@@ -454,8 +454,9 @@ class cs_item {
    *
    * @author CommSy Development Group
    */
-   function getItemID() {
-      return $this->_getValue('item_id');
+   public function getItemID(): int
+   {
+      return (int) $this->_getValue('item_id');
    }
 
    /** set item id
