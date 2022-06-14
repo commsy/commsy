@@ -4,6 +4,7 @@ namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
 use cs_environment;
+use cs_item;
 use cs_item_manager;
 
 class ItemService
@@ -26,7 +27,7 @@ class ItemService
 
     /**
      * @param integer $itemId
-     * @return \cs_item
+     * @return cs_item
      */
     public function getItem($itemId)
     {
@@ -38,9 +39,9 @@ class ItemService
     /**
      * @param int $itemId
      * @param int (optional) $versionId
-     * @return \cs_item|null
+     * @return cs_item|null
      */
-    public function getTypedItem($itemId, $versionId = null)
+    public function getTypedItem($itemId, $versionId = null): ?cs_item
     {
         $item = $this->getItem($itemId);
 
@@ -159,7 +160,7 @@ class ItemService
     /**
      * Returns all searchable items contained in rooms specified by the given room IDs.
      * @param integer[] $contextIds array of room IDs for rooms whose items shall be returned
-     * @return \cs_item[]
+     * @return cs_item[]
      */
     public function getSearchableItemsForContextIds(array $contextIds): array
     {
@@ -193,7 +194,7 @@ class ItemService
     }
 
     /**
-     * @param \cs_item[] cs_item array
+     * @param cs_item[] cs_item array
      * @param bool $withAnnotations Should related annotations also marked read?
      */
     public function markRead($items, $withAnnotations = true)
