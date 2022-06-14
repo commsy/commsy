@@ -12,6 +12,8 @@ use cs_environment;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -53,6 +55,11 @@ class MenuBuilder
     private Security $security;
 
     /**
+     * @var RouterInterface
+     */
+    private RouterInterface $router;
+
+    /**
      * @param FactoryInterface $factory
      * @param RoomService $roomService
      * @param LegacyEnvironment $legacyEnvironment
@@ -60,6 +67,7 @@ class MenuBuilder
      * @param InvitationsService $invitationsService
      * @param PortalRepository $portalRepository
      * @param Security $security
+     * @param RouterInterface $router
      */
     public function __construct(
         FactoryInterface $factory,
@@ -68,7 +76,8 @@ class MenuBuilder
         AuthorizationCheckerInterface $authorizationChecker,
         InvitationsService $invitationsService,
         PortalRepository $portalRepository,
-        Security $security
+        Security $security,
+        RouterInterface $router
     ) {
         $this->factory = $factory;
         $this->roomService = $roomService;
@@ -77,6 +86,7 @@ class MenuBuilder
         $this->invitationsService = $invitationsService;
         $this->portalRepository = $portalRepository;
         $this->security = $security;
+        $this->router = $router;
     }
 
     /**
@@ -584,12 +594,11 @@ class MenuBuilder
         if (!$userIsRoot && !$currentUser->isGuest()) {
             $privateRoom = $currentUser->getOwnRoom();
 
-            if ($roomId === $privateRoom->getItemId()) {
+            if ($roomId == $privateRoom->getItemId()) {
                 $inPrivateRoom = true;
             }
         }
 
-        $rubrics = [];
         $label = "home";
         $icon = "uk-icon-home";
         $route = "app_room_home";
@@ -643,15 +652,20 @@ class MenuBuilder
                     }
                 }
 
-                $menu->addChild($value, [
-                    'label' => $value,
-                    'route' => $route,
-                    'routeParameters' => array('roomId' => $roomId),
-                    'extras' => [
-                        'icon' => $this->getRubricIcon($value),
-                    ]
-                ])
-                ->setExtra('translation_domain', 'menu');
+                try {
+                    $this->router->generate($route, ['roomId' => $roomId]);
+                    $menu
+                        ->addChild($value, [
+                            'label' => $value,
+                            'route' => $route,
+                            'routeParameters' => ['roomId' => $roomId],
+                            'extras' => [
+                                'icon' => $this->getRubricIcon($value),
+                            ]
+                        ])
+                        ->setExtra('translation_domain', 'menu');
+                } catch (RouteNotFoundException $e) {
+                }
             }
         }
 
