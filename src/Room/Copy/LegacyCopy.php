@@ -672,7 +672,9 @@ class LegacyCopy implements CopyStrategy
             $itemId = $item->getItemID();
             if ($itemId != $target->getItemID()) {
                 $typedItem = $this->itemService->getTypedItem($itemId);
-                $this->eventDispatcher->dispatch(new ItemReindexEvent($typedItem), ItemReindexEvent::class);
+                if ($typedItem) {
+                    $this->eventDispatcher->dispatch(new ItemReindexEvent($typedItem), ItemReindexEvent::class);
+                }
             }
         }
 

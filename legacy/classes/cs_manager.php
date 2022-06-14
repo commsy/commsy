@@ -883,36 +883,43 @@ class cs_manager {
    *
    * @return object cs_item an item
    */
-   function _buildItem ($db_array) {
-      // ------------------
-      // --->UTF8 - OK<----
-      // ------------------
-      $item = $this->getNewItem();
-      if ( isset($item) ) {
-         $item->_setItemData(encode(FROM_DB,$db_array));
+    protected function _buildItem(array $db_array)
+    {
+        /** @var cs_item $item */
+        $item = $this->getNewItem();
+        if (isset($item)) {
+            $item->_setItemData(encode(FROM_DB, $db_array));
 
-         // archive
-        	if ( function_exists('get_called_class')
-        		  and strstr(get_called_class(),'_zzz_')
-        	   ) {
-            $item->setArchiveStatus();
-        	}
-         // archive
+            // archive
+            if (function_exists('get_called_class') && strstr(get_called_class(), '_zzz_')) {
+                $item->setArchiveStatus();
+            }
 
-      }
-      if ( $this->_cache_on
-           and method_exists($item,'getItemID')
-         ) {
-         $item_id = $item->getItemID();
-         if ( !empty($item_id)
-              and empty($this->_cache_object[$item_id])
-            ) {
-            $this->_cache_object[$item_id] = $item;
-         }
-      }
+            if (method_exists($item, 'getItemID')) {
+                $item_id = $item->getItemID();
+                if (!empty($item_id)) {
+                    // external viewer
+                    $itemManager = $this->_environment->getItemManager();
+                    $externalViewer = $itemManager->getExternalViewerUserArrayForItem($item_id);
+                    $item->setExternalViewerAccounts($externalViewer);
 
-      return $item;
-   }
+                    // cache
+                    if (empty($this->_cache_object[$item_id])) {
+                        $this->_cache_object[$item_id] = $item;
+                    }
+                }
+            }
+        }
+
+        if ($this->_cache_on && method_exists($item, 'getItemID')) {
+            $item_id = $item->getItemID();
+            if (!empty($item_id) && empty($this->_cache_object[$item_id])) {
+                $this->_cache_object[$item_id] = $item;
+            }
+        }
+
+        return $item;
+    }
 
    /** select items limited by limits
    * this method returns a list (cs_list) of items within the database limited by the limits.
