@@ -64,6 +64,7 @@ class CronNewsletter implements CronTaskInterface
         $portals = $this->portalRepository->findAll();
         foreach ($portals as $portal) {
             $this->legacyEnvironment->setCurrentContextID($portal->getId());
+            $this->legacyEnvironment->setCurrentPortalID($portal->getId());
 
             $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
             $privateRoomManager->reset();
@@ -79,7 +80,7 @@ class CronNewsletter implements CronTaskInterface
                 }
 
                 $privateRoomUser = $privateRoom->getOwnerUserItem();
-                $portalUser = $privateRoomUser->getRelatedPortalUserItem();
+                $portalUser = $privateRoomUser->getRelatedPortalUserItem($portal->getId());
                 if ($portalUser === null || !$portalUser->isActiveDuringLast99Days()) {
                     continue;
                 }
