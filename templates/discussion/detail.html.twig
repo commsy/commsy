@@ -127,23 +127,6 @@
                                                 </span>
                                             {% endif %}
                                         </li>
-
-                                        {# separator #}
-                                        <li>&nbsp;</li>
-
-                                        {# new article #}
-                                        <li>
-                                            {% if is_granted('ITEM_EDIT', 'NEW') %}
-                                                <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId}) }}">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({}, 'discussion') }}
-                                                </a>
-                                            {% else %}
-                                                <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({}, 'discussion') }}
-                                                </span>
-                                            {% endif %}
-                                        </li>
-
                                     </ul>
                                 </div>
                             </div>
@@ -195,6 +178,15 @@
                     {% endif %}
                 </article>
             </div>
+
+
+            {% if not draft %}
+                {{ render(controller(
+                    'App\\Controller\\DiscussionController::createArticleInitialAction',
+                    { 'roomId': roomId, 'itemId': item.itemId }
+                ))}}
+            {% endif %}
+
             
             <div data-uk-observe id="article-content">
                 <ul class="uk-comment-list">

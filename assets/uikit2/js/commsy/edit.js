@@ -117,6 +117,15 @@
                 .addClass('uk-hidden')
                 .parent().find("button.uk-button").addClass("uk-text-muted");
 
+            let articleDiscussion = $(el).parents('.cs-edit-section-discussion');
+            if(articleDiscussion.length > 0){
+                editButtons.each(function(){
+                    $(this).find('a').removeClass('uk-hidden');
+                });
+                $(".cs-additional-actions")
+                    .removeClass('uk-hidden')
+                    .parent().find("button.uk-button").removeClass("uk-text-muted");
+            }
             // send ajax request to get edit html
             $.ajax({
               url: this.options.editUrl
@@ -284,6 +293,22 @@
          * if the user submits the (combined) form for a second time or more often.
          */
         $('#draft-save-combine-link').on('click', function (event) {
+            event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+            $(this).parents('article').find('form').each(function () {
+                if (!$(this).reportValid()) {
+                    return false; // break in case of invalid form state
+                }
+                let button = $(this).find('.uk-button-primary');
+                if (button.length) {
+                    button.click();
+                }
+            });
+        });
+        /**
+         * Change to create initial discusion.
+         */
+        $('#draft-save-combine-link-initial-article-discussion').off('click');
+        $('#draft-save-combine-link-initial-article-discussion').on('click', function (event) {
             event.preventDefault ? event.preventDefault() : (event.returnValue = false);
             $(this).parents('article').find('form').each(function () {
                 if (!$(this).reportValid()) {

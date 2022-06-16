@@ -781,6 +781,117 @@ class DiscussionController extends BaseController
         ];
     }
 
+
+
+    /**
+     * @Route("/room/{roomId}/discussion/{itemId}/createarticleinitial")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
+     * @param Request $request
+     * @param int $roomId
+     * @param int $itemId
+     * @return array
+     */
+    public function createArticleInitialAction(
+        Request $request,
+        DiscussionTransformer $transformer,
+        int $roomId,
+        int $itemId,
+        TranslatorInterface $translator,
+        DiscussionTransformer $discussionTransformer
+    ) {
+        $discussion = $this->discussionService->getDiscussion($itemId);
+        $articleList = $discussion->getAllArticles();
+
+        // calculate new position
+        if ($request->query->has('answerTo')) {
+            // get parent position
+            $parentId = $request->query->get('answerTo');
+            $daManager = $this->legacyEnvironment->getDiscussionArticlesManager();
+            $parentArticle = $daManager->getItem($parentId);
+            $parentPosition = $parentArticle->getPosition();
+        } else {
+            $parentId = 0;
+            $parentPosition = 0;
+        }
+
+        /**
+         * TODO: Instead of iteration all articles to find the latest in the parents branch
+         * it would be much better to ask only for all childs of an article or directly
+         * for the latest position
+         */
+        $numParentDots = substr_count($parentPosition, '.');
+        $article = $articleList->getFirst();
+        $newRelativeNumericPosition = 1;
+        while ($article) {
+            $position = $article->getPosition();
+
+            $numDots = substr_count($position, '.');
+
+            if ($parentPosition == 0) {
+                if ($numDots == 0) {
+                    // compare against our latest stored position
+                    if (sprintf('%1$04d', $newRelativeNumericPosition) <= $position) {
+                        $newRelativeNumericPosition = $position + 1;
+//                        $newRelativeNumericPosition++;
+                    }
+                }
+            } else {
+                // if the parent position is one level above the child ones and
+                // the position string is start of the child position
+                if ($numDots == $numParentDots + 1 && substr($position, 0,
+                        strlen($parentPosition)) == $parentPosition) {
+                    // extract the last position part
+                    $positionExp = explode('.', $position);
+                    $lastPositionPart = $positionExp[sizeof($positionExp) - 1];
+
+                    // compare against our latest stored position
+                    if (sprintf('%1$04d', $newRelativeNumericPosition) <= $lastPositionPart) {
+                        $newRelativeNumericPosition = $lastPositionPart + 1;
+                    }
+                }
+            }
+
+            $article = $articleList->getNext();
+        }
+
+        // new position is relative to the parent position
+        $newPosition = '';
+        if ($parentPosition != 0) {
+            $newPosition .= $parentPosition . '.';
+        }
+        $newPosition .= sprintf('%1$04d', $newRelativeNumericPosition);
+
+        $article = $this->discussionService->getNewArticle();
+        $article->setDraftStatus(1);
+        $article->setDiscussionID($itemId);
+        $article->setPosition($newPosition);
+        $article->setPrivateEditing(false);
+        $article->save();
+
+        $formData = $transformer->transform($article);
+        $form = $this->createForm(DiscussionArticleType::class, $formData, [
+            'action' => $this->generateUrl('app_discussion_savearticle', [
+                'roomId' => $roomId,
+                'itemId' => $article->getItemID()
+            ]),
+            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
+        ]);
+
+        return [
+            'form' => $form->createView(),
+            'articleList' => $articleList,
+            'discussion' => $discussion,
+            'article' => $article,
+            'modifierList' => array(),
+            'userCount' => 0,
+            'readCount' => 0,
+            'readSinceModificationCount' => 0,
+            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
+            'parentId' => $parentId,
+        ];
+    }
+
     /**
      * @Route("/room/{roomId}/discussion/{itemId}/editarticles")
      * @Template()
