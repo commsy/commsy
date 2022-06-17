@@ -1,6 +1,7 @@
 <?php
 namespace App\Filter;
 
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -55,6 +56,7 @@ class RoomFilterType extends AbstractType
                     $tokens = explode(' ', $values['value']);
 
                     $expr = $filterQuery->getExpr();
+                    /** @var QueryBuilder $qb */
                     $qb = $filterQuery->getQueryBuilder();
 
                     foreach ($tokens as $num => $token) {
@@ -75,6 +77,31 @@ class RoomFilterType extends AbstractType
             ])
             ->add('membership', Filters\CheckboxFilterType::class, [
                 'label' => 'hide-rooms-without-membership',
+                'mapped' => false,
+                'translation_domain' => 'room',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+            ])
+            ->add('template', Filters\CheckboxFilterType::class, [
+                'label' => 'hide-templates',
+                'apply_filter' => function (QueryInterface $filterQuery, $field, $values) {
+                    if (empty($values['value'])) {
+                        return null;
+                    }
+
+                    if ($values['value'] === false) {
+                        return null;
+                    }
+
+                    /** @var QueryBuilder $qb */
+                    $qb = $filterQuery->getQueryBuilder();
+                    $qb
+                        ->andWhere('r.template = :template')
+                        ->setParameter('template', '-1');
+
+                    return $qb;
+                },
                 'mapped' => false,
                 'translation_domain' => 'room',
                 'label_attr' => array(

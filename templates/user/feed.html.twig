@@ -42,7 +42,17 @@
             {# name and meta #}
             <div class="uk-width-3-10">
                 <h4 class="uk-comment-title">
-                    <a href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.fullName|decodeHtmlEntity }}</a>
+                    {% if is_granted('ITEM_SEE', user.itemId) -%}
+                        <a href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">
+                    {%- else -%}
+                        <span class="uk-text-muted">
+                    {%- endif %}
+                            {{ user.fullName|decodeHtmlEntity }}
+                    {% if is_granted('ITEM_SEE', user.itemId) -%}
+                        </a>
+                    {%- else -%}
+                        </span>
+                    {%- endif %}
                 </h4>
 
                 <div class="uk-comment-meta">
@@ -63,13 +73,12 @@
                 </div>
             </div>
             <div class="uk-width-4-10">
-                {% if user.email %}
+                {% if is_granted('ITEM_SEE', user.itemId) and user.email %}
                     {% if user.isEmailVisible %}
                         <td>{{ user.email }} (<a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId, 'originPath': 'app_user_list'}) }}">{{'send mail'|trans({}, 'user') }}</a>)</td>
                     {% else %}
                         <td>{{ 'emailHidden'|trans({}, 'user') }} (<a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId, 'originPath': 'app_user_list'}) }}">{{'send mail'|trans({}, 'user') }}</a>)</td>
                     {% endif %}
-
                 {% endif %}
                 <br/>
                 {% if user.telephone %}

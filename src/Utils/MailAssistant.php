@@ -142,7 +142,7 @@ class MailAssistant
 
         $message = (new Email())
             ->subject($formDataSubject)
-            ->html($formDataMessage)
+            ->html($formDataMessage ?: '')
             ->replyTo(...$replyTo);
 
         // form option: files

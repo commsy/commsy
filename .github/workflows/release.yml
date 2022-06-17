@@ -10,6 +10,8 @@ jobs:
     release-gh:
         name: Create GitHub Release
         runs-on: ubuntu-latest
+        env:
+            APP_ENV: prod
         steps:
             -   name: actions/checkout
                 uses: actions/checkout@v2
@@ -22,13 +24,16 @@ jobs:
                 with:
                     php-version: '7.4'
                     extensions: zip, imap, ldap, soap
-                    tools: composer:v1
+                    tools: composer:v2
 
             -   name: Install yarn deps
                 run: yarn install
 
             -   name: Install php deps
                 run: composer install --prefer-dist --no-dev --no-scripts --no-progress --no-suggest
+
+            -   name: Generate JWT keypair
+                run: bin/console lexik:jwt:generate-keypair
 
             -   name: Dump env
                 run: composer dump-env prod

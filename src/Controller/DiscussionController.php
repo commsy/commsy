@@ -14,10 +14,10 @@ use App\Form\Type\DiscussionArticleType;
 use App\Form\Type\DiscussionType;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
-use App\Utils\CategoryService;
-use App\Utils\LabelService;
 use App\Utils\AssessmentService;
+use App\Utils\CategoryService;
 use App\Utils\DiscussionService;
+use App\Utils\LabelService;
 use App\Utils\TopicService;
 use cs_discussion_item;
 use cs_room_item;
@@ -55,7 +55,6 @@ class DiscussionController extends BaseController
         $this->discussionService = $discussionService;
     }
 
-
     /**
      * @required
      * @param SessionInterface $session
@@ -64,7 +63,6 @@ class DiscussionController extends BaseController
     {
         $this->session = $session;
     }
-
 
     /**
      * @Route("/room/{roomId}/discussion/feed/{start}/{sort}")
@@ -83,7 +81,7 @@ class DiscussionController extends BaseController
         int $roomId,
         int $max = 10,
         int $start = 0,
-        string $sort = 'latest'
+        string $sort = ''
     ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -110,10 +108,13 @@ class DiscussionController extends BaseController
             $this->discussionService->hideDeactivatedEntries();
         }
 
+        if (empty($sort)) {
+            $sort = $this->session->get('sortDiscussions', 'latest');
+        }
+        $this->session->set('sortDiscussions', $sort);
+
         // get discussion list from manager service
         $discussions = $this->discussionService->getListDiscussions($roomId, $max, $start, $sort);
-
-        $this->session->set('sortDiscussions', $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -165,6 +166,8 @@ class DiscussionController extends BaseController
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
+        $sort = $this->session->get('sortDiscussions', 'latest');
+
         // get the discussion manager service
         $filterForm = $this->createFilterForm($roomItem);
 
@@ -201,6 +204,7 @@ class DiscussionController extends BaseController
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'sort' => $sort,
         );
 
     }
@@ -240,14 +244,10 @@ class DiscussionController extends BaseController
         }
 
         // get discussion list from manager service
-        if ($sort != "none") {
-            $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, $sort);
-        } elseif ($this->session->get('sortDates')) {
-            $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0,
-                $this->session->get('sortDiscussions'));
-        } else {
-            $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, 'date');
+        if ($sort === "none" || empty($sort)) {
+            $sort = $this->session->get('sortDiscussions', 'latest');
         }
+        $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -836,9 +836,6 @@ class DiscussionController extends BaseController
 
         $isDraft = $item->isDraft();
 
-        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
-        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
-
         $transformer = null;
 
         if ($item->getItemType() == 'discussion') {
@@ -858,8 +855,6 @@ class DiscussionController extends BaseController
                 throw $this->createNotFoundException('No discussion found for id ' . $itemId);
             }
             $formData = $transformer->transform($discussionItem);
-            $formData['categoriesMandatory'] = $categoriesMandatory;
-            $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
             $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
                 $this->legacyEnvironment);
@@ -880,7 +875,7 @@ class DiscussionController extends BaseController
                     'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                     'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
                 ],
-
+                'room' => $current_context,
             ));
         } else {
             if ($item->getItemType() == 'discarticle') {
@@ -910,7 +905,7 @@ class DiscussionController extends BaseController
 
                     // set linked hashtags and categories
                     $formData = $form->getData();
-                    if ($categoriesMandatory) {
+                    if ($form->has('category_mapping')) {
                         $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
                         if (isset($formData['category_mapping']['newCategory'])) {
@@ -919,17 +914,21 @@ class DiscussionController extends BaseController
                             $categoryIds[] = $newCategory->getItemID();
                         }
 
-                        $discussionItem->setTagListByID($categoryIds);
+                        if (!empty($categoryIds)) {
+                            $discussionItem->setTagListByID($categoryIds);
+                        }
                     }
-                    if ($hashtagsMandatory) {
+                    if ($form->has('hashtag_mapping')) {
                         $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
-    if (isset($formData['hashtag_mapping']['newHashtag'])) {
+                        if (isset($formData['hashtag_mapping']['newHashtag'])) {
                             $newHashtagTitle = $formData['hashtag_mapping']['newHashtag'];
                             $newHashtag = $labelService->getNewHashtag($newHashtagTitle, $roomId);
                             $hashtagIds[] = $newHashtag->getItemID();
                         }
 
-                        $discussionItem->setBuzzwordListByID($hashtagIds);
+                        if (!empty($hashtagIds)) {
+                            $discussionItem->setBuzzwordListByID($hashtagIds);
+                        }
                     }
 
                     $discussionItem->save();
@@ -953,11 +952,6 @@ class DiscussionController extends BaseController
                 }
             }
             return $this->redirectToRoute('app_discussion_save', array('roomId' => $roomId, 'itemId' => $itemId));
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
 
         if ($item->getItemType() == 'discussion') {
@@ -973,8 +967,6 @@ class DiscussionController extends BaseController
             'discussion' => $discussionItem,
             'discussionArticle' => $discussionArticleItem,
             'isDraft' => $isDraft,
-            'showHashtags' => $hashtagsMandatory,
-            'showCategories' => $categoriesMandatory,
             'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }

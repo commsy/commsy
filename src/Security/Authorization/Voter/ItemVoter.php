@@ -2,6 +2,7 @@
 
 namespace App\Security\Authorization\Voter;
 
+use App\Entity\Account;
 use App\Entity\Portal;
 use App\Proxy\PortalProxy;
 use App\Services\LegacyEnvironment;
@@ -67,10 +68,9 @@ class ItemVoter extends Voter
         // get current logged in user
         $user = $token->getUser();
 
-        // make sure there is a user object (i.e. that the user is logged in)
-        // if (!$user instanceof User) {
-        //     return false
-        // }
+        if ($user instanceof Account && $user->getUsername() === 'root') {
+            return true;
+        }
 
         $itemId = $object;
 
@@ -150,7 +150,8 @@ class ItemVoter extends Voter
      */
     private function canEdit($item, \cs_user_item $currentUser): bool
     {
-        if ($item->getContextItem()->isArchived()) {
+        $contextItem = $item->getContextItem();
+        if ($contextItem !== null && $contextItem->isArchived()) {
             // users may still edit their own account settings & room profile (which also allows them to leave the room)
             if ($item instanceof \cs_user_item && $item->getItemID() === $currentUser->getItemID()) {
                 return true;
@@ -283,8 +284,11 @@ class ItemVoter extends Voter
 
     private function hasUserroomItemPrivileges($item, $currentUser)
     {
-        if ($item->getContextItem()->getType() === 'userroom'
-            && $this->canParticipate($item, $currentUser)) {
+        $contextItem = $item->getContextItem();
+        if ($contextItem !== null &&
+            $contextItem->getType() === 'userroom' &&
+            $this->canParticipate($item, $currentUser)
+        ) {
             return true;
         }
         return false;

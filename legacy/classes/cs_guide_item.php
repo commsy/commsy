@@ -29,133 +29,68 @@ include_once('classes/cs_context_item.php');
 /** class for a context
  * this class implements a context item
  */
-class cs_guide_item extends cs_context_item {
+class cs_guide_item extends cs_context_item
+{
 
-   /** constructor: cs_server_item
-    * the only available constructor, initial values for internal variables
-    *
-    * @param object environment the environment of the commsy
-    */
-   function __construct($environment) {
-      cs_context_item::__construct($environment);
-   }
+    /** constructor: cs_server_item
+     * the only available constructor, initial values for internal variables
+     *
+     * @param object environment the environment of the commsy
+     */
+    public function __construct($environment)
+    {
+        parent::__construct($environment);
+    }
 
-   function isServer () {
-      return false;
-   }
+    public function isServer()
+    {
+        return false;
+    }
 
-   function isPortal () {
-      return false;
-   }
+    public function isPortal()
+    {
+        return false;
+    }
 
-   function setServerNewsTitle ($value) {
-      $this->_setServerNews('title',$value);
-   }
+    public function setAvailableLanguageArray($value)
+    {
+        $this->_addExtra('LANGUAGE_AVAILABLE', $value);
+    }
 
-   function setServerNewsText ($value) {
-      $this->_setServerNews('text',$value);
-   }
+    public function getAvailableLanguageArray()
+    {
+        $retour = array();
+        if ($this->_issetExtra('LANGUAGE_AVAILABLE')) {
+            $retour = $this->_getExtra('LANGUAGE_AVAILABLE');
+        } elseif ($this->isServer()) {
+            $translator = $this->_environment->getTranslationObject();
+            $retour = $translator->getAvailableLanguages();
+        } elseif ($this->isPortal()) {
+            $server_item = $this->_environment->getServerItem();
+            $retour = $server_item->getAvailableLanguageArray();
+        }
+        return $retour;
+    }
 
-   function setServerNewsLink ($value) {
-      $this->_setServerNews('link',$value);
-   }
+    /** get url of a portal/server
+     * this method returns the url of the portal/server
+     * - without http(s)://
+     * - without /commsy.php?....
+     *
+     * @return string url of a portal/server
+     */
+    public function getUrl()
+    {
+        return $this->_getValue('url');
+    }
 
-   function _setServerNewsShow ($value) {
-      $this->_setServerNews('show',$value);
-   }
-
-   function _setServerNews ($mode,$value) {
-      $server_news_array = $this->_getServerNewsArray();
-      $server_news_array[mb_strtoupper($mode, 'UTF-8')] = $value;
-      $this->_setServerNewsArray($server_news_array);
-   }
-
-   function _setServerNewsArray ($value) {
-      $this->_addExtra('SERVER_NEWS',$value);
-   }
-
-   function _getServerNewsArray () {
-      return $this->_getExtra('SERVER_NEWS');
-   }
-
-   function getServerNewsTitle () {
-      return $this->_getServerNews('title');
-   }
-
-   function getServerNewsText () {
-      return $this->_getServerNews('text');
-   }
-
-   function getServerNewsLink () {
-      return $this->_getServerNews('link');
-   }
-
-   function _getServerNewsShow () {
-      return $this->_getServerNews('show');
-   }
-
-   function _getServerNews ($mode) {
-      $retour = '';
-      $server_news_array = $this->_getServerNewsArray();
-      if (!empty($server_news_array[mb_strtoupper($mode, 'UTF-8')])) {
-         $retour = $server_news_array[mb_strtoupper($mode, 'UTF-8')];
-      }
-      return $retour;
-   }
-
-   function showServerNews () {
-      $retour = false;
-      $show_news = $this->_getServerNewsShow();
-      if ($show_news == 1) {
-         $retour = true;
-      }
-      return $retour;
-   }
-
-   function setDontShowServerNews () {
-      $this->_setServerNewsShow(-1);
-   }
-
-   function setShowServerNews () {
-      $this->_setServerNewsShow(1);
-   }
-
-   function setAvailableLanguageArray ($value) {
-      $this->_addExtra('LANGUAGE_AVAILABLE',$value);
-   }
-
-   function getAvailableLanguageArray () {
-      $retour = array();
-      if ( $this->_issetExtra('LANGUAGE_AVAILABLE') ) {
-         $retour = $this->_getExtra('LANGUAGE_AVAILABLE');
-      } elseif ( $this->isServer() ) {
-         $translator = $this->_environment->getTranslationObject();
-         $retour = $translator->getAvailableLanguages();
-      } elseif ( $this->isPortal() ) {
-         $server_item = $this->_environment->getServerItem();
-         $retour = $server_item->getAvailableLanguageArray();
-      }
-      return $retour;
-   }
-
-   /** get url of a portal/server
-    * this method returns the url of the portal/server
-    * - without http(s)://
-    * - without /commsy.php?....
-    *
-    * @return string url of a portal/server
-    */
-   function getUrl () {
-      return $this->_getValue('url');
-   }
-
-   /** set url of a portal
-    * this method sets the url of the portal/server
-    *
-    * @param string value url of the portal/server
-    */
-   function setUrl ($value) {
-      $this->_setValue('url', $value, TRUE);
-   }
+    /** set url of a portal
+     * this method sets the url of the portal/server
+     *
+     * @param string value url of the portal/server
+     */
+    public function setUrl($value)
+    {
+        $this->_setValue('url', $value, true);
+    }
 }
-?>

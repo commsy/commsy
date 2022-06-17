@@ -74,6 +74,8 @@ class AuthSourceShibboleth extends AuthSource
      */
     private ?Collection $identityProviders;
 
+    protected string $type = 'shib';
+
     public function __construct()
     {
         $this->addAccount = self::ADD_ACCOUNT_NO;
@@ -82,11 +84,6 @@ class AuthSourceShibboleth extends AuthSource
         $this->changeUserdata = false;
         $this->changePassword = false;
         $this->identityProviders = new ArrayCollection();
-    }
-
-    public function getType(): string
-    {
-        return 'shib';
     }
 
     /**

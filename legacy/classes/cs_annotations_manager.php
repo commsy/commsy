@@ -37,7 +37,7 @@ include_once('classes/cs_manager.php');
 /** class for database connection to the database table "annotations"
  * this class implements a database manager for the table "annotations"
  */
-class cs_annotations_manager extends cs_manager implements cs_export_import_interface {
+class cs_annotations_manager extends cs_manager {
 
   /**
    * object manager - containing object to the select links for annotations
@@ -244,7 +244,6 @@ class cs_annotations_manager extends cs_manager implements cs_export_import_inte
      if (in_array($item_id,$this->_item_id_array)){
         $annotation_list = $this->_all_annotation_list;
         $annotation_item = $annotation_list->getFirst();
-        $return_list = new cs_list();
         while($annotation_item){
            if($item_id == $annotation_item->getLinkedItemID()){
               $list->add($annotation_item);
@@ -313,7 +312,6 @@ class cs_annotations_manager extends cs_manager implements cs_export_import_inte
 
      $query = 'UPDATE '.$this->addDatabasePrefix('annotations').' SET '.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
-              'title="'.encode(AS_DB,$annotation_item->getTitle()).'",'.
               'description="'.encode(AS_DB,$annotation_item->getDescription()).'",'.
               'linked_item_id="'.encode(AS_DB,$annotation_item->getLinkedItemID()).'",'.
               'linked_version_id="'.encode(AS_DB,$version_id).'",'.
@@ -372,7 +370,6 @@ class cs_annotations_manager extends cs_manager implements cs_export_import_inte
               'creator_id="'.encode(AS_DB,$this->_current_user->getItemID()).'",'.
               'creation_date="'.$current_datetime.'",'.
               'modification_date="'.$current_datetime.'",'.
-              'title="'.encode(AS_DB,$annotation_item->getTitle()).'",'.
               'description="'.encode(AS_DB,$annotation_item->getDescription()).'",'.
               'linked_item_id="'.encode(AS_DB,$annotation_item->getLinkedItemID()).'",'.
               'linked_version_id="'.encode(AS_DB,$version_id).'"';
@@ -426,28 +423,6 @@ class cs_annotations_manager extends cs_manager implements cs_export_import_inte
      }
   }
 
-   function getCountExistingAnnotationsOfUser($user_id) {
-     $query = 'SELECT count('.$this->addDatabasePrefix('annotations').'.item_id) as count';
-     $query .= ' FROM '.$this->addDatabasePrefix('annotations');
-     $query .= ' WHERE 1';
-
-     if (isset($this->_room_limit)) {
-        $query .= ' AND '.$this->addDatabasePrefix('annotations').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
-     } else {
-        $query .= ' AND '.$this->addDatabasePrefix('annotations').'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
-     }
-     $query .= ' AND '.$this->addDatabasePrefix('annotations').'.deleter_id IS NULL';
-     $query .= ' AND '.$this->addDatabasePrefix('annotations').'.creator_id ="'.encode(AS_DB,$user_id).'"';
-
-     // perform query
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems selecting items.',E_USER_WARNING);
-     } else {
-         return $result[0]['count'];
-     }
-   }
-
     function deleteAnnotationsofUser($uid) {
         global $symfonyContainer;
         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
@@ -469,7 +444,6 @@ class cs_annotations_manager extends cs_manager implements cs_export_import_inte
 
                     /* disabled */
                     if ($disableOverwrite === 'FALSE') {
-                        $updateQuery .= ' title = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')) . '",';
                         $updateQuery .= ' description = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')) . '",';
                         $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
                     }
@@ -484,55 +458,4 @@ class cs_annotations_manager extends cs_manager implements cs_export_import_inte
             }
         }
     }
-	
-	function export_item($id) {
-	   $item = $this->getItem($id);
-	
-   	$xml = new SimpleXMLElementExtended('<annotations_item></annotations_item>');
-   	$xml->addChildWithCDATA('item_id', $item->getItemID());
-      $xml->addChildWithCDATA('context_id', $item->getContextID());
-      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
-      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
-      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
-      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
-      $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
-      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
-      $xml->addChildWithCDATA('title', $item->getTitle());
-      $xml->addChildWithCDATA('description', $item->getDescription());
-      $xml->addChildWithCDATA('linked_item_id', $item->getLinkedItemID());
-      $xml->addChildWithCDATA('linked_version_id', $item->getLinkedVersionID());
-      
-   	$extras_array = $item->getExtraInformation();
-      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
-      $this->simplexml_import_simplexml($xml, $xmlExtras);
-   
-      $xml->addChildWithCDATA('public', $item->isPublic());
-   
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
-      
-   }
-   
-   function import_item($xml, $top_item, &$options) {
-      $item = null;
-      if ($xml != null) {
-         $item = $this->getNewItem();
-         $item->setTitle((string)$xml->title[0]);
-         $item->setDescription((string)$xml->description[0]);
-         $item->setLinkedItemID($top_item->getItemID());
-         $item->setContextID($top_item->getContextID());
-         $item->save();
-      }
-      
-      $options[(string)$xml->item_id[0]] = $item->getItemId();
-      
-      return $item;
-   }
-   
-   function import_sub_items($xml, $top_item, &$options) {
-      
-   }
 }
-?>

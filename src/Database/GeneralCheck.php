@@ -34,7 +34,7 @@ abstract class GeneralCheck implements DatabaseCheck
 
         $conn = $this->entityManager->getConnection();
         $stmt = $conn->prepare($sql);
-        $stmt->execute();
+        $stmt->executeQuery();
 
         return $stmt;
     }

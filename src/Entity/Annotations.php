@@ -73,13 +73,6 @@ class Annotations
     /**
      * @var string
      *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
-     */
-    private $title;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="description", type="text", length=16777215, nullable=true)
      */
     private $description;
@@ -111,7 +104,5 @@ class Annotations
      * @ORM\Column(name="public", type="boolean", nullable=false)
      */
     private $public = '0';
-
-
 }
 

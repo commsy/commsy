@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
+use App\Controller\Api\GetPortalAnnouncement;
+use App\Controller\Api\GetPortalTou;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_list;
@@ -9,7 +13,7 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Swagger\Annotations as SWG;
+use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -24,6 +28,71 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\PortalRepository")
  * @ORM\HasLifecycleCallbacks()
  * @Vich\Uploadable
+ * @ApiResource(
+ *     security="is_granted('ROLE_API_READ')",
+ *     collectionOperations={
+ *         "get",
+ *     },
+ *     itemOperations={
+ *         "get",
+ *         "get_announcement"={
+ *             "method"="GET",
+ *             "path"="portals/{id}/announcement",
+ *             "controller"=GetPortalAnnouncement::class,
+ *             "openapi_context"={
+ *                 "summary"="Get portal announcement",
+ *                 "responses"={
+ *                     "200"={
+ *                         "description"="Portal announcement",
+ *                         "content"={
+ *                             "application/json"={
+ *                                 "schema"={
+ *                                     "type"="object",
+ *                                     "properties"={
+ *                                         "enabled"={"type"="boolean"},
+ *                                         "title"={"type"="string"},
+ *                                         "severity"={"type"="string"},
+ *                                         "text"={"type"="string"},
+ *                                     },
+ *                                 },
+ *                             },
+ *                         },
+ *                     },
+ *                 },
+ *             },
+ *         },
+ *         "get_tou"={
+ *             "method"="GET",
+ *             "path"="portals/{id}/tou",
+ *             "controller"=GetPortalTou::class,
+ *             "openapi_context"={
+ *                 "summary"="Get portal terms of use",
+ *                 "responses"={
+ *                     "200"={
+ *                         "description"="Portal terms of use",
+ *                         "content"={
+ *                             "application/json"={
+ *                                 "schema"={
+ *                                     "type"="object",
+ *                                     "properties"={
+ *                                         "de"={"type"="string","nullable"=true},
+ *                                         "en"={"type"="string","nullable"=true},
+ *                                     },
+ *                                 },
+ *                             },
+ *                         },
+ *                     },
+ *                 },
+ *             },
+ *         },
+ *     },
+ *     normalizationContext={
+ *         "groups"={"api"},
+ *     },
+ *     denormalizationContext={
+ *         "groups"={"api"},
+ *     }
+ * )
  */
 class Portal implements \Serializable
 {
@@ -33,7 +102,7 @@ class Portal implements \Serializable
      * @ORM\GeneratedValue
      *
      * @Groups({"api"})
-     * @SWG\Property(description="The unique identifier.")
+     * @OA\Property(description="The unique identifier.")
      */
     private $id;
 
@@ -76,7 +145,7 @@ class Portal implements \Serializable
      * @ORM\Column(name="title", type="string", length=255, nullable=false)
      *
      * @Groups({"api"})
-     * @SWG\Property(type="string", maxLength=255)
+     * @OA\Property(type="string", maxLength=255)
      */
     private $title;
 
@@ -86,7 +155,7 @@ class Portal implements \Serializable
      * @ORM\Column(name="description_de", type="text")
      *
      * @Groups({"api"})
-     * @SWG\Property(type="string")
+     * @OA\Property(type="string")
      */
     private $descriptionGerman;
 
@@ -96,7 +165,7 @@ class Portal implements \Serializable
      * @ORM\Column(name="description_en", type="text")
      *
      * @Groups({"api"})
-     * @SWG\Property(type="string")
+     * @OA\Property(type="string")
      */
     private $descriptionEnglish;
 
@@ -137,6 +206,8 @@ class Portal implements \Serializable
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\AuthSource", mappedBy="portal")
+     *
+     * @ApiSubresource()
      */
     private $authSources;
 
@@ -680,6 +751,12 @@ class Portal implements \Serializable
         return $this;
     }
 
+    /**
+     * @Groups({"api"})
+     * @OA\Property(type="boolean")
+     *
+     * @return bool
+     */
     public function hasAGBEnabled(): bool
     {
         /**

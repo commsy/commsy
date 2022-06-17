@@ -35,7 +35,6 @@ include_once('classes/cs_manager.php');
 include_once('functions/text_functions.php');
 include_once('classes/cs_list.php');
 include_once('classes/cs_userroom_item.php');
-include_once('classes/interfaces/cs_export_import_interface.php');
 
    /** This class returns an instance of a cs_mananger subclass on request.
    *It also contains often needed environment variables.
@@ -216,109 +215,81 @@ class cs_environment {
       $this->current_context = $value;
    }
 
-  /** get the current room item
-   * current context id must be set
-   *
-   * @return \cs_context_item     room
-   */
-   function getCurrentContextItem() {
-      if ( !is_null($this->current_context_id)
-           and $this->current_context_id != 0
-           and $this->current_context_id != $this->getServerID()
-         ) {
-         if ( is_null($this->current_context)
-              or $this->current_context->getItemID() != $this->current_context_id
-            ) {
-             global $symfonyContainer;
-             /** @var EntityManagerInterface $entityManager */
-             $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
-             $portal = $entityManager->getRepository(Portal::class)->find($this->current_context_id);
+    /** get the current room item
+     * current context id must be set
+     *
+     * @return cs_context_item
+     */
+    public function getCurrentContextItem()
+    {
+        if (
+            $this->current_context_id === null ||
+            $this->current_context_id === 0 ||
+            $this->current_context_id == $this->getServerID()
+        ) {
+            $this->current_context_id = $this->getServerID();
+            $this->current_context = $this->getServerItem();
+        }
 
-             if ($portal) {
-                 $this->current_context = new PortalProxy($portal, $this);
-                 return $this->current_context;
-             }
+        if ($this->current_context === null || $this->current_context->getItemID() != $this->current_context_id) {
+            global $symfonyContainer;
+            /** @var EntityManagerInterface $entityManager */
+            $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
+            $portal = $entityManager->getRepository(Portal::class)->find($this->current_context_id);
+
+            if ($portal) {
+                $this->current_context = new PortalProxy($portal, $this);
+                return $this->current_context;
+            }
 
             $item_manager = $this->getItemManager();
             $item = $item_manager->getItem($this->current_context_id);
-            if ( isset($item) ) {
-               $type = $item->getItemType();
-               if ($type == CS_PROJECT_TYPE) {
-                  $manager = $this->getRoomManager(); // room_manager for caching
-               } elseif ($type == CS_COMMUNITY_TYPE) {
-                  $manager = $this->getRoomManager(); // room_manager for caching
-               } elseif ($type == CS_PRIVATEROOM_TYPE) {
-                  $manager = $this->getManager(CS_PRIVATEROOM_TYPE); // room_manager for caching
-               } elseif ($type == CS_GROUPROOM_TYPE) {
-                  $manager = $this->getRoomManager(); // room_manager for caching
-               } elseif ($type == cs_userroom_item::ROOM_TYPE_USER) {
-                   $manager = $this->getRoomManager(); // room_manager for caching
-               } elseif ($type == CS_PORTAL_TYPE) {
-                  $manager = $this->getPortalManager();
-               } elseif ($type == CS_SERVER_TYPE) {
-                  $manager = $this->getServerManager();
-               } else {
-                  include_once('functions/error_functions.php');
-                  trigger_error('wrong type of room ['.$type.']',E_USER_ERROR);
-               }
+            if (isset($item)) {
+                $type = $item->getItemType();
+                $manager = $this->getManager($type);
             } else {
-               include_once('functions/error_functions.php');
-               $archive_mode = ' - archive mode = false';
-               if ($this->isArchiveMode()) {
-                  $archive_mode = ' - archive mode = true';
-               }
-               trigger_error('can not initiate room ['.$this->current_context_id.'] -> bug in item table'.$archive_mode,E_USER_ERROR);
+                include_once('functions/error_functions.php');
+                $archive_mode = ' - archive mode = false';
+                if ($this->isArchiveMode()) {
+                    $archive_mode = ' - archive mode = true';
+                }
+                trigger_error('can not initiate room [' . $this->current_context_id . '] -> bug in item table' . $archive_mode,
+                    E_USER_ERROR);
             }
-            if ( !empty($manager)
-                 and is_object($manager)
-               ) {
-               $this->current_context = $manager->getItem($this->current_context_id);
-               if ( !isset($this->current_context) ) {
-                  if ( !$this->isArchiveMode() ) {
-                     $this->activateArchiveMode();
-                  } else {
-                     $this->deactivateArchiveMode();
-                  }
-                  $type = $item->getItemType();
-                  if ($type == CS_PROJECT_TYPE) {
-                     $manager = $this->getRoomManager(); // room_manager for caching
-                  } elseif ($type == CS_COMMUNITY_TYPE) {
-                     $manager = $this->getRoomManager(); // room_manager for caching
-                  } elseif ($type == CS_PRIVATEROOM_TYPE) {
-                     $manager = $this->getManager(CS_PRIVATEROOM_TYPE); // room_manager for caching
-                  } elseif ($type == CS_GROUPROOM_TYPE) {
-                     $manager = $this->getRoomManager(); // room_manager for caching
-                  } elseif ($type == cs_userroom_item::ROOM_TYPE_USER) {
-                      $manager = $this->getRoomManager(); // room_manager for caching
-                  } elseif ($type == CS_PORTAL_TYPE) {
-                     $manager = $this->getPortalManager();
-                  } elseif ($type == CS_SERVER_TYPE) {
-                     $manager = $this->getServerManager();
-                  } else {
-                     include_once('functions/error_functions.php');
-                     trigger_error('wrong type of room ['.$type.']',E_USER_ERROR);
-                  }
-                  if ( !empty($manager)
-                       and is_object($manager)
-                     ) {
-                     $this->current_context = $manager->getItem($this->current_context_id);
-                     if ( !isset($this->current_context) ) {
-                        include_once('functions/error_functions.php');
-                        $archive_mode = ' - archive mode = false';
-                        if ($this->isArchiveMode()) {
-                           $archive_mode = ' - archive mode = true';
+
+            if (!empty($manager) && is_object($manager)) {
+                $this->current_context = $manager->getItem($this->current_context_id);
+                if (!isset($this->current_context)) {
+                    $this->toggleArchiveMode();
+
+                    $type = $item->getItemType();
+                    $manager = $this->getManager($type);
+
+                    if (!empty($manager) && is_object($manager)) {
+                        $this->current_context = $manager->getItem($this->current_context_id);
+                        if (!isset($this->current_context)) {
+                            include_once('functions/error_functions.php');
+                            $archive_mode = ' - archive mode = false';
+                            if ($this->isArchiveMode()) {
+                                $archive_mode = ' - archive mode = true';
+                            }
+                            trigger_error('can not initiate room [' . $this->current_context_id . '] -> bug in room table' . $archive_mode,
+                                E_USER_ERROR);
                         }
-                        trigger_error('can not initiate room ['.$this->current_context_id.'] -> bug in room table'.$archive_mode,E_USER_ERROR);
-                     }
-                  }
-               }
+                    }
+                }
             }
-         }
-      } else {
-         $this->current_context_id = $this->getServerID();
-         $this->current_context = $this->getServerItem();
-      }
-      return $this->current_context;
+        }
+
+        return $this->current_context;
+    }
+
+   public function configureContext()
+   {
+        $currentContextItem = $this->getCurrentContextItem();
+        if ($currentContextItem !== null && $currentContextItem->isArchived()) {
+            $this->activateArchiveMode();
+        }
    }
 
   /** get server object
@@ -921,18 +892,21 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_link_manager');
    }
 
-  /** get instance of cs_user_manager
-   *
-   * @return cs_user_manager
-   * @access public
-   */
-   function getUserManager( $force = false ) {
-      if ( $force or !$this->isArchiveMode() ) {
-         return $this->_getInstance('cs_user_manager');
-      } else {
-         return $this->getZzzUserManager();
-      }
-   }
+    /** get instance of cs_user_manager
+     *
+     * @param bool $force
+     * @return cs_user_manager
+     * @access public
+     */
+    public function getUserManager(bool $force = false): cs_user_manager
+    {
+        if ($force || !$this->isArchiveMode()) {
+            /** @noinspection PhpIncompatibleReturnTypeInspection */
+            return $this->_getInstance('cs_user_manager');
+        } else {
+            return $this->getZzzUserManager();
+        }
+    }
 
  /** get instance of cs_zzz_user_manager
    *
@@ -1482,15 +1456,6 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_hash_manager');
    }
 
-  /** get instance of cs_wordpress_manager
-   *
-   * @return cs_wordpress_manager
-   * @access public
-   */
-   function getWordpressManager() {
-      return $this->_getInstance('cs_wordpress_manager');
-   }
-
    function getExternalIdManager() {
       return $this->_getInstance('cs_external_id_manager');
    }
@@ -1607,11 +1572,10 @@ class cs_environment {
     /** get instance of cs_XXX_manager by item_type
      *
      * @param string type of an item
-     * @param bool $force
-     * @return cs_manager|null
+     * @return object|null
      * @access public
      */
-    public function getManager($type): ?cs_manager
+    public function getManager($type): ?object
     {
         if (!empty($type)) {
             if ($type == CS_DATE_TYPE) {
@@ -1775,14 +1739,6 @@ class cs_environment {
    function inServer () {
       $context_item = $this->getCurrentContextItem();
       return $context_item->isServer();
-   }
-   
-   public function getCommSyConnectionObject () {
-   	if ( !isset($this->instance['commsy_connection_object']) ) {
-         include_once('classes/cs_connection_commsy.php');
-         $this->instance['commsy_connection_object'] = new cs_connection_commsy($this);
-     	}
-      return $this->instance['commsy_connection_object'];
    }
 
    /** get Instance of the translation object
@@ -1992,17 +1948,6 @@ class cs_environment {
       return $retour;
    }
 
-   function getCurrentBrowserVersion () {
-      $retour = '';
-      if ( !isset($this->_browser_version) ) {
-         $this->_parseBrowser();
-      }
-      if ( !empty($this->_browser_version) ) {
-         $retour = $this->_browser_version;
-      }
-      return $retour;
-   }
-
    function _parseBrowser() {
       global $_SERVER;
 
@@ -2033,17 +1978,7 @@ class cs_environment {
             break; // first match wins
          }
       }
-      // IPHONE Textarea without FCK-/ CK-Editor
-//      if($this->_browser == 'IPHONE' OR $this->_browser == 'IPAD'){
-//         $currentContextItem = $this->getCurrentContextItem();
-//         if($currentContextItem->isPluginOn('ckeditor')){
-//            $currentContextItem->setPluginOff('ckeditor');
-//         }
-//         if($currentContextItem->withHtmlTextArea()){
-//            $currentContextItem->setHtmlTextAreaStatus(3);
-//         }
-//         unset($currentContextItem);
-//      }
+
       $this->getCurrentOperatingSystem();
    }
 
@@ -2202,12 +2137,7 @@ class cs_environment {
    # plugin: end
    ################################################################
 
-    function getDBConnector()
-    {
-        return $this->_getMySQLConnector();
-    }
-
-    private function _getMySQLConnector()
+    public function getDBConnector(): db_mysql_connector
     {
         if (empty($this->_db_mysql_connector)) {
             include_once('classes/db_mysql_connector.php');

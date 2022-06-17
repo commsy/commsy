@@ -128,7 +128,7 @@ class AnnouncementController extends BaseController
         int $roomId,
         int $max = 10,
         int $start = 0,
-        string $sort = 'date'
+        string $sort = ''
     ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -157,11 +157,15 @@ class AnnouncementController extends BaseController
             $this->announcementService->hideInvalidEntries();
         }
 
+        if (empty($sort)) {
+            $sort = $this->session->get('sortAnnouncements', 'date');
+        }
+        $this->session->set('sortAnnouncements', $sort);
+
         // get announcement list from manager service
         /** @var cs_announcement_item[] $announcements */
         $announcements = $this->announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
-        $this->session->set('sortAnnouncements', $sort);
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
@@ -290,7 +294,9 @@ class AnnouncementController extends BaseController
             $this->announcementService->hideInvalidEntries();
         }
 
-        // get announcement list from manager service 
+        $sort = $this->session->get('sortAnnouncements', 'date');
+
+        // get announcement list from manager service
         $itemsCountArray = $this->announcementService->getCountArray($roomId);
 
         $usageInfo = false;
@@ -314,6 +320,7 @@ class AnnouncementController extends BaseController
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'sort' => $sort,
         );
     }
 
@@ -352,17 +359,11 @@ class AnnouncementController extends BaseController
         }
 
         // get announcement list from manager service
-        if ($sort != "none") {
-            /** @var cs_announcement_item[] $announcements */
-            $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, $sort);
-        } elseif ($this->session->get('sortAnnouncements')) {
-            /** @var cs_announcement_item[] $announcements */
-            $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0,
-                $this->session->get('sortAnnouncements'));
-        } else {
-            /** @var cs_announcement_item[] $announcements */
-            $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, 'date');
+        if ($sort === "none" || empty($sort)) {
+            $sort = $this->session->get('sortAnnouncements', 'date');
         }
+        /** @var cs_announcement_item[] $announcements */
+        $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -582,9 +583,6 @@ class AnnouncementController extends BaseController
 
         $isDraft = $item->isDraft();
 
-        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
-        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
-
         if ($item->getItemType() == 'announcement') {
             // get announcement from announcementService
             /** @var cs_announcement_item $announcementItem */
@@ -594,8 +592,6 @@ class AnnouncementController extends BaseController
                 throw $this->createNotFoundException('No announcement found for id ' . $roomId);
             }
             $formData = $transformer->transform($announcementItem);
-            $formData['categoriesMandatory'] = $categoriesMandatory;
-            $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
             $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
                 $this->legacyEnvironment);
@@ -615,6 +611,7 @@ class AnnouncementController extends BaseController
                     'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                     'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
                 ],
+                'room' => $current_context,
             ));
         }
 
@@ -630,7 +627,7 @@ class AnnouncementController extends BaseController
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
-                if ($categoriesMandatory) {
+                if ($form->has('category_mapping')) {
                     $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
                     if (isset($formData['category_mapping']['newCategory'])) {
@@ -639,9 +636,11 @@ class AnnouncementController extends BaseController
                         $categoryIds[] = $newCategory->getItemID();
                     }
 
-                    $announcementItem->setTagListByID($categoryIds);
+                    if (!empty($categoryIds)) {
+                        $announcementItem->setTagListByID($categoryIds);
+                    }
                 }
-                if ($hashtagsMandatory) {
+                if ($form->has('hashtag_mapping')) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
 
                     if (isset($formData['hashtag_mapping']['newHashtag'])) {
@@ -650,7 +649,9 @@ class AnnouncementController extends BaseController
                         $hashtagIds[] = $newHashtag->getItemID();
                     }
 
-                    $announcementItem->setBuzzwordListByID($hashtagIds);
+                    if (!empty($hashtagIds)) {
+                        $announcementItem->setBuzzwordListByID($hashtagIds);
+                    }
                 }
 
                 $announcementItem->save();
@@ -670,8 +671,6 @@ class AnnouncementController extends BaseController
             'form' => $form->createView(),
             'announcement' => $announcementItem,
             'isDraft' => $isDraft,
-            'showHashtags' => $hashtagsMandatory,
-            'showCategories' => $categoriesMandatory,
             'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }
@@ -990,10 +989,6 @@ class AnnouncementController extends BaseController
                 $lastItemId = $announcements[sizeof($announcements) - 1]->getItemId();
             }
         }
-        // mark annotations as read
-        $annotationList = $announcement->getAnnotationList();
-        $this->annotationService->markAnnotationsReadedAndNoticed($annotationList);
-
         $categories = array();
         if ($current_context->withTags()) {
             $roomCategories = $this->categoryService->getTags($roomId);

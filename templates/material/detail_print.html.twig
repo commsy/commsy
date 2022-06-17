@@ -34,22 +34,22 @@
                         <div>
                             {{ macros.title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) }}
                         </div>
-                
+
                         {# description #}
                         <div>
                             {{ macros.itemDescription('description', item, true, item.description) }}
                         </div>
-                
+
                         {# files #}
                         <div>
                             {{ macros.files(item) }}
                         </div>
-            
+
                         {# links #}
                         <div>
                             {{ macros.links(item,showHashtags,showCategories,roomCategories) }}
                         </div>
-            
+
                         {# workflow #}
                         {% if showWorkflow %}
                             <div>

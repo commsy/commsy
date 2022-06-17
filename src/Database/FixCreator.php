@@ -10,8 +10,7 @@ final class FixCreator extends GeneralCheck
     {
         $tablesWithCreator = ['annotations', 'announcement', 'assessments', 'dates', 'discussionarticles',
             'discussions', 'files', 'labels', 'link_items', 'materials', 'portfolio', 'room', 'room_privat', 'section',
-            'server', 'step', 'tag', 'tag2tag', 'tasks', 'todos'];
-        // TODO: add user table
+            'server', 'step', 'tag', 'tag2tag', 'tasks', 'todos', 'user'];
 
         foreach ($tablesWithCreator as $tableWithCreator) {
             $sql = "

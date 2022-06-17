@@ -629,6 +629,7 @@ class ItemController extends AbstractController
             'hashtagConstraints' => $hashtagConstraints,
             'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
             'placeholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+            'placeholderTextCategories' => $translator->trans('New category', [], 'category'),
         ]);
 
         $form->handleRequest($request);
@@ -637,6 +638,9 @@ class ItemController extends AbstractController
                 $data = $form->getData();
 
                 // $itemData = array_merge(array_keys($data['itemsLinked']), $data['itemsLatest']);
+                if($data['newCategory']){
+                    $data['categories'][] = $categoryService->addTag($data['newCategory'],$roomId)->getItemID();
+                }
 
                 // update modifier
                 $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
@@ -1089,11 +1093,12 @@ class ItemController extends AbstractController
         if ($item->getItemType() == 'date') {
             $rubricManager->setWithoutDateModeLimit();
         }
-        
+        if(!$environment->getCurrentUserItem()->isModerator() ){
+            $rubricManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        }
         $rubricManager->select();
         $itemList = $rubricManager->get();
         $items = $itemList->to_array();
-        
         $itemList = array();
         $counterBefore = 0;
         $counterAfter = 0;

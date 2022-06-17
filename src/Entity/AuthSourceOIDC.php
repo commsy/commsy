@@ -10,8 +10,5 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class AuthSourceOIDC extends AuthSource
 {
-    public function getType(): string
-    {
-        return 'oidc';
-    }
+    protected string $type = 'oidc';
 }

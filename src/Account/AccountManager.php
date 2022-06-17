@@ -78,7 +78,7 @@ class AccountManager
     /**
      * @param Account $account
      */
-    public function propgateAccountDataToProfiles(Account $account): void
+    public function propagateAccountDataToProfiles(Account $account): void
     {
         /*
          * This is a real gotcha. When the legacy code persists a new user, it will only create a private room
@@ -92,13 +92,22 @@ class AccountManager
             $relatedUsers = $portalUser->getRelatedUserList();
             $relatedUsers->add($portalUser);
 
+            /**
+             * TODO: This is still very slow when changes occur, but will drastically improve login performance in
+             * most of the "normal" cases
+             */
             foreach ($relatedUsers as $relatedUser) {
                 /** @var cs_user_item $relatedUser */
-                $relatedUser->setFirstname($account->getFirstname());
-                $relatedUser->setLastname($account->getLastname());
-                $relatedUser->setEmail($account->getEmail());
+                if ($relatedUser->getFirstname() !== $account->getFirstname() ||
+                    $relatedUser->getLastname() !== $account->getLastname() ||
+                    $relatedUser->getEmail() !== $account->getEmail()
+                ) {
+                    $relatedUser->setFirstname($account->getFirstname());
+                    $relatedUser->setLastname($account->getLastname());
+                    $relatedUser->setEmail($account->getEmail());
 
-                $relatedUser->save();
+                    $relatedUser->save();
+                }
             }
         }
     }

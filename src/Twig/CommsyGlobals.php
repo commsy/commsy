@@ -5,9 +5,8 @@ namespace App\Twig;
 
 
 use App\Entity\Portal;
-use App\Entity\Room;
 use App\Entity\Server;
-use App\Utils\PortalGuessService;
+use App\Utils\RequestContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -30,20 +29,20 @@ class CommsyGlobals
     private RequestStack $requestStack;
 
     /**
-     * @var PortalGuessService
+     * @var RequestContext
      */
-    private $portalGuessService;
+    private RequestContext $requestContext;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         ParameterBagInterface $parameterBag,
         RequestStack $requestStack,
-        PortalGuessService $portalGuessService
+        RequestContext $requestContext
     ) {
         $this->entityManager = $entityManager;
         $this->parameterBag = $parameterBag;
         $this->requestStack = $requestStack;
-        $this->portalGuessService = $portalGuessService;
+        $this->requestContext = $requestContext;
     }
 
     /**
@@ -63,7 +62,7 @@ class CommsyGlobals
      */
     public function portal(): ?Portal
     {
-        return $this->portalGuessService->fetchPortal($this->requestStack->getCurrentRequest());
+        return $this->requestContext->fetchPortal($this->requestStack->getCurrentRequest());
     }
 
     /**

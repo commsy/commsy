@@ -10,7 +10,7 @@ use App\Entity\AuthSource;
 use App\Entity\AuthSourceShibboleth;
 use App\Entity\Portal;
 use App\Facade\AccountCreatorFacade;
-use App\Utils\PortalGuessService;
+use App\Utils\RequestContext;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -47,10 +47,10 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
         EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
         AccountCreatorFacade $accountCreator,
-        PortalGuessService $portalGuessService,
+        RequestContext $requestContext,
         AccountManager $accountManager
     ) {
-        parent::__construct($urlGenerator, $portalGuessService);
+        parent::__construct($urlGenerator, $requestContext);
 
         $this->entityManager = $entityManager;
         $this->accountCreator = $accountCreator;
@@ -203,7 +203,7 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
         $this->entityManager->persist($account);
         $this->entityManager->flush();
 
-        $this->accountManager->propgateAccountDataToProfiles($account);
+        $this->accountManager->propagateAccountDataToProfiles($account);
 
         return $account;
     }

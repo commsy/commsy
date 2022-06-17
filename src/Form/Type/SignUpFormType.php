@@ -72,13 +72,14 @@ class SignUpFormType extends AbstractType
                     'label' => 'registration.password',
                     'attr' => [
                         'placeholder' => $this->translator->trans('registration.password', [], 'registration'),
-                    ]
+                    ],
                 ],
                 'second_options' => [
                     'label' => false,
                     'attr' => [
                         'placeholder' => $this->translator->trans('registration.password_confirm', [], 'registration'),
-                    ]
+                    ],
+                    'help' => 'registration.password_help',
                 ],
             ])
             ->add('submit', SubmitType::class, [

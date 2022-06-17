@@ -34,12 +34,12 @@ class PortalRepository extends ServiceEntityRepository
      * @return mixed
      * @throws NonUniqueResultException
      */
-    public function findActivePortal(int $portalId)
+    public function findActivePortal(int $portalId): ?Portal
     {
         return $this->createQueryBuilder('p')
             ->where('p.deleter IS NULL')
             ->andWhere('p.deletionDate IS NULL')
-            ->andWhere('p.itemId = :portalId')
+            ->andWhere('p.id = :portalId')
             ->setParameter('portalId', $portalId)
             ->getQuery()
             ->setMaxResults(1)

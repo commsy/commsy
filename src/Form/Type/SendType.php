@@ -86,6 +86,7 @@ class SendType extends AbstractType
                                 'translation_domain' => 'mail',
                                 'choice_translation_domain' => 'form',
                                 'required' => true,
+                                'data' => false,
                             ])
                         ;
                     }
@@ -133,7 +134,7 @@ class SendType extends AbstractType
                                 'multiple' => true,
                                 'translation_domain' => 'mail',
                                 'choice_translation_domain' => 'form',
-                                'required' => true,
+                                'required' => false,
                             ])
                         ;
                     } else if ($mailAssistant->showInstitutionRecipients($item)) {

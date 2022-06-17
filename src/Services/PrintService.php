@@ -117,7 +117,7 @@ class PrintService
             'header-right' => date($dateFormat),
             'header-left' => $roomItem->getTitle(),
             'header-center' => 'CommSy',
-            'images' => true,
+            'no-images' => true,
             'load-media-error-handling' => 'ignore',
             'load-error-handling' => 'ignore',
             'disable-javascript' => true,

@@ -119,9 +119,15 @@
 
                                         {# send #}
                                         <li>
-                                            <a href="{{ path('app_item_send', {'roomId': roomId, 'itemId': topic.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
-                                            </a>
+                                            {% if user.isUser %}
+                                                <a href="{{ path('app_item_send', {'roomId': roomId, 'itemId': topic.itemId}) }}">
+                                                    <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                                </a>
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                                </span>
+                                            {% endif %}
                                         </li>
 
                                         {# delete #}

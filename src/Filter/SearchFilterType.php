@@ -43,54 +43,57 @@ class SearchFilterType extends AbstractType
         /** @var SearchData $searchData */
         $searchData = $builder->getData();
 
+        if ($options['userIsReallyGuest'] === false) {
+            $builder
+                ->add('selectedSavedSearch', EntityType::class, [
+                    'attr' => [
+                        'onchange' => "document.getElementById('search_filter_load').click()",
+                    ],
+                    'class' => SavedSearch::class,
+                    'choices' => $searchData->getSavedSearches() ?? [],
+                    'choice_label' => 'title',
+                    'label' => 'My view',
+                    'required' => false,
+                    'placeholder' => 'New view',
+                ])
+                // due to the validation annotation `@Assert\NotBlank(...)` for `SearchData->selectedSavedSearchTitle`
+                // clicking the "Save" button will require a non-empty title (which does not only consist of whitespace)
+                ->add('selectedSavedSearchTitle', Types\TextType::class, [
+                    'attr' => [
+                        'class' => 'cs-form-horizontal-full-width',
+                    ],
+                    'label' => 'Title',
+                    'required' => false,
+                ])
+                ->add('save', Types\SubmitType::class, [
+                    'attr' => [
+                        'class' => 'uk-button-primary',
+                    ],
+                    'label' => 'save',
+                    'translation_domain' => 'form',
+                    'validation_groups' => 'save',
+                ])
+                ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                    /** @var SearchData $searchData */
+                    $searchData = $event->getData();
+                    $form = $event->getForm();
+
+                    $selectedSavedSearch = $searchData->getSelectedSavedSearch();
+                    if ($selectedSavedSearch) {
+                        $form->add('delete', Types\SubmitType::class, [
+                            'attr' => [
+                                'class' => 'uk-button-danger',
+                            ],
+                            'label' => 'Delete',
+                            'translation_domain' => 'form',
+                            'validation_groups' => false,
+                        ]);
+                    }
+                })
+            ;
+        }
+
         $builder
-            ->add('selectedSavedSearch', EntityType::class, [
-                'attr' => [
-                    'onchange' => "document.getElementById('search_filter_load').click()",
-                ],
-                'class' => SavedSearch::class,
-                'choices' => $searchData->getSavedSearches() ?? [],
-                'choice_label' => 'title',
-                'label' => 'My view',
-                'required' => false,
-                'placeholder' => 'New view',
-            ])
-            // due to the validation annotation `@Assert\NotBlank(...)` for `SearchData->selectedSavedSearchTitle`
-            // clicking the "Save" button will require a non-empty title (which does not only consist of whitespace)
-            ->add('selectedSavedSearchTitle', Types\TextType::class, [
-                'attr' => [
-                    'class' => 'cs-form-horizontal-full-width',
-                ],
-                'label' => 'Title',
-                'required' => false,
-            ])
-            ->add('save', Types\SubmitType::class, [
-                'attr' => [
-                    'class' => 'uk-button-primary',
-                ],
-                'label' => 'save',
-                'translation_domain' => 'form',
-                'validation_groups' => 'save',
-            ])
-
-            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
-                /** @var SearchData $searchData */
-                $searchData = $event->getData();
-                $form = $event->getForm();
-
-                $selectedSavedSearch = $searchData->getSelectedSavedSearch();
-                if ($selectedSavedSearch) {
-                    $form->add('delete', Types\SubmitType::class, [
-                        'attr' => [
-                            'class' => 'uk-button-danger',
-                        ],
-                        'label' => 'Delete',
-                        'translation_domain' => 'form',
-                        'validation_groups' => false,
-                    ]);
-                }
-            })
-
             ->add('submit', Types\SubmitType::class, [
                 'attr' => [
                     'class' => 'uk-button uk-button-primary',
@@ -198,19 +201,25 @@ class SearchFilterType extends AbstractType
                 'label' => 'Rubric',
                 'required' => false,
                 'placeholder' => false,
-            ])
-            ->add('selectedReadStatus', Types\ChoiceType::class, [
-                'choices' => [
-                    $this->translator->trans('any', [], 'form') => 'all',
-                    'New' => ReaderService::READ_STATUS_NEW,
-                    'Modified' => ReaderService::READ_STATUS_CHANGED,
-                    'Unread' => ReaderService::READ_STATUS_UNREAD,
-                    'Read' => ReaderService::READ_STATUS_SEEN,
-                ],
-                'label' => 'Read status',
-                'required' => false,
-                'placeholder' => false,
-            ])
+            ]);
+
+            if ($options['userIsReallyGuest'] === false) {
+                $builder
+                    ->add('selectedReadStatus', Types\ChoiceType::class, [
+                        'choices' => [
+                            $this->translator->trans('any', [], 'form') => 'all',
+                            'New' => ReaderService::READ_STATUS_NEW,
+                            'Modified' => ReaderService::READ_STATUS_CHANGED,
+                            'Unread' => ReaderService::READ_STATUS_UNREAD,
+                            'Read' => ReaderService::READ_STATUS_SEEN,
+                        ],
+                        'label' => 'Read status',
+                        'required' => false,
+                        'placeholder' => false,
+                    ]);
+            }
+
+        $builder
             ->addEventSubscriber(new ChosenRubricSubscriber($this->translator))
             ->add('selectedHashtags', Select2ChoiceType::class, [
                 'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
@@ -252,7 +261,7 @@ class SearchFilterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['contextId'])
+            ->setRequired(['contextId', 'userIsReallyGuest'])
             ->setDefaults([
                 'csrf_protection'    => false,
                 'validation_groups'  => ['filtering', 'save'], // avoid NotBlank() constraint-related message

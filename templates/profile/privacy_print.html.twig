@@ -112,7 +112,7 @@
                     {{ roomProfileData.roomType|trans({},'room') }} {{ roomProfileData.roomID }}: {{ roomProfileData.roomName|raw }}
                     {%- if printProfileImages == true -%}
                         {# NOTE: including profile images significantly increases load times! #}
-                        <span class="uk-float-right"><img class="uk-comment-avatar uk-thumbnail uk-border-circle uk-margin-small-right" style="height:22px; width:22px" src="{{ absolute_url(path('app_user_image', {'roomId': roomProfileData.roomID, 'itemId': roomProfileData.itemID}) )}}"></span>
+                        <span class="uk-float-right"><img class="uk-thumbnail uk-border-circle uk-margin-small-right" style="height:22px; width:22px" src="{{ absolute_url(path('app_user_image', {'roomId': roomProfileData.roomID, 'itemId': roomProfileData.itemID}) )}}"></span>
                     {%- endif %}
                 </h4>
             </header>

@@ -670,27 +670,6 @@ class cs_context_item extends cs_item {
       return $this;
     }
 
-  function setWithTodoManagment() {
-    $this->_addExtra('TODOMANAGEMENT',2);
-  }
-
-  function setWithoutTodoManagment() {
-    $this->_addExtra('TODOMANAGEMENT',1);
-  }
-
-  function setTodoManagmentStatus($value) {
-    $this->_addExtra('TODOMANAGEMENT',$value);
-  }
-
-  function getTodoManagmentStatus() {
-    $retour = 1;
-    if ($this->_issetExtra('TODOMANAGEMENT') ) {
-      $retour = $this->_getExtra('TODOMANAGEMENT');
-    }
-    return $retour;
-  }
-
-
   function setActionBarVisibilityDefault($value) {
     $this->_addExtra('ACTIONBARVISIBILITY',$value);
   }
@@ -737,19 +716,6 @@ class cs_context_item extends cs_item {
       $retour = true;
     }
     return $retour;
-  }
-
-
-  function withTodoManagement() {
-    $retour = false;
-    if ($this->_issetExtra('TODOMANAGEMENT') ) {
-      $re = $this->_getExtra('TODOMANAGEMENT');
-      if ($re == 2) {
-        $retour = true;
-      }
-    }
-//    return $retour;
-	return true;
   }
 
   function setWithAssociations() {
@@ -1312,26 +1278,6 @@ class cs_context_item extends cs_item {
     }
   }
 
-
-
-  /** get modifier
-   * this method returns the modifier of the item
-   *
-   * @return cs_user_item modifier of the item
-   */
-  function getModifier () {
-    return $this->_getUserItem('modifier');
-  }
-
-  /** set modifier
-   * this method sets the modifier of the item
-   *
-   * @param object cs_item modifier of the item
-   */
-  function setModifier ($value) {
-    $this->_setUserItem('modifier',$value);
-  }
-
   /** get flag for checking always new members
    * this method returns a boolean for checking always new members
    *
@@ -1414,6 +1360,24 @@ class cs_context_item extends cs_item {
       $retour = $this->_getExtra('CHECKNEWMEMBERS');
     }
     return $retour;
+  }
+  /**
+   * Return value for Room asociation
+   * @return mixed|string|void
+   */
+  function _getRoomAssociation () {
+    $retour = '';
+    if ($this->_issetExtra('ROOMASSOCIATION')) {
+      $retour = $this->_getExtra('ROOMASSOCIATION');
+    }
+    return $retour;
+  }
+
+  /*
+   * set value to room asociation
+   */
+  public function _setRoomAssociation ( $value ) {
+    $this->_addExtra('ROOMASSOCIATION',$value);
   }
 
   /** set flag for check new members

@@ -25,7 +25,6 @@ $message["DATE_LEAVE"]["en"] = "Cancel participation";
 $message["DATE_LOCATION"]["en"] = "Location";
 $message["DATE_MONTH_PRESENTATION"]["en"] = "month view";
 $message["DATE_PARTICIPANTS"]["en"] = "Participants";
-$message["DATE_PRIVATE_ENTRY"]["en"] = "private item";
 $message["DATE_PUBLIC_NO"]["en"] = "Upload events as private items";
 $message["DATE_STARTDAY"]["en"] = "Day (start)";
 $message["DATE_STARTTIME"]["en"] = "Time (start)";

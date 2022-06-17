@@ -1530,31 +1530,6 @@ class cs_portal_item extends cs_guide_item {
    ######################################################
    # don't show news from server on portal
 
-   public function _setNewsFromServerShow ($value) {
-      $this->_setServerNews('show_news_form_server',$value);
-   }
-
-   public function setDontShowNewsFromServer () {
-      $this->_setNewsFromServerShow(-1);
-   }
-
-   public function setShowNewsFromServer () {
-      $this->_setNewsFromServerShow(1);
-   }
-
-   public function showNewsFromServer () {
-      $retour = false;
-      $show_news = $this->_getNewsFromServerShow();
-      if ($show_news == 1) {
-         $retour = true;
-      }
-      return $retour;
-   }
-
-   private function _getNewsFromServerShow () {
-      return $this->_getServerNews('show_news_form_server');
-   }
-
    public function isPluginActive ( $plugin ) {
       $retour = false;
       if ( $this->isPluginOn($plugin) ) {
@@ -1564,39 +1539,6 @@ class cs_portal_item extends cs_guide_item {
          #}
       }
       return $retour;
-   }
-   
-   // show tempates in room list
-
-   private function _setShowTemplateInRoomList ($value) {
-   	$this->_setExtra('SHOW_TEMPLATE_IN_ROOM_LIST',(int)$value);
-   }
-    
-   private function _getShowTemplateInRoomList () {
-      $retour = 1;
-      if ($this->_issetExtra('SHOW_TEMPLATE_IN_ROOM_LIST')) {
-         $retour = $this->_getExtra('SHOW_TEMPLATE_IN_ROOM_LIST');
-      }
-      return $retour;
-   }
-   
-   public function showTemplatesInRoomList () {
-   	$retour = true;
-   	$value = $this->_getShowTemplateInRoomList();
-   	if ( !empty($value)
-   		  and $value == -1
-   	   ) {
-   		$retour = false;
-   	}
-   	return $retour;
-   }
-   
-   public function setShowTemplatesInRoomListON () {
-   	$this->_setShowTemplateInRoomList(1);
-   }
-
-   public function setShowTemplatesInRoomListOFF () {
-   	$this->_setShowTemplateInRoomList(-1);
    }
 
    ############################################
@@ -1867,13 +1809,6 @@ class cs_portal_item extends cs_guide_item {
       return $retour;
    }
 
-    public function getCountProjectAndCommunityRooms()
-    {
-        $manager = $this->_environment->getRoomManager();
-        $manager->setContextLimit($this->getItemID());
-        return $manager->getCountAll();
-    }
-
    private function _getCountRoomRedundancy () {
       $retour = -1;
       if ($this->_issetExtra('COUNT_ROOM_REDUNDANCY')) {
@@ -1884,127 +1819,6 @@ class cs_portal_item extends cs_guide_item {
 
    private function _setCountRoomRedundancy ( $value ) {
       $this->_addExtra('COUNT_ROOM_REDUNDANCY',(int)$value);
-   }
-
-   public function turnOnCountRoomRedundancy ( $save = false ) {
-      $this->_setCountRoomRedundancy(1);
-      if ( $save ) {
-         $this->save();
-      }
-   }
-
-   public function turnOffCountRoomRedundancy ( $save = false ) {
-      $this->_setCountRoomRedundancy(-1);
-      if ( $save ) {
-         $this->save();
-      }
-   }
-
-   public function syncCountProjectRoomRedundancy ( $save = false ) {
-      $this->_syncCountProjectRoomRedundancy();
-      if ( $save ) {
-         $this->save();
-      }
-   }
-
-   private function _syncCountProjectRoomRedundancy ( $save = false ) {
-      $value1 = $this->_getCountProjectRoomsManager();
-      $value2 = $this->_getCountProjectRoomsExtra();
-      if ( $value1 != $value2 ) {
-         $this->_setCountProjectRoomsExtra($value1);
-      }
-      if ( $save ) {
-         $this->save();
-      }
-   }
-
-   public function syncCountCommunityRoomRedundancy ( $save = false ) {
-      $this->_syncCountCommunityRoomRedundancy();
-      if ( $save ) {
-         $this->save();
-      }
-   }
-
-   private function _syncCountCommunityRoomRedundancy ( $save = false ) {
-      $value1 = $this->_getCountCommunityRoomsManager();
-      $value2 = $this->_getCountCommunityRoomsExtra();
-      if ( $value1 != $value2 ) {
-         $this->_setCountCommunityRoomsExtra($value1);
-      }
-      if ( $save ) {
-         $this->save();
-      }
-   }
-
-   public function syncCountGroupRoomRedundancy ( $save = false ) {
-      $this->_syncCountGroupRoomRedundancy();
-      if ( $save ) {
-         $this->save();
-      }
-   }
-
-   private function _syncCountGroupRoomRedundancy ( $save = false ) {
-      $value1 = $this->_getCountGroupRoomsManager();
-      $value2 = $this->_getCountGroupRoomsExtra();
-      if ( $value1 != $value2 ) {
-         $this->_setCountGroupRoomsExtra($value1);
-      }
-      if ( $save ) {
-         $this->save();
-      }
-   }
-
-   public function syncCountPrivateRoomRedundancy ( $save = false ) {
-      $this->_syncCountPrivateRoomRedundancy();
-      if ( $save ) {
-         $this->save();
-      }
-   }
-
-   private function _syncCountPrivateRoomRedundancy ( $save = false ) {
-      $value1 = $this->_getCountPrivateRoomsManager();
-      $value2 = $this->_getCountPrivateRoomsExtra();
-      if ( $value1 != $value2 ) {
-         $this->_setCountPrivateRoomsExtra($value1);
-      }
-      if ( $save ) {
-         $this->save();
-      }
-   }
-   
-   public function getCountArchivedProjectAndCommunityRooms () {
-   	if ( !isset($this->_count_archived_project_and_community_rooms) ) {
-   	   $manager = $this->_environment->getZzzRoomManager();
-   	   $manager->setContextLimit($this->getItemID());
-   	   $this->_count_archived_project_and_community_rooms = $manager->getCountAll();
-   	   unset($manager);
-   	}
-   	return $this->_count_archived_project_and_community_rooms;
-   }
-
-   public function getCountProjectAndCommunityRoomsWithoutTemplates () {
-   	if ( !isset($this->_count_project_and_community_rooms_without_templates) ) {
-   		$manager = $this->_environment->getRoomManager();
-   		$manager->setContextLimit($this->getItemID());
-   		$manager->setNotTemplateLimit();
-   		$this->_count_project_and_community_rooms_without_templates = $manager->getCountAll();
-   		unset($manager);
-   	}
-   	return $this->_count_project_and_community_rooms_without_templates;
-   }
-    
-   /** get count group rooms from manager
-    *
-    * @return int count group rooms
-    */
-   public function getCountArchivedGroupRooms () {
-      if (!isset($this->_count_archived_grouprooms)) {
-         $manager = $this->_environment->getZzzGrouproomManager();
-         $manager->setContextLimit($this->getItemID());
-         $this->_count_archived_grouprooms = $manager->getCountAll();
-         unset($manager);
-      }
-      return $this->_count_archived_grouprooms;
    }
    
    // Datenschutz

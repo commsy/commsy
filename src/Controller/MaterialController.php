@@ -20,9 +20,9 @@ use App\Http\JsonRedirectResponse;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
+use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
 use App\Utils\LabelService;
-use App\Utils\AssessmentService;
 use App\Utils\MaterialService;
 use App\Utils\TopicService;
 use cs_material_item;
@@ -142,7 +142,7 @@ class MaterialController extends BaseController
         int $roomId,
         int $max = 10,
         int $start = 0,
-        string $sort = 'date'
+        string $sort = ''
     ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -169,10 +169,13 @@ class MaterialController extends BaseController
             $this->materialService->hideDeactivatedEntries();
         }
 
-        // get material list from manager service 
-        $materials = $this->materialService->getListMaterials($roomId, $max, $start, $sort);
-
+        if (empty($sort)) {
+            $sort = $this->session->get('sortMaterials', 'date');
+        }
         $this->session->set('sortMaterials', $sort);
+
+        // get material list from manager service
+        $materials = $this->materialService->getListMaterials($roomId, $max, $start, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -242,6 +245,8 @@ class MaterialController extends BaseController
             $this->materialService->hideDeactivatedEntries();
         }
 
+        $sort = $this->session->get('sortMaterials', 'date');
+
         // get material list from manager service 
         $itemsCountArray = $this->materialService->getCountArray($roomId);
 
@@ -268,6 +273,7 @@ class MaterialController extends BaseController
             'isArchived' => $roomItem->isArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'isMaterialOpenForGuests' => $roomItem->isMaterialOpenForGuests(),
+            'sort' => $sort,
         );
     }
 
@@ -303,14 +309,10 @@ class MaterialController extends BaseController
         }
 
         // get material list from manager service 
-        if ($sort != "none") {
-            $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, $sort);
-        } elseif ($this->session->get('sortMaterials')) {
-            $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0,
-                $this->session->get('sortMaterials'));
-        } else {
-            $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, 'date');
+        if ($sort === "none" || empty($sort)) {
+            $sort = $this->session->get('sortMaterials', 'date');
         }
+        $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -382,9 +384,6 @@ class MaterialController extends BaseController
         // TODO: check if no version is specified
         // !isset($_GET['version_id'])
 
-
-        $canExportToWiki = false;
-
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
@@ -444,7 +443,6 @@ class MaterialController extends BaseController
             'annotationForm' => $form->createView(),
             'ratingArray' => $infoArray['ratingArray'],
             'canExportToWordpress' => $canExportToWordpress,
-            'canExportToWiki' => $canExportToWiki,
             'roomCategories' => $infoArray['roomCategories'],
             'versions' => $infoArray['versions'],
             'workflowTitles' => [
@@ -765,10 +763,6 @@ class MaterialController extends BaseController
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
-        // mark annotations as read
-        $annotationList = $material->getAnnotationList();
-        $this->annotationService->markAnnotationsReadedAndNoticed($annotationList);
-
         $readsectionList = $material->getSectionList();
 
         $section = $readsectionList->getFirst();
@@ -1040,9 +1034,6 @@ class MaterialController extends BaseController
         $isDraft = false;
         $isSaved = false;
 
-        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
-        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
-
         $licenses = [];
         $licensesContent = [];
 
@@ -1061,10 +1052,8 @@ class MaterialController extends BaseController
             }
 
             $formData = $this->materialTransformer->transform($materialItem);
-            $formData['categoriesMandatory'] = $categoriesMandatory;
-            $formData['hashtagsMandatory'] = $hashtagsMandatory;
-            $formData['hashtag_mapping']['categories'] = $itemController->getLinkedCategories($item);
-            $formData['category_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
+            $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
+            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
                 $this->legacyEnvironment);
 
             $licensesRepository = $this->getDoctrine()->getRepository(License::class);
@@ -1091,6 +1080,7 @@ class MaterialController extends BaseController
                     'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
                 ],
                 'licenses' => $licenses,
+                'room' => $current_context,
             ));
 
             $this->eventDispatcher->dispatch(new CommsyEditEvent($materialItem), CommsyEditEvent::EDIT);
@@ -1123,7 +1113,8 @@ class MaterialController extends BaseController
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
-                if ($categoriesMandatory) {
+
+                if ($form->has('category_mapping')) {
                     $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
                     if (isset($formData['category_mapping']['newCategory'])) {
@@ -1132,9 +1123,12 @@ class MaterialController extends BaseController
                         $categoryIds[] = $newCategory->getItemID();
                     }
 
-                    $typedItem->setTagListByID($categoryIds);
+                    if (!empty($categoryIds)) {
+                        $typedItem->setTagListByID($categoryIds);
+                    }
                 }
-                if ($hashtagsMandatory) {
+
+                if ($form->has('hashtag_mapping')) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
 
                     if (isset($formData['hashtag_mapping']['newHashtag'])) {
@@ -1143,11 +1137,11 @@ class MaterialController extends BaseController
                         $newHashtag = $labelService->getNewHashtag($newHashtagTitle, $roomId);
                         $hashtagIds[] = $newHashtag->getItemID();
 
-                        $hashtagaIds[] = $newHashtag->getItemID();
-
                     }
 
-                    $typedItem->setBuzzwordListByID($hashtagIds);
+                    if (!empty($hashtagIds)) {
+                        $typedItem->setBuzzwordListByID($hashtagIds);
+                    }
                 }
 
                 $typedItem->save();
@@ -1171,8 +1165,6 @@ class MaterialController extends BaseController
             'isDraft' => $isDraft,
             'isMaterial' => $isMaterial,
             'form' => $form->createView(),
-            'showHashtags' => $hashtagsMandatory,
-            'showCategories' => $categoriesMandatory,
             'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
             'material' => $typedItem,
             'licenses' => $licenses,

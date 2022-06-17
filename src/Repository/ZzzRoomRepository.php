@@ -29,13 +29,20 @@ class ZzzRoomRepository extends ServiceEntityRepository
 
         $sortExploded = explode('_', $sort);
 
-        if($sortExploded[0] === 'activity' || $sortExploded[0] === 'title'){
-            $orderBy = 'r.'.$sortExploded[0];
+        if ($sortExploded[0] === 'activity' || $sortExploded[0] === 'title') {
+            $orderBy = 'r.' . $sortExploded[0];
         } else {
             $orderBy = 'r.activity';
         }
 
-        $order = isset($sortExploded[1]) ? 'ASC' : 'DESC';
+        // NOTE: for activity, the sort order is switched around:
+        //       $sort = 'activity' -> DESC
+        //       $sort = 'activity_rev' -> ASC
+        if (isset($sortExploded[1])) {
+            $order = $sortExploded[0] === 'activity' ? 'ASC' : 'DESC';
+        } else {
+            $order = $sortExploded[0] === 'activity' ? 'DESC' : 'ASC';
+        }
 
         return $qb
             ->where($qb->expr()->andX(
@@ -45,6 +52,7 @@ class ZzzRoomRepository extends ServiceEntityRepository
                 $qb->expr()->isNull('r.deleter')
             ))
             ->orderBy($orderBy, $order)
+            ->addOrderBy('r.template', 'ASC')
             ->setParameters([
                 'contextId' => $portalId,
             ]);

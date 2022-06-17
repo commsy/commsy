@@ -34,31 +34,6 @@
             <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">
                 <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
                     <div class="uk-width-9-10 uk-padding-remove">
-                        <div class="toggle-title-{{ item.itemId }}">
-                            <div class="uk-panel">
-                                <div class="uk-grid">
-                                    <div class="uk-width-1-1">
-                                        <div class="uk-flex">
-                                            <div class="uk-margin-right">
-                                                {% if not item.modificatorItem.isDeleted and item.modificatorItem.isUser %}
-                                                    {{ macros.userIconLink(item.modificatorItem) }}
-                                                {% else %}
-                                                    {{ macros.userIcon(item.modificatorItem) }}
-                                                {% endif %}
-                                            </div>
-                                            <div class="uk-margin-right">
-                                                {% if '9999-00-00' not in item.getModificationDate %}
-                                                    {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
-                                                {% else %}
-                                                    {{ 'last changed'|trans({})|capitalize }}: {{ item.creationDate|craue_date }} {{ item.creationDate|craue_time }}<br/>
-                                                {% endif %}
-                                                {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="toggle-title-{{ item.itemId }} uk-hidden">
                             <div class="uk-panel">
                                 <div class="uk-grid">

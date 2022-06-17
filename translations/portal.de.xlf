@@ -263,17 +263,13 @@
                 <source>Only project workspaces</source>
                 <target>Nur Projekträume anzeigen (keine Gemeinschaftsräume)</target>
             </trans-unit>
-            <trans-unit id="Show_templates_in_workspace_feed">
-                <source>Show templates in workspace feed</source>
-                <target>Vorlagen in der Raumliste anzeigen</target>
-            </trans-unit>
             <trans-unit id="workspace_display">
                 <source>Workspace display</source>
                 <target>Raumanzeige</target>
             </trans-unit>
             <trans-unit id="portal_menu_home_sortby">
                 <source>Sort list of all rooms by</source>
-                <target>Sortiere "All Räume" nach</target>
+                <target>Sortiere "Alle Räume" nach</target>
             </trans-unit>
             <trans-unit id="portal_menu_home_sortby_activity">
                 <source>Activity</source>
@@ -1092,6 +1088,10 @@
                 <source>Download sample</source>
                 <target>Vorlage herunterladen</target>
             </trans-unit>
+            <trans-unit id="portal_csv_success">
+                <source>Import completed successfully.</source>
+                <target>Import erfolgreich ausgeführt.</target>
+            </trans-unit>
 
             <!-- auth -->
             <trans-unit id="authentication_source">
@@ -1150,6 +1150,10 @@
             </trans-unit>
 
             <!-- general form -->
+            <trans-unit id="portal_general_form_title">
+                <source>General</source>
+                <target>Allgemein</target>
+            </trans-unit>
             <trans-unit id="portal_form_title">
                 <source>portal.form_title</source>
                 <target>Titel</target>
@@ -1165,6 +1169,14 @@
             <trans-unit id="available_idps">
                 <source>Available idps</source>
                 <target>Verfügbare Idps</target>
+            </trans-unit>
+            <trans-unit id="commsy_icon_link">
+                <source>CommSy icon link</source>
+                <target>CommSy-Icon Link</target>
+            </trans-unit>
+            <trans-unit id="commsy_icon_link_help_text">
+                <source>CommSy icon link help text</source>
+                <target>Link zur Startseite für dieses Portal (erreichbar via Klick auf das CommSy-Icon auf der Portalübersicht oder Login-Seite)</target>
             </trans-unit>
 
             <!-- appearance form -->

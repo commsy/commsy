@@ -60,7 +60,7 @@ class cs_room2_manager extends cs_context_manager {
         parent::__construct($environment);
     }
 
-  /** reset limits
+    /** reset limits
     * reset limits of this class: lastlogin and all limits from upper class
     */
    function resetLimits () {

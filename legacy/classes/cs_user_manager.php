@@ -508,64 +508,74 @@ class cs_user_manager extends cs_manager {
       return $retour;
    }
 
-   function isUserInContext($user_id, $context_id, $auth_source){
-      if (isset($this->_is_user_in_context_cache[$user_id.$auth_source])){
-         if (isset($this->_is_user_in_context_cache[$user_id.$auth_source][$context_id]) and $this->_is_user_in_context_cache[$user_id.$auth_source][$context_id] == 'is_user'){
-            return true;
-         }else{
-            return false;
-         }
-      }else{
-         $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('user').'.context_id FROM '.$this->addDatabasePrefix('user');
-         $query .= ' WHERE 1 AND '.$this->addDatabasePrefix('user').'.user_id = "'.$user_id.'" AND '.$this->addDatabasePrefix('user').'.auth_source = "'.$auth_source.'"';
-         $query .= ' AND '.$this->addDatabasePrefix('user').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL AND '.$this->addDatabasePrefix('user').'.status >= "2" ORDER BY '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname DESC, '.$this->addDatabasePrefix('user').'.user_id ASC';
-         #$query .= ' WHERE 1 AND user.user_id = "'.$user_id.'" AND user.auth_source = "'.$auth_source.'"';
-         #$query .= ' AND user.deleter_id IS NULL AND user.deletion_date IS NULL AND user.status >= "2" ORDER BY user.lastname, user.firstname DESC, user.user_id ASC';
-         if ( isset($this->_cache_sql[$query]) ) {
-            $result = $this->_cache_sql[$query];
-         } else {
-            $result = $this->_db_connector->performQuery($query);
-            if ( !isset($result) ) {
-               include_once('functions/error_functions.php');
-               trigger_error('Problems selecting user.',E_USER_WARNING);
+    /**
+     * @param $user_id
+     * @param $context_id
+     * @param $auth_source
+     * @return bool
+     */
+    public function isUserInContext($user_id, $context_id, $auth_source): bool
+    {
+        if (isset($this->_is_user_in_context_cache[$user_id . $auth_source])) {
+            if (isset($this->_is_user_in_context_cache[$user_id . $auth_source][$context_id]) and $this->_is_user_in_context_cache[$user_id . $auth_source][$context_id] == 'is_user') {
+                return true;
             } else {
-               if ( $this->_cache_on ) {
-                  $this->_cache_sql[$query] = $result;
-               }
+                return false;
             }
-         }
-         if (isset($result)){
-            foreach ($result as $r){
-               $this->_is_user_in_context_cache[$user_id.$auth_source][$r['context_id']] = 'is_user';
+        } else {
+            $qb = $this->_db_connector->getConnection()->createQueryBuilder();
+
+            $qb
+                ->select('u.context_id')
+                ->distinct()
+                ->from($this->addDatabasePrefix('user'), 'u')
+                ->where('u.user_id = :userId')
+                ->andWhere('u.auth_source = :authSource')
+                ->andWhere('u.deleter_id IS NULL')
+                ->andWhere('u.deletion_date IS NULL')
+                ->andWhere('u.status >= :status')
+                ->setParameter('userId', $user_id)
+                ->setParameter('authSource', $auth_source)
+                ->setParameter('status', 2);
+
+            try {
+                $result = $this->_db_connector->performQuery($qb->getSQL(), $qb->getParameters());
+            } catch (\Doctrine\DBAL\Exception $e) {
+                include_once('functions/error_functions.php');
+                trigger_error('Problems selecting user.',E_USER_WARNING);
             }
-            if (isset($this->_is_user_in_context_cache[$user_id.$auth_source][$context_id]) and $this->_is_user_in_context_cache[$user_id.$auth_source][$context_id] == 'is_user'){
-               return true;
+
+            if (isset($result)) {
+                foreach ($result as $r) {
+                    $this->_is_user_in_context_cache[$user_id . $auth_source][$r['context_id']] = 'is_user';
+                }
+                if (isset($this->_is_user_in_context_cache[$user_id . $auth_source][$context_id]) &&
+                    $this->_is_user_in_context_cache[$user_id . $auth_source][$context_id] == 'is_user') {
+                    return true;
+                } else {
+                    if ($this->_environment->foundCurrentContextInArchive() &&
+                        !$this->_environment->isArchiveMode() &&
+                        !($this instanceof cs_zzz_user_manager)
+                    ) {
+                        $zzz_user_manager = $this->_environment->getZZZUserManager();
+                        return $zzz_user_manager->isUserInContext($user_id, $context_id, $auth_source);
+                    } else {
+                        return false;
+                    }
+                }
             } else {
-            	if ( $this->_environment->foundCurrentContextInArchive()
-            	     and !$this->_environment->isArchiveMode()
-            	     and !($this instanceof cs_zzz_user_manager)
-            	   ) {
-            		$zzz_user_manager = $this->_environment->getZZZUserManager();
-            		$retour = $zzz_user_manager->isUserInContext($user_id, $context_id, $auth_source);
-            		return $retour;
-            	} else {
-                  return false;
-            	}
+                if ($this->_environment->foundCurrentContextInArchive() &&
+                    !$this->_environment->isArchiveMode() &&
+                    !($this instanceof cs_zzz_user_manager)
+                ) {
+                    $zzz_user_manager = $this->_environment->getZZZUserManager();
+                    return $zzz_user_manager->isUserInContext($user_id, $context_id, $auth_source);
+                } else {
+                    return false;
+                }
             }
-         } else {
-           	if ( $this->_environment->foundCurrentContextInArchive()
-           	     and !$this->_environment->isArchiveMode()
-           	     and !($this instanceof cs_zzz_user_manager)
-               ) {
-           		$zzz_user_manager = $this->_environment->getZZZUserManager();
-           		$retour = $zzz_user_manager->isUserInContext($user_id, $context_id, $auth_source);
-           		return $retour;
-           	} else {
-               return false;
-           	}
-         }
-      }
-   }
+        }
+    }
 
    /** INTERNAL: perform database query to get user data
      *
