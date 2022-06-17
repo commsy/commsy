@@ -53,7 +53,7 @@ final class Version20160718213927 extends AbstractMigration
             ->from($table, 'f')
             ->innerJoin('f', 'items', 'i', 'f.context_id = i.item_id');
 
-        $files = $qb->execute();
+        $files = $qb->executeQuery()->fetchAllAssociative();
 
         foreach ($files as $file) {
             $fileContextId = $file['context_id'];

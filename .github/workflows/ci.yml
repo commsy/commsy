@@ -20,7 +20,7 @@ jobs:
                       experimental: true
         services:
             db:
-                image: mariadb:10.3
+                image: mariadb:10.4
                 env:
                     MYSQL_ROOT_PASSWORD: root
                     MYSQL_DATABASE: commsy_test
@@ -38,13 +38,16 @@ jobs:
                 with:
                     php-version: ${{ matrix.php-versions }}
                     extensions: zip, imap, ldap, soap
-                    tools: composer:v1
+                    tools: composer:v2
 
             -   name: Install yarn deps
                 run: yarn install
 
             -   name: Install php deps
                 run: composer install --no-progress
+
+            -   name: Generate JWT keypair
+                run: bin/console lexik:jwt:generate-keypair
 
             -   name: Build frontend package
                 run: yarn build

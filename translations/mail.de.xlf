@@ -32,7 +32,7 @@
             </trans-unit>
             <trans-unit id="mailSendToAttendees">
                 <source>Send to attendees</source>
-                <target>An Teilnehmer versenden</target>
+                <target>An TeilnehmerInnen versenden</target>
             </trans-unit>
             <trans-unit id="mailSendToAssigned">
                 <source>Send to assigned</source>
@@ -60,11 +60,11 @@
             </trans-unit>
             <trans-unit id="mailAdditionalRecipients">
                 <source>Additional recipients</source>
-                <target>Zusätzliche Empfänger</target>
+                <target>Zusätzliche EmpfängerInnen</target>
             </trans-unit>
             <trans-unit id="mailAddRecipients">
                 <source>Add another recipient</source>
-                <target>Einen weiteren Empfänger hinzufügen</target>
+                <target>Weitere EmpfängerInnen hinzufügen</target>
             </trans-unit>
             <trans-unit id="mailAttachments">
                 <source>Attachments</source>
@@ -189,6 +189,30 @@
             <trans-unit id="mail_no">
                 <source>No</source>
                 <target>Nein</target>
+            </trans-unit>
+            <trans-unit id="mail_invitation_subject">
+                <source>mail.invitation_subject</source>
+                <target>Einladung CommSy-Portal "%portal%"</target>
+            </trans-unit>
+            <trans-unit id="mail_invitation_opening">
+                <source>mail.invitation_opening</source>
+                <target>Sie wurden in den Raum "%room%" im CommSy-Portal "%portal%" eingeladen.</target>
+            </trans-unit>
+            <trans-unit id="mail_invitation_link_pre">
+                <source>mail.invitation_link_pre</source>
+                <target>Bitte legen Sie sich über folgenden Link eine Kennung für das Portal %portal% an:</target>
+            </trans-unit>
+            <trans-unit id="mail_invitation_link_post">
+                <source>mail.invitation_link_post</source>
+                <target>Dieser Link ist nur 14 Tage lang gültig.</target>
+            </trans-unit>
+            <trans-unit id="mail_invitation_room_link_pre">
+                <source>mail.invitation_room_link_pre</source>
+                <target>Nachdem Sie die Kennung angelegt und sich eingeloggt haben, können Sie über diesen Link zum Raum gelangen:</target>
+            </trans-unit>
+            <trans-unit id="mail_invitation_room_link_post">
+                <source>mail.invitation_room_link_post</source>
+                <target>Dort befinden sich Auswahlmöglichkeiten für die Teilnahme. Diese erfolgt je nach Raumeinstellung per Antrag oder per Code. Sollte im letzteren Fall der Code Ihnen nicht vorliegen, erfragen Sie diesen bitte bei der/dem Einladenden.</target>
             </trans-unit>
         </body>
     </file>

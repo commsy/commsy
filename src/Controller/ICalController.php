@@ -3,20 +3,37 @@
 namespace App\Controller;
 
 use App\Services\LegacyEnvironment;
+use cs_dates_item;
 use cs_environment;
-use Eluceo\iCal\Component\Calendar;
-use Eluceo\iCal\Component\Event;
-use Eluceo\iCal\Component\Timezone;
-use Eluceo\iCal\Component\TimezoneRule;
-use Eluceo\iCal\Property\Event\Organizer;
-use Eluceo\iCal\Property\Event\RecurrenceRule;
+use cs_item;
+use cs_list;
+use DateInterval;
+use DateTime;
+use DateTimeImmutable;
+use DateTimeZone;
+use Eluceo\iCal\Domain\Entity\Attendee;
+use Eluceo\iCal\Domain\Entity\Calendar;
+use Eluceo\iCal\Domain\Entity\Event;
+use Eluceo\iCal\Domain\Entity\TimeZone;
+use Eluceo\iCal\Domain\ValueObject\Date as EventDate;
+use Eluceo\iCal\Domain\ValueObject\DateTime as EventDateTime;
+use Eluceo\iCal\Domain\ValueObject\EmailAddress;
+use Eluceo\iCal\Domain\ValueObject\Location;
+use Eluceo\iCal\Domain\ValueObject\MultiDay;
+use Eluceo\iCal\Domain\ValueObject\Organizer;
+use Eluceo\iCal\Domain\ValueObject\SingleDay;
+use Eluceo\iCal\Domain\ValueObject\TimeSpan;
+use Eluceo\iCal\Domain\ValueObject\UniqueIdentifier;
+use Eluceo\iCal\Domain\ValueObject\Uri;
+use Eluceo\iCal\Presentation\Factory\CalendarFactory;
+use Exception;
+use Generator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -50,22 +67,19 @@ class ICalController extends AbstractController
         $this->translator = $translator;
     }
 
-
-
-
-
     /**
      * @Route("/ical/{contextId}")
      * @param Request $request
      * @param LegacyEnvironment $environment
      * @param int $contextId
      * @return Response
+     * @throws Exception
      */
     public function getContentAction(
         Request $request,
         LegacyEnvironment $environment,
         int $contextId
-    ) {
+    ): Response {
         $legacyEnvironment = $environment->getEnvironment();
 
         $legacyEnvironment->setCurrentContextID($contextId);
@@ -93,8 +107,6 @@ class ICalController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        $userItem = null;
-
         if ($request->query->has('hid')) {
             $hash = $request->query->get('hid');
             $hashManager = $legacyEnvironment->getHashManager();
@@ -112,9 +124,10 @@ class ICalController extends AbstractController
         }
 
         $calendar = $this->createCalendar($currentContextItem, $export, $calendarId);
+        $calendarComponent = (new CalendarFactory())->createCalendar($calendar);
 
         // prepare response
-        $response = new Response($calendar->render());
+        $response = new Response($calendarComponent);
         $response->headers->set('Content-Type', 'text/calendar');
         $response->setCharset('utf-8');
         $disposition = $response->headers->makeDisposition(
@@ -126,25 +139,42 @@ class ICalController extends AbstractController
         return $response;
     }
 
+    /**
+     * @throws Exception
+     */
     private function createCalendar(
         $currentContextItem,
         $export,
         $calendarId
-    ) {
+    ): Calendar {
         // setup calendar
-        $calendar = new Calendar('www.commsy.net');
+        $calendar = new Calendar($this->generateEvents($currentContextItem, $export, $calendarId));
+        $calendar->setProductIdentifier('www.commsy.net');
 
-        $calendar->setPublishedTTL('PT30M');
+        // time zone
+        $dtz = new DateTimeZone($this->getParameter('commsy.dates.timezone'));
+        $timeZone = TimeZone::createFromPhpDateTimeZone(
+            $dtz,
+            (new DateTimeImmutable())->sub(new DateInterval('P5Y')),
+            (new DateTimeImmutable())->add(new DateInterval('P5Y')),
+        );
+        $calendar->addTimeZone($timeZone);
 
+        return $calendar;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function generateEvents(cs_item $currentContextItem, bool $export, int $calendarId): Generator
+    {
         $dateList = $this->getDateList($currentContextItem, $export, $calendarId);
 
         // get ids auf all items
         $itemIdArray = [];
-        $item = $dateList->getFirst();
-        while ($item) {
-            $itemIdArray[] = $item->getItemID();
-
-            $item = $dateList->getNext();
+        foreach ($dateList as $date) {
+            /** @var $date */
+            $itemIdArray[] = $date->getItemID();
         }
 
         // get a list of all related users
@@ -159,13 +189,11 @@ class ICalController extends AbstractController
         $linkedUserArray = [];
         foreach ($itemIdArray as $itemId) {
             $tempArray = [];
-            $linkedUser = $linkedUserList->getFirst();
-            while ($linkedUser) {
+
+            foreach ($linkedUserList as $linkedUser) {
                 if ($linkedUser->getFirstLinkedItemID() == $itemId) {
                     $tempArray[] = $linkedUser->getSecondLinkedItemID();
                 }
-
-                $linkedUser = $linkedUserList->getNext();
             }
 
             $linkedUserArray[$itemId] = $tempArray;
@@ -173,13 +201,10 @@ class ICalController extends AbstractController
 
         // array with user ids
         $userIdArray = [];
-        $linkedUser = $linkedUserList->getFirst();
-        while ($linkedUser) {
+        foreach ($linkedUserList as $linkedUser) {
             if (!in_array($linkedUser->getSecondLinkedItemID(), $linkedUserArray)) {
                 $userIdArray[] = $linkedUser->getSecondLinkedItemID();
             }
-
-            $linkedUser = $linkedUserList->getNext();
         }
 
         // query user manager
@@ -189,10 +214,11 @@ class ICalController extends AbstractController
         $userManager->select();
         $userList = $userManager->get();
 
-        $item = $dateList->getFirst();
-        while ($item) {
+        foreach ($dateList as $item) {
+            /** @var cs_dates_item $item */
+
             // create new calendar event
-            $event = new Event();
+            $event = new Event(new UniqueIdentifier($item->getItemID()));
 
             // setup organizer
             $creatorItem = $item->getCreator();
@@ -200,41 +226,33 @@ class ICalController extends AbstractController
             $email = $creatorItem->getEmail();
 
             if (!empty($fullName) && !empty($email)) {
-                $event->setOrganizer(new Organizer("MAILTO:$email", [
-                    'CN' => $fullName,
-                ]));
+                $event->setOrganizer(new Organizer(new EmailAddress($email), $fullName));
             }
 
             // attendee
             $userItemIdArray = $linkedUserArray[$item->getItemID()];
             foreach ($userItemIdArray as $userId) {
-                $userItem = $userList->getFirst();
-                while ($userItem) {
+                foreach ($userList as $userItem) {
                     if ($userItem->getItemID() == $userId) {
                         $email = $userItem->getEmail();
-                        $fullName = $userItem->getFullName();
 
-                        if (!empty($email) && !empty($fullName)) {
-                            $event->addAttendee("MAILTO:$email", [
-                                'CN' => $fullName,
-                            ]);
+                        if (!empty($email)) {
+                            $event->addAttendee(new Attendee(new EmailAddress($email)));
                         }
                     }
-
-                    $userItem = $userList->getNext();
                 }
             }
 
             // title
             $summary = html_entity_decode($item->getTitle());
             if ($item->issetPrivatDate()) {
-                $summary .= ' [' . $this->translator->getMessage('DATE_PRIVATE_ENTRY') . ']';
+                $summary .= ' [' . $this->translator->trans('date.private', [], 'date') . ']';
             }
             $event->setSummary($summary);
 
             // location
             if (!empty($item->getPlace())) {
-                $event->setLocation($item->getPlace());
+                $event->setLocation(new Location($item->getPlace()));
             }
 
             // url
@@ -242,95 +260,55 @@ class ICalController extends AbstractController
                 'roomId' => $item->getContextID(),
                 'itemId' => $item->getItemID(),
             ], UrlGeneratorInterface::ABSOLUTE_URL);
-            $event->setUrl($url);
-
-            // unique id
-            $event->setUniqueId($item->getItemID());
+            $event->setUrl(new Uri($url));
 
             // start / end
-            $startTime = new \DateTime($item->getDateTime_start());
-            $endTime = new \DateTime($item->getDateTime_end());
-
-            // time zone
-            $dtz = new \DateTimeZone($this->getParameter('commsy.dates.timezone'));
-
-            $timezoneRuleDst = new TimezoneRule(TimezoneRule::TYPE_DAYLIGHT);
-            $timezoneRuleDst->setTzName('CEST');
-            $timezoneRuleDst->setDtStart(new \DateTime('1981-03-29 02:00:00', $dtz));
-            $timezoneRuleDst->setTzOffsetFrom('+0100');
-            $timezoneRuleDst->setTzOffsetTo('+0200');
-
-            $dstRecurrenceRule = new RecurrenceRule();
-            $dstRecurrenceRule->setFreq(RecurrenceRule::FREQ_YEARLY);
-            $dstRecurrenceRule->setByMonth(3);
-            $dstRecurrenceRule->setByDay('-1SU');
-            $timezoneRuleDst->setRecurrenceRule($dstRecurrenceRule);
-
-            $timezoneRuleStd = new TimezoneRule(TimezoneRule::TYPE_STANDARD);
-            $timezoneRuleStd->setTzName('CET');
-            $timezoneRuleStd->setDtStart(new \DateTime('1996-10-27 03:00:00', $dtz));
-            $timezoneRuleStd->setTzOffsetFrom('+0200');
-            $timezoneRuleStd->setTzOffsetTo('+0100');
-
-            $stdRecurrenceRule = new RecurrenceRule();
-            $stdRecurrenceRule->setFreq(RecurrenceRule::FREQ_YEARLY);
-            $stdRecurrenceRule->setByMonth(10);
-            $stdRecurrenceRule->setByDay('-1SU');
-            $timezoneRuleStd->setRecurrenceRule($stdRecurrenceRule);
-
-            $timezone = new Timezone($this->getParameter('commsy.dates.timezone'));
-            $timezone->addComponent($timezoneRuleDst);
-            $timezone->addComponent($timezoneRuleStd);
-
-            $calendar->setTimezone($timezone);
-
+            $dtz = new DateTimeZone($this->getParameter('commsy.dates.timezone'));
+            $startTime = new DateTime($item->getDateTime_start());
+            $endTime = new DateTime($item->getDateTime_end());
             $startTime->setTimezone($dtz);
             $endTime->setTimezone($dtz);
 
-            if ($startTime && $endTime) {
-                // Dates with equal start and end date or no start and end time are all day events
-                if ($startTime == $endTime || (empty($item->getStartingTime()) && empty($item->getEndingTime()))) {
-                    $event->setNoTime(true);
-                }
-
-                // Ending dates ending not at the starting day, with starting time and without an exact ending time are considered to
-                // span the whole day
-                if ($startTime != $endTime && !empty($item->getStartingTime()) && empty($item->getEndingTime())) {
-                    $endTime->add(new \DateInterval('P1D'));
-                }
-
-                $event
-                    ->setDtStart($startTime)
-                    ->setDtEnd($endTime)
-                    ->setDescription(html_entity_decode(strip_tags($item->getDescription()), ENT_NOQUOTES, 'UTF-8'))
-                    ->setStatus(Event::STATUS_CONFIRMED)
-                    ->setUseTimezone(true)
-                    ->setUseUtc(false);
+            // Ending dates ending not at the starting day, with starting time and without an exact ending time are considered to
+            // span the whole day
+            if ($startTime != $endTime && !empty($item->getStartingTime()) && empty($item->getEndingTime())) {
+                $endTime->add(new DateInterval('P1D'));
             }
 
-            $event->setNoTime($item->isWholeDay());
+            if ($item->isWholeDay()) {
+                if ($startTime == $endTime) {
+                    $date = new EventDate($startTime);
+                    $event->setOccurrence(new SingleDay($date));
+                } else {
+                    $firstDay = new EventDate($startTime);
+                    $lastDay = new EventDate($endTime);
+                    $event->setOccurrence(new MultiDay($firstDay, $lastDay));
+                }
+            } else {
+                $start = new EventDateTime($startTime, false);
+                $end = new EventDateTime($endTime, false);
+                $event->setOccurrence(new TimeSpan($start,$end));
+            }
 
-            $calendar->addComponent($event);
+            // description
+            $event->setDescription(html_entity_decode(strip_tags($item->getDescription()), ENT_NOQUOTES, 'UTF-8'));
 
-            $item = $dateList->getNext();
+            yield $event;
         }
-
-        return $calendar;
     }
 
     private function getDateList(
         $currentContextItem,
         $export,
         $calendarId
-    ) {
+    ): ?cs_list {
         $datesManager = $this->legacyEnvironment->getDatesManager();
 
         $datesManager->setWithoutDateModeLimit();
+        $datesManager->setCalendarArrayLimit([$calendarId]);
 
         if (!$this->legacyEnvironment->inPrivateRoom()) {
             $datesManager->setContextLimit($currentContextItem->getItemID());
-
-            $datesManager->setCalendarArrayLimit([$calendarId]);
         } else {
             $dateSelStatus = $currentContextItem->getRubrikSelection('date', 'status');
             if (!empty($dateSelStatus)) {
@@ -372,8 +350,6 @@ class ICalController extends AbstractController
             $myRooms[] = $currentContextItem->getItemID();
 
             $datesManager->setContextArrayLimit($myRooms);
-
-            $datesManager->setCalendarArrayLimit([$calendarId]);
         }
 
         if (!$export) {
@@ -389,7 +365,7 @@ class ICalController extends AbstractController
             $myEntries = $currentContextItem->getMyCalendarDisplayConfig();
 
             if (in_array('mycalendar_dates_assigned_to_me', $myEntries)) {
-                $tempList = new \cs_list();
+                $tempList = new cs_list();
 
                 $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
                 $currentUserList = $currentUserItem->getRelatedUserList();

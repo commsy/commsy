@@ -2,13 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Calendars;
 use App\Entity\SavedSearch;
 use App\Form\Type\MyViewsType;
 use App\Model\SearchData;
+use App\Repository\PortalRepository;
+use App\Repository\ServerRepository;
 use App\RoomFeed\RoomFeedGenerator;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
+use Doctrine\ORM\NonUniqueResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,12 +35,17 @@ class DashboardController extends AbstractController
      * @Template()
      * @param ItemService $itemService
      * @param LegacyEnvironment $environment
+     * @param PortalRepository $portalRepository
+     * @param ServerRepository $serverRepository
      * @param int $roomId
      * @return array
+     * @throws NonUniqueResultException
      */
      public function overviewAction(
          ItemService $itemService,
          LegacyEnvironment $environment,
+         PortalRepository $portalRepository,
+         ServerRepository $serverRepository,
          int $roomId
      ) {
         $legacyEnvironment = $environment->getEnvironment();
@@ -48,6 +57,9 @@ class DashboardController extends AbstractController
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
+
+        $portal = $portalRepository->find($legacyEnvironment->getCurrentPortalID());
+        $server = $serverRepository->getServer();
 
         // iCal
         $iCal = [
@@ -93,18 +105,16 @@ class DashboardController extends AbstractController
         }
 
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('App:Calendars');
-        $calendars = $repository->findBy(array('context_id' => $contextIds, 'external_url' => array('', NULL)));
+        $repository = $em->getRepository(Calendars::class);
+        $calendars = $repository->findBy(['context_id' => $contextIds, 'external_url' => ['', NULL]]);
 
         $contextArray = [];
-        foreach ($calendars as $index => $calendar) {
+        foreach ($calendars as $calendar) {
             $roomItemCalendar = $itemService->getTypedItem($calendar->getContextId());
-            $contextArray[$calendar->getContextId()][] = $roomItemCalendar->getTitle();
+            if ($roomItemCalendar) {
+                $contextArray[$calendar->getContextId()][] = $roomItemCalendar->getTitle();
+            }
         }
-
-        // announcements
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
-        $serverItem = $legacyEnvironment->getServerItem();
 
         // given the current portal configuration, is the current user allowed to create new rooms?
         $userMayCreateContext = false;
@@ -115,7 +125,7 @@ class DashboardController extends AbstractController
             if ($portalUser) {
                 if ($portalUser->isModerator()) {
                     $userMayCreateContext = true;
-                } else if ($portalItem->getCommunityRoomCreationStatus() == 'all' || $portalItem->getProjectRoomCreationStatus() == 'portal') {
+                } else if ($portal->getCommunityRoomCreationStatus() == 'all' || $portal->getProjectRoomCreationStatus() == 'portal') {
                     $userMayCreateContext = $currentUser->isAllowedToCreateContext();
                 }
             }
@@ -123,18 +133,17 @@ class DashboardController extends AbstractController
             $userMayCreateContext = true;
         }
 
-        return array(
+        return [
             'roomItem' => $roomItem,
             'dashboardLayout' => $roomItem->getDashboardLayout(),
             'iCal' => $iCal,
             'calendars' => $calendars,
             'contextArray' => $contextArray,
-            'portal' => $portalItem,
-            'server' => $serverItem,
+            'portal' => $portal,
+            'server' => $server,
             'userMayCreateContext' => $userMayCreateContext,
-        );
+        ];
     }
-
 
     /**
      * @Route("/dashboard/{roomId}/feed/{start}/{sort}")

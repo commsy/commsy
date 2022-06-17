@@ -17,6 +17,7 @@ use App\Utils\ProjectService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use cs_environment;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -34,22 +35,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ProjectController extends AbstractController
 {
-    private $legacyEnvironment;
-    private $translator;
-
-
-    /**
-     * ProjectController constructor.
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param TranslatorInterface $translator
-     */
-    public function __construct(LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator)
-    {
-        $this->legacyEnvironment = $legacyEnvironment;
-        $this->translator = $translator;
-    }
-
-
     /**
      * @Route("/room/{roomId}/project/feed/{start}/{sort}")
      * @Template()
@@ -73,6 +58,8 @@ class ProjectController extends AbstractController
         int $start = 0,
         string $sort = 'date_rev'
     ) {
+        $legacyEnvironment = $environment->getEnvironment();
+
         // setup filter form
         $defaultFilterValues = array(
             'activated' => true
@@ -92,7 +79,7 @@ class ProjectController extends AbstractController
         $projects = $projectService->getListProjects($roomId, $max, $start, $sort);
         $projectsMemberStatus = array();
         foreach ($projects as $project) {
-            $projectsMemberStatus[$project->getItemId()] = $this->memberStatus($project);
+            $projectsMemberStatus[$project->getItemId()] = $this->memberStatus($project, $legacyEnvironment);
         }
 
         $readerList = array();
@@ -105,7 +92,6 @@ class ProjectController extends AbstractController
             }
         }
 
-        $legacyEnvironment = $environment->getEnvironment();
         $currentUser = $legacyEnvironment->getCurrentUser();
 
         return array(
@@ -335,7 +321,7 @@ class ProjectController extends AbstractController
 
                     $masterRoom = $roomService->getRoomItem($masterTemplate);
                     if ($masterRoom) {
-                        $legacyRoom = $this->copySettings($masterRoom, $legacyRoom, $legacyCopy);
+                        $legacyRoom = $this->copySettings($masterRoom, $legacyRoom, $legacyCopy, $legacyEnvironment);
                     }
                 }
 
@@ -394,6 +380,7 @@ class ProjectController extends AbstractController
      * @Security("is_granted('MODERATOR', itemId)")
      * @param Request $request
      * @param RoomService $roomService
+     * @param TranslatorInterface $translator
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -401,6 +388,7 @@ class ProjectController extends AbstractController
     public function deleteAction(
         Request $request,
         RoomService $roomService,
+        TranslatorInterface $translator,
         int $roomId,
         int $itemId
     ) {
@@ -411,7 +399,7 @@ class ProjectController extends AbstractController
 
         $form = $this->createForm(DeleteType::class, [], [
             'room' => $roomItem,
-            'confirm_string' => $this->translator->trans('delete', [], 'profile')
+            'confirm_string' => $translator->trans('delete', [], 'profile')
         ]);
 
         $form->handleRequest($request);
@@ -481,10 +469,9 @@ class ProjectController extends AbstractController
         return $info;
     }
 
-    private function copySettings($masterRoom, $targetRoom, LegacyCopy $legacyCopy)
+    private function copySettings($masterRoom, $targetRoom, LegacyCopy $legacyCopy, cs_environment $legacyEnvironment)
     {
-        /**/
-        $user_manager = $this->legacyEnvironment->getUserManager();
+        $user_manager = $legacyEnvironment->getUserManager();
         $creator_item = $user_manager->getItem($targetRoom->getCreatorID());
         if ($creator_item->getContextID() != $targetRoom->getItemID()) {
             $user_manager->resetLimits();
@@ -513,17 +500,16 @@ class ProjectController extends AbstractController
 
         // copy data
         $legacyCopy->copyData($masterRoom, $targetRoom, $creator_item);
-        /**/
 
         return $targetRoom;
     }
 
     /**
-     * @param \cs_environment $legacyEnvironment
+     * @param cs_environment $legacyEnvironment
      * @param string $type
      * @return array
      */
-    private function getAvailableTemplates(\cs_environment $legacyEnvironment, $type = 'project')
+    private function getAvailableTemplates(cs_environment $legacyEnvironment, $type = 'project')
     {
         $templates = [];
 
@@ -612,10 +598,9 @@ class ProjectController extends AbstractController
         return $templates;
     }
     
-    private function memberStatus($item)
+    private function memberStatus($item, cs_environment $legacyEnvironment)
     {
         $status = 'closed';
-        $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
         $currentUser = $legacyEnvironment->getCurrentUserItem();
 
         $relatedUserArray = $currentUser->getRelatedUserList()->to_array();

@@ -253,11 +253,11 @@
     {% endif %}
 
     {% if user.isDeleted %}
-        <img class="uk-comment-avatar uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('app_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "deleted person"|trans({}, 'user')}}">
+        <img class="uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('app_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "deleted person"|trans({}, 'user')}}">
     {% elseif user.itemId != "" %}
-        <img class="uk-comment-avatar uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
+        <img class="uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
     {% else %}
-        <img class="uk-comment-avatar uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('app_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "guest"|trans({}, 'messages')}}">
+        <img class="uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('app_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "guest"|trans({}, 'messages')}}">
     {% endif %}
 {% endmacro %}
 
@@ -599,7 +599,7 @@
     {% endif %}
 {% endmacro %}
 
-{% macro mandatoryLinks(showHashtags, showCategories, form) %}
+{% macro mandatoryLinks(form) %}
     <div class="uk-form-row">
 
         <ul class='form-errors'>
@@ -618,15 +618,15 @@
         <div class="uk-form-label">{{ 'categoriesAndBuzzwords'|trans({}, "messages")|capitalize }}</div>
         <div class="uk-form-controls">
             <ul id="mandatoryLinkFormTabs" class="uk-tab" data-uk-tab="{connect:'#mandatoryLinksForm'}">
-                {% if showCategories %}
+                {% if form.category_mapping.categories is defined %}
                     <li><a href="">{{ 'categories'|trans({})|capitalize }}</a></li>
                 {% endif %}
-                {% if showHashtags %}
+                {% if form.hashtag_mapping.hashtags is defined %}
                     <li><a href="">{{ 'hashtags'|trans({}, 'room')|capitalize }}</a></li>
                 {% endif %}
             </ul>
             <ul id="mandatoryLinksForm" class="uk-switcher uk-margin">
-                {% if showCategories and form.category_mapping.categories is defined %}
+                {% if form.category_mapping.categories is defined %}
                     <li>
                         <div class="category-form">
                             {{ form_widget(form.category_mapping.categories) }}
@@ -641,7 +641,7 @@
                         </div>
                     </li>
                 {% endif %}
-                {% if showHashtags and form.hashtag_mapping.hashtags is defined %}
+                {% if form.hashtag_mapping.hashtags is defined %}
                     <li>
                         <div class="uk-grid-width-small-1-4 hashtag-form" data-uk-grid data-uk-check-display data-uk-grid-match>
                             {% for hashtag in form.hashtag_mapping.hashtags %}

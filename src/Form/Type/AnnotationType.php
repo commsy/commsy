@@ -5,6 +5,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
@@ -25,6 +26,9 @@ class AnnotationType extends AbstractType
                 'config_name' => 'cs_annotation_config',
                 'label' => 'Add new annotation',
                 'required' => true,
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ],
                 'attr' => array(
                     'placeholder' => 'annotation',
                     'class' => 'uk-form-width-large',

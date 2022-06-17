@@ -42,7 +42,7 @@ include_once('functions/text_functions.php');
  * @version 2.1 $Revision$
  */
 
-class cs_step_manager extends cs_manager implements cs_export_import_interface {
+class cs_step_manager extends cs_manager {
 
    /**
    * integer - containing a start point for the select step
@@ -401,31 +401,52 @@ class cs_step_manager extends cs_manager implements cs_export_import_interface {
      unset($item);
   }
 
-  /** store a new step item to the database - internal, do not use -> use method save
-    * this method stores a newly created step item to the database
-    *
-    * @param cs_step_item the step item to be stored
-    */
-  function _newStep ($item) {
-     $current_datetime = getCurrentDateTimeInMySQL();
-     $query = 'INSERT INTO '.$this->addDatabasePrefix('step').' SET '.
-              'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
-              'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
-              'creator_id="'.encode(AS_DB,$item->getCreatorID()).'",'.
-              'creation_date="'.$current_datetime.'",'.
-              'modification_date="'.$current_datetime.'",'.
-              'title="'.encode(AS_DB,$item->getTitle()).'",'.
-              'description="'.encode(AS_DB,$item->getDescription()).'",'.
-               $this->returnQuerySentenceIfFieldIsValid($item->getMinutes(), "minutes").
-              'time_type="'.encode(AS_DB,$item->getTimeType()).'",'.
-              'todo_item_id="'.encode(AS_DB,$item->getTodoID()).'"';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems creating step from query: "'.$query.'"',E_USER_WARNING);
-     }
-     unset($item);
-  }
+    /**
+     * store a new step item to the database - internal, do not use -> use method save
+     * this method stores a newly created step item to the database
+     *
+     * @param cs_step_item the step item to be stored
+     */
+    function _newStep(cs_step_item $item)
+    {
+        $currentDateTime = getCurrentDateTimeInMySQL();
+
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $queryBuilder
+            ->insert($this->addDatabasePrefix('step'))
+            ->setValue('item_id', ':itemId')
+            ->setValue('context_id', ':contextId')
+            ->setValue('creator_id', ':creatorId')
+            ->setValue('creation_date', ':creationDate')
+            ->setValue('modification_date', ':modificationDate')
+            ->setValue('title', ':title')
+            ->setValue('description', ':description')
+            ->setValue('time_type', ':timeType')
+            ->setValue('todo_item_id', ':todoItemId')
+            ->setParameter('itemId', $item->getItemID())
+            ->setParameter('contextId', $item->getContextID())
+            ->setParameter('creatorId', $item->getCreatorID())
+            ->setParameter('creationDate', $currentDateTime)
+            ->setParameter('modificationDate', $currentDateTime)
+            ->setParameter('title', $item->getTitle())
+            ->setParameter('description', $item->getDescription())
+            ->setParameter('timeType', $item->getTimeType())
+            ->setParameter('todoItemId', $item->getTodoID());
+
+        if ($item->getMinutes()) {
+            $queryBuilder
+                ->setValue('minutes', ':minutes')
+                ->setParameter('minutes', $item->getMinutes());
+        }
+
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error($e->getMessage(), E_USER_WARNING);
+        }
+    }
 
    /**  delete a step item
    *
@@ -563,61 +584,4 @@ class cs_step_manager extends cs_manager implements cs_export_import_interface {
             }
         }
     }
-	
-	function export_item($id) {
-	   $item = $this->getItem($id);
-	
-   	$xml = new SimpleXMLElementExtended('<step_item></step_item>');
-   	$xml->addChildWithCDATA('item_id', $item->getItemID());
-      $xml->addChildWithCDATA('context_id', $item->getContextID());
-      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
-      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
-      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
-      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
-      $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
-      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
-      $xml->addChildWithCDATA('title', $item->getTitle());
-      $xml->addChildWithCDATA('description', $item->getDescription());
-      $xml->addChildWithCDATA('minutes', $item->getMinutes());
-      $xml->addChildWithCDATA('time_type', $item->getTimeType());
-      $xml->addChildWithCDATA('todo_item_id', $item->getTodoID());
-
-   	$extras_array = $item->getExtraInformation();
-      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
-      $this->simplexml_import_simplexml($xml, $xmlExtras);
-   
-      $xml->addChildWithCDATA('public', $item->isPublic());
-   
-      $xmlFiles = $this->getFilesAsXML($item->getItemID());
-      $this->simplexml_import_simplexml($xml, $xmlFiles);
-   
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
-      
-   }
-   
-   function import_item($xml, $top_item, &$options) {
-      $item = null;
-      if ($xml != null) {
-         $item = $this->getNewItem();
-         $item->setTitle((string)$xml->title[0]);
-         $item->setContextId($top_item->getContextId());
-         $item->setDescription((string)$xml->description[0]);
-         $item->setMinutes((string)$xml->minutes[0]);
-         $item->setTimeType((string)$xml->time_type[0]);
-         $item->setTodoID($top_item->getItemId());
-         //$item->setPublic((string)$xml->public[0]);
-         $extra_array = $this->getXMLAsArray($xml->extras);
-         $item->setExtraInformation($extra_array['extras']);
-         $item->save();
-      }
-      return $item;
-   }
-   
-   function import_sub_items($xml, $top_item, &$options) {
-      
-   }
 }
-?>

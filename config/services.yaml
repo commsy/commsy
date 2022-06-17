@@ -6,6 +6,8 @@
 parameters:
     locale: '%env(LOCALE)%'
 
+    commsy.elastic.prefix: '%env(ELASTIC_INDEX)%'
+
     commsy.force_theme: '%env(FORCE_THEME)%'
 
     files_directory: '%kernel.project_dir%/files'
@@ -116,15 +118,6 @@ parameters:
     commsy.etherpad.api_key: '%env(ETHERPAD_API_KEY)%'
     commsy.etherpad.api_url: '%env(ETHERPAD_API_URL)%'
     commsy.etherpad.base_url: '%env(ETHERPAD_BASE_URL)%'
-
-    # MediaWiki
-    commsy.mediawiki.enabled: '%env(bool:MEDIAWIKI_ENABLED)%'      # set the following variable to activate mediawiki extension
-    commsy.mediawiki.roomWikiUrl: '%env(MEDIAWIKI_ROOM_WIKI_URL)%'
-    commsy.mediawiki.apiUrl: '%env(MEDIAWIKI_API_URL)%'
-    commsy.mediawiki.consumerKey: '%env(MEDIAWIKI_CONSUMER_KEY)%'
-    commsy.mediawiki.consumerSecret: '%env(MEDIAWIKI_CONSUMER_SECRET)%'
-    commsy.mediawiki.accessToken: '%env(MEDIAWIKI_ACCESS_TOKEN)%'
-    commsy.mediawiki.accessSecret: '%env(MEDIAWIKI_ACCESS_SECRET)%'
 
     # Dates
     commsy.dates.timezone: '%env(TIMEZONE)%'
@@ -347,10 +340,6 @@ services:
         autowire: true
         autoconfigure: true
 
-    # Exporter
-    commsy.export.wordpress:
-        alias: App\Export\WordpressExporter
-
     # EventListener
     commsy.listener.get_room_membership_filter:
         class: App\EventListener\RoomMembershipFilterConditionListener
@@ -432,14 +421,14 @@ services:
     App\Search\Transformer\ElasticaToModelTransformerCollection:
         arguments:
             - {
-                commsy_announcement: '@fos_elastica.elastica_to_model_transformer.commsy_announcement',
-                commsy_date: '@fos_elastica.elastica_to_model_transformer.commsy_date',
-                commsy_discussion: '@fos_elastica.elastica_to_model_transformer.commsy_discussion',
-                commsy_label: '@fos_elastica.elastica_to_model_transformer.commsy_label',
-                commsy_room: '@fos_elastica.elastica_to_model_transformer.commsy_room',
-                commsy_todo: '@fos_elastica.elastica_to_model_transformer.commsy_todo',
-                commsy_user: '@fos_elastica.elastica_to_model_transformer.commsy_user',
-                commsy_material: '@fos_elastica.elastica_to_model_transformer.commsy_material',
+                announcement: '@fos_elastica.elastica_to_model_transformer.commsy_announcement',
+                date: '@fos_elastica.elastica_to_model_transformer.commsy_date',
+                discussion: '@fos_elastica.elastica_to_model_transformer.commsy_discussion',
+                label: '@fos_elastica.elastica_to_model_transformer.commsy_label',
+                room: '@fos_elastica.elastica_to_model_transformer.commsy_room',
+                todo: '@fos_elastica.elastica_to_model_transformer.commsy_todo',
+                user: '@fos_elastica.elastica_to_model_transformer.commsy_user',
+                material: '@fos_elastica.elastica_to_model_transformer.commsy_material',
             }
     FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface: '@App\Search\Transformer\ElasticaToModelTransformerCollection'
 
@@ -518,8 +507,6 @@ services:
 
     # Form types
     App\Form\Type\ExtensionSettingsType:
-        arguments:
-            $mediaWikiEnabled: '%commsy.mediawiki.enabled%'
         tags:
             - { name: form.type }
 
@@ -760,17 +747,7 @@ services:
     # SessionHandler
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
-            - !service { class: PDO, factory: ['@database_connection', 'getWrappedConnection'] }
-            # If you get transaction issues (e.g. after login) uncomment the line below
-            - { lock_mode: 1 }
-
-    App\Services\MediawikiService:
-        arguments:
-            $apiUrl: '%commsy.mediawiki.apiUrl%'
-            $consumerKey: '%commsy.mediawiki.consumerKey%'
-            $consumerSecret: '%commsy.mediawiki.consumerSecret%'
-            $accessToken: '%commsy.mediawiki.accessToken%'
-            $accessSecret: '%commsy.mediawiki.accessSecret%'
+            - '%env(DATABASE_URL)%'
 
     # FormatDateTimeExtension
     Craue\TwigExtensionsBundle\Twig\Extension\FormatDateTimeExtension:

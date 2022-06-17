@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
-use Swagger\Annotations as SWG;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -22,6 +23,22 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     @ORM\Index(name="type", columns={"type"})
  * })
  * @ORM\Entity(repositoryClass="App\Repository\RoomRepository")
+ * @ORM\HasLifecycleCallbacks
+ * @ApiResource(
+ *     security="is_granted('ROLE_API_READ')",
+ *     collectionOperations={
+ *         "get",
+ *     },
+ *     itemOperations={
+ *         "get",
+ *     },
+ *     normalizationContext={
+ *         "groups"={"api"},
+ *     },
+ *     denormalizationContext={
+ *         "groups"={"api"},
+ *     }
+ * )
  */
 class Room
 {
@@ -38,8 +55,8 @@ class Room
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
-     * @Groups({"api_read"})
-     * @SWG\Property(description="The unique identifier.")
+     * @Groups({"api"})
+     * @OA\Property(description="The unique identifier.")
      */
     private $itemId;
 
@@ -79,7 +96,7 @@ class Room
      *
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
      *
-     * @Groups({"api_read"})
+     * @Groups({"api"})
      */
     private DateTime $creationDate;
 
@@ -88,7 +105,7 @@ class Room
      *
      * @ORM\Column(name="modification_date", type="datetime", nullable=false)
      *
-     * @Groups({"api_read"})
+     * @Groups({"api"})
      */
     private DateTime $modificationDate;
 
@@ -104,8 +121,8 @@ class Room
      *
      * @ORM\Column(name="title", type="string", length=255)
      *
-     * @Groups({"api_read"})
-     * @SWG\Property(type="string", maxLength=255)
+     * @Groups({"api"})
+     * @OA\Property(type="string", maxLength=255)
      */
     private string $title;
 
@@ -135,8 +152,8 @@ class Room
      *
      * @ORM\Column(name="type", type="string", length=20)
      *
-     * @Groups({"api_read"})
-     * @SWG\Property(description="Either project or community")
+     * @Groups({"api"})
+     * @OA\Property(description="Either project or community")
      */
     private string $type = 'project';
 
@@ -180,7 +197,8 @@ class Room
      *
      * @ORM\Column(name="room_description", type="string", length=10000, nullable=true)
      *
-     * @Groups({"api_read"})
+     * @Groups({"api"})
+     * @OA\Property(type="string", nullable=true)
      */
     private ?string $roomDescription = null;
 
@@ -368,6 +386,15 @@ class Room
     public function getContextId(): ?int
     {
         return $this->contextId;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function setInitialDateValues()
+    {
+        $this->creationDate = new \DateTime("now");
+        $this->modificationDate = new \DateTime("now");
     }
 
     /**

@@ -3,13 +3,23 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Swagger\Annotations as SWG;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * User
  *
- * @ORM\Table(name="user", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"}), @ORM\Index(name="user_id", columns={"user_id"}), @ORM\Index(name="deletion_date", columns={"deletion_date"}), @ORM\Index(name="deleter_id", columns={"deleter_id"}), @ORM\Index(name="status", columns={"status"}), @ORM\Index(name="is_contact", columns={"is_contact"})})
+ * @ORM\Table(
+ *     name="user",
+ *     indexes={
+ *         @ORM\Index(name="creator_idx", columns={"creator_id"}),
+ *         @ORM\Index(name="deleted_idx", columns={"deletion_date", "deleter_id"}),
+ *         @ORM\Index(name="context_idx", columns={"context_id"}),
+ *     },
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(name="unique_non_soft_deleted_idx", columns={"user_id", "auth_source", "context_id", "not_deleted"})
+ *     }
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
 class User
@@ -22,7 +32,7 @@ class User
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
      * @Groups({"api_read"})
-     * @SWG\Property(description="The unique identifier.")
+     * @OA\Property(description="The unique identifier.")
      */
     public $itemId = '0';
 
@@ -80,6 +90,13 @@ class User
      * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
      */
     private $deletionDate;
+
+    /**
+     * @ORM\Column(name="not_deleted", type="boolean", insertable=false, updatable=false,generated="ALWAYS",
+     *     columnDefinition="TINYINT(1) AS (IF (deleter_id IS NULL AND deletion_date IS NULL, 1, NULL)) PERSISTENT AFTER deletion_date"
+     * )
+     */
+    private $isNotDeleted;
 
     /**
      * @var string
@@ -179,6 +196,11 @@ class User
      * @ORM\Column(name="expire_date", type="datetime", nullable=true)
      */
     private $expireDate;
+
+    /**
+     * @ORM\Column(name="use_portal_email", type="boolean")
+     */
+    private $usePortalEmail = false;
 
     /**
      * Set contextId

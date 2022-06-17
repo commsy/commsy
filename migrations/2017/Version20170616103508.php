@@ -130,7 +130,7 @@ final class Version20170616103508 extends AbstractMigration
         $qb = $queryBuilder
             ->select('r.item_id, r.extras')
             ->from($dTable, 'r');
-        $rooms = $qb->execute();
+        $rooms = $qb->executeQuery()->fetchAllAssociative();
 
         $this->write('adding dates to new calendars for table '.$dTable);
 
@@ -157,7 +157,7 @@ final class Version20170616103508 extends AbstractMigration
                 ->setParameter(2, '#ffffff')
                 ->setParameter(3, '')
                 ->setParameter(4, '1')
-                ->execute();
+                ->executeStatement();
             ;
 
             $calendarId = $this->connection->lastInsertId();
@@ -167,7 +167,7 @@ final class Version20170616103508 extends AbstractMigration
                 ->from('dates', 'd')
                 ->where('d.context_id = :context_id')
                 ->setParameter('context_id', $room['item_id'])
-                ->execute();
+                ->executeQuery()->fetchAllAssociative();
 
             $colorsInContext = [];
             foreach ($dates as $date) {
@@ -220,7 +220,7 @@ final class Version20170616103508 extends AbstractMigration
                     ->setParameter(2, $currentColor)
                     ->setParameter(3, '')
                     ->setParameter(4, '0')
-                    ->execute();
+                    ->executeStatement();
                 ;
 
                 $calendarId = $this->connection->lastInsertId();
@@ -230,7 +230,7 @@ final class Version20170616103508 extends AbstractMigration
                     ->from('dates', 'd')
                     ->where('d.context_id = :context_id')
                     ->setParameter('context_id', $room['item_id'])
-                    ->execute();
+                    ->executeQuery()->fetchAllAssociative();
 
                 foreach ($dates as $date) {
                     if (in_array($date['color'], $currentColors)) {
@@ -248,6 +248,6 @@ final class Version20170616103508 extends AbstractMigration
             ->where("d.item_id = :itemId")
             ->setParameter("calendarId", $calendarId)
             ->setParameter("itemId", $itemId)
-            ->execute();
+            ->executeStatement();
     }
 }

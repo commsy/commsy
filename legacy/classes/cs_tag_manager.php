@@ -30,7 +30,7 @@ include_once('classes/cs_manager.php');
 /** class for database connection to the database table "tag"
  * this class implements a database manager for the table "tag".
  */
-class cs_tag_manager extends cs_manager implements cs_export_import_interface {
+class cs_tag_manager extends cs_manager {
 
   /**
    * integer - containing the age of last change as a limit in days
@@ -760,21 +760,20 @@ class cs_tag_manager extends cs_manager implements cs_export_import_interface {
      }
   }
 
-   public function copyDataFromRoomToRoom ($old_id, $new_id, $user_id='', $id_array='') {
-      $retour = parent::copyDataFromRoomToRoom($old_id,$new_id,$user_id,$id_array);
+    public function copyDataFromRoomToRoom($old_id, $new_id, $user_id = '', $id_array = '')
+    {
+        $retour = parent::copyDataFromRoomToRoom($old_id, $new_id, $user_id, $id_array);
 
-      $tag_root_item_old = $this->getRootTagItemFor($old_id);
-      if ( isset($tag_root_item_old) ) {
-         $this->forceSQL();
-         $tag_root_item_new = $this->getRootTagItemFor($new_id);
-         if ( isset($tag_root_item_new) ) {
-            $retour[$tag_root_item_old->getItemID()] = $tag_root_item_new->getItemID();
-            unset($tag_root_item_new);
-         }
-      }
-      unset($tag_root_item_old);
-      return $retour;
-   }
+        $tag_root_item_old = $this->getRootTagItemFor($old_id);
+        if (isset($tag_root_item_old)) {
+            $this->forceSQL();
+            $tag_root_item_new = $this->getRootTagItemFor($new_id);
+            if (isset($tag_root_item_new)) {
+                $retour[$tag_root_item_old->getItemID()] = $tag_root_item_new->getItemID();
+            }
+        }
+        return $retour;
+    }
 
     public function deleteTagsOfUser ($uid) {
         global $symfonyContainer;
@@ -814,55 +813,4 @@ class cs_tag_manager extends cs_manager implements cs_export_import_interface {
             }
         }
     }
-	
-	function export_item($id) {
-	   $item = $this->getItem($id);
-   	$xml = new SimpleXMLElementExtended('<tag_item></tag_item>');
-   	$xml->addChildWithCDATA('item_id', $item->getItemID());
-      $xml->addChildWithCDATA('context_id', $item->getContextID());
-      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
-      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
-      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
-      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
-      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
-      $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
-      $xml->addChildWithCDATA('title', $item->getTitle());
-      $tag2TagManager = $this->_environment->getTag2TagManager();
-      $tag2TagManager->resetCachedFatherIdArray();
-      $tag2TagManager->setContextLimit($item->getContextId());
-      $tag2Tag_father_id = $tag2TagManager->getFatherItemID($item->getItemId());
-      if ($tag2Tag_father_id) {
-        $tag2Tag_item = $tag2TagManager->getItem($tag2Tag_father_id, $item->getItemId());
-        $xml->addChildWithCDATA('sorting_place', $tag2Tag_item->getSortingPlace());
-      } else {
-        $xml->addChildWithCDATA('sorting_place', '1');
-      }
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
-      
-   }
-   
-   function import_item($xml, $top_item, &$options) {
-      $item = null;
-      if ($xml != null) {
-         $item = $this->getNewItem();
-         $item->setTitle((string)$xml->title[0]);
-         $item->setContextId($top_item->getContextId());
-         //$item->setPosition($top_item->getItemId(), $top_item->getChildrenList()->getCount() + 1);
-         $item->save();
-         $tag2TagManager = $this->_environment->getTag2TagManager();
-         $tag2TagManager->insert_with_context($item->getItemId(), $top_item->getItemid(), (string)$xml->sorting_place[0], $top_item->getContextId());
-      }
-      
-      $options[(string)$xml->item_id[0]] = $item->getItemId();
-      
-      return $item;
-   }
-   
-   function import_sub_items($xml, $top_item, &$options) {
-      
-   }
 }
-?>

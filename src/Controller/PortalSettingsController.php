@@ -45,6 +45,7 @@ use App\Form\Type\Portal\AuthLocalType;
 use App\Form\Type\Portal\AuthShibbolethType;
 use App\Form\Type\Portal\CommunityRoomsCreationType;
 use App\Form\Type\Portal\DataPrivacyType;
+use App\Form\Type\Portal\DeleteArchiveRoomsType;
 use App\Form\Type\Portal\GeneralType;
 use App\Form\Type\Portal\ImpressumType;
 use App\Form\Type\Portal\LicenseSortType;
@@ -53,6 +54,7 @@ use App\Form\Type\Portal\MailtextsType;
 use App\Form\Type\Portal\MandatoryAssignmentType;
 use App\Form\Type\Portal\PortalAnnouncementsType;
 use App\Form\Type\Portal\PortalAppearanceType;
+use App\Form\Type\Portal\PortalGeneralType;
 use App\Form\Type\Portal\PortalhomeType;
 use App\Form\Type\Portal\PrivacyType;
 use App\Form\Type\Portal\ProjectRoomsCreationType;
@@ -60,6 +62,7 @@ use App\Form\Type\Portal\RoomCategoriesType;
 use App\Form\Type\Portal\RoomInactiveType;
 use App\Form\Type\Portal\ServerAnnouncementsType;
 use App\Form\Type\Portal\ServerAppearanceType;
+use App\Form\Type\Portal\ServerGeneralType;
 use App\Form\Type\Portal\SupportRequestsType;
 use App\Form\Type\Portal\SupportType;
 use App\Form\Type\Portal\TermsType;
@@ -124,19 +127,39 @@ class PortalSettingsController extends AbstractController
      */
     public function general(Portal $portal, Request $request, EntityManagerInterface $entityManager)
     {
-        $form = $this->createForm(GeneralType::class, $portal);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            if ($form->getClickedButton()->getName() === 'save') {
+        $portalForm = $this->createForm(PortalGeneralType::class, $portal);
+        $portalForm->handleRequest($request);
+        if ($portalForm->isSubmitted() && $portalForm->isValid()) {
+            if ($portalForm->getClickedButton()->getName() === 'save') {
                 $entityManager->persist($portal);
                 $entityManager->flush();
             }
+
+            return $this->redirectToRoute('app_portalsettings_general', [
+                'portalId' => $portal->getId(),
+                'tab' => 'portal',
+            ]);
+        }
+
+        $server = $entityManager->getRepository(Server::class)->getServer();
+        $serverForm = $this->createForm(ServerGeneralType::class, $server);
+        $serverForm->handleRequest($request);
+        if ($serverForm->isSubmitted() && $serverForm->isValid()) {
+            if ($serverForm->getClickedButton()->getName() === 'save') {
+                $entityManager->persist($server);
+                $entityManager->flush();
+            }
+
+            return $this->redirectToRoute('app_portalsettings_general', [
+                'portalId' => $portal->getId(),
+                'tab' => 'server',
+            ]);
         }
 
         return [
-            'form' => $form->createView(),
+            'portalForm' => $portalForm->createView(),
+            'serverForm' => $serverForm->createView(),
+            'tab' => $request->query->has('tab') ? $request->query->get('tab') : 'portal',
         ];
     }
 
@@ -550,6 +573,8 @@ class PortalSettingsController extends AbstractController
             foreach ($datasets as $dataset) {
                 $userCreator->createFromCsvDataset($authSource, $dataset);
             }
+
+            $this->addFlash('notice', 'Import completed successfully.');
         }
 
         return [

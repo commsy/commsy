@@ -435,26 +435,6 @@
                 <source>guest</source>
                 <target>Gast</target>
             </trans-unit>
-            <trans-unit id="invitation subject">
-                <source>invitation subject %portal%</source>
-                <target>Einladung CommSy-Portal "%portal%"</target>
-            </trans-unit>
-            <trans-unit id="invitation body">
-                <source>invitation body %portal% %link% %sender%</source>
-                <target>
-Sie wurden in den Raum %room% im CommSy-Portal %portal% eingeladen.
-Bitte legen Sie sich über folgenden Link eine Kennung für das Portal %portal% an, dieser ist 14 Tage gültig:
-%link%
-
-Nachdem Sie die Kennung angelegt und sich eingeloggt haben, können Sie über diesen Link zum Raum gelangen:
-%roomLink%
-Dort befinden sich Auswahlmöglichkeiten für die Teilnahme. Diese erfolgt je nach Raumeinstellung per Antrag oder per Code.
-Sollte im letzteren Fall der Code Ihnen nicht vorliegen, erfragen Sie diesen bitte bei der/dem Einladenden.
-
-Gruß ...
-%sender%
-                </target>
-            </trans-unit>
             <trans-unit id="calendar">
                 <source>calendar</source>
                 <target>Kalender</target>
@@ -471,6 +451,10 @@ Gruß ...
                 <source>Close</source>
                 <target>Schließen</target>
             </trans-unit>
+             <trans-unit id="deactivated_entry">
+                 <source>Deactivated entry</source>
+                 <target>(Deaktivierter Eintrag)</target>
+             </trans-unit>
         </body>
     </file>
 </xliff>

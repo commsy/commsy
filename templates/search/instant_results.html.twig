@@ -18,10 +18,10 @@
         {{#msgMoreResults}}\
             <li class="uk-nav-header uk-skip">{{msgMoreResults}}</li>\
             <li class="uk-search-moreresults" data-moreresults="true"><a href="#" onclick="jQuery(this).closest(\'form\').submit()">{%- endverbatim -%}{{ searchAllRooms }}{%- verbatim -%}</a></li>\
-            <li class="uk-search-moreresults" data-moreresults="true" data-url="{%- endverbatim -%}{{ path('app_search_results', { 'roomId': roomId, 'originalContext': originalRoomId }) }}\
+            {%- endverbatim -%}{% if originalRoomId is not same as 1 %}{%- verbatim -%}<li class="uk-search-moreresults" data-moreresults="true" data-url="{%- endverbatim -%}{{ path('app_search_results', { 'roomId': roomId, 'originalContext': originalRoomId }) }}\
                 {%- verbatim -%}&search%5Bphrase%5D={{#items && items.length}}{{#$item.searchPhrase}}{{{$item.searchPhrase}}}{{/$item.searchPhrase}}{{/items}}">\
                     <a href="#">{%- endverbatim -%}{{ searchCurrentRoom }}{%- verbatim -%}</a>\
-            </li>\
+            </li>\{%- endverbatim -%}{% endif %}{%- verbatim -%}
         {{/msgMoreResults}}\
     {{/end}}\
     {{^items.length}}\

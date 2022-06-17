@@ -24,8 +24,11 @@ use App\Utils\ItemService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use cs_environment;
 use cs_user_item;
 use DateTimeImmutable;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Exception;
 use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -33,10 +36,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sylius\Bundle\ThemeBundle\Repository\ThemeRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -49,18 +52,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class RoomController extends AbstractController
 {
-    /**
-     * @var Mailer
-     */
-    private Mailer $mailer;
+    private SessionInterface $session;
 
     /**
      * @required
-     * @param Mailer $mailer
+     * @param SessionInterface $session
      */
-    public function setMailer(Mailer $mailer)
+    public function setSession(SessionInterface $session): void
     {
-        $this->mailer = $mailer;
+        $this->session = $session;
     }
 
     /**
@@ -169,7 +169,7 @@ class RoomController extends AbstractController
             $serviceContact['link'] = $roomService->buildServiceLink();
         }
 
-        // RSS-Feed / iCal / Wiki
+        // RSS-Feed / iCal
         $rss = [
             'show' => false,
             'url' => $this->generateUrl('app_rss', [
@@ -177,20 +177,11 @@ class RoomController extends AbstractController
             ]),
         ];
 
-        $wiki = [
-            'show' => false,
-            'url' => str_ireplace('[COMMSY_CONTEXT_ID]', $roomItem->getItemId(), $this->getParameter('commsy.mediawiki.roomWikiUrl')),
-        ];
-
         if (!$roomItem->isLocked() && !$roomItem->isClosed()) {
             $currentUserItem = $legacyEnvironment->getCurrentUserItem();
 
             if ($roomItem->isRSSOn()) {
                 $rss['show'] = true;
-            }
-
-            if ($roomItem->isWikiEnabled()) {
-                $wiki['show'] = true;
             }
 
             if (!$roomItem->isOpenForGuests()) {
@@ -201,8 +192,6 @@ class RoomController extends AbstractController
                         'contextId' => $roomId,
                         'hid' => $hashManager->getRSSHashForUser($currentUserItem->getItemID()),
                     ]);
-
-                    $wiki['url'] = $wiki['url'].'?session-id='.$legacyEnvironment->getSessionID();
                 }
             }
         }
@@ -240,7 +229,6 @@ class RoomController extends AbstractController
             'logoImageFilepath' => $logoImage,
             'serviceContact' => $serviceContact,
             'rss' => $rss,
-            'wiki' => $wiki,
             'header' => $header,
             'isModerator' => $legacyEnvironment->getCurrentUserItem()->isModerator(),
             'userTasks' => $userTasks,
@@ -258,6 +246,7 @@ class RoomController extends AbstractController
      * @param ReaderService $readerService
      * @param RoomFeedGenerator $roomFeedGenerator
      * @param LegacyEnvironment $environment
+     * @param RoomService $roomService
      * @param int $roomId
      * @param int $max
      * @return array
@@ -325,6 +314,7 @@ class RoomController extends AbstractController
      * @param Request $request
      * @param TranslatorInterface $translator
      * @param LegacyEnvironment $environment
+     * @param Mailer $mailer
      * @param int $roomId
      * @return array|JsonResponse
      */
@@ -332,6 +322,7 @@ class RoomController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         LegacyEnvironment $environment,
+        Mailer $mailer,
         int $roomId
     ) {
         $moderationsupportData = array();
@@ -352,7 +343,7 @@ class RoomController extends AbstractController
 
             $moderationRecipients = RecipientFactory::createModerationRecipients($roomItem);
 
-            $this->mailer->sendMultipleRaw(
+            $mailer->sendMultipleRaw(
                 $data['subject'],
                 $data['message'],
                 $moderationRecipients,
@@ -387,8 +378,8 @@ class RoomController extends AbstractController
      * @param PortalRepository $portalRepository
      * @param int $roomId
      * @return array [type]           [description]
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
     public function listAllAction(
         Request $request,
@@ -413,6 +404,8 @@ class RoomController extends AbstractController
                 $roomTypes = [CS_PROJECT_TYPE, CS_COMMUNITY_TYPE];
                 break;
         }
+
+        $sort = $this->session->get('sortRooms', $portal->getSortRoomsBy() ?? 'activity');
 
         $filterForm = $this->createForm(RoomFilterType::class, null, [
             'showTime' => $portal->getShowTimePulses(),
@@ -454,7 +447,7 @@ class RoomController extends AbstractController
         if ($request->query->has('room_filter')) {
             $roomFilter = $request->query->get('room_filter');
 
-            // "archived" not set or archived != 1 = include archived rooms in list 
+            // "archived" not set or archived != 1 = include archived rooms in list
             if (!isset($roomFilter['archived']) || $roomFilter['archived'] != "1") {
                 if ($filterForm->isSubmitted() && $filterForm->isValid()) {
                     $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
@@ -497,6 +490,7 @@ class RoomController extends AbstractController
                 'countAll' => $countAll,
             ],
             'userMayCreateContext' => $userMayCreateContext,
+            'sort' => $sort,
         ];
     }
 
@@ -523,7 +517,7 @@ class RoomController extends AbstractController
         UserRepository $userRepository,
         PortalRepository $portalRepository,
         int $roomId,
-        string $sort='activity',
+        string $sort='',
         int $max = 10,
         int $start = 0
     ) {
@@ -542,6 +536,11 @@ class RoomController extends AbstractController
                 $roomTypes = [CS_PROJECT_TYPE, CS_COMMUNITY_TYPE];
                 break;
         }
+
+        if (empty($sort)) {
+            $sort = $this->session->get('sortRooms', $portal->getSortRoomsBy() ?? 'activity');
+        }
+        $this->session->set('sortRooms', $sort);
 
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -639,110 +638,6 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @Route("/room/{roomId}/all/{itemId}", requirements={
-     *     "itemId": "\d+"
-     * }))
-     * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
-     * @param ItemService $itemService
-     * @param RoomService $roomService
-     * @param UserService $userService
-     * @param LegacyEnvironment $environment
-     * @param LegacyMarkup $legacyMarkup
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
-    public function detailAction(
-        ItemService $itemService,
-        RoomService $roomService,
-        UserService $userService,
-        LegacyEnvironment $environment,
-        LegacyMarkup $legacyMarkup,
-        int $roomId,
-        int $itemId
-    ) {
-        $legacyEnvironment = $environment->getEnvironment();
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($itemId);
-
-        $currentUser = $legacyEnvironment->getCurrentUser();
-
-        $infoArray = $this->getDetailInfo($roomItem, $itemService, $legacyEnvironment);
-
-        $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
-
-        $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
-        $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
-
-        return [
-            'roomId' => $roomId,
-            'item' => $roomItem,
-            'currentUser' => $currentUser,
-            'modifierList' => $infoArray['modifierList'],
-            'userCount' => $infoArray['userCount'],
-            'readCount' => $infoArray['readCount'],
-            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
-            'memberStatus' => $memberStatus,
-            'contactModeratorItems' => $contactModeratorItems,
-            'portalId' => $legacyEnvironment->getCurrentPortalItem()->getItemId(),
-        ];
-    }
-
-    private function getDetailInfo(
-        $room,
-        ItemService $itemService,
-        \cs_environment $legacyEnvironment
-    ) {
-        $readerManager = $legacyEnvironment->getReaderManager();
-
-        $info = [];
-
-        // modifier
-        $info['modifierList'][$room->getItemId()] = $itemService->getAdditionalEditorsForItem($room);
-
-        // total user count
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $userList = $userManager->get();
-
-        $info['userCount'] = $userList->getCount();
-
-        // total and since modification reader count
-        $readerCount = 0;
-        $readSinceModificationCount = 0;
-        $currentUser = $userList->getFirst();
-
-        $userIds = array();
-        while ($currentUser) {
-            $userIds[] = $currentUser->getItemID();
-
-            $currentUser = $userList->getNext();
-        }
-
-        $readerManager->getLatestReaderByUserIDArray($userIds, $room->getItemID());
-        $currentUser = $userList->getFirst();
-        while ($currentUser) {
-            $currentReader = $readerManager->getLatestReaderForUserByID($room->getItemID(), $currentUser->getItemID());
-            if ( !empty($currentReader) ) {
-                if ($currentReader['read_date'] >= $room->getModificationDate()) {
-                    $readSinceModificationCount++;
-                }
-
-                $readerCount++;
-            }
-            $currentUser = $userList->getNext();
-        }
-
-        $info['readCount'] = $readerCount;
-        $info['readSinceModificationCount'] = $readSinceModificationCount;
-
-        return $info;
-    }
-
-    /**
      * @Route("/room/{roomId}/all/{itemId}/request", requirements={
      *     "itemId": "\d+"
      * }))
@@ -750,6 +645,8 @@ class RoomController extends AbstractController
      * @Template()
      * @param Request $request
      * @param LegacyEnvironment $environment
+     * @param UserService $userService
+     * @param Mailer $mailer
      * @param int $roomId
      * @param int $itemId
      * @return array|string|RedirectResponse
@@ -758,6 +655,7 @@ class RoomController extends AbstractController
         Request $request,
         LegacyEnvironment $environment,
         UserService $userService,
+        Mailer $mailer,
         int $roomId,
         int $itemId
     ) {
@@ -925,7 +823,7 @@ class RoomController extends AbstractController
                             $newUser->getFullname(),
                             $roomItem->getTitle()
                         );
-                        $this->mailer->sendMultipleRaw(
+                        $mailer->sendMultipleRaw(
                             $subject,
                             $body,
                             $moderatorRecipients,
@@ -984,7 +882,7 @@ class RoomController extends AbstractController
                         'roomId' => $roomItem->getItemID(),
                     ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                    $this->mailer->sendRaw(
+                    $mailer->sendRaw(
                         $subject,
                         $body,
                         RecipientFactory::createRecipient($newUser),
@@ -1027,8 +925,12 @@ class RoomController extends AbstractController
      * @Template()
      * @param Request $request
      * @param RoomService $roomService
+     * @param UserService $userService
      * @param RoomCategoriesService $roomCategoriesService
      * @param LegacyEnvironment $environment
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param CalendarsService $calendarsService
+     * @param LegacyCopy $legacyCopy
      * @param int $roomId
      * @return array|RedirectResponse
      * @throws Exception
@@ -1246,8 +1148,8 @@ class RoomController extends AbstractController
                 }
 
                 // redirect to the project detail page
-                return $this->redirectToRoute('app_room_detail', [
-                    'roomId' => $roomId,
+                return $this->redirectToRoute('app_roomall_detail', [
+                    'portalId' => $legacyEnvironment->getCurrentPortalID(),
                     'itemId' => $legacyRoom->getItemId(),
                 ]);
             } else {
@@ -1264,7 +1166,7 @@ class RoomController extends AbstractController
 
     private function memberStatus(
         $roomItem,
-        \cs_environment $legacyEnvironment,
+        cs_environment $legacyEnvironment,
         RoomService $roomService
     ) {
         $status = 'closed';
@@ -1333,7 +1235,7 @@ class RoomController extends AbstractController
         return $status;
     }
 
-    private function copySettings($masterRoom, $targetRoom, \cs_environment $legacyEnvironment, LegacyCopy $legacyCopy)
+    private function copySettings($masterRoom, $targetRoom, cs_environment $legacyEnvironment, LegacyCopy $legacyCopy)
     {
         $old_room = $masterRoom;
         $new_room = $targetRoom;

@@ -8,7 +8,7 @@ use App\Services\LegacyEnvironment;
 use cs_environment;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\TerminateEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class ActivitySubscriber implements EventSubscriberInterface
@@ -38,9 +38,16 @@ class ActivitySubscriber implements EventSubscriberInterface
         $this->roomManager = $roomManager;
     }
 
-    public function onKernelRequest(RequestEvent $event)
+    public static function getSubscribedEvents()
     {
-        if ($event->isMasterRequest()) {
+        return [
+            KernelEvents::TERMINATE => 'onKernelTerminate',
+        ];
+    }
+
+    public function onKernelTerminate(TerminateEvent $event)
+    {
+        if ($event->isMainRequest()) {
             $request = $event->getRequest();
             if (!$request->isXmlHttpRequest()) {
 
@@ -68,6 +75,8 @@ class ActivitySubscriber implements EventSubscriberInterface
                             $currentContextItem->isGroupRoom()
                         ) {
                             $currentContextItem->saveLastLogin();
+                            $currentContextItem->saveActivityPoints(1);
+
                             $room = $this->roomManager->getRoom($currentContextItem->getItemId());
                             if ($room) {
                                 $this->roomManager->resetInactivity($room, false, true, true);
@@ -91,12 +100,5 @@ class ActivitySubscriber implements EventSubscriberInterface
             $this->entityManager->persist($portal);
             $this->entityManager->flush();
         }
-    }
-
-    public static function getSubscribedEvents()
-    {
-        return [
-            KernelEvents::REQUEST => 'onKernelRequest',
-        ];
     }
 }

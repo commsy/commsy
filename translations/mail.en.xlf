@@ -190,6 +190,30 @@
                 <source>No</source>
                 <target>No</target>
             </trans-unit>
+            <trans-unit id="mail_invitation_subject">
+                <source>mail.invitation_subject</source>
+                <target>Invitation CommSy-Portal "%portal%"</target>
+            </trans-unit>
+            <trans-unit id="mail_invitation_opening">
+                <source>mail.invitation_opening</source>
+                <target>You have received an invitation to the project room "%room%" on the CommSy portal "%portal%".</target>
+            </trans-unit>
+            <trans-unit id="mail_invitation_link_pre">
+                <source>mail.invitation_link_pre</source>
+                <target>Please click the following link to sign up on the portal %portal%:</target>
+            </trans-unit>
+            <trans-unit id="mail_invitation_link_post">
+                <source>mail.invitation_link_post</source>
+                <target>The link will remain valid for 14 days.</target>
+            </trans-unit>
+            <trans-unit id="mail_invitation_room_link_pre">
+                <source>mail.invitation_room_link_pre</source>
+                <target>Once you have registered a username, use the following link to access the project room:</target>
+            </trans-unit>
+            <trans-unit id="mail_invitation_room_link_post">
+                <source>mail.invitation_room_link_post</source>
+                <target>There are three ways of applying for room membership. You can either enter your motivation into the free-text field, enter a membership code or click “Become member ”, depending on which method the room moderator has chosen. If you need a membership code, request it directly from the room moderator or the person who has invited you.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

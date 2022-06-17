@@ -2,8 +2,16 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Action\NotFoundAction;
+use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\Api\GetServerAnnouncement;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -15,24 +23,76 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * })
  * @ORM\Entity(repositoryClass="App\Repository\ServerRepository")
  * @Vich\Uploadable
+ * @ApiResource(
+ *     security="is_granted('ROLE_API_READ')",
+ *     collectionOperations={
+ *         "get",
+ *     },
+ *     itemOperations={
+ *         "get",
+ *         "get_announcement"={
+ *             "method"="GET",
+ *             "path"="servers/{id}/announcement",
+ *             "controller"=GetServerAnnouncement::class,
+ *             "openapi_context"={
+ *                 "summary"="Get server announcement",
+ *                 "responses"={
+ *                     "200"={
+ *                         "description"="Server announcement",
+ *                         "content"={
+ *                             "application/json"={
+ *                                 "schema"={
+ *                                     "type"="object",
+ *                                     "properties"={
+ *                                         "enabled"={
+ *                                             "type"="boolean",
+ *                                         },
+ *                                         "title"={
+ *                                             "type"="string",
+ *                                         },
+ *                                         "severity"={
+ *                                             "type"="string",
+ *                                         },
+ *                                         "text"={
+ *                                             "type"="string",
+ *                                         },
+ *                                     },
+ *                                 },
+ *                             },
+ *                         },
+ *                     },
+ *                 },
+ *             },
+ *         },
+ *     },
+ *     normalizationContext={
+ *         "groups"={"api"},
+ *     },
+ *     denormalizationContext={
+ *         "groups"={"api"},
+ *     }
+ * )
  */
 class Server
 {
     /**
      * @var integer
      *
-     * @ORM\Column(name="item_id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(name="item_id", type="integer")
+     * @ORM\GeneratedValue()
+     *
+     * @Groups({"api"})
+     * @OA\Property(description="The unique identifier.")
      */
-    private $itemId = '0';
+    private int $id;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="context_id", type="integer", nullable=true)
      */
-    private $contextId;
+    private int $contextId;
 
     /**
      * @var integer
@@ -46,31 +106,31 @@ class Server
      *
      * @ORM\Column(name="modifier_id", type="integer", nullable=true)
      */
-    private $modifierId;
+    private int $modifierId;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="deleter_id", type="integer", nullable=true)
      */
-    private $deleterId;
+    private int $deleterId;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
      */
     private $creationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="modification_date", type="datetime", nullable=false)
      */
     private $modificationDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
      */
@@ -81,21 +141,21 @@ class Server
      *
      * @ORM\Column(name="title", type="string", length=255, nullable=false)
      */
-    private $title;
+    private string $title;
 
     /**
-     * @var array
+     * @var array|null
      *
      * @ORM\Column(name="extras", type="array", nullable=true)
      */
-    private $extras;
+    private ?array $extras;
 
     /**
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=20, nullable=false)
      */
-    private $status;
+    private string $status;
 
     /**
      * @var integer
@@ -109,7 +169,7 @@ class Server
      *
      * @ORM\Column(name="type", type="string", length=10, nullable=false)
      */
-    private $type = 'server';
+    private string $type = 'server';
 
     /**
      * @var boolean
@@ -119,11 +179,11 @@ class Server
     private $isOpenForGuests = '1';
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="url", type="string", length=255, nullable=true)
      */
-    private $url;
+    private ?string $url;
 
     /**
      * @var File|null
@@ -135,9 +195,26 @@ class Server
     /**
      * @var string|null
      *
-     * @ORM\Column(type="string")
+     * @ORM\Column(name="logo_image_name", type="string", length=255, nullable=true)
      */
-    private $logoImageName;
+    private ?string $logoImageName;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="commsy_icon_link", type="string", length=255, nullable=true)
+     */
+    private ?string $commsyIconLink;
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @return File|null
@@ -189,6 +266,24 @@ class Server
     }
 
     /**
+     * @return string|null
+     */
+    public function getCommsyIconLink(): ?string
+    {
+        return $this->commsyIconLink;
+    }
+
+    /**
+     * @param string|null $commsyIconLink
+     * @return self
+     */
+    public function setCommsyIconLink(?string $commsyIconLink): self
+    {
+        $this->commsyIconLink = $commsyIconLink;
+        return $this;
+    }
+
+    /**
      * Set extras
      *
      * @param array $extras
@@ -205,7 +300,7 @@ class Server
     /**
      * Get extras
      *
-     * @return array
+     * @return array|null
      */
     public function getExtras(): ?array
     {

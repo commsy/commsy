@@ -11,6 +11,13 @@
         {% block title %}{{ 'CSV-Import'|trans({}, "portal") }}{% endblock %}
 
         {% block body %}
+            {% for message in app.flashes('notice') %}
+                <div class="uk-alert uk-alert-success">
+                    <i class="uk-icon-check-square-o uk-icon-medium"></i>
+                    {{ message|trans({}, 'portal') }}
+                </div>
+            {% endfor %}
+
             <a href="{{ asset('files/csv_import_sample.csv') }}">{{ 'Download sample'|trans({}, 'portal') }}</a>
 
             {{ form(form) }}

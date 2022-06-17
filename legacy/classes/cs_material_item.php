@@ -449,16 +449,17 @@ class cs_material_item extends cs_item {
 ################ GET-METHODS
 
 
-   /** get version id of a material
-    * this method returns the version id of the material
-    *
-    * @return int version of the material
-    *
-    * @author CommSy Development Group
-    */
-   function getVersionID () {
-      return $this->_getValue('version_id');
-   }
+    /** get version id of a material
+     * this method returns the version id of the material
+     *
+     * @return int version of the material
+     *
+     * @author CommSy Development Group
+     */
+    public function getVersionID(): int
+    {
+        return (int)$this->_getValue('version_id');
+    }
 
    public function isCurrentVersion () {
        $material_manager = $this->_environment->getMaterialManager();
@@ -658,19 +659,6 @@ class cs_material_item extends cs_item {
       $this->_data['section_for'] = $section_manager->getSectionForCurrentVersion($this);
       return $this->_data['section_for'];
    }
-
-    /**
-     * @return cs_list
-     */
-    public function getAnnotationList()
-    {
-        $annotation_manager = $this->_environment->getAnnotationManager();
-        $annotation_manager->reset();
-        $annotation_manager->setLinkedItemID($this->getItemID());
-        $annotation_manager->setContextLimit($this->getContextID());
-        $annotation_manager->select();
-        return $annotation_manager->get();
-    }
 
   function selectAttachedItems(){
       $link_manager = $this->_environment->getLinkManager();
@@ -1444,27 +1432,6 @@ function _copySectionList ($copy_id) {
       return $retour;
    }
 
-
-
-   /** is the given user allowed to see this material item?
-    *
-    * @param \cs_user_item $user_item
-    */
-   function maySee ($user_item) {
-      if ($this->_environment->inProjectRoom()
-           or $user_item->isUser() or $this->isWorldPublic()) {
-         return parent::maySee($user_item);
-
-      } else {
-          $currentContextItem = $this->_environment->getCurrentContextItem();
-          if ($currentContextItem->isOpenForGuests() && $currentContextItem->isMaterialOpenForGuests()) {
-              return parent::maySee($user_item);
-          }
-      }
-
-      return false;
-   }
-
    /** asks if item is editable by everybody or just creator
     *
     * @param value
@@ -1492,151 +1459,6 @@ function _copySectionList ($copy_id) {
       } else {
          $this->_section_save_id = 'NEW';
       }
-   }
-
-   public function getDataAsXML () {
-      $retour  = '<material_item>';
-      $retour .= $this->_getDataAsXML();
-
-      $retour = preg_replace('~<copy_of><!\[CDATA\[[\d]*\]\]></copy_of>~u','',$retour);
-      $retour = preg_replace('~<new_hack><!\[CDATA\[[\d]*\]\]></new_hack>~u','',$retour);
-
-      if ( strstr($retour,'<STUDY_LOG>') ) {
-         $first_pos = mb_strpos($retour,'<STUDY_LOG>');
-         $second_pos = mb_strrpos($retour,'</STUDY_LOG>');
-         $first_pos = $first_pos + 11;
-         $substring = mb_substr($retour,$first_pos,$second_pos-$first_pos);
-      }
-
-      $retour = preg_replace('~<extras>[\d\D]*</extras>~u','',$retour);
-
-      if ( !strstr($retour,'<extras>') and isset($substring) ) {
-         $retour .= '<extras><study_log><![CDATA['.$substring.']]></study_log></extras>'.LF;
-      }
-
-      // special date format
-      $publishing_date = $this->getPublishingDate();
-
-      $retour .= '<date>'.LF;
-      $retour .= '<day>';
-      $retour .= '</day>'.LF;
-      $retour .= '<month>';
-      $retour .= '</month>'.LF;
-      $retour .= '<year><![CDATA[';
-      if ( is_int($publishing_date) ) {
-         $retour .= trim($publishing_date);
-      }
-      $retour .= ']]></year>'.LF;
-      $retour .= '</date>'.LF;
-
-      // special author format
-      $retour .= '<author_list>'.LF;
-      $author_array = explode(';',$this->getAuthor());
-      foreach ($author_array as $value) {
-         $retour .= '<author_item><![CDATA[';
-         $retour .= trim($value);
-         $retour .= ']]></author_item>'.LF;
-      }
-      $retour .= '</author_list>'.LF;
-
-      $value = $this->getBibKind();
-      if ( !empty($value) ) {
-         $retour .= '<bib_kind><![CDATA['.$this->getBibKind().']]></bib_kind>'.LF;
-      }
-      $value = $this->getBibliographicValues();
-      if ( !empty($value) ) {
-         $retour .= '<common><![CDATA['.$this->getBibliographicValues().']]></common>'.LF;
-      }
-      $value = $this->getBooktitle();
-      if ( !empty($value) ) {
-         $retour .= '<booktitle><![CDATA['.$this->getBooktitle().']]></booktitle>'.LF;
-      }
-      $value = $this->getPublisher();
-      if ( !empty($value) ) {
-         $retour .= '<publisher><![CDATA['.$this->getPublisher().']]></publisher>'.LF;
-      }
-      $value = $this->getAddress();
-      if ( !empty($value) ) {
-         $retour .= '<address><![CDATA['.$this->getAddress().']]></address>'.LF;
-      }
-      $value = $this->getVolume();
-      if ( !empty($value) ) {
-         $retour .= '<volume><![CDATA['.$this->getVolume().']]></volume>'.LF;
-      }
-      $value = $this->getSeries();
-      if ( !empty($value) ) {
-         $retour .= '<series><![CDATA['.$this->getSeries().']]></series>'.LF;
-      }
-      $value = $this->getISBN();
-      if ( !empty($value) ) {
-         $retour .= '<isbn><![CDATA['.$this->getISBN().']]></isbn>'.LF;
-      }
-      $value = $this->getISSN();
-      if ( !empty($value) ) {
-         $retour .= '<issn><![CDATA['.$this->getISSN().']]></issn>'.LF;
-      }
-      $value = $this->getPages();
-      if ( !empty($value) ) {
-         $retour .= '<pages><![CDATA['.$this->getPages().']]></pages>'.LF;
-      }
-      $value = $this->getJournal();
-      if ( !empty($value) ) {
-         $retour .= '<journal><![CDATA['.$this->getJournal().']]></journal>'.LF;
-      }
-      $value = $this->getIssue();
-      if ( !empty($value) ) {
-         $retour .= '<issue><![CDATA['.$this->getIssue().']]></issue>'.LF;
-      }
-      $value = $this->getUniversity();
-      if ( !empty($value) ) {
-         $retour .= '<university><![CDATA['.$this->getUniversity().']]></university>'.LF;
-      }
-      $value = $this->getFaculty();
-      if ( !empty($value) ) {
-         $retour .= '<faculty><![CDATA['.$this->getFaculty().']]></faculty>'.LF;
-      }
-      $value = $this->getThesiskind();
-      if ( !empty($value) ) {
-         $retour .= '<thesis_kind><![CDATA['.$this->getThesiskind().']]></thesis_kind>'.LF;
-      }
-      $value = $this->getURL();
-      if ( !empty($value) ) {
-         $retour .= '<url><![CDATA['.$this->getURL().']]></url>'.LF;
-      }
-      $value = $this->getURLDate();
-      if ( !empty($value) ) {
-         $retour .= '<url_date><![CDATA['.$this->getURLDate().']]></url_date>'.LF;
-      }
-
-      // special editor format
-      $retour .= '<editor_list>'.LF;
-      $author_array = explode(';',$this->getEditor());
-      foreach ($author_array as $value) {
-         if ( !empty($value) ) {
-            $retour .= '<editor_item><![CDATA[';
-            $retour .= trim($value);
-            $retour .= ']]></editor_item>'.LF;
-         }
-      }
-      $retour .= '</editor_list>'.LF;
-
-      // buzzword
-      $buzzword_array = $this->getBuzzwordArray();
-      $retour .= '<keyword_list>'.LF;
-      if ( !empty($buzzword_array) ) {
-         foreach ($buzzword_array as $buzzword) {
-            $retour .= '<keyword_item><![CDATA['.$buzzword.']]></keyword_item>'.LF;
-         }
-      }
-      $retour .= '</keyword_list>'.LF;
-
-      $value = $this->getLabel();
-      if ( !empty($value) ) {
-         $retour .= '<label><![CDATA['.$this->getLabel().']]></label>'.LF;
-      }
-
-      $retour .= '</material_item>'.LF;
-      return $retour;
    }
 
   /** get list of files attached o this item
@@ -1752,9 +1574,9 @@ function _copySectionList ($copy_id) {
         $this->_setValue('license_id', $licenseId);
     }
 
-    public function getLicenseId()
+    public function getLicenseId(): int
     {
-        return $this->_getValue('license_id');
+        return (int) $this->_getValue('license_id');
     }
 
     public function getLicenseTitle()

@@ -39,6 +39,7 @@ class ItemDescriptionType extends AbstractType
                     // as its default upload method; see https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_browser_api.html
                     'filebrowserUploadMethod' => 'form',
                     'filebrowserUploadUrl' => $options['uploadUrl'],
+                    'maxUploadSize' => $this->getConfigValueInBytes('upload_max_filesize'),
                 ],
                 'translation_domain' => 'material',
                 'required' => false,
@@ -109,5 +110,35 @@ class ItemDescriptionType extends AbstractType
     public function getBlockPrefix()
     {
         return 'itemDescription';
+    }
+
+    /**
+     * For a PHP configuration key whose value describes a size in (kilo/mega)bytes, returns the value in bytes.
+     * Returns 0.0 on failure.
+     * @param string $configName The PHP configuration key whose size value shall be retrieved via `ini_get`.
+     * Note that the value must resolve to a number or a number followed by a one-letter suffix (like "1k" or "2M").
+     * @return float
+     */
+    private function getConfigValueInBytes(string $configName): float
+    {
+        $value = ini_get($configName);
+        if (empty($value)) {
+            return 0.0;
+        }
+
+        // if necessary, convert to a number in bytes
+        $value = trim($value);
+        $suffix = strtolower($value[strlen($value) - 1]);
+        $value = intval($value);
+        switch ($suffix) {
+            case 'k':
+                $value *= 1024;
+                break;
+            case 'm':
+                $value *= 1048576;
+                break;
+        }
+
+        return $value;
     }
 }

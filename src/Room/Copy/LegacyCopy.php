@@ -68,7 +68,6 @@ class LegacyCopy implements CopyStrategy
         $copy_array['topicpath'] = true;
         $copy_array['tag'] = true;
         $copy_array['discussionstatus'] = true;
-        $copy_array['todomanagementstatus'] = true;
         $copy_array['detailboxconf'] = true;
         $copy_array['listboxconf'] = true;
         $copy_array['homerightconf'] = true;
@@ -80,13 +79,16 @@ class LegacyCopy implements CopyStrategy
         $copy_array['title'] = true;
         $copy_array['logo'] = true;
         $copy_array['BGImage'] = true;
-        $copy_array['wiki'] = true;
         $copy_array['informationbox'] = true;
         $copy_array['myentrydisplayconf'] = false;
         $copy_array['grouproomfct'] = false;
         $copy_array['rss'] = true;
         $copy_array['language'] = true;
         $copy_array['visibilitydefaults'] = true;
+        $copy_array['checknewmembers'] = true;
+        $copy_array['checknewmembers_code'] = true;
+        $copy_array['roomassociation'] = true;
+
 
         // now adaption for special rooms
         if ($source->isProjectRoom()) {
@@ -114,7 +116,6 @@ class LegacyCopy implements CopyStrategy
             $copy_array['emailtext'] = false;
             $copy_array['title'] = false;
             $copy_array['logo'] = false;
-            $copy_array['wiki'] = false;
             $copy_array['informationbox'] = false;
             $copy_array['myentrydisplayconf'] = true;
         }
@@ -207,9 +208,6 @@ class LegacyCopy implements CopyStrategy
         if ($copy_array['discussionstatus']) {
             $target->setDiscussionStatus($source->getDiscussionStatus());
         }
-        if ($copy_array['todomanagementstatus']) {
-            $target->setTodoManagmentStatus($source->getTodoManagmentStatus());
-        }
         if ($copy_array['detailboxconf']) {
             $target->setDetailBoxConf($source->getDetailBoxConf());
         }
@@ -225,6 +223,16 @@ class LegacyCopy implements CopyStrategy
         if ($copy_array['htmltextareastatus']) {
             $target->setHtmlTextAreaStatus($source->getHtmlTextAreaStatus());
         }
+        if ($copy_array['checknewmembers']) {
+            $target->_setCheckNewMember($source->_getCheckNewMembers());
+        }
+        if ($copy_array['checknewmembers_code']) {
+            $target->setCheckNewMemberCode($source->getCheckNewMemberCode());
+        }
+        if ($copy_array['roomassociation']) {
+            $target->_setRoomAssociation($source->_getRoomAssociation());
+        }
+
         // config of buzzwords
         if ($copy_array['buzzword']) {
             if ($source->isBuzzwordMandatory()) {
@@ -664,7 +672,9 @@ class LegacyCopy implements CopyStrategy
             $itemId = $item->getItemID();
             if ($itemId != $target->getItemID()) {
                 $typedItem = $this->itemService->getTypedItem($itemId);
-                $this->eventDispatcher->dispatch(new ItemReindexEvent($typedItem), ItemReindexEvent::class);
+                if ($typedItem) {
+                    $this->eventDispatcher->dispatch(new ItemReindexEvent($typedItem), ItemReindexEvent::class);
+                }
             }
         }
 

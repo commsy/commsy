@@ -57,8 +57,8 @@
             {%  endif %}
         </div>
 
-        {% if isDraft and (showHashtags or showCategories) %}
-            {{ macros.mandatoryLinks(showHashtags, showCategories, form) }}
+        {% if form.category_mapping is defined or form.hashtag_mapping is defined %}
+            {{ macros.mandatoryLinks(form) }}
         {% endif %}
 
         <div class="uk-flex uk-margin-small-top">

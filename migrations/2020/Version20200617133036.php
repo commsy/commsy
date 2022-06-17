@@ -35,7 +35,7 @@ final class Version20200617133036 extends AbstractMigration
         $qb = $queryBuilder
             ->select('p.id', 'p.extras')
             ->from('portal', '`p`');
-        $portals = $qb->execute();
+        $portals = $qb->executeQuery()->fetchAllAssociative();
 
         foreach ($portals as $portal) {
             $extras = DbConverter::convertToPHPValue($portal['extras']);

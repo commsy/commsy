@@ -154,6 +154,10 @@
                 <source>This value should be positive or empty.</source>
                 <target>This value should be positive or empty.</target>
             </trans-unit>
+            <trans-unit id="violation_not_compromised_password">
+                <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
+                <target>This password is too easily guessed. Please choose a more secure password.</target>
+            </trans-unit>
 
             <!-- csv user import -->
             <trans-unit id="violation_csv_user_import_firstname_not_blank">
@@ -191,6 +195,12 @@
             <trans-unit id="violation_hashtag_merge_identical">
                 <source>Your selection must differ.</source>
                 <target>Your selection must differ.</target>
+            </trans-unit>
+
+            <!-- signup -->
+            <trans-unit id="signup-regex-mail">
+                <source>signup-regex-mail</source>
+                <target>The email address does not match the required regex.</target>
             </trans-unit>
 
             <!-- password reset -->

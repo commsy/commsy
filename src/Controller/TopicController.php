@@ -13,10 +13,10 @@ use App\Form\Type\TopicPathType;
 use App\Form\Type\TopicType;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
-use App\Utils\CategoryService;
-use App\Utils\LabelService;
 use App\Utils\AnnotationService;
 use App\Utils\AssessmentService;
+use App\Utils\CategoryService;
+use App\Utils\LabelService;
 use App\Utils\TopicService;
 use cs_room_item;
 use cs_topic_item;
@@ -375,10 +375,6 @@ class TopicController extends BaseController
                 $lastItemId = $topics[sizeof($topics) - 1]->getItemId();
             }
         }
-        // mark annotations as readed
-        $annotationList = $topic->getAnnotationList();
-        $this->annotationService->markAnnotationsReadedAndNoticed($annotationList);
-
 
         $infoArray['topic'] = $topic;
         $infoArray['readerList'] = $readerList;
@@ -468,17 +464,12 @@ class TopicController extends BaseController
 
         $isDraft = $item->isDraft();
 
-        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
-        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
-
         // get date from DateService
         $topicItem = $this->topicService->getTopic($itemId);
         if (!$topicItem) {
             throw $this->createNotFoundException('No topic found for id ' . $itemId);
         }
         $formData = $transformer->transform($topicItem);
-        $formData['categoriesMandatory'] = $categoriesMandatory;
-        $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
         $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
             $this->legacyEnvironment);
@@ -500,6 +491,7 @@ class TopicController extends BaseController
                 'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
+            'room' => $current_context,
         ));
 
         $form->handleRequest($request);
@@ -512,7 +504,7 @@ class TopicController extends BaseController
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
-                if ($categoriesMandatory) {
+                if ($form->has('category_mapping')) {
                     $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
                     if (isset($formData['category_mapping']['newCategory'])) {
@@ -521,9 +513,11 @@ class TopicController extends BaseController
                         $categoryIds[] = $newCategory->getItemID();
                     }
 
-                    $topicItem->setTagListByID($categoryIds);
+                    if (!empty($categoryIds)) {
+                        $topicItem->setTagListByID($categoryIds);
+                    }
                 }
-                if ($hashtagsMandatory) {
+                if ($form->has('hashtag_mapping')) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
 
                     if (isset($formData['hashtag_mapping']['newHashtag'])) {
@@ -532,7 +526,9 @@ class TopicController extends BaseController
                         $hashtagIds[] = $newHashtag->getItemID();
                     }
 
-                    $topicItem->setBuzzwordListByID($hashtagIds);
+                    if (!empty($hashtagIds)) {
+                        $topicItem->setBuzzwordListByID($hashtagIds);
+                    }
                 }
 
                 $topicItem->save();
@@ -555,9 +551,7 @@ class TopicController extends BaseController
             'form' => $form->createView(),
             'topic' => $topicItem,
             'isDraft' => $isDraft,
-            'showHashtags' => $hashtagsMandatory,
             'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
-            'showCategories' => $categoriesMandatory,
             'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }

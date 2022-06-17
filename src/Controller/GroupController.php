@@ -137,7 +137,9 @@ class GroupController extends BaseController
             $this->groupService->hideDeactivatedEntries();
         }
 
-        // get group list from manager service 
+        $sort = $this->session->get('sortGroups', 'date');
+
+        // get group list from manager service
         $itemsCountArray = $this->groupService->getCountArray($roomId);
 
         $usageInfo = false;
@@ -158,6 +160,7 @@ class GroupController extends BaseController
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'sort' => $sort,
         );
     }
 
@@ -194,14 +197,10 @@ class GroupController extends BaseController
         }
 
         // get group list from manager service 
-        if ($sort != "none") {
-            $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0, $sort);
-        } elseif ($this->session->get('sortGroups')) {
-            $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0,
-                $this->session->get('sortGroups'));
-        } else {
-            $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0, 'date');
+        if ($sort === "none" || empty($sort)) {
+            $sort = $this->session->get('sortGroups', 'date');
         }
+        $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0, $sort);
 
         $readerList = array();
         foreach ($groups as $item) {
@@ -242,7 +241,7 @@ class GroupController extends BaseController
         int $roomId,
         int $max = 10,
         int $start = 0,
-        string $sort = 'date'
+        string $sort = ''
     ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -269,10 +268,13 @@ class GroupController extends BaseController
             $this->groupService->hideDeactivatedEntries();
         }
 
-        // get group list from manager service 
-        $groups = $this->groupService->getListGroups($roomId, $max, $start, $sort);
-
+        if (empty($sort)) {
+            $sort = $this->session->get('sortGroups', 'date');
+        }
         $this->session->set('sortGroups', $sort);
+
+        // get group list from manager service
+        $groups = $this->groupService->getListGroups($roomId, $max, $start, $sort);
 
         // contains member status of current user for each group and grouproom
         $allGroupsMemberStatus = [];
@@ -596,10 +598,6 @@ class GroupController extends BaseController
                 $lastItemId = $groups[sizeof($groups) - 1]->getItemId();
             }
         }
-        // mark annotations as readed
-        $annotationList = $group->getAnnotationList();
-        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
-
 
         $membersList = $group->getMemberItemList();
         $members = $membersList->to_array();
@@ -752,17 +750,12 @@ class GroupController extends BaseController
 
         $isDraft = $item->isDraft();
 
-        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
-        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
-
         // get date from DateService
         $groupItem = $this->groupService->getGroup($itemId);
         if (!$groupItem) {
             throw $this->createNotFoundException('No group found for id ' . $itemId);
         }
         $formData = $transformer->transform($groupItem);
-        $formData['categoriesMandatory'] = $categoriesMandatory;
-        $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
         $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
             $this->legacyEnvironment);
@@ -783,6 +776,7 @@ class GroupController extends BaseController
                 'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
+            'room' => $current_context,
         ));
 
         $form->handleRequest($request);
@@ -795,7 +789,7 @@ class GroupController extends BaseController
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
-                if ($categoriesMandatory) {
+                if ($form->has('category_mapping')) {
                     $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
                     if (isset($formData['category_mapping']['newCategory'])) {
@@ -804,9 +798,11 @@ class GroupController extends BaseController
                         $categoryIds[] = $newCategory->getItemID();
                     }
 
-                    $groupItem->setTagListByID($categoryIds);
+                    if (!empty($categoryIds)) {
+                        $groupItem->setTagListByID($categoryIds);
+                    }
                 }
-                if ($hashtagsMandatory) {
+                if ($form->has('hashtag_mapping')) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
 
                     if (isset($formData['hashtag_mapping']['newHashtag'])) {
@@ -815,7 +811,9 @@ class GroupController extends BaseController
                         $hashtagIds[] = $newHashtag->getItemID();
                     }
 
-                    $groupItem->setBuzzwordListByID($hashtagIds);
+                    if (!empty($hashtagIds)) {
+                        $groupItem->setBuzzwordListByID($hashtagIds);
+                    }
                 }
 
                 $groupItem->save();
@@ -826,11 +824,6 @@ class GroupController extends BaseController
                 }
             }
             return $this->redirectToRoute('app_group_save', array('roomId' => $roomId, 'itemId' => $itemId));
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($groupItem), CommsyEditEvent::EDIT);
@@ -839,8 +832,6 @@ class GroupController extends BaseController
             'form' => $form->createView(),
             'group' => $groupItem,
             'isDraft' => $isDraft,
-            'showHashtags' => $hashtagsMandatory,
-            'showCategories' => $categoriesMandatory,
             'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }
@@ -1015,6 +1006,24 @@ class GroupController extends BaseController
         return array(
             'form' => $form->createView(),
         );
+    }
+
+    /**
+     * @Route("/room/{roomId}/date/{itemId}/savegrouproom")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
+     */
+    public function savegrouproomAction(
+        $roomId,
+        $itemId,
+        GroupService $groupService)
+    {
+        $group = $groupService->getGroup($itemId);
+
+        return [
+            'roomId' => $roomId,
+            'item' => $group,
+        ];
     }
 
     /**

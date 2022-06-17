@@ -16,7 +16,7 @@ fos_elastica:
     indexes:
         # Announcements
         commsy_announcement:
-            index_name: '%env(ELASTIC_INDEX)%_announcement'
+            index_name: '%commsy.elastic.prefix%_announcement'
             client: default
             finder: ~
             settings:
@@ -155,7 +155,7 @@ fos_elastica:
 
         # Dates
         commsy_date:
-            index_name: '%env(ELASTIC_INDEX)%_date'
+            index_name: '%commsy.elastic.prefix%_date'
             client: default
             finder: ~
             settings:
@@ -297,7 +297,7 @@ fos_elastica:
 
         # Discussions
         commsy_discussion:
-            index_name: '%env(ELASTIC_INDEX)%_discussion'
+            index_name: '%commsy.elastic.prefix%_discussion'
             client: default
             finder: ~
             settings:
@@ -446,7 +446,7 @@ fos_elastica:
 
         # Labels (Groups, Topics, Institutions)
         commsy_label:
-            index_name: '%env(ELASTIC_INDEX)%_label'
+            index_name: '%commsy.elastic.prefix%_label'
             client: default
             finder: ~
             settings:
@@ -567,7 +567,7 @@ fos_elastica:
 
         # Rooms
         commsy_room:
-            index_name: '%env(ELASTIC_INDEX)%_room'
+            index_name: '%commsy.elastic.prefix%_room'
             client: default
             finder: ~
             settings:
@@ -689,7 +689,7 @@ fos_elastica:
 
         # Todos
         commsy_todo:
-            index_name: '%env(ELASTIC_INDEX)%_todo'
+            index_name: '%commsy.elastic.prefix%_todo'
             client: default
             finder: ~
             settings:
@@ -850,7 +850,7 @@ fos_elastica:
 
         # User
         commsy_user:
-            index_name: '%env(ELASTIC_INDEX)%_user'
+            index_name: '%commsy.elastic.prefix%_user'
             client: default
             finder: ~
             settings:
@@ -983,7 +983,7 @@ fos_elastica:
 
         # Materials
         commsy_material:
-            index_name: '%env(ELASTIC_INDEX)%_material'
+            index_name: '%commsy.elastic.prefix%_material'
             client: default
             finder: ~
             settings:

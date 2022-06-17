@@ -47,11 +47,6 @@
                             
                             {# user icon and modification time #}
                             <div class="uk-width-1-10">
-                                {% if not discussion.modificatorItem.isDeleted and discussion.modificatorItem.isUser %}
-                                    {{ macros.userIconLink(discussion.modificatorItem) }}
-                                {% else %}
-                                    {{ macros.userIcon(discussion.modificatorItem) }}
-                                {% endif %}
                                 <div class="uk-comment-meta">
                                     <span class="uk-text-nowrap">
                                         {% if discussion.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}

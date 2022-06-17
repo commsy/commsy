@@ -591,14 +591,6 @@ class cs_label_item extends cs_item {
       $this->_changeCreatorItemAndModificatorItemTo($user,$this->_environment->getLabelManager());
    }
 
-   public function getDataAsXML () {
-      $retour  = '<label_item>';
-      $retour .= $this->_getDataAsXML();
-      $retour .= '</label_item>';
-
-      return $retour;
-   }
-
     /** returns whether the given user may edit the label item or not,
      * but will always prevent editing if the label item is a system label
      */
@@ -613,4 +605,3 @@ class cs_label_item extends cs_item {
         return $mayEditItem;
     }
 }
-?>

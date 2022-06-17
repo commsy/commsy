@@ -31,72 +31,75 @@
 
 /**
  */
+
+use Doctrine\DBAL\Schema\Column;
+
 include_once('custom/SimpleXMLElementExtended.php');
 include_once('functions/date_functions.php');
 
 class cs_manager {
 
-  /**
-   * integer - containing the item id, if an item was created
-   */
-  var $_create_id;
+    /**
+     * integer - containing the item id, if an item was created
+     */
+    var $_create_id;
 
-  /**
-   * integer - containing the version id of the item
-   */
-  var $_version_id;
+    /**
+     * integer - containing the version id of the item
+     */
+    var $_version_id;
 
-  /**
-   * object cs_user_item - containing the current user
-   */
-  var $_current_user = NULL;
+    /**
+     * object cs_user_item - containing the current user
+     */
+    protected $_current_user;
 
-  /**
-   * integer - containing the room id as a limit for select statements
-   */
-  var $_room_limit = NULL;
-  var $_room_array_limit = NULL;
+    /**
+     * integer - containing the room id as a limit for select statements
+     */
+    var $_room_limit = null;
+    var $_room_array_limit = null;
 
-  /**
-   * String - containing the attribute as a limit for select statements
-   */
-  var $_attribute_limit = NULL;
+    /**
+     * String - containing the attribute as a limit for select statements
+     */
+    var $_attribute_limit = null;
 
-  /**
-   * boolean - true: then all deleted items where not observed in select statements, false: then all deleted items where observed in select statements
-   */
-  var $_delete_limit = true;
+    /**
+     * boolean - true: then all deleted items where not observed in select statements, false: then all deleted items where observed in select statements
+     */
+    var $_delete_limit = true;
 
-  /**
-   * object cs_list - contains stored commsy items
-   */
-  var $_data = NULL;
+    /**
+     * object cs_list - contains stored commsy items
+     */
+    var $_data = null;
 
-   /**
-    * Environment - the environment of the CommSy
-    */
-   var $_environment = null;
+    /**
+     * Environment - the environment of the CommSy
+     */
+    protected cs_environment $_environment;
 
-   /**
-    * id_array for item_ids
-    */
-   var $_id_array = NULL;
+    /**
+     * id_array for item_ids
+     */
+    var $_id_array = null;
 
-   /**
-    * integer - containing the item id of the ref item as a limit
-    */
-   var $_ref_id_limit = NULL;
+    /**
+     * integer - containing the item id of the ref item as a limit
+     */
+    var $_ref_id_limit = null;
 
-   /**
-    * integer - containing the item id of the user as a limit
-    */
-   var $_ref_user_limit = NULL;
+    /**
+     * integer - containing the item id of the user as a limit
+     */
+    var $_ref_user_limit = null;
 
-   /**
-    * integer - max number of days since creation of item
-    */
-   var $_existence_limit = NULL;
-   var $_age_limit = NULL;
+    /**
+     * integer - max number of days since creation of item
+     */
+    var $_existence_limit = null;
+    var $_age_limit = null;
 
     /**
      * @var \DateTime
@@ -120,49 +123,49 @@ class cs_manager {
 
     protected $inactiveEntriesLimit = self::SHOW_ENTRIES_ACTIVATED_DEACTIVATED;
 
-   var $_update_with_changing_modification_information = true;
+    var $_update_with_changing_modification_information = true;
 
-   var $_db_table = NULL;
+    var $_db_table = null;
 
-   /**
-   * Array containing search limits
-   */
-   var $_search_array = array();
+    /**
+     * Array containing search limits
+     */
+    var $_search_array = array();
 
-   var $_tag_limit = NULL;
-   var $_tag_limit_array = NULL;
-   var $_buzzword_limit = NULL;
-   var $_user_limit = NULL;
+    var $_tag_limit = null;
+    var $_tag_limit_array = null;
+    var $_buzzword_limit = null;
+    var $_user_limit = null;
 
-   /**
-   * Array containing negative search limits (words that mustn't occure)
-   */
-   var $_search_negative_array = array();
+    /**
+     * Array containing negative search limits (words that mustn't occure)
+     */
+    var $_search_negative_array = array();
 
-   /**
-    * Stores last query if method assigns string
-    */
-   var $_last_query = '';
+    /**
+     * Stores last query if method assigns string
+     */
+    var $_last_query = '';
 
-   var $_output_limit = '';
-   var $_key_array = NULL;
-   var $_only_files_limit = NULL;
-   var $_db_connector = NULL;
+    var $_output_limit = '';
+    var $_key_array = null;
+    var $_only_files_limit = null;
+    protected db_mysql_connector $_db_connector;
 
-   var $_cached_items = array();
-   var $_cache_object = array();
-   var $_cache_on = true;
-   var $_cached_sql = array();
+    var $_cached_items = array();
+    var $_cache_object = array();
+    var $_cache_on = true;
+    var $_cached_sql = array();
 
-   public $_class_factory = NULL;
+    public $_class_factory = null;
 
-   protected $_id_array_limit = NULL;
+    protected $_id_array_limit = null;
 
-   public $_link_modifier = true;
-   public $_db_prefix = '';
-   public $_with_db_prefix = true;
+    public $_link_modifier = true;
+    public $_db_prefix = '';
+    public $_with_db_prefix = true;
 
-   var $_force_sql = false;
+    var $_force_sql = false;
 
     public const SHOW_ENTRIES_ONLY_ACTIVATED = 'only.activated';
     public const SHOW_ENTRIES_ONLY_DEACTIVATED = 'only.deactivated';
@@ -173,7 +176,7 @@ class cs_manager {
      *
      * @param object cs_environment the environment
      */
-    public function __construct($environment)
+    public function __construct(cs_environment $environment)
     {
         $this->_environment = $environment;
         $this->_class_factory = $this->_environment->getClassFactory();
@@ -878,36 +881,43 @@ class cs_manager {
    *
    * @return object cs_item an item
    */
-   function _buildItem ($db_array) {
-      // ------------------
-      // --->UTF8 - OK<----
-      // ------------------
-      $item = $this->getNewItem();
-      if ( isset($item) ) {
-         $item->_setItemData(encode(FROM_DB,$db_array));
+    protected function _buildItem(array $db_array)
+    {
+        /** @var cs_item $item */
+        $item = $this->getNewItem();
+        if (isset($item)) {
+            $item->_setItemData(encode(FROM_DB, $db_array));
 
-         // archive
-        	if ( function_exists('get_called_class')
-        		  and strstr(get_called_class(),'_zzz_')
-        	   ) {
-            $item->setArchiveStatus();
-        	}
-         // archive
+            // archive
+            if (function_exists('get_called_class') && strstr(get_called_class(), '_zzz_')) {
+                $item->setArchiveStatus();
+            }
 
-      }
-      if ( $this->_cache_on
-           and method_exists($item,'getItemID')
-         ) {
-         $item_id = $item->getItemID();
-         if ( !empty($item_id)
-              and empty($this->_cache_object[$item_id])
-            ) {
-            $this->_cache_object[$item_id] = $item;
-         }
-      }
+            if (method_exists($item, 'getItemID')) {
+                $item_id = $item->getItemID();
+                if (!empty($item_id)) {
+                    // external viewer
+                    $itemManager = $this->_environment->getItemManager();
+                    $externalViewer = $itemManager->getExternalViewerUserArrayForItem($item_id);
+                    $item->setExternalViewerAccounts($externalViewer);
 
-      return $item;
-   }
+                    // cache
+                    if (empty($this->_cache_object[$item_id])) {
+                        $this->_cache_object[$item_id] = $item;
+                    }
+                }
+            }
+        }
+
+        if ($this->_cache_on && method_exists($item, 'getItemID')) {
+            $item_id = $item->getItemID();
+            if (!empty($item_id) && empty($this->_cache_object[$item_id])) {
+                $this->_cache_object[$item_id] = $item;
+            }
+        }
+
+        return $item;
+    }
 
    /** select items limited by limits
    * this method returns a list (cs_list) of items within the database limited by the limits.
@@ -1071,58 +1081,48 @@ class cs_manager {
       trigger_error("must be overwritten!", E_USER_ERROR);
    }
 
-   function mergeAccounts ($new_id, $old_id) {
-     // creator id
-     if ( $this->_db_table != 'links'
-          and $this->_db_table != 'items'
-       ) {
-         $query1 = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET creator_id = "'.encode(AS_DB,$new_id).'" WHERE creator_id = "'.encode(AS_DB,$old_id).'";';
-         $result = $this->_db_connector->performQuery($query1);
-         if ( !isset($result) or !$result ) {
+    public function mergeAccounts($new_id, $old_id)
+    {
+        // creator id
+        if (!in_array($this->_db_table, ['links', 'items', 'portal'])) {
+            $query1 = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET creator_id = "' . encode(AS_DB,
+                    $new_id) . '" WHERE creator_id = "' . encode(AS_DB, $old_id) . '";';
+            $result = $this->_db_connector->performQuery($query1);
+            if (!isset($result) or !$result) {
+                include_once('functions/error_functions.php');
+                trigger_error('Problems merging accounts "' . $this->_db_table . '".', E_USER_WARNING);
+            }
+        }
+
+        // modifier id
+        if (!in_array($this->_db_table, ['files', 'link_items', 'links', 'tasks', 'items', 'portal'])) {
+            $query2 = ' UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET modifier_id = "' . encode(AS_DB,
+                    $new_id) . '" WHERE modifier_id = "' . encode(AS_DB, $old_id) . '";';
+            $result = $this->_db_connector->performQuery($query2);
+            if (!isset($result) or !$result) {
+                include_once('functions/error_functions.php');
+                trigger_error('Problems merging accounts "' . $this->_db_table . '".', E_USER_WARNING);
+            }
+        }
+
+        // deleter id
+        $query3 = ' UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET deleter_id = "' . encode(AS_DB,
+                $new_id) . '" WHERE deleter_id = "' . encode(AS_DB, $old_id) . '";';
+        $result = $this->_db_connector->performQuery($query3);
+        if (!isset($result) or !$result) {
             include_once('functions/error_functions.php');
-            trigger_error('Problems merging accounts "'.$this->_db_table.'".',E_USER_WARNING);
-         } else {
-            unset($result);
-            unset($query1);
-         }
-     }
+            trigger_error('Problems merging accounts "' . $this->_db_table . '": "' . $this->_dberror . '" from query: "' . $query3 . '"',
+                E_USER_WARNING);
+        }
+    }
 
-      // modifier id
-      if ( $this->_db_table != 'files'
-           and $this->_db_table != 'link_items'
-           and $this->_db_table != 'links'
-           and $this->_db_table != 'tasks'
-           and $this->_db_table != 'items'
-         ) {
-         $query2 = ' UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET modifier_id = "'.encode(AS_DB,$new_id).'" WHERE modifier_id = "'.encode(AS_DB,$old_id).'";';
-         $result = $this->_db_connector->performQuery($query2);
-         if ( !isset($result) or !$result ) {
-            include_once('functions/error_functions.php');
-            trigger_error('Problems merging accounts "'.$this->_db_table.'".',E_USER_WARNING);
-         } else {
-            unset($result);
-            unset($query2);
-         }
-      }
-
-      // deleter id
-      $query3 = ' UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET deleter_id = "'.encode(AS_DB,$new_id).'" WHERE deleter_id = "'.encode(AS_DB,$old_id).'";';
-      $result = $this->_db_connector->performQuery($query3);
-      if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems merging accounts "'.$this->_db_table.'": "'.$this->_dberror.'" from query: "'.$query3.'"',E_USER_WARNING);
-      } else {
-         unset($result);
-         unset($query3);
-      }
-   }
-
-   function copyDataFromRoomToRoom ($old_id, $new_id, $user_id='', $id_array='') {
+   public function copyDataFromRoomToRoom ($old_id, $new_id, $user_id='', $id_array='')
+   {
       $retour = array();
       $current_date = getCurrentDateTimeInMySQL();
 
-      $query  = '';
-      $query .= 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.encode(AS_DB,$old_id).'" AND deleter_id IS NULL AND deletion_date IS NULL';
+       $query = 'SELECT * FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE context_id="' .
+           encode(AS_DB, $old_id) . '" AND deleter_id IS NULL AND deletion_date IS NULL';
 
       # special for links
       # should be deleted when data clean
@@ -1212,8 +1212,6 @@ class cs_manager {
                   include_once('functions/text_functions.php');
                   $extra_array = mb_unserialize($sql_row['extras']);
                   $current_data_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$item_id];
-                  #$current_copy_date_array[$extra_array['COPY']['ITEM_ID']] = $extra_array['COPY']['DATETIME'];
-                  #$current_mod_date_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$modification_date];
                }
             }
          } elseif ( DBTable2Type($this->_db_table) == CS_LINK_TYPE ) {
@@ -1307,8 +1305,7 @@ class cs_manager {
                $new_item_id = $this->_createItemInItemTable($new_id,DBTable2Type($this->_db_table),$current_date);
             }
             if ($do_it) {
-               $insert_query  = '';
-               $insert_query .= 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET';
+               $insert_query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET';
                $first = true;
                $old_item_id = '';
                foreach ($query_result as $key => $value) {
@@ -1460,7 +1457,6 @@ class cs_manager {
                            $retour[$old_item_id] = $new_item_id;
                         }
                      }
-                     unset($old_item_id);
                   }
 
                   // link_item_modifier
@@ -1474,14 +1470,8 @@ class cs_manager {
                      $this->_createEntryInLinkItemModifier($new_item_id,$user_id);
                   }
                }
-               if ( !empty($new_item_id) ) {
-                  unset($new_item_id);
-               }
-               unset($result_insert);
-               unset($insert_query);
             }
          }
-         unset($result);
       }
       return $retour;
    }
@@ -1758,31 +1748,6 @@ class cs_manager {
       return $retour;
    }
 
-   public function getAsXMLForFlash () {
-      $retour = '';
-      $list = $this->get();
-      if ( !empty($list) and $list->isNotEmpty() ) {
-         $item = $list->getFirst();
-         $type = $item->getType();
-         if ( $type == CS_LABEL_TYPE ) {
-            $type = $item->getLabelType();
-         }
-         while ($item) {
-            $retour .= $item->getDataAsXMLForFlash();
-            $item = $list->getNext();
-         }
-         $retour2 = $retour;
-         $retour  = '';
-         $retour .= '   <list>'.LF;
-         if ( !empty($type) ) {
-            $retour .= '      <type><![CDATA['.$type.']]></type>'.LF;
-         }
-         $retour .= $retour2;
-         $retour .= '   </list>'.LF;
-      }
-      return $retour;
-   }
-
    function addDatabasePrefix ($db_table) {
       $retour = $db_table;
       if ( $this->withDatabasePrefix() ) {
@@ -1807,28 +1772,58 @@ class cs_manager {
       return $this->_db_prefix;
    }
 
-    function moveFromDbToBackup($context_id)
+   private function getNonGeneratedColumnsNames(string $tableName): array
+   {
+       $connection = $this->_db_connector->getConnection();
+       $sm = $connection->createSchemaManager();
+
+       $table = $sm->listTableDetails($this->_db_table);
+       $notGeneratedColumns = array_filter($table->getColumns(), function (Column $column) {
+           /**
+            * The column "not_deleted" is a generated column
+            */
+           return $column->getName() !== 'not_deleted';
+       });
+
+       return array_map(function (Column $column) {
+           return $column->getName();
+       }, $notGeneratedColumns);
+   }
+
+    public function moveFromDbToBackup($context_id)
     {
         global $symfonyContainer;
         $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
 
         if (!empty($context_id)) {
-            $query = 'INSERT INTO ' . $c_db_backup_prefix . '_' . $this->_db_table . ' SELECT * FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.context_id = "' . $context_id . '"';
-            $this->_db_connector->performQuery($query);
+            $sourceTable = $this->_db_table;
+            $targetTable = $c_db_backup_prefix . '_' . $this->_db_table;
 
+            $implodedColumnNames = implode(', ', $this->getNonGeneratedColumnsNames($sourceTable));
+            $sql = "INSERT INTO $targetTable ($implodedColumnNames)
+                SELECT $implodedColumnNames FROM $sourceTable WHERE context_id = :contextId"
+            ;
+
+            $this->_db_connector->performQuery($sql, ['contextId' => $context_id]);
             $this->deleteFromDb($context_id);
         }
     }
 
-    function moveFromBackupToDb($context_id)
+    public function moveFromBackupToDb($context_id)
     {
         global $symfonyContainer;
         $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
 
         if (!empty($context_id)) {
-            $query = 'INSERT INTO ' . $this->_db_table . ' SELECT * FROM ' . $c_db_backup_prefix . '_' . $this->_db_table . ' WHERE ' . $c_db_backup_prefix . '_' . $this->_db_table . '.context_id = "' . $context_id . '"';
-            $this->_db_connector->performQuery($query);
+            $sourceTable = $c_db_backup_prefix . '_' . $this->_db_table;
+            $targetTable = $this->_db_table;
 
+            $implodedColumnNames = implode(', ', $this->getNonGeneratedColumnsNames($sourceTable));
+            $sql = "INSERT INTO $targetTable ($implodedColumnNames)
+                SELECT $implodedColumnNames FROM $sourceTable WHERE context_id = :contextId"
+            ;
+
+            $this->_db_connector->performQuery($sql, ['contextId' => $context_id]);
             $this->deleteFromDb($context_id, true);
         }
     }
@@ -2075,22 +2070,5 @@ class cs_manager {
         if (isset($limits['categories'])) {
             $this->setTagArrayLimit($limits['categories']);
         }
-    }
-
-    /**
-     * @param $value
-     * @param $databaseField
-     * @param false $isString
-     * @return string
-     */
-    protected function returnQuerySentenceIfFieldIsValid($value, $databaseField, $isString=false): string {
-        if(!is_null($value) && $value !== ""){
-            $doubleQuotes = $isString ? '"' : '';
-            if(is_bool($value)){
-                $value = $value ? 'true': 'false';
-            }
-            return sprintf("%s=%s%s%s,", $databaseField, $doubleQuotes, $value, $doubleQuotes);
-        }
-        return '';
     }
 }

@@ -30,12 +30,13 @@ class AnnotationController extends AbstractController
      * @param AnnotationService $annotationService
      * @param ItemService $itemService
      * @param ReaderService $readerService
+     * @param PortfolioService $portfolioService
      * @param int $roomId
      * @param int $linkedItemId
      * @param int $max
      * @param int $start
-     * @param int $firstTagId
-     * @param int $secondTagId
+     * @param int|null $firstTagId
+     * @param int|null $secondTagId
      * @return array
      */
     public function feedAction(
@@ -49,7 +50,7 @@ class AnnotationController extends AbstractController
         int $start = 0,
         int $firstTagId = null,
         int $secondTagId = null
-    ) {
+    ): array {
         // get annotation list from manager service 
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
 
@@ -71,7 +72,12 @@ class AnnotationController extends AbstractController
         foreach ($annotations as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
         }
-
+        /**
+         * For first show annotations no read and after mark read.
+         */
+        $itemAnnotation = $itemService->getItem($linkedItemId);
+        $annotationList = $itemAnnotation->getAnnotationList();
+        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
 
         return [
             'roomId' => $roomId,
@@ -98,7 +104,7 @@ class AnnotationController extends AbstractController
         int $linkedItemId,
         int $max = 10,
         int $start = 0
-    ) {
+    ): array {
         // get annotation list from manager service 
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
 
@@ -188,10 +194,11 @@ class AnnotationController extends AbstractController
      * @param ItemService $itemService
      * @param AnnotationService $annotationService
      * @param Request $request
+     * @param PortfolioService $portfolioService
      * @param int $roomId
      * @param int $itemId
-     * @param int $firstTagId
-     * @param int $secondTagId
+     * @param int|null $firstTagId
+     * @param int|null $secondTagId
      * @return RedirectResponse
      */
     public function createAction(

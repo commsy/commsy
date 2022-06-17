@@ -1,11 +1,13 @@
 <?php
 namespace App\Repository;
 
+use App\Entity\Account;
 use App\Entity\Room;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -33,13 +35,20 @@ class RoomRepository extends ServiceEntityRepository
 
         $sortExploded = explode('_', $sort);
 
-        if($sortExploded[0] === 'activity' || $sortExploded[0] === 'title'){
-            $orderBy = 'r.'.$sortExploded[0];
+        if ($sortExploded[0] === 'activity' || $sortExploded[0] === 'title') {
+            $orderBy = 'r.' . $sortExploded[0];
         } else {
             $orderBy = 'r.activity';
         }
 
-        $order = isset($sortExploded[1]) ? 'ASC' : 'DESC';
+        // NOTE: for activity, the sort order is switched around:
+        //       $sort = 'activity' -> DESC
+        //       $sort = 'activity_rev' -> ASC
+        if (isset($sortExploded[1])) {
+            $order = $sortExploded[0] === 'activity' ? 'ASC' : 'DESC';
+        } else {
+            $order = $sortExploded[0] === 'activity' ? 'DESC' : 'ASC';
+        }
 
         return $qb
             ->where($qb->expr()->andX(
@@ -49,6 +58,7 @@ class RoomRepository extends ServiceEntityRepository
                 $qb->expr()->isNull('r.deleter')
             ))
             ->orderBy($orderBy, $order)
+            ->addOrderBy('r.template', 'ASC')
             ->setParameters([
                 'contextId' => $portalId,
             ]);
@@ -70,6 +80,25 @@ class RoomRepository extends ServiceEntityRepository
             ->setParameter('portalId', $portalId)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function getActiveRoomsByAccount(Account $account)
+    {
+        return $this->createQueryBuilder('r')
+            ->select()
+            ->innerJoin(User::class, 'u', Join::WITH, 'u.contextId = r.itemId')
+            ->andWhere('r.deletionDate IS NULL')
+            ->andWhere('r.deleter IS NULL')
+            ->andWhere('r.contextId = :contextId')
+            ->andWhere('u.deletionDate IS NULL')
+            ->andWhere('u.deleterId IS NULL')
+            ->andWhere('u.userId = :userId')
+            ->andWhere('u.authSource = :authSource')
+            ->setParameter(':contextId', $account->getContextId())
+            ->setParameter(':userId', $account->getUsername())
+            ->setParameter(':authSource', $account->getAuthSource()->getId())
+            ->getQuery()
+            ->getResult();
     }
 
     /**

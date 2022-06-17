@@ -30,8 +30,7 @@ class CancellableLockAndDeleteController extends AbstractController
         RoomService $roomService,
         TranslatorInterface $translator,
         $itemId
-    )
-    {
+    ) {
         $roomItem = $roomService->getRoomItem($itemId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $itemId);
@@ -45,8 +44,21 @@ class CancellableLockAndDeleteController extends AbstractController
         $communityRooms = $isProjectRoom ? $roomService->getCommunityRoomsForRoom($roomItem) : [];
         $communityRoomIds = $roomService->getIdsForRooms($communityRooms);
         $projectRoomIsViewedFromItsCommunityRoom = ($isProjectRoom && in_array($roomId, $communityRoomIds));
-        $detailRoute = $isGroupRoom ? 'app_group_detail' : ($projectRoomIsViewedFromItsCommunityRoom ? 'app_project_detail' : 'app_room_detail') ;
+
+        $detailRoute = $isGroupRoom ? 'app_group_detail' : ($projectRoomIsViewedFromItsCommunityRoom ? 'app_project_detail' : 'app_roomall_detail') ;
         $listRoute = $isGroupRoom ? 'app_group_detail' : ($projectRoomIsViewedFromItsCommunityRoom ? 'app_project_list' : 'app_room_listall') ;
+
+        if ($detailRoute === 'app_roomall_detail') {
+            $detailRedirectResponse = $this->redirectToRoute($detailRoute, [
+                'portalId' => $roomItem->getContextID(),
+                'itemId' => $isGroupRoom ? $groupId : $itemId,
+            ]);
+        } else {
+            $detailRedirectResponse = $this->redirectToRoute($detailRoute, [
+                'roomId' => $roomId,
+                'itemId' => $isGroupRoom ? $groupId : $itemId,
+            ]);
+        }
 
         $relatedGroupRooms = [];
         if ($isProjectRoom) {
@@ -70,10 +82,7 @@ class CancellableLockAndDeleteController extends AbstractController
             $buttonName = $clickedButton ? $clickedButton->getName() : '';
 
             if ($buttonName === 'cancel') {
-                return $this->redirectToRoute($detailRoute, [
-                    'roomId' => $roomId,
-                    'itemId' => $isGroupRoom ? $groupId : $itemId,
-                ]);
+                return $detailRedirectResponse;
             } elseif ($buttonName === 'delete') {
                 $roomItem->delete();
                 $roomItem->save();
@@ -93,18 +102,12 @@ class CancellableLockAndDeleteController extends AbstractController
             $buttonName = $clickedButton ? $clickedButton->getName() : '';
 
             if ($buttonName === 'cancel') {
-                return $this->redirectToRoute($detailRoute, [
-                    'roomId' => $roomId,
-                    'itemId' => $isGroupRoom ? $groupId : $itemId,
-                ]);
+                return $detailRedirectResponse;
             } elseif ($buttonName === 'lock') {
                 $roomItem->lock();
                 $roomItem->save();
 
-                return $this->redirectToRoute($detailRoute, [
-                    'roomId' => $roomId,
-                    'itemId' => $isGroupRoom ? $groupId : $itemId,
-                ]);
+                return $detailRedirectResponse;
             }
         }
 
@@ -125,8 +128,7 @@ class CancellableLockAndDeleteController extends AbstractController
         Request $request,
         RoomService $roomService,
         $itemId
-    )
-    {
+    ) {
         $roomItem = $roomService->getRoomItem($itemId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $itemId);
@@ -140,14 +142,21 @@ class CancellableLockAndDeleteController extends AbstractController
         $communityRooms = $isProjectRoom ? $roomService->getCommunityRoomsForRoom($roomItem) : [];
         $communityRoomIds = $roomService->getIdsForRooms($communityRooms);
         $projectRoomIsViewedFromItsCommunityRoom = ($isProjectRoom && in_array($roomId, $communityRoomIds));
-        $detailRoute = $isGroupRoom ? 'app_group_detail' : ($projectRoomIsViewedFromItsCommunityRoom ? 'app_project_detail' : 'app_room_detail') ;
+        $detailRoute = $isGroupRoom ? 'app_group_detail' : ($projectRoomIsViewedFromItsCommunityRoom ? 'app_project_detail' : 'app_roomall_detail') ;
 
         $roomItem->unlock();
         $roomItem->save();
 
-        return $this->redirectToRoute($detailRoute, [
-            'roomId' => $roomId,
-            'itemId' => $isGroupRoom ? $groupId : $itemId,
-        ]);
+        if ($detailRoute === 'app_roomall_detail') {
+            return $this->redirectToRoute($detailRoute, [
+                'portalId' => $roomItem->getContextID(),
+                'itemId' => $isGroupRoom ? $groupId : $itemId,
+            ]);
+        } else {
+            return $this->redirectToRoute($detailRoute, [
+                'roomId' => $roomId,
+                'itemId' => $isGroupRoom ? $groupId : $itemId,
+            ]);
+        }
     }
 }

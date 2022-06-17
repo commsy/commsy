@@ -37,6 +37,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Security\Authorization\Voter\DateVoter;
 
 /**
  * Class DateController
@@ -88,7 +89,7 @@ class DateController extends BaseController
         int $roomId,
         int $max = 10,
         int $start = 0,
-        string $sort = 'time'
+        string $sort = ''
     ) {
         $roomItem = $this->getRoom($roomId);
 
@@ -120,10 +121,13 @@ class DateController extends BaseController
             }
         }
 
+        if (empty($sort)) {
+            $sort = $this->session->get('sortDates', 'time');
+        }
+        $this->session->set('sortDates', $sort);
+
         // get material list from manager service
         $dates = $this->dateService->getListDates($roomId, $max, $start, $sort);
-
-        $this->session->set('sortDates', $sort);
 
         $readerList = array();
         $allowedActions = array();
@@ -156,6 +160,8 @@ class DateController extends BaseController
         int $roomId
     ) {
         $roomItem = $this->getRoom($roomId);
+
+        $sort = $this->session->get('sortDates', 'time');
 
         $filterForm = $this->createFilterForm($roomItem);
 
@@ -229,6 +235,7 @@ class DateController extends BaseController
             'calendars' => $calendars,
             'isArchived' => $roomItem->isArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'sort' => $sort,
         ];
     }
 
@@ -260,14 +267,10 @@ class DateController extends BaseController
         }
 
         // get date list from manager service
-        if ($sort != "none") {
-            $dates = $this->dateService->getListDates($roomId, $numAllDates, 0, $sort);
-        } elseif ($this->session->get('sortDates')) {
-            $dates = $this->dateService->getListDates($roomId, $numAllDates, 0,
-                $this->session->get('sortDates'));
-        } else {
-            $dates = $this->dateService->getListDates($roomId, $numAllDates, 0, 'date');
+        if ($sort === "none" || empty($sort)) {
+            $sort = $this->session->get('sortDates', 'time');
         }
+        $dates = $this->dateService->getListDates($roomId, $numAllDates, 0, $sort);
 
         $readerList = array();
         foreach ($dates as $item) {
@@ -371,6 +374,7 @@ class DateController extends BaseController
             'iCal' => $iCal,
             'calendars' => $calendars,
             'isArchived' => $roomItem->isArchived(),
+            'defaultView' => ($roomItem->getDatesPresentationStatus() === 'calendar')? 'agendaWeek': 'month'
         ];
     }
 
@@ -427,10 +431,6 @@ class DateController extends BaseController
         if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
-
-        // mark annotations as read
-        $annotationList = $date->getAnnotationList();
-        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
 
         $itemArray = array($date);
 
@@ -714,7 +714,7 @@ class DateController extends BaseController
                 'end' => $end,
                 'color' => $color,
                 'calendar' => $date->getCalendar()->getTitle(),
-                'editable' => $date->isPublic(),
+                'editable' =>  $this->isGranted(DateVoter::EDIT, $date),
                 'description' => $date->getDateDescription(),
                 'place' => $date->getPlace(),
                 'participants' => $participantsDisplay,
@@ -1068,9 +1068,6 @@ class DateController extends BaseController
 
         $isDraft = $item->isDraft();
 
-        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
-        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
-
         // get date from DateService
         $dateItem = $this->dateService->getDate($itemId);
         if (!$dateItem) {
@@ -1078,8 +1075,6 @@ class DateController extends BaseController
         }
 
         $formData = $transformer->transform($dateItem);
-        $formData['categoriesMandatory'] = $categoriesMandatory;
-        $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['language'] = $this->legacyEnvironment->getCurrentContextItem()->getLanguage();
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
         $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
@@ -1114,7 +1109,7 @@ class DateController extends BaseController
             'calendarsAttr' => $calendarsOptionsAttr,
             'categoryMappingOptions' => [
                 'categories' => $itemController->getCategories($roomId, $categoryService),
- 'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
+                'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
                 'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
             ],
             'hashtagMappingOptions' => [
@@ -1122,6 +1117,7 @@ class DateController extends BaseController
                 'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
+            'room' => $current_context,
         );
         if ($dateItem->getRecurrencePattern() != '') {
             $formOptions['attr']['unsetRecurrence'] = true;
@@ -1147,7 +1143,7 @@ class DateController extends BaseController
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
-                if ($categoriesMandatory) {
+                if ($form->has('category_mapping')) {
                     $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
                     if (isset($formData['category_mapping']['newCategory'])) {
@@ -1156,9 +1152,11 @@ class DateController extends BaseController
                         $categoryIds[] = $newCategory->getItemID();
                     }
 
-                    $dateItem->setTagListByID($categoryIds);
+                    if (!empty($categoryIds)) {
+                        $dateItem->setTagListByID($categoryIds);
+                    }
                 }
-                if ($hashtagsMandatory) {
+                if ($form->has('hashtag_mapping')) {
                     $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
 
                     if (isset($formData['hashtag_mapping']['newHashtag'])) {
@@ -1167,7 +1165,9 @@ class DateController extends BaseController
                         $hashtagIds[] = $newHashtag->getItemID();
                     }
 
-                    $dateItem->setBuzzwordListByID($hashtagIds);
+                    if (!empty($hashtagIds)) {
+                        $dateItem->setBuzzwordListByID($hashtagIds);
+                    }
                 }
 
                 $valuesToChange = array();
@@ -1252,9 +1252,7 @@ class DateController extends BaseController
         return array(
             'form' => $form->createView(),
             'isDraft' => $isDraft,
-            'showHashtags' => $hashtagsMandatory,
             'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
-            'showCategories' => $categoriesMandatory,
             'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
             'withRecurrence' => $dateItem->getRecurrencePattern() != '',
             'date' => $dateItem,

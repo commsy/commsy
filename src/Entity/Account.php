@@ -2,23 +2,93 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\Api\GetAccountsCheckLocalLogin;
+use App\Controller\Api\GetAccountsWorkspaces;
+use App\Dto\LocalLoginInput;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Account
  *
- * @ORM\Table(name="accounts")
+ * @ORM\Table(name="accounts", uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="accounts_idx", columns={"context_id", "username", "auth_source_id"})
+ * })
  * @ORM\Entity(repositoryClass="App\Repository\AccountsRepository")
  * @UniqueEntity(
  *     fields={"contextId", "username", "authSource"},
  *     errorPath="username",
  *     repositoryMethod="findOnByCredentials"
+ * )
+ * @ApiResource(
+ *     security="is_granted('ROLE_API_READ')",
+ *     collectionOperations={
+ *     },
+ *     itemOperations={
+ *         "get",
+ *         "check_local_login"={
+ *             "method"="POST",
+ *             "path"="accounts/checkLocalLogin",
+ *             "controller"=GetAccountsCheckLocalLogin::class,
+ *             "status"=200,
+ *             "read"=false,
+ *             "write"=false,
+ *             "input"=LocalLoginInput::class,
+ *             "validation_groups"={"checkLocalLoginValidation"},
+ *             "normalization_context"={
+ *                 "groups"={"api"},
+ *             },
+ *             "denormalization_context"={
+ *                 "groups"={"api_check_local_login"},
+ *              },
+ *             "openapi_context"={
+ *                 "summary"="Checks plain user credentials and returns account information",
+ *                 "parameters"={
+ *                 },
+ *                 "requestBody"={
+ *                     "required"=true,
+ *                     "description"="Local login data",
+ *                     "content"={
+ *                         "application/json"={
+ *                             "schema"={
+ *                                 "type"="object",
+ *                                 "properties"={
+ *                                     "contextId"={
+ *                                         "type"="int",
+ *                                     },
+ *                                     "username"={
+ *                                         "type"="string",
+ *                                     },
+ *                                     "password"={
+ *                                         "type"="string",
+ *                                     }
+ *                                 },
+ *                             },
+ *                         },
+ *                     },
+ *                 },
+ *             },
+ *         },
+ *         "get_workspaces"={
+ *             "method"="GET",
+ *             "path"="accounts/{id}/workspaces",
+ *             "controller"=GetAccountsWorkspaces::class,
+ *         }
+ *     },
+ *     normalizationContext={
+ *         "groups"={"api"}
+ *     },
+ *     denormalizationContext={
+ *         "groups"={"api"}
+ *     }
  * )
  */
 class Account implements UserInterface, EncoderAwareInterface, \Serializable
@@ -30,11 +100,24 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
     public const ACTIVITY_ABANDONED = 'abandoned';
 
     /**
-     * @var integer
+     * @var int|null
      *
      * @ORM\Column(type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\GeneratedValue()
+     *
+     * @Groups({"api", "api_check_local_login"})
+     */
+    private ?int $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(type="integer")
+     *
+     * @Assert\NotBlank(groups={"checkLocalLoginValidation"})
+     *
+     * @Groups({"api_check_local_login"})
      */
     private int $contextId;
 
@@ -42,11 +125,11 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @var string
      *
      * @ORM\Column(type="string", length=100)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      *
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"Default", "checkLocalLoginValidation"})
      * @Assert\Regex(pattern="/^(root|guest)$/i", match=false, message="{{ value }} is a reserved name")
+     *
+     * @Groups({"api", "api_check_local_login"})
      */
     private string $username;
 
@@ -62,12 +145,18 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
     private $plainPassword;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="string", length=32, nullable=true)
      */
     private ?string $passwordMd5;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     *
+     * @Assert\NotBlank(groups={"checkLocalLoginValidation"})
+     *
+     * @Groups({"api_check_local_login"})
      */
     private ?string $password;
 
@@ -77,6 +166,8 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @ORM\Column(type="string", length=50)
      *
      * @Assert\NotBlank()
+     *
+     * @Groups({"api"})
      */
     private string $firstname;
 
@@ -86,6 +177,8 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @ORM\Column(type="string", length=50)
      *
      * @Assert\NotBlank()
+     *
+     * @Groups({"api"})
      */
     private string $lastname;
 
@@ -95,6 +188,9 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @ORM\Column(name="email", type="string", length=100)
      *
      * @Assert\Email()
+     * @Assert\Callback({"App\Entity\Account", "validateMailRegex"})
+     *
+     * @Groups({"api"})
      */
     private string $email;
 
@@ -107,8 +203,6 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\AuthSource")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\JoinColumn()
      */
     private AuthSource $authSource;
@@ -117,6 +211,8 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @var bool
      *
      * @ORM\Column(name="locked", type="boolean")
+     *
+     * @Groups({"api"})
      */
     private bool $locked = false;
 
@@ -147,6 +243,24 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
         $this->password = null;
         $this->passwordMd5 = null;
         $this->activityState = self::ACTIVITY_ACTIVE;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int|null $id
+     * @return Account
+     */
+    public function setId(?int $id): Account
+    {
+        $this->id = $id;
+        return $this;
     }
 
     /**
@@ -206,7 +320,7 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
     /**
      * @return int
      */
-    public function getContextId(): int
+    public function getContextId(): ?int
     {
         return $this->contextId;
     }
@@ -484,6 +598,29 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
 
         foreach ($unserializedData as $key => $value) {
             $this->$key = $value;
+        }
+    }
+
+    /**
+     * @param ExecutionContextInterface $context
+     * @param $payload
+     */
+    public function validateMailRegex($payload, ExecutionContextInterface $context): void
+    {
+
+        /** @var AuthSource $authSource */
+        $authSource = $context->getObject()->authSource;
+
+        if ($authSource instanceof AuthSourceLocal) {
+            /** @var AuthSourceLocal $authSource */
+            $regex = $authSource->getMailRegex();
+
+            // check regex
+            if ($regex && !preg_match($regex, $payload)) {
+                $context->buildViolation('signup-regex-mail')
+                    ->atPath('email')
+                    ->addViolation();
+            }
         }
     }
 }

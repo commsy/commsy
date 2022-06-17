@@ -42,11 +42,13 @@
             <ul id="linksForm" class="uk-switcher uk-margin">
 
                 {% if showCategories %}
-                <li>
-                    {{ form_widget(form.categories) }}
-                </li>
+                    <li>
+                        {{ form_widget(form.newCategory) }}
+                        {{ form_widget(form.categories) }}
+                    </li>
                 {% else %}
                     {% do form.categories.setRendered %}
+                    {% do form.newCategory.setRendered %}
                 {% endif %}
 
                 {% if showHashtags %}

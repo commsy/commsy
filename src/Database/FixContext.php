@@ -15,7 +15,6 @@ class FixContext extends GeneralCheck
             'discussionarticles', 'discussions', 'files', 'invitations', 'labels', 'licenses', 'link_items',
             'links', 'materials', 'room', 'room_privat', 'section', 'step', 'tag', 'tag2tag', 'tasks',
             'terms', 'todos', 'translation',  'user'];
-        // TODO: Check auth_source
 
         foreach ($tablesWithContext as $tableWithContext) {
             $sql = "

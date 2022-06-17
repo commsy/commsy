@@ -48,6 +48,19 @@ class FunctionalTester extends Actor
         return $portal;
     }
 
+    public function haveAuthSource(Portal $portal, AuthSource $authSource, string $title): void
+    {
+        $this->haveInRepository($authSource, [
+            'title' => $title,
+            'enabled' => true,
+            'default' => false,
+            'createRoom' => true,
+        ]);
+
+        $portal->addAuthSource($authSource);
+        $this->haveInRepository($portal);
+    }
+
     public function haveAccount(Portal $portal, string $username): Account
     {
         /** @var AuthSourceLocal $localAuthSource */

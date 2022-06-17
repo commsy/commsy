@@ -2,22 +2,50 @@
 
 namespace App\EventSubscriber;
 
+use App\Entity\Account;
 use App\Services\LegacyEnvironment;
+use App\Utils\RequestContext;
+use cs_environment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 class SecuritySubscriber implements EventSubscriberInterface
 {
-    private $legacyEnvironment;
+    /**
+     * @var cs_environment|LegacyEnvironment
+     */
+    private cs_environment $legacyEnvironment;
 
-    private $router;
+    /**
+     * @var RouterInterface
+     */
+    private RouterInterface $router;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RouterInterface $router)
-    {
-        $this->legacyEnvironment = $legacyEnvironment;
+    /**
+     * @var Security
+     */
+    private Security $security;
+
+    /**
+     * @var RequestContext
+     */
+    private RequestContext $requestContext;
+
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        RouterInterface $router,
+        Security $security,
+        RequestContext $requestContext
+    ) {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->router = $router;
+        $this->security = $security;
+        $this->requestContext = $requestContext;
     }
 
     public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
@@ -26,9 +54,7 @@ class SecuritySubscriber implements EventSubscriberInterface
             return;
         }
 
-        $environment = $this->legacyEnvironment->getEnvironment();
-
-        $currentUser = $environment->getCurrentUserItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         $portalUser = $currentUser->getRelatedPortalUserItem();
 
         $privateRoom = $currentUser->getOwnRoom();
@@ -49,10 +75,38 @@ class SecuritySubscriber implements EventSubscriberInterface
         }
     }
 
+    public function onKernelRequest(RequestEvent $event)
+    {
+        $request = $event->getRequest();
+
+        if ($request->attributes->get('_route') === 'app_security_simultaneouslogin') {
+            return;
+        }
+
+        /** @var Account $account */
+        $account = $this->security->getUser();
+
+        if ($account === null || $account->getUsername() === 'root') {
+            return;
+        }
+
+        $portal = $this->requestContext->fetchPortal($request);
+        if ($portal === null) {
+            return;
+        }
+
+        if ($account->getContextId() !== $portal->getId()) {
+            $event->setResponse(new RedirectResponse($this->router->generate('app_security_simultaneouslogin', [
+                'portalId' => $portal->getId(),
+            ])));
+        }
+    }
+
     public static function getSubscribedEvents()
     {
         return [
             'security.interactive_login' => 'onSecurityInteractiveLogin',
+            KernelEvents::REQUEST => 'onKernelRequest',
         ];
     }
 }

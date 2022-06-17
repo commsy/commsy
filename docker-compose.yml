@@ -3,7 +3,7 @@ version: "3.4"
 services:
 
   db:
-    image: mariadb:10.3
+    image: mariadb:10.4
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=commsy
@@ -14,6 +14,21 @@ services:
     ports:
       - "3106:3306"
 
+  elastic:
+    build: ./docker/elasticsearch
+    ports:
+      - "9200:9200"
+    volumes:
+      - elastic-data:/usr/share/elasticsearch/data
+    environment:
+      - "discovery.type=single-node"
+      - "bootstrap.memory_lock=true"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
   nginx:
     image: commsy/nginx
     build:
@@ -21,9 +36,6 @@ services:
       target: commsy_nginx
     depends_on:
       - php
-    volumes:
-      # Use only in development
-      - ./public/:/var/www/html/public:cached
     ports:
       - "81:80"
 
@@ -34,13 +46,11 @@ services:
       target: commsy_php
     depends_on:
       - db
+      - elastic
     volumes:
       - commsy-data:/var/www/html/files
-      - ./:/var/www/html:cached
-      - ./docker/php/conf.d/commsy.dev.ini/:/usr/local/etc/php/conf.d/commsy.ini
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
 volumes:
   db-data:
+  elastic-data:
   commsy-data:
