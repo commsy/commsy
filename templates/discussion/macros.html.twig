@@ -428,7 +428,7 @@
         {% set article = child.item %}
         {% set count = loop.index0 %}
         <div id="discarticle_{{count}}" class="uk-panel uk-panel-box uk-margin-top discussion-article">
-            <li id="article_{{ child.item.itemId }}" data-jstree='{"opened": {{ opened }}}'>
+            <li data-id="{{ article.itemId }}" data-jstree='{"opened": {{ opened }}}'>
 
 
                 <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow cs-remove-section cs-toggle">
