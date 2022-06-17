@@ -382,10 +382,10 @@ class cs_dates_manager extends cs_manager {
 
        switch ($this->inactiveEntriesLimit) {
            case self::SHOW_ENTRIES_ONLY_ACTIVATED:
-               $query .= ' AND (' . $this->addDatabasePrefix('dates') . '.link_modifier_item_date IS NULL OR ' . $this->addDatabasePrefix('dates') . '.link_modifier_item_date <= "' . getCurrentDateTimeInMySQL() . '")';
+               $query .= ' AND (' . $this->addDatabasePrefix('dates') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('dates') . '.modification_date <= "' . getCurrentDateTimeInMySQL() . '")';
                break;
            case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
-               $query .= ' AND (' . $this->addDatabasePrefix('dates') . '.link_modifier_item_date IS NOT NULL AND ' . $this->addDatabasePrefix('dates') . '.link_modifier_item_date > "' . getCurrentDateTimeInMySQL() . '")';
+               $query .= ' AND (' . $this->addDatabasePrefix('dates') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('dates') . '.modification_date > "' . getCurrentDateTimeInMySQL() . '")';
                break;
        }
 
@@ -804,9 +804,8 @@ class cs_dates_manager extends cs_manager {
             $public = '0';
         }
         $modification_date = getCurrentDateTimeInMySQL();
-        $link_modifier_item_date = getCurrentDateTimeInMySQL();
         if ($item->isNotActivated() || !$item->isChangeModificationOnSave()) {
-            $link_modifier_item_date = $item->getLinkModifierItemDate();
+            $modification_date = $item->getModificationDate();
         }
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
@@ -830,7 +829,6 @@ class cs_dates_manager extends cs_manager {
             ->update($this->addDatabasePrefix('dates'))
             ->set('modifier_id', ':modifierId')
             ->set('modification_date', ':modificationDate')
-            ->set('link_modifier_item_date', ':linkModifierItemDate')
             ->set('title', ':title')
             ->set('public', ':public')
             ->set('description', ':description')
@@ -853,7 +851,6 @@ class cs_dates_manager extends cs_manager {
             ->where('item_id = :itemId')
             ->setParameter('modifierId', $modificator->getItemID())
             ->setParameter('modificationDate', $modification_date)
-            ->setParameter('linkModifierItemDate', $link_modifier_item_date)
             ->setParameter('title', $item->getTitle())
             ->setParameter('public', $public)
             ->setParameter('description', $item->getDescription())
@@ -898,7 +895,6 @@ class cs_dates_manager extends cs_manager {
      $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'modification_date="'.$current_datetime.'",'.
-              'link_modifier_item_date="'.$current_datetime.'",'.
               'type="date",'.
       'draft="'.encode(AS_DB,$item->isDraft()).'"';
      $result = $this->_db_connector->performQuery($query);
@@ -938,9 +934,8 @@ class cs_dates_manager extends cs_manager {
             $public = '0';
         }
         $modification_date = getCurrentDateTimeInMySQL();
-        $link_modifier_item_date = getCurrentDateTimeInMySQL();
         if ($item->isNotActivated()) {
-            $link_modifier_item_date = $item->getLinkModifierItemDate();
+            $modification_date = $item->getModificationDate();
         }
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
@@ -968,7 +963,6 @@ class cs_dates_manager extends cs_manager {
             ->setValue('creation_date', ':creationDate')
             ->setValue('modifier_id', ':modifierId')
             ->setValue('modification_date', ':modificationDate')
-            ->setValue('link_modifier_item_date', ':linkModifierItemDate')
             ->setValue('title', ':title')
             ->setValue('public', ':public')
             ->setValue('description', ':description')
@@ -994,7 +988,6 @@ class cs_dates_manager extends cs_manager {
             ->setParameter('creationDate', $current_datetime)
             ->setParameter('modifierId', $modificator->getItemID())
             ->setParameter('modificationDate', $modification_date)
-            ->setParameter('linkModifierItemDate', $link_modifier_item_date)
             ->setParameter('title', $item->getTitle())
             ->setParameter('public', $public)
             ->setParameter('description', $item->getDescription())
