@@ -781,15 +781,13 @@ class cs_manager {
    function _update($item) {
       $query = 'UPDATE '.$this->addDatabasePrefix('items').' SET';
       $modification_date = getCurrentDateTimeInMySQL();
-      $link_modifier_item_date = getCurrentDateTimeInMySQL();
       if ($item->isNotActivated()){
-          $link_modifier_item_date = $item->getLinkModifierItemDate();
+         $modification_date = $item->getModificationDate();
       }
       if ( $item->isChangeModificationOnSave()
            or $this->_update_with_changing_modification_information
          ) {
          $query .= ' modification_date="'.$modification_date.'",';
-         $query .= ' link_modifier_item_date="'.$link_modifier_item_date.'",';
       }
       $query .= ' context_id="'.encode(AS_DB,$item->getContextID()).'"';
       if (get_class($item) == 'cs_item') {
