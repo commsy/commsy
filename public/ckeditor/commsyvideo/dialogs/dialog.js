@@ -98,7 +98,7 @@
                                         {
                                             type: 'file',
                                             id: 'upload',
-                                            label: editor.lang.commsyvideo.uploadnew + '<br/>' + '<span style="font-size: 9px;color: red;">' + editor.lang.commsyvideo.uploadnewlegend + '</span>',
+                                            label: editor.lang.commsyvideo.uploadnew + '<br/>' + '<span style="color: #636363;">' + editor.lang.commsyvideo.uploadnewlegend.replace('<quantity_reeplace>', editor.config.maxUploadSize/(1024*1024)) + '</span>',
                                             onChange: function () {
                                                 const limit = editor.config.maxUploadSize;
                                                 var upload = this.getDialog().getContentElement('videoTab', 'upload');
@@ -113,6 +113,7 @@
                                                 } 
               
                                             }
+
                                         },
                                         {
                                             type: 'fileButton',

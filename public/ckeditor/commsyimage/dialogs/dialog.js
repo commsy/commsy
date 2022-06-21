@@ -68,7 +68,7 @@
                                         {
                                             type: 'file',
                                             id: 'upload',
-                                            label: editor.lang.commsyimage.uploadnew + '<br/>' + '<span style="font-size: 9px;color: red;">' + editor.lang.commsyimage.uploadnewlegend + '</span>',
+                                            label: editor.lang.commsyimage.uploadnew + '<br/>' + '<span style="color: #636363;">' + editor.lang.commsyimage.uploadnewlegend.replace('<quantity_reeplace>', editor.config.maxUploadSize/(1024*1024)) + '</span>',
                                             onChange: function () {
                                                 const limit = editor.config.maxUploadSize;
                                                 var upload = this.getDialog().getContentElement('imageTab', 'upload');

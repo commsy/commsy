@@ -64,7 +64,7 @@ class cs_environment {
    */
    var $_current_portal = NULL;
 
-   var $_current_portal_id = 0;
+   private int $_current_portal_id = 0;
 
     /**
      * @var \cs_server_item server item
@@ -362,16 +362,19 @@ class cs_environment {
        return null;
    }
 
-   function getCurrentPortalID () {
-      if ( empty($this->_current_portal_id) ) {
-         $this->getCurrentPortalItem();
-      }
-      return $this->_current_portal_id;
-   }
+    public function getCurrentPortalID(): int
+    {
+        if (empty($this->_current_portal_id)) {
+            $this->getCurrentPortalItem();
+        }
+        return $this->_current_portal_id;
+    }
 
-   function setCurrentPortalID ( $value ) {
-      $this->_current_portal_id = (int)$value;
-   }
+    public function setCurrentPortalID($value)
+    {
+        $this->_current_portal = null;
+        $this->_current_portal_id = (int)$value;
+    }
 
   /** get name of the current module
    * returns the current module.
@@ -2296,10 +2299,6 @@ class cs_environment {
 
    public function foundCurrentContextInArchive () {
       return $this->_found_in_archive;
-   }
-
-   public function unsetPortalItem () {
-       $this->_current_portal = NULL;
    }
 
     /**

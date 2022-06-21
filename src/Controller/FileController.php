@@ -13,7 +13,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sylius\Bundle\ThemeBundle\Context\SettableThemeContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,8 +26,11 @@ class FileController extends AbstractController
     /**
      * @Route("/file/{fileId}/{disposition}")
      * @Security("is_granted('FILE_DOWNLOAD', fileId)")
+     * @param Request $request
      * @param FileService $fileService
      * @param RoomService $roomService
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param ParameterBagInterface $params
      * @param int $fileId
      * @param string $disposition
      * @return Response
@@ -51,19 +56,19 @@ class FileController extends AbstractController
         }
         // ~fix for archived rooms
 
-        if (file_exists($rootDir . $file->getDiskFileName())) {
-            $content = file_get_contents($rootDir . $file->getDiskFileName());
-        } else {
+        if (!file_exists($rootDir . $file->getDiskFileName())) {
             // fix for userrooms
             if ($legacyEnvironment->getEnvironment()->getCurrentContextItem()->getType() == 'userroom') {
                 $file->setPortalID($legacyEnvironment->getEnvironment()->getCurrentPortalID());
             }
-            $content = file_get_contents($rootDir . $file->getDiskFileName());
             if (!file_exists($rootDir . $file->getDiskFileName())) {
                 throw $this->createNotFoundException('The requested file does not exist');
             }
         }
-        $response = new Response($content, Response::HTTP_OK, array('content-type' => $file->getMime()));
+
+
+        $response = new BinaryFileResponse($file->getDiskFileName());
+
 
         $fileName = $file->getFileName();
 
@@ -73,18 +78,18 @@ class FileController extends AbstractController
         $fallbackFileName = str_replace(array('%', '/', '\\'), '', $fileName);
         $fallbackFileName = mb_convert_encoding($fallbackFileName, 'US-ASCII', 'UTF-8');
 
-        if ($disposition == 'inline') {
-            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $fileName,
-                $fallbackFileName);
-        } else {
-            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                $fileName, $fallbackFileName);
-        }
-        $response->headers->set('Content-Disposition', $contentDisposition);
+        $contentDisposition = $response->headers->makeDisposition(
+            ($disposition === 'inline') ?
+                ResponseHeaderBag::DISPOSITION_INLINE :
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $fileName,
+            $fallbackFileName
+        );
 
+        $response->headers->set('Content-Disposition', $contentDisposition);
+        $response->prepare($request);
         return $response;
     }
-
 
     /**
      * @Route("/room/{roomId}/logo", name="getLogo")
