@@ -14,23 +14,35 @@ final class Version20220610091500 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->addSql('alter table announcement add link_modifier_item_date  datetime  NULL after modification_date;');
-        $this->addSql('alter table dates add link_modifier_item_date  datetime  NULL after modification_date;');
-        $this->addSql('alter table discussions add link_modifier_item_date  datetime  NULL after modification_date;');
-        $this->addSql('alter table materials add link_modifier_item_date  datetime  NULL after modification_date;');
-        $this->addSql('alter table todos add link_modifier_item_date  datetime  NULL after modification_date;');
-        $this->addSql('alter table labels add link_modifier_item_date  datetime  NULL after modification_date;');
+        $this->addSql('alter table announcement add activation_date  datetime  NULL after modification_date;');
+        $this->addSql('alter table dates add activation_date  datetime  NULL after modification_date;');
+        $this->addSql('alter table discussions add activation_date  datetime  NULL after modification_date;');
+        $this->addSql('alter table materials add activation_date  datetime  NULL after modification_date;');
+        $this->addSql('alter table todos add activation_date  datetime  NULL after modification_date;');
+        $this->addSql('alter table labels add activation_date  datetime  NULL after modification_date;');
+        $this->addSql('alter table items add activation_date  datetime  NULL after modification_date;');
+
+        $this->addSql('update announcement set activation_date  =  modification_date;');
+        $this->addSql('update dates set activation_date  =  modification_date;');
+        $this->addSql('update discussions set activation_date  =  modification_date;');
+        $this->addSql('update materials set activation_date  =  modification_date;');
+        $this->addSql('update todos set activation_date  =  modification_date;');
+        $this->addSql('update labels set activation_date  =  modification_date;');
+        $this->addSql('update items set activation_date  =  modification_date;');
+
+        $this->addSql("update announcement set modification_date  =  creation_date where modification_date ='9999-00-00 00:00:00';");
+        $this->addSql("update dates set modification_date  =  creation_date where modification_date ='9999-00-00 00:00:00';");
+        $this->addSql("update discussions set modification_date  =  creation_date where modification_date ='9999-00-00 00:00:00';");
+        $this->addSql("update materials set modification_date  =  creation_date where modification_date ='9999-00-00 00:00:00';");
+        $this->addSql("update todos set modification_date  =  creation_date where modification_date ='9999-00-00 00:00:00';");
+        $this->addSql("update labels set modification_date  =  creation_date where modification_date ='9999-00-00 00:00:00';");
+
 
     }
 
     public function down(Schema $schema): void
     {
-        $this->addSql('alter table announcement DROP COLUMN link_modifier_item_date;');
-        $this->addSql('alter table dates DROP COLUMN link_modifier_item_date;');
-        $this->addSql('alter table discussions DROP COLUMN link_modifier_item_date;');
-        $this->addSql('alter table materials DROP COLUMN link_modifier_item_date;');
-        $this->addSql('alter table todos DROP COLUMN link_modifier_item_date;');
-        $this->addSql('alter table labels DROP COLUMN link_modifier_item_date;');
+        $this->throwIrreversibleMigrationException();
 
     }
 }

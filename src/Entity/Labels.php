@@ -76,9 +76,9 @@ class Labels
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="link_modifier_item_date", type="datetime", nullable=false)
+     * @ORM\Column(name="activation_date", type="datetime", nullable=false)
      */
-    private $linkModifierItemDate = '0000-00-00 00:00:00';
+    private $activationDate = '0000-00-00 00:00:00';
 
     /**
      * @var \DateTime
@@ -231,27 +231,28 @@ class Labels
     }
 
     /**
-     * Set linkModifierItemDate
+     * Set activationDate
      *
-     * @param \DateTime $linkModifierItemDate
+     * @param \DateTime $activationDate
      *
      * @return Dates
      */
-    public function setLinkModifierItemDate($linkModifierItemDate)
+    public function setActivationDate($activationDate)
     {
-        $this->linkModifierItemDate = $linkModifierItemDate;
+        $this->activationDate = $activationDate;
 
         return $this;
     }
 
+
     /**
-     * Get linkModifierItemDate
+     * Get activationDate
      *
      * @return \DateTime
      */
-    public function getLinkModifierItemDate()
+    public function getActivationDate()
     {
-        return $this->linkModifierItemDate;
+        return $this->activationDate;
     }
 
     /**

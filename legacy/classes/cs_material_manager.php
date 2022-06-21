@@ -627,10 +627,10 @@ class cs_material_manager extends cs_manager {
 
        switch ($this->inactiveEntriesLimit) {
            case self::SHOW_ENTRIES_ONLY_ACTIVATED:
-               $query .= ' AND (' . $this->addDatabasePrefix('materials') . '.link_modifier_item_date  IS NULL OR ' . $this->addDatabasePrefix('materials') . '.link_modifier_item_date  <= "' . getCurrentDateTimeInMySQL() . '")';
+               $query .= ' AND (' . $this->addDatabasePrefix('materials') . '.activation_date  IS NULL OR ' . $this->addDatabasePrefix('materials') . '.activation_date  <= "' . getCurrentDateTimeInMySQL() . '")';
                break;
            case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
-               $query .= ' AND (' . $this->addDatabasePrefix('materials') . '.link_modifier_item_date  IS NOT NULL AND ' . $this->addDatabasePrefix('materials') . '.link_modifier_item_date  > "' . getCurrentDateTimeInMySQL() . '")';
+               $query .= ' AND (' . $this->addDatabasePrefix('materials') . '.activation_date  IS NOT NULL AND ' . $this->addDatabasePrefix('materials') . '.activation_date  > "' . getCurrentDateTimeInMySQL() . '")';
                break;
        }
 
@@ -969,9 +969,9 @@ class cs_material_manager extends cs_manager {
                 $world_public = '0';
             }
             $modification_date = getCurrentDateTimeInMySQL();
-            $link_modifier_item_date = getCurrentDateTimeInMySQL();
+            $activation_date = getCurrentDateTimeInMySQL();
             if ($material_item->isNotActivated()) {
-                $link_modifier_item_date = $material_item->getLinkModifierItemDate();
+                $activation_date = $material_item->getActivationDate();
             }
 
             $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
@@ -986,7 +986,7 @@ class cs_material_manager extends cs_manager {
                 ->update($this->addDatabasePrefix('materials'))
                 ->set('modifier_id', ':modifierId')
                 ->set('modification_date', ':modificationDate')
-                ->set('link_modifier_item_date', ':linkModifierItemDate')
+                ->set('activation_date', ':activationDate')
                 ->set('title', ':title')
                 ->set('description', ':description')
                 ->set('publishing_date', ':publishingDate')
@@ -1005,7 +1005,7 @@ class cs_material_manager extends cs_manager {
                 ->setParameter('versionId', $material_item->getVersionID())
                 ->setParameter('modifierId', $modificator->getItemID())
                 ->setParameter('modificationDate', $modification_date)
-                ->setParameter('linkModifierItemDate', $link_modifier_item_date)
+                ->setParameter('activationDate', $activation_date)
                 ->setParameter('title', $material_item->getTitle())
                 ->setParameter('description', $material_item->getDescription())
                 ->setParameter('publishingDate', $material_item->getPublishingDate())
@@ -1044,7 +1044,7 @@ class cs_material_manager extends cs_manager {
         $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
                  'context_id="'.encode(AS_DB,$context_id).'",'.
                  'modification_date="'.getCurrentDateTimeInMySQL().'",'.
-                 'link_modifier_item_date="'.getCurrentDateTimeInMySQL().'",'.
+                 'activation_date="'.getCurrentDateTimeInMySQL().'",'.
                  'type="'.encode(AS_DB,$material_item->getItemType(NONE)).'",'.
                  'draft="'.encode(AS_DB,$material_item->isDraft()).'"';
         $result = $this->_db_connector->performQuery($query);
@@ -1096,9 +1096,9 @@ class cs_material_manager extends cs_manager {
                 $world_public = '0';
             }
             $modification_date = getCurrentDateTimeInMySQL();
-            $link_modifier_item_date = getCurrentDateTimeInMySQL();
+            $activation_date = getCurrentDateTimeInMySQL();
             if ($material_item->isNotActivated()) {
-                $link_modifier_item_date = $material_item->getLinkModifierItemDate();
+                $activation_date = $material_item->getActivationDate();
             }
 
             $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
@@ -1118,7 +1118,7 @@ class cs_material_manager extends cs_manager {
                 ->setValue('creation_date', ':creationDate')
                 ->setValue('modifier_id', ':modifierId')
                 ->setValue('modification_date', ':modificationDate')
-                ->setValue('link_modifier_item_date', ':linkModifierItemDate')
+                ->setValue('activation_date', ':activationDate')
                 ->setValue('title', ':title')
                 ->setValue('description', ':description')
                 ->setValue('publishing_date', ':publishingDate')
@@ -1138,7 +1138,7 @@ class cs_material_manager extends cs_manager {
                 ->setParameter('creationDate', $current_datetime)
                 ->setParameter('modifierId', $modificator->getItemID())
                 ->setParameter('modificationDate', $modification_date)
-                ->setParameter('linkModifierItemDate', $link_modifier_item_date)
+                ->setParameter('activationDate', $activation_date)
                 ->setParameter('title', $material_item->getTitle())
                 ->setParameter('description', $material_item->getDescription())
                 ->setParameter('publishingDate', $material_item->getPublishingDate())

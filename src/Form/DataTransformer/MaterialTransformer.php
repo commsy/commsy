@@ -177,18 +177,18 @@ class MaterialTransformer extends AbstractTransformer
                         $time = explode(":", $materialData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
-                    $materialObject->setLinkModifierItemDate($datetime->format('Y-m-d H:i:s'));
+                    $materialObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
                 } else {
-                    $materialObject->setLinkModifierItemDate('9999-00-00 00:00:00');
+                    $materialObject->setActivationDate('9999-00-00 00:00:00');
                 }
             } else {
                 if($materialObject->isNotActivated()){
-    	            $materialObject->setLinkModifierItemDate(getCurrentDateTimeInMySQL());
+    	            $materialObject->setActivationDate(getCurrentDateTimeInMySQL());
     	        }
             }
         } else {
             if($materialObject->isNotActivated()){
-	            $materialObject->setLinkModifierItemDate(getCurrentDateTimeInMySQL());
+	            $materialObject->setActivationDate(getCurrentDateTimeInMySQL());
 	        }
         }
 

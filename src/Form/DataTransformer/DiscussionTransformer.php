@@ -82,18 +82,18 @@ class DiscussionTransformer extends AbstractTransformer
                         $time = explode(":", $discussionData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
-                    $discussionObject->setLinkModifierItemDate($datetime->format('Y-m-d H:i:s'));
+                    $discussionObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
                 } else {
-                    $discussionObject->setLinkModifierItemDate('9999-00-00 00:00:00');
+                    $discussionObject->setActivationDate('9999-00-00 00:00:00');
                 }
             } else {
                 if($discussionObject->isNotActivated()){
-    	            $discussionObject->setLinkModifierItemDate(getCurrentDateTimeInMySQL());
+    	            $discussionObject->setActivationDate(getCurrentDateTimeInMySQL());
     	        }
             }
         } else {
             if($discussionObject->isNotActivated()){
-	            $discussionObject->setLinkModifierItemDate(getCurrentDateTimeInMySQL());
+	            $discussionObject->setActivationDate(getCurrentDateTimeInMySQL());
 	        }
         }
 

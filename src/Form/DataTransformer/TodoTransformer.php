@@ -113,18 +113,18 @@ class TodoTransformer extends AbstractTransformer
                         $time = explode(":", $todoData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
-                    $todoObject->setLinkModifierItemDate($datetime->format('Y-m-d H:i:s'));
+                    $todoObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
                 } else {
-                    $todoObject->setLinkModifierItemDate('9999-00-00 00:00:00');
+                    $todoObject->setActivationDate('9999-00-00 00:00:00');
                 }
             } else {
                 if($todoObject->isNotActivated()){
-    	            $todoObject->setLinkModifierItemDate(getCurrentDateTimeInMySQL());
+    	            $todoObject->setActivationDate(getCurrentDateTimeInMySQL());
     	        }
             }
         } else {
             if($todoObject->isNotActivated()){
-	            $todoObject->setLinkModifierItemDate(getCurrentDateTimeInMySQL());
+	            $todoObject->setActivationDate(getCurrentDateTimeInMySQL());
 	        }
         }
 

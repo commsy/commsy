@@ -597,8 +597,8 @@ class cs_item {
      *
      * @author CommSy Development Group
      */
-    function getLinkModifierItemDate () {
-        $date = $this->_getValue('link_modifier_item_date');
+    function getActivationDate () {
+        $date = $this->_getValue('activation_date');
         if (is_null($date) or $date=='0000-00-00 00:00:00') {
             $date = $this->_getValue('creation_date');
         }
@@ -624,8 +624,8 @@ class cs_item {
      *
      * @author CommSy Development Group
      */
-    function setLinkModifierItemDate ($value) {
-        $this->_setValue('link_modifier_item_date', (string)$value);
+    function setActivationDate ($value) {
+        $this->_setValue('activation_date', (string)$value);
     }
 
    /** get deletion date
@@ -641,7 +641,7 @@ class cs_item {
    }
 
    function isNotActivated(){
-      $date = $this->getLinkModifierItemDate();
+      $date = $this->getActivationDate();
       if ( $date > getCurrentDateTimeInMySQL() ) {
         return true;
       }else{
@@ -652,7 +652,7 @@ class cs_item {
    function getActivatingDate(){
       $retour = '';
       if ($this->isNotActivated()){
-         $retour = $this->getLinkModifierItemDate();
+         $retour = $this->getActivationDate();
       }
       return $retour;
    }

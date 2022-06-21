@@ -77,18 +77,18 @@ class AnnouncementTransformer  extends AbstractTransformer
                         $time = explode(":", $announcementData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
-                    $announcementObject->setLinkModifierItemDate($datetime->format('Y-m-d H:i:s'));
+                    $announcementObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
                 } else {
-                    $announcementObject->setLinkModifierItemDate('9999-00-00 00:00:00');
+                    $announcementObject->setActivationDate('9999-00-00 00:00:00');
                 }
             } else {
                 if($announcementObject->isNotActivated()){
-    	            $announcementObject->setLinkModifierItemDate(getCurrentDateTimeInMySQL());
+    	            $announcementObject->setActivationDate(getCurrentDateTimeInMySQL());
     	        }
             }
         } else {
             if($announcementObject->isNotActivated()){
-	            $announcementObject->setLinkModifierItemDate(getCurrentDateTimeInMySQL());
+	            $announcementObject->setActivationDate(getCurrentDateTimeInMySQL());
 	        }
         }
         
