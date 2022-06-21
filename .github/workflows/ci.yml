@@ -1,0 +1,93 @@
+name: CI
+
+on: push
+
+jobs:
+    test:
+        name: Run Tests
+        env:
+            APP_ENV: test
+            DATABASE_URL: mysql://root:root@127.0.0.1:3306/commsy_test
+        runs-on: ubuntu-latest
+        continue-on-error: ${{ matrix.experimental }}
+        strategy:
+            fail-fast: false
+            matrix:
+                php-versions: [ '7.4' ]
+                experimental: [false]
+                include:
+                    - php-versions: [ '8.0' ]
+                      experimental: true
+        services:
+            db:
+                image: mariadb:10.4
+                env:
+                    MYSQL_ROOT_PASSWORD: root
+                    MYSQL_DATABASE: commsy_test
+                ports:
+                    - 3306:3306
+        steps:
+            -   name: actions/checkout
+                uses: actions/checkout@v2
+
+            -   name: Setup node
+                uses: actions/setup-node@v2
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-versions }}
+                    extensions: zip, imap, ldap, soap
+                    tools: composer:v2
+
+            -   name: Install yarn deps
+                run: yarn install
+
+            -   name: Install php deps
+                run: composer install --no-progress
+
+            -   name: Generate JWT keypair
+                run: bin/console lexik:jwt:generate-keypair
+
+            -   name: Build frontend package
+                run: yarn build
+
+            -   name: Run tests
+                run: vendor/bin/codecept run --env github
+
+    release-docker:
+        name: Create and push docker images
+        needs: test
+        runs-on: ubuntu-latest
+        steps:
+            -   name: actions/checkout
+                uses: actions/checkout@v2
+
+            -   name: Login to DockerHub
+                uses: docker/login-action@v1
+                with:
+                    username: ${{ secrets.DOCKERHUB_USERNAME }}
+                    password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+            -   name: Build php image and push
+                uses: docker/build-push-action@v2
+                with:
+                    context: .
+                    push: true
+                    target: commsy_php
+                    tags: effectivewebwork/commsy:10.1.0-php7.4-fpm-ci
+
+            -   name: Build nginx image and push
+                uses: docker/build-push-action@v2
+                with:
+                    context: .
+                    push: true
+                    target: commsy_nginx
+                    tags: effectivewebwork/commsy:10.1.0-nginx-ci
+
+            -   name: Build elasticsearch image and push
+                uses: docker/build-push-action@v2
+                with:
+                    context: ./docker/elasticsearch
+                    push: true
+                    tags: effectivewebwork/commsy:10.1.0-elastic-ci

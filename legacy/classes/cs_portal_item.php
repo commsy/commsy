@@ -1902,22 +1902,6 @@ class cs_portal_item extends cs_guide_item {
    public function setPasswordExpiration($value) {
    	$this->_addExtra('PASSWORD_EXPIRATION', $value);
    }
-
-   public function setInactivityConfigDate()
-   {
-        // set inactivity configuration date
-        $this->_addExtra('INACTIVITY_CONFIGURATION_DATE', getCurrentDateTimeInMySQL());
-   }
-
-   public function getInactivityConfigDate()
-   {
-        // get inactivity configuration date
-        $retour = 0;
-        if ($this->_issetExtra('INACTIVITY_CONFIGURATION_DATE')) {
-            $retour = $this->_getExtra('INACTIVITY_CONFIGURATION_DATE');
-        }
-        return $retour;
-   }
    
    public function setDaysBeforeExpiringPasswordSendMail($days){
    	$this->_addExtra('DAYSBEFORE_EXPIRINGPW_SENDMAIL', $days);
@@ -1994,18 +1978,5 @@ class cs_portal_item extends cs_guide_item {
    		$retour = true;
    	}
    	return $retour;
-   }
-
-
-   public function setInactivitySettingChangeTime(){
-      $this->_addExtra('INACTIVITY_CHANGE_SETTING_TIME', getCurrentDateTimeInMySQL());
-   }
-
-   public function getInactivitySettingChangeTime(){
-    $retour = 0;
-    if ($this->_issetExtra('INACTIVITY_CHANGE_SETTING_TIME')) {
-      $retour = $this->_getExtra('INACTIVITY_CHANGE_SETTING_TIME');
-    }
-    return $retour;
    }
 }

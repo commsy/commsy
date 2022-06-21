@@ -84,6 +84,7 @@ class PersonalInformationType extends AbstractType
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
                 ],
                 'widget' => 'single_text',
+                'html5' => false,
             ])
             ->add('dateOfBirthChangeInAllContexts', CheckboxType::class, [
                 'label' => false,

@@ -54,6 +54,7 @@ class ItemWorkflowType extends AbstractType
                 'input'  => 'datetime',
                 'widget' => 'single_text',
                 'format' => 'dd.MM.yyyy',
+                'html5' => false,
                 'required' => false,
                 'attr' => array(
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
@@ -107,6 +108,7 @@ class ItemWorkflowType extends AbstractType
                 'input'  => 'datetime',
                 'widget' => 'single_text',
                 'format' => 'dd.MM.yyyy',
+                'html5' => false,
                 'required' => false,
                 'attr' => array(
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
