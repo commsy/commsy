@@ -8,7 +8,7 @@ use App\Utils\ItemService;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -28,24 +28,19 @@ class KernelSubscriber implements EventSubscriberInterface
 
     private $itemService;
 
-    private $fileService;
-
     private $urlGenerator;
 
     /**
      * @param ItemService $itemService
-     * @param FileService $fileService
      * @param UrlGeneratorInterface $urlGenerator
      * @param LegacyEnvironment $legacyEnvironment
      */
     public function __construct(
         ItemService $itemService,
-        FileService $fileService,
         UrlGeneratorInterface $urlGenerator,
         LegacyEnvironment $legacyEnvironment
     ) {
         $this->itemService = $itemService;
-        $this->fileService = $fileService;
         $this->urlGenerator = $urlGenerator;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -66,10 +61,10 @@ class KernelSubscriber implements EventSubscriberInterface
     /**
      * Catches all legacy requests and hands them over to legacy kernel
      *
-     * @param GetResponseEvent $event
+     * @param RequestEvent $event
      * @throws Exception
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event)
     {
         // the legacy kernel only deals with master requests
         if (HttpKernelInterface::MASTER_REQUEST != $event->getRequestType()) {

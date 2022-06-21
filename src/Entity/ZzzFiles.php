@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  *     @ORM\Index(name="context_id", columns={"context_id"}),
  *     @ORM\Index(name="creator_id", columns={"creator_id"})
  * })
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\ZzzFilesRepository")
  */
 class ZzzFiles
 {
@@ -150,7 +150,7 @@ class ZzzFiles
      *
      * @param integer $contextId
      *
-     * @return Files
+     * @return ZzzFiles
      */
     public function setContextId($contextId)
     {
@@ -174,7 +174,7 @@ class ZzzFiles
      *
      * @param integer $creatorId
      *
-     * @return Files
+     * @return ZzzFiles
      */
     public function setCreatorId($creatorId)
     {
@@ -198,7 +198,7 @@ class ZzzFiles
      *
      * @param integer $deleterId
      *
-     * @return Files
+     * @return ZzzFiles
      */
     public function setDeleterId($deleterId)
     {
@@ -222,7 +222,7 @@ class ZzzFiles
      *
      * @param \DateTime $creationDate
      *
-     * @return Files
+     * @return ZzzFiles
      */
     public function setCreationDate($creationDate)
     {
@@ -246,7 +246,7 @@ class ZzzFiles
      *
      * @param \DateTime $modificationDate
      *
-     * @return Files
+     * @return ZzzFiles
      */
     public function setModificationDate($modificationDate)
     {
@@ -270,7 +270,7 @@ class ZzzFiles
      *
      * @param \DateTime $deletionDate
      *
-     * @return Files
+     * @return ZzzFiles
      */
     public function setDeletionDate($deletionDate)
     {
@@ -294,7 +294,7 @@ class ZzzFiles
      *
      * @param string $filename
      *
-     * @return Files
+     * @return ZzzFiles
      */
     public function setFilename($filename)
     {
@@ -318,7 +318,7 @@ class ZzzFiles
      *
      * @param string $filepath
      *
-     * @return Files
+     * @return ZzzFiles
      */
     public function setFilepath($filepath)
     {
@@ -342,7 +342,7 @@ class ZzzFiles
      *
      * @param integer $size
      *
-     * @return Files
+     * @return ZzzFiles
      */
     public function setSize($size)
     {
@@ -366,7 +366,7 @@ class ZzzFiles
      *
      * @param string $hasHtml
      *
-     * @return Files
+     * @return ZzzFiles
      */
     public function setHasHtml($hasHtml)
     {
@@ -390,7 +390,7 @@ class ZzzFiles
      *
      * @param boolean $scan
      *
-     * @return Files
+     * @return ZzzFiles
      */
     public function setScan($scan)
     {
@@ -414,7 +414,7 @@ class ZzzFiles
      *
      * @param string $extras
      *
-     * @return Files
+     * @return ZzzFiles
      */
     public function setExtras($extras)
     {
@@ -438,7 +438,7 @@ class ZzzFiles
      *
      * @param string $tempUploadSessionId
      *
-     * @return Files
+     * @return ZzzFiles
      */
     public function setTempUploadSessionId($tempUploadSessionId)
     {
