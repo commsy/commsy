@@ -738,6 +738,16 @@ class cs_user_item extends cs_item
         $this->changedValues[] = 'email';
     }
 
+
+    /** set creator of the user - overwritting parent method - do not use
+     *
+     * @param object cs_user_item value creator of the user
+     */
+    function setCreator($value)
+    {
+        echo('use setCreatorID( xxx )<br />');
+    }
+
     /** get deleter - do not use
      * this method is a warning for coders, because if you want an object cs_user_item here, you get into an endless loop
      */
@@ -1216,34 +1226,38 @@ class cs_user_item extends cs_item
         return $room_manager->getItem($this->getRoomID());
     }
 
-    function getUserRelatedCommunityList(bool $withExtras = true)
+    function getUserRelatedCommunityList()
     {
         $manager = $this->_environment->getCommunityManager();
-        return $manager->getUserRelatedCommunityListForUser($this, $withExtras);
+        $list = $manager->getUserRelatedCommunityListForUser($this);
+        return $list;
     }
 
     function getRelatedCommunityList()
     {
         $manager = $this->_environment->getCommunityManager();
-        return $manager->getRelatedCommunityListForUser($this);
+        $list = $manager->getRelatedCommunityListForUser($this);
+        return $list;
     }
 
     function getRelatedCommunityListAllUserStatus()
     {
         $manager = $this->_environment->getCommunityManager();
-        return $manager->getRelatedCommunityListForUserAllUserStatus($this);
+        $list = $manager->getRelatedCommunityListForUserAllUserStatus($this);
+        return $list;
     }
 
-    public function getRelatedUserroomsList(bool $withExtras = true): \cs_list
+    public function getRelatedUserroomsList(): \cs_list
     {
         $manager = $this->_environment->getRoomManager();
-        return $manager->getUserRoomsUserIsMemberOf($this, $withExtras);
+        return $manager->getUserRoomsUserIsMemberOf($this)  ;
     }
 
-    function getUserRelatedProjectList(bool $withExtras = true)
+    function getUserRelatedProjectList()
     {
         $manager = $this->_environment->getProjectManager();
-        return $manager->getUserRelatedProjectListForUser($this, $withExtras);
+        $list = $manager->getUserRelatedProjectListForUser($this);
+        return $list;
     }
 
     public function getRelatedProjectList()
@@ -1419,7 +1433,7 @@ class cs_user_item extends cs_item
      * This method only updates the LastLogin Of the User.
      * Only the LastLoginField will be touched.
      */
-    function updateLastLogin()
+    public function updateLastLogin()
     {
         $user_manager = $this->_environment->getUserManager();
         $user_manager->updateLastLoginOf($this);
@@ -1508,13 +1522,13 @@ class cs_user_item extends cs_item
      *
      * @see cs_item::mayPortfolioSee()
      */
-    public function mayPortfolioSee(string $username)
+    public function mayPortfolioSee($userItem)
     {
         $portfolioManager = $this->_environment->getPortfolioManager();
 
         $userArray = $portfolioManager->getPortfolioUserForExternalViewer($this->getItemId());
 
-        return in_array($username, $userArray);
+        return in_array($userItem->getUserId(), $userArray);
     }
 
     function maySee($user_item)
@@ -1833,11 +1847,11 @@ class cs_user_item extends cs_item
 
         // community rooms
         $communityManager = $this->_environment->getCommunityManager();
-        $communityRooms = $communityManager->getRelatedCommunityListForUser($this, false);
+        $communityRooms = $communityManager->getRelatedCommunityListForUser($this);
 
         // project rooms
         $projectManager = $this->_environment->getProjectManager();
-        $projectRooms = $projectManager->getRelatedProjectListForUser($this, null, false);
+        $projectRooms = $projectManager->getRelatedProjectListForUser($this);
 
         // user rooms
         $userroomManager = $this->_environment->getUserRoomManager();
@@ -2001,38 +2015,33 @@ class cs_user_item extends cs_item
         return $retour;
     }
 
-    /**
-     * @param int|null $portalId
-     * @return cs_user_item|null
-     */
-    public function getRelatedPortalUserItem(?int $portalId = null): ?cs_user_item
+    function getRelatedPortalUserItem():?cs_user_item
     {
-        $retour = null;
+        $retour = NULL;
 
         // archive
-        $toggleArchive = false;
+        $toggle_archive = false;
         if ($this->_environment->isArchiveMode()) {
-            $toggleArchive = true;
+            $toggle_archive = true;
             $this->_environment->deactivateArchiveMode();
         }
         // archive
 
-        $contextLimit = $portalId ?? $this->_environment->getCurrentPortalID();
-
-        $userManager = $this->_environment->getUserManager();
-        $userManager->resetLimits();
-        $userManager->setContextLimit($contextLimit);
-        $userManager->setUserIDLimit($this->getUserID());
-        $userManager->setAuthSourceLimit($this->getAuthSource());
-        $userManager->select();
-        $userList = $userManager->get();
-
-        if ($userList !== null && $userList->getCount() === 1) {
-            $retour = $userList->getFirst();
+        $user_manager = $this->_environment->getUserManager();
+        $user_manager->resetLimits();
+        $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
+        $user_manager->setUserIDLimit($this->getUserID());
+        $user_manager->setAuthSourceLimit($this->getAuthSource());
+        $user_manager->select();
+        $user_list = $user_manager->get();
+        unset($user_manager);
+        if ($user_list->getCount() == 1) {
+            $retour = $user_list->getFirst();
         }
+        unset($user_list);
 
         // archive
-        if ($toggleArchive) {
+        if ($toggle_archive) {
             $this->_environment->activateArchiveMode();
         }
         // archive
@@ -2090,6 +2099,21 @@ class cs_user_item extends cs_item
     {
         $user_manager = $this->_environment->getUserManager();
         $user_manager->setCreatorID2ItemID($this);
+    }
+
+    function isDeletable()
+    {
+        $value = false;
+        $item_manager = $this->_environment->getItemManager();
+        $annotation_manager = $this->_environment->getAnnotationManager();
+        $link_manager = $this->_environment->getLinkItemManager();
+        $result1 = $item_manager->getCountExistingItemsOfUser($this->getItemID());
+        $result2 = $annotation_manager->getCountExistingAnnotationsOfUser($this->getItemID());
+        $result3 = $link_manager->getCountExistingLinkItemsOfUser($this->getItemID());
+        if ($result1 == 0 and $result2 == 0 and $result3 == 0) {
+            $value = true;
+        }
+        return $value;
     }
 
     function deleteAllEntriesOfUser()
@@ -2421,6 +2445,11 @@ class cs_user_item extends cs_item
         return $retour;
     }
 
+    function getDataAsXML()
+    {
+        return $this->_getDataAsXML();
+    }
+
     public function isOnlyReadUser()
     {
         if ($this->isReadOnlyUser()) {
@@ -2543,35 +2572,6 @@ class cs_user_item extends cs_item
     {
         include_once('functions/date_functions.php');
         $this->_addExtra('LOCK', getCurrentDateTimePlusDaysInMySQL($days));
-    }
-
-    function getLock()
-    {
-        $retour = '';
-        if ($this->_issetExtra('LOCK')) {
-            $retour = $this->_getExtra('LOCK');
-        }
-        return $retour;
-    }
-
-    function isLocked()
-    {
-        $retour = false;
-        if ($this->_issetExtra('LOCK')) {
-            include_once('functions/date_functions.php');
-            $date = $this->_getExtra('LOCK');
-            if (getCurrentDateTimeInMySQL() > $date) {
-                $retour = false;
-            } else {
-                $retour = true;
-            }
-        }
-        return $retour;
-    }
-
-    function unsetLock()
-    {
-        $this->_unsetExtra('LOCK');
     }
 
     function setTemporaryLock()
@@ -2745,151 +2745,6 @@ class cs_user_item extends cs_item
         }
 
         return null;
-    }
-
-    function setMailSendLocked()
-    {
-        $this->_addExtra('MAIL_SEND_LOCKED', '1');
-    }
-
-    function unsetMailSendLocked()
-    {
-        $this->_unsetExtra('MAIL_SEND_LOCKED');
-    }
-
-    function getMailSendLocked()
-    {
-        $retour = false;
-        if ($this->_issetExtra('MAIL_SEND_LOCKED')) {
-            $retour = $this->_getExtra('MAIL_SEND_LOCKED');
-        }
-        return $retour;
-    }
-
-
-    function setMailSendBeforeLock()
-    {
-        $this->_addExtra('MAIL_SEND_LOCK', '1');
-    }
-
-    function unsetMailSendBeforeLock()
-    {
-        $this->_unsetExtra('MAIL_SEND_LOCK');
-    }
-
-    function getMailSendBeforeLock()
-    {
-        $retour = false;
-        if ($this->_issetExtra('MAIL_SEND_LOCK')) {
-            $retour = $this->_getExtra('MAIL_SEND_LOCK');
-        }
-        return $retour;
-    }
-
-    function getMailSendNextLock()
-    {
-        $retour = false;
-        if ($this->_issetExtra('MAIL_SEND_NEXT_LOCK')) {
-            $retour = $this->_getExtra('MAIL_SEND_NEXT_LOCK');
-        }
-        return $retour;
-    }
-
-    function setMailSendBeforeDelete()
-    {
-        $this->_addExtra('MAIL_SEND_DELETE', '1');
-    }
-
-    function unsetMailSendBeforeDelete()
-    {
-        $this->_unsetExtra('MAIL_SEND_DELETE');
-    }
-
-    function getMailSendBeforeDelete()
-    {
-        $retour = false;
-        if ($this->_issetExtra('MAIL_SEND_DELETE')) {
-            $retour = $this->_getExtra('MAIL_SEND_DELETE');
-        }
-        return $retour;
-    }
-
-    function setMailSendNextDelete()
-    {
-        $this->_addExtra('MAIL_SEND_NEXT_DELETE', '1');
-    }
-
-    function unsetMailSendNextDelete()
-    {
-        $this->_unsetExtra('MAIL_SEND_NEXT_DELETE');
-    }
-
-    function getMailSendNextDelete()
-    {
-        $retour = false;
-        if ($this->_issetExtra('MAIL_SEND_NEXT_DELETE')) {
-            $retour = $this->_getExtra('MAIL_SEND_NEXT_DELETE');
-        }
-        return $retour;
-    }
-
-    function setLockSendMailDate()
-    {
-        $this->_addExtra('LOCK_SEND_MAIL_DATE', getCurrentDateTimeInMySQL());
-    }
-
-    function getLockSendMailDate()
-    {
-        return $this->_getExtra('LOCK_SEND_MAIL_DATE');
-    }
-
-    function unsetLockSendMailDate()
-    {
-        $this->_unsetExtra('LOCK_SEND_MAIL_DATE');
-    }
-
-    function setNotifyLockDate()
-    {
-        $this->_addExtra('NOTIFY_LOCK_DATE', getCurrentDateTimeInMySQL());
-    }
-
-    function getNotifyLockDate()
-    {
-        return $this->_getExtra('NOTIFY_LOCK_DATE');
-    }
-
-    function unsetNotifyLockDate()
-    {
-        $this->_unsetExtra('NOTIFY_LOCK_DATE');
-    }
-
-    function setNotifyDeleteDate()
-    {
-        $this->_addExtra('NOTIFY_DELETE_DATE', getCurrentDateTimeInMySQL());
-    }
-
-    function getNotifyDeleteDate()
-    {
-        return $this->_getExtra('NOTIFY_DELETE_DATE');
-    }
-
-    function unsetNotifyDeleteDate()
-    {
-        $this->_unsetExtra('NOTIFY_DELETE_DATE');
-    }
-
-    function resetInactivity()
-    {
-        $this->unsetMailSendBeforeLock();
-        $this->unsetMailSendLocked();
-        $this->unsetMailSendBeforeDelete();
-        $this->unsetMailSendNextDelete();
-        $this->unsetLockSendMailDate();
-        $this->unsetLock();
-        $this->unsetNotifyLockDate();
-        $this->unsetNotifyDeleteDate();
-
-        $this->save();
     }
 
     ## commsy user connections: portal2portal
