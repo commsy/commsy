@@ -861,7 +861,6 @@ class cs_item_manager extends cs_manager {
             ->from($this->addDatabasePrefix('external_viewer'), 'e')
             ->where('e.item_id = :itemId')
             ->andWhere('e.user_id = :username')
-            ->andWhere('e.deletion_date IS NULL')
             ->setParameter('itemId', $itemId)
             ->setParameter('username', $username);
 
@@ -886,7 +885,6 @@ class cs_item_manager extends cs_manager {
         $query = 'SELECT user_id';
         $query .= ' FROM ' . $this->addDatabasePrefix('external_viewer');
         $query .= ' WHERE item_id="' . $iid . '"';
-        $query .= ' AND deletion_date IS NULL';
 
         $result = $this->_db_connector->performQuery($query);
         if (isset($result) and !empty($result)) {
@@ -897,10 +895,8 @@ class cs_item_manager extends cs_manager {
     }
 
    function deleteExternalViewerEntry($iid,$user_id){
-      $current_user = $this->_environment->getCurrentUserItem();
-      $query = 'UPDATE ';
-      $query .= $this->addDatabasePrefix('external_viewer');
-      $query .= ' SET deleter_id='.encode(AS_DB,$current_user->getItemID()).', deletion_date=NOW()';
+      $query = 'DELETE';
+      $query .= ' FROM '.$this->addDatabasePrefix('external_viewer');
       $query .= ' WHERE item_id="'.$iid.'" and user_id = "'.$user_id.'"';
       $result = $this->_db_connector->performQuery($query);
    }
@@ -930,7 +926,8 @@ class cs_item_manager extends cs_manager {
             ->from($this->addDatabasePrefix($this->_db_table), 'i')
             ->innerJoin('i', $this->addDatabasePrefix('external_viewer'), 'e', 'i.item_id = e.item_id')
             ->where('i.context_id = :contextId')
-            ->andWhere('e.deletion_date IS NULL')
+            ->andWhere('i.deleter_id IS NULL')
+            ->andWhere('i.deletion_date IS NULL')
             ->setParameter('contextId', $room_id);
 
         $result = $this->_db_connector->performQuery($queryBuilder->getSQL(), $queryBuilder->getParameters());
@@ -943,7 +940,6 @@ class cs_item_manager extends cs_manager {
       $query = 'SELECT item_id';
       $query .= ' FROM '.$this->addDatabasePrefix('external_viewer');
       $query .= ' WHERE user_id="'.$user_id.'"';
-      $query .= ' AND deletion_date IS NULL';
       $result = $this->_db_connector->performQuery($query);
       if ( isset($result) and !empty($result) ) {
       	foreach($result as $query_result){
