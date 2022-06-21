@@ -36,6 +36,7 @@ class FileController extends AbstractController
      * @return Response
      */
     public function getFileAction(
+        Request $request,
         FileService $fileService,
         RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
@@ -66,9 +67,7 @@ class FileController extends AbstractController
             }
         }
 
-
         $response = new BinaryFileResponse($file->getDiskFileName());
-
 
         $fileName = $file->getFileName();
 
