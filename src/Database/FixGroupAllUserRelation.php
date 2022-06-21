@@ -1,19 +1,16 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 09.02.18
- * Time: 16:23
- */
 
 namespace App\Database;
 
 
-use App\Services\LegacyEnvironment;
-use App\Database\Resolve\AddMemberToGroupResolution;
 use App\Entity\Portal;
 use App\Entity\Room;
+use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_group_item;
+use cs_link_item;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class FixGroupAllUserRelation implements DatabaseCheck
@@ -21,16 +18,18 @@ class FixGroupAllUserRelation implements DatabaseCheck
     /**
      * @var EntityManagerInterface
      */
-    private $em;
+    private EntityManagerInterface $entityManager;
 
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
-    public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
-    {
-        $this->em = $em;
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        LegacyEnvironment $legacyEnvironment
+    ) {
+        $this->entityManager = $entityManager;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -39,10 +38,10 @@ class FixGroupAllUserRelation implements DatabaseCheck
         return 199;
     }
 
-    public function findProblems(SymfonyStyle $io, int $limit)
+    public function resolve(SymfonyStyle $io): bool
     {
         // find all active portals
-        $qb = $this->em->createQueryBuilder()
+        $qb = $this->entityManager->createQueryBuilder()
             ->select('p')
             ->from('App:Portal', 'p')
             ->where('p.deleter IS NULL')
@@ -53,25 +52,26 @@ class FixGroupAllUserRelation implements DatabaseCheck
         $groupManager = $this->legacyEnvironment->getGroupManager();
         $userManager = $this->legacyEnvironment->getUserManager();
 
-        $problems = [];
-
         /** @var Portal[] $portals */
         foreach ($portals as $portal) {
-            $io->text('Inspecting relations between users and system group "ALL" in portal ' . $portal->getTitle() . '(' . $portal->getItemId() . ')');
+            $io->text('Inspecting relations between users and system group "ALL" in portal ' . $portal->getTitle() . '(' . $portal->getId() . ')');
 
-            $qb = $this->em->createQueryBuilder()
+            $qb = $this->entityManager->createQueryBuilder()
                 ->select('r')
                 ->from('App:Room', 'r')
                 ->where('r.deleter IS NULL')
                 ->andWhere('r.deletionDate IS NULL')
                 ->andWhere('r.contextId = :contextId')
                 ->andWhere('r.type = :roomType')
-                ->setParameter('contextId', $portal->getItemId())
+                ->setParameter('contextId', $portal->getId())
                 ->setParameter('roomType', 'project')
                 ->getQuery();
 
             /** @var Room[] $projectRooms */
             $projectRooms = $qb->execute();
+
+            $progressBar = new ProgressBar($io, count($projectRooms));
+            $progressBar->start();
 
             foreach ($projectRooms as $projectRoom) {
                 if ($io->isVerbose()) {
@@ -81,7 +81,8 @@ class FixGroupAllUserRelation implements DatabaseCheck
                 // get group "ALL"
                 $groupManager->reset();
                 $groupManager->setContextLimit($projectRoom->getItemId());
-                /** @var \cs_group_item $groupAll */
+
+                /** @var cs_group_item $groupAll */
                 $groupAll = $groupManager->getItemByName('ALL');
                 $groupAllMembers = $groupAll->getMemberItemList();
 
@@ -101,31 +102,30 @@ class FixGroupAllUserRelation implements DatabaseCheck
                             if (!$groupAllMembers->inList($userItem)) {
                                 $io->warning('Missing user relation found');
 
-                                $problems[] = new DatabaseProblem([
-                                    'user' => $userItem,
-                                    'group' => $groupAll,
-                                ]);
+                                $linkManager = $this->legacyEnvironment->getLinkItemManager();
 
-                                if ($limit > 0 && sizeof($problems) === $limit) {
-                                    $io->warning('Number of problems found reached limit -> early return. Please rerun the command.');
-                                    return $problems;
-                                }
+                                /** @var cs_link_item $linkItem */
+                                $linkItem = $linkManager->getNewItem();
+
+                                $linkItem->setCreatorItem($userItem);
+                                $linkItem->setModificatorItem($userItem);
+                                $linkItem->setFirstLinkedItem($groupAll);
+                                $linkItem->setSecondLinkedItem($userItem);
+
+                                $linkItem->save();
                             }
                         }
 
                         $userItem = $userList->getNext();
                     }
                 }
+
+                $progressBar->advance();
             }
+
+            $progressBar->finish();
         }
 
-        return $problems;
-    }
-
-    public function getResolutionStrategies()
-    {
-        return [
-            new AddMemberToGroupResolution($this->legacyEnvironment),
-        ];
+        return true;
     }
 }

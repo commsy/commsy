@@ -10,6 +10,7 @@ use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use ReflectionClass;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Stopwatch\Stopwatch;
 
@@ -53,7 +54,7 @@ class CronManager
         $this->projectDir = $projectDir;
     }
 
-    public function run(SymfonyStyle $output, bool $force = false)
+    public function run(SymfonyStyle $output, array $exclude, bool $force = false)
     {
         chdir($this->projectDir . '/legacy/');
         $this->legacyEnvironment->setCacheOff();
@@ -69,6 +70,15 @@ class CronManager
         $cronTasks = iterator_to_array($this->cronTasks);
         usort($cronTasks, [$this, 'sortByPriority']);
         foreach ($cronTasks as $cronTask) {
+            try {
+                $cronTaskRef = new ReflectionClass($cronTask);
+                if (in_array($cronTaskRef->getShortName(), $exclude)) {
+                    $output->note($cronTask->getSummary() . ' - skipped by exclusion');
+                    continue;
+                }
+            } catch (\ReflectionException $e) {
+            }
+
             /** @var CronTaskInterface $cronTask */
             $stopwatch->start($cronTask->getSummary());
 

@@ -24,7 +24,7 @@ class cs_disc_manager {
 
    var $_first_id = NULL;
    var $_second_id = NULL;
-   var $_file_path_basic = '../files/';
+   var $_file_path_basic = 'files/';
 
    // NOTE: this path spec will be used instead of `$_file_path_basic` if the current working directory matches the
    // project directory; this happens in case of CLI command execution (like `bin/console fos:elastica:populate`)

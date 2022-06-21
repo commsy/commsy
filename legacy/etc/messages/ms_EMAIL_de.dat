@@ -8,27 +8,21 @@ $message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["de"] = "Text";
 $message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["de"] = "Ihre Kennung %1 (%2) wird in %3 Tagen gelöscht.
 
 %4";
-$message["EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT"]["de"] = "%2: Kennung wird in %1 Tagen gelöscht";
 $message["EMAIL_INACTIVITY_DELETE_NOW_BODY"]["de"] = "Ihre Kennung %1 (%2) wurde gelöscht.
 
 %3";
-$message["EMAIL_INACTIVITY_DELETE_NOW_SUBJECT"]["de"] = "%2: Kennung wurde gelöscht";
-$message["EMAIL_INACTIVITY_DELETE_TOMORROW_BODY"]["de"] = "Ihre Kennung %1 (%2) wird morgen gelöscht.
-
-%3";
-$message["EMAIL_INACTIVITY_DELETE_TOMORROW_SUBJECT"]["de"] = "%1: Kennung wird morgen gelöscht";
 $message["EMAIL_INACTIVITY_LOCK_NEXT_BODY"]["de"] = "Ihre Kennung %1 (%2) wird in %3 Tagen wegen Inaktivität gesperrt. Bitte loggen Sie sich innerhalb dieser Zeit ein, um eine automatische Sperrung zu verhindern.
 
 %4";
-$message["EMAIL_INACTIVITY_LOCK_NEXT_SUBJECT"]["de"] = "%2: Kennung wird in %1 Tagen gesperrt";
 $message["EMAIL_INACTIVITY_LOCK_NOW_BODY"]["de"] = "Ihre Kennung %1 (%2) wurde wegen Inaktivität gesperrt. Bitte wenden Sie sich an Ihre Portal-Moderation.
 
 %3";
-$message["EMAIL_INACTIVITY_LOCK_NOW_SUBJECT"]["de"] = "%1: Ihre Kennung wurde gesperrt";
-$message["EMAIL_INACTIVITY_LOCK_TOMORROW_BODY"]["de"] = "Ihre Kennung %1 (%2) wird morgen wegen Inaktivität gesperrt. Bitte loggen Sie sich bis morgen ein, um eine automatische Sperrung zu verhindern.
+$message["EMAIL_INACTIVITY_ROOM_LOCK_UPCOMING_BODY"]["de"] = "Der Raum &quot;%1&quot; wurde seit %2 Tagen nicht mehr verwendet. Daher wird er in %3 Tagen gesperrt.
 
-%3";
-$message["EMAIL_INACTIVITY_LOCK_TOMORROW_SUBJECT"]["de"] = "%1: Kennung wird morgen gesperrt";
+Wenn Sie nicht wollen, dass der Raum gesperrt wird, betreten Sie Ihn innerhalb der nächsten %3 Tage.";
+$message["EMAIL_INACTIVITY_ROOM_DELETE_UPCOMING_BODY"]["de"] = "Der Raum &quot;%1&quot; wurde seit %2 Tagen nicht mehr verwendet. Daher findet eine Löschung in %3 Tagen statt.
+
+Wenn Sie nicht wollen, dass der Raum gelöscht wird, kontaktieren Sie inner der nächsten %3 Tage die Portalmoderation mit der Bitte ihn zu entsperren.";
 $message["EMAIL_LOGIN_EXPIRATION_BODY"]["de"] = "die Funktion, Einloggen als XYZ, ist automatisch deaktiviert worden.";
 $message["EMAIL_LOGIN_EXPIRATION_SUBJECT"]["de"] = "%1: Einloggen als XYZ ist abgelaufen";
 $message["EMAIL_PASSWORD_EXPIRATION_BODY"]["de"] = "Ihr Passwort ist nun leider abgelaufen und wurde auf einen zufälligen Wert geändert.

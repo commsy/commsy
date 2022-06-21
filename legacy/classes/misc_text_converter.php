@@ -3381,8 +3381,8 @@ class misc_text_converter {
     private function _constructHTMLPurifier()
     {
         global $symfonyContainer;
-        $kernelDir = $symfonyContainer->getParameter('kernel.root_dir');
-        require_once $kernelDir . '/../vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
+        $projectDir = $symfonyContainer->getParameter('kernel.project_dir');
+        require_once $projectDir . '/vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
 
         // Allow Full HTML
         $configFullHTML = $this->_getFullHTMLPurifierConfig();
@@ -3398,9 +3398,9 @@ class misc_text_converter {
         $config = HTMLPurifier_Config::createDefault();
 
         global $symfonyContainer;
-        $kernelDir = $symfonyContainer->getParameter('kernel.root_dir');
+        $projectDir = $symfonyContainer->getParameter('kernel.project_dir');
 
-        $config->set('Cache.SerializerPath', $kernelDir . '/../var/cache/htmlpurifier');
+        $config->set('Cache.SerializerPath', $projectDir . '/var/cache/htmlpurifier');
 
         $config->set('HTML.Allowed', '');
 
@@ -3412,9 +3412,9 @@ class misc_text_converter {
         $config = HTMLPurifier_Config::createDefault();
 
         global $symfonyContainer;
-        $kernelDir = $symfonyContainer->getParameter('kernel.root_dir');
+        $projectDir = $symfonyContainer->getParameter('kernel.project_dir');
 
-        $config->set('Cache.SerializerPath', $kernelDir . '/../var/cache/htmlpurifier');
+        $config->set('Cache.SerializerPath', $projectDir . '/var/cache/htmlpurifier');
 
         $config->set('HTML.Allowed', NULL);
 

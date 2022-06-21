@@ -329,34 +329,6 @@
                 <source>Default template help text</source>
                 <target>By choosing a template, a newly created workspace will be prepopulated with contents from the template workspace (except for user information)</target>
             </trans-unit>
-            <trans-unit id="archiving_rooms">
-                <source>Archiving rooms</source>
-                <target>ARchiving</target>
-            </trans-unit>
-            <trans-unit id="archive_deletion">
-                <source>Archive deletion</source>
-                <target>Deletion of archiv. rooms</target>
-            </trans-unit>
-            <trans-unit id="activate">
-                <source>Activate</source>
-                <target>activate</target>
-            </trans-unit>
-            <trans-unit id="archive_after_x_days">
-                <source>Archive rooms after x days</source>
-                <target>Archive rooms after x days</target>
-            </trans-unit>
-            <trans-unit id="send_mail_x_days_before_archiving">
-                <source>Send mail x days before archiving</source>
-                <target>Send mail x days before archiving</target>
-            </trans-unit>
-            <trans-unit id="delete_after_x_days">
-                <source>Delete rooms after x days</source>
-                <target>Delete rooms after x days</target>
-            </trans-unit>
-            <trans-unit id="send_mail_x_days_before_deletion">
-                <source>Send mail x days before deletion</source>
-                <target>Send mail x days before deletion</target>
-            </trans-unit>
 
             <!-- Portal Account Index -->
             <trans-unit id="portal_accounts">
@@ -961,37 +933,99 @@
             </trans-unit>
 
             <!-- inactive -->
-            <trans-unit id="lock_user">
-                <source>Lock user</source>
-                <target>Lock user after x days of inactivity</target>
-            </trans-unit>
-            <trans-unit id="email_before_lock">
-                <source>Email before lock</source>
-                <target>Send an email x days before locking a user</target>
-            </trans-unit>
-            <trans-unit id="delete_user">
-                <source>Delete user</source>
-                <target>Delete users after x days of inactivity</target>
-            </trans-unit>
-            <trans-unit id="email_before_delete">
-                <source>Email before delete</source>
-                <target>Write an email x days before deleting a user</target>
-            </trans-unit>
-            <trans-unit id="inactive">
-                <source>Inactive</source>
-                <target>Deleting inactive users</target>
-            </trans-unit>
             <trans-unit id="deprovisioning">
                 <source>Deprovisioning</source>
                 <target>Deprovisioning</target>
             </trans-unit>
-            <trans-unit id="archive_inactive_rooms">
-                <source>Archive inactive rooms</source>
-                <target>Archive inactive rooms</target>
+
+            <trans-unit id="portal.inactive.account.title">
+                <source>portal.inactive.account.title</source>
+                <target>Delete inactive users</target>
             </trans-unit>
-            <trans-unit id="delete_inactive_rooms">
-                <source>Delete inactive rooms</source>
-                <target>Delete inactive rooms</target>
+            <trans-unit id="portal.inactive.account.enable.label">
+                <source>portal.inactive.account.enable.label</source>
+                <target>Activated</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.enable.help">
+                <source>portal.inactive.account.enable.help</source>
+                <target>Deactivating the function will reset all previous notifications.</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.email_before_lock.label">
+                <source>portal.inactive.account.email_before_lock.label</source>
+                <target>Notification before locking</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.email_before_lock.help">
+                <source>portal.inactive.account.email_before_lock.help</source>
+                <target>Number of days of inactivity after that a notification will be send, informing the user about an upcoming locking.</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.lock.label">
+                <source>portal.inactive.account.lock.label</source>
+                <target>Lock by inactivity</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.lock.help">
+                <source>portal.inactive.account.lock.help</source>
+                <target>Number of days after notification an account will be locked.</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.email_before_delete.label">
+                <source>portal.inactive.account.email_before_delete.label</source>
+                <target>Notification before deletion</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.email_before_delete.help">
+                <source>portal.inactive.account.email_before_delete.help</source>
+                <target>Number of days of inactivity after that a locked users will be notified about an upcoming deletion.</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.delete.label">
+                <source>portal.inactive.account.delete.label</source>
+                <target>Delete by inactivity</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.account.delete.help">
+                <source>portal.inactive.account.delete.help</source>
+                <target>Number of days after notification an account will be deleted.</target>
+            </trans-unit>
+
+            <trans-unit id="portal.inactive.room.title">
+                <source>portal.inactive.room.title</source>
+                <target>Delete inactive workspace</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.enable.label">
+                <source>portal.inactive.room.enable.label</source>
+                <target>Aktiviert</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.enable.help">
+                <source>portal.inactive.room.enable.help</source>
+                <target>Das Deaktivieren dieser Funktion setzt alle erfolgten Benachrichtigungen zurück.</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.email_before_lock.label">
+                <source>portal.inactive.room.email_before_lock.label</source>
+                <target>Notification before locking</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.email_before_lock.help">
+                <source>portal.inactive.room.email_before_lock.help</source>
+                <target>Number of days of inactivity after that a notification will be send, informing the room moderation about an upcoming locking.</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.lock.label">
+                <source>portal.inactive.room.lock.label</source>
+                <target>Lock by inactivity</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.lock.help">
+                <source>portal.inactive.room.lock.help</source>
+                <target>Number of days after notification a workspace will be locked.</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.email_before_delete.label">
+                <source>portal.inactive.room.email_before_delete.label</source>
+                <target>Notification before deletion</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.email_before_delete.help">
+                <source>portal.inactive.room.email_before_delete.help</source>
+                <target>Number of days of inactivity after that moderation of a locked workspace will be notified about an upcoming deletion.</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.delete.label">
+                <source>portal.inactive.room.delete.label</source>
+                <target>Delete by inactivity</target>
+            </trans-unit>
+            <trans-unit id="portal.inactive.room.delete.help">
+                <source>portal.inactive.room.delete.help</source>
+                <target>Number of days after notification a workspace will be deleted.</target>
             </trans-unit>
 
             <!-- portal licenses configuration -->
@@ -1191,29 +1225,17 @@
                 <source>Create room</source>
                 <target>Create room</target>
             </trans-unit>
-            <trans-unit id="archive_room_x_days">
-                <source>Archive room after X days</source>
-                <target>Room will automatically be archived in X days</target>
-            </trans-unit>
-            <trans-unit id="room_was_archived_yesterday">
-                <source>Room was archived yesterday</source>
-                <target>Room was archived yesterday</target>
+            <trans-unit id="lock_room_x_days">
+                <source>Lock room after X days</source>
+                <target>Room will automatically be locked in X days</target>
             </trans-unit>
             <trans-unit id="delete_room_after_x_days">
                 <source>Delete room after X day</source>
                 <target>Room will be automatically deleted after X days</target>
             </trans-unit>
-            <trans-unit id="room_was_deleted_yesterday">
-                <source>Room was deleted yesterday</source>
-                <target>Room was deleted yesterday</target>
-            </trans-unit>
             <trans-unit id="lock_userid_in_x_days">
                 <source>Lock userid in X days</source>
                 <target>Lock user ID in X days</target>
-            </trans-unit>
-            <trans-unit id="userid_locked_tomorrow">
-                <source>Userid will be locked tomorrow</source>
-                <target>Use ID will be locked tomorrow</target>
             </trans-unit>
             <trans-unit id="userid_locked">
                 <source>Userid was locked</source>
@@ -1222,10 +1244,6 @@
             <trans-unit id="delete_userid_in_X_days">
                 <source>Delete userid in X days</source>
                 <target>Delete user ID in X days</target>
-            </trans-unit>
-            <trans-unit id="delete_userid_tomorrow">
-                <source>Userid will be deleted tomorrow</source>
-                <target>User ID will be deleted tomorrow</target>
             </trans-unit>
             <trans-unit id="userid_deleted">
                 <source>Userid was deleted</source>

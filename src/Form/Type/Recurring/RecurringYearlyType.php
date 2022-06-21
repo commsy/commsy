@@ -61,6 +61,7 @@ class RecurringYearlyType extends AbstractType
                 'label' => 'untilDate',
                 'widget' => 'single_text',
                 'format' => 'dd.MM.yyyy',
+                'html5' => false,
                 'attr' => array(
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
                     'style' => 'margin: 0px 3px;',

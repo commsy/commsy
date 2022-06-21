@@ -67,7 +67,8 @@ fos_elastica:
                 identifier: itemId
                 finder: ~
                 provider: ~
-                listener: ~
+                listener:
+                    enabled: false
 
             indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
 
@@ -205,7 +206,8 @@ fos_elastica:
                 identifier: itemId
                 finder: ~
                 provider: ~
-                listener: ~
+                listener:
+                    enabled: false
 
             indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
 
@@ -346,7 +348,8 @@ fos_elastica:
                 identifier: itemId
                 finder: ~
                 provider: ~
-                listener: ~
+                listener:
+                    enabled: false
 
             indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
 
@@ -494,7 +497,8 @@ fos_elastica:
                 identifier: itemId
                 finder: ~
                 provider: ~
-                listener: ~
+                listener:
+                    enabled: false
 
             indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
 
@@ -614,7 +618,8 @@ fos_elastica:
                 identifier: itemId
                 finder: ~
                 provider: ~
-                listener: ~
+                listener:
+                    enabled: false
 
             indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
 
@@ -735,7 +740,8 @@ fos_elastica:
                 identifier: itemId
                 finder: ~
                 provider: ~
-                listener: ~
+                listener:
+                    enabled: false
 
             indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
 
@@ -895,7 +901,8 @@ fos_elastica:
                 identifier: itemId
                 finder: ~
                 provider: ~
-                listener: ~
+                listener:
+                    enabled: false
 
             indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
 
@@ -1028,7 +1035,8 @@ fos_elastica:
                 finder: ~
                 provider:
                     query_builder_method: createSearchQueryBuilder
-                listener: ~
+                listener:
+                    enabled: false
                 elastica_to_model_transformer:
                     query_builder_method: createSearchHydrationQueryBuilder
 

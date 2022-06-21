@@ -21,7 +21,7 @@ class LoggingSubscriber implements EventSubscriberInterface
 
     public function onTerminateEvent(TerminateEvent $event)
     {
-        if ($event->isMasterRequest()) {
+        if ($event->isMainRequest()) {
             $request = $event->getRequest();
 
             /*
