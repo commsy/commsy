@@ -473,12 +473,14 @@ class CronNewsletter implements CronTaskInterface
 
             // send email
             $account = $this->accountManager->getAccount($user, $portal->getItemId());
-            $this->mailer->sendRaw(
-                $subject,
-                $body,
-                RecipientFactory::createFromAccount($account),
-                $from
-            );
+            if ($account) {
+                $this->mailer->sendRaw(
+                    $subject,
+                    $body,
+                    RecipientFactory::createFromAccount($account),
+                    $from
+                );
+            }
         }
     }
 }

@@ -738,16 +738,6 @@ class cs_user_item extends cs_item
         $this->changedValues[] = 'email';
     }
 
-
-    /** set creator of the user - overwritting parent method - do not use
-     *
-     * @param object cs_user_item value creator of the user
-     */
-    function setCreator($value)
-    {
-        echo('use setCreatorID( xxx )<br />');
-    }
-
     /** get deleter - do not use
      * this method is a warning for coders, because if you want an object cs_user_item here, you get into an endless loop
      */
@@ -1226,38 +1216,34 @@ class cs_user_item extends cs_item
         return $room_manager->getItem($this->getRoomID());
     }
 
-    function getUserRelatedCommunityList()
+    function getUserRelatedCommunityList(bool $withExtras = true)
     {
         $manager = $this->_environment->getCommunityManager();
-        $list = $manager->getUserRelatedCommunityListForUser($this);
-        return $list;
+        return $manager->getUserRelatedCommunityListForUser($this, $withExtras);
     }
 
     function getRelatedCommunityList()
     {
         $manager = $this->_environment->getCommunityManager();
-        $list = $manager->getRelatedCommunityListForUser($this);
-        return $list;
+        return $manager->getRelatedCommunityListForUser($this);
     }
 
     function getRelatedCommunityListAllUserStatus()
     {
         $manager = $this->_environment->getCommunityManager();
-        $list = $manager->getRelatedCommunityListForUserAllUserStatus($this);
-        return $list;
+        return $manager->getRelatedCommunityListForUserAllUserStatus($this);
     }
 
-    public function getRelatedUserroomsList(): \cs_list
+    public function getRelatedUserroomsList(bool $withExtras = true): \cs_list
     {
         $manager = $this->_environment->getRoomManager();
-        return $manager->getUserRoomsUserIsMemberOf($this)  ;
+        return $manager->getUserRoomsUserIsMemberOf($this, $withExtras);
     }
 
-    function getUserRelatedProjectList()
+    function getUserRelatedProjectList(bool $withExtras = true)
     {
         $manager = $this->_environment->getProjectManager();
-        $list = $manager->getUserRelatedProjectListForUser($this);
-        return $list;
+        return $manager->getUserRelatedProjectListForUser($this, $withExtras);
     }
 
     public function getRelatedProjectList()
@@ -1522,13 +1508,13 @@ class cs_user_item extends cs_item
      *
      * @see cs_item::mayPortfolioSee()
      */
-    public function mayPortfolioSee($userItem)
+    public function mayPortfolioSee(string $username)
     {
         $portfolioManager = $this->_environment->getPortfolioManager();
 
         $userArray = $portfolioManager->getPortfolioUserForExternalViewer($this->getItemId());
 
-        return in_array($userItem->getUserId(), $userArray);
+        return in_array($username, $userArray);
     }
 
     function maySee($user_item)
@@ -1847,11 +1833,11 @@ class cs_user_item extends cs_item
 
         // community rooms
         $communityManager = $this->_environment->getCommunityManager();
-        $communityRooms = $communityManager->getRelatedCommunityListForUser($this);
+        $communityRooms = $communityManager->getRelatedCommunityListForUser($this, false);
 
         // project rooms
         $projectManager = $this->_environment->getProjectManager();
-        $projectRooms = $projectManager->getRelatedProjectListForUser($this);
+        $projectRooms = $projectManager->getRelatedProjectListForUser($this, null, false);
 
         // user rooms
         $userroomManager = $this->_environment->getUserRoomManager();
@@ -2099,21 +2085,6 @@ class cs_user_item extends cs_item
     {
         $user_manager = $this->_environment->getUserManager();
         $user_manager->setCreatorID2ItemID($this);
-    }
-
-    function isDeletable()
-    {
-        $value = false;
-        $item_manager = $this->_environment->getItemManager();
-        $annotation_manager = $this->_environment->getAnnotationManager();
-        $link_manager = $this->_environment->getLinkItemManager();
-        $result1 = $item_manager->getCountExistingItemsOfUser($this->getItemID());
-        $result2 = $annotation_manager->getCountExistingAnnotationsOfUser($this->getItemID());
-        $result3 = $link_manager->getCountExistingLinkItemsOfUser($this->getItemID());
-        if ($result1 == 0 and $result2 == 0 and $result3 == 0) {
-            $value = true;
-        }
-        return $value;
     }
 
     function deleteAllEntriesOfUser()
@@ -2443,11 +2414,6 @@ class cs_user_item extends cs_item
         }
 
         return $retour;
-    }
-
-    function getDataAsXML()
-    {
-        return $this->_getDataAsXML();
     }
 
     public function isOnlyReadUser()
