@@ -214,7 +214,7 @@ class cs_discussionarticles_manager extends cs_manager {
 
 
      if ($this->_sort_position){
-        $query .= ' ORDER BY '.$this->addDatabasePrefix('discussionarticles').'.position DESC';
+        $query .= ' ORDER BY '.$this->addDatabasePrefix('discussionarticles').'.position ASC';
      }else{
         $query .= ' ORDER BY '.$this->addDatabasePrefix('discussionarticles').'.creation_date ASC, '.$this->addDatabasePrefix('discussionarticles').'.item_id ASC, '.$this->addDatabasePrefix('discussionarticles').'.subject DESC';
      }
@@ -326,7 +326,6 @@ class cs_discussionarticles_manager extends cs_manager {
          $this->setContextLimit($discussion_item->getContextID());
          $this->setDiscussionLimit($discussion_item->getItemID());
          $this->setSortPosition();
-       //  $this->setOrder('ASC');
          if ($show_all == true) {
             $this->setDeleteLimit(false);
          }
