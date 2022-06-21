@@ -53,6 +53,7 @@ class DateTimeSelectType extends AbstractType
             'label' => false,
             'widget' => 'single_text',
             'format' => 'HH:mm',
+            'html5' => false,
             'required' => false,
             'attr' => array(
                 'data-uk-timepicker' => '',

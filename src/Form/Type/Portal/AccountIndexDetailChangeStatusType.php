@@ -2,7 +2,6 @@
 
 namespace App\Form\Type\Portal;
 
-use App\Entity\Portalportal;
 use App\Entity\PortalUserChangeStatus;
 use App\Security\Authorization\Voter\RootVoter;
 use Symfony\Component\Form\AbstractType;
@@ -89,6 +88,7 @@ class AccountIndexDetailChangeStatusType extends AbstractType
                 'translation_domain' => 'portal',
                 'required' => false,
                 'widget' => 'single_text',
+                'html5' => false,
                 'input' => 'datetime_immutable',
                 'disabled' => !$this->security->isGranted(RootVoter::ROOT),
             ])

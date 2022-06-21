@@ -38,6 +38,7 @@ class RecurringDailyType extends AbstractType
                 'label' => 'untilDate',
                 'widget' => 'single_text',
                 'format' => 'dd.MM.yyyy',
+                'html5' => false,
                 'attr' => array(
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
                     'class' => 'cs-form-input-inline',
