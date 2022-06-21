@@ -66,18 +66,18 @@ class TopicTransformer extends AbstractTransformer
                         $time = explode(":", $topicData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
-                    $topicObject->setLinkModifierItemDate($datetime->format('Y-m-d H:i:s'));
+                    $topicObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
                 } else {
-                    $topicObject->setLinkModifierItemDate('9999-00-00 00:00:00');
+                    $topicObject->setActivationDate('9999-00-00 00:00:00');
                 }
             } else {
                 if($topicObject->isNotActivated()){
-    	            $topicObject->setLinkModifierItemDate(getCurrentDateTimeInMySQL());
+    	            $topicObject->setActivationDate(getCurrentDateTimeInMySQL());
     	        }
             }
         } else {
             if($topicObject->isNotActivated()){
-	            $topicObject->setLinkModifierItemDate(getCurrentDateTimeInMySQL());
+	            $topicObject->setActivationDate(getCurrentDateTimeInMySQL());
 	        }
         }
 

@@ -129,19 +129,19 @@ class DateTransformer  extends AbstractTransformer
                         $time = explode(":", $dateData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
-                    $dateObject->setLinkModifierItemDate($datetime->format('Y-m-d H:i:s'));
+                    $dateObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
                 } else {
-                    $dateObject->setLinkModifierItemDate('9999-00-00 00:00:00');
+                    $dateObject->setActivationDate('9999-00-00 00:00:00');
                 }
             } else {
                 if($dateObject->isNotActivated()){
-                    $dateObject->setLinkModifierItemDate(getCurrentDateTimeInMySQL());
+                    $dateObject->setActivationDate(getCurrentDateTimeInMySQL());
     	        }
             }
         } else {
             if($dateObject->isNotActivated()){
                 $dateObject->setModificationDate(getCurrentDateTimeInMySQL());
-	            $dateObject->setLinkModifierItemDate(getCurrentDateTimeInMySQL());
+	            $dateObject->setActivationDate(getCurrentDateTimeInMySQL());
 	        }
         }
 
