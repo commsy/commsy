@@ -326,7 +326,6 @@ class cs_discussionarticles_manager extends cs_manager {
          $this->setContextLimit($discussion_item->getContextID());
          $this->setDiscussionLimit($discussion_item->getItemID());
          $this->setSortPosition();
-       //  $this->setOrder('ASC');
          if ($show_all == true) {
             $this->setDeleteLimit(false);
          }
