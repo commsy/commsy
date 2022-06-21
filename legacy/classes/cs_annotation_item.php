@@ -243,7 +243,7 @@ class cs_annotation_item extends cs_item {
      *
      * This Method checks for item <=> activated portfolio - relationships
      */
-    public function mayPortfolioSee($userItem)
+    public function mayPortfolioSee(string $username)
     {
         $portfolioManager = $this->_environment->getPortfolioManager();
 
@@ -251,7 +251,7 @@ class cs_annotation_item extends cs_item {
         $portfolioId = $portfolioManager->getPortfolioId($this->getItemId());
 
         // get all ids from portfolios we are allow to see
-        $portfolioIds = $portfolioManager->getPortfolioForExternalViewer($userItem->getUserId());
+        $portfolioIds = $portfolioManager->getPortfolioForExternalViewer($username);
 
         // if the portfolio this annotation belongs to is in the list, we are allowed to see
         return in_array($portfolioId, $portfolioIds);
