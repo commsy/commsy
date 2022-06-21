@@ -7,7 +7,6 @@ use App\Form\Type as Types;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
 use App\Utils\RoomService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -104,8 +103,7 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/room/{roomId}/category/new")
-     * @Method("POST")
+     * @Route("/room/{roomId}/category/new", methods={"POST"})
      * @Security("is_granted('CATEGORY_EDIT')")
      * @param Request $request
      * @param CategoryService $categoryService

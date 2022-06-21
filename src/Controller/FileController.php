@@ -45,7 +45,7 @@ class FileController extends AbstractController
         string $disposition = 'attachment'
     ) {
         $file = $fileService->getFile($fileId);
-        $rootDir = $params->get('kernel.root_dir') . '/';
+        $rootDir = $params->get('kernel.project_dir') . '/';
 
         // fix for archived rooms
         if (!$file->getPortalID()) {

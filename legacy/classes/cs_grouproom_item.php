@@ -1090,12 +1090,18 @@ class cs_grouproom_item extends cs_room_item {
             $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_UNLOCK');
          }
          $body .= LF.LF;
-         $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',$title,$current_user->getFullname(),$room_change_action);
+
+         $editorFullName = !empty($current_user->getFullname()) ? $current_user->getFullname(): '-';
+         $body .= $translator->getMessage(
+             'PROJECT_MAIL_BODY_INFORMATION',
+             $title,
+             $editorFullName,
+             $room_change_action
+         );
 
          global $symfonyContainer;
 
          if ( $room_change != 'delete' ) {
-
             $router = $symfonyContainer->get('router');
 
             $group_item = $this->getLinkedGroupItem();

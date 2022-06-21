@@ -1874,10 +1874,10 @@ class DateController extends BaseController
                     $em->flush();
                 }
 
-                $kernelRootDir = $this->getParameter('kernel.root_dir');
+                $projectDir = $this->getParameter('kernel.project_dir');
                 $fileData = array();
                 foreach ($files as $file) {
-                    $fileHandle = fopen($kernelRootDir . '/../var/temp/' . $file->getFileId(), 'r');
+                    $fileHandle = fopen($projectDir . '/var/temp/' . $file->getFileId(), 'r');
                     if ($fileHandle) {
                         $fileData[] = $fileHandle;
                     }
@@ -1908,7 +1908,7 @@ class DateController extends BaseController
     ) {
         $response = new JsonResponse();
 
-        $kernelRootDir = $this->getParameter('kernel.root_dir');
+        $projectDir = $this->getParameter('kernel.project_dir');
 
         $files = $request->files->all();
 
@@ -1916,7 +1916,7 @@ class DateController extends BaseController
         foreach ($files['files'] as $file) {
             if (stristr($file->getMimeType(), 'text/calendar')) {
                 $filename = $roomId . '_' . date('Ymdhis') . '_' . $file->getClientOriginalName();
-                if ($file->move($kernelRootDir . '/../var/temp/', $filename)) {
+                if ($file->move($projectDir . '/var/temp/', $filename)) {
                     $responseData[$filename] = $file->getClientOriginalName();
                 }
             }
