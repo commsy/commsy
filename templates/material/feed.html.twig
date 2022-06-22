@@ -45,7 +45,7 @@
                     {% if is_granted('ITEM_SEE', material.itemId) %}
                         <a href="{{ path('app_material_detail', {'roomId': roomId, 'itemId': material.itemId}) }}">{{ material.title|decodeHtmlEntity }}</a>
                     {% else %}
-                        {{ 'Deactivated entry'|trans({}) }}  {{ material.title|decodeHtmlEntity }}
+                        {{ material.title|decodeHtmlEntity }}
                     {% endif %}
                 </h4>
 
