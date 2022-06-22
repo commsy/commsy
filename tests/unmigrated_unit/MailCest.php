@@ -51,10 +51,10 @@ class MailCest
             'language' => 'de',
         ]);
 
-        $status = $mailer->send($message, 'fromSender', $invalid);
+        $status = $mailer->send($message, $invalid, 'fromSender');
         $I->assertFalse($status);
 
-        $status = $mailer->send($message, 'fromSender', $valid, ['invalidemail' => 'invalid']);
+        $status = $mailer->send($message, $valid, 'fromSender', ['invalidemail' => 'invalid']);
         $I->assertFalse($status);
     }
 
@@ -78,7 +78,7 @@ class MailCest
             'language' => 'de',
         ]);
 
-        $status = $mailer->send($message, 'fromSender', $valid, ['validemail@test.de' => 'name']);
+        $status = $mailer->send($message, $valid, 'fromSender', ['validemail@test.de' => 'name']);
         $I->assertTrue($status);
     }
 

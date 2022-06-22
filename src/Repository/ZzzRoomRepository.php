@@ -3,6 +3,7 @@ namespace App\Repository;
 
 use App\Entity\ZzzRoom;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -55,5 +56,39 @@ class ZzzRoomRepository extends ServiceEntityRepository
             ->setParameters([
                 'contextId' => $portalId,
             ]);
+    }
+
+    /**
+     * @return array
+     */
+    public function getProjectAndUserRoomIds(): array
+    {
+        $query = $this->getEntityManager()->createQuery('
+            SELECT r.itemId FROM App\Entity\ZzzRoom r
+            WHERE (r.type = :projectType OR r.type = :userroomType)
+        ');
+        $query->setParameters([
+            'projectType' => 'project',
+            'userroomType' => 'userroom',
+        ]);
+
+        return array_column($query->getResult(), 'itemId');
+    }
+
+    /**
+     * @param string $oldState
+     * @param string $newState
+     * @return int|mixed|string
+     */
+    public function updateActivity(string $oldState, string $newState)
+    {
+        return $this->createQueryBuilder('r')
+            ->update()
+            ->set('r.activityState', ':newState')
+            ->where('r.activityState = :oldState')
+            ->setParameter('oldState', $oldState)
+            ->setParameter('newState', $newState)
+            ->getQuery()
+            ->execute();
     }
 }

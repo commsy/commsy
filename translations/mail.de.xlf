@@ -122,6 +122,10 @@
                 <source>You received this email as one of the moderator/s in the workspace &quot;%room_name%&quot;.</source>
                 <target>Sie haben diese E-Mail als Mitglied der Moderation des Raumes &quot;%room_name%&quot; erhalten.</target>
             </trans-unit>
+            <trans-unit id="mail_footer_ask_moderation">
+                <source>If you have any questions please contact the portal moderation.</source>
+                <target>Bei Fragen senden Sie sich bitte an die Portalmoderation.</target>
+            </trans-unit>
             <trans-unit id="mail_send_to">
                 <source>This email was send to: %recipients%</source>
                 <target>Diese E-Mail wurde versendet an: %recipients%</target>
@@ -132,11 +136,35 @@
             </trans-unit>
             <trans-unit id="mail_subject_user_inactivity_upcoming_lock">
                 <source>%portal_name%: Your account will be locked in %num_days% days</source>
-                <target>%portal_name%: Ihre kennung wird in %num_days% Tagen gesperrt</target>
+                <target>%portal_name%: Ihre Kennung wird in %num_days% Tagen gesperrt</target>
             </trans-unit>
             <trans-unit id="mail_subject_item_deleted">
                 <source>Deleted entry (%room_name%)</source>
                 <target>Gelöschter Eintrag (%room_name%)</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_activity_lock_warning">
+                <source>%portal_name%: Account will be locked in %num_days% days</source>
+                <target>%portal_name%: Kennung wird in %num_days% Tagen gesperrt</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_activity_locked">
+                <source>%portal_name%: Your account is locked</source>
+                <target>%portal_name%: Ihre Kennung wurde gesperrt</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_activity_delete_warning">
+                <source>%portal_name%: Account will be deleted in %num_days% days</source>
+                <target>%portal_name%: Kennung wird in %num_days% Tagen gelöscht</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_activity_deleted">
+                <source>%portal_name%: Your account has been deleted</source>
+                <target>%portal_name%: Ihre Kennung wurde gelöscht</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_workspace_activity_lock_warning">
+                <source>%portal_name%: Workspace will be locked in %num_days% days</source>
+                <target>%portal_name%: Raum wird in %num_days% Tagen gesperrt</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_workspace_activity_delete_warning">
+                <source>%portal_name%: Workspace will be deleted in %num_days% days</source>
+                <target>%portal_name%: Raum wird in %num_days% Tagen gelöscht</target>
             </trans-unit>
             <trans-unit id="mail_body_common_title">
                 <source>Title: %title%</source>

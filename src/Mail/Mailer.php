@@ -132,16 +132,16 @@ class Mailer
      * Sends the given message to all recipients.
      *
      * @param MessageInterface $message The message to send
-     * @param string $fromSenderName The from name of the sender
      * @param Recipient recipient The recipient
+     * @param string $fromSenderName The from name of the sender
      * @param array $replyTo Reply to in the form of email => name
      *
      * @return bool The success status
      */
     public function send(
         MessageInterface $message,
-        string $fromSenderName,
         Recipient $recipient,
+        string $fromSenderName = 'CommSy',
         array $replyTo = []
     ): bool {
         try {
@@ -173,7 +173,7 @@ class Mailer
         $withErrors = false;
 
         foreach ($recipients as $recipient) {
-            $send = $this->send($message, $fromSenderName, $recipient, $replyTo);
+            $send = $this->send($message, $recipient, $fromSenderName, $replyTo);
             $withErrors = $withErrors || ($send === false);
         }
 
