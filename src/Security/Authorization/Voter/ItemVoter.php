@@ -140,6 +140,18 @@ class ItemVoter extends Voter
             return true;
         }
 
+        if ($item->isNotActivated()){
+            $users = $this->userService->getModeratorsForContext($item->getContextID());
+            if (empty($users)){
+                return false;
+            }
+            foreach ($users as $user) {
+                if($user->getUserID() === $currentUser->getUserID() ){
+                    return  true;
+                }
+            }
+        }
+
         return false;
     }
 
