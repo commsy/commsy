@@ -1,8 +1,7 @@
 {% extends 'layout.html.twig' %}
 
-{% form_theme inactiveForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
-{% form_theme archiveRoomsForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
-{% form_theme deleteArchiveRoomsForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme inactiveAccountsForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme inactiveRoomsForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
 
 {% block sidebar_left %}
     {% include 'components/context_navigation.html.twig' with {'menu_name': 'portal_settings'} only %}
@@ -14,15 +13,13 @@
 
         {% block body %}
             <ul uk-tab>
-                <li class="{% if tab is same as 'inactive' %}uk-active{% endif %}"><a href="#">{{ 'Inactive'|trans({}, "portal") }}</a></li>
-                <li class="{% if tab is same as 'archiveRooms' %}uk-active{% endif %}"><a href="#">{{ 'Archive inactive rooms'|trans({}, "portal") }}</a></li>
-                <li class="{% if tab is same as 'deleteRooms' %}uk-active{% endif %}"><a href="#">{{ 'Delete inactive rooms'|trans({}, "portal") }}</a></li>
+                <li class="{% if tab is same as 'inactiveAccounts' %}uk-active{% endif %}"><a href="#">{{ 'portal.inactive.account.title'|trans({}, "portal") }}</a></li>
+                <li class="{% if tab is same as 'inactiveRooms' %}uk-active{% endif %}"><a href="#">{{ 'portal.inactive.room.title'|trans({}, "portal") }}</a></li>
             </ul>
 
             <ul class="uk-switcher uk-margin">
-                <li>{{ form(inactiveForm) }}</li>
-                <li>{{ form(archiveRoomsForm) }}</li>
-                <li>{{ form(deleteArchiveRoomsForm) }}</li>
+                <li>{{ form(inactiveAccountsForm) }}</li>
+                <li>{{ form(inactiveRoomsForm) }}</li>
             </ul>
         {% endblock %}
     {% endembed %}

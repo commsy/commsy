@@ -25,20 +25,14 @@ class RecipientFactory
         $recipients = [];
 
         $moderators = $room->getModeratorList();
-        if (!$moderators->isEmpty()) {
+        foreach ($moderators as $moderator) {
             /** @var cs_user_item $moderator */
-            $moderator = $moderators->getFirst();
-
-            while ($moderator) {
-                if ($callback) {
-                    if ($callback($moderator)) {
-                        $recipients[] = RecipientFactory::createRecipient($moderator);
-                    }
-                } else {
-                    $recipients[] = RecipientFactory::createRecipient($moderator);
+            if ($callback) {
+                if ($callback($moderator)) {
+                    $recipients[] = self::createRecipient($moderator);
                 }
-
-                $moderator = $moderators->getNext();
+            } else {
+                $recipients[] = self::createRecipient($moderator);
             }
         }
 

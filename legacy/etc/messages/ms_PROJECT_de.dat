@@ -12,16 +12,10 @@ $message["PROJECT_MAIL_BODY_ACTION_REOPEN"]["de"] = "Wiedereröffnung";
 $message["PROJECT_MAIL_BODY_ACTION_UNDELETE"]["de"] = "Wiederherstellung";
 $message["PROJECT_MAIL_BODY_ACTION_UNLOCK"]["de"] = "Entsperrung";
 $message["PROJECT_MAIL_BODY_ARCHIVE"]["de"] = "Archivierung %_PROJECT_ART_UNDEF_GENS_LOW %_PROJECT_SUB_GENS_BIG.";
-$message["PROJECT_MAIL_BODY_ARCHIVE_INFO"]["de"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_BIG &quot;%1&quot; wurde seit %3 Tagen nicht mehr verwendet. Daher findet eine Archivierung  %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG in %2 Tagen statt. Nach der Archivierung können Sie weiterhin auf alle Inhalte lesend zugreifen.
-
-Wenn Sie nicht wollen, dass %_PROJECT_ART_DEF_NOMS_LOW  %_PROJECT_SUB_NOMS_BIG archiviert wird, loggen Sie sich einmal innerhalb der nächsten %2 Tage in %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_NOMS_BIG ein.";
 $message["PROJECT_MAIL_BODY_COMMUNITIY_ROOMS"]["de"] = "%_COMMUNITY_ART_DEF_NOMPL_BIG folgenden %_COMMUNITY_SUB_NOMPL_BIG sind mit %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_AKKS_BIG verknüpft:";
 $message["PROJECT_MAIL_BODY_COMMUNITIY_ROOMS_EMPTY"]["de"] = "*keine %_COMMUNITY_SUB_NOMPL_BIG";
 $message["PROJECT_MAIL_BODY_COMMUNITIY_ROOMS_UNLINKED"]["de"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_BIG ist mit folgenden %_COMMUNITY_SUB_NOMPL_BIG NICHT mehr verknüpft:";
 $message["PROJECT_MAIL_BODY_DELETE"]["de"] = "Löschung %_PROJECT_ART_UNDEF_GENS_LOW %_PROJECT_SUB_GENS_BIG.";
-$message["PROJECT_MAIL_BODY_DELETE_INFO"]["de"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_BIG &quot;%1&quot; wurde seit %3 Tagen nicht mehr verwendet. Daher findet eine Löschung  %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG in %2 Tagen statt.
-
-Wenn Sie nicht wollen, dass %_PROJECT_ART_DEF_NOMS_LOW %_PROJECT_SUB_NOMS_BIG gelöscht wird, loggen Sie sich einmal innerhalb der nächsten %2 Tage in %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_NOMS_BIG ein.";
 $message["PROJECT_MAIL_BODY_INFORMATION"]["de"] = "Die Informationen im Einzelnen:
 Name des Raumes: %1
 Bearbeiter:      %2
@@ -33,7 +27,6 @@ $message["PROJECT_MAIL_BODY_REOPEN"]["de"] = "Wiedereröffnung %_PROJECT_ART_UND
 $message["PROJECT_MAIL_BODY_UNDELETE"]["de"] = "Wiederherstellung %_PROJECT_ART_UNDEF_GENS_LOW %_PROJECT_SUB_GENS_BIG.";
 $message["PROJECT_MAIL_BODY_UNLOCK"]["de"] = "Entsperrung %_PROJECT_ART_UNDEF_GENS_LOW %_PROJECT_SUB_GENS_BIG.";
 $message["PROJECT_MAIL_SUBJECT_ARCHIVE"]["de"] = "%1 archiviert";
-$message["PROJECT_MAIL_SUBJECT_ARCHIVE_INFO"]["de"] = "%1 wird in %2 Tagen archiviert";
 $message["PROJECT_MAIL_SUBJECT_DELETE"]["de"] = "%1 gelöscht";
 $message["PROJECT_MAIL_SUBJECT_DELETE_INFO"]["de"] = "%1 wird in %2 Tagen gelöscht";
 $message["PROJECT_MAIL_SUBJECT_LINK"]["de"] = "%1 verlinkt";

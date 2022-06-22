@@ -1419,7 +1419,7 @@ class cs_user_item extends cs_item
      * This method only updates the LastLogin Of the User.
      * Only the LastLoginField will be touched.
      */
-    function updateLastLogin()
+    public function updateLastLogin()
     {
         $user_manager = $this->_environment->getUserManager();
         $user_manager->updateLastLoginOf($this);
@@ -2545,35 +2545,6 @@ class cs_user_item extends cs_item
         $this->_addExtra('LOCK', getCurrentDateTimePlusDaysInMySQL($days));
     }
 
-    function getLock()
-    {
-        $retour = '';
-        if ($this->_issetExtra('LOCK')) {
-            $retour = $this->_getExtra('LOCK');
-        }
-        return $retour;
-    }
-
-    function isLocked()
-    {
-        $retour = false;
-        if ($this->_issetExtra('LOCK')) {
-            include_once('functions/date_functions.php');
-            $date = $this->_getExtra('LOCK');
-            if (getCurrentDateTimeInMySQL() > $date) {
-                $retour = false;
-            } else {
-                $retour = true;
-            }
-        }
-        return $retour;
-    }
-
-    function unsetLock()
-    {
-        $this->_unsetExtra('LOCK');
-    }
-
     function setTemporaryLock()
     {
         include_once('functions/date_functions.php');
@@ -2745,151 +2716,6 @@ class cs_user_item extends cs_item
         }
 
         return null;
-    }
-
-    function setMailSendLocked()
-    {
-        $this->_addExtra('MAIL_SEND_LOCKED', '1');
-    }
-
-    function unsetMailSendLocked()
-    {
-        $this->_unsetExtra('MAIL_SEND_LOCKED');
-    }
-
-    function getMailSendLocked()
-    {
-        $retour = false;
-        if ($this->_issetExtra('MAIL_SEND_LOCKED')) {
-            $retour = $this->_getExtra('MAIL_SEND_LOCKED');
-        }
-        return $retour;
-    }
-
-
-    function setMailSendBeforeLock()
-    {
-        $this->_addExtra('MAIL_SEND_LOCK', '1');
-    }
-
-    function unsetMailSendBeforeLock()
-    {
-        $this->_unsetExtra('MAIL_SEND_LOCK');
-    }
-
-    function getMailSendBeforeLock()
-    {
-        $retour = false;
-        if ($this->_issetExtra('MAIL_SEND_LOCK')) {
-            $retour = $this->_getExtra('MAIL_SEND_LOCK');
-        }
-        return $retour;
-    }
-
-    function getMailSendNextLock()
-    {
-        $retour = false;
-        if ($this->_issetExtra('MAIL_SEND_NEXT_LOCK')) {
-            $retour = $this->_getExtra('MAIL_SEND_NEXT_LOCK');
-        }
-        return $retour;
-    }
-
-    function setMailSendBeforeDelete()
-    {
-        $this->_addExtra('MAIL_SEND_DELETE', '1');
-    }
-
-    function unsetMailSendBeforeDelete()
-    {
-        $this->_unsetExtra('MAIL_SEND_DELETE');
-    }
-
-    function getMailSendBeforeDelete()
-    {
-        $retour = false;
-        if ($this->_issetExtra('MAIL_SEND_DELETE')) {
-            $retour = $this->_getExtra('MAIL_SEND_DELETE');
-        }
-        return $retour;
-    }
-
-    function setMailSendNextDelete()
-    {
-        $this->_addExtra('MAIL_SEND_NEXT_DELETE', '1');
-    }
-
-    function unsetMailSendNextDelete()
-    {
-        $this->_unsetExtra('MAIL_SEND_NEXT_DELETE');
-    }
-
-    function getMailSendNextDelete()
-    {
-        $retour = false;
-        if ($this->_issetExtra('MAIL_SEND_NEXT_DELETE')) {
-            $retour = $this->_getExtra('MAIL_SEND_NEXT_DELETE');
-        }
-        return $retour;
-    }
-
-    function setLockSendMailDate()
-    {
-        $this->_addExtra('LOCK_SEND_MAIL_DATE', getCurrentDateTimeInMySQL());
-    }
-
-    function getLockSendMailDate()
-    {
-        return $this->_getExtra('LOCK_SEND_MAIL_DATE');
-    }
-
-    function unsetLockSendMailDate()
-    {
-        $this->_unsetExtra('LOCK_SEND_MAIL_DATE');
-    }
-
-    function setNotifyLockDate()
-    {
-        $this->_addExtra('NOTIFY_LOCK_DATE', getCurrentDateTimeInMySQL());
-    }
-
-    function getNotifyLockDate()
-    {
-        return $this->_getExtra('NOTIFY_LOCK_DATE');
-    }
-
-    function unsetNotifyLockDate()
-    {
-        $this->_unsetExtra('NOTIFY_LOCK_DATE');
-    }
-
-    function setNotifyDeleteDate()
-    {
-        $this->_addExtra('NOTIFY_DELETE_DATE', getCurrentDateTimeInMySQL());
-    }
-
-    function getNotifyDeleteDate()
-    {
-        return $this->_getExtra('NOTIFY_DELETE_DATE');
-    }
-
-    function unsetNotifyDeleteDate()
-    {
-        $this->_unsetExtra('NOTIFY_DELETE_DATE');
-    }
-
-    function resetInactivity()
-    {
-        $this->unsetMailSendBeforeLock();
-        $this->unsetMailSendLocked();
-        $this->unsetMailSendBeforeDelete();
-        $this->unsetMailSendNextDelete();
-        $this->unsetLockSendMailDate();
-        $this->unsetLock();
-        $this->unsetNotifyLockDate();
-        $this->unsetNotifyDeleteDate();
-
-        $this->save();
     }
 
     ## commsy user connections: portal2portal

@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Account\AccountManager;
 use App\Entity\Account;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -9,6 +10,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 class LoginSubscriber implements EventSubscriberInterface
 {
@@ -22,16 +24,23 @@ class LoginSubscriber implements EventSubscriberInterface
      */
     private UrlGeneratorInterface $urlGenerator;
 
-    public function __construct(Security $security, UrlGeneratorInterface $urlGenerator)
-    {
+    private AccountManager $accountManager;
+
+    public function __construct(
+        Security $security,
+        UrlGeneratorInterface $urlGenerator,
+        AccountManager $accountManager
+    ) {
         $this->security = $security;
         $this->urlGenerator = $urlGenerator;
+        $this->accountManager = $accountManager;
     }
 
     public static function getSubscribedEvents()
     {
         return [
             'kernel.request' => 'onKernelRequest',
+            'security.interactive_login' => 'onInteractiveLogin',
         ];
     }
 
@@ -61,6 +70,16 @@ class LoginSubscriber implements EventSubscriberInterface
 
         if ($account->hasLegacyPassword()) {
             $event->setResponse(new RedirectResponse($this->urlGenerator->generate('app_migration_password')));
+        }
+    }
+
+    public function onInteractiveLogin(InteractiveLoginEvent $event)
+    {
+        /** @var Account $account */
+        $account = $this->security->getUser();
+
+        if ($account) {
+            $this->accountManager->resetInactivity($account);
         }
     }
 }

@@ -1,0 +1,59 @@
+framework:
+    workflows:
+
+        account_activity:
+            type: state_machine
+            marking_store:
+                type: method
+                property: activityState
+            supports:
+                - App\Entity\Account
+            initial_marking: active
+            places:
+                - active
+                - active_notified
+                - idle
+                - idle_notified
+                - abandoned
+            transitions:
+                notify_lock:
+                    from: active
+                    to: active_notified
+                lock:
+                    from: active_notified
+                    to: idle
+                notify_forsake:
+                    from: idle
+                    to: idle_notified
+                forsake:
+                    from: idle_notified
+                    to: abandoned
+
+        room_activity:
+            type: state_machine
+            marking_store:
+                type: method
+                property: activityState
+            supports:
+                - App\Entity\Room
+                - App\Entity\ZzzRoom
+            initial_marking: active
+            places:
+                - active
+                - active_notified
+                - idle
+                - idle_notified
+                - abandoned
+            transitions:
+                notify_lock:
+                    from: active
+                    to: active_notified
+                lock:
+                    from: active_notified
+                    to: idle
+                notify_forsake:
+                    from: idle
+                    to: idle_notified
+                forsake:
+                    from: idle_notified
+                    to: abandoned

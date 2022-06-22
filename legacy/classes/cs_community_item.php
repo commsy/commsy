@@ -34,42 +34,45 @@ include_once('classes/cs_room_item.php');
  */
 class cs_community_item extends cs_room_item {
 
-   /**
-    * Constructor
-    */
-   function __construct($environment) {
-      cs_context_item::__construct($environment);
-      $this->_type = CS_COMMUNITY_TYPE;
-      $this->_default_rubrics_array[0] = CS_ANNOUNCEMENT_TYPE;
-      $this->_default_rubrics_array[1] = CS_PROJECT_TYPE;
-      $this->_default_rubrics_array[2] = CS_TODO_TYPE;
-      $this->_default_rubrics_array[3] = CS_DATE_TYPE;
-      $this->_default_rubrics_array[4] = CS_MATERIAL_TYPE;
-      $this->_default_rubrics_array[5] = CS_DISCUSSION_TYPE;
-      $this->_default_rubrics_array[6] = CS_USER_TYPE;
-      $this->_default_rubrics_array[7] = CS_TOPIC_TYPE;
-      $this->_default_home_conf_array[CS_ANNOUNCEMENT_TYPE] = 'short';
-      $this->_default_home_conf_array[CS_PROJECT_TYPE] = 'short';
-      $this->_default_home_conf_array[CS_DATE_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_MATERIAL_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_TOPIC_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_DISCUSSION_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_TODO_TYPE] = 'tiny';
-   }
+    /**
+     * Constructor
+     */
+    public function __construct($environment)
+    {
+        parent::__construct($environment);
+
+        $this->_type = CS_COMMUNITY_TYPE;
+        $this->_default_rubrics_array[0] = CS_ANNOUNCEMENT_TYPE;
+        $this->_default_rubrics_array[1] = CS_PROJECT_TYPE;
+        $this->_default_rubrics_array[2] = CS_TODO_TYPE;
+        $this->_default_rubrics_array[3] = CS_DATE_TYPE;
+        $this->_default_rubrics_array[4] = CS_MATERIAL_TYPE;
+        $this->_default_rubrics_array[5] = CS_DISCUSSION_TYPE;
+        $this->_default_rubrics_array[6] = CS_USER_TYPE;
+        $this->_default_rubrics_array[7] = CS_TOPIC_TYPE;
+        $this->_default_home_conf_array[CS_ANNOUNCEMENT_TYPE] = 'short';
+        $this->_default_home_conf_array[CS_PROJECT_TYPE] = 'short';
+        $this->_default_home_conf_array[CS_DATE_TYPE] = 'tiny';
+        $this->_default_home_conf_array[CS_MATERIAL_TYPE] = 'tiny';
+        $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
+        $this->_default_home_conf_array[CS_TOPIC_TYPE] = 'tiny';
+        $this->_default_home_conf_array[CS_DISCUSSION_TYPE] = 'tiny';
+        $this->_default_home_conf_array[CS_TODO_TYPE] = 'tiny';
+    }
 
    function isCommunityRoom () {
       return true;
    }
 
-   /** get projects of a project
-    * this method returns a list of projects which are linked to the project
-    *
-    * @return object cs_list a list of projects (cs_project_item)
-    */
-   function getProjectList () {
-      return $this->getLinkedItemList(CS_PROJECT_TYPE);
-   }
+    /** get projects of a project
+     * this method returns a list of projects which are linked to the project
+     *
+     * @return object cs_list a list of projects (cs_project_item)
+     */
+    public function getProjectList(): cs_list
+    {
+        return $this->getLinkedItemList(CS_PROJECT_TYPE);
+    }
 
    /** get project ids of a community
     * this method returns an array of projects ids which are linked to the community
@@ -983,19 +986,24 @@ class cs_community_item extends cs_room_item {
             $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_UNLOCK');
          }
          $body .= LF.LF;
-         $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',str_ireplace('&amp;', '&', $this->getTitle()),$current_user->getFullname(),$room_change_action);
-         if ( $room_change != 'delete' ) {
 
+         $editorFullName = !empty($current_user->getFullname()) ? $current_user->getFullname() : '-';
+         $body .= $translator->getMessage(
+             'PROJECT_MAIL_BODY_INFORMATION',
+             str_ireplace('&amp;', '&', $this->getTitle()),
+             $editorFullName,
+             $room_change_action
+         );
+
+         if ($room_change != 'delete') {
              global $symfonyContainer;
-
              $url = $symfonyContainer->get('router')->generate('app_room_home', [
                  'roomId' => $this->getItemID()
-             ],  UrlGeneratorInterface::ABSOLUTE_URL);
+             ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-  			   $body .= LF.$url;
-         	
-  			   #$body .= LF.'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->getContextID().'&room_id='.$this->getItemID();
+             $body .= LF . $url;
          }
+
          $body .= LF.LF;
          $body .= $translator->getMessage('MAIL_SEND_TO',implode(LF,$moderator_name_array));
          $body .= LF.LF;

@@ -166,9 +166,11 @@ services:
 
     _instanceof:
         App\Form\DataTransformer\DataTransformerInterface:
-            tags: [ 'app.data_transformer' ]
+            tags: ['app.data_transformer']
         App\Cron\Tasks\CronTaskInterface:
-            tags: [ 'app.cron_task' ]
+            tags: ['app.cron_task']
+        App\Database\DatabaseCheck:
+            tags: ['app.database.check']
 
     # Event subscriber
     App\EventSubscriber\KernelSubscriber:
@@ -339,12 +341,6 @@ services:
         autoconfigure: true
 
     # EventListener
-    kernel.listener.commsy_activity:
-        class: App\EventListener\CommsyActivityListener
-        arguments: ['@commsy_legacy.room_service', '@commsy_legacy.environment']
-        tags:
-            - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }
-
     commsy.listener.get_room_membership_filter:
         class: App\EventListener\RoomMembershipFilterConditionListener
         arguments: ['@commsy_legacy.user_service']
@@ -550,60 +546,10 @@ services:
             $uploadAccount: '%commsy.upload.account%'
             $uploadPassword: '%commsy.upload.password%'
 
-    commsy.command.db_check:
-        class: App\Command\DBCheckCommand
-        arguments:
-            - '@commsy.database.checks'
-        tags:
-            - { name: console.command }
-
     # Database checks
-    commsy.database.checks:
-        class: App\Database\DatabaseChecks
-
-    commsy.database.checks.group_all_user_relation:
-        class: App\Database\FixGroupAllUserRelation
+    App\Database\DatabaseChecks:
         arguments:
-            - '@doctrine.orm.entity_manager'
-            - '@commsy_legacy.environment'
-        tags:
-            - commsy.database.check
-
-    commsy.database.checks.group_all:
-        class: App\Database\FixGroupAll
-        arguments:
-            - '@doctrine.orm.entity_manager'
-            - '@commsy_legacy.environment'
-        tags:
-            - commsy.database.check
-
-    commsy.database.checks.user_relation:
-        class: App\Database\FixUserRelations
-        arguments:
-            - '@doctrine.orm.entity_manager'
-            - '@commsy_legacy.environment'
-        tags:
-            - commsy.database.check
-
-    #    commsy.database.checks.files:
-    #        class: App\Database\FixDBFiles
-    #        arguments:
-    #            - '@doctrine.orm.entity_manager'
-    #            - '@commsy_legacy.environment'
-    #        tags:
-    #            - commsy.database.check
-
-    App\Database\DatabaseProblem:
-        autowire: false
-
-    App\Database\Resolve\AddMemberToGroupResolution:
-        autowire: false
-
-    App\Database\Resolve\CreateGroupAllResolution:
-        autowire: false
-
-    App\Database\Resolve\DeleteDatabaseFilesResolution:
-        autowire: false
+            $databaseChecks: !tagged_iterator app.database.check
 
     # Feed
     debril.rss_atom.provider:

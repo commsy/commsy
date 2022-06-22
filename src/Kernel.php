@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\DependencyInjection\Compiler\DatabaseChecksPass;
 use App\DependencyInjection\Compiler\ElasticaCompilerPass;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -56,7 +55,6 @@ class Kernel extends BaseKernel
 
     protected function build(ContainerBuilder $container): void
     {
-        $container->addCompilerPass(new DatabaseChecksPass());
         $container->addCompilerPass(new ElasticaCompilerPass());
     }
 }

@@ -22,15 +22,5 @@ interface DatabaseCheck
      */
     public function getPriority();
 
-    /**
-     * @param SymfonyStyle $io
-     * @return DatabaseProblem[]
-     */
-    public function findProblems(SymfonyStyle $io, int $limit);
-
-
-    /**
-     * @return ResolutionInterface[]
-     */
-    public function getResolutionStrategies();
+    public function resolve(SymfonyStyle $io): bool;
 }
