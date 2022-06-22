@@ -2001,38 +2001,33 @@ class cs_user_item extends cs_item
         return $retour;
     }
 
-    /**
-     * @param int|null $portalId
-     * @return cs_user_item|null
-     */
-    public function getRelatedPortalUserItem(?int $portalId = null): ?cs_user_item
+    function getRelatedPortalUserItem():?cs_user_item
     {
-        $retour = null;
+        $retour = NULL;
 
         // archive
-        $toggleArchive = false;
+        $toggle_archive = false;
         if ($this->_environment->isArchiveMode()) {
-            $toggleArchive = true;
+            $toggle_archive = true;
             $this->_environment->deactivateArchiveMode();
         }
         // archive
 
-        $contextLimit = $portalId ?? $this->_environment->getCurrentPortalID();
-
-        $userManager = $this->_environment->getUserManager();
-        $userManager->resetLimits();
-        $userManager->setContextLimit($contextLimit);
-        $userManager->setUserIDLimit($this->getUserID());
-        $userManager->setAuthSourceLimit($this->getAuthSource());
-        $userManager->select();
-        $userList = $userManager->get();
-
-        if ($userList !== null && $userList->getCount() === 1) {
-            $retour = $userList->getFirst();
+        $user_manager = $this->_environment->getUserManager();
+        $user_manager->resetLimits();
+        $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
+        $user_manager->setUserIDLimit($this->getUserID());
+        $user_manager->setAuthSourceLimit($this->getAuthSource());
+        $user_manager->select();
+        $user_list = $user_manager->get();
+        unset($user_manager);
+        if ($user_list->getCount() == 1) {
+            $retour = $user_list->getFirst();
         }
+        unset($user_list);
 
         // archive
-        if ($toggleArchive) {
+        if ($toggle_archive) {
             $this->_environment->activateArchiveMode();
         }
         // archive
