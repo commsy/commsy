@@ -149,7 +149,7 @@
                 {% set count = 1 %}
                 {% if (item.tagsArray|length) < 4 %}
                     {% if (item.tagsArray|length) == 0 %}
-                      2  {{ 'no linked items'|trans({}, "room")}}
+                       {{ 'no linked items'|trans({}, "room")}}
                     {% else %}
                         {% for tag in item.tagsArray %}
                             {{tag.title|decodeHtmlEntity}}{% if count < item.tagsArray|length %}, {% endif %}
@@ -199,7 +199,7 @@
                     {{ itemMacros.nestedTagList(item.tagsArray, roomCategories, 1) }}
                 </div>
             {% else %}
-               3 <br/>{{ 'no linked items'|trans({}, "room")}}
+                <br/>{{ 'no linked items'|trans({}, "room")}}
             {% endif %}
         </div>
         {% endif %}
