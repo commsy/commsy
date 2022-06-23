@@ -18,6 +18,7 @@ class DateSelectType extends AbstractType
                 'label' => false,
                 'widget' => 'single_text',
                 'format' => 'dd.MM.yyyy',
+                'html5' => false,
                 'required' => false,
                 'attr' => array(
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',

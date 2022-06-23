@@ -3,6 +3,7 @@
 namespace App\Monolog\Handler;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Monolog\Formatter\FormatterInterface;
 use Monolog\Logger;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Processor\WebProcessor;
@@ -30,14 +31,14 @@ class DoctrineORMHandler extends AbstractProcessingHandler
         $this->pushProcessor(new WebProcessor());
     }
 
-    protected function write(array $record)
+    protected function write(array $record): void
     {
         $record = $record['formatted'];
 
         dump($record);
     }
 
-    protected function getDefaultFormatter()
+    protected function getDefaultFormatter(): FormatterInterface
     {
         return new NormalizerFormatter();
     }

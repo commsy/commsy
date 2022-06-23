@@ -9,9 +9,9 @@
 namespace App\Mail;
 
 
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Templating\EngineInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MessageBuilder
@@ -22,22 +22,15 @@ class MessageBuilder
     private TranslatorInterface $translator;
 
     /**
-     * @var EngineInterface $templating
-     */
-    private EngineInterface $templating;
-
-    /**
      * @var string $emailFrom
      */
     private string $emailFrom;
 
     public function __construct(
         TranslatorInterface $translator,
-        EngineInterface $templating,
         string $emailFrom
     ) {
         $this->translator = $translator;
-        $this->templating = $templating;
         $this->emailFrom = $emailFrom;
     }
 
@@ -116,7 +109,7 @@ class MessageBuilder
         $locale = $this->translator->getLocale();
         $this->translator->setLocale($recipient->getLanguage());
 
-        $email = (new Email())
+        $email = (new TemplatedEmail())
             ->from(new Address($this->emailFrom, $fromSenderName));
 
         // Subject
@@ -139,8 +132,8 @@ class MessageBuilder
         }
 
         // Body
-        $body = $this->templating->render($message->getTemplateName(), $message->getParameters());
-        $email->html($body);
+        $email->htmlTemplate($message->getTemplateName());
+        $email->context($message->getParameters());
 
         // Restore the previous locale
         $this->translator->setLocale($locale);

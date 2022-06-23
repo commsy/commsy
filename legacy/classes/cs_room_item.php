@@ -48,7 +48,6 @@ class cs_room_item extends cs_context_item {
    ######################################################
 
    function _getContinuousStatus () {
-      $retour = '';
       $retour = $this->_getValue('continuous');
       if (empty($retour)) {
          $retour = -1;
@@ -168,7 +167,6 @@ class cs_room_item extends cs_context_item {
 
 
    function _getDayMonthFromTimeLabel ($title, $key) {
-      $retour = '';
       $portal_item = $this->getContextItem();
                  if ( !$portal_item->isPortal() ) {
                     $portal_item = $this->_environment->getCurrentPortalItem();
@@ -202,7 +200,6 @@ class cs_room_item extends cs_context_item {
 
    function setContactPerson ($fullname) {
       if ( !empty($fullname) ) {
-         $value = '';
          $value = $this->_getValue('contact_persons');
          if(!mb_stristr($value,$fullname)){
             $value .= $fullname.', ';
@@ -212,7 +209,6 @@ class cs_room_item extends cs_context_item {
    }
 
    function getContactPersonString () {
-      $return = '';
       $return = trim($this->_getValue('contact_persons'));
       if ( !empty($return)
            and mb_strstr($return,',')
@@ -1224,346 +1220,28 @@ class cs_room_item extends cs_context_item {
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
-   
-   // archiving
-   public function saveLastlogin ( $datetime = '' ) {
-   	$retour = false;
-      if ( $this->isProjectRoom() ) {
-         $manager = $this->_environment->getProjectManager();
-      } elseif ( $this->isGroupRoom() ) {
-         $manager = $this->_environment->getGrouproomManager();
-      } elseif ( $this->isUserroom() ) {
-          $manager = $this->_environment->getUserRoomManager();
-      } elseif ( $this->isCommunityRoom() ) {
-         $manager = $this->_environment->getCommunityManager();
-      } elseif ( $this->isPrivateRoom() ) {
-         $manager = $this->_environment->getPrivateRoomManager();
-      }
-      if ( isset($manager) ) {
-         $retour = $manager->saveLastLogin($this,$datetime);
-      }
-      return $retour;
-   }   
 
-   public function getArchiveMailSendDateTime () {
-      $retour = '';
-      if ( $this->_issetExtra('ARCHIVE_SEND_MAIL_DATETIME') ) {
-         $retour = $this->_getExtra('ARCHIVE_SEND_MAIL_DATETIME');
-      }
-      return $retour;
-   }
-
-   public function setArchiveMailSendDateTime ($value) {
-      $this->_addExtra('ARCHIVE_SEND_MAIL_DATETIME',$value);
-   }
-
-    public function sendMailArchiveInfoToModeration()
+    public function saveLastlogin()
     {
-        $translator = $this->_environment->getTranslationObject();
-        $default_language = 'de';
-
-        global $symfonyContainer;
-        $default_sender_address = $symfonyContainer->getParameter('commsy.email.from');
-
-        /** @var \cs_portal_item $current_portal */
-        $current_portal = $this->getContextItem();
-        $current_user = $this->_environment->getCurrentUserItem();
-        $fullname = $current_user->getFullname();
-        if (empty($fullname)) {
-            $mod_list = $current_portal->getContactModeratorList();
-            if (empty($mod_list)
-                or $mod_list->isNotEmpty()
-            ) {
-                $mod_list = $current_portal->getContactModeratorList();
-            }
-            if (!empty($mod_list)
-                and $mod_list->isNotEmpty()
-            ) {
-                $current_user = $mod_list->getFirst();
-            }
-            unset($mod_list);
+        $manager = $this->_environment->getManager($this->getType());
+        if ($manager) {
+            return $manager->saveLastLogin($this);
         }
-
-        $moderator_list = $this->getModeratorList();
-
-        // get moderators
-        $receiver_array = array();
-        $moderator_name_array = array();
-
-        if ($moderator_list->isNotEmpty()) {
-            $mod_item = $moderator_list->getFirst();
-            while ($mod_item) {
-                if ($mod_item->getOpenRoomWantMail() == 'yes') {
-                    $language = $this->getLanguage();
-                    if ($language == 'user') {
-                        $language = $mod_item->getLanguage();
-                        if ($language == 'browser') {
-                            $language = $default_language;
-                        }
-                    }
-
-                    $modEmail = $mod_item->getEmail();
-                    $validator = new \Egulias\EmailValidator\EmailValidator();
-
-                    if ($validator->isValid($modEmail, new \Egulias\EmailValidator\Validation\RFCValidation())) {
-                        $receiver_array[$language][] = $modEmail;
-                        $moderator_name_array[] = $mod_item->getFullname();
-                    }
-                }
-                $mod_item = $moderator_list->getNext();
-            }
-        }
-
-        // now email information
-        foreach ($receiver_array as $language => $emailArray) {
-            $save_language = $translator->getSelectedLanguage();
-            $translator->setSelectedLanguage($language);
-            $subject = '';
-            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_ARCHIVE_INFO', str_ireplace('&amp;', '&', $this->getTitle()), $current_portal->getDaysSendMailBeforeArchivingRooms());
-
-            $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-            $body .= LF . LF;
-            if ($this->isCommunityRoom()) {
-                $body .= $translator->getMessage('COMMUNITY_MAIL_BODY_ARCHIVE_INFO', $this->getTitle(), $current_portal->getDaysSendMailBeforeArchivingRooms(), ($current_portal->getDaysUnusedBeforeArchivingRooms() - $current_portal->getDaysSendMailBeforeArchivingRooms()));
-            } else {
-                $body .= $translator->getEmailMessage('PROJECT_MAIL_BODY_ARCHIVE_INFO', $this->getTitle(), $current_portal->getDaysSendMailBeforeArchivingRooms(), ($current_portal->getDaysUnusedBeforeArchivingRooms() - $current_portal->getDaysSendMailBeforeArchivingRooms()));
-            }
-            $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_ARCHIVE_INFO');
-
-            $body .= LF . LF;
-            $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION', str_ireplace('&amp;', '&', $this->getTitle()), $current_user->getFullname(), $room_change_action);
-
-            // set new commsy url
-            global $symfonyContainer;
-
-            /** @var \Symfony\Component\Routing\RouterInterface $router */
-            $router = $symfonyContainer->get('router');
-            $url = $router->generate('app_room_home', [
-                'roomId' => $this->getItemID(),
-            ], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
-
-            $body .= LF . $url;
-
-            if ($this->isProjectRoom()) {
-                $community_name_array = array();
-                $community_list = $this->getCommunityList();
-                if ($community_list->isNotEmpty()) {
-                    $community_item = $community_list->getFirst();
-                    while ($community_item) {
-                        $community_name_array[] = $community_item->getTitle();
-                        unset($community_item);
-                        $community_item = $community_list->getNext();
-                    }
-                }
-                unset($community_list);
-                if (!empty($community_name_array)) {
-                    $body .= LF . LF;
-                    $body .= $translator->getMessage('PROJECT_MAIL_BODY_COMMUNITIY_ROOMS') . LF;
-                    $body .= implode(LF, $community_name_array);
-                }
-            }
-
-            $body .= LF . LF;
-            $body .= $translator->getMessage('MAIL_SEND_TO', implode(LF, $moderator_name_array));
-            $body .= LF . LF;
-            if ($this->isCommunityRoom()) {
-                $body .= $translator->getMessage('MAIL_SEND_WHY_COMMUNITY', $this->getTitle());
-            } else {
-                $body .= $translator->getMessage('MAIL_SEND_WHY_PROJECT', $this->getTitle());
-            }
-
-            // send email
-            include_once('classes/cs_mail.php');
-            $mail = new cs_mail();
-            $mail->set_to(implode(',', $emailArray));
-            $mail->set_from_email($default_sender_address);
-            if (isset($current_portal)) {
-                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $current_portal->getTitle()));
-            } else {
-                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $this->getTitle()));
-            }
-            $mail->set_reply_to_name($current_user->getFullname());
-            $mail->set_reply_to_email($current_user->getEmail());
-            $mail->set_subject($subject);
-            $mail->set_message($body);
-
-            $translator->setSelectedLanguage($save_language);
-            return $mail->send();
-        }
-
-        return false;
     }
 
-   public function getDeleteMailSendDateTime () {
-   	$retour = '';
-   	if ( $this->_issetExtra('DELETE_SEND_MAIL_DATETIME') ) {
-   		$retour = $this->_getExtra('DELETE_SEND_MAIL_DATETIME');
-   	}
-   	return $retour;
-   }
-   
-   public function setDeleteMailSendDateTime ($value) {
-   	$this->_addExtra('DELETE_SEND_MAIL_DATETIME',$value);
-   }
-
-    public function sendMailDeleteInfoToModeration()
+    /** get lastlogin of a context
+     * this method returns the last login date of the context
+     *
+     * @return string lastlogin of a context
+     */
+    public function getLastLogin()
     {
-        $translator = $this->_environment->getTranslationObject();
-        $default_language = 'de';
-
-        $toggle_archive = false;
-        if ($this->_environment->isArchiveMode()) {
-            $toggle_archive = true;
-            $this->_environment->toggleArchiveMode();
-        }
-
-        global $symfonyContainer;
-        $default_sender_address = $symfonyContainer->getParameter('commsy.email.from');
-
-        $current_portal = $this->getContextItem();
-        $current_user = $this->_environment->getCurrentUserItem();
-        $fullname = $current_user->getFullname();
-        if (empty($fullname)) {
-            $mod_list = $current_portal->getContactModeratorList();
-            if (empty($mod_list)
-                or $mod_list->isNotEmpty()
-            ) {
-                $mod_list = $current_portal->getContactModeratorList();
-            }
-            if (!empty($mod_list)
-                and $mod_list->isNotEmpty()
-            ) {
-                $current_user = $mod_list->getFirst();
-            }
-            unset($mod_list);
-        }
-
-        if ($toggle_archive) {
-            $this->_environment->toggleArchiveMode();
-        }
-        unset($toggle_archive);
-
-        $moderator_list = $this->getModeratorList();
-
-        // get moderators
-        $receiver_array = array();
-        $moderator_name_array = array();
-
-        if ($moderator_list->isNotEmpty()) {
-            $mod_item = $moderator_list->getFirst();
-            while ($mod_item) {
-                if ($mod_item->getOpenRoomWantMail() == 'yes') {
-                    $language = $this->getLanguage();
-                    if ($language == 'user') {
-                        $language = $mod_item->getLanguage();
-                        if ($language == 'browser') {
-                            $language = $default_language;
-                        }
-                    }
-
-                    $modEmail = $mod_item->getEmail();
-                    $validator = new \Egulias\EmailValidator\EmailValidator();
-
-                    if ($validator->isValid($modEmail, new \Egulias\EmailValidator\Validation\RFCValidation())) {
-                        $receiver_array[$language][] = $modEmail;
-                        $moderator_name_array[] = $mod_item->getFullname();
-                    }
-                }
-                $mod_item = $moderator_list->getNext();
-            }
-        }
-
-        // now email information
-        foreach ($receiver_array as $language => $emailArray) {
-            $save_language = $translator->getSelectedLanguage();
-            $translator->setSelectedLanguage($language);
-            $subject = '';
-            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_DELETE_INFO', str_ireplace('&amp;', '&', $this->getTitle()), $current_portal->getDaysSendMailBeforeDeletingRooms());
-
-            $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-            $body .= LF . LF;
-            if ($this->isCommunityRoom()) {
-                $body .= $translator->getMessage('COMMUNITY_MAIL_BODY_DELETE_INFO', $this->getTitle(), $current_portal->getDaysSendMailBeforeDeletingRooms(), ($current_portal->getDaysUnusedBeforeDeletingRooms() - $current_portal->getDaysSendMailBeforeDeletingRooms()));
-            } else {
-                $body .= $translator->getEmailMessage('PROJECT_MAIL_BODY_DELETE_INFO', $this->getTitle(), $current_portal->getDaysSendMailBeforeDeletingRooms(), ($current_portal->getDaysUnusedBeforeDeletingRooms() - $current_portal->getDaysSendMailBeforeDeletingRooms()));
-            }
-            $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_DELETE_INFO');
-
-            $body .= LF . LF;
-            $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION', str_ireplace('&amp;', '&', $this->getTitle()), $current_user->getFullname(), $room_change_action);
-
-            // set new commsy url
-            global $symfonyContainer;
-
-            /** @var \Symfony\Component\Routing\RouterInterface $router */
-            $router = $symfonyContainer->get('router');
-            $url = $router->generate('app_room_home', [
-                'roomId' => $this->getItemID(),
-            ], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
-
-            $body .= LF . $url;
-
-            if ($this->isProjectRoom()) {
-                $community_name_array = array();
-                $community_list = $this->getCommunityList();
-                if ($community_list->isNotEmpty()) {
-                    $community_item = $community_list->getFirst();
-                    while ($community_item) {
-                        $community_name_array[] = $community_item->getTitle();
-                        unset($community_item);
-                        $community_item = $community_list->getNext();
-                    }
-                }
-                unset($community_list);
-                if (!empty($community_name_array)) {
-                    $body .= LF . LF;
-                    $body .= $translator->getMessage('PROJECT_MAIL_BODY_COMMUNITIY_ROOMS') . LF;
-                    $body .= implode(LF, $community_name_array);
-                }
-            }
-
-            $body .= LF . LF;
-            $body .= $translator->getMessage('MAIL_SEND_TO', implode(LF, $moderator_name_array));
-            $body .= LF . LF;
-            if ($this->isCommunityRoom()) {
-                $body .= $translator->getMessage('MAIL_SEND_WHY_COMMUNITY', $this->getTitle());
-            } else {
-                $body .= $translator->getMessage('MAIL_SEND_WHY_PROJECT', $this->getTitle());
-            }
-
-            // send email
-            include_once('classes/cs_mail.php');
-            $mail = new cs_mail();
-            $mail->set_to(implode(',', $emailArray));
-            $mail->set_from_email($default_sender_address);
-            if (isset($current_portal)) {
-                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $current_portal->getTitle()));
-            } else {
-                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $this->getTitle()));
-            }
-            $mail->set_reply_to_name($current_user->getFullname());
-            $mail->set_reply_to_email($current_user->getEmail());
-            $mail->set_subject($subject);
-            $mail->set_message($body);
-
-            $translator->setSelectedLanguage($save_language);
-            return $mail->send();
-        }
-
-        return false;
+        return $this->_getValue('lastlogin');
     }
-    
-  /** get lastlogin of a context
-   * this method returns the last login date of the context
-   *
-   * @return string lastlogin of a context
-   */
-   public function getLastLogin () {
-      return $this->_getValue('lastlogin');
-   }
-   
-   public function isActiveDuringLast99Days () {
-      include_once('functions/date_functions.php');
-      return $this->getLastLogin() >= getCurrentDateTimeMinusDaysInMySQL(99);
-   }
+
+    public function isActiveDuringLast99Days()
+    {
+        include_once('functions/date_functions.php');
+        return $this->getLastLogin() >= getCurrentDateTimeMinusDaysInMySQL(99);
+    }
 }
