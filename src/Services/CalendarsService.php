@@ -3,20 +3,27 @@
 namespace App\Services;
 
 use App\Entity\Calendars;
+use App\Repository\CalendarsRepository;
 use App\Utils\DateService;
 use App\Utils\RoomService;
 use cs_environment;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface as Container;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
 use Sabre\VObject;
+use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CalendarsService
 {
     /**
-     * @var EntityManagerInterface $em
+     * @var CalendarsRepository
      */
-    private EntityManagerInterface $em;
+    private CalendarsRepository $calendarsRepository;
+
+    /**
+     * @var ObjectManager
+     */
+    private ObjectManager $objectManager;
 
     /**
      * @var Container
@@ -39,24 +46,26 @@ class CalendarsService
     private TranslatorInterface $translator;
 
     public function __construct(
-        EntityManagerInterface $entityManager,
+        CalendarsRepository $calendarsRepository,
+        ManagerRegistry $doctrine,
         Container $container,
         DateService $dateService,
         LegacyEnvironment $legacyEnvironment,
         TranslatorInterface $translator
     ) {
-        $this->em = $entityManager;
+        $this->calendarsRepository = $calendarsRepository;
+        $this->objectManager = $doctrine->getManager();
         $this->dateService = $dateService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->translator = $translator;
         $this->serviceContainer = $container;
     }
 
-    public function getListCalendars ($contextId) {
+    public function getListCalendars($contextId)
+    {
         $result = array();
 
-        $repository = $this->em->getRepository('App:Calendars');
-        $query = $repository->createQueryBuilder('calendars')
+        $query = $this->calendarsRepository->createQueryBuilder('calendars')
             ->select()
             ->where('calendars.context_id = :context_id')
             ->setParameter('context_id', $contextId)
@@ -70,11 +79,11 @@ class CalendarsService
         return $result;
     }
 
-    public function getListExternalCalendars () {
+    public function getListExternalCalendars()
+    {
         $result = array();
 
-        $repository = $this->em->getRepository('App:Calendars');
-        $query = $repository->createQueryBuilder('calendars')
+        $query = $this->calendarsRepository->createQueryBuilder('calendars')
             ->select()
             ->where('calendars.external_url <> \'\'')
             ->getQuery();
@@ -87,43 +96,48 @@ class CalendarsService
         return $result;
     }
 
-    public function getCalendar ($calendarId) {
-        $repository = $this->em->getRepository('App:Calendars');
-        $query = $repository->createQueryBuilder('calendars')
+    public function getCalendar($calendarId)
+    {
+        $query = $this->calendarsRepository->createQueryBuilder('calendars')
             ->select()
             ->where('calendars.id = :calendarId')
             ->setParameter('calendarId', $calendarId)
             ->getQuery();
 
-        return $calendars = $query->getResult();
+        return $query->getResult();
     }
 
-    public function getDefaultCalendar ($contextId) {
-        $repository = $this->em->getRepository('App:Calendars');
-        $query = $repository->createQueryBuilder('calendars')
+    public function getDefaultCalendar($contextId)
+    {
+        $query = $this->calendarsRepository->createQueryBuilder('calendars')
             ->select()
             ->where('calendars.context_id = :context_id AND calendars.default_calendar = 1')
             ->setParameter('context_id', $contextId)
             ->getQuery();
 
-        return $calendars = $query->getResult();
+        return $query->getResult();
     }
 
     /**
      * Deletes the given calendar and all of its contained date entries.
+     *
+     * @param RoomService $roomService
      * @var Calendars $calendar
      */
     public function removeCalendar(RoomService $roomService, $calendar)
     {
         $this->removeAllCalendarDates($roomService, $calendar);
 
-        $this->em->remove($calendar);
-        $this->em->flush();
+        $this->objectManager->remove($calendar);
+        $this->objectManager->flush();
     }
 
 
     /**
      * Deletes all date entries from the given calendar.
+     *
+     * @param RoomService $roomService
+     * @return \Symfony\Component\HttpFoundation\Response|void
      * @var Calendars $calendar
      */
     public function removeAllCalendarDates(RoomService $roomService, $calendar)
@@ -144,12 +158,12 @@ class CalendarsService
     }
 
 
-    public function updateSynctoken ($calendarId) {
+    public function updateSynctoken($calendarId)
+    {
         $calendar = $this->getCalendar($calendarId);
 
         if (isset($calendar[0])) {
-            $repository = $this->em->getRepository('App:Calendars');
-            $query = $repository->createQueryBuilder('calendars')
+            $query = $this->calendarsRepository->createQueryBuilder('calendars')
                 ->update()
                 ->set('calendars.synctoken', ($calendar[0]->getSynctoken() + 1))
                 ->where('calendars.id = :calendarId')
@@ -171,7 +185,8 @@ class CalendarsService
      * @return bool|string Returns true if the events from the given iCalendar file(s) could be imported successfully,
      * otherwise returns the error message.
      */
-    public function importEvents ($icalData, $calendar, $external = false) {
+    public function importEvents($icalData, $calendar, $external = false)
+    {
         try {
             if (is_array($icalData)) {
                 // merge multiple iCalendar files into a single iCalendar
@@ -466,7 +481,8 @@ class CalendarsService
                 $dateInterval->f === 0.0);
     }
 
-    public function createCalendar($roomItem, $title = null, $color = null, $default = null) {
+    public function createCalendar($roomItem, $title = null, $color = null, $default = null)
+    {
         $calendar = new Calendars();
 
         if (!$title) {
@@ -487,7 +503,7 @@ class CalendarsService
         }
 
         $calendar->setSynctoken(0);
-        $this->em->persist($calendar);
-        $this->em->flush();
+        $this->objectManager->persist($calendar);
+        $this->objectManager->flush();
     }
 }
