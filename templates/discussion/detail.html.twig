@@ -168,15 +168,6 @@
                     </div>
 
                     {% if not draft %}
-                        {# links #}
-                        <div id="links{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }">
-                            {{ macrosItem.linksAssociations(discussion,showHashtags,showCategories,roomCategories, draft, showAssociations) }}
-                        </div>
-                        {% if (showCategories or showHashtags) %}
-                            <div id="categoriesAndBuzzwords{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }">
-                                {{ macrosItem.links(discussion,showHashtags,showCategories,roomCategories, draft, buzzExpanded, catzExpanded) }}
-                            </div>
-                        {% endif %}
                         {# articles #}
                         <div id="articles{{ discussion.itemId }}" class="cs-edit-section cs-toggle">
                             {{ macrosDiscussion.articles(discussion, articleList, articleTree) }}
@@ -368,8 +359,36 @@
                 </div>
             </div>
 
+                {# details #}
+                <div style="margin-top: 10px;" class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
+                    <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
+                        {{ 'details'|trans({})|capitalize }}
+                    </div>
+                    <div id="cs-nav-quick" class="cs-nav-quick">
+                        {% if not draft %}
+                            {# links #}
+                            <div id="links{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }">
+                                {{ macrosItem.linksAssociations(discussion,showHashtags,showCategories,roomCategories, draft, showAssociations) }}
+                            </div>
+                            {% if (showCategories or showHashtags) %}
+                                <div id="categoriesAndBuzzwords{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }">
+                                    {{ macrosItem.links(discussion,showHashtags,showCategories,roomCategories, draft, buzzExpanded, catzExpanded) }}
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+
+
         </div>
-      
+
+
+
+
+
+
+
+
     </div>
 {% endblock %}
 
