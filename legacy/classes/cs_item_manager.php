@@ -926,6 +926,8 @@ class cs_item_manager extends cs_manager {
             ->from($this->addDatabasePrefix($this->_db_table), 'i')
             ->innerJoin('i', $this->addDatabasePrefix('external_viewer'), 'e', 'i.item_id = e.item_id')
             ->where('i.context_id = :contextId')
+            ->andWhere('i.deleter_id IS NULL')
+            ->andWhere('i.deletion_date IS NULL')
             ->setParameter('contextId', $room_id);
 
         $result = $this->_db_connector->performQuery($queryBuilder->getSQL(), $queryBuilder->getParameters());
