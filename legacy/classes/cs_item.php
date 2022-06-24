@@ -1599,9 +1599,9 @@ class cs_item {
 
     /** is the given user allowed to see this item?
      *
-     * @param \cs_user_item $userItem
+     * @param cs_user_item $userItem
      */
-    public function maySee($userItem)
+    public function maySee(cs_user_item $userItem)
     {
         // Deny access, if the item's context is deleted
         $contextItem = $this->getContextItem();
@@ -1613,19 +1613,23 @@ class cs_item {
            return true;
         }
 
-        if ($userItem->isUser() && $userItem->getContextID() === $this->getContextID()) {
-           // deactivated entries can be only viewed by a moderator or by their creator
-           if ($this->isNotActivated()) {
-              if ($userItem->isModerator()) {
-                 return true;
-              }
+        $userManager = $this->_environment->getUserManager();
 
-              if ($this->getCreatorID() == $userItem->getItemId()) {
-                 return true;
-              }
-           } else {
-               return true;
-           }
+        $userInContext = ($userItem->getContextID() === $this->getContextID()) ?:
+            $userItem->getRelatedUserItemInContext($this->getContextID());
+        if ($userInContext !== null && $userInContext->isUser()) {
+            // deactivated entries can be only viewed by a moderator or by their creator
+            if ($this->isNotActivated()) {
+                if ($userInContext->isModerator()) {
+                    return true;
+                }
+
+                if ($this->getCreatorID() == $userInContext->getItemId()) {
+                    return true;
+                }
+            } else {
+                return true;
+            }
         }
 
         $currentContextItem = $this->_environment->getCurrentContextItem();
