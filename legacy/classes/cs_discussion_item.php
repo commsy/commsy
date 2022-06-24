@@ -469,6 +469,7 @@ class cs_discussion_item extends cs_item {
       $file_list->sortby('filename');
       return $file_list;
    }
+
     /** set description of a material
      * this method sets the description of the material an marks it as 'changed'
      *
@@ -476,12 +477,14 @@ class cs_discussion_item extends cs_item {
      *
      * @author CommSy Development Group
      */
-    function setDescription ($value) {
+    public function setDescription(string $description)
+    {
         // sanitize description
         $converter = $this->_environment->getTextConverter();
-        $value = $converter->sanitizeFullHTML($value);
-        $this->_setValue('description',$value);
+        $description = $converter->sanitizeFullHTML($description);
+        $this->_setValue('description', $description);
     }
+
     /** get description of a material
      * this method returns the description of the material
      *
@@ -489,13 +492,13 @@ class cs_discussion_item extends cs_item {
      *
      * @author CommSy Development Group
      */
-    function getDescription () {
-        if ($this->getPublic()=='-1'){
+    public function getDescription(): string
+    {
+        if ($this->getPublic() == '-1') {
             $translator = $this->_environment->getTranslationObject();
             return $translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
-        }else{
-            return (string) $this->_getValue('description');
+        } else {
+            return (string)$this->_getValue('description');
         }
     }
 }
-?>
