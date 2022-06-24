@@ -935,19 +935,29 @@ class cs_item_manager extends cs_manager {
         return array_column($result, 'item_id');
     }
 
-   function getExternalViewerEntriesForUser($user_id) {
-      $result_array = array();
-      $query = 'SELECT item_id';
-      $query .= ' FROM '.$this->addDatabasePrefix('external_viewer');
-      $query .= ' WHERE user_id="'.$user_id.'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( isset($result) and !empty($result) ) {
-      	foreach($result as $query_result){
-            $result_array[] .= $query_result['item_id'];
-      	}
-      }
-      return $result_array;
-   }
+    /**
+     * @param string $userId
+     * @return array
+     * @throws \Doctrine\DBAL\Exception
+     */
+    function getExternalViewerEntriesForUser(string $userId): array
+    {
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $queryBuilder
+            ->select('e.item_id')
+            ->distinct()
+            ->from($this->addDatabasePrefix($this->_db_table), 'i')
+            ->innerJoin('i', $this->addDatabasePrefix('external_viewer'), 'e', 'i.item_id = e.item_id')
+            ->where('e.user_id = :userId')
+            ->andWhere('i.deleter_id IS NULL')
+            ->andWhere('i.deletion_date IS NULL')
+            ->setParameter('userId', $userId);
+
+        $result = $this->_db_connector->performQuery($queryBuilder->getSQL(), $queryBuilder->getParameters());
+
+        return array_column($result, 'item_id');
+    }
 
   /** Prepares the db_array for the item
     *
