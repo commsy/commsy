@@ -7,6 +7,7 @@ use App\Action\Mark\HashtaggingAction;
 use App\Action\Mark\InsertAction;
 use App\Action\Mark\RemoveAction;
 use App\Filter\MarkedFilterType;
+use App\Form\Type\XhrActionOptionsType;
 use App\Services\MarkedService;
 use cs_item;
 use cs_room_item;
@@ -16,6 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class MarkedController
@@ -190,6 +192,7 @@ class MarkedController extends BaseController
     /**
      * @Route("/room/{roomId}/mark/xhr/categorize", condition="request.isXmlHttpRequest()")
      * @param Request $request
+     * @param CategorizeAction $action
      * @param int $roomId
      * @return mixed
      * @throws Exception
@@ -208,6 +211,9 @@ class MarkedController extends BaseController
     /**
      * @Route("/room/{roomId}/mark/xhr/hashtagging", condition="request.isXmlHttpRequest()")
      * @param Request $request
+     * @param HashtaggingAction $action
+     * @param ItemController $itemController
+     * @param TranslatorInterface $translator
      * @param int $roomId
      * @return mixed
      * @throws Exception
@@ -215,12 +221,35 @@ class MarkedController extends BaseController
     public function xhrHashtaggingAction(
         Request $request,
         HashtaggingAction $action,
+        ItemController $itemController,
+        TranslatorInterface $translator,
         int $roomId)
     {
-        $room = $this->getRoom($roomId);
-        $items = $this->getItemsForActionRequest($room, $request);
+        // TODO: this doesn't work yet, ListActionManager->performClick() must first call this method to load
+        //       the additional form options, then call this method again after the form has been submitted
 
-        return $action->execute($room, $items);
+        $hashtags = $itemController->getHashtags($roomId, $this->legacyEnvironment);
+
+        // provide a form with custom form options that are required for this action
+        $form = $this->createForm(XhrActionOptionsType::class, null, [
+            'label' => $translator->trans('hashtags', [], 'room'),
+            'choices' => $hashtags,
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // TODO: pass the hashtags chosen by the user to the HashtaggingAction
+
+            // execute action
+            $room = $this->getRoom($roomId);
+            $items = $this->getItemsForActionRequest($room, $request);
+
+            return $action->execute($room, $items);
+        }
+
+        return [
+            'form' => $form->createView(),
+        ];
     }
 
     /**
