@@ -78,7 +78,7 @@ export class ActionExecuter {
         let actionPayload: ActionRequest = {
             positiveItemIds: [itemId],
             negativeItemIds: [],
-            action: action.action,
+            action: action.actionData.action,
             selectAll: false,
             selectAllStart: 0
         };
@@ -90,7 +90,7 @@ export class ActionExecuter {
         let actionPayload: ActionRequest = {
             positiveItemIds: positiveItemIds,
             negativeItemIds: negativeItemIds,
-            action: action.action,
+            action: action.actionData.action,
             selectAll: selectAll,
             selectAllStart: selectAllStart
         };
@@ -103,7 +103,7 @@ export class ActionExecuter {
             .then(() => {
                 // set current query parameters also on the request URI
                 let currentURI = new URI(location.href);
-                let requestURI = new URI(action.url);
+                let requestURI = new URI(action.actionData.url);
                 requestURI.search(function() {
                     return currentURI.search(true);
                 });

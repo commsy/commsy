@@ -7,7 +7,7 @@ declare var UIkit: any;
 
 export class HashtaggingAction extends XHRAction {
     constructor(actionData: ActionData) {
-        super(actionData);
+        super(actionData, true);
     }
 
     public onSuccess(backendResponse: ActionResponse): Promise<ActionResponse> {
