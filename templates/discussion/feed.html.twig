@@ -45,7 +45,7 @@
                     {% if is_granted('ITEM_SEE', discussion.itemId) %}
                         <a href="{{ path('app_discussion_detail', {'roomId': roomId, 'itemId': discussion.itemId}) }}">{{ discussion.title|decodeHtmlEntity }}</a>
                     {% else %}
-                    <span class="uk-text-muted">  {{ 'Deactivated entry'|trans({}) }} {{ discussion.title|decodeHtmlEntity }} </span>
+                        <span class="uk-text-muted">{{ 'Deactivated entry'|trans({}) }} {{ discussion.title|decodeHtmlEntity }}</span>
                     {% endif %}
                 </h4>
 
