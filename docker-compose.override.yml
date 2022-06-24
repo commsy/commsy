@@ -1,0 +1,18 @@
+version: "3.4"
+
+# Development environment override
+services:
+  php:
+    volumes:
+      # The "cached" option has no effect on Linux but improves performance on Mac
+      - ./:/var/www/html:rw,cached
+      - ./docker/php/conf.d/commsy.dev.ini:/usr/local/etc/php/conf.d/commsy.ini
+      # If you develop on Mac you can remove the var/ directory from the bind-mount
+      # for better performance by enabling the next line
+      # - /srv/app/var
+    environment:
+      APP_ENV: dev
+
+  nginx:
+    volumes:
+      - ./public:/var/www/html/public:ro,cached
