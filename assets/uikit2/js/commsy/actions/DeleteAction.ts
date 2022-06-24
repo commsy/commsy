@@ -59,7 +59,7 @@ export class DeleteAction extends XHRAction {
                     case 'discarticle':
                         $('.discussion-article').hide();
 
-                        let urlPathParts = this.url.split("/");
+                        let urlPathParts = this.actionData.url.split("/");
                         let listElement = $("#" + this.itemType + "-list a[href='#" + this.itemType + urlPathParts[urlPathParts.length-2]+"']").closest("li");
                         listElement.nextAll("li").each(function(){
                             let lineParts = $(this).find("a").text().trim().split(" ");

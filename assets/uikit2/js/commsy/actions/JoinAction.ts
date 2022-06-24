@@ -37,7 +37,7 @@ export class JoinAction extends XHRAction {
             // update member information
             let $membersDiv = $("#member" + this.groupId);
             if($membersDiv.length > 0) {
-                let membersUrl = this.url.replace("join", "members");
+                let membersUrl = this.actionData.url.replace("join", "members");
                 $.ajax({
                     url: membersUrl,
                     type: 'POST',
@@ -50,7 +50,7 @@ export class JoinAction extends XHRAction {
             // update grouproom information
             let $grouproomDiv = $("#grouproom" + this.groupId);
             if($grouproomDiv.length > 0) {
-                let grouproomUrl = this.url.replace("join", "grouproom");
+                let grouproomUrl = this.actionData.url.replace("join", "grouproom");
                 $.ajax({
                     url: grouproomUrl,
                     type: 'POST',
@@ -63,7 +63,7 @@ export class JoinAction extends XHRAction {
             // update link information
             let $linksDiv = $("#links" + this.groupId);
             if($linksDiv.length > 0) {
-                let linksUrl = this.url.replace("group", "item").replace("join", "links");
+                let linksUrl = this.actionData.url.replace("group", "item").replace("join", "links");
                 $.ajax({
                     url: linksUrl,
                     type: 'POST',

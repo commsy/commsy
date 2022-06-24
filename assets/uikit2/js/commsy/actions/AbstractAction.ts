@@ -6,22 +6,24 @@ import * as $ from "jquery";
 declare var UIkit: any;
 
 export abstract class BaseAction {
-    private actionData: ActionData;
+    private _actionData: ActionData;
 
-    constructor(actionData: ActionData) {
-        this.actionData = actionData;
+    /**
+     * Returns true if this action needs to load additional form controls, otherwise false. Defaults to false.
+     */
+    private _wantsCustomFormData: boolean;
+
+    constructor(actionData: ActionData, wantsCustomFormData = false) {
+        this._actionData = actionData;
+        this._wantsCustomFormData = wantsCustomFormData;
     }
 
-    get url(): string {
-        return this.actionData.url;
+    get actionData(): ActionData {
+        return this._actionData;
     }
 
-    get action(): string {
-        return this.actionData.action;
-    }
-
-    get errorMessage(): string {
-        return this.actionData.errorMessage;
+    get wantsCustomFormData(): boolean {
+        return this._wantsCustomFormData;
     }
 
     public preExecute(actionActor: JQuery): Promise<void> {
@@ -43,7 +45,7 @@ export abstract class BaseAction {
     }
 
     public onError(error: Error) {
-        UIkit.notify(this.errorMessage, 'danger');
+        UIkit.notify(this._actionData.errorMessage, 'danger');
     }
 }
 
@@ -51,8 +53,8 @@ export abstract class BaseAction {
 export abstract class XHRAction extends BaseAction {
     private extraData: object;
 
-    constructor(actionData: ActionData) {
-        super(actionData);
+    constructor(actionData: ActionData, wantsCustomFormData = false) {
+        super(actionData, wantsCustomFormData);
 
         this.extraData = {};
     }

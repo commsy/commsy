@@ -22,7 +22,7 @@ import {BaseAction} from "./AbstractAction";
 declare var UIkit: any;
 
 export class ListActionManager {
-    private currentActionData: ListActionData;
+    private currentAction: BaseAction;
     private actionActor: JQuery;
 
     private selectMode: boolean = false;
@@ -58,12 +58,14 @@ export class ListActionManager {
             event.preventDefault();
 
             // store data from data-comsy-list-action
-            this.currentActionData = $(event.currentTarget).data('cs-action');
+            let currentActionData: ListActionData = $(event.currentTarget).data('cs-action');
+
+            this.currentAction = Actions.createAction(currentActionData);
 
             // store actor to get needed data later on
             this.actionActor = $(event.currentTarget);
 
-            if (this.currentActionData.mode == 'selection') {
+            if (currentActionData.mode == 'selection') {
                 this.onStartEdit();
             }
         });
@@ -261,10 +263,12 @@ export class ListActionManager {
         // collect values of selected checkboxes
         let $feed: JQuery = $('.feed ul, .feed div.uk-grid');
 
+        let listActionData: ListActionData = <ListActionData>this.currentAction.actionData;
+
         // if no entries are selected, present notification
         if (this.numSelected == 0) {
             UIkit.notify({
-                message : this.currentActionData.noSelectionMessage,
+                message : listActionData.noSelectionMessage,
                 status  : 'warning',
                 timeout : 5550,
                 pos     : 'top-center'
@@ -273,9 +277,8 @@ export class ListActionManager {
             return;
         }
 
-        let action: BaseAction = Actions.createAction(this.currentActionData);
         let actionExecuter: ActionExecuter = new ActionExecuter();
-        actionExecuter.invokeListAction(this.actionActor, action, this.positiveSelection, this.negativeSelection, this.selectAll, 0)
+        actionExecuter.invokeListAction(this.actionActor, this.currentAction, this.positiveSelection, this.negativeSelection, this.selectAll, 0)
             .then(() => {
                 $('#commsy-select-actions-select-all').removeClass('uk-active');
                 $('#commsy-select-actions-unselect').removeClass('uk-active');
@@ -306,11 +309,11 @@ export class ListActionManager {
 
         let $articles: JQuery = $feed.find('article')
 
-        let currentAction: string = this.currentActionData.action;
+        let currentActionType: string = this.currentAction.actionData.action;
 
         $articles.each(function() {
             // each article has a data attribute listing the allowed actions
-            if ($.inArray(currentAction, $(this).data('allowed-actions')) > -1) {
+            if ($.inArray(currentActionType, $(this).data('allowed-actions')) > -1) {
                 $(this).toggleClass('selectable', true);
             }
         });
