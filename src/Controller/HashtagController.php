@@ -204,6 +204,19 @@ class HashtagController extends AbstractController
             $buzzwordItemOne->setName($newName);
             $buzzwordItemOne->setModificationDate(getCurrentDateTimeInMySQL());
             $buzzwordItemOne->save();
+            //Get links to create new hashtag links
+            $managerLink = $legacyEnvironment->getLinkManager();
+            $links = $managerLink->getLinksTo2('buzzword_for', $secondId);
+            foreach ($links as $link) {
+                $link_array = array();
+                $link_array['room_id'] = $roomId;
+                $link_array['from_item_id'] = $link['from_item_id'];
+                $link_array['to_item_id'] = $buzzwordItemOne->getItemID();
+                $link_array['to_version_id'] = $link['to_version_id'];
+                $link_array['from_version_id'] = $link['from_version_id'];
+                $link_array['link_type'] = $link['link_type'];
+                $managerLink->save($link_array);
+            }
             $buzzwordItemTwo->delete();
 
             return $this->redirectToRoute('app_hashtag_edit', [

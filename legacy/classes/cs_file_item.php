@@ -567,20 +567,16 @@ class cs_file_item extends cs_item {
       $linkItemManager->resetLimits();
       $linkItemManager->setFileIDLimit($this->getFileID());
       $linkItemManager->select();
-      /** @var \cs_list $linkItemList */
       $linkItemList = $linkItemManager->get();
 
       // assemble array collection of corresponding \cs_item objects
       $itemCollection = new Collections\ArrayCollection();
-      if (isset($linkItemList) and $linkItemList->isNotEmpty()) {
-         $linkItem = $linkItemList->getFirst();
-         while ($linkItem) {
-            $linkedItem = $linkItem->getLinkedItem();
-            if ($linkedItem) {
-               $itemCollection->add($linkedItem);
-               $linkItem = $linkItemList->getNext();
-            }
-         }
+
+      foreach ($linkItemList as $linkItem) {
+          $linkedItem = $linkItem->getLinkedItem();
+          if ($linkedItem) {
+              $itemCollection->add($linkedItem);
+          }
       }
 
       return $itemCollection;
@@ -757,7 +753,7 @@ class cs_file_item extends cs_item {
        }
 
        foreach ($itemCollection as $item) {
-           if ($item->mayPortfolioSee($userItem)) {
+           if ($item->mayPortfolioSee($userItem->getUserID())) {
                return true;
            }
        }
@@ -809,5 +805,22 @@ class cs_file_item extends cs_item {
         } else {
             return null;
         }
+    }
+
+    /**
+     * May view files for externar viewer.
+     * @param string $username
+     * @return bool
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function mayExternalViewerSeeLinkedItem(string $username): bool
+    {
+        $itemCollection = $this->getLinkedItems();
+        if (!isset($itemCollection) or $itemCollection->isEmpty()) {
+            return false;
+        }
+        $itemId = $itemCollection[0]->getItemID();
+
+        return $this->mayExternalSee($itemId, $username);
     }
 }

@@ -142,7 +142,7 @@ class MaterialController extends BaseController
         int $roomId,
         int $max = 10,
         int $start = 0,
-        string $sort = 'date'
+        string $sort = ''
     ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -169,10 +169,13 @@ class MaterialController extends BaseController
             $this->materialService->hideDeactivatedEntries();
         }
 
-        // get material list from manager service 
-        $materials = $this->materialService->getListMaterials($roomId, $max, $start, $sort);
-
+        if (empty($sort)) {
+            $sort = $this->session->get('sortMaterials', 'date');
+        }
         $this->session->set('sortMaterials', $sort);
+
+        // get material list from manager service
+        $materials = $this->materialService->getListMaterials($roomId, $max, $start, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -242,6 +245,8 @@ class MaterialController extends BaseController
             $this->materialService->hideDeactivatedEntries();
         }
 
+        $sort = $this->session->get('sortMaterials', 'date');
+
         // get material list from manager service 
         $itemsCountArray = $this->materialService->getCountArray($roomId);
 
@@ -268,6 +273,7 @@ class MaterialController extends BaseController
             'isArchived' => $roomItem->isArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'isMaterialOpenForGuests' => $roomItem->isMaterialOpenForGuests(),
+            'sort' => $sort,
         );
     }
 
@@ -303,14 +309,10 @@ class MaterialController extends BaseController
         }
 
         // get material list from manager service 
-        if ($sort != "none") {
-            $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, $sort);
-        } elseif ($this->session->get('sortMaterials')) {
-            $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0,
-                $this->session->get('sortMaterials'));
-        } else {
-            $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, 'date');
+        if ($sort === "none" || empty($sort)) {
+            $sort = $this->session->get('sortMaterials', 'date');
         }
+        $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -760,10 +762,6 @@ class MaterialController extends BaseController
         if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
-
-        // mark annotations as read
-        $annotationList = $material->getAnnotationList();
-        $this->annotationService->markAnnotationsReadedAndNoticed($annotationList);
 
         $readsectionList = $material->getSectionList();
 

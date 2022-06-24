@@ -42,6 +42,10 @@
                 <source>registration.password_confirm</source>
                 <target>Password (repeat)</target>
             </trans-unit>
+            <trans-unit id="registration.password_help">
+                <source>registration.password_help</source>
+                <target>Your password must be at least 8 characters long and contain at least one lowercase, one uppercase, one special and one numeric character.</target>
+            </trans-unit>
             <trans-unit id="registration.submit">
                 <source>registration.submit</source>
                 <target>Register</target>

@@ -660,19 +660,6 @@ class cs_material_item extends cs_item {
       return $this->_data['section_for'];
    }
 
-    /**
-     * @return cs_list
-     */
-    public function getAnnotationList()
-    {
-        $annotation_manager = $this->_environment->getAnnotationManager();
-        $annotation_manager->reset();
-        $annotation_manager->setLinkedItemID($this->getItemID());
-        $annotation_manager->setContextLimit($this->getContextID());
-        $annotation_manager->select();
-        return $annotation_manager->get();
-    }
-
   function selectAttachedItems(){
       $link_manager = $this->_environment->getLinkManager();
       $link_array = $link_manager->getLinksFromWithItemType('material_for', $this);#, $this->getVersionID());
@@ -1443,27 +1430,6 @@ function _copySectionList ($copy_id) {
       #$retour['DC.RIGHTS'] = ''; // Standardtext zur Nutzerinformation, dass die Urheberrechte bzw. die spezifischen Verwertungsrechte am Dokument zu beachten sind.
 
       return $retour;
-   }
-
-
-
-   /** is the given user allowed to see this material item?
-    *
-    * @param \cs_user_item $user_item
-    */
-   function maySee ($user_item) {
-      if ($this->_environment->inProjectRoom()
-           or $user_item->isUser() or $this->isWorldPublic()) {
-         return parent::maySee($user_item);
-
-      } else {
-          $contextItem = $this->getContextItem();
-          if ($contextItem->isOpenForGuests() && $contextItem->isMaterialOpenForGuests()) {
-              return parent::maySee($user_item);
-          }
-      }
-
-      return false;
    }
 
    /** asks if item is editable by everybody or just creator

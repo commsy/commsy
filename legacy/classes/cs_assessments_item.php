@@ -82,15 +82,6 @@ class cs_assessments_item extends cs_item {
    }
    
    /**
-    * returns item id of item
-    * 
-    * @return integer item_id
-    */
-   function getItemID() {
-   	 return $this->_getValue('item_id');
-   }
-   
-   /**
     * sets context id of item
     * 
     * @param integer context_id
