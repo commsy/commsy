@@ -86,30 +86,24 @@ class cs_room2_manager extends cs_context_manager {
       include_once('functions/date_functions.php');
       $this->setLastLoginNewerLimit(getCurrentDateTimeMinusDaysInMySQL(100));
    }
-   
-   // archiving
-   public function saveLastLogin ($item, $datetime = '') {
-   	$retour = false;
-   	if ( !empty($datetime) ) {
-   		$query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
-   		                  ' lastlogin="'.$datetime.'"'.
-   		                  ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
-   		 
-   	} else {
-         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
-                  ' lastlogin=NOW()'.
-                  ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
-   	}
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems saving lastlogin to room ('.$item->getItemID().') - '.$this->_db_table.'.',E_USER_WARNING);
-      } else {
-      	$retour = true;
-      }
-      return $retour;
-   }
-   
+
+    public function saveLastLogin($item)
+    {
+        $query = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET' .
+            ' lastlogin=NOW()' .
+            ' WHERE item_id="' . encode(AS_DB, $item->getItemID()) . '"';
+        $result = $this->_db_connector->performQuery($query);
+        if (!isset($result) or !$result) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems saving lastlogin to room (' . $item->getItemID() . ') - ' . $this->_db_table . '.',
+                E_USER_WARNING);
+        } else {
+            return true;
+        }
+
+        return false;
+    }
+
   /** update a room - internal, do not use -> use method save
     * this method updates a room
     *

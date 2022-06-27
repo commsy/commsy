@@ -1167,7 +1167,7 @@ class UserController extends BaseController
         $foundUserImage = true;
 
         if ($file != '') {
-            $rootDir = $params->get('kernel.root_dir') . '/';
+            $rootDir = $params->get('kernel.project_dir') . '/';
 
             $disc_manager = $this->legacyEnvironment->getDiscManager();
             $disc_manager->setContextID($roomId);
@@ -1189,7 +1189,7 @@ class UserController extends BaseController
 
             if (file_exists($rootDir . $filePath)) {
                 $processedImage = $dataManager->find('commsy_user_image',
-                    str_ireplace('../files', './', $filePath));
+                    str_ireplace('files/', './', $filePath));
                 $content = $filterManager->applyFilter($processedImage,
                     'commsy_user_image')->getContent();
 

@@ -14,6 +14,8 @@ use App\Form\DataTransformer\DateTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\DateImportType;
 use App\Form\Type\DateType;
+use App\Repository\CalendarsRepository;
+use App\Security\Authorization\Voter\DateVoter;
 use App\Services\CalendarsService;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -26,6 +28,7 @@ use cs_dates_item;
 use cs_room_item;
 use cs_user_item;
 use DateTime;
+use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -37,7 +40,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use App\Security\Authorization\Voter\DateVoter;
 
 /**
  * Class DateController
@@ -153,11 +155,13 @@ class DateController extends BaseController
      * @Template()
      * @param Request $request
      * @param int $roomId
+     * @param CalendarsRepository $calendarsRepository
      * @return array
      */
     public function listAction(
         Request $request,
-        int $roomId
+        int $roomId,
+        CalendarsRepository $calendarsRepository
     ) {
         $roomItem = $this->getRoom($roomId);
 
@@ -221,9 +225,7 @@ class DateController extends BaseController
             }
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('App:Calendars');
-        $calendars = $repository->findBy(array('context_id' => $roomId, 'external_url' => array('', null)));
+        $calendars = $calendarsRepository->findBy(array('context_id' => $roomId, 'external_url' => array('', null)));
 
         return [
             'roomId' => $roomId,
@@ -299,13 +301,14 @@ class DateController extends BaseController
      * @Route("/room/{roomId}/date/calendar")
      * @Template()
      * @param Request $request
-     * @param DateService $dateService
      * @param int $roomId
+     * @param CalendarsRepository $calendarsRepository
      * @return array
      */
     public function calendarAction(
         Request $request,
-        int $roomId
+        int $roomId,
+        CalendarsRepository $calendarsRepository
     ) {
         $roomItem = $this->getRoom($roomId);
         $filterForm = $this->createFilterForm($roomItem, false);
@@ -362,9 +365,7 @@ class DateController extends BaseController
             }
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('App:Calendars');
-        $calendars = $repository->findBy(array('context_id' => $roomId, 'external_url' => array('', null)));
+        $calendars = $calendarsRepository->findBy(array('context_id' => $roomId, 'external_url' => array('', null)));
 
         return [
             'roomId' => $roomId,
@@ -1059,6 +1060,7 @@ class DateController extends BaseController
         DateTransformer $transformer,
         ItemController $itemController,
         LabelService $labelService,
+        CalendarsRepository $calendarsRepository,
         int $roomId,
         int $itemId
     ) {
@@ -1081,9 +1083,7 @@ class DateController extends BaseController
             $this->legacyEnvironment);
         $formData['draft'] = $isDraft;
 
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('App:Calendars');
-        $calendars = $repository->findBy(array('context_id' => $roomId));
+        $calendars = $calendarsRepository->findBy(array('context_id' => $roomId));
         $calendarsOptions = [];
         $calendarsOptionsAttr = [];
         foreach ($calendars as $calendar) {
@@ -1790,18 +1790,19 @@ class DateController extends BaseController
      * @Template()
      * @param Request $request
      * @param CalendarsService $calendarsService
+     * @param CalendarsRepository $calendarsRepository
      * @param int $roomId
      * @return array|RedirectResponse
      */
     public function importAction(
         Request $request,
         CalendarsService $calendarsService,
+        CalendarsRepository $calendarsRepository,
+        ManagerRegistry $doctrine,
         int $roomId
     ) {
         $formData = [];
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('App:Calendars');
-        $calendars = $repository->findBy(array('context_id' => $roomId));
+        $calendars = $calendarsRepository->findBy(array('context_id' => $roomId));
         $calendarsOptions = [$this->translator->trans('new calendar', [], 'date') => 'new'];
         $calendarsOptionsAttr = [
             [
@@ -1870,14 +1871,16 @@ class DateController extends BaseController
                     $calendar->setColor($calendarColor);
 
                     $calendar->setSynctoken(0);
+
+                    $em = $doctrine->getManager();
                     $em->persist($calendar);
                     $em->flush();
                 }
 
-                $kernelRootDir = $this->getParameter('kernel.root_dir');
+                $projectDir = $this->getParameter('kernel.project_dir');
                 $fileData = array();
                 foreach ($files as $file) {
-                    $fileHandle = fopen($kernelRootDir . '/../var/temp/' . $file->getFileId(), 'r');
+                    $fileHandle = fopen($projectDir . '/var/temp/' . $file->getFileId(), 'r');
                     if ($fileHandle) {
                         $fileData[] = $fileHandle;
                     }
@@ -1908,7 +1911,7 @@ class DateController extends BaseController
     ) {
         $response = new JsonResponse();
 
-        $kernelRootDir = $this->getParameter('kernel.root_dir');
+        $projectDir = $this->getParameter('kernel.project_dir');
 
         $files = $request->files->all();
 
@@ -1916,7 +1919,7 @@ class DateController extends BaseController
         foreach ($files['files'] as $file) {
             if (stristr($file->getMimeType(), 'text/calendar')) {
                 $filename = $roomId . '_' . date('Ymdhis') . '_' . $file->getClientOriginalName();
-                if ($file->move($kernelRootDir . '/../var/temp/', $filename)) {
+                if ($file->move($projectDir . '/var/temp/', $filename)) {
                     $responseData[$filename] = $file->getClientOriginalName();
                 }
             }

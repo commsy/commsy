@@ -5,6 +5,8 @@ use App\Entity\Account;
 use App\Entity\Room;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -62,6 +64,12 @@ class RoomRepository extends ServiceEntityRepository
             ]);
     }
 
+    /**
+     * @param int $portalId
+     * @return int
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     */
     public function getNumActiveRoomsByPortal(int $portalId): int
     {
         return $this->createQueryBuilder('r')
@@ -91,5 +99,39 @@ class RoomRepository extends ServiceEntityRepository
             ->setParameter(':authSource', $account->getAuthSource()->getId())
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return array
+     */
+    public function getProjectAndUserRoomIds(): array
+    {
+        $query = $this->getEntityManager()->createQuery('
+            SELECT r.itemId FROM App\Entity\Room r
+            WHERE (r.type = :projectType OR r.type = :userroomType)
+        ');
+        $query->setParameters([
+            'projectType' => 'project',
+            'userroomType' => 'userroom',
+        ]);
+
+        return array_column($query->getResult(), 'itemId');
+    }
+
+    /**
+     * @param string $oldState
+     * @param string $newState
+     * @return int|mixed|string
+     */
+    public function updateActivity(string $oldState, string $newState)
+    {
+        return $this->createQueryBuilder('r')
+            ->update()
+            ->set('r.activityState', ':newState')
+            ->where('r.activityState = :oldState')
+            ->setParameter('oldState', $oldState)
+            ->setParameter('newState', $newState)
+            ->getQuery()
+            ->execute();
     }
 }
