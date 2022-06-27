@@ -62,9 +62,6 @@ class cs_discussion_item extends cs_item
    	  }
    }
 
-function getDescription(){
-	return '';
-}
 
   /** set title of a discussion
    * this method sets the title of the discussion
@@ -476,5 +473,36 @@ function getDescription(){
       $file_list->sortby('filename');
       return $file_list;
    }
+
+    /** set description of a material
+     * this method sets the description of the material an marks it as 'changed'
+     *
+     * @param string value description of the material
+     *
+     * @author CommSy Development Group
+     */
+    public function setDescription(string $description)
+    {
+        // sanitize description
+        $converter = $this->_environment->getTextConverter();
+        $description = $converter->sanitizeFullHTML($description);
+        $this->_setValue('description', $description);
+    }
+
+    /** get description of a material
+     * this method returns the description of the material
+     *
+     * @return string description of a material
+     *
+     * @author CommSy Development Group
+     */
+    public function getDescription(): string
+    {
+        if ($this->getPublic() == '-1') {
+            $translator = $this->_environment->getTranslationObject();
+            return $translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
+        } else {
+            return (string)$this->_getValue('description');
+        }
+    }
 }
-?>
