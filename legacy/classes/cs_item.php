@@ -494,17 +494,17 @@ class cs_item {
       $this->_setValue('version_id', (integer)$value);
    }
 
-   /** get context id
-    * this function returns the id of the current context:
-    */
-   function getContextID () {
-      $context_id = $this->_getValue('context_id');
-      if ($context_id === '') {
-         $context_id = $this->_environment->getCurrentContextID();
-      }
-      return (int) $context_id;
-   }
-
+    /** get context id
+     * this function returns the id of the current context:
+     */
+    public function getContextID(): int
+    {
+        $context_id = $this->_getValue('context_id');
+        if ($context_id === '') {
+            $context_id = $this->_environment->getCurrentContextID();
+        }
+        return (int)$context_id;
+    }
 
    /** set context id
    * this method sets the context id of the item
@@ -1616,8 +1616,7 @@ class cs_item {
         }
 
         // Room user
-        $userManager = $this->_environment->getUserManager();
-        $userInContext = ($userItem->getContextID() === $this->getContextID()) ?:
+        $userInContext = ($userItem->getContextID() === $this->getContextID()) ? $userItem:
             $userItem->getRelatedUserItemInContext($this->getContextID());
         if ($userInContext !== null && $userInContext->isUser()) {
             // deactivated entries can be only viewed by a moderator or by their creator
