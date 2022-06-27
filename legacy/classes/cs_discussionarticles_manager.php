@@ -305,34 +305,30 @@ class cs_discussionarticles_manager extends cs_manager {
       }
    }
 
-
-   function getAllArticlesForItem($discussion_item,$show_all=false){
-      $item_id = $discussion_item->getItemID();
-      if ( in_array($item_id,$this->_cached_discussion_item_ids) ) {
-         $list = new cs_list();
-         $discarticle_list = $this->_all_discarticle_list;
-         $discarticle_item = $discarticle_list->getFirst();
-         while($discarticle_item){
-            if($item_id == $discarticle_item->getDiscussionID() ){
-               $list->add($discarticle_item);
+    public function getAllArticlesForItem($discussion_item, $show_all = false):? cs_list
+    {
+        $item_id = $discussion_item->getItemID();
+        if (in_array($item_id, $this->_cached_discussion_item_ids)) {
+            $list = new cs_list();
+            foreach ($this->_all_discarticle_list as $discArticleItem) {
+                /** @var cs_discussionarticle_item $discArticleItem */
+                if ($item_id == $discArticleItem->getDiscussionID()) {
+                    $list->add($discArticleItem);
+                }
             }
-            $discarticle_item = $discarticle_list->getNext();
-         }
-         unset($discarticle_list);
-         unset($discarticle_item);
-         return $list;
-      } else {
-         $this->reset();
-         $this->setContextLimit($discussion_item->getContextID());
-         $this->setDiscussionLimit($discussion_item->getItemID());
-         $this->setSortPosition();
-         if ($show_all == true) {
-            $this->setDeleteLimit(false);
-         }
-         $this->select();
-         return $this->get();
-      }
-   }
+            return $list;
+        } else {
+            $this->reset();
+            $this->setContextLimit($discussion_item->getContextID());
+            $this->setDiscussionLimit($discussion_item->getItemID());
+            $this->setSortPosition();
+            if ($show_all == true) {
+                $this->setDeleteLimit(false);
+            }
+            $this->select();
+            return $this->get();
+        }
+    }
 
     /**
      * Returns the parent article for the given discussion article, i.e. the article to which the given article is an answer.

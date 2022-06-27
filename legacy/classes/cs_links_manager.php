@@ -1115,4 +1115,3 @@ class cs_links_manager extends cs_manager {
       }
    }
 }
-?>
