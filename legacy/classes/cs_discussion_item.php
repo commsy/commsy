@@ -220,18 +220,19 @@ class cs_discussion_item extends cs_item
       return $all_articles;
    }
 
-   /** get all articles of discussion
-   * this method returns all articles of the discussion
-   *
-   * @param bool show_all If true, all articles of a closed discussion are selected. Default false.
-   *
-   * @return cs_list
-   */
+    /** get all articles of discussion
+     * this method returns all articles of the discussion
+     *
+     * @param bool show_all If true, all articles of a closed discussion are selected. Default false.
+     *
+     * @return cs_list
+     */
 
-   function getAllArticles($show_all=false) {
-      $discussionarticles_manager = $this->_environment->getDiscussionArticlesManager();
-      return $discussionarticles_manager->getAllArticlesForItem($this,$show_all=false);
-   }
+    public function getAllArticles(bool $showAll = false)
+    {
+        $discussionarticles_manager = $this->_environment->getDiscussionArticlesManager();
+        return $discussionarticles_manager->getAllArticlesForItem($this, $showAll);
+    }
 
   /** get unread articles of a discussion
    * this method returns a number of unread articles of a discussion
