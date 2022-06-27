@@ -486,6 +486,7 @@ class cs_discussion_manager extends cs_manager {
                'modification_date="'.$modification_date.'",'.
                'title="'.encode(AS_DB,$item->getTitle()).'",'.
                'extras="'.encode(AS_DB,serialize($item->getExtraInformation())).'",'.
+               'description="'.encode(AS_DB,$item->getDescription()).'",'.
                'public="'.encode(AS_DB,$public).'"';
       $article_id = $item->getLatestArticleID();
       if (!empty($article_id)) {
@@ -564,6 +565,7 @@ class cs_discussion_manager extends cs_manager {
               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
               'modification_date="'.$modification_date.'",'.
               'title="'.encode(AS_DB,$item->getTitle()).'",'.
+              'description="'.encode(AS_DB,$item->getDescription()).'",'.
               'discussion_type="'.encode(AS_DB,$type).'",'.
               'public="'.encode(AS_DB,$public).'"';
      $article_id = $item->getLatestArticleID();

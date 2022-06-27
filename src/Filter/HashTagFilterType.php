@@ -1,18 +1,16 @@
 <?php
 namespace App\Filter;
 
+use App\Entity\Labels;
+use App\Form\Type\HashtagType;
+use App\Utils\RoomService;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\FormView;
-use Symfony\Component\Form\FormInterface;
-
-use Doctrine\ORM\EntityRepository;
-
-use App\Utils\RoomService;
-
-use App\Form\Type\HashtagType;
 
 class HashTagFilterType extends AbstractType
 {
@@ -30,7 +28,7 @@ class HashTagFilterType extends AbstractType
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
      * Type extensions can further modify the form.
-     * 
+     *
      * @param  FormBuilderInterface $builder The form builder
      * @param  array                $options The options
      */
@@ -45,7 +43,7 @@ class HashTagFilterType extends AbstractType
 
                 $builder
                     ->add('hashtag', HashtagType::class, array(
-                        'class' => 'App:Labels',
+                        'class' => Labels::class,
                         'query_builder' => function (EntityRepository $er) use ($roomId) {
                             return $er->createQueryBuilder('l')
                                 ->andWhere('l.contextId = :roomId')
@@ -71,7 +69,7 @@ class HashTagFilterType extends AbstractType
      * Returns the prefix of the template block name for this type.
      * The block prefix defaults to the underscored short class name with the "Type" suffix removed
      * (e.g. "UserProfileType" => "user_profile").
-     * 
+     *
      * @return string The prefix of the template block name
      */
     public function getBlockPrefix()
@@ -81,7 +79,7 @@ class HashTagFilterType extends AbstractType
 
     /**
      * Configures the options for this type.
-     * 
+     *
      * @param  OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)

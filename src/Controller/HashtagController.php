@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\LabelRepository;
 use App\Services\LegacyEnvironment;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,48 +27,40 @@ class HashtagController extends AbstractController
     /**
      * @Template("hashtag/show.html.twig")
      * @param int $roomId
+     * @param LabelRepository $labelRepository
      * @return array
      */
     public function showAction(
-        int $roomId
+        int $roomId,
+        LabelRepository $labelRepository
     ) {
-        $em = $this->getDoctrine()->getManager();
-        $hashtags = $em->getRepository('App:Labels')
-            ->findRoomHashtags($roomId);
-
-        return array(
-            'hashtags' => $hashtags
-        );
+        return [
+            'hashtags' => $labelRepository->findRoomHashtags($roomId),
+        ];
     }
 
     /**
      * @Template("hashtag/showDetail.html.twig")
      */
     public function showDetailAction(
-        int $roomId
+        int $roomId,
+        LabelRepository $labelRepository
     ) {
-        $em = $this->getDoctrine()->getManager();
-        $hashtags = $em->getRepository('App:Labels')
-            ->findRoomHashtags($roomId);
-
-        return array(
-            'hashtags' => $hashtags
-        );
+        return [
+            'hashtags' => $labelRepository->findRoomHashtags($roomId),
+        ];
     }
 
     /**
      * @Template("hashtag/showDetailShort.html.twig")
      */
     public function showDetailShortAction(
-        int $roomId
+        int $roomId,
+        LabelRepository $labelRepository
     ) {
-        $em = $this->getDoctrine()->getManager();
-        $hashtags = $em->getRepository('App:Labels')
-            ->findRoomHashtags($roomId);
-
-        return array(
-            'hashtags' => $hashtags
-        );
+        return [
+            'hashtags' => $labelRepository->findRoomHashtags($roomId),
+        ];
     }
 
     /**
@@ -122,6 +115,7 @@ class HashtagController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         EventDispatcherInterface $eventDispatcher,
         LabelService $labelService,
+        LabelRepository $labelRepository,
         int $roomId,
         int $labelId = null
     ) {
@@ -134,11 +128,8 @@ class HashtagController extends AbstractController
             throw $this->createAccessDeniedException('The requested room does not have hashtags enabled.');
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('App:Labels');
-
         if ($labelId) {
-            $hashtag = $repository->findOneByItemId($labelId);
+            $hashtag = $labelRepository->findOneByItemId($labelId);
             $hashtag->setName(html_entity_decode($hashtag->getName()));
         } else {
             $hashtag = new Labels();
@@ -173,7 +164,7 @@ class HashtagController extends AbstractController
             ]);
         }
 
-        $hashtags = $repository->findRoomHashtags($roomId);
+        $hashtags = $labelRepository->findRoomHashtags($roomId);
         foreach ($hashtags as $hashtag) {
             $hashtag->setName(html_entity_decode($hashtag->getName()));
         }
@@ -194,7 +185,7 @@ class HashtagController extends AbstractController
 
             $buzzwordItemOne = $labelManager->getItem($firstId);
             $buzzwordItemTwo = $labelManager->getItem($secondId);
-                    
+
             // change name of item one, save it and delete the item two
             $buzzwordOne = $buzzwordItemOne->getName();
             $buzzwordTwo = $buzzwordItemTwo->getName();
