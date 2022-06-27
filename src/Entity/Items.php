@@ -81,6 +81,13 @@ abstract class Items
      */
     private $modificationDate;
 
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="activation_date", type="datetime")
+     */
+    private $activationDate;
+
 
 }
 
