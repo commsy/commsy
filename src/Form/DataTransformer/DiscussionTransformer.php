@@ -3,6 +3,7 @@ namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
 use cs_environment;
+use DateTime;
 
 class DiscussionTransformer extends AbstractTransformer
 {
@@ -88,12 +89,12 @@ class DiscussionTransformer extends AbstractTransformer
                 }
             } else {
                 if($discussionObject->isNotActivated()){
-    	            $discussionObject->setActivationDate(getCurrentDateTimeInMySQL());
+    	            $discussionObject->setActivationDate(new DateTime());
     	        }
             }
         } else {
             if($discussionObject->isNotActivated()){
-	            $discussionObject->setActivationDate(getCurrentDateTimeInMySQL());
+	            $discussionObject->setActivationDate(new DateTime());
 	        }
         }
 

@@ -76,9 +76,9 @@ class Labels
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="activation_date", type="datetime", nullable=false)
+     * @ORM\Column(name="activation_date", type="datetime")
      */
-    private $activationDate = '0000-00-00 00:00:00';
+    private $activationDate;
 
     /**
      * @var \DateTime

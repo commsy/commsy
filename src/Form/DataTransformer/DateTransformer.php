@@ -3,6 +3,7 @@ namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
 use cs_environment;
+use DateTime;
 
 class DateTransformer  extends AbstractTransformer
 {
@@ -135,13 +136,12 @@ class DateTransformer  extends AbstractTransformer
                 }
             } else {
                 if($dateObject->isNotActivated()){
-                    $dateObject->setActivationDate(getCurrentDateTimeInMySQL());
+                    $dateObject->setActivationDate(new DateTime());
     	        }
             }
         } else {
             if($dateObject->isNotActivated()){
-                $dateObject->setModificationDate(getCurrentDateTimeInMySQL());
-	            $dateObject->setActivationDate(getCurrentDateTimeInMySQL());
+                $dateObject->setActivationDate(new DateTime());
 	        }
         }
 

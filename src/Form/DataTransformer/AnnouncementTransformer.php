@@ -1,6 +1,8 @@
 <?php
 namespace App\Form\DataTransformer;
 
+use DateTime;
+
 class AnnouncementTransformer  extends AbstractTransformer
 {
     protected $entity = 'announcement';
@@ -83,12 +85,12 @@ class AnnouncementTransformer  extends AbstractTransformer
                 }
             } else {
                 if($announcementObject->isNotActivated()){
-    	            $announcementObject->setActivationDate(getCurrentDateTimeInMySQL());
+    	            $announcementObject->setActivationDate(new DateTime());
     	        }
             }
         } else {
             if($announcementObject->isNotActivated()){
-	            $announcementObject->setActivationDate(getCurrentDateTimeInMySQL());
+	            $announcementObject->setActivationDate(new DateTime());
 	        }
         }
         
