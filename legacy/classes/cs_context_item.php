@@ -519,7 +519,6 @@ class cs_context_item extends cs_item {
   }
 
   function getDescription () {
-    $retour = '';
     $retour = $this->getDescriptionByLanguage($this->_environment->getSelectedLanguage());
     if ( empty($retour) ) {
       $current_user = $this->_environment->getCurrentUserItem();
@@ -4789,7 +4788,8 @@ class cs_context_item extends cs_item {
     $temp = $this->getLastStatus();
     $this->setLastStatus($this->getStatus());
     $this->_data['status'] = $temp;
-    unset($temp);
+
+
   }
 
   /** is room a normal open ?
@@ -5638,24 +5638,6 @@ class cs_context_item extends cs_item {
       }
       $retour = $count;
     }
-    return $retour;
-  }
-
-  function getActiveAndAllMembersAsArray($external_timespread = 0) {
-    if($external_timespread != 0) {
-      $timespread = $external_timespread;
-    }else {
-      $timespread = $this->getTimeSpread();
-    }
-    $user_manager = $this->_environment->getUserManager();
-    $user_manager->reset();
-    $user_manager->setContextLimit($this->getItemID());
-    $user_manager->setUserLimit();
-    $retour['all_users'] = $user_manager->getCountAll();
-    $context = $this->_environment->getCurrentContextItem();
-    $user_manager->setLastLoginLimit($timespread);
-    $ids = $user_manager->getIDArray();
-    $retour['active'] = count($ids);
     return $retour;
   }
 

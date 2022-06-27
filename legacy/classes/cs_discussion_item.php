@@ -24,23 +24,27 @@
 
 /** upper class of the discussion item
  */
+
+use App\Entity\Discussions;
+
 include_once('classes/cs_item.php');
 
 /** class for a discussion
  * this class implements a discussion item
  */
-class cs_discussion_item extends cs_item {
-
-  /** constructor
-   * the only available constructor, initial values for internal variables
-   *
-   * @param object  environment            environment of the commsy
-   *
-   */
-   function __construct($environment) {
-      cs_item::__construct($environment);
-      $this->_type = CS_DISCUSSION_TYPE;
-   }
+class cs_discussion_item extends cs_item
+{
+    /** constructor
+     * the only available constructor, initial values for internal variables
+     *
+     * @param object  environment            environment of the commsy
+     *
+     */
+    public function __construct($environment)
+    {
+        parent::__construct($environment);
+        $this->_type = CS_DISCUSSION_TYPE;
+    }
 
   /** get title of a discussion
    * this method returns the title of the discussion
@@ -58,9 +62,6 @@ class cs_discussion_item extends cs_item {
    	  }
    }
 
-function getDescription(){
-	return '';
-}
 
   /** set title of a discussion
    * this method sets the title of the discussion
@@ -293,7 +294,7 @@ function getDescription(){
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_discussion');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Discussions');
+        $repository = $em->getRepository(Discussions::class);
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -313,7 +314,7 @@ function getDescription(){
 
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_discussion');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Discussions');
+        $repository = $em->getRepository(Discussions::class);
 
         $this->deleteElasticItem($objectPersister, $repository);
     }
@@ -472,5 +473,36 @@ function getDescription(){
       $file_list->sortby('filename');
       return $file_list;
    }
+
+    /** set description of a material
+     * this method sets the description of the material an marks it as 'changed'
+     *
+     * @param string value description of the material
+     *
+     * @author CommSy Development Group
+     */
+    public function setDescription(string $description)
+    {
+        // sanitize description
+        $converter = $this->_environment->getTextConverter();
+        $description = $converter->sanitizeFullHTML($description);
+        $this->_setValue('description', $description);
+    }
+
+    /** get description of a material
+     * this method returns the description of the material
+     *
+     * @return string description of a material
+     *
+     * @author CommSy Development Group
+     */
+    public function getDescription(): string
+    {
+        if ($this->getPublic() == '-1') {
+            $translator = $this->_environment->getTranslationObject();
+            return $translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
+        } else {
+            return (string)$this->_getValue('description');
+        }
+    }
 }
-?>

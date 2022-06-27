@@ -53,14 +53,8 @@ class UserActivitySubscriber implements EventSubscriberInterface
             if ($user->isUser() and !$user->isRoot()) {
                 $user->updateLastLogin();
 
-                $portalUser = $user->getRelatedCommSyUserItem();
-                if ($portalUser) {
-                    $portalUser->updateLastLogin();
-
-                    if ($portalUser->getMailSendNextLock() || $portalUser->getMailSendBeforeLock() || $portalUser->getNotifyLockDate()) {
-                        $portalUser->resetInactivity();
-                    }
-                }
+                // The portal user is no longer updated here
+                // This is now done by the LoginSubscriber and stored in the Account
             }
         }
     }

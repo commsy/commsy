@@ -30,6 +30,7 @@ class UserType extends AbstractType
                 'label'    => 'dateOfBirth',
                 'required' => false,
                 'format' => 'dd.MM.yyyy',
+                'html5' => false,
                 'attr' => array(
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
                 ),

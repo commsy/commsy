@@ -1057,21 +1057,26 @@ class cs_project_item extends cs_room_item {
                 $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_UNLOCK');
             }
             $body .= LF . LF;
-            $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION', $title, $current_user->getFullname(),
-                $room_change_action);
+
+            $editorFullName = !empty($current_user->getFullname()) ? $current_user->getFullname() : '-';
+            $body .= $translator->getMessage(
+              'PROJECT_MAIL_BODY_INFORMATION',
+              $title,
+              $editorFullName,
+              $room_change_action
+            );
+
             if ($room_change != 'delete') {
+              global $symfonyContainer;
+              $url = $symfonyContainer->get('router')->generate('app_room_home', [
+                  'roomId' => $this->getItemID()
+              ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                global $symfonyContainer;
-
-                $url = $symfonyContainer->get('router')->generate('app_room_home', [
-                    'roomId' => $this->getItemID()
-                ], UrlGeneratorInterface::ABSOLUTE_URL);
-
-                $body .= LF . $url;
+              $body .= LF . $url;
             }
 
-            $body .= LF . LF;
-            $body .= $translator->getMessage('PROJECT_MAIL_BODY_COMMUNITIY_ROOMS') . LF;
+          $body .= LF . LF;
+          $body .= $translator->getMessage('PROJECT_MAIL_BODY_COMMUNITIY_ROOMS') . LF;
 
             $community_name_array = array();
             if ($room_change != 'link') {

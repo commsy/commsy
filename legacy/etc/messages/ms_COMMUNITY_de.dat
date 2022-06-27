@@ -2,13 +2,7 @@
 $message["COMMUNITY_ACCESS_NOT_GRANTED"]["de"] = "Sie dürfen %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG <span style=&quot;font-weight:bold;&quot;>%1</span> nicht betreten, da Sie dort kein Mitglied sind. Sie können hier die %2.";
 $message["COMMUNITY_INDEX"]["de"] = "%_COMMUNITY_SUB_NOMPL_BIG";
 $message["COMMUNITY_MAIL_BODY_ARCHIVE"]["de"] = "Archivierung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
-$message["COMMUNITY_MAIL_BODY_ARCHIVE_INFO"]["de"] = "%_COMMUNITY_ART_DEF_NOMS_BIG %_COMMUNITY_SUB_NOMS_BIG &quot;%1&quot; wurde seit %3 Tagen nicht mehr verwendet. Daher findet eine Archivierung  %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG in %2 Tagen statt. Nach der Archivierung können Sie weiterhin auf alle Inhalte lesend zugreifen.
-
-Wenn Sie nicht wollen, dass %_COMMUNITY_ART_DEF_NOMS_LOW  %_COMMUNITY_SUB_NOMS_BIG archiviert wird, loggen Sie sich einmal innerhalb der nächsten %2 Tage in %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_NOMS_BIG ein.";
 $message["COMMUNITY_MAIL_BODY_DELETE"]["de"] = "Löschung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
-$message["COMMUNITY_MAIL_BODY_DELETE_INFO"]["de"] = "%_COMMUNITY_ART_DEF_NOMS_BIG %_COMMUNITY_SUB_NOMS_BIG &quot;%1&quot; wurde seit %3 Tagen nicht mehr verwendet. Daher findet eine Löschung %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG in %2 Tagen statt.
-
-Wenn Sie nicht wollen, dass %_COMMUNITY_ART_DEF_NOMS_LOW %_COMMUNITY_SUB_NOMS_BIG gelöscht wird, loggen Sie sich einmal innerhalb der nächsten %2 Tage in %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_NOMS_BIG ein.";
 $message["COMMUNITY_MAIL_BODY_LOCK"]["de"] = "Sperrung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
 $message["COMMUNITY_MAIL_BODY_OPEN"]["de"] = "Eröffnung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
 $message["COMMUNITY_MAIL_BODY_REOPEN"]["de"] = "Wiedereröffnung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
