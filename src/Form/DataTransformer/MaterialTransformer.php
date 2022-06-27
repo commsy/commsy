@@ -4,6 +4,7 @@ namespace App\Form\DataTransformer;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_material_item;
+use DateTime;
 
 class MaterialTransformer extends AbstractTransformer
 {
@@ -183,12 +184,12 @@ class MaterialTransformer extends AbstractTransformer
                 }
             } else {
                 if($materialObject->isNotActivated()){
-    	            $materialObject->setActivationDate(getCurrentDateTimeInMySQL());
+    	            $materialObject->setActivationDate(new DateTime());
     	        }
             }
         } else {
             if($materialObject->isNotActivated()){
-	            $materialObject->setActivationDate(getCurrentDateTimeInMySQL());
+	            $materialObject->setActivationDate(new DateTime());
 	        }
         }
 

@@ -1,6 +1,7 @@
 <?php
 namespace App\Form\DataTransformer;
 
+use DateTime;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class TopicTransformer extends AbstractTransformer
@@ -72,12 +73,12 @@ class TopicTransformer extends AbstractTransformer
                 }
             } else {
                 if($topicObject->isNotActivated()){
-    	            $topicObject->setActivationDate(getCurrentDateTimeInMySQL());
+    	            $topicObject->setActivationDate(new DateTime());
     	        }
             }
         } else {
             if($topicObject->isNotActivated()){
-	            $topicObject->setActivationDate(getCurrentDateTimeInMySQL());
+	            $topicObject->setActivationDate(new DateTime());
 	        }
         }
 

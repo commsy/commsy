@@ -3,6 +3,7 @@ namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
 use cs_environment;
+use DateTime;
 
 class TodoTransformer extends AbstractTransformer
 {
@@ -119,12 +120,12 @@ class TodoTransformer extends AbstractTransformer
                 }
             } else {
                 if($todoObject->isNotActivated()){
-    	            $todoObject->setActivationDate(getCurrentDateTimeInMySQL());
+    	            $todoObject->setActivationDate(new DateTime());
     	        }
             }
         } else {
             if($todoObject->isNotActivated()){
-	            $todoObject->setActivationDate(getCurrentDateTimeInMySQL());
+	            $todoObject->setActivationDate(new DateTime());
 	        }
         }
 

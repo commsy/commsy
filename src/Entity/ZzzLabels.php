@@ -66,6 +66,13 @@ class ZzzLabels
     /**
      * @var \DateTime
      *
+     * @ORM\Column(name="activation_date", type="datetime")
+     */
+    private $activationDate;
+
+    /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
      */
     private $deletionDate;
