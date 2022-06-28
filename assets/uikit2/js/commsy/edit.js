@@ -254,7 +254,6 @@
 
         onClickEditDiscussion: function(el) {
             draftFormCount++;
-
             let $this = this;
             let article = $(el).parents('.cs-edit-section');
             $(article).find('.cs-edit-spinner').toggleClass('uk-hidden', false);
