@@ -1092,6 +1092,7 @@ class GroupController extends BaseController
      * @return JsonDataResponse
      */
     public function leaveAction(
+        Request $request,
         int $roomId,
         int $itemId
     ) {
@@ -1107,7 +1108,15 @@ class GroupController extends BaseController
 
         $current_user = $this->legacyEnvironment->getCurrentUser();
         $groupItem->removeMember($current_user);
-
+        if ($request->query->has('leaveworkspace')) {
+            $group = $groupItem->getGroupRoomItem();
+            $users = $this->userService->getUsersByGroupIds($group->getItemId(), [], true);
+            $this->leaveWorkspace($current_user->getUserID(), $users);
+            return $this->redirectToRoute('app_group_detail', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
+        }
         return new JsonDataResponse([
             'title' => $groupItem->getTitle(),
             'groupId' => $itemId,
@@ -1698,5 +1707,33 @@ class GroupController extends BaseController
         } else {
             return $this->groupService->getGroupsById($roomItem->getItemID(), $itemIds);
         }
+    }
+
+    /**
+     * Delete user to leave also workspace
+     * @param $userId
+     * @return void
+     */
+    private function leaveWorkspace($userId, $usersGroups){
+        $userDelete = null;
+        if ( !empty($usersGroups)) {
+            foreach ($usersGroups as $itertor) {
+                if($itertor->getUserId() === $userId){
+                    $userDelete = $itertor->getItemId();
+                }
+            }
+        }
+        if($userDelete !== null){
+            $user = $this->userService->getUser($userDelete);
+            $user->delete();
+            $user->save();
+            $readerManager = $this->legacyEnvironment->getReaderManager();
+            $noticedManager = $this->legacyEnvironment->getNoticedManager();
+            $itemId = $user->getItemID();
+            $versionId = $user->getVersionID();
+            $readerManager->markRead($itemId, $versionId);
+            $noticedManager->markNoticed($itemId, $versionId);
+        }
+
     }
 }
