@@ -190,7 +190,7 @@
 
             {% if not draft %}
                 {{ render(controller(
-                    'App\\Controller\\DiscussionController::createArticleInitialAction',
+                    'App\\Controller\\DiscussionController::createArticleAction',
                     { 'roomId': roomId, 'itemId': item.itemId }
                 ))}}
             {% endif %}

@@ -50,9 +50,8 @@
         <div class="cs-edit-section cs-toggle cs-edit-section-discussion" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
             {{ macrosItem.files(article, article.draft) }}
         </div>
-
         <div id="draft-buttons-wrapper" data-item-type="article">
-            <a id="draft-save-combine-link" href="" class="uk-button uk-button-primary">
+            <a id="{{buttonSubmitName}}" href="" class="uk-button uk-button-primary">
                 {{ 'Answer'|trans({}, "form") }}
             </a>
             <a id="draft-cancel-link" href="" class="uk-button uk-button-secondary">
