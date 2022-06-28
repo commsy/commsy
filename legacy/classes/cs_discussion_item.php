@@ -24,6 +24,9 @@
 
 /** upper class of the discussion item
  */
+
+use App\Entity\Discussions;
+
 include_once('classes/cs_item.php');
 
 /** class for a discussion
@@ -290,7 +293,7 @@ class cs_discussion_item extends cs_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_discussion');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Discussions');
+        $repository = $em->getRepository(Discussions::class);
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -310,7 +313,7 @@ class cs_discussion_item extends cs_item {
 
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_discussion');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Discussions');
+        $repository = $em->getRepository(Discussions::class);
 
         $this->deleteElasticItem($objectPersister, $repository);
     }

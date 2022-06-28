@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Entity\RoomCategories;
 use App\Entity\RoomCategoriesLinks;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
@@ -24,7 +25,7 @@ class RoomCategoriesService
     public function getListRoomCategories ($contextId) {
         $result = array();
 
-        $repository = $this->em->getRepository('App:RoomCategories');
+        $repository = $this->em->getRepository(RoomCategories::class);
         $query = $repository->createQueryBuilder('room_categories')
             ->select()
             ->where('room_categories.context_id = :context_id')
@@ -40,7 +41,7 @@ class RoomCategoriesService
     }
 
     public function getRoomCategory ($roomCategoryId) {
-        $repository = $this->em->getRepository('App:RoomCategories');
+        $repository = $this->em->getRepository(RoomCategories::class);
         $query = $repository->createQueryBuilder('room_categories')
             ->select()
             ->where('room_categories.id = :roomCategoryId')
@@ -51,7 +52,7 @@ class RoomCategoriesService
     }
 
     public function getRoomCategoriesLinkedToContext ($contextId) {
-        $repository = $this->em->getRepository('App:RoomCategoriesLinks');
+        $repository = $this->em->getRepository(RoomCategoriesLinks::class);
         $query = $repository->createQueryBuilder('room_categories_links')
             ->select()
             ->where('room_categories_links.context_id = :context_id')
@@ -88,7 +89,7 @@ class RoomCategoriesService
     }
 
     public function removeRoomCategory ($roomCategory) {
-        $repository = $this->em->getRepository('App:RoomCategoriesLinks');
+        $repository = $this->em->getRepository(RoomCategoriesLinks::class);
 
         $query = $repository->createQueryBuilder('room_categories_links')
             ->select()

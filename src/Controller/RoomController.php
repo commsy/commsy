@@ -550,7 +550,7 @@ class RoomController extends AbstractController
         }
 
         // ***** Active rooms *****
-        $repository = $this->getDoctrine()->getRepository('App:Room');
+        $repository = $this->getDoctrine()->getRepository(Room::class);
         $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portal->getId(), $roomTypes, $sort);
         $activeRoomQueryBuilder->setMaxResults($max);
         $activeRoomQueryBuilder->setFirstResult($start);
@@ -575,7 +575,7 @@ class RoomController extends AbstractController
         // ***** Archived rooms *****
         if(!$roomFilter || !isset($roomFilter['archived']) || $roomFilter['archived'] != "1") {
             $legacyEnvironment->activateArchiveMode();
-            $repository = $this->getDoctrine()->getRepository('App:ZzzRoom');
+            $repository = $this->getDoctrine()->getRepository(ZzzRoom::class);
             $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portal->getId(), $roomTypes, $sort);
             $archivedRoomQueryBuilder->setMaxResults($max);
             $archivedRoomQueryBuilder->setFirstResult($start);

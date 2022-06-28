@@ -169,7 +169,7 @@ class CategoryController extends AbstractController
         }
 
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('App:Tag');
+        $repository = $em->getRepository(Tag::class);
 
         // create new form
         $category = new Tag();

@@ -306,7 +306,11 @@ class DashboardController extends AbstractController
             $tempItem = $itemManager->getItem($releasedId);
             if ($tempItem) {
                 $tempManager = $legacyEnvironment->getManager($tempItem->getItemType());
-                $releasedItems[] = $tempManager->getItem($releasedId);
+                $resp = $tempManager->getItem($releasedId);
+                if($resp){
+                    $releasedItems[] =  $resp;
+                }
+
             }
         }
         
@@ -315,7 +319,11 @@ class DashboardController extends AbstractController
             $tempItem = $itemManager->getItem($viewableId);
             if ($tempItem) {
                 $tempManager = $legacyEnvironment->getManager($tempItem->getItemType());
-                $viewableItems[] = $tempManager->getItem($viewableId);
+                $resp = $tempManager->getItem($viewableId);
+                if($resp){
+                    $viewableItems[] = $resp;
+                }
+
             }
         }
         
