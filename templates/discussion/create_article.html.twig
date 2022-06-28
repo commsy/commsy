@@ -47,8 +47,23 @@
         </div>
 
         {# files #}
-        <div class="cs-edit-section cs-toggle cs-edit-section-discussion" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
-            {{ macrosItem.files(article, article.draft) }}
+        <div class="uk-margin-bottom">
+            <a class="cs-toggle uk-margin-left" data-uk-toggle="{target:'.toggle-files'}">
+                {{ 'add files here'|trans({}, "form") }}
+            </a>
+        </div>
+
+        <div class="toggle-files uk-hidden" aria-hidden="false">
+            <div class="cs-edit-section" data-uk-observe data-cs-edit="{
+                editUrl: '{{ path('app_upload_uploadform', {
+                    'roomId': article.contextId, 'itemId': article.itemId
+                }) }}',
+                cancelEditUrl: '{{ path('app_item_canceledit', {
+                    'roomId': article.contextId, 'itemId': article.itemId
+                }) }}'
+            }">
+                {{ macrosItem.files(article, article.draft) }}
+            </div>
         </div>
 
         <div id="draft-buttons-wrapper" data-item-type="article">
