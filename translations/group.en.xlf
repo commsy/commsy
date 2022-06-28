@@ -74,6 +74,10 @@
                 <source>Unlock group workspace</source>
                 <target>Unlock group workspace</target>
             </trans-unit>
+             <trans-unit id="leaveGroupAndWorkspace">
+                <source>leave group and workspace</source>
+                <target>Leave (incl. group workspace)</target>
+             </trans-unit>
         </body>
     </file>
 </xliff>
