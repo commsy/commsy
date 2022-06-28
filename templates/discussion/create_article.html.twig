@@ -42,7 +42,7 @@
         </div>
         
         {# description #}
-        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
+        <div class="cs-edit-section cs-toggle cs-edit-section-discussion" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
             {{ macrosItem.itemDescription('description', article, true, article.description, article.draft) }}
         </div>
 
