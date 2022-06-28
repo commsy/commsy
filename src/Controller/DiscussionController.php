@@ -20,6 +20,7 @@ use App\Utils\DiscussionService;
 use App\Utils\LabelService;
 use App\Utils\TopicService;
 use cs_discussion_item;
+use cs_discussionarticle_item;
 use cs_room_item;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -299,6 +300,8 @@ class DiscussionController extends BaseController
      * @param LegacyMarkup $legacyMarkup
      * @param int $roomId
      * @param int $itemId
+     * @param AssessmentService $assessmentService
+     * @param CategoryService $categoryService
      * @return array
      */
     public function detailAction(
@@ -382,9 +385,8 @@ class DiscussionController extends BaseController
         }
 
         // mark discussion articles as read / noticed
-        /** @var \cs_discussionarticle_item $article */
-        $article = $articleList->getFirst();
-        while ($article) {
+        foreach ($articleList as $article) {
+            /** @var cs_discussionarticle_item $article */
             $latestReader = $readerManager->getLatestReader($article->getItemID());
             if (empty($latestReader) || $latestReader['read_date'] < $article->getModificationDate()) {
                 $readerManager->markRead($article->getItemID(), 0);
@@ -396,8 +398,6 @@ class DiscussionController extends BaseController
             }
 
             $legacyMarkup->addFiles($this->itemService->getItemFileList($article->getItemID()));
-
-            $article = $articleList->getNext();
         }
 
         $itemArray = array_merge([$discussion], $articleList->to_array());
@@ -415,17 +415,11 @@ class DiscussionController extends BaseController
         $read_count = 0;
         $read_since_modification_count = 0;
 
-        $current_user = $user_list->getFirst();
-        $id_array = array();
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
+        $id_array = $user_list->getIDArray();
         $readerManager->getLatestReaderByUserIDArray($id_array, $discussion->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
+        foreach ($user_list as $user) {
             $current_reader = $readerManager->getLatestReaderForUserByID($discussion->getItemID(),
-                $current_user->getItemID());
+                $user->getItemID());
             if (!empty($current_reader)) {
                 if ($current_reader['read_date'] >= $discussion->getModificationDate()) {
                     $read_count++;
@@ -434,7 +428,6 @@ class DiscussionController extends BaseController
                     $read_count++;
                 }
             }
-            $current_user = $user_list->getNext();
         }
 
         $readerList = array();
@@ -629,6 +622,8 @@ class DiscussionController extends BaseController
      * @param LegacyMarkup $legacyMarkup
      * @param int $roomId
      * @param int $itemId
+     * @param AssessmentService $assessmentService
+     * @param CategoryService $categoryService
      * @return Response
      */
     public function printAction(

@@ -663,10 +663,10 @@ class cs_file_item extends cs_item {
     * Returns true if the user represented by the given user item is allowed to edit the file,
     * otherwise returns false.
     *
-    * @param \cs_user_item $user_item
+    * @param cs_user_item $user_item
     * @return bool
     */
-   public function mayEdit(\cs_user_item $user_item) {
+   public function mayEdit(cs_user_item $user_item) {
       $access = false;
       if ( !$user_item->isOnlyReadUser() ) {
          if ( $user_item->isRoot() or
@@ -690,10 +690,10 @@ class cs_file_item extends cs_item {
     * Returns true if the user represented by the given user item is allowed to edit any of 
     * the file's linked items, otherwise returns false.
     *
-    * @param \cs_user_item $userItem
+    * @param cs_user_item $userItem
     * @return bool
     */
-   public function mayEditLinkedItem(\cs_user_item $userItem): bool
+   public function mayEditLinkedItem(cs_user_item $userItem): bool
    {
       $itemCollection = $this->getLinkedItems();
       if (!isset($itemCollection) or $itemCollection->isEmpty()) {
@@ -713,10 +713,10 @@ class cs_file_item extends cs_item {
      * Returns true if the user represented by the given user item is allowed to see the file,
      * otherwise returns false.
      *
-     * @param \cs_user_item $userItem
+     * @param cs_user_item $userItem
      * @return bool
      */
-    public function maySee($userItem)
+    public function maySee(cs_user_item $userItem)
     {
         // a user who's allowed to see any of this file's linked items may also see this file
         return $this->maySeeLinkedItem($userItem);
@@ -726,10 +726,10 @@ class cs_file_item extends cs_item {
     * Returns true if the user represented by the given user item is allowed to see any of 
     * the file's linked items, otherwise returns false.
     *
-    * @param \cs_user_item $userItem
+    * @param cs_user_item $userItem
     * @return bool
     */
-   public function maySeeLinkedItem(\cs_user_item $userItem): bool
+   public function maySeeLinkedItem(cs_user_item $userItem): bool
    {
       $itemCollection = $this->getLinkedItems();
       if (!isset($itemCollection) or $itemCollection->isEmpty()) {
@@ -745,7 +745,7 @@ class cs_file_item extends cs_item {
       return false;
    }
 
-   public function mayPortfolioSeeLinkedItem(\cs_user_item $userItem)
+   public function mayPortfolioSeeLinkedItem(cs_user_item $userItem)
    {
        $itemCollection = $this->getLinkedItems();
        if (!isset($itemCollection) or $itemCollection->isEmpty()) {

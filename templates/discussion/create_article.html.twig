@@ -15,16 +15,16 @@
             </div>
 
             {% if article.creator.itemId == currentUser.itemId or currentUser.isModerator %}
-                <div class="uk-flex uk-margin-bottom uk-margin-small-top">
-                    <div>
-                        <label class="">
-                            {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
-                        </label>
-                    </div>
-                    <div class="uk-margin-left">
-                        {{ form_widget(form.permission) }}
-                    </div>
+            <div class="uk-flex uk-margin-bottom uk-margin-small-top">
+                <div>
+                    <label class="">
+                        {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
+                    </label>
                 </div>
+                <div class="uk-margin-left">
+                    {{ form_widget(form.permission) }}
+                </div>
+            </div>
             {% endif %}
 
             <div class="uk-flex uk-margin-small-top">
@@ -40,34 +40,19 @@
             {{ form_end(form, {'render_rest': false}) }}
             {#{ macrosDiscussion.title(section, modifierList, userCount, readCount, readSinceModificationCount) }#}
         </div>
-
+        
         {# description #}
         <div class="cs-edit-section cs-toggle cs-edit-section-discussion" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
             {{ macrosItem.itemDescription('description', article, true, article.description, article.draft) }}
         </div>
 
         {# files #}
-        <div class="uk-margin-bottom">
-            <a class="cs-toggle uk-margin-left" data-uk-toggle="{target:'.toggle-files'}">
-                {{ 'add files here'|trans({}, "form") }}
-            </a>
-        </div>
-
-        <div class="toggle-files uk-hidden" aria-hidden="false">
-            <div class="cs-edit-section cs-edit-section-discussion" data-uk-observe data-cs-edit="{
-                editUrl: '{{ path('app_upload_uploadform', {
-                'roomId': article.contextId, 'itemId': article.itemId
-            }) }}',
-                cancelEditUrl: '{{ path('app_item_canceledit', {
-                'roomId': article.contextId, 'itemId': article.itemId
-            }) }}'
-            }">
-                {{ macrosItem.files(article, article.draft) }}
-            </div>
+        <div class="cs-edit-section cs-toggle cs-edit-section-discussion" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
+            {{ macrosItem.files(article, article.draft) }}
         </div>
 
         <div id="draft-buttons-wrapper" data-item-type="article">
-            <a id="{{buttonSubmitName}}" href="" class="uk-button uk-button-primary">
+            <a id="draft-save-combine-link" href="" class="uk-button uk-button-primary">
                 {{ 'Answer'|trans({}, "form") }}
             </a>
             <a id="draft-cancel-link" href="" class="uk-button uk-button-secondary">

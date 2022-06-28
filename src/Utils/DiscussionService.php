@@ -1,9 +1,9 @@
 <?php
 namespace App\Utils;
 
-use Symfony\Component\Form\Form;
-
 use App\Services\LegacyEnvironment;
+use cs_discussion_item;
+use cs_discussionarticle_item;
 use Symfony\Component\Form\FormInterface;
 
 class DiscussionService
@@ -30,7 +30,7 @@ class DiscussionService
      * @param integer $max
      * @param integer $start
      * @param string $sort
-     * @return \cs_discussion_item[]
+     * @return cs_discussion_item[]
      */
     public function getListDiscussions($roomId, $max = NULL, $start = NULL, $sort = NULL)
     {
@@ -53,7 +53,7 @@ class DiscussionService
     /**
      * @param integer $roomId
      * @param integer[] $ids
-     * @return \cs_discussion_item[]
+     * @return cs_discussion_item[]
      */
     public function getDiscussionsById($roomId, $ids) {
         $this->discussionManager->setContextLimit($roomId);
@@ -129,7 +129,7 @@ class DiscussionService
         }
     }
     
-    public function getDiscussion($itemId)
+    public function getDiscussion($itemId): ?cs_discussion_item
     {
         return $this->discussionManager->getItem($itemId);
     }
@@ -157,13 +157,12 @@ class DiscussionService
         $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
-    public function buildArticleTree($articleList, $root = null)
+    public function buildArticleTree($articleList, $root = null): array
     {
         $tree = [];
 
-        $article = $articleList->getFirst();
-        while ($article) {
-
+        foreach ($articleList as $article) {
+            /** @var cs_discussionarticle_item $article */
             $base =& $tree;
             $expLevel = explode('.', $article->getPosition());
             foreach ($expLevel as $level) {
@@ -171,8 +170,6 @@ class DiscussionService
             }
 
             $base['item'] = $article;
-
-            $article = $articleList->getNext();
         }
 
         return $tree;

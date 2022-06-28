@@ -631,16 +631,17 @@ class cs_manager {
         return $this->_data;
     }
 
-  /** get one item (newest version)
-    * this method returns an item in his newest version - this method needs to be overwritten
-    *
-    * @param integer item_id id of the commsy item
-    *
-    * @return object cs_item one commsy items
-    */
-  function getItem ($item_id) {
-     echo('cs_manager (getItem): needs to be overwritten !!!<br />'."\n");
-  }
+    /** get one item (newest version)
+     * this method returns an item in his newest version - this method needs to be overwritten
+     *
+     * @param integer item_id id of the commsy item
+     *
+     * @return object cs_item one commsy items
+     */
+    public function getItem($item_id)
+    {
+        throw new LogicException('cs_manager (getItem): needs to be overwritten !!!');
+    }
 
     /** get a list of items (newest version)
     * this method returns a list of items
