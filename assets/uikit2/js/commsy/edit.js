@@ -257,12 +257,8 @@
 
             let $this = this;
             let article = $(el).parents('.cs-edit-section');
-
-            // show the loading spinner
             $(article).find('.cs-edit-spinner').toggleClass('uk-hidden', false);
-
             let editButtons = $('.cs-edit');
-
             let articleDiscussion = $(el).parents('.cs-edit-section-discussion');
             if(articleDiscussion.length > 0){
                 editButtons.each(function(){
@@ -272,23 +268,13 @@
                     .removeClass('uk-hidden')
                     .parent().find("button.uk-button").removeClass("uk-text-muted");
             }
-
-
-            // send ajax request to get edit html
             $.ajax({
                 url: this.options.editUrl
             })
                 .done(function(result) {
-                    // replace article html
                     article.html($(result));
                     registerDraftFormButtonEvents();
-
                     $this.handleFormSubmit(article);
-
-                    // Trigger an resize event. This is a workaround for the data-uk-grid component for example used
-                    // by hashtags. There is some odd behaviour after replacing the content with ajax. Sometimes labels
-                    // which are too long become truncated. However data-uk-grid-match will now adjust the height of all
-                    // columns in a row.
                     UI.trigger('resize');
                 });
         },
