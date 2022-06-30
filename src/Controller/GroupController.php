@@ -777,6 +777,7 @@ class GroupController extends BaseController
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
             'room' => $current_context,
+            'templates' => $this->getAvailableTemplates(),
         ));
 
         $form->handleRequest($request);
@@ -950,8 +951,7 @@ class GroupController extends BaseController
             'action' => $this->generateUrl('app_group_editgrouproom', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
-            )),
-            'templates' => $this->getAvailableTemplates(),
+            ))
         ));
 
         $form->handleRequest($request);
@@ -974,7 +974,6 @@ class GroupController extends BaseController
                 $groupRoom = $groupItem->getGroupRoomItem();
 
                 // only initialize the name of the grouproom the first time it is created!
-                if ($groupRoom && !empty($groupRoom)) {
                     if ($originalGroupName == "") {
                         $groupRoom->setTitle($groupItem->getTitle() . " (" . $this->translator->trans('grouproom', [],
                                 'group') . ")");
@@ -995,7 +994,7 @@ class GroupController extends BaseController
                         }
                     }
                     $groupItem->save(true);
-                }
+
 
             }
             return $this->redirectToRoute('app_group_savegrouproom', array('roomId' => $roomId, 'itemId' => $itemId));

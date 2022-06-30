@@ -7,6 +7,7 @@ use App\Form\Type\Custom\HashtagMappingType;
 use cs_context_item;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -31,6 +32,14 @@ class GroupType extends AbstractType
                 ),
                 'translation_domain' => 'material',
             ))
+            ->add('master_template', ChoiceType::class, [
+                'choices' => $options['templates'],
+                'placeholder' => 'Choose a template',
+                'required' => false,
+                'mapped' => false,
+                'label' => 'Template',
+                'translation_domain' => 'group',
+            ])
             ->add('hidden', CheckboxType::class, array(
                 'label' => 'hidden',
                 'required' => false,
@@ -89,7 +98,7 @@ class GroupType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(['placeholderText', 'hashtagMappingOptions', 'categoryMappingOptions', 'room']);
+        $resolver->setRequired(['placeholderText', 'hashtagMappingOptions', 'categoryMappingOptions', 'room', 'templates']);
 
         $resolver->setDefaults(['translation_domain' => 'form']);
 
