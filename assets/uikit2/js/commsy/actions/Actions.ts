@@ -100,16 +100,9 @@ export class ActionExecuter {
 
     public loadCustomFormData(action: BaseAction): Promise<any> {
         return new Promise<ActionResponse>((resolve) => {
-            const request: ActionRequest = {
-                positiveItemIds: [],
-                negativeItemIds: [],
-                action: action.actionData.action,
-                selectAll: false,
-                selectAllStart: 0
-            };
             let requestURI = new URI(action.actionData.url);
 
-            return action.execute(request, requestURI.toString());
+            return action.loadCustomFormData(requestURI.toString());
         })
         .then((backendResponse: ActionResponse) => {
             return action.onPostLoadCustomFormData(backendResponse);
