@@ -133,7 +133,7 @@ class cs_group_item extends cs_label_item {
          // initiate group room
          $grouproom_manager = $this->_environment->getGroupRoomManager();
          $grouproom_item = $grouproom_manager->getNewItem();
-         $grouproom_item->setTitle($this->getTitle());
+         $grouproom_item->setTitle(html_entity_decode($this->getTitle()));
          $grouproom_item->setContextID($this->_environment->getCurrentPortalID());
          $grouproom_item->setLinkedProjectRoomItemID($this->getContextID());
          $grouproom_item->setCheckNewMemberNever();
@@ -211,7 +211,7 @@ class cs_group_item extends cs_label_item {
                ) {
          $grouproom_item = $this->getGroupRoomItem();
          if ( isset($grouproom_item) and !empty($grouproom_item) ) {
-            $grouproom_item->setTitle($this->getTitle());
+            $grouproom_item->setTitle(html_entity_decode($this->getTitle()));
 
             // desctiption
             $current_context = $this->_environment->getCurrentContextItem();

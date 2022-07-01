@@ -268,16 +268,17 @@ class cs_file_item extends cs_item {
       return $retour;
    }
 
-   /* There was a bug in CommSy so context ID of an item were not
-      saved correctly. This method is a workaround for file item db entries
-      with context_id of 0. */
-   function getContextID () {
-      $context_id = parent::getContextID();
-      if ( $context_id == 0 ) {
-         $context_id = $this->_environment->getCurrentContextID();
-      }
-      return (int) $context_id;
-   }
+    /* There was a bug in CommSy so context ID of an item were not
+       saved correctly. This method is a workaround for file item db entries
+       with context_id of 0. */
+    public function getContextID(): int
+    {
+        $context_id = parent::getContextID();
+        if ($context_id == 0) {
+            $context_id = $this->_environment->getCurrentContextID();
+        }
+        return (int)$context_id;
+    }
 
    function setPortalID ($value) {
       $this->_portal_id = (int)$value;
@@ -687,7 +688,7 @@ class cs_file_item extends cs_item {
    }
 
    /**
-    * Returns true if the user represented by the given user item is allowed to edit any of 
+    * Returns true if the user represented by the given user item is allowed to edit any of
     * the file's linked items, otherwise returns false.
     *
     * @param cs_user_item $userItem
@@ -723,7 +724,7 @@ class cs_file_item extends cs_item {
     }
 
    /**
-    * Returns true if the user represented by the given user item is allowed to see any of 
+    * Returns true if the user represented by the given user item is allowed to see any of
     * the file's linked items, otherwise returns false.
     *
     * @param cs_user_item $userItem

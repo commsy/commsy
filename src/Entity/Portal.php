@@ -157,7 +157,7 @@ class Portal implements \Serializable
      * @Groups({"api"})
      * @OA\Property(type="string")
      */
-    private $descriptionGerman;
+    private ?string $descriptionGerman;
 
     /**
      * @var string
@@ -167,7 +167,7 @@ class Portal implements \Serializable
      * @Groups({"api"})
      * @OA\Property(type="string")
      */
-    private $descriptionEnglish;
+    private ?string $descriptionEnglish;
 
     /**
      * @var string
@@ -978,10 +978,10 @@ class Portal implements \Serializable
     }
 
     /**
-     * @param string $descriptionGerman
+     * @param string|null $descriptionGerman
      * @return Portal
      */
-    public function setDescriptionGerman(string $descriptionGerman): Portal
+    public function setDescriptionGerman(?string $descriptionGerman): Portal
     {
         $this->descriptionGerman = $descriptionGerman;
         return $this;
@@ -996,10 +996,10 @@ class Portal implements \Serializable
     }
 
     /**
-     * @param string $descriptionEnglish
+     * @param string|null $descriptionEnglish
      * @return Portal
      */
-    public function setDescriptionEnglish(string $descriptionEnglish): Portal
+    public function setDescriptionEnglish(?string $descriptionEnglish): Portal
     {
         $this->descriptionEnglish = $descriptionEnglish;
         return $this;
