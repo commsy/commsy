@@ -223,8 +223,8 @@ class MarkedController extends BaseController
         HashtaggingAction $action,
         ItemController $itemController,
         TranslatorInterface $translator,
-        int $roomId)
-    {
+        int $roomId
+    ) {
         // TODO: this doesn't work yet, ListActionManager->performClick() must first call this method to load
         //       the additional form options, then call this method again after the form has been submitted
 

@@ -98,6 +98,29 @@ export class ActionExecuter {
         return this.invoke($actor, action, actionPayload);
     }
 
+    public loadCustomFormData(action: BaseAction): Promise<any> {
+        return new Promise<ActionResponse>((resolve) => {
+            const request: ActionRequest = {
+                positiveItemIds: [],
+                negativeItemIds: [],
+                action: action.actionData.action,
+                selectAll: false,
+                selectAllStart: 0
+            };
+            let requestURI = new URI(action.actionData.url);
+
+            return action.execute(request, requestURI.toString());
+        })
+        .then((backendResponse: ActionResponse) => {
+            return action.onPostLoadCustomFormData(backendResponse);
+        })
+        .catch((error: Error) => {
+            if (error) {
+                action.onError(error);
+            }
+        });
+    }
+
     private invoke($actor: JQuery, action: BaseAction, actionPayload: ActionRequest): Promise<any> {
         return action.preExecute($actor)
             .then(() => {

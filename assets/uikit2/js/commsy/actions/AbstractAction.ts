@@ -26,6 +26,12 @@ export abstract class BaseAction {
         return this._wantsCustomFormData;
     }
 
+    public onPostLoadCustomFormData(backendResponse: ActionResponse): Promise<ActionResponse> {
+        return new Promise<ActionResponse>((resolve) => {
+            resolve(backendResponse);
+        });
+    }
+
     public preExecute(actionActor: JQuery): Promise<void> {
         return new Promise<void>((resolve) => {
             resolve();
