@@ -1,6 +1,8 @@
 <?php
 namespace App\Form\DataTransformer;
 
+use DateTime;
+
 class AnnouncementTransformer  extends AbstractTransformer
 {
     protected $entity = 'announcement';
@@ -70,25 +72,25 @@ class AnnouncementTransformer  extends AbstractTransformer
         
         if (isset($announcementData['hidden'])) {
             if ($announcementData['hidden']) {
-                if ($announcementData['hiddendate']['date']) {
+                if (isset($announcementData['hiddendate']['date'])) {
                     // add validdate to validdate
                     $datetime = $announcementData['hiddendate']['date'];
                     if ($announcementData['hiddendate']['time']) {
                         $time = explode(":", $announcementData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
-                    $announcementObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+                    $announcementObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
                 } else {
-                    $announcementObject->setModificationDate('9999-00-00 00:00:00');
+                    $announcementObject->setActivationDate('9999-00-00 00:00:00');
                 }
             } else {
                 if($announcementObject->isNotActivated()){
-    	            $announcementObject->setModificationDate(getCurrentDateTimeInMySQL());
+    	            $announcementObject->setActivationDate(new DateTime());
     	        }
             }
         } else {
             if($announcementObject->isNotActivated()){
-	            $announcementObject->setModificationDate(getCurrentDateTimeInMySQL());
+	            $announcementObject->setActivationDate(new DateTime());
 	        }
         }
         
