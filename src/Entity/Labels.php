@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 use App\Validator\Constraints as CommsyAssert;
@@ -60,28 +61,28 @@ class Labels
     private $deleter;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
      */
     private $creationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="modification_date", type="datetime", nullable=false)
      */
     private $modificationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var \DateTime
+     * @var DateTime|null
      *
      * @ORM\Column(name="activation_date", type="datetime")
      */
-    private $activationDate;
+    private ?DateTime $activationDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
      */
@@ -123,7 +124,7 @@ class Labels
     private $public = '0';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="locking_date", type="datetime", nullable=true)
      */
@@ -185,7 +186,7 @@ class Labels
     /**
      * Set creationDate
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Labels
      */
@@ -199,7 +200,7 @@ class Labels
     /**
      * Get creationDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -209,7 +210,7 @@ class Labels
     /**
      * Set modificationDate
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Labels
      */
@@ -223,7 +224,7 @@ class Labels
     /**
      * Get modificationDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -233,24 +234,23 @@ class Labels
     /**
      * Set activationDate
      *
-     * @param \DateTime $activationDate
+     * @param DateTime $activationDate
      *
-     * @return Dates
+     * @return Labels
      */
-    public function setActivationDate($activationDate)
+    public function setActivationDate(DateTime $activationDate): self
     {
         $this->activationDate = $activationDate;
 
         return $this;
     }
 
-
     /**
      * Get activationDate
      *
-     * @return \DateTime
+     * @return DateTime|null
      */
-    public function getActivationDate()
+    public function getActivationDate(): ?DateTime
     {
         return $this->activationDate;
     }
@@ -258,7 +258,7 @@ class Labels
     /**
      * Set deletionDate
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Labels
      */
@@ -272,7 +272,7 @@ class Labels
     /**
      * Get deletionDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {
@@ -402,7 +402,7 @@ class Labels
     /**
      * Set lockingDate
      *
-     * @param \DateTime $lockingDate
+     * @param DateTime $lockingDate
      *
      * @return Labels
      */
@@ -416,7 +416,7 @@ class Labels
     /**
      * Get lockingDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLockingDate()
     {
