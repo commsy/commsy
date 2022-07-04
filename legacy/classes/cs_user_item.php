@@ -24,6 +24,7 @@
 
 use App\Account\AccountManager;
 use App\Entity\Account;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 include_once('classes/cs_item.php');
@@ -1410,7 +1411,7 @@ class cs_user_item extends cs_item
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_user');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:User');
+        $repository = $em->getRepository(User::class);
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -1498,7 +1499,7 @@ class cs_user_item extends cs_item
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_user');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:User');
+        $repository = $em->getRepository(User::class);
 
         $this->deleteElasticItem($objectPersister, $repository);
     }

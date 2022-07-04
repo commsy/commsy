@@ -27,6 +27,8 @@
  */
 include_once('classes/cs_room_item.php');
 
+use App\Entity\Room;
+use App\Entity\ZzzRoom;
 use App\Mail\Mailer;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
@@ -179,7 +181,7 @@ class cs_grouproom_item extends cs_room_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Room');
+        $repository = $em->getRepository(Room::class);
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -220,11 +222,11 @@ class cs_grouproom_item extends cs_room_item {
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('App:Room');
+      $repository = $em->getRepository(Room::class);
 
        // use zzz repository if room is archived
        if ($this->isArchived()) {
-           $repository = $em->getRepository('App:ZzzRoom');
+           $repository = $em->getRepository(ZzzRoom::class);
        }
        $this->deleteElasticItem($objectPersister, $repository);
    }

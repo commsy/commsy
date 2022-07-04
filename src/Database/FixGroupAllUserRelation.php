@@ -43,7 +43,7 @@ class FixGroupAllUserRelation implements DatabaseCheck
         // find all active portals
         $qb = $this->entityManager->createQueryBuilder()
             ->select('p')
-            ->from('App:Portal', 'p')
+            ->from(Portal::class, 'p')
             ->where('p.deleter IS NULL')
             ->andWhere('p.deletionDate IS NULL')
             ->getQuery();
@@ -58,7 +58,7 @@ class FixGroupAllUserRelation implements DatabaseCheck
 
             $qb = $this->entityManager->createQueryBuilder()
                 ->select('r')
-                ->from('App:Room', 'r')
+                ->from(Room::class, 'r')
                 ->where('r.deleter IS NULL')
                 ->andWhere('r.deletionDate IS NULL')
                 ->andWhere('r.contextId = :contextId')
