@@ -14,7 +14,7 @@ class AccountsCest
     }
 
     // tests
-    public function checkLocalLoginincorrectPayload(ApiTester $I)
+    public function checkLocalLoginIncorrectPayload(ApiTester $I)
     {
         $I->amReadOnlyAuthenticated();
         $portal = $I->havePortal('Some portal');
@@ -24,7 +24,7 @@ class AccountsCest
         $I->seeResponseCodeIsClientError();
     }
 
-    public function checkLocalLoginwrongCredentials(ApiTester $I)
+    public function checkLocalLoginWrongCredentials(ApiTester $I)
     {
         $I->amReadOnlyAuthenticated();
         $portal = $I->havePortal('Some portal');
@@ -38,7 +38,7 @@ class AccountsCest
         $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
     }
 
-    public function checkLocalLoginvalidCredentials(ApiTester $I)
+    public function checkLocalLoginValidCredentials(ApiTester $I)
     {
         $I->amReadOnlyAuthenticated();
         $portal = $I->havePortal('Some portal');
