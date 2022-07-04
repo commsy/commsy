@@ -294,16 +294,15 @@ class cs_list implements IteratorAggregate
 
     public function getIDArray(): array
     {
-        $retour = array();
-        $item = $this->getFirst();
-        while ($item) {
+        $ids = [];
+
+        foreach ($this as $item) {
             if (method_exists($item, 'getItemID')) {
-                $retour[] = $item->getItemID();
+                $ids[] = $item->getItemID();
             }
-            $item = $this->getNext();
         }
 
-        return $retour;
+        return $ids;
     }
 
     /**

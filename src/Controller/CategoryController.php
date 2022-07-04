@@ -7,6 +7,7 @@ use App\Form\Type as Types;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
 use App\Utils\RoomService;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -150,8 +151,9 @@ class CategoryController extends AbstractController
      * @param RoomService $roomService
      * @param CategoryService $categoryService
      * @param LegacyEnvironment $legacyEnvironment
+     * @param ManagerRegistry $doctrine
      * @param int $roomId
-     * @param int $categoryId
+     * @param int|null $categoryId
      * @return array|RedirectResponse
      */
     public function edit(
@@ -159,6 +161,7 @@ class CategoryController extends AbstractController
         RoomService $roomService,
         CategoryService $categoryService,
         LegacyEnvironment $legacyEnvironment,
+        ManagerRegistry $doctrine,
         int $roomId,
         int $categoryId = null
     ) {
@@ -168,8 +171,10 @@ class CategoryController extends AbstractController
             throw $this->createAccessDeniedException('The requested room does not have categories enabled.');
         }
 
+
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository(Tag::class);
+
 
         // create new form
         $category = new Tag();

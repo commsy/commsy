@@ -45,7 +45,7 @@
                     {% if is_granted('ITEM_SEE', todo.itemId) %}
                         <a class="uk-text-break" href="{{ path('app_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}) }}">{{ todo.title|decodeHtmlEntity }}</a>
                     {% else %}
-                        {{ todo.title|decodeHtmlEntity }}
+                        <span class="uk-text-muted">{{ 'Deactivated entry'|trans({}) }}  {{ todo.title|decodeHtmlEntity }}</span>
                     {% endif %}
                 </h4>
 
