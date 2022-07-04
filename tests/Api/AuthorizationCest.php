@@ -38,9 +38,6 @@ class AuthorizationCest
             'code' => 'integer',
             'message' => 'string',
         ]);
-        $I->seeResponseContainsJson([
-            'message' => 'Invalid credentials.',
-        ]);
     }
 
     public function testValidCredentials(ApiTester $I)

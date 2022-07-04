@@ -972,29 +972,8 @@ class RoomController extends AbstractController
         $times = $roomService->getTimePulses(true);
 
         $current_user = $legacyEnvironment->getCurrentUserItem();
-        $communityManager = $legacyEnvironment->getCommunityManager();
-        $communityManager->setContextLimit($currentPortalItem->getItemID());
-        $communityManager->select();
-        $community_list = $communityManager->get();
-        $community_room_array = array();
-        unset($temp_array);
-        if ($community_list->isNotEmpty()) {
-            $community_item = $community_list->getFirst();
-            while ($community_item) {
-                if ($community_item->isAssignmentOnlyOpenForRoomMembers() ){
-                    if ( $community_item->isUser($current_user)) {
-                        $community_room_array[$community_item->getTitle()] = $community_item->getItemID();
-                    }
-                }else{
-                    $community_room_array[$community_item->getTitle()] = $community_item->getItemID();
-                }
-                $community_item = $community_list->getNext();
-            }
-        }
-
-        $types = [];
         $portalUser = $current_user->getRelatedPortalUserItem();
-
+        $types = [];
         if ($portalUser->isModerator()) {
             $types = ['project' => 'project', 'community' => 'community'];
         } else {
@@ -1057,7 +1036,6 @@ class RoomController extends AbstractController
             'preferredChoices' => $defaultTemplateIDs,
             'timesDisplay' => $timesDisplay,
             'times' => $times,
-            'communities' => $community_room_array,
             'linkCommunitiesMandantory' => $linkCommunitiesMandantory,
             'roomCategories' => $roomCategories,
             'linkRoomCategoriesMandatory' => $linkRoomCategoriesMandatory,

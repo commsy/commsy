@@ -365,7 +365,7 @@ class cs_discussion_manager extends cs_manager {
 
      if ( isset($this->_sort_order) ) {
         if ( $this->_sort_order == 'latest' ) {
-           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.latest_article_modification_date DESC, ' . $this->addDatabasePrefix('discussions') . '.modification_date DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions') . '.modification_date DESC';
         } elseif ( $this->_sort_order == 'latest_rev' ) {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.latest_article_modification_date, ' . $this->addDatabasePrefix('discussions') . '.modification_date';
         } elseif ( $this->_sort_order == 'title' ) {
@@ -412,37 +412,40 @@ class cs_discussion_manager extends cs_manager {
       return new cs_discussion_item($this->_environment);
    }
 
-  /** get a discussion in newest version
-    *
-    * @param integer item_id id of the item
-    *
-    * @return object cs_item a label
-    */
-     function getItem ($item_id) {
-        $discussion = NULL;
-        if ( !empty($item_id)
-             and !empty($this->_cache_object[$item_id])
-           ) {
-           return $this->_cache_object[$item_id];
-        } elseif ( array_key_exists($item_id,$this->_cached_items) ) {
-           return $this->_buildItem($this->_cached_items[$item_id]);
-        } elseif ( !empty($item_id) ) {
-           $query = "SELECT * FROM ".$this->addDatabasePrefix("discussions")." WHERE ".$this->addDatabasePrefix("discussions").".item_id = '".encode(AS_DB,$item_id)."'";
-           $result = $this->_db_connector->performQuery($query);
-           if ( !isset($result) ) {
-              include_once('functions/error_functions.php');
-              trigger_error('Problems selecting one discussions item ('.$item_id.').',E_USER_WARNING);
-           } elseif ( !empty($result[0]) ) {
-              $discussion = $this->_buildItem($result[0]);
-              if ( $this->_cache_on ) {
-                 $this->_cached_items[$item_id] = $result[0];
-              }
-           }
-           return $discussion;
+    /** get a discussion in newest version
+     *
+     * @param integer item_id id of the item
+     *
+     * @return cs_discussion_item|null cs_item a label
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function getItem($item_id): ?cs_discussion_item
+    {
+        $discussion = null;
+        if (!empty($item_id)
+            and !empty($this->_cache_object[$item_id])
+        ) {
+            return $this->_cache_object[$item_id];
+        } elseif (array_key_exists($item_id, $this->_cached_items)) {
+            return $this->_buildItem($this->_cached_items[$item_id]);
+        } elseif (!empty($item_id)) {
+            $query = "SELECT * FROM " . $this->addDatabasePrefix("discussions") . " WHERE " . $this->addDatabasePrefix("discussions") . ".item_id = '" . encode(AS_DB,
+                    $item_id) . "'";
+            $result = $this->_db_connector->performQuery($query);
+            if (!isset($result)) {
+                include_once('functions/error_functions.php');
+                trigger_error('Problems selecting one discussions item (' . $item_id . ').', E_USER_WARNING);
+            } elseif (!empty($result[0])) {
+                $discussion = $this->_buildItem($result[0]);
+                if ($this->_cache_on) {
+                    $this->_cached_items[$item_id] = $result[0];
+                }
+            }
+            return $discussion;
         } else {
-           return NULL;
+            return null;
         }
-     }
+    }
 
    function getItemList($id_array) {
       return $this->_getItemList('discussion', $id_array);

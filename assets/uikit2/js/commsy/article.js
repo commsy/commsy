@@ -26,14 +26,14 @@
                     $ul = $liNode.children('ul');
                 }
 
-                let $li = $('<li>').appendTo($ul);
+                let $li = $('<li>').prependTo($ul);
                 $li.append($result);
                 $li[0].scrollIntoView();
             } else {
                 if ($('.discussion-article').length) {
                     let $mainUl = $('#article-content').children('ul')[0];
 
-                    let $li = $('<li>').appendTo($mainUl);
+                    let $li = $('<li>').prependTo($mainUl);
                     $li.append($result);
                     $li[0].scrollIntoView();
                 } else {
