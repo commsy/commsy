@@ -1,6 +1,7 @@
 <?php
 namespace App\Form\Type;
 
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -8,29 +9,33 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use App\Form\Type\Event\AddBibliographicFieldListener;
 
-class DiscussionArticleType extends AbstractType
+class DiscussionAnswerType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, array(
-                'constraints' => array(
-                    new NotBlank(),
-                ),
-                'label' => 'title',
+            ->add('description', CKEditorType::class, array(
+                'config_name' => 'cs_annotation_config',
+                'label' => 'Add answer',
+                'required' => true,
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ],
                 'attr' => array(
                     'placeholder' => $options['placeholderText'],
-                    'class' => 'uk-form-width-medium cs-form-title',
+                    'class' => 'uk-form-width-large',
                 ),
-                'translation_domain' => 'material',
+                'label_attr' => array(
+                    'style' => 'font-weight: bold;'
+                ),
+                'translation_domain' => 'item',
+                'input_sync' => true,
             ))
-            ->add('permission', CheckboxType::class, array(
-                'label' => 'permission',
-                'required' => false,
-            ))
+
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',

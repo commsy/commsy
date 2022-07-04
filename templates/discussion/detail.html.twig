@@ -230,7 +230,7 @@
                                 <ul class="uk-nav-sub">                      
                                     {% for article in articleList %}
                                         <li>
-                                            <a href="#article{{ article.itemId }}">{{ loop.index }}. {{ article.title|decodeHtmlEntity|u.truncate(20) }}</a>
+                                            <a href="#article{{ article.itemId }}">{{ loop.index }}. {{ article.description|commsyMarkup|raw|replace({'<p>': '', '</p>': '','<h3>': '', '</h3>': ''})|u.truncate(20) }}</a>
                                         </li>
                                     {% endfor %}
                                 </ul>
