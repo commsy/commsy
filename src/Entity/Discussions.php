@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -52,28 +53,28 @@ class Discussions
     private $deleterId;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
      */
     private $creationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="modification_date", type="datetime", nullable=true)
      */
     private $modificationDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime|null
      *
      * @ORM\Column(name="activation_date", type="datetime")
      */
-    private $activationDate;
+    private ?DateTime $activationDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
      */
@@ -94,7 +95,7 @@ class Discussions
     private $latestArticleItemId;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="latest_article_modification_date", type="datetime", nullable=true)
      */
@@ -129,7 +130,7 @@ class Discussions
     private $extras;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="locking_date", type="datetime", nullable=true)
      */
@@ -213,7 +214,7 @@ class Discussions
     /**
      * Set creationDate
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Discussions
      */
@@ -227,7 +228,7 @@ class Discussions
     /**
      * Get creationDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -237,7 +238,7 @@ class Discussions
     /**
      * Set modificationDate
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Discussions
      */
@@ -251,24 +252,23 @@ class Discussions
     /**
      * Set activationDate
      *
-     * @param \DateTime $activationDate
+     * @param DateTime $activationDate
      *
-     * @return Dates
+     * @return Discussions
      */
-    public function setActivationDate($activationDate)
+    public function setActivationDate(DateTime $activationDate): self
     {
         $this->activationDate = $activationDate;
 
         return $this;
     }
 
-
     /**
      * Get activationDate
      *
-     * @return \DateTime
+     * @return DateTime|null
      */
-    public function getActivationDate()
+    public function getActivationDate(): ?DateTime
     {
         return $this->activationDate;
     }
@@ -276,7 +276,7 @@ class Discussions
     /**
      * Get modificationDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -286,7 +286,7 @@ class Discussions
     /**
      * Set deletionDate
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Discussions
      */
@@ -300,7 +300,7 @@ class Discussions
     /**
      * Get deletionDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {
@@ -358,7 +358,7 @@ class Discussions
     /**
      * Set latestArticleModificationDate
      *
-     * @param \DateTime $latestArticleModificationDate
+     * @param DateTime $latestArticleModificationDate
      *
      * @return Discussions
      */
@@ -372,7 +372,7 @@ class Discussions
     /**
      * Get latestArticleModificationDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLatestArticleModificationDate()
     {
@@ -478,7 +478,7 @@ class Discussions
     /**
      * Set lockingDate
      *
-     * @param \DateTime $lockingDate
+     * @param DateTime $lockingDate
      *
      * @return Discussions
      */
@@ -492,7 +492,7 @@ class Discussions
     /**
      * Get lockingDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLockingDate()
     {

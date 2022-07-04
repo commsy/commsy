@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -59,7 +60,7 @@ class Materials
     private $deleter;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
      */
@@ -74,21 +75,21 @@ class Materials
     private $modifier;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="modification_date", type="datetime", nullable=true)
      */
     private $modificationDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime|null
      *
      * @ORM\Column(name="activation_date", type="datetime")
      */
-    private $activationDate;
+    private ?DateTime $activationDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
      */
@@ -165,21 +166,21 @@ class Materials
     private $workflowStatus = '3_none';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="workflow_resubmission_date", type="datetime", nullable=true)
      */
     private $workflowResubmissionDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="workflow_validity_date", type="datetime", nullable=true)
      */
     private $workflowValidityDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="locking_date", type="datetime", nullable=true)
      */
@@ -314,7 +315,7 @@ class Materials
     /**
      * Set creationDate
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Materials
      */
@@ -328,7 +329,7 @@ class Materials
     /**
      * Get creationDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -338,7 +339,7 @@ class Materials
     /**
      * Set modificationDate
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Materials
      */
@@ -352,33 +353,33 @@ class Materials
     /**
      * Get modificationDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
         return $this->modificationDate;
     }
+
     /**
      * Set activationDate
      *
-     * @param \DateTime $activationDate
+     * @param DateTime $activationDate
      *
-     * @return Dates
+     * @return Materials
      */
-    public function setActivationDate($activationDate)
+    public function setActivationDate(DateTime $activationDate): self
     {
         $this->activationDate = $activationDate;
 
         return $this;
     }
 
-
     /**
      * Get activationDate
      *
-     * @return \DateTime
+     * @return DateTime|null
      */
-    public function getActivationDate()
+    public function getActivationDate(): ?DateTime
     {
         return $this->activationDate;
     }
@@ -386,7 +387,7 @@ class Materials
     /**
      * Set deletionDate
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Materials
      */
@@ -400,7 +401,7 @@ class Materials
     /**
      * Get deletionDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {
@@ -650,7 +651,7 @@ class Materials
     /**
      * Set workflowResubmissionDate
      *
-     * @param \DateTime $workflowResubmissionDate
+     * @param DateTime $workflowResubmissionDate
      *
      * @return Materials
      */
@@ -664,7 +665,7 @@ class Materials
     /**
      * Get workflowResubmissionDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getWorkflowResubmissionDate()
     {
@@ -674,7 +675,7 @@ class Materials
     /**
      * Set workflowValidityDate
      *
-     * @param \DateTime $workflowValidityDate
+     * @param DateTime $workflowValidityDate
      *
      * @return Materials
      */
@@ -688,7 +689,7 @@ class Materials
     /**
      * Get workflowValidityDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getWorkflowValidityDate()
     {
@@ -698,7 +699,7 @@ class Materials
     /**
      * Set lockingDate
      *
-     * @param \DateTime $lockingDate
+     * @param DateTime $lockingDate
      *
      * @return Materials
      */
@@ -712,7 +713,7 @@ class Materials
     /**
      * Get lockingDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLockingDate()
     {

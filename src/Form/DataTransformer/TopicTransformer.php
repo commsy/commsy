@@ -28,7 +28,7 @@ class TopicTransformer extends AbstractTransformer
                 
                 $activating_date = $topicItem->getActivatingDate();
                 if (!stristr($activating_date,'9999')){
-                    $datetime = new \DateTime($activating_date);
+                    $datetime = new DateTime($activating_date);
                     $topicData['hiddendate']['date'] = $datetime;
                     $topicData['hiddendate']['time'] = $datetime;
                 }

@@ -35,11 +35,11 @@ class DateTransformer  extends AbstractTransformer
             $dateData['permission'] = !($dateItem->isPublic());
             $dateData['place'] = $dateItem->getPlace();
             
-            $datetimeStart = new \DateTime($dateItem->getDateTime_start());
+            $datetimeStart = new DateTime($dateItem->getDateTime_start());
             $dateData['start']['date'] = $datetimeStart;
             $dateData['start']['time'] = $datetimeStart;
             
-            $datetimeEnd = new \DateTime($dateItem->getDateTime_end());
+            $datetimeEnd = new DateTime($dateItem->getDateTime_end());
             $dateData['end']['date'] = $datetimeEnd;
             $dateData['end']['time'] = $datetimeEnd;
 
@@ -49,7 +49,7 @@ class DateTransformer  extends AbstractTransformer
 
             if ($dateItem->getRecurrencePattern() != '') {
                 $dateData = array_merge($dateData, $dateItem->getRecurrencePattern());
-                $dateData['recurring_sub']['untilDate'] = new \DateTime($dateData['recurringEndDate']);
+                $dateData['recurring_sub']['untilDate'] = new DateTime($dateData['recurringEndDate']);
             }
             
             if ($dateItem->isNotActivated()) {
@@ -57,7 +57,7 @@ class DateTransformer  extends AbstractTransformer
                 
                 $activating_date = $dateItem->getActivatingDate();
                 if (!stristr($activating_date,'9999')){
-                    $datetime = new \DateTime($activating_date);
+                    $datetime = new DateTime($activating_date);
                     $dateData['hiddendate']['date'] = $datetime;
                     $dateData['hiddendate']['time'] = $datetime;
                 }

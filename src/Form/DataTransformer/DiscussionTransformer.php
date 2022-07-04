@@ -39,7 +39,7 @@ class DiscussionTransformer extends AbstractTransformer
                 
                 $activating_date = $discussionItem->getActivatingDate();
                 if (!stristr($activating_date,'9999')){
-                    $datetime = new \DateTime($activating_date);
+                    $datetime = new DateTime($activating_date);
                     $discussionData['hiddendate']['date'] = $datetime;
                     $discussionData['hiddendate']['time'] = $datetime;
                 }

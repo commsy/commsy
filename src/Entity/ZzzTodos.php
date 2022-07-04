@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -64,11 +65,11 @@ class ZzzTodos
     private $modificationDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime|null
      *
      * @ORM\Column(name="activation_date", type="datetime")
      */
-    private $activationDate;
+    private ?DateTime $activationDate;
 
     /**
      * @var \DateTime

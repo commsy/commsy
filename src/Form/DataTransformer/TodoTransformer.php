@@ -39,7 +39,7 @@ class TodoTransformer extends AbstractTransformer
                 
                 $activating_date = $todoItem->getActivatingDate();
                 if (!stristr($activating_date,'9999')){
-                    $datetime = new \DateTime($activating_date);
+                    $datetime = new DateTime($activating_date);
                     $todoData['hiddendate']['date'] = $datetime;
                     $todoData['hiddendate']['time'] = $datetime;
                 }
@@ -47,9 +47,9 @@ class TodoTransformer extends AbstractTransformer
             
             if (get_class($todoItem) != 'cs_step_item') {
                 if ($todoItem->getDate() && $todoItem->getDate() != '9999-00-00 00:00:00') {
-                    $datetimeDueDate = new \DateTime($todoItem->getDate());
+                    $datetimeDueDate = new DateTime($todoItem->getDate());
                 } else{
-                    $datetimeDueDate = new \DateTime();
+                    $datetimeDueDate = new DateTime();
                 }
                 $todoData['due_date']['date'] = $datetimeDueDate;
                 $todoData['due_date']['time'] = $datetimeDueDate;

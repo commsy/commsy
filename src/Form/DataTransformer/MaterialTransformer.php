@@ -99,7 +99,7 @@ class MaterialTransformer extends AbstractTransformer
                 
                 $activating_date = $materialItem->getActivatingDate();
                 if (!stristr($activating_date,'9999')){
-                    $datetime = new \DateTime($activating_date);
+                    $datetime = new DateTime($activating_date);
                     $materialData['hiddendate']['date'] = $datetime;
                     $materialData['hiddendate']['time'] = $datetime;
                 }
