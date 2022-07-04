@@ -168,29 +168,23 @@ class MaterialTransformer extends AbstractTransformer
                 }
             }
         }
-        
-        if (isset($materialData['hidden'])) {
-            if ($materialData['hidden']) {
-                if (isset($materialData['hiddendate']['date'])) {
-                    // add validdate to validdate
-                    $datetime = $materialData['hiddendate']['date'];
-                    if ($materialData['hiddendate']['time']) {
-                        $time = explode(":", $materialData['hiddendate']['time']->format('H:i'));
-                        $datetime->setTime($time[0], $time[1]);
-                    }
-                    $materialObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
-                } else {
-                    $materialObject->setActivationDate('9999-00-00 00:00:00');
+
+        if (isset($materialData['hidden']) && $materialData['hidden']) {
+            if (isset($materialData['hiddendate']['date']) && $materialData['hiddendate']['date']) {
+                // add validdate to validdate
+                $datetime = $materialData['hiddendate']['date'];
+                if ($materialData['hiddendate']['time']) {
+                    $time = explode(":", $materialData['hiddendate']['time']->format('H:i'));
+                    $datetime->setTime($time[0], $time[1]);
                 }
+                $materialObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
             } else {
-                if($materialObject->isNotActivated()){
-    	            $materialObject->setActivationDate(new DateTime());
-    	        }
+                $materialObject->setActivationDate('9999-00-00 00:00:00');
             }
         } else {
-            if($materialObject->isNotActivated()){
-	            $materialObject->setActivationDate(new DateTime());
-	        }
+            if ($materialObject->isNotActivated()) {
+                $materialObject->setActivationDate(new DateTime());
+            }
         }
 
         if (get_class($materialObject) != 'cs_section_item') {
