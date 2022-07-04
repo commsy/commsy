@@ -1,9 +1,9 @@
 <?php
 namespace App\Form\Type\Event;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 
 /**
@@ -11,7 +11,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 */
 class AddContextFieldListener implements EventSubscriberInterface
 {
-
     public static function getSubscribedEvents()
     {
         return array(
