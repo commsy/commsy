@@ -30,13 +30,11 @@
                         {% endif %}
                     {% else %}
                         <div class="uk-width-1-1">
-                            <h1 class="uk-article-title">
-                                <span class="{% if item.hasOverwrittenContent %}uk-text-muted{% endif %}">{{ item.title|decodeHtmlEntity }}</span>
-                            </h1>
+                                <span class="{% if item.hasOverwrittenContent %}uk-text-muted{% endif %}">{{ item.description|commsyMarkup|raw}}</span>
                         </div>
                     {% endif %}
                     </div>
-                </div>        
+                </div>
                 <div class="uk-width-2-10 uk-text-right">
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
@@ -334,7 +332,7 @@
 
     {% for child in articles %}
         <li id="article_{{ child.item.itemId }}" data-jstree='{"opened": {{ opened }}}'>
-            <a href="#discarticle{{ child.item.itemId }}">{{- child.item.title|decodeHtmlEntity -}}</a>
+            <a href="#discarticle{{ child.item.itemId }}">{{child.item.description|commsyMarkup|raw|replace({'<p>': '', '</p>': '','<h3>': '', '</h3>': ''})|u.truncate(20)}}</a>
 
         {% if child.children is defined %}
             <ul>
