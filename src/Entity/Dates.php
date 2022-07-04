@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -52,21 +53,28 @@ class Dates
     private $deleterId;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
      */
     private $creationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="modification_date", type="datetime", nullable=false)
      */
     private $modificationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var \DateTime
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="activation_date", type="datetime")
+     */
+    private ?DateTime $activationDate;
+
+    /**
+     * @var DateTime
      *
      * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
      */
@@ -122,14 +130,14 @@ class Dates
     private $place;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="datetime_start", type="datetime", nullable=false)
      */
     private $datetimeStart = '0000-00-00 00:00:00';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="datetime_end", type="datetime", nullable=false)
      */
@@ -178,7 +186,7 @@ class Dates
     private $recurrencePattern;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="locking_date", type="datetime", nullable=true)
      */
@@ -286,7 +294,7 @@ class Dates
     /**
      * Set creationDate
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Dates
      */
@@ -300,7 +308,7 @@ class Dates
     /**
      * Get creationDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -310,7 +318,7 @@ class Dates
     /**
      * Set modificationDate
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Dates
      */
@@ -324,7 +332,7 @@ class Dates
     /**
      * Get modificationDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -332,9 +340,33 @@ class Dates
     }
 
     /**
+     * Set activationDate
+     *
+     * @param DateTime $activationDate
+     *
+     * @return Dates
+     */
+    public function setActivationDate(DateTime $activationDate): self
+    {
+        $this->activationDate = $activationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get activationDate
+     *
+     * @return DateTime|null
+     */
+    public function getActivationDate(): ?DateTime
+    {
+        return $this->activationDate;
+    }
+
+    /**
      * Set deletionDate
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Dates
      */
@@ -348,7 +380,7 @@ class Dates
     /**
      * Get deletionDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {
@@ -526,7 +558,7 @@ class Dates
     /**
      * Set datetimeStart
      *
-     * @param \DateTime $datetimeStart
+     * @param DateTime $datetimeStart
      *
      * @return Dates
      */
@@ -540,7 +572,7 @@ class Dates
     /**
      * Get datetimeStart
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDatetimeStart()
     {
@@ -550,7 +582,7 @@ class Dates
     /**
      * Set datetimeEnd
      *
-     * @param \DateTime $datetimeEnd
+     * @param DateTime $datetimeEnd
      *
      * @return Dates
      */
@@ -564,7 +596,7 @@ class Dates
     /**
      * Get datetimeEnd
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDatetimeEnd()
     {
@@ -718,7 +750,7 @@ class Dates
     /**
      * Set lockingDate
      *
-     * @param \DateTime $lockingDate
+     * @param DateTime $lockingDate
      *
      * @return Dates
      */
@@ -732,7 +764,7 @@ class Dates
     /**
      * Get lockingDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLockingDate()
     {
