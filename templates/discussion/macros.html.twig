@@ -327,7 +327,7 @@
 {% endmacro %}
 
 
-{% macro articleTree(articles, level) %}
+{% macro answersTree(articles, level) %}
     {% import _self as discussionMacros %}
 
     {% set opened = false %}
@@ -338,7 +338,7 @@
 
         {% if child.children is defined %}
             <ul>
-                {{ discussionMacros.articleTree(child.children, level+1) }}
+                {{ discussionMacros.answersTree(child.children, level+1) }}
             </ul>
         {% endif %}
 
@@ -346,7 +346,7 @@
     {% endfor %}
 {% endmacro %}
 
-{% macro articles(item, articleList, articleTree) %}
+{% macro answersSection(item, articleList, articleTree) %}
     {% import 'utils/macros.html.twig' as macrosUtils %}
     {% import _self as discussionMacros %}
 
@@ -373,10 +373,31 @@
 
                 <div class="uk-width-2-3" data-cs-tree='{"tree": {"checkbox": {"visible": false}}, "custom": {"toggle": "toggleDiscussionTree"}}'>
                     <ul class="uk-list">
-                        {{ discussionMacros.articleTree(articleTree.children, 0) }}
+                        {{ discussionMacros.answersTree(articleTree.children, 0) }}
                     </ul>
                 </div>
             </div>
         {% endif %}
     </article>
+{% endmacro %}
+
+{% macro answers(list, discussion, roomId, modifierList, userCount, readCount, readSinceModificationCount, count = 0) %}
+    {% import _self as discussionMacros %}
+
+    {% if list is not empty %}
+        <ul class="uk-comment-list">
+            {% for child in list %}
+                <li data-id="{{ child.item.itemId }}">
+                    {{ include('discussion/answer.html.twig', {
+                        article: child.item
+                    }) }}
+                    {% set count = count + 1 %}
+
+                    {% if child.children is defined %}
+                        {{ discussionMacros.answers(child.children, discussion, roomId, modifierList, userCount, readCount, readSinceModificationCount, count) }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endmacro %}
