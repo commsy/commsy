@@ -91,19 +91,17 @@ export class ActionExecuter {
     }
 
     public loadCustomFormData(action: BaseAction): Promise<any> {
-        return new Promise<ActionResponse>((resolve) => {
-            let requestURI = new URI(action.actionData.url);
+        let requestURI = new URI(action.actionData.url);
 
-            return action.loadCustomFormData(requestURI.toString());
-        })
-        .then((backendResponse: ActionResponse) => {
-            return action.onPostLoadCustomFormData(backendResponse);
-        })
-        .catch((error: Error) => {
-            if (error) {
-                action.onError(error);
-            }
-        });
+        return action.loadCustomFormData(requestURI.toString())
+            .then((backendResponse: ActionResponse) => {
+                return action.onPostLoadCustomFormData(backendResponse);
+            })
+            .catch((error: Error) => {
+                if (error) {
+                    action.onError(error);
+                }
+            });
     }
 
     public invoke($actor: JQuery, action: BaseAction, actionPayload: ActionRequest): Promise<any> {
