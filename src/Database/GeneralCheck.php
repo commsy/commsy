@@ -2,7 +2,7 @@
 
 namespace App\Database;
 
-use Doctrine\DBAL\Statement;
+use Doctrine\DBAL\Result;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -26,7 +26,7 @@ abstract class GeneralCheck implements DatabaseCheck
         return 999;
     }
 
-    protected function executeSQL(string $sql, SymfonyStyle $io): Statement
+    protected function executeSQL(string $sql, SymfonyStyle $io): Result
     {
         if ($io->isVerbose()) {
             $io->note('Executing ' . $sql);
@@ -34,8 +34,7 @@ abstract class GeneralCheck implements DatabaseCheck
 
         $conn = $this->entityManager->getConnection();
         $stmt = $conn->prepare($sql);
-        $stmt->executeQuery();
 
-        return $stmt;
+        return $stmt->executeQuery();
     }
 }

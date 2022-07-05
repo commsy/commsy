@@ -314,10 +314,6 @@
                 <source>Archived room info</source>
                 <target>Dieser Raum wurde archiviert und befindet sich im Lesemodus. D.h., Sie können Einträge in diesem Raum lesen jedoch nicht editieren oder neu erstellen.</target>
             </trans-unit>
-            <trans-unit id="Archived room removal warning">
-                <source>Archived room removal warning</source>
-                <target>Bitte beachten Sie, dass dieser Raum nach %days% Tagen Nichtnutzung gelöscht wird.</target>
-            </trans-unit>
             <trans-unit id="room_template">
                 <source>Template</source>
                 <target>Vorlage</target>

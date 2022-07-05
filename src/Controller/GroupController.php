@@ -976,10 +976,10 @@ class GroupController extends BaseController
                 // only initialize the name of the grouproom the first time it is created!
                 if ($groupRoom && !empty($groupRoom)) {
                     if ($originalGroupName == "") {
-                        $groupRoom->setTitle($groupItem->getTitle() . " (" . $this->translator->trans('grouproom', [],
-                                'group') . ")");
+                        $title = $groupItem->getTitle() . " (" . $this->translator->trans('grouproom', [], 'group') . ")";
+                        $groupRoom->setTitle(html_entity_decode($title));
                     } else {
-                        $groupRoom->setTitle($originalGroupName);
+                        $groupRoom->setTitle(html_entity_decode($originalGroupName));
                     }
                     $groupRoom->save(false);
 
@@ -991,7 +991,7 @@ class GroupController extends BaseController
 
                         $masterRoom = $this->roomService->getRoomItem($masterTemplate);
                         if ($masterRoom) {
-                            $groupRoom = $this->copySettings($masterRoom, $groupRoom, $legacyCopy);
+                            $this->copySettings($masterRoom, $groupRoom, $legacyCopy);
                         }
                     }
                     $groupItem->save(true);

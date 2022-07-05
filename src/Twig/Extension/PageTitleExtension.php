@@ -10,6 +10,7 @@ namespace App\Twig\Extension;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
+use cs_environment;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -17,12 +18,25 @@ use Twig\TwigFunction;
 class PageTitleExtension extends AbstractExtension
 {
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
-    private $legacyEnvironment;
-    private $roomService;
-    private $translator;
+    private cs_environment $legacyEnvironment;
 
+    /**
+     * @var RoomService
+     */
+    private RoomService $roomService;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private TranslatorInterface $translator;
+
+    /**
+     * @param LegacyEnvironment $legacyEnvironment
+     * @param RoomService $roomService
+     * @param TranslatorInterface $translator
+     */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         RoomService $roomService,
@@ -33,15 +47,22 @@ class PageTitleExtension extends AbstractExtension
         $this->translator = $translator;
     }
 
-    public function getFunctions()
+    /**
+     * @return TwigFunction[]
+     */
+    public function getFunctions(): array
     {
         return [
-            new TwigFunction('pageTitle', [$this, 'pageTitle']),
-            new TwigFunction('shortPageTitle', [$this, 'shortPageTitle']),
+            new TwigFunction('pageTitle', [$this, 'pageTitle'], ['is_safe' => ['html']]),
+            new TwigFunction('shortPageTitle', [$this, 'shortPageTitle'], ['is_safe' => ['html']]),
         ];
     }
 
-    public function pageTitle($roomId)
+    /**
+     * @param $roomId
+     * @return string
+     */
+    public function pageTitle($roomId): string
     {
         $pageTitleElements = [];
 
@@ -67,21 +88,35 @@ class PageTitleExtension extends AbstractExtension
             $pageTitleElements[] = $portal->getTitle();
         }
 
-        return (!empty($pageTitleElements)) ? implode(' - ', $pageTitleElements) : 'CommSy';
-    }
+        if (!empty($pageTitleElements)) {
+            $pageTitle = implode(' - ', $pageTitleElements);
 
-    public function shortPageTitle()
-    {
-        $portal = $this->legacyEnvironment->getCurrentPortalItem();
-        if ($portal) {
-            return $portal->getTitle();
+            return htmlentities(
+                $pageTitle,
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401,
+                'UTF-8',
+                false
+            );
         }
 
         return 'CommSy';
     }
 
-    private function roomTitle($roomId)
+    /**
+     * @return string
+     */
+    public function shortPageTitle(): string
     {
+        $portal = $this->legacyEnvironment->getCurrentPortalItem();
+        if ($portal) {
+            return htmlentities(
+                $portal->getTitle(),
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401,
+                'UTF-8',
+                false
+            );
+        }
 
+        return 'CommSy';
     }
 }

@@ -167,10 +167,18 @@
                         {{ macrosDiscussion.title(discussion, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray) }}
                     </div>
 
+                    {# description #}
+                    <div id="description{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe
+                         data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}',
+                         cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }">
+
+                        {{ macrosItem.itemDescription('description', discussion, true, discussion.description, draft) }}
+                    </div>
+
                     {% if not draft %}
                         {# articles #}
                         <div id="articles{{ discussion.itemId }}" class="cs-edit-section cs-toggle">
-                            {{ macrosDiscussion.articles(discussion, articleList, articleTree) }}
+                            {{ macrosDiscussion.answersSection(discussion, articleList, articleTree) }}
                         </div>
                     {% endif %}
 
@@ -188,143 +196,9 @@
             </div>
             
             <div data-uk-observe id="article-content">
-                <ul class="uk-comment-list">
-                    {# discussion articles #}
-                    {% set lastLevel = 1 %}
-
-                    {% for article in articleList %}
-
-                        {% set currentLevel = article.position|split('.')|length %}
-
-                        {% if currentLevel > lastLevel %}
-                            <ul>
-                        {% elseif currentLevel < lastLevel %}
-                            {% for i in currentLevel..lastLevel-1 %}
-                                </li></ul>
-                            {% endfor %}
-                        {% else %}
-                            </li>
-                        {% endif %}
-
-                        {% set lastLevel = currentLevel %}
-
-                        <li data-id="{{ article.itemId }}">
-                            {% set count = loop.index0 %}
-                            <div id="discarticle_{{count}}" class="uk-panel uk-panel-box uk-margin-top discussion-article">
-
-                                {# panel teaser #}
-                                <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow cs-remove-section cs-toggle">
-                                    <div class="uk-grid">
-                                        {# left article navigation #}
-                                        <div class="uk-flex-inline uk-width-2-5 ">
-                                            {% if loop.last and loop.length > 1 %}
-                                                <div class="uk-margin-right">
-                                                    <a class="uk-button-primary" href="#discarticle_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
-                                                    <i class="uk-icon-small uk-icon-angle-down uk-text-muted"></i>
-                                                </div>
-                                            {% elseif loop.first and loop.length > 1 %}
-                                                <div>
-                                                    <i class="uk-icon-small uk-icon-angle-up uk-text-muted"></i>
-                                                    <a class="uk-button-primary" href="#discarticle_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
-                                                </div>
-                                            {% elseif loop.length == 1 %}
-                                                <div>
-                                                    <i class="uk-icon-small uk-icon-angle-up uk-text-muted"></i>
-                                                    <i class="uk-icon-small uk-icon-angle-down uk-text-muted"></i>
-                                                </div>
-                                            {% else %}
-                                                <div class="uk-margin-right">
-                                                    <a class="uk-button-primary" href="#discarticle_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
-                                                    <a class="uk-button-primary" href="#discarticle_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
-                                                </div>
-                                            {% endif %}
-                                        </div>
-
-                                        {# right actions #}
-                                        <div class="uk-width-3-5 uk-text-right">
-
-                                            {# section actions #}
-                                            {# NOTE: `getHasOverwrittenContent()` returns true for articles with answers which were "deleted" but should instead have their content overwritten to keep the discussion hierarchy intact. #}
-                                            {% if not article.hasOverwrittenContent -%}
-                                            <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
-                                                <button class="uk-button uk-button-mini">
-                                                    {{ 'selected entries'|trans({}, 'rubric') }}
-                                                    <i class="uk-icon-caret-down"></i>
-                                                </button>
-
-                                                <div class="cs-additional-actions uk-dropdown  uk-padding-remove">
-                                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
-
-                                                        {# answer #}
-                                                        <li>
-                                                            {% if is_granted('ITEM_EDIT', 'NEW') %}
-                                                                <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId, 'answerTo': article.itemId }) }}">
-                                                                    <i class="uk-icon-small uk-icon-reply uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({},'discussion') }}
-                                                                </a>
-                                                            {% else %}
-                                                                <span class="uk-text-muted">
-                                                                    <i class="uk-icon-small uk-icon-reply uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({},'discussion') }}
-                                                                </span>
-                                                            {% endif %}
-                                                        </li>
-
-
-                                                        {# delete #}
-                                                        <li>
-                                                            {% if is_granted('ITEM_EDIT', article.itemId) %}
-                                                                <a  href="#" data-cs-action="{{ {
-                                                                    'url': path('app_discussionarticle_xhrdelete', {'roomId': roomId, 'itemId': article.itemId}),
-                                                                    'action': 'delete',
-                                                                    'itemId': article.itemId,
-                                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                                    'mode': 'click',
-                                                                    'itemType': article.itemType,
-                                                                    'title': 'list choice'|trans({},'rubric')|capitalize,
-                                                                    'confirmQuestion': 'confirm delete'|trans({},'rubric'),
-                                                                    'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
-                                                                    'confirmOk': 'confirm delete confirm'|trans({},'rubric')
-                                                                }|json_encode|e('html_attr') }}">
-                                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
-                                                                </a>
-                                                            {% else %}
-                                                                <span class="uk-text-muted">
-                                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
-                                                                </span>
-                                                            {% endif %}
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <article class="uk-article uk-position-relative">
-                                    {# title #}
-                                    <div class="cs-toggle" data-uk-observe>
-                                        {{ macrosDiscussion.title(article, modifierList, userCount, readCount, readSinceModificationCount) }}
-                                    </div>
-
-                                    {# description #}
-                                    <div id="description{{ article.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
-                                        {{ macrosItem.itemDescription('description', article, true, article.description) }}
-                                    </div>
-
-                                    {# files #}
-                                    {% if not article.hasOverwrittenContent -%}
-                                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
-                                            {{ macrosItem.files(article) }}
-                                        </div>
-                                    {%- endif %}
-                                </article>
-                            </div>
-                    {% endfor %}
-
-                    {% for i in 1..lastLevel-1 %}
-                            </ul></li>
-                    {% endfor %}
-                </ul>
+                {% if articleTree.children is defined %}
+                    {{ macrosDiscussion.answers(articleTree.children, discussion, roomId, modifierList, userCount, readCount, readSinceModificationCount) }}
+                {% endif %}
             </div>
         </div>
 

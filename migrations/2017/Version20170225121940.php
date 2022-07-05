@@ -86,7 +86,7 @@ final class Version20170225121940 extends AbstractMigration
                 ->from($daTable, 'da')
                 ->where('da.discussion_id = :discussionId')
                 ->orderBy('da.item_id', 'ASC')
-                ->setParameter(':discussionId', $discussionId);
+                ->setParameter('discussionId', $discussionId);
             $articles = $qb->executeQuery()->fetchAllAssociative();
 
             if ($discussionType == 'simple') {

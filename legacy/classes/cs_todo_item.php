@@ -23,6 +23,9 @@
 
 /** upper class of the todo item
  */
+
+use App\Entity\Todos;
+
 include_once('classes/cs_item.php');
 
 /** class for a todo
@@ -309,7 +312,7 @@ class cs_todo_item extends cs_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_todo');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Todos');
+        $repository = $em->getRepository(Todos::class);
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -336,7 +339,7 @@ class cs_todo_item extends cs_item {
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_todo');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('App:Todos');
+      $repository = $em->getRepository(Todos::class);
 
       $this->deleteElasticItem($objectPersister, $repository);
    }
