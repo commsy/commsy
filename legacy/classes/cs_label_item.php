@@ -24,6 +24,9 @@
 
 /** upper class of the label item
  */
+
+use App\Entity\Labels;
+
 include_once('classes/cs_item.php');
 
 /** class for a label
@@ -474,7 +477,7 @@ class cs_label_item extends cs_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_label');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Labels');
+        $repository = $em->getRepository(Labels::class);
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -491,7 +494,7 @@ class cs_label_item extends cs_item {
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_label');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('App:Labels');
+      $repository = $em->getRepository(Labels::class);
 
       $this->deleteElasticItem($objectPersister, $repository);
    }

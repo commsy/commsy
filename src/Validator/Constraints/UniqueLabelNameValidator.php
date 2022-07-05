@@ -1,17 +1,19 @@
 <?php
 namespace App\Validator\Constraints;
 
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\LabelRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 
 class UniqueLabelNameValidator extends ConstraintValidator
 {
-    private $em;
+    private LabelRepository $labelRepository;
 
-    public function __construct(EntityManagerInterface $entityManager) {
-        $this->em = $entityManager;
+    public function __construct(
+        LabelRepository $labelRepository
+    ) {
+        $this->labelRepository = $labelRepository;
     }
 
     public function validate($entity, Constraint $constraint)
@@ -26,9 +28,7 @@ class UniqueLabelNameValidator extends ConstraintValidator
             throw new ConstraintDefinitionException('Entity must have a type before validation.');
         }
 
-        $repository = $this->em->getRepository('App:Labels');
-
-        $labels = $repository->findLabelsByContextIdAndNameAndType(
+        $labels = $this->labelRepository->findLabelsByContextIdAndNameAndType(
             $entity->getContextId(),
             $entity->getName(),
             $entity->getType());

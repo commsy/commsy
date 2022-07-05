@@ -23,6 +23,8 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+use App\Entity\Room;
+use App\Entity\ZzzRoom;
 use \Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /** upper class of the community item
@@ -245,7 +247,7 @@ class cs_community_item extends cs_room_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Room');
+        $repository = $em->getRepository(Room::class);
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -265,11 +267,11 @@ class cs_community_item extends cs_room_item {
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('App:Room');
+      $repository = $em->getRepository(Room::class);
 
        // use zzz repository if room is archived
        if ($this->isArchived()) {
-           $repository = $em->getRepository('App:ZzzRoom');
+           $repository = $em->getRepository(ZzzRoom::class);
        }
 
        $this->deleteElasticItem($objectPersister, $repository);

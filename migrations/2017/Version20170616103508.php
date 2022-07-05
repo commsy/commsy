@@ -140,23 +140,22 @@ final class Version20170616103508 extends AbstractMigration
 
             $extras = DbConverter::convertToPHPValue($room['extras']);
             $language = $extras['LANGUAGE'] ?? 'de';
+            $language = $language === 'user' ? 'de' : $language;
 
             $queryBuilder
                 ->insert('calendars')
-                ->values(
-                    array(
-                        'context_id' => '?',
-                        'title' => '?',
-                        'color' => '?',
-                        'external_url' => '?',
-                        'default_calendar' => '?'
-                    )
-                )
-                ->setParameter(0, $room['item_id'])
-                ->setParameter(1, $translations['standard'][$language])
-                ->setParameter(2, '#ffffff')
-                ->setParameter(3, '')
-                ->setParameter(4, '1')
+                ->values([
+                    'context_id' => ':contextId',
+                    'title' => ':title',
+                    'color' => ':color',
+                    'external_url' => ':externalUrl',
+                    'default_calendar' => ':defaultCalendar'
+                ])
+                ->setParameter('contextId', $room['item_id'])
+                ->setParameter('title', $translations['Standard'][$language])
+                ->setParameter('color', '#ffffff')
+                ->setParameter('externalUrl', '')
+                ->setParameter('defaultCalendar', '1')
                 ->executeStatement();
             ;
 
@@ -206,20 +205,18 @@ final class Version20170616103508 extends AbstractMigration
                 
                 $queryBuilder
                     ->insert('calendars')
-                    ->values(
-                        array(
-                            'context_id' => '?',
-                            'title' => '?',
-                            'color' => '?',
-                            'external_url' => '?',
-                            'default_calendar' => '?'
-                        )
-                    )
-                    ->setParameter(0, $room['item_id'])
-                    ->setParameter(1, $translations[$currentColorName][$language])
-                    ->setParameter(2, $currentColor)
-                    ->setParameter(3, '')
-                    ->setParameter(4, '0')
+                    ->values([
+                        'context_id' => ':contextId',
+                        'title' => ':title',
+                        'color' => ':color',
+                        'external_url' => ':externalUrl',
+                        'default_calendar' => ':defaultCalendar'
+                    ])
+                    ->setParameter('contextId', $room['item_id'])
+                    ->setParameter('title', $translations[$currentColorName][$language])
+                    ->setParameter('color', $currentColor)
+                    ->setParameter('externalUrl', '')
+                    ->setParameter('defaultCalendar', '0')
                     ->executeStatement();
                 ;
 
