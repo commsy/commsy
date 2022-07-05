@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-use App\Event\UserLeftRoomEvent;
+use App\Entity\Account;
+use App\Facade\MembershipManager;
 use App\Form\DataTransformer\PrivateRoomTransformer;
 use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\Profile\DeleteType;
@@ -24,7 +25,6 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 
@@ -405,8 +405,8 @@ class ProfileController extends AbstractController
      * @param LegacyEnvironment $legacyEnvironment
      * @param UserService $userService
      * @param ParameterBagInterface $parameterBag
-     * @param EventDispatcherInterface $eventDispatcher
      * @param TranslatorInterface $translator
+     * @param MembershipManager $membershipManager
      * @param int $roomId
      * @return array|RedirectResponse
      */
@@ -415,10 +415,16 @@ class ProfileController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         UserService $userService,
         ParameterBagInterface $parameterBag,
-        EventDispatcherInterface $eventDispatcher,
         TranslatorInterface $translator,
+        MembershipManager $membershipManager,
         int $roomId
     ) {
+        /** @var Account $account */
+        $account = $this->getUser();
+        if (!$account) {
+            throw $this->createAccessDeniedException();
+        }
+
         $deleteParameter = $parameterBag->get('commsy.security.privacy_disable_overwriting');
         $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, [
             'confirm_string' => $translator->trans('lock', [], 'profile'),
@@ -443,7 +449,6 @@ class ProfileController extends AbstractController
         if ($request->request->has('lock_form')) {
             $lockForm->handleRequest($request);
             if ($lockForm->isSubmitted() && $lockForm->isValid()) {
-
                 $currentUser->reject();
                 $currentUser->save();
                 $userService->propagateStatusToGrouproomUsersForUser($currentUser);
@@ -454,10 +459,7 @@ class ProfileController extends AbstractController
             $deleteForm->handleRequest($request);
 
             if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
-                $currentUser->delete();
-
-                $event = new UserLeftRoomEvent($currentUser, $roomItem);
-                $eventDispatcher->dispatch($event);
+                $membershipManager->leaveWorkspace($roomItem, $account);
 
                 return $this->redirect($portalUrl);
             }

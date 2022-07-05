@@ -195,19 +195,23 @@ class cs_label_item extends cs_item {
       $this->_setObject(CS_MATERIAL_TYPE, $value, FALSE);
    }
 
-   function getMemberItemList(){
-      $members = new cs_list();
-      $member_ids = $this->getLinkedItemIDArray(CS_USER_TYPE);
-      if ( !empty($member_ids) ){
-         $user_manager = $this->_environment->getUserManager();
-         $user_manager->setIDArrayLimit($member_ids);
-         $user_manager->setUserLimit();
-         $user_manager->select();
-         $members = $user_manager->get();
-      }        // returns a cs_list of user_items
-      return $members;
-   }
+    /**
+     * @return cs_list
+     */
+    public function getMemberItemList(): cs_list
+    {
+        $members = new cs_list();
+        $member_ids = $this->getLinkedItemIDArray(CS_USER_TYPE);
+        if (!empty($member_ids)) {
+            $user_manager = $this->_environment->getUserManager();
+            $user_manager->setIDArrayLimit($member_ids);
+            $user_manager->setUserLimit();
+            $user_manager->select();
+            $members = $user_manager->get();
+        }
 
+        return $members;
+    }
 
    function getCountMemberItemList(){
       $members = $this->getMemberItemList();
@@ -538,31 +542,35 @@ class cs_label_item extends cs_item {
       return $is_member;
    }
 
-   public function addMember ($user) {
-      if ( !$this->isMember($user) ) {
-         $link_manager = $this->_environment->getLinkItemManager();
-         $link_item = $link_manager->getNewItem();
-         $link_item->setFirstLinkedItem($this);
-         $link_item->setSecondLinkedItem($user);
-         $link_item->save();
-      }
-   }
+    /**
+     * @param cs_user_item $user
+     * @return void
+     */
+    public function addMember(cs_user_item $user): void
+    {
+        if (!$this->isMember($user)) {
+            $link_manager = $this->_environment->getLinkItemManager();
+            $link_item = $link_manager->getNewItem();
+            $link_item->setFirstLinkedItem($this);
+            $link_item->setSecondLinkedItem($user);
+            $link_item->save();
+        }
+    }
 
-   public function removeMember ($user) {
-      $link_member_list = $this->getLinkItemList(CS_USER_TYPE);
-      $link_member_item = $link_member_list->getFirst();
-      while ( $link_member_item ) {
-         $linked_user_id = $link_member_item->getLinkedItemID($this);
-         if ( isset($user)
-              and is_object($user)
-              and $user->isA(CS_USER_TYPE)
-              and $user->getItemID() == $linked_user_id
-            ) {
-            $link_member_item->delete();
-         }
-         $link_member_item = $link_member_list->getNext();
-      }
-   }
+    /**
+     * @param cs_user_item $user
+     * @return void
+     */
+    public function removeMember(cs_user_item $user): void
+    {
+        $linkedMemberList = $this->getLinkItemList(CS_USER_TYPE);
+        foreach ($linkedMemberList as $linkedMemberItem) {
+            $linked_user_id = $linkedMemberItem->getLinkedItemID($this);
+            if ($user->getItemID() == $linked_user_id) {
+                $linkedMemberItem->delete();
+            }
+        }
+    }
 
    /** asks if item is editable by everybody or just creator
     *

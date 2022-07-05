@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\MarkReadAction;
+use App\Entity\Account;
 use App\Event\CommsyEditEvent;
+use App\Facade\MembershipManager;
 use App\Filter\GroupFilterType;
 use App\Form\DataTransformer\GroupTransformer;
 use App\Form\Type\AnnotationType;
@@ -333,18 +335,16 @@ class GroupController extends BaseController
      * @param Request $request
      * @param AnnotationService $annotationService
      * @param CategoryService $categoryService
-     * @param UserService $userService
      * @param TopicService $topicService
      * @param LegacyMarkup $legacyMarkup
      * @param int $roomId
      * @param int $itemId
      * @return array
      */
-    public function detailAction(
+    public function detail(
         Request $request,
         AnnotationService $annotationService,
         CategoryService $categoryService,
-        UserService $userService,
         TopicService $topicService,
         LegacyMarkup $legacyMarkup,
         int $roomId,
@@ -1031,87 +1031,114 @@ class GroupController extends BaseController
      * @param int $roomId
      * @param int $itemId
      * @param bool $joinRoom
+     * @param MembershipManager $membershipManager
      * @return JsonDataResponse|RedirectResponse
      * @throws Exception
      */
-    public function joinAction(
+    public function join(
         int $roomId,
         int $itemId,
-        bool $joinRoom
+        bool $joinRoom,
+        MembershipManager $membershipManager
     ) {
         $roomManager = $this->legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        
+        $room = $roomManager->getItem($roomId);
+        $group = $this->groupService->getGroup($itemId);
 
-        $groupItem = $this->groupService->getGroup($itemId);
-
-        if (!$roomItem) {
+        if (!$room) {
             throw $this->createNotFoundException('The requested room does not exist');
-        } elseif (!$groupItem) {
+        }
+
+        if (!$group) {
             throw $this->createNotFoundException('The requested group does not exists');
         }
 
-        $current_user = $this->legacyEnvironment->getCurrentUser();
-
-        // first, join group
-        if ($groupItem->getMemberItemList()->inList($current_user)) {
-            throw new Exception("ERROR: User '" . $current_user->getUserID() . "' cannot join group '" . $groupItem->getName() . "' since (s)he already is a member!");
-        } else {
-            $groupItem->addMember($current_user);
+        /** @var Account $account */
+        $account = $this->getUser();
+        if (!$account) {
+            throw $this->createAccessDeniedException();
         }
 
-        // then, join grouproom
+        // join group
+        $membershipManager->joinGroup($group, $account);
+
+        $currentUser = $this->legacyEnvironment->getCurrentUser();
+
+        /**
+         * If the user also wants to join the group room, redirect him to the request page
+         */
         if ($joinRoom) {
-            $grouproomItem = $groupItem->getGroupRoomItem();
-            if ($grouproomItem) {
-                $memberStatus = $this->userService->getMemberStatus($grouproomItem,
-                    $this->legacyEnvironment->getCurrentUser());
+            $groupRoom = $group->getGroupRoomItem();
+            if ($groupRoom) {
+                $memberStatus = $this->userService->getMemberStatus($groupRoom, $currentUser);
                 if ($memberStatus == 'join') {
                     return $this->redirectToRoute('app_context_request', [
                         'roomId' => $roomId,
-                        'itemId' => $grouproomItem->getItemId(),
+                        'itemId' => $groupRoom->getItemId(),
                     ]);
                 } else {
-                    throw new Exception("ERROR: User '" . $current_user->getUserID() . "' cannot join group room '" . $grouproomItem->getTitle() . "' since (s)he has room member status '" . $memberStatus . "' (requires status 'join' to become a room member)!");
+                    throw new Exception("ERROR: User '" . $currentUser->getUserID() . "' cannot join group room '" . $groupRoom->getTitle() . "' since (s)he has room member status '" . $memberStatus . "' (requires status 'join' to become a room member)!");
                 }
             } else {
-                throw new Exception("ERROR: User '" . $current_user->getUserID() . "' cannot join the group room of group '" . $groupItem->getName() . "' since it does not exist!");
+                throw new Exception("ERROR: User '" . $currentUser->getUserID() . "' cannot join the group room of group '" . $group->getName() . "' since it does not exist!");
             }
         }
 
         return new JsonDataResponse([
-            'title' => $groupItem->getTitle(),
+            'title' => $group->getTitle(),
             'groupId' => $itemId,
-            'memberId' => $current_user->getItemId(),
         ]);
     }
 
     /**
-     * @Route("/room/{roomId}/group/{itemId}/leave")
+     * @Route("/room/{roomId}/group/{itemId}/leave/{leaveWorkspace}", defaults={"leaveWorkspace"=false})
      * @param int $roomId
      * @param int $itemId
-     * @return JsonDataResponse
+     * @param bool $leaveWorkspace
+     * @param MembershipManager $membershipManager
+     * @return JsonDataResponse|RedirectResponse
      */
-    public function leaveAction(
+    public function leave(
         int $roomId,
-        int $itemId
+        int $itemId,
+        bool $leaveWorkspace,
+        MembershipManager $membershipManager
     ) {
         $roomManager = $this->legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
-        $groupItem = $this->groupService->getGroup($itemId);
 
-        if (!$roomItem) {
+        $room = $roomManager->getItem($roomId);
+        $group = $this->groupService->getGroup($itemId);
+
+        if (!$room) {
             throw $this->createNotFoundException('The requested room does not exist');
-        } elseif (!$groupItem) {
+        }
+
+        if (!$group) {
             throw $this->createNotFoundException('The requested group does not exists');
         }
 
-        $current_user = $this->legacyEnvironment->getCurrentUser();
-        $groupItem->removeMember($current_user);
+        /** @var Account $account */
+        $account = $this->getUser();
+        if (!$account) {
+            throw $this->createAccessDeniedException();
+        }
 
+        // leave group
+        $membershipManager->leaveGroup($group, $account);
+
+        if ($leaveWorkspace) {
+            $groupRoom = $group->getGroupRoomItem();
+            $membershipManager->leaveWorkspace($groupRoom, $account);
+
+            return $this->redirectToRoute('app_group_detail', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
+        }
         return new JsonDataResponse([
-            'title' => $groupItem->getTitle(),
+            'title' => $group->getTitle(),
             'groupId' => $itemId,
-            'memberId' => $current_user->getItemId(),
         ]);
     }
 
@@ -1604,7 +1631,6 @@ class GroupController extends BaseController
      */
     private function getAvailableTemplates()
     {
-
         $templates = [];
 
         $currentPortal = $this->legacyEnvironment->getCurrentPortalItem();
