@@ -132,6 +132,15 @@
                                                     <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
                                                 </a>
                                             </li>
+                                            {% if item.isGroupRoomActivated and memberStatus != 'join' %}
+                                                <li id="leave-group-link">
+                                                    <a id="leave-group-link"
+                                                       href="{{path('app_group_leave', {'roomId': roomId, 'itemId': group.itemId, 'leaveWorkspace': true}) }}" >
+                                                        <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave group and workspace'|trans({}, 'group') }}
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+
                                         {% endif %}
 
                                         {% if is_granted('ITEM_EDIT', 'NEW') %}
