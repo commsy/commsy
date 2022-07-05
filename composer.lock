@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e01047cd0e24375c16c386319ede9bea",
+    "content-hash": "2b19efc957e77fe6c29db8ac8009f8b2",
     "packages": [
         {
             "name": "api-platform/core",
@@ -11099,16 +11099,16 @@
         },
         {
             "name": "symfony/webpack-encore-bundle",
-            "version": "v1.13.2",
+            "version": "v1.14.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/webpack-encore-bundle.git",
-                "reference": "509cad50878e838c879743225e0e921b3b64a3f2"
+                "reference": "6b18be99bf2a5a402b80a2c00043fe0b365fe836"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/webpack-encore-bundle/zipball/509cad50878e838c879743225e0e921b3b64a3f2",
-                "reference": "509cad50878e838c879743225e0e921b3b64a3f2",
+                "url": "https://api.github.com/repos/symfony/webpack-encore-bundle/zipball/6b18be99bf2a5a402b80a2c00043fe0b365fe836",
+                "reference": "6b18be99bf2a5a402b80a2c00043fe0b365fe836",
                 "shasum": ""
             },
             "require": {
@@ -11150,7 +11150,7 @@
             "description": "Integration with your Symfony app & Webpack Encore!",
             "support": {
                 "issues": "https://github.com/symfony/webpack-encore-bundle/issues",
-                "source": "https://github.com/symfony/webpack-encore-bundle/tree/v1.13.2"
+                "source": "https://github.com/symfony/webpack-encore-bundle/tree/v1.14.1"
             },
             "funding": [
                 {
@@ -11166,7 +11166,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-12-02T19:45:55+00:00"
+            "time": "2022-05-03T17:55:32+00:00"
         },
         {
             "name": "symfony/yaml",
