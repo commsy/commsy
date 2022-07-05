@@ -204,36 +204,38 @@
 
         <div class="uk-width-medium-1-5 cs-addon-navigation">
 
-            {# quick navigation #}
-            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
-                <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
-                    {{ 'quick navigation'|trans({})|capitalize }}
+            <div data-uk-sticky>
+                {# quick navigation #}
+                <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary">
+                    <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
+                        {{ 'quick navigation'|trans({})|capitalize }}
+                    </div>
+                    <div id="cs-nav-quick" class="cs-nav-quick">
+                        <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#articles{{ discussion.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
+                            <li><a href="#description{{ discussion.itemId }}">{{ 'entry description'|trans({})}}</a></li>
+                            <li><a href="#files{{ discussion.itemId }}">{{ 'files'|trans({})}}</a></li>
+                            <li><a href="#links{{ discussion.itemId }}">{{ 'links'|trans({})}}</a></li>
+                            {% if (showCategories or showHashtags) %}
+                                <li><a href="#categoriesAndBuzzwords{{ discussion.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
+                            {% endif %}
+                            {% if not articleList is empty %}
+                                <li class="uk-parent">
+                                    <a href="#articles{{ discussion.itemId }}">{{ 'articles'|trans({},'discussion')|capitalize }}</a>
+                                    <ul class="uk-nav-sub">
+                                        {% for article in articleList %}
+                                            <li>
+                                                <a href="#article{{ article.itemId }}">{{ loop.index }}. {{ article.title|decodeHtmlEntity|u.truncate(20) }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
-                <div id="cs-nav-quick" class="cs-nav-quick">
-                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#articles{{ discussion.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
-                        <li><a href="#description{{ discussion.itemId }}">{{ 'entry description'|trans({})}}</a></li>
-                        <li><a href="#files{{ discussion.itemId }}">{{ 'files'|trans({})}}</a></li>
-                        <li><a href="#links{{ discussion.itemId }}">{{ 'links'|trans({})}}</a></li>
-                        {% if (showCategories or showHashtags) %}
-                            <li><a href="#categoriesAndBuzzwords{{ discussion.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
-                        {% endif %}
-                        {% if not articleList is empty %}
-                            <li class="uk-parent">
-                                <a href="#articles{{ discussion.itemId }}">{{ 'articles'|trans({},'discussion')|capitalize }}</a>
-                                <ul class="uk-nav-sub">                      
-                                    {% for article in articleList %}
-                                        <li>
-                                            <a href="#article{{ article.itemId }}">{{ loop.index }}. {{ article.title|decodeHtmlEntity|u.truncate(20) }}</a>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
+
                 {# details #}
-                <div style="margin-top: 10px;" class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
+                <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary uk-margin-top">
                     <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
                         {{ 'details'|trans({})|capitalize }}
                     </div>
@@ -251,6 +253,7 @@
                         {% endif %}
                     </div>
                 </div>
+            </div>
         </div>
     </div>
 {% endblock %}
