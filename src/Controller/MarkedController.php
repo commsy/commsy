@@ -210,6 +210,7 @@ class MarkedController extends BaseController
 
     /**
      * @Route("/room/{roomId}/mark/xhr/hashtagging", condition="request.isXmlHttpRequest()")
+     * @Template("marked/hashtagging.html.twig")
      * @param Request $request
      * @param HashtaggingAction $action
      * @param ItemController $itemController
