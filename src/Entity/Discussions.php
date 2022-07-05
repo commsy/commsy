@@ -80,6 +80,11 @@ class Discussions
     private $title;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private string $description;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="latest_article_item_id", type="integer", nullable=true)
@@ -297,6 +302,17 @@ class Discussions
     public function getTitle()
     {
         return $this->title;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+        return $this;
     }
 
     /**

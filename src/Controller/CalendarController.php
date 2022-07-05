@@ -2,21 +2,21 @@
 
 namespace App\Controller;
 
+use App\Entity\Calendars;
+use App\Event\CommsyEditEvent;
+use App\Form\Type\CalendarEditType;
+use App\Repository\CalendarsRepository;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
-use App\Utils\ItemService;
 use App\Utils\RoomService;
+use Doctrine\Persistence\ManagerRegistry;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
-
-use App\Form\Type\CalendarEditType;
-use App\Entity\Calendars;
-use App\Event\CommsyEditEvent;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -78,13 +78,16 @@ class CalendarController extends AbstractController
      * @Security("is_granted('CALENDARS_EDIT') and is_granted('RUBRIC_SEE', 'date')")
      * @param Request $request
      * @param int $roomId
-     * @param int $calendarId
+     * @param int|null $calendarId
+     * @param CalendarsRepository $calendarsRepository
      * @return array|RedirectResponse
      */
     public function editAction(
         Request $request,
         int $roomId,
-        int $calendarId = null
+        int $calendarId = null,
+        CalendarsRepository $calendarsRepository,
+        ManagerRegistry $doctrine
     ) {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -93,11 +96,8 @@ class CalendarController extends AbstractController
             $roomItem = $privateRoomManager->getItem($roomId);
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('App:Calendars');
-
         if ($calendarId) {
-            $calendar = $repository->findOneById($calendarId);
+            $calendar = $calendarsRepository->findOneById($calendarId);
         } else {
             $calendar = new Calendars();
             $calendar->setContextId($roomId);
@@ -125,18 +125,18 @@ class CalendarController extends AbstractController
             if ($editForm->getClickedButton()->getName() == 'delete') {
                 $this->calendarsService->removeCalendar($this->roomService, $calendar);
             } else {
-                $em->persist($calendar);
+                $doctrine->getManager()->persist($calendar);
             }
 
             // actually executes the queries (i.e. the INSERT query)
-            $em->flush();
+            $doctrine->getManager()->flush();
 
             return $this->redirectToRoute('app_calendar_edit', [
                 'roomId' => $roomId,
             ]);
         }
 
-        $calendars = $repository->findBy(array('context_id' => $roomId));
+        $calendars = $calendarsRepository->findBy(array('context_id' => $roomId));
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($calendar), CommsyEditEvent::EDIT );
 

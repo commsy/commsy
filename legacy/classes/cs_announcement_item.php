@@ -24,6 +24,9 @@
 
 /** upper class of the announcement item
  */
+
+use App\Entity\Announcement;
+
 include_once('classes/cs_item.php');
 
 /** class for a announcement
@@ -171,7 +174,7 @@ class cs_announcement_item extends cs_item {
        global $symfonyContainer;
        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_announcement');
        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-       $repository = $em->getRepository('App:Announcement');
+       $repository = $em->getRepository(Announcement::class);
 
        $this->replaceElasticItem($objectPersister, $repository);
    }
@@ -197,7 +200,7 @@ class cs_announcement_item extends cs_item {
 
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_announcement');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Announcement');
+        $repository = $em->getRepository(Announcement::class);
 
         $this->deleteElasticItem($objectPersister, $repository);
     }

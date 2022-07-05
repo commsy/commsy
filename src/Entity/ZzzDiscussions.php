@@ -78,6 +78,11 @@ class ZzzDiscussions
     private $title;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private string $description;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="latest_article_item_id", type="integer", nullable=true)

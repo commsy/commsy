@@ -183,14 +183,15 @@ class cs_link {
       $this->_data['context_id'] = (int)$value;
    }
 
-   /** return the context id of the link
-    * this method returns the context id of the link
-    *
-    * @return string context id of the link
-    */
-   public function getContextID () {
-      return $this->_getContextID();
-   }
+    /** return the context id of the link
+     * this method returns the context id of the link
+     *
+     * @return string context id of the link
+     */
+    public function getContextID(): int
+    {
+        return (int)$this->_getContextID();
+    }
 
    /** return the context id of the link, INTERNAL
     * this method returns the context id of the link

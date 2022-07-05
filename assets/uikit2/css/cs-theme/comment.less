@@ -36,6 +36,7 @@
 @comment-info-color-changed: yellow;
 @comment-padding: 5px;
 
+@comment-list-padding-left: 25px;
 
 .hook-comment {
     padding: @comment-padding;
@@ -95,4 +96,11 @@ article.uk-comment {
     margin: 0px 0px 0px 10px;
     height:42px;
     width:42px;
+}
+
+#article-content {
+    article.uk-comment {
+        padding: 0px;
+        border: 0px;
+    }
 }
