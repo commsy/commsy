@@ -24,6 +24,9 @@
 
 /** upper class of the project item
  */
+
+use App\Entity\Room;
+
 include_once('classes/cs_context_item.php');
 include_once('functions/text_functions.php');
 
@@ -967,7 +970,7 @@ class cs_room_item extends cs_context_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Room');
+        $repository = $em->getRepository(Room::class);
 
         $this->deleteElasticItem($objectPersister, $repository);
 
@@ -1216,7 +1219,7 @@ class cs_room_item extends cs_context_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Room');
+        $repository = $em->getRepository(Room::class);
 
         $this->replaceElasticItem($objectPersister, $repository);
     }

@@ -159,13 +159,6 @@ class GeneralSettingsType extends AbstractType
 
                 if (!empty($choices)) {
                     $form
-                        // ->add('community_rooms', 'entity', array(
-                        //     'class' => 'App:Room',
-                        //     'choices' => $this->getAssignableCommunityRoom(),
-                        //     'choice_label' => 'title',
-                        //     'multiple' => true,
-                        //     'required' => false,
-                        // ))
                         ->add('community_rooms', Select2ChoiceType::class, array(
                             'choices' => $choices,
                             'multiple' => true,
