@@ -97,6 +97,11 @@
             {{ macrosDiscussion.title(article, modifierList, userCount, readCount, readSinceModificationCount) }}
         </div>
 
+        {# description #}
+        <div id="description{{ article.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
+            {{ macrosItem.itemDescription('description', article, true, article.description) }}
+        </div>
+
         {# files #}
         {% if not article.hasOverwrittenContent -%}
             <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
