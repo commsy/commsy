@@ -205,7 +205,9 @@
             </div>
             
             <div data-uk-observe id="article-content">
-                {{ macrosDiscussion.answers(articleTree.children, discussion, roomId, modifierList, userCount, readCount, readSinceModificationCount) }}
+                {% if articleTree.children is defined %}
+                    {{ macrosDiscussion.answers(articleTree.children, discussion, roomId, modifierList, userCount, readCount, readSinceModificationCount) }}
+                {% endif %}
             </div>
         </div>
 
