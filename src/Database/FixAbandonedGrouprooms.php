@@ -38,7 +38,7 @@ class FixAbandonedGrouprooms implements DatabaseCheck
 
         $qb = $this->entityManager->createQueryBuilder()
             ->select('r')
-            ->from('App:Room', 'r')
+            ->from(Room::class, 'r')
             ->where('r.deleter IS NULL')
             ->andWhere('r.deletionDate IS NULL')
             ->andWhere('r.type = :roomType')
@@ -71,7 +71,7 @@ class FixAbandonedGrouprooms implements DatabaseCheck
                 $io->warning('"PROJECT_ROOM_ITEM_ID" not set or no related room found for grouproom with id ' . $groupRoom->getItemId());
 
                 $this->entityManager->createQueryBuilder()
-                    ->delete('App:Room', 'r')
+                    ->delete(Room::class, 'r')
                     ->where('r.itemId = :roomId')
                     ->setParameter('roomId', $groupRoom->getItemId())
                     ->getQuery()

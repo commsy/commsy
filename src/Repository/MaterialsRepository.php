@@ -17,7 +17,7 @@ class MaterialsRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('m')
             ->leftJoin(
-                'App:Materials',
+                Materials::class,
                 'b',
                 Expr\Join::WITH,
                 'm.itemId = b.itemId AND m.versionId < b.versionId')
@@ -39,7 +39,7 @@ class MaterialsRepository extends ServiceEntityRepository
         // @see: https://stackoverflow.com/a/7745635
         return $this->createQueryBuilder('m')
             ->leftJoin(
-                'App:Materials',
+                Materials::class,
                 'b',
                 Expr\Join::WITH,
                 'm.itemId = b.itemId AND m.versionId < b.versionId')
@@ -57,7 +57,7 @@ class MaterialsRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder($entityAlias)
             ->leftJoin(
-                'App:Materials',
+                Materials::class,
                 'b',
                 Expr\Join::WITH,
                 $entityAlias . '.itemId = b.itemId AND ' . $entityAlias . '.versionId < b.versionId')
