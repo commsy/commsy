@@ -4,6 +4,8 @@
 namespace App\Event;
 
 
+use cs_room_item;
+use cs_user_item;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -16,27 +18,27 @@ use Symfony\Contracts\EventDispatcher\Event;
 class UserLeftRoomEvent extends Event
 {
     /**
-     * @var \cs_user_item
+     * @var cs_user_item
      */
-    private $user;
+    private cs_user_item $user;
 
     /**
-     * @var \cs_room_item
+     * @var cs_room_item
      */
-    private $room;
+    private cs_room_item $room;
 
-    public function __construct(\cs_user_item $user, \cs_room_item $room)
+    public function __construct(cs_user_item $user, cs_room_item $room)
     {
         $this->user = $user;
         $this->room = $room;
     }
 
-    public function getUser(): \cs_user_item
+    public function getUser(): cs_user_item
     {
         return $this->user;
     }
 
-    public function getRoom(): \cs_room_item
+    public function getRoom(): cs_room_item
     {
         return $this->room;
     }
