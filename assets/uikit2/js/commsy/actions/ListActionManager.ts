@@ -1,6 +1,6 @@
 import * as $ from 'jquery';
 import * as Actions from './Actions';
-import {ActionExecuter, ActionResponse, ListActionData} from "./Actions";
+import {ActionExecuter, ActionRequest, ActionResponse, ListActionData} from "./Actions";
 import {BaseAction} from "./AbstractAction";
 
 /*
@@ -294,7 +294,15 @@ export class ListActionManager {
         }
 
         let actionExecuter: ActionExecuter = new ActionExecuter();
-        actionExecuter.invokeListAction(this.actionActor, this.currentAction, this.positiveSelection, this.negativeSelection, this.selectAll, 0)
+        let actionRequest: ActionRequest = actionExecuter.buildActionRequest(
+            this.currentAction,
+            this.positiveSelection,
+            this.negativeSelection,
+            this.selectAll,
+            0
+        );
+
+        actionExecuter.invoke(this.actionActor, this.currentAction, actionRequest)
             .then(() => {
                 $('#commsy-select-actions-select-all').removeClass('uk-active');
                 $('#commsy-select-actions-unselect').removeClass('uk-active');
