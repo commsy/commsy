@@ -24,23 +24,27 @@
 
 /** upper class of the discussion item
  */
+
+use App\Entity\Discussions;
+
 include_once('classes/cs_item.php');
 
 /** class for a discussion
  * this class implements a discussion item
  */
-class cs_discussion_item extends cs_item {
-
-  /** constructor
-   * the only available constructor, initial values for internal variables
-   *
-   * @param object  environment            environment of the commsy
-   *
-   */
-   function __construct($environment) {
-      cs_item::__construct($environment);
-      $this->_type = CS_DISCUSSION_TYPE;
-   }
+class cs_discussion_item extends cs_item
+{
+    /** constructor
+     * the only available constructor, initial values for internal variables
+     *
+     * @param object  environment            environment of the commsy
+     *
+     */
+    public function __construct($environment)
+    {
+        parent::__construct($environment);
+        $this->_type = CS_DISCUSSION_TYPE;
+    }
 
   /** get title of a discussion
    * this method returns the title of the discussion
@@ -216,18 +220,19 @@ class cs_discussion_item extends cs_item {
       return $all_articles;
    }
 
-   /** get all articles of discussion
-   * this method returns all articles of the discussion
-   *
-   * @param bool show_all If true, all articles of a closed discussion are selected. Default false.
-   *
-   * @return cs_list
-   */
+    /** get all articles of discussion
+     * this method returns all articles of the discussion
+     *
+     * @param bool show_all If true, all articles of a closed discussion are selected. Default false.
+     *
+     * @return cs_list
+     */
 
-   function getAllArticles($show_all=false) {
-      $discussionarticles_manager = $this->_environment->getDiscussionArticlesManager();
-      return $discussionarticles_manager->getAllArticlesForItem($this,$show_all=false);
-   }
+    public function getAllArticles(bool $showAll = false)
+    {
+        $discussionarticles_manager = $this->_environment->getDiscussionArticlesManager();
+        return $discussionarticles_manager->getAllArticlesForItem($this, $showAll);
+    }
 
   /** get unread articles of a discussion
    * this method returns a number of unread articles of a discussion
@@ -290,7 +295,7 @@ class cs_discussion_item extends cs_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_discussion');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Discussions');
+        $repository = $em->getRepository(Discussions::class);
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -310,7 +315,7 @@ class cs_discussion_item extends cs_item {
 
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_discussion');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Discussions');
+        $repository = $em->getRepository(Discussions::class);
 
         $this->deleteElasticItem($objectPersister, $repository);
     }

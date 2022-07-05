@@ -23,6 +23,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+use App\Entity\Room;
 use \Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /** upper class of the project item
@@ -337,7 +338,7 @@ class cs_project_item extends cs_room_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Room');
+        $repository = $em->getRepository(Room::class);
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -435,7 +436,7 @@ class cs_project_item extends cs_room_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Room');
+        $repository = $em->getRepository(Room::class);
 
 
         // use zzz repository if room is archived
@@ -1008,7 +1009,7 @@ class cs_project_item extends cs_room_item {
             $translator->setSelectedLanguage($key);
             $subject = '';
             if ($room_item->isCommunityRoom() or $room_item->isPortal()) {
-                $subject .= $room_item->getTitle() . ': ';
+                $subject .= html_entity_decode($room_item->getTitle() . ': ');
             }
             $title = html_entity_decode($this->getTitle());
             if ($room_change == 'open') {
@@ -1082,14 +1083,14 @@ class cs_project_item extends cs_room_item {
             if ($room_change != 'link') {
                 $communityList = $this->getCommunityList();
                 foreach ($communityList as $communityWorkspace) {
-                    $community_name_array[] = $communityWorkspace->getTitle();
+                    $community_name_array[] = html_entity_decode($communityWorkspace->getTitle());
                 }
             } else {
                 $room_manager = $this->_environment->getCommunityManager();
                 foreach ($this->_new_community_id_array as $room_id) {
                     $community_room_item = $room_manager->getItem($room_id);
                     if (!empty($community_room_item)) {
-                        $temp_title = $community_room_item->getTitle();
+                        $temp_title = html_entity_decode($community_room_item->getTitle());
                         if (!in_array($community_room_item->getItemID(), $this->_old_community_id_array)) {
                             $temp_title .= ' [' . $translator->getMessage('COMMON_NEW') . ']';
                         }
@@ -1109,7 +1110,7 @@ class cs_project_item extends cs_room_item {
                     if (!in_array($room_id, $this->_new_community_id_array)) {
                         $community_room_item = $room_manager->getItem($room_id);
                         if (!empty($community_room_item)) {
-                            $community_old_name_array[] = $community_room_item->getTitle();
+                            $community_old_name_array[] = html_entity_decode($community_room_item->getTitle());
                         }
                     }
                 }

@@ -24,6 +24,9 @@
 
 /** upper class of the dates item
  */
+
+use App\Entity\Dates;
+
 include_once('classes/cs_item.php');
 
 /** class for a dates
@@ -524,7 +527,7 @@ class cs_dates_item extends cs_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_date');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Dates');
+        $repository = $em->getRepository(Dates::class);
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -547,7 +550,7 @@ class cs_dates_item extends cs_item {
 
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_date');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Dates');
+        $repository = $em->getRepository(Dates::class);
 
         $this->deleteElasticItem($objectPersister, $repository);
     }
