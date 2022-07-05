@@ -405,6 +405,14 @@
                 </a>
 
             </div>
+        {% else %}
+            <div class="uk-width-9-10 uk-margin-top-remove">
+                
+                <div class="toggle-sections-{{ item.itemId }} cs-toggle-empty">
+                    <span class="uk-text-muted">{{ 'no content'|trans({}, "room") }}</span>
+                </div>
+
+            </div>
         {% endif %}
     </article>
 {% endmacro %}
