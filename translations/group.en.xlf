@@ -10,23 +10,23 @@
                 <source>grouproom access</source>
                 <target>Access is restricted to group members.</target>
             </trans-unit>
-           <trans-unit id="2">
+            <trans-unit id="2">
                 <source>grouproom</source>
                 <target>Group workspace</target>
             </trans-unit>
-           <trans-unit id="3">
+            <trans-unit id="3">
                 <source>grouproom information</source>
                 <target>Workspace information</target>
             </trans-unit>
-           <trans-unit id="4">
+            <trans-unit id="4">
                 <source>grouproom moderators</source>
                 <target>Group workspace moderators</target>
             </trans-unit>
-           <trans-unit id="5">
+            <trans-unit id="5">
                 <source>no grouproom</source>
                 <target>No group workspace</target>
             </trans-unit>
-           <trans-unit id="6">
+            <trans-unit id="6">
                 <source>no grouproom description text</source>
                 <target>There is no active workspace for this group.</target>
             </trans-unit>
@@ -74,10 +74,10 @@
                 <source>Unlock group workspace</source>
                 <target>Unlock group workspace</target>
             </trans-unit>
-             <trans-unit id="leaveGroupAndWorkspace">
+            <trans-unit id="leaveGroupAndWorkspace">
                 <source>leave group and workspace</source>
                 <target>Leave (incl. group workspace)</target>
-             </trans-unit>
+            </trans-unit>
         </body>
     </file>
 </xliff>

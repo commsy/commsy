@@ -74,10 +74,10 @@
                 <source>Unlock group workspace</source>
                 <target>Gruppenraum entsperren</target>
             </trans-unit>
-             <trans-unit id="leaveGroupAndWorkspace">
-                  <source>leave group and workspace</source>
-                  <target>Austreten (inkl. Gruppenraum)</target>
-             </trans-unit>
+            <trans-unit id="leaveGroupAndWorkspace">
+                <source>leave group and workspace</source>
+                <target>Austreten (inkl. Gruppenraum)</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
