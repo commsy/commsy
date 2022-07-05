@@ -29,15 +29,6 @@ class GroupFilterType extends AbstractType
                 'label' => 'Restrict',
                 'translation_domain' => 'form',
             ])
-            ->add('hide-deactivated-entries', Filters\ChoiceFilterType::class, [
-                'choices' => [
-                    'only activated' => 'only_activated',
-                    'only deactivated' => 'only_deactivated',
-                    'no restrictions' => 'all',
-                ],
-                'translation_domain' => 'form',
-                'placeholder' => false,
-            ])
             ->add('field0', HiddenType::class, []);
 
         if ($options['hasCategories']) {

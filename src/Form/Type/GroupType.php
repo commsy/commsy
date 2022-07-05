@@ -31,13 +31,6 @@ class GroupType extends AbstractType
                 ),
                 'translation_domain' => 'material',
             ))
-            ->add('hidden', CheckboxType::class, array(
-                'label' => 'hidden',
-                'required' => false,
-            ))
-            ->add('hiddendate', DateTimeSelectType::class, array(
-                'label' => 'hidden until',
-            ))
             ->add('permission', CheckboxType::class, array(
                 'label' => 'permission',
                 'required' => false,
