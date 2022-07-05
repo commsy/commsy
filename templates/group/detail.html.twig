@@ -136,7 +136,7 @@
                                             <li id="leave-group-link">
                                                 <a id="leave-group-link"
                                                    href="{{path('app_group_leave', {'roomId': roomId, 'itemId': group.itemId, 'leaveworkspace': 'leaveworkspace'}) }}" >
-                                                    <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave group and workspace'|trans({})|capitalize }}
+                                                    <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave group and workspace'|trans({}, 'group') }}
                                                 </a>
                                             </li>
                                         {% endif %}
