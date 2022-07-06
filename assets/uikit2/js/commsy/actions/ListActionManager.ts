@@ -1,6 +1,6 @@
 import * as $ from 'jquery';
 import * as Actions from './Actions';
-import {ActionExecuter, ListActionData} from "./Actions";
+import {ActionExecuter, ActionRequest, ActionResponse, ListActionData} from "./Actions";
 import {BaseAction} from "./AbstractAction";
 
 /*
@@ -179,44 +179,60 @@ export class ListActionManager {
         this.onStopEdit();
         this.selectMode = true;
 
-        let $feed: JQuery = $('.feed ul:first-child, .feed div.uk-grid');
-        if (!$feed.length) {
-            return;
-        }
+        // NOTE: in an arrow function (`() => {...}`), the `this` pointer will refer to the object as desired
+        const requestDone = () => {
+            let $feed: JQuery = $('.feed ul:first-child, .feed div.uk-grid');
+            if (!$feed.length) {
+                return;
+            }
 
-        this.updateSelectables();
+            this.updateSelectables();
 
-        // show the action dialog
-        let $actionDialog: JQuery = $('#commsy-select-actions');
-        $actionDialog
-            .removeClass('uk-hidden')
-            .parent('.uk-sticky-placeholder')
+            // show the action dialog
+            let $actionDialog: JQuery = $('#commsy-select-actions');
+            $actionDialog
+                .removeClass('uk-hidden')
+                .parent('.uk-sticky-placeholder')
                 .css('height', '65px');
 
-        // reset current selected count
-        this.positiveSelection = [];
-        this.negativeSelection = [];
+            // reset current selected count
+            this.positiveSelection = [];
+            this.negativeSelection = [];
 
-        this.numSelected = 0;
-        this.updateCurrentSelected();
+            this.numSelected = 0;
+            this.updateCurrentSelected();
 
-        // hide normal list count / show edit count
-        $('#commsy-list-count-display').addClass('uk-hidden');
-        $('#commsy-list-count-edit').removeClass('uk-hidden');
+            // hide normal list count / show edit count
+            $('#commsy-list-count-display').addClass('uk-hidden');
+            $('#commsy-list-count-edit').removeClass('uk-hidden');
 
-        // reset dialog state
-        $('#commsy-select-actions-select-all').removeClass('uk-active');
-        $('#commsy-select-actions-unselect').removeClass('uk-active');
-        $('#commsy-select-actions-ok').removeClass('uk-active');
-        $('#commsy-select-actions-cancel').removeClass('uk-active');
+            // TODO: initialize select2Choice form control, call BaseAction::loadActionChoices() if necessary
 
-        $(".feed .uk-grid.uk-text-truncate div").css("padding-left", "0px");
-        $(".feed .uk-grid .uk-icon-sign-in").toggleClass("uk-hidden");
+            // reset dialog state
+            $('#commsy-select-actions-select-all').removeClass('uk-active');
+            $('#commsy-select-actions-unselect').removeClass('uk-active');
+            $('#commsy-select-actions-ok').removeClass('uk-active');
+            $('#commsy-select-actions-cancel').removeClass('uk-active');
 
-        // reset select all
-        this.selectAll = false;
+            $(".feed .uk-grid.uk-text-truncate div").css("padding-left", "0px");
+            $(".feed .uk-grid .uk-icon-sign-in").toggleClass("uk-hidden");
 
-        this.registerArticleEvents();
+            // reset select all
+            this.selectAll = false;
+
+            this.registerArticleEvents();
+        }
+
+        if (this.currentAction.wantsCustomFormData) {
+            // TODO: Move initialization to constructor?
+            let actionExecuter: ActionExecuter = new ActionExecuter();
+            actionExecuter.loadCustomFormData(this.currentAction)
+                .then((response: ActionResponse) => {
+                    requestDone();
+                });
+        } else {
+            requestDone();
+        }
     }
 
     private onStopEdit() {
@@ -278,7 +294,15 @@ export class ListActionManager {
         }
 
         let actionExecuter: ActionExecuter = new ActionExecuter();
-        actionExecuter.invokeListAction(this.actionActor, this.currentAction, this.positiveSelection, this.negativeSelection, this.selectAll, 0)
+        let actionRequest: ActionRequest = actionExecuter.buildActionRequest(
+            this.currentAction,
+            this.positiveSelection,
+            this.negativeSelection,
+            this.selectAll,
+            0
+        );
+
+        actionExecuter.invoke(this.actionActor, this.currentAction, actionRequest)
             .then(() => {
                 $('#commsy-select-actions-select-all').removeClass('uk-active');
                 $('#commsy-select-actions-unselect').removeClass('uk-active');
