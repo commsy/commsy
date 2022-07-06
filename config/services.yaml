@@ -740,7 +740,7 @@ services:
     App\Action\Mark\CategorizeAction:
         autowire: true
 
-    App\Action\Mark\HashtaggingAction:
+    App\Action\Mark\HashtagAction:
         autowire: true
 
     App\Action\Download\DownloadAction:

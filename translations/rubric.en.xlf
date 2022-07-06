@@ -164,11 +164,11 @@
             </trans-unit>
             <trans-unit id="categorize">
                 <source>categorize</source>
-                <target>Assign category</target>
+                <target>Assign categories</target>
             </trans-unit>
-            <trans-unit id="hashtagging">
-                <source>hashtagging</source>
-                <target>Assign hashtag</target>
+            <trans-unit id="hashtag">
+                <source>hashtag</source>
+                <target>Assign hashtags</target>
             </trans-unit>
              <trans-unit id="38">
                 <source>cancel</source>

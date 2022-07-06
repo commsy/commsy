@@ -52,13 +52,13 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('app_marked_xhrhashtagging', {'roomId': roomId}),
-                        'action': 'hashtagging',
+                        'url': path('app_marked_xhrhashtag', {'roomId': roomId}),
+                        'action': 'hashtag',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
                         'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
                     }|json_encode|e('html_attr') }}">
-                        <i class="uk-icon-justify uk-icon-small uk-icon-hashtag uk-visible-large"></i> {{ 'hashtagging'|trans({},'rubric') }}
+                        <i class="uk-icon-justify uk-icon-small uk-icon-hashtag uk-visible-large"></i> {{ 'hashtag'|trans({},'rubric') }}
                     </a>
                 </li>
 
