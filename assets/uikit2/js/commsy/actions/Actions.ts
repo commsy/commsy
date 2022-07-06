@@ -14,7 +14,7 @@ import {UserStatusAction} from "./UserStatusAction";
 import {InsertAction} from "./InsertAction";
 import {RemoveAction} from "./RemoveAction";
 import {CategorizeAction} from "./CategorizeAction";
-import {HashtaggingAction} from "./HashtaggingAction";
+import {HashtagAction} from "./HashtagAction";
 import {InsertUserroomAction} from "./InsertUserroomAction";
 
 'use strict';
@@ -125,7 +125,7 @@ export function createAction(actionData: ActionData): BaseAction {
     switch (actionData.action) {
         case 'delete':
             return new DeleteAction(actionData);
-        case 'mark':
+        case 'mark':    // exact match, different to e.g. 'action.substr(0,4) === 'mark', i.e. 'markpending'.
             return new MarkAction(actionData);
         case 'insert':
             return new InsertAction(actionData);
@@ -135,8 +135,8 @@ export function createAction(actionData: ActionData): BaseAction {
             return new RemoveAction(actionData);
         case 'categorize':
             return new CategorizeAction(actionData);
-        case 'hashtagging':
-            return new HashtaggingAction(actionData);
+        case 'hashtag':
+            return new HashtagAction(actionData);
         case 'workflow':
             return new WorkflowAction(actionData);
         case 'join':
@@ -165,6 +165,7 @@ export function createAction(actionData: ActionData): BaseAction {
     }
 
     if (actionData.action.substr(0, 4) === 'mark') {
+        // should not be reached, as 'markpending, markprogress, markdone' have already been case-switched
         return new TodoStatusAction(actionData);
     }
 

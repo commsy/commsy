@@ -15,7 +15,7 @@ use App\Services\MarkedService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class HashtaggingAction implements ActionInterface
+class HashtagAction implements ActionInterface
 {
     /**
      * @var TranslatorInterface

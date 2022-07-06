@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Action\Mark\CategorizeAction;
-use App\Action\Mark\HashtaggingAction;
+use App\Action\Mark\HashtagAction;
 use App\Action\Mark\InsertAction;
 use App\Action\Mark\RemoveAction;
 use App\Filter\MarkedFilterType;
@@ -105,7 +105,7 @@ class MarkedController extends BaseController
             }
             $allowedActions[$item->getItemID()][] = 'remove';
             $allowedActions[$item->getItemID()][] = 'categorize';
-            $allowedActions[$item->getItemID()][] = 'hashtagging';
+            $allowedActions[$item->getItemID()][] = 'hashtag';
         }
 
         return [
@@ -209,18 +209,18 @@ class MarkedController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/mark/xhr/hashtagging", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/mark/xhr/hashtag", condition="request.isXmlHttpRequest()")
      * @param Request $request
-     * @param HashtaggingAction $action
+     * @param HashtagAction $action
      * @param ItemController $itemController
      * @param TranslatorInterface $translator
      * @param int $roomId
      * @return mixed
      * @throws Exception
      */
-    public function xhrHashtaggingAction(
+    public function xhrHashtagAction(
         Request $request,
-        HashtaggingAction $action,
+        HashtagAction $action,
         ItemController $itemController,
         TranslatorInterface $translator,
         int $roomId)
@@ -238,7 +238,7 @@ class MarkedController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // TODO: pass the hashtags chosen by the user to the HashtaggingAction
+            // TODO: pass the hashtags chosen by the user to the HashtagAction
 
             // execute action
             $room = $this->getRoom($roomId);
