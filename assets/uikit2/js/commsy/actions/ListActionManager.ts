@@ -188,12 +188,14 @@ export class ListActionManager {
 
             this.updateSelectables();
 
+            let actionDialogHeight: string = (this.currentAction.wantsCustomFormData) ? '162px': '65px';
+
             // show the action dialog
             let $actionDialog: JQuery = $('#commsy-select-actions');
             $actionDialog
                 .removeClass('uk-hidden')
                 .parent('.uk-sticky-placeholder')
-                .css('height', '65px');
+                .css('height', actionDialogHeight);
 
             // reset current selected count
             this.positiveSelection = [];
