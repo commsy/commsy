@@ -210,6 +210,7 @@ class MarkedController extends BaseController
 
     /**
      * @Route("/room/{roomId}/mark/xhr/hashtag", condition="request.isXmlHttpRequest()")
+     * @Template("marked/hashtag.html.twig")
      * @param Request $request
      * @param HashtagAction $action
      * @param ItemController $itemController
@@ -223,8 +224,8 @@ class MarkedController extends BaseController
         HashtagAction $action,
         ItemController $itemController,
         TranslatorInterface $translator,
-        int $roomId)
-    {
+        int $roomId
+    ) {
         // TODO: this doesn't work yet, ListActionManager->performClick() must first call this method to load
         //       the additional form options, then call this method again after the form has been submitted
 

@@ -74,31 +74,37 @@ export interface ActionResponse {
 }
 
 export class ActionExecuter {
-    public invokeAction($actor: JQuery, action: BaseAction, itemId: number): Promise<ActionResponse> {
-        let actionPayload: ActionRequest = {
-            positiveItemIds: [itemId],
-            negativeItemIds: [],
-            action: action.actionData.action,
-            selectAll: false,
-            selectAllStart: 0
-        };
-
-        return this.invoke($actor, action, actionPayload);
-    }
-
-    public invokeListAction($actor: JQuery, action: BaseAction, positiveItemIds: number[], negativeItemIds: number[], selectAll: boolean, selectAllStart: number): Promise<ActionResponse> {
-        let actionPayload: ActionRequest = {
+    public buildActionRequest(
+        action: BaseAction,
+        positiveItemIds: number[],
+        negativeItemIds: number[],
+        selectAll: boolean,
+        selectAllStart: number
+    ): ActionRequest {
+        return {
             positiveItemIds: positiveItemIds,
             negativeItemIds: negativeItemIds,
             action: action.actionData.action,
             selectAll: selectAll,
             selectAllStart: selectAllStart
         };
-
-        return this.invoke($actor, action, actionPayload);
     }
 
-    private invoke($actor: JQuery, action: BaseAction, actionPayload: ActionRequest): Promise<any> {
+    public loadCustomFormData(action: BaseAction): Promise<any> {
+        let requestURI = new URI(action.actionData.url);
+
+        return action.loadCustomFormData(requestURI.toString())
+            .then((backendResponse: ActionResponse) => {
+                return action.onPostLoadCustomFormData(backendResponse);
+            })
+            .catch((error: Error) => {
+                if (error) {
+                    action.onError(error);
+                }
+            });
+    }
+
+    public invoke($actor: JQuery, action: BaseAction, actionPayload: ActionRequest): Promise<any> {
         return action.preExecute($actor)
             .then(() => {
                 // set current query parameters also on the request URI

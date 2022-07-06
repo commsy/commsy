@@ -2,6 +2,7 @@
 
 import {ActionData, ActionRequest, ActionResponse} from "./Actions";
 import * as $ from "jquery";
+import htmlString = JQuery.htmlString;
 
 declare var UIkit: any;
 
@@ -24,6 +25,18 @@ export abstract class BaseAction {
 
     get wantsCustomFormData(): boolean {
         return this._wantsCustomFormData;
+    }
+
+    public loadCustomFormData(requestURI: string): Promise<ActionResponse> {
+        return new Promise<ActionResponse>((resolve) => {
+            resolve(null);
+        });
+    }
+
+    public onPostLoadCustomFormData(backendResponse: ActionResponse): Promise<ActionResponse> {
+        return new Promise<ActionResponse>((resolve) => {
+            resolve(backendResponse);
+        });
     }
 
     public preExecute(actionActor: JQuery): Promise<void> {
@@ -65,6 +78,24 @@ export abstract class XHRAction extends BaseAction {
 
     public setExtraData(key: string, value: any) {
         this.extraData[key] = value;
+    }
+
+    // TODO: do we actually need a separate loadCustomFormData() method or could execute() be (re)used instead?
+    public loadCustomFormData(requestURI: string): Promise<ActionResponse> {
+        return new Promise<ActionResponse>((resolve, reject) => {
+            $.ajax({
+                url: requestURI,
+                type: 'GET'
+            }).done((result) => {
+                let backendResponse: ActionResponse = {
+                    html: result
+                };
+
+                resolve(backendResponse);
+            }).fail((jqXHR, textStatus, errorThrown) => {
+                reject(new Error(errorThrown));
+            })
+        });
     }
 
     public execute(actionPayload: ActionRequest, requestURI: string): Promise<ActionResponse> {
