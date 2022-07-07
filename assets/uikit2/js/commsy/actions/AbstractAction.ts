@@ -51,9 +51,9 @@ export abstract class BaseAction {
         });
     }
 
-    public onSuccess(backendResponse: ActionResponse): Promise<ActionResponse> {
-        return new Promise<ActionResponse>((resolve) => {
-            resolve(backendResponse);
+    public onSuccess(backendResponse: ActionResponse): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
+            resolve(true);
         });
     }
 
@@ -87,9 +87,7 @@ export abstract class XHRAction extends BaseAction {
                 url: requestURI,
                 type: 'GET'
             }).done((result) => {
-                let backendResponse: ActionResponse = {
-                    html: result
-                };
+                let backendResponse: ActionResponse = result; // result (a JsonHTMLResponse) is also a valid ActionResponse
 
                 resolve(backendResponse);
             }).fail((jqXHR, textStatus, errorThrown) => {

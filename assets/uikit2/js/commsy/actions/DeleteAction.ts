@@ -47,8 +47,8 @@ export class DeleteAction extends XHRAction {
         });
     }
 
-    public onSuccess(backendResponse: ActionResponse): Promise<ActionResponse> {
-        return new Promise<ActionResponse>((resolve) => {
+    public onSuccess(backendResponse: ActionResponse): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
             if (backendResponse.redirect) {
                 window.location.href = backendResponse.redirect.route;
             } else {
@@ -77,7 +77,7 @@ export class DeleteAction extends XHRAction {
                 }
             }
 
-            resolve(backendResponse);
+            resolve(true);
         });
     }
 }

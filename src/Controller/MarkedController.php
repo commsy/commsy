@@ -8,6 +8,7 @@ use App\Action\Mark\InsertAction;
 use App\Action\Mark\RemoveAction;
 use App\Filter\MarkedFilterType;
 use App\Form\Type\XhrActionOptionsType;
+use App\Http\JsonHTMLResponse;
 use App\Services\MarkedService;
 use cs_item;
 use cs_room_item;
@@ -210,7 +211,6 @@ class MarkedController extends BaseController
 
     /**
      * @Route("/room/{roomId}/mark/xhr/hashtag", condition="request.isXmlHttpRequest()")
-     * @Template("marked/hashtag.html.twig")
      * @param Request $request
      * @param HashtagAction $action
      * @param ItemController $itemController
@@ -226,9 +226,6 @@ class MarkedController extends BaseController
         TranslatorInterface $translator,
         int $roomId
     ) {
-        // TODO: this doesn't work yet, ListActionManager->performClick() must first call this method to load
-        //       the additional form options, then call this method again after the form has been submitted
-
         $hashtags = $itemController->getHashtags($roomId, $this->legacyEnvironment);
 
         // provide a form with custom form options that are required for this action
@@ -239,18 +236,19 @@ class MarkedController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // TODO: pass the hashtags chosen by the user to the HashtagAction
+            $hashtagChoices = $form->get('choices')->getData();
 
             // execute action
             $room = $this->getRoom($roomId);
             $items = $this->getItemsForActionRequest($room, $request);
 
+            // TODO: pass the hashtags chosen by the user to the HashtagAction.php->execute()
             return $action->execute($room, $items);
         }
 
-        return [
+        return new JsonHTMLResponse($this->renderView('marked/hashtag.html.twig', [
             'form' => $form->createView(),
-        ];
+        ]));
     }
 
     /**

@@ -26,15 +26,15 @@ export class WorkflowAction extends XHRAction {
         });
     }
 
-    public onSuccess(backendResponse: ActionResponse): Promise<ActionResponse> {
-        return new Promise<ActionResponse>((resolve) => {
+    public onSuccess(backendResponse: ActionResponse): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
             UIkit.notify(this.successMessage, "success");
 
             $('.cs-workflow-action').toggleClass('uk-hidden');
 
             window.location.href = backendResponse.redirect.route;
 
-            resolve(backendResponse);
+            resolve(true);
         });
     }
 }
