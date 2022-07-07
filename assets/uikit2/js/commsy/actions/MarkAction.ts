@@ -12,8 +12,8 @@ export class MarkAction extends XHRAction {
         super(actionData);
     }
 
-    public onSuccess(backendResponse: ActionResponse): Promise<ActionResponse> {
-        return new Promise<ActionResponse>((resolve) => {
+    public onSuccess(backendResponse: ActionResponse): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
             let payload: any = backendResponse.payload;
 
             UIkit.notify(payload.message, 'success');
@@ -21,7 +21,7 @@ export class MarkAction extends XHRAction {
             let $indicator = $('#cs-nav-mark-indicator');
             $indicator.html(payload.count);
 
-            resolve(backendResponse);
+            resolve(true);
         });
     }
 }

@@ -104,7 +104,7 @@ export class ActionExecuter {
             });
     }
 
-    public invoke($actor: JQuery, action: BaseAction, actionPayload: ActionRequest): Promise<any> {
+    public invoke($actor: JQuery, action: BaseAction, actionPayload: ActionRequest): Promise<boolean|void> {
         return action.preExecute($actor)
             .then(() => {
                 // set current query parameters also on the request URI
@@ -131,7 +131,7 @@ export function createAction(actionData: ActionData): BaseAction {
     switch (actionData.action) {
         case 'delete':
             return new DeleteAction(actionData);
-        case 'mark':    // exact match, different to e.g. 'action.substr(0,4) === 'mark', i.e. 'markpending'.
+        case 'mark':
             return new MarkAction(actionData);
         case 'insert':
             return new InsertAction(actionData);
@@ -168,11 +168,6 @@ export function createAction(actionData: ActionData): BaseAction {
         case 'user-contact':
         case 'user-contact-remove':
             return new UserStatusAction(actionData);
-    }
-
-    if (actionData.action.substr(0, 4) === 'mark') {
-        // should not be reached, as 'markpending, markprogress, markdone' have already been case-switched
-        return new TodoStatusAction(actionData);
     }
 
     return null;

@@ -10,13 +10,13 @@ export class CategorizeAction extends XHRAction {
         super(actionData, true);
     }
 
-    public onSuccess(backendResponse: ActionResponse): Promise<ActionResponse> {
-        return new Promise<ActionResponse>((resolve) => {
+    public onSuccess(backendResponse: ActionResponse): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
             let payload: any = backendResponse.payload;
 
             UIkit.notify(payload.message, 'success');
 
-            resolve(backendResponse);
+            resolve(true);
         });
     }
 }

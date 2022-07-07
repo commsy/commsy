@@ -24,8 +24,8 @@ export class JoinAction extends XHRAction {
         });
     }
 
-    public onSuccess(backendResponse: ActionResponse): Promise<ActionResponse> {
-        return new Promise<ActionResponse>((resolve) => {
+    public onSuccess(backendResponse: ActionResponse): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
             UIkit.notify(this.successMessage, 'success');
 
             window.location.href = window.location.href;
@@ -73,7 +73,7 @@ export class JoinAction extends XHRAction {
                 });
             }
 
-            resolve(backendResponse);
+            resolve(true);
         });
     }
 }

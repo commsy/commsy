@@ -3,10 +3,11 @@ import * as Actions from './Actions';
 import {ActionExecuter, ActionRequest, ActionResponse, ListActionData} from "./Actions";
 import {BaseAction} from "./AbstractAction";
 
+// TODO: update this comment with an up-to-date example
 /*
  Action in template:
 
- <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}", "action": "user-delete"}'>
+ <a href="#" class="commsy-select-action" data-uk-button data-cs-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}", "action": "user-delete"}'>
  <i class="uk-icon-justify uk-icon-small uk-icon-remove uk-visible-large"></i> {{ 'delete'|trans({},'user')|capitalize }}
  </a>
 
@@ -57,7 +58,7 @@ export class ListActionManager {
             event.stopPropagation();
             event.preventDefault();
 
-            // store data from data-comsy-list-action
+            // store data from data-cs-action
             let currentActionData: ListActionData = $(event.currentTarget).data('cs-action');
 
             this.currentAction = Actions.createAction(currentActionData);
@@ -305,18 +306,20 @@ export class ListActionManager {
         );
 
         actionExecuter.invoke(this.actionActor, this.currentAction, actionRequest)
-            .then(() => {
-                $('#commsy-select-actions-select-all').removeClass('uk-active');
-                $('#commsy-select-actions-unselect').removeClass('uk-active');
+            .then((disableEditMode: boolean) => {
+                if (disableEditMode) {
+                    $('#commsy-select-actions-select-all').removeClass('uk-active');
+                    $('#commsy-select-actions-unselect').removeClass('uk-active');
 
-                $feed.find('input[type="checkbox"]').each(function () {
-                    $(this).prop('checked', false);
-                });
-                $feed.find('article').each(function () {
-                    $(this).removeClass('uk-comment-primary');
-                });
+                    $feed.find('input[type="checkbox"]').each(function () {
+                        $(this).prop('checked', false);
+                    });
+                    $feed.find('article').each(function () {
+                        $(this).removeClass('uk-comment-primary');
+                    });
 
-                this.onStopEdit();
+                    this.onStopEdit();
+                }
             })
             .catch( (error: Error) => {
                 // Catching here does not have to be a fatal error, e.g. rejecting a confirm dialog.
