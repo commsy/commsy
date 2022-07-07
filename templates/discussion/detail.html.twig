@@ -128,21 +128,6 @@
                                             {% endif %}
                                         </li>
 
-                                        {# separator #}
-                                        <li>&nbsp;</li>
-
-                                        {# new article #}
-                                        <li>
-                                            {% if is_granted('ITEM_EDIT', 'NEW') %}
-                                                <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId}) }}">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({}, 'discussion') }}
-                                                </a>
-                                            {% else %}
-                                                <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({}, 'discussion') }}
-                                                </span>
-                                            {% endif %}
-                                        </li>
 
                                     </ul>
                                 </div>
@@ -203,7 +188,33 @@
                     {% endif %}
                 </article>
             </div>
-            
+            <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
+                <div class="uk-grid">
+                    <div class="uk-width-3-5 uk-text-large ">
+                         {{ 'answer'|trans({})|capitalize }}
+                    </div>
+                </div>
+            </div>
+
+            <article class="uk-comment">
+                <header class="uk-comment-header uk-flex">
+                    <div class="uk-margin-right uk-flex-item-none">
+                        {% if not user.isDeleted and user.isUser %}
+                            {{ macros.userIconLink(user) }}
+                        {% else %}
+                            {{ macros.userIcon(user) }}
+                        {% endif %}
+                    </div>
+                    <div class="uk-width-8-10">
+                        {{ form_start(discussionAnswerForm, {'action': path('app_discussion_savearticle', {'roomId': app.request.attributes.get('roomId'), 'itemId': discussion.itemId, 'firstAnswer': 'firstAnswer'}), 'method': 'POST'}) }}
+                        <p>
+                            {{ form_label(discussionAnswerForm.description) }}
+                        </p>
+                        {{ form_widget(discussionAnswerForm.description) }}
+                        {{ form_end(discussionAnswerForm) }}
+                    </div>
+                </header>
+            </article>
             <div data-uk-observe id="article-content">
                 {{ macrosDiscussion.answers(articleTree.children, discussion, roomId, modifierList, userCount, readCount, readSinceModificationCount) }}
             </div>

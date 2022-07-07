@@ -26,7 +26,6 @@ class DiscussionAnswerType extends AbstractType
                     new Assert\NotBlank(),
                 ],
                 'attr' => array(
-                    'placeholder' => $options['placeholderText'],
                     'class' => 'uk-form-width-large',
                 ),
                 'label_attr' => array(
@@ -40,7 +39,7 @@ class DiscussionAnswerType extends AbstractType
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
-                'label' => 'save',
+                'label' => 'Answer',
             ))
             ->add('cancel', SubmitType::class, array(
                 'attr' => array(

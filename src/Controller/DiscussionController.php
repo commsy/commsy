@@ -325,8 +325,10 @@ class DiscussionController extends BaseController
         if ($request->query->get('path')) {
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
+       $form = $this->createForm(DiscussionAnswerType::class);
 
         return [
+            'discussionAnswerForm' => $form->createView(),
             'roomId' => $roomId,
             'discussion' => $infoArray['discussion'],
             'articleList' => $infoArray['articleList'],
@@ -1109,6 +1111,40 @@ class DiscussionController extends BaseController
         int $itemId,
         TranslatorInterface $translator
     ) {
+
+        if ($request->query->has('firstAnswer')) {
+            $discussion = $this->discussionService->getDiscussion($itemId);
+            $articleList = $discussion->getAllArticles();
+            $parentPosition = 0;
+            $numParentDots = substr_count($parentPosition, '.');
+            $article = $articleList->getFirst();
+            $newRelativeNumericPosition = 1;
+            while ($article) {
+                $position = $article->getPosition();
+                $numDots = substr_count($position, '.');
+                if ($parentPosition == 0) {
+                    if ($numDots == 0) {
+                        if (sprintf('%1$04d', $newRelativeNumericPosition) <= $position) {
+                            $newRelativeNumericPosition = $position + 1;
+                        }
+                    }
+                }
+                $article = $articleList->getNext();
+            }
+            $newPosition = '';
+            if ($parentPosition != 0) {
+                $newPosition .= $parentPosition . '.';
+            }
+            $newPosition .= sprintf('%1$04d', $newRelativeNumericPosition);
+
+            $article = $this->discussionService->getNewArticle();
+            $article->setDraftStatus(0);
+            $article->setDiscussionID($itemId);
+            $article->setPosition($newPosition);
+            $article->setPrivateEditing(false);
+            $article->save();
+            $itemId = $article->getItemID();
+        }
         $item = $this->itemService->getItem($itemId);
         $article = $this->discussionService->getArticle($itemId);
         $formData = $transformer->transform($article);
