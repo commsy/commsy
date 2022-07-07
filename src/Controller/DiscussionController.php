@@ -760,8 +760,8 @@ class DiscussionController extends BaseController
             'action' => $this->generateUrl('app_discussion_savearticle', [
                 'roomId' => $roomId,
                 'itemId' => $article->getItemID()
-            ]),
-            'placeholderText' => '[' . $this->translator->trans('annotation') . ']',
+            ])
+
         ]);
 
         return [

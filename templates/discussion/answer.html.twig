@@ -31,63 +31,6 @@
                     </div>
                 {% endif %}
             </div>
-
-            {# right actions #}
-            <div class="uk-width-3-5 uk-text-right">
-
-                {# section actions #}
-                {# NOTE: `getHasOverwrittenContent()` returns true for articles with answers which were "deleted" but should instead have their content overwritten to keep the discussion hierarchy intact. #}
-                {% if not article.hasOverwrittenContent -%}
-                    <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
-                        <button class="uk-button uk-button-mini">
-                            {{ 'selected entries'|trans({}, 'rubric') }}
-                            <i class="uk-icon-caret-down"></i>
-                        </button>
-
-                        <div class="cs-additional-actions uk-dropdown uk-padding-remove">
-                            <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
-
-                                {# answer #}
-                                <li>
-                                    {% if is_granted('ITEM_EDIT', 'NEW') %}
-                                        <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId, 'answerTo': article.itemId }) }}">
-                                            <i class="uk-icon-small uk-icon-reply uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({},'discussion') }}
-                                        </a>
-                                    {% else %}
-                                        <span class="uk-text-muted">
-                                            <i class="uk-icon-small uk-icon-reply uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({},'discussion') }}
-                                        </span>
-                                    {% endif %}
-                                </li>
-
-                                {# delete #}
-                                <li>
-                                    {% if is_granted('ITEM_EDIT', article.itemId) %}
-                                        <a  href="#" data-cs-action="{{ {
-                                            'url': path('app_discussionarticle_xhrdelete', {'roomId': roomId, 'itemId': article.itemId}),
-                                            'action': 'delete',
-                                            'itemId': article.itemId,
-                                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                            'mode': 'click',
-                                            'itemType': article.itemType,
-                                            'title': 'list choice'|trans({},'rubric')|capitalize,
-                                            'confirmQuestion': 'confirm delete'|trans({},'rubric'),
-                                            'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
-                                            'confirmOk': 'confirm delete confirm'|trans({},'rubric')
-                                        }|json_encode|e('html_attr') }}">
-                                            <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
-                                        </a>
-                                    {% else %}
-                                        <span class="uk-text-muted">
-                                            <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
-                                        </span>
-                                    {% endif %}
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
         </div>
     </div>
 
