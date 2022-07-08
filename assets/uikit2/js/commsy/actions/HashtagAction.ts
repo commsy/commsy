@@ -14,16 +14,15 @@ export class HashtagAction extends XHRAction {
         return new Promise<ActionResponse>((resolve) => {
             let responseHtml: string = backendResponse.html;
 
+            // insert form HTML with Select2Choice control containing available hashtags
             let $customChoicesPlaceholder = $('#commsy-select-actions-custom-choices');
             $customChoicesPlaceholder.html(responseHtml);
-
-            console.log($customChoicesPlaceholder);
 
             // TODO: better initialize dynamically loaded HTML components?
             const children: any = $customChoicesPlaceholder.find('.js-select2-choice');
             children.select2();
 
-            // TODO: this doesn't work yet: register event listener onchange and store all hashtags selected by the user in extraData
+            // listen to changes to the Select2Choice control and store IDs of all chosen hashtags as extra data
             let choices = [];
             let self = this;
             children.on('change.select2', function (e) {
@@ -33,7 +32,6 @@ export class HashtagAction extends XHRAction {
                     return sel.id;
                 })
 
-                console.log(choices);
                 self.setExtraData('choices', choices);
             });
 
@@ -43,6 +41,7 @@ export class HashtagAction extends XHRAction {
 
     public onSuccess(backendResponse: ActionResponse): Promise<boolean> {
         return new Promise<boolean>((resolve) => {
+            // display again any returned HTML (potentially containing form validation errors)
             if (backendResponse.html) {
                 this.onPostLoadCustomFormData(backendResponse)
                     .then(() => {
