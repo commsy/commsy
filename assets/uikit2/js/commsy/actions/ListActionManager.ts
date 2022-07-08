@@ -26,12 +26,18 @@ export class ListActionManager {
     private currentAction: BaseAction;
     private actionActor: JQuery;
 
+    private actionExecuter: ActionExecuter;
+
     private selectMode: boolean = false;
 
     private selectAll: boolean = false;
     private positiveSelection: number[];
     private negativeSelection: number[];
     private numSelected: number = 0;
+
+    constructor() {
+        this.actionExecuter = new ActionExecuter();
+    }
 
     public bootstrap() {
         this.registerClickEvents();
@@ -180,61 +186,50 @@ export class ListActionManager {
         this.onStopEdit();
         this.selectMode = true;
 
-        // NOTE: in an arrow function (`() => {...}`), the `this` pointer will refer to the object as desired
-        const requestDone = () => {
-            let $feed: JQuery = $('.feed ul:first-child, .feed div.uk-grid');
-            if (!$feed.length) {
-                return;
-            }
-
-            this.updateSelectables();
-
-            let actionDialogHeight: string = (this.currentAction.wantsCustomFormData) ? '162px': '65px';
-
-            // show the action dialog
-            let $actionDialog: JQuery = $('#commsy-select-actions');
-            $actionDialog
-                .removeClass('uk-hidden')
-                .parent('.uk-sticky-placeholder')
-                .css('height', actionDialogHeight);
-
-            // reset current selected count
-            this.positiveSelection = [];
-            this.negativeSelection = [];
-
-            this.numSelected = 0;
-            this.updateCurrentSelected();
-
-            // hide normal list count / show edit count
-            $('#commsy-list-count-display').addClass('uk-hidden');
-            $('#commsy-list-count-edit').removeClass('uk-hidden');
-
-            // TODO: initialize select2Choice form control, call BaseAction::loadActionChoices() if necessary
-
-            // reset dialog state
-            $('#commsy-select-actions-select-all').removeClass('uk-active');
-            $('#commsy-select-actions-unselect').removeClass('uk-active');
-            $('#commsy-select-actions-ok').removeClass('uk-active');
-            $('#commsy-select-actions-cancel').removeClass('uk-active');
-
-            $(".feed .uk-grid.uk-text-truncate div").css("padding-left", "0px");
-            $(".feed .uk-grid .uk-icon-sign-in").toggleClass("uk-hidden");
-
-            // reset select all
-            this.selectAll = false;
-
-            this.registerArticleEvents();
+        let $feed: JQuery = $('.feed ul:first-child, .feed div.uk-grid');
+        if (!$feed.length) {
+            return;
         }
 
+        this.updateSelectables();
+
+        let actionDialogHeight: string = (this.currentAction.wantsCustomFormData) ? '162px' : '65px';
+
+        // show the action dialog
+        let $actionDialog: JQuery = $('#commsy-select-actions');
+        $actionDialog
+            .removeClass('uk-hidden')
+            .parent('.uk-sticky-placeholder')
+            .css('height', actionDialogHeight);
+
+        // reset current selected count
+        this.positiveSelection = [];
+        this.negativeSelection = [];
+
+        this.numSelected = 0;
+        this.updateCurrentSelected();
+
+        // hide normal list count / show edit count
+        $('#commsy-list-count-display').addClass('uk-hidden');
+        $('#commsy-list-count-edit').removeClass('uk-hidden');
+
+        // reset dialog state
+        $('#commsy-select-actions-select-all').removeClass('uk-active');
+        $('#commsy-select-actions-unselect').removeClass('uk-active');
+        $('#commsy-select-actions-ok').removeClass('uk-active');
+        $('#commsy-select-actions-cancel').removeClass('uk-active');
+
+        $(".feed .uk-grid.uk-text-truncate div").css("padding-left", "0px");
+        $(".feed .uk-grid .uk-icon-sign-in").toggleClass("uk-hidden");
+
+        // reset select all
+        this.selectAll = false;
+
+        this.registerArticleEvents();
+
+        // load custom form options required by this action
         if (this.currentAction.wantsCustomFormData) {
-            // TODO: Move initialization to constructor?
-            let actionExecuter: ActionExecuter = new ActionExecuter();
-            actionExecuter.loadCustomFormData(this.currentAction)
-                .then((response: ActionResponse) => {
-                    requestDone();
-                });
-        } else {
-            requestDone();
+            this.actionExecuter.loadCustomFormData(this.currentAction);
         }
     }
 
@@ -296,8 +291,7 @@ export class ListActionManager {
             return;
         }
 
-        let actionExecuter: ActionExecuter = new ActionExecuter();
-        let actionRequest: ActionRequest = actionExecuter.buildActionRequest(
+        let actionRequest: ActionRequest = this.actionExecuter.buildActionRequest(
             this.currentAction,
             this.positiveSelection,
             this.negativeSelection,
@@ -305,7 +299,7 @@ export class ListActionManager {
             0
         );
 
-        actionExecuter.invoke(this.actionActor, this.currentAction, actionRequest)
+        this.actionExecuter.invoke(this.actionActor, this.currentAction, actionRequest)
             .then((disableEditMode: boolean) => {
                 if (disableEditMode) {
                     $('#commsy-select-actions-select-all').removeClass('uk-active');
