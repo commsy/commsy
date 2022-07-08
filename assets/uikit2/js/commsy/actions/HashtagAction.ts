@@ -17,16 +17,25 @@ export class HashtagAction extends XHRAction {
             let $customChoicesPlaceholder = $('#commsy-select-actions-custom-choices');
             $customChoicesPlaceholder.html(responseHtml);
 
+            console.log($customChoicesPlaceholder);
+
             // TODO: better initialize dynamically loaded HTML components?
-            const children: any = $customChoicesPlaceholder.children('.js-select2-choice');
-            children.eq(0).select2();
+            const children: any = $customChoicesPlaceholder.find('.js-select2-choice');
+            children.select2();
 
             // TODO: this doesn't work yet: register event listener onchange and store all hashtags selected by the user in extraData
-            children.eq(0).on('select2:select', function (e) {
-                console.log('select2-choice was changed'); // DEBUG
-            });
+            let choices = [];
+            let self = this;
+            children.on('change.select2', function (e) {
+                const data = ($(this) as any).select2('data');
 
-            this.setExtraData('choices', [0, 1, 2]); // DEBUG
+                choices = data.map(function(sel) {
+                    return sel.id;
+                })
+
+                console.log(choices);
+                self.setExtraData('choices', choices);
+            });
 
             resolve(backendResponse);
         });
@@ -34,12 +43,14 @@ export class HashtagAction extends XHRAction {
 
     public onSuccess(backendResponse: ActionResponse): Promise<boolean> {
         return new Promise<boolean>((resolve) => {
-            let payload: any = backendResponse.payload;
-
             if (backendResponse.html) {
-                resolve(false);
+                this.onPostLoadCustomFormData(backendResponse)
+                    .then(() => {
+                        resolve(false);
+                    });
             }
 
+            let payload: any = backendResponse.payload;
             UIkit.notify(payload.message, 'success');
 
             resolve(true);

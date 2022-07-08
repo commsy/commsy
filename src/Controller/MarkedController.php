@@ -228,22 +228,28 @@ class MarkedController extends BaseController
     ) {
         $hashtags = $itemController->getHashtags($roomId, $this->legacyEnvironment);
 
+        $payload = $request->request->get('payload', []);
+        $choices = $payload['choices'] ?? [];
+
         // provide a form with custom form options that are required for this action
-        $form = $this->createForm(XhrActionOptionsType::class, null, [
+        $form = $this->createForm(XhrActionOptionsType::class, $choices, [
             'label' => $translator->trans('hashtags', [], 'room'),
             'choices' => $hashtags,
         ]);
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $hashtagChoices = $form->get('choices')->getData();
+        if ($request->isMethod(Request::METHOD_POST) && $choices) {
+            $form->submit(['choices' => $choices]);
 
-            // execute action
-            $room = $this->getRoom($roomId);
-            $items = $this->getItemsForActionRequest($room, $request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $hashtagChoices = $form->get('choices')->getData();
 
-            // TODO: pass the hashtags chosen by the user to the HashtagAction.php->execute()
-            return $action->execute($room, $items);
+                // execute action
+                $room = $this->getRoom($roomId);
+                $items = $this->getItemsForActionRequest($room, $request);
+
+                // TODO: pass the hashtags chosen by the user to the HashtagAction.php->execute()
+                return $action->execute($room, $items);
+            }
         }
 
         return new JsonHTMLResponse($this->renderView('marked/hashtag.html.twig', [
