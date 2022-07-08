@@ -39,6 +39,7 @@ class XhrActionOptionsType extends AbstractType
             ->setRequired(['label', 'choices'])
             ->setDefaults([
                 'translation_domain' => 'room',
+                'csrf_protection' => false,
             ])
         ;
     }
