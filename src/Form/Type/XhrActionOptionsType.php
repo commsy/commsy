@@ -24,6 +24,9 @@ class XhrActionOptionsType extends AbstractType
                 'required' => false,
                 'choices' => $options['choices'],
                 'multiple' => true,
+                'attr' => [
+                    'class' => 'uk-width-1-1'
+                ]
             ])
         ;
     }
