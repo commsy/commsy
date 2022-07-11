@@ -1,5 +1,8 @@
 <?PHP
 
+use App\Entity\Room;
+use App\Entity\ZzzRoom;
+
 include_once('classes/cs_room_item.php');
 
 /**
@@ -25,7 +28,7 @@ class cs_userroom_item extends cs_room_item
 
    /**
     * the regular (i.e., non-moderator) user associated with this user room
-    * @var \cs_user_item
+    * @var cs_user_item
     */
    private $_userItem = NULL;
 
@@ -91,7 +94,7 @@ class cs_userroom_item extends cs_room_item
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('App:Room');
+      $repository = $em->getRepository(Room::class);
 
       $this->replaceElasticItem($objectPersister, $repository);
    }
@@ -101,11 +104,11 @@ class cs_userroom_item extends cs_room_item
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('App:Room');
+      $repository = $em->getRepository(Room::class);
 
       // use zzz repository if room is archived
       if ($this->isArchived()) {
-         $repository = $em->getRepository('App:ZzzRoom');
+         $repository = $em->getRepository(ZzzRoom::class);
       }
 
       $this->deleteElasticItem($objectPersister, $repository);
@@ -143,9 +146,9 @@ class cs_userroom_item extends cs_room_item
 
    /**
     * is the given user allowed to see this item?
-    * @param \cs_user_item $userItem
+    * @param cs_user_item $userItem
     */
-   public function maySee($userItem)
+   public function maySee(cs_user_item $userItem)
    {
       if ($userItem->isRoot() || $userItem->isModerator()) {
          return true;
@@ -218,7 +221,7 @@ class cs_userroom_item extends cs_room_item
 
    // user item
 
-   public function getLinkedUserItem(): ?\cs_user_item
+   public function getLinkedUserItem(): ?cs_user_item
    {
       if (isset($this->_userItem)) {
          return $this->_userItem;

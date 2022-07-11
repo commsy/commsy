@@ -56,10 +56,10 @@ final class Version20160718213927 extends AbstractMigration
         $files = $qb->executeQuery()->fetchAllAssociative();
 
         foreach ($files as $file) {
-            $fileContextId = $file['context_id'];
+            $fileContextId = (int) $file['context_id'];
 
             if ($fileContextId) {
-                $portalId = $file['portal_id'];
+                $portalId = (int) $file['portal_id'];
 
                 $lastSubstringBeginningWithDot = strrchr($file['filename'], '.');
                 if ($lastSubstringBeginningWithDot) {

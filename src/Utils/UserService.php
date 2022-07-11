@@ -336,6 +336,28 @@ class UserService
     }
 
     /**
+     * @param Account $account
+     * @param int $contextId
+     * @return cs_user_item|null
+     */
+    public function getUserInContext(Account $account, int $contextId): ?cs_user_item
+    {
+        $this->userManager->resetLimits();
+        $this->userManager->setContextLimit($contextId);
+        $this->userManager->setUserIDLimit($account->getUsername());
+        $this->userManager->setAuthSourceLimit($account->getAuthSource()->getId());
+        $this->userManager->select();
+
+        $userList = $this->userManager->get();
+        if ($userList && $userList->getCount() == 1) {
+            /** @noinspection PhpIncompatibleReturnTypeInspection */
+            return $userList->getFirst();
+        }
+
+        return null;
+    }
+
+    /**
      * Returns a array of archived room ids from userId
      * @param $userId
      * @return array

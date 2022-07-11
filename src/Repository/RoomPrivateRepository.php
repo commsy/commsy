@@ -4,9 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Account;
 use App\Entity\RoomPrivat;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -27,8 +27,8 @@ class RoomPrivateRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('rp')
             ->select('rp')
-            ->innerJoin('App:User', 'u', Expr\Join::WITH, 'u.contextId = rp.itemId AND u.deleterId IS NULL AND u.deletionDate IS NULL')
-            ->innerJoin('App:Account', 'a', Expr\Join::WITH, 'a.username = u.userId AND a.authSource = u.authSource')
+            ->innerJoin(User::class, 'u', Expr\Join::WITH, 'u.contextId = rp.itemId AND u.deleterId IS NULL AND u.deletionDate IS NULL')
+            ->innerJoin(Account::class, 'a', Expr\Join::WITH, 'a.username = u.userId AND a.authSource = u.authSource')
             ->where('rp.contextId = :portalId')
             ->andWhere('rp.deleterId IS NULL')
             ->andWhere('rp.deletionDate IS NULL')

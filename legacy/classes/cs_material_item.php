@@ -24,6 +24,9 @@
 
 /** upper class of the material item
  */
+
+use App\Entity\Materials;
+
 include_once('classes/cs_item.php');
 
 /** class for object lists
@@ -727,7 +730,7 @@ class cs_material_item extends cs_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_material');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Materials');
+        $repository = $em->getRepository(Materials::class);
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -919,7 +922,7 @@ class cs_material_item extends cs_item {
 
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_material');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Materials');
+        $repository = $em->getRepository(Materials::class);
 
         $this->deleteElasticItem($objectPersister, $repository);
     }

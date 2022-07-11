@@ -128,14 +128,6 @@
                     </a>
                 </div>
             </div>
-        {% else %}
-            <div class="uk-width-9-10 uk-margin-top-remove">
-                
-                <div class="toggle-files-{{ item.itemId }} cs-toggle-empty">
-                    <span class="uk-text-muted">{{ 'no content'|trans({}, "room") }}</span>
-                </div>
-
-            </div>
         {% endif %}
     </article>
 {% endmacro %}
@@ -157,7 +149,7 @@
                 {% set count = 1 %}
                 {% if (item.tagsArray|length) < 4 %}
                     {% if (item.tagsArray|length) == 0 %}
-                        {{ 'no linked items'|trans({}, "room")}}
+                       {{ 'no linked items'|trans({}, "room")}}
                     {% else %}
                         {% for tag in item.tagsArray %}
                             {{tag.title|decodeHtmlEntity}}{% if count < item.tagsArray|length %}, {% endif %}
@@ -171,12 +163,11 @@
         {% endif %}
         {% if withTags %}
             <div class="uk-width-1-3">
-                <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
                 {% set count = 1 %}
                 {% if (item.buzzwordArray|length) < 4 %}
                     {% if (item.buzzwordArray|length) == 0 %}
-                        {{ 'no linked items'|trans({}, "room")}}    
                     {%else%}
+                        <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
                         {% for tag in item.buzzwordArray %}
                             {{tag}}{% if count < item.buzzwordArray|length %}, {% endif %}
                             {% set count = count +1 %}
@@ -202,13 +193,12 @@
         {% if withCategories %}
 
             <div class="uk-width-1-3">
-            <strong>{{ 'categories'|trans({}, "room") }}:</strong>
+
             {% if (item.tagsArray|length) > 0 %}
+                <strong>{{ 'categories'|trans({}, "room") }}:</strong>
                 <div class="cs-tree-plain">
                     {{ itemMacros.nestedTagList(item.tagsArray, roomCategories, 1) }}
                 </div>
-            {% else %}
-                <br/>{{ 'no linked items'|trans({}, "room")}}
             {% endif %}
         </div>
         {% endif %}

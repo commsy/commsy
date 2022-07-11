@@ -4,6 +4,7 @@ step_decorators:
 suite_namespace: \App\Tests\Api
 modules:
     enabled:
+        - Db
         - Doctrine2:
             depends: Symfony
         - REST:
