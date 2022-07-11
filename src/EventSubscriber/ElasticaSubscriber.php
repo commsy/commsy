@@ -593,6 +593,11 @@ class ElasticaSubscriber implements EventSubscriberInterface
         'application/mspowerpoint',
         'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         'application/pdf',
+        'application/vnd.oasis.opendocument.text',
+        'application/vnd.oasis.opendocument.spreadsheet',
+        'application/vnd.oasis.opendocument.presentation',
+        'text/html',
         'text/plain',
+        'text/rtf',
     ];
 }
