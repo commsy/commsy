@@ -916,10 +916,9 @@ class GroupController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/group/{itemId}/join/{joinRoom}", defaults={"joinRoom"=false})
+     * @Route("/room/{roomId}/group/{itemId}/join")
      * @param int $roomId
      * @param int $itemId
-     * @param bool $joinRoom
      * @param MembershipManager $membershipManager
      * @return JsonDataResponse|RedirectResponse
      * @throws Exception
@@ -927,7 +926,6 @@ class GroupController extends BaseController
     public function join(
         int $roomId,
         int $itemId,
-        bool $joinRoom,
         MembershipManager $membershipManager
     ) {
         $roomManager = $this->legacyEnvironment->getRoomManager();
@@ -954,44 +952,32 @@ class GroupController extends BaseController
 
         $currentUser = $this->legacyEnvironment->getCurrentUser();
 
-        /**
-         * If the user also wants to join the group room, redirect him to the request page
-         */
-        if ($joinRoom) {
-            $groupRoom = $group->getGroupRoomItem();
-            if ($groupRoom) {
-                $memberStatus = $this->userService->getMemberStatus($groupRoom, $currentUser);
-                if ($memberStatus == 'join') {
-                    return $this->redirectToRoute('app_context_request', [
-                        'roomId' => $roomId,
-                        'itemId' => $groupRoom->getItemId(),
-                    ]);
-                } else {
-                    throw new Exception("ERROR: User '" . $currentUser->getUserID() . "' cannot join group room '" . $groupRoom->getTitle() . "' since (s)he has room member status '" . $memberStatus . "' (requires status 'join' to become a room member)!");
-                }
+        $groupRoom = $group->getGroupRoomItem();
+        if ($groupRoom) {
+            $memberStatus = $this->userService->getMemberStatus($groupRoom, $currentUser);
+            if ($memberStatus == 'join') {
+                return $this->redirectToRoute('app_context_request', [
+                    'roomId' => $roomId,
+                    'itemId' => $groupRoom->getItemId(),
+                ]);
             } else {
-                throw new Exception("ERROR: User '" . $currentUser->getUserID() . "' cannot join the group room of group '" . $group->getName() . "' since it does not exist!");
+                throw new Exception("ERROR: User '" . $currentUser->getUserID() . "' cannot join group room '" . $groupRoom->getTitle() . "' since (s)he has room member status '" . $memberStatus . "' (requires status 'join' to become a room member)!");
             }
+        } else {
+            throw new Exception("ERROR: User '" . $currentUser->getUserID() . "' cannot join the group room of group '" . $group->getName() . "' since it does not exist!");
         }
-
-        return new JsonDataResponse([
-            'title' => $group->getTitle(),
-            'groupId' => $itemId,
-        ]);
     }
 
     /**
-     * @Route("/room/{roomId}/group/{itemId}/leave/{leaveWorkspace}", defaults={"leaveWorkspace"=false})
+     * @Route("/room/{roomId}/group/{itemId}/leave")
      * @param int $roomId
      * @param int $itemId
-     * @param bool $leaveWorkspace
      * @param MembershipManager $membershipManager
      * @return JsonDataResponse|RedirectResponse
      */
     public function leave(
         int $roomId,
         int $itemId,
-        bool $leaveWorkspace,
         MembershipManager $membershipManager
     ) {
         $roomManager = $this->legacyEnvironment->getRoomManager();
@@ -1016,18 +1002,12 @@ class GroupController extends BaseController
         // leave group
         $membershipManager->leaveGroup($group, $account);
 
-        if ($leaveWorkspace) {
-            $groupRoom = $group->getGroupRoomItem();
-            $membershipManager->leaveWorkspace($groupRoom, $account);
+        $groupRoom = $group->getGroupRoomItem();
+        $membershipManager->leaveWorkspace($groupRoom, $account);
 
-            return $this->redirectToRoute('app_group_detail', [
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            ]);
-        }
-        return new JsonDataResponse([
-            'title' => $group->getTitle(),
-            'groupId' => $itemId,
+        return $this->redirectToRoute('app_group_detail', [
+            'roomId' => $roomId,
+            'itemId' => $itemId,
         ]);
     }
 
