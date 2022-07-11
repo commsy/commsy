@@ -410,7 +410,7 @@
 
 {% macro grouproom(item, roomId, userIsGroupMember, roomMemberStatus, draft, isRoot) %}
     {% import 'utils/macros.html.twig' as macros %}
-    <div id="grouproom{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path('app_group_editgrouproom', {'roomId': item.contextId, 'itemId': item.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': item.contextId, 'itemId': item.itemId}) }}'}">
+    <div id="grouproom{{ item.itemId }}" class="s-toggle">
         <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
                 <div class="uk-width-8-10 uk-margin-small-bottom" >
@@ -471,13 +471,6 @@
                             </div>
                         </div>
                     </div>
-                </div>        
-                <div class="uk-width-2-10 uk-text-right">
-                    {# edit #}
-                    {% if is_granted('ITEM_EDIT', item.itemId) %}
-                        {{ macros.actionIcons('editgrouproom', item, true, draft) }}
-                        {% include 'utils/edit_spinner.html.twig' %}
-                    {% endif %}
                 </div>
             </div>
         </div>
