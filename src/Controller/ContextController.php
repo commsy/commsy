@@ -413,6 +413,7 @@ class ContextController extends AbstractController
 
             // redirect to detail page
             if ($roomItem->isGroupRoom()) {
+
                 if ($form->get('cancel')->isClicked()) {
                     $account = $this->getUser();
                     $group = $this->groupService->getGroup($roomItem->getLinkedGroupItemID());
