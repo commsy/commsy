@@ -112,7 +112,7 @@
             </trans-unit>
             <trans-unit id="breacrumb_marked">
                 <source>marked</source>
-                <target>Marked Entries</target>
+                <target>Marked entries</target>
             </trans-unit>
             <trans-unit id="breadcrumb_portfolio">
                 <source>portfolio</source>

@@ -70,10 +70,6 @@
                 <source>send</source>
                 <target>send</target>
             </trans-unit>
-            <trans-unit id="message_marked">
-                <source>marked</source>
-                <target>marking</target>
-            </trans-unit>
             <trans-unit id="17">
                 <source>print</source>
                 <target>print</target>

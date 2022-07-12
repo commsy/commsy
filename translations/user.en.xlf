@@ -136,7 +136,7 @@
             </trans-unit>
             <trans-unit id="userPaste">
                 <source>paste</source>
-                <target>Insert my selection into personal workspaces</target>
+                <target>Insert marked entries into personal workspaces</target>
             </trans-unit>
             <trans-unit id="delete">
                 <source>delete</source>
