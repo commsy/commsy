@@ -228,6 +228,7 @@ class MarkedController extends BaseController
     ) {
         $hashtags = $itemController->getHashtags($roomId, $this->legacyEnvironment);
 
+        // NOTE: HashtagAction.ts extracts the chosen choices and XHRAction->execute() stores them as request 'payload'
         $payload = $request->request->get('payload', []);
         $choices = $payload['choices'] ?? [];
 
@@ -237,17 +238,18 @@ class MarkedController extends BaseController
             'choices' => $hashtags,
         ]);
 
-        if ($request->isMethod(Request::METHOD_POST) && $choices) {
+        // the request doesn't have the typical structure required by handleRequest() so we handle the request manually
+        if ($request->isMethod(Request::METHOD_POST) && !empty($choices)) {
             $form->submit(['choices' => $choices]);
 
             if ($form->isSubmitted() && $form->isValid()) {
                 $hashtagChoices = $form->get('choices')->getData();
+                $action->setHashtagIds($hashtagChoices);
 
                 // execute action
                 $room = $this->getRoom($roomId);
                 $items = $this->getItemsForActionRequest($room, $request);
 
-                // TODO: pass the hashtags chosen by the user to the HashtagAction.php->execute()
                 return $action->execute($room, $items);
             }
         }

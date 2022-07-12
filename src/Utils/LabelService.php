@@ -18,10 +18,14 @@ class LabelService
     /** @var cs_labels_manager $labelManager */
     private cs_labels_manager $labelManager;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
+    /** @var ItemService $itemService */
+    private ItemService $itemService;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment, ItemService $itemService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->labelManager = $this->legacyEnvironment->getLabelManager();
+        $this->itemService = $itemService;
     }
 
     public function getLabel($itemId)
@@ -49,6 +53,29 @@ class LabelService
         $hashtag->save();
 
         return $hashtag;
+    }
+
+    /**
+     * Adds the hashtags with the given IDs to the items with the given IDs.
+     *
+     * @param int[] $hashtagIds list of IDs for hashtags that shall be added to the items referenced by $itemIds
+     * @param int[] $itemIds list of IDs for items that shall be tagged with the hashtags referenced by $hashtagIds
+     * @param int $contextId the ID of the room containing the specified hashtags and items
+     */
+    public function addHashtagsById(array $hashtagIds, array $itemIds, int $contextId)
+    {
+        if (empty($hashtagIds) || empty($itemIds)) {
+            return;
+        }
+
+        foreach ($itemIds as $itemId) {
+            $itemHashtagIds = $this->getLinkedHashtagIds($itemId, $contextId);
+            $itemHashtagIds = array_unique(array_merge($itemHashtagIds, $hashtagIds));
+
+            $item = $this->itemService->getTypedItem($itemId);
+            $item->setBuzzwordListByID($itemHashtagIds);
+            $item->save();
+        }
     }
 
     /**
