@@ -102,7 +102,7 @@
                                             {# join and leave group (and group room) #}
                                             {% if item.isGroupRoomActivated %}
                                                 <li id="join-group-and-room-link" {% if userIsMember or not memberStatus == 'join' %} class="uk-hidden" {% endif %}>
-                                                    <a href="{{ path('app_group_join', {'roomId': roomId, 'itemId': group.itemId, 'joinRoom': true}) }}">
+                                                    <a href="{{ path('app_group_join', {'roomId': roomId, 'itemId': group.itemId}) }}">
                                                         <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }}
                                                     </a>
                                                 </li>
@@ -110,7 +110,7 @@
                                             {% if item.isGroupRoomActivated and memberStatus != 'join' %}
                                                 <li id="leave-group-link">
                                                     <a id="leave-group-link"
-                                                       href="{{path('app_group_leave', {'roomId': roomId, 'itemId': group.itemId, 'leaveWorkspace': true}) }}" >
+                                                       href="{{path('app_group_leave', {'roomId': roomId, 'itemId': group.itemId}) }}" >
                                                         <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
                                                     </a>
                                                 </li>
