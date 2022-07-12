@@ -70,10 +70,6 @@
                 <source>send</source>
                 <target>senden</target>
             </trans-unit>
-            <trans-unit id="message_marked">
-                <source>marked</source>
-                <target>auswählen</target>
-            </trans-unit>
             <trans-unit id="17">
                 <source>print</source>
                 <target>drucken</target>
@@ -400,11 +396,11 @@
            </trans-unit>
            <trans-unit id="entriesHashtagged">
                 <source>hashtagged %count% entries in list</source>
-                <target>{0} Keinen Eintrag mit einem Schlagwort versehen.|{1} Einen Eintrag aus der Liste mit einem Schlagwort versehen.|]1,Inf[ %count% Einträge aus der Liste mit einem Schlagwort versehen.</target>
+                <target>{0} Keinen Eintrag verschlagwortet.|{1} Einen Eintrag verschlagwortet.|]1,Inf[ %count% Einträge verschlagwortet.</target>
            </trans-unit>
            <trans-unit id="entriesCategorized">
                 <source>categorized %count% entries in list</source>
-                <target>{0} Keinen Eintrag kategorisiert.|{1} Einen Eintrag aus der Liste kategorisiert.|]1,Inf[ %count% Einträge aus der Liste kategorisiert.</target>
+                <target>{0} Keinen Eintrag kategorisiert.|{1} Einen Eintrag kategorisiert.|]1,Inf[ %count% Einträge kategorisiert.</target>
            </trans-unit>
            <trans-unit id="dashboardChanged">
                 <source>dashboard changed</source>

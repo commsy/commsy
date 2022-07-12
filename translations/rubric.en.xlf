@@ -134,9 +134,13 @@
                 <source>insert stack</source>
                 <target>Insert into "My stack"</target>
             </trans-unit>
+            <trans-unit id="action_add_to_marked">
+                <source>add to marked</source>
+                <target>Add to 'Marked entries'</target>
+            </trans-unit>
             <trans-unit id="action_remove_marked">
                 <source>remove marked</source>
-                <target>Remove from 'Marked Entries'</target>
+                <target>Remove from 'Marked entries'</target>
             </trans-unit>
             <trans-unit id="31">
                 <source>mark read</source>
@@ -256,7 +260,7 @@
             </trans-unit>
             <trans-unit id="marked_entries">
                 <source>Marked</source>
-                <target>Marked Entries</target>
+                <target>Marked entries</target>
             </trans-unit>
         </body>
     </file>
