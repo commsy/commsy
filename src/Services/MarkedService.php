@@ -131,14 +131,4 @@ class MarkedService
             $this->session->set('clipboard_ids', $currentClipboardIds);
         }
     }
-
-    public function categorizeEntries($roomId, $entries)
-    {
-        // TODO: implement
-    }
-
-    public function hashtagEntries($roomId, $entries)
-    {
-        // TODO: implement
-    }
 }
