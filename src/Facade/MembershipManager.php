@@ -75,4 +75,19 @@ class MembershipManager
         $event = new UserLeftRoomEvent($userInWorkspace, $room);
         $this->eventDispatcher->dispatch($event);
     }
+
+    /**
+     * Return Boolean if the last moderator
+     * @param cs_room_item $room
+     * @param Account $account
+     * @return bool
+     */
+    public function isLastModerator(cs_room_item $room, $currentUser): bool
+    {
+        $usersInWorkspace = $this->userService->getUserModeratorsInContext($room->getItemID());
+        if ($usersInWorkspace && ($usersInWorkspace->getCount() <= 1) && ($currentUser->getStatus() === '3' )) {
+            return true;
+        }
+        return false;
+    }
 }

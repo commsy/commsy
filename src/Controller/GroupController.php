@@ -984,6 +984,7 @@ class GroupController extends BaseController
 
         $room = $roomManager->getItem($roomId);
         $group = $this->groupService->getGroup($itemId);
+        $groupRoom = $group->getGroupRoomItem();
 
         if (!$room) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -998,12 +999,19 @@ class GroupController extends BaseController
         if (!$account) {
             throw $this->createAccessDeniedException();
         }
-
-        // leave group
-        $membershipManager->leaveGroup($group, $account);
-
-        $groupRoom = $group->getGroupRoomItem();
-        $membershipManager->leaveWorkspace($groupRoom, $account);
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        if($membershipManager->isLastModerator($groupRoom, $currentUser)){
+             //Redirect delete group
+            return $this->redirectToRoute('app_profile_deleteroomprofile', [
+                'roomId' => $groupRoom->getItemID(),
+                'itemId' => $currentUser->getItemID(),
+                'groupId' => $itemId,
+                'roomEndId' => $roomId
+            ]);
+        }
+            // leave group
+            $membershipManager->leaveGroup($group, $account);
+            $membershipManager->leaveWorkspace($groupRoom, $account);
 
         return $this->redirectToRoute('app_group_detail', [
             'roomId' => $roomId,
