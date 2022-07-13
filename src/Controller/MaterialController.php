@@ -181,7 +181,7 @@ class MaterialController extends BaseController
         foreach ($materials as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save', 'delete');
+                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'categorize', 'hashtag', 'save', 'delete');
             } else {
                 $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save');
             }
