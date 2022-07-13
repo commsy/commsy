@@ -171,9 +171,7 @@ class DiscussionService
 
             $base['item'] = $article;
         }
-        if (empty($tree)) {
-            $tree['children'] = [];
-        }
+
         return $tree;
     }
 }

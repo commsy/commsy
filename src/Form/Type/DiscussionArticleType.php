@@ -8,43 +8,41 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-
-use App\Form\Type\Custom\DateTimeSelectType;
 
 use App\Form\Type\Event\AddBibliographicFieldListener;
 
-class GrouproomType extends AbstractType
+class DiscussionArticleType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('activate', CheckboxType::class, array(
-                'label' => 'activate grouproom',
-                'required' => false,
-                'translation_domain' => 'group',
+            ->add('title', TextType::class, array(
+                'constraints' => array(
+                    new NotBlank(),
+                ),
+                'label' => 'title',
+                'attr' => array(
+                    'placeholder' => $options['placeholderText'],
+                    'class' => 'uk-form-width-medium cs-form-title',
+                ),
+                'translation_domain' => 'material',
             ))
-            ->add('master_template', ChoiceType::class, [
-                'choices' => $options['templates'],
-                'placeholder' => 'Choose a template',
+            ->add('permission', CheckboxType::class, array(
+                'label' => 'permission',
                 'required' => false,
-                'mapped' => false,
-                'label' => 'Template',
-                'translation_domain' => 'group',
-            ])
+            ))
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
                 'label' => 'save',
-                'translation_domain' => 'form',
             ))
             ->add('cancel', SubmitType::class, array(
                 'attr' => array(
                     'formnovalidate' => '',
                 ),
                 'label' => 'cancel',
-                'translation_domain' => 'form',
+                'validation_groups' => false,
             ))
         ;
         
@@ -58,9 +56,8 @@ class GrouproomType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired([
-                'templates'
-            ])
+            ->setDefined(array('placeholderText', 'categories', 'hashTagPlaceholderText', 'hashtagEditUrl', 'hashtags'))
+            ->setDefaults(array('translation_domain' => 'form'))
         ;
     }
 
@@ -73,6 +70,6 @@ class GrouproomType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'group';
+        return 'discussionarticle';
     }
 }

@@ -82,10 +82,6 @@
                 <source>Add new annotation</source>
                 <target>Add new annotation</target>
             </trans-unit>
-             <trans-unit id="addAnswer">
-                <source>Add answer</source>
-                <target>Add answer...</target>
-             </trans-unit>
             <trans-unit id="noEntrySelected">
                 <source>no entry selected</source>
                 <target>No entry selected</target>

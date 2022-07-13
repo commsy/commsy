@@ -10,7 +10,7 @@ use App\Event\CommsyEditEvent;
 use App\Filter\DiscussionFilterType;
 use App\Form\DataTransformer\DiscussionarticleTransformer;
 use App\Form\DataTransformer\DiscussionTransformer;
-use App\Form\Type\DiscussionAnswerType;
+use App\Form\Type\DiscussionArticleType;
 use App\Form\Type\DiscussionType;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -754,12 +754,12 @@ class DiscussionController extends BaseController
         $article->save();
 
         $formData = $transformer->transform($article);
-        $form = $this->createForm(DiscussionAnswerType::class, $formData, [
+        $form = $this->createForm(DiscussionArticleType::class, $formData, [
             'action' => $this->generateUrl('app_discussion_savearticle', [
                 'roomId' => $roomId,
                 'itemId' => $article->getItemID()
             ]),
-            'placeholderText' => '[' . $this->translator->trans('annotation') . ']',
+            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
         ]);
 
         return [
@@ -880,7 +880,7 @@ class DiscussionController extends BaseController
                     throw $this->createNotFoundException('No discussion article found for id ' . $itemId);
                 }
                 $formData = $transformer->transform($discussionArticleItem);
-                $form = $this->createForm(DiscussionAnswerType::class, $formData, array(
+                $form = $this->createForm(DiscussionArticleType::class, $formData, array(
                     'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
                     'categories' => $itemController->getCategories($roomId, $categoryService),
                     'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
@@ -1113,7 +1113,7 @@ class DiscussionController extends BaseController
         $article = $this->discussionService->getArticle($itemId);
         $formData = $transformer->transform($article);
 
-        $form = $this->createForm(DiscussionAnswerType::class, $formData, array(
+        $form = $this->createForm(DiscussionArticleType::class, $formData, array(
             'action' => $this->generateUrl('app_discussion_savearticle',
                 array('roomId' => $roomId, 'itemId' => $article->getItemID())),
             'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
@@ -1122,8 +1122,8 @@ class DiscussionController extends BaseController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                // update description
-                $article->setDescription($form->getData()['description']);
+                // update title
+                $article->setTitle($form->getData()['title']);
 
                 if ($form->getData()['permission']) {
                     $article->setPrivateEditing('0'); // editable only by creator

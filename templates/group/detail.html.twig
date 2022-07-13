@@ -100,43 +100,18 @@
 
                                         {% if not isArchived and not item.isSystemLabel %}
                                             {# join and leave group (and group room) #}
-                                            <li id="join-group-link" {% if userIsMember %} class="uk-hidden" {% endif %}>
-                                                <a id="join-group-link" href="#" data-cs-action="{{ {
-                                                    'url': path('app_group_join', {'roomId': roomId, 'itemId': group.itemId}),
-                                                    'action': 'join',
-                                                    'itemId': group.itemId,
-                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                    'mode': 'click',
-                                                    'successMessage': '<i class=\'uk-icon-medium uk-icon-user-plus\'></i>' ~ 'Joined group %s'|trans|format(group.title|decodeHtmlEntity)
-                                                }|json_encode|e('html_attr') }}">
-                                                    <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }}
-                                                </a>
-                                            </li>
                                             {% if item.isGroupRoomActivated %}
                                                 <li id="join-group-and-room-link" {% if userIsMember or not memberStatus == 'join' %} class="uk-hidden" {% endif %}>
-                                                    <a href="{{ path('app_group_join', {'roomId': roomId, 'itemId': group.itemId, 'joinRoom': true}) }}">
-                                                        <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }} {{ 'withGrouproom'|trans({}) }}
+                                                    <a href="{{ path('app_group_join', {'roomId': roomId, 'itemId': group.itemId}) }}">
+                                                        <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }}
                                                     </a>
                                                 </li>
                                             {% endif %}
-                                            <li id="leave-group-link" {% if not userIsMember %} class="uk-hidden" {% elseif memberStatus == 'enter' %} data-uk-tooltip title="{{ 'leave grouproom before group'|trans({},'group') }}" {% endif %}>
-                                                <a id="leave-group-link" {% if memberStatus == 'enter' %} class="uk-text-muted" style="pointer-events: none;" {% endif %}
-                                                   href="#" data-cs-action="{{ {
-                                                    'url': path('app_group_leave', {'roomId': roomId, 'itemId': group.itemId}),
-                                                    'action': 'leave',
-                                                    'itemId': group.itemId,
-                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                    'mode': 'click',
-                                                    'successMessage': '<i class=\'uk-icon-medium uk-icon-user-times\'></i>' ~ 'Left group %s'|trans|format(group.title|decodeHtmlEntity)
-                                                }|json_encode|e('html_attr') }}">
-                                                    <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
-                                                </a>
-                                            </li>
                                             {% if item.isGroupRoomActivated and memberStatus != 'join' %}
                                                 <li id="leave-group-link">
                                                     <a id="leave-group-link"
-                                                       href="{{path('app_group_leave', {'roomId': roomId, 'itemId': group.itemId, 'leaveWorkspace': true}) }}" >
-                                                        <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave group and workspace'|trans({}, 'group') }}
+                                                       href="{{path('app_group_leave', {'roomId': roomId, 'itemId': group.itemId}) }}" >
+                                                        <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
                                                     </a>
                                                 </li>
                                             {% endif %}
