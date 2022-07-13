@@ -105,8 +105,13 @@ class MarkedController extends BaseController
                 $allowedActions[$item->getItemID()][] = 'insertStack';
             }
             $allowedActions[$item->getItemID()][] = 'remove';
-            $allowedActions[$item->getItemID()][] = 'categorize';
-            $allowedActions[$item->getItemID()][] = 'hashtag';
+
+            // NOTE: assigning categories (aka tags) and hashtags (aka buzzwords) is room-specific
+            //       and can only handle items belonging to the same context
+            if ($item->getContextID() === $roomId) {
+                $allowedActions[$item->getItemID()][] = 'categorize';
+                $allowedActions[$item->getItemID()][] = 'hashtag';
+            }
         }
 
         return [
