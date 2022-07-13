@@ -147,6 +147,8 @@ class MarkedController extends BaseController
             'itemsCountArray' => $itemsCountArray,
             'usageInfo' => null,
             'roomname' => $roomItem->getTitle(),
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showCategories' => $roomItem->withTags(),
         ];
     }
 
