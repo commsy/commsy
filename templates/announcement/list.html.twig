@@ -101,6 +101,42 @@
                 </li>
 
                 <li>
+                    {% if showCategories and is_granted('CATEGORY_EDIT') %}
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('app_marked_xhrcategorize', {'roomId': roomId}),
+                            'action': 'categorize',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                        }|json_encode|e('html_attr') }}">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-sitemap uk-visible-large"></i> {{ 'categorize'|trans({},'rubric') }}
+                        </a>
+                    {% else %}
+                        <span class="uk-text-muted">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-sitemap uk-visible-large"></i> {{ 'categorize'|trans({},'rubric') }}
+                        </span>
+                    {% endif %}
+                </li>
+
+                <li>
+                    {% if showHashTags and is_granted('HASHTAG_EDIT') %}
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('app_announcement_xhrhashtag', {'roomId': roomId}),
+                            'action': 'hashtag',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                        }|json_encode|e('html_attr') }}">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-hashtag uk-visible-large"></i> {{ 'hashtag'|trans({},'rubric') }}
+                        </a>
+                    {% else %}
+                        <span class="uk-text-muted">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-hashtag uk-visible-large"></i> {{ 'hashtag'|trans({},'rubric') }}
+                        </span>
+                    {% endif %}
+                </li>
+
+                <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
                         'url': path('app_announcement_download', {'roomId': roomId}),
                         'action': 'save',

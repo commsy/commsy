@@ -124,7 +124,7 @@
                 <li>
                     {% if showHashTags and is_granted('HASHTAG_EDIT') %}
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('app_marked_xhrhashtag', {'roomId': roomId}),
+                            'url': path('app_material_xhrhashtag', {'roomId': roomId}),
                             'action': 'hashtag',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
+use App\Action\Mark\HashtagAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\TopicFilterType;
@@ -107,9 +108,9 @@ class TopicController extends BaseController
             'module' => 'topic',
             'itemsCountArray' => $itemsCountArray,
             'showRating' => false,
-            'showHashTags' => false,
+            'showHashTags' => $roomItem->withBuzzwords(),
             'showAssociations' => false,
-            'showCategories' => false,
+            'showCategories' => $roomItem->withTags(),
             'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
             'catzExpanded' => $roomItem->isTagsShowExpanded(),
             'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
@@ -166,9 +167,9 @@ class TopicController extends BaseController
         foreach ($topics as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
+                $allowedActions[$item->getItemID()] = array('markread', 'categorize', 'hashtag', 'save', 'delete');
             } else {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+                $allowedActions[$item->getItemID()] = array('markread', 'save');
             }
         }
 
@@ -926,6 +927,24 @@ class TopicController extends BaseController
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $markReadAction->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/topic/xhr/hashtag", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param HashtagAction $action
+     * @param ItemController $itemController
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrHashtagAction(
+        Request $request,
+        HashtagAction $action,
+        ItemController $itemController,
+        int $roomId
+    ) {
+        return parent::handleHashtagActionOptions($request, $action, $itemController, $roomId);
     }
 
     /**

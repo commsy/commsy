@@ -10,6 +10,9 @@ namespace App\Controller;
 
 
 use App\Action\ActionFactory;
+use App\Action\Mark\HashtagAction;
+use App\Form\Type\XhrActionOptionsType;
+use App\Http\JsonHTMLResponse;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
@@ -109,6 +112,53 @@ abstract class BaseController extends AbstractController
         RoomService $service
     ) {
         $this->roomService = $service;
+    }
+
+    /**
+     * @param Request $request
+     * @param HashtagAction $action
+     * @param ItemController $itemController
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function handleHashtagActionOptions(
+        Request $request,
+        HashtagAction $action,
+        ItemController $itemController,
+        int $roomId
+    ) {
+        $hashtags = $itemController->getHashtags($roomId, $this->legacyEnvironment);
+
+        // NOTE: HashtagAction.ts extracts the chosen choices and XHRAction->execute() stores them as request 'payload'
+        $payload = $request->request->get('payload', []);
+        $choices = $payload['choices'] ?? [];
+
+        // provide a form with custom form options that are required for this action
+        $form = $this->createForm(XhrActionOptionsType::class, $choices, [
+            'label' => $this->translator->trans('hashtags', [], 'room'),
+            'choices' => $hashtags,
+        ]);
+
+        // the request doesn't have the typical structure required by handleRequest() so we handle the request manually
+        if ($request->isMethod(Request::METHOD_POST) && !empty($choices)) {
+            $form->submit(['choices' => $choices]);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $hashtagChoices = $form->get('choices')->getData();
+                $action->setHashtagIds($hashtagChoices);
+
+                // execute action
+                $room = $this->getRoom($roomId);
+                $items = $this->getItemsForActionRequest($room, $request);
+
+                return $action->execute($room, $items);
+            }
+        }
+
+        return new JsonHTMLResponse($this->renderView('marked/hashtag.html.twig', [
+            'form' => $form->createView(),
+        ]));
     }
 
     /**
