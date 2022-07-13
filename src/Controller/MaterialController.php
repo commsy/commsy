@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Action\Delete\DeleteAction;
 use App\Action\Delete\DeleteMaterial;
 use App\Action\Download\DownloadAction;
+use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Action\MarkRead\MarkReadMaterial;
@@ -1624,6 +1625,24 @@ class MaterialController extends BaseController
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/material/xhr/hashtag", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param HashtagAction $action
+     * @param ItemController $itemController
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrHashtagAction(
+        Request $request,
+        HashtagAction $action,
+        ItemController $itemController,
+        int $roomId
+    ) {
+        return parent::handleHashtagActionOptions($request, $action, $itemController, $roomId);
     }
 
     /**

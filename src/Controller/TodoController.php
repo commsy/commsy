@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
@@ -210,6 +211,8 @@ class TodoController extends BaseController
                 $allowedActions[$item->getItemID()] = array(
                     'markread',
                     'mark',
+                    'categorize',
+                    'hashtag',
                     'save',
                     'delete',
                     'markpending',
@@ -1024,6 +1027,24 @@ class TodoController extends BaseController
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/todo/xhr/hashtag", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param HashtagAction $action
+     * @param ItemController $itemController
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrHashtagAction(
+        Request $request,
+        HashtagAction $action,
+        ItemController $itemController,
+        int $roomId
+    ) {
+        return parent::handleHashtagActionOptions($request, $action, $itemController, $roomId);
     }
 
     /**

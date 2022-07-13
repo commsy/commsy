@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Delete\DeleteDate;
@@ -130,7 +131,7 @@ class DateController extends BaseController
         foreach ($dates as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save', 'delete');
+                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'categorize', 'hashtag', 'save', 'delete');
             } else {
                 $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save');
             }
@@ -229,6 +230,8 @@ class DateController extends BaseController
             'calendars' => $calendars,
             'isArchived' => $roomItem->isArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showCategories' => $roomItem->withTags(),
         ];
     }
 
@@ -1985,6 +1988,24 @@ class DateController extends BaseController
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/date/xhr/hashtag", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param HashtagAction $action
+     * @param ItemController $itemController
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrHashtagAction(
+        Request $request,
+        HashtagAction $action,
+        ItemController $itemController,
+        int $roomId
+    ) {
+        return parent::handleHashtagActionOptions($request, $action, $itemController, $roomId);
     }
 
     /**

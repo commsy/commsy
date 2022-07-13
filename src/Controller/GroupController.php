@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
+use App\Action\Mark\HashtagAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\GroupFilterType;
@@ -152,8 +153,8 @@ class GroupController extends BaseController
             'module' => 'group',
             'itemsCountArray' => $itemsCountArray,
             'showRating' => false,
-            'showHashTags' => false,
-            'showCategories' => false,
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showCategories' => $roomItem->withTags(),
             'showAssociations' => false,
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
@@ -282,7 +283,7 @@ class GroupController extends BaseController
         foreach ($groups as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'sendmail', 'delete');
+                $allowedActions[$item->getItemID()] = array('markread', 'categorize', 'hashtag', 'sendmail', 'delete');
             } else {
                 $allowedActions[$item->getItemID()] = array('markread', 'sendmail');
             }
@@ -1537,6 +1538,24 @@ class GroupController extends BaseController
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
         return $markReadAction->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/group/xhr/hashtag", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param HashtagAction $action
+     * @param ItemController $itemController
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrHashtagAction(
+        Request $request,
+        HashtagAction $action,
+        ItemController $itemController,
+        int $roomId
+    ) {
+        return parent::handleHashtagActionOptions($request, $action, $itemController, $roomId);
     }
 
     /**
