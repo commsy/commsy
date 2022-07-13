@@ -875,4 +875,20 @@ class UserService
             }
         }
     }
+
+    /**
+     * @param Account $account
+     * @param int $contextId
+     * @return cs_user_item|null
+     */
+    public function getUserModeratorsInContext(int $contextId): ?\cs_list
+    {
+        $this->userManager->resetLimits();
+        $this->userManager->setContextLimit($contextId);
+        $this->userManager->setStatusLimit(3);
+        $this->userManager->select();
+
+        $userList = $this->userManager->get();
+        return $userList;
+    }
 }
