@@ -7,6 +7,5 @@
         {{ type|capitalize|trans({'%count%':1},"rubric") }} ({{ rubric|length }}){% if count < linkedItemsByRubric|length %}, {% endif %}
         {% set count = count +1 %}
     {% endfor %}
-{% else %}
-    {{ 'no linked items'|trans({}, "room")}}    
+
 {% endif %}

@@ -13,7 +13,9 @@ use App\Form\Type\ModerationSupportType;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
+use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
+use App\Repository\ZzzRoomRepository;
 use App\Room\Copy\LegacyCopy;
 use App\RoomFeed\RoomFeedGenerator;
 use App\Services\CalendarsService;
@@ -503,6 +505,8 @@ class RoomController extends AbstractController
      * @param LegacyEnvironment $environment
      * @param UserRepository $userRepository
      * @param PortalRepository $portalRepository
+     * @param RoomRepository $roomRepository
+     * @param ZzzRoomRepository $zzzRoomRepository
      * @param int $roomId
      * @param string $sort
      * @param int $max
@@ -516,8 +520,10 @@ class RoomController extends AbstractController
         LegacyEnvironment $environment,
         UserRepository $userRepository,
         PortalRepository $portalRepository,
+        RoomRepository $roomRepository,
+        ZzzRoomRepository $zzzRoomRepository,
         int $roomId,
-        string $sort='',
+        string $sort = '',
         int $max = 10,
         int $start = 0
     ) {
@@ -550,11 +556,9 @@ class RoomController extends AbstractController
         }
 
         // ***** Active rooms *****
-        $repository = $this->getDoctrine()->getRepository('App:Room');
-        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portal->getId(), $roomTypes, $sort);
+        $activeRoomQueryBuilder = $roomRepository->getMainRoomQueryBuilder($portal->getId(), $roomTypes, $sort);
         $activeRoomQueryBuilder->setMaxResults($max);
         $activeRoomQueryBuilder->setFirstResult($start);
-
 
 
         if ($roomFilter) {
@@ -573,10 +577,10 @@ class RoomController extends AbstractController
         $rooms = $activeRoomQueryBuilder->getQuery()->getResult();
 
         // ***** Archived rooms *****
-        if(!$roomFilter || !isset($roomFilter['archived']) || $roomFilter['archived'] != "1") {
+        if (!$roomFilter || !isset($roomFilter['archived']) || $roomFilter['archived'] != "1") {
             $legacyEnvironment->activateArchiveMode();
-            $repository = $this->getDoctrine()->getRepository('App:ZzzRoom');
-            $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portal->getId(), $roomTypes, $sort);
+            $archivedRoomQueryBuilder = $zzzRoomRepository->getMainRoomQueryBuilder($portal->getId(), $roomTypes,
+                $sort);
             $archivedRoomQueryBuilder->setMaxResults($max);
             $archivedRoomQueryBuilder->setFirstResult($start);
 
@@ -592,8 +596,6 @@ class RoomController extends AbstractController
             $rooms = array_merge($rooms, $archivedRoomQueryBuilder->getQuery()->getResult());
         }
 
-
-
         if ($legacyEnvironment->isArchiveMode()) {
             $legacyEnvironment->deactivateArchiveMode();
         }
@@ -601,19 +603,20 @@ class RoomController extends AbstractController
         $projectsMemberStatus = array();
         foreach ($rooms as $room) {
 
-            try{
-                $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room, $legacyEnvironment, $roomService);
+            try {
+                $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room, $legacyEnvironment,
+                    $roomService);
                 $contactUsers = $userRepository->getContactsByRoomId($room->getItemId());
                 $moderators = $userRepository->getModeratorsByRoomId($room->getItemId());
 
-                if(empty($contactUsers)){
+                if (empty($contactUsers)) {
                     $contactUsers = array_unique(array_merge($contactUsers, $moderators), SORT_REGULAR);
                 }
 
                 $contactsString = "";
                 $iDsString = "";
 
-                foreach($contactUsers as $contactUser){
+                foreach ($contactUsers as $contactUser) {
                     $contactsString .= $contactUser->getFullName();
                     $iDsString .= $contactUser->getItemID();
                     $contactsString .= ", ";
@@ -622,10 +625,10 @@ class RoomController extends AbstractController
 
                 $contactsString = rtrim($contactsString, ", ");
                 $iDsString = rtrim($iDsString, ", ");
-                if(strlen($iDsString) > 1 and strlen($contactsString) > 1){
+                if (strlen($iDsString) > 1 and strlen($contactsString) > 1) {
                     $room->setContactPersons($contactsString . ";" . $iDsString);
                 }
-            }catch (Exception $e){
+            } catch (Exception $e) {
                 // do nothing
             }
         }
@@ -972,29 +975,8 @@ class RoomController extends AbstractController
         $times = $roomService->getTimePulses(true);
 
         $current_user = $legacyEnvironment->getCurrentUserItem();
-        $communityManager = $legacyEnvironment->getCommunityManager();
-        $communityManager->setContextLimit($currentPortalItem->getItemID());
-        $communityManager->select();
-        $community_list = $communityManager->get();
-        $community_room_array = array();
-        unset($temp_array);
-        if ($community_list->isNotEmpty()) {
-            $community_item = $community_list->getFirst();
-            while ($community_item) {
-                if ($community_item->isAssignmentOnlyOpenForRoomMembers() ){
-                    if ( $community_item->isUser($current_user)) {
-                        $community_room_array[$community_item->getTitle()] = $community_item->getItemID();
-                    }
-                }else{
-                    $community_room_array[$community_item->getTitle()] = $community_item->getItemID();
-                }
-                $community_item = $community_list->getNext();
-            }
-        }
-
-        $types = [];
         $portalUser = $current_user->getRelatedPortalUserItem();
-
+        $types = [];
         if ($portalUser->isModerator()) {
             $types = ['project' => 'project', 'community' => 'community'];
         } else {
@@ -1057,7 +1039,6 @@ class RoomController extends AbstractController
             'preferredChoices' => $defaultTemplateIDs,
             'timesDisplay' => $timesDisplay,
             'times' => $times,
-            'communities' => $community_room_array,
             'linkCommunitiesMandantory' => $linkCommunitiesMandantory,
             'roomCategories' => $roomCategories,
             'linkRoomCategoriesMandatory' => $linkRoomCategoriesMandatory,

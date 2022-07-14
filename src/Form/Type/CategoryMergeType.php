@@ -1,12 +1,13 @@
 <?php
 namespace App\Form\Type;
 
+use App\Entity\Tag;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type as Types;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Doctrine\ORM\EntityRepository;
 
 class CategoryMergeType extends AbstractType
 {
@@ -22,7 +23,7 @@ class CategoryMergeType extends AbstractType
     {
         $builder
             ->add('first', EntityType::class, [
-                'class' => 'App:Tag',
+                'class' => Tag::class,
                 'query_builder' => function (EntityRepository $er) use ($options) {
                     return $er->createQueryBuilder('l')
                             ->andWhere('l.contextId = :roomId')
@@ -37,7 +38,7 @@ class CategoryMergeType extends AbstractType
 
             ])
             ->add('second', EntityType::class, [
-                'class' => 'App:Tag',
+                'class' => Tag::class,
                 'query_builder' => function (EntityRepository $er) use ($options) {
                     return $er->createQueryBuilder('l')
                             ->andWhere('l.contextId = :roomId')
