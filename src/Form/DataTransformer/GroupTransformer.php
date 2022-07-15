@@ -20,7 +20,7 @@ class GroupTransformer extends AbstractTransformer
         if ($groupItem) {
             $groupData['title'] = html_entity_decode($groupItem->getTitle());
             $groupData['description'] = $groupItem->getDescription();
-            $groupData['activate'] = true;
+            $groupData['activate'] = $groupItem->isGroupRoomActivated();
             
             if ($groupItem->isNotActivated()) {
                 $groupData['hidden'] = true;
