@@ -265,6 +265,7 @@ class LinkController extends AbstractController
             if ($tempLabel->getLabelType() == 'group') {
                 $group = $groupService->getGroup($tempLabel->getItemID());
                 $membersList = $group->getMemberItemList();
+                $linkedItems = $membersList->to_array();
             }
         }
         $ids = $item->getAllLinkeditemIDArray();
@@ -336,6 +337,7 @@ class LinkController extends AbstractController
             if ($tempLabel->getLabelType() == 'group') {
                 $group = $groupService->getGroup($tempLabel->getItemID());
                 $membersList = $group->getMemberItemList();
+                $linkedItems = $membersList->to_array();
             }
         }
         $ids = $item->getAllLinkedItemIDArray();
