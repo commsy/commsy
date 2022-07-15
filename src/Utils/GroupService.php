@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_group_item;
 use cs_group_manager;
 use Symfony\Component\Form\Form;
 
@@ -33,8 +34,9 @@ class GroupService
     }
 
 
-    public function getGroup($itemId)
+    public function getGroup($itemId): ?cs_group_item
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->groupManager->getItem($itemId);
     }
 
@@ -43,7 +45,7 @@ class GroupService
      * @param integer $max
      * @param integer $start
      * @param string $sort
-     * @return \cs_group_item[]
+     * @return cs_group_item[]
      */
     public function getListGroups($roomId, $max = NULL, $start = NULL, $sort = NULL)
     {
@@ -65,7 +67,7 @@ class GroupService
     /**
      * @param integer $roomId
      * @param integer[] $ids
-     * @return \cs_group_item[]
+     * @return cs_group_item[]
      */
     public function getGroupsById($roomId, $ids) {
         $this->groupManager->setContextLimit($roomId);

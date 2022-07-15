@@ -71,140 +71,131 @@ class cs_assessments_item extends cs_item {
    function getType () {
       return $this->_type;
    }
-   
+
    /**
     * sets item id of item
-    * 
+    *
     * @param integer item_it
     */
    function setItemID($value) {
    	 $this->_data['item_id'] = (int) $value;
    }
-   
+
    /**
     * sets context id of item
-    * 
+    *
     * @param integer context_id
     */
    function setContextID($value) {
    	 $this->_data['context_id'] = (int) $value;
    }
-   
-   /**
-    * returns context id of item
-    * 
-    * @return integer context_id
-    */
-   function getContextID() {
-   	 return $this->_getValue('context_id');
-   }
-   
+
    /**
     * sets creator id of item
-    * 
+    *
     * @param integer creator_id
     */
    function setCreatorID($value) {
    	 $this->_data['creator_id'] = (int) $value;
    }
-   
+
    /**
     * returns creator id of item
-    * 
+    *
     * @return integer creator_id
     */
    function getCreatorID() {
    	 return $this->_getValue('creator_id');
    }
-   
+
    /**
     * sets deleter id of item
-    * 
+    *
     * @param integer deleter_id
     */
    function setDeleterID($value) {
    	 $this->_data['deleter_id'] = (int) $value;
    }
-   
+
    /**
     * returns deleter id of item
-    * 
+    *
     * @return integer deleter_id
     */
    function getDeleterID() {
    	 return $this->_getValue('deleter_id');
    }
-   
+
    /**
     * sets creation date of item
-    * 
+    *
     * @param date creation_date
     */
    function setCreationDate($value) {
      $this->_data['creation_date'] = $value;
    }
-   
+
    /**
     * returns creation date of item
-    * 
+    *
     * @return date creation_date
     */
    function getCreationDate() {
    	 return $this->_getValue('creation_date');
    }
-   
+
    /**
     * sets deletion date of item
-    * 
+    *
     * @param date deletion_date
     */
    function setDeletionDate($value) {
    	 $this->_data['deletion_date'] = $value;
    }
-   
+
    /**
     * returns deletion date of item
-    * 
+    *
     * @return date deletion_date
     */
    function getDeletionDate() {
    	 return $this->_getValue('deletion_date');
    }
-   
+
    /**
     * sets id of the linked item
-    * 
+    *
     * @param integer item_link_id
     */
    function setItemLinkID($value) {
    	 $this->_data['item_link_id'] = (int) $value;
    }
-   
+
    /**
     * returns id of the linked item
-    * 
+    *
     * @return integer item_link_id
     */
    function getItemLinkID() {
    	 return $this->_getValue('item_link_id');
    }
-   
+
    /**
     * sets assessment of item
-    * 
+    *
     * @param integer assessment
     */
    function setAssessment($value) {
    	 $this->_data['assessment'] = (int)	$value;
    }
-   
+
    /**
     * returns assessment of item
     */
    function getAssessment() {
    	 return $this->_getValue('assessment');
    }
-   
+
    /** return a value of the link, INTERNAL
     * this method returns a value of the link
     *
