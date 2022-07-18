@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Action\Delete\DeleteAction;
 use App\Action\Delete\DeleteMaterial;
 use App\Action\Download\DownloadAction;
+use App\Action\Mark\CategorizeAction;
 use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
 use App\Action\MarkRead\MarkReadAction;
@@ -1012,15 +1013,14 @@ class MaterialController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
      * @param Request $request
-     * @param ItemController $itemController
      * @param CategoryService $categoryService
+     * @param LabelService $labelService
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
      */
     public function editAction(
         Request $request,
-        ItemController $itemController,
         CategoryService $categoryService,
         LabelService $labelService,
         int $roomId,
@@ -1055,9 +1055,8 @@ class MaterialController extends BaseController
             }
 
             $formData = $this->materialTransformer->transform($materialItem);
-            $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
-                $this->legacyEnvironment);
+            $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
+            $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
 
             $licensesRepository = $this->getDoctrine()->getRepository(License::class);
             $availableLicenses = $licensesRepository->findByContextOrderByPosition($this->legacyEnvironment->getCurrentPortalId());
@@ -1073,12 +1072,12 @@ class MaterialController extends BaseController
                 )),
                 'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
                 'categoryMappingOptions' => [
-                    'categories' => $itemController->getCategories($roomId, $categoryService),
+                    'categories' => $labelService->getCategories($roomId),
                     'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
                     'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
                 ],
                 'hashtagMappingOptions' => [
-                    'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
+                    'hashtags' => $labelService->getHashtags($roomId),
                     'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                     'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
                 ],
@@ -1628,10 +1627,25 @@ class MaterialController extends BaseController
     }
 
     /**
+     * @Route("/room/{roomId}/material/xhr/categorize", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param CategorizeAction $action
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrCategorizeAction(
+        Request $request,
+        CategorizeAction $action,
+        int $roomId
+    ) {
+        return parent::handleCategoryActionOptions($request, $action, $roomId);
+    }
+
+    /**
      * @Route("/room/{roomId}/material/xhr/hashtag", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param HashtagAction $action
-     * @param ItemController $itemController
      * @param int $roomId
      * @return mixed
      * @throws Exception
@@ -1639,10 +1653,9 @@ class MaterialController extends BaseController
     public function xhrHashtagAction(
         Request $request,
         HashtagAction $action,
-        ItemController $itemController,
         int $roomId
     ) {
-        return parent::handleHashtagActionOptions($request, $action, $itemController, $roomId);
+        return parent::handleHashtagActionOptions($request, $action, $roomId);
     }
 
     /**

@@ -103,7 +103,7 @@
                 <li>
                     {% if showCategories and is_granted('CATEGORY_EDIT') %}
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('app_marked_xhrcategorize', {'roomId': roomId}),
+                            'url': path('app_announcement_xhrcategorize', {'roomId': roomId}),
                             'action': 'categorize',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
