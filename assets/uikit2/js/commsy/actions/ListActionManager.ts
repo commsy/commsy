@@ -241,6 +241,10 @@ export class ListActionManager {
             return;
         }
 
+        // clear any custom form HTML inserted by a previous action
+        let $customChoicesPlaceholder = $('#commsy-select-actions-custom-choices');
+        $customChoicesPlaceholder.html('');
+
         // hide the action dialog
         let $actionDialog: JQuery = $('#commsy-select-actions');
         $actionDialog
