@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Action\Mark\CategorizeAction;
 use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
 use App\Action\Delete\DeleteAction;
@@ -564,8 +565,8 @@ class TodoController extends BaseController
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      * @param Request $request
      * @param CategoryService $categoryService
+     * @param LabelService $labelService
      * @param TodoTransformer $transformer
-     * @param ItemController $itemController
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -575,7 +576,6 @@ class TodoController extends BaseController
         CategoryService $categoryService,
         LabelService $labelService,
         TodoTransformer $transformer,
-        ItemController $itemController,
         int $roomId,
         int $itemId
     ) {
@@ -607,12 +607,12 @@ class TodoController extends BaseController
             'statusChoices' => $statusChoices,
             'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
             'categoryMappingOptions' => [
-                'categories' => $itemController->getCategories($roomId, $categoryService),
+                'categories' => $labelService->getCategories($roomId),
                 'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
                 'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
             ],
             'hashtagMappingOptions' => [
-                'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
+                'hashtags' => $labelService->getHashtags($roomId),
                 'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
@@ -626,9 +626,8 @@ class TodoController extends BaseController
 
 
         $formData = $transformer->transform($todoItem);
-        $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
-            $this->legacyEnvironment);
+        $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
+        $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
         $formData['draft'] = $isDraft;
 
         $form = $this->createForm(TodoType::class, $formData, $formOptions);
@@ -1030,10 +1029,25 @@ class TodoController extends BaseController
     }
 
     /**
+     * @Route("/room/{roomId}/todo/xhr/categorize", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param CategorizeAction $action
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrCategorizeAction(
+        Request $request,
+        CategorizeAction $action,
+        int $roomId
+    ) {
+        return parent::handleCategoryActionOptions($request, $action, $roomId);
+    }
+
+    /**
      * @Route("/room/{roomId}/todo/xhr/hashtag", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param HashtagAction $action
-     * @param ItemController $itemController
      * @param int $roomId
      * @return mixed
      * @throws Exception
@@ -1041,10 +1055,9 @@ class TodoController extends BaseController
     public function xhrHashtagAction(
         Request $request,
         HashtagAction $action,
-        ItemController $itemController,
         int $roomId
     ) {
-        return parent::handleHashtagActionOptions($request, $action, $itemController, $roomId);
+        return parent::handleHashtagActionOptions($request, $action, $roomId);
     }
 
     /**

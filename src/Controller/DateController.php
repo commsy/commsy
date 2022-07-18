@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Action\Mark\CategorizeAction;
 use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
 use App\Action\Delete\DeleteAction;
@@ -1050,8 +1051,8 @@ class DateController extends BaseController
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'date')")
      * @param Request $request
      * @param CategoryService $categoryService
+     * @param LabelService $labelService
      * @param DateTransformer $transformer
-     * @param ItemController $itemController
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -1059,9 +1060,8 @@ class DateController extends BaseController
     public function editAction(
         Request $request,
         CategoryService $categoryService,
-        DateTransformer $transformer,
-        ItemController $itemController,
         LabelService $labelService,
+        DateTransformer $transformer,
         int $roomId,
         int $itemId
     ) {
@@ -1079,9 +1079,8 @@ class DateController extends BaseController
 
         $formData = $transformer->transform($dateItem);
         $formData['language'] = $this->legacyEnvironment->getCurrentContextItem()->getLanguage();
-        $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
-            $this->legacyEnvironment);
+        $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
+        $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
         $formData['draft'] = $isDraft;
 
         $em = $this->getDoctrine()->getManager();
@@ -1111,12 +1110,12 @@ class DateController extends BaseController
             'calendars' => $calendarsOptions,
             'calendarsAttr' => $calendarsOptionsAttr,
             'categoryMappingOptions' => [
-                'categories' => $itemController->getCategories($roomId, $categoryService),
+                'categories' => $labelService->getCategories($roomId),
                 'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
                 'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
             ],
             'hashtagMappingOptions' => [
-                'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
+                'hashtags' => $labelService->getHashtags($roomId),
                 'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
@@ -1991,10 +1990,25 @@ class DateController extends BaseController
     }
 
     /**
+     * @Route("/room/{roomId}/date/xhr/categorize", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param CategorizeAction $action
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrCategorizeAction(
+        Request $request,
+        CategorizeAction $action,
+        int $roomId
+    ) {
+        return parent::handleCategoryActionOptions($request, $action, $roomId);
+    }
+
+    /**
      * @Route("/room/{roomId}/date/xhr/hashtag", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param HashtagAction $action
-     * @param ItemController $itemController
      * @param int $roomId
      * @return mixed
      * @throws Exception
@@ -2002,10 +2016,9 @@ class DateController extends BaseController
     public function xhrHashtagAction(
         Request $request,
         HashtagAction $action,
-        ItemController $itemController,
         int $roomId
     ) {
-        return parent::handleHashtagActionOptions($request, $action, $itemController, $roomId);
+        return parent::handleHashtagActionOptions($request, $action, $roomId);
     }
 
     /**

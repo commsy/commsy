@@ -23,12 +23,9 @@ use App\Utils\MailAssistant;
 use App\Utils\MaterialService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
-use cs_buzzword_item;
-use cs_buzzword_manager;
 use cs_dates_item;
 use cs_item;
 use cs_manager;
-use cs_tag_item;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -302,7 +299,7 @@ class ItemController extends AbstractController
      * @Route("/room/{roomId}/item/{itemId}/editlinks/{feedAmount}", defaults={"feedAmount" = 20})
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param CategoryService $categoryService
+     * @param LabelService $labelService
      * @param RoomService $roomService
      * @param ItemService $itemService
      * @param TranslatorInterface $translator
@@ -315,7 +312,7 @@ class ItemController extends AbstractController
      * @return array|RedirectResponse
      */
     public function editLinksAction(
-        CategoryService $categoryService,
+        LabelService $labelService,
         RoomService $roomService,
         ItemService $itemService,
         TranslatorInterface $translator,
@@ -428,13 +425,13 @@ class ItemController extends AbstractController
         }
 
         // get all categories -> tree
-        $optionsData['categories'] = $this->getCategories($roomId, $categoryService);
-        $formData['categories'] = $this->getLinkedCategories($item);
+        $optionsData['categories'] = $labelService->getCategories($roomId);
+        $formData['categories'] = $labelService->getLinkedCategoryIds($item);
         $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(array('min' => 1))] : array();
 
         // get all hashtags -> list
-        $optionsData['hashtags'] = $this->getHashtags($roomId, $legacyEnvironment);
-        $formData['hashtags'] = $this->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+        $optionsData['hashtags'] = $labelService->getHashtags($roomId);
+        $formData['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
         $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(array('min' => 1))] : [];
 
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
@@ -501,6 +498,7 @@ class ItemController extends AbstractController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
      * @param CategoryService $categoryService
+     * @param LabelService $labelService
      * @param RoomService $roomService
      * @param ItemService $itemService
      * @param TranslatorInterface $translator
@@ -514,6 +512,7 @@ class ItemController extends AbstractController
      */
     public function editCatsBuzzAction(
         CategoryService $categoryService,
+        LabelService $labelService,
         RoomService $roomService,
         ItemService $itemService,
         TranslatorInterface $translator,
@@ -620,13 +619,13 @@ class ItemController extends AbstractController
         }
 
         // get all categories -> tree
-        $optionsData['categories'] = $this->getCategories($roomId, $categoryService);
-        $formData['categories'] = $this->getLinkedCategories($item);
+        $optionsData['categories'] = $labelService->getCategories($roomId);
+        $formData['categories'] = $labelService->getLinkedCategoryIds($item);
         $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(array('min' => 1))] : array();
 
         // get all hashtags -> list
-        $optionsData['hashtags'] = $this->getHashtags($roomId, $legacyEnvironment);
-        $formData['hashtags'] = $this->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+        $optionsData['hashtags'] = $labelService->getHashtags($roomId);
+        $formData['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
         $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(array('min' => 1))] : [];
 
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
@@ -1215,22 +1214,6 @@ class ItemController extends AbstractController
             'showCategories' => $roomItem->withTags(),
             'roomCategories' => $categories,
         ];
-    }
-
-    public function getCategories($roomId, $categoryService) {
-        return $this->labelService->getCategories($roomId, $categoryService);
-    }
-
-    public function getLinkedCategories($item) {
-        return $this->labelService->getLinkedCategoryIds($item);
-    }
-
-    public function getHashtags($roomId, $legacyEnvironment) {
-        return $this->labelService->getHashtags($roomId);
-    }
-
-    public function getLinkedHashtags($itemId, $roomId, $legacyEnvironment) {
-        return $this->labelService->getLinkedHashtagIds($itemId, $roomId);
     }
 
     /**

@@ -21,11 +21,18 @@ class LabelService
     /** @var ItemService $itemService */
     private ItemService $itemService;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, ItemService $itemService)
-    {
+    /** @var CategoryService $categoryService */
+    private CategoryService $categoryService;
+
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        ItemService $itemService,
+        CategoryService $categoryService
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->labelManager = $this->legacyEnvironment->getLabelManager();
         $this->itemService = $itemService;
+        $this->categoryService = $categoryService;
     }
 
     public function getLabel($itemId)
@@ -56,6 +63,29 @@ class LabelService
     }
 
     /**
+     * Adds the categories with the given IDs to the items with the given IDs.
+     *
+     * @param int[] $categoryIds list of IDs for categories that shall be added to the items referenced by $itemIds
+     * @param int[] $itemIds list of IDs for items that shall be tagged with the categories referenced by $categoryIds
+     * @param int $contextId the ID of the room containing the specified categories and items
+     */
+    public function addCategoriesById(array $categoryIds, array $itemIds, int $contextId)
+    {
+        if (empty($categoryIds) || empty($itemIds)) {
+            return;
+        }
+
+        foreach ($itemIds as $itemId) {
+            $item = $this->itemService->getTypedItem($itemId);
+            $itemCategoryIds = $this->getLinkedCategoryIds($item);
+            $itemCategoryIds = array_unique(array_merge($itemCategoryIds, $categoryIds));
+
+            $item->setTagListByID($itemCategoryIds);
+            $item->save();
+        }
+    }
+
+    /**
      * Adds the hashtags with the given IDs to the items with the given IDs.
      *
      * @param int[] $hashtagIds list of IDs for hashtags that shall be added to the items referenced by $itemIds
@@ -80,16 +110,18 @@ class LabelService
 
     /**
      * Returns an array of all category (aka tag) IDs for the room with the given ID. Each array item is keyed
-     * by the category's title & ID (like '<TITLE>_<ID>'), and a category's children are contained in an array
-     * item keyed by '<TITLE>_sub_<ID>'.
+     * by the category's title & ID (like '<TITLE>_<ID>'), and (if `$flatten` is false) a category's children
+     * are contained in an array item keyed by '<TITLE>_sub_<ID>'.
      *
-     * @param int $roomId
+     * @param int $roomId the ID of the room whose categories shall be returned
+     * @param bool $flatten whether the returned array should be flattened (true) or not (false); defaults to false
+     * in which case a category's children are contained in a sub-array
      * @return array
      */
-    public function getCategories(int $roomId, CategoryService $categoryService): array
+    public function getCategories(int $roomId, bool $flatten = false): array
     {
-        $categories = $categoryService->getTags($roomId);
-        return $this->transformTagArray($categories);
+        $categories = $this->categoryService->getTags($roomId);
+        return $this->transformTagArray($categories, $flatten);
     }
 
     /**
@@ -222,10 +254,16 @@ class LabelService
     }
 
     /**
-     * @param array $tagArray
+     * Transforms the given category (aka tag) array into an array of category IDs. Each array item is keyed
+     * by the category's title & ID (like '<TITLE>_<ID>'), and (if `$flatten` is false) a category's children
+     * are contained in an array item keyed by '<TITLE>_sub_<ID>'.
+     *
+     * @param array $tagArray array of categories in a format as created by `CategoryService->buildTagArray()`
+     * @param bool $flatten whether the returned array should be flattened (true) or not (false); defaults to false
+     * in which case a category's children are contained in a sub-array
      * @return array
      */
-    private function transformTagArray($tagArray): array
+    private function transformTagArray(array $tagArray, bool $flatten = false): array
     {
         $array = [];
 
@@ -236,7 +274,13 @@ class LabelService
             $array[$tag['title'] . '_' . $tag['item_id']] = $tag['item_id'];
 
             if (!empty($tag['children'])) {
-                $array[$tag['title'] . '_sub' . '_' . $tag['item_id']] = $this->transformTagArray($tag['children']);
+                $children = $this->transformTagArray($tag['children'], $flatten);
+
+                if ($flatten) {
+                    $array = array_merge($array, $children);
+                } else {
+                    $array[$tag['title'] . '_sub' . '_' . $tag['item_id']] = $children;
+                }
             }
         }
 
