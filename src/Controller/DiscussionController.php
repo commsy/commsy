@@ -57,7 +57,6 @@ class DiscussionController extends BaseController
         $this->discussionService = $discussionService;
     }
 
-
     /**
      * @required
      * @param SessionInterface $session
@@ -66,7 +65,6 @@ class DiscussionController extends BaseController
     {
         $this->session = $session;
     }
-
 
     /**
      * @Route("/room/{roomId}/discussion/feed/{start}/{sort}")
@@ -85,7 +83,7 @@ class DiscussionController extends BaseController
         int $roomId,
         int $max = 10,
         int $start = 0,
-        string $sort = 'latest'
+        string $sort = ''
     ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -112,10 +110,13 @@ class DiscussionController extends BaseController
             $this->discussionService->hideDeactivatedEntries();
         }
 
+        if (empty($sort)) {
+            $sort = $this->session->get('sortDiscussions', 'latest');
+        }
+        $this->session->set('sortDiscussions', $sort);
+
         // get discussion list from manager service
         $discussions = $this->discussionService->getListDiscussions($roomId, $max, $start, $sort);
-
-        $this->session->set('sortDiscussions', $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -167,6 +168,8 @@ class DiscussionController extends BaseController
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
+        $sort = $this->session->get('sortDiscussions', 'latest');
+
         // get the discussion manager service
         $filterForm = $this->createFilterForm($roomItem);
 
@@ -203,6 +206,7 @@ class DiscussionController extends BaseController
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'sort' => $sort,
         );
 
     }
@@ -242,14 +246,10 @@ class DiscussionController extends BaseController
         }
 
         // get discussion list from manager service
-        if ($sort != "none") {
-            $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, $sort);
-        } elseif ($this->session->get('sortDates')) {
-            $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0,
-                $this->session->get('sortDiscussions'));
-        } else {
-            $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, 'date');
+        if ($sort === "none" || empty($sort)) {
+            $sort = $this->session->get('sortDiscussions', 'latest');
         }
+        $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 

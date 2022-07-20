@@ -238,11 +238,22 @@ textarea[id*=descriptionedit] {
 .cs-form-label-help {
     text-decoration: underline;
 }
-
-.uk-form-horizontal .cke,
-.uk-form-horizontal .cke_editable {
-    margin-left: 150px;
+@media(max-width: 767px) {
+    .uk-form-horizontal .cke,
+    .uk-form-horizontal .cke_editable,
+    .cke_group_margin_left{
+        margin-left: 0px;
+    }
 }
+
+@media(min-width: 768px) {
+    .uk-form-horizontal .cke,
+    .uk-form-horizontal .cke_editable,
+    .cke_group_margin_left{
+        margin-left: 150px;
+    }
+}
+
 
 .uk-form-controls textarea {
     resize: vertical;

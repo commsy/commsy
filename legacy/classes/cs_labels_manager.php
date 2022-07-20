@@ -460,10 +460,10 @@ class cs_labels_manager extends cs_manager {
 
       switch ($this->inactiveEntriesLimit) {
           case self::SHOW_ENTRIES_ONLY_ACTIVATED:
-              $query .= ' AND (' . $this->addDatabasePrefix('labels') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('labels') . '.modification_date <= "' . getCurrentDateTimeInMySQL() . '")';
+              $query .= ' AND (' . $this->addDatabasePrefix('labels') . '.activation_date IS NULL OR ' . $this->addDatabasePrefix('labels') . '.activation_date <= "' . getCurrentDateTimeInMySQL() . '")';
               break;
           case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
-              $query .= ' AND (' . $this->addDatabasePrefix('labels') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('labels') . '.modification_date > "' . getCurrentDateTimeInMySQL() . '")';
+              $query .= ' AND (' . $this->addDatabasePrefix('labels') . '.activation_date IS NOT NULL AND ' . $this->addDatabasePrefix('labels') . '.activation_date > "' . getCurrentDateTimeInMySQL() . '")';
               break;
       }
 
@@ -805,6 +805,7 @@ class cs_labels_manager extends cs_manager {
 
      $modificator = $item->getModificatorItem();
      $modification_date = getCurrentDateTimeInMySQL();
+     $activation_date = getCurrentDateTimeInMySQL();
 
      if ($item->isPublic()) {
         $public = 1;
@@ -812,11 +813,12 @@ class cs_labels_manager extends cs_manager {
         $public = 0;
      }
      if ($item->isNotActivated()){
-        $modification_date = $item->getModificationDate();
+         $activation_date = $item->getActivationDate();
      }
      $query =  'UPDATE '.$this->addDatabasePrefix('labels').' SET '.
                'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-               'modification_date="'.$modification_date.'",';
+               'modification_date="'.$modification_date.'",'.
+                'activation_date="'.$activation_date.'",';
      if ( !($item->getLabelType() == CS_GROUP_TYPE AND $item->isSystemLabel()) ) {
         $query .= 'name="'.encode(AS_DB,$item->getTitle()).'",';
      }
@@ -839,6 +841,7 @@ class cs_labels_manager extends cs_manager {
      $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
+              'activation_date="'.getCurrentDateTimeInMySQL().'",'.
               'type="label",'.
               'draft="'.encode(AS_DB,$item->isDraft()).'"';
 
@@ -866,7 +869,10 @@ class cs_labels_manager extends cs_manager {
      $modificator = $item->getModificatorItem();
      $current_datetime = getCurrentDateTimeInMySQL();
      $modification_date = $item->getModificationDate();
-
+     $activation_date =  getCurrentDateTimeInMySQL();
+      if ($item->isNotActivated()) {
+          $activation_date = $item->getActivationDate();
+      }
      if ($item->isPublic()) {
         $public = 1;
      } else {
@@ -878,6 +884,7 @@ class cs_labels_manager extends cs_manager {
                'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
                'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
                'creation_date="'.$current_datetime.'",'.
+               'activation_date="'.$activation_date.'",'.
                'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",';
 
      if (empty($modification_date)) {

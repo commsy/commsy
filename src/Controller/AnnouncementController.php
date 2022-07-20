@@ -130,7 +130,7 @@ class AnnouncementController extends BaseController
         int $roomId,
         int $max = 10,
         int $start = 0,
-        string $sort = 'date'
+        string $sort = ''
     ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -159,11 +159,15 @@ class AnnouncementController extends BaseController
             $this->announcementService->hideInvalidEntries();
         }
 
+        if (empty($sort)) {
+            $sort = $this->session->get('sortAnnouncements', 'date');
+        }
+        $this->session->set('sortAnnouncements', $sort);
+
         // get announcement list from manager service
         /** @var cs_announcement_item[] $announcements */
         $announcements = $this->announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
-        $this->session->set('sortAnnouncements', $sort);
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
@@ -292,7 +296,9 @@ class AnnouncementController extends BaseController
             $this->announcementService->hideInvalidEntries();
         }
 
-        // get announcement list from manager service 
+        $sort = $this->session->get('sortAnnouncements', 'date');
+
+        // get announcement list from manager service
         $itemsCountArray = $this->announcementService->getCountArray($roomId);
 
         $usageInfo = false;
@@ -316,6 +322,7 @@ class AnnouncementController extends BaseController
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'sort' => $sort,
         );
     }
 
@@ -354,17 +361,11 @@ class AnnouncementController extends BaseController
         }
 
         // get announcement list from manager service
-        if ($sort != "none") {
-            /** @var cs_announcement_item[] $announcements */
-            $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, $sort);
-        } elseif ($this->session->get('sortAnnouncements')) {
-            /** @var cs_announcement_item[] $announcements */
-            $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0,
-                $this->session->get('sortAnnouncements'));
-        } else {
-            /** @var cs_announcement_item[] $announcements */
-            $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, 'date');
+        if ($sort === "none" || empty($sort)) {
+            $sort = $this->session->get('sortAnnouncements', 'date');
         }
+        /** @var cs_announcement_item[] $announcements */
+        $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -1022,10 +1023,6 @@ class AnnouncementController extends BaseController
                 $lastItemId = $announcements[sizeof($announcements) - 1]->getItemId();
             }
         }
-        // mark annotations as read
-        $annotationList = $announcement->getAnnotationList();
-        $this->annotationService->markAnnotationsReadedAndNoticed($annotationList);
-
         $categories = array();
         if ($current_context->withTags()) {
             $roomCategories = $this->categoryService->getTags($roomId);

@@ -106,7 +106,7 @@ class InsertAction
                 if ($toggleArchive) {
                     $this->legacyEnvironment->toggleArchiveMode();
                 }
-
+                $importItem->setExternalViewerAccounts(array());
                 // archive
                 $copy = $importItem->copy();
 

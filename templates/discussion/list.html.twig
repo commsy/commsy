@@ -25,12 +25,17 @@
         <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
             <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                 {# sorting options #}
-                {{ utilsMacros.sortActor('title', 'title', 'rubric', 'title', 'title_rev', '') }}
-                {{ utilsMacros.sortActor('creator', 'modifier', 'rubric', 'creator', 'creator_rev', '') }}
-                {{ utilsMacros.sortActor('latest', 'latest article', 'discussion', 'latest_rev', 'latest', 'desc') }}
+                {%- set initialStateTitle = sort is same as('title') ? 'asc' : (sort is same as('title_rev') ? 'desc' : '') -%}
+                {%- set initialStateCreator = sort is same as('creator') ? 'asc' : (sort is same as('creator_rev') ? 'desc' : '') -%}
+                {%- set initialStateLatest = sort is same as('latest_rev') ? 'asc' : (sort is same as('latest') ? 'desc' : '') -%}
+
+                {{ utilsMacros.sortActor('title', 'title', 'rubric', 'title', 'title_rev', initialStateTitle) }}
+                {{ utilsMacros.sortActor('creator', 'modifier', 'rubric', 'creator', 'creator_rev', initialStateCreator) }}
+                {{ utilsMacros.sortActor('latest', 'latest article', 'discussion', 'latest_rev', 'latest', initialStateLatest) }}
 
                 {% if showRating %}
-                    {{ utilsMacros.sortActor('assessment', 'rating', 'rubric', 'assessment', 'assessment_rev', '') }}
+                    {%- set initialStateAssessment = sort is same as('assessment') ? 'asc' : (sort is same as('assessment_rev') ? 'desc' : '') %}
+                    {{ utilsMacros.sortActor('assessment', 'rating', 'rubric', 'assessment', 'assessment_rev', initialStateAssessment) }}
                 {% endif %}
             </ul>
         </div>

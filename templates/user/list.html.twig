@@ -251,9 +251,13 @@
             <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
                 <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                     {# sorting options #}
-                    {{ utilsMacros.sortActor('name', 'surname', 'user', 'name', 'name_rev', 'asc') }}
-                    {{ utilsMacros.sortActor('email', 'email', 'user', 'email', 'email_rev', '') }}
-                    {{ utilsMacros.sortActor('status', 'user status', 'user', 'status', 'status_rev', '') }}
+                    {%- set initialStateName = sort is same as('name') ? 'asc' : (sort is same as('name_rev') ? 'desc' : '') -%}
+                    {%- set initialStateEmail = sort is same as('email') ? 'asc' : (sort is same as('email_rev') ? 'desc' : '') -%}
+                    {%- set initialStateStatus = sort is same as('status') ? 'asc' : (sort is same as('status_rev') ? 'desc' : '') -%}
+
+                    {{ utilsMacros.sortActor('name', 'surname', 'user', 'name', 'name_rev', initialStateName) }}
+                    {{ utilsMacros.sortActor('email', 'email', 'user', 'email', 'email_rev', initialStateEmail) }}
+                    {{ utilsMacros.sortActor('status', 'user status', 'user', 'status', 'status_rev', initialStateStatus) }}
                 </ul>
             </div>
         </div>

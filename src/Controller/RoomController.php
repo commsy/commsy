@@ -39,6 +39,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -51,6 +52,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class RoomController extends AbstractController
 {
+    private SessionInterface $session;
+
+    /**
+     * @required
+     * @param SessionInterface $session
+     */
+    public function setSession(SessionInterface $session): void
+    {
+        $this->session = $session;
+    }
+
     /**
      * @Route("/room/{roomId}", requirements={
      *     "roomId": "\d+"
@@ -393,6 +405,8 @@ class RoomController extends AbstractController
                 break;
         }
 
+        $sort = $this->session->get('sortRooms', $portal->getSortRoomsBy() ?? 'activity');
+
         $filterForm = $this->createForm(RoomFilterType::class, null, [
             'showTime' => $portal->getShowTimePulses(),
             'timePulses' => $roomService->getTimePulses(),
@@ -476,6 +490,7 @@ class RoomController extends AbstractController
                 'countAll' => $countAll,
             ],
             'userMayCreateContext' => $userMayCreateContext,
+            'sort' => $sort,
         ];
     }
 
@@ -502,7 +517,7 @@ class RoomController extends AbstractController
         UserRepository $userRepository,
         PortalRepository $portalRepository,
         int $roomId,
-        string $sort='activity',
+        string $sort='',
         int $max = 10,
         int $start = 0
     ) {
@@ -521,6 +536,11 @@ class RoomController extends AbstractController
                 $roomTypes = [CS_PROJECT_TYPE, CS_COMMUNITY_TYPE];
                 break;
         }
+
+        if (empty($sort)) {
+            $sort = $this->session->get('sortRooms', $portal->getSortRoomsBy() ?? 'activity');
+        }
+        $this->session->set('sortRooms', $sort);
 
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -952,29 +972,8 @@ class RoomController extends AbstractController
         $times = $roomService->getTimePulses(true);
 
         $current_user = $legacyEnvironment->getCurrentUserItem();
-        $communityManager = $legacyEnvironment->getCommunityManager();
-        $communityManager->setContextLimit($currentPortalItem->getItemID());
-        $communityManager->select();
-        $community_list = $communityManager->get();
-        $community_room_array = array();
-        unset($temp_array);
-        if ($community_list->isNotEmpty()) {
-            $community_item = $community_list->getFirst();
-            while ($community_item) {
-                if ($community_item->isAssignmentOnlyOpenForRoomMembers() ){
-                    if ( $community_item->isUser($current_user)) {
-                        $community_room_array[$community_item->getTitle()] = $community_item->getItemID();
-                    }
-                }else{
-                    $community_room_array[$community_item->getTitle()] = $community_item->getItemID();
-                }
-                $community_item = $community_list->getNext();
-            }
-        }
-
-        $types = [];
         $portalUser = $current_user->getRelatedPortalUserItem();
-
+        $types = [];
         if ($portalUser->isModerator()) {
             $types = ['project' => 'project', 'community' => 'community'];
         } else {
@@ -1037,7 +1036,6 @@ class RoomController extends AbstractController
             'preferredChoices' => $defaultTemplateIDs,
             'timesDisplay' => $timesDisplay,
             'times' => $times,
-            'communities' => $community_room_array,
             'linkCommunitiesMandantory' => $linkCommunitiesMandantory,
             'roomCategories' => $roomCategories,
             'linkRoomCategoriesMandatory' => $linkRoomCategoriesMandatory,

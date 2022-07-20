@@ -26,10 +26,6 @@ class PortalhomeType extends AbstractType
                     'Only project workspaces' => 'onlyprojectrooms',
                 ],
             ])
-            ->add('showTemplatesInRoomList', Types\CheckboxType::class, [
-                'label' => 'Show templates in workspace feed',
-                'required' => false,
-            ])
             ->add('sortRoomsBy', Types\ChoiceType::class, [
                 'label' => 'Sort list of all rooms by',
                 'expanded' => true,

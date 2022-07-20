@@ -139,7 +139,9 @@ class GroupController extends BaseController
             $this->groupService->hideDeactivatedEntries();
         }
 
-        // get group list from manager service 
+        $sort = $this->session->get('sortGroups', 'date');
+
+        // get group list from manager service
         $itemsCountArray = $this->groupService->getCountArray($roomId);
 
         $usageInfo = false;
@@ -160,6 +162,7 @@ class GroupController extends BaseController
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'sort' => $sort,
         );
     }
 
@@ -196,14 +199,10 @@ class GroupController extends BaseController
         }
 
         // get group list from manager service 
-        if ($sort != "none") {
-            $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0, $sort);
-        } elseif ($this->session->get('sortGroups')) {
-            $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0,
-                $this->session->get('sortGroups'));
-        } else {
-            $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0, 'date');
+        if ($sort === "none" || empty($sort)) {
+            $sort = $this->session->get('sortGroups', 'date');
         }
+        $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0, $sort);
 
         $readerList = array();
         foreach ($groups as $item) {
@@ -244,7 +243,7 @@ class GroupController extends BaseController
         int $roomId,
         int $max = 10,
         int $start = 0,
-        string $sort = 'date'
+        string $sort = ''
     ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -271,10 +270,13 @@ class GroupController extends BaseController
             $this->groupService->hideDeactivatedEntries();
         }
 
-        // get group list from manager service 
-        $groups = $this->groupService->getListGroups($roomId, $max, $start, $sort);
-
+        if (empty($sort)) {
+            $sort = $this->session->get('sortGroups', 'date');
+        }
         $this->session->set('sortGroups', $sort);
+
+        // get group list from manager service
+        $groups = $this->groupService->getListGroups($roomId, $max, $start, $sort);
 
         // contains member status of current user for each group and grouproom
         $allGroupsMemberStatus = [];
@@ -598,10 +600,6 @@ class GroupController extends BaseController
                 $lastItemId = $groups[sizeof($groups) - 1]->getItemId();
             }
         }
-        // mark annotations as readed
-        $annotationList = $group->getAnnotationList();
-        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
-
 
         $membersList = $group->getMemberItemList();
         $members = $membersList->to_array();
@@ -978,10 +976,10 @@ class GroupController extends BaseController
                 // only initialize the name of the grouproom the first time it is created!
                 if ($groupRoom && !empty($groupRoom)) {
                     if ($originalGroupName == "") {
-                        $groupRoom->setTitle($groupItem->getTitle() . " (" . $this->translator->trans('grouproom', [],
-                                'group') . ")");
+                        $title = $groupItem->getTitle() . " (" . $this->translator->trans('grouproom', [], 'group') . ")";
+                        $groupRoom->setTitle(html_entity_decode($title));
                     } else {
-                        $groupRoom->setTitle($originalGroupName);
+                        $groupRoom->setTitle(html_entity_decode($originalGroupName));
                     }
                     $groupRoom->save(false);
 
@@ -993,7 +991,7 @@ class GroupController extends BaseController
 
                         $masterRoom = $this->roomService->getRoomItem($masterTemplate);
                         if ($masterRoom) {
-                            $groupRoom = $this->copySettings($masterRoom, $groupRoom, $legacyCopy);
+                            $this->copySettings($masterRoom, $groupRoom, $legacyCopy);
                         }
                     }
                     $groupItem->save(true);

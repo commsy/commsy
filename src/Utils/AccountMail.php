@@ -121,7 +121,7 @@ class AccountMail
 
         switch ($action) {
             case 'user-delete':
-                $mailText = $legacyTranslator->getEmailMessageInLang($this->legacyEnvironment->getUserLanguage(), 'MAIL_BODY_USER_ACCOUNT_DELETE');
+                $mailText = $legacyTranslator->getEmailMessageInLang($this->legacyEnvironment->getUserLanguage(), 'MAIL_BODY_USER_ACCOUNT_DELETE', $user->getUserID(), $room->getTitle());
                 $body .= $mailText;
                 break;
 
@@ -185,8 +185,11 @@ class AccountMail
                 break;
         }
 
-        $body .= "<br/><br/>";
-        $body .= $absoluteRoomUrl;
+        if ($action !== 'user-delete') {
+            $body .= "<br/><br/>";
+            $body .= $absoluteRoomUrl;
+        }
+
         $body .= "<br/><br/>";
 
         $message = $legacyTranslator->getEmailMessage('MAIL_BODY_CIAO', $moderator->getFullname(),

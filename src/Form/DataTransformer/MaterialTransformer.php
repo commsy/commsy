@@ -4,6 +4,7 @@ namespace App\Form\DataTransformer;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_material_item;
+use DateTime;
 
 class MaterialTransformer extends AbstractTransformer
 {
@@ -98,7 +99,7 @@ class MaterialTransformer extends AbstractTransformer
                 
                 $activating_date = $materialItem->getActivatingDate();
                 if (!stristr($activating_date,'9999')){
-                    $datetime = new \DateTime($activating_date);
+                    $datetime = new DateTime($activating_date);
                     $materialData['hiddendate']['date'] = $datetime;
                     $materialData['hiddendate']['time'] = $datetime;
                 }
@@ -167,29 +168,23 @@ class MaterialTransformer extends AbstractTransformer
                 }
             }
         }
-        
-        if (isset($materialData['hidden'])) {
-            if ($materialData['hidden']) {
-                if ($materialData['hiddendate']['date']) {
-                    // add validdate to validdate
-                    $datetime = $materialData['hiddendate']['date'];
-                    if ($materialData['hiddendate']['time']) {
-                        $time = explode(":", $materialData['hiddendate']['time']->format('H:i'));
-                        $datetime->setTime($time[0], $time[1]);
-                    }
-                    $materialObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
-                } else {
-                    $materialObject->setModificationDate('9999-00-00 00:00:00');
+
+        if (isset($materialData['hidden']) && $materialData['hidden']) {
+            if (isset($materialData['hiddendate']['date']) && $materialData['hiddendate']['date']) {
+                // add validdate to validdate
+                $datetime = $materialData['hiddendate']['date'];
+                if ($materialData['hiddendate']['time']) {
+                    $time = explode(":", $materialData['hiddendate']['time']->format('H:i'));
+                    $datetime->setTime($time[0], $time[1]);
                 }
+                $materialObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
             } else {
-                if($materialObject->isNotActivated()){
-    	            $materialObject->setModificationDate(getCurrentDateTimeInMySQL());
-    	        }
+                $materialObject->setActivationDate('9999-00-00 00:00:00');
             }
         } else {
-            if($materialObject->isNotActivated()){
-	            $materialObject->setModificationDate(getCurrentDateTimeInMySQL());
-	        }
+            if ($materialObject->isNotActivated()) {
+                $materialObject->setActivationDate(new DateTime());
+            }
         }
 
         if (get_class($materialObject) != 'cs_section_item') {

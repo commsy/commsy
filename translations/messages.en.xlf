@@ -459,6 +459,10 @@
                 <source>Close</source>
                 <target>Close</target>
             </trans-unit>
+            <trans-unit id="deactivated_entry">
+                 <source>Deactivated entry</source>
+                 <target>(Deactivated entry)</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -377,10 +377,6 @@ class TopicController extends BaseController
                 $lastItemId = $topics[sizeof($topics) - 1]->getItemId();
             }
         }
-        // mark annotations as readed
-        $annotationList = $topic->getAnnotationList();
-        $this->annotationService->markAnnotationsReadedAndNoticed($annotationList);
-
 
         $infoArray['topic'] = $topic;
         $infoArray['readerList'] = $readerList;
