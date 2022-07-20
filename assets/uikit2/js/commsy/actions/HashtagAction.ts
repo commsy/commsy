@@ -20,7 +20,7 @@ export class HashtagAction extends XHRAction {
 
             // TODO: better initialize dynamically loaded HTML components?
             const children: any = $customChoicesPlaceholder.find('.js-select2-choice');
-            children.select2();
+            children.select2({ width: '100%', dropdownAutoWidth : true });
 
             // listen to changes to the Select2Choice control and store IDs of all chosen hashtags as extra data
             let choices = [];
