@@ -1508,16 +1508,20 @@ class cs_user_item extends cs_item
      *
      * @see cs_item::mayPortfolioSee()
      */
-    public function mayPortfolioSee($userItem)
+    public function mayPortfolioSee(string $username)
     {
         $portfolioManager = $this->_environment->getPortfolioManager();
 
         $userArray = $portfolioManager->getPortfolioUserForExternalViewer($this->getItemId());
 
-        return in_array($userItem->getUserId(), $userArray);
+        return in_array($username, $userArray);
     }
 
-    function maySee($user_item)
+    /**
+     * @param cs_user_item $user_item
+     * @return bool
+     */
+    public function maySee(cs_user_item $user_item)
     {
         if ($this->_environment->inCommunityRoom()) {  // Community room
             if ($user_item->isRoot()
@@ -1877,25 +1881,24 @@ class cs_user_item extends cs_item
         return $relatedUsers;
     }
 
-    public function getRelatedUserItemInContext($value):?cs_user_item
+    /**
+     * @param $contextId
+     * @return cs_user_item|null
+     */
+    public function getRelatedUserItemInContext($contextId): ?cs_user_item
     {
-        $retour = NULL;
-        $user_manager = $this->_environment->getUserManager();
-        $user_manager->resetLimits();
-        $user_manager->setContextLimit($value);
-        $user_manager->setUserIDLimit($this->getUserID());
-        $user_manager->setAuthSourceLimit($this->getAuthSource());
-        $user_manager->select();
-        $user_list = $user_manager->get();
-        if (isset($user_list)
-            and $user_list->isNotEmpty()
-            and $user_list->getCount() == 1
-        ) {
-            $retour = $user_list->getFirst();
+        $userManager = $this->_environment->getUserManager();
+        $userManager->resetLimits();
+        $userManager->setContextLimit($contextId);
+        $userManager->setUserIDLimit($this->getUserID());
+        $userManager->setAuthSourceLimit($this->getAuthSource());
+        $userManager->select();
+        $userList = $userManager->get();
+        if (isset($userList) && $userList->getCount() == 1) {
+            return $userList->getFirst();
         }
-        unset($user_manager);
-        unset($user_list);
-        return $retour;
+
+        return null;
     }
 
     /**
@@ -2001,33 +2004,38 @@ class cs_user_item extends cs_item
         return $retour;
     }
 
-    function getRelatedPortalUserItem():?cs_user_item
+    /**
+     * @param int|null $portalId
+     * @return cs_user_item|null
+     */
+    public function getRelatedPortalUserItem(?int $portalId = null): ?cs_user_item
     {
-        $retour = NULL;
+        $retour = null;
 
         // archive
-        $toggle_archive = false;
+        $toggleArchive = false;
         if ($this->_environment->isArchiveMode()) {
-            $toggle_archive = true;
+            $toggleArchive = true;
             $this->_environment->deactivateArchiveMode();
         }
         // archive
 
-        $user_manager = $this->_environment->getUserManager();
-        $user_manager->resetLimits();
-        $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
-        $user_manager->setUserIDLimit($this->getUserID());
-        $user_manager->setAuthSourceLimit($this->getAuthSource());
-        $user_manager->select();
-        $user_list = $user_manager->get();
-        unset($user_manager);
-        if ($user_list->getCount() == 1) {
-            $retour = $user_list->getFirst();
+        $contextLimit = $portalId ?? $this->_environment->getCurrentPortalID();
+
+        $userManager = $this->_environment->getUserManager();
+        $userManager->resetLimits();
+        $userManager->setContextLimit($contextLimit);
+        $userManager->setUserIDLimit($this->getUserID());
+        $userManager->setAuthSourceLimit($this->getAuthSource());
+        $userManager->select();
+        $userList = $userManager->get();
+
+        if ($userList !== null && $userList->getCount() === 1) {
+            $retour = $userList->getFirst();
         }
-        unset($user_list);
 
         // archive
-        if ($toggle_archive) {
+        if ($toggleArchive) {
             $this->_environment->activateArchiveMode();
         }
         // archive

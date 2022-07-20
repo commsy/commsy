@@ -263,17 +263,13 @@
                 <source>Only project workspaces</source>
                 <target>Nur Projekträume anzeigen (keine Gemeinschaftsräume)</target>
             </trans-unit>
-            <trans-unit id="Show_templates_in_workspace_feed">
-                <source>Show templates in workspace feed</source>
-                <target>Vorlagen in der Raumliste anzeigen</target>
-            </trans-unit>
             <trans-unit id="workspace_display">
                 <source>Workspace display</source>
                 <target>Raumanzeige</target>
             </trans-unit>
             <trans-unit id="portal_menu_home_sortby">
                 <source>Sort list of all rooms by</source>
-                <target>Sortiere "All Räume" nach</target>
+                <target>Sortiere "Alle Räume" nach</target>
             </trans-unit>
             <trans-unit id="portal_menu_home_sortby_activity">
                 <source>Activity</source>

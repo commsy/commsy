@@ -1088,11 +1088,12 @@ class ItemController extends AbstractController
         if ($item->getItemType() == 'date') {
             $rubricManager->setWithoutDateModeLimit();
         }
-        
+        if(!$environment->getCurrentUserItem()->isModerator() ){
+            $rubricManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        }
         $rubricManager->select();
         $itemList = $rubricManager->get();
         $items = $itemList->to_array();
-        
         $itemList = array();
         $counterBefore = 0;
         $counterAfter = 0;

@@ -103,7 +103,9 @@ class TodoController extends BaseController
             $this->todoService->hideCompletedEntries();
         }
 
-        // get todo list from manager service 
+        $sort = $this->session->get('sortTodos', 'duedate_rev');
+
+        // get todo list from manager service
         $itemsCountArray = $this->todoService->getCountArray($roomId);
 
         $usageInfo = false;
@@ -126,6 +128,7 @@ class TodoController extends BaseController
             'catzExpanded' => $roomItem->isTagsShowExpanded(),
             'isArchived' => $roomItem->isArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'sort' => $sort,
         );
     }
 
@@ -165,7 +168,7 @@ class TodoController extends BaseController
         int $roomId,
         int $max = 10,
         int $start = 0,
-        string $sort = 'duedate_rev'
+        string $sort = ''
     ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -193,11 +196,14 @@ class TodoController extends BaseController
             $this->todoService->hideCompletedEntries();
         }
 
+        if (empty($sort)) {
+            $sort = $this->session->get('sortTodos', 'duedate_rev');
+        }
+        $this->session->set('sortTodos', $sort);
+
         // get todo list from manager service
         /** @var cs_todo_item[] $todos */
         $todos = $this->todoService->getListTodos($roomId, $max, $start, $sort);
-
-        $this->session->set('sortTodos', $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -291,10 +297,6 @@ class TodoController extends BaseController
         if (empty($noticed) || $noticed['read_date'] < $todo->getModificationDate()) {
             $noticed_manager->markNoticed($todo->getItemID(), $todo->getVersionID());
         }
-
-        // mark annotations as read
-        $annotationList = $todo->getAnnotationList();
-        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
 
         $stepList = $todo->getStepItemList();
 
@@ -894,17 +896,11 @@ class TodoController extends BaseController
         }
 
         // get todo list from manager service
-        if ($sort != "none") {
-            /** @var cs_todo_item[] $todos */
-            $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0, $sort);
-        } elseif ($this->session->get('sortTodos')) {
-            /** @var cs_todo_item[] $todos */
-            $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0,
-                $this->session->get('sortTodos'));
-        } else {
-            /** @var cs_todo_item[] $todos */
-            $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0, 'date');
+        if ($sort === "none" || empty($sort)) {
+            $sort = $this->session->get('sortTodos', 'duedate_rev');
         }
+        /** @var cs_todo_item[] $todos */
+        $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 

@@ -41,7 +41,7 @@
                         {% if form.send_to_groups is defined %}
                             <div class="uk-margin-top uk-margin-bottom">
                                 {{ form_label(form.send_to_groups) }}
-                                <div style="margin-left:150px;">
+                                <div class="cke_group_margin_left">
                                 {% for tempGroup in form.send_to_groups.iterator %}
                                     {% if form.send_to_groups.iterator|length < 2 %}
                                         <div class="uk-margin-small-bottom" style="min-height:50px;"><span class="uk-margin-right">{{ form_widget(tempGroup) }}</span>{{ tempGroup.vars.label }}</div>

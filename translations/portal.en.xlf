@@ -263,10 +263,6 @@
                 <source>Only project workspaces</source>
                 <target>Show project workspaces only (no community workspaces)</target>
             </trans-unit>
-            <trans-unit id="Show_templates_in_workspace_feed">
-                <source>Show templates in workspace feed</source>
-                <target>Show templates in workplace list</target>
-            </trans-unit>
             <trans-unit id="workspace_display">
                 <source>Workspace display</source>
                 <target>Display workspaces</target>

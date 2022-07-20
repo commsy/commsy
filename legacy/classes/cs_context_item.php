@@ -1362,6 +1362,24 @@ class cs_context_item extends cs_item {
     }
     return $retour;
   }
+  /**
+   * Return value for Room asociation
+   * @return mixed|string|void
+   */
+  function _getRoomAssociation () {
+    $retour = '';
+    if ($this->_issetExtra('ROOMASSOCIATION')) {
+      $retour = $this->_getExtra('ROOMASSOCIATION');
+    }
+    return $retour;
+  }
+
+  /*
+   * set value to room asociation
+   */
+  public function _setRoomAssociation ( $value ) {
+    $this->_addExtra('ROOMASSOCIATION',$value);
+  }
 
   /** set flag for check new members
    * this method sets the flag for checking new members
