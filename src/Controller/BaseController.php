@@ -259,7 +259,7 @@ abstract class BaseController extends AbstractController
         // TODO: This is a workaround for copying a single entry from detail view when accessing as external viewer
         // The implementation of getItemsByFilterConditions() should not rely on the context if we already know
         // the exact item ids we are working with
-        if ($positiveItemIds[0]) {
+        if (!empty($positiveItemIds) && $positiveItemIds[0]) {
             $itemTemp = $positiveItemIds[0];
             $itemTemp = $this->itemService->getTypedItem($itemTemp);
             if ($itemTemp->getContextID() !== $room->getItemID()) {
