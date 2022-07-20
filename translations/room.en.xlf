@@ -40,7 +40,7 @@
             </trans-unit>
             <trans-unit id="10">
                 <source>hashtags</source>
-                <target>Tags</target>
+                <target>Hashtags</target>
             </trans-unit>
              <trans-unit id="11">
                 <source>categories</source>
