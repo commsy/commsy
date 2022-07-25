@@ -29,6 +29,17 @@ class GroupFilterType extends AbstractType
                 'label' => 'Restrict',
                 'translation_domain' => 'form',
             ])
+            ->add('membership', Filters\CheckboxFilterType::class, [
+                'label' => 'hide-rooms-without-membership',
+                'mapped' => false,
+                'translation_domain' => 'room',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+            ])
+            ->add('rubrics', RubricFilterType::class, [
+                'label' => false,
+            ])
             ->add('field0', HiddenType::class, []);
 
         if ($options['hasCategories']) {
