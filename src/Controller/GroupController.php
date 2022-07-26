@@ -17,7 +17,6 @@ use App\Form\Type\GroupType;
 use App\Http\JsonDataResponse;
 use App\Mail\Mailer;
 use App\Room\Copy\LegacyCopy;
-use App\Services\CalendarsService;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
@@ -916,121 +915,10 @@ class GroupController extends BaseController
         );
     }
 
-
     /**
-     * @Route("/room/{roomId}/group/{itemId}/editgrouproom")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
-     * @param Request $request
-     * @param CalendarsService $calendarsService
-     * @param GroupTransformer $transformer
-     * @param LegacyCopy $legacyCopy
+     * @Route("/room/{roomId}/group/{itemId}/join")
      * @param int $roomId
      * @param int $itemId
-     * @return array|RedirectResponse
-     * @throws Exception
-     */
-    public function editgrouproomAction(
-        Request $request,
-        CalendarsService $calendarsService,
-        GroupTransformer $transformer,
-        LegacyCopy $legacyCopy,
-        int $roomId,
-        int $itemId
-    ) {
-        $groupItem = null;
-
-        // get group from GroupService
-        $groupItem = $this->groupService->getGroup($itemId);
-        if (!$groupItem) {
-            throw $this->createNotFoundException('No group found for id ' . $itemId);
-        }
-        $formData = $transformer->transform($groupItem);
-        $form = $this->createForm(GrouproomType::class, $formData, array(
-            'action' => $this->generateUrl('app_group_editgrouproom', array(
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            )),
-            'templates' => $this->getAvailableTemplates(),
-        ));
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $saveType = $form->getClickedButton()->getName();
-            if ($saveType == 'save') {
-
-                $originalGroupName = "";
-                if ($groupItem->getGroupRoomItem() && !empty($groupItem->getGroupRoomItem())) {
-                    $originalGroupName = $groupItem->getGroupRoomItem()->getTitle();
-                }
-
-                $groupItem = $transformer->applyTransformation($groupItem, $form->getData());
-
-                // update modifier
-                $groupItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
-
-                $groupItem->save(true);
-
-                $groupRoom = $groupItem->getGroupRoomItem();
-
-                // only initialize the name of the grouproom the first time it is created!
-                if ($groupRoom && !empty($groupRoom)) {
-                    if ($originalGroupName == "") {
-                        $title = $groupItem->getTitle() . " (" . $this->translator->trans('grouproom', [], 'group') . ")";
-                        $groupRoom->setTitle(html_entity_decode($title));
-                    } else {
-                        $groupRoom->setTitle(html_entity_decode($originalGroupName));
-                    }
-                    $groupRoom->save(false);
-
-                    $calendarsService->createCalendar($groupRoom, null, null, true);
-
-                    // take values from a template?
-                    if ($form->has('master_template')) {
-                        $masterTemplate = $form->get('master_template')->getData();
-
-                        $masterRoom = $this->roomService->getRoomItem($masterTemplate);
-                        if ($masterRoom) {
-                            $this->copySettings($masterRoom, $groupRoom, $legacyCopy);
-                        }
-                    }
-                    $groupItem->save(true);
-                }
-
-            }
-            return $this->redirectToRoute('app_group_savegrouproom', array('roomId' => $roomId, 'itemId' => $itemId));
-        }
-
-        $this->eventDispatcher->dispatch(new CommsyEditEvent($groupItem), CommsyEditEvent::EDIT);
-
-        return array(
-            'form' => $form->createView(),
-        );
-    }
-
-    /**
-     * @Route("/room/{roomId}/date/{itemId}/savegrouproom")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
-     */
-    public function savegrouproomAction(
-        $roomId,
-        $itemId,
-        GroupService $groupService)
-    {
-        $group = $groupService->getGroup($itemId);
-
-        return [
-            'roomId' => $roomId,
-            'item' => $group,
-        ];
-    }
-
-    /**
-     * @Route("/room/{roomId}/group/{itemId}/join/{joinRoom}", defaults={"joinRoom"=false})
-     * @param int $roomId
-     * @param int $itemId
-     * @param bool $joinRoom
      * @param MembershipManager $membershipManager
      * @return JsonDataResponse|RedirectResponse
      * @throws Exception
@@ -1038,11 +926,10 @@ class GroupController extends BaseController
     public function join(
         int $roomId,
         int $itemId,
-        bool $joinRoom,
         MembershipManager $membershipManager
     ) {
         $roomManager = $this->legacyEnvironment->getRoomManager();
-        
+
         $room = $roomManager->getItem($roomId);
         $group = $this->groupService->getGroup($itemId);
 
@@ -1065,44 +952,32 @@ class GroupController extends BaseController
 
         $currentUser = $this->legacyEnvironment->getCurrentUser();
 
-        /**
-         * If the user also wants to join the group room, redirect him to the request page
-         */
-        if ($joinRoom) {
-            $groupRoom = $group->getGroupRoomItem();
-            if ($groupRoom) {
-                $memberStatus = $this->userService->getMemberStatus($groupRoom, $currentUser);
-                if ($memberStatus == 'join') {
-                    return $this->redirectToRoute('app_context_request', [
-                        'roomId' => $roomId,
-                        'itemId' => $groupRoom->getItemId(),
-                    ]);
-                } else {
-                    throw new Exception("ERROR: User '" . $currentUser->getUserID() . "' cannot join group room '" . $groupRoom->getTitle() . "' since (s)he has room member status '" . $memberStatus . "' (requires status 'join' to become a room member)!");
-                }
+        $groupRoom = $group->getGroupRoomItem();
+        if ($groupRoom) {
+            $memberStatus = $this->userService->getMemberStatus($groupRoom, $currentUser);
+            if ($memberStatus == 'join') {
+                return $this->redirectToRoute('app_context_request', [
+                    'roomId' => $roomId,
+                    'itemId' => $groupRoom->getItemId(),
+                ]);
             } else {
-                throw new Exception("ERROR: User '" . $currentUser->getUserID() . "' cannot join the group room of group '" . $group->getName() . "' since it does not exist!");
+                throw new Exception("ERROR: User '" . $currentUser->getUserID() . "' cannot join group room '" . $groupRoom->getTitle() . "' since (s)he has room member status '" . $memberStatus . "' (requires status 'join' to become a room member)!");
             }
+        } else {
+            throw new Exception("ERROR: User '" . $currentUser->getUserID() . "' cannot join the group room of group '" . $group->getName() . "' since it does not exist!");
         }
-
-        return new JsonDataResponse([
-            'title' => $group->getTitle(),
-            'groupId' => $itemId,
-        ]);
     }
 
     /**
-     * @Route("/room/{roomId}/group/{itemId}/leave/{leaveWorkspace}", defaults={"leaveWorkspace"=false})
+     * @Route("/room/{roomId}/group/{itemId}/leave")
      * @param int $roomId
      * @param int $itemId
-     * @param bool $leaveWorkspace
      * @param MembershipManager $membershipManager
      * @return JsonDataResponse|RedirectResponse
      */
     public function leave(
         int $roomId,
         int $itemId,
-        bool $leaveWorkspace,
         MembershipManager $membershipManager
     ) {
         $roomManager = $this->legacyEnvironment->getRoomManager();
@@ -1127,18 +1002,12 @@ class GroupController extends BaseController
         // leave group
         $membershipManager->leaveGroup($group, $account);
 
-        if ($leaveWorkspace) {
-            $groupRoom = $group->getGroupRoomItem();
-            $membershipManager->leaveWorkspace($groupRoom, $account);
+        $groupRoom = $group->getGroupRoomItem();
+        $membershipManager->leaveWorkspace($groupRoom, $account);
 
-            return $this->redirectToRoute('app_group_detail', [
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            ]);
-        }
-        return new JsonDataResponse([
-            'title' => $group->getTitle(),
-            'groupId' => $itemId,
+        return $this->redirectToRoute('app_group_detail', [
+            'roomId' => $roomId,
+            'itemId' => $itemId,
         ]);
     }
 
@@ -1160,35 +1029,6 @@ class GroupController extends BaseController
         return [
             'group' => $group,
             'members' => $members,
-        ];
-    }
-
-    /**
-     * @Route("/room/{roomId}/group/{itemId}/grouproom", requirements={
-     *     "itemId": "\d+"
-     * }))
-     * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'group')")
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
-    public function groupRoomAction(
-        int $roomId,
-        int $itemId
-    ) {
-        $group = $this->groupService->getGroup($itemId);
-        $membersList = $group->getMemberItemList();
-        $memberStatus = $this->userService->getMemberStatus(
-            $group->getGroupRoomItem(),
-            $this->legacyEnvironment->getCurrentUser()
-        );
-
-        return [
-            'group' => $group,
-            'roomId' => $roomId,
-            'userIsMember' => $membersList->inList($this->legacyEnvironment->getCurrentUserItem()),
-            'memberStatus' => $memberStatus,
         ];
     }
 

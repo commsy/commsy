@@ -790,6 +790,12 @@ class UserController extends BaseController
             }
         }
 
+        $groups = [];
+        $context_item = $this->legacyEnvironment->getCurrentContextItem();
+        $conf = $context_item->getHomeConf();
+        if(strpos($conf, "group_show") == true) {
+            $groups = $this->userService->getUser($itemId)->getGroupList()->to_array();
+        }
         $infoArray['user'] = $user;
         $infoArray['readerList'] = $readerList;
         $infoArray['modifierList'] = $modifierList;
