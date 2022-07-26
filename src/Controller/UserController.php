@@ -796,7 +796,6 @@ class UserController extends BaseController
         if(strpos($conf, "group_show") == true) {
             $groups = $this->userService->getUser($itemId)->getGroupList()->to_array();
         }
-
         $infoArray['user'] = $user;
         $infoArray['readerList'] = $readerList;
         $infoArray['modifierList'] = $modifierList;
@@ -816,7 +815,7 @@ class UserController extends BaseController
         $infoArray['currentUser'] = $this->legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
-        $infoArray['linkedGroups'] = $groups;
+        $infoArray['linkedGroups'] = $this->userService->getUser($itemId)->getGroupList()->to_array();;
         $infoArray['comment'] = $user->getUserComment();
         $infoArray['status'] = $user->getStatus();
 
