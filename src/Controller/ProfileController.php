@@ -15,6 +15,7 @@ use App\Form\Type\Profile\RoomProfileGeneralType;
 use App\Form\Type\Profile\RoomProfileNotificationsType;
 use App\Services\LegacyEnvironment;
 use App\Utils\DiscService;
+use App\Utils\GroupService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
 use cs_user_item;
@@ -34,6 +35,21 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ProfileController extends AbstractController
 {
+
+    /**
+     * @var GroupService
+     */
+    private GroupService $groupService;
+
+    /**
+     * @required
+     * @param GroupService $groupService
+     */
+    public function setGroupService(GroupService $groupService): void
+    {
+        $this->groupService = $groupService;
+    }
+
     /**
      * @Route("/room/{roomId}/user/{itemId}/general")
      * @Template
@@ -462,6 +478,20 @@ class ProfileController extends AbstractController
                 $membershipManager->leaveWorkspace($roomItem, $account);
 
                 return $this->redirect($portalUrl);
+            }
+            if($request->query->has('groupId')){
+                $groupId = $request->query->get('groupId');
+                $roomEndId = $request->query->get('roomEndId');
+                $group = $this->groupService->getGroup($groupId);
+                $membershipManager->leaveGroup($group, $account);
+                $membershipManager->leaveWorkspace($roomItem, $account);
+                $group = $this->groupService->getGroup($groupId);
+                $roomItem->delete();
+                $group->delete();
+                return $this->redirectToRoute('app_group_list', [
+                    'roomId' => $roomEndId
+                ]);
+
             }
         }
 
