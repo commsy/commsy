@@ -32,6 +32,14 @@ class CommunityRoomsCreationType extends AbstractType
                 'label' => 'Default template',
                 'help' => 'Default template help text',
             ])
+            ->add('communityRoomShowTitle', Types\ChoiceType::class, [
+                'label' => 'Deactivated entries',
+                'expanded' => true,
+                'choices'  => [
+                    'Show title' => 'yes',
+                    'Hide title' => 'no',
+                ],
+            ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',
