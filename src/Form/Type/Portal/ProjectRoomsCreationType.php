@@ -42,6 +42,14 @@ class ProjectRoomsCreationType extends AbstractType
                 'choice_translation_domain' => 'form',
                 'help' => 'Mandatory room assignment help text',
             ])
+            ->add('projectRoomShowTitle', Types\ChoiceType::class, [
+                'label' => 'Deactivated entries',
+                'expanded' => true,
+                'choices'  => [
+                    'Show title' => 'yes',
+                    'Hide title' => 'no',
+                ],
+            ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',
