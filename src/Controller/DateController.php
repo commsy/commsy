@@ -312,7 +312,7 @@ class DateController extends BaseController
         int $roomId
     ) {
         $roomItem = $this->getRoom($roomId);
-        $filterForm = $this->createFilterForm($roomItem, false);
+        $filterForm = $this->createFilterForm($roomItem, false, true);
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -2054,9 +2054,11 @@ class DateController extends BaseController
     /**
      * @param cs_room_item $room
      * @param bool $hidePastDates Default state for hide past dates filter
+     * @param bool $viewAsCalendar Wheter the form's action should point to the calendar view (true),
+     * or else to list view(false): defaults to else
      * @return FormInterface
      */
-    private function createFilterForm($room, $hidePastDates = true)
+    private function createFilterForm($room, $hidePastDates = true, $viewAsCalendar = false)
     {
         // setup filter form default values
         $defaultFilterValues = [
@@ -2064,10 +2066,15 @@ class DateController extends BaseController
             'hide-past-dates' => $hidePastDates,
         ];
 
+        $listAction = $this->generateUrl('app_date_list', [
+            'roomId' => $room->getItemID()
+        ]);
+        $calendarAction = $this->generateUrl('app_date_calendar', [
+            'roomId' => $room->getItemID()
+        ]);
+
         return $this->createForm(DateFilterType::class, $defaultFilterValues, [
-            'action' => $this->generateUrl('app_date_list', [
-                'roomId' => $room->getItemID(),
-            ]),
+            'action' => $viewAsCalendar ? $calendarAction: $listAction,
             'hasHashtags' => $room->withBuzzwords(),
             'hasCategories' => $room->withTags(),
         ]);
