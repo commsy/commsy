@@ -968,11 +968,6 @@ class cs_material_manager extends cs_manager {
             } else {
                 $world_public = '0';
             }
-            $modification_date = getCurrentDateTimeInMySQL();
-            $activation_date = getCurrentDateTimeInMySQL();
-            if ($material_item->isNotActivated()) {
-                $activation_date = $material_item->getActivationDate();
-            }
 
             $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
@@ -1004,8 +999,8 @@ class cs_material_manager extends cs_manager {
                 ->setParameter('itemId', $material_item->getItemID())
                 ->setParameter('versionId', $material_item->getVersionID())
                 ->setParameter('modifierId', $modificator->getItemID())
-                ->setParameter('modificationDate', $modification_date)
-                ->setParameter('activationDate', $activation_date)
+                ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+                ->setParameter('activationDate', $material_item->isNotActivated() ? $material_item->getActivatingDate() : null)
                 ->setParameter('title', $material_item->getTitle())
                 ->setParameter('description', $material_item->getDescription())
                 ->setParameter('publishingDate', $material_item->getPublishingDate())
@@ -1031,33 +1026,43 @@ class cs_material_manager extends cs_manager {
         }
     }
 
-   /** create a material - internal, do not use -> use method save
-    * this method creates a material
-    *
-    * @param object cs_item material_item the material
-    */
-   function _create ($material_item) {
-     $context_id = $material_item->getContextID();
-     if ( !isset($context_id) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems creating new material: ContextID is not set',E_USER_ERROR);
-     } else {
-        $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
-                 'context_id="'.encode(AS_DB,$context_id).'",'.
-                 'modification_date="'.getCurrentDateTimeInMySQL().'",'.
-                 'activation_date="'.getCurrentDateTimeInMySQL().'",'.
-                 'type="'.encode(AS_DB,$material_item->getItemType(NONE)).'",'.
-                 'draft="'.encode(AS_DB,$material_item->isDraft()).'"';
-        $result = $this->_db_connector->performQuery($query);
-        if ( !isset($result) ) {
-           include_once('functions/error_functions.php');trigger_error('Problems creating material from query: "'.$query.'"',E_USER_WARNING);
-           $this->_create_id = NULL;
-        } else {
-           $this->_create_id = $result;
-           $material_item->setItemID($this->getCreateID());
-           $this->_newmaterial($material_item);
+    /**
+     * create a material - internal, do not use -> use method save
+     * this method creates a material
+     *
+     * @param cs_material_item $material_item
+     */
+    function _create(cs_material_item $material_item)
+    {
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $queryBuilder
+            ->insert($this->addDatabasePrefix('items'))
+            ->setValue('context_id', ':contextId')
+            ->setValue('modification_date', ':modificationDate')
+            ->setValue('activation_date', ':activationDate')
+            ->setValue('type', ':type')
+            ->setValue('draft', ':draft')
+            ->setParameter('contextId', $material_item->getContextID())
+            ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+            ->setParameter('activationDate',
+                $material_item->isNotActivated() ? $material_item->getActivatingDate() : null)
+            ->setParameter('type', 'material')
+            ->setParameter('draft', $material_item->isDraft());
+
+        try {
+            $queryBuilder->executeStatement();
+
+            $this->_create_id = $queryBuilder->getConnection()->lastInsertId();
+            $material_item->setItemID($this->getCreateID());
+            $this->_newmaterial($material_item);
+
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error($e->getMessage(), E_USER_WARNING);
+            $this->_create_id = null;
         }
-     }
-  }
+    }
 
     /** creates a new material - internal, do not use -> use method save
      * this method creates a new material
@@ -1096,10 +1101,6 @@ class cs_material_manager extends cs_manager {
                 $world_public = '0';
             }
             $modification_date = getCurrentDateTimeInMySQL();
-            $activation_date = getCurrentDateTimeInMySQL();
-            if ($material_item->isNotActivated()) {
-                $activation_date = $material_item->getActivationDate();
-            }
 
             $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
@@ -1138,7 +1139,7 @@ class cs_material_manager extends cs_manager {
                 ->setParameter('creationDate', $current_datetime)
                 ->setParameter('modifierId', $modificator->getItemID())
                 ->setParameter('modificationDate', $modification_date)
-                ->setParameter('activationDate', $activation_date)
+                ->setParameter('activationDate', $material_item->isNotActivated() ? $material_item->getActivatingDate() : null)
                 ->setParameter('title', $material_item->getTitle())
                 ->setParameter('description', $material_item->getDescription())
                 ->setParameter('publishingDate', $material_item->getPublishingDate())

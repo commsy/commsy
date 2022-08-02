@@ -72,13 +72,13 @@ class TopicTransformer extends AbstractTransformer
                     $topicObject->setActivationDate('9999-00-00 00:00:00');
                 }
             } else {
-                if($topicObject->isNotActivated()){
-    	            $topicObject->setActivationDate(new DateTime());
+                if ($topicObject->isNotActivated()) {
+    	            $topicObject->setActivationDate(null);
     	        }
             }
         } else {
-            if($topicObject->isNotActivated()){
-	            $topicObject->setActivationDate(new DateTime());
+            if ($topicObject->isNotActivated()) {
+	            $topicObject->setActivationDate(null);
 	        }
         }
 

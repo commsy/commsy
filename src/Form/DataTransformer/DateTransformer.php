@@ -135,13 +135,13 @@ class DateTransformer  extends AbstractTransformer
                     $dateObject->setActivationDate('9999-00-00 00:00:00');
                 }
             } else {
-                if($dateObject->isNotActivated()){
-                    $dateObject->setActivationDate(new DateTime());
+                if ($dateObject->isNotActivated()) {
+                    $dateObject->setActivationDate(null);
     	        }
             }
         } else {
-            if($dateObject->isNotActivated()){
-                $dateObject->setActivationDate(new DateTime());
+            if ($dateObject->isNotActivated()) {
+                $dateObject->setActivationDate(null);
 	        }
         }
 
