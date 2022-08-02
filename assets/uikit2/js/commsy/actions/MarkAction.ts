@@ -7,21 +7,21 @@ import {XHRAction} from "./AbstractAction";
 
 declare var UIkit: any;
 
-export class CopyAction extends XHRAction {
+export class MarkAction extends XHRAction {
     constructor(actionData: ActionData) {
         super(actionData);
     }
 
-    public onSuccess(backendResponse: ActionResponse): Promise<ActionResponse> {
-        return new Promise<ActionResponse>((resolve) => {
+    public onSuccess(backendResponse: ActionResponse): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
             let payload: any = backendResponse.payload;
 
             UIkit.notify(payload.message, 'success');
 
-            let $indicator = $('#cs-nav-copy-indicator');
+            let $indicator = $('#cs-nav-mark-indicator');
             $indicator.html(payload.count);
 
-            resolve(backendResponse);
+            resolve(true);
         });
     }
 }

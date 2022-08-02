@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
-use App\Action\Copy\CopyAction;
+use App\Action\Mark\CategorizeAction;
+use App\Action\Mark\HashtagAction;
+use App\Action\Mark\MarkAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\ItemMarkRead;
@@ -173,9 +175,9 @@ class AnnouncementController extends BaseController
         foreach ($announcements as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
+                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'categorize', 'hashtag', 'save', 'delete');
             } else {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save');
             }
         }
 
@@ -560,6 +562,8 @@ class AnnouncementController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
      * @param Request $request
+     * @param LabelService $labelService
+     * @param CategoryService $categoryService
      * @param AnnouncementTransformer $transformer
      * @param int $roomId
      * @param int $itemId
@@ -567,10 +571,9 @@ class AnnouncementController extends BaseController
      */
     public function editAction(
         Request $request,
-        ItemController $itemController,
-        AnnouncementTransformer $transformer,
         LabelService $labelService,
         CategoryService $categoryService,
+        AnnouncementTransformer $transformer,
         int $roomId,
         int $itemId
     ) {
@@ -592,9 +595,8 @@ class AnnouncementController extends BaseController
                 throw $this->createNotFoundException('No announcement found for id ' . $roomId);
             }
             $formData = $transformer->transform($announcementItem);
-            $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
-                $this->legacyEnvironment);
+            $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
+            $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
             $form = $this->createForm(AnnouncementType::class, $formData, array(
                 'action' => $this->generateUrl('app_announcement_edit', array(
                     'roomId' => $roomId,
@@ -602,12 +604,12 @@ class AnnouncementController extends BaseController
                 )),
                 'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
                 'categoryMappingOptions' => [
-                    'categories' => $itemController->getCategories($roomId, $this->categoryService),
+                    'categories' => $labelService->getCategories($roomId),
                     'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
                     'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
                 ],
                 'hashtagMappingOptions' => [
-                    'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
+                    'hashtags' => $labelService->getHashtags($roomId),
                     'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                     'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
                 ],
@@ -785,21 +787,53 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/announcement/xhr/copy", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/announcement/xhr/mark", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param $roomId
      * @return
      * @throws Exception
      */
-    public function xhrCopyAction(
+    public function xhrMarkAction(
         Request $request,
-        CopyAction $action,
+        MarkAction $action,
         $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/announcement/xhr/categorize", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param CategorizeAction $action
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrCategorizeAction(
+        Request $request,
+        CategorizeAction $action,
+        int $roomId
+    ) {
+        return parent::handleCategoryActionOptions($request, $action, $roomId);
+    }
+
+    /**
+     * @Route("/room/{roomId}/announcement/xhr/hashtag", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param HashtagAction $action
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrHashtagAction(
+        Request $request,
+        HashtagAction $action,
+        int $roomId
+    ) {
+        return parent::handleHashtagActionOptions($request, $action, $roomId);
     }
 
     /**

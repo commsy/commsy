@@ -3,6 +3,7 @@ namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
 use cs_environment;
+use DateTime;
 
 class TodoTransformer extends AbstractTransformer
 {
@@ -38,7 +39,7 @@ class TodoTransformer extends AbstractTransformer
                 
                 $activating_date = $todoItem->getActivatingDate();
                 if (!stristr($activating_date,'9999')){
-                    $datetime = new \DateTime($activating_date);
+                    $datetime = new DateTime($activating_date);
                     $todoData['hiddendate']['date'] = $datetime;
                     $todoData['hiddendate']['time'] = $datetime;
                 }
@@ -46,9 +47,9 @@ class TodoTransformer extends AbstractTransformer
             
             if (get_class($todoItem) != 'cs_step_item') {
                 if ($todoItem->getDate() && $todoItem->getDate() != '9999-00-00 00:00:00') {
-                    $datetimeDueDate = new \DateTime($todoItem->getDate());
+                    $datetimeDueDate = new DateTime($todoItem->getDate());
                 } else{
-                    $datetimeDueDate = new \DateTime();
+                    $datetimeDueDate = new DateTime();
                 }
                 $todoData['due_date']['date'] = $datetimeDueDate;
                 $todoData['due_date']['time'] = $datetimeDueDate;
@@ -106,25 +107,25 @@ class TodoTransformer extends AbstractTransformer
 
         if (isset($todoData['hidden'])) {
             if ($todoData['hidden']) {
-                if ($todoData['hiddendate']['date']) {
+                if (isset($todoData['hiddendate']['date'])) {
                     // add validdate to validdate
                     $datetime = $todoData['hiddendate']['date'];
                     if ($todoData['hiddendate']['time']) {
                         $time = explode(":", $todoData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
-                    $todoObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+                    $todoObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
                 } else {
-                    $todoObject->setModificationDate('9999-00-00 00:00:00');
+                    $todoObject->setActivationDate('9999-00-00 00:00:00');
                 }
             } else {
                 if($todoObject->isNotActivated()){
-    	            $todoObject->setModificationDate(getCurrentDateTimeInMySQL());
+    	            $todoObject->setActivationDate(new DateTime());
     	        }
             }
         } else {
             if($todoObject->isNotActivated()){
-	            $todoObject->setModificationDate(getCurrentDateTimeInMySQL());
+	            $todoObject->setActivationDate(new DateTime());
 	        }
         }
 

@@ -630,7 +630,7 @@ class MenuBuilder
         // NOTE: hide dashboard menu in dashboard overview and room list!
         if (!$userIsRoot &&
             (!$inPrivateRoom || ($action != "overview" && $action != "listall")) &&
-            ($controller != "copy" || $action != "list") &&
+            ($controller != "marked" || $action != "list") &&
             ($controller != "room" || $action != "detail")
         ) {
             // home navigation

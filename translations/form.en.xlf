@@ -438,10 +438,6 @@
                 <source>create entry</source>
                 <target>Create entry</target>
             </trans-unit>
-            <trans-unit id="add files here">
-                 <source>add files here</source>
-                 <target>Add files here</target>
-            </trans-unit>
             <trans-unit id="token invalid">
                 <source>token invalid</source>
                 <target>The invitation is not valid (anymore). Please contact the moderation.</target>

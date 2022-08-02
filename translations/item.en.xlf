@@ -62,9 +62,9 @@
                 <source>workflowNoStatus</source>
                 <target>No status</target>
             </trans-unit>
-            <trans-unit id="clipboardCopySuccess">
-                <source>Entry stored in clipboard|%count% entries stored in clipboard</source>
-                <target>Entry stored in clipboard|%count% entries stored in clipboard</target>
+            <trans-unit id="markedSuccess">
+                <source>Entry marked|%count% entries marked</source>
+                <target>Entry marked|%count% entries marked</target>
             </trans-unit>
             <trans-unit id="exportToWordpress">
                 <source>Export to Wordpress</source>
