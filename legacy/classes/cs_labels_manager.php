@@ -793,69 +793,87 @@ class cs_labels_manager extends cs_manager {
      return $item;
   }
 
-  /** update a label - internal, do not use -> use method save
-    * this method updates a label
-    *
-    * @param object cs_item label_item the label
-    *
-    * @author CommSy Development Group
-    */
-  function _update ($item) {
-     parent::_update($item);
+    /**
+     * update a label - internal, do not use -> use method save
+     * this method updates a label
+     *
+     * @param cs_label_item $item
+     *
+     * @author CommSy Development Group
+     */
+    function _update($item)
+    {
+        parent::_update($item);
 
-     $modificator = $item->getModificatorItem();
-     $modification_date = getCurrentDateTimeInMySQL();
-     $activation_date = getCurrentDateTimeInMySQL();
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
-     if ($item->isPublic()) {
-        $public = 1;
-     } else {
-        $public = 0;
-     }
-     if ($item->isNotActivated()){
-         $activation_date = $item->getActivationDate();
-     }
-     $query =  'UPDATE '.$this->addDatabasePrefix('labels').' SET '.
-               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-               'modification_date="'.$modification_date.'",'.
-                'activation_date="'.$activation_date.'",';
-     if ( !($item->getLabelType() == CS_GROUP_TYPE AND $item->isSystemLabel()) ) {
-        $query .= 'name="'.encode(AS_DB,$item->getTitle()).'",';
-     }
-     $query .= 'description="'.encode(AS_DB,$item->getDescription()).'",'.
-               'public="'.encode(AS_DB,$public).'",'.
-               "extras='".encode(AS_DB,serialize($item->getExtraInformation()))."'".
-               ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) or !$result ) {
-        include_once('functions/error_functions.php');trigger_error('Problems updating label: "'.$this->_dberror.'" from query: "'.$query.'"',E_USER_WARNING);
-     }
-  }
+        $queryBuilder
+            ->update($this->addDatabasePrefix('labels'))
+            ->set('modifier_id', ':modifierId')
+            ->set('modification_date', ':modificationDate')
+            ->set('activation_date', ':activationDate')
+            ->set('description', ':description')
+            ->set('extras', ':extras')
+            ->set('public', ':public')
+            ->where('item_id = :itemId')
+            ->setParameter('modifierId', $item->getModificatorItem()->getItemID())
+            ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+            ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
+            ->setParameter('description', $item->getDescription())
+            ->setParameter('extras', serialize($item->getExtraInformation()))
+            ->setParameter('public', $item->isPublic() ? 1 : 0)
+            ->setParameter('itemId', $item->getItemID());
 
-  /** create a label - internal, do not use -> use method save
-    * this method creates a label
-    *
-    * @param object cs_item label_item the label
-    */
-  function _create ($item) {
-     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
-              'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
-              'modification_date="'.getCurrentDateTimeInMySQL().'",'.
-              'activation_date="'.getCurrentDateTimeInMySQL().'",'.
-              'type="label",'.
-              'draft="'.encode(AS_DB,$item->isDraft()).'"';
+        if (!($item->getLabelType() == CS_GROUP_TYPE && $item->isSystemLabel())) {
+            $queryBuilder
+                ->set('name', ':name')
+                ->setParameter('name', $item->getTitle());
+        }
 
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems creating label.', E_USER_ERROR);
-        $this->_create_id = NULL;
-     } else {
-        $this->_create_id = $result;
-        $item->setItemID($this->getCreateID());
-        $this->_newLabel($item);
-     }
-  }
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error($e->getMessage(), E_USER_WARNING);
+        }
+    }
+
+    /**
+     * create a label - internal, do not use -> use method save
+     * this method creates a label
+     *
+     * @param cs_label_item $item
+     */
+    function _create(cs_label_item $item)
+    {
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $queryBuilder
+            ->insert($this->addDatabasePrefix('items'))
+            ->setValue('context_id', ':contextId')
+            ->setValue('modification_date', ':modificationDate')
+            ->setValue('activation_date', ':activationDate')
+            ->setValue('type', ':type')
+            ->setValue('draft', ':draft')
+            ->setParameter('contextId', $item->getContextID())
+            ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+            ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
+            ->setParameter('type', 'label')
+            ->setParameter('draft', $item->isDraft());
+
+        try {
+            $queryBuilder->executeStatement();
+
+            $this->_create_id = $queryBuilder->getConnection()->lastInsertId();
+            $item->setItemID($this->getCreateID());
+            $this->_newLabel($item);
+
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error($e->getMessage(), E_USER_WARNING);
+            $this->_create_id = null;
+        }
+    }
 
   /** creates a new label - internal, do not use -> use method save
     * this method creates a new version of a label
@@ -864,45 +882,45 @@ class cs_labels_manager extends cs_manager {
     *
     * @author CommSy Development Group
     */
-  function _newLabel ($item) {
-     $user = $item->getCreatorItem();
-     $modificator = $item->getModificatorItem();
-     $current_datetime = getCurrentDateTimeInMySQL();
-     $modification_date = $item->getModificationDate();
-     $activation_date =  getCurrentDateTimeInMySQL();
-      if ($item->isNotActivated()) {
-          $activation_date = $item->getActivationDate();
+  function _newLabel (cs_label_item $item)
+  {
+      $currentDateTime = getCurrentDateTimeInMySQL();
+
+      $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+      $queryBuilder
+          ->insert($this->addDatabasePrefix('labels'))
+          ->setValue('item_id', ':itemId')
+          ->setValue('context_id', ':contextId')
+          ->setValue('creator_id', ':creatorId')
+          ->setValue('creation_date', ':creationDate')
+          ->setValue('modifier_id', ':modifierId')
+          ->setValue('modification_date', ':modificationDate')
+          ->setValue('activation_date', ':activationDate')
+          ->setValue('name', ':name')
+          ->setValue('public', ':public')
+          ->setValue('description', ':description')
+          ->setValue('extras', ':extras')
+          ->setValue('type', ':type')
+          ->setParameter('itemId', $item->getItemID())
+          ->setParameter('contextId', $item->getContextID())
+          ->setParameter('creatorId', $item->getCreatorItem()->getItemID())
+          ->setParameter('creationDate', $currentDateTime)
+          ->setParameter('modifierId', $item->getModificatorItem()->getItemID())
+          ->setParameter('modificationDate', $item->getModificationDate() ?: $currentDateTime)
+          ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
+          ->setParameter('name', $item->getTitle())
+          ->setParameter('public', $item->isPublic() ? 1 : 0)
+          ->setParameter('description', $item->getDescription())
+          ->setParameter('extras', serialize($item->getExtraInformation()))
+          ->setParameter('type', $item->getLabelType());
+
+      try {
+          $queryBuilder->executeStatement();
+      } catch (\Doctrine\DBAL\Exception $e) {
+          include_once('functions/error_functions.php');
+          trigger_error('Problems creating announcement.', E_USER_WARNING);
       }
-     if ($item->isPublic()) {
-        $public = 1;
-     } else {
-        $public = 0;
-     }
-
-     $query  = 'INSERT INTO '.$this->addDatabasePrefix('labels').' SET '.
-               'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
-               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
-               'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
-               'creation_date="'.$current_datetime.'",'.
-               'activation_date="'.$activation_date.'",'.
-               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",';
-
-     if (empty($modification_date)) {
-         $query .= 'modification_date="'.$current_datetime.'",';
-     } else {
-         $query .= 'modification_date="'.$modification_date.'",';
-     }
-
-     $query .= 'name="'.encode(AS_DB,$item->getTitle()).'",'.
-               'public="'.encode(AS_DB,$public).'",'.
-               'description="'.encode(AS_DB,$item->getDescription()).'",'.
-               'extras="'.encode(AS_DB,serialize($item->getExtraInformation())).'",'.
-               'type="'.encode(AS_DB,$item->getLabelType()).'"';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems creating label.',E_USER_WARNING);
-     }
   }
 
   /** save a label
