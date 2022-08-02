@@ -446,19 +446,6 @@ class cs_todos_manager extends cs_manager {
         /** @var cs_todo_item $item */
         parent::_update($item);
 
-        $modificator = $item->getModificatorItem();
-        $modification_date = getCurrentDateTimeInMySQL();
-        $activation_date = getCurrentDateTimeInMySQL();
-
-        if ($item->isPublic()) {
-            $public = '1';
-        } else {
-            $public = '0';
-        }
-        if ($item->isNotActivated()) {
-            $activation_date = $item->getActivationDate();
-        }
-
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
         $queryBuilder
@@ -473,14 +460,14 @@ class cs_todos_manager extends cs_manager {
             ->set('public', ':public')
             ->set('description', ':description')
             ->where('item_id = :itemId')
-            ->setParameter('modifierId', $modificator->getItemID())
-            ->setParameter('modificationDate', $modification_date)
-            ->setParameter('activationDate', $activation_date)
+            ->setParameter('modifierId', $item->getModificatorItem()->getItemID())
+            ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+            ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
             ->setParameter('title', $item->getTitle())
             ->setParameter('status', $item->getInternalStatus())
             ->setParameter('minutes', $item->getPlannedTime())
             ->setParameter('timeType', $item->getTimeType())
-            ->setParameter('public', $public)
+            ->setParameter('public', $item->isPublic() ? 1 : 0)
             ->setParameter('description', $item->getDescription())
             ->setParameter('itemId', $item->getItemID());
 
@@ -498,29 +485,42 @@ class cs_todos_manager extends cs_manager {
         }
     }
 
-  /** create a new item in the items table - internal, do not use -> use method save
+  /**
+   * create a new item in the items table - internal, do not use -> use method save
    * this method creates a new item of type 'todo' in the database and sets the todo items item id.
    * it then calls the private method _newNews to store the todo item itself.
-   * @param cs_todo_item the todo item for which an entry should be made
+   *
+   * @param cs_todo_item $item
    */
-  function _create ($item) {
-     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
-              'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
-              'modification_date="'.getCurrentDateTimeInMySQL().'",'.
-              'activation_date="'.getCurrentDateTimeInMySQL().'",'.
-              'type="todo",'.
-              'draft="'.encode(AS_DB,$item->isDraft()).'"';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems creating todo from query: "'.$query.'"',E_USER_WARNING);
-        $this->_create_id = NULL;
-     } else {
-        $this->_create_id = $result;
-        $item->setItemID($this->getCreateID());
-        $this->_newNews($item);
-     }
-     unset($item);
+  function _create (cs_todo_item $item)
+  {
+      $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+      $queryBuilder
+          ->insert($this->addDatabasePrefix('items'))
+          ->setValue('context_id', ':contextId')
+          ->setValue('modification_date', ':modificationDate')
+          ->setValue('activation_date', ':activationDate')
+          ->setValue('type', ':type')
+          ->setValue('draft', ':draft')
+          ->setParameter('contextId', $item->getContextID())
+          ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+          ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
+          ->setParameter('type', 'todo')
+          ->setParameter('draft', $item->isDraft());
+
+      try {
+          $queryBuilder->executeStatement();
+
+          $this->_create_id = $queryBuilder->getConnection()->lastInsertId();
+          $item->setItemID($this->getCreateID());
+          $this->_newNews($item);
+
+      } catch (\Doctrine\DBAL\Exception $e) {
+          include_once('functions/error_functions.php');
+          trigger_error($e->getMessage(), E_USER_WARNING);
+          $this->_create_id = null;
+      }
   }
 
     /** store a new todo item to the database - internal, do not use -> use method save
@@ -530,26 +530,9 @@ class cs_todos_manager extends cs_manager {
      */
     function _newNews(cs_todo_item $item)
     {
-        $user = $item->getCreatorItem();
-        $modificator = $item->getModificatorItem();
-        $modificationDate = getCurrentDateTimeInMySQL();
-        $activation_date = getCurrentDateTimeInMySQL();
         $currentDateTime = getCurrentDateTimeInMySQL();
 
-        if ($item->isPublic()) {
-            $public = '1';
-        } else {
-            $public = '0';
-        }
-
-        $date = $item->getDate();
-        if ($item->isNotActivated()) {
-            $activation_date = $item->getActivationDate();
-        }
-
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
-
-        $date = empty($item->getDate()) ? null : $item->getDate();
 
         $queryBuilder
             ->insert($this->addDatabasePrefix('todos'))
@@ -568,16 +551,16 @@ class cs_todos_manager extends cs_manager {
             ->setValue('description', ':description')
             ->setParameter('itemId', $item->getItemID())
             ->setParameter('contextId', $item->getContextID())
-            ->setParameter('creatorId', $user->getItemID())
+            ->setParameter('creatorId', $item->getCreatorItem()->getItemID())
             ->setParameter('creationDate', $currentDateTime)
-            ->setParameter('modifierId', $modificator->getItemID())
-            ->setParameter('modificationDate', $modificationDate)
-            ->setParameter('activationDate', $activation_date)
+            ->setParameter('modifierId', $item->getModificatorItem()->getItemID())
+            ->setParameter('modificationDate', $currentDateTime)
+            ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
             ->setParameter('title', $item->getTitle())
-            ->setParameter('date', $date)
+            ->setParameter('date', empty($item->getDate()) ? null : $item->getDate())
             ->setParameter('minutes', $item->getPlannedTime())
             ->setParameter('timeType', $item->getTimeType())
-            ->setParameter('public', $public)
+            ->setParameter('public', $item->isPublic() ? 1 : 0)
             ->setParameter('description', $item->getDescription());
 
         $status = $item->getInternalStatus();

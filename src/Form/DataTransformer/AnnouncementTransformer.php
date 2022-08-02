@@ -84,13 +84,13 @@ class AnnouncementTransformer  extends AbstractTransformer
                     $announcementObject->setActivationDate('9999-00-00 00:00:00');
                 }
             } else {
-                if($announcementObject->isNotActivated()){
-    	            $announcementObject->setActivationDate(new DateTime());
+                if ($announcementObject->isNotActivated()) {
+    	            $announcementObject->setActivationDate(null);
     	        }
             }
         } else {
-            if($announcementObject->isNotActivated()){
-	            $announcementObject->setActivationDate(new DateTime());
+            if ($announcementObject->isNotActivated()) {
+	            $announcementObject->setActivationDate(null);
 	        }
         }
         

@@ -119,13 +119,13 @@ class TodoTransformer extends AbstractTransformer
                     $todoObject->setActivationDate('9999-00-00 00:00:00');
                 }
             } else {
-                if($todoObject->isNotActivated()){
-    	            $todoObject->setActivationDate(new DateTime());
+                if ($todoObject->isNotActivated()) {
+    	            $todoObject->setActivationDate(null);
     	        }
             }
         } else {
-            if($todoObject->isNotActivated()){
-	            $todoObject->setActivationDate(new DateTime());
+            if ($todoObject->isNotActivated()) {
+	            $todoObject->setActivationDate(null);
 	        }
         }
 
