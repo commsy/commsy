@@ -76,11 +76,11 @@
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item')
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-check-square-o uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-book uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-check-square-o uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-book uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
                         </span>
                     {% endif %}
                 </li>
@@ -88,17 +88,53 @@
                 <li>
                     {% if user.isUser %}
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('app_todo_xhrcopy', {'roomId': roomId}),
-                            'action': 'copy',
+                            'url': path('app_todo_xhrmark', {'roomId': roomId}),
+                            'action': 'mark',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item')
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-check uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-check uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
+                        </span>
+                    {% endif %}
+                </li>
+
+                <li>
+                    {% if showCategories and is_granted('CATEGORY_EDIT') %}
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('app_todo_xhrcategorize', {'roomId': roomId}),
+                            'action': 'categorize',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                        }|json_encode|e('html_attr') }}">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-sitemap uk-visible-large"></i> {{ 'categorize'|trans({},'rubric') }}
+                        </a>
+                    {% else %}
+                        <span class="uk-text-muted">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-sitemap uk-visible-large"></i> {{ 'categorize'|trans({},'rubric') }}
+                        </span>
+                    {% endif %}
+                </li>
+
+                <li>
+                    {% if showHashTags and is_granted('HASHTAG_EDIT') %}
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('app_todo_xhrhashtag', {'roomId': roomId}),
+                            'action': 'hashtag',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                        }|json_encode|e('html_attr') }}">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-hashtag uk-visible-large"></i> {{ 'hashtag'|trans({},'rubric') }}
+                        </a>
+                    {% else %}
+                        <span class="uk-text-muted">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-hashtag uk-visible-large"></i> {{ 'hashtag'|trans({},'rubric') }}
                         </span>
                     {% endif %}
                 </li>

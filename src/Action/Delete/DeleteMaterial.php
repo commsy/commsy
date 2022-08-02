@@ -3,16 +3,16 @@
 namespace App\Action\Delete;
 
 
-use App\Services\CopyService;
+use App\Services\MarkedService;
 
 class DeleteMaterial implements DeleteInterface
 {
-    /** @var CopyService $copyService */
-    protected CopyService $copyService;
+    /** @var MarkedService $markedService */
+    protected MarkedService $markedService;
 
-    public function __construct(CopyService $copyService)
+    public function __construct(MarkedService $markedService)
     {
-        $this->copyService = $copyService;
+        $this->markedService = $markedService;
     }
 
     /**
@@ -25,7 +25,7 @@ class DeleteMaterial implements DeleteInterface
 
         $material->deleteAllVersions();
 
-        $this->copyService->removeItemFromClipboard($material->getItemId());
+        $this->markedService->removeItemFromClipboard($material->getItemId());
     }
 
     /**

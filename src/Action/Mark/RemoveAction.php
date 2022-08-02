@@ -6,13 +6,12 @@
  * Time: 15:28
  */
 
-namespace App\Action\Copy;
+namespace App\Action\Mark;
 
 
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
-use App\Services\CopyService;
-use App\Services\LegacyEnvironment;
+use App\Services\MarkedService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -24,17 +23,16 @@ class RemoveAction implements ActionInterface
     private TranslatorInterface $translator;
 
     /**
-     * @var CopyService
+     * @var MarkedService
      */
-    private CopyService $copyService;
+    private MarkedService $markedService;
 
     public function __construct(
         TranslatorInterface $translator,
-        LegacyEnvironment $legacyEnvironment,
-        CopyService $copyService
+        MarkedService $markedService
     ) {
         $this->translator = $translator;
-        $this->copyService = $copyService;
+        $this->markedService = $markedService;
     }
 
     public function execute(\cs_room_item $roomItem, array $items): Response
@@ -44,7 +42,7 @@ class RemoveAction implements ActionInterface
             $ids[] = $item->getItemId();
         }
 
-        $this->copyService->removeEntries($roomItem->getItemID(), $ids);
+        $this->markedService->removeEntries($roomItem->getItemID(), $ids);
 
         return new JsonDataResponse([
             'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> ' . $this->translator->trans('removed %count% entries from list', [

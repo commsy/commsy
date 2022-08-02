@@ -20,7 +20,7 @@ class CategoryMappingType extends AbstractType
                 'placeholder' => false,
                 'choices' => $options['categories'],
                 'choice_label' => function ($choice, $key, $value) {
-                    // remove the trailing category ID from $key (which was used in ItemController->transformTagArray() to uniquify the key)
+                    // remove the trailing category ID from $key (which was used in LabelService->transformTagArray() to uniquify the key)
                     return implode('_', explode('_', $key, -1));
                 },
                 'required' => false,

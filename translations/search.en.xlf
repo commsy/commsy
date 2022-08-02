@@ -92,7 +92,7 @@
             </trans-unit>
             <trans-unit id="search-filter-hashtags">
                 <source>Hashtags</source>
-                <target>Tags</target>
+                <target>Hashtags</target>
             </trans-unit>
             <trans-unit id="search-filter-contexts">
                 <source>Contexts</source>

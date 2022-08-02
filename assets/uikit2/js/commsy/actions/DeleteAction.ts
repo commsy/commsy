@@ -47,8 +47,8 @@ export class DeleteAction extends XHRAction {
         });
     }
 
-    public onSuccess(backendResponse: ActionResponse): Promise<ActionResponse> {
-        return new Promise<ActionResponse>((resolve) => {
+    public onSuccess(backendResponse: ActionResponse): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
             if (backendResponse.redirect) {
                 window.location.href = backendResponse.redirect.route;
             } else {
@@ -59,7 +59,7 @@ export class DeleteAction extends XHRAction {
                     case 'discarticle':
                         $('.discussion-article').hide();
 
-                        let urlPathParts = this.url.split("/");
+                        let urlPathParts = this.actionData.url.split("/");
                         let listElement = $("#" + this.itemType + "-list a[href='#" + this.itemType + urlPathParts[urlPathParts.length-2]+"']").closest("li");
                         listElement.nextAll("li").each(function(){
                             let lineParts = $(this).find("a").text().trim().split(" ");
@@ -77,7 +77,7 @@ export class DeleteAction extends XHRAction {
                 }
             }
 
-            resolve(backendResponse);
+            resolve(true);
         });
     }
 }

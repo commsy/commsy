@@ -18,16 +18,14 @@ use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
 use App\Utils\DateService;
 use App\Utils\ItemService;
+use App\Utils\LabelService;
 use App\Utils\MailAssistant;
 use App\Utils\MaterialService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
-use cs_buzzword_item;
-use cs_buzzword_manager;
 use cs_dates_item;
 use cs_item;
 use cs_manager;
-use cs_tag_item;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -50,6 +48,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ItemController extends AbstractController
 {
     /**
+     * @var LabelService
+     */
+    private LabelService $labelService;
+
+    /**
      * @var TransformerManager
      */
     private TransformerManager $transformerManager;
@@ -61,6 +64,14 @@ class ItemController extends AbstractController
     public function setTransformerManager(TransformerManager $transformerManager): void
     {
         $this->transformerManager = $transformerManager;
+    }
+
+    /**
+     * @param LabelService $labelService
+     */
+    public function __construct(LabelService $labelService)
+    {
+        $this->labelService = $labelService;
     }
 
     /**
@@ -288,7 +299,7 @@ class ItemController extends AbstractController
      * @Route("/room/{roomId}/item/{itemId}/editlinks/{feedAmount}", defaults={"feedAmount" = 20})
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param CategoryService $categoryService
+     * @param LabelService $labelService
      * @param RoomService $roomService
      * @param ItemService $itemService
      * @param TranslatorInterface $translator
@@ -301,7 +312,7 @@ class ItemController extends AbstractController
      * @return array|RedirectResponse
      */
     public function editLinksAction(
-        CategoryService $categoryService,
+        LabelService $labelService,
         RoomService $roomService,
         ItemService $itemService,
         TranslatorInterface $translator,
@@ -414,13 +425,13 @@ class ItemController extends AbstractController
         }
 
         // get all categories -> tree
-        $optionsData['categories'] = $this->getCategories($roomId, $categoryService);
-        $formData['categories'] = $this->getLinkedCategories($item);
+        $optionsData['categories'] = $labelService->getCategories($roomId);
+        $formData['categories'] = $labelService->getLinkedCategoryIds($item);
         $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(array('min' => 1))] : array();
 
         // get all hashtags -> list
-        $optionsData['hashtags'] = $this->getHashtags($roomId, $legacyEnvironment);
-        $formData['hashtags'] = $this->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+        $optionsData['hashtags'] = $labelService->getHashtags($roomId);
+        $formData['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
         $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(array('min' => 1))] : [];
 
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
@@ -487,6 +498,7 @@ class ItemController extends AbstractController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
      * @param CategoryService $categoryService
+     * @param LabelService $labelService
      * @param RoomService $roomService
      * @param ItemService $itemService
      * @param TranslatorInterface $translator
@@ -500,6 +512,7 @@ class ItemController extends AbstractController
      */
     public function editCatsBuzzAction(
         CategoryService $categoryService,
+        LabelService $labelService,
         RoomService $roomService,
         ItemService $itemService,
         TranslatorInterface $translator,
@@ -606,13 +619,13 @@ class ItemController extends AbstractController
         }
 
         // get all categories -> tree
-        $optionsData['categories'] = $this->getCategories($roomId, $categoryService);
-        $formData['categories'] = $this->getLinkedCategories($item);
+        $optionsData['categories'] = $labelService->getCategories($roomId);
+        $formData['categories'] = $labelService->getLinkedCategoryIds($item);
         $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(array('min' => 1))] : array();
 
         // get all hashtags -> list
-        $optionsData['hashtags'] = $this->getHashtags($roomId, $legacyEnvironment);
-        $formData['hashtags'] = $this->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+        $optionsData['hashtags'] = $labelService->getHashtags($roomId);
+        $formData['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
         $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(array('min' => 1))] : [];
 
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
@@ -843,24 +856,6 @@ class ItemController extends AbstractController
             ]),
             'title' => $item->getTitle(),
         ];
-    }
-
-    private function transformTagArray($tagArray)
-    {
-        $array = [];
-
-        foreach ($tagArray as $tag) {
-            // NOTE: in order to form unique array keys, we append the category (aka tag) ID to the category title;
-            // note that, in any form that makes use of this tag array, the category ID must be stripped again
-            // from the title (e.g. via a `choice_label` field option)
-            $array[$tag['title'] . '_' . $tag['item_id']] = $tag['item_id'];
-
-            if (!empty($tag['children'])) {
-                $array[$tag['title'] . '_sub' . '_' . $tag['item_id']] = $this->transformTagArray($tag['children']);
-            }
-        }
-
-        return $array;
     }
 
     /**
@@ -1209,7 +1204,7 @@ class ItemController extends AbstractController
         if ($current_context->withTags()) {
             $roomCategories = $categoryService->getTags($roomId);
             $itemCategories = $item->getTagsArray();
-            $categories = $this->getTagDetailArray($roomCategories, $itemCategories);
+            $categories = $this->labelService->getTagDetailArray($roomCategories, $itemCategories);
         }
 
         $roomItem = $roomService->getRoomItem($roomId);
@@ -1220,103 +1215,6 @@ class ItemController extends AbstractController
             'showCategories' => $roomItem->withTags(),
             'roomCategories' => $categories,
         ];
-    }
-
-    private function getTagDetailArray ($baseCategories, $itemCategories) {
-        $result = array();
-        $tempResult = array();
-        $addCategory = false;
-        foreach ($baseCategories as $baseCategory) {
-            if (!empty($baseCategory['children'])) {
-                $tempResult = $this->getTagDetailArray($baseCategory['children'], $itemCategories);
-            }
-            if (!empty($tempResult)) {
-                $addCategory = true;
-            }
-            $tempArray = array();
-            $foundCategory = false;
-            foreach ($itemCategories as $itemCategory) {
-                if ($baseCategory['item_id'] == $itemCategory['id']) {
-                    if ($addCategory) {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
-                    } else {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
-                    }
-                    $foundCategory = true;
-                }
-            }
-            if (!$foundCategory) {
-                if ($addCategory) {
-                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
-                }
-            }
-            $tempResult = array();
-            $addCategory = false;
-        }
-        return $result;
-    }
-
-    public function getCategories($roomId, $categoryService) {
-        $categories = $categoryService->getTags($roomId);
-        return $this->transformTagArray($categories);
-    }
-
-    /**
-     * @param cs_item $item
-     * @return cs_tag_item[]
-     */
-    public function getLinkedCategories($item) {
-        /** @var cs_item $item */
-
-        $linkedCategories = [];
-        $categoriesList = $item->getTagList();
-
-        /** @var cs_tag_item $categoryItem */
-        $categoryItem = $categoriesList->getFirst();
-        while ($categoryItem) {
-            $linkedCategories[] = $categoryItem->getItemId();
-            $categoryItem = $categoriesList->getNext();
-        }
-        return $linkedCategories;
-    }
-
-    public function getHashtags($roomId, $legacyEnvironment) {
-        $hashtags = [];
-
-        /** @var cs_buzzword_manager $buzzwordManager */
-        $buzzwordManager = $legacyEnvironment->getBuzzwordManager();
-        $buzzwordManager->setContextLimit($roomId);
-        $buzzwordManager->setTypeLimit('buzzword');
-        $buzzwordManager->select();
-        $buzzwordList = $buzzwordManager->get();
-        $buzzwordItem = $buzzwordList->getFirst();
-        while ($buzzwordItem) {
-            $hashtags[$buzzwordItem->getItemId()] = $buzzwordItem->getTitle();
-            $buzzwordItem = $buzzwordList->getNext();
-        }
-        return array_flip($hashtags);
-    }
-
-    public function getLinkedHashtags($itemId, $roomId, $legacyEnvironment) {
-        $linkedHashtags = [];
-
-        /** @var cs_buzzword_manager $buzzwordManager */
-        $buzzwordManager = $legacyEnvironment->getBuzzwordManager();
-        $buzzwordManager->setContextLimit($roomId);
-        $buzzwordManager->setTypeLimit('buzzword');
-        $buzzwordManager->select();
-        $buzzwordList = $buzzwordManager->get();
-
-        /** @var cs_buzzword_item $buzzwordItem */
-        $buzzwordItem = $buzzwordList->getFirst();
-        while ($buzzwordItem) {
-            $selected_ids = $buzzwordItem->getAllLinkedItemIDArrayLabelVersion();
-            if (in_array($itemId, $selected_ids)) {
-                $linkedHashtags[] = $buzzwordItem->getItemId();
-            }
-            $buzzwordItem = $buzzwordList->getNext();
-        }
-        return $linkedHashtags;
     }
 
     /**

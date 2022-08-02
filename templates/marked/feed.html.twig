@@ -35,7 +35,7 @@
             {# title and meta #}
             <div class="uk-width-8-10">
                 <h4 class="uk-comment-title">
-                    <a href="{{ path('app_' ~ entry.itemType ~ '_detail', {'roomId': roomId, 'itemId': entry.itemId}) }}">{{ entry.title|decodeHtmlEntity }}</a>
+                    <a href="{{ path('app_' ~ entry.itemType ~ '_detail', {'roomId': entry.contextId, 'itemId': entry.itemId}) }}">{{ entry.title|decodeHtmlEntity }}</a>
                 </h4>
                
                 <div class="uk-comment-meta">

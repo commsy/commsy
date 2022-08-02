@@ -23,14 +23,14 @@ export class TodoStatusAction extends XHRAction {
         });
     }
 
-    public onSuccess(backendResponse: ActionResponse): Promise<ActionResponse> {
-        return new Promise<ActionResponse>((resolve) => {
+    public onSuccess(backendResponse: ActionResponse): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
             let payload: any = backendResponse.payload;
 
             UIkit.notify(payload.message, 'success');
             window.location.href = this.returnUrl;
 
-            resolve(backendResponse);
+            resolve(true);
         });
     }
 }

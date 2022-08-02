@@ -134,17 +134,17 @@
                 <source>insert stack</source>
                 <target>Einfügen in "Meine Ablage"</target>
             </trans-unit>
-            <trans-unit id="action_remove">
-                <source>remove</source>
-                <target>Löschen aus "Meine Kopien"</target>
+            <trans-unit id="action_add_to_marked">
+                <source>add to marked</source>
+                <target>Auswählen</target>
+            </trans-unit>
+            <trans-unit id="action_remove_marked">
+                <source>remove marked</source>
+                <target>Entfernen aus "Meine Auswahl"</target>
             </trans-unit>
             <trans-unit id="31">
                 <source>mark read</source>
                 <target>Als gelesen markieren</target>
-            </trans-unit>
-            <trans-unit id="32">
-                <source>copy</source>
-                <target>Kopieren</target>
             </trans-unit>
             <trans-unit id="33">
                 <source>save</source>
@@ -161,6 +161,14 @@
             <trans-unit id="36">
                 <source>confirm delete confirm</source>
                 <target>Ja</target>
+            </trans-unit>
+            <trans-unit id="categorize">
+                <source>categorize</source>
+                <target>Kategorien zuweisen</target>
+            </trans-unit>
+            <trans-unit id="hashtag">
+                <source>hashtag</source>
+                <target>Schlagwörter zuweisen</target>
             </trans-unit>
             <trans-unit id="37">
                 <source>confirm delete cancel</source>
@@ -250,13 +258,9 @@
                 <source>place</source>
                 <target>Ort</target>
             </trans-unit>
-            <trans-unit id="copy">
-                <source>Copy</source>
-                <target>Kopie</target>
-            </trans-unit>
-            <trans-unit id="mycopies">
-                <source>Copies</source>
-                <target>Meine Kopien</target>
+            <trans-unit id="marked_entries">
+                <source>Marked</source>
+                <target>Meine Auswahl</target>
             </trans-unit>
         </body>
     </file>

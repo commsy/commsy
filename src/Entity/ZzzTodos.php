@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -62,6 +63,13 @@ class ZzzTodos
      * @ORM\Column(name="modification_date", type="datetime", nullable=true)
      */
     private $modificationDate;
+
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="activation_date", type="datetime")
+     */
+    private ?DateTime $activationDate;
 
     /**
      * @var \DateTime

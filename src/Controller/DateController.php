@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
-use App\Action\Copy\CopyAction;
+use App\Action\Mark\CategorizeAction;
+use App\Action\Mark\HashtagAction;
+use App\Action\Mark\MarkAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Delete\DeleteDate;
 use App\Action\Download\DownloadAction;
@@ -136,9 +138,9 @@ class DateController extends BaseController
         foreach ($dates as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
+                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'categorize', 'hashtag', 'save', 'delete');
             } else {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save');
             }
         }
 
@@ -238,6 +240,8 @@ class DateController extends BaseController
             'isArchived' => $roomItem->isArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'sort' => $sort,
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showCategories' => $roomItem->withTags(),
         ];
     }
 
@@ -1048,8 +1052,9 @@ class DateController extends BaseController
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'date')")
      * @param Request $request
      * @param CategoryService $categoryService
+     * @param LabelService $labelService
      * @param DateTransformer $transformer
-     * @param ItemController $itemController
+     * @param CalendarsRepository $calendarsRepository
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -1057,9 +1062,8 @@ class DateController extends BaseController
     public function editAction(
         Request $request,
         CategoryService $categoryService,
-        DateTransformer $transformer,
-        ItemController $itemController,
         LabelService $labelService,
+        DateTransformer $transformer,
         CalendarsRepository $calendarsRepository,
         int $roomId,
         int $itemId
@@ -1078,9 +1082,8 @@ class DateController extends BaseController
 
         $formData = $transformer->transform($dateItem);
         $formData['language'] = $this->legacyEnvironment->getCurrentContextItem()->getLanguage();
-        $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
-            $this->legacyEnvironment);
+        $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
+        $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
         $formData['draft'] = $isDraft;
 
         $calendars = $calendarsRepository->findBy(array('context_id' => $roomId));
@@ -1108,12 +1111,12 @@ class DateController extends BaseController
             'calendars' => $calendarsOptions,
             'calendarsAttr' => $calendarsOptionsAttr,
             'categoryMappingOptions' => [
-                'categories' => $itemController->getCategories($roomId, $categoryService),
+                'categories' => $labelService->getCategories($roomId),
                 'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
                 'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
             ],
             'hashtagMappingOptions' => [
-                'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
+                'hashtags' => $labelService->getHashtags($roomId),
                 'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
@@ -1791,6 +1794,7 @@ class DateController extends BaseController
      * @param Request $request
      * @param CalendarsService $calendarsService
      * @param CalendarsRepository $calendarsRepository
+     * @param ManagerRegistry $doctrine
      * @param int $roomId
      * @return array|RedirectResponse
      */
@@ -1973,21 +1977,53 @@ class DateController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/date/xhr/copy", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/date/xhr/mark", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
      * @return Response
      * @throws Exception
      */
-    public function xhrCopyAction(
+    public function xhrMarkAction(
         Request $request,
-        CopyAction $action,
+        MarkAction $action,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/date/xhr/categorize", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param CategorizeAction $action
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrCategorizeAction(
+        Request $request,
+        CategorizeAction $action,
+        int $roomId
+    ) {
+        return parent::handleCategoryActionOptions($request, $action, $roomId);
+    }
+
+    /**
+     * @Route("/room/{roomId}/date/xhr/hashtag", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param HashtagAction $action
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrHashtagAction(
+        Request $request,
+        HashtagAction $action,
+        int $roomId
+    ) {
+        return parent::handleHashtagActionOptions($request, $action, $roomId);
     }
 
     /**
