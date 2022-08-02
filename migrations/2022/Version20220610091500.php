@@ -14,51 +14,54 @@ final class Version20220610091500 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->addSql('alter table announcement add activation_date datetime NULL after modification_date;');
-        $this->addSql('alter table dates add activation_date datetime NULL after modification_date;');
-        $this->addSql('alter table discussions add activation_date datetime NULL after modification_date;');
-        $this->addSql('alter table materials add activation_date datetime NULL after modification_date;');
-        $this->addSql('alter table todos add activation_date datetime NULL after modification_date;');
-        $this->addSql('alter table labels add activation_date datetime NULL after modification_date;');
-        $this->addSql('alter table items add activation_date datetime NULL after modification_date;');
+        // Add new column
+        $this->addSql('ALTER TABLE announcement ADD activation_date datetime NULL AFTER modification_date;');
+        $this->addSql('ALTER TABLE dates ADD activation_date datetime NULL AFTER modification_date;');
+        $this->addSql('ALTER TABLE discussions ADD activation_date datetime NULL AFTER modification_date;');
+        $this->addSql('ALTER TABLE materials ADD activation_date datetime NULL AFTER modification_date;');
+        $this->addSql('ALTER TABLE todos ADD activation_date datetime NULL AFTER modification_date;');
+        $this->addSql('ALTER TABLE labels ADD activation_date datetime NULL AFTER modification_date;');
+        $this->addSql('ALTER TABLE items ADD activation_date datetime NULL AFTER modification_date;');
 
-        $this->addSql('update announcement set activation_date = modification_date;');
-        $this->addSql('update dates set activation_date = modification_date;');
-        $this->addSql('update discussions set activation_date = modification_date;');
-        $this->addSql('update materials set activation_date = modification_date;');
-        $this->addSql('update todos set activation_date = modification_date;');
-        $this->addSql('update labels set activation_date = modification_date;');
-        $this->addSql('update items set activation_date = modification_date;');
+        $this->addSql('ALTER TABLE zzz_announcement ADD activation_date datetime NULL AFTER modification_date;');
+        $this->addSql('ALTER TABLE zzz_dates ADD activation_date datetime NULL AFTER modification_date;');
+        $this->addSql('ALTER TABLE zzz_discussions ADD activation_date datetime NULL AFTER modification_date;');
+        $this->addSql('ALTER TABLE zzz_materials ADD activation_date datetime NULL AFTER modification_date;');
+        $this->addSql('ALTER TABLE zzz_todos ADD activation_date datetime NULL AFTER modification_date;');
+        $this->addSql('ALTER TABLE zzz_labels ADD activation_date datetime NULL AFTER modification_date;');
+        $this->addSql('ALTER TABLE zzz_items ADD activation_date datetime NULL AFTER modification_date;');
 
-        $this->addSql("update announcement set modification_date = creation_date where modification_date ='9999-00-00 00:00:00';");
-        $this->addSql("update dates set modification_date = creation_date where modification_date ='9999-00-00 00:00:00';");
-        $this->addSql("update discussions set modification_date = creation_date where modification_date ='9999-00-00 00:00:00';");
-        $this->addSql("update materials set modification_date = creation_date where modification_date ='9999-00-00 00:00:00';");
-        $this->addSql("update todos set modification_date = creation_date where modification_date ='9999-00-00 00:00:00';");
-        $this->addSql("update labels set modification_date = creation_date where modification_date ='9999-00-00 00:00:00';");
+        // Set the activation_date, if the modification_date is in the future
+        $this->addSql('UPDATE announcement SET activation_date = modification_date WHERE modification_date > NOW();');
+        $this->addSql('UPDATE dates SET activation_date = modification_date WHERE modification_date > NOW();');
+        $this->addSql('UPDATE discussions SET activation_date = modification_date WHERE modification_date > NOW();');
+        $this->addSql('UPDATE materials SET activation_date = modification_date WHERE modification_date > NOW();');
+        $this->addSql('UPDATE todos SET activation_date = modification_date WHERE modification_date > NOW();');
+        $this->addSql('UPDATE labels SET activation_date = modification_date WHERE modification_date > NOW();');
+        $this->addSql('UPDATE items SET activation_date = modification_date WHERE modification_date > NOW();');
 
-        $this->addSql('alter table zzz_announcement add activation_date datetime NULL after modification_date;');
-        $this->addSql('alter table zzz_dates add activation_date datetime NULL after modification_date;');
-        $this->addSql('alter table zzz_discussions add activation_date datetime NULL after modification_date;');
-        $this->addSql('alter table zzz_materials add activation_date datetime NULL after modification_date;');
-        $this->addSql('alter table zzz_todos add activation_date datetime NULL after modification_date;');
-        $this->addSql('alter table zzz_labels add activation_date datetime NULL after modification_date;');
-        $this->addSql('alter table zzz_items add activation_date datetime NULL after modification_date;');
+        $this->addSql('UPDATE zzz_announcement SET activation_date = modification_date WHERE modification_date > NOW();');
+        $this->addSql('UPDATE zzz_dates SET activation_date = modification_date WHERE modification_date > NOW();');
+        $this->addSql('UPDATE zzz_discussions SET activation_date = modification_date WHERE modification_date > NOW();');
+        $this->addSql('UPDATE zzz_materials SET activation_date = modification_date WHERE modification_date > NOW();');
+        $this->addSql('UPDATE zzz_todos SET activation_date = modification_date WHERE modification_date > NOW();');
+        $this->addSql('UPDATE zzz_labels SET activation_date = modification_date WHERE modification_date > NOW();');
+        $this->addSql('UPDATE zzz_items SET activation_date = modification_date WHERE modification_date > NOW();');
 
-        $this->addSql('update zzz_announcement set activation_date = modification_date;');
-        $this->addSql('update zzz_dates set activation_date = modification_date;');
-        $this->addSql('update zzz_discussions set activation_date = modification_date;');
-        $this->addSql('update zzz_materials set activation_date = modification_date;');
-        $this->addSql('update zzz_todos set activation_date = modification_date;');
-        $this->addSql('update zzz_labels set activation_date = modification_date;');
-        $this->addSql('update zzz_items set activation_date = modification_date;');
+        // Set the modification date to creation date, if the modification_date is in the future
+        $this->addSql("UPDATE announcement SET modification_date = creation_date WHERE modification_date > NOW();");
+        $this->addSql("UPDATE dates SET modification_date = creation_date WHERE modification_date > NOW();");
+        $this->addSql("UPDATE discussions SET modification_date = creation_date WHERE modification_date > NOW();");
+        $this->addSql("UPDATE materials SET modification_date = creation_date WHERE modification_date > NOW();");
+        $this->addSql("UPDATE todos SET modification_date = creation_date WHERE modification_date > NOW();");
+        $this->addSql("UPDATE labels SET modification_date = creation_date WHERE modification_date > NOW();");
 
-        $this->addSql("update zzz_announcement set modification_date = creation_date where modification_date ='9999-00-00 00:00:00';");
-        $this->addSql("update zzz_dates set modification_date = creation_date where modification_date ='9999-00-00 00:00:00';");
-        $this->addSql("update zzz_discussions set modification_date = creation_date where modification_date ='9999-00-00 00:00:00';");
-        $this->addSql("update zzz_materials set modification_date = creation_date where modification_date ='9999-00-00 00:00:00';");
-        $this->addSql("update zzz_todos set modification_date = creation_date where modification_date ='9999-00-00 00:00:00';");
-        $this->addSql("update zzz_labels set modification_date = creation_date where modification_date ='9999-00-00 00:00:00';");
+        $this->addSql("UPDATE zzz_announcement SET modification_date = creation_date WHERE modification_date > NOW();");
+        $this->addSql("UPDATE zzz_dates SET modification_date = creation_date WHERE modification_date > NOW();");
+        $this->addSql("UPDATE zzz_discussions SET modification_date = creation_date WHERE modification_date > NOW();");
+        $this->addSql("UPDATE zzz_materials SET modification_date = creation_date WHERE modification_date > NOW();");
+        $this->addSql("UPDATE zzz_todos SET modification_date = creation_date WHERE modification_date > NOW();");
+        $this->addSql("UPDATE zzz_labels SET modification_date = creation_date WHERE modification_date > NOW();");
     }
 
     public function down(Schema $schema): void
