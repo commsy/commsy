@@ -773,47 +773,51 @@ class cs_manager {
       // needs to be overwritten
    }
 
-   /** update modification date of item in items table
-   * this method updates the database record for a given item
-   *
-   * @param cs_item the item for which an update should be made
-   */
-   function _update($item) {
-      $query = 'UPDATE '.$this->addDatabasePrefix('items').' SET';
-      $modification_date = getCurrentDateTimeInMySQL();
-      $activation_date = getCurrentDateTimeInMySQL();
-      if ($item->isNotActivated()){
-          $activation_date = $item->getActivationDate();
-      }
-      if ( $item->isChangeModificationOnSave()
-           or $this->_update_with_changing_modification_information
-         ) {
-         $query .= ' modification_date="'.$modification_date.'",';
-         $query .= ' activation_date="'.$activation_date.'",';
-      }
-      $query .= ' context_id="'.encode(AS_DB,$item->getContextID()).'"';
-      if (get_class($item) == 'cs_item') {
-          $query .= ', draft="' . encode(AS_DB, $item->isDraft()) . '"';
-      }
-      $query .= ' WHERE item_id = "'.encode(AS_DB,$item->getItemID()).'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems updating item in table items.',E_USER_WARNING);
-      } else {
-         unset($result);
-      }
-      unset($query);
+    /**
+     * update modification date of item in items table
+     * this method updates the database record for a given item
+     *
+     * @param cs_item $item
+     */
+    function _update($item)
+    {
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
-      global $symfonyContainer;
-      $checkLocking = $symfonyContainer->getParameter('commsy.settings.item_locking');
+        $queryBuilder
+            ->update($this->addDatabasePrefix('items'))
+            ->set('context_id', ':contextId')
+            ->set('activation_date', ':activationDate')
+            ->where('item_id = :itemId')
+            ->setParameter('contextId', $item->getContextID())
+            ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
+            ->setParameter('itemId', $item->getItemID());
 
-      if ($checkLocking && $item->hasLocking()) {
-          $item->unlock();
-      }
+        if ($item->isChangeModificationOnSave() || $this->_update_with_changing_modification_information) {
+            $queryBuilder
+                ->set('modification_date', ':modificationDate')
+                ->setParameter('modificationDate', getCurrentDateTimeInMySQL());
+        }
 
-      unset($item);
-   }
+        if (get_class($item) == 'cs_item') {
+            $queryBuilder
+                ->set('draft', ':draft')
+                ->setParameter('draft', $item->isDraft());
+        }
+
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error($e->getMessage(), E_USER_WARNING);
+        }
+
+        global $symfonyContainer;
+        $checkLocking = $symfonyContainer->getParameter('commsy.settings.item_locking');
+
+        if ($checkLocking && $item->hasLocking()) {
+            $item->unlock();
+        }
+    }
 
     /** delete a commsy item
      * this method deletes a commsy item

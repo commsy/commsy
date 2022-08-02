@@ -88,13 +88,13 @@ class DiscussionTransformer extends AbstractTransformer
                     $discussionObject->setActivationDate('9999-00-00 00:00:00');
                 }
             } else {
-                if($discussionObject->isNotActivated()){
-    	            $discussionObject->setActivationDate(new DateTime());
+                if ($discussionObject->isNotActivated()) {
+    	            $discussionObject->setActivationDate(null);
     	        }
             }
         } else {
-            if($discussionObject->isNotActivated()){
-	            $discussionObject->setActivationDate(new DateTime());
+            if ($discussionObject->isNotActivated()) {
+	            $discussionObject->setActivationDate(null);
 	        }
         }
 

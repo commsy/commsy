@@ -183,7 +183,7 @@ class MaterialTransformer extends AbstractTransformer
             }
         } else {
             if ($materialObject->isNotActivated()) {
-                $materialObject->setActivationDate(new DateTime());
+                $materialObject->setActivationDate(null);
             }
         }
 
