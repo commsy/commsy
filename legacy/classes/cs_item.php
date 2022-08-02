@@ -832,8 +832,9 @@ class cs_item {
       return $this->_setValue('deleter_id',$value);
    }
 
-   function getCreatorID() {
-      return $this->_getValue('creator_id');
+   public function getCreatorID(): int
+   {
+      return (int) $this->_getValue('creator_id');
    }
 
    function setCreatorID($value) {
