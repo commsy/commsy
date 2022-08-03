@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
-use App\Action\Copy\CopyAction;
+use App\Action\Mark\CategorizeAction;
+use App\Action\Mark\HashtagAction;
+use App\Action\Mark\MarkAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\MarkReadAction;
@@ -20,6 +22,7 @@ use App\Utils\DiscussionService;
 use App\Utils\LabelService;
 use App\Utils\TopicService;
 use cs_discussion_item;
+use cs_discussionarticle_item;
 use cs_room_item;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -123,9 +126,9 @@ class DiscussionController extends BaseController
         foreach ($discussions as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
+                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'categorize', 'hashtag', 'save', 'delete');
             } else {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save');
             }
         }
 
@@ -299,6 +302,8 @@ class DiscussionController extends BaseController
      * @param LegacyMarkup $legacyMarkup
      * @param int $roomId
      * @param int $itemId
+     * @param AssessmentService $assessmentService
+     * @param CategoryService $categoryService
      * @return array
      */
     public function detailAction(
@@ -382,9 +387,8 @@ class DiscussionController extends BaseController
         }
 
         // mark discussion articles as read / noticed
-        /** @var \cs_discussionarticle_item $article */
-        $article = $articleList->getFirst();
-        while ($article) {
+        foreach ($articleList as $article) {
+            /** @var cs_discussionarticle_item $article */
             $latestReader = $readerManager->getLatestReader($article->getItemID());
             if (empty($latestReader) || $latestReader['read_date'] < $article->getModificationDate()) {
                 $readerManager->markRead($article->getItemID(), 0);
@@ -396,8 +400,6 @@ class DiscussionController extends BaseController
             }
 
             $legacyMarkup->addFiles($this->itemService->getItemFileList($article->getItemID()));
-
-            $article = $articleList->getNext();
         }
 
         $itemArray = array_merge([$discussion], $articleList->to_array());
@@ -415,17 +417,11 @@ class DiscussionController extends BaseController
         $read_count = 0;
         $read_since_modification_count = 0;
 
-        $current_user = $user_list->getFirst();
-        $id_array = array();
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
+        $id_array = $user_list->getIDArray();
         $readerManager->getLatestReaderByUserIDArray($id_array, $discussion->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
+        foreach ($user_list as $user) {
             $current_reader = $readerManager->getLatestReaderForUserByID($discussion->getItemID(),
-                $current_user->getItemID());
+                $user->getItemID());
             if (!empty($current_reader)) {
                 if ($current_reader['read_date'] >= $discussion->getModificationDate()) {
                     $read_count++;
@@ -434,7 +430,6 @@ class DiscussionController extends BaseController
                     $read_count++;
                 }
             }
-            $current_user = $user_list->getNext();
         }
 
         $readerList = array();
@@ -629,6 +624,8 @@ class DiscussionController extends BaseController
      * @param LegacyMarkup $legacyMarkup
      * @param int $roomId
      * @param int $itemId
+     * @param AssessmentService $assessmentService
+     * @param CategoryService $categoryService
      * @return Response
      */
     public function printAction(
@@ -806,8 +803,8 @@ class DiscussionController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
      * @param Request $request
-     * @param ItemController $itemController
      * @param CategoryService $categoryService
+     * @param LabelService $labelService
      * @param DiscussionTransformer $discussionTransformer
      * @param DiscussionarticleTransformer $discussionarticleTransformer
      * @param int $roomId
@@ -816,7 +813,6 @@ class DiscussionController extends BaseController
      */
     public function editAction(
         Request $request,
-        ItemController $itemController,
         CategoryService $categoryService,
         LabelService $labelService,
         DiscussionTransformer $discussionTransformer,
@@ -855,9 +851,8 @@ class DiscussionController extends BaseController
                 throw $this->createNotFoundException('No discussion found for id ' . $itemId);
             }
             $formData = $transformer->transform($discussionItem);
-            $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
-                $this->legacyEnvironment);
+            $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
+            $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
             $formData['draft'] = $isDraft;
             $form = $this->createForm(DiscussionType::class, $formData, array(
                 'action' => $this->generateUrl('app_discussion_edit', array(
@@ -866,12 +861,12 @@ class DiscussionController extends BaseController
                 )),
                 'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
                 'categoryMappingOptions' => [
-                    'categories' => $itemController->getCategories($roomId, $categoryService),
+                    'categories' => $labelService->getCategories($roomId),
                     'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
                     'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
                 ],
                 'hashtagMappingOptions' => [
-                    'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
+                    'hashtags' => $labelService->getHashtags($roomId),
                     'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                     'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
                 ],
@@ -887,8 +882,8 @@ class DiscussionController extends BaseController
                 $formData = $transformer->transform($discussionArticleItem);
                 $form = $this->createForm(DiscussionArticleType::class, $formData, array(
                     'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
-                    'categories' => $itemController->getCategories($roomId, $categoryService),
-                    'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
+                    'categories' => $labelService->getCategories($roomId),
+                    'hashtags' => $labelService->getHashtags($roomId),
                     'hashTagPlaceholderText' => $this->translator->trans('Hashtag', [], 'hashtag'),
                     'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
                 ));
@@ -1202,21 +1197,53 @@ class DiscussionController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/discussion/xhr/copy", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/discussion/xhr/mark", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
      * @return
      * @throws Exception
      */
-    public function xhrCopyAction(
+    public function xhrMarkAction(
         Request $request,
-        CopyAction $action,
+        MarkAction $action,
         int $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/discussion/xhr/categorize", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param CategorizeAction $action
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrCategorizeAction(
+        Request $request,
+        CategorizeAction $action,
+        int $roomId
+    ) {
+        return parent::handleCategoryActionOptions($request, $action, $roomId);
+    }
+
+    /**
+     * @Route("/room/{roomId}/discussion/xhr/hashtag", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param HashtagAction $action
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrHashtagAction(
+        Request $request,
+        HashtagAction $action,
+        int $roomId
+    ) {
+        return parent::handleHashtagActionOptions($request, $action, $roomId);
     }
 
     /**

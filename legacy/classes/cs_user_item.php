@@ -24,6 +24,7 @@
 
 use App\Account\AccountManager;
 use App\Entity\Account;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 include_once('classes/cs_item.php');
@@ -1410,7 +1411,7 @@ class cs_user_item extends cs_item
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_user');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:User');
+        $repository = $em->getRepository(User::class);
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -1498,7 +1499,7 @@ class cs_user_item extends cs_item
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_user');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:User');
+        $repository = $em->getRepository(User::class);
 
         $this->deleteElasticItem($objectPersister, $repository);
     }
@@ -1517,7 +1518,11 @@ class cs_user_item extends cs_item
         return in_array($username, $userArray);
     }
 
-    function maySee($user_item)
+    /**
+     * @param cs_user_item $user_item
+     * @return bool
+     */
+    public function maySee(cs_user_item $user_item)
     {
         if ($this->_environment->inCommunityRoom()) {  // Community room
             if ($user_item->isRoot()
@@ -1877,25 +1882,24 @@ class cs_user_item extends cs_item
         return $relatedUsers;
     }
 
-    public function getRelatedUserItemInContext($value):?cs_user_item
+    /**
+     * @param $contextId
+     * @return cs_user_item|null
+     */
+    public function getRelatedUserItemInContext($contextId): ?cs_user_item
     {
-        $retour = NULL;
-        $user_manager = $this->_environment->getUserManager();
-        $user_manager->resetLimits();
-        $user_manager->setContextLimit($value);
-        $user_manager->setUserIDLimit($this->getUserID());
-        $user_manager->setAuthSourceLimit($this->getAuthSource());
-        $user_manager->select();
-        $user_list = $user_manager->get();
-        if (isset($user_list)
-            and $user_list->isNotEmpty()
-            and $user_list->getCount() == 1
-        ) {
-            $retour = $user_list->getFirst();
+        $userManager = $this->_environment->getUserManager();
+        $userManager->resetLimits();
+        $userManager->setContextLimit($contextId);
+        $userManager->setUserIDLimit($this->getUserID());
+        $userManager->setAuthSourceLimit($this->getAuthSource());
+        $userManager->select();
+        $userList = $userManager->get();
+        if (isset($userList) && $userList->getCount() == 1) {
+            return $userList->getFirst();
         }
-        unset($user_manager);
-        unset($user_list);
-        return $retour;
+
+        return null;
     }
 
     /**

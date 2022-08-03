@@ -9,7 +9,7 @@
 namespace App\Action\Delete;
 
 
-use App\Services\CopyService;
+use App\Services\MarkedService;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 
@@ -20,15 +20,15 @@ class DeleteGeneric implements DeleteInterface
      */
     protected cs_environment $legacyEnvironment;
 
-    /** @var CopyService $copyService */
-    protected CopyService $copyService;
+    /** @var MarkedService $markedService */
+    protected MarkedService $markedService;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        CopyService $copyService
+        MarkedService $markedService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->copyService = $copyService;
+        $this->markedService = $markedService;
     }
 
     /**
@@ -38,7 +38,7 @@ class DeleteGeneric implements DeleteInterface
     {
         $item->delete();
 
-        $this->copyService->removeItemFromClipboard($item->getItemId());
+        $this->markedService->removeItemFromClipboard($item->getItemId());
     }
 
     /**

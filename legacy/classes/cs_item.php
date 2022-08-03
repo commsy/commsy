@@ -494,17 +494,17 @@ class cs_item {
       $this->_setValue('version_id', (integer)$value);
    }
 
-   /** get context id
-    * this function returns the id of the current context:
-    */
-   function getContextID () {
-      $context_id = $this->_getValue('context_id');
-      if ($context_id === '') {
-         $context_id = $this->_environment->getCurrentContextID();
-      }
-      return (int) $context_id;
-   }
-
+    /** get context id
+     * this function returns the id of the current context:
+     */
+    public function getContextID(): int
+    {
+        $context_id = $this->_getValue('context_id');
+        if ($context_id === '') {
+            $context_id = $this->_environment->getCurrentContextID();
+        }
+        return (int)$context_id;
+    }
 
    /** set context id
    * this method sets the context id of the item
@@ -590,6 +590,22 @@ class cs_item {
       return $date;
    }
 
+    /** get modification date
+     * this method returns the modification date of the item
+     *
+     * @return string modification date of the item in datetime-FORMAT
+     *
+     * @author CommSy Development Group
+     */
+    function getActivationDate () {
+        $date = $this->_getValue('activation_date');
+        if (is_null($date) or $date=='0000-00-00 00:00:00') {
+            $date = $this->_getValue('creation_date');
+        }
+        return $date;
+    }
+
+
    /** set modification date
     * this method sets the modification date of the item
     *
@@ -600,6 +616,17 @@ class cs_item {
    function setModificationDate ($value) {
       $this->_setValue('modification_date', (string)$value);
    }
+
+    /** set modification date
+     * this method sets the modification date of the item
+     *
+     * @param string modification date in datetime-FORMAT of the item
+     *
+     * @author CommSy Development Group
+     */
+    function setActivationDate ($value) {
+        $this->_setValue('activation_date', (string)$value);
+    }
 
    /** get deletion date
     * this method returns the deletion date of the item
@@ -614,7 +641,7 @@ class cs_item {
    }
 
    function isNotActivated(){
-      $date = $this->getModificationDate();
+      $date = $this->getActivationDate();
       if ( $date > getCurrentDateTimeInMySQL() ) {
         return true;
       }else{
@@ -625,7 +652,7 @@ class cs_item {
    function getActivatingDate(){
       $retour = '';
       if ($this->isNotActivated()){
-         $retour = $this->getModificationDate();
+         $retour = $this->getActivationDate();
       }
       return $retour;
    }
@@ -805,8 +832,9 @@ class cs_item {
       return $this->_setValue('deleter_id',$value);
    }
 
-   function getCreatorID() {
-      return $this->_getValue('creator_id');
+   public function getCreatorID(): int
+   {
+      return (int) $this->_getValue('creator_id');
    }
 
    function setCreatorID($value) {
@@ -1600,9 +1628,9 @@ class cs_item {
 
     /** is the given user allowed to see this item?
      *
-     * @param \cs_user_item $userItem
+     * @param cs_user_item $userItem
      */
-    public function maySee($userItem)
+    public function maySee(cs_user_item $userItem)
     {
         // Deny access, if the item's context is deleted
         $contextItem = $this->getContextItem();
@@ -1616,19 +1644,21 @@ class cs_item {
         }
 
         // Room user
-        if ($userItem->isUser() && $userItem->getContextID() === $this->getContextID()) {
-           // deactivated entries can be only viewed by a moderator or by their creator
-           if ($this->isNotActivated()) {
-              if ($userItem->isModerator()) {
-                 return true;
-              }
+        $userInContext = ($userItem->getContextID() === $this->getContextID()) ? $userItem:
+            $userItem->getRelatedUserItemInContext($this->getContextID());
+        if ($userInContext !== null && $userInContext->isUser()) {
+            // deactivated entries can be only viewed by a moderator or by their creator
+            if ($this->isNotActivated()) {
+                if ($userInContext->isModerator()) {
+                    return true;
+                }
 
-              if ($this->getCreatorID() == $userItem->getItemId()) {
-                 return true;
-              }
-           } else {
-               return true;
-           }
+                if ($this->getCreatorID() == $userInContext->getItemId()) {
+                    return true;
+                }
+            } else {
+                return true;
+            }
         }
 
         // External viewer

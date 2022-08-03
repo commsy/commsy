@@ -27,6 +27,8 @@
  */
 include_once('classes/cs_room_item.php');
 
+use App\Entity\Room;
+use App\Entity\ZzzRoom;
 use App\Mail\Mailer;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
@@ -179,7 +181,7 @@ class cs_grouproom_item extends cs_room_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('App:Room');
+        $repository = $em->getRepository(Room::class);
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -220,11 +222,11 @@ class cs_grouproom_item extends cs_room_item {
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('App:Room');
+      $repository = $em->getRepository(Room::class);
 
        // use zzz repository if room is archived
        if ($this->isArchived()) {
-           $repository = $em->getRepository('App:ZzzRoom');
+           $repository = $em->getRepository(ZzzRoom::class);
        }
        $this->deleteElasticItem($objectPersister, $repository);
    }
@@ -1046,7 +1048,8 @@ class cs_grouproom_item extends cs_room_item {
          $save_language = $translator->getSelectedLanguage();
          $translator->setSelectedLanguage($key);
          $project_room = $this->getLinkedProjectItem();
-         $title = str_ireplace('&amp;', '&', $this->getTitle());
+
+         $title = html_entity_decode($this->getTitle());
 
          if ( $room_change == 'open' ) {
             $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_OPEN',$title);
@@ -1132,7 +1135,7 @@ class cs_grouproom_item extends cs_room_item {
          $body .= $translator->getMessage('GROUPROOM_MAIL_BODY_PROJECT_ROOM').LF;
 
          if ( isset($project_room) and !empty($project_room) ) {
-            $body .= str_ireplace('&amp;', '&', $project_room->getTitle());
+            $body .= html_entity_decode($project_room->getTitle());
          } else {
             $body .= $translator->getMessage('GROUPROOM_MAIL_BODY_PROJECT_ROOMS_EMPTY');
          }
@@ -1141,17 +1144,17 @@ class cs_grouproom_item extends cs_room_item {
          $body .= $translator->getMessage('MAIL_SEND_TO',implode(LF,$moderator_name_array));
          $body .= LF.LF;
          if ( $room_item->isPortal() ) {
-            $body .= $translator->getMessage('MAIL_SEND_WHY_PORTAL',$room_item->getTitle());
+            $body .= $translator->getMessage('MAIL_SEND_WHY_PORTAL', html_entity_decode($room_item->getTitle()));
          } elseif ( $room_item->isCommunityRoom() ) {
-            $body .= $translator->getMessage('MAIL_SEND_WHY_COMMUNITY',$room_item->getTitle());
+            $body .= $translator->getMessage('MAIL_SEND_WHY_COMMUNITY', html_entity_decode($room_item->getTitle()));
          } elseif ( $room_item->isProjectRoom() ) {
-            $body .= $translator->getMessage('MAIL_SEND_WHY_PROJECT',$room_item->getTitle());
+            $body .= $translator->getMessage('MAIL_SEND_WHY_PROJECT', html_entity_decode($room_item->getTitle()));
          } else {
-            $body .= $translator->getMessage('GROUPROOM_MAIL_SEND_WHY_GROUP',$room_item->getTitle());
+            $body .= $translator->getMessage('GROUPROOM_MAIL_SEND_WHY_GROUP', html_entity_decode($room_item->getTitle()));
          }
 
          // send email
-         $fromName = $translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_portal->getTitle());
+         $fromName = $translator->getMessage('SYSTEM_MAIL_MESSAGE', $current_portal->getTitle());
 
          $message = (new Email())
              ->subject($subject)

@@ -1,9 +1,9 @@
 <?php
 namespace App\Form\Type\Event;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 
 /**
@@ -11,7 +11,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 */
 class AddContextFieldListener implements EventSubscriberInterface
 {
-
     public static function getSubscribedEvents()
     {
         return array(
@@ -35,7 +34,10 @@ class AddContextFieldListener implements EventSubscriberInterface
         if (isset($data['type_select']) && $data['type_select'] == 'project') {
             $form->add('type_sub', 'App\Form\Type\Context\ProjectType', $formOptions);
         } else if (isset($data['type_select']) && $data['type_select'] == 'community') {
-            $form->add('type_sub', 'App\Form\Type\Context\CommunityType', $formOptions);
+            $form->add('type_sub', 'App\Form\Type\Context\CommunityType', [
+                'templates' => $formOptions['templates'],
+                'preferredChoices' => $formOptions['preferredChoices'],
+            ]);
         }
     }
 
@@ -48,7 +50,10 @@ class AddContextFieldListener implements EventSubscriberInterface
         if (isset($data['type_select']) && $data['type_select'] == 'project') {
             $form->add('type_sub', 'App\Form\Type\Context\ProjectType', $formOptions);
         } else if (isset($data['type_select']) && $data['type_select'] == 'community') {
-            $form->add('type_sub', 'App\Form\Type\Context\CommunityType', $formOptions);
+            $form->add('type_sub', 'App\Form\Type\Context\CommunityType', [
+                'templates' => $formOptions['templates'],
+                'preferredChoices' => $formOptions['preferredChoices'],
+            ]);
         }
     }
 }

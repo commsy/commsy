@@ -6,12 +6,12 @@
  * Time: 14:35
  */
 
-namespace App\Action\Copy;
+namespace App\Action\Mark;
 
 
 use App\Http\JsonDataResponse;
 use App\Http\JsonErrorResponse;
-use App\Services\CopyService;
+use App\Services\MarkedService;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use cs_environment;
@@ -36,20 +36,20 @@ class InsertAction
     private ItemService $itemService;
 
     /**
-     * @var CopyService
+     * @var MarkedService
      */
-    private CopyService $copyService;
+    private MarkedService $markService;
 
     public function __construct(
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
         ItemService $itemService,
-        CopyService $copyService
+        MarkedService $markService
     ) {
         $this->translator = $translator;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->itemService = $itemService;
-        $this->copyService = $copyService;
+        $this->markService = $markService;
     }
 
     public function execute(\cs_room_item $roomItem, array $items): Response
@@ -67,7 +67,7 @@ class InsertAction
         }
 
         if($roomItem->getType() == 'userroom'){
-            $imports = $this->copyService->getListEntries(0);
+            $imports = $this->markService->getListEntries(0);
 
             foreach ($items as $user) {
                 /** @var \cs_user_item $user */
@@ -106,7 +106,7 @@ class InsertAction
                 if ($toggleArchive) {
                     $this->legacyEnvironment->toggleArchiveMode();
                 }
-
+                $importItem->setExternalViewerAccounts(array());
                 // archive
                 $copy = $importItem->copy();
 

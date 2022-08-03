@@ -249,10 +249,10 @@ class cs_discussion_manager extends cs_manager {
 
        switch ($this->inactiveEntriesLimit) {
            case self::SHOW_ENTRIES_ONLY_ACTIVATED:
-               $query .= ' AND (' . $this->addDatabasePrefix('discussions') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('discussions') . '.modification_date <= "' . getCurrentDateTimeInMySQL() . '")';
+               $query .= ' AND (' . $this->addDatabasePrefix('discussions') . '.activation_date  IS NULL OR ' . $this->addDatabasePrefix('discussions') . '.activation_date  <= "' . getCurrentDateTimeInMySQL() . '")';
                break;
            case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
-               $query .= ' AND (' . $this->addDatabasePrefix('discussions') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('discussions') . '.modification_date > "' . getCurrentDateTimeInMySQL() . '")';
+               $query .= ' AND (' . $this->addDatabasePrefix('discussions') . '.activation_date  IS NOT NULL AND ' . $this->addDatabasePrefix('discussions') . '.activation_date  > "' . getCurrentDateTimeInMySQL() . '")';
                break;
        }
 
@@ -365,7 +365,7 @@ class cs_discussion_manager extends cs_manager {
 
      if ( isset($this->_sort_order) ) {
         if ( $this->_sort_order == 'latest' ) {
-           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.latest_article_modification_date DESC, ' . $this->addDatabasePrefix('discussions') . '.modification_date DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions') . '.modification_date DESC';
         } elseif ( $this->_sort_order == 'latest_rev' ) {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.latest_article_modification_date, ' . $this->addDatabasePrefix('discussions') . '.modification_date';
         } elseif ( $this->_sort_order == 'title' ) {
@@ -412,176 +412,195 @@ class cs_discussion_manager extends cs_manager {
       return new cs_discussion_item($this->_environment);
    }
 
-  /** get a discussion in newest version
-    *
-    * @param integer item_id id of the item
-    *
-    * @return object cs_item a label
-    */
-     function getItem ($item_id) {
-        $discussion = NULL;
-        if ( !empty($item_id)
-             and !empty($this->_cache_object[$item_id])
-           ) {
-           return $this->_cache_object[$item_id];
-        } elseif ( array_key_exists($item_id,$this->_cached_items) ) {
-           return $this->_buildItem($this->_cached_items[$item_id]);
-        } elseif ( !empty($item_id) ) {
-           $query = "SELECT * FROM ".$this->addDatabasePrefix("discussions")." WHERE ".$this->addDatabasePrefix("discussions").".item_id = '".encode(AS_DB,$item_id)."'";
-           $result = $this->_db_connector->performQuery($query);
-           if ( !isset($result) ) {
-              include_once('functions/error_functions.php');
-              trigger_error('Problems selecting one discussions item ('.$item_id.').',E_USER_WARNING);
-           } elseif ( !empty($result[0]) ) {
-              $discussion = $this->_buildItem($result[0]);
-              if ( $this->_cache_on ) {
-                 $this->_cached_items[$item_id] = $result[0];
-              }
-           }
-           return $discussion;
+    /** get a discussion in newest version
+     *
+     * @param integer item_id id of the item
+     *
+     * @return cs_discussion_item|null cs_item a label
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function getItem($item_id): ?cs_discussion_item
+    {
+        $discussion = null;
+        if (!empty($item_id)
+            and !empty($this->_cache_object[$item_id])
+        ) {
+            return $this->_cache_object[$item_id];
+        } elseif (array_key_exists($item_id, $this->_cached_items)) {
+            return $this->_buildItem($this->_cached_items[$item_id]);
+        } elseif (!empty($item_id)) {
+            $query = "SELECT * FROM " . $this->addDatabasePrefix("discussions") . " WHERE " . $this->addDatabasePrefix("discussions") . ".item_id = '" . encode(AS_DB,
+                    $item_id) . "'";
+            $result = $this->_db_connector->performQuery($query);
+            if (!isset($result)) {
+                include_once('functions/error_functions.php');
+                trigger_error('Problems selecting one discussions item (' . $item_id . ').', E_USER_WARNING);
+            } elseif (!empty($result[0])) {
+                $discussion = $this->_buildItem($result[0]);
+                if ($this->_cache_on) {
+                    $this->_cached_items[$item_id] = $result[0];
+                }
+            }
+            return $discussion;
         } else {
-           return NULL;
+            return null;
         }
-     }
+    }
 
    function getItemList($id_array) {
       return $this->_getItemList('discussion', $id_array);
    }
 
-  /** update a discussion - internal, do not use -> use method save
-   * this method updates the database record for a given discussion item
-   *
-   * @param cs_discussion_item the discussion item for which an update should be made
-   */
-   function _update ($item) {
-      parent::_update($item);
+    /** update a discussion - internal, do not use -> use method save
+     * this method updates the database record for a given discussion item
+     *
+     * @param cs_discussion_item the discussion item for which an update should be made
+     */
+    function _update($item)
+    {
+        parent::_update($item);
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
-      $modificator = $item->getModificatorItem();
-      $current_datetime = getCurrentDateTimeInMySQL();
+        $queryBuilder
+            ->update($this->addDatabasePrefix('discussions'))
+            ->set('modifier_id', ':modifierId')
+            ->set('modification_date', ':modificationDate')
+            ->set('activation_date', ':activationDate')
+            ->set('title', ':title')
+            ->set('description', ':description')
+            ->set('extras', ':extras')
+            ->set('status', ':status')
+            ->set('discussion_type', ':discussionType')
+            ->set('public', ':public')
+            ->where('item_id = :itemId')
+            ->setParameter('modifierId', $item->getModificatorItem()->getItemID())
+            ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+            ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
+            ->setParameter('title', $item->getTitle())
+            ->setParameter('description', $item->getDescription())
+            ->setParameter('extras', serialize($item->getExtraInformation()))
+            ->setParameter('status', $item->getDiscussionStatus() ?: '1')
+            ->setParameter('discussionType', $item->getDiscussionType() ?: 'simple')
+            ->setParameter('public', $item->isPublic() ? 1 : 0)
+            ->setParameter('itemId', $item->getItemID());
 
-     if ( $item->isPublic() ) {
-        $public = '1';
-     } else {
-        $public = '0';
-     }
+        $articleId = $item->getLatestArticleID();
+        if (!empty($articleId)) {
+            $queryBuilder
+                ->set('latest_article_item_id', ':latestArticleItemId')
+                ->setParameter('latestArticleItemId', $articleId);
+        }
 
-     if ( $item->getDiscussionStatus() ) {
-        $status = $item->getDiscussionStatus();
-     } else {
-        $status = '1';
-     }
+        $articleModificationDate = $item->getLatestArticleModificationDate();
+        if (!empty($articleModificationDate)) {
+            $queryBuilder
+                ->set('latest_article_modification_date', ':latestArticleModificationDate')
+                ->setParameter('latestArticleModificationDate', $articleModificationDate);
+        }
 
-     if ( $item->getDiscussionType() ) {
-        $type = $item->getDiscussionType();
-     } else {
-        $type = 'simple';
-     }
-     $modification_date = getCurrentDateTimeInMySQL();
-     if ($item->isNotActivated()){
-        $modification_date = $item->getModificationDate();
-     }
 
-      $query = 'UPDATE '.$this->addDatabasePrefix('discussions').' SET '.
-               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-               'modification_date="'.$modification_date.'",'.
-               'title="'.encode(AS_DB,$item->getTitle()).'",'.
-               'extras="'.encode(AS_DB,serialize($item->getExtraInformation())).'",'.
-               'description="'.encode(AS_DB,$item->getDescription()).'",'.
-               'public="'.encode(AS_DB,$public).'"';
-      $article_id = $item->getLatestArticleID();
-      if (!empty($article_id)) {
-         $query .= ', latest_article_item_id="'.encode(AS_DB,$article_id).'"';
-      }
-      $article_modification_date = $item->getLatestArticleModificationDate();
-      if (!empty($article_modification_date)) {
-         $query .= ', latest_article_modification_date="'.encode(AS_DB,$article_modification_date).'"';
-      }
-      $query .= ', status="'.encode(AS_DB,$status).'"';
-      $query .= ', discussion_type="'.encode(AS_DB,$type).'"';
-      $query .=      ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems updating discussion.', E_USER_WARNING);
+        }
+    }
 
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');trigger_error('Problems updating discussion',E_USER_WARNING);
-      }
-      unset($item);
-      unset($modificator);
-   }
+    /**
+     * create a new item in the items table - internal, do not use -> use method save
+     * this method creates a new item of type 'ndiscussion' in the database and sets the discussion items item id.
+     * it then calls the private method _newNews to store the discussion item itself.
+     * @param cs_discussion_item the discussion item for which an entry should be made
+     */
+    function _create(cs_discussion_item $item)
+    {
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
-  /** create a new item in the items table - internal, do not use -> use method save
-   * this method creates a new item of type 'ndiscussion' in the database and sets the discussion items item id.
-   * it then calls the private method _newNews to store the discussion item itself.
-   * @param cs_discussion_item the discussion item for which an entry should be made
-   */
-  function _create ($item) {
-     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
-              'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
-              'modification_date="'.getCurrentDateTimeInMySQL().'",'.
-              'type="discussion",'.
-              'draft="'.encode(AS_DB,$item->isDraft()).'"';
+        $queryBuilder
+            ->insert($this->addDatabasePrefix('items'))
+            ->setValue('context_id', ':contextId')
+            ->setValue('modification_date', ':modificationDate')
+            ->setValue('activation_date', ':activationDate')
+            ->setValue('type', ':type')
+            ->setValue('draft', ':draft')
+            ->setParameter('contextId', $item->getContextID())
+            ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+            ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
+            ->setParameter('type', 'discussion')
+            ->setParameter('draft', $item->isDraft());
 
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems creating discussion.',E_USER_WARNING);
-        $this->_create_id = NULL;
-     } else {
-        $this->_create_id = $result;
-        $item->setItemID($this->getCreateID());
-        $this->_newDiscussion($item);
-     }
-     unset($item);
-  }
+        try {
+            $queryBuilder->executeStatement();
+
+            $this->_create_id = $queryBuilder->getConnection()->lastInsertId();
+            $item->setItemID($this->getCreateID());
+            $this->_newDiscussion($item);
+
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error($e->getMessage(), E_USER_WARNING);
+            $this->_create_id = null;
+        }
+    }
 
   /** store a new discussion item to the database - internal, do not use -> use method save
     * this method stores a newly created discussion item to the database
     *
-    * @param cs_discussion_item the discussion item to be stored
+    * @param cs_discussion_item $item
     */
-  function _newDiscussion ($item) {
-     $user = $item->getCreatorItem();
-     $modificator = $item->getModificatorItem();
-     $current_datetime = getCurrentDateTimeInMySQL();
+  function _newDiscussion (cs_discussion_item $item)
+  {
+      $currentDateTime = getCurrentDateTimeInMySQL();
 
-     if ( $item->isPublic() ) {
-        $public = '1';
-     } else {
-        $public = '0';
-     }
-     if ( $item->getDiscussionType() ) {
-        $type = $item->getDiscussionType();
-     } else {
-        $type = 'simple';
-     }
-     $modification_date = getCurrentDateTimeInMySQL();
-     if ($item->isNotActivated()){
-        $modification_date = $item->getModificationDate();
-     }
+      $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
-     $query = 'INSERT INTO '.$this->addDatabasePrefix('discussions').' SET '.
-              'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
-              'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
-              'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
-              'creation_date="'.$current_datetime.'",'.
-              'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-              'modification_date="'.$modification_date.'",'.
-              'title="'.encode(AS_DB,$item->getTitle()).'",'.
-              'description="'.encode(AS_DB,$item->getDescription()).'",'.
-              'discussion_type="'.encode(AS_DB,$type).'",'.
-              'public="'.encode(AS_DB,$public).'"';
-     $article_id = $item->getLatestArticleID();
-     if (!empty($article_id)) {
-        $query .= ', latest_article_item_id="'.encode(AS_DB,$article_id).'"';
-     }
-     $article_modification_date = $item->getLatestArticleModificationDate();
-     if (!empty($article_modification_date)) {
-        $query .= ', latest_article_modification_date="'.encode(AS_DB,$article_modification_date).'"';
-     }
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems creating discussion.',E_USER_WARNING);
-     }
-     unset($item);
-     unset($modificator);
+      $queryBuilder
+          ->insert($this->addDatabasePrefix('discussions'))
+          ->setValue('item_id', ':itemId')
+          ->setValue('context_id', ':contextId')
+          ->setValue('creator_id', ':creatorId')
+          ->setValue('creation_date', ':creationDate')
+          ->setValue('modifier_id', ':modifierId')
+          ->setValue('modification_date', ':modificationDate')
+          ->setValue('activation_date', ':activationDate')
+          ->setValue('title', ':title')
+          ->setValue('description', ':description')
+          ->setValue('discussion_type', ':discussionType')
+          ->setValue('public', ':public')
+          ->setParameter('itemId', $item->getItemID())
+          ->setParameter('contextId', $item->getContextID())
+          ->setParameter('creatorId', $item->getCreatorItem()->getItemID())
+          ->setParameter('creationDate', $currentDateTime)
+          ->setParameter('modifierId', $item->getModificatorItem()->getItemID())
+          ->setParameter('modificationDate', $currentDateTime)
+          ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
+          ->setParameter('title', $item->getTitle())
+          ->setParameter('description', $item->getDescription())
+          ->setParameter('discussionType', $item->getDiscussionType() ?: 'simple')
+          ->setParameter('public', $item->isPublic() ? 1 : 0);
+
+
+      $articleId = $item->getLatestArticleID();
+      if (!empty($articleId)) {
+          $queryBuilder
+              ->setValue('latest_article_item_id', ':latestArticleItemId')
+              ->setParameter('latestArticleItemId', $articleId);
+      }
+
+      $articleModificationDate = $item->getLatestArticleModificationDate();
+      if (!empty($articleModificationDate)) {
+          $queryBuilder
+              ->setValue('latest_article_modification_date', ':latestArticleModificationDate')
+              ->setParameter('latestArticleModificationDate', $articleModificationDate);
+      }
+
+      try {
+          $queryBuilder->executeStatement();
+      } catch (\Doctrine\DBAL\Exception $e) {
+          include_once('functions/error_functions.php');
+          trigger_error('Problems creating dates.', E_USER_WARNING);
+      }
   }
 
   /**  delete a discussion item

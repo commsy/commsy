@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -52,7 +53,7 @@ class ZzzMaterials
     private $deleterId;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
      */
@@ -66,14 +67,21 @@ class ZzzMaterials
     private $modifierId;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="modification_date", type="datetime", nullable=true)
      */
     private $modificationDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="activation_date", type="datetime")
+     */
+    private ?DateTime $activationDate;
+
+    /**
+     * @var DateTime
      *
      * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
      */
@@ -150,21 +158,21 @@ class ZzzMaterials
     private $workflowStatus = '3_none';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="workflow_resubmission_date", type="datetime", nullable=true)
      */
     private $workflowResubmissionDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="workflow_validity_date", type="datetime", nullable=true)
      */
     private $workflowValidityDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="locking_date", type="datetime", nullable=true)
      */
