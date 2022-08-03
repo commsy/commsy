@@ -100,15 +100,6 @@ class cs_assessments_item extends cs_item {
    }
 
    /**
-    * returns creator id of item
-    *
-    * @return integer creator_id
-    */
-   function getCreatorID() {
-   	 return $this->_getValue('creator_id');
-   }
-
-   /**
     * sets deleter id of item
     *
     * @param integer deleter_id

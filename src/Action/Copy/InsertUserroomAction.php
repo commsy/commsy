@@ -11,7 +11,7 @@ namespace App\Action\Copy;
 
 use App\Http\JsonDataResponse;
 use App\Http\JsonErrorResponse;
-use App\Services\CopyService;
+use App\Services\MarkedService;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,18 +30,18 @@ class InsertUserroomAction
     private cs_environment $legacyEnvironment;
 
     /**
-     * @var CopyService
+     * @var MarkedService
      */
-    private CopyService $copyService;
+    private MarkedService $markService;
 
     public function __construct(
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
-        CopyService $copyService
+        MarkedService $markService
     ) {
         $this->translator = $translator;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->copyService = $copyService;
+        $this->markService = $markService;
     }
 
     public function execute(\cs_room_item $roomItem, array $users): Response
@@ -66,7 +66,7 @@ class InsertUserroomAction
         $versionIdsByCopyIds = [];
 
         // get the copied items from the clipboard to be "imported" into the given users' user rooms
-        $imports = $this->copyService->getListEntries(0);
+        $imports = $this->markService->getListEntries(0);
 
         // for each given (project room) user, copy each import item into his/her user room
         foreach ($users as $user) {

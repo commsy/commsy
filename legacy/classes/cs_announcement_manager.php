@@ -233,10 +233,10 @@ class cs_announcement_manager extends cs_manager {
 
        switch ($this->inactiveEntriesLimit) {
            case self::SHOW_ENTRIES_ONLY_ACTIVATED:
-               $query .= ' AND (' . $this->addDatabasePrefix('announcement') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('announcement') . '.modification_date <= "' . getCurrentDateTimeInMySQL() . '")';
+               $query .= ' AND (' . $this->addDatabasePrefix('announcement') . '.activation_date  IS NULL OR ' . $this->addDatabasePrefix('announcement') . '.activation_date  <= "' . getCurrentDateTimeInMySQL() . '")';
                break;
            case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
-               $query .= ' AND (' . $this->addDatabasePrefix('announcement') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('announcement') . '.modification_date > "' . getCurrentDateTimeInMySQL() . '")';
+               $query .= ' AND (' . $this->addDatabasePrefix('announcement') . '.activation_date  IS NOT NULL AND ' . $this->addDatabasePrefix('announcement') . '.activation_date  > "' . getCurrentDateTimeInMySQL() . '")';
                break;
        }
 
@@ -439,117 +439,127 @@ class cs_announcement_manager extends cs_manager {
    }
 
 
-  /** update an announcement - internal, do not use -> use method save
-    * this method updates an announcement
-    *
-    * @param object cs_item announcement_item the announcement
-    *
-    * @author CommSy Development Group
-    */
-  function _update ($announcement_item) {
-     parent::_update($announcement_item);
+    /**
+     * update an announcement - internal, do not use -> use method save
+     * this method updates an announcement
+     *
+     * @param cs_announcement_item $announcement_item
+     *
+     * @author CommSy Development Group
+     */
+    function _update($announcement_item)
+    {
+        parent::_update($announcement_item);
 
-     $modificator = $announcement_item->getModificatorItem();
-     $current_datetime = getCurrentDateTimeInMySQL();
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
-     if ( $announcement_item->isPublic() ) {
-        $public = '1';
-     } else {
-        $public = '0';
-     }
-     $modification_date = getCurrentDateTimeInMySQL();
-     if ($announcement_item->isNotActivated()){
-        $modification_date = $announcement_item->getModificationDate();
-     }
+        $queryBuilder
+            ->update($this->addDatabasePrefix('announcement'))
+            ->set('modifier_id', ':modifierId')
+            ->set('modification_date', ':modificationDate')
+            ->set('activation_date', ':activationDate')
+            ->set('title', ':title')
+            ->set('description', ':description')
+            ->set('public', ':public')
+            ->set('enddate', ':endDate')
+            ->where('item_id = :itemId')
+            ->setParameter('title', $announcement_item->getTitle())
+            ->setParameter('modifierId', $announcement_item->getModificatorItem()->getItemID())
+            ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+            ->setParameter('activationDate', $announcement_item->isNotActivated() ? $announcement_item->getActivatingDate() : null)
+            ->setParameter('description', $announcement_item->getDescription())
+            ->setParameter('public', $announcement_item->isPublic() ? 1 : 0)
+            ->setParameter('endDate', $announcement_item->getSecondDateTime())
+            ->setParameter('itemId', $announcement_item->getItemID());
 
-     $query = 'UPDATE '.$this->addDatabasePrefix('announcement').' SET '.
-              'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-              'modification_date="'.$modification_date.'",'.
-              'title="'.encode(AS_DB,$announcement_item->getTitle()).'",'.
-              'description="'.encode(AS_DB,$announcement_item->getDescription()).'",'.
-              'public="'.encode(AS_DB,$public).'",'.
-              'enddate="'.encode(AS_DB,$announcement_item->getSecondDateTime()).'"'.
-              ' WHERE item_id="'.encode(AS_DB,$announcement_item->getItemID()).'"';
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error($e->getMessage(), E_USER_WARNING);
+        }
+    }
 
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) or !$result ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems updating announcement.',E_USER_WARNING);
-     } else {
-        unset($result);
-     }
-     unset($announcement_item);
-     unset($modificator);
-  }
+    /**
+     * create an announcement - internal, do not use -> use method save
+     * this method creates an announcement
+     *
+     * @param cs_announcement_item $announcement_item
+     * @throws \Doctrine\DBAL\Exception
+     */
+    function _create(cs_announcement_item $announcement_item)
+    {
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
-  /** create an announcement - internal, do not use -> use method save
-    * this method creates an announcement
-    *
-    * @param object cs_item announcement_item the announcement
-    */
-  function _create ($announcement_item) {
-     $modification_date = getCurrentDateTimeInMySQL();
-     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
-              'context_id="'.encode(AS_DB,$announcement_item->getContextID()).'",'.
-              'modification_date="'.$modification_date.'",'.
-              'type="announcement",'.
-              'draft="'.encode(AS_DB,$announcement_item->isDraft()).'"';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems creating announcement.',E_USER_WARNING);
-        $this->_create_id = NULL;
-     } else {
-        $this->_create_id = $result;
-        $announcement_item->setItemID($this->getCreateID());
-        $this->_newAnnouncement($announcement_item);
-        unset($result);
-     }
-     unset($announcement_item);
-  }
+        $queryBuilder
+            ->insert($this->addDatabasePrefix('items'))
+            ->setValue('context_id', ':contextId')
+            ->setValue('modification_date', ':modificationDate')
+            ->setValue('activation_date', ':activationDate')
+            ->setValue('type', ':type')
+            ->setValue('draft', ':draft')
+            ->setParameter('contextId', $announcement_item->getContextID())
+            ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+            ->setParameter('activationDate', $announcement_item->isNotActivated() ? $announcement_item->getActivatingDate() : null)
+            ->setParameter('type', 'announcement')
+            ->setParameter('draft', $announcement_item->isDraft());
+
+        try {
+            $queryBuilder->executeStatement();
+
+            $this->_create_id = $queryBuilder->getConnection()->lastInsertId();
+            $announcement_item->setItemID($this->getCreateID());
+            $this->_newAnnouncement($announcement_item);
+
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error($e->getMessage(), E_USER_WARNING);
+            $this->_create_id = null;
+        }
+    }
 
   /** creates an new announcement - internal, do not use -> use method save
     * this method creates an new announcement
     *
     * @param object cs_item announcement_item the announcement
     */
-  function _newAnnouncement ($announcement_item) {
-     $user = $announcement_item->getCreatorItem();
-     $modificator = $announcement_item->getModificatorItem();
-     $current_datetime = getCurrentDateTimeInMySQL();
+  function _newAnnouncement (cs_announcement_item $announcement_item)
+  {
+      $currentDateTime = getCurrentDateTimeInMySQL();
 
-     if ( $announcement_item->isPublic() ) {
-        $public = '1';
-     } else {
-        $public = '0';
-     }
-     $modification_date = getCurrentDateTimeInMySQL();
-     if ($announcement_item->isNotActivated()){
-        $modification_date = $announcement_item->getModificationDate();
-     }
+      $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
-     $query = 'INSERT INTO '.$this->addDatabasePrefix('announcement').' SET '.
-              'item_id="'.encode(AS_DB,$announcement_item->getItemID()).'",'.
-              'context_id="'.encode(AS_DB,$announcement_item->getContextID()).'",'.
-              'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
-              'creation_date="'.$current_datetime.'",'.
-              'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-              'modification_date="'.$modification_date.'",'.
-              'title="'.encode(AS_DB,$announcement_item->getTitle()).'",'.
-              'enddate ="'.encode(AS_DB,$announcement_item->getSecondDateTime()).'",'.
-              'public="'.encode(AS_DB,$public).'",'.
-              'description="'.encode(AS_DB,$announcement_item->getDescription()).'"';
+      $queryBuilder
+          ->insert($this->addDatabasePrefix('announcement'))
+          ->setValue('item_id', ':itemId')
+          ->setValue('context_id', ':contextId')
+          ->setValue('creator_id', ':creatorId')
+          ->setValue('creation_date', ':creationDate')
+          ->setValue('modifier_id', ':modifierId')
+          ->setValue('modification_date', ':modificationDate')
+          ->setValue('activation_date', ':activationDate')
+          ->setValue('title', ':title')
+          ->setValue('enddate', ':endDate')
+          ->setValue('public', ':public')
+          ->setValue('description', ':description')
+          ->setParameter('itemId', $announcement_item->getItemID())
+          ->setParameter('contextId', $announcement_item->getContextID())
+          ->setParameter('creatorId', $announcement_item->getCreatorItem()->getItemID())
+          ->setParameter('creationDate', $currentDateTime)
+          ->setParameter('modifierId', $announcement_item->getModificatorItem()->getItemID())
+          ->setParameter('modificationDate', $currentDateTime)
+          ->setParameter('activationDate', $announcement_item->isNotActivated() ? $announcement_item->getActivatingDate() : null)
+          ->setParameter('title', $announcement_item->getTitle())
+          ->setParameter('endDate', $announcement_item->getSecondDateTime())
+          ->setParameter('public', $announcement_item->isPublic() ? 1 : 0)
+          ->setParameter('description', $announcement_item->getDescription());
 
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems creating announcement.',E_USER_WARNING);
-     } else {
-        unset($result);
-     }
-     unset($announcement_item);
-     unset($modificator);
-     unset($user);
+      try {
+          $queryBuilder->executeStatement();
+      } catch (\Doctrine\DBAL\Exception $e) {
+          include_once('functions/error_functions.php');
+          trigger_error('Problems creating announcement.', E_USER_WARNING);
+      }
   }
 
   function delete ($item_id) {

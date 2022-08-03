@@ -2,45 +2,44 @@
 
 namespace App\Controller;
 
-use App\Action\Copy\InsertAction;
-use App\Action\Copy\RemoveAction;
-use App\Services\CopyService;
-use App\Services\LegacyEnvironment;
+use App\Action\Mark\CategorizeAction;
+use App\Action\Mark\HashtagAction;
+use App\Action\Mark\InsertAction;
+use App\Action\Mark\RemoveAction;
+use App\Filter\MarkedFilterType;
+use App\Services\MarkedService;
 use cs_item;
 use cs_room_item;
 use Exception;
-use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
-
-use App\Filter\CopyFilterType;
-
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class CopyController
+ * Class MarkedController
  * @package App\Controller
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
-class CopyController extends BaseController
+class MarkedController extends BaseController
 {
     /**
-     * @var CopyService
+     * @var MarkedService
      */
-    private CopyService $copyService;
+    private MarkedService $markedService;
 
     /**
      * @required
-     * @param CopyService $copyService
+     * @param MarkedService $markedService
      */
-    public function setCopyService(CopyService $copyService): void
+    public function setMarkedService (MarkedService $markedService): void
     {
-        $this->copyService = $copyService;
+        $this->markedService = $markedService;
     }
 
     /**
-     * @Route("/room/{roomId}/copy/feed/{start}/{sort}")
+     * @Route("/room/{roomId}/mark/feed/{start}/{sort}")
      * @Template()
      * @param Request $request
      * @param int $roomId
@@ -58,9 +57,9 @@ class CopyController extends BaseController
     ) {
         // extract current filter from parameter bag (embedded controller call)
         // or from query parameters (AJAX)
-        $copyFilter = $request->get('copyFilter');
-        if (!$copyFilter) {
-            $copyFilter = $request->query->get('copy_filter');
+        $markedFilter = $request->get('markFilter');
+        if (!$markedFilter) {
+            $markedFilter = $request->query->get('marked_filter');
         }
 
         $roomItem = $this->loadRoom($roomId);
@@ -78,19 +77,19 @@ class CopyController extends BaseController
             $rubrics = array_combine($rubrics, $rubrics);
         }
 
-        if ($copyFilter) {
+        if ($markedFilter) {
             // setup filter form
             $filterForm = $this->createFilterForm($roomItem);
 
             // manually bind values from the request
-            $filterForm->submit($copyFilter);
+            $filterForm->submit($markedFilter);
 
             // apply filter
-            $this->copyService->setFilterConditions($filterForm);
+            $this->markedService->setFilterConditions($filterForm);
         }
 
         // get announcement list from manager service 
-        $entries = $this->copyService->getListEntries($max, $start, $sort);
+        $entries = $this->markedService->getListEntries($max, $start, $sort);
 
         $stackRubrics = ['date', 'material', 'discussion', 'todo'];
 
@@ -103,6 +102,13 @@ class CopyController extends BaseController
                 $allowedActions[$item->getItemID()][] = 'insertStack';
             }
             $allowedActions[$item->getItemID()][] = 'remove';
+
+            // NOTE: assigning categories (aka tags) and hashtags (aka buzzwords) is room-specific
+            //       and can only handle items belonging to the same context
+            if ($item->getContextID() === $roomId) {
+                $allowedActions[$item->getItemID()][] = 'categorize';
+                $allowedActions[$item->getItemID()][] = 'hashtag';
+            }
         }
 
         return [
@@ -113,7 +119,7 @@ class CopyController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/copy")
+     * @Route("/room/{roomId}/mark")
      * @Template()
      * @param Request $request
      * @param int $roomId
@@ -130,19 +136,21 @@ class CopyController extends BaseController
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions
-            $this->copyService->setFilterConditions($filterForm);
+            $this->markedService->setFilterConditions($filterForm);
         }
 
         // get number of items
-        $itemsCountArray = $this->copyService->getCountArray($roomId);
+        $itemsCountArray = $this->markedService->getCountArray($roomId);
 
         return [
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
-            'module' => 'copies',
+            'module' => 'marked',
             'itemsCountArray' => $itemsCountArray,
             'usageInfo' => null,
             'roomname' => $roomItem->getTitle(),
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showCategories' => $roomItem->withTags(),
         ];
     }
 
@@ -151,7 +159,7 @@ class CopyController extends BaseController
     ###################################################################################################
 
     /**
-     * @Route("/room/{roomId}/copy/xhr/insert", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/mark/xhr/insert", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
      * @return
@@ -169,7 +177,7 @@ class CopyController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/copy/xhr/remove", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/mark/xhr/remove", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
      * @return mixed
@@ -187,6 +195,38 @@ class CopyController extends BaseController
     }
 
     /**
+     * @Route("/room/{roomId}/mark/xhr/categorize", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param CategorizeAction $action
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrCategorizeAction(
+        Request $request,
+        CategorizeAction $action,
+        int $roomId
+    ) {
+        return parent::handleCategoryActionOptions($request, $action, $roomId);
+    }
+
+    /**
+     * @Route("/room/{roomId}/mark/xhr/hashtag", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param HashtagAction $action
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrHashtagAction(
+        Request $request,
+        HashtagAction $action,
+        int $roomId
+    ) {
+        return parent::handleHashtagActionOptions($request, $action, $roomId);
+    }
+
+    /**
      * @param Request $request
      * @param $roomItem
      * @param boolean $selectAll
@@ -201,20 +241,20 @@ class CopyController extends BaseController
     ) {
 
         if ($selectAll) {
-            if ($request->query->has('copy_filter')) {
-                $currentFilter = $request->query->get('copy_filter');
+            if ($request->query->has('marked_filter')) {
+                $currentFilter = $request->query->get('marked_filter');
                 $filterForm = $this->createFilterForm($roomItem);
 
                 // manually bind values from the request
                 $filterForm->submit($currentFilter);
 
                 // apply filter
-                $this->copyService->setFilterConditions($filterForm);
+                $this->markedService->setFilterConditions($filterForm);
             }
 
-            return $this->copyService->getListEntries();
+            return $this->markedService->getListEntries();
         } else {
-            return $this->copyService->getCopiesById($itemIds);
+            return $this->markedService->getMarkedItemsById($itemIds);
         }
     }
 
@@ -238,8 +278,8 @@ class CopyController extends BaseController
             $rubrics = array_combine($rubrics, $rubrics);
         }
 
-        return $this->createForm(CopyFilterType::class, [], [
-            'action' => $this->generateUrl('app_copy_list', [
+        return $this->createForm(MarkedFilterType::class, [], [
+            'action' => $this->generateUrl('app_marked_list', [
                 'roomId' => $room->getItemID(),
             ]),
             'rubrics' => $rubrics,

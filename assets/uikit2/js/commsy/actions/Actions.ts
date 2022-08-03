@@ -1,5 +1,5 @@
 import * as $ from 'jquery';
-import {CopyAction} from "./CopyAction";
+import {MarkAction} from "./MarkAction";
 import {BaseAction} from "./AbstractAction";
 import {DeleteAction} from "./DeleteAction";
 import {WorkflowAction} from "./WorkflowAction";
@@ -13,6 +13,8 @@ import {SendMailAction} from "./SendMailAction";
 import {UserStatusAction} from "./UserStatusAction";
 import {InsertAction} from "./InsertAction";
 import {RemoveAction} from "./RemoveAction";
+import {CategorizeAction} from "./CategorizeAction";
+import {HashtagAction} from "./HashtagAction";
 import {InsertUserroomAction} from "./InsertUserroomAction";
 
 'use strict';
@@ -72,36 +74,42 @@ export interface ActionResponse {
 }
 
 export class ActionExecuter {
-    public invokeAction($actor: JQuery, action: BaseAction, itemId: number): Promise<ActionResponse> {
-        let actionPayload: ActionRequest = {
-            positiveItemIds: [itemId],
-            negativeItemIds: [],
-            action: action.action,
-            selectAll: false,
-            selectAllStart: 0
-        };
-
-        return this.invoke($actor, action, actionPayload);
-    }
-
-    public invokeListAction($actor: JQuery, action: BaseAction, positiveItemIds: number[], negativeItemIds: number[], selectAll: boolean, selectAllStart: number): Promise<ActionResponse> {
-        let actionPayload: ActionRequest = {
+    public buildActionRequest(
+        action: BaseAction,
+        positiveItemIds: number[],
+        negativeItemIds: number[],
+        selectAll: boolean,
+        selectAllStart: number
+    ): ActionRequest {
+        return {
             positiveItemIds: positiveItemIds,
             negativeItemIds: negativeItemIds,
-            action: action.action,
+            action: action.actionData.action,
             selectAll: selectAll,
             selectAllStart: selectAllStart
         };
-
-        return this.invoke($actor, action, actionPayload);
     }
 
-    private invoke($actor: JQuery, action: BaseAction, actionPayload: ActionRequest): Promise<any> {
+    public loadCustomFormData(action: BaseAction): Promise<any> {
+        let requestURI = new URI(action.actionData.url);
+
+        return action.loadCustomFormData(requestURI.toString())
+            .then((backendResponse: ActionResponse) => {
+                return action.onPostLoadCustomFormData(backendResponse);
+            })
+            .catch((error: Error) => {
+                if (error) {
+                    action.onError(error);
+                }
+            });
+    }
+
+    public invoke($actor: JQuery, action: BaseAction, actionPayload: ActionRequest): Promise<boolean|void> {
         return action.preExecute($actor)
             .then(() => {
                 // set current query parameters also on the request URI
                 let currentURI = new URI(location.href);
-                let requestURI = new URI(action.url);
+                let requestURI = new URI(action.actionData.url);
                 requestURI.search(function() {
                     return currentURI.search(true);
                 });
@@ -123,14 +131,18 @@ export function createAction(actionData: ActionData): BaseAction {
     switch (actionData.action) {
         case 'delete':
             return new DeleteAction(actionData);
-        case 'copy':
-            return new CopyAction(actionData);
+        case 'mark':
+            return new MarkAction(actionData);
         case 'insert':
             return new InsertAction(actionData);
         case 'insertuserroom':
             return new InsertUserroomAction(actionData);
         case 'remove':
             return new RemoveAction(actionData);
+        case 'categorize':
+            return new CategorizeAction(actionData);
+        case 'hashtag':
+            return new HashtagAction(actionData);
         case 'workflow':
             return new WorkflowAction(actionData);
         case 'join':
@@ -156,10 +168,6 @@ export function createAction(actionData: ActionData): BaseAction {
         case 'user-contact':
         case 'user-contact-remove':
             return new UserStatusAction(actionData);
-    }
-
-    if (actionData.action.substr(0, 4) === 'mark') {
-        return new TodoStatusAction(actionData);
     }
 
     return null;

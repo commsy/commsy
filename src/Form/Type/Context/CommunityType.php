@@ -2,8 +2,8 @@
 namespace App\Form\Type\Context;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CommunityType extends AbstractType
@@ -44,7 +44,7 @@ class CommunityType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['types', 'templates', 'preferredChoices', 'timesDisplay', 'times', 'communities', 'linkCommunitiesMandantory', 'roomCategories', 'linkRoomCategoriesMandatory'])
+            ->setRequired(['templates', 'preferredChoices'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

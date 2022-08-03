@@ -2,7 +2,7 @@ import * as $ from 'jquery';
 
 'use strict';
 
-import {DetailActionData, ActionExecuter, createAction} from "./Actions";
+import {DetailActionData, ActionExecuter, createAction, ActionRequest} from "./Actions";
 import {BaseAction} from "./AbstractAction";
 
 declare var UIkit: any;
@@ -21,7 +21,15 @@ export class DetailActionManager {
                     let action: BaseAction = createAction(actionData);
 
                     let actionExecuter: ActionExecuter = new ActionExecuter();
-                    actionExecuter.invokeAction($actor, action, actionData.itemId)
+                    let actionRequest: ActionRequest = actionExecuter.buildActionRequest(
+                        action,
+                        [actionData.itemId],
+                        [],
+                        false,
+                        0
+                    );
+
+                    actionExecuter.invoke($actor, action, actionRequest)
                         .catch((error: Error) => {
                             // Catching here does not have to be a fatal error, e.g. rejecting a confirm dialog.
                             // So we check for the error parameter

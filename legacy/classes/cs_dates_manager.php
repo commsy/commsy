@@ -382,10 +382,10 @@ class cs_dates_manager extends cs_manager {
 
        switch ($this->inactiveEntriesLimit) {
            case self::SHOW_ENTRIES_ONLY_ACTIVATED:
-               $query .= ' AND (' . $this->addDatabasePrefix('dates') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('dates') . '.modification_date <= "' . getCurrentDateTimeInMySQL() . '")';
+               $query .= ' AND (' . $this->addDatabasePrefix('dates') . '.activation_date IS NULL OR ' . $this->addDatabasePrefix('dates') . '.activation_date <= "' . getCurrentDateTimeInMySQL() . '")';
                break;
            case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
-               $query .= ' AND (' . $this->addDatabasePrefix('dates') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('dates') . '.modification_date > "' . getCurrentDateTimeInMySQL() . '")';
+               $query .= ' AND (' . $this->addDatabasePrefix('dates') . '.activation_date IS NOT NULL AND ' . $this->addDatabasePrefix('dates') . '.activation_date > "' . getCurrentDateTimeInMySQL() . '")';
                break;
        }
 
@@ -804,9 +804,6 @@ class cs_dates_manager extends cs_manager {
             $public = '0';
         }
         $modification_date = getCurrentDateTimeInMySQL();
-        if ($item->isNotActivated() || !$item->isChangeModificationOnSave()) {
-            $modification_date = $item->getModificationDate();
-        }
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
@@ -829,6 +826,7 @@ class cs_dates_manager extends cs_manager {
             ->update($this->addDatabasePrefix('dates'))
             ->set('modifier_id', ':modifierId')
             ->set('modification_date', ':modificationDate')
+            ->set('activation_date', ':activationDate')
             ->set('title', ':title')
             ->set('public', ':public')
             ->set('description', ':description')
@@ -851,6 +849,7 @@ class cs_dates_manager extends cs_manager {
             ->where('item_id = :itemId')
             ->setParameter('modifierId', $modificator->getItemID())
             ->setParameter('modificationDate', $modification_date)
+            ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
             ->setParameter('title', $item->getTitle())
             ->setParameter('public', $public)
             ->setParameter('description', $item->getDescription())
@@ -880,36 +879,44 @@ class cs_dates_manager extends cs_manager {
         }
     }
 
-  /** create a new item in the items table - internal, do not use -> use method save
-   * this method creates a new item of type 'ndates' in the database and sets the dates items item id.
-   * it then calls the date_mode method _newNews to store the dates item itself.
-   *
-   * @param cs_dates_item the dates item for which an entry should be made
-   */
-  function _create ($item) {
-      $current_datetime = getCurrentDateTimeInMySQL();
-      if ($item->isExternal()) {
-          $current_datetime = $item->getCreationDate();
-      }
+    /**
+     * create a new item in the items table - internal, do not use -> use method save
+     * this method creates a new item of type 'ndates' in the database and sets the dates items item id.
+     * it then calls the date_mode method _newNews to store the dates item itself.
+     *
+     * @param cs_dates_item $item
+     * @throws \Doctrine\DBAL\Exception
+     */
+    function _create(cs_dates_item $item)
+    {
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
-     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
-              'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
-              'modification_date="'.$current_datetime.'",'.
-              'type="date",'.
-      'draft="'.encode(AS_DB,$item->isDraft()).'"';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) ) {
-        include_once('functions/error_functions.php');
-        trigger_error('Problems creating dates.',E_USER_WARNING);
-        $this->_create_id = NULL;
-     } else {
-        $this->_create_id = $result;
-        $item->setItemID($this->getCreateID());
-        $this->_newDate($item);
-        unset($result);
-     }
-     unset($item);
-  }
+        $queryBuilder
+            ->insert($this->addDatabasePrefix('items'))
+            ->setValue('context_id', ':contextId')
+            ->setValue('modification_date', ':modificationDate')
+            ->setValue('activation_date', ':activationDate')
+            ->setValue('type', ':type')
+            ->setValue('draft', ':draft')
+            ->setParameter('contextId', $item->getContextID())
+            ->setParameter('modificationDate', $item->isExternal() ? $item->getCreationDate() : getCurrentDateTimeInMySQL())
+            ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
+            ->setParameter('type', 'date')
+            ->setParameter('draft', $item->isDraft());
+
+        try {
+            $queryBuilder->executeStatement();
+
+            $this->_create_id = $queryBuilder->getConnection()->lastInsertId();
+            $item->setItemID($this->getCreateID());
+            $this->_newDate($item);
+
+        } catch (\Doctrine\DBAL\Exception $e) {
+            include_once('functions/error_functions.php');
+            trigger_error($e->getMessage(), E_USER_WARNING);
+            $this->_create_id = null;
+        }
+    }
 
     /** store a new dates item to the database - internal, do not use -> use method save
      * this method stores a newly created dates item to the database
@@ -918,7 +925,7 @@ class cs_dates_manager extends cs_manager {
      *
      * @author CommSy Development Group
      */
-    function _newDate($item)
+    function _newDate(cs_dates_item $item)
     {
         /** @var cs_dates_item $item */
         $user = $item->getCreatorItem();
@@ -934,9 +941,6 @@ class cs_dates_manager extends cs_manager {
             $public = '0';
         }
         $modification_date = getCurrentDateTimeInMySQL();
-        if ($item->isNotActivated()) {
-            $modification_date = $item->getModificationDate();
-        }
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
@@ -963,6 +967,7 @@ class cs_dates_manager extends cs_manager {
             ->setValue('creation_date', ':creationDate')
             ->setValue('modifier_id', ':modifierId')
             ->setValue('modification_date', ':modificationDate')
+            ->setValue('activation_date', ':activationDate')
             ->setValue('title', ':title')
             ->setValue('public', ':public')
             ->setValue('description', ':description')
@@ -988,6 +993,7 @@ class cs_dates_manager extends cs_manager {
             ->setParameter('creationDate', $current_datetime)
             ->setParameter('modifierId', $modificator->getItemID())
             ->setParameter('modificationDate', $modification_date)
+            ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
             ->setParameter('title', $item->getTitle())
             ->setParameter('public', $public)
             ->setParameter('description', $item->getDescription())

@@ -215,7 +215,7 @@ class HashtagController extends AbstractController
             ]);
         }
 
-        $eventDispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));
+        $eventDispatcher->dispatch(new CommsyEditEvent(null), CommsyEditEvent::EDIT);
 
         return [
             'editForm' => $editForm->createView(),

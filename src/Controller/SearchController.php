@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Action\Copy\CopyAction;
 use App\Action\Delete\DeleteAction;
+use App\Action\Mark\MarkAction;
 use App\Entity\SavedSearch;
 use App\Filter\SearchFilterType;
 use App\Form\Type\SearchItemType;
@@ -883,22 +883,22 @@ class SearchController extends BaseController
     ###################################################################################################
 
     /**
-     * @Route("/room/{roomId}/search/xhr/copy", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/search/xhr/mark", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param int $roomId
      * @return
      * @throws Exception
      */
-    public function xhrCopyAction(
+    public function xhrMarkAction(
         Request $request,
-        CopyAction $copyAction,
+        MarkAction $markAction,
         int $roomId
     )
     {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
-        return $copyAction->execute($room, $items);
+        return $markAction->execute($room, $items);
     }
 
     /**
@@ -1014,7 +1014,7 @@ class SearchController extends BaseController
                     'searchPhrase' => $searchPhrase ?? '',
                 ];
             } else {
-                $allowedActions = ['copy'];
+                $allowedActions = ['mark'];
                 if (method_exists($searchResult, 'getItemId')) {
                     if ($this->isGranted('ITEM_EDIT', $searchResult->getItemId()) && ($type !== 'user')) {
                         $allowedActions[] = 'delete';

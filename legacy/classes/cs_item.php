@@ -590,6 +590,22 @@ class cs_item {
       return $date;
    }
 
+    /** get modification date
+     * this method returns the modification date of the item
+     *
+     * @return string modification date of the item in datetime-FORMAT
+     *
+     * @author CommSy Development Group
+     */
+    function getActivationDate () {
+        $date = $this->_getValue('activation_date');
+        if (is_null($date) or $date=='0000-00-00 00:00:00') {
+            $date = $this->_getValue('creation_date');
+        }
+        return $date;
+    }
+
+
    /** set modification date
     * this method sets the modification date of the item
     *
@@ -600,6 +616,17 @@ class cs_item {
    function setModificationDate ($value) {
       $this->_setValue('modification_date', (string)$value);
    }
+
+    /** set modification date
+     * this method sets the modification date of the item
+     *
+     * @param string modification date in datetime-FORMAT of the item
+     *
+     * @author CommSy Development Group
+     */
+    function setActivationDate ($value) {
+        $this->_setValue('activation_date', (string)$value);
+    }
 
    /** get deletion date
     * this method returns the deletion date of the item
@@ -614,7 +641,7 @@ class cs_item {
    }
 
    function isNotActivated(){
-      $date = $this->getModificationDate();
+      $date = $this->getActivationDate();
       if ( $date > getCurrentDateTimeInMySQL() ) {
         return true;
       }else{
@@ -625,7 +652,7 @@ class cs_item {
    function getActivatingDate(){
       $retour = '';
       if ($this->isNotActivated()){
-         $retour = $this->getModificationDate();
+         $retour = $this->getActivationDate();
       }
       return $retour;
    }
@@ -805,8 +832,9 @@ class cs_item {
       return $this->_setValue('deleter_id',$value);
    }
 
-   function getCreatorID() {
-      return $this->_getValue('creator_id');
+   public function getCreatorID(): int
+   {
+      return (int) $this->_getValue('creator_id');
    }
 
    function setCreatorID($value) {

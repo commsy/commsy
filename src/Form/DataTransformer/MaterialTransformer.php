@@ -4,6 +4,7 @@ namespace App\Form\DataTransformer;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_material_item;
+use DateTime;
 
 class MaterialTransformer extends AbstractTransformer
 {
@@ -98,7 +99,7 @@ class MaterialTransformer extends AbstractTransformer
                 
                 $activating_date = $materialItem->getActivatingDate();
                 if (!stristr($activating_date,'9999')){
-                    $datetime = new \DateTime($activating_date);
+                    $datetime = new DateTime($activating_date);
                     $materialData['hiddendate']['date'] = $datetime;
                     $materialData['hiddendate']['time'] = $datetime;
                 }
@@ -176,13 +177,13 @@ class MaterialTransformer extends AbstractTransformer
                     $time = explode(":", $materialData['hiddendate']['time']->format('H:i'));
                     $datetime->setTime($time[0], $time[1]);
                 }
-                $materialObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+                $materialObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
             } else {
-                $materialObject->setModificationDate('9999-00-00 00:00:00');
+                $materialObject->setActivationDate('9999-00-00 00:00:00');
             }
         } else {
             if ($materialObject->isNotActivated()) {
-                $materialObject->setModificationDate(getCurrentDateTimeInMySQL());
+                $materialObject->setActivationDate(null);
             }
         }
 
