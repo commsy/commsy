@@ -7,7 +7,7 @@ use cs_item;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class CopyService
+class MarkedService
 {
     private ItemService $itemService;
 
@@ -16,7 +16,7 @@ class CopyService
     private ?string $type = null;
 
     /**
-     * CopyService constructor.
+     * MarkedService constructor.
      * @param ItemService $itemService
      * @param SessionInterface $session
      */
@@ -83,18 +83,18 @@ class CopyService
      * @param integer[] $ids
      * @return cs_item[]
      */
-    public function getCopiesById($ids)
+    public function getMarkedItemsById($ids)
     {
-        $allCopies = $this->getListEntries();
+        $allMarkedItems = $this->getListEntries();
 
-        $filteredCopies = [];
-        foreach ($allCopies as $copy) {
-            if (in_array($copy->getItemID(), $ids)) {
-                $filteredCopies[] = $copy;
+        $filteredMarkedItems = [];
+        foreach ($allMarkedItems as $markedItem) {
+            if (in_array($markedItem->getItemID(), $ids)) {
+                $filteredMarkedItems[] = $markedItem;
             }
         }
 
-        return $filteredCopies;
+        return $filteredMarkedItems;
     }
 
     public function setFilterConditions(FormInterface $filterForm)
@@ -125,6 +125,7 @@ class CopyService
     public function removeItemFromClipboard(int $itemId)
     {
         $currentClipboardIds = $this->session->get('clipboard_ids', []);
+
         if (in_array($itemId, $currentClipboardIds)) {
             unset($currentClipboardIds[array_search($itemId, $currentClipboardIds)]);
             $this->session->set('clipboard_ids', $currentClipboardIds);

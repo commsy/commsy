@@ -27,7 +27,7 @@
                 {% endif %}
 
                 {# toggle action #}
-                <div class="uk-display-inline cs-toggle-icon uk-margin-left">
+                <div class="uk-display-inline cs-toggle-icon uk-margin-left {% if (fileArray|length) < 1 %} uk-invisible {% endif %}">
                     <a class="cs-toggle" data-uk-toggle="{target:'.toggle-files-{{ item.itemId }}'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
                 </div>
            </div>
@@ -149,7 +149,7 @@
                 {% set count = 1 %}
                 {% if (item.tagsArray|length) < 4 %}
                     {% if (item.tagsArray|length) == 0 %}
-                       {{ 'no linked items'|trans({}, "room")}}
+
                     {% else %}
                         {% for tag in item.tagsArray %}
                             {{tag.title|decodeHtmlEntity}}{% if count < item.tagsArray|length %}, {% endif %}
@@ -193,26 +193,23 @@
         {% if withCategories %}
 
             <div class="uk-width-1-3">
-            <strong>{{ 'categories'|trans({}, "room") }}:</strong>
-            {% if (item.tagsArray|length) > 0 %}
-                <div class="cs-tree-plain">
-                    {{ itemMacros.nestedTagList(item.tagsArray, roomCategories, 1) }}
-                </div>
-            {% else %}
-                <br/>{{ 'no linked items'|trans({}, "room")}}
-            {% endif %}
-        </div>
+                {% if (item.tagsArray|length) > 0 %}
+                    <strong>{{ 'categories'|trans({}, "room") }}:</strong>
+                    <div class="cs-tree-plain">
+                        {{ itemMacros.nestedTagList(item.tagsArray, roomCategories, 1) }}
+                    </div>
+                {% endif %}
+            </div>
         {% endif %}
         {% if withTags %}
             <div class="uk-width-1-3">
-            <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
+
             {% set tagArray = item.buzzwordList.to_array() %} 
             {% if (tagArray|length) > 0 %}
+                <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
                 {% for tag in tagArray %}
                     <button class="uk-button uk-margin-small-bottom">{{tag.title|decodeHtmlEntity}}</button>
                 {% endfor %}
-            {% else %}
-                {{ 'no linked items'|trans({}, "room")}}
             {% endif %}
         </div>
         {% endif %}
