@@ -119,41 +119,41 @@
 {% macro statusColor(readerList, itemId, type='comment') %}
     {% if type is same as('grid') %}
         {% if readerList[itemId] is defined %}
-            {% if readerList[itemId] is same as('new') %}
+           {% if readerList[itemId] is same as('new') %}
                 <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newEntry'|trans({})}}">
                     <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
                 </div>
             {% elseif readerList[itemId] is same as('changed') %}
                 <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedEntry'|trans({})}}">
-                    <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
             {% elseif readerList[itemId] is same as('new_annotation') %}
                 <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newAnnotation'|trans({})}}">
-                    <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
             {% elseif readerList[itemId] is same as('changed_annotation') %}
                 <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedAnnotation'|trans({})}}">
-                    <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
             {% endif %}
         {% endif %}
     {% else %}
         {% if readerList[itemId] is defined %}
-            {% if readerList[itemId] is same as('new') %}
+           {% if readerList[itemId] is same as('new') %}
                 <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newEntry'|trans({})}}">
                     <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
                 </div>
             {% elseif readerList[itemId] is same as('changed') %}
                 <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedEntry'|trans({})}}">
-                    <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
             {% elseif readerList[itemId] is same as('new_annotation') %}
                 <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newAnnotation'|trans({})}}">
-                    <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
             {% elseif readerList[itemId] is same as('changed_annotation') %}
                 <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedAnnotation'|trans({})}}">
-                    <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
                 </div>
             {% endif %}
         {% endif %}
@@ -187,9 +187,9 @@
     {% set fileArray = item.fileList.to_array %}
     {% if not fileArray is empty %}
         <ul class="uk-list">
-            {% for file in fileArray %}
-                <li><i class="{{ macros.iconClassForFileType(file.extension) }}"></i> <a href="{{ path('app_file_getfile', {'fileId': file.fileId}) }}">{{ file.filename }}</a></li>
-            {% endfor %}
+        {% for file in fileArray %}
+            <li><i class="{{ macros.iconClassForFileType(file.extension) }}"></i> <a href="{{ path('app_file_getfile', {'fileId': file.fileId}) }}">{{ file.filename }}</a></li>
+        {% endfor %}
         </ul>
     {% endif %}
 {% endmacro %}
@@ -316,10 +316,11 @@
                 {% endif %}
             {% endif %}
         {% endif %}
-        <div class="uk-display-inline cs-toggle-icon uk-margin-left">
+        <div class="uk-display-inline cs-toggle-icon uk-margin-left
+        {% if (title == 'links') and (item.AllLinkeditemIDArray|length < 1) %} uk-invisible {% endif %} {% if (title == 'categoriesAndBuzzwords') and (item.buzzwordArray|length < 1) %} uk-invisible {% endif %}">
             <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
         </div>
-    </div>
+   </div>
 {% endmacro %}
 
 {% macro editContent(title, item, edit, content, preview, shortPreview, displayCount, count, draft) %}
@@ -363,7 +364,7 @@
             </div>
         {% else %}
             <div class="uk-width-9-10 uk-margin-top-remove">
-
+                
                 {% if not content is empty %}
                     <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-content">
                         {{ content|raw }}
@@ -412,7 +413,7 @@
         {% if ratingArray.ratingOwnDetail %}
             {% set hasVoted = true %}
         {% endif %}
-
+    
         <div id="cs-rating-wrapper" data-cs-rating-wrapper='{"hasVoted": "{{ hasVoted }}"}'>
             {% for i in 1..5 %}
                 {% if rating >= i %}
@@ -494,7 +495,7 @@
 
 {% macro workflowTrafficLight(item, workflowTitles) %}
     {% import _self as macros %}
-
+    
     {{ macros.workflowStatus(item.workflowTrafficLight, workflowTitles) }}
 {% endmacro %}
 
@@ -627,16 +628,16 @@
     <div class="uk-form-row">
 
         <ul class='form-errors'>
-            {% if form.category_mapping.categories is defined %}
-                {% if form.category_mapping.categories.vars.errors|length %}
-                    <li>{{ 'categories'|trans({})|capitalize }}: {{ form.category_mapping.categories.vars.errors[0].message }}</li>
-                {% endif %}
+        {% if form.category_mapping.categories is defined %}
+            {% if form.category_mapping.categories.vars.errors|length %}
+                <li>{{ 'categories'|trans({})|capitalize }}: {{ form.category_mapping.categories.vars.errors[0].message }}</li>
             {% endif %}
-            {% if form.hashtag_mapping.hashtags is defined %}
-                {% if form.hashtag_mapping.hashtags.vars.errors|length %}
-                    <li>{{ 'hashtags'|trans({}, 'room')|capitalize }}: {{ form.hashtag_mapping.hashtags.vars.errors[0].message }}</li>
-                {% endif %}
+        {% endif %}
+        {% if form.hashtag_mapping.hashtags is defined %}
+            {% if form.hashtag_mapping.hashtags.vars.errors|length %}
+                <li>{{ 'hashtags'|trans({}, 'room')|capitalize }}: {{ form.hashtag_mapping.hashtags.vars.errors[0].message }}</li>
             {% endif %}
+        {% endif %}
         </ul>
 
         <div class="uk-form-label">{{ 'categoriesAndBuzzwords'|trans({}, "messages")|capitalize }}</div>
@@ -670,8 +671,8 @@
                         <div class="uk-grid-width-small-1-4 hashtag-form" data-uk-grid data-uk-check-display data-uk-grid-match>
                             {% for hashtag in form.hashtag_mapping.hashtags %}
                                 <div>
-                                    {{ form_widget(hashtag) }}
-                                    {{ form_label(hashtag) }}
+                                {{ form_widget(hashtag) }}
+                                {{ form_label(hashtag) }}
                                 </div>
                             {% endfor %}
                         </div>
