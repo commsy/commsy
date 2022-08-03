@@ -50,6 +50,10 @@
                 <source>cancel</source>
                 <target>Abbrechen</target>
             </trans-unit>
+            <trans-unit id="form-files-add">
+                <source>add files here</source>
+                <target>Dateien hinzufügen</target>
+            </trans-unit>
             <trans-unit id="form-upload-1">
                 <source>Attach files by dropping them here or</source>
                 <target>Ziehen Sie die Dateien in dieses Feld (Drag&amp;Drop).</target>
@@ -437,10 +441,6 @@
             <trans-unit id="create entry">
                 <source>create entry</source>
                 <target>Eintrag anlegen</target>
-            </trans-unit>
-            <trans-unit id="add files here">
-                 <source>add files here</source>
-                 <target>Fügen Sie hier Dateien hinzu</target>
             </trans-unit>
             <trans-unit id="token invalid">
                 <source>token invalid</source>
