@@ -290,31 +290,7 @@
                 <div class="uk-display-inline cs-edit {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
                     <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                 </div>
-            {% endif %}
-            {% if item.itemType == 'discarticle' %}
-                {% if is_granted('ITEM_EDIT', 'NEW') %}
-                    <div style="padding-left: 5px; padding-right: 5px;" class="uk-display-inline cs-edit-detail {% if draft %}cs-edit-draft{% endif %}">
-                        <a class="newArticle uk-icon-hover uk-icon-small uk-icon-reply" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createarticle', {'roomId': item.contextId, 'itemId': item.discussionId, 'answerTo': item.itemId }) }}">
-                        </a>
-                    </div>
-
-                    <div class="uk-display-inline cs-edit-detail {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "trash"|trans({}) }}">
-                        <a  href="#" data-cs-action="{{ {
-                            'url': path('app_discussionarticle_xhrdelete', {'roomId': item.contextId, 'itemId': item.itemId}),
-                            'action': 'delete',
-                            'itemId': item.itemId,
-                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                            'mode': 'click',
-                            'itemType': item.itemType,
-                            'title': 'list choice'|trans({},'rubric')|capitalize,
-                            'confirmQuestion': 'confirm delete'|trans({},'rubric'),
-                            'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
-                            'confirmOk': 'confirm delete confirm'|trans({},'rubric')
-                        }|json_encode|e('html_attr') }}" class="uk-icon-hover uk-icon-small uk-icon-trash-o">
-                        </a>
-                    </div>
-                {% endif %}
-            {% endif %}
+            {% endif %}        
         {% endif %}
         <div class="uk-display-inline cs-toggle-icon uk-margin-left
         {% if (title == 'links') and (item.AllLinkeditemIDArray|length < 1) %} uk-invisible {% endif %} {% if (title == 'categoriesAndBuzzwords') and (item.buzzwordArray|length < 1) %} uk-invisible {% endif %}">

@@ -27,7 +27,6 @@ class ItemVoter extends Voter
     const ENTER = 'ITEM_ENTER';
     const USERROOM = 'ITEM_USERROOM';
     const DELETE = 'ITEM_DELETE';
-    const SEE_TITLE = 'ITEM_SEE_TITLE';
 
     private $legacyEnvironment;
     private $itemService;
@@ -61,7 +60,6 @@ class ItemVoter extends Voter
             self::ENTER,
             self::USERROOM,
             self::DELETE,
-            self::SEE_TITLE,
         ));
     }
 
@@ -112,8 +110,6 @@ class ItemVoter extends Voter
 
                 case self::DELETE:
                     return $this->canDelete($item, $currentUser);
-                case self::SEE_TITLE:
-                    return $this->canViewTitle($item, $currentUser);
             }
         } else {
             if ($itemId == 'NEW') {
@@ -312,19 +308,5 @@ class ItemVoter extends Voter
         }
 
         return $this->userService->userIsParentModeratorForRoom($room, $user);
-    }
-
-
-    private function canViewTitle($item, $currentUser)
-    {
-        if ($item->isDeleted()) {
-            return false;
-        }
-
-        if ($item->maySeeTitle($currentUser)) {
-            return true;
-        }
-
-        return false;
     }
 }

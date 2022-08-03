@@ -844,36 +844,6 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getCommunityRoomShowTitle(): string
-    {
-        return $this->extras['COMMUNITYROOMSHOWTITLE'] ?? 'no';
-
-    }
-
-    public function setCommunityRoomShowTitle(?string $status): Portal
-    {
-        if ($status !== 'yes' && $status !== 'no') {
-            $status = 'no';
-        }
-        $this->extras['COMMUNITYROOMSHOWTITLE'] = $status;
-        return $this;
-    }
-
-    public function getProjectRoomShowTitle(): string
-    {
-        return $this->extras['PROJECTROOMSHOWTITLE'] ?? 'no';
-
-    }
-
-    public function setProjectRoomShowTitle(?string $status): Portal
-    {
-        if ($status !== 'yes' && $status !== 'no') {
-            $status = 'no';
-        }
-        $this->extras['PROJECTROOMSHOWTITLE'] = $status;
-        return $this;
-    }
-
     /** Returns the project room creation status.
      *
      * @return string room creation status ("portal" = in community rooms & portal (default), "communityroom" = only in community rooms)
