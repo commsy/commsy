@@ -136,7 +136,7 @@
             </trans-unit>
             <trans-unit id="userPaste">
                 <source>paste</source>
-                <target>Zwischenablage in Personenräume kopieren</target>
+                <target>Meine Auswahl in Personenräume kopieren</target>
             </trans-unit>
             <trans-unit id="delete">
                 <source>delete</source>
