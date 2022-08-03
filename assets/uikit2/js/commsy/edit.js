@@ -112,7 +112,11 @@
             editButtons.each(function(){
                 $(this).find('a').addClass('uk-hidden');
             });
-
+            let editButtonsDetails = $('.cs-edit-detail');
+            editButtonsDetails.removeClass('cs-edit-detail');
+            editButtonsDetails.each(function(){
+                $(this).find('a').addClass('uk-hidden');
+            });
             $(".cs-additional-actions")
                 .addClass('uk-hidden')
                 .parent().find("button.uk-button").addClass("uk-text-muted");
