@@ -70,23 +70,23 @@
                                             </a>
                                         </li>
 
-                                        {# copy #}
+                                        {# mark #}
                                         <li>
                                             {% if user.isUser %}
                                                 <a href="#" data-cs-action="{{ {
-                                                    'url': path('app_date_xhrcopy', {'roomId': roomId}),
-                                                    'action': 'copy',
+                                                    'url': path('app_date_xhrmark', {'roomId': roomId}),
+                                                    'action': 'mark',
                                                     'itemId': date.itemId,
                                                     'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                     'mode': 'click',
                                                     'mode': 'click',
-                                                    'successMessage': '<i class="uk-icon-medium uk-icon-copy"></i>' ~ 'Entry stored in clipboard|%count% entries stored in clipboard'|trans({'%count%':1}, 'item')
+                                                    'successMessage': '<i class="uk-icon-medium uk-icon-check"></i>' ~ 'Entry marked|%count% entries marked'|trans({'%count%':1}, 'item')
                                                 }|json_encode|e('html_attr') }}">
-                                                    <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
+                                                    <i class="uk-icon-small uk-icon-check uk-icon-justify uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
                                                 </a>
                                             {% else %}
                                                 <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
+                                                    <i class="uk-icon-small uk-icon-check uk-icon-justify uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
                                                 </span>
                                             {% endif %}
                                         </li>

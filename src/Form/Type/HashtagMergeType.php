@@ -4,13 +4,11 @@ namespace App\Form\Type;
 
 use App\Entity\Labels;
 use Doctrine\ORM\EntityRepository;
-use PhpParser\Node\Stmt\Label;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotIdenticalTo;
 
 class HashtagMergeType extends AbstractType
 {
@@ -42,7 +40,7 @@ class HashtagMergeType extends AbstractType
                 'translation_domain' => 'hashtag',
             ])
             ->add('second', EntityType::class, [
-                'class' => Label::class,
+                'class' => Labels::class,
                 'query_builder' => function (EntityRepository $er) use ($options) {
                     return $er->createQueryBuilder('l')
                         ->andWhere('l.contextId = :roomId')

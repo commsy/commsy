@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
-use App\Action\Copy\CopyAction;
+use App\Action\Mark\CategorizeAction;
+use App\Action\Mark\HashtagAction;
+use App\Action\Mark\MarkAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\MarkReadAction;
@@ -215,7 +217,9 @@ class TodoController extends BaseController
                 or ($roomItem->getType() == 'project' and $this->isGranted('ITEM_PARTICIPATE', $roomId))) {
                 $allowedActions[$item->getItemID()] = array(
                     'markread',
-                    'copy',
+                    'mark',
+                    'categorize',
+                    'hashtag',
                     'save',
                     'delete',
                     'markpending',
@@ -228,7 +232,7 @@ class TodoController extends BaseController
                     $allowedActions[$item->getItemID()][] = 'mark' . $tempStatus;
                 }
             } else {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save');
             }
         }
 
@@ -563,8 +567,8 @@ class TodoController extends BaseController
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      * @param Request $request
      * @param CategoryService $categoryService
+     * @param LabelService $labelService
      * @param TodoTransformer $transformer
-     * @param ItemController $itemController
      * @param int $roomId
      * @param int $itemId
      * @return array|RedirectResponse
@@ -574,7 +578,6 @@ class TodoController extends BaseController
         CategoryService $categoryService,
         LabelService $labelService,
         TodoTransformer $transformer,
-        ItemController $itemController,
         int $roomId,
         int $itemId
     ) {
@@ -606,12 +609,12 @@ class TodoController extends BaseController
             'statusChoices' => $statusChoices,
             'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
             'categoryMappingOptions' => [
-                'categories' => $itemController->getCategories($roomId, $categoryService),
+                'categories' => $labelService->getCategories($roomId),
                 'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
                 'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
             ],
             'hashtagMappingOptions' => [
-                'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
+                'hashtags' => $labelService->getHashtags($roomId),
                 'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
@@ -625,9 +628,8 @@ class TodoController extends BaseController
 
 
         $formData = $transformer->transform($todoItem);
-        $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
-            $this->legacyEnvironment);
+        $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
+        $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
         $formData['draft'] = $isDraft;
 
         $form = $this->createForm(TodoType::class, $formData, $formOptions);
@@ -1005,21 +1007,53 @@ class TodoController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/todo/xhr/copy", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/todo/xhr/mark", condition="request.isXmlHttpRequest()")
      * @param Request $request
      * @param $roomId
      * @return Response
      * @throws Exception
      */
-    public function xhrCopyAction(
+    public function xhrMarkAction(
         Request $request,
-        CopyAction $action,
+        MarkAction $action,
         $roomId
     ) {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/todo/xhr/categorize", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param CategorizeAction $action
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrCategorizeAction(
+        Request $request,
+        CategorizeAction $action,
+        int $roomId
+    ) {
+        return parent::handleCategoryActionOptions($request, $action, $roomId);
+    }
+
+    /**
+     * @Route("/room/{roomId}/todo/xhr/hashtag", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param HashtagAction $action
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrHashtagAction(
+        Request $request,
+        HashtagAction $action,
+        int $roomId
+    ) {
+        return parent::handleHashtagActionOptions($request, $action, $roomId);
     }
 
     /**

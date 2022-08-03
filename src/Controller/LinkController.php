@@ -260,13 +260,6 @@ class LinkController extends AbstractController
         $item = $itemService->getItem($itemId);
 
         $linkedItems = array();
-        if ($item->getItemType() == 'label') {
-            $tempLabel = $labelService->getLabel($item->getItemId());
-            if ($tempLabel->getLabelType() == 'group') {
-                $group = $groupService->getGroup($tempLabel->getItemID());
-                $membersList = $group->getMemberItemList();
-            }
-        }
         $ids = $item->getAllLinkeditemIDArray();
         foreach ($ids as $id) {
             $linkedItems[] = $itemService->getItem($id);
@@ -331,13 +324,6 @@ class LinkController extends AbstractController
         $item = $itemService->getItem($itemId);
 
         $linkedItems = array();
-        if ($item->getItemType() == 'label') {
-            $tempLabel = $labelService->getLabel($item->getItemId());
-            if ($tempLabel->getLabelType() == 'group') {
-                $group = $groupService->getGroup($tempLabel->getItemID());
-                $membersList = $group->getMemberItemList();
-            }
-        }
         $ids = $item->getAllLinkedItemIDArray();
         foreach ($ids as $id) {
             $linkedItems[] = $itemService->getItem($id);

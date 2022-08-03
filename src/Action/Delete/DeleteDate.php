@@ -10,7 +10,7 @@ namespace App\Action\Delete;
 
 
 use App\Services\CalendarsService;
-use App\Services\CopyService;
+use App\Services\MarkedService;
 use App\Services\LegacyEnvironment;
 use cs_dates_item;
 use cs_environment;
@@ -37,9 +37,9 @@ class DeleteDate implements DeleteInterface
     private string $dateMode = 'normal';
 
     /**
-     * @var CopyService
+     * @var MarkedService
      */
-    private CopyService $copyService;
+    private MarkedService $markedService;
 
     /**
      * @var CalendarsService
@@ -53,12 +53,12 @@ class DeleteDate implements DeleteInterface
 
     public function __construct(
         RouterInterface $router,
-        CopyService $copyService,
+        MarkedService $markedService,
         CalendarsService $calendarsService,
         LegacyEnvironment $legacyEnvironment
     ) {
         $this->router = $router;
-        $this->copyService = $copyService;
+        $this->markedService = $markedService;
         $this->calendarsService = $calendarsService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -80,7 +80,7 @@ class DeleteDate implements DeleteInterface
     {
         $item->delete();
 
-        $this->copyService->removeItemFromClipboard($item->getItemId());
+        $this->markedService->removeItemFromClipboard($item->getItemId());
 
         /** @var cs_dates_item $date */
         $date = $item;

@@ -17,7 +17,7 @@ export class UserStatusAction extends XHRAction {
     public execute(actionPayload: ActionRequest, requestURI: string): Promise<ActionResponse> {
         return new Promise<ActionResponse>((resolve) => {
             let currentURI = new URI(location.href);
-            let requestURI = new URI(this.url);
+            let requestURI = new URI(this.actionData.url);
             requestURI.search(function() {
                 return currentURI.search(true);
             });
