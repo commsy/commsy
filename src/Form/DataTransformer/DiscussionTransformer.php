@@ -68,7 +68,7 @@ class DiscussionTransformer extends AbstractTransformer
     public function applyTransformation($discussionObject, $discussionData)
     {
         $discussionObject->setTitle($discussionData['title']);
-        $discussionObject->setDescription($discussionData['description']);
+        $discussionObject->setDescription($discussionData['description'] ?: '');
         if ($discussionData['permission']) {
             $discussionObject->setPrivateEditing('0');
         } else {
