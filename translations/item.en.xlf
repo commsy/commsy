@@ -62,9 +62,9 @@
                 <source>workflowNoStatus</source>
                 <target>No status</target>
             </trans-unit>
-            <trans-unit id="clipboardCopySuccess">
-                <source>Entry stored in clipboard|%count% entries stored in clipboard</source>
-                <target>Entry stored in clipboard|%count% entries stored in clipboard</target>
+            <trans-unit id="markedSuccess">
+                <source>Entry marked|%count% entries marked</source>
+                <target>Entry marked|%count% entries marked</target>
             </trans-unit>
             <trans-unit id="exportToWordpress">
                 <source>Export to Wordpress</source>
@@ -82,10 +82,6 @@
                 <source>Add new annotation</source>
                 <target>Add new annotation</target>
             </trans-unit>
-             <trans-unit id="addAnswer">
-                <source>Add answer</source>
-                <target>Add answer...</target>
-             </trans-unit>
             <trans-unit id="noEntrySelected">
                 <source>no entry selected</source>
                 <target>No entry selected</target>
