@@ -50,6 +50,10 @@
                 <source>cancel</source>
                 <target>Cancel</target>
             </trans-unit>
+            <trans-unit id="form-files-add">
+                <source>add files here</source>
+                <target>Add files here</target>
+            </trans-unit>
             <trans-unit id="form-upload-1">
                 <source>Attach files by dropping them here or</source>
                 <target>Attach files by dropping them here.</target>
