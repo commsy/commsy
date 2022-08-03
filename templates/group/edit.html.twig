@@ -10,6 +10,15 @@
                     {{ form_widget(form.title) }}
             </div>
         </div>
+        <div class="uk-margin-small-left uk-flex">
+            <div class="uk-form-label">
+                {{ form_label(form.master_template) }}
+            </div>
+            <div  class="uk-margin-small-top" >
+                {{ form_widget(form.master_template) }}
+            </div>
+
+        </div>
 
             {% if group.creator.itemId == currentUser.itemId or currentUser.isModerator %}
             <div class="uk-margin-small-left uk-flex">
