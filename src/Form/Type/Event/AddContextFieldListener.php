@@ -34,7 +34,10 @@ class AddContextFieldListener implements EventSubscriberInterface
         if (isset($data['type_select']) && $data['type_select'] == 'project') {
             $form->add('type_sub', 'App\Form\Type\Context\ProjectType', $formOptions);
         } else if (isset($data['type_select']) && $data['type_select'] == 'community') {
-            $form->add('type_sub', 'App\Form\Type\Context\CommunityType', $formOptions);
+            $form->add('type_sub', 'App\Form\Type\Context\CommunityType', [
+                'templates' => $formOptions['templates'],
+                'preferredChoices' => $formOptions['preferredChoices'],
+            ]);
         }
     }
 
@@ -47,7 +50,10 @@ class AddContextFieldListener implements EventSubscriberInterface
         if (isset($data['type_select']) && $data['type_select'] == 'project') {
             $form->add('type_sub', 'App\Form\Type\Context\ProjectType', $formOptions);
         } else if (isset($data['type_select']) && $data['type_select'] == 'community') {
-            $form->add('type_sub', 'App\Form\Type\Context\CommunityType', $formOptions);
+            $form->add('type_sub', 'App\Form\Type\Context\CommunityType', [
+                'templates' => $formOptions['templates'],
+                'preferredChoices' => $formOptions['preferredChoices'],
+            ]);
         }
     }
 }
