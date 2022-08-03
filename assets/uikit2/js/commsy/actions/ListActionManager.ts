@@ -1,12 +1,13 @@
 import * as $ from 'jquery';
 import * as Actions from './Actions';
-import {ActionExecuter, ListActionData} from "./Actions";
+import {ActionExecuter, ActionRequest, ActionResponse, ListActionData} from "./Actions";
 import {BaseAction} from "./AbstractAction";
 
+// TODO: update this comment with an up-to-date example
 /*
  Action in template:
 
- <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}", "action": "user-delete"}'>
+ <a href="#" class="commsy-select-action" data-uk-button data-cs-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}", "action": "user-delete"}'>
  <i class="uk-icon-justify uk-icon-small uk-icon-remove uk-visible-large"></i> {{ 'delete'|trans({},'user')|capitalize }}
  </a>
 
@@ -22,8 +23,10 @@ import {BaseAction} from "./AbstractAction";
 declare var UIkit: any;
 
 export class ListActionManager {
-    private currentActionData: ListActionData;
+    private currentAction: BaseAction;
     private actionActor: JQuery;
+
+    private actionExecuter: ActionExecuter;
 
     private selectMode: boolean = false;
 
@@ -31,6 +34,10 @@ export class ListActionManager {
     private positiveSelection: number[];
     private negativeSelection: number[];
     private numSelected: number = 0;
+
+    constructor() {
+        this.actionExecuter = new ActionExecuter();
+    }
 
     public bootstrap() {
         this.registerClickEvents();
@@ -57,13 +64,15 @@ export class ListActionManager {
             event.stopPropagation();
             event.preventDefault();
 
-            // store data from data-comsy-list-action
-            this.currentActionData = $(event.currentTarget).data('cs-action');
+            // store data from data-cs-action
+            let currentActionData: ListActionData = $(event.currentTarget).data('cs-action');
+
+            this.currentAction = Actions.createAction(currentActionData);
 
             // store actor to get needed data later on
             this.actionActor = $(event.currentTarget);
 
-            if (this.currentActionData.mode == 'selection') {
+            if (currentActionData.mode == 'selection') {
                 this.onStartEdit();
             }
         });
@@ -184,12 +193,14 @@ export class ListActionManager {
 
         this.updateSelectables();
 
+        let actionDialogHeight: string = (this.currentAction.wantsCustomFormData) ? '162px' : '65px';
+
         // show the action dialog
         let $actionDialog: JQuery = $('#commsy-select-actions');
         $actionDialog
             .removeClass('uk-hidden')
             .parent('.uk-sticky-placeholder')
-                .css('height', '65px');
+            .css('height', actionDialogHeight);
 
         // reset current selected count
         this.positiveSelection = [];
@@ -215,6 +226,11 @@ export class ListActionManager {
         this.selectAll = false;
 
         this.registerArticleEvents();
+
+        // load custom form options required by this action
+        if (this.currentAction.wantsCustomFormData) {
+            this.actionExecuter.loadCustomFormData(this.currentAction);
+        }
     }
 
     private onStopEdit() {
@@ -224,6 +240,10 @@ export class ListActionManager {
         if (!$feed.length) {
             return;
         }
+
+        // clear any custom form HTML inserted by a previous action
+        let $customChoicesPlaceholder = $('#commsy-select-actions-custom-choices');
+        $customChoicesPlaceholder.html('');
 
         // hide the action dialog
         let $actionDialog: JQuery = $('#commsy-select-actions');
@@ -261,10 +281,12 @@ export class ListActionManager {
         // collect values of selected checkboxes
         let $feed: JQuery = $('.feed ul, .feed div.uk-grid');
 
+        let listActionData: ListActionData = <ListActionData>this.currentAction.actionData;
+
         // if no entries are selected, present notification
         if (this.numSelected == 0) {
             UIkit.notify({
-                message : this.currentActionData.noSelectionMessage,
+                message : listActionData.noSelectionMessage,
                 status  : 'warning',
                 timeout : 5550,
                 pos     : 'top-center'
@@ -273,21 +295,29 @@ export class ListActionManager {
             return;
         }
 
-        let action: BaseAction = Actions.createAction(this.currentActionData);
-        let actionExecuter: ActionExecuter = new ActionExecuter();
-        actionExecuter.invokeListAction(this.actionActor, action, this.positiveSelection, this.negativeSelection, this.selectAll, 0)
-            .then(() => {
-                $('#commsy-select-actions-select-all').removeClass('uk-active');
-                $('#commsy-select-actions-unselect').removeClass('uk-active');
+        let actionRequest: ActionRequest = this.actionExecuter.buildActionRequest(
+            this.currentAction,
+            this.positiveSelection,
+            this.negativeSelection,
+            this.selectAll,
+            0
+        );
 
-                $feed.find('input[type="checkbox"]').each(function () {
-                    $(this).prop('checked', false);
-                });
-                $feed.find('article').each(function () {
-                    $(this).removeClass('uk-comment-primary');
-                });
+        this.actionExecuter.invoke(this.actionActor, this.currentAction, actionRequest)
+            .then((disableEditMode: boolean) => {
+                if (disableEditMode) {
+                    $('#commsy-select-actions-select-all').removeClass('uk-active');
+                    $('#commsy-select-actions-unselect').removeClass('uk-active');
 
-                this.onStopEdit();
+                    $feed.find('input[type="checkbox"]').each(function () {
+                        $(this).prop('checked', false);
+                    });
+                    $feed.find('article').each(function () {
+                        $(this).removeClass('uk-comment-primary');
+                    });
+
+                    this.onStopEdit();
+                }
             })
             .catch( (error: Error) => {
                 // Catching here does not have to be a fatal error, e.g. rejecting a confirm dialog.
@@ -306,11 +336,11 @@ export class ListActionManager {
 
         let $articles: JQuery = $feed.find('article')
 
-        let currentAction: string = this.currentActionData.action;
+        let currentActionType: string = this.currentAction.actionData.action;
 
         $articles.each(function() {
             // each article has a data attribute listing the allowed actions
-            if ($.inArray(currentAction, $(this).data('allowed-actions')) > -1) {
+            if ($.inArray(currentActionType, $(this).data('allowed-actions')) > -1) {
                 $(this).toggleClass('selectable', true);
             }
         });

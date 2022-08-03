@@ -134,17 +134,17 @@
                 <source>insert stack</source>
                 <target>Insert into "My stack"</target>
             </trans-unit>
-            <trans-unit id="action_remove">
-                <source>remove</source>
-                <target>Remove from "My copies"</target>
+            <trans-unit id="action_add_to_marked">
+                <source>add to marked</source>
+                <target>Add to 'Marked entries'</target>
+            </trans-unit>
+            <trans-unit id="action_remove_marked">
+                <source>remove marked</source>
+                <target>Remove from 'Marked entries'</target>
             </trans-unit>
             <trans-unit id="31">
                 <source>mark read</source>
                 <target>Mark as read</target>
-            </trans-unit>
-            <trans-unit id="32">
-                <source>copy</source>
-                <target>Copy</target>
             </trans-unit>
             <trans-unit id="33">
                 <source>save</source>
@@ -165,6 +165,14 @@
             <trans-unit id="37">
                 <source>confirm delete cancel</source>
                 <target>No</target>
+            </trans-unit>
+            <trans-unit id="categorize">
+                <source>categorize</source>
+                <target>Assign categories</target>
+            </trans-unit>
+            <trans-unit id="hashtag">
+                <source>hashtag</source>
+                <target>Assign hashtags</target>
             </trans-unit>
              <trans-unit id="38">
                 <source>cancel</source>
@@ -250,13 +258,9 @@
                 <source>place</source>
                 <target>Place</target>
             </trans-unit>
-            <trans-unit id="copy">
-                <source>Copy</source>
-                <target>Copy</target>
-            </trans-unit>
-            <trans-unit id="mycopies">
-                <source>Copies</source>
-                <target>My copies</target>
+            <trans-unit id="marked_entries">
+                <source>Marked</source>
+                <target>Marked entries</target>
             </trans-unit>
         </body>
     </file>

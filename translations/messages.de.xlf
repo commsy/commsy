@@ -70,10 +70,6 @@
                 <source>send</source>
                 <target>senden</target>
             </trans-unit>
-            <trans-unit id="16">
-                <source>copy</source>
-                <target>kopieren</target>
-            </trans-unit>
             <trans-unit id="17">
                 <source>print</source>
                 <target>drucken</target>
@@ -133,11 +129,11 @@
             <trans-unit id="31">
                 <source>%count% deleted entries</source>
                  <target>{0} Keine Einträge gelöscht.|{1} Ein Eintrag gelöscht.|]1,Inf[ %count% Einträge gelöscht.</target>
-           </trans-unit>            
-            <trans-unit id="32">
-                <source>%count% copied entries</source>
-                 <target>{0} Keine Einträge kopiert.|{1} Ein Eintrag kopiert.|]1,Inf[ %count% Einträge kopiert.</target>
-           </trans-unit>            
+           </trans-unit>
+            <trans-unit id="msgMarkedEntries">
+                <source>%count% marked entries</source>
+                 <target>{0} Keine Einträge zu meiner Auswahl hinzugefügt.|{1} Ein Eintrag zu meiner Auswahl hinzugefügt.|]1,Inf[ %count% Einträge zu meiner Auswahl hinzugefügt.</target>
+           </trans-unit>
             <trans-unit id="33">
                 <source>action error</source>
                  <target>Beim Ausführen der Aktion ist ein Fehler aufgetreten.</target>
@@ -397,6 +393,14 @@
            <trans-unit id="entriesRemoved">
                 <source>removed %count% entries from list</source>
                 <target>{0} Keinen Eintrag entfert.|{1} Einen Eintrag aus der Liste entfernt.|]1,Inf[ %count% Einträge aus der Liste entfernt.</target>
+           </trans-unit>
+           <trans-unit id="entriesHashtagged">
+                <source>hashtagged %count% entries in list</source>
+                <target>{0} Keinen Eintrag verschlagwortet.|{1} Einen Eintrag verschlagwortet.|]1,Inf[ %count% Einträge verschlagwortet.</target>
+           </trans-unit>
+           <trans-unit id="entriesCategorized">
+                <source>categorized %count% entries in list</source>
+                <target>{0} Keinen Eintrag kategorisiert.|{1} Einen Eintrag kategorisiert.|]1,Inf[ %count% Einträge kategorisiert.</target>
            </trans-unit>
            <trans-unit id="dashboardChanged">
                 <source>dashboard changed</source>
