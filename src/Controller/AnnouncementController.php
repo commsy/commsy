@@ -667,7 +667,7 @@ class AnnouncementController extends BaseController
             return $this->redirectToRoute('app_announcement_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
-        $this->eventDispatcher->dispatch('commsy.edit', new CommsyEditEvent($announcementItem));
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($announcementItem), CommsyEditEvent::EDIT);
 
         return array(
             'form' => $form->createView(),
