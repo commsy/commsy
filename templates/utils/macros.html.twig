@@ -292,7 +292,8 @@
                 </div>
             {% endif %}        
         {% endif %}
-        <div class="uk-display-inline cs-toggle-icon uk-margin-left">
+        <div class="uk-display-inline cs-toggle-icon uk-margin-left
+        {% if (title == 'links') and (item.AllLinkeditemIDArray|length < 1) %} uk-invisible {% endif %} {% if (title == 'categoriesAndBuzzwords') and (item.buzzwordArray|length < 1) %} uk-invisible {% endif %}">
             <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
         </div>
    </div>
