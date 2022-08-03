@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
+use App\Action\Mark\CategorizeAction;
+use App\Action\Mark\HashtagAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Entity\Account;
 use App\Event\CommsyEditEvent;
@@ -155,8 +157,8 @@ class GroupController extends BaseController
             'module' => 'group',
             'itemsCountArray' => $itemsCountArray,
             'showRating' => false,
-            'showHashTags' => false,
-            'showCategories' => false,
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showCategories' => $roomItem->withTags(),
             'showAssociations' => false,
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
@@ -285,7 +287,7 @@ class GroupController extends BaseController
         foreach ($groups as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'sendmail', 'delete');
+                $allowedActions[$item->getItemID()] = array('markread', 'categorize', 'hashtag', 'sendmail', 'delete');
             } else {
                 $allowedActions[$item->getItemID()] = array('markread', 'sendmail');
             }
@@ -726,8 +728,8 @@ class GroupController extends BaseController
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
      * @param Request $request
-     * @param ItemController $itemController
      * @param CategoryService $categoryService
+     * @param LabelService $labelService
      * @param GroupTransformer $transformer
      * @param int $roomId
      * @param int $itemId
@@ -735,7 +737,6 @@ class GroupController extends BaseController
      */
     public function editAction(
         Request $request,
-        ItemController $itemController,
         CategoryService $categoryService,
         LabelService $labelService,
         GroupTransformer $transformer,
@@ -755,9 +756,8 @@ class GroupController extends BaseController
             throw $this->createNotFoundException('No group found for id ' . $itemId);
         }
         $formData = $transformer->transform($groupItem);
-        $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId,
-            $this->legacyEnvironment);
+        $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
+        $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
         $formData['draft'] = $isDraft;
         $form = $this->createForm(GroupType::class, $formData, array(
             'action' => $this->generateUrl('app_group_edit', array(
@@ -766,12 +766,12 @@ class GroupController extends BaseController
             )),
             'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
             'categoryMappingOptions' => [
-                'categories' => $itemController->getCategories($roomId, $categoryService),
+                'categories' => $labelService->getCategories($roomId),
                 'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
                 'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId]),
             ],
             'hashtagMappingOptions' => [
-                'hashtags' => $itemController->getHashtags($roomId, $this->legacyEnvironment),
+                'hashtags' => $labelService->getHashtags($roomId),
                 'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
@@ -1402,6 +1402,38 @@ class GroupController extends BaseController
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
         return $markReadAction->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/group/xhr/categorize", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param CategorizeAction $action
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrCategorizeAction(
+        Request $request,
+        CategorizeAction $action,
+        int $roomId
+    ) {
+        return parent::handleCategoryActionOptions($request, $action, $roomId);
+    }
+
+    /**
+     * @Route("/room/{roomId}/group/xhr/hashtag", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param HashtagAction $action
+     * @param int $roomId
+     * @return mixed
+     * @throws Exception
+     */
+    public function xhrHashtagAction(
+        Request $request,
+        HashtagAction $action,
+        int $roomId
+    ) {
+        return parent::handleHashtagActionOptions($request, $action, $roomId);
     }
 
     /**
