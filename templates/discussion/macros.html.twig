@@ -332,7 +332,7 @@
 
     {% for child in articles %}
         <li id="article_{{ child.item.itemId }}" data-jstree='{"opened": {{ opened }}}'>
-            <a href="#discarticle{{ child.item.itemId }}">{{child.item.description|commsyMarkup|raw|replace({'<p>': '', '</p>': '','<h3>': '', '</h3>': ''})|u.truncate(20)}}</a>
+            <a href="#discarticle{{ child.item.itemId }}">{{child.item.description|commsyMarkup|raw|replace({'<p>': '', '</p>': '','<h3>': '', '</h3>': ''})|u.truncate(25)}}...</a>
 
         {% if child.children is defined %}
             <ul>

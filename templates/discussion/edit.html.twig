@@ -5,44 +5,61 @@
     <div class="uk-form-horizontal">
         {{ form_start(form) }}
         {{ form_errors(form) }}
-        <div class="uk-flex">
-            <div class="uk-width-9-10">
-                    {{ form_widget(form.title) }}
-            </div>
-        </div>
-
         {% if form.vars.name == "discussion"  %}
+            <div class="uk-flex">
+                <div class="uk-width-9-10">
+                    {{ form_widget(form.title) }}
+                </div>
+            </div>
+
+
             {% set discussionItem = discussion %}
         {% elseif form.vars.name == "discussionarticle" %}
             {% set discussionItem = discussionArticle %}
+            <header class="uk-comment-header uk-flex">
+                <div class="uk-margin-right uk-flex-item-none">
+                    {% if not discussionItem.modificatorItem.isDeleted and discussionItem.modificatorItem.isUser %}
+                        {{ macros.userIconLink(discussionItem.modificatorItem) }}
+                    {% else %}
+                        {{ macros.userIcon(discussionItem.modificatorItem) }}
+                    {% endif %}
+                </div>
+                <div class="uk-width-9-10">
+                    <div class="uk-margin-left ckeditor-single">
+                        {{ form_widget(form.description,  {'id': 'annotationedit' ~ discussionItem.itemId}) }}
+                    </div>
+                </div>
+
+            </header>
+
         {% endif %}
 
-        {% if discussionItem.creator.itemId == currentUser.itemId or currentUser.isModerator %}
-        <div class="uk-margin-small-left uk-flex">
-            <label class="uk-form-label">
-                <span data-uk-tooltip title="{{ macros.userFullname(discussionItem.creator) }}">{{ 'permission'|trans({}, "form") }}</span>
-            </label>
-            <div>
-                {{ form_widget(form.permission) }}
-                <i class="uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': macros.userFullname(discussionItem.creator)}, 'form') }}"></i>
+        {% if (discussionItem.creator.itemId == currentUser.itemId or currentUser.isModerator) and (form.vars.name == "discussion")%}
+            <div class="uk-margin-small-left uk-flex">
+                <label class="uk-form-label">
+                    <span data-uk-tooltip title="{{ macros.userFullname(discussionItem.creator) }}">{{ 'permission'|trans({}, "form") }}</span>
+                </label>
+                <div>
+                    {{ form_widget(form.permission) }}
+                    <i class="uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': macros.userFullname(discussionItem.creator)}, 'form') }}"></i>
+                </div>
             </div>
-        </div>
         {% endif %}
 
         {% if form.vars.name == "discussion"  %}
             {% if discussion.creator.itemId == currentUser.itemId or currentUser.isModerator %}
-            <div class="uk-margin-small-left uk-flex">
-                <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
-                <div>
-                    {{ form_widget(form.hidden) }}
+                <div class="uk-margin-small-left uk-flex">
+                    <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
+                    <div>
+                        {{ form_widget(form.hidden) }}
+                    </div>
                 </div>
-            </div>
-            <div class="uk-margin-small-left uk-flex">
-                <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
-                <div class="uk-margin-small-top">
-                    {{ form_widget(form.hiddendate) }}
+                <div class="uk-margin-small-left uk-flex">
+                    <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
+                    <div class="uk-margin-small-top">
+                        {{ form_widget(form.hiddendate) }}
+                    </div>
                 </div>
-            </div>
             {% endif %}
 
             {% if form.category_mapping is defined or form.hashtag_mapping is defined %}
