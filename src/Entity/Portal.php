@@ -305,6 +305,18 @@ class Portal implements \Serializable
      */
     private int $clearInactiveRoomsDeleteDays = 30;
 
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean", options={"default": 1})
+     */
+    private bool $projectShowDeactivatedEntriesTitle = true;
+
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean", options={"default": 1})
+     */
+    private bool $communityShowDeactivatedEntriesTitle = true;
+
     public function __construct()
     {
         $this->authSources = new ArrayCollection();
@@ -844,33 +856,39 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getCommunityRoomShowTitle(): string
+    /**
+     * @return bool
+     */
+    public function isProjectShowDeactivatedEntriesTitle(): bool
     {
-        return $this->extras['COMMUNITYROOMSHOWTITLE'] ?? 'no';
-
+        return $this->projectShowDeactivatedEntriesTitle;
     }
 
-    public function setCommunityRoomShowTitle(?string $status): Portal
+    /**
+     * @param bool $projectShowDeactivatedEntriesTitle
+     * @return Portal
+     */
+    public function setProjectShowDeactivatedEntriesTitle(bool $projectShowDeactivatedEntriesTitle): Portal
     {
-        if ($status !== 'yes' && $status !== 'no') {
-            $status = 'no';
-        }
-        $this->extras['COMMUNITYROOMSHOWTITLE'] = $status;
+        $this->projectShowDeactivatedEntriesTitle = $projectShowDeactivatedEntriesTitle;
         return $this;
     }
 
-    public function getProjectRoomShowTitle(): string
+    /**
+     * @return bool
+     */
+    public function isCommunityShowDeactivatedEntriesTitle(): bool
     {
-        return $this->extras['PROJECTROOMSHOWTITLE'] ?? 'no';
-
+        return $this->communityShowDeactivatedEntriesTitle;
     }
 
-    public function setProjectRoomShowTitle(?string $status): Portal
+    /**
+     * @param bool $communityShowDeactivatedEntriesTitle
+     * @return Portal
+     */
+    public function setCommunityShowDeactivatedEntriesTitle(bool $communityShowDeactivatedEntriesTitle): Portal
     {
-        if ($status !== 'yes' && $status !== 'no') {
-            $status = 'no';
-        }
-        $this->extras['PROJECTROOMSHOWTITLE'] = $status;
+        $this->communityShowDeactivatedEntriesTitle = $communityShowDeactivatedEntriesTitle;
         return $this;
     }
 

@@ -9,6 +9,7 @@ use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use cs_environment;
 use cs_room_item;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,19 +28,43 @@ class ItemVoter extends Voter
     const ENTER = 'ITEM_ENTER';
     const USERROOM = 'ITEM_USERROOM';
     const DELETE = 'ITEM_DELETE';
-    const SEE_TITLE = 'ITEM_SEE_TITLE';
 
-    private $legacyEnvironment;
-    private $itemService;
-    private $roomService;
-    private $userService;
-    private $requestStack;
-    private $entityManager;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
+
+    /**
+     * @var ItemService
+     */
+    private ItemService $itemService;
+
+    /**
+     * @var RoomService
+     */
+    private RoomService $roomService;
+
+    /**
+     * @var UserService
+     */
+    private UserService $userService;
+
+    /**
+     * @var RequestStack
+     */
+    private RequestStack $requestStack;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         ItemService $itemService,
-        RoomService $roomService, UserService $userService, RequestStack $requestStack,
+        RoomService $roomService,
+        UserService $userService,
+        RequestStack $requestStack,
         EntityManagerInterface $entityManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -61,7 +86,6 @@ class ItemVoter extends Voter
             self::ENTER,
             self::USERROOM,
             self::DELETE,
-            self::SEE_TITLE,
         ));
     }
 
@@ -112,8 +136,6 @@ class ItemVoter extends Voter
 
                 case self::DELETE:
                     return $this->canDelete($item, $currentUser);
-                case self::SEE_TITLE:
-                    return $this->canViewTitle($item, $currentUser);
             }
         } else {
             if ($itemId == 'NEW') {
@@ -312,19 +334,5 @@ class ItemVoter extends Voter
         }
 
         return $this->userService->userIsParentModeratorForRoom($room, $user);
-    }
-
-
-    private function canViewTitle($item, $currentUser)
-    {
-        if ($item->isDeleted()) {
-            return false;
-        }
-
-        if ($item->maySeeTitle($currentUser)) {
-            return true;
-        }
-
-        return false;
     }
 }

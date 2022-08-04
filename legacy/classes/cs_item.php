@@ -2685,24 +2685,4 @@ class cs_item {
     {
         return null;
     }
-
-    public function maySeeTitle(cs_user_item $userItem)
-    {
-        global $symfonyContainer;
-        /** @var EntityManagerInterface $entityManager */
-        $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $portal = $entityManager->getRepository(Portal::class)->find($this->_environment->getCurrentPortalID());
-        $showTitle = false;
-        $room = $this->getContextItem();
-        if($room->getType() === CS_COMMUNITY_TYPE){
-            if($portal->getCommunityRoomShowTitle() === 'yes'){
-                $showTitle = true;
-            }
-        } else {
-            if($portal->getProjectRoomShowTitle() === 'yes'){
-                $showTitle = true;
-            }
-        }
-        return $showTitle;
-    }
 }
