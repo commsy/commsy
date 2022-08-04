@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Event\UserJoinedRoomEvent;
+use App\Facade\MembershipManager;
 use App\Filter\ProjectFilterType;
 use App\Form\Type\ContextRequestType;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
+use App\Utils\GroupService;
 use App\Utils\ProjectService;
 use App\Utils\UserService;
 use cs_user_item;
@@ -38,6 +40,10 @@ class ContextController extends AbstractController
     private Mailer $mailer;
 
     /**
+     * @var GroupService
+     */
+    private GroupService $groupService;
+    /**
      * @required
      * @param Mailer $mailer
      */
@@ -45,6 +51,16 @@ class ContextController extends AbstractController
     {
         $this->mailer = $mailer;
     }
+
+    /**
+     * @required
+     * @param GroupService $groupService
+     */
+    public function setGroupService(GroupService $groupService): void
+    {
+        $this->groupService = $groupService;
+    }
+
 
     /**
      * @Route("/room/{roomId}/context")
@@ -105,7 +121,8 @@ class ContextController extends AbstractController
         UserService $userService,
         EventDispatcherInterface $eventDispatcher,
         int $roomId,
-        int $itemId
+        int $itemId,
+        MembershipManager $membershipManager
     ) {
         $legacyEnvironment = $environment->getEnvironment();
 
@@ -396,6 +413,12 @@ class ContextController extends AbstractController
 
             // redirect to detail page
             if ($roomItem->isGroupRoom()) {
+
+                if ($form->get('cancel')->isClicked()) {
+                    $account = $this->getUser();
+                    $group = $this->groupService->getGroup($roomItem->getLinkedGroupItemID());
+                    $membershipManager->leaveGroup($group, $account);
+                }
                 $route = $this->redirectToRoute('app_group_detail', [
                     'roomId' => $roomId,
                     'itemId' => $roomItem->getLinkedGroupItemID(),
