@@ -329,6 +329,18 @@
                 <source>Default template help text</source>
                 <target>By choosing a template, a newly created workspace will be prepopulated with contents from the template workspace (except for user information)</target>
             </trans-unit>
+            <trans-unit id="portal.form.workspaces.show_deactivated_entries_label">
+                <source>portal.form.workspaces.show_deactivated_entries_label</source>
+                <target>Deactivated entries</target>
+            </trans-unit>
+            <trans-unit id="portal.form.workspaces.show_deactivated_entries_label.show_title">
+                <source>portal.form.workspaces.show_deactivated_entries_label.show_title</source>
+                <target>Show title</target>
+            </trans-unit>
+            <trans-unit id="portal.form.workspaces.show_deactivated_entries_label.hide_title">
+                <source>portal.form.workspaces.show_deactivated_entries_label.hide_title</source>
+                <target>Hide title</target>
+            </trans-unit>
 
             <!-- Portal Account Index -->
             <trans-unit id="portal_accounts">

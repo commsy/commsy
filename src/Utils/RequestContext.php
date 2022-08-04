@@ -5,6 +5,7 @@ namespace App\Utils;
 
 
 use App\Entity\Portal;
+use App\Entity\Room;
 use App\Repository\PortalRepository;
 use App\Repository\RoomRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,6 +35,26 @@ class RequestContext
         $this->portalRepository = $portalRepository;
         $this->roomRepository = $roomRepository;
         $this->itemService = $itemService;
+    }
+
+    /**
+     * Return the room context entity or null
+     *
+     * @param Request $request
+     * @return Room|null
+     */
+    public function fetchRoom(Request $request): ?Room
+    {
+        $contextId = $this->fetchContextId($request);
+
+        if ($contextId !== null) {
+            $room = $this->roomRepository->find($contextId);
+            if ($room) {
+                return $room;
+            }
+        }
+
+        return null;
     }
 
     /**
