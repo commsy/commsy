@@ -2066,15 +2066,10 @@ class DateController extends BaseController
             'hide-past-dates' => $hidePastDates,
         ];
 
-        $listAction = $this->generateUrl('app_date_list', [
-            'roomId' => $room->getItemID()
-        ]);
-        $calendarAction = $this->generateUrl('app_date_calendar', [
-            'roomId' => $room->getItemID()
-        ]);
-
         return $this->createForm(DateFilterType::class, $defaultFilterValues, [
-            'action' => $viewAsCalendar ? $calendarAction: $listAction,
+            'action' => $this->generateUrl($viewAsCalendar ? 'app_date_calendar' : 'app_date_list', [
+                'roomId' => $room->getItemID(),
+            ]),
             'hasHashtags' => $room->withBuzzwords(),
             'hasCategories' => $room->withTags(),
         ]);
