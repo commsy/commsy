@@ -760,3 +760,18 @@
 {% macro userListToString(userList) %}
     {{- userList|map(user => "#{user.fullName}")|join(', ') -}}
 {% endmacro %}
+
+{% macro deactivatedEntryTitle(portal, room, title) %}
+    {{ 'Deactivated entry'|trans({}) }}
+    {% if commsy.room.type == 'project' %}
+        {% if commsy.portal.projectShowDeactivatedEntriesTitle %}
+            {{ title|decodeHtmlEntity }}
+        {% endif %}
+    {% elseif commsy.room.type == 'community' %}
+        {% if commsy.portal.communityShowDeactivatedEntriesTitle %}
+            {{ title|decodeHtmlEntity }}
+        {% endif %}
+    {% else %}
+        {{ title|decodeHtmlEntity }}
+    {% endif %}
+{% endmacro %}

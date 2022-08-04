@@ -17,6 +17,7 @@ use App\Services\LegacyEnvironment;
 use App\Utils\DiscService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use App\Utils\GroupService;
 use cs_user_item;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -407,6 +408,7 @@ class ProfileController extends AbstractController
      * @param ParameterBagInterface $parameterBag
      * @param TranslatorInterface $translator
      * @param MembershipManager $membershipManager
+     * @param GroupService $groupService
      * @param int $roomId
      * @return array|RedirectResponse
      */
@@ -417,6 +419,7 @@ class ProfileController extends AbstractController
         ParameterBagInterface $parameterBag,
         TranslatorInterface $translator,
         MembershipManager $membershipManager,
+        GroupService $groupService,
         int $roomId
     ) {
         /** @var Account $account */
@@ -462,6 +465,20 @@ class ProfileController extends AbstractController
                 $membershipManager->leaveWorkspace($roomItem, $account);
 
                 return $this->redirect($portalUrl);
+            }
+            if($request->query->has('groupId')){
+                $groupId = $request->query->get('groupId');
+                $roomEndId = $request->query->get('roomEndId');
+                $group = $groupService->getGroup($groupId);
+                $membershipManager->leaveGroup($group, $account);
+                $membershipManager->leaveWorkspace($roomItem, $account);
+                $group = $groupService->getGroup($groupId);
+                $roomItem->delete();
+                $group->delete();
+                return $this->redirectToRoute('app_group_list', [
+                    'roomId' => $roomEndId
+                ]);
+
             }
         }
 
