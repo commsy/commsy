@@ -35,21 +35,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ProfileController extends AbstractController
 {
-
-    /**
-     * @var GroupService
-     */
-    private GroupService $groupService;
-
-    /**
-     * @required
-     * @param GroupService $groupService
-     */
-    public function setGroupService(GroupService $groupService): void
-    {
-        $this->groupService = $groupService;
-    }
-
     /**
      * @Route("/room/{roomId}/user/{itemId}/general")
      * @Template
@@ -423,6 +408,7 @@ class ProfileController extends AbstractController
      * @param ParameterBagInterface $parameterBag
      * @param TranslatorInterface $translator
      * @param MembershipManager $membershipManager
+     * @param GroupService $groupService
      * @param int $roomId
      * @return array|RedirectResponse
      */
@@ -433,6 +419,7 @@ class ProfileController extends AbstractController
         ParameterBagInterface $parameterBag,
         TranslatorInterface $translator,
         MembershipManager $membershipManager,
+        GroupService $groupService,
         int $roomId
     ) {
         /** @var Account $account */
@@ -482,10 +469,10 @@ class ProfileController extends AbstractController
             if($request->query->has('groupId')){
                 $groupId = $request->query->get('groupId');
                 $roomEndId = $request->query->get('roomEndId');
-                $group = $this->groupService->getGroup($groupId);
+                $group = $groupService->getGroup($groupId);
                 $membershipManager->leaveGroup($group, $account);
                 $membershipManager->leaveWorkspace($roomItem, $account);
-                $group = $this->groupService->getGroup($groupId);
+                $group = $groupService->getGroup($groupId);
                 $roomItem->delete();
                 $group->delete();
                 return $this->redirectToRoute('app_group_list', [

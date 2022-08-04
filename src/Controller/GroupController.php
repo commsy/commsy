@@ -1003,15 +1003,16 @@ class GroupController extends BaseController
 
         // leave group
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-        if($membershipManager->isLastModerator($groupRoom, $currentUser)){
+        if ($membershipManager->isLastModerator($groupRoom, $currentUser)) {
             //Redirect delete group
             return $this->redirectToRoute('app_profile_deleteroomprofile', [
                 'roomId' => $groupRoom->getItemID(),
                 'itemId' => $currentUser->getItemID(),
                 'groupId' => $itemId,
-                'roomEndId' => $roomId
+                'roomEndId' => $roomId,
             ]);
         }
+
         // leave group
         $membershipManager->leaveGroup($group, $account);
         $membershipManager->leaveWorkspace($groupRoom, $account);
