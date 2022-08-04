@@ -293,12 +293,12 @@
             {% endif %}
             {% if item.itemType == 'discarticle' %}
                 {% if is_granted('ITEM_EDIT', 'NEW') %}
-                    <div style="padding-left: 5px; padding-right: 5px;" class="uk-display-inline cs-edit-detail {% if draft %}cs-edit-draft{% endif %}">
+                    <div style="padding-left: 5px; padding-right: 5px;" class="uk-display-inline cs-edit {% if draft %}cs-edit-draft{% endif %}">
                         <a class="newArticle uk-icon-hover uk-icon-small uk-icon-reply" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createarticle', {'roomId': item.contextId, 'itemId': item.discussionId, 'answerTo': item.itemId }) }}">
                         </a>
                     </div>
 
-                    <div class="uk-display-inline cs-edit-detail {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "trash"|trans({}) }}">
+                    <div class="uk-display-inline cs-edit {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "trash"|trans({}) }}">
                         <a  href="#" data-cs-action="{{ {
                             'url': path('app_discussionarticle_xhrdelete', {'roomId': item.contextId, 'itemId': item.itemId}),
                             'action': 'delete',
