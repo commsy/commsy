@@ -93,6 +93,41 @@ class GroupService
                 $this->groupManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
             }
         }
+        // rubrics
+        if ($formData['rubrics']) {
+            // group
+            if (isset($formData['rubrics']['group'])) {
+                $relatedLabel = $formData['rubrics']['group'];
+                $this->groupManager->setGroupLimit($relatedLabel->getItemId());
+            }
+
+            // topic
+            if (isset($formData['rubrics']['topic'])) {
+                $relatedLabel = $formData['rubrics']['topic'];
+                $this->groupManager->setTopicLimit($relatedLabel->getItemId());
+            }
+        }
+
+        // hashtag
+        if (isset($formData['hashtag'])) {
+            if (isset($formData['hashtag']['hashtag'])) {
+                $hashtag = $formData['hashtag']['hashtag'];
+                $itemId = $hashtag->getItemId();
+                $this->groupManager->setBuzzwordLimit($itemId);
+            }
+        }
+
+        // category
+        if (isset($formData['category'])) {
+            if (isset($formData['category']['category'])) {
+                $categories = $formData['category']['category'];
+
+                if (!empty($categories)) {
+                    $this->groupManager->setTagArrayLimit($categories);
+                }
+            }
+        }
+
     }
     
     public function getNewGroup()

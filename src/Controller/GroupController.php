@@ -1575,8 +1575,8 @@ class GroupController extends BaseController
             'action' => $this->generateUrl('app_group_list', [
                 'roomId' => $room->getItemID(),
             ]),
-            'hasHashtags' => false,
-            'hasCategories' => false,
+            'hasHashtags' => true,
+            'hasCategories' => true,
         ]);
     }
 

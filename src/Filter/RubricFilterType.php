@@ -38,7 +38,9 @@ class RubricFilterType extends AbstractType
                 $roomId = $attributes->getInt('roomId');
 
                 $filterableRubrics = $this->roomService->getFilterableRubrics($roomId);
-
+                if ($attributes->has('_route') && $attributes->get('_route') == 'app_group_list') {
+                    $filterableRubrics = array_diff($filterableRubrics, ["group"]);
+                }
                 // group
                 if (in_array('group', $filterableRubrics)) {
                     $builder
