@@ -676,6 +676,7 @@ class UserController extends BaseController
             'pathTopicItem' => $pathTopicItem,
             'isSelf' => $isSelf,
             'moderatorListLength' => $moderatorListLength,
+            'showRelatedGroups' => $infoArray['showRelatedGroups']
         );
     }
 
@@ -789,11 +790,12 @@ class UserController extends BaseController
                 $lastItemId = $users[sizeof($users) - 1]->getItemId();
             }
         }
-
+        $showRelatedGroups = false;
         $groups = [];
         $context_item = $this->legacyEnvironment->getCurrentContextItem();
         $conf = $context_item->getHomeConf();
         if(strpos($conf, "group_show") == true) {
+            $showRelatedGroups = true;
             $groups = $this->userService->getUser($itemId)->getGroupList()->to_array();
         }
 
@@ -819,6 +821,7 @@ class UserController extends BaseController
         $infoArray['linkedGroups'] = $groups;
         $infoArray['comment'] = $user->getUserComment();
         $infoArray['status'] = $user->getStatus();
+        $infoArray['showRelatedGroups'] = $showRelatedGroups;
 
         return $infoArray;
     }
