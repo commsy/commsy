@@ -5,6 +5,7 @@ namespace App\Twig;
 
 
 use App\Entity\Portal;
+use App\Entity\Room;
 use App\Entity\Server;
 use App\Utils\RequestContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -63,6 +64,16 @@ class CommsyGlobals
     public function portal(): ?Portal
     {
         return $this->requestContext->fetchPortal($this->requestStack->getCurrentRequest());
+    }
+
+    /**
+     * Return the room context entity or null
+     *
+     * @return Room|null
+     */
+    public function room(): ?Room
+    {
+        return $this->requestContext->fetchRoom($this->requestStack->getCurrentRequest());
     }
 
     /**

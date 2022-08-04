@@ -305,6 +305,18 @@ class Portal implements \Serializable
      */
     private int $clearInactiveRoomsDeleteDays = 30;
 
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean", options={"default": 1})
+     */
+    private bool $projectShowDeactivatedEntriesTitle = true;
+
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean", options={"default": 1})
+     */
+    private bool $communityShowDeactivatedEntriesTitle = true;
+
     public function __construct()
     {
         $this->authSources = new ArrayCollection();
@@ -841,6 +853,42 @@ class Portal implements \Serializable
             $status = 'all';
         }
         $this->extras['COMMUNITYROOMCREATIONSTATUS'] = $status;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isProjectShowDeactivatedEntriesTitle(): bool
+    {
+        return $this->projectShowDeactivatedEntriesTitle;
+    }
+
+    /**
+     * @param bool $projectShowDeactivatedEntriesTitle
+     * @return Portal
+     */
+    public function setProjectShowDeactivatedEntriesTitle(bool $projectShowDeactivatedEntriesTitle): Portal
+    {
+        $this->projectShowDeactivatedEntriesTitle = $projectShowDeactivatedEntriesTitle;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCommunityShowDeactivatedEntriesTitle(): bool
+    {
+        return $this->communityShowDeactivatedEntriesTitle;
+    }
+
+    /**
+     * @param bool $communityShowDeactivatedEntriesTitle
+     * @return Portal
+     */
+    public function setCommunityShowDeactivatedEntriesTitle(bool $communityShowDeactivatedEntriesTitle): Portal
+    {
+        $this->communityShowDeactivatedEntriesTitle = $communityShowDeactivatedEntriesTitle;
         return $this;
     }
 

@@ -3,9 +3,9 @@ namespace App\Form\Type\Portal;
 
 use App\Entity\Portal;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type as Types;
 
 class ProjectRoomsCreationType extends AbstractType
 {
@@ -41,6 +41,14 @@ class ProjectRoomsCreationType extends AbstractType
                 ],
                 'choice_translation_domain' => 'form',
                 'help' => 'Mandatory room assignment help text',
+            ])
+            ->add('projectShowDeactivatedEntriesTitle', Types\ChoiceType::class, [
+                'label' => 'portal.form.workspaces.show_deactivated_entries_label',
+                'expanded' => true,
+                'choices'  => [
+                    'portal.form.workspaces.show_deactivated_entries_label.show_title' => true,
+                    'portal.form.workspaces.show_deactivated_entries_label.hide_title' => false,
+                ],
             ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',

@@ -50,7 +50,9 @@
                     {% if is_granted('ITEM_SEE', date.itemId) %}
                         <a href="{{ path('app_date_detail', {'roomId': roomId, 'itemId': date.itemId}) }}">{{ date.title|decodeHtmlEntity }}</a>
                     {% else %}
-                        <span class="uk-text-muted">{{ 'Deactivated entry'|trans({}) }} {{ date.title|decodeHtmlEntity }}</span>
+                        <span class="uk-text-muted">
+                            {{ macros.deactivatedEntryTitle(commsy.portal, commsy.room, material.title) }}
+                        </span>
                     {% endif %}
                 </h4>
 

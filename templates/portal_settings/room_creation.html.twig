@@ -16,6 +16,9 @@
             {{ form_label(communityRoomsForm.communityRoomCreationStatus) }}
             {{ form_row(communityRoomsForm.communityRoomCreationStatus[0]) }}
             {{ form_row(communityRoomsForm.communityRoomCreationStatus[1]) }}
+            {{ form_label(communityRoomsForm.communityShowDeactivatedEntriesTitle) }}
+            {{ form_row(communityRoomsForm.communityShowDeactivatedEntriesTitle[0]) }}
+            {{ form_row(communityRoomsForm.communityShowDeactivatedEntriesTitle[1]) }}
             {{ form_end(communityRoomsForm) }}
         {% endblock %}
     {% endembed %}
@@ -28,6 +31,9 @@
             {{ form_label(projectRoomsForm.projectRoomCreationStatus) }}
             {{ form_row(projectRoomsForm.projectRoomCreationStatus[0]) }}
             {{ form_row(projectRoomsForm.projectRoomCreationStatus[1]) }}
+            {{ form_label(projectRoomsForm.projectShowDeactivatedEntriesTitle) }}
+            {{ form_row(projectRoomsForm.projectShowDeactivatedEntriesTitle[0]) }}
+            {{ form_row(projectRoomsForm.projectShowDeactivatedEntriesTitle[1]) }}
             {{ form_end(projectRoomsForm) }}
         {% endblock %}
     {% endembed %}
