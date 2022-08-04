@@ -436,26 +436,20 @@
                                                     <span class="uk-icon-large uk-icon-button uk-icon-remove" data-uk-tooltip title="{{'no access'|trans({}, 'room') }}"> </span>
                                                 {% endif %}
                                             </div>
-                                        {% else %}
-                                            <span class="uk-icon-large uk-icon-button uk-icon-remove" data-uk-tooltip title="{{'no grouproom'|trans({},'group') }}"> </span>
+
                                         {% endif %}
                                     </div>
                                     <div class="uk-width-2-5 uk-text-left uk-margin-right">
                                         {% if item.isGroupRoomActivated and item.groupRoomItem %}
                                             <span class="uk-text-bold">{{item.groupRoomItem.title|decodeHtmlEntity}}</span><br/>
                                             <p>
-                                            {{'grouproom description text'|trans({},'group') }}    
+                                            {{'grouproom description text'|trans({},'group') }}
                                             </p>
                                             <p>
                                             {{'grouproom access'|trans({},'group') }}
                                             </p>
                                             <p>
                                             {{ macros.contextLink(roomId, item.getGroupRoomItem, roomMemberStatus, (isRoot or userIsGroupMember)) }}
-                                            </p>
-                                        {% else %}
-                                            <span class="uk-text-bold">{{'no grouproom'|trans({},'group') }}</span><br/>
-                                            <p>
-                                            {{'no grouproom description text'|trans({},'group') }}    
                                             </p>
                                         {% endif %}
                                     </div>

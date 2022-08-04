@@ -13,7 +13,6 @@ use App\Facade\MembershipManager;
 use App\Filter\GroupFilterType;
 use App\Form\DataTransformer\GroupTransformer;
 use App\Form\Type\AnnotationType;
-use App\Form\Type\GrouproomType;
 use App\Form\Type\GroupSendType;
 use App\Form\Type\GroupType;
 use App\Http\JsonDataResponse;
@@ -776,7 +775,9 @@ class GroupController extends BaseController
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
             ],
             'room' => $current_context,
+            'templates' => $this->getAvailableTemplates(),
         ));
+
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -984,6 +985,7 @@ class GroupController extends BaseController
 
         $room = $roomManager->getItem($roomId);
         $group = $this->groupService->getGroup($itemId);
+        $groupRoom = $group->getGroupRoomItem();
 
         if (!$room) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -1000,9 +1002,18 @@ class GroupController extends BaseController
         }
 
         // leave group
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        if($membershipManager->isLastModerator($groupRoom, $currentUser)){
+            //Redirect delete group
+            return $this->redirectToRoute('app_profile_deleteroomprofile', [
+                'roomId' => $groupRoom->getItemID(),
+                'itemId' => $currentUser->getItemID(),
+                'groupId' => $itemId,
+                'roomEndId' => $roomId
+            ]);
+        }
+        // leave group
         $membershipManager->leaveGroup($group, $account);
-
-        $groupRoom = $group->getGroupRoomItem();
         $membershipManager->leaveWorkspace($groupRoom, $account);
 
         return $this->redirectToRoute('app_group_detail', [
