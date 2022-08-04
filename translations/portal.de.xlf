@@ -329,6 +329,18 @@
                 <source>Default template help text</source>
                 <target>Bei Auswahl einer Vorlage werden beim Eröffnen eines Raumes sämtliche Voreinstellungen und Inhalte der Vorlage in den neuen Raum übernommen, mit Ausnahme der Informationen zu Personen</target>
             </trans-unit>
+            <trans-unit id="portal.form.workspaces.show_deactivated_entries_label">
+                <source>portal.form.workspaces.show_deactivated_entries_label</source>
+                <target>Deaktivierte Einträge</target>
+            </trans-unit>
+            <trans-unit id="portal.form.workspaces.show_deactivated_entries_label.show_title">
+                <source>portal.form.workspaces.show_deactivated_entries_label.show_title</source>
+                <target>Titel anzeigen</target>
+            </trans-unit>
+            <trans-unit id="portal.form.workspaces.show_deactivated_entries_label.hide_title">
+                <source>portal.form.workspaces.show_deactivated_entries_label.hide_title</source>
+                <target>Titel verbergen</target>
+            </trans-unit>
 
             <!-- Portal Account Index -->
             <trans-unit id="portal_accounts">
