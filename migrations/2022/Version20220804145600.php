@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20220803124700 extends AbstractMigration
+final class Version20220804145600 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
@@ -20,6 +20,6 @@ final class Version20220803124700 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-
+        $this->throwIrreversibleMigrationException();
     }
 }
