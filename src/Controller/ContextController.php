@@ -40,10 +40,6 @@ class ContextController extends AbstractController
     private Mailer $mailer;
 
     /**
-     * @var GroupService
-     */
-    private GroupService $groupService;
-    /**
      * @required
      * @param Mailer $mailer
      */
@@ -51,16 +47,6 @@ class ContextController extends AbstractController
     {
         $this->mailer = $mailer;
     }
-
-    /**
-     * @required
-     * @param GroupService $groupService
-     */
-    public function setGroupService(GroupService $groupService): void
-    {
-        $this->groupService = $groupService;
-    }
-
 
     /**
      * @Route("/room/{roomId}/context")
@@ -111,6 +97,8 @@ class ContextController extends AbstractController
      * @param LegacyEnvironment $environment
      * @param UserService $userService
      * @param EventDispatcherInterface $eventDispatcher
+     * @param MembershipManager $membershipManager
+     * @param GroupService $groupService
      * @param int $roomId
      * @param int $itemId
      * @return array|Response
@@ -120,9 +108,10 @@ class ContextController extends AbstractController
         LegacyEnvironment $environment,
         UserService $userService,
         EventDispatcherInterface $eventDispatcher,
+        MembershipManager $membershipManager,
+        GroupService $groupService,
         int $roomId,
-        int $itemId,
-        MembershipManager $membershipManager
+        int $itemId
     ) {
         $legacyEnvironment = $environment->getEnvironment();
 
@@ -416,7 +405,7 @@ class ContextController extends AbstractController
 
                 if ($form->get('cancel')->isClicked()) {
                     $account = $this->getUser();
-                    $group = $this->groupService->getGroup($roomItem->getLinkedGroupItemID());
+                    $group = $groupService->getGroup($roomItem->getLinkedGroupItemID());
                     $membershipManager->leaveGroup($group, $account);
                 }
                 $route = $this->redirectToRoute('app_group_detail', [
