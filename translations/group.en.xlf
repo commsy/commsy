@@ -78,6 +78,10 @@
                 <source>leave group and workspace</source>
                 <target>Leave (incl. group workspace)</target>
             </trans-unit>
+            <trans-unit id="templateForGroupWorkspace">
+               <source>template for group workspace</source>
+               <target>Template for group workspace</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
