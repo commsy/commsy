@@ -13,36 +13,31 @@ class DiscussionAnswerType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('description', CKEditorType::class, array(
+            ->add('description', CKEditorType::class, [
                 'config_name' => 'cs_annotation_config',
-                'label' => 'Add answer',
+                'label' => false,
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank(),
                 ],
-                'attr' => array(
-                    'class' => 'uk-form-width-large',
-                ),
-                'label_attr' => array(
-                    'style' => 'font-weight: bold;'
-                ),
                 'translation_domain' => 'item',
                 'input_sync' => true,
-            ))
+            ])
 
-            ->add('save', SubmitType::class, array(
-                'attr' => array(
+            ->add('save', SubmitType::class, [
+                'attr' => [
                     'class' => 'uk-button-primary',
-                ),
+                ],
                 'label' => 'Answer',
-            ))
-            ->add('cancel', SubmitType::class, array(
-                'attr' => array(
+                'translation_domain' => 'discussion',
+            ])
+            ->add('cancel', SubmitType::class, [
+                'attr' => [
                     'formnovalidate' => '',
-                ),
+                ],
                 'label' => 'cancel',
                 'validation_groups' => false,
-            ))
+            ])
         ;
 
     }
@@ -55,8 +50,8 @@ class DiscussionAnswerType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefined(array('placeholderText', 'categories', 'hashTagPlaceholderText', 'hashtagEditUrl', 'hashtags'))
-            ->setDefaults(array('translation_domain' => 'form'))
+            ->setDefined(['placeholderText', 'categories', 'hashTagPlaceholderText', 'hashtagEditUrl', 'hashtags'])
+            ->setDefaults(['translation_domain' => 'form'])
         ;
     }
 
