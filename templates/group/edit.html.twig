@@ -19,22 +19,6 @@
             </div>
 
         </div>
-
-            {% if group.creator.itemId == currentUser.itemId or currentUser.isModerator %}
-            <div class="uk-margin-small-left uk-flex">
-                <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
-                <div>
-                    {{ form_widget(form.hidden) }}
-                </div>
-            </div>
-            <div class="uk-margin-small-left uk-flex">
-                <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
-                <div class="uk-margin-small-top">
-                    {{ form_widget(form.hiddendate) }}
-                </div>
-            </div>
-            {% endif %}
-
             {% if form.category_mapping is defined or form.hashtag_mapping is defined %}
                 {{ macros.mandatoryLinks(form) }}
             {% endif %}

@@ -40,13 +40,6 @@ class GroupType extends AbstractType
                 'label' => 'Template',
                 'translation_domain' => 'group',
             ])
-            ->add('hidden', CheckboxType::class, array(
-                'label' => 'hidden',
-                'required' => false,
-            ))
-            ->add('hiddendate', DateTimeSelectType::class, array(
-                'label' => 'hidden until',
-            ))
             ->add('permission', CheckboxType::class, array(
                 'label' => 'permission',
                 'required' => false,

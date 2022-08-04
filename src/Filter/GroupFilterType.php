@@ -29,14 +29,16 @@ class GroupFilterType extends AbstractType
                 'label' => 'Restrict',
                 'translation_domain' => 'form',
             ])
-            ->add('hide-deactivated-entries', Filters\ChoiceFilterType::class, [
-                'choices' => [
-                    'only activated' => 'only_activated',
-                    'only deactivated' => 'only_deactivated',
-                    'no restrictions' => 'all',
-                ],
-                'translation_domain' => 'form',
-                'placeholder' => false,
+            ->add('membership', Filters\CheckboxFilterType::class, [
+                'label' => 'hide-rooms-without-membership',
+                'mapped' => false,
+                'translation_domain' => 'room',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+            ])
+            ->add('rubrics', RubricFilterType::class, [
+                'label' => false,
             ])
             ->add('field0', HiddenType::class, []);
 
