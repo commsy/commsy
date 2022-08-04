@@ -214,7 +214,7 @@ class cs_discussionarticles_manager extends cs_manager {
 
 
      if ($this->_sort_position){
-        $query .= ' ORDER BY '.$this->addDatabasePrefix('discussionarticles').'.position ASC';
+        $query .= ' ORDER BY '.$this->addDatabasePrefix('discussionarticles').'.position DESC';
      }else{
         $query .= ' ORDER BY '.$this->addDatabasePrefix('discussionarticles').'.creation_date ASC, '.$this->addDatabasePrefix('discussionarticles').'.item_id ASC, '.$this->addDatabasePrefix('discussionarticles').'.subject DESC';
      }
