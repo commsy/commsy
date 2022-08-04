@@ -83,8 +83,18 @@ class MembershipManager
      */
     public function isLastModerator(cs_room_item $room, $currentUser): bool
     {
+        $isSameUser = false;
         $usersInWorkspace = $this->userService->getUserModeratorsInContext($room->getItemID());
-        if ($usersInWorkspace && ($usersInWorkspace->getCount() <= 1) && ($currentUser->getStatus() === '3' )) {
+        if (!empty($usersInWorkspace)) {
+            $obj = $usersInWorkspace->getFirst();
+            while ($obj) {
+                if ($obj->getUserID() === $currentUser->getUserID()){
+                    $isSameUser = true;
+                }
+                $obj = $usersInWorkspace->getNext();
+            }
+        }
+        if ($usersInWorkspace && ($usersInWorkspace->getCount() <= 1) && ($currentUser->getStatus() === '3' ) && $isSameUser) {
             return true;
         }
         return false;
