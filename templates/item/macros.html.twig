@@ -145,7 +145,10 @@
     <div class="uk-grid">
         {% if withCategories %}
             <div class="uk-width-1-3">
-                <strong>{{ 'categories'|trans({}, "room") }}:</strong> <br/>
+                {% if (item.tagsArray|length) > 0 %}
+                    <strong>{{ 'categories'|trans({}, "room") }}:</strong> <br/>
+                {% endif %}
+
                 {% set count = 1 %}
                 {% if (item.tagsArray|length) < 4 %}
                     {% if (item.tagsArray|length) == 0 %}
