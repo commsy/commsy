@@ -26,6 +26,10 @@
                 <source>latest article</source>
                 <target>Neuester Beitrag</target>
             </trans-unit>
+            <trans-unit id="add_answer">
+                <source>add answer</source>
+                <target>Antwort hinzufügen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

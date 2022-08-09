@@ -26,6 +26,10 @@
                 <source>latest article</source>
                 <target>Latest article</target>
             </trans-unit>
+            <trans-unit id="add_answer">
+                <source>add answer</source>
+                <target>Add answer</target>
+             </trans-unit>
         </body>
     </file>
 </xliff>
