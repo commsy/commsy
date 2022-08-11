@@ -77,10 +77,22 @@
                     <a href="{{ path(result.routeName, {'roomId': entity.contextId, 'itemId': entity.itemId}) }}">
                 {%- else -%}
                       <span class="uk-text-muted">
-                      {{ 'Deactivated entry'|trans({}) }}
+                          {{ 'Deactivated entry'|trans({}) }}
+                          {% if result.typeContext == 'project' %}
+                              {% if commsy.portal.projectShowDeactivatedEntriesTitle %}
+                                  {{ entity.title|decodeHtmlEntity }}
+                              {% endif %}
+                          {% elseif result.typeContext == 'community' %}
+                              {% if commsy.portal.communityShowDeactivatedEntriesTitle %}
+                                  {{ entity.title|decodeHtmlEntity }}
+                              {% endif %}
+                          {% else %}
+                              {{ entity.title|decodeHtmlEntity }}
+                          {% endif %}
+
                 {%- endif %}
-                        {% if entity.title is defined %}
-                            {{ entity.title|decodeHtmlEntity }}
+                        {% if entity.title is defined and is_granted('ITEM_SEE', entity.itemId) %}
+                             {{ entity.title|decodeHtmlEntity }}
                         {% endif %}
 
                         {% if entity.firstname is defined and entity.lastname is defined %}

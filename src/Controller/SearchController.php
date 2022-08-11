@@ -959,6 +959,7 @@ class SearchController extends BaseController
         $results = [];
         foreach ($searchResults->getResults($offset, 10)->toArray() as $searchResult) {
 
+            $typeContext = CS_COMMUNITY_TYPE;
             $reflection = new \ReflectionClass($searchResult);
             $type = strtolower(rtrim($reflection->getShortName(), 's'));
 
@@ -977,6 +978,7 @@ class SearchController extends BaseController
                 } else {
                     $roomId = $searchResult->getContextId();
                     $roomItem = $this->getRoom($roomId);
+                    $typeContext = $roomItem->getType();
                     if ($roomItem) {
                         $roomTitle = $roomItem->getTitle();
                     }
@@ -1042,6 +1044,7 @@ class SearchController extends BaseController
                     'routeName' => $routeName,
                     'files' => $this->itemService->getItemFileList($searchResult->getItemId()),
                     'type' => $type,
+                    'typeContext' => $typeContext,
                     'status' => $status,
                     'readStatus' => $readStatus,
                 ];
