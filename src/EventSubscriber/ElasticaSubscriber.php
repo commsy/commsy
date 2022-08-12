@@ -65,7 +65,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
         $this->parameterBag = $parameterBag;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PostIndexResetEvent::class => 'prepareIngestPipeline',
@@ -109,7 +109,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
                 ]
             ];
             $index->getClient()->request(
-                "_ingest/pipeline/{$attachmentPipelineId}",
+                "_ingest/pipeline/$attachmentPipelineId",
                 Request::PUT,
                 json_encode($pipelineDefinition)
             );
@@ -200,13 +200,10 @@ class ElasticaSubscriber implements EventSubscriberInterface
             if ($hashtags->isNotEmpty()) {
                 $objectHashtags = [];
 
-                $hashtag = $hashtags->getFirst();
-                while ($hashtag) {
+                foreach ($hashtags as $hashtag) {
                     if (!$hashtag->isDeleted()) {
                         $objectHashtags[] = $hashtag->getName();
                     }
-
-                    $hashtag = $hashtags->getNext();
                 }
 
                 if (!empty($objectHashtags)) {
@@ -232,13 +229,10 @@ class ElasticaSubscriber implements EventSubscriberInterface
                 if ($tags->isNotEmpty()) {
                     $objectTags = [];
 
-                    $tag = $tags->getFirst();
-                    while ($tag) {
+                    foreach ($tags as $tag) {
                         if (!$tag->isDeleted()) {
                             $objectTags[] = $tag->getTitle();
                         }
-
-                        $tag = $tags->getNext();
                     }
 
                     if (!empty($objectTags)) {
@@ -280,13 +274,10 @@ class ElasticaSubscriber implements EventSubscriberInterface
             if ($annotations->isNotEmpty()) {
                 $objectTags = [];
 
-                $annotation = $annotations->getFirst();
-                while ($annotation) {
+                foreach ($annotations as $annotation) {
                     if (!$annotation->isDeleted()) {
                         $objectTags[] = $annotation->getDescription();
                     }
-
-                    $annotation = $annotations->getNext();
                 }
 
                 if (!empty($objectTags)) {
@@ -324,7 +315,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
         foreach ($files as $legacyFile) {
             /** @var cs_file_item $legacyFile */
             if (!$legacyFile->isDeleted()) {
-                /** @noinspection MissingService */
                 $fileInfo = pathinfo($this->parameterBag->get('kernel.project_dir') . '/' . $legacyFile->getFilepath());
                 $dirname = $fileInfo['dirname'];
                 $basename = $fileInfo['basename'];
@@ -338,26 +328,30 @@ class ElasticaSubscriber implements EventSubscriberInterface
                     ->files()
                     ->size('<= 25M')
                     ->name($fileInfo['basename'])
-                    ->in($fileInfo['dirname'])
-                    ->filter(function(SplFileInfo $file) {
-                        $mimeTypes = new MimeTypes();
-                        $mimeType = $mimeTypes->guessMimeType($file->getPathname());
-
-                        return in_array($mimeType, self::VALID_MIMES);
-                    });
+                    ->in($fileInfo['dirname']);
 
                 if ($finder->hasResults()) {
                     $results = iterator_to_array($finder);
                     /** @var SplFileInfo $splFile */
                     $splFile = current($results);
 
-                    $content = base64_encode($splFile->getContents());
-                    if (!empty($content)) {
-                        $filesBase64[] = [
-                            'filename' => $legacyFile->getFilename(),
-                            'data' => $content,
-                        ];
+                    // If the file has a whitelisted mime-type index the content, otherwise just the filename
+                    $mimeTypes = new MimeTypes();
+                    $mimeType = $mimeTypes->guessMimeType($splFile->getPathname());
+
+                    $indexInfo = [
+                        'filename' => $legacyFile->getFileName(),
+                        'filename_no_ext' => pathinfo($legacyFile->getFileName(), PATHINFO_FILENAME),
+                        'data' => '',
+                    ];
+                    if (in_array($mimeType, self::VALID_MIMES)) {
+                        $content = base64_encode($splFile->getContents());
+                        if (!empty($content)) {
+                            $indexInfo['data'] = $content;
+                        }
                     }
+
+                    $filesBase64[] = $indexInfo;
                 }
             }
         }
@@ -378,20 +372,16 @@ class ElasticaSubscriber implements EventSubscriberInterface
             if ($articles->isNotEmpty()) {
                 $articleContents = [];
 
-                $article = $articles->getFirst();
-                while ($article) {
+                foreach ($articles as $article) {
                     if (!$article->isDeleted() && !$article->isDraft()) {
-                        $files = $article->getFileList();
+//                        $files = $article->getFileList();
 //                        $filesBase64 = $this->getBase64ContentofAllFiles($files);
 
                         $articleContents[] = [
                             'subject' => $article->getSubject(),
                             'description' => $article->getDescription(),
-//                            'files' => $filesBase64,
                         ];
                     }
-
-                    $article = $articles->getNext();
                 }
 
                 if (!empty($articleContents)) {
@@ -418,10 +408,9 @@ class ElasticaSubscriber implements EventSubscriberInterface
                 if ($steps->isNotEmpty()) {
                     $stepContents = [];
 
-                    $step = $steps->getFirst();
-                    while ($step) {
+                    foreach ($steps as $step) {
                         if (!$step->isDeleted() && !$step->isDraft()) {
-                            $files = $step->getFileList();
+//                            $files = $step->getFileList();
 //                            $filesBase64 = $this->getBase64ContentofAllFiles($files);
                             $stepContents[] = [
                                 'title' => $step->getTitle(),
@@ -429,8 +418,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
 //                                'files' => $filesBase64,
                             ];
                         }
-
-                        $step = $steps->getNext();
                     }
 
                     if (!empty($stepContents)) {
@@ -454,10 +441,9 @@ class ElasticaSubscriber implements EventSubscriberInterface
             if ($sections->isNotEmpty()) {
                 $sectionContents = [];
 
-                $section = $sections->getFirst();
-                while ($section) {
+                foreach ($sections as $section) {
                     if (!$section->isDeleted() && !$section->isDraft()) {
-                        $files = $section->getFileList();
+//                        $files = $section->getFileList();
 //                        $filesBase64 = $this->getBase64ContentofAllFiles($files);
                         $sectionContents[] = [
                             'title' => $section->getTitle(),
@@ -465,8 +451,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
 //                            'files' => $filesBase64,
                         ];
                     }
-
-                    $section = $sections->getNext();
                 }
 
                 if (!empty($sectionContents)) {
@@ -490,12 +474,8 @@ class ElasticaSubscriber implements EventSubscriberInterface
             if ($communityRooms->isNotEmpty()) {
                 $parentIds = [];
 
-                $communityRoom = $communityRooms->getFirst();
-
-                while ($communityRoom) {
+                foreach ($communityRooms as $communityRoom) {
                     $parentIds[] = $communityRoom->getItemId();
-
-                    $communityRoom = $communityRooms->getNext();
                 }
 
                 if (!empty($parentIds)) {

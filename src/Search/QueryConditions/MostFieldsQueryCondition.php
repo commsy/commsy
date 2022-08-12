@@ -52,6 +52,7 @@ class MostFieldsQueryCondition implements QueryConditionInterface
 
             // files
             'attachments.filename^1.5',
+            'attachments.filename_no_ext^1.5',
             'attachments.attachment.content^1.6',
 //            'discussionarticles.files.content',
 //            'steps.files.content',
