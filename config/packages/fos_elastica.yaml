@@ -19,8 +19,7 @@ fos_elastica:
             index_name: '%commsy.elastic.prefix%_announcement'
             client: default
             finder: ~
-            settings:
-                max_ngram_diff: 20
+            settings: &index_settings
                 analysis:
                     analyzer:
                         commsy_analyzer:
@@ -30,6 +29,7 @@ fos_elastica:
                                 - lowercase
                                 - stop_de_filter
                                 - stop_en_filter
+                                - stemmer_filter
                                 - ngrams_filter
                             char_filter:
                                 - html_strip
@@ -41,14 +41,15 @@ fos_elastica:
                                 - lowercase
                                 - stop_de_filter
                                 - stop_en_filter
+                                - stemmer_filter
                             char_filter:
                                 - html_strip
 
                     filter:
                         ngrams_filter:
                             type: ngram
-                            min_gram: 1
-                            max_gram: 20
+                            min_gram: 2
+                            max_gram: 3
                             token_chars:
                                 - letter
                                 - digit
@@ -60,6 +61,10 @@ fos_elastica:
                         stop_en_filter:
                             type: stop
                             stopword: _english_
+
+                        stemmer_filter:
+                            type: stemmer
+                            language: german2
 
             persistence:
                 driver: orm
@@ -85,7 +90,7 @@ fos_elastica:
                     property_path: false
                 contextId:
                     type: integer
-                creator:
+                creator: &name_mapping
                     type: object
                     properties:
                         firstName:
@@ -99,30 +104,17 @@ fos_elastica:
                             fields:
                                 raw:
                                     type: keyword
-                modifier:
-                    type: object
-                    properties:
-                        firstName:
-                            type: text
-                            copy_to: fullName
-                        lastName:
-                            type: text
-                            copy_to: fullName
-                        fullName:
-                            type: text
-                            fields:
-                                raw:
-                                    type: keyword
+                modifier: *name_mapping
                 creationDate:
                     type: date
                     format: date_optional_time
                 modificationDate:
                     type: date
                     format: date_optional_time
-                title:
+                title: &title_mapping
                     type: text
                     analyzer: commsy_analyzer
-                    search_analyzer: html_strip_analyzer
+                    search_analyzer: commsy_analyzer
                     fields:
                         raw:
                             type: keyword
@@ -157,47 +149,7 @@ fos_elastica:
             index_name: '%commsy.elastic.prefix%_date'
             client: default
             finder: ~
-            settings:
-                max_ngram_diff: 20
-                analysis:
-                    analyzer:
-                        commsy_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                                - ngrams_filter
-                            char_filter:
-                                - html_strip
-
-                        html_strip_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                            char_filter:
-                                - html_strip
-
-                    filter:
-                        ngrams_filter:
-                            type: ngram
-                            min_gram: 3
-                            max_gram: 20
-                            token_chars:
-                                - letter
-                                - digit
-
-                        stop_de_filter:
-                            type: stop
-                            stopword: _german_
-
-                        stop_en_filter:
-                            type: stop
-                            stopword: _english_
+            settings: *index_settings
 
             persistence:
                 driver: orm
@@ -223,47 +175,15 @@ fos_elastica:
                     property_path: false
                 contextId:
                     type: integer
-                creator:
-                    type: object
-                    properties:
-                        firstName:
-                            type: text
-                            copy_to: fullName
-                        lastName:
-                            type: text
-                            copy_to: fullName
-                        fullName:
-                            type: text
-                            fields:
-                                raw:
-                                    type: keyword
-                modifier:
-                    type: object
-                    properties:
-                        firstName:
-                            type: text
-                            copy_to: fullName
-                        lastName:
-                            type: text
-                            copy_to: fullName
-                        fullName:
-                            type: text
-                            fields:
-                                raw:
-                                    type: keyword
+                creator: *name_mapping
+                modifier: *name_mapping
                 creationDate:
                     type: date
                     format: date_optional_time
                 modificationDate:
                     type: date
                     format: date_optional_time
-                title:
-                    type: text
-                    analyzer: commsy_analyzer
-                    search_analyzer: html_strip_analyzer
-                    fields:
-                        raw:
-                            type: keyword
+                title: *title_mapping
                 description:
                     type: text
                     analyzer: html_strip_analyzer
@@ -298,47 +218,7 @@ fos_elastica:
             index_name: '%commsy.elastic.prefix%_discussion'
             client: default
             finder: ~
-            settings:
-                max_ngram_diff: 20
-                analysis:
-                    analyzer:
-                        commsy_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                                - ngrams_filter
-                            char_filter:
-                                - html_strip
-
-                        html_strip_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                            char_filter:
-                                - html_strip
-
-                    filter:
-                        ngrams_filter:
-                            type: ngram
-                            min_gram: 3
-                            max_gram: 20
-                            token_chars:
-                                - letter
-                                - digit
-
-                        stop_de_filter:
-                            type: stop
-                            stopword: _german_
-
-                        stop_en_filter:
-                            type: stop
-                            stopword: _english_
+            settings: *index_settings
 
             persistence:
                 driver: orm
@@ -364,47 +244,15 @@ fos_elastica:
                             type: keyword
                 contextId:
                     type: integer
-                creator:
-                    type: object
-                    properties:
-                        firstName:
-                            type: text
-                            copy_to: fullName
-                        lastName:
-                            type: text
-                            copy_to: fullName
-                        fullName:
-                            type: text
-                            fields:
-                                raw:
-                                    type: keyword
-                modifier:
-                    type: object
-                    properties:
-                        firstName:
-                            type: text
-                            copy_to: fullName
-                        lastName:
-                            type: text
-                            copy_to: fullName
-                        fullName:
-                            type: text
-                            fields:
-                                raw:
-                                    type: keyword
+                creator: *name_mapping
+                modifier: *name_mapping
                 creationDate:
                     type: date
                     format: date_optional_time
                 modificationDate:
                     type: date
                     format: date_optional_time
-                title:
-                    type: text
-                    analyzer: commsy_analyzer
-                    search_analyzer: html_strip_analyzer
-                    fields:
-                        raw:
-                            type: keyword
+                title: *title_mapping
                 discussionarticles:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
@@ -446,47 +294,7 @@ fos_elastica:
             index_name: '%commsy.elastic.prefix%_label'
             client: default
             finder: ~
-            settings:
-                max_ngram_diff: 20
-                analysis:
-                    analyzer:
-                        commsy_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                                - ngrams_filter
-                            char_filter:
-                                - html_strip
-
-                        html_strip_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                            char_filter:
-                                - html_strip
-
-                    filter:
-                        ngrams_filter:
-                            type: ngram
-                            min_gram: 3
-                            max_gram: 20
-                            token_chars:
-                                - letter
-                                - digit
-
-                        stop_de_filter:
-                            type: stop
-                            stopword: _german_
-
-                        stop_en_filter:
-                            type: stop
-                            stopword: _english_
+            settings: *index_settings
 
             persistence:
                 driver: orm
@@ -512,34 +320,8 @@ fos_elastica:
                     property_path: false
                 contextId:
                     type: integer
-                creator:
-                    type: object
-                    properties:
-                        firstName:
-                            type: text
-                            copy_to: fullName
-                        lastName:
-                            type: text
-                            copy_to: fullName
-                        fullName:
-                            type: text
-                            fields:
-                                raw:
-                                    type: keyword
-                modifier:
-                    type: object
-                    properties:
-                        firstName:
-                            type: text
-                            copy_to: fullName
-                        lastName:
-                            type: text
-                            copy_to: fullName
-                        fullName:
-                            type: text
-                            fields:
-                                raw:
-                                    type: keyword
+                creator: *name_mapping
+                modifier: *name_mapping
                 creationDate:
                     type: date
                     format: date_optional_time
@@ -549,13 +331,7 @@ fos_elastica:
                 name:
                     type: text
                     copy_to: title
-                title:
-                    type: text
-                    analyzer: commsy_analyzer
-                    search_analyzer: html_strip_analyzer
-                    fields:
-                        raw:
-                            type: keyword
+                title: *title_mapping
                 description:
                     type: text
                     analyzer: html_strip_analyzer
@@ -566,47 +342,7 @@ fos_elastica:
             index_name: '%commsy.elastic.prefix%_room'
             client: default
             finder: ~
-            settings:
-                max_ngram_diff: 20
-                analysis:
-                    analyzer:
-                        commsy_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                                - ngrams_filter
-                            char_filter:
-                                - html_strip
-
-                        html_strip_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                            char_filter:
-                                - html_strip
-
-                    filter:
-                        ngrams_filter:
-                            type: ngram
-                            min_gram: 3
-                            max_gram: 20
-                            token_chars:
-                                - letter
-                                - digit
-
-                        stop_de_filter:
-                            type: stop
-                            stopword: _german_
-
-                        stop_en_filter:
-                            type: stop
-                            stopword: _english_
+            settings: *index_settings
 
             persistence:
                 driver: orm
@@ -629,47 +365,15 @@ fos_elastica:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
                     type: integer
-                creator:
-                    type: object
-                    properties:
-                        firstName:
-                            type: text
-                            copy_to: fullName
-                        lastName:
-                            type: text
-                            copy_to: fullName
-                        fullName:
-                            type: text
-                            fields:
-                                raw:
-                                    type: keyword
-                modifier:
-                    type: object
-                    properties:
-                        firstName:
-                            type: text
-                            copy_to: fullName
-                        lastName:
-                            type: text
-                            copy_to: fullName
-                        fullName:
-                            type: text
-                            fields:
-                                raw:
-                                    type: keyword
+                creator: *name_mapping
+                modifier: *name_mapping
                 creationDate:
                     type: date
                     format: date_optional_time
                 modificationDate:
                     type: date
                     format: date_optional_time
-                title:
-                    type: text
-                    analyzer: commsy_analyzer
-                    search_analyzer: html_strip_analyzer
-                    fields:
-                        raw:
-                            type: keyword
+                title: *title_mapping
                 contactPersons:
                     type: text
                 roomDescription:
@@ -687,47 +391,7 @@ fos_elastica:
             index_name: '%commsy.elastic.prefix%_todo'
             client: default
             finder: ~
-            settings:
-                max_ngram_diff: 20
-                analysis:
-                    analyzer:
-                        commsy_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                                - ngrams_filter
-                            char_filter:
-                                - html_strip
-
-                        html_strip_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                            char_filter:
-                                - html_strip
-
-                    filter:
-                        ngrams_filter:
-                            type: ngram
-                            min_gram: 3
-                            max_gram: 20
-                            token_chars:
-                                - letter
-                                - digit
-
-                        stop_de_filter:
-                            type: stop
-                            stopword: _german_
-
-                        stop_en_filter:
-                            type: stop
-                            stopword: _english_
+            settings: *index_settings
 
             persistence:
                 driver: orm
@@ -753,47 +417,15 @@ fos_elastica:
                     property_path: false
                 contextId:
                     type: integer
-                creator:
-                    type: object
-                    properties:
-                        firstName:
-                            type: text
-                            copy_to: fullName
-                        lastName:
-                            type: text
-                            copy_to: fullName
-                        fullName:
-                            type: text
-                            fields:
-                                raw:
-                                    type: keyword
-                modifier:
-                    type: object
-                    properties:
-                        firstName:
-                            type: text
-                            copy_to: fullName
-                        lastName:
-                            type: text
-                            copy_to: fullName
-                        fullName:
-                            type: text
-                            fields:
-                                raw:
-                                    type: keyword
+                creator: *name_mapping
+                modifier: *name_mapping
                 creationDate:
                     type: date
                     format: date_optional_time
                 modificationDate:
                     type: date
                     format: date_optional_time
-                title:
-                    type: text
-                    analyzer: commsy_analyzer
-                    search_analyzer: html_strip_analyzer
-                    fields:
-                        raw:
-                            type: keyword
+                title: *title_mapping
                 date:
                     type: date
                     format: date_optional_time
@@ -808,13 +440,7 @@ fos_elastica:
                     property_path: false
                     type: object
                     properties:
-                        title:
-                            type: text
-                            analyzer: commsy_analyzer
-                            search_analyzer: html_strip_analyzer
-                            fields:
-                                raw:
-                                    type: keyword
+                        title: *title_mapping
                         description:
                             type: text
                             analyzer: html_strip_analyzer
@@ -847,47 +473,7 @@ fos_elastica:
             index_name: '%commsy.elastic.prefix%_user'
             client: default
             finder: ~
-            settings:
-                max_ngram_diff: 20
-                analysis:
-                    analyzer:
-                        commsy_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                                - ngrams_filter
-                            char_filter:
-                                - html_strip
-
-                        html_strip_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                            char_filter:
-                                - html_strip
-
-                    filter:
-                        ngrams_filter:
-                            type: ngram
-                            min_gram: 3
-                            max_gram: 20
-                            token_chars:
-                                - letter
-                                - digit
-
-                        stop_de_filter:
-                            type: stop
-                            stopword: _german_
-
-                        stop_en_filter:
-                            type: stop
-                            stopword: _english_
+            settings: *index_settings
 
             persistence:
                 driver: orm
@@ -965,7 +551,7 @@ fos_elastica:
                     property_path: getFullname
                     type: text
                     analyzer: commsy_analyzer
-                    search_analyzer: html_strip_analyzer
+                    search_analyzer: commsy_analyzer
                     fields:
                         raw:
                             type: keyword
@@ -979,47 +565,7 @@ fos_elastica:
             index_name: '%commsy.elastic.prefix%_material'
             client: default
             finder: ~
-            settings:
-                max_ngram_diff: 20
-                analysis:
-                    analyzer:
-                        commsy_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                                - ngrams_filter
-                            char_filter:
-                                - html_strip
-
-                        html_strip_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                            char_filter:
-                                - html_strip
-
-                    filter:
-                        ngrams_filter:
-                            type: ngram
-                            min_gram: 3
-                            max_gram: 20
-                            token_chars:
-                                - letter
-                                - digit
-
-                        stop_de_filter:
-                            type: stop
-                            stopword: _german_
-
-                        stop_en_filter:
-                            type: stop
-                            stopword: _english_
+            settings: *index_settings
 
             persistence:
                 driver: orm
@@ -1050,47 +596,15 @@ fos_elastica:
                     type: integer
                 contextId:
                     type: integer
-                creator:
-                    type: object
-                    properties:
-                        firstName:
-                            type: text
-                            copy_to: fullName
-                        lastName:
-                            type: text
-                            copy_to: fullName
-                        fullName:
-                            type: text
-                            fields:
-                                raw:
-                                    type: keyword
-                modifier:
-                    type: object
-                    properties:
-                        firstName:
-                            type: text
-                            copy_to: fullName
-                        lastName:
-                            type: text
-                            copy_to: fullName
-                        fullName:
-                            type: text
-                            fields:
-                                raw:
-                                    type: keyword
+                creator: *name_mapping
+                modifier: *name_mapping
                 creationDate:
                     type: date
                     format: date_optional_time
                 modificationDate:
                     type: date
                     format: date_optional_time
-                title:
-                    type: text
-                    analyzer: commsy_analyzer
-                    search_analyzer: html_strip_analyzer
-                    fields:
-                        raw:
-                            type: keyword
+                title: *title_mapping
                 description:
                     type: text
                     analyzer: html_strip_analyzer
