@@ -416,11 +416,11 @@
             </trans-unit>
             <trans-unit id="addNewCategory">
                 <source>addNewCategory</source>
-                <target>add category</target>
+                <target>Add category</target>
             </trans-unit>
             <trans-unit id="addNewHashtag">
                 <source>addNewHashtag</source>
-                <target>add hashtag</target>
+                <target>Add hashtag</target>
             </trans-unit>
             <trans-unit id="final_choice">
                 <source>etherpadText</source>
