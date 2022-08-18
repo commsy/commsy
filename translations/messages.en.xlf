@@ -387,8 +387,8 @@
                 <target>{0} No entry inserted.|{1} Inserted one entry.|]1,Inf[ Inserted %count% entries.</target>
            </trans-unit>
            <trans-unit id="entriesInsertedIntoUserrooms">
-                <source>inserted %itemcount% entries into %usercount% personal workspaces</source>
-                <target>{0} No entry inserted.|{1} Inserted one entry into %usercount% personal workspaces.|]1,Inf[ inserted %itemcount% entries into %usercount% personal workspaces.</target>
+                <source>inserted %count% entries into %usercount% personal workspaces</source>
+                <target>{0} No entry inserted.|{1} Inserted one entry into %usercount% personal workspace(s).|]1,Inf[ Inserted %count% entries into %usercount% personal workspace(s).</target>
            </trans-unit>
            <trans-unit id="entriesRemoved">
                 <source>removed %count% entries from list</source>

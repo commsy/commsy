@@ -387,8 +387,8 @@
                 <target>{0} Keinen Eintrag eingefügt.|{1} Einen Eintrag eingefügt.|]1,Inf[ %count% Einträge eingefügt.</target>
            </trans-unit>
            <trans-unit id="entriesInsertedIntoUserrooms">
-                <source>inserted %itemcount% entries into %usercount% personal workspaces</source>
-                <target>{0} Keinen Eintrag eingefügt.|{1} Einen Eintrag in %usercount% Personenräume eingefügt.|]1,Inf[ %itemcount% Einträge in %usercount% Personenräume eingefügt.</target>
+                <source>inserted %count% entries into %usercount% personal workspaces</source>
+                <target>{0} Keinen Eintrag eingefügt.|{1} Einen Eintrag in %usercount% Personenräume eingefügt.|]1,Inf[ %count% Einträge in %usercount% Personenräume eingefügt.</target>
            </trans-unit>
            <trans-unit id="entriesRemoved">
                 <source>removed %count% entries from list</source>
