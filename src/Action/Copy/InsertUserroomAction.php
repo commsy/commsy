@@ -9,12 +9,14 @@
 namespace App\Action\Copy;
 
 
+use App\Entity\Account;
 use App\Http\JsonDataResponse;
 use App\Http\JsonErrorResponse;
-use App\Services\MarkedService;
 use App\Services\LegacyEnvironment;
+use App\Services\MarkedService;
 use cs_environment;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class InsertUserroomAction
@@ -34,14 +36,21 @@ class InsertUserroomAction
      */
     private MarkedService $markService;
 
+    /**
+     * @var Security
+     */
+    private $security;
+
     public function __construct(
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
-        MarkedService $markService
+        MarkedService $markService,
+        Security $security
     ) {
         $this->translator = $translator;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->markService = $markService;
+        $this->security = $security;
     }
 
     public function execute(\cs_room_item $roomItem, array $users): Response
@@ -101,13 +110,14 @@ class InsertUserroomAction
         }
 
         if (!empty($versionIdsByCopyIds) && !empty($userRoomIds)) {
-            $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
-            $authSource = $authSourceManager->getItem($currentUser->getAuthSource());
+            /** @var Account $account */
+            $account = $this->security->getUser();
+            $authSource = $account->getAuthSource();
             $userManager = $this->legacyEnvironment->getUserManager();
 
             // for the current user, get his/her related users from the user rooms identified by the IDs in $userRoomIds
             /** @var \cs_user_item[] $relatedUsers */
-            $relatedUsers = $userManager->getAllUsersByUserAndRoomIDLimit($currentUser->getUserId(), $userRoomIds, $authSource->getItemId());
+            $relatedUsers = $userManager->getAllUsersByUserAndRoomIDLimit($currentUser->getUserId(), $userRoomIds, $authSource->getId());
 
             // for all found related users, mark the copied items as read & noticed
             if (!empty($relatedUsers)) {
