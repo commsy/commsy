@@ -44,7 +44,7 @@ class MarkReadAction implements ActionInterface
         }
 
         return new JsonDataResponse([
-            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->trans('marked %count% entries as read', [
+            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check\'></i> ' . $this->translator->trans('marked %count% entries as read', [
                     '%count%' => count($items),
                 ]),
         ]);
