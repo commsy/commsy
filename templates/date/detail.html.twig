@@ -80,13 +80,13 @@
                                                     'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                     'mode': 'click',
                                                     'mode': 'click',
-                                                    'successMessage': '<i class="uk-icon-medium uk-icon-check"></i>' ~ 'Entry marked|%count% entries marked'|trans({'%count%':1}, 'item')
+                                                    'successMessage': '<i class="uk-icon-medium uk-icon-bookmark-o"></i>' ~ 'Entry marked|%count% entries marked'|trans({'%count%':1}, 'item')
                                                 }|json_encode|e('html_attr') }}">
-                                                    <i class="uk-icon-small uk-icon-check uk-icon-justify uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
+                                                    <i class="uk-icon-small uk-icon-bookmark-o uk-icon-justify uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
                                                 </a>
                                             {% else %}
                                                 <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-check uk-icon-justify uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
+                                                    <i class="uk-icon-small uk-icon-bookmark-o uk-icon-justify uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
                                                 </span>
                                             {% endif %}
                                         </li>
