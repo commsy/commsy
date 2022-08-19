@@ -18,7 +18,7 @@
             {% if privateRoomItem %}
                 <li>
                     <a href="{{ path('app_marked_list', {'roomId': roomId}) }}" title="{{ 'marked'|capitalize|trans({}, "rubric")}}">
-                        <i class="uk-icon-check"></i>
+                        <i class="uk-icon-bookmark-o"></i>
                         <small id="cs-nav-mark-indicator">
                             {% if count > 0 %}
                                 {{ count }}
