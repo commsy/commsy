@@ -149,6 +149,10 @@ export class ListActionManager {
             }
         });
 
+        // improve the accuracy of the "XX selected" info by subtracting any unselectable element that gets loaded
+        let $unselectableElements: JQuery = $('.feed .unselectable');
+        let unselectableElementCount = $unselectableElements.length;
+
         // update selection
         this.positiveSelection = [];
         if (!isLoadMore) {
@@ -156,7 +160,7 @@ export class ListActionManager {
         }
 
         let $listCountAll: JQuery = $('#commsy-list-count-all');
-        this.numSelected = parseInt($listCountAll.html()) - this.negativeSelection.length;
+        this.numSelected = parseInt($listCountAll.html()) - this.negativeSelection.length - unselectableElementCount;
         this.updateCurrentSelected();
 
         // persist select all
