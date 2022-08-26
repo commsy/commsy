@@ -273,7 +273,8 @@ export class ListActionManager {
             each(function() {
                 $(this).removeClass('uk-comment-primary');
             })
-            .removeClass('selectable');
+            .removeClass('selectable')
+            .removeClass('unselectable');
 
         // show normal list count / hide edit count
         $('#commsy-list-count-display').removeClass('uk-hidden');
@@ -350,6 +351,8 @@ export class ListActionManager {
             // each article has a data attribute listing the allowed actions
             if ($.inArray(currentActionType, $(this).data('allowed-actions')) > -1) {
                 $(this).toggleClass('selectable', true);
+            } else {
+                $(this).toggleClass('unselectable', true);
             }
         });
     }
@@ -414,6 +417,10 @@ export class ListActionManager {
                     // disable normal click behaviour
                     event.preventDefault();
                 }
+
+            }  else if ($article.hasClass('unselectable')) {
+                // disable normal click behaviour
+                event.preventDefault();
             }
         });
 

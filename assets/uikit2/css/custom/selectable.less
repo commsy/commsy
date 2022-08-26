@@ -18,7 +18,33 @@ article.selectable {
     }
 
     cursor: pointer;
-    opacity: 0.65;
+    opacity: 0.90;
+
+    // disable link hover effects
+    a:hover {
+        color: @base-link-color;
+        text-decoration: none;
+    }
+
+    // disable selections
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+article.unselectable {
+    cursor: not-allowed;
+    opacity: 0.55;
+
+    // disable link hover effects
+    a:hover {
+        color: @base-link-color;
+        text-decoration: none;
+        cursor: not-allowed;
+    }
 
     // disable selections
     -webkit-touch-callout: none;
