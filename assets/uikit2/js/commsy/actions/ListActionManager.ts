@@ -156,7 +156,7 @@ export class ListActionManager {
         }
 
         let $listCountAll: JQuery = $('#commsy-list-count-all');
-        this.numSelected = parseInt($listCountAll.html());
+        this.numSelected = parseInt($listCountAll.html()) - this.negativeSelection.length;
         this.updateCurrentSelected();
 
         // persist select all
