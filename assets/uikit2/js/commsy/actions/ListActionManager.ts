@@ -3,19 +3,27 @@ import * as Actions from './Actions';
 import {ActionExecuter, ActionRequest, ActionResponse, ListActionData} from "./Actions";
 import {BaseAction} from "./AbstractAction";
 
-// TODO: update this comment with an up-to-date example
 /*
- Action in template:
+ Example of a corresponding list action in a template:
 
- <a href="#" class="commsy-select-action" data-uk-button data-cs-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}", "action": "user-delete"}'>
- <i class="uk-icon-justify uk-icon-small uk-icon-remove uk-visible-large"></i> {{ 'delete'|trans({},'user')|capitalize }}
+ <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+     'url': path('app_announcement_xhrmark', {'roomId': roomId}),
+     'action': 'mark',
+     'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+     'mode': 'selection',
+     'noSelectionMessage': 'no entry selected'|trans({},'item')
+ }|json_encode|e('html_attr') }}">
+     <i class="uk-icon-justify uk-icon-small uk-icon-bookmark-o uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
  </a>
 
+ Notes:
  - "class" must be "commsy-select-action"
- - "data-commsy-list-action" must contain the following values:
- - "target"      -> usualy the div where feed-entries can be selected and the returned feed-entries from the ajax call are inserted
- - "actionUrl"   -> path to controller
- - "action"      -> key that is send to controller
+ - "data-cs-action" must contain the following values:
+ -   "url"                -> path to controller method
+ -   "action"             -> key that uniquely represents this action
+ -   "mode"               -> a value of "selection" will activate selection mode
+ -   "errorMessage"       -> the message to be displayed if an error occurred
+ -   "noSelectionMessage" -> in case of list actions, the message to be displayed if no items were selected
  */
 
 'use strict';
