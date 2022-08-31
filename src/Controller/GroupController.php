@@ -703,9 +703,6 @@ class GroupController extends BaseController
         $groupItem->setPrivateEditing(1);
         $groupItem->save();
 
-        // add current user to new group
-        $groupItem->addMember($this->legacyEnvironment->getCurrentUser());
-
         return $this->redirectToRoute('app_group_detail',
             array('roomId' => $roomId, 'itemId' => $groupItem->getItemId()));
     }
@@ -782,6 +779,11 @@ class GroupController extends BaseController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
+
+                // add current user to new group
+                $groupItem->addMember($this->legacyEnvironment->getCurrentUser());
+
+
                 $groupItem = $transformer->applyTransformation($groupItem, $form->getData());
 
                 // update modifier
