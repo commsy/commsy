@@ -277,6 +277,19 @@ class CalendarsService
                         $attendee = implode("<br/>", array_unique($attendeeArray));
                     }
 
+                    // for an external calendar item, honour its original creation date
+                    $creationDatetime = NULL;
+                    if ($external) {
+                        // NOTE: when inserting a new _external_ date item, cs_dates_manager requires a set creation date
+                        $creationDatetime = new \DateTime();
+                        if ($event->CREATED) {
+                            $creationDatetime = $event->CREATED->getDateTime();
+                        } else if ($event->DTSTAMP) {
+                            $creationDatetime = $event->DTSTAMP->getDateTime();
+                        }
+                        $creationDatetime = $creationDatetime->setTimezone($currentTimeZone);
+                    }
+
                     // try to find existing date item
                     $hasChanges = false;
                     $date = $this->dateService->getDateByUid($uid, $calendar->getId(), $roomId);
@@ -289,6 +302,13 @@ class CalendarsService
                     }
 
                     // set (or update) date item properties
+                    if (!empty($creationDatetime)) {
+                        $dbCreationDatetime = $creationDatetime->format('Y-m-d H:i:s');
+                        if ($hasChanges || $hasChanges = (new \DateTime($date->getCreationDate()) != $creationDatetime)) {
+                            $date->setCreationDate($dbCreationDatetime);
+                        }
+                    }
+
                     if ($hasChanges || $hasChanges = ($date->getContextID() !== $roomId)) {
                         $date->setContextID($roomId);
                     }
@@ -351,21 +371,19 @@ class CalendarsService
                         $date->setUid($uid);
                     }
 
-                    $creatorId = $calendar->getCreatorId();
-                    if (!$creatorId) {
-                        $creatorId = $this->legacyEnvironment->getRootUserItemID();
-                    }
+                    // for the date item's creator, prefer the current user, or else the calendar creator, or else the root user
+                    $currentUserId = $this->legacyEnvironment->getCurrentUserID();
+                    $calendarCreatorId = $calendar->getCreatorId();
+                    $rootUserId = $this->legacyEnvironment->getRootUserItemID();
+                    $creatorId = $currentUserId ?: $calendarCreatorId ?: $rootUserId;
+
                     if ($hasChanges || $hasChanges = ((int)$date->getCreatorID() !== $creatorId)) {
                         $date->setCreatorID($creatorId);
                     }
                     if ($hasChanges || $hasChanges = ((int)$date->getModificatorID() !== $creatorId)) {
                         $date->setModifierID($creatorId);
                     }
-                    // Change for bug creator and Modifier set current user when insert new row .
-                    if ($hasChanges) {
-                        $date->setCreatorID($this->legacyEnvironment->getCurrentUserID());
-                        $date->setModifierID($this->legacyEnvironment->getCurrentUserID());
-                    }
+
                     if (!$hasChanges) {
                         // for existing date items, don't update their modification date if nothing has changed
                         $date->setChangeModificationOnSave(false);
