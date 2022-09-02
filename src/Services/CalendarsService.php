@@ -351,7 +351,7 @@ class CalendarsService
                         $date->setUid($uid);
                     }
 
-                    $creatorId = $calendar->getCreatorId();
+                    $creatorId = $this->legacyEnvironment->getCurrentUserID();
                     if (!$creatorId) {
                         $creatorId = $this->legacyEnvironment->getRootUserItemID();
                     }
@@ -361,11 +361,7 @@ class CalendarsService
                     if ($hasChanges || $hasChanges = ((int)$date->getModificatorID() !== $creatorId)) {
                         $date->setModifierID($creatorId);
                     }
-                    // Change for bug creator and Modifier set current user when insert new row .
-                    if ($hasChanges) {
-                        $date->setCreatorID($this->legacyEnvironment->getCurrentUserID());
-                        $date->setModifierID($this->legacyEnvironment->getCurrentUserID());
-                    }
+
                     if (!$hasChanges) {
                         // for existing date items, don't update their modification date if nothing has changed
                         $date->setChangeModificationOnSave(false);
