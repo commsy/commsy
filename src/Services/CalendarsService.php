@@ -351,10 +351,12 @@ class CalendarsService
                         $date->setUid($uid);
                     }
 
-                    $creatorId = $this->legacyEnvironment->getCurrentUserID();
-                    if (!$creatorId) {
-                        $creatorId = $this->legacyEnvironment->getRootUserItemID();
-                    }
+                    // for the date item's creator, prefer the current user, or else the calendar creator, or else the root user
+                    $currentUserId = $this->legacyEnvironment->getCurrentUserID();
+                    $calendarCreatorId = $calendar->getCreatorId();
+                    $rootUserId = $this->legacyEnvironment->getRootUserItemID();
+                    $creatorId = $currentUserId ?: $calendarCreatorId ?: $rootUserId;
+
                     if ($hasChanges || $hasChanges = ((int)$date->getCreatorID() !== $creatorId)) {
                         $date->setCreatorID($creatorId);
                     }
