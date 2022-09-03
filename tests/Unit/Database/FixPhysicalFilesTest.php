@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Database;
+namespace Tests\Unit\Database;
 
 use App\Database\FixPhysicalFiles;
 use App\Entity\Portal;
@@ -11,7 +11,7 @@ use App\Repository\RoomRepository;
 use App\Repository\ZzzFilesRepository;
 use App\Repository\ZzzItemRepository;
 use App\Repository\ZzzRoomRepository;
-use App\Tests\UnitTester;
+use Tests\Support\UnitTester;
 use Codeception\Test\Unit;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;

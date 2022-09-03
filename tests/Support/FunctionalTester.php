@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace Tests\Support;
 
 use App\Entity\Account;
 use App\Entity\AuthSource;

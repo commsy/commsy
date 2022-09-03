@@ -6,12 +6,12 @@
  * Time: 14:36
  */
 
-namespace App\Tests\Unit;
+namespace Tests\Unit;
 
 use App\Mail\Messages\ItemDeletedMessage;
 use App\Mail\Recipient;
 use App\Mail\RecipientFactory;
-use App\Tests\UnitTester;
+use Tests\Support\UnitTester;
 
 class MailCest
 {

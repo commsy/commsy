@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Tests\Unit;
+namespace Tests\Unit;
 
-use App\Tests\UnitTester;
+use Tests\Support\UnitTester;
 use App\Utils\GroupService;
 
 

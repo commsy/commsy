@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Tests\Functional;
 
-use App\Tests\FunctionalTester;
+use Tests\Support\FunctionalTester;
 
 class LoginCest
 {

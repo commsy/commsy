@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Tests\Unit;
+namespace Tests\Unit;
 
 use App\Form\DataTransformer\MaterialTransformer;
-use App\Tests\UnitTester;
+use Tests\Support\UnitTester;
 use Codeception\Stub;
 use cs_section_item;
 

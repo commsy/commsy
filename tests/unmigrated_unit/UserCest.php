@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Unit;
+namespace Tests\Unit;
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
@@ -11,7 +11,7 @@ use App\Facade\AccountCreatorFacade;
 use App\Facade\PortalCreatorFacade;
 use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\UserTransformer;
-use App\Tests\UnitTester;
+use Tests\Support\UnitTester;
 use cs_environment;
 use cs_user_item;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;

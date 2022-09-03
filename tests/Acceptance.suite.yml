@@ -5,7 +5,7 @@
 # If you need both WebDriver and PHPBrowser tests - create a separate suite.
 
 actor: AcceptanceTester
-suite_namespace: \App\Tests\Acceptance
+suite_namespace: Tests\Acceptance
 modules:
     enabled:
         - Db
@@ -17,4 +17,4 @@ modules:
 #              host: commsy_selenium_hub
 #              port: 4444
 #        - Asserts
-        - \App\Tests\Helper\Acceptance
+        - Tests\Support\Helper\Acceptance

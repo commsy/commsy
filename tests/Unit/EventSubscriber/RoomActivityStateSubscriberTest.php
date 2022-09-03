@@ -1,5 +1,5 @@
 <?php
-namespace App\Tests\EventSubscriber;
+namespace Tests\Unit\EventSubscriber;
 
 use App\EventSubscriber\RoomActivityStateSubscriber;
 use Codeception\Test\Unit;
@@ -7,10 +7,10 @@ use Codeception\Test\Unit;
 class RoomActivityStateSubscriberTest extends Unit
 {
     /**
-     * @var \App\Tests\UnitTester
+     * @var Tests\Support\UnitTester
      */
     protected $tester;
-    
+
     protected function _before()
     {
     }

@@ -1,5 +1,5 @@
 <?php
-namespace App\Tests\EventSubscriber;
+namespace Tests\Unit\EventSubscriber;
 
 use App\Account\AccountManager;
 use App\Entity\Account;
@@ -15,10 +15,10 @@ use Symfony\Component\Workflow\Event\GuardEvent;
 class AccountActivityStateSubscriberTest extends Unit
 {
     /**
-     * @var \App\Tests\UnitTester
+     * @var Tests\Support\UnitTester
      */
     protected $tester;
-    
+
     protected function _before()
     {
     }

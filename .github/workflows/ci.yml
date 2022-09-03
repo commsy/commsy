@@ -11,13 +11,8 @@ jobs:
         runs-on: ubuntu-latest
         continue-on-error: ${{ matrix.experimental }}
         strategy:
-            fail-fast: false
             matrix:
-                php-versions: [ '7.4' ]
-                experimental: [false]
-                include:
-                    - php-versions: [ '8.0' ]
-                      experimental: true
+                php-versions: ['8.0', '8.1']
         services:
             db:
                 image: mariadb:10.4
@@ -75,7 +70,7 @@ jobs:
                     context: .
                     push: true
                     target: commsy_php
-                    tags: effectivewebwork/commsy:10.1.0-php7.4-fpm-ci
+                    tags: effectivewebwork/commsy:10.1.0-php8.0-fpm-ci
 
             -   name: Build nginx image and push
                 uses: docker/build-push-action@v2

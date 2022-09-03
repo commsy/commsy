@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Tests\Functional;
 
-use App\Tests\Step\Functional\User;
+use Tests\Support\Step\Functional\User;
 use Codeception\Util\HttpCode;
 
 class AccountCest
