@@ -9,7 +9,6 @@ jobs:
             APP_ENV: test
             DATABASE_URL: mysql://root:root@127.0.0.1:3306/commsy_test
         runs-on: ubuntu-latest
-        continue-on-error: ${{ matrix.experimental }}
         strategy:
             matrix:
                 php-versions: ['8.0', '8.1']
