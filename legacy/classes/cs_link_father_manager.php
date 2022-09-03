@@ -114,10 +114,6 @@ class cs_link_father_manager extends cs_manager {
       $this->_context_limit = $limit;
    }
 
-   function setOutputLimitToXML () {
-      $this->_output_limit = 'XML';
-   }
-
    function backupDataFromXMLObject ($xml_object) {
       $major_success = true;
 
@@ -199,4 +195,3 @@ class cs_link_father_manager extends cs_manager {
       return $success;
    }
 }
-?>

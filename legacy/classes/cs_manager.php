@@ -147,7 +147,6 @@ class cs_manager {
      */
     var $_last_query = '';
 
-    var $_output_limit = '';
     var $_key_array = null;
     var $_only_files_limit = null;
     protected db_mysql_connector $_db_connector;
@@ -231,7 +230,6 @@ class cs_manager {
      $this->reset_search_limit();
      $this->_delete_limit = true;
      $this->_update_with_changing_modification_information = true;
-     $this->_output_limit = '';
      $this->_only_files_limit = NULL;
      $this->_room_array_limit = NULL;
      $this->inactiveEntriesLimit = self::SHOW_ENTRIES_ACTIVATED_DEACTIVATED;
@@ -327,10 +325,6 @@ class cs_manager {
     */
    function reset_search_limit () {
       $this->_search_array = array();
-   }
-
-   function setOutputLimitToXML () {
-      $this->_output_limit = 'XML';
    }
 
    function setOnlyFilesLimit () {
@@ -926,84 +920,26 @@ class cs_manager {
         return $item;
     }
 
-   /** select items limited by limits
-   * this method returns a list (cs_list) of items within the database limited by the limits.
-   * depends on _performQuery(), which must be overwritten
-   */
-   function select () {
-      // ------------------
-      // --->UTF8 - OK<----
-      // ------------------
-      $result = $this->_performQuery();
-      $this->_id_array = NULL;
-      if ( isset($this->_output_limit)
-           and !empty($this->_output_limit)
-           and $this->_output_limit == 'XML'
-         ) {
-         $this->_data = '<'.$this->_db_table.'_list>'.LF;
-      } else {
-         include_once('classes/cs_list.php');
-         $this->_data = new cs_list();
-      }
+    /**
+     * select items limited by limits
+     * this method returns a list (cs_list) of items within the database limited by the limits.
+     * depends on _performQuery(), which must be overwritten
+     */
+    public function select()
+    {
+        $result = $this->_performQuery();
+        $this->_id_array = null;
+        $data = new cs_list();
 
-      if ( is_array($result) ) {
-         // do nothing
-      } else {
-         $result = array();
-      }
-      foreach ($result as $query_result) {
-         if ( isset($this->_output_limit)
-              and !empty($this->_output_limit)
-              and $this->_output_limit == 'XML'
-            ) {
-            if ( isset($query_result)
-                 and !empty($query_result) ) {
-               $this->_data .= '<'.$this->_db_table.'_item>'.LF;
-               foreach ($query_result as $key => $value) {
-                  // ------------
-                  // --->UTF8<---
-                  // innerhalb einer Kodierung kein Problem
-                  // an dieser Stelle noch vor dem encode, d.h.
-                  // entweder latin-1 oder utf-8 - je nach DB Zustand
-                  //
-                  $value = str_replace('<','lt_commsy_export',$value);
-                  $value = str_replace('>','gt_commsy_export',$value);
-                  $value = str_replace('&','and_commsy_export',$value);
-                  // --->UTF8<---
-                  // ------------
-                  if ( $key == 'extras' ) {
-                     // ------------
-                     // --->UTF8<---
-                     // innerhalb einer Kodierung kein Problem
-                     // an dieser Stelle noch vor dem encode, d.h.
-                     // entweder latin-1 oder utf-8 - je nach DB Zustand
-                     //
-                     $value = serialize($value);
-                     // --->UTF8<---
-                     // ------------
-                  }
-                  $this->_data .= '<'.$key.'>'.$value.'</'.$key.'>'.LF;
-                  unset($value);
-                  unset($key);
-               }
-               $this->_data .= '</'.$this->_db_table.'_item>'.LF;
-            }
-         } else {
+        $result = is_array($result) ? $result : [];
+
+        foreach ($result as $query_result) {
             $item = $this->_buildItem($query_result);
-            $this->_data->add($item);
-            unset($item);
-         }
-         unset($query_result);
-         //$this->_id_array[] = $query_result['item_id'];
-      }
-      if ( isset($this->_output_limit)
-           and !empty($this->_output_limit)
-           and $this->_output_limit == 'XML'
-         ) {
-         $this->_data .= '</'.$this->_db_table.'_list>'.LF;
-      }
-      unset($result);
-   }
+            $data->add($item);
+        }
+
+        $this->_data = $data;
+    }
 
  /** select items limited by limits
    * this method returns a list (cs_list) of items within the database limited by the limits.
