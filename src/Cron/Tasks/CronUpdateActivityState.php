@@ -2,16 +2,20 @@
 
 namespace App\Cron\Tasks;
 
+use App\Entity\Account;
+use App\Entity\Room;
+use App\Entity\ZzzRoom;
+use App\Message\AccountActivityStateTransitions;
+use App\Message\WorkspaceActivityStateTransitions;
 use App\Repository\AccountsRepository;
 use App\Repository\RoomRepository;
 use App\Repository\ZzzRoomRepository;
 use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Workflow\WorkflowInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class CronUpdateActivityState implements CronTaskInterface
 {
-    private const BATCH_SIZE = 5000;
+    private const BATCH_SIZE = 100;
 
     /**
      * @var AccountsRepository
@@ -29,86 +33,53 @@ class CronUpdateActivityState implements CronTaskInterface
     private ZzzRoomRepository $zzzRoomRepository;
 
     /**
-     * @var EntityManagerInterface
+     * @var MessageBusInterface
      */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var WorkflowInterface
-     */
-    private WorkflowInterface $accountActivityStateMachine;
-
-    /**
-     * @var WorkflowInterface
-     */
-    private WorkflowInterface $roomActivityStateMachine;
+    private MessageBusInterface $messageBus;
 
     public function __construct(
         AccountsRepository $accountsRepository,
         RoomRepository $roomRepository,
         ZzzRoomRepository $zzzRoomRepository,
-        EntityManagerInterface $entityManager,
-        WorkflowInterface $accountActivityStateMachine,
-        WorkflowInterface $roomActivityStateMachine
+        MessageBusInterface $messageBus
     ) {
         $this->accountRepository = $accountsRepository;
         $this->roomRepository = $roomRepository;
         $this->zzzRoomRepository = $zzzRoomRepository;
-        $this->entityManager = $entityManager;
-        $this->accountActivityStateMachine = $accountActivityStateMachine;
-        $this->roomActivityStateMachine = $roomActivityStateMachine;
+
+        $this->messageBus = $messageBus;
     }
 
     public function run(?DateTimeImmutable $lastRun): void
     {
+        // Accounts
         $accountActivityObjects = $this->accountRepository->findAllExceptRoot();
-
-        $i = 0;
+        $ids = [];
         foreach ($accountActivityObjects as $accountActivityObject) {
-            $transitions = $this->accountActivityStateMachine->getEnabledTransitions($accountActivityObject);
+            /** @var Account $accountActivityObject */
+            $ids[] = $accountActivityObject->getId();
 
-            foreach ($transitions as $transition) {
-                $transitionName = $transition->getName();
-
-                if ($this->accountActivityStateMachine->can($accountActivityObject, $transitionName)) {
-                    $this->accountActivityStateMachine->apply($accountActivityObject, $transitionName);
-                    $this->entityManager->persist($accountActivityObject);
-                }
-            }
-
-            $i++;
-            if (($i % self::BATCH_SIZE) === 0) {
-                $this->entityManager->flush();
+            if ((count($ids) % self::BATCH_SIZE) === 0) {
+                $this->messageBus->dispatch(new AccountActivityStateTransitions($ids));
+                $ids = [];
             }
         }
-        $this->entityManager->flush();
+        $this->messageBus->dispatch(new AccountActivityStateTransitions($ids));
 
-        $roomActivityObjects = array_merge(
-            $this->roomRepository->findAll(),
-            $this->zzzRoomRepository->findAll()
-        );
-
-        $i = 0;
+        // Workspaces
+        $roomActivityObjects = array_merge($this->roomRepository->findAll(), $this->zzzRoomRepository->findAll());
+        $ids = [];
         foreach ($roomActivityObjects as $roomActivityObject) {
-            $transitions = $this->roomActivityStateMachine->getEnabledTransitions($roomActivityObject);
+            /** @var Room|ZzzRoom $roomActivityObject */
+            $ids[] = $roomActivityObject->getItemId();
 
-            foreach ($transitions as $transition) {
-                $transitionName = $transition->getName();
-
-                if ($this->roomActivityStateMachine->can($roomActivityObject, $transitionName)) {
-                    $this->roomActivityStateMachine->apply($roomActivityObject, $transitionName);
-                    $this->entityManager->persist($roomActivityObject);
-
-                }
-            }
-
-            $i++;
-            if (($i % self::BATCH_SIZE) === 0) {
-                $this->entityManager->flush();
+            if ((count($ids) % self::BATCH_SIZE) === 0) {
+                $this->messageBus->dispatch(new WorkspaceActivityStateTransitions($ids));
+                $ids = [];
             }
         }
 
-        $this->entityManager->flush();
+        $this->messageBus->dispatch(new WorkspaceActivityStateTransitions($ids));
     }
 
     public function getSummary(): string

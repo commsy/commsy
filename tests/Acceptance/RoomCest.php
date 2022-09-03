@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Tests\Acceptance;
+namespace Tests\Acceptance;
 
-use App\Tests\AcceptanceTester;
-use App\Tests\Page\Acceptance\GroupFeed;
-use App\Tests\Page\Login;
-use App\Tests\Page\PortalCreate;
-use App\Tests\Page\RoomCreate;
+use Tests\Support\AcceptanceTester;
+use Tests\Support\Page\Acceptance\GroupFeed;
+use Tests\Support\Page\Login;
+use Tests\Support\Page\PortalCreate;
+use Tests\Support\Page\RoomCreate;
 
 
 class RoomCest

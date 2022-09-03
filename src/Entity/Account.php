@@ -188,7 +188,6 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
      * @ORM\Column(name="email", type="string", length=100)
      *
      * @Assert\Email()
-     * @Assert\Callback({"App\Entity\Account", "validateMailRegex"})
      *
      * @Groups({"api"})
      */
@@ -602,10 +601,12 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
     }
 
     /**
+     * @Assert\Callback
+     *
      * @param ExecutionContextInterface $context
      * @param $payload
      */
-    public function validateMailRegex($payload, ExecutionContextInterface $context): void
+    public function validateMailRegex(ExecutionContextInterface $context, $payload): void
     {
 
         /** @var AuthSource $authSource */

@@ -1,5 +1,5 @@
 <?php
-namespace App\Tests\Cron\Tasks;
+namespace Tests\Unit\Cron\Tasks;
 
 use App\Cron\Tasks\CronUpdateActivityState;
 use App\Entity\Account;
@@ -8,20 +8,18 @@ use App\Entity\ZzzRoom;
 use App\Repository\AccountsRepository;
 use App\Repository\RoomRepository;
 use App\Repository\ZzzRoomRepository;
-use Codeception\Stub\Expected;
 use Codeception\Test\Unit;
 use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Workflow\Transition;
-use Symfony\Component\Workflow\WorkflowInterface;
+use Symfony\Component\Messenger\Transport\InMemoryTransport;
+use Tests\Support\UnitTester;
 
 class CronUpdateActivityStateTest extends Unit
 {
     /**
-     * @var \App\Tests\UnitTester
+     * @var UnitTester
      */
-    protected $tester;
-    
+    protected UnitTester $tester;
+
     protected function _before()
     {
     }
@@ -31,46 +29,30 @@ class CronUpdateActivityStateTest extends Unit
     }
 
     // tests
-    public function testCronCallsApply()
+    public function testCronDeliversMessages()
     {
         $accountRepositoryStub = $this->makeEmpty(AccountsRepository::class, [
-            'findAllExceptRoot' => [$this->make(Account::class)],
+            'findAllExceptRoot' => [$this->make(Account::class, ['id' => 1])],
         ]);
         $roomRepositoryStub = $this->makeEmpty(RoomRepository::class, [
-            'findAll' => [$this->make(Room::class)],
+            'findAll' => [$this->make(Room::class, ['itemId' => 1])],
         ]);
         $zzzRoomRepositoryStub = $this->makeEmpty(ZzzRoomRepository::class, [
-            'findAll' => [$this->make(ZzzRoom::class)],
+            'findAll' => [$this->make(ZzzRoom::class, ['itemId' => 2])],
         ]);
-        $entityManagerStub = $this->makeEmpty(EntityManagerInterface::class);
-        $workflowAccountActivityStateMachineStub = $this->makeEmpty(WorkflowInterface::class, [
-            'getEnabledTransitions' => [
-                $this->make(Transition::class, [
-                    'name' => 'test',
-                ])
-            ],
-            'can' => true,
-            'apply' => Expected::once(),
-        ]);
-        $workflowRoomActivityStateMachineStub = $this->makeEmpty(WorkflowInterface::class, [
-            'getEnabledTransitions' => [
-                $this->make(Transition::class, [
-                    'name' => 'test',
-                ])
-            ],
-            'can' => true,
-            'apply' => Expected::exactly(2),
-        ]);
+        $messageBus = $this->tester->grabService('messenger.default_bus');
 
         $cronTask = new CronUpdateActivityState(
             $accountRepositoryStub,
             $roomRepositoryStub,
             $zzzRoomRepositoryStub,
-            $entityManagerStub,
-            $workflowAccountActivityStateMachineStub,
-            $workflowRoomActivityStateMachineStub
+            $messageBus
         );
 
         $cronTask->run(new DateTimeImmutable());
+
+        /** @var InMemoryTransport $transport */
+        $transport = $this->tester->grabService('messenger.transport.async');
+        $this->tester->assertCount(2, $transport->getSent());
     }
 }

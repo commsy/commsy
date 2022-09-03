@@ -1,7 +1,7 @@
 <?php
-namespace App\Tests\Step\Functional;
+namespace Tests\Support\Step\Functional;
 
-use App\Tests\FunctionalTester;
+use Tests\Support\FunctionalTester;
 
 class Root extends FunctionalTester
 {

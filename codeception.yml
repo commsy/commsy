@@ -1,9 +1,10 @@
-namespace: App\Tests
+namespace: Tests
+support_namespace: Support
 paths:
     tests: tests
     output: tests/_output
-    data: tests/_data
-    support: tests/_support
+    data: tests/Support/Data
+    support: tests/Support
     envs: tests/_envs
 actor_suffix: Tester
 extensions:
@@ -18,7 +19,7 @@ modules:
             dsn: 'mysql:host=db;dbname='
             user: 'root'
             password: 'root'
-            dump: tests/_data/dump.sql
+            dump: tests/Support/Data/dump.sql
             cleanup: true # whether the dump should be reloaded before each test
             populate: true # whether the the dump should be loaded before the test suite is started
             populator: 'mysql -u $user -p$password -h $host commsy_test < $dump'

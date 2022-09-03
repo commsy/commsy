@@ -1,7 +1,7 @@
 <?php
-namespace App\Tests\Page\Acceptance;
+namespace Tests\Support\Page\Acceptance;
 
-use App\Tests\AcceptanceTester;
+use Tests\Support\AcceptanceTester;
 
 class PortalCreate
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Tests\Functional;
 
-use App\Tests\Step\Functional\Root;
+use Tests\Support\Step\Functional\Root;
 
 class PortalCest
 {

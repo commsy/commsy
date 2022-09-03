@@ -146,6 +146,7 @@ services:
             - '../src/Form/Model/'
             - '../src/Kernel.php'
             - '../src/Mail/Messages/'
+            - '../src/Message/'
             - '../src/Model/'
             - '../src/Proxy/'
             - '../src/Tests/'

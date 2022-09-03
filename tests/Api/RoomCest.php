@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Tests\Api;
+namespace Tests\Api;
 
 use App\Entity\AuthSource;
-use App\Tests\ApiTester;
+use Tests\Support\ApiTester;
 use Codeception\Util\HttpCode;
 
 class RoomCest

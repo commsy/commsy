@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Helper;
+namespace Tests\Support\Helper;
 
 use Codeception\Module;
 use Codeception\Module\Symfony;

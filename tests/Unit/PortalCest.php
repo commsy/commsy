@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests\Unit;
+namespace Tests\Unit;
 
 use App\Entity\AuthSource;
 use App\Entity\Portal;
 use App\Facade\PortalCreatorFacade;
-use App\Tests\UnitTester;
+use Tests\Support\UnitTester;
 
 class PortalCest
 {

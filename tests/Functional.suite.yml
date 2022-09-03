@@ -6,7 +6,7 @@
 # Remove this suite if you don't use frameworks
 
 actor: FunctionalTester
-suite_namespace: \App\Tests\Functional
+suite_namespace: Tests\Functional
 modules:
     enabled:
         - DataFactory:
@@ -15,5 +15,5 @@ modules:
         - Doctrine2:
             depends: Symfony
         - Symfony
-        - \App\Tests\Helper\Factories
-        - \App\Tests\Helper\Functional
+        - Tests\Support\Helper\Factories
+        - Tests\Support\Helper\Functional

@@ -3,7 +3,7 @@
 # https://docs.docker.com/compose/compose-file/#target
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-ARG PHP_VERSION=7.4
+ARG PHP_VERSION=8.0
 ARG NGINX_VERSION=1.21
 
 FROM php:${PHP_VERSION}-fpm-alpine AS commsy_php

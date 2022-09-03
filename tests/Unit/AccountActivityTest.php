@@ -1,5 +1,5 @@
 <?php
-namespace App\Tests\Unit;
+namespace Tests\Unit;
 
 use App\Entity\Account;
 use App\Entity\Room;
@@ -10,7 +10,7 @@ use Symfony\Component\Workflow\Transition;
 class AccountActivityTest extends Unit
 {
     /**
-     * @var \App\Tests\UnitTester
+     * @var Tests\Support\UnitTester
      */
     protected $tester;
 

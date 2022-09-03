@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace Tests\Functional;
 
 use App\Entity\AuthSourceShibboleth;
-use App\Tests\Step\Functional\User;
+use Tests\Support\Step\Functional\User;
 
 class ShibbolethCest
 {

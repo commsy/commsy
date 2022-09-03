@@ -1,8 +1,8 @@
 <?php
-namespace App\Tests\Step\Functional;
+namespace Tests\Support\Step\Functional;
 
 use App\Entity\Portal;
-use App\Tests\FunctionalTester;
+use Tests\Support\FunctionalTester;
 
 class User extends FunctionalTester
 {

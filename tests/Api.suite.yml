@@ -1,7 +1,7 @@
 actor: ApiTester
 step_decorators:
     - \Codeception\Step\AsJson
-suite_namespace: \App\Tests\Api
+suite_namespace: Tests\Api
 modules:
     enabled:
         - Db
@@ -12,4 +12,4 @@ modules:
             depends: Symfony
             part: Json
         - Symfony
-        - \App\Tests\Helper\Api
+        - Tests\Support\Helper\Api
