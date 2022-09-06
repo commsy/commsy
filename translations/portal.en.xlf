@@ -1001,7 +1001,7 @@
             </trans-unit>
             <trans-unit id="portal.inactive.room.enable.label">
                 <source>portal.inactive.room.enable.label</source>
-                <target>Aktiviert</target>
+                <target>Activated</target>
             </trans-unit>
             <trans-unit id="portal.inactive.room.enable.help">
                 <source>portal.inactive.room.enable.help</source>
