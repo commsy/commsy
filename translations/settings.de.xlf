@@ -23,7 +23,15 @@
             <trans-unit id="rubric_selection">
                 <source>Rubric selection</source>
                 <target>Rubrikauswahl</target>
-            </trans-unit> 
+            </trans-unit>
+            <trans-unit id="settings_activated">
+                <source>settings.activated</source>
+                <target>Aktiviert</target>
+            </trans-unit>
+            <trans-unit id="settings_deactivated">
+                <source>settings.deactivated</source>
+                <target>Deaktiviert</target>
+            </trans-unit>
             <trans-unit id="1">
                 <source>Off</source>
                 <target>Deaktiviert</target>

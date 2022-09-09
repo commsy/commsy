@@ -1,20 +1,26 @@
 <?php
 namespace App\Filter;
 
+use App\Services\LegacyEnvironment;
+use cs_environment;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 use Lexik\Bundle\FormFilterBundle\Filter\Query\QueryInterface;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-
-use App\Services\LegacyEnvironment;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RoomFilterType extends AbstractType
 {
-    private $legacyEnvironment;
+    /**
+     * @var cs_environment
+     */
+    private cs_environment $legacyEnvironment;
 
+    /**
+     * @param LegacyEnvironment $legacyEnvironment
+     */
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -31,19 +37,19 @@ class RoomFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('submit', SubmitType::class, array(
-                'attr' => array(
+            ->add('submit', SubmitType::class, [
+                'attr' => [
                     'class' => 'uk-button uk-button-primary',
-                ),
+                ],
                 'label' => 'Restrict',
                 'translation_domain' => 'form',
-            ))
+            ])
             ->add('title', Filters\TextFilterType::class, [
                 'label' => 'search-filter',
                 'translation_domain' => 'room',
-                'label_attr' => array(
+                'label_attr' => [
                     'class' => 'uk-form-label',
-                ),
+                ],
                 'attr' => [
                     'placeholder' => 'search-filter-placeholder',
                     'class' => 'cs-form-horizontal-full-width',
@@ -79,9 +85,9 @@ class RoomFilterType extends AbstractType
                 'label' => 'hide-rooms-without-membership',
                 'mapped' => false,
                 'translation_domain' => 'room',
-                'label_attr' => array(
+                'label_attr' => [
                     'class' => 'uk-form-label',
-                ),
+                ],
             ])
             ->add('template', Filters\CheckboxFilterType::class, [
                 'label' => 'hide-templates',
@@ -102,20 +108,18 @@ class RoomFilterType extends AbstractType
 
                     return $qb;
                 },
-                'mapped' => false,
                 'translation_domain' => 'room',
-                'label_attr' => array(
+                'label_attr' => [
                     'class' => 'uk-form-label',
-                ),
+                ],
             ])
             ->add('archived', Filters\CheckboxFilterType::class, [
                 'label' => 'hide-archived-rooms',
                 'apply_filter' => false, // disable filter
-                'mapped' => false,
                 'translation_domain' => 'room',
-                'label_attr' => array(
+                'label_attr' => [
                     'class' => 'uk-form-label',
-                ),
+                ],
             ]);
 
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();

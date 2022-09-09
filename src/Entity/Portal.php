@@ -227,6 +227,18 @@ class Portal implements \Serializable
     private $logoFilename;
 
     /**
+     * @var bool
+     * @ORM\Column(type="boolean", options={"default": 0})
+     */
+    private bool $defaultFilterHideTemplates = false;
+
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean", options={"default": 0})
+     */
+    private bool $defaultFilterHideArchived = false;
+
+    /**
      * array - containing the data of this item, including lists of linked items
      */
     var $_data = array();
@@ -752,6 +764,42 @@ class Portal implements \Serializable
             $text = 'activity';
         }
         $this->extras['SORTROOMSONHOME'] = $text;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getDefaultFilterHideTemplates(): bool
+    {
+        return $this->defaultFilterHideTemplates;
+    }
+
+    /**
+     * @param bool $enabled
+     * @return $this
+     */
+    public function setDefaultFilterHideTemplates(bool $enabled): Portal
+    {
+        $this->defaultFilterHideTemplates = $enabled;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getDefaultFilterHideArchived(): bool
+    {
+        return $this->defaultFilterHideArchived;
+    }
+
+    /**
+     * @param bool $enabled
+     * @return $this
+     */
+    public function setDefaultFilterHideArchived(bool $enabled): Portal
+    {
+        $this->defaultFilterHideArchived = $enabled;
         return $this;
     }
 
