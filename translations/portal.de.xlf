@@ -271,6 +271,14 @@
                 <source>Sort list of all rooms by</source>
                 <target>Sortiere "Alle Räume" nach</target>
             </trans-unit>
+            <trans-unit id="portal_form_label_default_filter_hide_templates">
+                <source>portal.form.label.default_filter_hide_templates</source>
+                <target>Initialwert "Vorlagen ausblenden"</target>
+            </trans-unit>
+            <trans-unit id="portal_form_label_default_filter_hide_archived">
+                <source>portal.form.label.default_filter_hide_archived</source>
+                <target>Initialwert "Archivierte Räume ausblenden"</target>
+            </trans-unit>
             <trans-unit id="portal_menu_home_sortby_activity">
                 <source>Activity</source>
                 <target>Aktivität</target>

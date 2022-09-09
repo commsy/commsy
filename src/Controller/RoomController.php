@@ -407,7 +407,10 @@ class RoomController extends AbstractController
 
         $sort = $this->session->get('sortRooms', $portal->getSortRoomsBy() ?? 'activity');
 
-        $filterForm = $this->createForm(RoomFilterType::class, null, [
+        $filterForm = $this->createForm(RoomFilterType::class, [
+            'template' => $portal->getDefaultFilterHideTemplates(),
+            'archived' => $portal->getDefaultFilterHideArchived(),
+        ], [
             'showTime' => $portal->getShowTimePulses(),
             'timePulses' => $roomService->getTimePulses(),
             'timePulsesDisplayName' => ucfirst($portal->getTimePulseName($legacyEnvironment->getSelectedLanguage())),
@@ -428,8 +431,7 @@ class RoomController extends AbstractController
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             $filterBuilderUpdater->addFilterConditions($filterForm, $activeRoomQueryBuilder);
             $count += $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
-        }
-        else {
+        } else {
             $count = $countAll;
         }
 
@@ -555,10 +557,8 @@ class RoomController extends AbstractController
         $activeRoomQueryBuilder->setMaxResults($max);
         $activeRoomQueryBuilder->setFirstResult($start);
 
-
-
         if ($roomFilter) {
-            $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
+            $filterForm = $this->createForm(RoomFilterType::class, null, [
                 'showTime' => $portal->getShowTimePulses(),
                 'timePulses' => $roomService->getTimePulses(),
                 'timePulsesDisplayName' => ucfirst($portal->getTimePulseName($legacyEnvironment->getSelectedLanguage())),
@@ -591,8 +591,6 @@ class RoomController extends AbstractController
             }
             $rooms = array_merge($rooms, $archivedRoomQueryBuilder->getQuery()->getResult());
         }
-
-
 
         if ($legacyEnvironment->isArchiveMode()) {
             $legacyEnvironment->deactivateArchiveMode();
