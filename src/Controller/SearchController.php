@@ -25,6 +25,7 @@ use App\Search\QueryConditions\MostFieldsQueryCondition;
 use App\Search\QueryConditions\RoomQueryCondition;
 use App\Search\QueryConditions\TitleQueryCondition;
 use App\Search\SearchManager;
+use App\Services\CalendarsService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use cs_item;
@@ -132,6 +133,8 @@ class SearchController extends BaseController
      * @Route("/room/{roomId}/search/itemresults")
      * @param Request $request
      * @param SearchManager $searchManager
+     * @param ReaderService $readerService
+     * @param CalendarsService $calendarsService
      * @param int $roomId
      * @return JsonResponse
      */
@@ -139,6 +142,7 @@ class SearchController extends BaseController
         Request $request,
         SearchManager $searchManager,
         ReaderService $readerService,
+        CalendarsService $calendarsService,
         int $roomId
     ) {
         $query = $request->get('search', '');
@@ -156,7 +160,7 @@ class SearchController extends BaseController
         $searchManager->addFilterCondition($singleFilterCondition);
 
         $searchResults = $searchManager->getLinkedItemResults();
-        $results = $this->prepareResults($searchResults, $readerService,  $roomId, 0, true);
+        $results = $this->prepareResults($searchResults, $readerService, $calendarsService, $roomId, 0, true);
 
         $response = new JsonResponse();
 
@@ -169,6 +173,9 @@ class SearchController extends BaseController
      * @Route("/room/{roomId}/search/instantresults")
      * @param Request $request
      * @param SearchManager $searchManager
+     * @param MultipleContextFilterCondition $multipleContextFilterCondition
+     * @param ReaderService $readerService
+     * @param CalendarsService $calendarsService
      * @param $roomId int The context id
      * @return JsonResponse
      */
@@ -176,7 +183,8 @@ class SearchController extends BaseController
         Request $request,
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
-                                         ReaderService $readerService,
+        ReaderService $readerService,
+        CalendarsService $calendarsService,
         int $roomId
     ) {
         $query = $request->get('search', '');
@@ -193,7 +201,7 @@ class SearchController extends BaseController
         $searchManager->addFilterCondition($multipleContextFilterCondition);
 
         $searchResults = $searchManager->getResults();
-        $results = $this->prepareResults($searchResults, $readerService, $roomId, 0, true, $query);
+        $results = $this->prepareResults($searchResults, $readerService, $calendarsService, $roomId, 0, true, $query);
 
         $response = new JsonResponse();
 
@@ -213,6 +221,11 @@ class SearchController extends BaseController
      * @param RoomService $roomService
      * @param SearchManager $searchManager
      * @param MultipleContextFilterCondition $multipleContextFilterCondition
+     * @param ReadStatusFilterCondition $readStatusFilterCondition
+     * @param EntityManagerInterface $entityManager
+     * @param TranslatorInterface $translator
+     * @param ReaderService $readerService
+     * @param CalendarsService $calendarsService
      * @param int $roomId
      * @return array
      */
@@ -225,6 +238,7 @@ class SearchController extends BaseController
         EntityManagerInterface $entityManager,
         TranslatorInterface $translator,
         ReaderService $readerService,
+        CalendarsService $calendarsService,
         int $roomId
     )
     {
@@ -422,7 +436,7 @@ class SearchController extends BaseController
         }
 
         $totalHits = $searchResults->getTotalHits();
-        $results = $this->prepareResults($searchResults, $readerService, $roomId );
+        $results = $this->prepareResults($searchResults, $readerService, $calendarsService, $roomId);
 
         return [
             'filterForm' => $filterForm->createView(),
@@ -443,8 +457,12 @@ class SearchController extends BaseController
      * @param Request $request
      * @param SearchManager $searchManager
      * @param MultipleContextFilterCondition $multipleContextFilterCondition
+     * @param ReadStatusFilterCondition $readStatusFilterCondition
+     * @param ReaderService $readerService
+     * @param CalendarsService $calendarsService
      * @param int $roomId
      * @param int $start
+     * @param string $sort
      * @return array
      */
     public function moreResultsAction(
@@ -453,9 +471,10 @@ class SearchController extends BaseController
         MultipleContextFilterCondition $multipleContextFilterCondition,
         ReadStatusFilterCondition $readStatusFilterCondition,
         ReaderService $readerService,
+        CalendarsService $calendarsService,
         int $roomId,
         int $start = 0,
-        $sort = ''
+        string $sort = ''
     )
     {
         // NOTE: to have the "load more" functionality work with any applied filters, we also need to add all
@@ -523,7 +542,7 @@ class SearchController extends BaseController
         ]);
         $filterForm->handleRequest($request);
 
-        $results = $this->prepareResults($searchResults, $readerService,  $roomId, $start);
+        $results = $this->prepareResults($searchResults, $readerService, $calendarsService, $roomId, $start);
 
         return [
             'roomId' => $roomId,
@@ -950,10 +969,12 @@ class SearchController extends BaseController
     private function prepareResults(
         TransformedPaginatorAdapter $searchResults,
         ReaderService $readerService,
+        CalendarsService $calendarsService,
         int $currentRoomId,
         int $offset = 0,
-        bool $json = false
-    , $searchPhrase = null)
+        bool $json = false,
+        $searchPhrase = null
+    )
     {
 
         $results = [];
@@ -1020,6 +1041,17 @@ class SearchController extends BaseController
                         $allowedActions[] = 'delete';
                     }
                 }
+                // handle Date entities representing date items from external calendar sources
+                $isExternal = false;
+                if (method_exists($searchResult, 'getExternal')) {
+                    $isExternal = $searchResult->getExternal();
+                }
+                $calendar = null;
+                if (method_exists($searchResult, 'getCalendarId')) {
+                    $calendarId = $searchResult->getCalendarId();
+                    $calendars = $calendarsService->getCalendar($calendarId);
+                    $calendar = !empty($calendars) ? $calendars[0] : null;
+                }
                 // NOTE: the Todos & User entities use a smallint-based status (in case of Todos, it's used for progress status)
                 $status = 0;
                 if (method_exists($searchResult, 'getStatus')) {
@@ -1044,6 +1076,8 @@ class SearchController extends BaseController
                     'type' => $type,
                     'status' => $status,
                     'readStatus' => $readStatus,
+                    'isExternal' => $isExternal,
+                    'calendar' => $calendar,
                 ];
             }
         }
