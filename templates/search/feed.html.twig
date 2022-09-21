@@ -34,21 +34,29 @@
 
             {# user icon and modification time #}
             <div class="uk-margin-right uk-flex-item-none">
-                {% if entity.modifier is defined and entity.modifier is not empty %}
-                    {# NOTE: `status >= 2` is used here since, opposed to the legacy model classes,
-                             the Doctrine entity User.php doesn't offer an `isUser()` function #}
-                    {% if not entity.modifier.isDeleted and entity.modifier.status >= 2 %}
-                        {{ macros.userIconLink(entity.modifier) }}
+                {% if not result.isExternal %}
+                    {% if entity.modifier is defined and entity.modifier is not empty %}
+                        {# NOTE: `status >= 2` is used here since, opposed to the legacy model classes,
+                                 the Doctrine entity User.php doesn't offer an `isUser()` function #}
+                        {% if not entity.modifier.isDeleted and entity.modifier.status >= 2 %}
+                            {{ macros.userIconLink(entity.modifier) }}
+                        {% else %}
+                            {{ macros.userIcon(entity.modifier) }}
+                        {% endif %}
                     {% else %}
-                        {{ macros.userIcon(entity.modifier) }}
+                        {# if modifier is undefined, show creator #}
+                        {% if not entity.creator.isDeleted and entity.creator.status >= 2 %}
+                            {{ macros.userIconLink(entity.creator) }}
+                        {% else %}
+                            {{ macros.userIcon(entity.creator) }}
+                        {% endif %}
                     {% endif %}
                 {% else %}
-                    {# if modifier is undefined, show creator #}
-                    {% if not entity.creator.isDeleted and entity.creator.status >= 2 %}
-                        {{ macros.userIconLink(entity.creator) }}
-                    {% else %}
-                        {{ macros.userIcon(entity.creator) }}
-                    {% endif %}
+                    <div class="uk-vertical-align uk-text-center uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;" data-uk-tooltip title="{{ result.calendar ? result.calendar.title }}">
+                        <div class="uk-container-center uk-vertical-align-middle" style="width:24px; height:24px;">
+                            <i class="uk-icon-medium uk-icon-calendar" style="color:{{ result.calendar ? result.calendar.color }}; width:24px; height:24px;"></i>
+                        </div>
+                    </div>
                 {% endif %}
                 <div class="uk-comment-meta">
                     <span class="uk-text-nowrap">
