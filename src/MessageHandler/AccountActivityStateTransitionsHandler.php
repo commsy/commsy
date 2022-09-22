@@ -2,6 +2,7 @@
 
 namespace App\MessageHandler;
 
+use App\Entity\Account;
 use App\Message\AccountActivityStateTransitions;
 use App\Repository\AccountsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,7 +50,9 @@ class AccountActivityStateTransitionsHandler implements MessageHandlerInterface
 
                 if ($this->accountActivityStateMachine->can($accountActivityObject, $transitionName)) {
                     $this->accountActivityStateMachine->apply($accountActivityObject, $transitionName);
-                    $this->entityManager->persist($accountActivityObject);
+                    if ($accountActivityObject->getActivityState() !== Account::ACTIVITY_ABANDONED) {
+                        $this->entityManager->persist($accountActivityObject);
+                    }
                 }
             }
         }
