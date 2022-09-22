@@ -24,7 +24,7 @@
 
 // user defined error handling function. This one is called for all
 // non-fatal errors, unfortunately.
-function commSyErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
+function commSyErrorHandler ($errno, $errstr, $errfile, $errline) {
    global $environment;
 
    // check if we want to report this error
@@ -80,13 +80,6 @@ function commSyErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
             $function = 'unknown';
          }
       }
-      $url = '';
-      if ( !empty($_SERVER['SERVER_NAME']) ) {
-         $url .= $_SERVER['SERVER_NAME'];
-      }
-      if ( !empty($_SERVER['REQUEST_URI']) ) {
-         $url .= $_SERVER['REQUEST_URI'];
-      }
 
       $referer = '';
       if ( !empty($_SERVER['HTTP_REFERER']) ) {
@@ -99,9 +92,9 @@ function commSyErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
          $err  = '<br /><CENTER><TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" WIDTH="70%" summary="Layout">'."\n";
          $err .= "\t".'<TR><TD COLSPAN="2"><B>PHP Error</B></TD></TR>'."\n";
          $err .= "\t".'<TR><TD>Type: </TD><TD>'.$errortype[$errno].'</TD></TR>'."\n";
-         $err .= "\t".'<TR><TD>Message: </TD><TD>'.$errmsg.'</TD></TR>'."\n";
-         $err .= "\t".'<TR><TD>File: </TD><TD>'.$filename.'</TD></TR>'."\n";
-         $err .= "\t".'<TR><TD>Line: </TD><TD>'.$linenum.'</TD></TR>'."\n";
+         $err .= "\t".'<TR><TD>Message: </TD><TD>'.$errstr.'</TD></TR>'."\n";
+         $err .= "\t".'<TR><TD>File: </TD><TD>'.$errfile.'</TD></TR>'."\n";
+         $err .= "\t".'<TR><TD>Line: </TD><TD>'.$errline.'</TD></TR>'."\n";
          $err .= "\t".'<TR><TD>Context: </TD><TD>'.$context.'</TD></TR>'."\n";
          $err .= "\t".'<TR><TD>Module: </TD><TD>'.$module.'</TD></TR>'."\n";
          $err .= "\t".'<TR><TD>Function: </TD><TD>'.$function.'</TD></TR>'."\n";
@@ -110,17 +103,10 @@ function commSyErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
          $err .= "\t".'<TR><TD>Time: </TD><TD>'.getCurrentDateTimeInMySQL().'</TD></TR>'."\n";
          $err .= '</TABLE></CENTER><br />'."\n";
          echo($err);
-
-         // Do a vardump, if vardump is set in the GET parameters
-         if ( !empty($_GET['vardump']) ) {
-            echo('<PRE>');
-            var_dump($vars);
-            echo('</PRE>');
-         }
       }
 
       if ( ini_get('log_errors') ) {
-         $err  = 'PHP '.$errortype[$errno].':  '.$errmsg.' in '.$filename.' on line '.$linenum;
+         $err  = 'PHP '.$errortype[$errno].':  '.$errstr.' in '.$errfile.' on line '.$errline;
          $err .= ' (context='.$context.', module='.$module.', function='.$function.', user='.$user.')';
          error_log($err, 0);
       }
@@ -136,4 +122,3 @@ function commSyErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
    return true;
 }
 set_error_handler('commSyErrorHandler');
-?>

@@ -152,7 +152,7 @@ class cs_context_item extends cs_item {
   function setClosedForGuests () {
     $this->_setValue('is_open_for_guests', 0, TRUE);
   }
-  
+
   function isMaterialOpenForGuests () {
   if ($this->_issetExtra('MATERIAL_GUESTS') and $this->_getExtra('MATERIAL_GUESTS') == 1) {
       return true;
@@ -160,11 +160,11 @@ class cs_context_item extends cs_item {
       return false;
     }
   }
-  
+
   function setMaterialOpenForGuests () {
   	$this->_addExtra('MATERIAL_GUESTS', 1, TRUE);
   }
-  
+
   function setMaterialClosedForGuests () {
   	$this->_addExtra('MATERIAL_GUESTS', 0, TRUE);
   }
@@ -459,12 +459,12 @@ class cs_context_item extends cs_item {
     }
     return $this->_contact_moderator_list;
   }
-  
+
   function getContactModeratorListString(){
     $list = new cs_list();
     $counter = 1;
     $return = '';
-    $list = $this->getContactModeratorList();      
+    $list = $this->getContactModeratorList();
     $length = $list->getCount();
     if (!$list->isEmpty()){
         $contact = $list->getFirst();
@@ -472,11 +472,11 @@ class cs_context_item extends cs_item {
             $return .= $contact->getFullname();
             if ($counter < $length){
                 $return .=', ';
-                $counter++;  
+                $counter++;
             }
-            $contact = $list->getNext();  
-        } 
-     }  
+            $contact = $list->getNext();
+        }
+     }
      return $return;
   }
 
@@ -484,7 +484,7 @@ class cs_context_item extends cs_item {
     $list = new cs_list();
     $counter = 1;
     $return = '';
-    $list = $this->getModeratorList();      
+    $list = $this->getModeratorList();
     $length = $list->getCount();
     if (!$list->isEmpty()){
         $contact = $list->getFirst();
@@ -492,11 +492,11 @@ class cs_context_item extends cs_item {
             $return .= $contact->getFullname();
             if ($counter < $length){
                 $return .=', ';
-                $counter++;  
+                $counter++;
             }
-            $contact = $list->getNext();  
-        } 
-     }  
+            $contact = $list->getNext();
+        }
+     }
      return $return;
   }
 
@@ -1184,7 +1184,7 @@ class cs_context_item extends cs_item {
           $retour = $zzz_user_manager->isUserInContext($user_id, $this->getItemID(), $auth_source);
        }
        // archive
-       
+
        if ($retour) {
           $this->_cache_may_enter[$user_id.'_'.$auth_source] = true;
        } else {
@@ -2368,11 +2368,11 @@ class cs_context_item extends cs_item {
     }
     return $retour;
   }
-  
+
   ##########################################
   # log-ip flag
   ##########################################
-  
+
   function withLogIPCover () {
   	$retour = false;
   	$value = $this->_getExtraConfig('LOGIPCOVER');
@@ -2380,13 +2380,13 @@ class cs_context_item extends cs_item {
   		$retour = true;
   	}
   	return $retour;
-  	
+
   }
-  
+
   function setWithLogIPCover () {
   	$this->_setExtraConfig('LOGIPCOVER', 1);
   }
-  
+
   function setWithoutLogIPCover () {
   	$this->_setExtraConfig('LOGIPCOVER', -1);
   }
@@ -3575,90 +3575,90 @@ class cs_context_item extends cs_item {
 //    return $retour;
 //  }
 
-  
+
   function withLimeSurveyFunctions()
   {
     global $symfonyContainer;
     return $symfonyContainer->getParameter('commsy.limesurvey.enabled');
   }
-  
+
   function setLimeSurveyActive()
   {
   	$this->_addExtra('LIMESURVEY', 1);
   }
-  
+
   function setLimeSurveyInactive()
   {
   	$this->_addExtra('LIMESURVEY', -1);
   }
-  
+
   function isLimeSurveyActive()
   {
   	if ( $this->_issetExtra('LIMESURVEY') && $this->_getExtra('LIMESURVEY') === 1 )
   	{
   		return true;
   	}
-  	
+
   	return false;
   }
-  
+
   function setLimeSurveyJsonRpcUrl($url)
   {
   	$this->_addExtra('LIMESURVEYJSONRPCURL', $url);
   }
-  
+
   function getLimeSurveyJsonRpcUrl()
   {
   	if ( $this->_issetExtra('LIMESURVEYJSONRPCURL') )
   	{
   		return $this->_getExtra('LIMESURVEYJSONRPCURL');
   	}
-  	
+
   	return '';
   }
-  
+
   function setLimeSurveySurveyIDs($ids)
   {
   	$this->_addExtra('LIMESURVEYSURVEYIDS', $ids);
   }
-  
+
   function getLimeSurveySurveyIDs()
   {
   	if ( $this->_issetExtra('LIMESURVEYSURVEYIDS') )
   	{
   		return $this->_getExtra('LIMESURVEYSURVEYIDS');
   	}
-  	
+
   	return array();
   }
-  
+
   function setLimeSurveyAdminUser($username)
   {
   	$this->_addExtra('LIMESURVEYADMINUSER', $username);
   }
-  
+
   function getLimeSurveyAdminUser()
   {
   	if ( $this->_issetExtra('LIMESURVEYADMINUSER') )
   	{
   		return $this->_getExtra('LIMESURVEYADMINUSER');
   	}
-  	
+
   	return '';
   }
-  
+
   function setLimeSurveyAdminPassword($password)
   {
   	$this->_addExtra('LIMESURVEYADMINPASSWORD', $password);
   }
-  
+
   function getLimeSurveyAdminPassword()
   {
   	if ( $this->_issetExtra('LIMESURVEYADMINPASSWORD') )
   	{
   		return $this->_getExtra('LIMESURVEYADMINPASSWORD');
   	}
-  	
+
   	return '';
   }
 
@@ -5537,45 +5537,6 @@ class cs_context_item extends cs_item {
     return $count_total;
   }
 
-  function getNotReadEntries($external_timespread = 0, $user_id) {
-    if($external_timespread != 0) {
-      $timespread = $external_timespread;
-    }else {
-      $timespread = $this->getTimeSpread();
-    }
-    $new_entries = 0;
-    $conf = $this->getHomeConf();
-    $rubrics = array();
-    if ( !empty($conf) ) {
-      $rubrics = explode(',', $conf);
-    }
-    $check_managers = array();
-    foreach ( $rubrics as $rubric ) {
-      list($rubric_name, $rubric_status) = explode('_', $rubric);
-      if ( $rubric_status != 'none' ) {
-        $check_managers[] = $rubric_name;
-        if ( $rubric_name == CS_DISCUSSION_TYPE ) {
-          $check_managers[] = 'discarticle';
-        }
-        if ( $rubric_name == CS_MATERIAL_TYPE ) {
-          $check_managers[] = CS_SECTION_TYPE;
-        }
-      }
-    }
-    $check_managers[] = CS_ANNOTATION_TYPE;
-    $item_manager =  $this->_environment->getItemManager();
-    $item_manager->setContextLimit($this->getItemID());
-    $item_manager->setReadLimit($user_id);
-    $item_manager->setAgeLimit($timespread);
-    $item_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
-    $item_manager->setTypeArrayLimit($check_managers);
-    $item_manager->select();
-    $new_entries = $item_manager->getIDArray();
-    $count_total = count($new_entries);
-    unset($item_manager);
-    return $count_total;
-  }
-
   function getActiveMembers($external_timespread = 0) {
     if($external_timespread != 0) {
       $timespread = $external_timespread;
@@ -5676,7 +5637,7 @@ class cs_context_item extends cs_item {
       $disc_manager->setContextID($this->getItemID());
       $disc_manager->makeFolder($this->getItemID(),$this->getItemID());
     }
-    
+
     $disc_manager->setContextID($this->_environment->getCurrentContextItem()->getItemID());
   }
 
@@ -5740,15 +5701,15 @@ class cs_context_item extends cs_item {
   function setWithoutWorkflowFunctions () {
     $this->_setExtraConfig('WORKFLOW',0);
   }
-  
+
   function setHideAccountname(){
   	$this->_setExtraConfig('HIDE_ACCOUNTNAME', '1');
   }
-  
+
   function unsetHideAccountname(){
   	$this->_setExtraConfig('HIDE_ACCOUNTNAME', '2');
   }
-  
+
   function getHideAccountname(){
   	$retour = false;
   	$value = $this->_getExtraConfig('HIDE_ACCOUNTNAME');
@@ -5763,11 +5724,11 @@ class cs_context_item extends cs_item {
   function setWithAnnouncementDates() {
   	$this->_addExtra('HIDE_ANNOUNCEMENT_DATE',2);
   }
-  
+
   function setWithoutAnnouncementDates() {
   	$this->_addExtra('HIDE_ANNOUNCEMENT_DATE',1);
   }
-  
+
   function withAnnouncementDates() {
   	$retour = false;
   	if ($this->_issetExtra('HIDE_ANNOUNCEMENT_DATE') ) {
@@ -5780,13 +5741,13 @@ class cs_context_item extends cs_item {
   	}
   	return $retour;
   }
- 
- 
+
+
   // MediaWiki
   function setWikiEnabled ($value) {
       $this->_addExtra('WIKI_ENABLED',$value);
   }
-  
+
   function isWikiEnabled () {
   	if ($this->_issetExtra('WIKI_ENABLED')) {
   		if ($this->_getExtra('WIKI_ENABLED')) {
