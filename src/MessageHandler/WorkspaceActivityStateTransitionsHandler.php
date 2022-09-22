@@ -2,6 +2,7 @@
 
 namespace App\MessageHandler;
 
+use App\Entity\Room;
 use App\Message\WorkspaceActivityStateTransitions;
 use App\Repository\RoomRepository;
 use App\Repository\ZzzRoomRepository;
@@ -60,7 +61,10 @@ class WorkspaceActivityStateTransitionsHandler implements MessageHandlerInterfac
 
                 if ($this->roomActivityStateMachine->can($roomActivityObject, $transitionName)) {
                     $this->roomActivityStateMachine->apply($roomActivityObject, $transitionName);
-                    $this->entityManager->persist($roomActivityObject);
+
+                    if ($roomActivityObject->getActivityState() !== Room::ACTIVITY_ABANDONED) {
+                        $this->entityManager->persist($roomActivityObject);
+                    }
                 }
             }
         }
