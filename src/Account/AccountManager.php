@@ -11,6 +11,7 @@ use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
 use cs_environment;
 use cs_list;
+use cs_room_item;
 use cs_user_item;
 use cs_user_manager;
 use DateTime;
@@ -124,13 +125,21 @@ class AccountManager
             $roomList->addList($communityManager->getRelatedCommunityRooms($portalUser, $portalUser->getContextID()));
 
             foreach ($roomList as $room) {
-                if ($this->userService->userIsLastModeratorForRoom($room, $portalUser)) {
+                if ($this->accountIsLastModeratorForRoom($room, $account)) {
                     return true;
                 }
             }
         }
 
         return false;
+    }
+
+    public function accountIsLastModeratorForRoom(cs_room_item $room, Account $account): bool
+    {
+        $roomModeratorIds = $room->getModeratorList()->getIDArray();
+        $userInContext = $this->userService->getUserInContext($account, $room->getItemID());
+
+        return (count($roomModeratorIds) === 1) && $userInContext && $userInContext->isModerator();
     }
 
     /**

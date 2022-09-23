@@ -16,12 +16,24 @@ use Symfony\Component\Form\FormInterface;
 
 class UserService
 {
+    /**
+     * @var cs_environment
+     */
     private cs_environment $legacyEnvironment;
 
+    /**
+     * @var cs_user_manager
+     */
     private cs_user_manager $userManager;
 
+    /**
+     * @var cs_room_manager|\cs_manager|\cs_zzz_room_manager
+     */
     private cs_room_manager $roomManager;
 
+    /**
+     * @var RoomService
+     */
     private RoomService $roomService;
 
     /**
