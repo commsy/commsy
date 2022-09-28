@@ -803,7 +803,8 @@ class cs_dates_manager extends cs_manager {
         } else {
             $public = '0';
         }
-        $modification_date = getCurrentDateTimeInMySQL();
+
+        $modificationDate = !$item->isChangeModificationOnSave() ? $item->getModificationDate() : getCurrentDateTimeInMySQL();
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
@@ -848,7 +849,7 @@ class cs_dates_manager extends cs_manager {
             ->set('datetime_recurrence', ':datetimeRecurrence')
             ->where('item_id = :itemId')
             ->setParameter('modifierId', $modificator->getItemID())
-            ->setParameter('modificationDate', $modification_date)
+            ->setParameter('modificationDate', $modificationDate)
             ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
             ->setParameter('title', $item->getTitle())
             ->setParameter('public', $public)
