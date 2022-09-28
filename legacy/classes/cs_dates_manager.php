@@ -1163,7 +1163,7 @@ class cs_dates_manager extends cs_manager {
             $this->setIntervalLimit(0, $size);
         }
 
-        $this->setExternalLimit(true);
+        $this->setExternalLimit(false);
         $this->setDateModeLimit(3);
         $this->setHideRecurringEntriesLimit(true);
         $this->setSortOrder('date');
