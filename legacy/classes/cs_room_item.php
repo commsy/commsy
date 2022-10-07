@@ -923,6 +923,26 @@ class cs_room_item extends cs_context_item {
       $this->_setValue('description',(array)$value);
    }
 
+    /**
+     * Get the room's slug (a unique textual identifier for this room)
+     *
+     * @return string
+     */
+    public function getSlug(): string
+    {
+        return $this->_getValue('slug') ?? '';
+    }
+
+    /**
+     * Set the room's slug (a unique textual identifier for this room)
+     *
+     * @param string $slug
+     */
+    public function setSlug(string $slug): void
+    {
+        $this->_setValue('slug', $slug);
+    }
+
    public function isUsed ($start_date, $end_date) {
       $retour = false;
 

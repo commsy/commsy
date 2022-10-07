@@ -86,6 +86,14 @@ class GeneralSettingsType extends AbstractType
                 ),
                 'required' => false,
             ))
+            ->add('room_slug', TextType::class, [
+                'required' => false,
+                'attr' => array(
+                    'class' => 'uk-form-width-large',
+                    'style' => 'width: 90%',
+                ),
+                'label' => 'Room slug',
+            ])
             ->add('rubrics', CollectionType::class, array(
                 'required' => false,
                 'entry_type' => ChoiceType::class,

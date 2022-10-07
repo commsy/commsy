@@ -195,8 +195,16 @@
             <trans-unit id="room_description_text">
                 <source>Room description text</source>
                 <target>Geben Sie noch eine zusätzliche Beschreibung an. Es sind max. 1000 Zeichen erlaubt.</target>
-            </trans-unit>      
-            
+            </trans-unit>
+            <trans-unit id="room_slug">
+                <source>Room slug</source>
+                <target>Raum-Kennzeichnung</target>
+            </trans-unit>
+            <trans-unit id="room_slug_text">
+                <source>Room slug text</source>
+                <target>Hier können Sie eine eindeutige textuelle Kennzeichnung für den Raum vergeben. Diese Raum-Kennzeichnung wird bei der automatischen Raumteilnahme verwendet, um den Raum zu identifizieren. Die Kennzeichnung darf max. 255 Zeichen und keine Umlaute, Leerzeichen oder Sonderzeichen enthalten.</target>
+            </trans-unit>
+
             <!-- Additional settings -->
             <trans-unit id="additional_configuration">
                 <source>Additional configuration</source>
