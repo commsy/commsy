@@ -166,7 +166,8 @@ class cs_room2_manager extends cs_context_manager {
                 "continuous='".$continuous."',".
                 "template='".$template."',".
                 "is_open_for_guests='".$open_for_guests."',".
-                "contact_persons='".encode(AS_DB,$item->getContactPersonString())."',";
+                "contact_persons='".encode(AS_DB,$item->getContactPersonString())."',".
+                "slug='".encode(AS_DB,$item->getSlug())."',";
                 if ($this->_existsField($this->_db_table, 'room_description')){
                    $query .= "room_description='".encode(AS_DB,$item->getDescription())."'";
                 }else{
@@ -221,7 +222,8 @@ class cs_room2_manager extends cs_context_manager {
                'type="'.encode(AS_DB,$item->getRoomType()).'",'.
                'continuous="'.$continuous.'",'.
                'status="'.encode(AS_DB,$item->getStatus()).'",'.
-               'contact_persons="'.encode(AS_DB,$item->getContactPersonString()).'",';
+               'contact_persons="'.encode(AS_DB,$item->getContactPersonString()).'",'.
+               'slug="'.encode(AS_DB,$item->getSlug()).'",';
                 if ($this->_existsField($this->_db_table, 'room_description')){
                    $query .= 'room_description="'.encode(AS_DB,$item->getDescription()).'"';
                 }else{
