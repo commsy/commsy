@@ -9,6 +9,7 @@ actor_suffix: Tester
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
+        - App\Tests\DatabaseMigrationExtension
 params:
     - .env
     - .env.test
@@ -18,7 +19,7 @@ modules:
             dsn: 'mysql:host=db;dbname='
             user: 'root'
             password: 'root'
-            dump: tests/_data/dump.sql
+            dump: src/Resources/fixtures/initial.sql
             cleanup: true # whether the dump should be reloaded before each test
             populate: true # whether the the dump should be loaded before the test suite is started
             populator: 'mysql -u $user -p$password -h $host commsy_test < $dump'
