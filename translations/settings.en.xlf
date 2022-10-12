@@ -667,7 +667,7 @@
             </trans-unit>
             <trans-unit id="delete_user_rooms">
                 <source>Delete user rooms</source>
-                <target>Delete user rooms</target>
+                <target>Delete personal workspaces</target>
             </trans-unit>
 
             <!-- Invitations -->
