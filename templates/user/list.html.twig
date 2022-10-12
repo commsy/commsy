@@ -92,7 +92,7 @@
                 </li>
 
                 <li>
-                    {% if is_granted('MODERATOR') and not isArchived %}
+                    {% if not isArchived and shouldCreateUserRooms and is_granted('MODERATOR') %}
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
                             'url': path('app_user_insertuserroom', {'roomId': roomId}),
                             'action': 'insertuserroom',
