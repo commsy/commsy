@@ -7,7 +7,7 @@ modules:
         - Doctrine2:
             depends: Symfony
         - REST:
-            url: /api/v2/
+            url: /api/
             depends: Symfony
             part: Json
         - Symfony
