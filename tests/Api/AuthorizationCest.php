@@ -14,7 +14,7 @@ class AuthorizationCest
     // tests
     public function testAccessDenied(ApiTester $I)
     {
-        $I->sendGet('/portals');
+        $I->sendGet('/v2/portals');
 
         $I->seeResponseCodeIs(HttpCode::UNAUTHORIZED);
         $I->seeResponseMatchesJsonType([
@@ -28,7 +28,7 @@ class AuthorizationCest
 
     public function testInvalidCredentials(ApiTester $I)
     {
-        $I->sendPostAsJson('/login_check', [
+        $I->sendPostAsJson('/v2/login_check', [
             'username' => 'unknown',
             'password' => 'secret',
         ]);
@@ -45,7 +45,7 @@ class AuthorizationCest
 
     public function testValidCredentials(ApiTester $I)
     {
-        $I->sendPostAsJson('/login_check', [
+        $I->sendPostAsJson('/v2/login_check', [
             'username' => 'api_write',
             'password' => 'apiwrite',
         ]);
