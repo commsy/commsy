@@ -14,6 +14,14 @@
                 <source>A workspace with the same workspace identifier already exists.</source>
                 <target>Ein Raum mit dieser Raum-Kennzeichnung existiert bereits.</target>
             </trans-unit>
+            <trans-unit id="validators_workspace_identifier_too_long">
+                <source>Your workspace identifier must not exceed {{ limit }} characters.</source>
+                <target>Die eingegebene Raum-Kennzeichnung darf maximal {{ limit }} Zeichen lang sein.</target>
+            </trans-unit>
+            <trans-unit id="validators_workspace_identifier_must_only_contain_unreserved_chars">
+                <source>Your workspace identifier may only contain English letters, digits or any of these special characters: -._~</source>
+                <target>Die eingegebene Raum-Kennzeichnung darf keine Umlaute oder Leerzeichen und nur folgende Sonderzeichen enthalten: -._~</target>
+            </trans-unit>
             <trans-unit id="validators_current_password_wrong">
                 <source>Wrong value for your current password.</source>
                 <target>Die Eingabe entspricht nicht dem aktuellen Passwort.</target>
