@@ -34,4 +34,9 @@ class AccountLoginsMetric implements MetricInterface, EventSubscriberInterface
         );
         $accountLoginsTotal->inc([$account->getAuthSource()->getPortal()->getTitle()]);
     }
+
+    public function update(): void
+    {
+        // This Metric is event-based and does not need to update
+    }
 }
