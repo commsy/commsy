@@ -141,10 +141,8 @@ class GeneralSettingsTransformer  extends AbstractTransformer
         else 
             $roomObject->setDescription('');
 
-        if (isset($roomData['room_slug'])) {
-            // NOTE: validation of character input for the room_slug form field is handled by URIUnreservedCharValidator
-            $roomObject->setSlug($roomData['room_slug']);
-        }
+        // NOTE: validation of character input for the room_slug form field is handled by form field constraints
+        $roomObject->setSlug($roomData['room_slug'] ?? '');
 
         // assignment
         if($roomObject->isProjectRoom() && isset($roomData['community_rooms'])) {
