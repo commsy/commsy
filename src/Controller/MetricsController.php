@@ -13,8 +13,10 @@ class MetricsController extends AbstractController
     /**
      * @Route("/api/metrics", name="metrics")
      */
-    public function index(): Response
+    public function index(PrometheusCollector $collector): Response
     {
+        $collector->updateMetrics();
+
         $registry = PrometheusCollector::getCollectorRegistry();
 
         $renderer = new RenderTextFormat();

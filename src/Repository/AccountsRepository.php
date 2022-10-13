@@ -5,8 +5,10 @@ namespace App\Repository;
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
+use App\Entity\Portal;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 class AccountsRepository extends ServiceEntityRepository
@@ -60,6 +62,18 @@ class AccountsRepository extends ServiceEntityRepository
                 'email' => $email,
                 'contextId' => $portalId,
             ])
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countByPortal()
+    {
+        return $this->createQueryBuilder('a')
+            ->groupBy('a.contextId')
+            ->select('COUNT(a) as count', 'p as portal')
+            ->innerJoin(Portal::class, 'p', Join::WITH, 'a.contextId = p.id')
+            ->where('p.deleter IS NULL')
+            ->andWhere('p.deletionDate IS NULL')
             ->getQuery()
             ->getResult();
     }

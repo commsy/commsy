@@ -169,6 +169,8 @@ services:
             tags: [ 'app.data_transformer' ]
         App\Cron\Tasks\CronTaskInterface:
             tags: [ 'app.cron_task' ]
+        App\Metrics\MetricInterface:
+            tags: [ 'app.metric' ]
 
     # Event subscriber
     App\EventSubscriber\KernelSubscriber:
@@ -396,6 +398,10 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
             $cronTasks: !tagged_iterator app.cron_task
+
+    App\Metrics\PrometheusCollector:
+        arguments:
+            - !tagged_iterator app.metric
 
     App\Search\SearchManager:
         autowire: false
