@@ -17,7 +17,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class GeneralSettingsType extends AbstractType
 {
@@ -92,6 +94,14 @@ class GeneralSettingsType extends AbstractType
                 'constraints' => [
                     new UniqueRoomSlug([
                         'roomItem' => $roomItem,
+                    ]),
+                    new Length([
+                        'max' => 255,
+                        'maxMessage' => 'Your workspace identifier must not exceed {{ limit }} characters.',
+                    ]),
+                    new Regex([
+                        'pattern' => '/^[[:alnum:]~._-]+$/', // unreserved URI chars only: any alphanumeric chars plus: ~._-
+                        'message' => 'Your workspace identifier may only contain English letters, digits or any of these special characters: -._~',
                     ]),
                 ],
                 'attr' => array(

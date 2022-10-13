@@ -14,6 +14,14 @@
                 <source>A workspace with the same workspace identifier already exists.</source>
                 <target>A workspace with the same workspace identifier already exists.</target>
             </trans-unit>
+            <trans-unit id="validators_workspace_identifier_too_long">
+                <source>Your workspace identifier must not exceed {{ limit }} characters.</source>
+                <target>Your workspace identifier must not exceed {{ limit }} characters.</target>
+            </trans-unit>
+            <trans-unit id="validators_workspace_identifier_must_only_contain_unreserved_chars">
+                <source>Your workspace identifier may only contain English letters, digits or any of these special characters: -._~</source>
+                <target>Your workspace identifier may only contain English letters, digits or any of these special characters: -._~</target>
+            </trans-unit>
             <trans-unit id="validators_current_password_wrong">
                 <source>Wrong value for your current password.</source>
                 <target>Wrong value for your current password.</target>
