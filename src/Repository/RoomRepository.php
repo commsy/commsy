@@ -5,6 +5,7 @@ use App\Entity\Account;
 use App\Entity\Room;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -91,5 +92,36 @@ class RoomRepository extends ServiceEntityRepository
             ->setParameter(':authSource', $account->getAuthSource()->getId())
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * NOTE: This may be used by the UniqueEntity annotation in App\Entity\Room.
+     *
+     * @param array $fields
+     * @return Room|null
+     * @throws NonUniqueResultException
+     */
+    public function findOnByRoomSlug(array $fields): ?Room
+    {
+        return $this->findOneByRoomSlug($fields['slug'], $fields['contextId']);
+    }
+
+    /**
+     * @param string $slug
+     * @param int $context
+     * @return Room|null
+     * @throws NonUniqueResultException
+     */
+    public function findOneByRoomSlug(string $roomSlug, int $context): ?Room
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.slug = :slug')
+            ->andWhere('a.contextId = :contextId')
+            ->setParameters([
+                'slug' => $roomSlug,
+                'contextId' => $context,
+            ])
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

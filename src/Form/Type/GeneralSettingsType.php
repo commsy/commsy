@@ -3,6 +3,7 @@ namespace App\Form\Type;
 
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Services\LegacyEnvironment;
+use App\Validator\Constraints\UniqueRoomSlug;
 use cs_environment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -88,6 +89,11 @@ class GeneralSettingsType extends AbstractType
             ))
             ->add('room_slug', TextType::class, [
                 'required' => false,
+                'constraints' => [
+                    new UniqueRoomSlug([
+                        'roomItem' => $roomItem,
+                    ]),
+                ],
                 'attr' => array(
                     'class' => 'uk-form-width-large',
                     'style' => 'width: 90%',

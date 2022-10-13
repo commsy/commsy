@@ -10,6 +10,10 @@
                 <source>A label with the same name already exists.</source>
                 <target>Ein Label mit diesem Namen existiert bereits.</target>
             </trans-unit>
+            <trans-unit id="validators_unique_workspace_identifier">
+                <source>A workspace with the same workspace identifier already exists.</source>
+                <target>Ein Raum mit dieser Raum-Kennzeichnung existiert bereits.</target>
+            </trans-unit>
             <trans-unit id="validators_current_password_wrong">
                 <source>Wrong value for your current password.</source>
                 <target>Die Eingabe entspricht nicht dem aktuellen Passwort.</target>
