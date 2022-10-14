@@ -2,9 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Room;
 use App\Entity\User;
-use App\Entity\ZzzRoom;
 use App\Event\UserJoinedRoomEvent;
 use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
@@ -13,7 +11,9 @@ use App\Form\Type\ModerationSupportType;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
+use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
+use App\Repository\ZzzRoomRepository;
 use App\Room\Copy\LegacyCopy;
 use App\RoomFeed\RoomFeedGenerator;
 use App\Services\CalendarsService;
@@ -365,7 +365,6 @@ class RoomController extends AbstractController
     }
 
     /**
-     *
      * @Route("/room/{roomId}/all", requirements={
      *     "roomId": "\d+"
      * })
@@ -376,8 +375,10 @@ class RoomController extends AbstractController
      * @param FilterBuilderUpdater $filterBuilderUpdater
      * @param LegacyEnvironment $environment
      * @param PortalRepository $portalRepository
+     * @param RoomRepository $roomRepository
+     * @param ZzzRoomRepository $zzzRoomRepository
      * @param int $roomId
-     * @return array [type]           [description]
+     * @return array
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
@@ -387,8 +388,10 @@ class RoomController extends AbstractController
         FilterBuilderUpdater $filterBuilderUpdater,
         LegacyEnvironment $environment,
         PortalRepository $portalRepository,
+        RoomRepository $roomRepository,
+        ZzzRoomRepository $zzzRoomRepository,
         int $roomId
-    ) {
+    ): array {
         $legacyEnvironment = $environment->getEnvironment();
         $portal = $portalRepository->find($legacyEnvironment->getCurrentPortalID());
 
@@ -418,22 +421,20 @@ class RoomController extends AbstractController
 
         $filterForm->handleRequest($request);
 
-        $count = 0;
-        $countAll = 0;
+        // Get both query builder - for active and archived workspaces
+        $activeRoomQueryBuilder = $roomRepository->getMainRoomQueryBuilder($portal->getId(), $roomTypes);
+        $archivedRoomQueryBuilder = $zzzRoomRepository->getMainRoomQueryBuilder($portal->getId(), $roomTypes);
 
-        // ***** Active rooms *****
-        $repository = $this->getDoctrine()->getRepository(Room::class);
-        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portal->getId(), $roomTypes);
+        // Get the sum of all active and archived workspaces before applying any filters
         $activeRoomQueryBuilder->select($activeRoomQueryBuilder->expr()->count('r.itemId'));
-        $countAll += $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
+        $archivedRoomQueryBuilder->select($archivedRoomQueryBuilder->expr()->count('r.itemId'));
+        $countAll = $activeRoomQueryBuilder->getQuery()->getSingleScalarResult() +
+            $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
 
-        // filtered rooms
-        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
-            $filterBuilderUpdater->addFilterConditions($filterForm, $activeRoomQueryBuilder);
-            $count += $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
-        } else {
-            $count = $countAll;
-        }
+        // Get the sum of all filtered workspaces after filtering
+        $filterBuilderUpdater->addFilterConditions($filterForm, $activeRoomQueryBuilder);
+        $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
+        $count = $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
 
         // ***** Archived rooms *****
         // TODO: Refactoring needed
@@ -441,25 +442,8 @@ class RoomController extends AbstractController
         // This is not the best solution, but works for now. It would be better
         // to use the form validation below, instead of manually checking for a
         // specific value
-        $repository = $this->getDoctrine()->getRepository(ZzzRoom::class);
-        $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portal->getId(), $roomTypes);
-        $archivedRoomQueryBuilder->select($archivedRoomQueryBuilder->expr()->count('r.itemId'));
-        $countAll += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
-
-        if ($request->query->has('room_filter')) {
-            $roomFilter = $request->query->get('room_filter');
-
-            // "archived" not set or archived != 1 = include archived rooms in list
-            if (!isset($roomFilter['archived']) || $roomFilter['archived'] != "1") {
-                if ($filterForm->isSubmitted() && $filterForm->isValid()) {
-                    $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
-                    $count += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
-                }
-            }
-        }
-        // archived rooms have to be included if they aren't explicitely excluded!
-        else {
-            $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
+        $archivedFilter = $filterForm->get('archived')->getData();
+        if ($archivedFilter === false) {
             $count += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
         }
 
@@ -505,6 +489,8 @@ class RoomController extends AbstractController
      * @param LegacyEnvironment $environment
      * @param UserRepository $userRepository
      * @param PortalRepository $portalRepository
+     * @param RoomRepository $roomRepository
+     * @param ZzzRoomRepository $zzzRoomRepository
      * @param int $roomId
      * @param string $sort
      * @param int $max
@@ -518,11 +504,13 @@ class RoomController extends AbstractController
         LegacyEnvironment $environment,
         UserRepository $userRepository,
         PortalRepository $portalRepository,
+        RoomRepository $roomRepository,
+        ZzzRoomRepository $zzzRoomRepository,
         int $roomId,
-        string $sort='',
+        string $sort = '',
         int $max = 10,
         int $start = 0
-    ) {
+    ): array {
         $legacyEnvironment = $environment->getEnvironment();
         $portal = $portalRepository->find($legacyEnvironment->getCurrentPortalID());
 
@@ -546,49 +534,41 @@ class RoomController extends AbstractController
 
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
-        $roomFilter = $request->get('roomFilter');
-        if (!$roomFilter) {
-            $roomFilter = $request->query->get('room_filter');
-        }
+        $roomFilter = $request->attributes->get('roomFilter') ?: $request->query->get('room_filter');
 
-        // ***** Active rooms *****
-        $repository = $this->getDoctrine()->getRepository('App:Room');
-        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portal->getId(), $roomTypes, $sort);
+        // Prepare query builder for active and archived rooms
+        $activeRoomQueryBuilder = $roomRepository->getMainRoomQueryBuilder($portal->getId(), $roomTypes, $sort);
+        $archivedRoomQueryBuilder = $zzzRoomRepository->getMainRoomQueryBuilder($portal->getId(), $roomTypes, $sort);
+
         $activeRoomQueryBuilder->setMaxResults($max);
         $activeRoomQueryBuilder->setFirstResult($start);
+        $archivedRoomQueryBuilder->setMaxResults($max);
+        $archivedRoomQueryBuilder->setFirstResult($start);
 
+        $filterForm = $this->createForm(RoomFilterType::class, [
+            'template' => $portal->getDefaultFilterHideTemplates(),
+            'archived' => $portal->getDefaultFilterHideArchived(),
+        ], [
+            'showTime' => $portal->getShowTimePulses(),
+            'timePulses' => $roomService->getTimePulses(),
+            'timePulsesDisplayName' => ucfirst($portal->getTimePulseName($legacyEnvironment->getSelectedLanguage())),
+        ]);
+
+        // manually bind values from the request
         if ($roomFilter) {
-            $filterForm = $this->createForm(RoomFilterType::class, null, [
-                'showTime' => $portal->getShowTimePulses(),
-                'timePulses' => $roomService->getTimePulses(),
-                'timePulsesDisplayName' => ucfirst($portal->getTimePulseName($legacyEnvironment->getSelectedLanguage())),
-            ]);
-
-            // manually bind values from the request
             $filterForm->submit($roomFilter);
-
-            $filterBuilderUpdater->addFilterConditions($filterForm, $activeRoomQueryBuilder);
         }
+
+        // apply filter
+        $filterBuilderUpdater->addFilterConditions($filterForm, $activeRoomQueryBuilder);
+        $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
 
         $rooms = $activeRoomQueryBuilder->getQuery()->getResult();
 
         // ***** Archived rooms *****
-        if(!$roomFilter || !isset($roomFilter['archived']) || $roomFilter['archived'] != "1") {
+        $archivedFilter = $filterForm->get('archived')->getData();
+        if ($archivedFilter === false) {
             $legacyEnvironment->activateArchiveMode();
-            $repository = $this->getDoctrine()->getRepository('App:ZzzRoom');
-            $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portal->getId(), $roomTypes, $sort);
-            $archivedRoomQueryBuilder->setMaxResults($max);
-            $archivedRoomQueryBuilder->setFirstResult($start);
-
-            if ($roomFilter) {
-                $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
-                    'showTime' => $portal->getShowTimePulses(),
-                    'timePulses' => $roomService->getTimePulses(),
-                    'timePulsesDisplayName' => ucfirst($portal->getTimePulseName($legacyEnvironment->getSelectedLanguage())),
-                ]);
-                $filterForm->submit($roomFilter);
-                $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
-            }
             $rooms = array_merge($rooms, $archivedRoomQueryBuilder->getQuery()->getResult());
         }
 
@@ -596,37 +576,34 @@ class RoomController extends AbstractController
             $legacyEnvironment->deactivateArchiveMode();
         }
 
-        $projectsMemberStatus = array();
+        $projectsMemberStatus = [];
         foreach ($rooms as $room) {
-
-            try{
-                $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room, $legacyEnvironment, $roomService);
+            try {
+                $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room, $legacyEnvironment,
+                    $roomService);
                 $contactUsers = $userRepository->getContactsByRoomId($room->getItemId());
                 $moderators = $userRepository->getModeratorsByRoomId($room->getItemId());
 
-                if(empty($contactUsers)){
+                if (empty($contactUsers)) {
                     $contactUsers = array_unique(array_merge($contactUsers, $moderators), SORT_REGULAR);
                 }
 
-                $contactsString = "";
-                $iDsString = "";
+                $contactsString = implode(', ', array_map(static function(User $user) {
+                    return $user->getFullName();
+                }, $contactUsers));
 
-                foreach($contactUsers as $contactUser){
-                    $contactsString .= $contactUser->getFullName();
-                    $iDsString .= $contactUser->getItemID();
-                    $contactsString .= ", ";
-                    $iDsString .= ",";
-                }
+                $iDsString = implode(',', array_map(static function(User $user) {
+                    return $user->getItemID();
+                }, $contactUsers));
 
-                $contactsString = rtrim($contactsString, ", ");
-                $iDsString = rtrim($iDsString, ", ");
-                if(strlen($iDsString) > 1 and strlen($contactsString) > 1){
+                if (strlen($iDsString) > 1 && strlen($contactsString) > 1) {
                     $room->setContactPersons($contactsString . ";" . $iDsString);
                 }
-            }catch (Exception $e){
+            } catch (Exception $e) {
                 // do nothing
             }
         }
+
         return [
             'roomId' => $roomId,
             'portal' => $portal,
