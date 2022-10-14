@@ -48,11 +48,14 @@ class UniqueRoomSlugValidator extends ConstraintValidator
             return;
         }
 
-        $roomRepository = $this->entityManager->getRepository($roomItem->isArchived() ? ZzzRoom::class : Room::class);
-        /** @var Room|ZzzRoom|null $room */
+        $roomRepository = $this->entityManager->getRepository(Room::class);
         $room = $roomRepository->findOneByRoomSlug($roomSlug, $roomItem->getContextId());
 
-        if ($room && $room->getItemId() !== $roomItem->getItemID()) {
+        $zzzRoomRepository = $this->entityManager->getRepository(ZzzRoom::class);
+        $zzzRoom = $zzzRoomRepository->findOneByRoomSlug($roomSlug, $roomItem->getContextId());
+
+        if ($room && $room->getItemId() !== $roomItem->getItemID() ||
+            $zzzRoom && $zzzRoom->getItemId() !== $roomItem->getItemID()) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();
         }
