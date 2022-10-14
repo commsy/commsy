@@ -2,6 +2,7 @@
 namespace App\Repository;
 
 use App\Entity\Account;
+use App\Entity\Portal;
 use App\Entity\Room;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -123,5 +124,20 @@ class RoomRepository extends ServiceEntityRepository
             ])
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function countByPortalAndType()
+    {
+        return $this->createQueryBuilder('r')
+            ->groupBy('r.contextId')
+            ->addGroupBy('r.type')
+            ->select('COUNT(r) as count', 'r.type', 'p.title as portal')
+            ->innerJoin(Portal::class, 'p', Join::WITH, 'r.contextId = p.id')
+            ->andWhere('r.deleter IS NULL')
+            ->andWhere('r.deletionDate IS NULL')
+            ->andWhere('p.deleter IS NULL')
+            ->andWhere('p.deletionDate IS NULL')
+            ->getQuery()
+            ->getResult();
     }
 }
