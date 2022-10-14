@@ -19,7 +19,7 @@
                 <target>Die eingegebene Raum-Kennzeichnung darf maximal {{ limit }} Zeichen lang sein.</target>
             </trans-unit>
             <trans-unit id="validators_workspace_identifier_must_only_contain_unreserved_chars">
-                <source>Your workspace identifier may only contain English letters, digits or any of these special characters: -._~</source>
+                <source>Your workspace identifier may only contain lowercase English letters, digits or any of these special characters: -._~</source>
                 <target>Die eingegebene Raum-Kennzeichnung darf keine Umlaute oder Leerzeichen und nur folgende Sonderzeichen enthalten: -._~</target>
             </trans-unit>
             <trans-unit id="validators_current_password_wrong">
