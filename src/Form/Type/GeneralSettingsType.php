@@ -101,7 +101,7 @@ class GeneralSettingsType extends AbstractType
                     ]),
                     new Regex([
                         'pattern' => '/^[[:alnum:]~._-]+$/', // unreserved URI chars only: any alphanumeric chars plus: ~._-
-                        'message' => 'Your workspace identifier may only contain English letters, digits or any of these special characters: -._~',
+                        'message' => 'Your workspace identifier may only contain lowercase English letters, digits or any of these special characters: -._~',
                     ]),
                 ],
                 'attr' => array(
