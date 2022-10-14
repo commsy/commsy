@@ -206,7 +206,7 @@
             </trans-unit>
             <trans-unit id="room_slug_text">
                 <source>Room slug text</source>
-                <target>Here you can define a unique textual identifier für this workspace. This workspace identifier gets used when automatically creating workspace members. Please use only digits and English letters for this identifier (max. 255 characters allowed).</target>
+                <target>Here you can define a unique textual identifier für this workspace. This workspace identifier gets used when automatically creating workspace members. The identifier must not exceed 255 characters and may only contain English letters, digits or any of these special characters: -._~</target>
             </trans-unit>
 
             <!-- Additional settings -->
