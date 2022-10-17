@@ -1265,6 +1265,10 @@
                 <source>Source</source>
                 <target>Quelle</target>
             </trans-unit>
+            <trans-unit id="portal_auth_sources">
+                <source>portal.auth.sources</source>
+                <target>Quellen</target>
+            </trans-unit>
             <trans-unit id="no_source">
                 <source>No source</source>
                 <target>Keine Quelle</target>
@@ -1486,6 +1490,24 @@
             <trans-unit id="mail_reg_ex_help">
                 <source>Please including delimiter and modifier</source>
                 <target>Bitte inkl. Delimiter und Modifier angeben</target>
+            </trans-unit>
+
+            <!-- Auth workspace membership -->
+            <trans-unit id="portal_auth_workspace_membership">
+                <source>portal.auth.workspace_membership</source>
+                <target>Raumteilnahme</target>
+            </trans-unit>
+            <trans-unit id="portal_auth_membership_enabled">
+                <source>portal.auth.membership_enabled</source>
+                <target>Aktiviert</target>
+            </trans-unit>
+            <trans-unit id="portal_auth.membership_identifier">
+                <source>portal.auth.membership_identifier</source>
+                <target>Request-Identifier</target>
+            </trans-unit>
+            <trans-unit id="portal_auth_membership_identifier_help">
+                <source>portal.auth.membership_identifier_help</source>
+                <target>Bezeichner für Komma-separierte Server Umgebungsinforationen für automatische Raumteilnahme</target>
             </trans-unit>
         </body>
     </file>

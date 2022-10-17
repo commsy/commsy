@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
+use Serializable;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -93,7 +94,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  *     }
  * )
  */
-class Portal implements \Serializable
+class Portal implements Serializable
 {
     /**
      * @ORM\Id
@@ -239,16 +240,21 @@ class Portal implements \Serializable
     private bool $defaultFilterHideArchived = false;
 
     /**
-     * array - containing the data of this item, including lists of linked items
+     * @ORM\Column(type="boolean", options={"default": 0})
      */
-    var $_data = array();
-    private $_environment;
-    var $_room_list_continuous = null;
+    private bool $authMembershipEnabled = false;
 
+    /**
+     * @ORM\Column(type="string", length=100, nullable=true)
+     */
+    private ?string $authMembershipIdentifier;
+
+    /**
+     *
+     */
     public function __construct()
     {
         $this->authSources = new ArrayCollection();
-        $this->_environment = $this;
     }
 
     /**
@@ -1192,15 +1198,11 @@ class Portal implements \Serializable
 
     public function getContinuousRoomList(LegacyEnvironment $environment)
     {
-        if (!isset($this->_room_list_continuous)) {
-            $manager = $environment->getEnvironment()->getRoomManager();
-            $manager->setContextLimit($this->getId());
-            $manager->setContinuousLimit();
-            $manager->select();
-            $this->_room_list_continuous = $manager->get();
-            unset($manager);
-        }
-        return $this->_room_list_continuous;
+        $manager = $environment->getEnvironment()->getRoomManager();
+        $manager->setContextLimit($this->getId());
+        $manager->setContinuousLimit();
+        $manager->select();
+        return $manager->get();
     }
 
     /**
@@ -1340,17 +1342,6 @@ class Portal implements \Serializable
         $this->setExtras($extras);
     }
 
-    /** save context
-     * this method save the context
-     */
-    function save()
-    {
-        $manager = $this->_environment->getManager($this->_type);
-        $this->_save($manager);
-        $this->_changes = array();
-    }
-
-
     ###################################################
     # archiving and deleting rooms
     ###################################################
@@ -1482,5 +1473,29 @@ class Portal implements \Serializable
     public function setDaysSendMailBeforeDeletingRooms(int $value)
     {
         $this->extras['ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE'] = $value;
+    }
+
+    public function getAuthMembershipEnabled(): ?bool
+    {
+        return $this->authMembershipEnabled;
+    }
+
+    public function setAuthMembershipEnabled(bool $authMembershipEnabled): self
+    {
+        $this->authMembershipEnabled = $authMembershipEnabled;
+
+        return $this;
+    }
+
+    public function getAuthMembershipIdentifier(): ?string
+    {
+        return $this->authMembershipIdentifier;
+    }
+
+    public function setAuthMembershipIdentifier(?string $authMembershipIdentifier): self
+    {
+        $this->authMembershipIdentifier = $authMembershipIdentifier;
+
+        return $this;
     }
 }

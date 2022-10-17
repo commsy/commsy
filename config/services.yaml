@@ -287,12 +287,6 @@ services:
         tags:
             - { name: knp_menu.menu, alias: profile }
 
-    commsy.menu.voter.request:
-        class: App\Menu\Voter\CommsyVoter
-        arguments: ['@request_stack']
-        tags:
-            - { name: knp_menu.voter }
-
     # Voter
     commsy.security.category_voter:
         class: App\Security\Authorization\Voter\CategoryVoter
