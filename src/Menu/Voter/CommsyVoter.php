@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class CommsyVoter implements VoterInterface
 {
-    private $requestStack;
+    private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {
@@ -20,18 +20,19 @@ class CommsyVoter implements VoterInterface
 
     public function matchItem(ItemInterface $item): ?bool
     {
-        $attributes = $item->getAttributes();
-        if (isset($attributes['breadcrumb_rubric'])) {
-            return false;
+        list(, $controller, $action) = explode('_', $this->requestStack->getCurrentRequest()->attributes->get('_route'));
+
+        // Room settings
+        if ($controller === 'settings') {
+            return null;
         }
-        
-        $roomId = $this->requestStack->getCurrentRequest()->attributes->get('roomId');
-        list($bundle, $controller, $action) = explode('_', $this->requestStack->getCurrentRequest()->attributes->get('_route'));
-        
+
+        // Room
+        $roomId = $this->requestStack->getCurrentRequest()->attributes->get('roomId', '');
         if (stristr($item->getUri(), 'room/' . $roomId . '/' . $controller)) {
             return in_array($action, ['detail', 'list', 'calendar', 'changestatus']);
         }
 
-        return false;
+        return null;
     }
 }

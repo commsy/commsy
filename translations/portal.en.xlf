@@ -1265,6 +1265,10 @@
                 <source>Source</source>
                 <target>Source</target>
             </trans-unit>
+            <trans-unit id="portal_auth_sources">
+                <source>portal.auth.sources</source>
+                <target>Sources</target>
+            </trans-unit>
             <trans-unit id="no_source">
                 <source>No source</source>
                 <target>Source</target>
@@ -1486,6 +1490,24 @@
             <trans-unit id="mail_reg_ex_help">
                 <source>Please including delimiter and modifier</source>
                 <target>Please including delimiter and modifier</target>
+            </trans-unit>
+
+            <!-- Auth workspace membership -->
+            <trans-unit id="portal_auth_workspace_membership">
+                <source>portal.auth.workspace_membership</source>
+                <target>Workspace membership</target>
+            </trans-unit>
+            <trans-unit id="portal_auth_membership_enabled">
+                <source>portal.auth.membership_enabled</source>
+                <target>Activated</target>
+            </trans-unit>
+            <trans-unit id="portal_auth.membership_identifier">
+                <source>portal.auth.membership_identifier</source>
+                <target>Request-Identifier</target>
+            </trans-unit>
+            <trans-unit id="portal_auth_membership_identifier_help">
+                <source>portal.auth.membership_identifier_help</source>
+                <target>Comma separated server environment information identifier used for automated workspace membership</target>
             </trans-unit>
         </body>
     </file>

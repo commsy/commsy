@@ -47,8 +47,11 @@
 @nav-side-nested-color: #CFCFCF;
 @nav-side-nested-hover-color: #989898;
 
-.hook-nav-side-active {}
+@nav-default-item-color: #CFCFCF;
+@nav-default-item-active-color: #FF404B;
+@nav-default-sublist-item-active-color: @nav-default-item-active-color;
 
+.hook-nav-side-active {}
 
 // @nav-padding-vertical:                          5px;
 // @nav-padding-horizontal:                        15px;
@@ -241,4 +244,14 @@
 .cs-nav-quick {
     max-height: 340px;
     overflow: auto;
+}
+
+.hook-nav-default {
+    > li {
+        margin: 5px;
+    }
+}
+
+ul.uk-nav-divider > li {
+    border-bottom: 1px solid #34394A;
 }
