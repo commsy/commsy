@@ -2,21 +2,24 @@
 
 namespace App\Validator\Constraints;
 
-use App\Entity\Room;
-use App\Entity\ZzzRoom;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\RoomRepository;
+use App\Repository\ZzzRoomRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class UniqueRoomSlugValidator extends ConstraintValidator
 {
-    /** @var EntityManagerInterface $entityManager */
-    private EntityManagerInterface $entityManager;
+    /** @var RoomRepository $roomRepository */
+    private RoomRepository $roomRepository;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    /** @var ZzzRoomRepository $zzzRoomRepository */
+    private ZzzRoomRepository $zzzRoomRepository;
+
+    public function __construct(RoomRepository $roomRepository, ZzzRoomRepository $zzzRoomRepository)
     {
-        $this->entityManager = $entityManager;
+        $this->roomRepository = $roomRepository;
+        $this->zzzRoomRepository = $zzzRoomRepository;
     }
 
     /**
@@ -48,11 +51,8 @@ class UniqueRoomSlugValidator extends ConstraintValidator
             return;
         }
 
-        $roomRepository = $this->entityManager->getRepository(Room::class);
-        $room = $roomRepository->findOneByRoomSlug($roomSlug, $roomItem->getContextId());
-
-        $zzzRoomRepository = $this->entityManager->getRepository(ZzzRoom::class);
-        $zzzRoom = $zzzRoomRepository->findOneByRoomSlug($roomSlug, $roomItem->getContextId());
+        $room = $this->roomRepository->findOneByRoomSlug($roomSlug, $roomItem->getContextId());
+        $zzzRoom = $this->zzzRoomRepository->findOneByRoomSlug($roomSlug, $roomItem->getContextId());
 
         if ($room && $room->getItemId() !== $roomItem->getItemID() ||
             $zzzRoom && $zzzRoom->getItemId() !== $roomItem->getItemID()) {
