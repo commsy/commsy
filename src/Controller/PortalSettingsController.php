@@ -43,6 +43,7 @@ use App\Form\Type\Portal\AuthGuestType;
 use App\Form\Type\Portal\AuthLdapType;
 use App\Form\Type\Portal\AuthLocalType;
 use App\Form\Type\Portal\AuthShibbolethType;
+use App\Form\Type\Portal\AuthWorkspaceMembershipType;
 use App\Form\Type\Portal\CommunityRoomsCreationType;
 use App\Form\Type\Portal\DataPrivacyType;
 use App\Form\Type\Portal\DeleteArchiveRoomsType;
@@ -84,6 +85,7 @@ use App\Utils\UserService;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -537,6 +539,30 @@ class PortalSettingsController extends AbstractController
         return [
             'form' => $localForm->createView(),
             'portal' => $portal,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/auth/workspacemembership")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @Template()
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     */
+    public function authWorkspaceMembership(
+        Portal $portal,
+        ManagerRegistry $doctrine,
+        Request $request
+    ): array
+    {
+        $form = $this->createForm(AuthWorkspaceMembershipType::class, $portal);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $doctrine->getManager()->flush();
+        }
+
+        return [
+            'form' => $form->createView(),
         ];
     }
 

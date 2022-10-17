@@ -284,11 +284,6 @@ class PortalProxy
         })->count() > 0;
     }
 
-    public function save()
-    {
-        $this->portal->save();
-    }
-
     public function getConfigurationHideMailByDefault(): bool
     {
         $hideMailByDefault = ($this->portal->getExtras()['HIDE_MAIL_BY_DEFAULT']) ?? 0;
