@@ -59,13 +59,13 @@ class ZzzRoomRepository extends ServiceEntityRepository
     }
 
     /**
-     * NOTE: This may be used by the UniqueEntity annotation in App\Entity\ZzzRoom.
+     * NOTE: This may be used by a UniqueEntity/UniqueRoomSlug annotation in App\Entity\ZzzRoom.
      *
-     * @param array $fields
+     * @param array $fields associative array of room identifiers with keys: `slug`, `contextId`
      * @return ZzzRoom|null
      * @throws NonUniqueResultException
      */
-    public function findOnByRoomSlug(array $fields): ?ZzzRoom
+    public function findOneByRoomIdentifiersArray(array $fields): ?ZzzRoom
     {
         return $this->findOneByRoomSlug($fields['slug'], $fields['contextId']);
     }
