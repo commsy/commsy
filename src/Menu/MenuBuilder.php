@@ -406,6 +406,8 @@ class MenuBuilder
     public function createPortalSettingsMenu(RequestStack $requestStack): ItemInterface
     {
         $menu = $this->factory->createItem('root');
+        $menu->setChildrenAttribute('class', 'uk-nav uk-nav-default uk-nav-divider');
+        $menu->setExtra('currentClass', 'asdf');
 
         $currentStack = $requestStack->getCurrentRequest();
         if ($currentStack) {
@@ -419,6 +421,39 @@ class MenuBuilder
                 'extras' => ['icon' => 'server'],
             ])
             ->setExtra('translation_domain', 'menu');
+
+            // authentication
+            $menu->addChild('Auth', [
+                'label' => 'Auth',
+                'route' => 'app_portalsettings_authlocal',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'credit-card']
+            ])
+            ->setChildrenAttribute('class', 'uk-nav-sub')
+            ->setExtra('translation_domain', 'portal');
+
+            $menu['Auth']->addChild('Sources', [
+                'label' => 'portal.auth.sources',
+                'route' => 'app_portalsettings_authlocal',
+                'routeParameters' => ['portalId' => $portalId],
+            ])
+            ->setExtra('translation_domain', 'portal');
+
+            $menu['Auth']->addChild('Workspace Membership', [
+                'label' => 'portal.auth.workspace_membership',
+                'route' => 'app_portalsettings_authworkspacemembership',
+                'routeParameters' => ['portalId' => $portalId],
+            ])
+            ->setExtra('translation_domain', 'portal');
+
+            // accounts
+            $menu->addChild('Accounts', [
+                'label' => 'Accounts',
+                'route' => 'app_portalsettings_accountindex',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'users']
+            ])
+            ->setExtra('translation_domain', 'portal');
 
             // appearance
             $menu->addChild('Appearance', [
@@ -453,15 +488,6 @@ class MenuBuilder
                 'route' => 'app_portalsettings_contents',
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'file-text']
-            ])
-            ->setExtra('translation_domain', 'portal');
-
-            // accounts
-            $menu->addChild('Accounts', [
-                'label' => 'Accounts',
-                'route' => 'app_portalsettings_accountindex',
-                'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'users']
             ])
             ->setExtra('translation_domain', 'portal');
 
@@ -552,15 +578,6 @@ class MenuBuilder
                 'route' => 'app_portalsettings_mailtexts',
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'mail']
-            ])
-            ->setExtra('translation_domain', 'portal');
-
-            // auth source
-            $menu->addChild('Auth', [
-                'label' => 'Auth',
-                'route' => 'app_portalsettings_authlocal',
-                'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'credit-card']
             ])
             ->setExtra('translation_domain', 'portal');
         }

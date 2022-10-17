@@ -1,0 +1,16 @@
+{% extends 'layout.html.twig' %}
+
+{% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+
+{% block sidebar_left %}
+    {% include 'components/context_navigation.html.twig' with {'menu_name': 'portal_settings'} only %}
+{% endblock %}
+
+{% block main %}
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'portal.auth.workspace_membership'|trans({}, "portal") }}{% endblock %}
+        {% block body %}
+            {{ form(form) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
