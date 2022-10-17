@@ -926,20 +926,22 @@ class cs_room_item extends cs_context_item {
     /**
      * Get the room's slug (a unique textual identifier for this room)
      *
-     * @return string
+     * @return string|null
      */
-    public function getSlug(): string
+    public function getSlug(): ?string
     {
-        return $this->_getValue('slug') ?? '';
+        return $this->_getValue('slug') ?: null;
     }
 
     /**
      * Set the room's slug (a unique textual identifier for this room)
      *
-     * @param string $slug
+     * @param string|null $slug
      */
-    public function setSlug(string $slug): void
+    public function setSlug(?string $slug): void
     {
+        $slug = !empty($slug) ? strtolower($slug) : null;
+
         $this->_setValue('slug', $slug);
     }
 
