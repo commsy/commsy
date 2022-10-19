@@ -74,8 +74,10 @@ class UserCreatorFacade
             $authSource
         );
 
-        if ($csvUserDataset->getRooms()) {
-            $this->addUserToRoomsWithIds($newUser, $csvUserDataset->getRooms());
+        $roomIdString = $csvUserDataset->getRooms();
+        if ($roomIdString) {
+            $roomIds = explode(' ', trim($roomIdString));
+            $this->addUserToRoomsWithIds($newUser, $roomIds);
         }
     }
 
@@ -150,12 +152,10 @@ class UserCreatorFacade
      * Adds users representing the given user to the rooms with the given IDs.
      *
      * @param cs_user_item $user the user for whom room users shall be created
-     * @param string $roomIdString string with space-delimited room IDs
+     * @param array $roomIds list of room IDs
      */
-    private function addUserToRoomsWithIds(cs_user_item $user, string $roomIdString): void
+    private function addUserToRoomsWithIds(cs_user_item $user, array $roomIds): void
     {
-        $roomIds = explode(' ', trim($roomIdString));
-
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $privateRoomUser = $user->getRelatedPrivateRoomUserItem();
 
