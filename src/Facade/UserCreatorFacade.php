@@ -11,8 +11,10 @@ namespace App\Facade;
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
+use App\Entity\Room;
 use App\Form\Model\Csv\CsvUserDataset;
 use App\Services\LegacyEnvironment;
+use App\Utils\UserService;
 use cs_environment;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,6 +34,11 @@ class UserCreatorFacade
     private AccountCreatorFacade $accountFacade;
 
     /**
+     * @var UserService
+     */
+    private UserService $userService;
+
+    /**
      * @var EntityManagerInterface
      */
     private EntityManagerInterface $entityManager;
@@ -44,11 +51,13 @@ class UserCreatorFacade
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         AccountCreatorFacade $accountFacade,
+        UserService $userService,
         EntityManagerInterface $entityManager,
         UserPasswordEncoderInterface $passwordEncoder
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->accountFacade = $accountFacade;
+        $this->userService = $userService;
         $this->entityManager = $entityManager;
         $this->passwordEncoder = $passwordEncoder;
     }
@@ -146,6 +155,34 @@ class UserCreatorFacade
         $account->setPassword($this->passwordEncoder->encodePassword($account, $password));
 
         return $this->accountFacade->persistNewAccount($account);
+    }
+
+    /**
+     * Adds users representing the given account to the rooms with the given room slugs.
+     *
+     * @param Account $account the account for whom room users shall be created
+     * @param string[] $roomSlugs list of room slugs (i.e., unique textual identifiers for the rooms)
+     */
+    public function addUserToRoomsWithSlugs(Account $account, array $roomSlugs): void
+    {
+        if (empty($roomSlugs)) {
+            return;
+        }
+
+        $roomRepository = $this->entityManager->getRepository(Room::class);
+
+        // map room slugs to actual room IDs
+        $roomIds = array_map(function (string $roomSlug) use ($roomRepository, $account) {
+            $room = $roomRepository->findOneByRoomSlug(trim($roomSlug), $account->getContextId());
+            return ($room) ? $room->getItemId() : null;
+        }, $roomSlugs);
+
+        // filter out any null values (where a room slug couldn't be mapped to an actual room ID)
+        $roomIds = array_filter($roomIds);
+
+        // create room users
+        $portalUser = $this->userService->getPortalUser($account);
+        $this->addUserToRoomsWithIds($portalUser, $roomIds);
     }
 
     /**
