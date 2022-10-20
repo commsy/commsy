@@ -77,6 +77,12 @@
                             {{ form_row(form.room_description) }}
                         </div>
 
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <h1 class='uk-panel-title'>{{ 'Room slug'|trans({}, 'settings') }}</h1>
+                            <div style="margin-bottom: 25px;">{{ 'Room slug text'|trans({}, 'settings') }}</div>
+                            {{ form_row(form.room_slug) }}
+                        </div>
+
                         {% if form.time_pulses is defined %}
                             <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                                 <h1 class='uk-panel-title'>{{ 'Time context'|trans({}, 'settings') }}</h1>
@@ -97,6 +103,7 @@
                             </div>
                         {% endif %}
                         {{ form_row(form.rubricOrder) }}
+
                         {{ form_row(form._token) }}
                         {{ form_row(form.save) }}
                     {{ form_end(form, {'render_rest': false}) }}

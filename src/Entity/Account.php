@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @UniqueEntity(
  *     fields={"contextId", "username", "authSource"},
  *     errorPath="username",
- *     repositoryMethod="findOnByCredentials"
+ *     repositoryMethod="findOneByCredentialsArray"
  * )
  * @ApiResource(
  *     security="is_granted('ROLE_API_READ')",

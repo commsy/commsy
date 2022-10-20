@@ -3,6 +3,7 @@ namespace App\Form\Type;
 
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Services\LegacyEnvironment;
+use App\Validator\Constraints\UniqueRoomSlug;
 use cs_environment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -16,7 +17,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class GeneralSettingsType extends AbstractType
 {
@@ -86,6 +89,27 @@ class GeneralSettingsType extends AbstractType
                 ),
                 'required' => false,
             ))
+            ->add('room_slug', TextType::class, [
+                'required' => false,
+                'constraints' => [
+                    new UniqueRoomSlug([
+                        'roomItem' => $roomItem,
+                    ]),
+                    new Length([
+                        'max' => 255,
+                        'maxMessage' => 'Your workspace identifier must not exceed {{ limit }} characters.',
+                    ]),
+                    new Regex([
+                        'pattern' => '/^[[:alnum:]~._-]+$/', // unreserved URI chars only: any alphanumeric chars plus: ~._-
+                        'message' => 'Your workspace identifier may only contain lowercase English letters, digits or any of these special characters: -._~',
+                    ]),
+                ],
+                'attr' => array(
+                    'class' => 'uk-form-width-large',
+                    'style' => 'width: 90%',
+                ),
+                'label' => 'Room slug',
+            ])
             ->add('rubrics', CollectionType::class, array(
                 'required' => false,
                 'entry_type' => ChoiceType::class,
