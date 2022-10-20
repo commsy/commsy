@@ -35,6 +35,17 @@ class AuthWorkspaceMembershipType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Portal::class,
             'translation_domain' => 'portal',
+            'validation_groups' => function (FormInterface $form) {
+                /** @var Portal $portal */
+                $portal = $form->getData();
+
+                // only validate the `authMembershipIdentifier` if `authMembershipEnabled` has been activated
+                if ($portal->getAuthMembershipEnabled()) {
+                    return ['Default', 'authMembershipValidation'];
+                }
+
+                return ['Default'];
+            },
         ]);
     }
 }
