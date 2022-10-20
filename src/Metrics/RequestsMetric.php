@@ -42,9 +42,8 @@ class RequestsMetric extends AbstractMetric implements MetricInterface, EventSub
 
         $response = $event->getResponse();
 
-        $registry = PrometheusCollector::getCollectorRegistry();
-        $requestsTotal = $registry->getOrRegisterCounter(
-            $this->getCacheKey(),
+        $requestsTotal = $this->getCollectorRegistry()->getOrRegisterCounter(
+            $this->getNamespace(),
             'requests_total',
             'Number of requests',
             ['portal', 'status_code']

@@ -2,10 +2,6 @@
 
 namespace App\Metrics;
 
-use Prometheus\CollectorRegistry;
-use Prometheus\RegistryInterface;
-use Prometheus\Storage\APC;
-
 class PrometheusCollector
 {
     /**
@@ -23,10 +19,5 @@ class PrometheusCollector
         foreach ($this->metrics as $metric) {
             $metric->update();
         }
-    }
-
-    public static function getCollectorRegistry(): RegistryInterface
-    {
-        return new CollectorRegistry(new APC());
     }
 }

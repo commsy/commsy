@@ -20,9 +20,8 @@ class WorkspaceMetric extends AbstractMetric implements MetricInterface
 
     public function update(): void
     {
-        $registry = PrometheusCollector::getCollectorRegistry();
-        $workspaceNumberTotal = $registry->getOrRegisterGauge(
-            $this->getCacheKey(),
+        $workspaceNumberTotal = $this->getCollectorRegistry()->getOrRegisterGauge(
+            $this->getNamespace(),
             'workspace_total',
             'Number of workspaces',
             ['portal', 'type']
