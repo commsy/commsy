@@ -16,6 +16,8 @@ parameters:
     router.request_context.host: "%env(HOST)%"
     router.request_context.scheme: "%env(SCHEME)%"
 
+    commsy.metrics.cache_namespace: "%env(API_METRICS_CACHE_NAMESPACE)%"
+
     # Autosaving
     commsy.autosave.mode: 0         # possible modes: 0 -> unvisible, 1 -> verbose / silent, 2 -> verbose / counter
     commsy.autosave.limit: 6        # limit in minutes
