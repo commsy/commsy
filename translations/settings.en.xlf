@@ -199,7 +199,15 @@
             <trans-unit id="room_description_text">
                 <source>Room description text</source>
                 <target>Insert an additional description (max. 1000 characters allowed).</target>
-            </trans-unit>  
+            </trans-unit>
+            <trans-unit id="room_slug">
+                <source>Room slug</source>
+                <target>Workspace identifier</target>
+            </trans-unit>
+            <trans-unit id="room_slug_text">
+                <source>Room slug text</source>
+                <target>Here you can define a unique textual identifier für this workspace. This workspace identifier gets used when automatically creating workspace members. The identifier must not exceed 255 characters and may only contain lowercase English letters, digits or any of these special characters: -._~</target>
+            </trans-unit>
 
             <!-- Additional settings -->
             <trans-unit id="additional_configuration">
