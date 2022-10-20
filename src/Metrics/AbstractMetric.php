@@ -2,6 +2,9 @@
 
 namespace App\Metrics;
 
+use Prometheus\CollectorRegistry;
+use Prometheus\RegistryInterface;
+use Prometheus\Storage\APC;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 abstract class AbstractMetric
@@ -16,8 +19,19 @@ abstract class AbstractMetric
         $this->cacheKey = $params->get('commsy.metrics.cache_namespace');
     }
 
-    protected function getCacheKey(): string
+    /**
+     * @return string
+     */
+    protected function getNamespace(): string
     {
-        return $this->cacheKey;
+        return 'commsy';
+    }
+
+    /**
+     * @return RegistryInterface
+     */
+    public function getCollectorRegistry(): RegistryInterface
+    {
+        return new CollectorRegistry(new APC($this->cacheKey));
     }
 }

@@ -20,9 +20,8 @@ class AccountMetric extends AbstractMetric implements MetricInterface
 
     public function update(): void
     {
-        $registry = PrometheusCollector::getCollectorRegistry();
-        $accountNumberTotal = $registry->getOrRegisterGauge(
-            $this->getCacheKey(),
+        $accountNumberTotal = $this->getCollectorRegistry()->getOrRegisterGauge(
+            $this->getNamespace(),
             'account_total',
             'Number of accounts',
             ['portal']

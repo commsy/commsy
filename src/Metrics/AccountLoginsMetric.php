@@ -25,9 +25,8 @@ class AccountLoginsMetric extends AbstractMetric implements MetricInterface, Eve
             return;
         }
 
-        $registry = PrometheusCollector::getCollectorRegistry();
-        $accountLoginsTotal = $registry->getOrRegisterCounter(
-            $this->getCacheKey(),
+        $accountLoginsTotal = $this->getCollectorRegistry()->getOrRegisterCounter(
+            $this->getNamespace(),
             'account_logins_total',
             'Number of logins',
             ['portal']
