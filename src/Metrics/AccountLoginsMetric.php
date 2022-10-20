@@ -7,7 +7,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 
-class AccountLoginsMetric implements MetricInterface, EventSubscriberInterface
+class AccountLoginsMetric extends AbstractMetric implements MetricInterface, EventSubscriberInterface
 {
     public static function getSubscribedEvents()
     {
@@ -27,7 +27,7 @@ class AccountLoginsMetric implements MetricInterface, EventSubscriberInterface
 
         $registry = PrometheusCollector::getCollectorRegistry();
         $accountLoginsTotal = $registry->getOrRegisterCounter(
-            'commsy',
+            $this->getCacheKey(),
             'account_logins_total',
             'Number of logins',
             ['portal']

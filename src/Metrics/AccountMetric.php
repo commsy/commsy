@@ -6,7 +6,7 @@ use App\Entity\Account;
 use App\Entity\Portal;
 use Doctrine\Persistence\ManagerRegistry;
 
-class AccountMetric implements MetricInterface
+class AccountMetric extends AbstractMetric implements MetricInterface
 {
     /**
      * @var ManagerRegistry
@@ -22,7 +22,7 @@ class AccountMetric implements MetricInterface
     {
         $registry = PrometheusCollector::getCollectorRegistry();
         $accountNumberTotal = $registry->getOrRegisterGauge(
-            'commsy',
+            $this->getCacheKey(),
             'account_total',
             'Number of accounts',
             ['portal']
