@@ -557,8 +557,12 @@ class PortalSettingsController extends AbstractController
         $form = $this->createForm(AuthWorkspaceMembershipType::class, $portal);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $doctrine->getManager()->flush();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $doctrine->getManager()->flush();
+            } else {
+                $doctrine->getManager()->refresh($portal);
+            }
         }
 
         return [
