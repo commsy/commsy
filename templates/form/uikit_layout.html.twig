@@ -145,6 +145,12 @@
 {%- endblock time_widget -%}
 
 {%- block form_errors -%}
+    {%- if not valid and form is rootform -%}
+        <div class="form-errors">
+            {{ 'Validation failed. Please check the form for errors.'|trans({}, 'form') }}
+        </div>
+    {%- endif -%}
+
     {%- if errors|length > 0 -%}
         <ul class="form-errors">
             {%- for error in errors -%}
