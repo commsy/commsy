@@ -18,6 +18,7 @@ use Serializable;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -246,6 +247,10 @@ class Portal implements Serializable
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
+     *
+     * @Assert\NotBlank(message="The request identifier must not be empty.", groups={"authMembershipValidation"})
+     * @Assert\Length(max=100, maxMessage="The request identifier must not exceed {{ limit }} characters.", groups={"Default", "authMembershipValidation"})
+     * @Assert\Regex(pattern="/^[[:alnum:]~._-]+$/", message="The request identifier may only contain lowercase English letters, digits or any of these special characters: -._~", groups={"authMembershipValidation"})
      */
     private ?string $authMembershipIdentifier;
 

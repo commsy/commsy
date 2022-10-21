@@ -1503,11 +1503,11 @@
             </trans-unit>
             <trans-unit id="portal_auth.membership_identifier">
                 <source>portal.auth.membership_identifier</source>
-                <target>Request-Identifier</target>
+                <target>Request identifier</target>
             </trans-unit>
             <trans-unit id="portal_auth_membership_identifier_help">
                 <source>portal.auth.membership_identifier_help</source>
-                <target>Comma separated server environment information identifier used for automated workspace membership</target>
+                <target>Identifier for comma-separated server environment information used when automatically creating workspace members</target>
             </trans-unit>
         </body>
     </file>

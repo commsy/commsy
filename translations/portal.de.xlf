@@ -1507,7 +1507,7 @@
             </trans-unit>
             <trans-unit id="portal_auth_membership_identifier_help">
                 <source>portal.auth.membership_identifier_help</source>
-                <target>Bezeichner für Komma-separierte Server Umgebungsinforationen für automatische Raumteilnahme</target>
+                <target>Bezeichner für Komma-separierte Server-Umgebungsinformationen zur automatischen Raumteilnahme</target>
             </trans-unit>
         </body>
     </file>
