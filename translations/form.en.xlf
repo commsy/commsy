@@ -442,6 +442,10 @@
                 <source>token invalid</source>
                 <target>The invitation is not valid (anymore). Please contact the moderation.</target>
             </trans-unit>
+            <trans-unit id="form validation failed">
+                <source>Validation failed. Please check the form for errors.</source>
+                <target>Validation failed. Please check the form for errors.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
