@@ -88,7 +88,7 @@ class UserService
         int $userStatus = 2,
         cs_user_item $creator = null
     ): ?cs_user_item {
-        // TODO: use a facade/factory to create a new room (also compare with UserCreatorFacade->addUserToRooms())
+        // TODO: use a facade/factory to create a new room (also compare with UserCreatorFacade->addUserToRoomsWithIds())
 
         if (!isset($sourceUser) || empty($contextID)) {
             return null;

@@ -11,8 +11,10 @@ namespace App\Facade;
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
+use App\Entity\Room;
 use App\Form\Model\Csv\CsvUserDataset;
 use App\Services\LegacyEnvironment;
+use App\Utils\UserService;
 use cs_environment;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,6 +34,11 @@ class UserCreatorFacade
     private AccountCreatorFacade $accountFacade;
 
     /**
+     * @var UserService
+     */
+    private UserService $userService;
+
+    /**
      * @var EntityManagerInterface
      */
     private EntityManagerInterface $entityManager;
@@ -44,11 +51,13 @@ class UserCreatorFacade
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         AccountCreatorFacade $accountFacade,
+        UserService $userService,
         EntityManagerInterface $entityManager,
         UserPasswordEncoderInterface $passwordEncoder
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->accountFacade = $accountFacade;
+        $this->userService = $userService;
         $this->entityManager = $entityManager;
         $this->passwordEncoder = $passwordEncoder;
     }
@@ -74,8 +83,10 @@ class UserCreatorFacade
             $authSource
         );
 
-        if ($csvUserDataset->getRooms()) {
-            $this->addUserToRooms($newUser, $csvUserDataset->getRooms());
+        $roomIdString = $csvUserDataset->getRooms();
+        if ($roomIdString) {
+            $roomIds = explode(' ', trim($roomIdString));
+            $this->addUserToRoomsWithIds($newUser, $roomIds);
         }
     }
 
@@ -147,13 +158,41 @@ class UserCreatorFacade
     }
 
     /**
-     * @param cs_user_item $user
-     * @param string $rooms
+     * Adds users representing the given account to the rooms with the given room slugs.
+     *
+     * @param Account $account the account for whom room users shall be created
+     * @param string[] $roomSlugs list of room slugs (i.e., unique textual identifiers for the rooms)
      */
-    private function addUserToRooms(cs_user_item $user, string $rooms): void
+    public function addUserToRoomsWithSlugs(Account $account, array $roomSlugs): void
     {
-        $roomIds = explode(' ', trim($rooms));
+        if (empty($roomSlugs)) {
+            return;
+        }
 
+        $roomRepository = $this->entityManager->getRepository(Room::class);
+
+        // map room slugs to actual room IDs
+        $roomIds = array_map(function (string $roomSlug) use ($roomRepository, $account) {
+            $room = $roomRepository->findOneByRoomSlug(trim($roomSlug), $account->getContextId());
+            return ($room) ? $room->getItemId() : null;
+        }, $roomSlugs);
+
+        // filter out any null values (where a room slug couldn't be mapped to an actual room ID)
+        $roomIds = array_filter($roomIds);
+
+        // create room users
+        $portalUser = $this->userService->getPortalUser($account);
+        $this->addUserToRoomsWithIds($portalUser, $roomIds);
+    }
+
+    /**
+     * Adds users representing the given user to the rooms with the given IDs.
+     *
+     * @param cs_user_item $user the user for whom room users shall be created
+     * @param array $roomIds list of room IDs
+     */
+    private function addUserToRoomsWithIds(cs_user_item $user, array $roomIds): void
+    {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $privateRoomUser = $user->getRelatedPrivateRoomUserItem();
 

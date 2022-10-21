@@ -7,6 +7,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -22,8 +23,10 @@ class LoginSubscriber implements EventSubscriberInterface
      */
     private UrlGeneratorInterface $urlGenerator;
 
-    public function __construct(Security $security, UrlGeneratorInterface $urlGenerator)
-    {
+    public function __construct(
+        Security $security,
+        UrlGeneratorInterface $urlGenerator
+    ) {
         $this->security = $security;
         $this->urlGenerator = $urlGenerator;
     }
@@ -31,7 +34,7 @@ class LoginSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'kernel.request' => 'onKernelRequest',
+            KernelEvents::REQUEST => 'onKernelRequest',
         ];
     }
 
