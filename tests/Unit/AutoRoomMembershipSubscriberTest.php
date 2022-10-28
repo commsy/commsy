@@ -9,31 +9,27 @@ use App\EventSubscriber\AutoRoomMembershipSubscriber;
 use App\Facade\UserCreatorFacade;
 use App\Tests\UnitTester;
 use Codeception\Stub;
+use Codeception\Test\Unit;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
-class AutoRoomMembershipSubscriberTestCest
+class AutoRoomMembershipSubscriberTest extends Unit
 {
-    public function _before(UnitTester $I)
-    {
-    }
+    protected UnitTester $tester;
 
     /**
      * Tests whether `AutoRoomMembershipSubscriber->onSecurityInteractiveLogin()` gets to call
      * the `UserCreatorFacade->addUserToRoomsWithSlugs()` method.
      *
-     * @param UnitTester $I
      * @throws \Exception
      */
-    public function tryToTest(UnitTester $I)
+    public function testSubscriberMethodCalled()
     {
-        // TODO fail test if AutoRoomMembershipSubscriber->onSecurityInteractiveLogin returns early
+        $roomslugs = ['a-test-room', 'another-test-room'];
 
-        $roomslugs = ['little-test-room', 'yet-another-little-test-room'];
-
-        $portal = Stub::makeEmpty(Portal::class, [
+        $portal = $this->makeEmpty(Portal::class, [
             'getAuthMembershipEnabled' => function () {
                 return true;
             },
@@ -42,32 +38,32 @@ class AutoRoomMembershipSubscriberTestCest
             }
         ]);
 
-        $authSource = Stub::makeEmpty(AuthSource::class, [
+        $authSource = $this->makeEmpty(AuthSource::class, [
             'getPortal' => function () use ($portal) {
                 return $portal;
             }]);
 
-        $account = Stub::makeEmpty(Account::class, [
+        $account = $this->makeEmpty(Account::class, [
             'getAuthSource' => function () use ($authSource) {
                 return $authSource;
             }
         ]);
 
-        $authToken = Stub::makeEmpty(TokenInterface::class, [
+        $authToken = $this->makeEmpty(TokenInterface::class, [
             'getUser' => function () use ($account) {
                 return $account;
             }
         ]);
 
-        $request = Stub::makeEmpty(Request::class, [
-            'request' => Stub::make(ParameterBag::class, [
+        $request = $this->makeEmpty(Request::class, [
+            'request' => $this->make(ParameterBag::class, [
                 'parameters' => [
                     'roomslugs' => join(',', $roomslugs)
                 ]
             ])
         ]);
 
-        $event = Stub::makeEmpty(InteractiveLoginEvent::class, [
+        $event = $this->makeEmpty(InteractiveLoginEvent::class, [
             'getAuthenticationToken' => function () use ($authToken) {
                 return $authToken;
             },
@@ -76,9 +72,9 @@ class AutoRoomMembershipSubscriberTestCest
             },
         ]);
 
-        $userCreator = Stub::makeEmpty(UserCreatorFacade::class, [
+        $userCreator = $this->makeEmpty(UserCreatorFacade::class, [
             'addUserToRoomsWithSlugs' => Stub\Expected::once(),
-        ], $this);
+        ]);
 
         $subscriber = new AutoRoomMembershipSubscriber($userCreator);
 
