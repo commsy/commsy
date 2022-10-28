@@ -6,6 +6,7 @@ use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
+use App\Entity\Room;
 use App\Facade\AccountCreatorFacade;
 use Codeception\Actor;
 
@@ -84,5 +85,25 @@ class FunctionalTester extends Actor
         ]);
 
         return $account;
+    }
+
+    public function haveRoom(string $title, Portal $portal, $additionalParams = []): Room
+    {
+        $params = [
+            'contextId' => $portal->getId(),
+            'creator_id' => 99,
+            'modifier_id' => 99,
+            'title' => $title,
+            'status' => 1,
+        ];
+
+        if (!empty($additionalParams)) {
+            $params = array_merge($params, $additionalParams);
+        }
+
+        $room = new Room();
+        $this->haveInRepository($room, $params);
+
+        return $room;
     }
 }
