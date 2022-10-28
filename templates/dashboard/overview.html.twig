@@ -34,11 +34,11 @@
         {% endif %}
 
         {% if showServerNews %}
-            <div class="{% if portal.showServerNews %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
-                <div class="uk-alert{% if item.announcementSeverity != 'normal' %} uk-alert-{{ item.announcementSeverity }}{% endif %}" style="border: 1px solid #DFE3E4" data-uk-alert>
+            <div class="{% if portal.serverAnnouncementEnabled %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
+                <div class="uk-alert{% if server.announcementSeverity != 'normal' %} uk-alert-{{ server.announcementSeverity }}{% endif %}" style="border: 1px solid #DFE3E4" data-uk-alert>
                     <a class="uk-alert-close uk-close" href=""></a>
-                    <h3>{{ item.announcementTitle }}</h3>
-                    <p>{{ item.announcementText|raw }}</p>
+                    <h3>{{ server.announcementTitle }}</h3>
+                    <p>{{ server.announcementText|raw }}</p>
                 </div>
             </div>
         {% endif %}
