@@ -1109,14 +1109,8 @@ class cs_room_item extends cs_context_item {
 
     public function backFromArchive()
     {
-        // group rooms in project room
-        $type = $this->getRoomType();
-        if ($type == CS_PROJECT_TYPE) {
-            $this->backGrouproomsFromArchive();
-        }
-        unset($type);
-
         $environment = $this->_environment;
+
         // Managers that need data from other tables
         $hash_manager = $environment->getHashManager();
         $hash_manager->moveFromBackupToDb($this->getItemID());
@@ -1222,6 +1216,13 @@ class cs_room_item extends cs_context_item {
         $room_manager = $environment->getRoomManager();
         $room_manager->moveFromBackupToDb($this->getItemID());
         unset($room_manager);
+
+        // move a project room's group rooms last, as these require users to be moved already
+        $type = $this->getRoomType();
+        if ($type == CS_PROJECT_TYPE) {
+            $this->backGrouproomsFromArchive();
+        }
+        unset($type);
 
         unset($environment);
 
