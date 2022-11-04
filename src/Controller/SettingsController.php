@@ -192,6 +192,8 @@ class SettingsController extends AbstractController
      * @param Request $request
      * @param RoomService $roomService
      * @param AdditionalSettingsTransformer $transformer
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param LegacyEnvironment $legacyEnvironment
      * @param int $roomId
      * @return array
      */
@@ -200,9 +202,13 @@ class SettingsController extends AbstractController
         RoomService $roomService,
         AdditionalSettingsTransformer $transformer,
         EventDispatcherInterface $eventDispatcher,
+        LegacyEnvironment $legacyEnvironment,
         int $roomId
     )
     {
+        $portalItem = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
+        $portalId = $portalItem->getItemId();
+
         /** @var cs_room_item $roomItem */
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
@@ -210,7 +216,7 @@ class SettingsController extends AbstractController
         }
 
         $termsRepository = $this->getDoctrine()->getRepository(Terms::class);
-        $availableTerms = $termsRepository->findByContextId($roomItem->getContextId());
+        $availableTerms = $termsRepository->findByContextId($portalId);
         $portalTerms = ['' => false];
         foreach ($availableTerms as $availableTerm) {
             $portalTerms[$availableTerm->getTitle()] = $availableTerm->getId();
@@ -243,8 +249,6 @@ class SettingsController extends AbstractController
             $roomSettingsChangedEvent = new RoomSettingsChangedEvent($oldRoom, $roomItem);
             $eventDispatcher->dispatch($roomSettingsChangedEvent);
         }
-
-        $portalItem = $roomItem->getContextItem();
 
         return [
             'form' => $form->createView(),
@@ -530,7 +534,8 @@ class SettingsController extends AbstractController
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment
     ) {
-        $portal = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
+        $portalItem = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
+        $portalId = $portalItem->getItemId();
 
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
@@ -560,7 +565,7 @@ class SettingsController extends AbstractController
 
                 // redirect back to all rooms
                 return $this->redirectToRoute('app_room_listall', [
-                    "roomId" => $portal->getItemId()
+                    "roomId" => $portalId
                 ]);
             }
         }
@@ -573,7 +578,7 @@ class SettingsController extends AbstractController
 
                 // redirect back to all rooms
                 return $this->redirectToRoute('app_room_listall', [
-                    "roomId" => $portal->getItemId()
+                    "roomId" => $portalId
                 ]);
             }
         }
@@ -619,8 +624,11 @@ class SettingsController extends AbstractController
 
         $legacyEnvironment = $environment->getEnvironment();
 
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+        $portalId = $portalItem->getItemId();
+
         /** @var Portal $portal */
-        $portal = $portalRepository->find($roomItem->getContextID());
+        $portal = $portalRepository->find($portalId);
 
         $authSources = $portal->getAuthSources();
 
@@ -657,7 +665,7 @@ class SettingsController extends AbstractController
                     $invitationCode = $invitationsService->generateInvitationCode($localAuthSource, $roomId, $data['email']);
                     $invitationMessage = $invitationMessageFactory->createInvitationMessage($portal, $roomItem, $invitationCode);
 
-                    $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
+                    $fromSender = $portalItem->getTitle();
                     $mailer->send($invitationMessage, $fromSender, RecipientFactory::createFromRaw($data['email']));
                 }
             } else if ($clickedButton === 'delete') {
