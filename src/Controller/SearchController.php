@@ -1009,8 +1009,11 @@ class SearchController extends BaseController
                     $routeName = 'app_' . $type . '_detail';
                 }
 
+                $portalId = $this->legacyEnvironment->getCurrentPortalID();
+
                 if ($this->router->getRouteCollection()->get($routeName)) {
                     $url = $this->generateUrl($routeName, [
+                        'portalId' => $portalId,
                         'roomId' => $roomId,
                         'itemId' => $searchResult->getItemId(),
                     ]);
@@ -1068,6 +1071,8 @@ class SearchController extends BaseController
                     $routeName = 'app_' . $type . '_detail';
                 }
 
+                $portalId = $this->legacyEnvironment->getCurrentPortalID();
+
                 $results[] = [
                     'allowedActions' => $allowedActions,
                     'entity' => $searchResult,
@@ -1078,6 +1083,7 @@ class SearchController extends BaseController
                     'readStatus' => $readStatus,
                     'isExternal' => $isExternal,
                     'calendar' => $calendar,
+                    'portalId' => $portalId,
                 ];
             }
         }
