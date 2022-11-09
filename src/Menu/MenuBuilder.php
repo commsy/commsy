@@ -295,17 +295,21 @@ class MenuBuilder
 
     /**
      * @param RequestStack $requestStack
+     * @param LegacyEnvironment $legacyEnvironment
      * @return ItemInterface
      */
-    public function createSettingsMenu(RequestStack $requestStack): ItemInterface
+    public function createSettingsMenu(RequestStack $requestStack, LegacyEnvironment $legacyEnvironment): ItemInterface
     {
         // get room Id
         $currentStack = $requestStack->getCurrentRequest();
         $roomId = $currentStack->attributes->get('roomId');
         $room = $this->roomService->getRoomItem($roomId);
 
+        $portalItem = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
+        $portalId = $portalItem->getItemId();
+
         /** @var Portal $portal */
-        $portal = $this->portalRepository->find($room->getContextID());
+        $portal = $this->portalRepository->find($portalId);
 
         // create root item
         $menu = $this->factory->createItem('root');

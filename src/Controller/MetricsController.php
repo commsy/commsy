@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Metrics\PrometheusCollector;
+use Prometheus\CollectorRegistry;
 use Prometheus\RenderTextFormat;
+use Prometheus\Storage\APC;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,8 +19,7 @@ class MetricsController extends AbstractController
     {
         $collector->updateMetrics();
 
-        $registry = PrometheusCollector::getCollectorRegistry();
-
+        $registry = new CollectorRegistry(new APC($this->getParameter('commsy.metrics.cache_namespace')));
         $renderer = new RenderTextFormat();
         $result = $renderer->render($registry->getMetricFamilySamples());
 

@@ -2205,15 +2205,16 @@ class PortalSettingsController extends AbstractController
 
         $relatedUsers = $userListBuilder
             ->fromAccount($accountManager->getAccount($user, $portal->getId()))
-            ->withProjectRoomUser()
-            ->withCommunityRoomUser()
+            ->withProjectRoomUser(true)
+            ->withCommunityRoomUser(true)
             ->withUserRoomUser()
             ->withPrivateRoomUser()
             ->getList();
+
         foreach ($relatedUsers as $relatedUser) {
             $contextID = $relatedUser->getContextID();
             $locked = $relatedUser->getStatus() === "0" ? "(".$translator->trans('Locked', [], 'portal'). ") " : "";
-            $relatedRoomItem = $roomService->getRoomItem($contextID);
+            $relatedRoomItem = $roomService->getRoomItem($contextID) ?? $roomService->getArchivedRoomItem($contextID);
             if ($relatedRoomItem->getType() === 'project') {
                 if ($relatedRoomItem->getStatus() == '2') {
                     $projectsArchivedListNames[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';

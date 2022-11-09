@@ -1,0 +1,13 @@
+{% macro userStatus(userStatus) %}
+    {% if (userStatus == 0) %}
+        {{- 'Locked'|trans({},'portal') -}}
+    {% elseif (userStatus == 1) %}
+        {{- 'Applying'|trans({},'portal') -}}
+    {% elseif (userStatus == 2) %}
+        {{- 'User'|trans({},'portal') -}}
+    {% elseif (userStatus == 3) %}
+        {{- 'Moderator'|trans({},'portal') -}}
+    {% else %}
+        {{- 'User'|trans({},'portal') -}}
+    {% endif %}
+{% endmacro %}

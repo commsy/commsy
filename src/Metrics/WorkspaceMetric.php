@@ -5,23 +5,23 @@ namespace App\Metrics;
 use App\Entity\Room;
 use Doctrine\Persistence\ManagerRegistry;
 
-class WorkspaceMetric implements MetricInterface
+class WorkspaceMetric extends AbstractMetric implements MetricInterface
 {
     /**
      * @var ManagerRegistry
      */
     private ManagerRegistry $doctrine;
 
-    public function __construct(ManagerRegistry $doctrine)
-    {
+    public function __construct(
+        ManagerRegistry $doctrine
+    ) {
         $this->doctrine = $doctrine;
     }
 
     public function update(): void
     {
-        $registry = PrometheusCollector::getCollectorRegistry();
-        $workspaceNumberTotal = $registry->getOrRegisterGauge(
-            'commsy',
+        $workspaceNumberTotal = $this->getCollectorRegistry()->getOrRegisterGauge(
+            $this->getNamespace(),
             'workspace_total',
             'Number of workspaces',
             ['portal', 'type']
