@@ -30,7 +30,7 @@ class AutoRoomMembershipCest
         // TODO set server params for next request via
         // $I->setServerParameters(['roomslugs' => 'test-room'])
 
-        $I->amLoggedInAsUser($portal, 'Test user', 'testpwd');
+        $I->amLoggedInAsUser($portal, 'user', 'testpwd');
 
         $I->amOnRoute('app_room_home', [
             'roomId' => $room->getItemId(),
