@@ -22,28 +22,25 @@ fos_elastica:
             settings: &index_settings
                 analysis:
                     analyzer:
-                        commsy_analyzer:
+                        commsy_default_analyzer: &default_analyzer_mapping
                             type: custom
                             tokenizer: standard
+                            filter:
+                                - lowercase
+                                - stop_de_filter
+                                - stop_en_filter
+                                - stemmer_filter
+                            char_filter:
+                                - html_strip
+
+                        commsy_ngram_analyzer:
+                            <<: *default_analyzer_mapping
                             filter:
                                 - lowercase
                                 - stop_de_filter
                                 - stop_en_filter
                                 - stemmer_filter
                                 - ngrams_filter
-                            char_filter:
-                                - html_strip
-
-                        html_strip_analyzer:
-                            type: custom
-                            tokenizer: standard
-                            filter:
-                                - lowercase
-                                - stop_de_filter
-                                - stop_en_filter
-                                - stemmer_filter
-                            char_filter:
-                                - html_strip
 
                     filter:
                         ngrams_filter:
@@ -113,15 +110,15 @@ fos_elastica:
                     format: date_optional_time
                 title: &title_mapping
                     type: text
-                    analyzer: commsy_analyzer
-                    search_analyzer: commsy_analyzer
+                    analyzer: commsy_ngram_analyzer
+                    search_analyzer: commsy_default_analyzer
                     fields:
                         raw:
                             type: keyword
                 description:
                     type: text
-                    analyzer: html_strip_analyzer
-                    search_analyzer: html_strip_analyzer
+                    analyzer: commsy_default_analyzer
+                    search_analyzer: commsy_default_analyzer
                 endDate:
                     type: date
                     format: date_optional_time
@@ -137,8 +134,8 @@ fos_elastica:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
                     type: text
-                    analyzer: html_strip_analyzer
-                    search_analyzer: html_strip_analyzer
+                    analyzer: commsy_default_analyzer
+                    search_analyzer: commsy_default_analyzer
                 attachments:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
@@ -186,8 +183,8 @@ fos_elastica:
                 title: *title_mapping
                 description:
                     type: text
-                    analyzer: html_strip_analyzer
-                    search_analyzer: html_strip_analyzer
+                    analyzer: commsy_default_analyzer
+                    search_analyzer: commsy_default_analyzer
                 datetimeStart:
                     type: date
                     format: date_optional_time
@@ -206,8 +203,8 @@ fos_elastica:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
                     type: text
-                    analyzer: html_strip_analyzer
-                    search_analyzer: html_strip_analyzer
+                    analyzer: commsy_default_analyzer
+                    search_analyzer: commsy_default_analyzer
                 attachments:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
@@ -260,12 +257,12 @@ fos_elastica:
                     properties:
                         subject:
                             type: text
-                            analyzer: commsy_analyzer
-                            search_analyzer: html_strip_analyzer
+                            analyzer: commsy_ngram_analyzer
+                            search_analyzer: commsy_default_analyzer
                         description:
                             type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
+                            analyzer: commsy_default_analyzer
+                            search_analyzer: commsy_default_analyzer
                 attachments:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
@@ -282,8 +279,8 @@ fos_elastica:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
                     type: text
-                    analyzer: html_strip_analyzer
-                    search_analyzer: html_strip_analyzer
+                    analyzer: commsy_default_analyzer
+                    search_analyzer: commsy_default_analyzer
             #                        attachments:
             #                            # resolved by FOSElastica using POST_TRANSFORM
             #                            property_path: false
@@ -334,8 +331,8 @@ fos_elastica:
                 title: *title_mapping
                 description:
                     type: text
-                    analyzer: html_strip_analyzer
-                    search_analyzer: html_strip_analyzer
+                    analyzer: commsy_default_analyzer
+                    search_analyzer: commsy_default_analyzer
 
         # Rooms
         commsy_room:
@@ -381,8 +378,8 @@ fos_elastica:
                 description:
                     property_path: getRoomDescription
                     type: text
-                    analyzer: html_strip_analyzer
-                    search_analyzer: html_strip_analyzer
+                    analyzer: commsy_default_analyzer
+                    search_analyzer: commsy_default_analyzer
                 activity:
                     type: integer
 
@@ -431,8 +428,8 @@ fos_elastica:
                     format: date_optional_time
                 description:
                     type: text
-                    analyzer: html_strip_analyzer
-                    search_analyzer: html_strip_analyzer
+                    analyzer: commsy_default_analyzer
+                    search_analyzer: commsy_default_analyzer
                 status:
                     type: integer
                 steps:
@@ -443,8 +440,8 @@ fos_elastica:
                         title: *title_mapping
                         description:
                             type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
+                            analyzer: commsy_default_analyzer
+                            search_analyzer: commsy_default_analyzer
                 attachments:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
@@ -461,8 +458,8 @@ fos_elastica:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
                     type: text
-                    analyzer: html_strip_analyzer
-                    search_analyzer: html_strip_analyzer
+                    analyzer: commsy_default_analyzer
+                    search_analyzer: commsy_default_analyzer
             #                        attachments:
             #                            # resolved by FOSElastica using POST_TRANSFORM
             #                            property_path: false
@@ -550,15 +547,15 @@ fos_elastica:
                 title:
                     property_path: getFullname
                     type: text
-                    analyzer: commsy_analyzer
-                    search_analyzer: commsy_analyzer
+                    analyzer: commsy_ngram_analyzer
+                    search_analyzer: commsy_default_analyzer
                     fields:
                         raw:
                             type: keyword
                 description:
                     type: text
-                    analyzer: html_strip_analyzer
-                    search_analyzer: html_strip_analyzer
+                    analyzer: commsy_default_analyzer
+                    search_analyzer: commsy_default_analyzer
 
         # Materials
         commsy_material:
@@ -607,8 +604,8 @@ fos_elastica:
                 title: *title_mapping
                 description:
                     type: text
-                    analyzer: html_strip_analyzer
-                    search_analyzer: html_strip_analyzer
+                    analyzer: commsy_default_analyzer
+                    search_analyzer: commsy_default_analyzer
                 sections:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
@@ -616,15 +613,15 @@ fos_elastica:
                     properties:
                         title:
                             type: text
-                            analyzer: commsy_analyzer
-                            search_analyzer: html_strip_analyzer
+                            analyzer: commsy_ngram_analyzer
+                            search_analyzer: commsy_default_analyzer
                             fields:
                                 raw:
                                     type: keyword
                         description:
                             type: text
-                            analyzer: html_strip_analyzer
-                            search_analyzer: html_strip_analyzer
+                            analyzer: commsy_default_analyzer
+                            search_analyzer: commsy_default_analyzer
                 #                                attachments:
                 #                                    # resolved by FOSElastica using POST_TRANSFORM
                 #                                    property_path: false
@@ -642,8 +639,8 @@ fos_elastica:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
                     type: text
-                    analyzer: html_strip_analyzer
-                    search_analyzer: html_strip_analyzer
+                    analyzer: commsy_default_analyzer
+                    search_analyzer: commsy_default_analyzer
                 attachments:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
