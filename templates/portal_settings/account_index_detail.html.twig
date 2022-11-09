@@ -8,6 +8,8 @@
 
 {% block main %}
     {% embed 'components/card.html.twig' %}
+        {% import 'account/macros.html.twig' as macros %}
+
         {% block title %}{{ 'Accounts'|trans({}, "portal") }}{% endblock %}
         {% block body %}
             {% set performedSuccessfully = app.flashes('performedSuccessfully')|first %}
@@ -73,18 +75,8 @@
                         <td>{{ authSource.title }}</td>
                     </tr>
                     <tr>
-                        <td> {{'Status'|trans({},'portal') }}: </td>
-                        {% if(user.getStatus() == 0) %}
-                            <td>{{'Locked'|trans({},'portal') }}</td>
-                        {% elseif(user.getStatus() == 1) %}
-                            <td>{{'Applying'|trans({},'portal') }}</td>
-                        {% elseif(user.getStatus() == 2) %}
-                            <td>{{'User'|trans({},'portal') }}</td>
-                        {% elseif(user.getStatus() == 3) %}
-                            <td>{{'Moderator'|trans({},'portal') }}</td>
-                        {% else %}
-                            <td>{{'User'|trans({},'portal') }}</td>
-                        {% endif %}
+                        <td>{{'Status'|trans({},'portal') }}:</td>
+                        <td>{{ macros.userStatus(user.status) }}</td>
                     </tr>
                     <tr>
                         <td>{{'Language'|trans({},'portal') }}</td>
