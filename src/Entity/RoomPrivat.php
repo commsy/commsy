@@ -155,6 +155,13 @@ class RoomPrivat
     private $lastlogin;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="slug", type="string", length=255, nullable=true)
+     */
+    private ?string $slug;
+
+    /**
      * @return int
      */
     public function getItemId(): int
@@ -512,6 +519,28 @@ class RoomPrivat
     {
         $this->lastlogin = $lastlogin;
         return $this;
+    }
+
+    /**
+     * Set the room's slug (a unique textual identifier for this room)
+     *
+     * @param string|null $slug
+     */
+    public function setSlug(?string $slug): void
+    {
+        $slug = !empty($slug) ? strtolower($slug) : null;
+
+        $this->slug = $slug;
+    }
+
+    /**
+     * Get the room's slug (a unique textual identifier for this room)
+     *
+     * @return string|null
+     */
+    public function getSlug(): ?string
+    {
+        return $this->slug;
     }
 }
 
