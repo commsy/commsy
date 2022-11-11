@@ -15,29 +15,28 @@ class AutoRoomMembershipCest
      */
     public function autoCreateRoomMember(User $I)
     {
-        $portal = $I->havePortal('Test portal');
-
-        // TODO set required Portal configs
-        // setAuthMembershipEnabled: true
-        // setAuthMembershipIdentifier: 'roomslugs'
-
-        $room = $I->haveRoom('Test room', $portal, [
-            'slug' => 'test-room',
+        // create portal & room with settings that facilitate auto-creation of room user(s)
+        $portal = $I->havePortal('Test portal', [
+            'authMembershipEnabled' => true,
+            'authMembershipIdentifier' => 'roomslugs',
         ]);
 
-        $I->haveAccount($portal, 'user');
+        $room = $I->haveProjectRoom('Test room', true, $portal);
+        $room->setSlug('test-room');
+        $room->save();
 
-        // TODO set server params for next request via
-        // $I->setServerParameters(['roomslugs' => 'test-room'])
+        $account = $I->haveAccount($portal, 'user2');
 
-        $I->amLoggedInAsUser($portal, 'user', 'testpwd');
+        $I->setServerParameters(['roomslugs' => 'test-room']);
 
+        // given the above, login should cause room user(s) for the currently logged-in account to be created
+        $I->amLoggedInAsUser($portal, 'user2', $account->getPlainPassword());
+
+        // check if the room can be accessed successfully for the newly logged-in account
         $I->amOnRoute('app_room_home', [
             'roomId' => $room->getItemId(),
         ]);
 
         $I->seeResponseCodeIs(HttpCode::OK);
-
-        // TODO check if the route for the newly created room user can be accessed successfully
     }
 }

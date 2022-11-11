@@ -6,9 +6,11 @@ use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
-use App\Entity\Room;
 use App\Facade\AccountCreatorFacade;
+use App\Utils\UserService;
 use Codeception\Actor;
+use Codeception\Util\HttpCode;
+use DateTimeImmutable;
 
 /**
  * Inherited Methods
@@ -29,7 +31,7 @@ class FunctionalTester extends Actor
 {
     use _generated\FunctionalTesterActions;
 
-    public function havePortal(string $title): Portal
+    public function havePortal(string $title, array $additionalParams = []): Portal
     {
         $authSource = new AuthSourceLocal();
         $this->haveInRepository($authSource, [
@@ -41,10 +43,16 @@ class FunctionalTester extends Actor
 
         $portal = new Portal();
         $portal->addAuthSource($authSource);
-        $this->haveInRepository($portal, [
+
+        $params = [
             'title' => $title,
             'status' => 1,
-        ]);
+        ];
+        if (!empty($additionalParams)) {
+            $params = array_merge($params, $additionalParams);
+        }
+
+        $this->haveInRepository($portal, $params);
 
         return $portal;
     }
@@ -87,23 +95,53 @@ class FunctionalTester extends Actor
         return $account;
     }
 
-    public function haveRoom(string $title, Portal $portal, $additionalParams = []): Room
+    public function haveProjectRoom(string $title, bool $performLogin = true, ?Portal $portal = null, ?Account $account = null)
     {
-        $params = [
-            'contextId' => $portal->getId(),
-            'creator_id' => 99,
-            'modifier_id' => 99,
-            'title' => $title,
-            'status' => 1,
-        ];
-
-        if (!empty($additionalParams)) {
-            $params = array_merge($params, $additionalParams);
+        if (!$portal) {
+            $portal = $this->havePortal('Test portal');
+            $this->seeInDatabase('user', ['title' => 'Test portal']);
         }
 
-        $room = new Room();
-        $this->haveInRepository($room, $params);
+        if (!$account) {
+            $account = $this->haveAccount($portal, 'user');
+            $this->seeInDatabase('user', ['user_id' => 'user', 'context_id' => $portal->getId()]);
+        }
 
-        return $room;
+        if ($performLogin && $portal && $account) {
+            $this->amLoggedInAsUser($portal, $account->getUsername(), $account->getPlainPassword());
+        }
+
+        /** @var \cs_environment $legacyEnvironment */
+        $legacyEnvironment = $this->grabService('commsy_legacy.environment')->getEnvironment();
+
+        /** @var UserService $userService */
+        $userService = $this->grabService(UserService::class);
+
+        $portalUser = $userService->getPortalUser($account);
+
+        $projectRoomManager = $legacyEnvironment->getProjectManager();
+
+        /** @var \cs_project_item $projectRoom */
+        $projectRoom = $projectRoomManager->getNewItem();
+
+        $now = new DateTimeImmutable();
+
+        $projectRoom->setTitle($title);
+        $projectRoom->setCreatorItem($portalUser);
+        $projectRoom->setCreationDate($now->format('Y-m-d H:i:s'));
+        $projectRoom->setModificatorItem($portalUser);
+        $projectRoom->setModificationDate($now->format('Y-m-d H:i:s'));
+        $projectRoom->setContextID($portal->getId());
+        $projectRoom->open();
+        $projectRoom->save();
+
+        $this->seeInDatabase('room', ['type' => 'project', 'title' => $title]);
+
+        $this->amOnRoute('app_room_home', [
+            'roomId' => $projectRoom->getItemId(),
+        ]);
+        $this->seeResponseCodeIs(HttpCode::OK);
+
+        return $projectRoom;
     }
 }
