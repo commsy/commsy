@@ -73,9 +73,9 @@ class FunctionalTester extends Actor
     public function haveAccount(Portal $portal, string $username): Account
     {
         /** @var AuthSourceLocal $localAuthSource */
-        $localAuthSource = $portal->getAuthSources()->filter(function (AuthSource $authSource) {
-            return $authSource->getType() === 'local';
-        })->first();
+        $localAuthSource = $this->grabEntityFromRepository(AuthSourceLocal::class, [
+            'portal' => $portal,
+        ]);
 
         /** @var Account $account */
         $account = $this->make(Account::class, [
