@@ -59,14 +59,7 @@ class LoggingSubscriber implements EventSubscriberInterface
                 // Datenschutz
                 if ($request->server->has('REMOTE_ADDR')) {
                     $remoteAddress = $request->server->get('REMOTE_ADDR');
-
-                    if ($server_item->withLogIPCover()) {
-                        // if datasecurity is active dont show last two fields
-                        $remote_adress_array = explode('.', $remoteAddress);
-                        $array['remote_addr']	   = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
-                    } else {
-                        $array['remote_addr']      = $remoteAddress;
-                    }
+                    $array['remote_addr'] = $remoteAddress;
                 }
 
                 $array['script_name']      = $request->getScriptName();

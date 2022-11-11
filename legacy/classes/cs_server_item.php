@@ -753,27 +753,6 @@ class cs_server_item extends cs_guide_item
         return $manager->getStatistics($this, $date_start, $date_end);
     }
 
-    public function withLogIPCover()
-    {
-        $retour = false;
-        $value = $this->_getExtraConfig('LOGIPCOVER');
-        if ($value == 1) {
-            $retour = true;
-        }
-
-        return $retour;
-    }
-
-    public function setWithLogIPCover()
-    {
-        $this->_setExtraConfig('LOGIPCOVER', 1);
-    }
-
-    public function setWithoutLogIPCover()
-    {
-        $this->_setExtraConfig('LOGIPCOVER', -1);
-    }
-
     ## commsy server connections: portal2portal
     public function getOwnConnectionKey()
     {
