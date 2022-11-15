@@ -503,10 +503,6 @@
                 <source>English</source>
                 <target>Englisch</target>
             </trans-unit>
-            <trans-unit id="settings_only_visible">
-                <source>Settings only visible...</source>
-                <target>Einstellungen (nur für </target>
-            </trans-unit>
             <trans-unit id="_for">
                 <source>...for</source>
                 <target> sichtbar)</target>

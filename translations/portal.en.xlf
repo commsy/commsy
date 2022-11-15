@@ -743,10 +743,6 @@
                 <source>English</source>
                 <target>English</target>
             </trans-unit>
-            <trans-unit id="settings_only_visible">
-                <source>Settings only visible...</source>
-                <target>Settings (only visible for </target>
-            </trans-unit>
             <trans-unit id="_for">
                 <source>...for</source>
                 <target> )</target>
