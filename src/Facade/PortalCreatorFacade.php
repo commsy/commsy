@@ -7,15 +7,16 @@ namespace App\Facade;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Translation;
+use Doctrine\Persistence\ManagerRegistry;
 
 class PortalCreatorFacade
 {
-    private $entityManager;
+    private ManagerRegistry $registry;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(ManagerRegistry $registry)
     {
-        $this->entityManager = $entityManager;
+        $this->registry = $registry;
     }
 
     public function persistPortal(Portal $portal)
@@ -34,8 +35,20 @@ class PortalCreatorFacade
 
         $portal->addAuthSource($authSource);
 
-        $this->entityManager->persist($portal);
-        $this->entityManager->persist($authSource);
-        $this->entityManager->flush();
+        $manager = $this->registry->getManager();
+
+        $manager->persist($portal);
+        $manager->persist($authSource);
+        $manager->flush();
+
+        $translation = new Translation();
+        // TODO: Make this a relation and flush all together
+        $translation->setContextId($portal->getId());
+        $translation->setTranslationKey('EMAIL_REGEX_ERROR');
+        $translation->setTranslationDe('Die angegebene E-Mail-Adresse entspricht nicht den Vorgaben der Portalmoderation.');
+        $translation->setTranslationEn('The given email-address does not match the requirements set by the portal moderators.');
+
+        $manager->persist($translation);
+        $manager->flush();
     }
 }

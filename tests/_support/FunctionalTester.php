@@ -31,15 +31,17 @@ class FunctionalTester extends Actor
 {
     use _generated\FunctionalTesterActions;
 
-    public function havePortal(string $title, array $additionalParams = []): Portal
+    public function havePortal(string $title, array $additionalParams = [], ?AuthSourceLocal $authSource = null): Portal
     {
-        $authSource = new AuthSourceLocal();
-        $this->haveInRepository($authSource, [
-            'title' => 'Lokal',
-            'enabled' => true,
-            'default' => true,
-            'createRoom' => true,
-        ]);
+        if (!$authSource) {
+            $authSource = new AuthSourceLocal();
+            $this->haveInRepository($authSource, [
+                'title' => 'Lokal',
+                'enabled' => true,
+                'default' => true,
+                'createRoom' => true,
+            ]);
+        }
 
         $portal = new Portal();
         $portal->addAuthSource($authSource);
