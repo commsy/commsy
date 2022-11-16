@@ -2553,33 +2553,6 @@ class PortalSettingsController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/hidemail")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @IsGranted("PORTAL_MODERATOR", subject="portal")
-     */
-    public function accountIndexDetailHideMail(
-        Portal $portal,
-        Request $request,
-        UserService $userService,
-        LegacyEnvironment $legacyEnvironment
-    ) {
-        $user = $userService->getUser($request->get('userId'));
-        $user->setEmailNotVisible();
-        $user->save();
-
-        $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
-            'portalId' => $portal->getId(),
-        ]);
-
-        $this->addFlash('performedSuccessfully', $returnUrl);
-
-        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
-            'portalId' => $request->get('portalId'),
-            'userId' => $request->get('userId'),
-        ]);
-    }
-
-    /**
      * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/hidemailallwrks")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
@@ -2587,8 +2560,7 @@ class PortalSettingsController extends AbstractController
     public function accountIndexDetailHideMailAllWrks(
         Portal $portal,
         Request $request,
-        UserService $userService,
-        LegacyEnvironment $legacyEnvironment
+        UserService $userService
     ) {
         $user = $userService->getUser($request->get('userId'));
         $user->setEmailNotVisible();
@@ -2613,33 +2585,6 @@ class PortalSettingsController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/showmail")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @IsGranted("PORTAL_MODERATOR", subject="portal")
-     */
-    public function accountIndexDetailShowMail(
-        Portal $portal,
-        Request $request,
-        UserService $userService,
-        LegacyEnvironment $legacyEnvironment
-    ) {
-        $user = $userService->getUser($request->get('userId'));
-        $user->setEmailVisible();
-        $user->save();
-
-        $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
-            'portalId' => $portal->getId(),
-        ]);
-
-        $this->addFlash('performedSuccessfully', $returnUrl);
-
-        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
-            'portalId' => $request->get('portalId'),
-            'userId' => $request->get('userId'),
-        ]);
-    }
-
-    /**
      * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/showmailallwroks")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
@@ -2647,13 +2592,11 @@ class PortalSettingsController extends AbstractController
     public function accountIndexDetailShowMailAllWroks(
         Portal $portal,
         Request $request,
-        UserService $userService,
-        LegacyEnvironment $legacyEnvironment
+        UserService $userService
     ) {
         $user = $userService->getUser($request->get('userId'));
         $user->setEmailVisible();
         $user->save();
-
 
         $relatedUsers = $user->getRelatedUserList();
         foreach ($relatedUsers as $relatedUser) {

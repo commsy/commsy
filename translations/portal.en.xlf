@@ -467,17 +467,9 @@
                 <source>Mail combine ids</source>
                 <target>Mail: merge ids</target>
             </trans-unit>
-            <trans-unit id="hide_mail">
-                <source>Hide mail</source>
-                <target>Hide mail</target>
-            </trans-unit>
             <trans-unit id="hide_mail_all_wrks">
                 <source>Hide mail all wrks</source>
                 <target>Hide mail in all workspaces</target>
-            </trans-unit>
-            <trans-unit id="show_mail">
-                <source>Show mail</source>
-                <target>Show mail</target>
             </trans-unit>
             <trans-unit id="show_mail_all_wrks">
                 <source>Show mail all wrks</source>
