@@ -1696,17 +1696,6 @@ class PortalSettingsController extends AbstractController
                             'portalId' => $portalId,
                             'recipients' => implode(", ", $IdsMailRecipients),
                         ]);
-                    case 10: // send mail userID and password
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                array_push($IdsMailRecipients, $id);
-                            }
-                        }
-                        return $this->redirectToRoute('app_portalsettings_accountindexsendpasswordmail', [
-                            'portalId' => $portalId,
-                            'recipients' => implode(", ", $IdsMailRecipients),
-                        ]);
                     case 11: // send mail merge userIDs
                         $IdsMailRecipients = [];
                         foreach ($ids as $id => $checked) {
@@ -1718,15 +1707,6 @@ class PortalSettingsController extends AbstractController
                             'portalId' => $portalId,
                             'recipients' => implode(", ", $IdsMailRecipients),
                         ]);
-                    case 12: // hide mail
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                $user = $userService->getUser($id);
-                                $user->setEmailNotVisible();
-                                $user->save();
-                            }
-                        }
-                        break;
                     case 13: // hide mail everywhere
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
@@ -1738,15 +1718,6 @@ class PortalSettingsController extends AbstractController
                                     $relatedUser->setEmailNotVisible();
                                     $relatedUser->save();
                                 }
-                            }
-                        }
-                        break;
-                    case 14: // show mail
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                $user = $userService->getUser($id);
-                                $user->setEmailVisible();
-                                $user->save();
                             }
                         }
                         break;
@@ -2001,84 +1972,6 @@ class PortalSettingsController extends AbstractController
 
         return [
             'user' => $user,
-            'form' => $form->createView(),
-            'recipients' => $recipientArray,
-        ];
-    }
-
-    /**
-     * @Route("/portal/{portalId}/settings/accountindex/sendpasswordmail/{recipients}")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @IsGranted("PORTAL_MODERATOR", subject="portal")
-     * @Template()
-     */
-    public function accountIndexSendPasswordMail(
-        Portal $portal,
-        $portalId,
-        $recipients,
-        Request $request,
-        LegacyEnvironment $legacyEnvironment,
-        MailAssistant $mailAssistant,
-        UserService $userService,
-        ItemService $itemService,
-        Mailer $mailer,
-        RouterInterface $router
-    ) {
-        $recipientArray = [];
-        $recipients = explode(', ', $recipients);
-        foreach ($recipients as $recipient) {
-            $currentUser = $userService->getUser($recipient);
-            array_push($recipientArray, $currentUser);
-        }
-
-        $sendMail = new AccountIndexSendPasswordMail();
-        $sendMail->setRecipients($recipientArray);
-
-        $user = $legacyEnvironment->getEnvironment()->getCurrentUser();
-        $action = 'user-account_password';
-        $accountMail = new AccountMail($legacyEnvironment, $router);
-        $subject = $accountMail->generateSubject($action);
-        $body = $accountMail->generateBody($userService->getCurrentUserItem(), $action);
-        $sendMail->setSubject($subject);
-        $sendMail->setMessage($body);
-
-        $form = $this->createForm(AccountIndexSendPasswordMailType::class, $sendMail);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $data = $form->getData();
-            $mailRecipients = $data->getRecipients();
-
-            $recipientCount = 0;
-            foreach ($mailRecipients as $mailRecipient) {
-
-                $item = $itemService->getTypedItem($mailRecipient->getItemId());
-                $email = $mailAssistant->getAccountIndexPasswordMessage($form, $item);
-                $mailer->sendEmailObject($email, $portal->getTitle());
-
-                if (!is_null($email->getTo())) {
-                    $recipientCount += count($email->getTo());
-                }
-                if (!is_null($email->getCc())) {
-                    $recipientCount += count($email->getCc());
-                }
-                if (!is_null($email->getBcc())) {
-                    $recipientCount += count($email->getBcc());
-                }
-            }
-
-            $this->addFlash('recipientCount', $recipientCount);
-
-            $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
-                'portalId' => $portal->getId(),
-            ]);
-            $this->addFlash('savedSuccess', $returnUrl);
-
-        }
-
-        return [
-            'portal' => $portal,
             'form' => $form->createView(),
             'recipients' => $recipientArray,
         ];

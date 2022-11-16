@@ -459,10 +459,6 @@
                 <source>Send mail</source>
                 <target>E-Mail schicken</target>
             </trans-unit>
-            <trans-unit id="mail_id_password">
-                <source>Mail id password</source>
-                <target>E-Mail: Kennung u. Passwort</target>
-            </trans-unit>
             <trans-unit id="mail_combine_ids">
                 <source>Mail combine ids</source>
                 <target>E-Mail: Kennungen zusammenführen</target>
