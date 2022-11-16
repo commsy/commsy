@@ -467,17 +467,9 @@
                 <source>Mail combine ids</source>
                 <target>E-Mail: Kennungen zusammenführen</target>
             </trans-unit>
-            <trans-unit id="hide_mail">
-                <source>Hide mail</source>
-                <target>E-Mail verbergen</target>
-            </trans-unit>
             <trans-unit id="hide_mail_all_wrks">
                 <source>Hide mail all wrks</source>
                 <target>E-Mail in allen Räumen verbergen</target>
-            </trans-unit>
-            <trans-unit id="show_mail">
-                <source>Show mail</source>
-                <target>E-Mail anzeigen</target>
             </trans-unit>
             <trans-unit id="show_mail_all_wrks">
                 <source>Show mail all wrks</source>
