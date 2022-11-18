@@ -3,9 +3,11 @@
 namespace App\Tests\Functional;
 
 use App\Entity\AuthSourceLocal;
+use App\Entity\Invitations;
 use App\Entity\Translation;
 use App\Tests\FunctionalTester;
 use App\Tests\Page\Functional\Registration;
+use App\Tests\Step\Functional\User;
 
 class LoginCest
 {
@@ -94,5 +96,53 @@ class LoginCest
             'some@other.tld', 'zfCbzLm9h4$h');
 
         $I->see('error_de');
+    }
+
+    public function registerWithInvitation(User $I, Registration $registrationPage)
+    {
+        $authSource = new AuthSourceLocal();
+        $authSource->setTitle('Lokal');
+        $authSource->setEnabled(true);
+        $authSource->setDefault(true);
+        $authSource->setAddAccount(AuthSourceLocal::ADD_ACCOUNT_INVITE);
+        $I->haveInRepository($authSource);
+
+        $portal = $I->havePortal('Testportal', [], $authSource);
+        $room = $I->haveProjectRoom('Testraum', true, $portal);
+
+        // Create an inviation in the room settings
+        $I->amOnRoute('app_settings_invitations', [
+            'roomId' => $room->getItemID(),
+        ]);
+        $I->fillField('#invitations_settings_email', 'asdf@some.mail');
+        $I->click('#invitations_settings_send');
+        $I->seeResponseCodeIsSuccessful();
+        $I->see('asdf@some.mail');
+
+        $I->logout();
+
+        /** @var Invitations $invitation */
+        $invitation = $I->grabEntityFromRepository(Invitations::class, ['email' => 'asdf@some.mail']);
+        $token = $invitation->getHash();
+
+        // No token
+        $I->amOnRoute('app_account_signup', [
+            'id' => $portal->getId(),
+        ]);
+        $I->see('Der Einladungslink ist nicht (mehr) gültig.');
+
+        // Wrong token
+        $I->amOnRoute('app_account_signup', [
+            'id' => $portal->getId(),
+            'token' => 'invalid',
+        ]);
+        $I->see('Der Einladungslink ist nicht (mehr) gültig.');
+
+        // Valid token
+        $I->amOnRoute('app_account_signup', [
+            'id' => $portal->getId(),
+            'token' => $token,
+        ]);
+        $I->dontSee('Der Einladungslink ist nicht (mehr) gültig.');
     }
 }
