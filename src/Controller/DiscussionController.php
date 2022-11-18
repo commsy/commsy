@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Action\Activate\ActivateAction;
+use App\Action\Activate\DeactivateAction;
 use App\Action\Mark\CategorizeAction;
 use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
@@ -125,7 +127,7 @@ class DiscussionController extends BaseController
         foreach ($discussions as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'categorize', 'hashtag', 'save', 'delete');
+                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'categorize', 'hashtag', 'activate', 'deactivate', 'save', 'delete');
             } else {
                 $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save');
             }
@@ -1249,6 +1251,42 @@ class DiscussionController extends BaseController
         int $roomId
     ) {
         return parent::handleHashtagActionOptions($request, $action, $roomId);
+    }
+
+    /**
+     * @Route("/room/{roomId}/discussion/xhr/activate", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param $roomId
+     * @return
+     * @throws Exception
+     */
+    public function xhrActivateAction(
+        Request $request,
+        ActivateAction $action,
+        $roomId
+    ) {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/discussion/xhr/deactivate", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param $roomId
+     * @return
+     * @throws Exception
+     */
+    public function xhrDeactivateAction(
+        Request $request,
+        DeactivateAction $action,
+        $roomId
+    ) {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
     }
 
     /**

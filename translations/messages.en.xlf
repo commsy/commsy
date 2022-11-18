@@ -402,6 +402,14 @@
                 <source>categorized %count% entries in list</source>
                 <target>{0} No entry categorized.|{1} Categorized one entry.|]1,Inf[ Categorized %count% entries.</target>
            </trans-unit>
+           <trans-unit id="entriesActivated">
+               <source>activated %count% entries</source>
+               <target>{0} No entry activated.|{1} Activated one entry.|]1,Inf[ Activated %count% entries.</target>
+           </trans-unit>
+           <trans-unit id="entriesDeactivated">
+               <source>deactivated %count% entries</source>
+               <target>{0} No entry deactivated.|{1} Deactivated one entry.|]1,Inf[ Deactivated %count% entries.</target>
+           </trans-unit>
            <trans-unit id="dashboardChanged">
                 <source>dashboard changed</source>
                 <target>Dashboard layout updated.</target>

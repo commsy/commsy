@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Action\Activate\ActivateAction;
+use App\Action\Activate\DeactivateAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Action\Mark\CategorizeAction;
@@ -286,7 +288,7 @@ class GroupController extends BaseController
         foreach ($groups as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'categorize', 'hashtag', 'sendmail', 'delete');
+                $allowedActions[$item->getItemID()] = array('markread', 'categorize', 'hashtag', 'activate', 'deactivate', 'sendmail', 'delete');
             } else {
                 $allowedActions[$item->getItemID()] = array('markread', 'sendmail');
             }
@@ -1569,6 +1571,42 @@ class GroupController extends BaseController
         int $roomId
     ) {
         return parent::handleHashtagActionOptions($request, $action, $roomId);
+    }
+
+    /**
+     * @Route("/room/{roomId}/group/xhr/activate", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param $roomId
+     * @return
+     * @throws Exception
+     */
+    public function xhrActivateAction(
+        Request $request,
+        ActivateAction $action,
+        $roomId
+    ) {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/group/xhr/deactivate", condition="request.isXmlHttpRequest()")
+     * @param Request $request
+     * @param $roomId
+     * @return
+     * @throws Exception
+     */
+    public function xhrDeactivateAction(
+        Request $request,
+        DeactivateAction $action,
+        $roomId
+    ) {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
     }
 
     /**
