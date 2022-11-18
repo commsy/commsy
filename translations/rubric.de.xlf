@@ -170,6 +170,14 @@
                 <source>hashtag</source>
                 <target>Schlagwörter zuweisen</target>
             </trans-unit>
+            <trans-unit id="activate">
+                <source>Activate</source>
+                <target>Aktivieren</target>
+            </trans-unit>
+            <trans-unit id="deactivate">
+                <source>Deactivate</source>
+                <target>Deaktivieren</target>
+            </trans-unit>
             <trans-unit id="37">
                 <source>confirm delete cancel</source>
                 <target>Nein</target>

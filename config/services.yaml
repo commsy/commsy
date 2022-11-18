@@ -745,6 +745,12 @@ services:
     App\Action\Mark\HashtagAction:
         autowire: true
 
+    App\Action\Activate\ActivateAction:
+        autowire: true
+
+    App\Action\Activate\DeactivateAction:
+        autowire: true
+
     App\Action\Download\DownloadAction:
         autowire: true
 

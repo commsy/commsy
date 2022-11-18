@@ -142,6 +142,42 @@
                 </li>
 
                 <li>
+                    {% if user.isUser %}
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('app_announcement_xhractivate', {'roomId': roomId}),
+                            'action': 'activate',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                        }|json_encode|e('html_attr') }}">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-on uk-visible-large"></i> {{ 'Activate'|trans({},'rubric') }}
+                        </a>
+                    {% else %}
+                        <span class="uk-text-muted">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-on uk-visible-large"></i> {{ 'Activate'|trans({},'rubric') }}
+                        </span>
+                    {% endif %}
+                </li>
+
+                <li>
+                    {% if user.isUser %}
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('app_announcement_xhrdeactivate', {'roomId': roomId}),
+                            'action': 'activate',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                        }|json_encode|e('html_attr') }}">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-off uk-visible-large"></i> {{ 'Deactivate'|trans({},'rubric') }}
+                        </a>
+                    {% else %}
+                        <span class="uk-text-muted">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-off uk-visible-large"></i> {{ 'Deactivate'|trans({},'rubric') }}
+                        </span>
+                    {% endif %}
+                </li>
+
+                <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
                         'url': path('app_announcement_download', {'roomId': roomId}),
                         'action': 'save',
