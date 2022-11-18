@@ -32,12 +32,7 @@
                     <div class="uk-form-row uk-margin">
                         <label class="uk-form-label"><em>{{ 'Notes'|trans({}, "portal") }}</em></label>
                         <div class="uk-form-controls">
-                            <div class="uk-alert">
-                                {# TODO: use route `app_portalsettings_roomtermstemplates` with param `portalId` instead #}
-                                <a href="{{ path('app_portal_roomtermstemplates', { 'roomId': portal.id }) }}">{{ 'You can set up templates for room terms here'|trans({}, 'portal') }}</a>
-                            </div>
-
-                            <div class="uk-alert-danger">
+                            <div class="uk-alert-danger" uk-alert>
                                 {{ 'terms update note'|trans({}, "portal") }}
                             </div>
                         </div>

@@ -22,6 +22,7 @@ use App\Entity\PortalUserEdit;
 use App\Entity\Room;
 use App\Entity\RoomCategories;
 use App\Entity\Server;
+use App\Entity\Terms;
 use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
 use App\Facade\UserCreatorFacade;
@@ -68,6 +69,7 @@ use App\Form\Type\Portal\SupportType;
 use App\Form\Type\Portal\TermsType;
 use App\Form\Type\Portal\TimePulsesType;
 use App\Form\Type\Portal\TimePulseTemplateType;
+use App\Form\Type\TermType;
 use App\Form\Type\TranslationType;
 use App\Mail\Mailer;
 use App\Model\TimePulseTemplate;
@@ -1262,6 +1264,75 @@ class PortalSettingsController extends AbstractController
             'accessibilityForm' => $accessibilityForm->createView(),
             'portal' => $portal,
             'tab' => $request->query->has('tab') ? $request->query->get('tab') : 'portal',
+        ];
+    }
+
+    /**
+     * Handles portal terms templates for use inside rooms
+     *
+     * @Route("/portal/{portalId}/settings/contents/roomTermsTemplates/{termId}")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     * @param EventDispatcherInterface $dispatcher
+     * @param LegacyEnvironment $environment
+     * @param int|null $termId
+     * @return array|RedirectResponse
+     */
+    public function roomTermsTemplates(
+        Portal $portal,
+        Request $request,
+        EventDispatcherInterface $dispatcher,
+        LegacyEnvironment $environment,
+        int $termId = null
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository(Terms::class);
+
+        if ($termId) {
+            /** @noinspection PhpUndefinedMethodInspection */
+            $term = $repository->findOneById($termId);
+        } else {
+            $term = new Terms();
+            $term->setContextId($portal->getId());
+        }
+
+        $form = $this->createForm(TermType::class, $term, []);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // tells Doctrine you want to (eventually) save the Product (no queries yet)
+            if ($form->getClickedButton()->getName() == 'delete') {
+                $em->remove($term);
+                $em->flush();
+            } else {
+                $em->persist($term);
+            }
+
+            // actually executes the queries (i.e. the INSERT query)
+            $em->flush();
+
+            return $this->redirectToRoute('app_portalsettings_roomtermstemplates', [
+                'portalId' => $portal->getId(),
+            ]);
+        }
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $terms = $repository->findByContextId($portal->getId());
+
+        $dispatcher->dispatch(new CommsyEditEvent(null), 'commsy.edit');
+
+        return [
+            'form' => $form->createView(),
+            'portalId' => $portal->getId(),
+            'terms' => $terms,
+            'termId' => $termId,
+            'item' => $legacyEnvironment->getCurrentPortalItem(),
         ];
     }
 

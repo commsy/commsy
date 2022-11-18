@@ -486,12 +486,27 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'portal');
 
-            // terms
+            // Terms / Content
             $menu->addChild('Contents', [
                 'label' => 'contents',
                 'route' => 'app_portalsettings_contents',
                 'routeParameters' => ['portalId' => $portalId],
                 'extras' => ['icon' => 'file-text']
+            ])
+            ->setChildrenAttribute('class', 'uk-nav-sub')
+            ->setExtra('translation_domain', 'portal');
+
+            $menu['Contents']->addChild('Contents', [
+                'label' => 'contents',
+                'route' => 'app_portalsettings_contents',
+                'routeParameters' => ['portalId' => $portalId],
+            ])
+            ->setExtra('translation_domain', 'portal');
+
+            $menu['Contents']->addChild('RoomTermsTermplates', [
+                'label' => 'roomtermstemplates',
+                'route' => 'app_portalsettings_roomtermstemplates',
+                'routeParameters' => ['portalId' => $portalId],
             ])
             ->setExtra('translation_domain', 'portal');
 
