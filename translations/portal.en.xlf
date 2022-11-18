@@ -154,11 +154,6 @@
             </trans-unit>
 
             <!-- portal terms templates -->
-            <trans-unit id="portal_terms_templates_reference">
-                <source>You can set up templates for room terms here</source>
-                <target>You can set up templates for workspace terms here</target>
-            </trans-unit>
-
             <trans-unit id="portal_terms_templates_breadcrumb">
                 <source>roomtermstemplates</source>
                 <target>Templates Terms</target>

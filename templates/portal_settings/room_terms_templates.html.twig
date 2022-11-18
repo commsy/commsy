@@ -1,0 +1,42 @@
+{% extends 'layout.html.twig' %}
+
+{% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+
+{% block sidebar_left %}
+    {% include 'components/context_navigation.html.twig' with {'menu_name': 'portal_settings'} only %}
+{% endblock %}
+
+{% block main %}
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'roomtermstemplates'|trans({}, "portal") }}{% endblock %}
+
+        {% block body %}
+            <div class="uk-grid">
+                {# form column #}
+                <div class="uk-width-3-4">
+                    {{ form_start(form) }}
+                    {{ form_row(form.title)}}
+                    {{ form_row(form.contentDe)}}
+                    {{ form_row(form.contentEn)}}
+                    {{ form_end(form) }}
+                </div>
+
+                {# show existing categories #}
+                <div id="categories" class="uk-width-1-4">
+                    {% for term in terms %}
+                        <span>
+                             <a class="uk-button uk-margin-small-bottom uk-margin-small-right{% if termId == term.id %} uk-button-primary{% endif %}" href="{{ path('app_portalsettings_roomtermstemplates', {
+                                 'portalId': portalId,
+                                 'termId': term.id
+                             }) }}">
+                                 <span class="uk-vertical-align-middle">
+                                    {{- term.title|trans({},'portal') -}}
+                                </span>
+                            </a>
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
