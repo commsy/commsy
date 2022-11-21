@@ -10,6 +10,8 @@ class User extends FunctionalTester
     {
         $I = $this;
 
+        $I->amOnRoute('app_logout');
+
         $I->amOnRoute('app_login', [
             'context' => $portal->getId(),
         ]);

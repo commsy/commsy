@@ -151,6 +151,7 @@ class cs_room2_manager extends cs_context_manager {
       }
 
       $title = str_ireplace("'", '"', $item->getTitle());
+      $slug = $item->getSlug();
 
       $query .= 'title="'.encode(AS_DB,$title).'",'.
                 "extras='".encode(AS_DB,serialize($item->getExtraInformation()))."',".
@@ -160,7 +161,8 @@ class cs_room2_manager extends cs_context_manager {
                 "continuous='".$continuous."',".
                 "template='".$template."',".
                 "is_open_for_guests='".$open_for_guests."',".
-                "contact_persons='".encode(AS_DB,$item->getContactPersonString())."',";
+                "contact_persons='".encode(AS_DB,$item->getContactPersonString())."',".
+                "slug=" . (!empty($slug) ? "'" . encode(AS_DB, $slug) . "'" : "NULL") . ",";
                 if ($this->_existsField($this->_db_table, 'room_description')){
                    $query .= "room_description='".encode(AS_DB,$item->getDescription())."'";
                 }else{
@@ -201,6 +203,7 @@ class cs_room2_manager extends cs_context_manager {
       }
 
       $title = str_ireplace("'", '"', $item->getTitle());
+      $slug = $item->getSlug();
 
       $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
                'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
@@ -215,7 +218,8 @@ class cs_room2_manager extends cs_context_manager {
                'type="'.encode(AS_DB,$item->getRoomType()).'",'.
                'continuous="'.$continuous.'",'.
                'status="'.encode(AS_DB,$item->getStatus()).'",'.
-               'contact_persons="'.encode(AS_DB,$item->getContactPersonString()).'",';
+               'contact_persons="'.encode(AS_DB,$item->getContactPersonString()).'",'.
+               'slug=' . (!empty($slug) ? '"' . encode(AS_DB, $slug) . '"' : "NULL") . ',';
                 if ($this->_existsField($this->_db_table, 'room_description')){
                    $query .= 'room_description="'.encode(AS_DB,$item->getDescription()).'"';
                 }else{

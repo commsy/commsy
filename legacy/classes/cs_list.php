@@ -35,7 +35,7 @@ class cs_list implements IteratorAggregate
     /**
      * array - containing the elements of the list
      */
-    protected $data = [];
+    protected array $data = [];
 
     /** constructor: cs_list
      * the only available constructor, initial values for internal variables
@@ -131,16 +131,11 @@ class cs_list implements IteratorAggregate
     /** add a list of commsy items to this list
      * this method adds a list of commsy items to this list, like array_merge
      *
-     * @param object cs_list a list of commsy items (object)
+     * @param cs_list $list cs_list a list of commsy items (object)
      */
-    public function addList($list): void
+    public function addList(cs_list $list): void
     {
-        // performance ??? (TBD)
-        $item = $list->getFirst();
-        while ($item) {
-            $this->add($item);
-            $item = $list->getNext();
-        }
+        array_push($this->data, ...$list);
     }
 
     /** count list
@@ -287,7 +282,7 @@ class cs_list implements IteratorAggregate
         return false;
     }
 
-    function to_array(): array
+    public function to_array(): array
     {
         return $this->data;
     }

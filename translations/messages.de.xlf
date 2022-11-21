@@ -387,8 +387,8 @@
                 <target>{0} Keinen Eintrag eingefügt.|{1} Einen Eintrag eingefügt.|]1,Inf[ %count% Einträge eingefügt.</target>
            </trans-unit>
            <trans-unit id="entriesInsertedIntoUserrooms">
-                <source>inserted %itemcount% entries into %usercount% personal workspaces</source>
-                <target>{0} Keinen Eintrag eingefügt.|{1} Einen Eintrag in %usercount% Personenräume eingefügt.|]1,Inf[ %itemcount% Einträge in %usercount% Personenräume eingefügt.</target>
+                <source>inserted %count% entries into %usercount% personal workspaces</source>
+                <target>{0} Keinen Eintrag eingefügt.|{1} Einen Eintrag in %usercount% Personenräume eingefügt.|]1,Inf[ %count% Einträge in %usercount% Personenräume eingefügt.</target>
            </trans-unit>
            <trans-unit id="entriesRemoved">
                 <source>removed %count% entries from list</source>
@@ -401,6 +401,14 @@
            <trans-unit id="entriesCategorized">
                 <source>categorized %count% entries in list</source>
                 <target>{0} Keinen Eintrag kategorisiert.|{1} Einen Eintrag kategorisiert.|]1,Inf[ %count% Einträge kategorisiert.</target>
+           </trans-unit>
+           <trans-unit id="entriesActivated">
+               <source>activated %count% entries</source>
+               <target>{0} Keinen Eintrag aktiviert.|{1} Einen Eintrag aktiviert.|]1,Inf[ %count% Einträge aktiviert.</target>
+           </trans-unit>
+           <trans-unit id="entriesDeactivated">
+               <source>deactivated %count% entries</source>
+               <target>{0} Keinen Eintrag deaktiviert.|{1} Einen Eintrag deaktiviert.|]1,Inf[ %count% Einträge deaktiviert.</target>
            </trans-unit>
            <trans-unit id="dashboardChanged">
                 <source>dashboard changed</source>

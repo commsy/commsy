@@ -4,6 +4,7 @@ namespace App\Repository;
 use App\Entity\ZzzRoom;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -90,5 +91,36 @@ class ZzzRoomRepository extends ServiceEntityRepository
             ->setParameter('newState', $newState)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * NOTE: This may be used by a UniqueEntity/UniqueRoomSlug annotation in App\Entity\ZzzRoom.
+     *
+     * @param array $fields associative array of room identifiers with keys: `slug`, `contextId`
+     * @return ZzzRoom|null
+     * @throws NonUniqueResultException
+     */
+    public function findOneByRoomIdentifiersArray(array $fields): ?ZzzRoom
+    {
+        return $this->findOneByRoomSlug($fields['slug'], $fields['contextId']);
+    }
+
+    /**
+     * @param string $slug
+     * @param int $context
+     * @return ZzzRoom|null
+     * @throws NonUniqueResultException
+     */
+    public function findOneByRoomSlug(string $roomSlug, int $context): ?ZzzRoom
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.slug = :slug')
+            ->andWhere('a.contextId = :contextId')
+            ->setParameters([
+                'slug' => $roomSlug,
+                'contextId' => $context,
+            ])
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

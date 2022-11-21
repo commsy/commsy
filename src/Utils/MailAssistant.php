@@ -392,7 +392,7 @@ class MailAssistant
             $additionalRecipients = array_filter($formDataAdditionalRecipients);
 
             if (!empty($additionalRecipients)) {
-                $to = array_merge($to, $additionalRecipients);
+                $to = array_merge($to, array_combine($additionalRecipients, $additionalRecipients));
             }
         }
 

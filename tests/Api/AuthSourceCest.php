@@ -23,7 +23,7 @@ class AuthSourceCest
         $I->amFullAuthenticated();
         $portal = $I->havePortal('Some portal');
 
-        $I->sendGet('/auth_sources');
+        $I->sendGet('/v2/auth_sources');
 
         $I->seeResponseMatchesJsonType([
             'id' => 'integer',
@@ -51,7 +51,7 @@ class AuthSourceCest
         $I->amReadOnlyAuthenticated();
         $portal = $I->havePortal('Some portal');
 
-        $I->sendGet('/auth_sources');
+        $I->sendGet('/v2/auth_sources');
 
         $I->seeResponseMatchesJsonType([
             'id' => 'integer',
@@ -82,7 +82,7 @@ class AuthSourceCest
         /** @var AuthSource $authSource */
         $authSource = $portal->getAuthSources()->first();
 
-        $I->sendGet('/auth_sources/' . $authSource->getId());
+        $I->sendGet('/v2/auth_sources/' . $authSource->getId());
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -114,7 +114,7 @@ class AuthSourceCest
         /** @var AuthSource $authSource */
         $authSource = $portal->getAuthSources()->first();
 
-        $I->sendGet('/auth_sources/' . $authSource->getId());
+        $I->sendGet('/v2/auth_sources/' . $authSource->getId());
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -146,7 +146,7 @@ class AuthSourceCest
         /** @var AuthSource $authSource */
         $authSource = $portal->getAuthSources()->first();
 
-        $I->sendGet('/auth_sources/123');
+        $I->sendGet('/v2/auth_sources/123');
 
         $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
         $I->seeResponseIsJson();
@@ -160,7 +160,7 @@ class AuthSourceCest
         /** @var AuthSource $authSource */
         $authSource = $portal->getAuthSources()->first();
 
-        $I->sendGet('/auth_sources/' . $authSource->getId() . '/login_url');
+        $I->sendGet('/v2/auth_sources/' . $authSource->getId() . '/login_url');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -178,7 +178,7 @@ class AuthSourceCest
         /** @var AuthSource $authSource */
         $authSource = $portal->getAuthSources()->first();
 
-        $I->sendGet('/auth_sources/' . $authSource->getId() . '/login_url');
+        $I->sendGet('/v2/auth_sources/' . $authSource->getId() . '/login_url');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();

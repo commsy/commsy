@@ -268,26 +268,6 @@ class cs_log_manager extends cs_manager {
          $array['time'] = '0';
       }
 
-      $current_context = $this->_environment->getCurrentContextItem();
-      
-      //Datenschutz
-      if($current_context->withLogIPCover()){
-      	// if datasecurity is active dont show last two fields
-      	$remote_adress_array = explode('.', $array['remote_addr']);
-      	$array['remote_addr'] = '';
-      	if ( !empty($remote_adress_array['0']) ) {
-      		$array['remote_addr'] .= $remote_adress_array['0'];
-      	}
-         if ( !empty($remote_adress_array['1']) ) {
-      		$array['remote_addr'] .= $remote_adress_array['1'];
-      	}
-      	if ( !empty($remote_adress_array['2']) ) {
-      		$array['remote_addr'] .= $remote_adress_array['2'];
-      	}     	 
-      	$array['remote_addr'] .= '.XXX';
-      }
-      unset($current_context);
-      
       $query = 'INSERT INTO '.$this->addDatabasePrefix('log').' SET '.
                'ip="'.      encode(AS_DB,$array['remote_addr']).'", '.
                'timestamp=NOW(), '.

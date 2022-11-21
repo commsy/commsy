@@ -12,7 +12,7 @@ security:
             encode_as_base64: false
             iterations: 1
 
-        # Rest API JWT
+        # Rest API JWT / Metrics
         Symfony\Component\Security\Core\User\User: plaintext
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
@@ -26,6 +26,11 @@ security:
                     api_read: { password: '%env(API_READ_SECRET)%', roles: ['ROLE_API_READ'] }
                     api_write: { password: '%env(API_WRITE_SECRET)%', roles: ['ROLE_API_WRITE'] }
 
+        memory_metrics:
+            memory:
+                users:
+                    commsy: { password: '%env(API_METRICS_SECRET)%' }
+
     role_hierarchy:
         ROLE_API_WRITE: ROLE_API_READ
 
@@ -33,6 +38,12 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        metrics:
+            pattern: ^/api/metrics
+            http_basic:
+                realm: Secured Area
+            provider: memory_metrics
 
         api_v2_login:
             pattern: ^/api/v2/login

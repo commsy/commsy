@@ -17,7 +17,7 @@ class ServerCest
     public function listServersFull(ApiTester $I)
     {
         $I->amFullAuthenticated();
-        $I->sendGet('/servers');
+        $I->sendGet('/v2/servers');
 
         $I->seeResponseJsonMatchesJsonPath('$[0].id');
     }
@@ -25,7 +25,7 @@ class ServerCest
     public function listServersReadOnly(ApiTester $I)
     {
         $I->amReadOnlyAuthenticated();
-        $I->sendGet('/servers');
+        $I->sendGet('/v2/servers');
 
         $I->seeResponseJsonMatchesJsonPath('$[0].id');
     }
@@ -33,7 +33,7 @@ class ServerCest
     public function getServerFull(ApiTester $I)
     {
         $I->amFullAuthenticated();
-        $I->sendGet('/servers/99');
+        $I->sendGet('/v2/servers/99');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -44,7 +44,7 @@ class ServerCest
     public function getServerFullReadOnly(ApiTester $I)
     {
         $I->amReadOnlyAuthenticated();
-        $I->sendGet('/servers/99');
+        $I->sendGet('/v2/servers/99');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -55,7 +55,7 @@ class ServerCest
     public function getServerNotFound(ApiTester $I)
     {
         $I->amReadOnlyAuthenticated();
-        $I->sendGet('/servers/123');
+        $I->sendGet('/v2/servers/123');
 
         $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
         $I->seeResponseIsJson();
@@ -64,7 +64,7 @@ class ServerCest
     public function getServerAnnouncementFull(ApiTester $I)
     {
         $I->amFullAuthenticated();
-        $I->sendGet('/servers/99/announcement');
+        $I->sendGet('/v2/servers/99/announcement');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -80,7 +80,7 @@ class ServerCest
     public function getServerAnnouncementReadOnly(ApiTester $I)
     {
         $I->amReadOnlyAuthenticated();
-        $I->sendGet('/servers/99/announcement');
+        $I->sendGet('/v2/servers/99/announcement');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();

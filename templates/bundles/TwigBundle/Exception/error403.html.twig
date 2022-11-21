@@ -1,0 +1,12 @@
+{% extends 'base_portal.html.twig' %}
+
+{% block main %}
+    <div uk-alert>
+        <h1>Access forbidden</h1>
+        <h2>The server returned a "{{ status_code }} {{ status_text }}".</h2>
+
+        <p>
+            You have insufficient rights to access the resource.
+        </p>
+    </div>
+{% endblock %}

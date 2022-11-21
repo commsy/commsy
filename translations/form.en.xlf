@@ -420,11 +420,11 @@
             </trans-unit>
             <trans-unit id="addNewCategory">
                 <source>addNewCategory</source>
-                <target>add category</target>
+                <target>Add category</target>
             </trans-unit>
             <trans-unit id="addNewHashtag">
                 <source>addNewHashtag</source>
-                <target>add hashtag</target>
+                <target>Add hashtag</target>
             </trans-unit>
             <trans-unit id="final_choice">
                 <source>etherpadText</source>
@@ -445,6 +445,10 @@
             <trans-unit id="token invalid">
                 <source>token invalid</source>
                 <target>The invitation is not valid (anymore). Please contact the moderation.</target>
+            </trans-unit>
+            <trans-unit id="form validation failed">
+                <source>Validation failed. Please check the form for errors.</source>
+                <target>Validation failed. Please check the form for errors.</target>
             </trans-unit>
         </body>
     </file>

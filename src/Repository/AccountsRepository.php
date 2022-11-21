@@ -5,8 +5,10 @@ namespace App\Repository;
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
+use App\Entity\Portal;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 class AccountsRepository extends ServiceEntityRepository
@@ -20,11 +22,11 @@ class AccountsRepository extends ServiceEntityRepository
      * IMPORTANT: DO NOT DELETE!
      * This is used by the UniqueEntity annotation in App\Entity\Account.
      *
-     * @param array $fields
+     * @param array $fields associative array of account credentials with keys: `username`, `contextId`, `authSource`
      * @return Account|mixed
      * @throws NonUniqueResultException
      */
-    public function findOnByCredentials(array $fields)
+    public function findOneByCredentialsArray(array $fields)
     {
         return $this->findOneByCredentials($fields['username'], $fields['contextId'], $fields['authSource']);
     }
@@ -88,5 +90,17 @@ class AccountsRepository extends ServiceEntityRepository
             ->setParameter('newState', $newState)
             ->getQuery()
             ->execute();
+    }
+
+    public function countByPortal()
+    {
+        return $this->createQueryBuilder('a')
+            ->groupBy('a.contextId')
+            ->select('COUNT(a) as count', 'p as portal')
+            ->innerJoin(Portal::class, 'p', Join::WITH, 'a.contextId = p.id')
+            ->where('p.deleter IS NULL')
+            ->andWhere('p.deletionDate IS NULL')
+            ->getQuery()
+            ->getResult();
     }
 }

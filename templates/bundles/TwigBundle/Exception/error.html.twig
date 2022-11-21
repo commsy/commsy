@@ -1,0 +1,13 @@
+{% extends 'base_portal.html.twig' %}
+
+{% block main %}
+    <div uk-alert>
+        <h1>An error occurred</h1>
+        <h2>The server returned a "{{ status_code }} {{ status_text }}".</h2>
+
+        <p>
+            Something is broken. Please let us know what you were doing when this error occurred.
+            We will fix it as soon as possible. Sorry for any inconvenience caused.
+        </p>
+    </div>
+{% endblock %}

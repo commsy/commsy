@@ -154,11 +154,6 @@
             </trans-unit>
 
             <!-- portal terms templates -->
-            <trans-unit id="portal_terms_templates_reference">
-                <source>You can set up templates for room terms here</source>
-                <target>You can set up templates for workspace terms here</target>
-            </trans-unit>
-
             <trans-unit id="portal_terms_templates_breadcrumb">
                 <source>roomtermstemplates</source>
                 <target>Templates Terms</target>
@@ -270,6 +265,14 @@
             <trans-unit id="portal_menu_home_sortby">
                 <source>Sort list of all rooms by</source>
                 <target>Sort list of all rooms by</target>
+            </trans-unit>
+            <trans-unit id="portal_form_label_default_filter_hide_templates">
+                <source>portal.form.label.default_filter_hide_templates</source>
+                <target>Initial value "Hide templates"</target>
+            </trans-unit>
+            <trans-unit id="portal_form_label_default_filter_hide_archived">
+                <source>portal.form.label.default_filter_hide_archived</source>
+                <target>Initial value "Hide archived workspaces"</target>
             </trans-unit>
             <trans-unit id="portal_menu_home_sortby_activity">
                 <source>Activity</source>
@@ -435,25 +438,13 @@
                 <source>Send mail</source>
                 <target>Send mail</target>
             </trans-unit>
-            <trans-unit id="mail_id_password">
-                <source>Mail id password</source>
-                <target>Mail: id and password</target>
-            </trans-unit>
             <trans-unit id="mail_combine_ids">
                 <source>Mail combine ids</source>
                 <target>Mail: merge ids</target>
             </trans-unit>
-            <trans-unit id="hide_mail">
-                <source>Hide mail</source>
-                <target>Hide mail</target>
-            </trans-unit>
             <trans-unit id="hide_mail_all_wrks">
                 <source>Hide mail all wrks</source>
                 <target>Hide mail in all workspaces</target>
-            </trans-unit>
-            <trans-unit id="show_mail">
-                <source>Show mail</source>
-                <target>Show mail</target>
             </trans-unit>
             <trans-unit id="show_mail_all_wrks">
                 <source>Show mail all wrks</source>
@@ -718,10 +709,6 @@
             <trans-unit id="english_language">
                 <source>English</source>
                 <target>English</target>
-            </trans-unit>
-            <trans-unit id="settings_only_visible">
-                <source>Settings only visible...</source>
-                <target>Settings (only visible for </target>
             </trans-unit>
             <trans-unit id="_for">
                 <source>...for</source>
@@ -1287,6 +1274,10 @@
                 <source>Source</source>
                 <target>Source</target>
             </trans-unit>
+            <trans-unit id="portal_auth_sources">
+                <source>portal.auth.sources</source>
+                <target>Sources</target>
+            </trans-unit>
             <trans-unit id="no_source">
                 <source>No source</source>
                 <target>Source</target>
@@ -1508,6 +1499,24 @@
             <trans-unit id="mail_reg_ex_help">
                 <source>Please including delimiter and modifier</source>
                 <target>Please including delimiter and modifier</target>
+            </trans-unit>
+
+            <!-- Auth workspace membership -->
+            <trans-unit id="portal_auth_workspace_membership">
+                <source>portal.auth.workspace_membership</source>
+                <target>Workspace membership</target>
+            </trans-unit>
+            <trans-unit id="portal_auth_membership_enabled">
+                <source>portal.auth.membership_enabled</source>
+                <target>Activated</target>
+            </trans-unit>
+            <trans-unit id="portal_auth.membership_identifier">
+                <source>portal.auth.membership_identifier</source>
+                <target>Request identifier</target>
+            </trans-unit>
+            <trans-unit id="portal_auth_membership_identifier_help">
+                <source>portal.auth.membership_identifier_help</source>
+                <target>Identifier for comma-separated server environment information used when automatically creating workspace members</target>
             </trans-unit>
         </body>
     </file>

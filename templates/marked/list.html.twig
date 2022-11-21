@@ -38,6 +38,14 @@
                     </a>
                 </li>
 
+                {#-
+                    NOTE:
+                    The below multi-select actions "Assign categories" and "Assign hashtags" have been disabled for now.
+                    This is since the "Marked entries" view will only allow to select items belonging to the original
+                    context from which the "Marked entries" view was entered. This behaviour was deemed too confusing
+                    for now but the actions may be enabled again when it's possible to select the context explicitly.
+                -#}
+                {#
                 <li>
                     {% if showCategories and is_granted('CATEGORY_EDIT') %}
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
@@ -73,6 +81,7 @@
                         </span>
                     {% endif %}
                 </li>
+                #}
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
@@ -89,14 +98,6 @@
                         <i class="uk-icon-justify uk-icon-small uk-icon-remove uk-visible-large"></i> {{ 'remove marked'|trans({},'rubric') }}
                     </a>
                 </li>
-
-                {#
-                <li>
-                    <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('app_mark_feedaction', {'roomId': roomId}) }}", "action": "insert"}' data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}">
-                        <i class="uk-icon-justify uk-icon-small uk-icon-paste uk-visible-large"></i> {{ 'insert stack'|trans({},'rubric') }}
-                    </a>
-                </li>
-                #}
             </ul>
         </div>
     </div>

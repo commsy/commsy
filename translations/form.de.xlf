@@ -446,6 +446,10 @@
                 <source>token invalid</source>
                 <target>Der Einladungslink ist nicht (mehr) gültig. Bitte wenden Sie sich an die Moderation.</target>
             </trans-unit>
+            <trans-unit id="form validation failed">
+                <source>Validation failed. Please check the form for errors.</source>
+                <target>Prüfung fehlgeschlagen. Bitte überprüfen Sie das Formular auf Fehler.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

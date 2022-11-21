@@ -14,11 +14,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
+use Serializable;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * Portal
@@ -94,7 +95,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     }
  * )
  */
-class Portal implements \Serializable
+class Portal implements Serializable
 {
     /**
      * @ORM\Id
@@ -228,6 +229,32 @@ class Portal implements \Serializable
     private $logoFilename;
 
     /**
+     * @var bool
+     * @ORM\Column(type="boolean", options={"default": 0})
+     */
+    private bool $defaultFilterHideTemplates = false;
+
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean", options={"default": 0})
+     */
+    private bool $defaultFilterHideArchived = false;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default": 0})
+     */
+    private bool $authMembershipEnabled = false;
+
+    /**
+     * @ORM\Column(type="string", length=100, nullable=true)
+     *
+     * @Assert\NotBlank(message="The request identifier must not be empty.", groups={"authMembershipValidation"})
+     * @Assert\Length(max=100, maxMessage="The request identifier must not exceed {{ limit }} characters.", groups={"Default", "authMembershipValidation"})
+     * @Assert\Regex(pattern="/^[[:alnum:]~._-]+$/", message="The request identifier may only contain lowercase English letters, digits or any of these special characters: -._~", groups={"authMembershipValidation"})
+     */
+    private ?string $authMembershipIdentifier;
+
+    /**
      * @ORM\Column(type="boolean", options={"default":0})
      *
      * @var bool
@@ -317,6 +344,9 @@ class Portal implements \Serializable
      */
     private bool $communityShowDeactivatedEntriesTitle = true;
 
+    /**
+     *
+     */
     public function __construct()
     {
         $this->authSources = new ArrayCollection();
@@ -838,6 +868,42 @@ class Portal implements \Serializable
         return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function getDefaultFilterHideTemplates(): bool
+    {
+        return $this->defaultFilterHideTemplates;
+    }
+
+    /**
+     * @param bool $enabled
+     * @return $this
+     */
+    public function setDefaultFilterHideTemplates(bool $enabled): Portal
+    {
+        $this->defaultFilterHideTemplates = $enabled;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getDefaultFilterHideArchived(): bool
+    {
+        return $this->defaultFilterHideArchived;
+    }
+
+    /**
+     * @param bool $enabled
+     * @return $this
+     */
+    public function setDefaultFilterHideArchived(bool $enabled): Portal
+    {
+        $this->defaultFilterHideArchived = $enabled;
+        return $this;
+    }
+
     /** Returns the community room creation status.
      *
      * @return string room creation status ("all" = all users (default), "moderator" = only portal moderators)
@@ -1335,12 +1401,9 @@ class Portal implements \Serializable
         $this->setExtras($extras);
     }
 
-    /** save context
-     * this method save the context
-     */
-    function save()
-    {
-    }
+    ###################################################
+    # archiving and deleting rooms
+    ###################################################
 
     /**
      * @return bool
@@ -1519,6 +1582,30 @@ class Portal implements \Serializable
     public function setClearInactiveRoomsDeleteDays(int $clearInactiveRoomsDeleteDays): Portal
     {
         $this->clearInactiveRoomsDeleteDays = $clearInactiveRoomsDeleteDays;
+        return $this;
+    }
+
+    public function getAuthMembershipEnabled(): ?bool
+    {
+        return $this->authMembershipEnabled;
+    }
+
+    public function setAuthMembershipEnabled(bool $authMembershipEnabled): self
+    {
+        $this->authMembershipEnabled = $authMembershipEnabled;
+
+        return $this;
+    }
+
+    public function getAuthMembershipIdentifier(): ?string
+    {
+        return $this->authMembershipIdentifier;
+    }
+
+    public function setAuthMembershipIdentifier(?string $authMembershipIdentifier): self
+    {
+        $this->authMembershipIdentifier = $authMembershipIdentifier;
+
         return $this;
     }
 }

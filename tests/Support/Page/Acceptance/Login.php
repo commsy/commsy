@@ -13,9 +13,9 @@ class Login
     public static $loginButton = 'form[name="login"] input[type="submit"]';
 
     /**
-     * @var \AcceptanceTester
+     * @var AcceptanceTester
      */
-    protected $tester;
+    protected AcceptanceTester $tester;
 
     public function __construct(AcceptanceTester $I)
     {

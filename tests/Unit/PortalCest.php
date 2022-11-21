@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Entity\AuthSource;
 use App\Entity\Portal;
+use App\Entity\Translation;
 use App\Facade\PortalCreatorFacade;
 use Tests\Support\UnitTester;
 
@@ -24,5 +25,6 @@ class PortalCest
 
         $I->seeInRepository(Portal::class, ['title' => 'Testportal']);
         $I->seeInRepository(AuthSource::class, ['portal' => $portal]);
+        $I->seeInRepository(Translation::class, ['contextId' => $portal->getId(), 'translationKey' => 'EMAIL_REGEX_ERROR']);
     }
 }

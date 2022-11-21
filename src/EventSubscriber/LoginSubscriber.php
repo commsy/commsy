@@ -8,9 +8,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\SecurityEvents;
 
 class LoginSubscriber implements EventSubscriberInterface
 {
@@ -39,8 +41,8 @@ class LoginSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'kernel.request' => 'onKernelRequest',
-            'security.interactive_login' => 'onInteractiveLogin',
+            KernelEvents::REQUEST => 'onKernelRequest',
+            SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin',
         ];
     }
 

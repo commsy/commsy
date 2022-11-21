@@ -19,6 +19,12 @@
             {{ form_label(form.sortRoomsBy) }}
             {{ form_row(form.sortRoomsBy[0]) }}
             {{ form_row(form.sortRoomsBy[1]) }}
+            {{ form_label(form.defaultFilterHideTemplates) }}
+            {{ form_row(form.defaultFilterHideTemplates[0]) }}
+            {{ form_row(form.defaultFilterHideTemplates[1]) }}
+            {{ form_label(form.defaultFilterHideArchived) }}
+            {{ form_row(form.defaultFilterHideArchived[0]) }}
+            {{ form_row(form.defaultFilterHideArchived[1]) }}
             {{ form_end(form) }}
         {% endblock %}
     {% endembed %}

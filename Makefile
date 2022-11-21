@@ -21,8 +21,11 @@ help: ## Outputs this help screen
 build: ## Builds the Docker images
 	@$(DOCKER_COMP) build --pull --no-cache
 
-up: ## Start the docker hub in detached mode (no logs)
+detach: ## Start the docker hub in detached mode (no logs)
 	@$(DOCKER_COMP) up --detach
+
+up: ## Start the docker hub
+	@$(DOCKER_COMP) up
 
 start: build up ## Build and start the containers
 
@@ -35,14 +38,8 @@ logs: ## Show live logs
 sh: ## Connect to the PHP FPM container
 	@$(PHP_CONT) sh
 
-build-debug:
-	@$(DOCKER_COMP) -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.debug.yml build --pull --no-cache
-
-debug:
-	@$(DOCKER_COMP) -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.debug.yml up
-
 debug-mailhog:
-	@$(DOCKER_COMP) -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.debug.yml -f docker/docker-compose.mailhog.yml up
+	@$(DOCKER_COMP) -f docker-compose.yml -f docker-compose.override.yml -f docker/docker-compose.mailhog.yml up
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————
 composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'

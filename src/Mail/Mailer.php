@@ -132,7 +132,7 @@ class Mailer
      * Sends the given message to all recipients.
      *
      * @param MessageInterface $message The message to send
-     * @param Recipient recipient The recipient
+     * @param Recipient $recipient The recipient
      * @param string $fromSenderName The from name of the sender
      * @param array $replyTo Reply to in the form of email => name
      *
