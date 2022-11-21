@@ -76,11 +76,11 @@
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item')
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-book uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-check uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-book uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-check uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
                         </span>
                     {% endif %}
                 </li>
@@ -94,11 +94,11 @@
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item')
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-check uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-bookmark-o uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-check uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-bookmark-o uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
                         </span>
                     {% endif %}
                 </li>
@@ -135,6 +135,42 @@
                     {% else %}
                         <span class="uk-text-muted">
                             <i class="uk-icon-justify uk-icon-small uk-icon-hashtag uk-visible-large"></i> {{ 'hashtag'|trans({},'rubric') }}
+                        </span>
+                    {% endif %}
+                </li>
+
+                <li>
+                    {% if user.isUser %}
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('app_discussion_xhractivate', {'roomId': roomId}),
+                            'action': 'activate',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                        }|json_encode|e('html_attr') }}">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-on uk-visible-large"></i> {{ 'Activate'|trans({},'rubric') }}
+                        </a>
+                    {% else %}
+                        <span class="uk-text-muted">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-on uk-visible-large"></i> {{ 'Activate'|trans({},'rubric') }}
+                        </span>
+                    {% endif %}
+                </li>
+
+                <li>
+                    {% if user.isUser %}
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('app_discussion_xhrdeactivate', {'roomId': roomId}),
+                            'action': 'activate',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                        }|json_encode|e('html_attr') }}">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-off uk-visible-large"></i> {{ 'Deactivate'|trans({},'rubric') }}
+                        </a>
+                    {% else %}
+                        <span class="uk-text-muted">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-off uk-visible-large"></i> {{ 'Deactivate'|trans({},'rubric') }}
                         </span>
                     {% endif %}
                 </li>

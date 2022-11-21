@@ -20,7 +20,7 @@ class PortalCest
         $I->amFullAuthenticated();
         $I->havePortal('Some portal');
 
-        $I->sendGet('/portals');
+        $I->sendGet('/v2/portals');
 
         $I->seeResponseJsonMatchesJsonPath('$[0].id');
         $I->seeResponseJsonMatchesJsonPath('$[0].creationDate');
@@ -42,7 +42,7 @@ class PortalCest
         $I->amReadOnlyAuthenticated();
         $I->havePortal('Some portal');
 
-        $I->sendGet('/portals');
+        $I->sendGet('/v2/portals');
 
         $I->seeResponseJsonMatchesJsonPath('$[0].id');
         $I->seeResponseJsonMatchesJsonPath('$[0].creationDate');
@@ -64,7 +64,7 @@ class PortalCest
         $I->amFullAuthenticated();
         $portal = $I->havePortal('Some portal');
 
-        $I->sendGet('/portals/' . $portal->getId());
+        $I->sendGet('/v2/portals/' . $portal->getId());
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -88,7 +88,7 @@ class PortalCest
         $I->amReadOnlyAuthenticated();
         $portal = $I->havePortal('Some portal');
 
-        $I->sendGet('/portals/' . $portal->getId());
+        $I->sendGet('/v2/portals/' . $portal->getId());
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -110,7 +110,7 @@ class PortalCest
     public function getPortalNotFound(ApiTester $I)
     {
         $I->amReadOnlyAuthenticated();
-        $I->sendGet('/portals/123');
+        $I->sendGet('/v2/portals/123');
 
         $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
         $I->seeResponseIsJson();
@@ -121,7 +121,7 @@ class PortalCest
         $I->amFullAuthenticated();
         $portal = $I->havePortal('Some portal');
 
-        $I->sendGet('/portals/' . $portal->getId() . '/auth_sources');
+        $I->sendGet('/v2/portals/' . $portal->getId() . '/auth_sources');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -150,7 +150,7 @@ class PortalCest
         $I->amReadOnlyAuthenticated();
         $portal = $I->havePortal('Some portal');
 
-        $I->sendGet('/portals/' . $portal->getId() . '/auth_sources');
+        $I->sendGet('/v2/portals/' . $portal->getId() . '/auth_sources');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -179,7 +179,7 @@ class PortalCest
         $I->amFullAuthenticated();
         $portal = $I->havePortal('Some portal');
 
-        $I->sendGet('/portals/' . $portal->getId() . '/announcement');
+        $I->sendGet('/v2/portals/' . $portal->getId() . '/announcement');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -197,7 +197,7 @@ class PortalCest
         $I->amReadOnlyAuthenticated();
         $portal = $I->havePortal('Some portal');
 
-        $I->sendGet('/portals/' . $portal->getId() . '/announcement');
+        $I->sendGet('/v2/portals/' . $portal->getId() . '/announcement');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -215,7 +215,7 @@ class PortalCest
         $I->amFullAuthenticated();
         $portal = $I->havePortal('Some portal');
 
-        $I->sendGet('/portals/' . $portal->getId() . '/tou');
+        $I->sendGet('/v2/portals/' . $portal->getId() . '/tou');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -231,7 +231,7 @@ class PortalCest
         $I->amReadOnlyAuthenticated();
         $portal = $I->havePortal('Some portal');
 
-        $I->sendGet('/portals/' . $portal->getId() . '/tou');
+        $I->sendGet('/v2/portals/' . $portal->getId() . '/tou');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();

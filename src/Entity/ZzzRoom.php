@@ -189,6 +189,13 @@ class ZzzRoom
         $this->modificationDate = new DateTime();
     }
 
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="slug", type="string", length=255, nullable=true)
+     */
+    private ?string $slug;
+
     public function isIndexable()
     {
         return ($this->deleter == null && $this->deletionDate == null);
@@ -705,6 +712,28 @@ class ZzzRoom
     public function getLastlogin(): ?DateTime
     {
         return $this->lastlogin;
+    }
+
+    /**
+     * Set the room's slug (a unique textual identifier for this room)
+     *
+     * @param string|null $slug
+     */
+    public function setSlug(?string $slug): void
+    {
+        $slug = !empty($slug) ? strtolower($slug) : null;
+
+        $this->slug = $slug;
+    }
+
+    /**
+     * Get the room's slug (a unique textual identifier for this room)
+     *
+     * @return string|null
+     */
+    public function getSlug(): ?string
+    {
+        return $this->slug;
     }
 
     /**

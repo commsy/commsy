@@ -15,6 +15,8 @@ import {InsertAction} from "./InsertAction";
 import {RemoveAction} from "./RemoveAction";
 import {CategorizeAction} from "./CategorizeAction";
 import {HashtagAction} from "./HashtagAction";
+import {ActivateAction} from "./ActivateAction";
+import {DeactivateAction} from "./DeactivateAction";
 import {InsertUserroomAction} from "./InsertUserroomAction";
 
 'use strict';
@@ -143,6 +145,10 @@ export function createAction(actionData: ActionData): BaseAction {
             return new CategorizeAction(actionData);
         case 'hashtag':
             return new HashtagAction(actionData);
+        case 'activate':
+            return new ActivateAction(actionData);
+        case 'deactivate':
+            return new DeactivateAction(actionData);
         case 'workflow':
             return new WorkflowAction(actionData);
         case 'join':

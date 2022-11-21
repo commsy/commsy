@@ -4,9 +4,13 @@
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
 ARG PHP_VERSION=8.0
-ARG NGINX_VERSION=1.21
+ARG CADDY_VERSION=2
 
 FROM php:${PHP_VERSION}-fpm-alpine AS commsy_php
+
+# php extensions installer: https://github.com/mlocati/docker-php-extension-installer
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN chmod +x /usr/local/bin/install-php-extensions
 
 # persistent / runtime deps
 RUN apk add --no-cache \
@@ -30,66 +34,36 @@ RUN apk add --no-cache \
 # see https://github.com/docker-library/php/issues/240#issuecomment-763112749
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 
-ARG APCU_VERSION=5.1.21
 RUN set -eux; \
-	apk add --no-cache --virtual .build-deps \
-		$PHPIZE_DEPS \
-		icu-dev \
-		libzip-dev \
-		zlib-dev \
-		libxml2-dev \
-		openldap-dev \
-		imap-dev \
-		libpng-dev \
-		jpeg-dev \
-		freetype-dev \
-	; \
-	\
-	docker-php-ext-configure zip; \
-	docker-php-ext-configure imap --with-imap-ssl; \
-	docker-php-ext-configure gd --with-freetype --with-jpeg; \
-	docker-php-ext-install -j$(nproc) \
-		intl \
-		pdo_mysql \
-		zip \
-		soap \
-		ldap \
-		imap \
-		gd \
-	; \
-	pecl install \
-		apcu-${APCU_VERSION} \
-	; \
-	pecl clear-cache; \
-	docker-php-ext-enable \
-		apcu \
-		opcache \
-	; \
-	\
-	runDeps="$( \
-		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
-			| tr ',' '\n' \
-			| sort -u \
-			| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
-	)"; \
-	apk add --no-cache --virtual .api-phpexts-rundeps $runDeps; \
-	\
-	apk del .build-deps
+    install-php-extensions \
+        apcu \
+        gd \
+        imap\
+        intl \
+        ldap \
+        opcache \
+        pdo_mysql \
+        zip \
+    ;
 
-# Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+###> recipes ###
+###< recipes ###
+
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+COPY docker/php/conf.d/commsy.ini $PHP_INI_DIR/conf.d/
+COPY docker/php/conf.d/commsy.prod.ini $PHP_INI_DIR/conf.d/
+
+COPY docker/php/php-fpm.d/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+RUN mkdir -p /var/run/php
 
 # wkhtmltopdf
 COPY --from=surnet/alpine-wkhtmltopdf:3.13.5-0.12.6-full /bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
 
-# Set up php configuration
-RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
-COPY docker/php/conf.d/commsy.prod.ini $PHP_INI_DIR/conf.d/commsy.ini
-COPY docker/php/conf.d/commsy.pool.conf /usr/local/etc/php-fpm.d/commsy.pool.conf
-
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
+
+COPY --from=composer/composer:2-bin /composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
@@ -99,7 +73,7 @@ ARG APP_ENV=prod
 # prevent the reinstallation of vendors at every changes in the source code
 COPY composer.json composer.lock symfony.lock ./
 RUN set -eux; \
-	composer install --prefer-dist --no-dev --no-scripts --no-progress; \
+	composer install --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress; \
 	composer clear-cache
 
 # prevent the reinstallation of node_modules at every changes in the source code
@@ -150,33 +124,23 @@ CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
 ##############################################################################
 
 # Dockerfile
-FROM commsy_php AS commsy_php_debug
+FROM commsy_php AS commsy_php_dev
 
-ARG XDEBUG_VERSION=3.1.2
+ENV APP_ENV=dev PHP_IDE_CONFIG="serverName=commsy"
+
+ARG XDEBUG_VERSION=^3.1
 RUN set -eux; \
-	apk add --no-cache --virtual .build-deps $PHPIZE_DEPS; \
-	pecl install xdebug-$XDEBUG_VERSION; \
-	docker-php-ext-enable xdebug; \
-	apk del .build-deps
+	install-php-extensions xdebug-$XDEBUG_VERSION
+
+COPY docker/php/conf.d/commsy.dev.ini $PHP_INI_DIR/conf.d/
 
 CMD ["php-fpm"]
 
 ##############################################################################
 
-FROM nginx:${NGINX_VERSION}-alpine AS commsy_nginx
+FROM caddy:${CADDY_VERSION} AS commsy_caddy
 
-COPY docker/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
-
-WORKDIR /var/www/html
+WORKDIR /srv/app
 
 COPY --from=commsy_php /var/www/html/public public/
-
-##############################################################################
-
-FROM nginx:${NGINX_VERSION}-alpine AS commsy_test_nginx
-
-COPY docker/nginx/conf.d/test.conf /etc/nginx/conf.d/default.conf
-
-WORKDIR /var/www/html
-
-#COPY --from=commsy_php /var/www/html/public public/
+COPY docker/caddy/Caddyfile /etc/caddy/Caddyfile

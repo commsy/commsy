@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\SecurityEvents;
 
 class SecuritySubscriber implements EventSubscriberInterface
 {
@@ -105,7 +106,7 @@ class SecuritySubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'security.interactive_login' => 'onSecurityInteractiveLogin',
+            SecurityEvents::INTERACTIVE_LOGIN  => 'onSecurityInteractiveLogin',
             KernelEvents::REQUEST => 'onKernelRequest',
         ];
     }

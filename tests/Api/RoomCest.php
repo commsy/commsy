@@ -21,7 +21,7 @@ class RoomCest
         $portal = $I->havePortal('Some portal');
         $room = $I->haveRoom('Some room', $portal);
 
-        $I->sendGet('/rooms');
+        $I->sendGet('/v2/rooms');
 
         $I->seeResponseMatchesJsonType([
             'itemId' => 'integer',
@@ -47,7 +47,7 @@ class RoomCest
         $portal = $I->havePortal('Some portal');
         $room = $I->haveRoom('Some room', $portal);
 
-        $I->sendGet('/rooms');
+        $I->sendGet('/v2/rooms');
 
         $I->seeResponseMatchesJsonType([
             'itemId' => 'integer',
@@ -73,7 +73,7 @@ class RoomCest
         $portal = $I->havePortal('Some portal');
         $room = $I->haveRoom('Some room', $portal);
 
-        $I->sendGet('/rooms/' . $room->getItemId());
+        $I->sendGet('/v2/rooms/' . $room->getItemId());
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -100,7 +100,7 @@ class RoomCest
         $portal = $I->havePortal('Some portal');
         $room = $I->haveRoom('Some room', $portal);
 
-        $I->sendGet('/rooms/' . $room->getItemId());
+        $I->sendGet('/v2/rooms/' . $room->getItemId());
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -124,7 +124,7 @@ class RoomCest
     public function getRoomNotFound(ApiTester $I)
     {
         $I->amReadOnlyAuthenticated();
-        $I->sendGet('/rooms/123');
+        $I->sendGet('/v2/rooms/123');
 
         $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
         $I->seeResponseIsJson();

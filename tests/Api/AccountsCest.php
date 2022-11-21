@@ -20,7 +20,7 @@ class AccountsCest
         $portal = $I->havePortal('Some portal');
         $account = $I->haveAccount($portal->getAuthSources()->first(), 'username', 'mypassword');
 
-        $I->sendPostAsJson('/accounts/checkLocalLogin');
+        $I->sendPostAsJson('/v2/accounts/checkLocalLogin');
         $I->seeResponseCodeIsClientError();
     }
 
@@ -30,7 +30,7 @@ class AccountsCest
         $portal = $I->havePortal('Some portal');
         $account = $I->haveAccount($portal->getAuthSources()->first(), 'username', 'mypassword');
 
-        $I->sendPostAsJson('/accounts/checkLocalLogin', [
+        $I->sendPostAsJson('/v2/accounts/checkLocalLogin', [
             'contextId' => $portal->getId(),
             'username' => 'notauser',
             'password' => 'somepassword',
@@ -44,7 +44,7 @@ class AccountsCest
         $portal = $I->havePortal('Some portal');
         $account = $I->haveAccount($portal->getAuthSources()->first(), 'username', 'mypassword');
 
-        $I->sendPostAsJson('/accounts/checkLocalLogin', [
+        $I->sendPostAsJson('/v2/accounts/checkLocalLogin', [
             'contextId' => $portal->getId(),
             'username' => 'username',
             'password' => 'mypassword',
@@ -77,7 +77,7 @@ class AccountsCest
         $portal = $I->havePortal('Some portal');
         $account = $I->haveAccount($portal->getAuthSources()->first(), 'username', 'mypassword');
 
-        $I->sendGetAsJson('/accounts/' . $account->getId() . '/workspaces');
+        $I->sendGetAsJson('/v2/accounts/' . $account->getId() . '/workspaces');
         $I->seeResponseCodeIsSuccessful();
     }
 }

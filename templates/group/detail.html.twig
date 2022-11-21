@@ -233,7 +233,7 @@
                     </div>
 
                     {# members #}
-                    {% if userRubricVisible %}
+                    {% if userRubricVisible and not draft %}
                         <div id="member{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe>
                             {{ macrosGroup.members(group, members) }}
                         </div>

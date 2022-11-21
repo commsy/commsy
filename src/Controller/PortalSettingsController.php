@@ -22,6 +22,7 @@ use App\Entity\PortalUserEdit;
 use App\Entity\Room;
 use App\Entity\RoomCategories;
 use App\Entity\Server;
+use App\Entity\Terms;
 use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
 use App\Facade\UserCreatorFacade;
@@ -43,6 +44,7 @@ use App\Form\Type\Portal\AuthGuestType;
 use App\Form\Type\Portal\AuthLdapType;
 use App\Form\Type\Portal\AuthLocalType;
 use App\Form\Type\Portal\AuthShibbolethType;
+use App\Form\Type\Portal\AuthWorkspaceMembershipType;
 use App\Form\Type\Portal\CommunityRoomsCreationType;
 use App\Form\Type\Portal\DataPrivacyType;
 use App\Form\Type\Portal\DeleteArchiveRoomsType;
@@ -68,6 +70,7 @@ use App\Form\Type\Portal\SupportType;
 use App\Form\Type\Portal\TermsType;
 use App\Form\Type\Portal\TimePulsesType;
 use App\Form\Type\Portal\TimePulseTemplateType;
+use App\Form\Type\TermType;
 use App\Form\Type\TranslationType;
 use App\Mail\Mailer;
 use App\Model\TimePulseTemplate;
@@ -86,6 +89,7 @@ use App\Utils\UserService;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -539,6 +543,34 @@ class PortalSettingsController extends AbstractController
         return [
             'form' => $localForm->createView(),
             'portal' => $portal,
+        ];
+    }
+
+    /**
+     * @Route("/portal/{portalId}/settings/auth/workspacemembership")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @Template()
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     */
+    public function authWorkspaceMembership(
+        Portal $portal,
+        ManagerRegistry $doctrine,
+        Request $request
+    ): array
+    {
+        $form = $this->createForm(AuthWorkspaceMembershipType::class, $portal);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $doctrine->getManager()->flush();
+            } else {
+                $doctrine->getManager()->refresh($portal);
+            }
+        }
+
+        return [
+            'form' => $form->createView(),
         ];
     }
 
@@ -1228,6 +1260,75 @@ class PortalSettingsController extends AbstractController
     }
 
     /**
+     * Handles portal terms templates for use inside rooms
+     *
+     * @Route("/portal/{portalId}/settings/contents/roomTermsTemplates/{termId}")
+     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
+     * @IsGranted("PORTAL_MODERATOR", subject="portal")
+     * @Template()
+     * @param Portal $portal
+     * @param Request $request
+     * @param EventDispatcherInterface $dispatcher
+     * @param LegacyEnvironment $environment
+     * @param int|null $termId
+     * @return array|RedirectResponse
+     */
+    public function roomTermsTemplates(
+        Portal $portal,
+        Request $request,
+        EventDispatcherInterface $dispatcher,
+        LegacyEnvironment $environment,
+        int $termId = null
+    ) {
+        $legacyEnvironment = $environment->getEnvironment();
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository(Terms::class);
+
+        if ($termId) {
+            /** @noinspection PhpUndefinedMethodInspection */
+            $term = $repository->findOneById($termId);
+        } else {
+            $term = new Terms();
+            $term->setContextId($portal->getId());
+        }
+
+        $form = $this->createForm(TermType::class, $term, []);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // tells Doctrine you want to (eventually) save the Product (no queries yet)
+            if ($form->getClickedButton()->getName() == 'delete') {
+                $em->remove($term);
+                $em->flush();
+            } else {
+                $em->persist($term);
+            }
+
+            // actually executes the queries (i.e. the INSERT query)
+            $em->flush();
+
+            return $this->redirectToRoute('app_portalsettings_roomtermstemplates', [
+                'portalId' => $portal->getId(),
+            ]);
+        }
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $terms = $repository->findByContextId($portal->getId());
+
+        $dispatcher->dispatch(new CommsyEditEvent(null), 'commsy.edit');
+
+        return [
+            'form' => $form->createView(),
+            'portalId' => $portal->getId(),
+            'terms' => $terms,
+            'termId' => $termId,
+            'item' => $legacyEnvironment->getCurrentPortalItem(),
+        ];
+    }
+
+    /**
      * @Route("/portal/{portalId}/settings/accountindex/{userId}/deleteUser")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
@@ -1662,17 +1763,6 @@ class PortalSettingsController extends AbstractController
                             'portalId' => $portalId,
                             'recipients' => implode(", ", $IdsMailRecipients),
                         ]);
-                    case 10: // send mail userID and password
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                array_push($IdsMailRecipients, $id);
-                            }
-                        }
-                        return $this->redirectToRoute('app_portalsettings_accountindexsendpasswordmail', [
-                            'portalId' => $portalId,
-                            'recipients' => implode(", ", $IdsMailRecipients),
-                        ]);
                     case 11: // send mail merge userIDs
                         $IdsMailRecipients = [];
                         foreach ($ids as $id => $checked) {
@@ -1684,15 +1774,6 @@ class PortalSettingsController extends AbstractController
                             'portalId' => $portalId,
                             'recipients' => implode(", ", $IdsMailRecipients),
                         ]);
-                    case 12: // hide mail
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                $user = $userService->getUser($id);
-                                $user->setEmailNotVisible();
-                                $user->save();
-                            }
-                        }
-                        break;
                     case 13: // hide mail everywhere
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
@@ -1704,15 +1785,6 @@ class PortalSettingsController extends AbstractController
                                     $relatedUser->setEmailNotVisible();
                                     $relatedUser->save();
                                 }
-                            }
-                        }
-                        break;
-                    case 14: // show mail
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                $user = $userService->getUser($id);
-                                $user->setEmailVisible();
-                                $user->save();
                             }
                         }
                         break;
@@ -1973,84 +2045,6 @@ class PortalSettingsController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{portalId}/settings/accountindex/sendpasswordmail/{recipients}")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @IsGranted("PORTAL_MODERATOR", subject="portal")
-     * @Template()
-     */
-    public function accountIndexSendPasswordMail(
-        Portal $portal,
-        $portalId,
-        $recipients,
-        Request $request,
-        LegacyEnvironment $legacyEnvironment,
-        MailAssistant $mailAssistant,
-        UserService $userService,
-        ItemService $itemService,
-        Mailer $mailer,
-        RouterInterface $router
-    ) {
-        $recipientArray = [];
-        $recipients = explode(', ', $recipients);
-        foreach ($recipients as $recipient) {
-            $currentUser = $userService->getUser($recipient);
-            array_push($recipientArray, $currentUser);
-        }
-
-        $sendMail = new AccountIndexSendPasswordMail();
-        $sendMail->setRecipients($recipientArray);
-
-        $user = $legacyEnvironment->getEnvironment()->getCurrentUser();
-        $action = 'user-account_password';
-        $accountMail = new AccountMail($legacyEnvironment, $router);
-        $subject = $accountMail->generateSubject($action);
-        $body = $accountMail->generateBody($userService->getCurrentUserItem(), $action);
-        $sendMail->setSubject($subject);
-        $sendMail->setMessage($body);
-
-        $form = $this->createForm(AccountIndexSendPasswordMailType::class, $sendMail);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $data = $form->getData();
-            $mailRecipients = $data->getRecipients();
-
-            $recipientCount = 0;
-            foreach ($mailRecipients as $mailRecipient) {
-
-                $item = $itemService->getTypedItem($mailRecipient->getItemId());
-                $email = $mailAssistant->getAccountIndexPasswordMessage($form, $item);
-                $mailer->sendEmailObject($email, $portal->getTitle());
-
-                if (!is_null($email->getTo())) {
-                    $recipientCount += count($email->getTo());
-                }
-                if (!is_null($email->getCc())) {
-                    $recipientCount += count($email->getCc());
-                }
-                if (!is_null($email->getBcc())) {
-                    $recipientCount += count($email->getBcc());
-                }
-            }
-
-            $this->addFlash('recipientCount', $recipientCount);
-
-            $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
-                'portalId' => $portal->getId(),
-            ]);
-            $this->addFlash('savedSuccess', $returnUrl);
-
-        }
-
-        return [
-            'portal' => $portal,
-            'form' => $form->createView(),
-            'recipients' => $recipientArray,
-        ];
-    }
-
-    /**
      * @Route("/portal/{portalId}/settings/accountindex/sendmergemail/{recipients}")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
@@ -2171,15 +2165,16 @@ class PortalSettingsController extends AbstractController
 
         $relatedUsers = $userListBuilder
             ->fromAccount($accountManager->getAccount($user, $portal->getId()))
-            ->withProjectRoomUser()
-            ->withCommunityRoomUser()
+            ->withProjectRoomUser(true)
+            ->withCommunityRoomUser(true)
             ->withUserRoomUser()
             ->withPrivateRoomUser()
             ->getList();
+
         foreach ($relatedUsers as $relatedUser) {
             $contextID = $relatedUser->getContextID();
             $locked = $relatedUser->getStatus() === "0" ? "(".$translator->trans('Locked', [], 'portal'). ") " : "";
-            $relatedRoomItem = $roomService->getRoomItem($contextID);
+            $relatedRoomItem = $roomService->getRoomItem($contextID) ?? $roomService->getArchivedRoomItem($contextID);
             if ($relatedRoomItem->getType() === 'project') {
                 if ($relatedRoomItem->getStatus() == '2') {
                     $projectsArchivedListNames[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
@@ -2518,33 +2513,6 @@ class PortalSettingsController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/hidemail")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @IsGranted("PORTAL_MODERATOR", subject="portal")
-     */
-    public function accountIndexDetailHideMail(
-        Portal $portal,
-        Request $request,
-        UserService $userService,
-        LegacyEnvironment $legacyEnvironment
-    ) {
-        $user = $userService->getUser($request->get('userId'));
-        $user->setEmailNotVisible();
-        $user->save();
-
-        $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
-            'portalId' => $portal->getId(),
-        ]);
-
-        $this->addFlash('performedSuccessfully', $returnUrl);
-
-        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
-            'portalId' => $request->get('portalId'),
-            'userId' => $request->get('userId'),
-        ]);
-    }
-
-    /**
      * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/hidemailallwrks")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
@@ -2552,8 +2520,7 @@ class PortalSettingsController extends AbstractController
     public function accountIndexDetailHideMailAllWrks(
         Portal $portal,
         Request $request,
-        UserService $userService,
-        LegacyEnvironment $legacyEnvironment
+        UserService $userService
     ) {
         $user = $userService->getUser($request->get('userId'));
         $user->setEmailNotVisible();
@@ -2578,33 +2545,6 @@ class PortalSettingsController extends AbstractController
     }
 
     /**
-     * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/showmail")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @IsGranted("PORTAL_MODERATOR", subject="portal")
-     */
-    public function accountIndexDetailShowMail(
-        Portal $portal,
-        Request $request,
-        UserService $userService,
-        LegacyEnvironment $legacyEnvironment
-    ) {
-        $user = $userService->getUser($request->get('userId'));
-        $user->setEmailVisible();
-        $user->save();
-
-        $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
-            'portalId' => $portal->getId(),
-        ]);
-
-        $this->addFlash('performedSuccessfully', $returnUrl);
-
-        return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
-            'portalId' => $request->get('portalId'),
-            'userId' => $request->get('userId'),
-        ]);
-    }
-
-    /**
      * @Route("/portal/{portalId}/settings/accountIndex/detail/{userId}/showmailallwroks")
      * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
@@ -2612,13 +2552,11 @@ class PortalSettingsController extends AbstractController
     public function accountIndexDetailShowMailAllWroks(
         Portal $portal,
         Request $request,
-        UserService $userService,
-        LegacyEnvironment $legacyEnvironment
+        UserService $userService
     ) {
         $user = $userService->getUser($request->get('userId'));
         $user->setEmailVisible();
         $user->save();
-
 
         $relatedUsers = $user->getRelatedUserList();
         foreach ($relatedUsers as $relatedUser) {

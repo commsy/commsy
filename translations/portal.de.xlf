@@ -154,11 +154,6 @@
             </trans-unit>
 
             <!-- portal terms templates -->
-            <trans-unit id="portal_terms_templates_reference">
-                <source>You can set up templates for room terms here</source>
-                <target>Sie können Vorlagen für Nutzungsbedingungen in Räumen hier verwalten</target>
-            </trans-unit>
-
             <trans-unit id="portal_terms_templates_breadcrumb">
                 <source>roomtermstemplates</source>
                 <target>Vorlagen Nutzungsbedingungen</target>
@@ -270,6 +265,14 @@
             <trans-unit id="portal_menu_home_sortby">
                 <source>Sort list of all rooms by</source>
                 <target>Sortiere "Alle Räume" nach</target>
+            </trans-unit>
+            <trans-unit id="portal_form_label_default_filter_hide_templates">
+                <source>portal.form.label.default_filter_hide_templates</source>
+                <target>Initialwert "Vorlagen ausblenden"</target>
+            </trans-unit>
+            <trans-unit id="portal_form_label_default_filter_hide_archived">
+                <source>portal.form.label.default_filter_hide_archived</source>
+                <target>Initialwert "Archivierte Räume ausblenden"</target>
             </trans-unit>
             <trans-unit id="portal_menu_home_sortby_activity">
                 <source>Activity</source>
@@ -435,25 +438,13 @@
                 <source>Send mail</source>
                 <target>E-Mail schicken</target>
             </trans-unit>
-            <trans-unit id="mail_id_password">
-                <source>Mail id password</source>
-                <target>E-Mail: Kennung u. Passwort</target>
-            </trans-unit>
             <trans-unit id="mail_combine_ids">
                 <source>Mail combine ids</source>
                 <target>E-Mail: Kennungen zusammenführen</target>
             </trans-unit>
-            <trans-unit id="hide_mail">
-                <source>Hide mail</source>
-                <target>E-Mail verbergen</target>
-            </trans-unit>
             <trans-unit id="hide_mail_all_wrks">
                 <source>Hide mail all wrks</source>
                 <target>E-Mail in allen Räumen verbergen</target>
-            </trans-unit>
-            <trans-unit id="show_mail">
-                <source>Show mail</source>
-                <target>E-Mail anzeigen</target>
             </trans-unit>
             <trans-unit id="show_mail_all_wrks">
                 <source>Show mail all wrks</source>
@@ -478,10 +469,6 @@
             <trans-unit id="english_language">
                 <source>English</source>
                 <target>Englisch</target>
-            </trans-unit>
-            <trans-unit id="settings_only_visible">
-                <source>Settings only visible...</source>
-                <target>Einstellungen (nur für </target>
             </trans-unit>
             <trans-unit id="_for">
                 <source>...for</source>
@@ -1288,6 +1275,10 @@
                 <source>Source</source>
                 <target>Quelle</target>
             </trans-unit>
+            <trans-unit id="portal_auth_sources">
+                <source>portal.auth.sources</source>
+                <target>Quellen</target>
+            </trans-unit>
             <trans-unit id="no_source">
                 <source>No source</source>
                 <target>Keine Quelle</target>
@@ -1509,6 +1500,24 @@
             <trans-unit id="mail_reg_ex_help">
                 <source>Please including delimiter and modifier</source>
                 <target>Bitte inkl. Delimiter und Modifier angeben</target>
+            </trans-unit>
+
+            <!-- Auth workspace membership -->
+            <trans-unit id="portal_auth_workspace_membership">
+                <source>portal.auth.workspace_membership</source>
+                <target>Raumteilnahme</target>
+            </trans-unit>
+            <trans-unit id="portal_auth_membership_enabled">
+                <source>portal.auth.membership_enabled</source>
+                <target>Aktiviert</target>
+            </trans-unit>
+            <trans-unit id="portal_auth.membership_identifier">
+                <source>portal.auth.membership_identifier</source>
+                <target>Request-Identifier</target>
+            </trans-unit>
+            <trans-unit id="portal_auth_membership_identifier_help">
+                <source>portal.auth.membership_identifier_help</source>
+                <target>Bezeichner für Komma-separierte Server-Umgebungsinformationen zur automatischen Raumteilnahme</target>
             </trans-unit>
         </body>
     </file>

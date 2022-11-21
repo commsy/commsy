@@ -1,0 +1,12 @@
+{% extends 'base_portal.html.twig' %}
+
+{% block main %}
+    <div uk-alert>
+        <h1>Resource not found</h1>
+        <h2>The server returned a "{{ status_code }} {{ status_text }}".</h2>
+
+        <p>
+            The resource you requested could not be found. It might not exist or be deleted.
+        </p>
+    </div>
+{% endblock %}

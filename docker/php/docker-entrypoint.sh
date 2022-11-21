@@ -24,7 +24,7 @@ set -e
 
     echo "Waiting for db to be ready..."
     ATTEMPTS_LEFT_TO_REACH_DATABASE=60
-    until [ $ATTEMPTS_LEFT_TO_REACH_DATABASE -eq 0 ] || bin/console doctrine:query:sql "SELECT 1" > /dev/null 2>&1; do
+    until [ $ATTEMPTS_LEFT_TO_REACH_DATABASE -eq 0 ] || bin/console dbal:run-sql "SELECT 1" > /dev/null 2>&1; do
         sleep 1
         ATTEMPTS_LEFT_TO_REACH_DATABASE=$((ATTEMPTS_LEFT_TO_REACH_DATABASE-1))
         echo "Still waiting for db to be ready... Or maybe the db is not reachable. $ATTEMPTS_LEFT_TO_REACH_DATABASE attempts left"
@@ -37,7 +37,13 @@ set -e
         echo "The db is now ready and reachable"
     fi
 
-    if ls -A migrations/*/*.php > /dev/null 2>&1; then
+    if bin/console doctrine:migrations:current --no-ansi | grep -q 'No migration executed yet'; then
+        echo "Loading initial database dump"
+        bin/console dbal:run-sql --no-interaction "$(cat src/Resources/fixtures/initial.sql)"
+    fi
+
+    if [ "$( find ./migrations -iname '*.php' -print -quit )" ]; then
+        echo "Running database migrations"
         bin/console doctrine:migrations:migrate --no-interaction
     fi
 #fi

@@ -2,17 +2,30 @@ version: "3.4"
 
 # Development environment override
 services:
+
+  db:
+    ports:
+      - "3106:3306"
+
+  elastic:
+    ports:
+      - "9200:9200"
+
   php:
+    build:
+      target: commsy_php_dev
     volumes:
       # The "cached" option has no effect on Linux but improves performance on Mac
       - ./:/var/www/html:rw,cached
-      - ./docker/php/conf.d/commsy.dev.ini:/usr/local/etc/php/conf.d/commsy.ini
+      - ./docker/php/conf.d/commsy.dev.ini:/usr/local/etc/php/conf.d/commsy.dev.ini:ro
       # If you develop on Mac you can remove the var/ directory from the bind-mount
       # for better performance by enabling the next line
       # - /srv/app/var
-    environment:
-      APP_ENV: dev
+    extra_hosts:
+      # Ensure that host.docker.internal is correctly defined on Linux
+      - host.docker.internal:host-gateway
 
-  nginx:
+  caddy:
     volumes:
       - ./public:/var/www/html/public:ro,cached
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro

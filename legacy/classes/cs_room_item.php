@@ -922,6 +922,28 @@ class cs_room_item extends cs_context_item {
       $this->_setValue('description',(array)$value);
    }
 
+    /**
+     * Get the room's slug (a unique textual identifier for this room)
+     *
+     * @return string|null
+     */
+    public function getSlug(): ?string
+    {
+        return $this->_getValue('slug') ?: null;
+    }
+
+    /**
+     * Set the room's slug (a unique textual identifier for this room)
+     *
+     * @param string|null $slug
+     */
+    public function setSlug(?string $slug): void
+    {
+        $slug = !empty($slug) ? strtolower($slug) : null;
+
+        $this->_setValue('slug', $slug);
+    }
+
    public function isUsed ($start_date, $end_date) {
       $retour = false;
 
@@ -1086,14 +1108,8 @@ class cs_room_item extends cs_context_item {
 
     public function backFromArchive()
     {
-        // group rooms in project room
-        $type = $this->getRoomType();
-        if ($type == CS_PROJECT_TYPE) {
-            $this->backGrouproomsFromArchive();
-        }
-        unset($type);
-
         $environment = $this->_environment;
+
         // Managers that need data from other tables
         $hash_manager = $environment->getHashManager();
         $hash_manager->moveFromBackupToDb($this->getItemID());
@@ -1199,6 +1215,13 @@ class cs_room_item extends cs_context_item {
         $room_manager = $environment->getRoomManager();
         $room_manager->moveFromBackupToDb($this->getItemID());
         unset($room_manager);
+
+        // move a project room's group rooms last, as these require users to be moved already
+        $type = $this->getRoomType();
+        if ($type == CS_PROJECT_TYPE) {
+            $this->backGrouproomsFromArchive();
+        }
+        unset($type);
 
         unset($environment);
 

@@ -16,6 +16,8 @@ parameters:
     router.request_context.host: "%env(HOST)%"
     router.request_context.scheme: "%env(SCHEME)%"
 
+    commsy.metrics.cache_namespace: "%env(API_METRICS_CACHE_NAMESPACE)%"
+
     # Autosaving
     commsy.autosave.mode: 0         # possible modes: 0 -> unvisible, 1 -> verbose / silent, 2 -> verbose / counter
     commsy.autosave.limit: 6        # limit in minutes
@@ -167,11 +169,13 @@ services:
 
     _instanceof:
         App\Form\DataTransformer\DataTransformerInterface:
-            tags: ['app.data_transformer']
+            tags: [ 'app.data_transformer ']
         App\Cron\Tasks\CronTaskInterface:
-            tags: ['app.cron_task']
+            tags: [ 'app.cron_task' ]
         App\Database\DatabaseCheck:
-            tags: ['app.database.check']
+            tags: [ 'app.database.check' ]
+        App\Metrics\MetricInterface:
+            tags: [ 'app.metric' ]
 
     # Event subscriber
     App\EventSubscriber\KernelSubscriber:
@@ -288,12 +292,6 @@ services:
         tags:
             - { name: knp_menu.menu, alias: profile }
 
-    commsy.menu.voter.request:
-        class: App\Menu\Voter\CommsyVoter
-        arguments: ['@request_stack']
-        tags:
-            - { name: knp_menu.voter }
-
     # Voter
     commsy.security.category_voter:
         class: App\Security\Authorization\Voter\CategoryVoter
@@ -393,6 +391,10 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
             $cronTasks: !tagged_iterator app.cron_task
+
+    App\Metrics\PrometheusCollector:
+        arguments:
+            - !tagged_iterator app.metric
 
     App\Search\SearchManager:
         autowire: false
@@ -688,6 +690,12 @@ services:
         autowire: true
 
     App\Action\Mark\HashtagAction:
+        autowire: true
+
+    App\Action\Activate\ActivateAction:
+        autowire: true
+
+    App\Action\Activate\DeactivateAction:
         autowire: true
 
     App\Action\Download\DownloadAction:

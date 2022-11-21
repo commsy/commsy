@@ -84,7 +84,7 @@ class ApiTester extends Actor
 
     public function amFullAuthenticated()
     {
-        $this->sendPostAsJson('/login_check', [
+        $this->sendPostAsJson('/v2/login_check', [
             'username' => 'api_write',
             'password' => 'apiwrite',
         ]);
@@ -94,7 +94,7 @@ class ApiTester extends Actor
 
     public function amReadOnlyAuthenticated()
     {
-        $this->sendPostAsJson('/login_check', [
+        $this->sendPostAsJson('/v2/login_check', [
             'username' => 'api_read',
             'password' => 'apiread',
         ]);

@@ -272,6 +272,7 @@ class UserController extends BaseController
             'isModerator' => $currentUser->isModerator(),
             'user' => $currentUser,
             'sort' => $sort,
+            'shouldCreateUserRooms' => $roomItem->isProjectRoom() ? $roomItem->getShouldCreateUserRooms() : false,
         ];
     }
 

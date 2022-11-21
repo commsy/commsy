@@ -10,6 +10,30 @@
                 <source>A label with the same name already exists.</source>
                 <target>Ein Label mit diesem Namen existiert bereits.</target>
             </trans-unit>
+            <trans-unit id="validators_unique_workspace_identifier">
+                <source>A workspace with the same workspace identifier already exists.</source>
+                <target>Ein Raum mit dieser Raum-Kennzeichnung existiert bereits.</target>
+            </trans-unit>
+            <trans-unit id="validators_workspace_identifier_too_long">
+                <source>Your workspace identifier must not exceed {{ limit }} characters.</source>
+                <target>Die eingegebene Raum-Kennzeichnung darf maximal {{ limit }} Zeichen lang sein.</target>
+            </trans-unit>
+            <trans-unit id="validators_workspace_identifier_must_only_contain_unreserved_chars">
+                <source>Your workspace identifier may only contain lowercase English letters, digits or any of these special characters: -._~</source>
+                <target>Die eingegebene Raum-Kennzeichnung darf keine Umlaute oder Leerzeichen und nur folgende Sonderzeichen enthalten: -._~</target>
+            </trans-unit>
+            <trans-unit id="validators_request_identifier_not_blank">
+                <source>The request identifier must not be empty.</source>
+                <target>Der Request-Identifier darf nicht leer sein.</target>
+            </trans-unit>
+            <trans-unit id="validators_request_identifier_too_long">
+                <source>The request identifier must not exceed {{ limit }} characters.</source>
+                <target>Der eingegebene Request-Identifier darf maximal {{ limit }} Zeichen lang sein.</target>
+            </trans-unit>
+            <trans-unit id="validators_request_identifier_must_only_contain_unreserved_chars">
+                <source>The request identifier may only contain lowercase English letters, digits or any of these special characters: -._~</source>
+                <target>Der eingegebene Request-Identifier darf keine Umlaute oder Leerzeichen und nur folgende Sonderzeichen enthalten: -._~</target>
+            </trans-unit>
             <trans-unit id="validators_current_password_wrong">
                 <source>Wrong value for your current password.</source>
                 <target>Die Eingabe entspricht nicht dem aktuellen Passwort.</target>

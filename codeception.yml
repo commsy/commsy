@@ -10,6 +10,7 @@ actor_suffix: Tester
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
+        - Tests\Support\DatabaseMigrationExtension
 params:
     - .env
     - .env.test
@@ -19,7 +20,7 @@ modules:
             dsn: 'mysql:host=db;dbname='
             user: 'root'
             password: 'root'
-            dump: tests/Support/Data/dump.sql
+            dump: src/Resources/fixtures/initial.sql
             cleanup: true # whether the dump should be reloaded before each test
             populate: true # whether the the dump should be loaded before the test suite is started
             populator: 'mysql -u $user -p$password -h $host commsy_test < $dump'
@@ -29,6 +30,9 @@ modules:
         Symfony:
             app_path: 'src'
             environment: 'test'
+
+        Doctrine2:
+            cleanup: false
 settings:
     shuffle: true
     colors: true

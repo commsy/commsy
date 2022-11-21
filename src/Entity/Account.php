@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use App\Validator\Constraints\EmailRegex;
 
 /**
  * Account
@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @UniqueEntity(
  *     fields={"contextId", "username", "authSource"},
  *     errorPath="username",
- *     repositoryMethod="findOnByCredentials"
+ *     repositoryMethod="findOneByCredentialsArray"
  * )
  * @ApiResource(
  *     security="is_granted('ROLE_API_READ')",
@@ -90,6 +90,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *         "groups"={"api"}
  *     }
  * )
+ * @EmailRegex
  */
 class Account implements UserInterface, EncoderAwareInterface, \Serializable
 {
@@ -597,31 +598,6 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
 
         foreach ($unserializedData as $key => $value) {
             $this->$key = $value;
-        }
-    }
-
-    /**
-     * @Assert\Callback
-     *
-     * @param ExecutionContextInterface $context
-     * @param $payload
-     */
-    public function validateMailRegex(ExecutionContextInterface $context, $payload): void
-    {
-
-        /** @var AuthSource $authSource */
-        $authSource = $context->getObject()->authSource;
-
-        if ($authSource instanceof AuthSourceLocal) {
-            /** @var AuthSourceLocal $authSource */
-            $regex = $authSource->getMailRegex();
-
-            // check regex
-            if ($regex && !preg_match($regex, $payload)) {
-                $context->buildViolation('signup-regex-mail')
-                    ->atPath('email')
-                    ->addViolation();
-            }
         }
     }
 }

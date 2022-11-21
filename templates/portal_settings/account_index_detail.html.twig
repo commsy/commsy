@@ -8,6 +8,8 @@
 
 {% block main %}
     {% embed 'components/card.html.twig' %}
+        {% import 'account/macros.html.twig' as macros %}
+
         {% block title %}{{ 'Accounts'|trans({}, "portal") }}{% endblock %}
         {% block body %}
             {% set performedSuccessfully = app.flashes('performedSuccessfully')|first %}
@@ -15,196 +17,185 @@
             {% if(performedSuccessfully) %}
                 <div class="uk-alert uk-alert-success">
                     <i class="uk-icon-check-square-o uk-icon-medium"></i>
-                    {{ 'Performed action'|trans({},'portal') }}.  <a href="{{  performedSuccessfully }}">{{'Back to overview'|trans({},'portal') }}</a>
+                    {{ 'Performed action'|trans({}, 'portal') }}.  <a href="{{  performedSuccessfully }}">{{'Back to overview'|trans({}, 'portal') }}</a>
                 </div>
             {% endif %}
             {% if(notYetImplemented) %}
                 <div class="uk-alert uk-alert-success">
                     <i class="uk-icon-check-square-o uk-icon-medium"></i>
-                    {{ 'Not yet implemented'|trans({},'portal') }}.  <a href="{{ notYetImplemented }}">{{'Back to overview'|trans({},'portal') }}</a>
+                    {{ 'Not yet implemented'|trans({}, 'portal') }}.  <a href="{{ notYetImplemented }}">{{'Back to overview'|trans({}, 'portal') }}</a>
                 </div>
             {% endif %}
             {{ form_start(form) }}
 
-            {% if(hasPrevious) %}
-                {{ form_row(form.previous) }}
-            {% else %}
-                {{ form_row(form.hasNoPrevious) }}
-            {% endif %}
+            <div class="uk-flex">
+                {% if(hasPrevious) %}
+                    {{ form_row(form.previous) }}
+                {% else %}
+                    {{ form_row(form.hasNoPrevious) }}
+                {% endif %}
 
-            {% if(hasNext) %}
-                {{ form_row(form.next) }}
-            {% else %}
-                {{ form_row(form.hasNoNext) }}
-            {% endif %}
+                {% if(hasNext) %}
+                    {{ form_row(form.next) }}
+                {% else %}
+                    {{ form_row(form.hasNoNext) }}
+                {% endif %}
+            </div>
 
-            <h1>{{ user.firstname }} {{ user.lastname }}</h1>
+            <h2 class="uk-margin-remove-top">{{ user.firstname }} {{ user.lastname }}</h2>
             <hr />
-            <div style="border: 1px solid black; padding: 10px; width: 50%;">
-                <ul style="list-style: none;">
-                    <li><a href="{{ path('app_portalsettings_accountindexdetailedit', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Edit'|trans({},'portal') }}</a></li>
+
+            <button class="uk-button uk-button-default" type="button">Aktionen</button>
+            <div uk-dropdown>
+                <ul class="uk-nav uk-dropdown-nav">
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailedit', {'portalId': portal.id, 'userId': user.itemId}) }}">
+                        {{ 'Edit' | trans({}, 'portal') }}
+                    </a></li>
+
                     {% if not portalUser.canImpersonateAnotherUser or (portalUser.impersonateExpiryDate is not null and portalUser.impersonateExpiryDate < date())%}
-                        <li style="font-style:italic; color:lightgrey">> {{'Login...'|trans({},'portal') }} {{ user.firstname }} {{ user.lastname }} {{'...As'|trans({},'portal') }}</li>
+                        <li class="uk-text-muted">
+                            {{'Login...'|trans({}, 'portal') }} {{ user.firstname }} {{ user.lastname }} {{'...As'|trans({}, 'portal') }}
+                        </li>
                     {% else %}
-                        <li><a href="{{ path('app_portalsettings_accountindexdetailtakeover', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Login...'|trans({},'portal') }} {{ user.firstname }} {{ user.lastname }} {{'...As'|trans({},'portal') }}</a></li>
+                        <li><a href="{{ path('app_portalsettings_accountindexdetailtakeover', {'portalId': portal.id, 'userId': user.itemId}) }}">
+                            {{'Login...'|trans({}, 'portal') }} {{ user.firstname }} {{ user.lastname }} {{'...As'|trans({}, 'portal') }}
+                        </a></li>
                     {% endif %}
+
+                    <li class="uk-nav-divider"></li>
+
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailchangepassword', {'portalId': portal.id, 'userId': user.itemId}) }}">
+                        {{ 'Change password' | trans({}, 'portal') }}
+                    </a></li>
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailchangestatus', {'portalId': portal.id, 'userId': user.itemId}) }}">
+                        {{ 'Change status' | trans({}, 'portal') }}
+                    </a></li>
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailassignworkspace', {'portalId': portal.id, 'userId': user.itemId}) }}">
+                        {{ 'Assign workspace' | trans({}, 'portal') }}
+                    </a></li>
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailhidemailallwrks', {'portalId': portal.id, 'userId': user.itemId}) }}">
+                        {{ 'Hide mail all wrks' | trans({}, 'portal') }}
+                    </a></li>
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailshowmailallwroks', {'portalId': portal.id, 'userId': user.itemId}) }}">
+                        {{ 'Show mail all wrks' | trans({}, 'portal') }}
+                    </a></li>
                 </ul>
             </div>
-            <hr />
-            <h3>{{'Settings only visible...'|trans({},'portal') }}{{ user.firstname }}{{'...for'|trans({},'portal') }}</h3>
-            <div style="border: 1px solid black; padding: 10px; width: 50%;">
-                <ul style="list-style: none;">
-                    <li><a href="{{ path('app_portalsettings_accountindexdetailchangepassword', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Change password'|trans({},'portal') }}</a></li>
-                    <li><a href="{{ path('app_portalsettings_accountindexdetailchangestatus', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Change status'|trans({},'portal') }}</a></li>
-                    <li><a href="{{ path('app_portalsettings_accountindexdetailassignworkspace', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Assign workspace'|trans({},'portal') }}</a></li>
-                    <li><a href="{{ path('app_portalsettings_accountindexdetailhidemail', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Hide mail'|trans({},'portal') }}</a></li>
-                    <li><a href="{{ path('app_portalsettings_accountindexdetailhidemailallwrks', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Hide mail all wrks'|trans({},'portal') }}</a></li>
-                    <li><a href="{{ path('app_portalsettings_accountindexdetailshowmail', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Show mail'|trans({},'portal') }}</a></li>
-                    <li><a href="{{ path('app_portalsettings_accountindexdetailshowmailallwroks', {'portalId': portal.id, 'userId': user.itemId}) }}">> {{'Show mail all wrks'|trans({},'portal') }}</a></li>
-                </ul>
+
+            <dl class="uk-description-list">
+                <dt>{{ 'User ID' | trans({}, 'portal') }}</dt>
+                <dd>{{ user.userid }}</dd>
+
+                <dt>{{ 'authSource' | trans({}, 'portal') }}</dt>
+                <dd>{{ authSource.title }}</dd>
+
+                <dt>{{ 'Status' | trans({}, 'portal') }}</dt>
+                <dd>{{ macros.userStatus(user.status) }}</dd>
+
+                <dt>{{ 'Language' | trans({}, 'portal') }}</dt>
+                <dd>
+                    {% if(user.getLanguage() == 'de') %}
+                        {{'German' | trans({}, 'portal') }}
+                    {% else %}
+                        {{'English' | trans({}, 'portal') }}
+                    {% endif %}
+                </dd>
+
+                <dt>{{ 'Login as... active' | trans({}, 'portal') }}</dt>
+                <dd>
+                    {% if not user.canImpersonateAnotherUser %}
+                        {{'No'|trans({}, 'portal') }}
+                    {% elseif user.impersonateExpiryDate is not null %}
+                        {{ user.impersonateExpiryDate|craue_date }}
+                    {% else %}
+                        {{'Yes'|trans({}, 'portal') }}
+                    {% endif %}
+                </dd>
+
+                <dt>{{ 'Agreed to the terms of service on the...' | trans({}, 'portal') }}</dt>
+                <dd>
+                    {% if user.getAGBAcceptanceDate() %}
+                        {{ user.getAGBAcceptanceDate()|craue_date }}
+                    {% else %}
+                        {{ 'Never' | trans({}, 'portal') }}
+                    {% endif %}
+                </dd>
+
+                <dt>{{ 'Hide mail' | trans({}, 'portal') }}</dt>
+                <dd>
+                    {% if user.isEmailVisible() %}
+                        {{ 'No' | trans({}, 'portal') }}
+                    {% else %}
+                        {{ 'Yes' | trans({}, 'portal') }}
+                    {% endif %}
+                </dd>
+
+                <dt>{{ 'User is allowed to create context' | trans({}, 'portal') }}</dt>
+                <dd>
+                    {% if user.isModerator() %}
+                        {% if user.isAllowedToCreateContext() == 'standard' %}
+                            {{ 'Standard' | trans({}, 'portal') }}
+                        {% elseif user.isAllowedToCreateContext() == 1 %}
+                            {{ 'Yes' | trans({}, 'portal') }}
+                        {% else %}
+                            {{ 'No' | trans({}, 'portal') }}
+                        {% endif %}
+                    {% else %}
+                        {{ 'Standard' | trans({}, 'portal') }}
+                    {% endif %}
+                </dd>
+
+                <dt>{{ 'Default settings for authentification sources' | trans({}, 'portal') }}</dt>
+                <dd>
+                    {% if user.isAllowedToCreateContext() == 'standard' %}
+                        {{ 'Standard' | trans({}, 'portal') }}
+                    {% elseif user.isAllowedToCreateContext() == 1 %}
+                        {{ 'Yes' | trans({}, 'portal') }}
+                    {% else %}
+                        {{ 'No' | trans({}, 'portal') }}
+                    {% endif %}
+                </dd>
+
+                <dt>{{ 'Default settings of the portal' | trans({}, 'portal') }}</dt>
+                <dd>{{ 'lock' | trans({}, 'profile') }}</dd>
+            </dl>
+
+            <div class="uk-child-width-expand@s uk-margin-bottom" uk-grid>
+                <div>
+                    <h3>{{ 'Workspace membership' |trans({}, 'portal') }}</h3>
+                    <dl class="uk-description-list">
+                        <dt>{{ 'Community workspaces' |trans({}, 'portal') }}</dt>
+                        <dd>{{ communities | default('None' | trans({}, 'portal')) }}</dd>
+
+                        <dt>{{ 'Project workspaces' | trans({}, 'portal') }}</dt>
+                        <dd>{{ projects | default('None' | trans({}, 'portal')) }}</dd>
+
+                        <dt>{{ 'Userroom workspaces' | trans({}, 'portal') }}</dt>
+                        <dd>{{ userrooms | default('None' | trans({}, 'portal')) }}</dd>
+
+                        <dt>{{'Privateroom workspaces' | trans({}, 'portal') }}</dt>
+                        <dd>{{ privaterooms | default('None' | trans({}, 'portal')) }}</dd>
+                    </dl>
+                </div>
+
+                <div>
+                    <h3>{{ 'Archived workspaces' | trans({}, 'portal') }}</h3>
+                    <dl class="uk-description-list">
+                        <dt>{{ 'Community workspaces' | trans({}, 'portal') }}</dt>
+                        <dd>{{ communitiesArchived | default('None' | trans({}, 'portal')) }}</dd>
+
+                        <dt>{{ 'Project workspaces' | trans({}, 'portal') }}</dt>
+                        <dd>{{ projectsArchived | default('None' | trans({}, 'portal')) }}</dd>
+
+                        <dt>{{ 'Userroom workspaces' | trans({}, 'portal') }}</dt>
+                        <dd>{{ userroomsArchived | default('None' | trans({}, 'portal')) }}</dd>
+
+                        <dt>{{ 'Privateroom workspaces' | trans({}, 'portal') }}</dt>
+                        <dd>{{ privateRoomsArchived | default('None' | trans({}, 'portal')) }}</dd>
+                    </dl>
+                </div>
             </div>
-                <table>
-                    <tr>
-                        <td> {{'User ID'|trans({},'portal') }}: </td>
-                        <td>{{ user.userid }}</td>
-                    </tr>
-                    <tr>
-                        <td> {{'authSource'|trans({}, 'portal') }}: </td>
-                        <td>{{ authSource.title }}</td>
-                    </tr>
-                    <tr>
-                        <td> {{'Status'|trans({},'portal') }}: </td>
-                        {% if(user.getStatus() == 0) %}
-                            <td>{{'Locked'|trans({},'portal') }}</td>
-                        {% elseif(user.getStatus() == 1) %}
-                            <td>{{'Applying'|trans({},'portal') }}</td>
-                        {% elseif(user.getStatus() == 2) %}
-                            <td>{{'User'|trans({},'portal') }}</td>
-                        {% elseif(user.getStatus() == 3) %}
-                            <td>{{'Moderator'|trans({},'portal') }}</td>
-                        {% else %}
-                            <td>{{'User'|trans({},'portal') }}</td>
-                        {% endif %}
-                    </tr>
-                    <tr>
-                        <td>{{'Language'|trans({},'portal') }}</td>
-                        {% if(user.getLanguage() == 'de') %}
-                            <td>{{'German'|trans({},'portal') }}</td>
-                        {% else %}
-                            <td>{{'English'|trans({},'portal') }}</td>
-                        {% endif %}
-                    </tr>
-                    <tr>
-                        <td>{{'Login as... active'|trans({},'portal') }}</td>
-                        <td>{% if not user.canImpersonateAnotherUser %}
-                            {{'No'|trans({},'portal') }}
-                        {% elseif user.impersonateExpiryDate is not null %}
-                            {{ user.impersonateExpiryDate|craue_date }}
-                        {% else %}
-                            {{'Yes'|trans({},'portal') }}
-                        {%  endif %}</td>
-                    </tr>
-                    <tr>
-                        <td>{{'Agreed to the terms of service on the...'|trans({},'portal') }}:</td>
-                        <td>
-                            {% if user.getAGBAcceptanceDate() %}
-                                {{ user.getAGBAcceptanceDate()|craue_date }}
-                            {% else %}
-                                {{'Never'|trans({},'portal') }}
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>{{'Hide mail'|trans({},'portal') }}</td>
-                        {% if user.isEmailVisible() %}
-                            <td>{{'No'|trans({},'portal') }}</td>
-                        {% else %}
-                            <td>{{'Yes'|trans({},'portal') }}</td>
-                        {% endif %}
-                    </tr>
-                    <tr>
-                        <td>{{'User is allowed to create context'|trans({},'portal') }}</td>
-                        <td>{% if user.isModerator() %}
-                                {% if user.isAllowedToCreateContext() == 'standard' %}
-                                    {{'Standard'|trans({},'portal') }}
-                                {% elseif user.isAllowedToCreateContext() == 1 %}
-                                    {{'Yes'|trans({},'portal') }}
-                                {% else %}
-                                    {{'No'|trans({},'portal') }}
-                                {% endif %}
-                        {% else %}
-                            {{'Standard'|trans({},'portal') }}
-                        {% endif %}</td>
-                    </tr>
-                    <tr>
-                        <td>{{'Default settings for authentification sources'|trans({},'portal') }}</td>
-                        <td>{% if user.isAllowedToCreateContext() == 'standard' %}
-                                {{'Standard'|trans({},'portal') }}
-                            {% elseif user.isAllowedToCreateContext() == 1 %}
-                                {{'Yes'|trans({},'portal') }}
-                            {% else %}
-                                {{'No'|trans({},'portal') }}
-                            {% endif %}</td>
-                    </tr>
-                    <!--
-                    <tr>
-                        <td>{# {{'May use caldav'|trans({},'portal') }}#}:</td>
-                        <td>-</td>
-                    </tr>
-                    -->
-                    <tr>
-                        <td>{{'Default settings of the portal'|trans({},'portal') }}</td>
-                        <td>{{'lock'|trans({},'profile') }}</td>
-                    </tr>
-                    <tr>
-                        <td> </td>
-                        <td> </td>
-                    </tr>
-                    <tr>
-                        <td>{{'Workspace membership'|trans({},'portal') }}:</td>
-                        <td> </td>
-                    </tr>
-                    <tr>
-                        <td>{{'Community workspaces'|trans({},'portal') }}</td>
-                        <td>{{communities}}</td>
-                    </tr>
-                    <tr>
-                        <td>{{'Project workspaces'|trans({},'portal') }}</td>
-                        <td>{{ projects }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{'Userroom workspaces'|trans({},'portal') }}</td>
-                        <td>{{ userrooms }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{'Privateroom workspaces'|trans({},'portal') }}</td>
-                        <td>{{ privaterooms }}</td>
-                    </tr>
-                    <tr>
-                        <td> </td>
-                        <td> </td>
-                    </tr>
-                    <tr style="font-style:italic; color:lightgrey">
-                        <td>{{'Archived workspaces'|trans({},'portal') }}: </td>
-                        <td> </td>
-                    </tr>
-                    <tr style="font-style:italic; color:lightgrey">
-                        <td>{{'Community workspaces'|trans({},'portal') }}</td>
-                        <td>{{ communitiesArchived }}</td>
-                    </tr>
-                    <tr style="font-style:italic; color:lightgrey">
-                        <td>{{'Project workspaces'|trans({},'portal') }}</td>
-                        <td>{{ projectsArchived }}</td>
-                    </tr>
-                    <tr style="font-style:italic; color:lightgrey">
-                        <td>{{'Userroom workspaces'|trans({},'portal') }}</td>
-                        <td>{{ userroomsArchived }}</td>
-                    </tr>
-                    <tr style="font-style:italic; color:lightgrey">
-                        <td>{{'Privateroom workspaces'|trans({},'portal') }}</td>
-                        <td>{{ privateRoomsArchived }}</td>
-                    </tr>
-                </table>
+
             {{ form_row(form.back) }}
             {% do form.next.setRendered %}
             {% do form.hasNoNext.setRendered %}

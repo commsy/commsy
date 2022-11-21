@@ -42,6 +42,7 @@ class PersonalInformationType extends AbstractType
         /** @var Account $user */
         $user = $this->security->getUser();
         $changeUsername = $user !== null ? $user->getAuthSource()->isChangeUsername() : false;
+        $changeUserdata = $user !== null ? $user->getAuthSource()->isChangeUserdata() : false;
 
         $emailConstraints = [];
         /** @var \cs_user_item $portalUser */
@@ -66,15 +67,18 @@ class PersonalInformationType extends AbstractType
             ->add('firstname', TextType::class, [
                 'label' => 'firstname',
                 'required' => false,
+                'disabled' => !$changeUserdata,
             ])
             ->add('lastname', TextType::class, [
                 'label' => 'lastname',
                 'required' => false,
+                'disabled' => !$changeUserdata,
             ])
             ->add('emailAccount', EmailType::class, [
                 'label' => 'email',
                 'required' => true,
                 'constraints' => $emailConstraints,
+                'disabled' => !$changeUserdata,
             ])
             ->add('dateOfBirth', DateType::class, [
                 'label' => 'dateOfBirth',

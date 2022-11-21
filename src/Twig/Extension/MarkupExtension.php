@@ -3,33 +3,32 @@
 namespace App\Twig\Extension;
 
 use App\Services\LegacyMarkup;
-use App\Utils\ItemService;
 use Masterminds\HTML5;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\RouterInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 class MarkupExtension extends AbstractExtension
 {
-    private $router;
-    private $itemService;
-    private $legacyMarkup;
+    /**
+     * @var LegacyMarkup
+     */
+    private LegacyMarkup $legacyMarkup;
 
     /**
      * @var RequestStack $requestStack
      */
-    private $requestStack;
+    private RequestStack $requestStack;
 
-    public function __construct(RequestStack $requestStack, RouterInterface $router, ItemService $itemService, LegacyMarkup $legacyMarkup)
-    {
-        $this->router = $router;
-        $this->itemService = $itemService;
+    public function __construct(
+        RequestStack $requestStack,
+        LegacyMarkup $legacyMarkup
+    ) {
         $this->legacyMarkup = $legacyMarkup;
         $this->requestStack = $requestStack;
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return array(
             new TwigFilter('commsyMarkup', array($this, 'commsyMarkup')),
@@ -43,14 +42,14 @@ class MarkupExtension extends AbstractExtension
         $text = $this->commsyMarkupLists($text); // lists / divider
 
         // bold
-        $text = preg_replace('~\*([^*]+)\*~uU', '<span style="font-weight:bold;">$1</span>', $text);
+        $text = preg_replace('/\*([^*^\n]+?)\*/', '<b>$1</b>', $text);
 
         // italic
         preg_match('~<!-- DNC -->.*<!-- DNC -->~us',$text,$values);
         foreach ($values as $key => $value) {
             $text = str_replace($value,'COMMSY_DNC'.$key.' ',$text);
         }
-        $text = preg_replace('~(^|\n|\t|\s|[ >\/[{(])_([^_]+)_($|\n|\t|:|[ <\/.)\]},!?;])~uU', '$1<span style="font-style:italic;">$2</span>$3', $text);
+        $text = preg_replace('~(^|\n|\t|\s|[ >\/[{(])_([^_]+)_($|\n|\t|:|[ <\/.)\]},!?;])~uU', '$1<i>$2</i>$3', $text);
         foreach ($values as $key => $value) {
             $text = str_replace('COMMSY_DNC'.$key.' ',$value,$text);
         }

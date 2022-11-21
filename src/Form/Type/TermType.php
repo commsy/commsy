@@ -1,14 +1,14 @@
 <?php
 namespace App\Form\Type;
 
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
-use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints;
 
 class TermType extends AbstractType
 {
@@ -29,33 +29,20 @@ class TermType extends AbstractType
                 ],
                 'label' => 'Title',
                 'required' => true,
-                'translation_domain' => 'portal',
             ])
             ->add('contentDe', CKEditorType::class, [
-                'inline' => false,
                 'constraints' => [
                     new Constraints\NotBlank(),
                 ],
                 'label' => 'content_de',
-                'required' => false,
-                'translation_domain' => 'portal',
-                'attr' => array(
-                    'class' => 'uk-form-width-large',
-                    'style' => 'width: 100%;',
-                ),
+                'config_name' => 'html_reduced',
             ])
             ->add('contentEn', CKEditorType::class, [
-                'inline' => false,
                 'constraints' => [
                     new Constraints\NotBlank(),
                 ],
                 'label' => 'content_en',
-                'required' => false,
-                'translation_domain' => 'portal',
-                'attr' => array(
-                    'class' => 'uk-form-width-large',
-                    'style' => 'width: 100%;',
-                ),
+                'config_name' => 'html_reduced',
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
@@ -65,37 +52,27 @@ class TermType extends AbstractType
             // check if this is a "new" object
             if (!$terms->getId()) {
                 $form->add('new', Types\SubmitType::class, [
-                    'attr' => array(
-                        'class' => 'uk-button-primary',
-                    ),
                     'label' => 'Create new term',
-                    'translation_domain' => 'portal',
                 ]);
             } else {
                 $form
                     ->add('update', Types\SubmitType::class, [
-                        'attr' => array(
-                            'class' => 'uk-button-primary',
-                        ),
                         'label' => 'Update term',
-                        'translation_domain' => 'portal',
                     ]);
                 $form
                     ->add('delete', Types\SubmitType::class, [
-                        'attr' => array(
-                            'class' => 'uk-button-danger',
-                        ),
+                        'attr' => [
+                            'class' => 'uk-button uk-button-danger uk-width-auto',
+                        ],
                         'label' => 'Delete term',
-                        'translation_domain' => 'portal',
                         'validation_groups' => false,   // disable validation
                     ]);
                 $form
                     ->add('cancel', Types\SubmitType::class, [
-                        'attr' => array(
-                            'class' => 'uk-button-secondary',
-                        ),
+                        'attr' => [
+                            'class' => 'uk-button uk-button-default',
+                        ],
                         'label' => 'Cancel',
-                        'translation_domain' => 'portal',
                     ]);
             }
         });
@@ -109,7 +86,9 @@ class TermType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired([])
+            ->setDefaults([
+                'translation_domain' => 'portal',
+            ])
         ;
     }
 

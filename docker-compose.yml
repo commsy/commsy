@@ -3,23 +3,21 @@ version: "3.4"
 services:
 
   db:
-    image: mariadb:10.4
+    image: mariadb:10.6
+    restart: unless-stopped
+    volumes:
+      - db_data:/var/lib/mysql:rw
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=commsy
       - MYSQL_USER=commsy
       - MYSQL_PASSWORD=commsy
-    volumes:
-      - db-data:/var/lib/mysql:rw
-    ports:
-      - "3106:3306"
 
   elastic:
     build: ./docker/elasticsearch
-    ports:
-      - "9200:9200"
+    restart: unless-stopped
     volumes:
-      - elastic-data:/usr/share/elasticsearch/data
+      - elastic_data:/usr/share/elasticsearch/data
     environment:
       - "discovery.type=single-node"
       - "bootstrap.memory_lock=true"
@@ -29,15 +27,29 @@ services:
         soft: -1
         hard: -1
 
-  nginx:
-    image: commsy/nginx
+  caddy:
+    image: commsy/caddy
     build:
       context: ./
-      target: commsy_nginx
+      target: commsy_caddy
     depends_on:
       - php
+    restart: unless-stopped
+    environment:
+      SERVER_NAME: ${SERVER_NAME:-localhost:80, caddy:80}
+    volumes:
+      - php_socket:/var/run/php
+      - caddy_data:/data
+      - caddy_config:/config
     ports:
-      - "81:80"
+      # HTTP
+      - target: 80
+        published: ${HTTP_PORT:-80}
+        protocol: tcp
+      # HTTPS
+      - target: 443
+        published: ${HTTPS_PORT:-443}
+        protocol: tcp
 
   php:
     image: commsy/php
@@ -47,10 +59,22 @@ services:
     depends_on:
       - db
       - elastic
+    restart: unless-stopped
+    healthcheck:
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
     volumes:
-      - commsy-data:/var/www/html/files
+      - php_socket:/var/run/php
+      - commsy_data:/var/www/html/files
+#    environment:
+#      DATABASE_URL: mysql://${MYSQL_USER:-commsy}:${MYSQL_PASSWORD:-commsy}@db:3306/${MYSQL_DB:-commsy}?serverVersion=${MYSQL_VERSION:-5.6}
 
 volumes:
-  db-data:
-  elastic-data:
-  commsy-data:
+  php_socket:
+  caddy_data:
+  caddy_config:
+  db_data:
+  elastic_data:
+  commsy_data:
