@@ -603,49 +603,21 @@ class cs_link_manager extends cs_manager {
       }
    }
 
-   function _selectForExport () {
-      $result = $this->_performQuery('select',false);
-      $this->_id_array = NULL;
-      if ( isset($this->_output_limit)
-           and !empty($this->_output_limit)
-           and $this->_output_limit == 'XML'
-         ) {
-         $this->_data = '<'.$this->_db_table.'_list>'.LF;
-      } else {
-         $this->_data = new cs_list();
-      }
-      foreach ($result as $query_result) {
-         if ( isset($this->_output_limit)
-              and !empty($this->_output_limit)
-              and $this->_output_limit == 'XML'
-            ) {
-            if ( isset($query_result)
-                 and !empty($query_result) ) {
-               $this->_data .= '<'.$this->_db_table.'_item>'.LF;
-               foreach ($query_result as $key => $value) {
-                  $value = str_replace('<','lt_commsy_export',$value);
-                  $value = str_replace('>','gt_commsy_export',$value);
-                  $value = str_replace('&','and_commsy_export',$value);
-                  if ( $key == 'extras' ) {
-                     $value = serialize($value);
-                  }
-                  $this->_data .= '<'.$key.'>'.$value.'</'.$key.'>'.LF;
-               }
-               $this->_data .= '</'.$this->_db_table.'_item>'.LF;
-            }
-         } else {
+    function _selectForExport()
+    {
+        $result = $this->_performQuery('select', false);
+        $this->_id_array = null;
+        $data = new cs_list();
+
+        $result = is_array($result) ? $result : [];
+
+        foreach ($result as $query_result) {
             $item = $this->_buildItem($query_result);
-            $this->_data->add($item);
-         }
-         //$this->_id_array[] = $query_result['item_id'];
-      }
-      if ( isset($this->_output_limit)
-           and !empty($this->_output_limit)
-           and $this->_output_limit == 'XML'
-         ) {
-         $this->_data .= '</'.$this->_db_table.'_list>'.LF;
-      }
-   }
+            $data->add($item);
+        }
+
+        $this->_data = $data;
+    }
 
   /** update a link item - internal, do not use -> use method save
     * this method updates a link item
