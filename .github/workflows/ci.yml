@@ -1,6 +1,15 @@
 name: CI
 
-on: push
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - '10.1'
+        tags:
+            - 'v*'
+    pull_request:
+        branches:
+            - '10.1'
 
 jobs:
     test:
@@ -56,33 +65,79 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             -   name: actions/checkout
-                uses: actions/checkout@v2
+                uses: actions/checkout@v3
 
             -   name: Login to DockerHub
-                uses: docker/login-action@v1
+                if: github.event_name != 'pull_request'
+                uses: docker/login-action@v2
                 with:
                     username: ${{ secrets.DOCKERHUB_USERNAME }}
                     password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-            -   name: Build php image and push
-                uses: docker/build-push-action@v2
+            # PHP image
+            -   name: docker/metadata-action
+                uses: docker/metadata-action@v4
+                id: meta_php
                 with:
-                    context: .
-                    push: true
-                    target: commsy_php
-                    tags: effectivewebwork/commsy:10.1.0-php8.0-fpm-ci
+                    images: |
+                        effectivewebwork/commsy
+                    tags: |
+                        type=ref,event=branch
+                        type=ref,event=pr
+                        type=semver,pattern={{major}}.{{minor}}
+                    flavor: |
+                        suffix=-php-fpm,onlatest=true
 
-            -   name: Build nginx image and push
+            -   name: Build php image and push
+                uses: docker/build-push-action@v3
+                with:
+                    context: .
+                    push: ${{ github.event_name != 'pull_request' }}
+                    target: commsy_php
+                    tags: ${{ steps.meta_php.outputs.tags }}
+                    labels: ${{ steps.meta_php.outputs.labels }}
+
+            # caddy image
+            -   name: docker/metadata-action
+                uses: docker/metadata-action@v4
+                id: meta_caddy
+                with:
+                    images: |
+                        effectivewebwork/commsy
+                    tags: |
+                        type=ref,event=branch
+                        type=ref,event=pr
+                        type=semver,pattern={{major}}.{{minor}}
+                    flavor: |
+                        suffix=-caddy,onlatest=true
+
+            -   name: Build caddy image and push
                 uses: docker/build-push-action@v2
                 with:
                     context: .
-                    push: true
-                    target: commsy_nginx
-                    tags: effectivewebwork/commsy:10.1.0-nginx-ci
+                    push: ${{ github.event_name != 'pull_request' }}
+                    target: commsy_caddy
+                    tags: ${{ steps.meta_caddy.outputs.tags }}
+                    labels: ${{ steps.meta_caddy.outputs.labels }}
+
+            # elasticsearch image
+            -   name: docker/metadata-action
+                uses: docker/metadata-action@v4
+                id: meta_elastic
+                with:
+                    images: |
+                        effectivewebwork/commsy
+                    tags: |
+                        type=ref,event=branch
+                        type=ref,event=pr
+                        type=semver,pattern={{major}}.{{minor}}
+                    flavor: |
+                        suffix=-elastic,onlatest=true
 
             -   name: Build elasticsearch image and push
-                uses: docker/build-push-action@v2
+                uses: docker/build-push-action@v3
                 with:
                     context: ./docker/elasticsearch
-                    push: true
-                    tags: effectivewebwork/commsy:10.1.0-elastic-ci
+                    push: ${{ github.event_name != 'pull_request' }}
+                    tags: ${{ steps.meta_elastic.outputs.tags }}
+                    labels: ${{ steps.meta_elastic.outputs.labels }}
