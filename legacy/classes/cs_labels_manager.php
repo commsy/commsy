@@ -293,72 +293,41 @@ class cs_labels_manager extends cs_manager {
       }
    }
 
-  /** select labels limited by limits
-    * this method returns a list (cs_list) of labels within the database limited by the limits. the select statement is a bit tricky, see source code for further information
-    */
-   function select () {
+    /** select labels limited by limits
+     * this method returns a list (cs_list) of labels within the database limited by the limits
+     */
+    function select()
+    {
+        $data = new cs_list();
 
-      if ( isset($this->_output_limit)
-           and !empty($this->_output_limit)
-           and $this->_output_limit == 'XML'
-         ) {
-         $this->_data = '<'.$this->_db_table.'_list>';
-      } else {
-         $this->_data = new cs_list();
-      }
-      if ($this->_isAvailable()) {
-         $result = $this->_performQuery();
+        if ($this->_isAvailable()) {
+            $result = $this->_performQuery();
+            $result = is_array($result) ? $result : [];
 
-         // count links
-         $count_array = array();
-         if ( $this->_count_links and !empty($this->_type_limit) ) {
-            $item_id_array = array();
+            // count links
+            $count_array = [];
+            if ($this->_count_links && !empty($this->_type_limit)) {
+                $item_id_array = [];
+                foreach ($result as $query_result) {
+                    $item_id_array[] = $query_result['item_id'];
+                }
+                $links_manager = $this->_environment->getLinkManager();
+                $count_array = $links_manager->getCountLinksFromItemIDArray($item_id_array, $this->_type_limit);
+            }
+
             foreach ($result as $query_result) {
-               $item_id_array[] = $query_result['item_id'];
+                $label_item = $this->_buildItem($query_result);
+                if (!empty($count_array)) {
+                    if (!empty($count_array[$label_item->getItemID()])) {
+                        $label_item->setCountLinks($count_array[$label_item->getItemID()]);
+                    }
+                }
+                $data->add($label_item);
             }
-            $links_manager = $this->_environment->getLinkManager();
-            $count_array = $links_manager->getCountLinksFromItemIDArray($item_id_array,$this->_type_limit);
-            unset($links_manager);
-         }
+        }
 
-         foreach ($result as $query_result) {
-            if ( isset($this->_output_limit)
-                 and !empty($this->_output_limit)
-                 and $this->_output_limit == 'XML'
-               ) {
-               if ( isset($query_result)
-                    and !empty($query_result) ) {
-                  $this->_data .= '<'.$this->_db_table.'_item>';
-                  foreach ($query_result as $key => $value) {
-                     $value = str_replace('<','lt_commsy_export',$value);
-                     $value = str_replace('>','gt_commsy_export',$value);
-                     $value = str_replace('&','and_commsy_export',$value);
-                     if ( $key == 'extras' ) {
-                        $value = serialize($value);
-                     }
-                     $this->_data .= '<'.$key.'>'.$value.'</'.$key.'>'.LF;
-                  }
-                  $this->_data .= '</'.$this->_db_table.'_item>';
-               }
-            } else {
-               $label_item = $this->_buildItem($query_result);
-               if ( !empty($count_array) ) {
-                  if ( !empty($count_array[$label_item->getItemID()]) ) {
-                     $label_item->setCountLinks($count_array[$label_item->getItemID()]);
-                  }
-               }
-               $this->_data->add($label_item);
-               unset($label_item);
-            }
-         }
-      }
-      if ( isset($this->_output_limit)
-           and !empty($this->_output_limit)
-           and $this->_output_limit == 'XML'
-         ) {
-         $this->_data .= '</'.$this->_db_table.'_list>';
-      }
-   }
+        $this->_data = $data;
+    }
 
   /** perform query for labels: select and count
     * this method perform query for selecting and counting labels

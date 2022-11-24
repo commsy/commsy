@@ -202,149 +202,43 @@ class cs_tag_manager extends cs_manager {
       $this->_cached_sql = array();
    }
 
-  /** select labels limited by limits
-    * this method returns a list (cs_list) of labels within the database limited by the limits. the select statement is a bit tricky, see source code for further information
-    */
-   function select () {
-      if ( isset($this->_output_limit)
-           and !empty($this->_output_limit)
-           and $this->_output_limit == 'XML'
-         ) {
-         $this->_data = '<'.$this->_db_table.'_list>';
-      } else {
-         include_once('classes/cs_list.php');
-         $this->_data = new cs_list();
-      }
+    /** select labels limited by limits
+     * this method returns a list (cs_list) of labels within the database limited by the limits
+     */
+    function select()
+    {
+        $data = new cs_list();
 
-      if ( isset($this->_id_array_limit)
-           and !empty($this->_id_array_limit)
-           and !$this->_output_limit == 'XML'
-         ) {
-         foreach ( $this->_id_array_limit as $id ) {
-            $item_outof_cache = $this->_getItemOutofCache($id);
-            if ( isset($item_outof_cache) ) {
-               $this->_data->add($item_outof_cache);
+        if (isset($this->_id_array_limit)
+            && !empty($this->_id_array_limit)
+        ) {
+            foreach ($this->_id_array_limit as $id) {
+                $item_outof_cache = $this->_getItemOutofCache($id);
+                if (isset($item_outof_cache)) {
+                    $data->add($item_outof_cache);
+                }
             }
-         }
-         if ( isset($this->_order) ) {
-            if ( 'title' ) {
-               $this->_data->sortby('title');
-            } elseif ( 'modification_date' ) {
-               $this->_data->sortby('date');
-            } else {
-               $this->_data->sortby('title');
+            if (isset($this->_order)) {
+                if ($this->_order === 'title') {
+                    $data->sortby('title');
+                } elseif ($this->_order === 'modification_date') {
+                    $data->sortby('date');
+                } else {
+                    $data->sortby('title');
+                }
             }
-         } else {
-         	/*
-            // sort tags(alphabet) if no order is given
-            $tag2tag_manager = $this->_environment->getTag2TagManager();
-            $query = 'SELECT link_id,sorting_place,title FROM '.$this->addDatabasePrefix($tag2tag_manager->_db_table).' INNER JOIN '.$this->addDatabasePrefix($this->_db_table).' ON item_id = to_item_id WHERE '.$this->addDatabasePrefix($tag2tag_manager->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($tag2tag_manager->_db_table).'.deleter_id IS NULL ';
-            $query .=' AND '.$this->addDatabasePrefix($tag2tag_manager->_db_table).'.context_id ="'.$this->_environment->getCurrentContextID().'"';
-            $query .=' ORDER BY title ASC';
-		     if ( !$this->_force_sql
-		          and isset($this->_cached_sql[$query])
-		        ) {
-		        $result = $this->_cached_sql[$query];
-		     } else {
-		        $this->_force_sql = false;
-            	$result = $tag2tag_manager->_db_connector->performQuery($query);
-		        if ( !isset($result) ) {
-		        	trigger_error('Problems selecting '.$this->_db_table.'.', E_USER_WARNING);
-		        } else {
-		             if ( $this->_cache_on ) {
-		                $this->_cached_sql[$query] = $result;
-		             }
-		        }
-		     }
-            if (!isset($result)) {
-               include_once('functions/error_functions.php');
-               trigger_error('Problems selecting tags from query: "'.$query.'"',E_USER_WARNING);
-            } else {
-               $flag = false;
-               if (isset($result['0']['sorting_place'])){
-                  $i = $result['0']['sorting_place'];
-                  foreach ( $result as $result_array ) {
-                     if ( $result_array['sorting_place'] != $i  ) {
-                           $flag = true;
-                           break;
-                     }
-                     $i = $i - 1;
-                  }
-               }
-               unset($result);
-         }
-         if($flag == false){
-            $query = 'SELECT item_id,title FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL AND title != "CS_TAG_ROOT" ORDER BY title ASC;';
-		     // sixth, perform query
-		     if ( !$this->_force_sql
-		          and isset($this->_cached_sql[$query])
-		        ) {
-		        $result = $this->_cached_sql[$query];
-		     } else {
-		        $this->_force_sql = false;
-            	$result = $tag2tag_manager->_db_connector->performQuery($query);
-		        if ( !isset($result) ) {
-		        	trigger_error('Problems selecting '.$this->_db_table.'.', E_USER_WARNING);
-		        } else {
-		             if ( $this->_cache_on ) {
-		                $this->_cached_sql[$query] = $result;
-		             }
-		        }
-		     }
+        } else {
+            $result = $this->_performQuery();
+            $result = is_array($result) ? $result : [];
 
-
-             $result = $this->_db_connector->performQuery($query);
-             if (!isset($result)) {
-                  include_once('functions/error_functions.php');
-                  trigger_error('Problems selecting tags from query: "'.$query.'"',E_USER_WARNING);
-               } else {
-                $sorting_place_id = 1;
-                foreach ( $result as $result_array ) {
-                    $update = 'UPDATE '.$this->addDatabasePrefix($tag2tag_manager->_db_table).' SET sorting_place='.$sorting_place_id.' WHERE to_item_id = '.$result_array["item_id"].';';
-                       $result = $tag2tag_manager->_db_connector->performQuery($update);
-                       $sorting_place_id = $sorting_place_id + 1;
-               }
-            $this->_data->sortby('title');
-             }
-         }
-         unset($tag2tag_manager);
-         */
-         }
-      } else {
-         $result = $this->_performQuery();
-         foreach ($result as $query_result) {
-            if ( isset($this->_output_limit)
-                 and !empty($this->_output_limit)
-                 and $this->_output_limit == 'XML'
-               ) {
-               if ( isset($query_result)
-                    and !empty($query_result) ) {
-                  $this->_data .= '<'.$this->_db_table.'_item>';
-                  foreach ($query_result as $key => $value) {
-                     $value = str_replace('<','lt_commsy_export',$value);
-                     $value = str_replace('>','gt_commsy_export',$value);
-                     $value = str_replace('&','and_commsy_export',$value);
-                     if ( $key == 'extras' ) {
-                        $value = serialize($value);
-                     }
-                     $this->_data .= '<'.$key.'>'.$value.'</'.$key.'>'.LF;
-                  }
-                  $this->_data .= '</'.$this->_db_table.'_item>';
-               }
-            } else {
-               $item = $this->_buildItem($query_result);
-               $this->_data->add($item);
-               unset($item);
+            foreach ($result as $query_result) {
+                $item = $this->_buildItem($query_result);
+                $data->add($item);
             }
-         }
-      }
-      if ( isset($this->_output_limit)
-           and !empty($this->_output_limit)
-           and $this->_output_limit == 'XML'
-         ) {
-         $this->_data .= '</'.$this->_db_table.'_list>';
-      }
-   }
+        }
+
+        $this->_data = $data;
+    }
 
   /** perform query for labels: select and count
     * this method perform query for selecting and counting labels

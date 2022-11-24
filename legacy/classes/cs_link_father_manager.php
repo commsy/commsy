@@ -53,62 +53,33 @@ class cs_link_father_manager extends cs_manager {
         $this->_current_user_id = $this->_current_user->getItemID();
     }
 
-   /** reset limits
-    * reset limits of this class
-    */
-   function resetLimits () {
-      $this->_context_limit = NULL;
-      $this->_output_limit = NULL;
-   }
+    /** reset limits
+     * reset limits of this class
+     */
+    function resetLimits()
+    {
+        $this->_context_limit = NULL;
+    }
 
-   /** select items limited by limits
-   * this method returns a list (cs_list) of items within the database limited by the limits.
-   * depends on _performQuery(), which must be overwritten
-   */
-   function select () {
-      $result = $this->_performQuery();
-      $this->_id_array = NULL;
-      if ( isset($this->_output_limit)
-           and !empty($this->_output_limit)
-           and $this->_output_limit == 'XML'
-         ) {
-         $this->_data = '<'.$this->_db_table.'_list>'.LF;
-      } else {
-      	include_once('classes/cs_list.php');
-         $this->_data = new cs_list();
-      }
-      foreach ($result as $query_result) {
-         if ( isset($this->_output_limit)
-              and !empty($this->_output_limit)
-              and $this->_output_limit == 'XML'
-            ) {
-            if ( isset($query_result)
-                 and !empty($query_result) ) {
-               $this->_data .= '<'.$this->_db_table.'_item>'.LF;
-               foreach ($query_result as $key => $value) {
-                  $value = str_replace('<','lt_commsy_export',$value);
-                  $value = str_replace('>','gt_commsy_export',$value);
-                  $value = str_replace('&','and_commsy_export',$value);
-                  if ( $key == 'extras' ) {
-                     $value = serialize($value);
-                  }
-                  $this->_data .= '<'.$key.'>'.$value.'</'.$key.'>'.LF;
-               }
-               $this->_data .= '</'.$this->_db_table.'_item>'.LF;
-            }
-         } else {
+    /** select items limited by limits
+     * this method returns a list (cs_list) of items within the database limited by the limits.
+     * depends on _performQuery(), which must be overwritten
+     */
+    function select()
+    {
+        $result = $this->_performQuery();
+        $this->_id_array = null;
+        $data = new cs_list();
+
+        $result = is_array($result) ? $result : [];
+
+        foreach ($result as $query_result) {
             $item = $this->_buildItem($query_result);
-            $this->_data->add($item);
-         }
-         //$this->_id_array[] = $query_result['item_id'];
-      }
-      if ( isset($this->_output_limit)
-           and !empty($this->_output_limit)
-           and $this->_output_limit == 'XML'
-         ) {
-         $this->_data .= '</'.$this->_db_table.'_list>'.LF;
-      }
-   }
+            $data->add($item);
+        }
+
+        $this->_data = $data;
+    }
 
    function setContextLimit ($limit) {
       $this->_context_limit = $limit;
