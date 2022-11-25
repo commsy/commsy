@@ -23,7 +23,7 @@ jobs:
                 php-versions: ['8.0', '8.1']
         services:
             db:
-                image: mariadb:10.4
+                image: mariadb:10.6
                 env:
                     MYSQL_ROOT_PASSWORD: root
                     MYSQL_DATABASE: commsy_test
