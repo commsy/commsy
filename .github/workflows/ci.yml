@@ -25,11 +25,12 @@ jobs:
                 ports:
                     - 3306:3306
             elastic:
-                image: elasticsearch:7.16.2
+                image: bitnami/elasticsearch:7
                 ports:
                     - 9200:9200
                 env:
                     discovery.type: single-node
+                    ELASTICSEARCH_PLUGINS: ingest-attachment
                 options: >-
                     --health-cmd "curl http://localhost:9200/_cluster/health"
                     --health-interval 10s
