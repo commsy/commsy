@@ -20,6 +20,7 @@ fos_elastica:
             client: default
             finder: ~
             settings: &index_settings
+                max_ngram_diff: 20
                 analysis:
                     analyzer:
                         commsy_default_analyzer: &default_analyzer_mapping
@@ -45,8 +46,8 @@ fos_elastica:
                     filter:
                         ngrams_filter:
                             type: ngram
-                            min_gram: 2
-                            max_gram: 3
+                            min_gram: 3
+                            max_gram: 20
                             token_chars:
                                 - letter
                                 - digit
