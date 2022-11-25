@@ -17,6 +17,7 @@ jobs:
         env:
             APP_ENV: test
             DATABASE_URL: mysql://root:root@127.0.0.1:3306/commsy_test
+            ELASTICSEARCH_URL: http://127.0.0.1:9200/
         runs-on: ubuntu-latest
         strategy:
             matrix:
@@ -29,6 +30,18 @@ jobs:
                     MYSQL_DATABASE: commsy_test
                 ports:
                     - 3306:3306
+            elastic:
+                image: elasticsearch:7.16.2
+                ports:
+                    - 9200:9200
+                env:
+                    discovery.type: single-node
+                options: >-
+                    --health-cmd "curl http://localhost:9200/_cluster/health"
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 10
+
         steps:
             -   name: actions/checkout
                 uses: actions/checkout@v2
