@@ -14,8 +14,10 @@ use Elastica\Aggregation as Aggregations;
 
 class SearchManager
 {
-    private $commsyFinder;
-    private $userService;
+    private TransformedFinder $commsyFinder;
+
+    private UserService $userService;
+
     private $itemService;
 
     private $query;
@@ -23,12 +25,12 @@ class SearchManager
     /**
      * @var array FilterConditionInterface
      */
-    private $filterConditions = [];
+    private array $filterConditions = [];
 
     /**
      * @var array QueryConditionInterface
      */
-    private $queryConditions = [];
+    private array $queryConditions = [];
 
     public function __construct(TransformedFinder $commsyFinder, UserService $userService, ItemService $itemService)
     {

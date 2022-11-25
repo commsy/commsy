@@ -9,5 +9,9 @@ use Codeception\Module;
 
 class Functional extends Module
 {
-
+    public function grabSymfony(): Module\Symfony
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->getModule('Symfony');
+    }
 }

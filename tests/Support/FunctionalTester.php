@@ -101,12 +101,12 @@ class FunctionalTester extends Actor
     {
         if (!$portal) {
             $portal = $this->havePortal('Test portal');
-            $this->seeInDatabase('user', ['title' => 'Test portal']);
+            $this->seeInDatabase('portal', ['title' => 'Test portal']);
         }
 
         if (!$account) {
             $account = $this->haveAccount($portal, 'user');
-            $this->seeInDatabase('user', ['user_id' => 'user', 'context_id' => $portal->getId()]);
+            $this->seeInDatabase('accounts', ['username' => 'user', 'context_id' => $portal->getId()]);
         }
 
         if ($performLogin && $portal && $account) {
