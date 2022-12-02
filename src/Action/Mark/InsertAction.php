@@ -66,7 +66,7 @@ class InsertAction
             return new JsonErrorResponse('<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i>' . $this->translator->trans('copy items as read only user is not allowed'));
         }
 
-        if($roomItem->getType() == 'userroom'){
+        if ($roomItem->getType() == 'userroom') {
             $imports = $this->markService->getListEntries(0);
 
             foreach ($items as $user) {
@@ -90,7 +90,7 @@ class InsertAction
                     }
                 }
             }
-        }else{
+        } else {
             foreach ($items as $item) {
                 // archive
                 $toggleArchive = false;
@@ -120,11 +120,10 @@ class InsertAction
         }
 
 
-
         return new JsonDataResponse([
-            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-paste\'></i> ' . $this->translator->trans('inserted %count% entries in this room',[
-                '%count%' => count($items),
-            ]),
+            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-paste\'></i> ' . $this->translator->trans('inserted %count% entries in this room', [
+                    '%count%' => count($items),
+                ]),
         ]);
     }
 }
