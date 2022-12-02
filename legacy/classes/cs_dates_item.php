@@ -587,6 +587,7 @@ class cs_dates_item extends cs_item {
       $user = $this->_environment->getCurrentUserItem();
       $copy->setCreatorItem($user);
       $copy->setModificatorItem($user);
+      $copy->setCalendarId($this->_environment->getCurrentContextItem()->getDefaultCalendarId());
       $list = new cs_list();
       $copy->setGroupList($list);
       $copy->setTopicList($list);
