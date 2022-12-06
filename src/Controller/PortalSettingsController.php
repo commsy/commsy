@@ -2771,17 +2771,18 @@ class PortalSettingsController extends AbstractController
      * @IsGranted("PORTAL_MODERATOR", subject="portal")
      * @Template()
      * @param Portal $portal
-     * @param int $translationId
+     * @param int|null $translationId
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return array|RedirectResponse
      */
     public function translations(
         Portal $portal,
-        $translationId,
+        ?int $translationId,
         Request $request,
         EntityManagerInterface $entityManager
-    ) {
+    ): RedirectResponse|array
+    {
         $editForm = null;
 
         $repository = $entityManager->getRepository(Translation::class);
@@ -2812,7 +2813,7 @@ class PortalSettingsController extends AbstractController
         ]);
 
         return [
-            'form' => $editForm ? $editForm->createView() : null,
+            'form' => $editForm?->createView(),
             'portal' => $portal,
             'translations' => $translations,
             'selectedTranslation' => $translation,

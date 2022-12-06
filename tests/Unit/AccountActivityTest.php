@@ -6,13 +6,14 @@ use App\Entity\Room;
 use Codeception\Test\Unit;
 use Symfony\Component\Workflow\Registry;
 use Symfony\Component\Workflow\Transition;
+use Tests\Support\UnitTester;
 
 class AccountActivityTest extends Unit
 {
     /**
-     * @var Tests\Support\UnitTester
+     * @var UnitTester
      */
-    protected $tester;
+    protected UnitTester $tester;
 
     // tests
     public function testAccountWorkflowExists()

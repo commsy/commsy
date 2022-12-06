@@ -44,11 +44,17 @@ class PortalCreatorFacade
         $translation = new Translation();
         // TODO: Make this a relation and flush all together
         $translation->setContextId($portal->getId());
+
         $translation->setTranslationKey('EMAIL_REGEX_ERROR');
         $translation->setTranslationDe('Die angegebene E-Mail-Adresse entspricht nicht den Vorgaben der Portalmoderation.');
         $translation->setTranslationEn('The given email-address does not match the requirements set by the portal moderators.');
-
         $manager->persist($translation);
+
+        $translation->setTranslationKey('REGISTRATION_USERNAME_HELP');
+        $translation->setTranslationDe('Ein frei wählbarer, eindeutiger Benutzername.');
+        $translation->setTranslationEn('An arbitrary, unique username.');
+        $manager->persist($translation);
+
         $manager->flush();
     }
 }

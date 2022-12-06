@@ -14,17 +14,13 @@
                 <source>Update translation</source>
                 <target>Übersetzung aktualisieren</target>
             </trans-unit>
-            <trans-unit id="Cancel">
-                <source>Cancel</source>
-                <target>Abbrechen</target>
-            </trans-unit>
             <trans-unit id="EMAIL_REGEX_ERROR">
                 <source>EMAIL_REGEX_ERROR</source>
                 <target>Fehlermeldung E-Mail Validierung</target>
             </trans-unit>
-            <trans-unit id="EMAIL_REGEX_ERROR_DESC">
-                <source>no EMAIL_REGEX_ERROR_DESC</source>
-                <target>Kein Pfad vorhanden.</target>
+            <trans-unit id="REGISTRATION_USERNAME_HELP">
+                <source>REGISTRATION_USERNAME_HELP</source>
+                <target>Hilfetext Kennung Registrierung</target>
             </trans-unit>
         </body>
     </file>
