@@ -2,10 +2,18 @@
 namespace Tests\Support\Step\Functional;
 
 use Tests\Support\FunctionalTester;
+use Tests\Support\Page\Functional\Portal;
 
 class Root extends FunctionalTester
 {
-    public function amLoggedInAsRoot()
+    private Portal $portalPage;
+
+    public function _inject(Portal $portalPage)
+    {
+        $this->portalPage = $portalPage;
+    }
+
+    public function loginAsRoot()
     {
         $I = $this;
 
@@ -15,11 +23,13 @@ class Root extends FunctionalTester
         $I->fillField('#inputEmail', 'root');
         $I->fillField('#inputPassword', 'pcxEmQj6QzE5');
         $I->click('button[name=login_local]');
+    }
 
-//        /** @var Account $rootAccount */
-//        $rootAccount = $I->grabEntityFromRepository(Account::class, [
-//            'username' => 'root',
-//        ]);
-//        $I->amLoggedInAs($rootAccount);
+    public function loginAndCreatePortalAsRoot(string $title = 'Testportal')
+    {
+        $I = $this;
+
+        $I->loginAsRoot();
+        $this->portalPage->create($title);
     }
 }

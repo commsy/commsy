@@ -14,6 +14,5 @@ class SymfonyHelper extends Module
 
         $container = $symfony->_getContainer();
         $container->set($serviceClassName, $mock);
-//        $symfony->persistService($serviceClassName);
     }
 }
