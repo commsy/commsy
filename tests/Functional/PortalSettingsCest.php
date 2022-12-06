@@ -6,16 +6,15 @@ use Tests\Support\Step\Functional\Root;
 
 class PortalSettingsCest
 {
-    public function roomTermsTemplates(Root $I)
+    public function roomTermsTemplates(Root $R)
     {
-        $portal = $I->havePortal('Testportal');
-        $I->amLoggedInAsRoot();
+        $R->loginAndCreatePortalAsRoot();
 
-        $I->amOnRoute('app_portalsettings_roomtermstemplates', [
-            'portalId' => $portal->getId(),
+        $R->amOnRoute('app_portalsettings_roomtermstemplates', [
+            'portalId' => 1,
         ]);
 
-        $I->seeResponseCodeIsSuccessful();
-        $I->see('Vorlagen Nutzungsbedingungen');
+        $R->seeResponseCodeIsSuccessful();
+        $R->see('Vorlagen Nutzungsbedingungen');
     }
 }

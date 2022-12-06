@@ -2,20 +2,22 @@
 
 namespace Tests\Functional;
 
-use Tests\Support\Step\Functional\User;
 use Codeception\Util\HttpCode;
+use Tests\Support\Step\Functional\Root;
+use Tests\Support\Step\Functional\User;
 
 class AccountCest
 {
-    public function accessAccount(User $I)
+    public function accessAccount(Root $R, User $U)
     {
-        $portal = $I->havePortal('Testportal');
-        $I->haveAccount($portal, 'user');
+        $R->loginAndCreatePortalAsRoot();
+        $U->registerAndLoginAsUser();
+        $R->goToLogoutPath();
 
-        $I->amOnRoute('app_account_personal', [
-            'portalId' => $portal->getId(),
+        $U->amOnRoute('app_account_personal', [
+            'portalId' => 1,
         ]);
 
-        $I->seeResponseCodeIs(HttpCode::OK);
+        $U->seeResponseCodeIs(HttpCode::OK);
     }
 }

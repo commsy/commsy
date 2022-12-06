@@ -2,37 +2,37 @@
 
 namespace Tests\Functional;
 
-use App\Entity\AuthSourceShibboleth;
+use Tests\Support\Page\Functional\PortalAuthShibboleth;
+use Tests\Support\Step\Functional\Root;
 use Tests\Support\Step\Functional\User;
 
 class ShibbolethCest
 {
-    public function initiatorUrlAccessDenied(User $I)
+    public function initiatorUrlAccessDenied(Root $R, User $U)
     {
-        $portal = $I->havePortal('Testportal');
+        $R->loginAndCreatePortalAsRoot();
+        $R->goToLogoutPath();
 
         // We assume that the default portal does not have a shibboleth source configured
-        $I->amOnRoute('app_shibboleth_authshibbolethinit', [
-            'portalId' => $portal->getId(),
+        $U->amOnRoute('app_shibboleth_authshibbolethinit', [
+            'portalId' => 1,
         ]);
 
         // The AccessDeniedException will result in a redirect to login page
-        $I->seeCurrentRouteIs('app_login', [
-            'context' => $portal->getId(),
+        $U->seeCurrentRouteIs('app_login', [
+            'context' => 1,
         ]);
     }
 
-    public function initiatorUrlDefault(User $I)
+    public function initiatorUrlDefault(Root $R, User $I, PortalAuthShibboleth $portalAuthShibbolethPage)
     {
-        $portal = $I->havePortal('Testportal');
-
-        $shibSource = new AuthSourceShibboleth();
-        $shibSource->setLoginUrl('https://example.com');
-        $I->haveAuthSource($portal, $shibSource, 'Shib');
+        $R->loginAndCreatePortalAsRoot();
+        $portalAuthShibbolethPage->configure(1, true);
+        $R->goToLogoutPath();
 
         $I->stopFollowingRedirects();
         $I->amOnRoute('app_shibboleth_authshibbolethinit', [
-            'portalId' => $portal->getId(),
+            'portalId' => 1,
         ]);
 
         $I->seeResponseCodeIsRedirection();
