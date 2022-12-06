@@ -19,42 +19,42 @@ class Translation
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
      * @var int
      *
      * @ORM\Column(name="context_id", type="integer")
      */
-    private $contextId;
+    private int $contextId;
 
     /**
      * @var string
      *
      * @ORM\Column(name="translation_key", type="string", length=255)
      */
-    private $translationKey;
+    private string $translationKey;
 
     /**
      * @var string
      *
      * @ORM\Column(name="translation_de", type="string", length=2000)
      */
-    private $translationDe;
+    private string $translationDe;
 
     /**
      * @var string
      *
      * @ORM\Column(name="translation_en", type="string", length=2000)
      */
-    private $translationEn;
+    private string $translationEn;
 
     /**
      * Get id
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -62,11 +62,11 @@ class Translation
     /**
      * Set contextId
      *
-     * @param integer $contextId
+     * @param int $contextId
      *
      * @return Translation
      */
-    public function setContextId($contextId)
+    public function setContextId(int $contextId): self
     {
         $this->contextId = $contextId;
 
@@ -78,7 +78,7 @@ class Translation
      *
      * @return int
      */
-    public function getContextId()
+    public function getContextId(): int
     {
         return $this->contextId;
     }
@@ -90,7 +90,7 @@ class Translation
      *
      * @return Translation
      */
-    public function setTranslationKey($translationKey)
+    public function setTranslationKey(string $translationKey): self
     {
         $this->translationKey = $translationKey;
 
@@ -102,7 +102,7 @@ class Translation
      *
      * @return string
      */
-    public function getTranslationKey()
+    public function getTranslationKey(): string
     {
         return $this->translationKey;
     }
@@ -112,7 +112,7 @@ class Translation
      *
      * @return string
      */
-    public function getTranslationDe()
+    public function getTranslationDe(): string
     {
         return $this->translationDe;
     }
@@ -120,9 +120,11 @@ class Translation
     /**
      * Set german translation
      */
-    public function setTranslationDe($translationDe)
+    public function setTranslationDe(string $translationDe): self
     {
         $this->translationDe = $translationDe;
+
+        return $this;
     }
 
     /**
@@ -130,7 +132,7 @@ class Translation
      *
      * @return string
      */
-    public function getTranslationEn()
+    public function getTranslationEn(): string
     {
         return $this->translationEn;
     }
@@ -138,18 +140,17 @@ class Translation
     /**
      * Set english translation
      */
-    public function setTranslationEn($translationEn)
+    public function setTranslationEn(string $translationEn): self
     {
         $this->translationEn = $translationEn;
+
+        return $this;
     }
 
-    public function getTranslationForLocale($locale)
+    public function getTranslationForLocale($locale): string
     {
-        if ($locale == 'de') {
-            return $this->getTranslationDe();
-        } else if ($locale == 'en') {
-            return $this->getTranslationEn();
-        }
+        if ($locale === 'de')  return $this->getTranslationDe();
+        if ($locale === 'en') return $this->getTranslationEn();
 
         return '';
     }

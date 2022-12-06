@@ -4,6 +4,7 @@ namespace App\Form\Type;
 
 use App\Entity\Account;
 use App\Entity\Portal;
+use App\Repository\TranslationRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -14,24 +15,28 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SignUpFormType extends AbstractType
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
+    public function __construct(
+        private TranslatorInterface $translator,
+        private TranslationRepository $translationRepository,
+        private RequestStack $requestStack
+    ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var Portal $portal */
+        $portal = $options['portal'];
+
+        $usernameHelp = $this->translationRepository
+            ->findOneByContextAndKey($portal->getId(), 'REGISTRATION_USERNAME_HELP')
+            ->getTranslationForLocale($this->requestStack->getCurrentRequest()->getLocale());
+
         $builder
             ->add('firstname', TextType::class, [
                 'label' => 'registration.firstname',
@@ -50,6 +55,7 @@ class SignUpFormType extends AbstractType
                 'attr' => [
                     'placeholder' => $this->translator->trans('registration.username', [], 'registration'),
                 ],
+                'help' => $usernameHelp,
             ])
             ->add('email', RepeatedType::class, [
                 'type' => EmailType::class,
@@ -97,7 +103,6 @@ class SignUpFormType extends AbstractType
                 'validation_groups' => false,
             ]);
 
-        $portal = $options['portal'];
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($portal) {
             /** @var Portal $portal */
             if (!$portal->hasAGBEnabled()) {
