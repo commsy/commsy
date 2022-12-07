@@ -8,9 +8,10 @@ ARG CADDY_VERSION=2
 
 FROM php:${PHP_VERSION}-fpm-alpine AS commsy_php
 
+ENV APP_ENV=prod
+
 # php extensions installer: https://github.com/mlocati/docker-php-extension-installer
-ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
-RUN chmod +x /usr/local/bin/install-php-extensions
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
 # persistent / runtime deps
 RUN apk add --no-cache \
@@ -29,10 +30,6 @@ RUN apk add --no-cache \
 		ttf-freefont \
 		yarn \
 	;
-
-# install gnu-libiconv and set LD_PRELOAD env to make iconv work fully on Alpine image.
-# see https://github.com/docker-library/php/issues/240#issuecomment-763112749
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 
 RUN set -eux; \
     install-php-extensions \
