@@ -366,7 +366,7 @@ class cs_item {
                $tmp_array = array();
                $tmp_array['id'] = $tag->getItemID();
                $tmp_array['title'] = $tag->getTitle();
-               
+
                $return[] = $tmp_array;
            }
           $tag = $tag_list->getNext();
@@ -1496,7 +1496,7 @@ class cs_item {
           global $symfonyContainer;
           $checkLocking = $symfonyContainer->getParameter('commsy.settings.item_locking');
           $checkLocking &= !$this->_issetExtra('etherpad_id'); // don't check locking for etherpads
-          
+
           if ($checkLocking && !$user_item->isRoot() && method_exists($this, "getLockingDate") && method_exists($this, "getLockingUserId") && $this->hasLocking()) {
               $lockingUserId = $this->getLockingUserId();
 
@@ -2191,20 +2191,20 @@ class cs_item {
    }
 
    function _copyFileList () {
-      $file_list = $this->getFileList();		
+      $file_list = $this->getFileList();
 		$file_new_list = new cs_list();
 
 		// archive
-		if ( $file_list->isEmpty() 
+		if ( $file_list->isEmpty()
 		     and $this->isArchived()
 			  and !$this->_environment->isArchiveMode()
 		   ) {
 			$this->_environment->toggleArchiveMode();
-         $file_list = $this->getFileList();		
+         $file_list = $this->getFileList();
 			$this->_environment->toggleArchiveMode();
 		}
-		// archive		
-      
+		// archive
+
       if ( !empty($file_list) and $file_list->getCount() > 0 ) {
          $file_item = $file_list->getFirst();
          while ( $file_item ) {
@@ -2339,34 +2339,6 @@ class cs_item {
 
    //------------- Wordpressexport -------------
    //------------------------------------------
-
-   public function getItemUrl () {
-      $type = $this->getType();
-      $fct = 'detail';
-      $params = array();
-      if ( $type == CS_FILE_TYPE ) {
-         $mod = type2Module(CS_MATERIAL_TYPE);
-         $fct = 'getfile';
-         $params['iid'] = $this->getFileID();
-      } elseif ( $type == CS_LABEL_TYPE ) {
-         $mod = type2Module($this->getLabelType());
-         $params['iid'] = $this->getItemID();
-      } else {
-         $mod = type2Module($type);
-         $params['iid'] = $this->getItemID();
-      }
-      $session_item = $this->_environment->getSessionItem();
-      if ( isset($session_item)
-           and $session_item->issetValue('cookie')
-           and $session_item->issetValue('cookie') != 1
-         ) {
-         $params['SID'] = $session_item->getSessionID();
-      }
-      global $c_commsy_domain;
-      global $c_commsy_url_path;
-      $retour = $c_commsy_domain.$c_commsy_url_path.'/'._curl(false,$this->getContextID(),$mod, $fct, $params);
-      return $retour;
-   }
 
    public function getModifierList () {
       $retour = NULL;
@@ -2533,7 +2505,7 @@ class cs_item {
    ##########################################
    # plugin configuration
    ############# START ######################
-   
+
    /** get part of the plugin config array, INTERNAL
     *
     * @param string type: PLUGIN for the plugin
@@ -2557,7 +2529,7 @@ class cs_item {
    	}
    	return $retour;
    }
-   
+
    /** set part of the plugin config array, INTERNAL
     *
     * @param string part: PLUGIN for the plugin
@@ -2573,15 +2545,15 @@ class cs_item {
    		$this->setPluginConfigForPlugin('whole',$config_array);
    	}
    }
-   
+
    public function getPluginConfigData () {
    	return $this->getPluginConfigForPlugin('whole');
    }
-   
+
    public function setPluginConfigData ($value) {
    	$this->setPluginConfigForPlugin('whole',$value);
    }
-   
+
    ############### END ######################
    # plugin configuration
    ##########################################

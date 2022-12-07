@@ -1,14 +1,25 @@
 <?php
 
-$finder = PhpCsFixer\Finder::create()
-    ->in(__DIR__ . '/legacy')
-    ->in(__DIR__ . '/src')
-;
+$fileHeaderComment = <<<'EOF'
+This file is part of CommSy.
+
+(c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+
+For the full copyright and license information, please view the LICENSE.md
+file that was distributed with this source code.
+EOF;
 
 $config = new PhpCsFixer\Config();
-return $config->setRules([
+return (new PhpCsFixer\Config())
+    ->setRules([
         '@Symfony' => true,
-        'yoda_style' => false,
+        'header_comment' => ['header' => $fileHeaderComment],
     ])
-    ->setFinder($finder)
+    ->setFinder(
+        PhpCsFixer\Finder::create()
+            ->in(__DIR__ . '/legacy')
+            ->in(__DIR__ . '/src')
+    )
 ;

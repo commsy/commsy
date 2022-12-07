@@ -616,33 +616,6 @@ class cs_community_item extends cs_room_item {
          return true;
       }
 
-      /*
-      $activity = $activity + $this->getCountAnnouncements($start,$end);
-      if ($activity > $activity_border) {
-         #return true;
-      }
-
-      $activity = $activity + $this->getCountUsers($start,$end);
-      if ($activity > $activity_border) {
-         #return true;
-      }
-
-      $activity = $activity + $this->getCountMaterials($start,$end);
-      if ($activity > $activity_border) {
-         #return true;
-      }
-
-      $activity = $activity + $this->getCountDiscussions($start,$end);
-      if ($activity > $activity_border) {
-         #return true;
-      }
-
-      $activity = $activity + $this->getCountTopics($start,$end);
-      if ($activity > $activity_border) {
-         #return true;
-      }
-      */
-
       // count project items additionaly because item manager can count them
       $activity = $activity + $this->getCountProjects($start,$end);
       if ($activity > $activity_border) {
@@ -780,7 +753,7 @@ class cs_community_item extends cs_room_item {
       }
       return $retour;
    }
-   
+
     function getMDOActive() {
         // Konfigurationsoption: Medieninhalte(Mediendistribution-Online)
         $retour = '';
@@ -877,7 +850,7 @@ class cs_community_item extends cs_room_item {
    function _sendMailToModeration2 ($room_item, $room_change) {
       $translator = $this->_environment->getTranslationObject();
       $default_language = 'de';
-      
+
       // maybe in archive mode
       $toggle_archive = false;
         if ( $this->_environment->isArchiveMode() ) {
@@ -905,14 +878,14 @@ class cs_community_item extends cs_room_item {
               and $default_sender_address != '@'
             ) {
          	$current_user->setEmail($default_sender_address);
-         }	
+         }
       }
-      
+
       if ( $toggle_archive ) {
       	$this->_environment->toggleArchiveMode();
       }
       unset($toggle_archive);
-      
+
       $moderator_list = $room_item->getModeratorList();
 
       // get moderators

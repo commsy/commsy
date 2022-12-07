@@ -1071,47 +1071,4 @@ class cs_links_manager extends cs_manager {
          $this->save($temp_array);
       }
    }
-   
-   function export_items() {
-	   $links_array = $this->_performQuery();
-   	$links_xml = new SimpleXMLElementExtended('<links></links>');
-   	foreach ($links_array as $link) {
-   	   $link_xml = new SimpleXMLElementExtended('<link></link>');
-   	   $link_xml->addChildWithCDATA('from_item_id', $link['from_item_id']);
-         $link_xml->addChildWithCDATA('from_version_id', $link['from_version_id']);
-         $link_xml->addChildWithCDATA('to_item_id', $link['to_item_id']);
-         $link_xml->addChildWithCDATA('to_version_id', $link['to_version_id']);
-         $link_xml->addChildWithCDATA('link_type', $link['link_type']);
-         $link_xml->addChildWithCDATA('context_id', $link['context_id']);
-         $link_xml->addChildWithCDATA('deleter_id', $link['deleter_id']);
-         $link_xml->addChildWithCDATA('deletion_date', $link['deletion_date']);
-         $link_xml->addChildWithCDATA('x', $link['x']);
-         $link_xml->addChildWithCDATA('y', $link['y']);
-         $this->simplexml_import_simplexml($links_xml, $link_xml);
-      }
-   	return $links_xml;
-	}
-   
-   function import_items($xml, $top_item, &$options) {
-      if ($xml != null) {
-         foreach ($xml->children() as $link) {
-            $new_from_item_id = $options[(string)$link->from_item_id[0]];
-            $new_to_item_id = $options[(string)$link->to_item_id[0]];
-            if (($new_from_item_id != '') && ($new_to_item_id != '')) {
-               $link_array = array();
-               $link_array['from_item_id'] = $new_from_item_id;
-               $link_array['from_version_id'] = (string)$link->from_version_id[0];
-               $link_array['to_item_id'] = $new_to_item_id;
-               $link_array['to_version_id'] = (string)$link->to_version_id[0];
-               $link_array['link_type'] = (string)$link->link_type[0];
-               $link_array['room_id'] = $top_item->getItemId();
-               $link_array['deleter_id'] = (string)$link->deleter_id[0];
-               $link_array['deletion_date'] = (string)$link->deletion_date[0];
-               $link_array['x'] = (string)$link->x[0];
-               $link_array['y'] = (string)$link->y[0];
-               $this->_create($link_array);
-            }
-         }
-      }
-   }
 }

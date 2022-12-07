@@ -25,34 +25,12 @@
 
 // home rubric list limit
 
-$interval = 20;
-/*
-include('cs_config.php');
-global $cs_max_list_length;
-global $cs_max_search_list_length;
-if (isset($cs_max_list_length) and !empty($cs_max_list_length)){
-	define('CS_HOME_RUBRIC_LIST_LIMIT', $cs_max_list_length);
-	define('CS_LIST_INTERVAL',$cs_max_list_length);
+define('CS_LIST_INTERVAL',20);
 
-}else{*/
-	define('CS_HOME_RUBRIC_LIST_LIMIT', 50);
-	define('CS_LIST_INTERVAL',20);/*
-}
-*/
-
-define('CS_YES',1);
-define('CS_NO',-1);
-
-$no_room = 0;
 define('CS_NO_ROOM',0);
 define('CS_ROOM_OPEN',1);
 define('CS_ROOM_CLOSED',2);
 define('CS_ROOM_LOCK',3);
-$text='';
-for($i=0;$i<40;$i++){
-   $text.='&nbsp;';
-}
-define('CS_WITDH_CONSTANT',$text);
 define('CS_ALL','all');
 
 define('CS_ITEM_TYPE','item');
@@ -95,21 +73,10 @@ define('CS_LINKMODITEM_TYPE','link_modifier_item');
 define('CS_LINKITEMFILE_TYPE','link_item_file');
 define('CS_READER_TYPE','reader');
 define('CS_NOTICED_TYPE','noticed');
-define('CS_AUTH_SOURCE_TYPE','auth_source');
 
 define('CS_TIME_TYPE','time');
 
-define('CS_LOG_TYPE','log');
-define('CS_LOGARCHIVE_TYPE','log_archive');
-define('CS_LOG_ERROR_TYPE','log_error');
-
 define('CS_ASSESSMENT_TYPE', 'assessments');
-
-define('CS_PLUGIN_TYPE','plugin');
-
-define('CS_GRADIENT_24','cs_gradient_24.png');
-define('CS_GRADIENT_24_FOCUS','cs_gradient_24_focus.png');
-define('CS_GRADIENT_32','cs_gradient_32.png');
 
 define('LF'  , "\n");       // line feed
 define('BR'  , "<br />");   // line feed
@@ -149,56 +116,3 @@ define ("FROM_DB", 12);
 define ("FROM_FILE", 13);
 define ("FROM_GET", 14);
 define ("HELP_AS_HTML_LONG", 21);
-
-
-// IIS - microsoft compatibility
-if ( empty( $_SERVER['REQUEST_URI'] ) ) {
-
-    // IIS Mod-Rewrite
-    if (isset($_SERVER['HTTP_X_ORIGINAL_URL'])) {
-        $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_ORIGINAL_URL'];
-    }
-    // IIS Isapi_Rewrite
-    else if (isset($_SERVER['HTTP_X_REWRITE_URL'])) {
-        $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
-    }
-    else
-    {
-        // Some IIS + PHP configurations puts the script-name in the path-info (No need to append it twice)
-        if ( isset($_SERVER['PATH_INFO']) ) {
-            if ( $_SERVER['PATH_INFO'] == $_SERVER['SCRIPT_NAME'] )
-                $_SERVER['REQUEST_URI'] = $_SERVER['PATH_INFO'];
-            else
-                $_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'] . $_SERVER['PATH_INFO'];
-        }
-
-        // Append the query string if it exists and isn't null
-        $_SERVER['REQUEST_URI'] = substr($_SERVER['PHP_SELF'],0);
-
-        if (isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING'])) {
-            $_SERVER['REQUEST_URI'] .= '?' . $_SERVER['QUERY_STRING'];
-        }
-    }
-}
-
-// new constants for CommSy8
-define('CS_OPTION_SAVE', 'save');
-define('CS_OPTION_CHANGE', 'change');
-define('CS_OPTION_NEW', 'new');
-define('CS_OPTION_CANCEL', 'cancel');
-define('CS_OPTION_DELETE', 'delete');
-define('CS_OPTION_JOIN', 'join');
-
-define('CS_LISTOPTION_NONE','listoption_none');
-define('CS_LISTOPTION_COPY', 'listoption_copy');
-define('CS_LISTOPTION_DOWNLOAD', 'listoption_download');
-define('CS_LISTOPTION_MARK_AS_READ', 'listoption_mark_as_read');
-define('CS_LISTOPTION_DELETE', 'listoption_delete');
-define('CS_LISTOPTION_EMAIL_SEND', 'listoption_email_send');
-define('CS_LISTOPTION_TODO_DONE', 'listoption_todo_done');
-define('CS_LISTOPTION_TODO_IN_PROGRESS', 'listoption_todo_in_progress');
-define('CS_LISTOPTION_TODO_NOT_STARTED', 'listoption_todo_not_started');
-
-define('CS_LISTOPTION_CONFIRM_DELETE', 'listoption_confirm_delete');
-define('CS_LISTOPTION_CONFIRM_CANCEL', 'listoption_confirm_cancel');
-?>

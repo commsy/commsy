@@ -114,7 +114,7 @@ class cs_user_manager extends cs_manager {
    * document this limit (TBD)
    */
    var $_user_limit = NULL;
-   
+
    var $_user_limit_binary = NULL;
 
   /**
@@ -156,7 +156,7 @@ class cs_user_manager extends cs_manager {
    private $_limit_no_membership = NULL;
 
    private $_limit_email = NULL;
-   
+
    private $_limit_connection_key = NULL;
    private $_limit_connection_server_key = NULL;
    private $_limit_connection_own_key = NULL;
@@ -393,10 +393,10 @@ class cs_user_manager extends cs_manager {
   function setUserIDLimit ($value) {
      $this->_user_limit = (string)$value;
   }
-  
+
   /** set user id limit with mysql binary (case sensitive)
    *  this method sets a user id limit for user (case sensitive)
-   *  
+   *
    *  @param string value user id limit for selected user
    */
   function setUserIDLimitBinary($value) {
@@ -463,7 +463,7 @@ class cs_user_manager extends cs_manager {
          $retour .= ' AND '.$tmp_db_name.'.deletion_date IS NULL';
          $retour .= ' AND '.$tmp_db_name.'.context_id IN ('.implode(',',$room_id_array).')';
       }
-      
+
       // archive
       if ( !$this->_environment->isArchiveMode() ) {
          $this->_environment->activateArchiveMode();
@@ -476,7 +476,7 @@ class cs_user_manager extends cs_manager {
 
             global $symfonyContainer;
             $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
-            
+
             $retour .= ' LEFT JOIN '.$this->addDatabasePrefix($this->_db_table).' AS '.$tmp_db_name;
             $this->_db_prefix = '';
             $this->setWithoutDatabasePrefix();
@@ -489,7 +489,7 @@ class cs_user_manager extends cs_manager {
          $this->_environment->deactivateArchiveMode();
       }
       // archive
-      
+
       return $retour;
    }
 
@@ -497,14 +497,14 @@ class cs_user_manager extends cs_manager {
       $retour  = '';
       $tmp_db_name = 'usernomem';
       $retour .= ' AND '.$tmp_db_name.'.auth_source IS NULL';
-      
+
       // archive
       if ( !$this->_environment->isArchiveMode() ) {
          $tmp_db_name_archive = 'usernomem_archive';
          $retour .= ' AND '.$tmp_db_name_archive.'.auth_source IS NULL';
       }
       // archive
-      
+
       return $retour;
    }
 
@@ -640,7 +640,7 @@ class cs_user_manager extends cs_manager {
      if (isset($this->_user_limit_binary)) {
      	$query .= ' AND BINARY '.$this->addDatabasePrefix('user').'.user_id = "'.encode(AS_DB,$this->_user_limit_binary).'"';
      }
-      
+
      if ( empty($this->_id_array_limit) ) {
         if ( isset($this->_context_array_limit)
              and !empty($this->_context_array_limit)
@@ -744,7 +744,7 @@ class cs_user_manager extends cs_manager {
      if ( !empty($this->_id_array_limit) ) {
         $query .= ' AND '.$this->addDatabasePrefix('user').'.item_id IN ('.implode(", ", $this->_id_array_limit).')';
      }
-     
+
      // portal2Portal: connection key limit
      if ( !empty($this->_limit_connection_key) ) {
      	  $query .= ' AND '.$this->addDatabasePrefix('user').'.extras LIKE "%CONNECTION_EXTERNAL_KEY_ARRAY%"';
@@ -759,7 +759,7 @@ class cs_user_manager extends cs_manager {
      if ( !empty($this->_limit_connection_own_key) ) {
      	  $query .= ' AND '.$this->addDatabasePrefix('user').'.extras LIKE "%s:17:\"CONNECTION_OWNKEY\";s:32:\"'.$this->_limit_connection_own_key.'\"%"';
      }
-     
+
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND ( 1 = 1';
@@ -1188,7 +1188,7 @@ class cs_user_manager extends cs_manager {
      if (empty($usePortalEmail)) {
          $usePortalEmail = 0;
      }
-  	 
+
      $query .= 'context_id="'.encode(AS_DB,$user_item->getContextID()).'",';
      $query .= 'status="'.encode(AS_DB,$user_item->getStatus()).'",';
      $query .= 'is_contact="'.encode(AS_DB,$contact_status).'",';
@@ -1203,13 +1203,13 @@ class cs_user_manager extends cs_manager {
      $query .= 'use_portal_email="'.encode(AS_DB,$usePortalEmail).'",';
      // Datenschutz
      $expire_date = $user_item->getPasswordExpireDate();
-     
+
      if ( empty ($expire_date) or $expire_date == 0){
      	$query .= 'expire_date=NULL,';
      } else {
      	$query .= 'expire_date="'.encode(AS_DB,$expire_date).'",';
      }
-     
+
 
      // if user was entered by system (creator_id == 0) then creator_id must change from 0 to item_id of the user_item
      // see methode _create()
@@ -1692,44 +1692,6 @@ class cs_user_manager extends cs_manager {
    # statistic functions
    ##########################################################
 
-   function getCountUsers ($start, $end) {
-      return $this->getCountUsedAccounts($start,$end);
-   }
-
-   function getCountNewUsers ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("user").".item_id) as number FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("user").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("user").".creation_date < '".encode(AS_DB,$end)."'";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems counting users.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-         unset($result);
-      }
-      return $retour;
-   }
-
-   function getCountModUsers ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("user").".item_id) as number FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("user").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("user").".modification_date < '".encode(AS_DB,$end)."' and ".$this->addDatabasePrefix("user").".modification_date != ".$this->addDatabasePrefix("user").".creation_date";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems counting users.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-         unset($result);
-      }
-      return $retour;
-   }
-
    function getCountUsedAccounts ($start, $end) {
       $retour = 0;
 
@@ -1852,11 +1814,11 @@ class cs_user_manager extends cs_manager {
    function resetCacheSQL(){
       $this->_cache_sql = array();
    }
-	
+
 	####################################################
 	# archive method
 	####################################################
-	
+
 	public function getLastUsedDateOfRoom ( $room_id ) {
 		$retour = '';
 		if ( !empty($room_id) ) {
@@ -1867,11 +1829,11 @@ class cs_user_manager extends cs_manager {
 				trigger_error('Problems getting last used date of this room: '.$room_id,E_USER_WARNING);
 			} elseif ( !empty($result[0]['lastlogin']) ) {
 				$retour = $result[0]['lastlogin'];
-			}	
+			}
 		}
 		return $retour;
 	}
-	
+
 	public function getUserPasswordExpiredByContextID($cid) {
 		$user_array = array();
 		$current_date = getCurrentDateTimeInMySQL();
@@ -1888,12 +1850,12 @@ class cs_user_manager extends cs_manager {
 			unset($result);
 			unset($query);
 		}
-		
+
 		return $user_array;
-		
+
 
 	}
-	
+
 	public function getCountUserPasswordExpiredByContextID($cid) {
 		$retour = 0;
 		$date = getCurrentDateTimeInMySQL();
@@ -1911,7 +1873,7 @@ class cs_user_manager extends cs_manager {
 		}
 		return $retour;
 	}
-	
+
 	public function getCountUserPasswordExpiredSoonByContextID($cid, $portal_item = NULL) {
 		$retour = 0;
 		$days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
@@ -1934,10 +1896,10 @@ class cs_user_manager extends cs_manager {
 		}
 		return $retour;
 	}
-	
+
 	public function getUserPasswordExpiredSoonByContextID($cid, $portal_item = NULL) {
 		$days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
-		
+
 		if(isset($days_before_expiring_sendmail)){
 			$date = getCurrentDateTimePlusDaysInMySQL($days_before_expiring_sendmail);
 		} else {
@@ -1959,7 +1921,7 @@ class cs_user_manager extends cs_manager {
 		}
 		return $user_array;
 	}
-	
+
 	public function getUserTempLoginExpired(){
 		$user = NULL;
 		$user_array = array();
@@ -1977,7 +1939,7 @@ class cs_user_manager extends cs_manager {
 		}
 		return $user_array;
 	}
-	
+
 	public function getUserLastLoginLaterAs($date,$cid, $status = 2){
 		$user = NULL;
 		$user_array = array();

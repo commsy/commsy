@@ -576,56 +576,6 @@ class cs_discussionarticles_manager extends cs_manager {
         }
     }
 
-   ########################################################
-   # statistic functions
-   ########################################################
-
-   function getCountDiscArticles ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix($this->_db_table).".item_id) as number FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$this->_room_limit)."' and ((".$this->addDatabasePrefix($this->_db_table).".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix($this->_db_table).".creation_date < '".encode(AS_DB,$end)."') or (".$this->addDatabasePrefix($this->_db_table).".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix($this->_db_table).".modification_date < '".encode(AS_DB,$end)."'))";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting all '.$this->_db_table.'.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-
-      return $retour;
-   }
-
-   function getCountNewDiscArticles ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix($this->_db_table).".item_id) as number FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix($this->_db_table).".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix($this->_db_table).".creation_date < '".encode(AS_DB,$end)."'";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting '.$this->_db_table.'.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-      return $retour;
-   }
-
-   function getCountModDiscArticles ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix($this->_db_table).".item_id) as number FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix($this->_db_table).".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix($this->_db_table).".modification_date < '".encode(AS_DB,$end)."' and ".$this->addDatabasePrefix($this->_db_table).".modification_date != ".$this->addDatabasePrefix($this->_db_table).".creation_date";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting '.$this->_db_table.'.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-      return $retour;
-   }
-
     function deleteDiscarticlesOfUser($uid) {
         global $symfonyContainer;
         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');

@@ -373,11 +373,6 @@ class cs_dates_manager extends cs_manager {
                      OR(l5.second_item_id='.$this->addDatabasePrefix('dates').'.item_id AND l5.first_item_id="'.encode(AS_DB,$this->_ref_id_limit).'") AND l5.deleter_id IS NULL)';
       }
 
-      // only files limit -> entries with files
-      if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
-         $query .= ' INNER JOIN '.$this->addDatabasePrefix('item_link_file').' AS lf ON '.$this->addDatabasePrefix($this->_db_table).'.item_id = lf.item_iid';
-      }
-
       $query .= ' WHERE 1';
 
        switch ($this->inactiveEntriesLimit) {
@@ -472,7 +467,7 @@ class cs_dates_manager extends cs_manager {
             $query .= ' OR (l42.first_item_id IN ('.encode(AS_DB,$id_string).') OR l42.second_item_id IN ('.encode(AS_DB,$id_string).') ))';
          }
       }
-      
+
       if (isset($this->_buzzword_limit)) {
          if ($this->_buzzword_limit ==-1){
             $query .= ' AND (l6.to_item_id IS NULL OR l6.deletion_date IS NOT NULL)';
@@ -483,7 +478,7 @@ class cs_dates_manager extends cs_manager {
 
       if ( isset($this->_participant_limit) ) {
          $id_string = implode(', ',$this->_participant_limit);
-         
+
          if( $this->_participant_limit == -1 ){
             $query .= ' AND (participant_limit1.first_item_id IS NULL AND participant_limit1.second_item_id IS NULL)';
             $query .= ' AND (participant_limit2.first_item_id IS NULL AND participant_limit2.second_item_id IS NULL)';
@@ -591,11 +586,6 @@ class cs_dates_manager extends cs_manager {
       // init and perform ft search action
       if (!empty($this->_search_array)) {
          $query .= $this->initFTSearch();
-      }
-
-      // only files limit -> entries with files
-      if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
-         $query .= ' AND lf.deleter_id IS NULL AND lf.deletion_date IS NULL';
       }
 
       // $this->_not_older_than_limit
@@ -1047,56 +1037,6 @@ class cs_dates_manager extends cs_manager {
          parent::delete($item_id);
          unset($result);
       }
-   }
-
-   ########################################################
-   # statistic functions
-   ########################################################
-
-   function getCountDates ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("dates").".item_id) as number FROM ".$this->addDatabasePrefix("dates")." WHERE ".$this->addDatabasePrefix("dates").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ((".$this->addDatabasePrefix("dates").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("dates").".creation_date < '".encode(AS_DB,$end)."') or (".$this->addDatabasePrefix("dates").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("dates").".modification_date < '".encode(AS_DB,$end)."'))";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting all dates.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-
-      return $retour;
-   }
-
-   function getCountNewDates ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("dates").".item_id) as number FROM ".$this->addDatabasePrefix("dates")." WHERE ".$this->addDatabasePrefix("dates").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("dates").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("dates").".creation_date < '".encode(AS_DB,$end)."'";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting dates.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-      return $retour;
-   }
-
-   function getCountModDates ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("dates").".item_id) as number FROM ".$this->addDatabasePrefix("dates")." WHERE ".$this->addDatabasePrefix("dates").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("dates").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("dates").".modification_date < '".encode(AS_DB,$end)."' and ".$this->addDatabasePrefix("dates").".modification_date != ".$this->addDatabasePrefix("dates").".creation_date";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting dates.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-      return $retour;
    }
 
     /**

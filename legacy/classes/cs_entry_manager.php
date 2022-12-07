@@ -198,12 +198,6 @@ class cs_entry_manager extends cs_manager {
          }
       }
 
-
-      // only files limit -> entries with files
-      if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
-         $query .= ' INNER JOIN '.$this->addDatabasePrefix('item_link_file').' AS lf ON '.$this->addDatabasePrefix($this->_db_table).'.item_id = lf.item_iid';
-      }
-
       $query .= ' WHERE 1';
 
        switch ($this->inactiveEntriesLimit) {
@@ -294,11 +288,6 @@ class cs_entry_manager extends cs_manager {
       // init and perform ft search action
       if (!empty($this->_search_array)) {
          $query .= $this->initFTSearch();
-      }
-
-      // only files limit -> entries with files
-      if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
-         $query .= ' AND lf.deleter_id IS NULL AND lf.deletion_date IS NULL';
       }
 
       if ( isset($this->_sort_order) ) {
@@ -521,58 +510,6 @@ class cs_entry_manager extends cs_manager {
    ########################################################
    # statistic functions
    ########################################################
-
-   function getCountAnnouncements ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("announcement").".item_id) as number FROM ".$this->addDatabasePrefix("announcement")." WHERE ".$this->addDatabasePrefix("announcement").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ((".$this->addDatabasePrefix("announcement").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("announcement").".creation_date < '".encode(AS_DB,$end)."') or (".$this->addDatabasePrefix("announcement").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("announcement").".modification_date < '".encode(AS_DB,$end)."'))";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting all announcement.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-         unset($result);
-      }
-
-      return $retour;
-   }
-
-   function getCountNewAnnouncements ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("announcement").".item_id) as number FROM ".$this->addDatabasePrefix("announcement")." WHERE ".$this->addDatabasePrefix("announcement").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("announcement").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("announcement").".creation_date < '".encode(AS_DB,$end)."'";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting announcement',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-         unset($result);
-      }
-
-      return $retour;
-   }
-
-   function getCountModAnnouncements ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("announcement").".item_id) as number FROM ".$this->addDatabasePrefix("announcement")." WHERE ".$this->addDatabasePrefix("announcement").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("announcement").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("announcement").".modification_date < '".encode(AS_DB,$end)."' and ".$this->addDatabasePrefix("announcement").".modification_date != ".$this->addDatabasePrefix("announcement").".creation_date";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems counting announcement.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-         unset($result);
-      }
-
-      return $retour;
-   }
 
    function deleteAnnouncementsofUser($uid) {
       $current_datetime = getCurrentDateTimeInMySQL();

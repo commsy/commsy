@@ -285,7 +285,7 @@ class cs_file_manager extends cs_manager {
             trigger_error('Problems updating file from query: "'.$query.'"',E_USER_WARNING);
          }
     }
-    
+
    function _saveOnDisk($file_item) {
       $success = false;
       $tempname = $file_item->_getTempName();
@@ -733,7 +733,7 @@ class cs_file_manager extends cs_manager {
          $retour = false;
       } else {
          $retour = true;
-         
+
          // get all file ids in the given context
          $sql = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.files_id, '.$this->addDatabasePrefix($this->_db_table).'.context_id, '.$this->addDatabasePrefix($this->_db_table).'.filename FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.$context_id.'";';
          $result = $this->_db_connector->performQuery($sql);
@@ -748,7 +748,7 @@ class cs_file_manager extends cs_manager {
                   $file_id_array[] = $query_result['files_id'];
                }
             }
-            
+
             // try to get the same file ids from the item_link_file table
             if ( !empty($file_id_array) ) {
                $sql2 = 'SELECT file_id FROM '.$this->addDatabasePrefix('item_link_file').' WHERE file_id IN ('.implode(',',$file_id_array).');';
@@ -766,7 +766,7 @@ class cs_file_manager extends cs_manager {
                   }
                }
             }
-            
+
             // file_id_diff will contain all file ids that are not linked anymore
             if ( !empty($file_id_array) ) {
                $file_id_array = array_unique($file_id_array);
@@ -777,13 +777,13 @@ class cs_file_manager extends cs_manager {
             } else {
                $file_id_diff = array();
             }
-            
+
             $disc_manager = $this->_environment->getDiscManager();
             foreach ($result as $query_result) {
                if ( !empty($query_result['files_id']) and in_array($query_result['files_id'],$file_id_diff) ) {
                   $sql = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE files_id="'.$query_result['files_id'].'";';
                   $result_delete = $this->_db_connector->performQuery($sql);
-                  
+
                   // get the current portal id, if it was not given
                   if ( empty($portal_id) ) {
                      $query2 = 'SELECT context_id as portal_id FROM '.$this->addDatabasePrefix('room').' WHERE item_id="'.$query_result['context_id'].'"';
@@ -822,22 +822,6 @@ class cs_file_manager extends cs_manager {
          unset($disc_manager);
       }
       return $retour;
-   }
-
-   public function updateScanned ($file_item) {
-      $saved = false;
-      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
-               ' scan="'.encode(AS_DB,$file_item->getScanValue()).'"'.
-               ' WHERE files_id = "'.encode(AS_DB,$file_item->getFileID()).'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');
-         trigger_error("Filemanager: Problem updating file entry: ".$query, E_USER_ERROR);
-      } else {
-         $saved = true;
-      }
-      unset($file_item);
-      return $saved;
    }
 
    /** Prepares the db_array for the item
