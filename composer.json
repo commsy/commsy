@@ -84,9 +84,8 @@
         "codeception/module-phpbrowser": "^3.0",
         "codeception/module-rest": "^3.3",
         "codeception/module-symfony": "^3.1",
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
         "doctrine/doctrine-fixtures-bundle": "^3.3",
-        "phpcompatibility/php-compatibility": "^9.3",
+        "rector/rector": "^0.15.0",
         "symfony/maker-bundle": "^1.21",
         "symfony/web-profiler-bundle": "5.4.*"
     },
@@ -97,7 +96,6 @@
         },
         "sort-packages": true,
         "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true,
             "symfony/flex": true
         }
     },
