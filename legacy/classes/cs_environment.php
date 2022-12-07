@@ -1464,58 +1464,20 @@ class cs_environment {
       return $this->_getInstance('cs_entry_manager');
    }
 
-  /** get instance of cs_session_manager
-   *
-   * @return cs_session_manager
-   * @access public
-   */
-   function getSessionManager() {
-      global $c_auth; // unschön (TBD)
-      if (!isset($this->instance['cs_session_manager'])) {
-         require_once('classes/cs_session_manager.php');
-         $this->instance['cs_session_manager'] = new cs_session_manager($this->getDBConnector(),$c_auth);
-      }
-      return $this->instance['cs_session_manager'];
+    /**
+     * @deprecated
+     */
+   public function getSessionManager()
+   {
+       throw new LogicException('Calling cs_environment::getSessionManager is no longer supported');
    }
 
-   function getSession () {
-      global $session; // (TBD) !!!!!!!
-      return $session;
-   }
-
-   function getSessionItem () {
-      $retour = NULL;
-      if ( isset($this->_session_item) and !empty($this->_session_item) ) {
-         $retour = $this->_session_item;
-      } elseif ( isset($this->_session_id) and !empty($this->_session_id) ) {
-         $session_manager = $this->getSessionManager();
-         $session_item = $session_manager->get($this->_session_id);
-         if ( isset($session_item) and !empty($session_item) ) {
-            $retour = $session_item;
-            $this->_session_item = $session_item;
-         }
-      } else {
-         global $session; // (TBD) !!!!!!!
-         $retour = $session;
-      }
-      return $retour;
-   }
-
-   function setSessionItem ($value) {
-      $this->_session_item = $value;
-   }
-
-   function setSessionID ($value) {
-      $this->_session_id = $value;
-   }
-
-   public function getSessionID () {
-      $retour = '';
-      $session_item = $this->getSessionItem();
-      if ( isset($session_item) ) {
-         $retour = $session_item->getSessionID();
-      }
-      return $retour;
+    /**
+     * @deprecated
+     */
+   public function getSessionID ()
+   {
+       throw new LogicException('Calling cs_environment::getSessionID is no longer supported');
    }
 
   /** get instance of a class, INTERNAL
@@ -1799,14 +1761,6 @@ class cs_environment {
          }
       } // end of if statement
 
-      $session_item = $this->getSessionItem();
-      if ( isset($session_item) and $session_item->issetValue('message_language_select_dev') ) {
-         $session_language = $session_item->getValue('message_language_select_dev');
-         if ( !empty($session_language) ) {
-            $this->instance['translation_object']->setSessionLanguage($session_language);
-         }
-      }
-
       return $this->instance['translation_object'];
    }
 
@@ -1851,26 +1805,20 @@ class cs_environment {
       $this->_selected_language = $value;
    }
 
-   function getUserLanguage () {
-      $session_item = $this->getSessionItem();
-      if ( isset($session_item)
-           and $session_item->issetValue('message_language_select')
-         ) {
-         $retour = $session_item->getValue('message_language_select');
-      } else {
-         $current_user = $this->getCurrentUserItem();
+    function getUserLanguage()
+    {
+        $current_user = $this->getCurrentUserItem();
 
-         if ( $current_user && $current_user->isUser() ) {
+        if ($current_user && $current_user->isUser()) {
             $retour = $current_user->getLanguage();
             if ($retour == 'browser') {
-               $retour = $this->getBrowserLanguage();
+                $retour = $this->getBrowserLanguage();
             }
-         } else {
+        } else {
             $retour = $this->getBrowserLanguage();
-         }
-      }
-      return $retour;
-   }
+        }
+        return $retour;
+    }
 
    function getBrowserLanguage () {
       $browser_languages = $this->parseAcceptLanguage();
@@ -2227,7 +2175,7 @@ class cs_environment {
    public function getTextConverter () {
       if ( !isset($this->_misc_text_converter) ) {
          $class_factory = $this->getClassFactory();
-         $this->_misc_text_converter = $class_factory->getClass(MISC_TEXT_CONVERTER,array('environment' => $this));
+         $this->_misc_text_converter = $class_factory->getClass('misc_text_converter',array('environment' => $this));
          unset($class_factory);
       }
       return $this->_misc_text_converter;

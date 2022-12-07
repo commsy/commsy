@@ -31,13 +31,25 @@ use Symfony\Component\Mime\Email;
 class cs_mail
 {
     private $errors = [];
-    private $asHTML = false;
+    private bool $asHTML = false;
 
+    /**
+     * @var mixed|null
+     */
     private $message;
+    /**
+     * @var mixed|null
+     */
     private $subject;
     private $fromEmail;
+    /**
+     * @var mixed|null
+     */
     private $fromName;
     private $replyToEmail;
+    /**
+     * @var mixed|null
+     */
     private $replyToName;
     private $recipients;
     private $ccRecipients;

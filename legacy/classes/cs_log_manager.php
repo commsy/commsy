@@ -44,7 +44,7 @@ class cs_log_manager extends cs_manager {
      */
    function __construct($environment ) {
       cs_manager::__construct($environment);
-     $this->_db_table = CS_LOG_TYPE;
+     $this->_db_table = 'log';
    }
 
    /** reset limits
@@ -214,10 +214,10 @@ class cs_log_manager extends cs_manager {
          return $return_array;
       }
    }
-   
+
    function hideAllLogIP() {
    	  $query = 'SELECT id,ip FROM '.$this->addDatabasePrefix('log').' WHERE ip NOT LIKE "%XXX"';
-   	  
+
    	  $result = $this->_db_connector->performQuery($query);
    	  if ( !isset($result) ) {
    	  	include_once('functions/error_functions.php');
@@ -229,15 +229,15 @@ class cs_log_manager extends cs_manager {
    	  		$remote_adress_array = explode('.', $r['ip']);
    	  		$ip_adress = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
    	  		$query2 = 'UPDATE '.$this->addDatabasePrefix('log').' SET ip = "'.encode(AS_DB,$ip_adress).'" WHERE id = "'.encode(AS_DB,$r['id']).'" AND ip NOT LIKE "%XXX"';
-   	  		
+
    	  		$result2 = $this->_db_connector->performQuery($query2);
    	  		if ( !isset($result2) ) {
    	  			include_once('functions/error_functions.php');
    	  			trigger_error('Problems log from query: "'.$query2.'"',E_USER_WARNING);
    	  		} else {
-   	  			
+
    	  		}
-   	  		
+
    	  	}
    	  }
    }

@@ -24,36 +24,6 @@
 // following the example of django
 // http://code.djangoproject.com/browser/django/trunk/django/contrib/csrf/middleware.py
 
-function getToken()
-{
-    global $environment;
-    $session_item = $environment->getSessionItem();
-    $session_id = $session_item->getSessionID();
-    global $c_security_key;
-    if (empty($c_security_key)) {
-        $c_security_key = 'commsy';
-    }
-    $retour = md5($c_security_key . $session_id);
-    return $retour;
-}
-
-function addTokenToPost($value)
-{
-    if (!empty($value)) {
-        $value_temp = $value;
-        // ------------------
-        // --->UTF8 - OK<----
-        // ------------------
-        $pattern = '~<form[^>]*method=[\'|"|][p|P][o|O][s|S][t|T][\'|"|][^>]*>~u';
-        $replace = '$0' . LF . '<div style=\'display:none;\'><input type=\'hidden\' name=\'security_token\' value=\'' . getToken() . '\'/></div>';
-        $value = preg_replace($pattern, $replace, $value);
-        if (empty($value)) {
-            $value = $value_temp;
-        }
-    }
-    return $value;
-}
-
 function getSecurityHash($value)
 {
     global $c_security_key;

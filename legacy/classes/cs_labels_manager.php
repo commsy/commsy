@@ -985,102 +985,6 @@ class cs_labels_manager extends cs_manager {
       return true;
    }
 
-   ########################################################
-   # statistic functions
-   ########################################################
-
-   function getCountGroups ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_GROUP_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ((".$this->addDatabasePrefix("labels").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".creation_date < '".encode(AS_DB,$end)."') or (".$this->addDatabasePrefix("labels").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".modification_date < '".encode(AS_DB,$end)."'))";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting all groups.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-
-      return $retour;
-   }
-
-   function getCountNewGroups ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_GROUP_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("labels").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".creation_date < '".encode(AS_DB,$end)."'";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting groups.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-      return $retour;
-   }
-
-   function getCountModGroups ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_GROUP_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("labels").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".modification_date < '".encode(AS_DB,$end)."' and ".$this->addDatabasePrefix("labels").".modification_date != ".$this->addDatabasePrefix("labels").".creation_date";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting groups.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-      return $retour;
-   }
-
-   function getCountTopics ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_TOPIC_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ((".$this->addDatabasePrefix("labels").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".creation_date < '".encode(AS_DB,$end)."') or (".$this->addDatabasePrefix("labels").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".modification_date < '".encode(AS_DB,$end)."'))";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting all topics.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-
-      return $retour;
-   }
-
-   function getCountNewTopics ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_TOPIC_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("labels").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".creation_date < '".encode(AS_DB,$end)."'";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting topics.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-      return $retour;
-   }
-
-   function getCountModTopics ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_TOPIC_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("labels").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".modification_date < '".encode(AS_DB,$end)."' and ".$this->addDatabasePrefix("labels").".modification_date != ".$this->addDatabasePrefix("labels").".creation_date";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting topics.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-      return $retour;
-   }
-
     public function copyDataFromRoomToRoom($old_id, $new_id, $user_id = '', $id_array = '')
     {
         $retour = parent::copyDataFromRoomtoRoom($old_id, $new_id, $user_id, $id_array);
@@ -1182,7 +1086,7 @@ class cs_labels_manager extends cs_manager {
            foreach ( $result as $rs ) {
               //Never delete any group "ALL"
               if (!($rs['type'] == CS_GROUP_TYPE AND $rs['name'] == 'ALL')) {
-                 
+
               }
            }
         }

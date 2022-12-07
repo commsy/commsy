@@ -52,7 +52,6 @@ class cs_file_item extends cs_item {
    var $_icon = array();
 
    private $_portal_id = NULL;
-   private $_virus_name = '';
 
    /** constructor: cs_file_item
     * the only available constructor, initial values for internal variables
@@ -406,17 +405,6 @@ class cs_file_item extends cs_item {
       }
       unset($ftsearch_manager);
 
-      // are we in search status? - set by session
-      $session = $this->_environment->getSessionItem();
-      if(isset($session)){
-	      if ($session->issetValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_parameter_array')) {
-	         $search_array = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_parameter_array');
-	         if ( !empty($search_array['file_id_array']) ) {
-	            $ft_file_ids = $search_array['file_id_array'];
-	         }
-	      }
-      }
-
       if ( !empty($ft_file_ids) and in_array($this->getFileID(),$ft_file_ids) ) {
          $img = str_replace('.','_found.',$img);
       }
@@ -596,25 +584,14 @@ class cs_file_item extends cs_item {
    # virus scanning
    ##################################################
 
-   public function isScanned () {
-      $retour = false;
-      if ( $this->_getValue('scan') == 1 ) {
-         $retour = true;
-      }
-      return $retour;
-   }
-
-   public function setScanned () {
-      $this->_data['scan'] = 1;
-   }
 
    public function updateScanned () {
-      $this->setScanned();
-      $saved = false;
-      $manager = $this->_environment->getFileManager();
-      $saved = $manager->updateScanned($this);
-      unset($manager);
-      return $saved;
+//      $this->setScanned();
+//      $saved = false;
+//      $manager = $this->_environment->getFileManager();
+//      $saved = $manager->updateScanned($this);
+//      unset($manager);
+//      return $saved;
    }
 
    public function getScanValue () {
@@ -624,26 +601,6 @@ class cs_file_item extends cs_item {
          $retour = $temp;
       }
       return $retour;
-   }
-
-   public function hasVirus () {
-      $retour = false;
-      if ($this->isOnDisk()) {
-         include_once('classes/cs_virus_scan.php');
-         $virus_scanner = new cs_virus_scan($this->_environment);
-         if (!$virus_scanner->isClean($this->getDiskFileName())) {
-            $this->_virus_name = $virus_scanner->getVirusName();
-            if ( !empty($this->_virus_name) ) {
-               $retour = true;
-            }
-         }
-         unset($virus_scanner);
-      }
-      return $retour;
-   }
-
-   public function getVirusName () {
-      return $this->_virus_name;
    }
 
    function setScribdDocId($value) {

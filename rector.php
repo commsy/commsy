@@ -18,10 +18,13 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/tests',
     ]);
 
+//    $rectorConfig->parallel(600, 8, 4);
+    $rectorConfig->disableParallel();
+
     $rectorConfig->symfonyContainerXml(__DIR__ . '/var/cache/dev/App_KernelDevDebugContainer.xml');
 
     // register a single rule
-    $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
+//    $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
 
     // define sets of rules
     $rectorConfig->sets([

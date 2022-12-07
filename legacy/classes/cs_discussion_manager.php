@@ -171,7 +171,6 @@ class cs_discussion_manager extends cs_manager {
 
      if ( ( isset($this->_search_array) AND !empty($this->_search_array) )
           or isset($this->_sort_order)
-          or ( isset($this->_only_files_limit) and $this->_only_files_limit )
         ) {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('discussionarticles').' ON ('.$this->addDatabasePrefix('discussionarticles').'.discussion_id = '.$this->addDatabasePrefix('discussions').'.item_id';
         if ( !empty($this->_room_array_limit)
@@ -234,11 +233,6 @@ class cs_discussion_manager extends cs_manager {
       if (isset($this->_ref_id_limit)) {
          $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS l5 ON ( (l5.first_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l5.second_item_id="'.encode(AS_DB,$this->_ref_id_limit).'")
                      OR(l5.second_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l5.first_item_id="'.encode(AS_DB,$this->_ref_id_limit).'") AND l5.deleter_id IS NULL)';
-      }
-
-      // only files limit -> entries with files
-      if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
-         $query .= ' INNER JOIN '.$this->addDatabasePrefix('item_link_file').' AS lf ON '.$this->addDatabasePrefix('discussionarticles').'.item_id = lf.item_iid';
       }
 
 	  if((isset($this->_sort_order) && ($this->_sort_order == 'assessment' || $this->_sort_order == 'assessment_rev'))) {
@@ -340,11 +334,6 @@ class cs_discussion_manager extends cs_manager {
       // init and perform ft search action
       if (!empty($this->_search_array)) {
          $query .= $this->initFTSearch();
-      }
-
-      // only files limit -> entries with files
-      if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
-         $query .= ' AND lf.deleter_id IS NULL AND lf.deletion_date IS NULL';
       }
 
        if ($this->modificationNewerThenLimit) {
@@ -631,65 +620,6 @@ class cs_discussion_manager extends cs_manager {
    ########################################################
    # statistic functions
    ########################################################
-
-   function getCountDiscussions ($start, $end) {
-      $retour = 0;
-
-      $query  = "SELECT count(DISTINCT ".$this->addDatabasePrefix("discussions").".item_id) as number FROM ".$this->addDatabasePrefix("discussions").", ".$this->addDatabasePrefix("discussionarticles");
-      $query .= " WHERE ".$this->addDatabasePrefix("discussions").".context_id = '".encode(AS_DB,$this->_room_limit)."'";
-      $query .= " and ((".$this->addDatabasePrefix("discussions").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("discussions").".creation_date < '".encode(AS_DB,$end)."')";
-      $query .= " or (".$this->addDatabasePrefix("discussions").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("discussions").".modification_date < '".encode(AS_DB,$end)."'))";
-      $query .= " and ".$this->addDatabasePrefix("discussions").".item_id=".$this->addDatabasePrefix("discussionarticles").".discussion_id";
-      $query .= " and ((".$this->addDatabasePrefix("discussionarticles").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("discussionarticles").".creation_date < '".encode(AS_DB,$end)."')";
-      $query .= " or (".$this->addDatabasePrefix("discussionarticles").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("discussionarticles").".modification_date < '".encode(AS_DB,$end)."'))";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting all discussions.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-
-      return $retour;
-   }
-
-   function getCountNewDiscussions ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("discussions").".item_id) as number FROM ".$this->addDatabasePrefix("discussions")." WHERE ".$this->addDatabasePrefix("discussions").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("discussions").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("discussions").".creation_date < '".encode(AS_DB,$end)."'";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting discussions.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-      return $retour;
-   }
-
-   function getCountModDiscussions ($start, $end) {
-      $retour = 0;
-
-      $query  = "SELECT count(DISTINCT ".$this->addDatabasePrefix("discussions").".item_id) as number FROM ".$this->addDatabasePrefix("discussions").", ".$this->addDatabasePrefix("discussionarticles");
-      $query .= " WHERE ".$this->addDatabasePrefix("discussions").".context_id = '".encode(AS_DB,$this->_room_limit)."'";
-      $query .= " and ".$this->addDatabasePrefix("discussions").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("discussions").".modification_date < '".encode(AS_DB,$end)."'";
-      $query .= " and ".$this->addDatabasePrefix("discussions").".modification_date != ".$this->addDatabasePrefix("discussions").".creation_date";
-      $query .= " and ".$this->addDatabasePrefix("discussions").".item_id=".$this->addDatabasePrefix("discussionarticles").".discussion_id";
-      $query .= " and ((".$this->addDatabasePrefix("discussionarticles").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("discussionarticles").".creation_date < '".encode(AS_DB,$end)."')";
-      $query .= " or (".$this->addDatabasePrefix("discussionarticles").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("discussionarticles").".modification_date < '".encode(AS_DB,$end)."'))";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting all discussions.',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-
-      return $retour;
-   }
 
     function deleteDiscussionsOfUser($uid) {
         global $symfonyContainer;

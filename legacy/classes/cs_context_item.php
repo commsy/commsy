@@ -56,10 +56,7 @@ class cs_context_item extends cs_item {
   var $_current_home_conf_array = array();
 
   var $_default_listbox_array = array();
-  var $_current_listbox_array = array();
-  var $_current_lisbox_conf_array = array();
   var $_default_detailbox_array = array();
-  var $_current_detailbox_array = array();
   var $_current_detailbox_conf_array = array();
   /**
    * list of rubrics, that can be turned on or off on the server
@@ -228,10 +225,6 @@ class cs_context_item extends cs_item {
     }
     return $retour;
   }
-
-
-
-
 
   /** Checks and sets the data of the item.
    *
@@ -567,15 +560,6 @@ class cs_context_item extends cs_item {
     return $retour;
   }
 
-  function isLanguageFix () {
-    $retour = false;
-    $lang = $this->getLanguage();
-    if ( mb_strtoupper($lang, 'UTF-8') == 'USER' ) {
-      $retour = true;
-    }
-    return $retour;
-  }
-
   /** set language
    * this method sets the language
    *
@@ -778,7 +762,6 @@ class cs_context_item extends cs_item {
   function unsetBuzzwordMandatory () {
     $this->_addExtra('BUZZWORDMANDATORY',0);
   }
-
 
     public function isAssociationShowExpanded()
     {
@@ -1020,9 +1003,6 @@ class cs_context_item extends cs_item {
         $retour = true;
       }
     }
-    #else {
-    #  $retour = true;
-    #}
     return $retour;
   }
 
@@ -1190,31 +1170,6 @@ class cs_context_item extends cs_item {
        } else {
           $this->_cache_may_enter[$user_id.'_'.$auth_source] = false;
        }
-/*     $user_manager->resetLimits();
-       $user_manager->setContextLimit($this->getItemID());
-       $user_manager->setUserIDLimit($user_id);
-       $user_manager->setAuthSourceLimit($auth_source);
-       $user_manager->select();
-       $user_list = $user_manager->get();
-       $user_manager = $this->_environment->getUserManager();
-       if ($user_list->getCount() == 1) {
-          $user_in_room = $user_list->getFirst();
-          if ($user_in_room->isUser()) {
-             $retour = true;
-             $this->_cache_may_enter[$user_id.'_'.$auth_source] = true;
-          } else {
-             $this->_cache_may_enter[$user_id.'_'.$auth_source] = false;
-          }
-          unset($user_in_room);
-       } elseif ($user_list->getCount() > 1) {
-          include_once('functions/error_functions.php');
-          trigger_error('ambiguous user data in database table "user" for user-id "'.$user_id.'"',E_USER_WARNING);
-       }
-       unset($user_in_room);
-       unset($user_list);
-       unset($user_manager);*/
-/*DB-Optimierung vom 23.10.2010*/
-
     }
     return $retour;
   }
@@ -1466,7 +1421,6 @@ class cs_context_item extends cs_item {
   function setRoomContext ($value) {
     $this->_addExtra('ROOM_CONTEXT',(string)$value);
   }
-
 
   ###################################################
   # email text translation methods
@@ -1877,109 +1831,6 @@ class cs_context_item extends cs_item {
       }
 
     return $rubricsString;
-  }
-
-
-  function getAvailableDetailBoxes() {
-    $current_list_boxes = $this->getDetailBoxConf();
-    if (!empty($current_list_boxes)) {
-      $tokens = explode(',', $current_list_boxes);
-      $pointer = 0;
-      foreach ($tokens as $module) {
-        if (!empty($module)) {
-          list($box, $view) = explode('_', $module);
-          if ($box =='detailbuzzwords' and $this->withBuzzwords() ) {
-            $this->_current_detailbox_array[$pointer++] = $box;
-          }elseif ($box =='detailtags' and $this->withTags() ) {
-            $this->_current_detailbox_array[$pointer++] = $box;
-          }elseif ($box !='detailtags' and $box !='detailbuzzwords') {
-            $this->_current_detailbox_array[$pointer++] = $box;
-          }
-          $this->_current_detailbox_conf_array[$box] = $view;
-        }
-      }
-      if ($this->withTags()) {
-        $in_array = false;
-        foreach($this->_current_detailbox_array as $entry) {
-          if ($entry == 'detailtags') {
-            $in_array = true;
-          }
-        }
-        if ( !$in_array ) {
-          $this->_current_detailbox_array[] = 'detailtags';
-          $this->_current_detailbox_conf_array['detailtags'] = 'tiny';
-        }
-      }
-      if ($this->withBuzzwords()) {
-        $in_array = false;
-        foreach($this->_current_detailbox_array as $entry) {
-          if ($entry == 'detailbuzzwords') {
-            $in_array = true;
-          }
-        }
-        if ( !$in_array ) {
-          $this->_current_detailbox_array[] = 'detailbuzzwords';
-          $this->_current_detailbox_conf_array['detailbuzzwords'] = 'tiny';
-        }
-      }
-    }
-    return $this->_current_detailbox_array;
-  }
-
-  function withIMSContentConnection() {
-    global $with_ims_content_connection;
-    if (isset($with_ims_content_connection)) {
-      return $with_ims_content_connection;
-    }else {
-      return false;
-    }
-  }
-
-
-  function getAvailableListBoxes() {
-    $current_list_boxes = $this->getListBoxConf();
-    if (!empty($current_list_boxes)) {
-      $tokens = explode(',', $current_list_boxes);
-      $pointer = 0;
-      foreach ($tokens as $module) {
-        if (!empty($module)) {
-          list($box, $view) = explode('_', $module);
-          if ($box =='buzzwords' and $this->withBuzzwords() ) {
-            $this->_current_listbox_array[$pointer++] = $box;
-          }elseif ($box =='tags' and $this->withTags() ) {
-            $this->_current_listbox_array[$pointer++] = $box;
-          }elseif ($box !='tags' and $box !='buzzwords') {
-            $this->_current_listbox_array[$pointer++] = $box;
-          }
-          $this->_current_listbox_conf_array[$box] = $view;
-        }
-      }
-      if ($this->withTags()) {
-        $in_array = false;
-        foreach($this->_current_listbox_array as $entry) {
-          if ($entry == 'tags') {
-            $in_array = true;
-          }
-        }
-        if ( !$in_array ) {
-          $this->_current_listbox_array[] = 'tags';
-          $this->_current_listbox_conf_array['tags'] = 'tiny';
-        }
-      }
-      if ($this->withBuzzwords()) {
-        $in_array = false;
-        foreach($this->_current_listbox_array as $entry) {
-          if ($entry == 'buzzwords') {
-            $in_array = true;
-          }
-        }
-        if ( !$in_array ) {
-          $this->_current_listbox_array[] = 'buzzwords';
-          $this->_current_listbox_conf_array['buzzwords'] = 'tiny';
-        }
-      }
-    }
-    return $this->_current_listbox_array;
   }
 
   function getDefaultListBoxConf () {
@@ -2402,7 +2253,6 @@ class cs_context_item extends cs_item {
     if ($value == 1) {
       $retour = true;
     }
-//    return $retour;
 	return true;
   }
 
@@ -2444,17 +2294,7 @@ class cs_context_item extends cs_item {
    * @return boolean
    */
   function isGrouproomActive () {
-    /*
-    $retour = false;
-    if ( $this->_issetExtra('GROUPROOM') ) {
-      $active = $this->_getExtra('GROUPROOM');
-      if ( $active == 1 ) {
-        $retour = true;
-      }
-    }
-    */
-    $retour = true;
-    return $retour;
+      return true;
   }
 
   /** set activity of the group room, INTERNAL
@@ -5053,303 +4893,6 @@ class cs_context_item extends cs_item {
       $this->_count_items = $manager->getCountItems($start,$end);
     }
     $retour = $this->_count_items;
-    return $retour;
-  }
-
-  function getCountAnnouncements ($start,$end) {
-    if (!isset($this->_count_announcements)) {
-      $manager = $this->_environment->getAnnouncementManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_announcements = $manager->getCountAnnouncements($start,$end);
-    }
-    $retour = $this->_count_announcements;
-    return $retour;
-  }
-
-  function getCountNewAnnouncements ($start, $end) {
-    if ( !isset($this->_count_new_announcements )) {
-      $manager = $this->_environment->getAnnouncementManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_new_announcements = $manager->getCountNewAnnouncements($start,$end);
-    }
-    $retour = $this->_count_new_announcements;
-    return $retour;
-  }
-
-  function getCountModAnnouncements ($start, $end) {
-    if ( !isset($this->_count_mod_announcements )) {
-      $manager = $this->_environment->getAnnouncementManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_mod_announcements = $manager->getCountModAnnouncements($start,$end);
-    }
-    $retour = $this->_count_mod_announcements;
-    return $retour;
-  }
-
-  function getCountDates ($start,$end) {
-    if (!isset($this->_count_dates)) {
-      $manager = $this->_environment->getDateManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_dates = $manager->getCountDates($start,$end);
-    }
-    $retour = $this->_count_dates;
-    return $retour;
-  }
-
-  function getCountNewDates ($start,$end) {
-    if (!isset($this->_count_new_dates)) {
-      $manager = $this->_environment->getDateManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_new_dates = $manager->getCountNewDates($start,$end);
-    }
-    $retour = $this->_count_new_dates;
-    return $retour;
-  }
-
-  function getCountModDates ($start,$end) {
-    if (!isset($this->_count_mod_dates)) {
-      $manager = $this->_environment->getDateManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_mod_dates = $manager->getCountModDates($start,$end);
-    }
-    $retour = $this->_count_mod_dates;
-    return $retour;
-  }
-
-  function getCountMaterials ($start,$end) {
-    if (!isset($this->_count_materials)) {
-      $manager = $this->_environment->getMaterialManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_materials = $manager->getCountMaterials($start,$end);
-    }
-    $retour = $this->_count_materials;
-    return $retour;
-  }
-
-  function getCountNewMaterials ($start,$end) {
-    if (!isset($this->_count_new_materials)) {
-      $manager = $this->_environment->getMaterialManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_new_materials = $manager->getCountNewMaterials($start,$end);
-    }
-    $retour = $this->_count_new_materials;
-    return $retour;
-  }
-
-  function getCountModMaterials ($start,$end) {
-    if (!isset($this->_count_mod_materials)) {
-      $manager = $this->_environment->getMaterialManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_mod_materials = $manager->getCountModMaterials($start,$end);
-    }
-    $retour = $this->_count_mod_materials;
-    return $retour;
-  }
-
-  function getCountDiscussions ($start,$end) {
-    if (!isset($this->_count_discussions)) {
-      $manager = $this->_environment->getDiscussionManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_discussions = $manager->getCountDiscussions($start,$end);
-    }
-    $retour = $this->_count_discussions;
-    return $retour;
-  }
-
-  function getCountNewDiscussions ($start,$end) {
-    if (!isset($this->_count_new_discussions)) {
-      $manager = $this->_environment->getDiscussionManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_new_discussions = $manager->getCountNewDiscussions($start,$end);
-    }
-    $retour = $this->_count_new_discussions;
-    return $retour;
-  }
-
-  function getCountModDiscussions ($start,$end) {
-    if (!isset($this->_count_mod_discussions)) {
-      $manager = $this->_environment->getDiscussionManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_mod_discussions = $manager->getCountModDiscussions($start,$end);
-    }
-    $retour = $this->_count_mod_discussions;
-    return $retour;
-  }
-
-  function getCountDiscArticles ($start,$end) {
-    if (!isset($this->_count_discarticles)) {
-      $manager = $this->_environment->getDiscussionArticleManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_discarticles = $manager->getCountDiscArticles($start,$end);
-    }
-    $retour = $this->_count_discarticles;
-    return $retour;
-  }
-
-  function getCountNewDiscArticles ($start,$end) {
-    if (!isset($this->_count_new_discarticles)) {
-      $manager = $this->_environment->getDiscussionArticleManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_new_discarticles = $manager->getCountNewDiscArticles($start,$end);
-    }
-    $retour = $this->_count_new_discarticles;
-    return $retour;
-  }
-
-  function getCountModDiscArticles ($start,$end) {
-    if (!isset($this->_count_mod_disarticles)) {
-      $manager = $this->_environment->getDiscussionArticleManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_mod_disarticles = $manager->getCountModDiscArticles($start,$end);
-    }
-    $retour = $this->_count_mod_disarticles;
-    return $retour;
-  }
-
-  function getCountUsers ($start,$end) {
-    if (!isset($this->_count_users)) {
-      $manager = $this->_environment->getUserManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_users = $manager->getCountUsers($start,$end);
-    }
-    $retour = $this->_count_users;
-    return $retour;
-  }
-
-  function getCountNewUsers ($start,$end) {
-    if (!isset($this->_count_new_users)) {
-      $manager = $this->_environment->getUserManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_new_users = $manager->getCountNewUsers($start,$end);
-    }
-    $retour = $this->_count_new_users;
-    return $retour;
-  }
-
-  function getCountModUsers ($start,$end) {
-    if (!isset($this->_count_mod_users)) {
-      $manager = $this->_environment->getUserManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_mod_users = $manager->getCountModUsers($start,$end);
-    }
-    $retour = $this->_count_mod_users;
-    return $retour;
-  }
-
-  function getCountGroups ($start,$end) {
-    if (!isset($this->_count_groups)) {
-      $manager = $this->_environment->getGroupManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_groups = $manager->getCountGroups($start,$end);
-    }
-    $retour = $this->_count_groups;
-    return $retour;
-  }
-
-  function getCountNewGroups ($start,$end) {
-    if (!isset($this->_count_new_groups)) {
-      $manager = $this->_environment->getGroupManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_new_groups = $manager->getCountNewGroups($start,$end);
-    }
-    $retour = $this->_count_new_groups;
-    return $retour;
-  }
-
-  function getCountModGroups ($start,$end) {
-    if (!isset($this->_count_mod_groups)) {
-      $manager = $this->_environment->getGroupManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_mod_groups = $manager->getCountModGroups($start,$end);
-    }
-    $retour = $this->_count_mod_groups;
-    return $retour;
-  }
-
-  function getCountTopics ($start,$end) {
-    if (!isset($this->_count_topics)) {
-      $manager = $this->_environment->getTopicManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_topics = $manager->getCountTopics($start,$end);
-    }
-    $retour = $this->_count_topics;
-    return $retour;
-  }
-
-  function getCountNewTopics ($start,$end) {
-    if (!isset($this->_count_new_topics)) {
-      $manager = $this->_environment->getTopicManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_new_topics = $manager->getCountNewTopics($start,$end);
-    }
-    $retour = $this->_count_new_topics;
-    return $retour;
-  }
-
-  function getCountModTopics ($start,$end) {
-    if (!isset($this->_count_mod_topics)) {
-      $manager = $this->_environment->getTopicManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_mod_topics = $manager->getCountModTopics($start,$end);
-    }
-    $retour = $this->_count_mod_topics;
-    return $retour;
-  }
-
-  function getCountToDos ($start,$end) {
-    if (!isset($this->_count_todos)) {
-      $manager = $this->_environment->getToDosManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_todos = $manager->getCountToDos($start,$end);
-    }
-    $retour = $this->_count_todos;
-    return $retour;
-  }
-
-  function getCountNewToDos ($start, $end) {
-    if ( !isset($this->_count_new_todos )) {
-      $manager = $this->_environment->getToDosManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_new_todos = $manager->getCountNewToDos($start,$end);
-    }
-    $retour = $this->_count_new_todos;
-    return $retour;
-  }
-
-  function getCountModToDos ($start, $end) {
-    if ( !isset($this->_count_mod_todos )) {
-      $manager = $this->_environment->getToDosManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($this->getItemID());
-      $this->_count_mod_todos = $manager->getCountModToDos($start,$end);
-    }
-    $retour = $this->_count_mod_todos;
     return $retour;
   }
 

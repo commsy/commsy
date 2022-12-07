@@ -38,7 +38,7 @@ class cs_log_error_manager extends cs_manager {
      */
    function __construct($environment ) {
       cs_manager::__construct($environment);
-	  $this->_db_table = CS_LOG_ERROR_TYPE;
+	  $this->_db_table = 'log_error';
    }
 
    /** reset limits

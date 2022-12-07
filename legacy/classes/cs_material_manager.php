@@ -406,50 +406,8 @@ class cs_material_manager extends cs_manager {
       return $version_list;
    }
 
- /** select items limited by limits
-   * this method returns a list (cs_list) of items within the database limited by the limits.
-   * depends on _performQuery(), which must be overwritten
-   */
-   function selectDistinct () {
-      $result = $this->_performQuery('distinct');
-      $this->_data = new cs_list();
-      $this->_id_array = NULL;
-      if ( !empty($result) ) {
-         foreach ($result as $query_result) {
-            $item = $this->_buildItem($query_result);
-            $this->_data->add($item);
-            if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
-               $this->_id_array[] = $query_result['item_id'];
-            }
-         }
-      }
-   }
-
    function _performQuery ($mode = 'select') {
-      $retour = '';
-      if ( isset($this->_only_files_limit) and $this->_only_files_limit and $mode != 'id_array' ) {
-         $session_item = $this->_environment->getSessionItem();
-         $query = str_replace('temp_material','f'.$session_item->getSessionID(),$this->_sql_create_temp_material_table);
-         $result = $this->_db_connector->performQuery($query);
-         $this->_limit_only_files_mode = 'both';
-         $this->_performQuery2($mode);
-         $query = 'SELECT DISTINCT item_id FROM f'.encode(AS_DB,$session_item->getSessionID()).' ORDER BY title;';
-         $retour = $this->_db_connector->performQuery($query);
-         foreach ($retour as $query_result) {
-            $this->_limit_not_item_id_array[] = $query_result['item_id'];
-         }
-         $this->_limit_only_files_mode = 'item';
-         $this->_performQuery2($mode);
-         $this->_limit_only_files_mode = 'subitem';
-         $this->_performQuery2($mode);
-         $query = 'SELECT DISTINCT * FROM f'.encode(AS_DB,$session_item->getSessionID()).' ORDER BY title;';
-         $retour = $this->_db_connector->performQuery($query);
-         unset($this->_limit_only_files_mode);
-         unset($this->_limit_not_item_id_array);
-      } else {
-         $retour = $this->_performQuery2($mode);
-      }
-      return $retour;
+       return $this->_performQuery2($mode);
    }
 
    /** perform query for material: select and count
@@ -463,20 +421,15 @@ class cs_material_manager extends cs_manager {
 
    function _performQuery2 ($mode = 'select') {
       $this->_data = new cs_list();
-      $session = $this->_environment->getSessionItem();
-      if ( isset($session) ) {
-         $temp_number = $session->getSessionID();
-      } else {
-         include_once('functions/date_functions.php');
-         $current_time = getCurrentDateTimeInMySQL();
-         $randum_number = rand(0,999999);
-         $uid = 'cron_job';
-         $temp_number = '';
-         for ($i=0; $i<mb_strlen($current_time); $i++) {
-            $temp_number .= mb_substr($current_time,$i,1).mb_substr($uid,$i,1).mb_substr($randum_number,$i,1);
-         }
-         $temp_number = md5($temp_number);
+      include_once('functions/date_functions.php');
+      $current_time = getCurrentDateTimeInMySQL();
+      $randum_number = rand(0,999999);
+      $uid = 'cron_job';
+      $temp_number = '';
+      for ($i=0; $i<mb_strlen($current_time); $i++) {
+          $temp_number .= mb_substr($current_time,$i,1).mb_substr($uid,$i,1).mb_substr($randum_number,$i,1);
       }
+      $temp_number = md5($temp_number);
       $cancel = false;
        if (!$this->_handle_tmp_manual) {
            $query = 'CREATE TEMPORARY TABLE tmp3' . $temp_number . ' (item_id INT(11) NOT NULL, version_id INT(11) NOT NULL, PRIMARY KEY (item_id, version_id));';
@@ -519,9 +472,7 @@ class cs_material_manager extends cs_manager {
       $query .= ' INNER JOIN tmp3'.$temp_number.' ON '.$this->addDatabasePrefix('materials').'.item_id=tmp3'.$temp_number.'.item_id AND '.$this->addDatabasePrefix('materials').'.version_id=tmp3'.$temp_number.'.version_id';
       $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('materials').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
 
-      if ( ( isset($this->_search_array) AND !empty($this->_search_array) )
-           or ( isset($this->_only_files_limit) and $this->_only_files_limit )
-          ) {
+      if ( ( isset($this->_search_array) AND !empty($this->_search_array) )) {
          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('section').' ON ('.$this->addDatabasePrefix('section').'.material_item_id = '.$this->addDatabasePrefix('materials').'.item_id AND '.$this->addDatabasePrefix('section').'.version_id = '.$this->addDatabasePrefix('materials').'.version_id AND '.$this->addDatabasePrefix('section').'.context_id = "'.$this->_room_limit.'")';
       }
 
@@ -785,10 +736,6 @@ class cs_material_manager extends cs_manager {
          $query .= ' AND lf1.deleter_id IS NULL AND lf1.deletion_date IS NULL';
       }
 
-      if (isset($this->_only_files_limit) && $this->_only_files_limit) {
-         $query .= ' AND '.$this->addDatabasePrefix('section').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('section').'.deletion_date IS NULL';
-      }
-
        if ($this->modificationNewerThenLimit) {
            $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.modification_date >= "' . $this->modificationNewerThenLimit->format('Y-m-d H:i:s') . '"';
        }
@@ -869,37 +816,6 @@ class cs_material_manager extends cs_manager {
          }
       } // end of if (cancel)
    } // end of methode _performQuery
-
-
-   function create_tmp_table($room_id) {
-      $session = $this->_environment->getSessionItem();
-      $query = 'CREATE TEMPORARY TABLE tmp3'.encode(AS_DB,$session->getSessionID()).' (item_id INT(11) NOT NULL, version_id INT(11) NOT NULL, PRIMARY KEY (item_id, version_id));';
-      $result = $this->_db_connector->performQuery($query);
-      $query = 'INSERT INTO tmp3'.encode(AS_DB,$session->getSessionID()).' (item_id,version_id) SELECT item_id,MAX(version_id) FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').'.context_id ="'.$room_id.'" GROUP BY item_id;';
-      $result = $this->_db_connector->performQuery($query);
-      unset($session);
-      $this->_handle_tmp_manual = true;
-   }
-
-   function create_tmp_table_by_id_array($id_array) {
-      $session = $this->_environment->getSessionItem();
-      $query = 'CREATE TEMPORARY TABLE tmp3'.encode(AS_DB,$session->getSessionID()).' (item_id INT(11) NOT NULL, version_id INT(11) NOT NULL, PRIMARY KEY (item_id, version_id));';
-      $result = $this->_db_connector->performQuery($query);
-      if ( isset($id_array) and !empty($id_array) ) {
-         $query = 'INSERT INTO tmp3'.encode(AS_DB,$session->getSessionID()).' (item_id,version_id) SELECT item_id,MAX(version_id) FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').'.context_id IN ('.implode(",", $id_array).') GROUP BY item_id;';
-         $result = $this->_db_connector->performQuery($query);
-      }
-      unset($session);
-      $this->_handle_tmp_manual = true;
-   }
-
-   function delete_tmp_table() {
-      $session = $this->_environment->getSessionItem();
-      $query = 'DROP TABLE tmp3'.encode(AS_DB,$session->getSessionID()).';';
-      $this->_db_connector->performQuery($query);
-      unset($session);
-      $this->_handle_tmp_manual = false;
-   }
 
    /**
       get latest version id for a material item
@@ -1235,13 +1151,6 @@ class cs_material_manager extends cs_manager {
      unset($current_user);
   }
 
-  /**
-   * documentation TBD
-   */
-  /*function _deleteVersion ($material_id, $version_id) {
-     $this->delete($material_id, $version_id);
-  }*/
-
    /**
     * checks if label type is supported in the current context
     * so far only groups are checked within contexts, since they can be "switched off"
@@ -1276,52 +1185,6 @@ class cs_material_manager extends cs_manager {
    ########################################################
    # statistic functions
    ########################################################
-
-   function getCountMaterials ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("materials").".item_id) as number FROM ".$this->addDatabasePrefix("materials")." WHERE ".$this->addDatabasePrefix("materials").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ((".$this->addDatabasePrefix("materials").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("materials").".creation_date < '".encode(AS_DB,$end)."') or (".$this->addDatabasePrefix("materials").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("materials").".modification_date < '".encode(AS_DB,$end)."'))";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting all materials from query: "'.$query.'"',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-
-      return $retour;
-   }
-
-   function getCountNewMaterials ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("materials").".item_id) as number FROM ".$this->addDatabasePrefix("materials")." WHERE ".$this->addDatabasePrefix("materials").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("materials").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("materials").".creation_date < '".encode(AS_DB,$end)."'";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !$result ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting materials from query: "'.$query.'"',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-      return $retour;
-   }
-
-   function getCountModMaterials ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("materials").".item_id) as number FROM ".$this->addDatabasePrefix("materials")." WHERE ".$this->addDatabasePrefix("materials").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("materials").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("materials").".modification_date < '".encode(AS_DB,$end)."' and ".$this->addDatabasePrefix("materials").".modification_date != ".$this->addDatabasePrefix("materials").".creation_date";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting materials from query: "'.$query.'"',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-      return $retour;
-   }
 
     function deleteMaterialsOfUser($uid) {
         global $symfonyContainer;
@@ -1381,7 +1244,7 @@ class cs_material_manager extends cs_manager {
 
     /**
      * Resets license links to null
-     * 
+     *
      * @param \App\Entity\License $license
      * @return mixed
      */

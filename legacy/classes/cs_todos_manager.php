@@ -202,11 +202,6 @@ class cs_todos_manager extends cs_manager {
                      OR(l5.second_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l5.first_item_id="'.encode(AS_DB,$this->_ref_id_limit).'") AND l5.deleter_id IS NULL)';
       }
 
-      // only files limit -> entries with files
-      if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
-         $query .= ' INNER JOIN '.$this->addDatabasePrefix('item_link_file').' AS lf ON '.$this->addDatabasePrefix($this->_db_table).'.item_id = lf.item_iid';
-      }
-
       $query .= ' WHERE 1';
       if (isset($this->_room_array_limit)) {
          $query .= ' AND '.$this->addDatabasePrefix('todos').'.context_id IN ('.implode(", ", $this->_room_array_limit).')';
@@ -312,11 +307,6 @@ class cs_todos_manager extends cs_manager {
       // init and perform ft search action
       if (!empty($this->_search_array)) {
          $query .= $this->initFTSearch();
-      }
-
-      // only files limit -> entries with files
-      if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
-         $query .= ' AND lf.deleter_id IS NULL AND lf.deletion_date IS NULL';
       }
 
        if ($this->modificationNewerThenLimit) {
@@ -603,58 +593,6 @@ class cs_todos_manager extends cs_manager {
          parent::delete($item_id);
       }
       unset($current_user);
-   }
-
-   ########################################################
-   # statistic functions
-   ########################################################
-
-   function getCountTodos ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("todos").".item_id) as number FROM ".$this->addDatabasePrefix("todos")." WHERE ".$this->addDatabasePrefix("todos").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ((".$this->addDatabasePrefix("todos").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("todos").".creation_date < '".encode(AS_DB,$end)."') or (".$this->addDatabasePrefix("todos").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("todos").".modification_date < '".encode(AS_DB,$end)."'))";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting all todos from query: "'.$query.'"',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-
-      return $retour;
-   }
-
-   function getCountNewTodos ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("todos").".item_id) as number FROM ".$this->addDatabasePrefix("todos")." WHERE ".$this->addDatabasePrefix("todos").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("todos").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("todos").".creation_date < '".encode(AS_DB,$end)."'";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting todos from query:<br />"'.$query.'"',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-
-      return $retour;
-   }
-
-   function getCountModTodos ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->addDatabasePrefix("todos").".item_id) as number FROM ".$this->addDatabasePrefix("todos")." WHERE ".$this->addDatabasePrefix("todos").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("todos").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("todos").".modification_date < '".encode(AS_DB,$end)."' and ".$this->addDatabasePrefix("todos").".modification_date != ".$this->addDatabasePrefix("todos").".creation_date";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting todos from query:<br />"'.$query.'"',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-      }
-
-      return $retour;
    }
 
     function deleteTodosOfUser($uid) {
