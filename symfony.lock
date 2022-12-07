@@ -85,9 +85,6 @@
     "craue/twigextensions-bundle": {
         "version": "2.7.0"
     },
-    "dealerdirect/phpcodesniffer-composer-installer": {
-        "version": "v0.5.0"
-    },
     "debril/feed-io": {
         "version": "v4.7.8"
     },
@@ -422,9 +419,6 @@
     "php-webdriver/webdriver": {
         "version": "1.8.2"
     },
-    "phpcompatibility/php-compatibility": {
-        "version": "9.3.5"
-    },
     "phpdocumentor/reflection-common": {
         "version": "2.0.0"
     },
@@ -570,18 +564,6 @@
     },
     "softcreatr/jsonpath": {
         "version": "0.7.5"
-    },
-    "squizlabs/php_codesniffer": {
-        "version": "3.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "master",
-            "version": "3.0",
-            "ref": "0dc9cceda799fd3a08b96987e176a261028a3709"
-        },
-        "files": [
-            "phpcs.xml.dist"
-        ]
     },
     "sylius/theme-bundle": {
         "version": "v2.2.0"
