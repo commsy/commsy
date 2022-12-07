@@ -169,7 +169,7 @@ services:
 
     _instanceof:
         App\Form\DataTransformer\DataTransformerInterface:
-            tags: [ 'app.data_transformer ']
+            tags: [ 'app.data_transformer']
         App\Cron\Tasks\CronTaskInterface:
             tags: [ 'app.cron_task' ]
         App\Database\DatabaseCheck:
