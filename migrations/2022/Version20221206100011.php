@@ -23,7 +23,7 @@ final class Version20221206100011 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('INSERT INTO translation (context_id, translation_key, translation_de, translation_en) SELECT portal.id, \'REGISTRATION_USERNAME_INFO\', \'' . self::DE . '\', \'' . self::EN . '\' FROM portal;');
+        $this->addSql('INSERT INTO translation (context_id, translation_key, translation_de, translation_en) SELECT portal.id, \'REGISTRATION_USERNAME_HELP\', \'' . self::DE . '\', \'' . self::EN . '\' FROM portal;');
     }
 
     public function down(Schema $schema): void
