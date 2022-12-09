@@ -65,16 +65,11 @@ class LegacyCopy implements CopyStrategy
         $copy_array['color'] = true;
         $copy_array['todostatus'] = true;
         $copy_array['usageinfo'] = true;
-        $copy_array['topicpath'] = true;
         $copy_array['tag'] = true;
         $copy_array['discussionstatus'] = true;
-        $copy_array['detailboxconf'] = true;
-        $copy_array['listboxconf'] = true;
-        $copy_array['homerightconf'] = true;
         $copy_array['datespresentationstatus'] = true;
         $copy_array['htmltextareastatus'] = true;
         $copy_array['buzzword'] = true;
-        $copy_array['netnavigation'] = true;
         $copy_array['emailtext'] = true;
         $copy_array['title'] = true;
         $copy_array['logo'] = true;
@@ -84,7 +79,6 @@ class LegacyCopy implements CopyStrategy
         $copy_array['grouproomfct'] = false;
         $copy_array['rss'] = true;
         $copy_array['language'] = true;
-        $copy_array['visibilitydefaults'] = true;
         $copy_array['checknewmembers'] = true;
         $copy_array['checknewmembers_code'] = true;
         $copy_array['roomassociation'] = true;
@@ -107,10 +101,6 @@ class LegacyCopy implements CopyStrategy
             $copy_array['plugins'] = false;
             $copy_array['color'] = false;
             $copy_array['usageinfo'] = false;
-            $copy_array['chat'] = false;
-            $copy_array['detailboxconf'] = false;
-            $copy_array['listboxconf'] = false;
-            $copy_array['homerightconf'] = false;
             $copy_array['datespresentationstatus'] = false;
             $copy_array['htmltextareastatus'] = false;
             $copy_array['emailtext'] = false;
@@ -172,15 +162,6 @@ class LegacyCopy implements CopyStrategy
             $target->setUsageInfoFormTextArray($source->getUsageInfoFormTextArray());
         }
 
-        // config of path
-        if ($copy_array['topicpath']) {
-            if ($source->withPath()) {
-                $target->setWithPath();
-            } else {
-                $target->setWithoutPath();
-            }
-        }
-
         // config of tags
         if ($copy_array['tag']) {
             if ($source->isTagMandatory()) {
@@ -207,15 +188,6 @@ class LegacyCopy implements CopyStrategy
 
         if ($copy_array['discussionstatus']) {
             $target->setDiscussionStatus($source->getDiscussionStatus());
-        }
-        if ($copy_array['detailboxconf']) {
-            $target->setDetailBoxConf($source->getDetailBoxConf());
-        }
-        if ($copy_array['listboxconf']) {
-            $target->setListBoxConf($source->getListBoxConf());
-        }
-        if ($copy_array['homerightconf']) {
-            $target->setHomeRightConf($source->getHomeRightConf());
         }
         if ($copy_array['datespresentationstatus']) {
             $target->setDatesPresentationStatus($source->getDatesPresentationStatus());
@@ -249,20 +221,6 @@ class LegacyCopy implements CopyStrategy
                 $target->setBuzzwordShowExpanded();
             } else {
                 $target->unsetBuzzwordShowExpanded();
-            }
-        }
-
-        // config of netnavigation
-        if ($copy_array['netnavigation']) {
-            if ($source->isNetnavigationShowExpanded()) {
-                $target->setNetnavigationShowExpanded();
-            } else {
-                $target->unsetNetnavigationShowExpanded();
-            }
-            if ($source->withNetnavigation()) {
-                $target->setWithNetnavigation();
-            } else {
-                $target->setWithoutNetnavigation();
             }
         }
 
@@ -329,11 +287,6 @@ class LegacyCopy implements CopyStrategy
 
         // grouproom functions
         if ($copy_array['grouproomfct']) {
-            if ($source->withGrouproomFunctions()) {
-                $target->setWithGrouproomFunctions();
-            } else {
-                $target->setWithGrouproomFunctions();
-            }
             if ($source->isGrouproomActive()) {
                 $target->setGrouproomActive();
             } else {
@@ -353,33 +306,6 @@ class LegacyCopy implements CopyStrategy
         // config of language
         if ($copy_array['language']) {
             $target->setLanguage($source->getLanguage());
-        }
-
-        // config of dates presentation status
-        if ($copy_array['visibilitydefaults']) {
-            if ($source->isActionBarVisibleAsDefault()) {
-                $target->setActionBarVisibilityDefault('1');
-            } else {
-                $target->setActionBarVisibilityDefault('-1');
-            }
-
-            if ($source->isReferenceBarVisibleAsDefault()) {
-                $target->setReferenceBarVisibilityDefault('1');
-            } else {
-                $target->setReferenceBarVisibilityDefault('-1');
-            }
-
-            if ($source->isDetailsBarVisibleAsDefault()) {
-                $target->setDetailsBarVisibilityDefault('1');
-            } else {
-                $target->setDetailsBarVisibilityDefault('-1');
-            }
-
-            if ($source->isAnnotationsBarVisibleAsDefault()) {
-                $target->setAnnotationsBarVisibilityDefault('1');
-            } else {
-                $target->setAnnotationsBarVisibilityDefault('-1');
-            }
         }
     }
 

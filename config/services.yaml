@@ -59,12 +59,6 @@ parameters:
     commsy.settings.single_cat_selection: false     # Single selection for categories
     commsy.settings.item_locking: true     # Temporary protect items from beeing edited by different users simultaneously
 
-    # Wordpress
-    commsy.wordpress.enabled: false     # For activating wordpress please set the following variable on true
-
-    # Limesurvey
-    commsy.limesurvey.enabled: false        # et the following variable to activate limesurvey extension
-
     # Etherpad
     commsy.etherpad.enabled: '%env(bool:ETHERPAD_ENABLED)%'
     commsy.etherpad.api_key: '%env(ETHERPAD_API_KEY)%'

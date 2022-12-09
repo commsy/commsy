@@ -29,7 +29,7 @@ class AppearanceSettingsTransformer  extends AbstractTransformer
             }
             $roomData['room_logo']['activate'] = !empty($roomItem->getLogoFilename());
         }
-        
+
         return $roomData;
     }
 
@@ -64,11 +64,11 @@ class AppearanceSettingsTransformer  extends AbstractTransformer
         */
 
         // bg image repeat
-        if (isset($roomData['room_image']['repeat_x']) && $roomData['room_image']['repeat_x'] == '1')
-            $roomObject->setBGImageRepeat();
-        else
-            $roomObject->unsetBGImageRepeat();
-            
+//        if (isset($roomData['room_image']['repeat_x']) && $roomData['room_image']['repeat_x'] == '1')
+//            $roomObject->setBGImageRepeat();
+//        else
+//            $roomObject->unsetBGImageRepeat();
+
         return $roomObject;
     }
 }

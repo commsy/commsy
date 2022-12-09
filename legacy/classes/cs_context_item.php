@@ -53,10 +53,6 @@ class cs_context_item extends cs_item {
   var $_current_rubrics_array = array();
 
   var $_current_home_conf_array = array();
-
-  var $_default_listbox_array = array();
-  var $_default_detailbox_array = array();
-  var $_current_detailbox_conf_array = array();
   /**
    * list of rubrics, that can be turned on or off on the server
    */
@@ -76,26 +72,6 @@ class cs_context_item extends cs_item {
   function __construct($environment) {
     cs_item::__construct($environment);
     $this->_type = 'context';
-
-    $this->_default_listbox_array[0] = 'actions';
-    $this->_default_listbox_array[1] = 'search';
-    $this->_default_listbox_array[2] = 'buzzwords';
-    $this->_default_listbox_array[3] = 'tags';
-    $this->_default_listbox_array[4] = 'usage';
-    $this->_default_listbox_conf_array['actions'] = 'short';
-    $this->_default_listbox_conf_array['search'] = 'tiny';
-    $this->_default_listbox_conf_array['buzzwords'] = 'tiny';
-    $this->_default_listbox_conf_array['tags'] = 'tiny';
-    $this->_default_listbox_conf_array['usage'] = 'tiny';
-
-    $this->_default_detailbox_array[0] = 'detailactions';
-    $this->_default_detailbox_array[1] = 'detailbuzzwords';
-    $this->_default_detailbox_array[2] = 'detailtags';
-    $this->_default_detailbox_array[3] = 'detailnetnavigation';
-    $this->_default_detailbox_conf_array['detailactions'] = 'short';
-    $this->_default_detailbox_conf_array['detailbuzzwords'] = 'tiny';
-    $this->_default_detailbox_conf_array['detailtags'] = 'tiny';
-    $this->_default_detailbox_conf_array['detailnetnavigation'] = 'short';
 
     $colors = [];
     $colors['schema']                     = 'DEFAULT';
@@ -209,22 +185,6 @@ class cs_context_item extends cs_item {
     return false;
   }
 
-  function setShowNoAnnouncementsOnHome() {
-    $this->_addExtra('SHOWANNOUNCEMENTSONHOME','no');
-  }
-
-  function setShowAnnouncementsOnHome() {
-    $this->_addExtra('SHOWANNOUNCEMENTSONHOME','yes');
-  }
-
-  function isShowAnnouncementsOnHome() {
-    $retour = true;
-    if ($this->_issetExtra('SHOWANNOUNCEMENTSONHOME') and $this->_getExtra('SHOWANNOUNCEMENTSONHOME')=='no') {
-      $retour = false;
-    }
-    return $retour;
-  }
-
   /** Checks and sets the data of the item.
    *
    * @param $data_array Is the prepared array from "_buildItemArray($db_array)"
@@ -290,32 +250,6 @@ class cs_context_item extends cs_item {
     $val = ini_get('upload_max_filesize');
     $val = trim($val);
 
-    // if this is in portal context
-    if(   $this->_environment->inPortal()) {
-      // check for portal limit
-      if($this->_issetExtra('MAX_UPLOAD_SIZE')) {
-        $val = $this->_getExtra('MAX_UPLOAD_SIZE');
-      }
-    }
-
-    // if this is in room context
-    if(   $this->_environment->inGroupRoom() ||
-            $this->_environment->inPrivateRoom() ||
-            $this->_environment->inProjectRoom() ||
-            $this->_environment->inCommunityRoom()) {
-      // check for portal limit
-      $portal_item = $this->_environment->getCurrentPortalItem();
-      $portal_limit = $portal_item->getMaxUploadSizeExtraOnly();
-      if($portal_limit != '') {
-        $val = $portal_limit;
-      }
-
-      // check for room limit
-      if($this->_issetExtra('MAX_UPLOAD_SIZE')) {
-        $val = $this->_getExtra('MAX_UPLOAD_SIZE');
-      }
-    }
-
     $last = $val[mb_strlen($val)-1];
     $numericVal = (int) substr($val, 0, -1);
     switch($last) {
@@ -329,42 +263,7 @@ class cs_context_item extends cs_item {
         break;
     }
 
-    // check if limit is beyond server maximum
-    $server_limit = ini_get('upload_max_filesize');
-    $server_last = $server_limit[mb_strlen($server_limit)-1];
-    $numericServerVal = (int) substr($server_limit, 0, -1);
-    switch($server_last) {
-      case 'k':
-      case 'K':
-        $numericServerVal *= 1024;
-        break;
-      case 'm':
-      case 'M':
-        $numericServerVal *= 1048576;
-        break;
-    }
-
-    if($numericServerVal < $numericVal) {
-      return $numericServerVal;
-    }
-
     return $numericVal;
-  }
-
-  function setMaxUploadSizeInBytes($val) {
-    if($val != '') {
-      $this->_addExtra('MAX_UPLOAD_SIZE',$val);
-    } else {
-      $this->_unsetExtra('MAX_UPLOAD_SIZE');
-    }
-  }
-
-  function getMaxUploadSizeExtraOnly() {
-    $retour = '';
-    if($this->_issetExtra('MAX_UPLOAD_SIZE')) {
-      $retour = $this->_getExtra('MAX_UPLOAD_SIZE');
-    }
-    return $retour;
   }
 
   function setNotShownInPrivateRoomHome ($user_id) {
@@ -459,9 +358,6 @@ class cs_context_item extends cs_item {
    */
   function getDescriptionByLanguage ($language) {
     $retour = '';
-    if ($language == 'browser') {
-      // ???
-    }
     $desc_array = $this->getDescriptionArray();
     if ( !empty($desc_array[cs_strtoupper($language)]) ) {
       $retour = $desc_array[cs_strtoupper($language)];
@@ -612,62 +508,6 @@ class cs_context_item extends cs_item {
       return $this;
     }
 
-  function setActionBarVisibilityDefault($value) {
-    $this->_addExtra('ACTIONBARVISIBILITY',$value);
-  }
-
-  function isActionBarVisibleAsDefault() {
-    $retour = true;
-    if ($this->_issetExtra('ACTIONBARVISIBILITY') and $this->_getExtra('ACTIONBARVISIBILITY') == -1) {
-      $retour = false;
-    }
-    return $retour;
-  }
-
-  function setReferenceBarVisibilityDefault($value) {
-    $this->_addExtra('REFERENCEBARVISIBILITY',$value);
-  }
-
-  function isReferenceBarVisibleAsDefault() {
-    $retour = false;
-    if ($this->_issetExtra('REFERENCEBARVISIBILITY') and $this->_getExtra('REFERENCEBARVISIBILITY') == 1) {
-      $retour = true;
-    }
-    return $retour;
-  }
-
-  function setDetailsBarVisibilityDefault($value) {
-    $this->_addExtra('DETAILSBARVISIBILITY',$value);
-  }
-
-  function isDetailsBarVisibleAsDefault() {
-    $retour = false;
-    if ($this->_issetExtra('DETAILSBARVISIBILITY') and $this->_getExtra('DETAILSBARVISIBILITY') == 1) {
-      $retour = true;
-    }
-    return $retour;
-  }
-
-  function setAnnotationsBarVisibilityDefault($value) {
-    $this->_addExtra('ANNOTATIONSBARVISIBILITY',$value);
-  }
-
-  function isAnnotationsBarVisibleAsDefault() {
-    $retour = false;
-    if ($this->_issetExtra('ANNOTATIONSBARVISIBILITY') and $this->_getExtra('ANNOTATIONSBARVISIBILITY') == 1) {
-      $retour = true;
-    }
-    return $retour;
-  }
-
-  function setWithAssociations() {
-    $this->_addExtra('WITHASSOCIATIONS',2);
-  }
-
-  function setWithoutAssociations() {
-    $this->_addExtra('WITHASSOCIATIONS',1);
-  }
-
   function withAssociations() {
     $retour = false;
     if ($this->_issetExtra('WITHASSOCIATIONS') ) {
@@ -743,7 +583,6 @@ class cs_context_item extends cs_item {
         $this->_addExtra('ASSOCIATIONSHOWEXPANDED', 0);
     }
 
-
   function isBuzzwordShowExpanded () {
     $retour = true;
     if ( $this->_issetExtra('BUZZWORDSHOWEXPANDED') ) {
@@ -786,7 +625,6 @@ class cs_context_item extends cs_item {
     #}
     return $retour;
   }
-
 
   function setWithWorkflowTrafficLight() {
     $this->_addExtra('WITHWORKFLOWTRAFFICLIGHT',2);
@@ -984,40 +822,6 @@ class cs_context_item extends cs_item {
     $this->_addExtra('DISCUSSIONSTATUS',(int)$value);
   }
 
-
-  // @return boolean true = with threaded discussions, false = without threaded discussions
-  function withOnlyThreadedDiscussionType () {
-    $discussionmodus = $this->getDiscussionStatus();
-    if ($discussionmodus == 2) {
-      $retour = true;
-    } else {
-      $retour = false;
-    }
-    return $retour;
-  }
-
-  // @return boolean true = with simple discussions, false = without simple discussions
-  function withOnlySimpleDiscussionType () {
-    $discussionmodus = $this->getDiscussionStatus();
-    if ($discussionmodus == 1) {
-      $retour = true;
-    } else {
-      $retour = false;
-    }
-    return $retour;
-  }
-
-  // @return boolean true = with both discussion types, false = not both discussion types
-  function withBothDiscussionTypes () {
-    $discussionmodus = $this->getDiscussionStatus();
-    if ($discussionmodus == 3) {
-      $retour = true;
-    } else {
-      $retour = false;
-    }
-    return $retour;
-  }
-
     /** get htmltextarea status
      *
      * @return integer htmltextarea status 1 = yes, 2 = yes, but minimum, 3 = no
@@ -1034,7 +838,6 @@ class cs_context_item extends cs_item {
   function setHtmlTextAreaStatus ($value) {
     $this->_addExtra('HTMLTEXTAREASTATUS',(int)$value);
   }
-
 
   // @return boolean true = with HTMLTextArea, false = without HTMLTextArea
   function withHtmlTextArea () {
@@ -1058,9 +861,7 @@ class cs_context_item extends cs_item {
     }
 
     // new private room
-    if ( $this->isPrivateRoom()
-            and $retour == 'normal'
-    ) {
+    if ( $this->isPrivateRoom() && $retour == 'normal') {
       $retour = 'calendar_month';
     }
 
@@ -1074,8 +875,6 @@ class cs_context_item extends cs_item {
   function setDatesPresentationStatus ($value) {
     $this->_addExtra('DATEPRESENTATIONSTATUS',(string)$value);
   }
-
-
 
   /** returns a boolean, if the the user can enter the context
    * true: user can enter project
@@ -1636,23 +1435,6 @@ class cs_context_item extends cs_item {
     return $this->moderator_list;
   }
 
-  /** get rubric configuration of the context
-   * this method returns the configuration of the homepage of the context
-   *
-   * @return string configuration of the homepage
-   */
-  function getHomeRightConf () {
-    $retour = '';
-    if ($this->_issetExtra('HOMERIGHTCONF')) {
-      $retour = $this->_getExtra('HOMERIGHTCONF');
-    }
-    return $retour;
-  }
-
-  function setHomeRightConf ($text) {
-    $this->_addExtra('HOMERIGHTCONF',(string)$text);
-  }
-
   function getHomeConf () {
     $retour = '';
     if ($this->_issetExtra('HOMECONF')) {
@@ -1768,155 +1550,6 @@ class cs_context_item extends cs_item {
 
     return $rubricsString;
   }
-
-  function getDefaultListBoxConf () {
-    $retour = '';
-    $first = true;
-    foreach ($this->_default_listbox_array as $box) {
-      if ($first) {
-        $first = false;
-      } else {
-        $retour .= ',';
-      }
-      if (isset($this->_default_listbox_conf_array[$box])) {
-        $retour .= $box.'_'.$this->_default_listbox_conf_array[$box];
-      }
-    }
-    return $this->clearUnallowedBoxes($retour);
-  }
-
-  function getDefaultDetailBoxConf () {
-    $retour = '';
-    $first = true;
-    foreach ($this->_default_detailbox_array as $box) {
-      if ($first) {
-        $first = false;
-      } else {
-        $retour .= ',';
-      }
-      if (isset($this->_default_detailbox_conf_array[$box])) {
-        $retour .= $box.'_'.$this->_default_detailbox_conf_array[$box];
-      }
-    }
-    return $this->clearUnallowedDetailBoxes($retour);
-  }
-
-  function setListBoxConf ($value) {
-    $this->_addExtra('LISTCONF', (string)$value);
-  }
-
-  function getListBoxConf () {
-    $retour = '';
-    if ($this->_issetExtra('LISTCONF')) {
-      $retour = $this->clearUnallowedBoxes($this->_getExtra('LISTCONF'));
-    }
-    if ( empty($retour) ) {
-      $retour = $this->getDefaultListBoxConf();
-      $this->setListBoxConf($retour);
-    }
-    return $retour;
-  }
-
-  function setDetailBoxConf ($value) {
-    $this->_addExtra('DETAILCONF', (string)$value);
-  }
-
-  function getDetailBoxConf () {
-
-    $retour = '';
-    if ($this->_issetExtra('DETAILCONF')) {
-      $retour = $this->clearUnallowedDetailBoxes($this->_getExtra('DETAILCONF'));
-    }
-    if ( empty($retour) ) {
-      $retour = $this->getDefaultDetailBoxConf();
-      $this->setDetailBoxConf($retour);
-    }
-    return $retour;
-  }
-
-  function clearUnallowedBoxes($boxesString) {
-    if( !$this->withTags() ) {
-      if (mb_stristr($boxesString, 'tags_tiny')) {
-        $boxesString = str_replace('tags_tiny', '', $boxesString);
-      }
-      if (mb_stristr($boxesString, 'tags_short')) {
-        $boxesString = str_replace('tags_short', '', $boxesString);
-      }
-      if (mb_stristr($boxesString, 'tags_none')) {
-        $boxesString = str_replace('tags_none', '', $boxesString);
-      }
-    }
-    if( !$this->withBuzzwords() ) {
-      if (mb_stristr($boxesString, 'buzzwords_tiny')) {
-        $boxesString = str_replace('buzzwords_tiny', '', $boxesString);
-      }
-      if (mb_stristr($boxesString, 'buzzwords_short')) {
-        $boxesString = str_replace('buzzwords_short', '', $boxesString);
-      }
-      if (mb_stristr($boxesString, 'buzzwords_none')) {
-        $boxesString = str_replace('buzzwords_none', '', $boxesString);
-      }
-    }
-    // clear string from ","
-    if ($boxesString[0] == ',') {
-      $boxesString = mb_substr($boxesString,1);
-    }
-    if ($boxesString[mb_strlen($boxesString)-1] == ',') {
-      $boxesString = mb_substr($boxesString,0,mb_strlen($boxesString)-1);
-    }
-    $boxesString = str_replace(',,',',',$boxesString);
-    return $boxesString;
-  }
-
-  function clearUnallowedDetailBoxes($boxesString) {
-    if( !$this->withTags() ) {
-      if (mb_stristr($boxesString, 'detailtags_tiny')) {
-        $boxesString = str_replace('detailtags_tiny', '', $boxesString);
-      }
-      if (mb_stristr($boxesString, 'detailtags_short')) {
-        $boxesString = str_replace('detailtags_short', '', $boxesString);
-      }
-      if (mb_stristr($boxesString, 'detailtags_none')) {
-        $boxesString = str_replace('detailtags_none', '', $boxesString);
-      }
-    }
-    if( !$this->withBuzzwords() ) {
-      if (mb_stristr($boxesString, 'detailbuzzwords_tiny')) {
-        $boxesString = str_replace('detailbuzzwords_tiny', '', $boxesString);
-      }
-      if (mb_stristr($boxesString, 'detailbuzzwords_short')) {
-        $boxesString = str_replace('detailbuzzwords_short', '', $boxesString);
-      }
-      if (mb_stristr($boxesString, 'detailbuzzwords_none')) {
-        $boxesString = str_replace('detailbuzzwords_none', '', $boxesString);
-      }
-    }
-    // clear string from ","
-    if ($boxesString[0] == ',') {
-      $boxesString = mb_substr($boxesString,1);
-    }
-    if ($boxesString[mb_strlen($boxesString)-1] == ',') {
-      $boxesString = mb_substr($boxesString,0,mb_strlen($boxesString)-1);
-    }
-    $boxesString = str_replace(',,',',',$boxesString);
-    return $boxesString;
-  }
-
-  function getListLength() {
-    $retour = CS_LIST_INTERVAL;
-    if ( $this->_issetExtra('LISTLENGTH') ) {
-      $retour = $this->_getExtra('LISTLENGTH');
-    }
-    if(empty($retour)){
-    	$retour = CS_LIST_INTERVAL;
-    }
-    return $retour;
-  }
-
-  function setListLength($value) {
-    $this->_addExtra('LISTLENGTH',$value);
-  }
-
 
   /** get configuration of the homepage
    * this method configuration of the homepage
@@ -2184,20 +1817,7 @@ class cs_context_item extends cs_item {
   ##########################################
 
   function withGrouproomFunctions() {
-    $retour = false;
-    $value = $this->_getExtraConfig('GROUPROOM');
-    if ($value == 1) {
-      $retour = true;
-    }
 	return true;
-  }
-
-  function setWithGrouproomFunctions () {
-    $this->_setExtraConfig('GROUPROOM',1);
-  }
-
-  function setWithoutGrouproomFunctions () {
-    $this->_setExtraConfig('GROUPROOM',-1);
   }
 
   function showGrouproomConfig () {
@@ -2343,56 +1963,6 @@ class cs_context_item extends cs_item {
     $this->_setServiceLinkActivity(0);
   }
 
-  /** is mail to moderator link active ?
-   * can be switched at room configuration
-   *
-   * true = mail to moderator link is active
-   * false = mail to moderator link is not active, default
-   *
-   * @return boolean
-   */
-  function isModeratorLinkActive () {
-    $retour = true;
-    if ( $this->_issetExtra('MODERATOR_MAIL_LINK') ) {
-      $active = $this->_getExtra('MODERATOR_MAIL_LINK');
-      if ($active == -1) {
-        $retour = false;
-      }
-    }
-    return $retour;
-  }
-
-  function showMail2ModeratorLink () {
-    return $this->isModeratorLinkActive();
-  }
-
-  /** set activity of the mail to moderator link, INTERNAL
-   *
-   * @param integer value: -1 = not
-   *                        1 = yes
-   */
-  function _setModeratorLinkActivity ($value) {
-    if ( $this->_issetExtra('MODERATOR_MAIL_LINK') ) {
-      $this->_setExtra('MODERATOR_MAIL_LINK',(int)$value);
-    } else {
-      $this->_addExtra('MODERATOR_MAIL_LINK',(int)$value);
-    }
-  }
-
-  /** set mail to moderator link active
-   */
-  function setModeratorLinkActive () {
-    $this->_setModeratorLinkActivity(1);
-  }
-
-  /** set mail to moderator link inactive
-   */
-  function setModeratorLinkInactive () {
-    $this->_setModeratorLinkActivity(-1);
-  }
-
-
-
   function getExtraToDoStatusArray() {
     $retour = array();
     if ( $this->_issetExtra('TODOEXTRASTATUSARRAY') ) {
@@ -2442,1008 +2012,12 @@ class cs_context_item extends cs_item {
     return $retour;
   }
 
-  # Wordpress
-
-  function setWordpressId($id) {
-    $this->_setExtra('WORDPRESSID',$id);
-  }
-
-  function getWordpressId(){
-    return ( $this->_issetExtra('WORDPRESSID') ) ? $this->_getExtra('WORDPRESSID') : 0;
-  }
-
-  function withWordpressFunctions () {
-    $portal_item = $this->_environment->getCurrentPortalItem();
-    if(!empty($portal_item)) {
-    	$wordpress = $portal_item->getWordpressPortalActive();
-    }
-    if ( !isset($wordpress) or !$wordpress ) {
-      return false;
-    }
-    $retour = false;
-    $value = $this->_getExtraConfig('WORDPRESS');
-    if ($value == 1) {
-      $retour = true;
-    } elseif ( $this->isProjectRoom()
-    or $this->isCommunityRoom()
-    or $this->isGroupRoom()
-    or $this->isPrivateRoom()
-    ) {
-      $portal_room = $this->getContextItem();
-      if ( $portal_room->withWordpressFunctions() ) {
-        $retour = true;
-      }
-    }
-    return $retour;
-  }
-
-  function setWithWordpressFunctions () {
-    $this->_setExtraConfig('WORDPRESS',1);
-  }
-
-  function setWithoutWordpressFunctions () {
-    $this->_setExtraConfig('WORDPRESS',0);
-  }
-
-  function showWordpressLink () {
-    $retour = false;
-    if ($this->withWordpressFunctions() and $this->isWordpressActive()) {
-      $retour = true;
-    }
-    return $retour;
-  }
-
-  /** is wordpress link active ?
-   * can be switched at room configuration
-   *
-   * true = wordpress link is active
-   * false = wordpress link is not active, default
-   *
-   * @return boolean
-   */
-  function isWordpressActive () {
-    $retour = false;
-    $active = $this->_getExtra('WORDPRESSLINK');
-    if ($active == 1) {
-      $retour = true;
-      $retour = $retour and $this->withWordpressFunctions();
-    }
-    return $retour;
-  }
-
-  /** set activity of the wordpress link, INTERNAL
-   *
-   * @param integer value: -1 = not
-   *                        1 = yes
-   */
-  function _setWordpressActivity ($value) {
-    $this->_addExtra('WORDPRESSLINK',(int)$value);
-  }
-
-  /** set wordpress link active
-   */
-  function setWordpressActive () {
-    $this->_setWordpressActivity(1);
-  }
-
-  /** set wordpress link inactive
-   */
-  function setWordpressInactive () {
-    $this->_setWordpressActivity(-1);
-  }
-
-  function setWordpressUseComments(){
-    $this->_addExtra('WORDPRESSUSECOMMENTS','1');
-  }
-
-  function getWordpressUseComments(){
-    if ( $this->_issetExtra('WORDPRESSUSECOMMENTS') ) {
-      $retour = $this->_getExtra('WORDPRESSUSECOMMENTS');
-    } else {
-      $retour = '1';
-    }
-    return $retour;
-  }
-
-  function unsetWordpressUseComments(){
-    $this->_addExtra('WORDPRESSUSECOMMENTS','-1');
-  }
-
-  function setWordpressUseCommentsModeration(){
-    $this->_addExtra('WORDPRESSUSECOMMENTSMODERATION','1');
-  }
-
-  function getWordpressUseCommentsModeration(){
-    if ( $this->_issetExtra('WORDPRESSUSECOMMENTSMODERATION') ) {
-      $retour = $this->_getExtra('WORDPRESSUSECOMMENTSMODERATION');
-    } else {
-      $retour = '1';
-    }
-    return $retour;
-  }
-
-  function unsetWordpressUseCommentsModeration(){
-    $this->_addExtra('WORDPRESSUSECOMMENTSMODERATION','-1');
-  }
-
-  function setWordpressUseCalendar(){
-    $this->_addExtra('WORDPRESSUSECALENDAR','1');
-  }
-
-  function getWordpressUseCalendar(){
-    if ( $this->_issetExtra('WORDPRESSUSECALENDAR') ) {
-      $retour = $this->_getExtra('WORDPRESSUSECALENDAR');
-    } else {
-      $retour = '1';
-    }
-    return $retour;
-  }
-
-  function unsetWordpressUseCalendar(){
-    $this->_addExtra('WORDPRESSUSECALENDAR','-1');
-  }
-
-  function setWordpressUseTagCloud(){
-    $this->_addExtra('WORDPRESSUSETAGCLOUD','1');
-  }
-
-  function getWordpressUseTagCloud(){
-    if ( $this->_issetExtra('WORDPRESSUSETAGCLOUD') ) {
-      $retour = $this->_getExtra('WORDPRESSUSETAGCLOUD');
-    } else {
-      $retour = '1';
-    }
-    return $retour;
-  }
-
-  function unsetWordpressUseTagCloud(){
-    $this->_addExtra('WORDPRESSUSETAGCLOUD','-1');
-  }
-
-  function setWordpressMemberRole($role='subscriber'){
-    $this->_addExtra('WORDPRESSMEMBERROLE',$role);
-  }
-
-  function getWordpressMemberRole(){
-    if ( $this->_issetExtra('WORDPRESSMEMBERROLE') ) {
-      $retour = $this->_getExtra('WORDPRESSMEMBERROLE');
-    } else {
-      $retour = 'subscriber';
-    }
-    return $retour;
-  }
-
-  function setWordpressHomeLink(){
-    $this->_addExtra('WORDPRESSHOMELINK','1');
-  }
-
-  function getWordpressHomeLink(){
-    if ( $this->_issetExtra('WORDPRESSHOMELINK') ) {
-      $retour = $this->_getExtra('WORDPRESSHOMELINK');
-    } else {
-      $retour = '1';
-    }
-    return $retour;
-  }
-
-  function unsetWordpressHomeLink(){
-    $this->_addExtra('WORDPRESSHOMELINK','-1');
-  }
-
-  function issetWordpressHomeLink(){
-    if ( $this->_issetExtra('WORDPRESSHOMELINK') ) {
-      $retour = $this->_getExtra('WORDPRESSHOMELINK');
-      if ($retour == '1'){
-        $retour = true;
-      }else{
-        $retour = false;
-      }
-    } else {
-      $retour =false;
-    }
-    return $retour;
-  }
-
-  function setWordpressPortalLink(){
-    $this->_addExtra('WORDPRESSPORTALLINK','1');
-  }
-
-  function getWordpressPortalLink(){
-    if ( $this->_issetExtra('WORDPRESSPORTALLINK') ) {
-      $retour = $this->_getExtra('WORDPRESSPORTALLINK');
-    }else{
-      $retour = '-1';
-    }
-    return $retour;
-  }
-  function unsetWordpressPortalLink(){
-    $this->_addExtra('WORDPRESSPORTALLINK','-1');
-  }
-
-  function issetWordpressPortalLink(){
-    if ( $this->_issetExtra('WORDPRESSPORTALLINK') ) {
-      $retour = $this->_getExtra('WORDPRESSPORTALLINK');
-      if ($retour == '1'){
-        $retour = true;
-      }else{
-        $retour = false;
-      }
-    } else {
-      $retour =false;
-    }
-    return $retour;
-  }
-
-  function setWordpressExists () {
-    $this->_addExtra('WORDPRESSEXISTS','1');
-  }
-
-  function unsetWordpressExists () {
-    $this->_addExtra('WORDPRESSEXISTS','-1');
-  }
-
-  function existWordpress () {
-    if ( $this->_issetExtra('WORDPRESSEXISTS') ) {
-      $retour = $this->_getExtra('WORDPRESSEXISTS');
-      if ($retour == '1'){
-        $retour = true;
-      }else{
-        $retour = false;
-      }
-    } else {
-      $retour =false;
-    }
-    return $retour;
-  }
-
-  function setWordpressSkin($skin){
-    $this->_addExtra('WORDPRESSSKIN',$skin);
-  }
-
-  function getWordpressSkin(){
-    if ( $this->_issetExtra('WORDPRESSSKIN') ) {
-      $retour = $this->_getExtra('WORDPRESSSKIN');
-    } else {
-      $retour ='twentyten';
-    }
-    return $retour;
-  }
-
-  function setWordpressTitle($title){
-    $this->_addExtra('WORDPRESSTITLE',$title);
-  }
-
-  function getWordpressTitle(){
-    if ( $this->_issetExtra('WORDPRESSTITLE') ) {
-      $retour = $this->_getExtra('WORDPRESSTITLE');
-    } else {
-      if ($this->isPrivateRoom()){
-        $translator = $this->_environment->getTranslationObject();
-        $retour = $translator->getMessage('COMMON_PRIVATE_ROOM');
-      }else{
-        $retour = $this->getTitle();
-      }
-    }
-    return $retour;
-  }
-
-  function setWordpressDescription($title){
-    $this->_addExtra('WORDPRESSDESCRIPTION',$title);
-  }
-
-  function getWordpressDescription(){
-    if ( $this->_issetExtra('WORDPRESSDESCRIPTION') ) {
-      $retour = $this->_getExtra('WORDPRESSDESCRIPTION');
-    } else {
-      $retour = '';
-    }
-    return $retour;
-  }
-
-//  function setWordpressAdminPW($pw){
-//    $this->_addExtra('WORDPRESSADMINPW',$pw);
-//  }
-//
-//  function getWordpressAdminPW(){
-//    if ( $this->_issetExtra('WORDPRESSADMINPW') ) {
-//      $retour = $this->_getExtra('WORDPRESSADMINPW');
-//    } else {
-//      $retour = 'admin';
-//    }
-//    return $retour;
-//  }
-//
-//
-//  function setWordpressShowCommSyLogin(){
-//    $this->_addExtra('WORDPRESSSHOWLOGIN','1');
-//  }
-//
-//  function unsetWordpressShowCommSyLogin(){
-//    $this->_addExtra('WORDPRESSSHOWLOGIN','-1');
-//  }
-//
-//  function WordpressShowCommSyLogin(){
-//    if ( $this->_issetExtra('WORDPRESSSHOWLOGIN') ) {
-//      $retour = $this->_getExtra('WORDPRESSSHOWLOGIN');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  //  new features
-//  function setWordpressEnableFCKEditor(){
-//    $this->_addExtra('WORDPRESSENABLEFCKEDITOR','1');
-//  }
-//
-//  function unsetWordpressEnableFCKEditor(){
-//    $this->_addExtra('WORDPRESSENABLEFCKEDITOR','-1');
-//  }
-//
-//  function WordpressEnableFCKEditor(){
-//    if ( $this->_issetExtra('WORDPRESSENABLEFCKEDITOR') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLEFCKEDITOR');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressEnableSitemap(){
-//    $this->_addExtra('WORDPRESSENABLESITEMAP','1');
-//  }
-//
-//  function unsetWordpressEnableSitemap(){
-//    $this->_addExtra('WORDPRESSENABLESITEMAP','-1');
-//  }
-//
-//  function WordpressEnableSitemap(){
-//    if ( $this->_issetExtra('WORDPRESSENABLESITEMAP') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLESITEMAP');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressEnableStatistic(){
-//    $this->_addExtra('WORDPRESSENABLESTATISTIC','1');
-//  }
-//
-//  function unsetWordpressEnableStatistic(){
-//    $this->_addExtra('WORDPRESSENABLESTATISTIC','-1');
-//  }
-//
-//  function WordpressEnableStatistic(){
-//    if ( $this->_issetExtra('WORDPRESSENABLESTATISTIC') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLESTATISTIC');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressEnableSearch(){
-//    $this->_addExtra('WORDPRESSENABLESEARCH','1');
-//  }
-//
-//  function unsetWordpressEnableSearch(){
-//    $this->_addExtra('WORDPRESSENABLESEARCH','-1');
-//  }
-//
-//  function WordpressEnableSearch(){
-//    if ( $this->_issetExtra('WORDPRESSENABLESEARCH') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLESEARCH');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressEnableRss(){
-//    $this->_addExtra('WORDPRESSENABLERSS','1');
-//  }
-//
-//  function unsetWordpressEnableRss(){
-//    $this->_addExtra('WORDPRESSENABLERSS','-1');
-//  }
-//
-//  function WordpressEnableRss(){
-//    if ( $this->_issetExtra('WORDPRESSENABLERSS') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLERSS');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressEnableCalendar(){
-//    $this->_addExtra('WORDPRESSENABLECALENDAR','1');
-//  }
-//
-//  function unsetWordpressEnableCalendar(){
-//    $this->_addExtra('WORDPRESSENABLECALENDAR','-1');
-//  }
-//
-//  function WordpressEnableCalendar(){
-//    if ( $this->_issetExtra('WORDPRESSENABLECALENDAR') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLECALENDAR');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressEnableGallery(){
-//    $this->_addExtra('WORDPRESSENABLEGALLERY','1');
-//  }
-//
-//  function unsetWordpressEnableGallery(){
-//    $this->_addExtra('WORDPRESSENABLEGALLERY','-1');
-//  }
-//
-//  function WordpressEnableGallery(){
-//    if ( $this->_issetExtra('WORDPRESSENABLEGALLERY') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLEGALLERY');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressEnableNotice(){
-//    $this->_addExtra('WORDPRESSENABLENOTICE','1');
-//  }
-//
-//  function unsetWordpressEnableNotice(){
-//    $this->_addExtra('WORDPRESSENABLENOTICE','-1');
-//  }
-//
-//  function WordpressEnableNotice(){
-//    if ( $this->_issetExtra('WORDPRESSENABLENOTICE') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLENOTICE');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressEnablePdf(){
-//    $this->_addExtra('WORDPRESSENABLEPDF','1');
-//  }
-//
-//  function unsetWordpressEnablePdf(){
-//    $this->_addExtra('WORDPRESSENABLEPDF','-1');
-//  }
-//
-//
-//  function WordpressEnablePdf(){
-//    if ( $this->_issetExtra('WORDPRESSENABLEPDF') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLEPDF');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressEnableRater(){
-//    $this->_addExtra('WORDPRESSENABLERATER','1');
-//  }
-//
-//  function unsetWordpressEnableRater(){
-//    $this->_addExtra('WORDPRESSENABLERATER','-1');
-//  }
-//
-//  function WordpressEnableRater(){
-//    if ( $this->_issetExtra('WORDPRESSENABLERATER') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLERATER');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressEnableListCategories(){
-//    $this->_addExtra('WORDPRESSENABLELISTCATEGORIES','1');
-//  }
-//
-//  function unsetWordpressEnableListCategories(){
-//    $this->_addExtra('WORDPRESSENABLELISTCATEGORIES','-1');
-//  }
-//
-//  function WordpressEnableListCategories(){
-//    if ( $this->_issetExtra('WORDPRESSENABLELISTCATEGORIES') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLELISTCATEGORIES');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressNewPageTemplate($template){
-//    $this->_addExtra('WORDPRESSNEWPAGETEMPLATE',$template);
-//  }
-//
-//  function unsetWordpressNewPageTemplate(){
-//    $this->_addExtra('WORDPRESSNEWPAGETEMPLATE','-1');
-//  }
-//
-//  function WordpressNewPageTemplate(){
-//    if (($this->_issetExtra('WORDPRESSNEWPAGETEMPLATE')) &&  ($this->_getExtra('WORDPRESSNEWPAGETEMPLATE') != '-1')) {
-//      $retour = $this->_getExtra('WORDPRESSNEWPAGETEMPLATE');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressEnableSwf(){
-//    $this->_addExtra('WORDPRESSENABLESWF','1');
-//  }
-//
-//  function unsetWordpressEnableSwf(){
-//    $this->_addExtra('WORDPRESSENABLESWF','-1');
-//  }
-//
-//  function WordpressEnableSwf(){
-//    if ( $this->_issetExtra('WORDPRESSENABLESWF') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLESWF');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressEnableWmplayer(){
-//    $this->_addExtra('WORDPRESSENABLEWMPLAYER','1');
-//  }
-//
-//  function unsetWordpressEnableWmplayer(){
-//    $this->_addExtra('WORDPRESSENABLEWMPLAYER','-1');
-//  }
-//
-//  function WordpressEnableWmplayer(){
-//    if ( $this->_issetExtra('WORDPRESSENABLEWMPLAYER') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLEWMPLAYER');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressEnableQuicktime(){
-//    $this->_addExtra('WORDPRESSENABLEQUICKTIME','1');
-//  }
-//
-//  function unsetWordpressEnableQuicktime(){
-//    $this->_addExtra('WORDPRESSENABLEQUICKTIME','-1');
-//  }
-//
-//  function WordpressEnableQuicktime(){
-//    if ( $this->_issetExtra('WORDPRESSENABLEQUICKTIME') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLEQUICKTIME');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressEnableYoutubeGoogleVimeo(){
-//    $this->_addExtra('WORDPRESSENABLEYOUTUBEGOOGLEVIMOEO','1');
-//  }
-//
-//  function unsetWordpressEnableYoutubeGoogleVimeo(){
-//    $this->_addExtra('WORDPRESSENABLEYOUTUBEGOOGLEVIMOEO','-1');
-//  }
-//
-//  function WordpressEnableYoutubeGoogleVimeo(){
-//    if ( $this->_issetExtra('WORDPRESSENABLEYOUTUBEGOOGLEVIMOEO') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLEYOUTUBEGOOGLEVIMOEO');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  // /new features
-//
-//  function setWordpressEditPW($pw){
-//    $this->_addExtra('WORDPRESSEDITPW',$pw);
-//  }
-//
-//  function getWordpressEditPW(){
-//    if ( $this->_issetExtra('WORDPRESSEDITPW') ) {
-//      $retour = $this->_getExtra('WORDPRESSEDITPW');
-//    } else {
-//      $retour ='edit';
-//    }
-//    return $retour;
-//  }
-//
-//
-//  function setWordpressReadPW($pw){
-//    $this->_addExtra('WORDPRESSREADPW',$pw);
-//  }
-//
-//  function getWordpressReadPW(){
-//    if ( $this->_issetExtra('WORDPRESSREADPW') ) {
-//      $retour = $this->_getExtra('WORDPRESSREADPW');
-//    } else {
-//      $retour = '';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressWithSectionEdit () {
-//    $this->_addExtra('WORDPRESS_SECTIONEDIT','1');
-//  }
-//
-//  function setWordpressWithoutSectionEdit () {
-//    $this->_addExtra('WORDPRESS_SECTIONEDIT','-1');
-//  }
-//
-//  function setWordpressWithHeaderForSectionEdit () {
-//    $this->_addExtra('WORDPRESS_SECTIONEDIT_HEADER','1');
-//  }
-//
-//  function setWordpressWithoutHeaderForSectionEdit () {
-//    $this->_addExtra('WORDPRESS_SECTIONEDIT_HEADER','-1');
-//  }
-//
-//  function wordpressWithSectionEdit () {
-//    $retour = false;
-//    if ( $this->_issetExtra('WORDPRESS_SECTIONEDIT') ) {
-//      $value = $this->_getExtra('WORDPRESS_SECTIONEDIT');
-//      if ( $value == 1 ) {
-//        $retour = true;
-//      }
-//    }
-//    return $retour;
-//  }
-//
-//  function wordpressWithHeaderForSectionEdit () {
-//    $retour = false;
-//    if ( $this->_issetExtra('WORDPRESS_SECTIONEDIT_HEADER') ) {
-//      $value = $this->_getExtra('WORDPRESS_SECTIONEDIT_HEADER');
-//      if ( $value == 1 ) {
-//        $retour = true;
-//      }
-//    }
-//    return $retour;
-//  }
-//
-//  // Wordpress Discussion
-//
-//  function setWordpressEnableDiscussion(){
-//    $this->_addExtra('WORDPRESSENABLEDISCUSSION','1');
-//  }
-//
-//  function unsetWordpressEnableDiscussion(){
-//    $this->_addExtra('WORDPRESSENABLEDISCUSSION','-1');
-//  }
-//
-//  function WordpressEnableDiscussion(){
-//    if ( $this->_issetExtra('WORDPRESSENABLEDISCUSSION') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLEDISCUSSION');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressEnableDiscussionNotification(){
-//    $this->_addExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATION','1');
-//  }
-//
-//  function unsetWordpressEnableDiscussionNotification(){
-//    $this->_addExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATION','-1');
-//  }
-//
-//  function WordpressEnableDiscussionNotification(){
-//    if ( $this->_issetExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATION') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATION');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressEnableDiscussionNotificationGroups(){
-//    $this->_addExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATIONGROUPS','1');
-//  }
-//
-//  function unsetWordpressEnableDiscussionNotificationGroups(){
-//    $this->_addExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATIONGROUPS','-1');
-//  }
-//
-//  function WordpressEnableDiscussionNotificationGroups(){
-//    if ( $this->_issetExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATIONGROUPS') ) {
-//      $retour = $this->_getExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATIONGROUPS');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function WordpressSetNewDiscussion($new_discussion){
-//    if(!empty($new_discussion)){
-//      if(!$this->_issetExtra('WORDPRESSDISCUSSIONARRAY')){
-//        $this->_addExtra('WORDPRESSDISCUSSIONARRAY', $new_discussion);
-//      } else {
-//        if ( $this->_issetExtra('WORDPRESSDISCUSSIONARRAY') && !mb_stristr($this->_getExtra('WORDPRESSDISCUSSIONARRAY'), $new_discussion)) {
-//          $discussion_string = $this->_getExtra('WORDPRESSDISCUSSIONARRAY');
-//          if(!empty($discussion_string)){
-//            $discussion_array = explode('$CSDW$', $discussion_string);
-//          } else {
-//            $discussion_array = array();
-//          }
-//          $discussion_array[] = $new_discussion;
-//          $discussion_string = implode('$CSDW$', $discussion_array);
-//          $this->_addExtra('WORDPRESSDISCUSSIONARRAY',$discussion_string);
-//        }
-//      }
-//    }
-//  }
-//
-//  function WordpressRemoveDiscussion($old_discussion){
-//    if ( $this->_issetExtra('WORDPRESSDISCUSSIONARRAY') && mb_stristr($this->_getExtra('WORDPRESSDISCUSSIONARRAY'), $old_discussion)) {
-//      $discussion_string = $this->_getExtra('WORDPRESSDISCUSSIONARRAY');
-//      if(!empty($discussion_string)){
-//        $discussion_array = explode('$CSDW$', $discussion_string);
-//        $new_discussion_array = array();
-//        foreach($discussion_array as $discussion){
-//          if($discussion != $old_discussion){
-//            $new_discussion_array[] = $discussion;
-//          }
-//        }
-//        $discussion_string = implode('$CSDW$', $new_discussion_array);
-//      }
-//      $this->_addExtra('WORDPRESSDISCUSSIONARRAY',$discussion_string);
-//    }
-//  }
-//
-//  function getWordpressDiscussionArray(){
-//    if ( $this->_issetExtra('WORDPRESSDISCUSSIONARRAY') ) {
-//      $discussion_string = $this->_getExtra('WORDPRESSDISCUSSIONARRAY');
-//    } else {
-//      $discussion_string ='';
-//    }
-//    $discussion_array = explode('$CSDW$', $discussion_string);
-//    if($discussion_array[0] == ''){
-//      return false;
-//    } else {
-//      return $discussion_array;
-//    }
-//  }
-//
-//  function unsetWordpressDiscussionArray(){
-//    $this->_addExtra('WORDPRESSDISCUSSIONARRAY','');
-//  }
-//
-//  function setWordpressUseCommSyLogin(){
-//    $this->_addExtra('WORDPRESSUSECOMMSYLOGIN','1');
-//  }
-//
-  function unsetWordpressUseCommSyLogin(){
-    $this->_addExtra('WORDPRESSUSECOMMSYLOGIN','-1');
-  }
-
-  function WordpressUseCommSyLogin(){
-    if ( $this->_issetExtra('WORDPRESSUSECOMMSYLOGIN') ) {
-      $retour = $this->_getExtra('WORDPRESSUSECOMMSYLOGIN');
-    } else {
-      $retour ='1';
-    }
-    return $retour;
-  }
-
-  public function withWordpressUseCommSyLogin () {
-    $retour = false;
-    if ( $this->WordpressUseCommSyLogin() == 1 ) {
-      $retour = true;
-    }
-    return $retour;
-  }
-//
-//  function setWordpressCommunityReadAccess(){
-//    $this->_addExtra('WORDPRESSCOMMUNITYREADACCESS','1');
-//  }
-//
-//  function unsetWordpressCommunityReadAccess(){
-//    $this->_addExtra('WORDPRESSCOMMUNITYREADACCESS','-1');
-//  }
-//
-//  function WordpressCommunityReadAccess(){
-//    if ( $this->_issetExtra('WORDPRESSCOMMUNITYREADACCESS') ) {
-//      $retour = $this->_getExtra('WORDPRESSCOMMUNITYREADACCESS');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressCommunityWriteAccess(){
-//    $this->_addExtra('WORDPRESSCOMMUNITYWRITEACCESS','1');
-//  }
-//
-//  function unsetWordpressCommunityWriteAccess(){
-//    $this->_addExtra('WORDPRESSCOMMUNITYWRITEACCESS','-1');
-//  }
-//
-//  function WordpressCommunityWriteAccess(){
-//    if ( $this->_issetExtra('WORDPRESSCOMMUNITYWRITEACCESS') ) {
-//      $retour = $this->_getExtra('WORDPRESSCOMMUNITYWRITEACCESS');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressPortalReadAccess(){
-//    $this->_addExtra('WORDPRESSPORTALREADACCESS','1');
-//  }
-//
-//  function unsetWordpressPortalReadAccess(){
-//    $this->_addExtra('WORDPRESSPORTALREADACCESS','-1');
-//  }
-//
-//  function WordpressPortalReadAccess(){
-//    if ( $this->_issetExtra('WORDPRESSPORTALREADACCESS') ) {
-//      $retour = $this->_getExtra('WORDPRESSPORTALREADACCESS');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function isWordpressPortalReadAccess () {
-//    $retour = false;
-//    if ( $this->WordpressPortalReadAccess() == 1 ) {
-//      $retour = true;
-//    }
-//    return $retour;
-//  }
-//
-//  function setWordpressRoomModWriteAccess(){
-//    $this->_addExtra('WORDPRESSROOMWRITEMODACCESS','1');
-//  }
-//
-//  function unsetWordpressRoomModWriteAccess(){
-//    $this->_addExtra('WORDPRESSROOMWRITEMODACCESS','-1');
-//  }
-//
-//  function WordpressRoomModWriteAccess(){
-//    if ( $this->_issetExtra('WORDPRESSROOMWRITEMODACCESS') ) {
-//      $retour = $this->_getExtra('WORDPRESSROOMWRITEMODACCESS');
-//    } else {
-//      $retour ='-1';
-//    }
-//    return $retour;
-//  }
-//
-//  function isWordpressRoomModWriteAccess () {
-//    $retour = false;
-//    if ( $this->WordpressRoomModWriteAccess() == 1 ) {
-//      $retour = true;
-//    }
-//    return $retour;
-//  }
-
-
-  function withLimeSurveyFunctions()
-  {
-    global $symfonyContainer;
-    return $symfonyContainer->getParameter('commsy.limesurvey.enabled');
-  }
-
-  function setLimeSurveyActive()
-  {
-  	$this->_addExtra('LIMESURVEY', 1);
-  }
-
-  function setLimeSurveyInactive()
-  {
-  	$this->_addExtra('LIMESURVEY', -1);
-  }
-
-  function isLimeSurveyActive()
-  {
-  	if ( $this->_issetExtra('LIMESURVEY') && $this->_getExtra('LIMESURVEY') === 1 )
-  	{
-  		return true;
-  	}
-
-  	return false;
-  }
-
-  function setLimeSurveyJsonRpcUrl($url)
-  {
-  	$this->_addExtra('LIMESURVEYJSONRPCURL', $url);
-  }
-
-  function getLimeSurveyJsonRpcUrl()
-  {
-  	if ( $this->_issetExtra('LIMESURVEYJSONRPCURL') )
-  	{
-  		return $this->_getExtra('LIMESURVEYJSONRPCURL');
-  	}
-
-  	return '';
-  }
-
-  function setLimeSurveySurveyIDs($ids)
-  {
-  	$this->_addExtra('LIMESURVEYSURVEYIDS', $ids);
-  }
-
-  function getLimeSurveySurveyIDs()
-  {
-  	if ( $this->_issetExtra('LIMESURVEYSURVEYIDS') )
-  	{
-  		return $this->_getExtra('LIMESURVEYSURVEYIDS');
-  	}
-
-  	return array();
-  }
-
-  function setLimeSurveyAdminUser($username)
-  {
-  	$this->_addExtra('LIMESURVEYADMINUSER', $username);
-  }
-
-  function getLimeSurveyAdminUser()
-  {
-  	if ( $this->_issetExtra('LIMESURVEYADMINUSER') )
-  	{
-  		return $this->_getExtra('LIMESURVEYADMINUSER');
-  	}
-
-  	return '';
-  }
-
-  function setLimeSurveyAdminPassword($password)
-  {
-  	$this->_addExtra('LIMESURVEYADMINPASSWORD', $password);
-  }
-
-  function getLimeSurveyAdminPassword()
-  {
-  	if ( $this->_issetExtra('LIMESURVEYADMINPASSWORD') )
-  	{
-  		return $this->_getExtra('LIMESURVEYADMINPASSWORD');
-  	}
-
-  	return '';
-  }
-
-
   ##########################################
   # Pfad
   ##########################################
 
   function withPath () {
-    $retour = false;
-    if ( $this->_issetExtra('PATH') ) {
-      $value = $this->_getExtra('PATH');
-      if ($value == 1) {
-        $retour = true;
-      }
-    } else {
-      $value = $this->_getExtraConfig('PATH');
-      if ($value == 1) {
-        $retour = true;
-      }
-    }
-//    return $retour;
 	return true;
-  }
-
-  function setWithPath () {
-    $this->_addExtra('PATH',1);
-  }
-
-  function setWithoutPath () {
-    $this->_addExtra('PATH',0);
   }
 
   function InformationBoxWithExistingObject() {
@@ -3526,9 +2100,6 @@ class cs_context_item extends cs_item {
     $this->_addExtra('INFORMATIONBOXENTRYID',(string)$value);
   }
 
-
-
-
   ##########################################
   # Tags
   ##########################################
@@ -3576,49 +2147,6 @@ class cs_context_item extends cs_item {
     return $retour;
   }
 
-  function setBGImageRepeat () {
-    $this->_addExtra('BGIMAGEREPEAT',1);
-  }
-
-  function unsetBGImageRepeat () {
-    $this->_addExtra('BGIMAGEREPEAT',0);
-  }
-
-  function setBGImageFixed () {
-    $this->_addExtra('BGIMAGEFIXED',1);
-  }
-
-  function unsetBGImageFixed () {
-    $this->_addExtra('BGIMAGEFIXED',0);
-  }
-
-  public function issetBGImageRepeat () {
-    $retour = false;
-    if ($this->_issetExtra('BGIMAGEREPEAT')) {
-      $retour = $this->_getExtra('BGIMAGEREPEAT');
-      if ( $retour == 1 ) {
-        $retour = true;
-      } else {
-        $retour = false;
-      }
-    }
-    return $retour;
-  }
-
-  public function issetBGImageFixed () {
-    $retour = false;
-    if ($this->_issetExtra('BGIMAGEFIXED')) {
-      $retour = $this->_getExtra('BGIMAGEFIXED');
-      if ( $retour == 1 ) {
-        $retour = true;
-      } else {
-        $retour = false;
-      }
-    }
-    return $retour;
-  }
-
-
   function setTagEditedByModerator () {
     $this->_addExtra('TAGEDITEDBY',2);
   }
@@ -3647,7 +2175,7 @@ class cs_context_item extends cs_item {
          $retour = true;
        }
 
-       if (is_a($this, "cs_privateroom_item")) $retour = true;
+       if ($this instanceof \cs_privateroom_item) $retour = true;
     }
     return $retour;
   }
@@ -3669,169 +2197,6 @@ class cs_context_item extends cs_item {
       }
     }
    return $retour;
-  }
-
-  function isNetnavigationShowExpanded () {
-    $retour = false;
-    if ( $this->_issetExtra('NAVIGATIONSHOWEXPANDED') ) {
-      $value = $this->_getExtra('NAVIGATIONSHOWEXPANDED');
-      if ($value == 1) {
-        $retour = true;
-      }
-    }
-//    return $retour;
-	return true;
-  }
-
-  function setNetnavigationShowExpanded () {
-    $this->_addExtra('NAVIGATIONSHOWEXPANDED',1);
-  }
-
-  function unsetNetnavigationShowExpanded () {
-    $this->_addExtra('NAVIGATIONSHOWEXPANDED',0);
-  }
-
-
-  function setWithNetnavigation() {
-    $this->_addExtra('WITHNETNAVIGATION',2);
-  }
-
-  function setWithoutNetnavigation() {
-    $this->_addExtra('WITHNETNAVIGATION',1);
-  }
-
-  function withNetnavigation() {
-    $retour = true;
-    if ( $this->_issetExtra('WITHNETNAVIGATION') ) {
-      $retour = false;
-      $re = $this->_getExtra('WITHNETNAVIGATION');
-      if ($re == 2) {
-        $retour = true;
-      }
-    }
-    return $retour;
-  }
-
-
-  function withMaterialImportLink () {
-    $retour = false;
-    $value = $this->_getExtraConfig('MATERIALIMPORT');
-    if ($value == 1) {
-      $retour = true;
-    } elseif ($this->isProjectRoom() or $this->isCommunityRoom()) {
-      $portal_room = $this->getContextItem();
-      if ( $portal_room->withMaterialImportLink() ) {
-        $retour = true;
-      }
-    }
-    return $retour;
-  }
-
-  function setWithMaterialImport () {
-    $this->_setExtraConfig('MATERIALIMPORT',1);
-  }
-
-  function setWithoutMaterialImport () {
-    $this->_setExtraConfig('MATERIALIMPORT',0);
-  }
-
-  function withActivatingContent () {
-    $retour = false;
-    $value = $this->_getExtraConfig('ACTIVATINGCONTENT');
-    if ($value == 1) {
-      $retour = true;
-    } elseif ($this->isProjectRoom() or $this->isCommunityRoom()) {
-      $portal_room = $this->getContextItem();
-      if ( $portal_room->withActivatingContent() ) {
-        $retour = true;
-      }
-    }
-    return $retour;
-  }
-
-  function setWithActivatingContent () {
-    $this->_setExtraConfig('ACTIVATINGCONTENT',1);
-  }
-
-  function setWithoutActivatingContent () {
-    $this->_setExtraConfig('ACTIVATINGCONTENT',0);
-  }
-
-
-
-  ##########################################
-  # Chat
-  ##########################################
-
-  function withChatLink () {
-    $retour = false;
-    $value = $this->_getExtraConfig('CHATLINK');
-    if ($value == 1) {
-      $retour = true;
-    } elseif ($this->isProjectRoom() or $this->isCommunityRoom()) {
-      $portal_room = $this->getContextItem();
-      if ( $portal_room->withChatLink() ) {
-        $retour = true;
-      }
-    }
-    return $retour;
-  }
-
-  function setWithChatLink () {
-    $this->_setExtraConfig('CHATLINK',1);
-  }
-
-  function setWithoutChatLink () {
-    $this->_setExtraConfig('CHATLINK',0);
-  }
-
-  function showChatLink () {
-    $retour = false;
-    if ($this->withChatLink() and $this->isChatLinkActive()) {
-      $retour = true;
-    }
-    return $retour;
-  }
-
-  /** is chat link active ?
-   * can be switched at room configuration
-   *
-   * true = chat link is active
-   * false = chat link is not active, default
-   *
-   * @return boolean
-   */
-  function isChatLinkActive () {
-    $retour = false;
-    if ( $this->_issetExtra('CHATLINK') ) {
-      $active = $this->_getExtra('CHATLINK');
-      if ($active == 1) {
-        $retour = true;
-        $retour = $retour and $this->withChatLink();
-      }
-    }
-    return $retour;
-  }
-
-  /** set activity of the chat link, INTERNAL
-   *
-   * @param integer value: -1 = not
-   *                        1 = yes
-   */
-  function _setChatLinkActivity ($value) {
-    $this->_addExtra('CHATLINK',(int)$value);
-  }
-
-  /** set chat link active
-   */
-  function setChatLinkActive () {
-    $this->_setChatLinkActivity(1);
-  }
-
-  /** set chat link inactive
-   */
-  function setChatLinkInactive () {
-    $this->_setChatLinkActivity(-1);
   }
 
   #########################################
@@ -4778,12 +3143,6 @@ class cs_context_item extends cs_item {
     return $retour;
   }
 
-  function _is_perspective ($rubric) {
-    $in_array = in_array($rubric, array(CS_GROUP_TYPE, CS_TOPIC_TYPE)) ;
-    return $in_array;
-  }
-
-
   /** asks if item is editable by everybody or just creator
    *
    * @param value
@@ -5011,7 +3370,7 @@ class cs_context_item extends cs_item {
     return $active;
   }
 
-  function getActiveMembersForNewsletter($external_timespread = 0) {
+  public function getActiveMembersForNewsletter($external_timespread = 0) {
     // take it from UserActivity extras field
     $retour = 0;
     if(isset($this->_user_activity_array[$external_timespread])) {
@@ -5071,8 +3430,6 @@ class cs_context_item extends cs_item {
   }
 
   function generateLayoutImages() {
-    global $c_commsy_path_file;
-    $color_array = $this->getColorArray();
     $disc_manager = $this->_environment->getDiscManager();
     if ( $this->isPortal() or $this->isServer() ) {
       $disc_manager->setPortalID($this->getItemID());
@@ -5081,25 +3438,6 @@ class cs_context_item extends cs_item {
     }
 
     $disc_manager->setContextID($this->_environment->getCurrentContextItem()->getItemID());
-  }
-
-  function generateColourGradient($height, $rgb) {
-    $image = imagecreate(1, $height);
-
-    $rgb = str_replace('#', '', $rgb);
-
-    $r = hexdec(mb_substr($rgb, 0, 2));
-    $g = hexdec(mb_substr($rgb, 2, 2));
-    $b = hexdec(mb_substr($rgb, 4, 2));
-
-    $border = ImageColorAllocate($image,$r,$g,$b);
-
-    for ($i=0; $i<($height/2); $i++) {
-      $line = ImageColorAllocate($image,$r-(($r/255)*($i*3)),$g-(($g/255)*($i*3)),$b-(($b/255)*($i*3)));
-      imageline($image, 0, $i, 0, $i, $line);
-      imageline($image, 0, (($height-1)-$i), 500, (($height-1)-$i), $line);
-    }
-    return $image;
   }
 
   function getPageImpressionAndUserActivityLast() {
@@ -5162,43 +3500,6 @@ class cs_context_item extends cs_item {
   	}
   	return $retour;
   }
-
-  function setWithAnnouncementDates() {
-  	$this->_addExtra('HIDE_ANNOUNCEMENT_DATE',2);
-  }
-
-  function setWithoutAnnouncementDates() {
-  	$this->_addExtra('HIDE_ANNOUNCEMENT_DATE',1);
-  }
-
-  function withAnnouncementDates() {
-  	$retour = false;
-  	if ($this->_issetExtra('HIDE_ANNOUNCEMENT_DATE') ) {
-  		$re = $this->_getExtra('HIDE_ANNOUNCEMENT_DATE');
-  		if ($re == 2) {
-  			$retour = true;
-  		}
-  	}else {
-  		$retour = false;
-  	}
-  	return $retour;
-  }
-
-
-  // MediaWiki
-  function setWikiEnabled ($value) {
-      $this->_addExtra('WIKI_ENABLED',$value);
-  }
-
-  function isWikiEnabled () {
-  	if ($this->_issetExtra('WIKI_ENABLED')) {
-  		if ($this->_getExtra('WIKI_ENABLED')) {
-      		return true;
-  		}
-  	}
-  	return false;
-  }
-
 
   public function getDefaultCalendarId () {
       global $symfonyContainer;
