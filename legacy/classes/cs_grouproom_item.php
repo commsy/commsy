@@ -1161,29 +1161,5 @@ class cs_grouproom_item extends cs_room_item {
          return $linked_project_item->withWikiFunctions();
       }
    }
-
-   public function withChatLink(){
-      // point to linked project item
-      $linked_project_item = $this->getLinkedProjectItem();
-      if( isset($linked_project_item) ) {
-         return $linked_project_item->withChatLink();
-      }
-   }
-
-   public function withMaterialImportLink() {
-      // point to linked project item
-      $linked_project_item = $this->getLinkedProjectItem();
-      if( isset($linked_project_item) ) {
-         return $linked_project_item->withMaterialImportLink();
-      }
-   }
-
-   public function withActivatingContent() {
-      // point to linked project item
-      $linked_project_item = $this->getLinkedProjectItem();
-      if( isset($linked_project_item) ) {
-         return $linked_project_item->withActivatingContent();
-      }
-   }
 }
 ?>
