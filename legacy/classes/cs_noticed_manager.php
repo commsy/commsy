@@ -41,7 +41,7 @@ class cs_noticed_manager {
 
   public $_db_prefix = '';
   public $_with_db_prefix = true;
-  
+
    /**
     * Environment - the environment of the CommSy
     */
@@ -430,9 +430,11 @@ class cs_noticed_manager {
       return $this->_with_db_prefix;
    }
 
-    function moveFromDbToBackup($context_id)
+    function deleteFromDb($context_id)
     {
         $id_array_items = array();
+        $id_array_users = array();
+
         $item_manager = $this->_environment->getItemManager();
         $item_manager->setContextLimit($context_id);
         $item_manager->setNoIntervalLimit();
@@ -443,8 +445,6 @@ class cs_noticed_manager {
             $id_array_items[] = $temp_item->getItemID();
             $temp_item = $item_list->getNext();
         }
-
-        $id_array_users = array();
         $user_manager = $this->_environment->getUserManager();
         $user_manager->setContextLimit($context_id);
         $user_manager->select();
@@ -455,112 +455,9 @@ class cs_noticed_manager {
             $temp_user = $user_list->getNext();
         }
 
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
         if (!empty($id_array_items) and !empty($id_array_users)) {
-            if (!empty($context_id)) {
-                $query = 'INSERT INTO ' . $c_db_backup_prefix . '_' . 'noticed' . ' SELECT * FROM ' . 'noticed' . ' WHERE ' . 'noticed' . '.item_id IN (' . implode(",", $id_array_items) . ') OR ' . 'noticed' . '.user_id IN (' . implode(",", $id_array_users) . ')';
-                $this->_db_connector->performQuery($query);
-
-                $this->deleteFromDb($context_id);
-            }
-        }
-    }
-
-    function moveFromBackupToDb($context_id)
-    {
-        $id_array_items = array();
-        $zzz_item_manager = $this->_environment->getZzzItemManager();
-        $zzz_item_manager->setContextLimit($context_id);
-        $zzz_item_manager->setNoIntervalLimit();
-        $zzz_item_manager->select();
-        $item_list = $zzz_item_manager->get();
-        $temp_item = $item_list->getFirst();
-        while ($temp_item) {
-            $id_array_items[] = $temp_item->getItemID();
-            $temp_item = $item_list->getNext();
-        }
-
-        $id_array_users = array();
-        $zzz_user_manager = $this->_environment->getZzzUserManager();
-        $zzz_user_manager->setContextLimit($context_id);
-        $zzz_user_manager->select();
-        $user_list = $zzz_user_manager->get();
-        $temp_user = $user_list->getFirst();
-        while ($temp_user) {
-            $id_array_users[] = $temp_user->getItemID();
-            $temp_user = $user_list->getNext();
-        }
-
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        if (!empty($id_array_items) and !empty($id_array_users)) {
-            if (!empty($context_id)) {
-                $query = 'INSERT INTO ' . 'noticed' . ' SELECT * FROM ' . $c_db_backup_prefix . '_' . 'noticed' . ' WHERE ' . $c_db_backup_prefix . '_' . 'noticed' . '.item_id IN (' . implode(",", $id_array_items) . ') OR ' . $c_db_backup_prefix . '_' . 'noticed' . '.user_id IN (' . implode(",", $id_array_users) . ')';
-                $result = $this->_db_connector->performQuery($query);
-
-                $this->deleteFromDb($context_id, true);
-            }
-        }
-    }
-
-    function deleteFromDb($context_id, $from_backup = false)
-    {
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        $db_prefix = '';
-        $id_array_items = array();
-        $id_array_users = array();
-        if (!$from_backup) {
-            $item_manager = $this->_environment->getItemManager();
-            $item_manager->setContextLimit($context_id);
-            $item_manager->setNoIntervalLimit();
-            $item_manager->select();
-            $item_list = $item_manager->get();
-            $temp_item = $item_list->getFirst();
-            while ($temp_item) {
-                $id_array_items[] = $temp_item->getItemID();
-                $temp_item = $item_list->getNext();
-            }
-            $user_manager = $this->_environment->getUserManager();
-            $user_manager->setContextLimit($context_id);
-            $user_manager->select();
-            $user_list = $user_manager->get();
-            $temp_user = $user_list->getFirst();
-            while ($temp_user) {
-                $id_array_users[] = $temp_user->getItemID();
-                $temp_user = $user_list->getNext();
-            }
-        } else {
-            $db_prefix .= $c_db_backup_prefix . '_';
-            $zzz_item_manager = $this->_environment->getZzzItemManager();
-            $zzz_item_manager->setContextLimit($context_id);
-            $zzz_item_manager->setNoIntervalLimit();
-            $zzz_item_manager->select();
-            $item_list = $zzz_item_manager->get();
-            $temp_item = $item_list->getFirst();
-            while ($temp_item) {
-                $id_array_items[] = $temp_item->getItemID();
-                $temp_item = $item_list->getNext();
-            }
-            $zzz_user_manager = $this->_environment->getZzzUserManager();
-            $zzz_user_manager->setContextLimit($context_id);
-            $zzz_user_manager->select();
-            $user_list = $zzz_user_manager->get();
-            $temp_user = $user_list->getFirst();
-            while ($temp_user) {
-                $id_array_users[] = $temp_user->getItemID();
-                $temp_user = $user_list->getNext();
-            }
-        }
-
-        if (!empty($id_array_items) and !empty($id_array_users)) {
-            $query = 'DELETE FROM ' . $db_prefix . 'noticed' . ' WHERE ' . $db_prefix . 'noticed' . '.item_id IN (' . implode(",", $id_array_items) . ') OR ' . $db_prefix . 'noticed' . '.user_id IN (' . implode(",", $id_array_users) . ')';
+            $query = 'DELETE FROM ' . 'noticed' . ' WHERE ' . 'noticed' . '.item_id IN (' . implode(",", $id_array_items) . ') OR ' . 'noticed' . '.user_id IN (' . implode(",", $id_array_users) . ')';
             $this->_db_connector->performQuery($query);
         }
     }
 }
-?>

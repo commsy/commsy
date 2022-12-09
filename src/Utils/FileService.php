@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_file_item;
 
 class FileService
 {
@@ -15,21 +16,14 @@ class FileService
 
     /**
      * @param $fileId
-     * @return \cs_file_item|null
+     * @return cs_file_item|null
      */
-    public function getFile($fileId):? \cs_file_item
+    public function getFile($fileId):? cs_file_item
     {
         $fileManager = $this->legacyEnvironment->getEnvironment()->getFileManager();
-        $file = $fileManager->getItem($fileId);
-
-        if (!$file) {
-            $fileManager = $this->legacyEnvironment->getEnvironment()->getZzzFileManager();
-            $file = $fileManager->getItem($fileId);
-        }
-
-        return $file;
+        return $fileManager->getItem($fileId);
     }
-    
+
     public function getNewFile()
     {
         $fileManager = $this->legacyEnvironment->getEnvironment()->getFileManager();

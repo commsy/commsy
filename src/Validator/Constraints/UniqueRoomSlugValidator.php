@@ -3,7 +3,6 @@
 namespace App\Validator\Constraints;
 
 use App\Repository\RoomRepository;
-use App\Repository\ZzzRoomRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -13,13 +12,9 @@ class UniqueRoomSlugValidator extends ConstraintValidator
     /** @var RoomRepository $roomRepository */
     private RoomRepository $roomRepository;
 
-    /** @var ZzzRoomRepository $zzzRoomRepository */
-    private ZzzRoomRepository $zzzRoomRepository;
-
-    public function __construct(RoomRepository $roomRepository, ZzzRoomRepository $zzzRoomRepository)
+    public function __construct(RoomRepository $roomRepository)
     {
         $this->roomRepository = $roomRepository;
-        $this->zzzRoomRepository = $zzzRoomRepository;
     }
 
     /**
@@ -52,10 +47,8 @@ class UniqueRoomSlugValidator extends ConstraintValidator
         }
 
         $room = $this->roomRepository->findOneByRoomSlug($roomSlug, $roomItem->getContextId());
-        $zzzRoom = $this->zzzRoomRepository->findOneByRoomSlug($roomSlug, $roomItem->getContextId());
 
-        if ($room && $room->getItemId() !== $roomItem->getItemID() ||
-            $zzzRoom && $zzzRoom->getItemId() !== $roomItem->getItemID()) {
+        if ($room && $room->getItemId() !== $roomItem->getItemID()) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();
         }

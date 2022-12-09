@@ -27,7 +27,7 @@ class UserService
     private cs_user_manager $userManager;
 
     /**
-     * @var cs_room_manager|\cs_manager|\cs_zzz_room_manager
+     * @var cs_room_manager|\cs_manager|
      */
     private cs_room_manager $roomManager;
 
@@ -369,20 +369,6 @@ class UserService
         return null;
     }
 
-    /**
-     * Returns a array of archived room ids from userId
-     * @param $userId
-     * @return array
-     */
-    public function getArchivedRoomList($userId): array
-    {
-        $archivedRoomManager = $this->legacyEnvironment->getZzzRoomManager();
-        $archivedRoomList = $archivedRoomManager->getRelatedRoomListForUser($userId);
-
-        return $archivedRoomList->to_array();
-
-    }
-
     public function getRoomList($userId)
     {
         $roomList = $this->roomManager->getRelatedRoomListForUser($userId);
@@ -435,13 +421,6 @@ class UserService
      */
     public function getSearchableRooms(cs_user_item $userItem)
     {
-        // search all workspaces/rooms even if current room is archived
-        $wasArchived = false;
-        if ($this->legacyEnvironment->isArchiveMode()) {
-            $this->legacyEnvironment->toggleArchiveMode();
-            $wasArchived = true;
-        }
-
         // project rooms
         $projectRoomList = $userItem->getUserRelatedProjectList();
 
@@ -474,11 +453,6 @@ class UserService
         $privateRoomItem = $userItem->getOwnRoom();
         if ($privateRoomItem) {
             $searchableRoomList->add($privateRoomItem);
-        }
-
-        // restore archive setting after having collected searchable rooms
-        if($wasArchived) {
-            $this->legacyEnvironment->toggleArchiveMode();
         }
 
         return $searchableRoomList->to_array();

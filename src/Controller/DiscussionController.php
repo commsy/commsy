@@ -207,7 +207,7 @@ class DiscussionController extends BaseController
             'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
             'catzExpanded' => $roomItem->isTagsShowExpanded(),
             'usageInfo' => $usageInfo,
-            'isArchived' => $roomItem->isArchived(),
+            'isArchived' => $roomItem->getArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'sort' => $sort,
         );

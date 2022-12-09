@@ -135,9 +135,9 @@ class cs_server_item extends cs_guide_item
     /** get contact moderator of a room
      * this method returns a list of contact moderator which are linked to the room
      *
-     * @return object cs_list a list of contact moderator (cs_label_item)
+     * @return cs_list a list of contact moderator (cs_label_item)
      */
-    public function getContactModeratorList()
+    public function getContactModeratorList(): cs_list
     {
         $user_manager = $this->_environment->getUserManager();
         $mod_list = new cs_list();
@@ -744,13 +744,6 @@ class cs_server_item extends cs_guide_item
         #   $retour = true;
         #}
         return $retour;
-    }
-
-    public function getStatistics($date_start, $date_end)
-    {
-        $manager = $this->_environment->getServerManager();
-
-        return $manager->getStatistics($this, $date_start, $date_end);
     }
 
     ## commsy server connections: portal2portal

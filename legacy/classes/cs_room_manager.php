@@ -70,8 +70,6 @@ class cs_room_manager extends cs_context_manager
 
     private $_limit_with_grouproom = false;
 
-    private $_archive_limit = false;
-
     private $_limit_only_grouproom = false;
 
     /** constructor
@@ -104,7 +102,6 @@ class cs_room_manager extends cs_context_manager
         $this->_logarchive_limit = NULL;
         $this->_limit_with_grouproom = false;
         $this->_limit_only_grouproom = false;
-        $this->_archive_limit = false;
     }
 
     public function setWithGrouproom()
@@ -130,11 +127,6 @@ class cs_room_manager extends cs_context_manager
     {
         $this->_interval_limit = (integer)$interval;
         $this->_from_limit = (integer)$from;
-    }
-
-    function setArchiveLimit()
-    {
-        $this->_archive_limit = true;
     }
 
     function setRoomTypeLimit($value)
@@ -395,24 +387,6 @@ class cs_room_manager extends cs_context_manager
             }
         }
 
-        // archive limit zzz_tables
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-        $db_prefix = $c_db_backup_prefix . '_';
-        if (isset($this->_archive_limit)
-            and $this->_archive_limit
-            and !strstr($query, $db_prefix)
-        ) {
-            $query = str_replace(' ' . $this->addDatabasePrefix($this->_db_table), ' ' . $db_prefix . $this->addDatabasePrefix($this->_db_table), $query);
-            $query = str_replace('(' . $this->addDatabasePrefix($this->_db_table), '(' . $db_prefix . $this->addDatabasePrefix($this->_db_table), $query);
-            $query = str_replace('=' . $this->addDatabasePrefix($this->_db_table), '=' . $db_prefix . $this->addDatabasePrefix($this->_db_table), $query);
-
-            // user
-            $table = 'user';
-            $query = str_replace(' ' . $this->addDatabasePrefix($table), ' ' . $db_prefix . $this->addDatabasePrefix($table), $query);
-            $query = str_replace('(' . $this->addDatabasePrefix($table), '(' . $db_prefix . $this->addDatabasePrefix($table), $query);
-            $query = str_replace('=' . $this->addDatabasePrefix($table), '=' . $db_prefix . $this->addDatabasePrefix($table), $query);
-        }
         $this->_last_query = $query;
 
         // perform query
@@ -421,18 +395,6 @@ class cs_room_manager extends cs_context_manager
             include_once('functions/error_functions.php');
             trigger_error('Problems selecting ' . $this->_db_table . ' items from query: "' . $query . '"', E_USER_ERROR);
         } else {
-            if (isset($this->_archive_limit)
-                and $this->_archive_limit
-                and $mode == 'select'
-            ) {
-                $result2 = array();
-                foreach ($result as $key => $row) {
-                    $row['zzz_table'] = 1;
-                    $result2[$key] = $row;
-                }
-                $result = $result2;
-                unset($result2);
-            }
             if (!empty($this->_id_array_limit)
                 and $this->_order == 'id_array'
             ) {
@@ -669,42 +631,9 @@ class cs_room_manager extends cs_context_manager
     # statistic functions - END
     ##########################################################
 
-    function moveFromDbToBackup($context_id)
+    function deleteFromDb($context_id)
     {
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        if (!empty($context_id)) {
-            $query = 'INSERT INTO ' . $c_db_backup_prefix . '_' . $this->_db_table . ' SELECT * FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.item_id = "' . $context_id . '"';
-            $this->_db_connector->performQuery($query);
-
-            $this->deleteFromDb($context_id);
-        }
-    }
-
-    function moveFromBackupToDb($context_id)
-    {
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        if (!empty($context_id)) {
-            $query = 'INSERT INTO ' . $this->_db_table . ' SELECT * FROM ' . $c_db_backup_prefix . '_' . $this->_db_table . ' WHERE ' . $c_db_backup_prefix . '_' . $this->_db_table . '.item_id = "' . $context_id . '"';
-            $this->_db_connector->performQuery($query);
-
-            $this->deleteFromDb($context_id, true);
-        }
-    }
-
-    function deleteFromDb($context_id, $from_backup = false)
-    {
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        $db_prefix = '';
-        if ($from_backup) {
-            $db_prefix .= $c_db_backup_prefix . '_';
-        }
-        $query = 'DELETE FROM ' . $db_prefix . $this->_db_table . ' WHERE ' . $db_prefix . $this->_db_table . '.item_id = "' . $context_id . '"';
+        $query = 'DELETE FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.item_id = "' . $context_id . '"';
         $this->_db_connector->performQuery($query);
     }
 
@@ -735,111 +664,80 @@ class cs_room_manager extends cs_context_manager
             // delete files
             $disc_manager = $this->_environment->getDiscManager();
             $disc_manager->removeRoomDir($portal_id, $iid);
-            unset($disc_manager);
-
-            // delete db content or archive content
-            $from_backup = false;
-            if ($this->_environment->isArchiveMode()) {
-                $from_backup = true;
-            }
 
             // managers need data from other tables
             $hash_manager = $this->_environment->getHashManager();
-            $hash_manager->deleteFromDb($iid, $from_backup);
-            unset($hash_manager);
+            $hash_manager->deleteFromDb($iid);
 
             $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
-            $link_modifier_item_manager->deleteFromDb($iid, $from_backup);
-            unset($link_modifier_item_manager);
+            $link_modifier_item_manager->deleteFromDb($iid);
 
             $link_item_file_manager = $this->_environment->getLinkItemFileManager();
-            $link_item_file_manager->deleteFromDb($iid, $from_backup);
-            unset($link_item_file_manager);
+            $link_item_file_manager->deleteFromDb($iid);
 
             $noticed_manager = $this->_environment->getNoticedManager();
-            $noticed_manager->deleteFromDb($iid, $from_backup);
-            unset($noticed_manager);
+            $noticed_manager->deleteFromDb($iid);
 
             $reader_manager = $this->_environment->getReaderManager();
-            $reader_manager->deleteFromDb($iid, $from_backup);
-            unset($reader_manager);
+            $reader_manager->deleteFromDb($iid);
 
             // plain deletion of the rest
             $annotation_manager = $this->_environment->getAnnotationManager();
-            $annotation_manager->deleteFromDb($iid, $from_backup);
-            unset($annotation_manager);
+            $annotation_manager->deleteFromDb($iid);
 
             $announcement_manager = $this->_environment->getAnnouncementManager();
-            $announcement_manager->deleteFromDb($iid, $from_backup);
-            unset($announcement_manager);
+            $announcement_manager->deleteFromDb($iid);
 
             $dates_manager = $this->_environment->getDatesManager();
-            $dates_manager->deleteFromDb($iid, $from_backup);
-            unset($dates_manager);
+            $dates_manager->deleteFromDb($iid);
 
             $discussion_manager = $this->_environment->getDiscussionManager();
-            $discussion_manager->deleteFromDb($iid, $from_backup);
-            unset($discussion_manager);
+            $discussion_manager->deleteFromDb($iid);
 
             $discussionarticles_manager = $this->_environment->getDiscussionarticleManager();
-            $discussionarticles_manager->deleteFromDb($iid, $from_backup);
-            unset($discussionarticles_manager);
+            $discussionarticles_manager->deleteFromDb($iid);
 
             $file_manager = $this->_environment->getFileManager();
-            $file_manager->deleteFromDb($iid, $from_backup);
-            unset($file_manager);
+            $file_manager->deleteFromDb($iid);
 
             $item_manager = $this->_environment->getItemManager();
-            $item_manager->deleteFromDb($iid, $from_backup);
-            unset($item_manager);
+            $item_manager->deleteFromDb($iid);
 
             $labels_manager = $this->_environment->getLabelManager();
-            $labels_manager->deleteFromDb($iid, $from_backup);
-            unset($labels_manager);
+            $labels_manager->deleteFromDb($iid);
 
             $links_manager = $this->_environment->getLinkManager();
-            $links_manager->deleteFromDb($iid, $from_backup);
-            unset($links_manager);
+            $links_manager->deleteFromDb($iid);
 
             $link_item_manager = $this->_environment->getLinkItemManager();
-            $link_item_manager->deleteFromDb($iid, $from_backup);
-            unset($link_item_manager);
+            $link_item_manager->deleteFromDb($iid);
 
             $material_manager = $this->_environment->getMaterialManager();
-            $material_manager->deleteFromDb($iid, $from_backup);
-            unset($material_manager);
+            $material_manager->deleteFromDb($iid);
 
             $section_manager = $this->_environment->getSectionManager();
-            $section_manager->deleteFromDb($iid, $from_backup);
-            unset($section_manager);
+            $section_manager->deleteFromDb($iid);
 
             $step_manager = $this->_environment->getStepManager();
-            $step_manager->deleteFromDb($iid, $from_backup);
-            unset($step_manager);
+            $step_manager->deleteFromDb($iid);
 
             $tag_manager = $this->_environment->getTagManager();
-            $tag_manager->deleteFromDb($iid, $from_backup);
-            unset($tag_manager);
+            $tag_manager->deleteFromDb($iid);
 
             $tag2tag_manager = $this->_environment->getTag2TagManager();
-            $tag2tag_manager->deleteFromDb($iid, $from_backup);
-            unset($tag2tag_manager);
+            $tag2tag_manager->deleteFromDb($iid);
 
             $task_manager = $this->_environment->getTaskManager();
-            $task_manager->deleteFromDb($iid, $from_backup);
-            unset($task_manager);
+            $task_manager->deleteFromDb($iid);
 
             $todo_manager = $this->_environment->getTodoManager();
-            $todo_manager->deleteFromDb($iid, $from_backup);
-            unset($todo_manager);
+            $todo_manager->deleteFromDb($iid);
 
             $user_manager = $this->_environment->getUserManager();
-            $user_manager->deleteFromDb($iid, $from_backup);
-            unset($user_manager);
+            $user_manager->deleteFromDb($iid);
 
             $room_manager = $this->_environment->getRoomManager();
-            $room_manager->deleteFromDb($iid, $from_backup);
-            unset($room_manager);
+            $room_manager->deleteFromDb($iid);
         }
         return $retour;
     }

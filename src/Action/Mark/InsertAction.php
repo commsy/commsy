@@ -54,7 +54,7 @@ class InsertAction
 
     public function execute(\cs_room_item $roomItem, array $items): Response
     {
-        if ($this->legacyEnvironment->isArchiveMode()) {
+        if (method_exists($roomItem, 'getArchived') && $roomItem->getArchived()) {
             return new JsonErrorResponse('<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i>' . $this->translator->trans('copy items in archived workspaces is not allowed'));
         }
 
@@ -92,22 +92,8 @@ class InsertAction
             }
         }else{
             foreach ($items as $item) {
-                // archive
-                $toggleArchive = false;
-                if ($item->isArchived() and !$this->legacyEnvironment->isArchiveMode()) {
-                    $toggleArchive = true;
-                    $this->legacyEnvironment->toggleArchiveMode();
-                }
-
-                // archive
                 $importItem = $this->itemService->getTypedItem($item->getItemId());
-
-                // archive
-                if ($toggleArchive) {
-                    $this->legacyEnvironment->toggleArchiveMode();
-                }
                 $importItem->setExternalViewerAccounts(array());
-                // archive
                 $copy = $importItem->copy();
 
                 if (empty($copy->getErrorArray())) {

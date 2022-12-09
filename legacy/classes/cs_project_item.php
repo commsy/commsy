@@ -437,12 +437,7 @@ class cs_project_item extends cs_room_item {
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
         $repository = $em->getRepository(Room::class);
-
-
-        // use zzz repository if room is archived
-        if (!$this->isArchived()) {
-            $this->deleteElasticItem($objectPersister, $repository);
-        }
+        $this->deleteElasticItem($objectPersister, $repository);
     }
 
    function undelete () {
@@ -945,13 +940,6 @@ class cs_project_item extends cs_room_item {
         $translator = $this->_environment->getTranslationObject();
         $default_language = 'de';
 
-        // maybe in archive mode
-        $toggle_archive = false;
-        if ($this->_environment->isArchiveMode()) {
-            $toggle_archive = true;
-            $this->_environment->toggleArchiveMode();
-        }
-
         global $symfonyContainer;
         $default_sender_address = $symfonyContainer->getParameter('commsy.email.from');
 
@@ -973,11 +961,6 @@ class cs_project_item extends cs_room_item {
                 $current_user->setEmail($default_sender_address);
             }
         }
-
-        if ($toggle_archive) {
-            $this->_environment->toggleArchiveMode();
-        }
-        unset($toggle_archive);
 
         $moderator_list = $room_item->getModeratorList();
 
@@ -1302,20 +1285,4 @@ class cs_project_item extends cs_room_item {
       unset($group_room_manager);
       return $retour;
    }
-
-    public function backGrouproomsFromArchive()
-    {
-        $zzz_group_room_manager = $this->_environment->getZzzGroupRoomManager();
-        $zzz_group_room_manager->setContextLimit($this->getContextID());
-        $zzz_group_room_manager->setProjectroomLimit($this->getItemID());
-        $zzz_group_room_manager->select();
-        $group_room_list = $zzz_group_room_manager->get();
-        $group_room_item = $group_room_list->getFirst();
-        while ($group_room_item) {
-            $group_room_item->backFromArchive();
-            $group_room_item = $group_room_list->getNext();
-        }
-        unset($zzz_group_room_manager);
-    }
 }
-?>

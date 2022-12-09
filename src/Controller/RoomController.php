@@ -13,7 +13,6 @@ use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
 use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
-use App\Repository\ZzzRoomRepository;
 use App\Room\Copy\LegacyCopy;
 use App\RoomFeed\RoomFeedGenerator;
 use App\Services\CalendarsService;
@@ -376,7 +375,6 @@ class RoomController extends AbstractController
      * @param LegacyEnvironment $environment
      * @param PortalRepository $portalRepository
      * @param RoomRepository $roomRepository
-     * @param ZzzRoomRepository $zzzRoomRepository
      * @param int $roomId
      * @return array
      * @throws NoResultException
@@ -389,7 +387,6 @@ class RoomController extends AbstractController
         LegacyEnvironment $environment,
         PortalRepository $portalRepository,
         RoomRepository $roomRepository,
-        ZzzRoomRepository $zzzRoomRepository,
         int $roomId
     ): array {
         $legacyEnvironment = $environment->getEnvironment();
@@ -423,33 +420,14 @@ class RoomController extends AbstractController
 
         // Get both query builder - for active and archived workspaces
         $activeRoomQueryBuilder = $roomRepository->getMainRoomQueryBuilder($portal->getId(), $roomTypes);
-        $archivedRoomQueryBuilder = $zzzRoomRepository->getMainRoomQueryBuilder($portal->getId(), $roomTypes);
 
         // Get the sum of all active and archived workspaces before applying any filters
         $activeRoomQueryBuilder->select($activeRoomQueryBuilder->expr()->count('r.itemId'));
-        $archivedRoomQueryBuilder->select($archivedRoomQueryBuilder->expr()->count('r.itemId'));
-        $countAll = $activeRoomQueryBuilder->getQuery()->getSingleScalarResult() +
-            $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
+        $countAll = $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
 
         // Get the sum of all filtered workspaces after filtering
         $filterBuilderUpdater->addFilterConditions($filterForm, $activeRoomQueryBuilder);
-        $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
         $count = $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
-
-        // ***** Archived rooms *****
-        // TODO: Refactoring needed
-        // We need to change the repository when querying archived rooms.
-        // This is not the best solution, but works for now. It would be better
-        // to use the form validation below, instead of manually checking for a
-        // specific value
-        $archivedFilter = $filterForm->get('archived')->getData();
-        if ($archivedFilter === false) {
-            $count += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
-        }
-
-        if ($legacyEnvironment->isArchiveMode()) {
-            $legacyEnvironment->deactivateArchiveMode();
-        }
 
         $userMayCreateContext = false;
         $currentUser = $legacyEnvironment->getCurrentUser();
@@ -490,7 +468,6 @@ class RoomController extends AbstractController
      * @param UserRepository $userRepository
      * @param PortalRepository $portalRepository
      * @param RoomRepository $roomRepository
-     * @param ZzzRoomRepository $zzzRoomRepository
      * @param int $roomId
      * @param string $sort
      * @param int $max
@@ -505,7 +482,6 @@ class RoomController extends AbstractController
         UserRepository $userRepository,
         PortalRepository $portalRepository,
         RoomRepository $roomRepository,
-        ZzzRoomRepository $zzzRoomRepository,
         int $roomId,
         string $sort = '',
         int $max = 10,
@@ -538,12 +514,9 @@ class RoomController extends AbstractController
 
         // Prepare query builder for active and archived rooms
         $activeRoomQueryBuilder = $roomRepository->getMainRoomQueryBuilder($portal->getId(), $roomTypes, $sort);
-        $archivedRoomQueryBuilder = $zzzRoomRepository->getMainRoomQueryBuilder($portal->getId(), $roomTypes, $sort);
 
         $activeRoomQueryBuilder->setMaxResults($max);
         $activeRoomQueryBuilder->setFirstResult($start);
-        $archivedRoomQueryBuilder->setMaxResults($max);
-        $archivedRoomQueryBuilder->setFirstResult($start);
 
         $filterForm = $this->createForm(RoomFilterType::class, [
             'template' => $portal->getDefaultFilterHideTemplates(),
@@ -561,20 +534,8 @@ class RoomController extends AbstractController
 
         // apply filter
         $filterBuilderUpdater->addFilterConditions($filterForm, $activeRoomQueryBuilder);
-        $filterBuilderUpdater->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
 
         $rooms = $activeRoomQueryBuilder->getQuery()->getResult();
-
-        // ***** Archived rooms *****
-        $archivedFilter = $filterForm->get('archived')->getData();
-        if ($archivedFilter === false) {
-            $legacyEnvironment->activateArchiveMode();
-            $rooms = array_merge($rooms, $archivedRoomQueryBuilder->getQuery()->getResult());
-        }
-
-        if ($legacyEnvironment->isArchiveMode()) {
-            $legacyEnvironment->deactivateArchiveMode();
-        }
 
         $projectsMemberStatus = [];
         foreach ($rooms as $room) {
@@ -1122,17 +1083,20 @@ class RoomController extends AbstractController
         cs_environment $legacyEnvironment,
         RoomService $roomService
     ) {
-        $status = 'closed';
         $currentUser = $legacyEnvironment->getCurrentUserItem();
         $item = $roomService->getRoomItem($roomItem->getItemId());
 
         if ($item) {
             $relatedUserArray = $currentUser->getRelatedUserList()->to_array();
-            $roomUser = null;
-            foreach ($relatedUserArray as $relatedUser) {
-                if ($relatedUser->getContextId() == $item->getItemId()) {
-                    $roomUser = $relatedUser;
+            $filteredUserArray = array_filter($relatedUserArray, fn(cs_user_item $user) => $user->getContextId() == $item->getItemId());
+            $roomUser = array_values($filteredUserArray)[0] ?? null;
+
+            if ($item->getArchived()) {
+                if ($currentUser->isRoot() || (!empty($roomUser) && $item->mayEnter($roomUser))) {
+                    return 'enter_archived';
                 }
+
+                return 'archived';
             }
 
             $mayEnter = false;
@@ -1143,49 +1107,29 @@ class RoomController extends AbstractController
             } else {
                 // in case of the guest user, $roomUser is null
                 if ($currentUser->isReallyGuest()) {
-                        $mayEnter = $item->mayEnter($currentUser);
+                    $mayEnter = $item->mayEnter($currentUser);
                 }
             }
 
             if ($mayEnter) {
                 if ($item->isOpen()) {
-                    $status = 'enter';
+                    return 'enter';
                 } else {
-                    $status = 'join';
+                    return 'join';
                 }
             } elseif ($item->isLocked()) {
-                $status = 'locked';
+                return 'locked';
             } elseif (!empty($roomUser) and $roomUser->isRequested()) {
-                $status = 'requested';
+                return 'requested';
             } elseif (!empty($roomUser) and $roomUser->isRejected()) {
-                $status = 'rejected';
+                return 'rejected';
             } else {
                 if ($currentUser->isReallyGuest()) {
                     return 'forbidden';
                 }
             }
-        } else {
-
-            $legacyEnvironment->activateArchiveMode();
-
-            $item = $roomService->getRoomItem($roomItem->getItemId());
-            $status = 'archived';
-
-            $currentUser = $legacyEnvironment->getCurrentUserItem();
-            $relatedUserArray = $currentUser->getRelatedUserList()->to_array();
-
-            foreach ($relatedUserArray as $relatedUser) {
-                if ($relatedUser->getContextId() == $item->getItemId()) {
-                    $roomUser = $relatedUser;
-                }
-            }
-            if ($currentUser->isRoot() || (!empty($roomUser) && $item->mayEnter($roomUser))) {
-                $status = 'enter_archived';
-            }
-
-            $legacyEnvironment->deactivateArchiveMode();
         }
-        return $status;
+        return 'closed';
     }
 
     private function copySettings($masterRoom, $targetRoom, cs_environment $legacyEnvironment, LegacyCopy $legacyCopy)

@@ -1277,18 +1277,7 @@ class Portal implements Serializable
         $contactModeratorList = $user_manager->get();
 
         if ($contactModeratorList->isEmpty()) {
-            if ($this->status == 2 && !$environment->isArchiveMode()) {
-                $user_manager = $environment->getZzzUserManager();
-                $user_manager->setContextLimit($this->getId());
-                $user_manager->setContactModeratorLimit();
-                $user_manager->select();
-                $contactModeratorList = $user_manager->get();
-                if ($contactModeratorList->isEmpty()) {
-                    $contactModeratorList = $this->getModeratorList($environment);
-                }
-            } else {
-                $contactModeratorList = $this->getModeratorList($environment);
-            }
+            $contactModeratorList = $this->getModeratorList($environment);
         }
 
         return $contactModeratorList;
@@ -1305,20 +1294,7 @@ class Portal implements Serializable
         $userManager->setContextLimit($this->getId());
         $userManager->setModeratorLimit();
         $userManager->select();
-        $moderatorList = $userManager->get();
-
-        if ($moderatorList->isEmpty()) {
-            if ($this->status == 2 && !$environment->isArchiveMode()) {
-                $userManager = $environment->getZzzUserManager();
-                $userManager->resetLimits();
-                $userManager->setContextLimit($this->getId());
-                $userManager->setModeratorLimit();
-                $userManager->select();
-                $moderatorList = $userManager->get();
-            }
-        }
-
-        return $moderatorList;
+        return $userManager->get();
     }
 
     // Serializable

@@ -141,6 +141,13 @@ class Room
     private string $status;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="archived", type="boolean", nullable=false, options={"default":0})
+     */
+    private bool $archived;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="activity", type="integer", options={"default":0})
@@ -239,7 +246,7 @@ class Room
 
     public function isIndexable(): bool
     {
-        return ($this->deleter == null && $this->deletionDate == null);
+        return ($this->deleter == null && $this->deletionDate == null && !$this->isArchived());
     }
 
     public function getLanguage()
@@ -618,6 +625,24 @@ class Room
     public function getPublic(): bool
     {
         return $this->public;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isArchived(): bool
+    {
+        return $this->archived;
+    }
+
+    /**
+     * @param bool $archived
+     * @return Room
+     */
+    public function setArchived(bool $archived): Room
+    {
+        $this->archived = $archived;
+        return $this;
     }
 
     /**

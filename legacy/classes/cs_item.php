@@ -80,12 +80,6 @@ class cs_item {
 
    private $_external_viewer_user_array = null;
 
-   /**
-    * used to flag, if item is in an archived room or not
-    * @var boolean
-    */
-   private $_is_archived = false;
-
    /** constructor
    * the only available constructor, initial values for internal variables
    */
@@ -104,14 +98,7 @@ class cs_item {
                 $item = $item_manager->getItem($this->getContextID());
 
                 if (isset($item) && is_object($item)) {
-                    if ($item->isArchived() && !$this->_environment->isArchiveMode()) {
-                        $this->_environment->toggleArchiveMode();
-                        $manager = $this->_environment->getManager($item->getItemType());
-                        $this->_environment->toggleArchiveMode();
-                    } else {
-                        $manager = $this->_environment->getManager($item->getItemType());
-                    }
-
+                    $manager = $this->_environment->getManager($item->getItemType());
                     $this->_context_item = $manager->getItem($this->getContextId());
                     return $this->_context_item;
                 }
@@ -1001,23 +988,7 @@ class cs_item {
               and method_exists($manager,'getExtras')
             ) {
             $this->_data['extras'] = $manager->getExtras($this->getItemID());
-            if ( empty($this->_data['extras'])
-                 and method_exists($this,'isClosed')
-                 and $this->isClosed()
-                 and !$this->_environment->isArchiveMode()
-               ) {
-               $this->_environment->activateArchiveMode();
-               $manager = $this->_environment->getManager($this->getItemType());
-               $this->_environment->deactivateArchiveMode();
-               if ( is_object($manager)
-                    and method_exists($manager,'getExtras')
-                  ) {
-                  $this->_data['extras'] = $manager->getExtras($this->getItemID());
-               }
-               unset($manager);
-            }
          }
-         unset($manager);
       }
    }
 
@@ -1044,14 +1015,6 @@ class cs_item {
             $user_id = $this->_getValue($role . '_id');
             if ($user_id !== null) {
                 $user = $user_manager->getItem($user_id);
-
-                if ($user === null) {
-                    $this->_environment->toggleArchiveMode();
-                    $user_manager = $this->_environment->getUserManager();
-                    $user = $user_manager->getItem($user_id);
-                    $this->_environment->toggleArchiveMode();
-                }
-
                 $this->_data[$role] = $user;
             }
         }
@@ -2194,17 +2157,6 @@ class cs_item {
       $file_list = $this->getFileList();
 		$file_new_list = new cs_list();
 
-		// archive
-		if ( $file_list->isEmpty()
-		     and $this->isArchived()
-			  and !$this->_environment->isArchiveMode()
-		   ) {
-			$this->_environment->toggleArchiveMode();
-         $file_list = $this->getFileList();
-			$this->_environment->toggleArchiveMode();
-		}
-		// archive
-
       if ( !empty($file_list) and $file_list->getCount() > 0 ) {
          $file_item = $file_list->getFirst();
          while ( $file_item ) {
@@ -2493,13 +2445,21 @@ class cs_item {
       $this->_setValue('draft', (string)$value);
    }
 
-   // archive
-   public function setArchiveStatus () {
-      $this->_is_archived = true;
-   }
+    /**
+     * @return bool
+     * @deprecated
+     */
+   public function isArchived()
+   {
+       // An item is "archived" if it exists in an archived room
+       $contextItem = $this->getContextItem();
+       if ($contextItem) {
+           if (method_exists($contextItem, 'getArchived')) {
+               return $contextItem->getArchived();
+           }
+       }
 
-   public function isArchived () {
-      return $this->_is_archived;
+       return false;
    }
 
    ##########################################

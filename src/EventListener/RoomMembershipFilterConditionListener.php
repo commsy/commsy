@@ -21,7 +21,7 @@ class RoomMembershipFilterConditionListener
 
     /**
      * Limits the room results to those the current user is member of.
-     * 
+     *
      * @param  GetFilterConditionEvent $event the event
      */
     public function onGetFilterCondition(GetFilterConditionEvent $event)
@@ -33,8 +33,6 @@ class RoomMembershipFilterConditionListener
 
             $currentUserItem = $this->userService->getCurrentUserItem();
             $userRoomList = $this->userService->getRoomList($currentUserItem);
-            $userArchivedRoomList = $this->userService->getArchivedRoomList($currentUserItem);
-            $userRoomList = array_merge($userRoomList, $userArchivedRoomList);
 
             $roomIds = [];
             foreach ($userRoomList as $room) {

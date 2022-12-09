@@ -37,7 +37,7 @@ class CategoryVoter extends Voter
 
         $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-        
+
         switch ($attribute) {
             case self::EDIT:
                 return $this->canEdit($currentRoom, $currentUser);
@@ -47,7 +47,7 @@ class CategoryVoter extends Voter
                 // if (isset($this->_data["roomId"])) {
                 //     $roomId = $this->_data["roomId"];
                 //     $ownRoomItem = $currentUser->getOwnRoom();
-                    
+
                 //     if ($roomId === $ownRoomItem->getItemID()) {
                 //         return true;
                 //     }
@@ -65,7 +65,7 @@ class CategoryVoter extends Voter
         }
 
         // categories are not editable in archived rooms
-        if ($currentRoom->isArchived()) {
+        if (method_exists($currentRoom, 'getArchived') && $currentRoom->getArchived()) {
             return false;
         }
 

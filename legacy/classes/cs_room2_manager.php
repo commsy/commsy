@@ -44,7 +44,7 @@ class cs_room2_manager extends cs_context_manager {
    * string - containing the last login limit (a datetime) of rooms
    */
   protected $_lastlogin_older_limit = NULL;
-	
+
   /**
    * string - containing the last login limit (a datetime) of rooms
    */
@@ -69,19 +69,19 @@ class cs_room2_manager extends cs_context_manager {
       $this->_lastlogin_older_limit = NULL;
       $this->_lastlogin_newer_limit = NULL;
    }
-  
+
    public function setLastLoginLimit ($limit) {
       $this->_lastlogin_limit = (string)$limit;
    }
-  
+
    public function setLastLoginOlderLimit ($limit) {
       $this->_lastlogin_older_limit = (string)$limit;
    }
-  
+
    public function setLastLoginNewerLimit ($limit) {
       $this->_lastlogin_newer_limit = (string)$limit;
    }
-  
+
    public function setActiveLimit () {
       include_once('functions/date_functions.php');
       $this->setLastLoginNewerLimit(getCurrentDateTimeMinusDaysInMySQL(100));
@@ -163,11 +163,16 @@ class cs_room2_manager extends cs_context_manager {
                 "is_open_for_guests='".$open_for_guests."',".
                 "contact_persons='".encode(AS_DB,$item->getContactPersonString())."',".
                 "slug=" . (!empty($slug) ? "'" . encode(AS_DB, $slug) . "'" : "NULL") . ",";
-                if ($this->_existsField($this->_db_table, 'room_description')){
-                   $query .= "room_description='".encode(AS_DB,$item->getDescription())."'";
-                }else{
-                    $query .= "description='".encode(AS_DB,$item->getDescription())."'";
-                }
+
+      if ($this->_existsField($this->_db_table, 'room_description')){
+           $query .= "room_description='".encode(AS_DB,$item->getDescription())."'";
+      }else{
+            $query .= "description='".encode(AS_DB,$item->getDescription())."'";
+      }
+
+      if ($this->_existsField($this->_db_table, 'archived') && method_exists($item, 'getArchived')) {
+          $query .= ", archived=" . encode(AS_DB, $item->getArchived() ? 1 : 0);
+      }
 
       $query .= ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
 

@@ -321,7 +321,7 @@ class AnnouncementController extends BaseController
             'showAssociations' => $roomItem->withAssociations(),
             'showCategories' => $roomItem->withTags(),
             'usageInfo' => $usageInfo,
-            'isArchived' => $roomItem->isArchived(),
+            'isArchived' => $roomItem->getArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'sort' => $sort,
         );
@@ -384,7 +384,7 @@ class AnnouncementController extends BaseController
             $ratingList = $this->assessmentService->getListAverageRatings($itemIds);
         }
 
-        // get announcement list from manager service 
+        // get announcement list from manager service
         $itemsCountArray = $this->announcementService->getCountArray($roomId);
 
         $html = $this->renderView('announcement/list_print.html.twig', [

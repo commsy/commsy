@@ -125,9 +125,10 @@ class cs_link_modifier_item_manager extends cs_link_father_manager {
       }
    }
 
-    function moveFromDbToBackup($context_id)
+    function deleteFromDb($context_id)
     {
         $id_array = array();
+
         $user_manager = $this->_environment->getUserManager();
         $user_manager->setContextLimit($context_id);
         $user_manager->select();
@@ -138,79 +139,9 @@ class cs_link_modifier_item_manager extends cs_link_father_manager {
             $temp_user = $user_list->getNext();
         }
 
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
         if (!empty($id_array)) {
-            if (!empty($context_id)) {
-                $query = 'INSERT INTO ' . $c_db_backup_prefix . '_' . $this->_db_table . ' SELECT * FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.modifier_id IN (' . implode(",", $id_array) . ')';
-                $this->_db_connector->performQuery($query);
-
-                $this->deleteFromDb($context_id);
-            }
-        }
-    }
-
-    function moveFromBackupToDb($context_id)
-    {
-        $id_array = array();
-        $zzz_user_manager = $this->_environment->getZzzUserManager();
-        $zzz_user_manager->setContextLimit($context_id);
-        $zzz_user_manager->select();
-        $user_list = $zzz_user_manager->get();
-        $temp_user = $user_list->getFirst();
-        while ($temp_user) {
-            $id_array[] = $temp_user->getItemID();
-            $temp_user = $user_list->getNext();
-        }
-
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        if (!empty($id_array)) {
-            if (!empty($context_id)) {
-                $query = 'INSERT INTO ' . $this->_db_table . ' SELECT * FROM ' . $c_db_backup_prefix . '_' . $this->_db_table . ' WHERE ' . $c_db_backup_prefix . '_' . $this->_db_table . '.modifier_id IN (' . implode(",", $id_array) . ')';
-                $this->_db_connector->performQuery($query);
-
-                $this->deleteFromDb($context_id, true);
-            }
-        }
-    }
-
-    function deleteFromDb($context_id, $from_backup = false)
-    {
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        $db_prefix = '';
-        $id_array = array();
-        if (!$from_backup) {
-            $user_manager = $this->_environment->getUserManager();
-            $user_manager->setContextLimit($context_id);
-            $user_manager->select();
-            $user_list = $user_manager->get();
-            $temp_user = $user_list->getFirst();
-            while ($temp_user) {
-                $id_array[] = $temp_user->getItemID();
-                $temp_user = $user_list->getNext();
-            }
-        } else {
-            $db_prefix .= $c_db_backup_prefix . '_';
-            $zzz_user_manager = $this->_environment->getZzzUserManager();
-            $zzz_user_manager->setContextLimit($context_id);
-            $zzz_user_manager->select();
-            $user_list = $zzz_user_manager->get();
-            $temp_user = $user_list->getFirst();
-            while ($temp_user) {
-                $id_array[] = $temp_user->getItemID();
-                $temp_user = $user_list->getNext();
-            }
-        }
-
-        if (!empty($id_array)) {
-            $query = 'DELETE FROM ' . $db_prefix . $this->_db_table . ' WHERE ' . $db_prefix . $this->_db_table . '.modifier_id IN (' . implode(",", $id_array) . ')';
+            $query = 'DELETE FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.modifier_id IN (' . implode(",", $id_array) . ')';
             $this->_db_connector->performQuery($query);
         }
     }
 }
-?>

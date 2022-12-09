@@ -24,7 +24,6 @@
 //    along with CommSy.
 
 use App\Entity\Room;
-use App\Entity\ZzzRoom;
 use \Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /** upper class of the community item
@@ -269,12 +268,7 @@ class cs_community_item extends cs_room_item {
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
       $repository = $em->getRepository(Room::class);
 
-       // use zzz repository if room is archived
-       if ($this->isArchived()) {
-           $repository = $em->getRepository(ZzzRoom::class);
-       }
-
-       $this->deleteElasticItem($objectPersister, $repository);
+      $this->deleteElasticItem($objectPersister, $repository);
    }
 
    function undelete () {
@@ -851,13 +845,6 @@ class cs_community_item extends cs_room_item {
       $translator = $this->_environment->getTranslationObject();
       $default_language = 'de';
 
-      // maybe in archive mode
-      $toggle_archive = false;
-        if ( $this->_environment->isArchiveMode() ) {
-            $toggle_archive = true;
-            $this->_environment->toggleArchiveMode();
-        }
-
        global $symfonyContainer;
        $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
        $default_sender_address = $emailFrom;
@@ -880,11 +867,6 @@ class cs_community_item extends cs_room_item {
          	$current_user->setEmail($default_sender_address);
          }
       }
-
-      if ( $toggle_archive ) {
-      	$this->_environment->toggleArchiveMode();
-      }
-      unset($toggle_archive);
 
       $moderator_list = $room_item->getModeratorList();
 

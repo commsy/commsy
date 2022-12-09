@@ -128,7 +128,7 @@ class TodoController extends BaseController
             'usageInfo' => $usageInfo,
             'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
             'catzExpanded' => $roomItem->isTagsShowExpanded(),
-            'isArchived' => $roomItem->isArchived(),
+            'isArchived' => $roomItem->getArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'sort' => $sort,
         );
@@ -922,7 +922,7 @@ class TodoController extends BaseController
             $ratingList = $assessmentService->getListAverageRatings($itemIds);
         }
 
-        // get announcement list from manager service 
+        // get announcement list from manager service
         $itemsCountArray = $this->todoService->getCountArray($roomId);
 
         $html = $this->renderView('todo/list_print.html.twig', [

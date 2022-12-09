@@ -69,7 +69,7 @@ class AdditionalSettingsTransformer extends AbstractTransformer
             }
 
             // archived
-            $roomData['archived']['active'] = !$roomItem->isOpen();
+            $roomData['archived']['active'] = method_exists($roomItem, 'getArchived') && $roomItem->getArchived();
 
             // terms and conditions
             $roomData['terms']['status'] = $roomItem->getAGBStatus();
@@ -204,71 +204,17 @@ class AdditionalSettingsTransformer extends AbstractTransformer
 
         /********* save archive options ******/
         $archived = $roomData['archived'];
-        if (isset($archived['active'])) {
+        if (isset($archived['active']) && method_exists($roomObject, 'getArchived')) {
             if ($archived['active']) {
-                if (!$roomObject->isArchived()) {
-                    $roomObject->moveToArchive();
-                    $this->legacyEnvironment->activateArchiveMode();
+                if (!$roomObject->getArchived()) {
+                    $roomObject->setArchived(true);
                 }
             } else {
-                if ($roomObject->isArchived()) {
-                    if ($this->legacyEnvironment->isArchiveMode()) {
-                        $roomObject->backFromArchive();
-                        $this->legacyEnvironment->deactivateArchiveMode();
-                    }
+                if ($roomObject->getArchived()) {
+                    $roomObject->setArchived(false);
                 }
             }
         }
-
-        /***************** save room status *************/
-        /*
-        if ( isset($roomData['room_status']) ) {
-            if ($roomData['room_status'] == '') {
-                // archive
-                if ($this->legacyEnvironment->isArchiveMode() ) {
-                    $roomObject->backFromArchive();
-                    $this->legacyEnvironment->deactivateArchiveMode();
-                }
-                // archive
-                // old: should be impossible
-                else {
-                    // Fix: Find Group-Rooms if existing
-                    if( $roomObject->isGrouproomActive() ) {  // GrouproomActive schmeißt fehler gucken ob er hier rein rennt wegen Kategorie einstellungen
-                        $groupRoomList = $roomObject->getGroupRoomList();
-
-                        if( !$groupRoomList->isEmpty() ) {
-                            $roomObject = $groupRoomList->getFirst();
-
-                            while($room_item) {
-                                // All GroupRooms have to be opened too
-                                $roomObject->open();
-                                $roomObject->save();
-         
-                                $roomObject = $groupRoomList->getNext();
-                            }
-                        }
-                    }
-                    // ~Fix
-                    $roomObject->open();
-                }
-            } elseif ($roomData['room_status'] == 2) {
-                // template or not: template close, others archive
-                if ( !$roomObject->isTemplate() ) {
-                    $roomObject->moveToArchive();
-                    $this->legacyEnvironment->activateArchiveMode();                             
-                }
-            }
-        }
-        // status != 2 and =! empty
-        else {
-            // archive
-            if ($this->legacyEnvironment->isArchiveMode() ) {
-                $roomObject->backFromArchive();
-                $this->legacyEnvironment->deactivateArchiveMode();
-            }
-        }
-        */
-        
 
         /***************** save AGB *************/
         $languages = $this->legacyEnvironment->getAvailableLanguageArray();
@@ -280,7 +226,7 @@ class AdditionalSettingsTransformer extends AbstractTransformer
                $agbtext_array[mb_strtoupper($language, 'UTF-8')] = '';
             }
          }
-         
+
         if(($agbtext_array != $roomObject->getAGBTextArray()) or ($roomData['terms']['status'] != $roomObject->getAGBStatus())) {
             $now = new DateTimeImmutable();
             $roomObject->setAGBStatus($roomData['terms']['status']);
@@ -289,7 +235,7 @@ class AdditionalSettingsTransformer extends AbstractTransformer
             $current_user->setAGBAcceptanceDate($now);
             $current_user->save();
          }
-         
+
         /***************** save extra task status ************/
         $roomObject->setExtraToDoStatusArray(array_filter($roomData['tasks']['additional_status']));
 

@@ -55,7 +55,7 @@ class cs_item_manager extends cs_manager {
    var $_user_since_lastlogin_limit = NULL;
    var $_cache_row = array();
    private $_no_interval_limit = false;
-   
+
   /**
    * integer - containing the age of material as a limit
    */
@@ -153,7 +153,7 @@ class cs_item_manager extends cs_manager {
         ) {
         $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.context_id';
      }
-     
+
      if (isset($this->_list_limit)) {
         if ($this->_list_limit == -1){
            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS links ON links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND links.link_type="buzzword_for"';
@@ -289,7 +289,7 @@ class cs_item_manager extends cs_manager {
             }
          }
       }
-     
+
      // perform query
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result)) {
@@ -788,62 +788,20 @@ class cs_item_manager extends cs_manager {
             return null;
         }
 
-        $retour = NULL;
         if (!isset($this->_cache_object[$iid])) {
             $query = 'SELECT *';
             $query .= ' FROM ' . $this->addDatabasePrefix('items');
             $query .= ' WHERE item_id="' . encode(AS_DB, $iid) . '"';
             $result = $this->_db_connector->performQuery($query);
             if (isset($result) and !empty($result)) {
-                $retour = $this->_buildItem($result[0]);
-            } elseif (!$this->_environment->isArchiveMode()
-                and get_class($this) == 'cs_item_manager'
-            ) {
-                $zzz_item_manager = $this->_environment->getZzzItemManager();
-                $retour = $zzz_item_manager->getItem($iid);
-                if ($retour == 'empty') {
-                    $retour = NULL;
-                } else {
-                    if ($retour->getItemID() == $this->_environment->getCurrentContextID()) {
-                        $this->_environment->setFoundCurrentContextInArchive();
-                        $this->_environment->activateArchiveMode();
-                    }
-                }
-                unset($zzz_item_manager);
-            } elseif ($this->_environment->isArchiveMode()
-                and get_class($this) == 'cs_zzz_item_manager'
-            ) {
-                $item_manager = $this->_environment->getItemManager(true);
-                $retour = $item_manager->getItem($iid);
-                if ($retour == 'empty') {
-                    $retour = NULL;
-                }
-                unset($item_manager);
+                $item = $this->_buildItem($result[0]);
+                $this->_cache_object[$iid] = $item;
             } else {
-                $retour = 'empty';
+                return null;
             }
-
-            if (!empty($retour)
-                and $retour != 'empty'
-                and is_object($retour)
-            ) {
-
-                // archive
-                $db_prefix = $this->getDatabasePrefix();
-                if ($this->withDatabasePrefix()
-                    and !empty($db_prefix)
-                    and Stristr($query, $db_prefix)
-                ) {
-                    $retour->setArchiveStatus();
-                }
-                // archive
-
-                $this->_cache_object[$iid] = $retour;
-            }
-        } else {
-            $retour = $this->_cache_object[$iid];
         }
-        return $retour;
+
+        return $this->_cache_object[$iid];
     }
 
     /**
@@ -1021,190 +979,6 @@ class cs_item_manager extends cs_manager {
       return $retour;
    }
 
-   ########################################################
-   # archive functions
-   ########################################################
-
-    function moveFromDbToBackup($context_id)
-    {
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        if (!empty($context_id)) {
-            $query = 'INSERT INTO ' . $c_db_backup_prefix . '_' . $this->_db_table . ' SELECT * FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.item_id = "' . $context_id . '"';
-            $this->_db_connector->performQuery($query);
-
-            $query = 'DELETE FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.item_id = "' . $context_id . '"';
-            $this->_db_connector->performQuery($query);
-
-            $query = 'INSERT INTO ' . $c_db_backup_prefix . '_' . $this->_db_table . ' SELECT * FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.context_id = "' . $context_id . '"';
-            $this->_db_connector->performQuery($query);
-
-            $query = 'DELETE FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.context_id = "' . $context_id . '"';
-            $this->_db_connector->performQuery($query);
-        }
-    }
-
-    function moveFromBackupToDb($context_id)
-    {
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        if (!empty($context_id)) {
-            $query = 'INSERT INTO ' . $this->_db_table . ' SELECT * FROM ' . $c_db_backup_prefix . '_' . $this->_db_table . ' WHERE ' . $c_db_backup_prefix . '_' . $this->_db_table . '.item_id = "' . $context_id . '"';
-            $this->_db_connector->performQuery($query);
-
-            $query = 'DELETE FROM ' . $c_db_backup_prefix . '_' . $this->_db_table . ' WHERE ' . $c_db_backup_prefix . '_' . $this->_db_table . '.item_id = "' . $context_id . '"';
-            $this->_db_connector->performQuery($query);
-
-            $query = 'INSERT INTO ' . $this->_db_table . ' SELECT * FROM ' . $c_db_backup_prefix . '_' . $this->_db_table . ' WHERE ' . $c_db_backup_prefix . '_' . $this->_db_table . '.context_id = "' . $context_id . '"';
-            $this->_db_connector->performQuery($query);
-
-            $query = 'DELETE FROM ' . $c_db_backup_prefix . '_' . $this->_db_table . ' WHERE ' . $c_db_backup_prefix . '_' . $this->_db_table . '.context_id = "' . $context_id . '"';
-            $this->_db_connector->performQuery($query);
-        }
-    }
-
-    public function moveFromDbToBackupWorkflow($context_id)
-    {
-        $db_table = 'workflow_read';
-
-        $id_array_items = array();
-        $item_manager = $this->_environment->getItemManager();
-        $item_manager->setContextLimit($context_id);
-        $item_manager->select();
-        $item_list = $item_manager->get();
-        $temp_item = $item_list->getFirst();
-        while ($temp_item) {
-            $id_array_items[] = $temp_item->getItemID();
-            $temp_item = $item_list->getNext();
-        }
-
-        $id_array_users = array();
-        $user_manager = $this->_environment->getUserManager();
-        $user_manager->setContextLimit($context_id);
-        $user_manager->select();
-        $user_list = $user_manager->get();
-        $temp_user = $user_list->getFirst();
-        while ($temp_user) {
-            $id_array_users[] = $temp_user->getItemID();
-            $temp_user = $user_list->getNext();
-        }
-
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        if (!empty($id_array_items) and !empty($id_array_users)) {
-            if (!empty($context_id)) {
-                $query = 'INSERT INTO ' . $c_db_backup_prefix . '_' . $db_table . ' SELECT * FROM ' . $db_table . ' WHERE ' . $db_table . '.item_id IN (' . implode(",", $id_array_items) . ') OR ' . $db_table . '.user_id IN (' . implode(",", $id_array_users) . ')';
-                $this->_db_connector->performQuery($query);
-
-                $this->_deleteFromDbWorkflow($context_id);
-            }
-        }
-    }
-
-    function moveFromBackupToDbWorkflow($context_id)
-    {
-        $db_table = 'workflow_read';
-
-        $id_array_items = array();
-        $zzz_item_manager = $this->_environment->getZzzItemManager();
-        $zzz_item_manager->setContextLimit($context_id);
-        $zzz_item_manager->select();
-        $item_list = $zzz_item_manager->get();
-        $temp_item = $item_list->getFirst();
-        while ($temp_item) {
-            $id_array_items[] = $temp_item->getItemID();
-            $temp_item = $item_list->getNext();
-        }
-
-        $id_array_users = array();
-        $zzz_user_manager = $this->_environment->getZzzUserManager();
-        $zzz_user_manager->setContextLimit($context_id);
-        $zzz_user_manager->select();
-        $user_list = $zzz_user_manager->get();
-        $temp_user = $user_list->getFirst();
-        while ($temp_user) {
-            $id_array_users[] = $temp_user->getItemID();
-            $temp_user = $user_list->getNext();
-        }
-
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        if (!empty($id_array_items) and !empty($id_array_users)) {
-            if (!empty($context_id)) {
-                $query = 'INSERT INTO ' . $db_table . ' SELECT * FROM ' . $c_db_backup_prefix . '_' . $db_table . ' WHERE ' . $c_db_backup_prefix . '_' . $db_table . '.item_id IN (' . implode(",", $id_array_items) . ') OR ' . $c_db_backup_prefix . '_' . $db_table . '.user_id IN (' . implode(",", $id_array_users) . ')';
-                $this->_db_connector->performQuery($query);
-
-                $this->_deleteFromDbWorkflow($context_id, true);
-            }
-        }
-    }
-
-    // archive
-    private function _deleteFromDbWorkflow($context_id, $from_backup = false)
-    {
-        $db_table = 'workflow_read';
-
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        $db_prefix = '';
-        $id_array_items = array();
-        $id_array_users = array();
-        if (!$from_backup) {
-            $item_manager = $this->_environment->getItemManager();
-            $item_manager->setContextLimit($context_id);
-            $item_manager->select();
-            $item_list = $item_manager->get();
-            $temp_item = $item_list->getFirst();
-            while ($temp_item) {
-                $id_array_items[] = $temp_item->getItemID();
-                $temp_item = $item_list->getNext();
-            }
-            $user_manager = $this->_environment->getUserManager();
-            $user_manager->setContextLimit($context_id);
-            $user_manager->select();
-            $user_list = $user_manager->get();
-            $temp_user = $user_list->getFirst();
-            while ($temp_user) {
-                $id_array_users[] = $temp_user->getItemID();
-                $temp_user = $user_list->getNext();
-            }
-        } else {
-            $db_prefix .= $c_db_backup_prefix . '_';
-            $zzz_item_manager = $this->_environment->getZzzItemManager();
-            $zzz_item_manager->setContextLimit($context_id);
-            $zzz_item_manager->select();
-            $item_list = $zzz_item_manager->get();
-            $temp_item = $item_list->getFirst();
-            while ($temp_item) {
-                $id_array_items[] = $temp_item->getItemID();
-                $temp_item = $item_list->getNext();
-            }
-            $zzz_user_manager = $this->_environment->getZzzUserManager();
-            $zzz_user_manager->setContextLimit($context_id);
-            $zzz_user_manager->select();
-            $user_list = $zzz_user_manager->get();
-            $temp_user = $user_list->getFirst();
-            while ($temp_user) {
-                $id_array_users[] = $temp_user->getItemID();
-                $temp_user = $user_list->getNext();
-            }
-        }
-
-        if (!empty($id_array_items) and !empty($id_array_users)) {
-            $query = 'DELETE FROM ' . $db_prefix . $db_table . ' WHERE ' . $db_prefix . $db_table . '.item_id IN (' . implode(",", $id_array_items) . ') OR ' . $db_prefix . $db_table . '.user_id IN (' . implode(",", $id_array_users) . ')';
-            $this->_db_connector->performQuery($query);
-        }
-    }
-   
-   ########################################################
-   # archive functions - END
-   ########################################################   
-   
    function getItemsForNewsletter ($room_id_array, $user_id_array,$age_limit){
      $query1 = 'SELECT '.$this->addDatabasePrefix('items').'.item_id, '.$this->addDatabasePrefix('items').'.context_id, '.$this->addDatabasePrefix('items').'.type FROM '.$this->addDatabasePrefix('items');
      $query1 .= ' WHERE '.$this->addDatabasePrefix('items').'.context_id IN ('.implode(", ",encode(AS_DB,$room_id_array)).')';
@@ -1358,28 +1132,28 @@ class cs_item_manager extends cs_manager {
         return true;
      }
   }
-  
+
   function getUsersMarkedAsWorkflowReadForItem($item_id){
      $result = array();
      $query = 'SELECT * FROM '.$this->addDatabasePrefix('workflow_read').' WHERE item_id = '.$item_id.';';
      $result = $this->_db_connector->performQuery($query);
      return $result;
   }
-  
+
   function markItemAsWorkflowRead($item_id, $user_id){
      if(!$this->isItemMarkedAsWorkflowRead($item_id, $user_id)){
         $query = 'INSERT INTO '.$this->addDatabasePrefix('workflow_read').' (item_id, user_id) VALUES ('.$item_id.', '.$user_id.');';
         $result = $this->_db_connector->performQuery($query);
      }
   }
-  
+
   function markItemAsWorkflowNotRead($item_id, $user_id){
      if($this->isItemMarkedAsWorkflowRead($item_id, $user_id)){
         $query = 'DELETE FROM '.$this->addDatabasePrefix('workflow_read').' WHERE item_id = '.$item_id.' AND user_id = '.$user_id.';';
         $result = $this->_db_connector->performQuery($query);
      }
   }
-  
+
   function markItemAsWorkflowNotReadForAllUsers($item_id){
      $query = 'DELETE FROM '.$this->addDatabasePrefix('workflow_read').' WHERE item_id = '.$item_id.';';
      $result = $this->_db_connector->performQuery($query);
@@ -1393,3 +1167,4 @@ class cs_item_manager extends cs_manager {
         return $result;
     }
 }
+

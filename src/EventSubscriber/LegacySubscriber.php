@@ -100,7 +100,6 @@ class LegacySubscriber implements EventSubscriberInterface
                 $this->legacyEnvironment->setCurrentContextID($account->getContextId());
             }
         }
-        $this->legacyEnvironment->configureContext();
     }
 
     /**

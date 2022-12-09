@@ -56,12 +56,7 @@ class AccountMerger
             return;
         }
 
-        // merge archived rooms
-        $this->legacyEnvironment->activateArchiveMode();
-        $this->doMerge($from, $into);
-
-        // merge non-archived rooms
-        $this->legacyEnvironment->deactivateArchiveMode();
+        // merge rooms
         $this->doMerge($from, $into);
 
         // merge private room

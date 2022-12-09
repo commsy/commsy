@@ -57,7 +57,7 @@ class InsertUserroomAction
     {
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
-        if ($this->legacyEnvironment->isArchiveMode()) {
+        if (method_exists($roomItem, 'getArchived') && $roomItem->getArchived()) {
             return new JsonErrorResponse('<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i>' . $this->translator->trans('copy items in archived workspaces is not allowed'));
         }
 

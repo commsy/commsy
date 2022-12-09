@@ -566,19 +566,6 @@ class cs_privateroom_item extends cs_room_item
                 $user_manager = $this->_environment->getUserManager();
                 $room_id_array2 = $user_manager->getMembershipContextIDArrayByUserAndRoomIDLimit($owner->getUserID(), $room_id_array, $owner->getAuthSource());
 
-                // archive
-                if (!$this->_environment->isArchiveMode()) {
-                    $this->_environment->activateArchiveMode();
-                    $user_manager2 = $this->_environment->getUserManager();
-                    $room_id_array3 = $user_manager2->getMembershipContextIDArrayByUserAndRoomIDLimit($owner->getUserID(), $room_id_array, $owner->getAuthSource());
-                    if (!empty($room_id_array3)) {
-                        $room_id_array2 = array_merge($room_id_array2, $room_id_array3);
-                    }
-                    unset($user_manager2);
-                    $this->_environment->deactivateArchiveMode();
-                }
-                // archive end
-
                 foreach ($array as $value) {
                     if ($value < 0 or in_array($value, $room_id_array2)) {
                         $retour[] = $value;

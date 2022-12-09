@@ -42,9 +42,6 @@ class MandatoryProjectRoomAssignmentValidator extends ConstraintValidator
         }
 
         $linkedProjectRoomIds = $room->getProjectIDArray();
-        $this->legacyEnvironment->toggleArchiveMode();
-        $linkedProjectRoomIds = array_merge($linkedProjectRoomIds, $room->getProjectIDArray());
-        $this->legacyEnvironment->toggleArchiveMode();
 
         if (!empty($linkedProjectRoomIds)) {
             $this->context->buildViolation($constraint->messageStart)

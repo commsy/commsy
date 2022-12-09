@@ -36,7 +36,6 @@ framework:
                 property: activityState
             supports:
                 - App\Entity\Room
-                - App\Entity\ZzzRoom
             initial_marking: active
             places:
                 - active

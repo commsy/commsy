@@ -22,7 +22,7 @@ class ItemService
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->setItemManager();
+        $this->itemManager = $this->legacyEnvironment->getItemManager();
     }
 
     /**
@@ -31,9 +31,7 @@ class ItemService
      */
     public function getItem($itemId)
     {
-        $this->setItemManager();
-        $item = $this->itemManager->getItem($itemId);
-        return $item;
+        return $this->itemManager->getItem($itemId);
     }
 
     /**
@@ -48,22 +46,12 @@ class ItemService
         if ($item && is_object($item)) {
             $type = $item->getItemType();
 
-            $archiveModeSwitched = false;
-            if ($item->isArchived() && !$this->legacyEnvironment->isArchiveMode()) {
-                $this->legacyEnvironment->toggleArchiveMode();
-                $archiveModeSwitched = true;
-            }
-
             if ($type == 'label') {
                 $labelManager = $this->legacyEnvironment->getLabelManager();
                 $labelItem = $labelManager->getItem($item->getItemID());
                 $type = $labelItem->getLabelType();
             }
             $manager = $this->legacyEnvironment->getManager($type);
-
-            if ($archiveModeSwitched === true) {
-                $this->legacyEnvironment->toggleArchiveMode();
-            }
 
             if (!$manager) {
                 return null;
@@ -95,7 +83,7 @@ class ItemService
         return $linkedItemIdArray;
 
     }
-    
+
     public function getEditorsForItem ($item) {
         $user = $this->legacyEnvironment->getCurrentUserItem();
 	    $link_modifier_item_manager = $this->legacyEnvironment->getLinkModifierItemManager();
@@ -108,7 +96,7 @@ class ItemService
 	    }
 	    return $modifier_array;
     }
-    
+
     public function getAdditionalEditorsForItem ($item) {
         $modifier_array = $this->getEditorsForItem($item);
         $additional_modifier_array = array();
@@ -221,14 +209,6 @@ class ItemService
                     }
                 }
             }
-        }
-    }
-
-    private function setItemManager() {
-        if (!$this->legacyEnvironment->isArchiveMode()) {
-            $this->itemManager = $this->legacyEnvironment->getItemManager();
-        } else {
-            $this->itemManager = $this->legacyEnvironment->getZzzItemManager();
         }
     }
 }

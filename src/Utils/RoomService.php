@@ -258,14 +258,6 @@ class RoomService
         return $roomItem;
     }
 
-    public function getArchivedRoomItem($roomId)
-    {
-        $zzzRoomItem = $this->legacyEnvironment->getZzzRoomManager();
-        $roomItem = $zzzRoomItem->getItem($roomId);
-
-        return $roomItem;
-    }
-
     /**
      * Returns all community rooms that host the given (project) room.
      * @param cs_room_item $room The room whose related community rooms shall be returned

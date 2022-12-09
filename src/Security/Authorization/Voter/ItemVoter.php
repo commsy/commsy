@@ -147,8 +147,7 @@ class ItemVoter extends Voter
                     }
 
                     $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
-
-                    return !$currentRoom->isArchived();
+                    return !(method_exists($currentRoom, 'getArchived') && $currentRoom->getArchived());
                 }
             }
         }
@@ -177,7 +176,7 @@ class ItemVoter extends Voter
     private function canEdit($item, \cs_user_item $currentUser): bool
     {
         $contextItem = $item->getContextItem();
-        if ($contextItem !== null && $contextItem->isArchived()) {
+        if ($contextItem !== null && method_exists($contextItem, 'getArchived') && $contextItem->getArchived()) {
             // users may still edit their own account settings & room profile (which also allows them to leave the room)
             if ($item instanceof \cs_user_item && $item->getItemID() === $currentUser->getItemID()) {
                 return true;
@@ -222,7 +221,7 @@ class ItemVoter extends Voter
         $userStatus = $currentUser->getStatus();
         if ($userStatus == 2 || $userStatus == 3) { // user & moderator
             $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
-            return !$currentRoom->isArchived();
+            return !(method_exists($currentRoom, 'getArchived') && $currentRoom->getArchived());
         }
 
         return false;
@@ -233,7 +232,7 @@ class ItemVoter extends Voter
         $userStatus = $currentUser->getStatus();
         if ($userStatus == 2 || $userStatus == 3 || $userStatus == 4) { // user, moderator & read-only user
             $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
-            return !$currentRoom->isArchived();
+            return !(method_exists($currentRoom, 'getArchived') && $currentRoom->getArchived());
         }
 
         return false;

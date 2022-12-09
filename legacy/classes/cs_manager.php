@@ -881,12 +881,6 @@ class cs_manager {
         $item = $this->getNewItem();
         if (isset($item)) {
             $item->_setItemData(encode(FROM_DB, $db_array));
-
-            // archive
-            if (function_exists('get_called_class') && strstr(get_called_class(), '_zzz_')) {
-                $item->setArchiveStatus();
-            }
-
             if (method_exists($item, 'getItemID')) {
                 $item_id = $item->getItemID();
                 if (!empty($item_id)) {
@@ -1704,54 +1698,9 @@ class cs_manager {
        }, $notGeneratedColumns);
    }
 
-    public function moveFromDbToBackup($context_id)
+    function deleteFromDb($context_id)
     {
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        if (!empty($context_id)) {
-            $sourceTable = $this->_db_table;
-            $targetTable = $c_db_backup_prefix . '_' . $this->_db_table;
-
-            $implodedColumnNames = implode(', ', $this->getNonGeneratedColumnsNames($sourceTable));
-            $sql = "INSERT INTO $targetTable ($implodedColumnNames)
-                SELECT $implodedColumnNames FROM $sourceTable WHERE context_id = :contextId"
-            ;
-
-            $this->_db_connector->performQuery($sql, ['contextId' => $context_id]);
-            $this->deleteFromDb($context_id);
-        }
-    }
-
-    public function moveFromBackupToDb($context_id)
-    {
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        if (!empty($context_id)) {
-            $sourceTable = $c_db_backup_prefix . '_' . $this->_db_table;
-            $targetTable = $this->_db_table;
-
-            $implodedColumnNames = implode(', ', $this->getNonGeneratedColumnsNames($sourceTable));
-            $sql = "INSERT INTO $targetTable ($implodedColumnNames)
-                SELECT $implodedColumnNames FROM $sourceTable WHERE context_id = :contextId"
-            ;
-
-            $this->_db_connector->performQuery($sql, ['contextId' => $context_id]);
-            $this->deleteFromDb($context_id, true);
-        }
-    }
-
-    function deleteFromDb($context_id, $from_backup = false)
-    {
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        $db_prefix = '';
-        if ($from_backup) {
-            $db_prefix .= $c_db_backup_prefix . '_';
-        }
-        $query = 'DELETE FROM ' . $db_prefix . $this->_db_table . ' WHERE ' . $db_prefix . $this->_db_table . '.context_id = "' . $context_id . '"';
+        $query = 'DELETE FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.context_id = "' . $context_id . '"';
         $this->_db_connector->performQuery($query);
     }
 
