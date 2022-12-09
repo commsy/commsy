@@ -13,9 +13,6 @@ use App\Repository\FilesRepository;
 use App\Repository\ItemRepository;
 use App\Repository\PortalRepository;
 use App\Repository\RoomRepository;
-use App\Repository\ZzzFilesRepository;
-use App\Repository\ZzzItemRepository;
-use App\Repository\ZzzRoomRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Psr\Log\LoggerInterface;
@@ -42,29 +39,14 @@ class FixPhysicalFiles implements DatabaseCheck
     private RoomRepository $roomRepository;
 
     /**
-     * @var ZzzRoomRepository
-     */
-    private ZzzRoomRepository $zzzRoomRepository;
-
-    /**
      * @var FilesRepository
      */
     private FilesRepository $filesRespository;
 
     /**
-     * @var ZzzFilesRepository
-     */
-    private ZzzFilesRepository $zzzFilesRepository;
-
-    /**
      * @var ItemRepository
      */
     private ItemRepository $itemRepository;
-
-    /**
-     * @var ZzzItemRepository
-     */
-    private ZzzItemRepository $zzzItemRepository;
 
     /**
      * @var LoggerInterface
@@ -75,21 +57,15 @@ class FixPhysicalFiles implements DatabaseCheck
         ParameterBagInterface $parameterBag,
         PortalRepository $portalRepository,
         RoomRepository $roomRepository,
-        ZzzRoomRepository $zzzRoomRepository,
         FilesRepository $filesRespository,
-        ZzzFilesRepository $zzzFilesRepository,
         ItemRepository $itemRepository,
-        ZzzItemRepository $zzzItemRepository,
         LoggerInterface $cleanupLogger
     ) {
         $this->parameterBag = $parameterBag;
         $this->portalRepository = $portalRepository;
         $this->roomRepository = $roomRepository;
-        $this->zzzRoomRepository = $zzzRoomRepository;
         $this->filesRespository = $filesRespository;
-        $this->zzzFilesRepository = $zzzFilesRepository;
         $this->itemRepository = $itemRepository;
-        $this->zzzItemRepository = $zzzItemRepository;
         $this->cleanupLogger = $cleanupLogger;
     }
 
@@ -245,12 +221,7 @@ class FixPhysicalFiles implements DatabaseCheck
             $validNames[] = $portal->getId();
         }
 
-        $projectAndUserRoomIds = array_merge(
-            $this->roomRepository->getProjectAndUserRoomIds(),
-            $this->zzzRoomRepository->getProjectAndUserRoomIds(),
-        );
-
-        return array_merge($validNames, $projectAndUserRoomIds);
+        return array_merge($validNames, $this->roomRepository->getProjectAndUserRoomIds());
     }
 
     /**
@@ -261,11 +232,7 @@ class FixPhysicalFiles implements DatabaseCheck
     private function fileExists(int $fileId, int $contextId): bool
     {
         try {
-            if ($this->filesRespository->getNumFiles($fileId, $contextId) > 0) {
-                return true;
-            }
-
-            return $this->zzzFilesRepository->getNumFiles($fileId, $contextId) > 0;
+            return $this->filesRespository->getNumFiles($fileId, $contextId) > 0;
         } catch (NoResultException|NonUniqueResultException $e) {
             return true;
         }
@@ -278,11 +245,7 @@ class FixPhysicalFiles implements DatabaseCheck
     private function roomExists(int $roomId): bool
     {
         try {
-            if ($this->itemRepository->getNumItems($roomId) > 0) {
-                return true;
-            }
-
-            return $this->zzzItemRepository->getNumItems($roomId) > 0;
+            return $this->itemRepository->getNumItems($roomId) > 0;
         } catch (NoResultException|NonUniqueResultException $e) {
             return true;
         }

@@ -35,10 +35,9 @@ class cs_context_item extends cs_item {
   var $_colors = array();
 
   /**
-   * a list of the moderators
-   * @var \cs_list $_moderator_list
+   * @var cs_list list of moderators
    */
-  var $_moderator_list = NULL;
+  private cs_list $moderator_list;
 
   /**
    * a list of the users
@@ -422,77 +421,36 @@ class cs_context_item extends cs_item {
   /** get contact moderators of a room
    * this method returns a list of contact moderators which are linked to the room
    *
-   * @return object cs_list a list of contact moderators (cs_label_item)
+   * @return cs_list a list of contact moderators (cs_label_item)
    */
-  function getContactModeratorList() {
-    if ( !isset($this->_contact_moderator_list) ) {
+  public function getContactModeratorList(): cs_list
+  {
+    if (!isset($this->_contact_moderator_list)) {
       $user_manager = $this->_environment->getUserManager();
       $user_manager->setContextLimit($this->getItemID());
       $user_manager->setContactModeratorLimit();
       $user_manager->select();
       $this->_contact_moderator_list = $user_manager->get();
-      unset($user_manager);
-      if ( $this->_contact_moderator_list->isEmpty() ) {
-        if ( $this->isClosed()
-                and !$this->_environment->isArchiveMode()
-        ) {
-          $user_manager = $this->_environment->getZzzUserManager();
-          $user_manager->setContextLimit($this->getItemID());
-          $user_manager->setContactModeratorLimit();
-          $user_manager->select();
-          $this->_contact_moderator_list = $user_manager->get();
-          unset($user_manager);
-          if ( $this->_contact_moderator_list->isEmpty() ) {
-            $this->_contact_moderator_list = $this->getModeratorList();
-          }
-        } else {
-          $this->_contact_moderator_list = $this->getModeratorList();
-        }
+
+      if ($this->_contact_moderator_list->isEmpty()) {
+        $this->_contact_moderator_list = $this->getModeratorList();
       }
     }
+
     return $this->_contact_moderator_list;
   }
 
-  function getContactModeratorListString(){
-    $list = new cs_list();
-    $counter = 1;
-    $return = '';
+  public function getContactModeratorListString(): string
+  {
     $list = $this->getContactModeratorList();
-    $length = $list->getCount();
-    if (!$list->isEmpty()){
-        $contact = $list->getFirst();
-        while ($contact){
-            $return .= $contact->getFullname();
-            if ($counter < $length){
-                $return .=', ';
-                $counter++;
-            }
-            $contact = $list->getNext();
-        }
-     }
-     return $return;
+    return implode(', ', array_map(fn($contact): string => $contact->getFullname(), $list->to_array()));
   }
 
-  function getModeratorListString(){
-    $list = new cs_list();
-    $counter = 1;
-    $return = '';
-    $list = $this->getModeratorList();
-    $length = $list->getCount();
-    if (!$list->isEmpty()){
-        $contact = $list->getFirst();
-        while ($contact){
-            $return .= $contact->getFullname();
-            if ($counter < $length){
-                $return .=', ';
-                $counter++;
-            }
-            $contact = $list->getNext();
-        }
-     }
-     return $return;
-  }
-
+    public function getModeratorListString(): string
+    {
+        $list = $this->getModeratorList();
+        return implode(', ', array_map(fn($moderator): string => $moderator->getFullname(), $list->to_array()));
+    }
 
   /** get description of a context
    * this method returns the description of the context
@@ -1129,51 +1087,41 @@ class cs_context_item extends cs_item {
     return $this->mayEnterByUserID($user_item->getUserID(),$user_item->getAuthSource());
   }
 
-  /** returns a boolean, if the the user can enter the context
+  /**
+   * returns a boolean, if  the user can enter the context
    * true: user can enter project
    * false: user can not enter project
    *
-   * @param string user_id of user wants to enter the project
+   * @param string $user_id id of user wants to enter the project
    */
-  function mayEnterByUserID ($user_id, $auth_source) {
-    $retour = false;
-    if ( isset($this->_cache_may_enter[$user_id.'_'.$auth_source]) ) {
-      $retour = $this->_cache_may_enter[$user_id.'_'.$auth_source];
-    } elseif ($user_id == 'root') {
-      $retour = true;
-    } elseif ($this->isLocked()) {
-      $retour = false;
-    } elseif ($this->isOpenForGuests()) {
-      $retour = true;
-    } else {
-       $user_manager = $this->_environment->getUserManager();
-/*DB-Optimierung vom 23.10.2010*/
-       $retour = $user_manager->isUserInContext($user_id, $this->getItemID(), $auth_source);
-
-       // archive
-       if ( !$retour
-            and ( $this->isProjectRoom()
-                  or $this->isCommunityRoom()
-                  or $this->isGroupRoom()
-                  or $this->isUserroom()
-                )
-            and $this->isClosed()
-            and !$this->_environment->isArchiveMode()
-          ) {
-       	 $zzz_user_manager = $this->_environment->getZzzUserManager();
-          $retour = $zzz_user_manager->isUserInContext($user_id, $this->getItemID(), $auth_source);
-       }
-       // archive
-
-       if ($retour) {
-          $this->_cache_may_enter[$user_id.'_'.$auth_source] = true;
-       } else {
-          $this->_cache_may_enter[$user_id.'_'.$auth_source] = false;
-       }
+  public function mayEnterByUserID($user_id, $auth_source): bool
+  {
+    if (isset($this->_cache_may_enter[$user_id . '_' . $auth_source])) {
+      return $this->_cache_may_enter[$user_id . '_' . $auth_source];
     }
-    return $retour;
-  }
 
+    if ($user_id == 'root') {
+      return true;
+    }
+
+    if ($this->isLocked()) {
+      return false;
+    }
+
+    if ($this->isOpenForGuests()) {
+      return true;
+    }
+
+    $user_manager = $this->_environment->getUserManager();
+    if ($user_manager->isUserInContext($user_id, $this->getItemID(), $auth_source)) {
+      $this->_cache_may_enter[$user_id . '_' . $auth_source] = true;
+      return true;
+    } else {
+      $this->_cache_may_enter[$user_id . '_' . $auth_source] = false;
+    }
+
+    return false;
+  }
 
    function isSystemLabel () {
       $retour = false;
@@ -1672,32 +1620,20 @@ class cs_context_item extends cs_item {
   /** get moderators of the context
    * this method returns a list of moderators of the context
    *
-   * @return \cs_list a list of moderator (cs_user_item)
+   * @return cs_list a list of moderator (cs_user_item)
    */
-  public function getModeratorList()
+  public function getModeratorList(): cs_list
   {
-    if (empty($this->_moderator_list)) {
+    if (!isset($this->moderator_list)) {
       $userManager = $this->_environment->getUserManager();
       $userManager->resetLimits();
       $userManager->setContextLimit($this->getItemID());
       $userManager->setModeratorLimit();
       $userManager->select();
-      $this->_moderator_list = $userManager->get();
-      unset($userManager);
-
-      if ($this->_moderator_list->isEmpty()) {
-        if ($this->isClosed() && !$this->_environment->isArchiveMode()) {
-          $userManager = $this->_environment->getZzzUserManager();
-          $userManager->resetLimits();
-          $userManager->setContextLimit($this->getItemID());
-          $userManager->setModeratorLimit();
-          $userManager->select();
-          $this->_moderator_list = $userManager->get();
-          unset($userManager);
-        }
-      }
+      $this->moderator_list = $userManager->get();
     }
-    return $this->_moderator_list;
+
+    return $this->moderator_list;
   }
 
   /** get rubric configuration of the context
@@ -5128,22 +5064,7 @@ class cs_context_item extends cs_item {
     $user_manager->reset();
     $user_manager->setContextLimit($this->getItemID());
     $user_manager->setUserLimit();
-    $retour = $user_manager->getCountAll();
-    if ( empty($retour)
-         and $this->isClosed()
-         and !$this->_environment->isArchiveMode()
-       ) {
-       $this->_environment->activateArchiveMode();
-       $user_manager2 = $this->_environment->getUserManager();
-       $user_manager2->reset();
-       $user_manager2->setContextLimit($this->getItemID());
-       $user_manager2->setUserLimit();
-       $retour = $user_manager2->getCountAll();
-       unset($user_manager2);
-       $this->_environment->deactivateArchiveMode();
-    }
-    unset($user_manager);
-    return $retour;
+    return $user_manager->getCountAll();
   }
 
   function delete () {

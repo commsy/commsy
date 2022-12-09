@@ -8,6 +8,7 @@ use App\Entity\AuthSource;
 use App\Entity\AuthSourceGuest;
 use App\Entity\Portal;
 use App\Services\LegacyEnvironment;
+use cs_list;
 
 class PortalProxy
 {
@@ -295,7 +296,7 @@ class PortalProxy
         $this->portal->getExtras()['HIDE_MAIL_BY_DEFAULT'] = ($enabled === true) ? 1 : 0;
     }
 
-    public function getModeratorList(): \cs_list
+    public function getModeratorList(): cs_list
     {
         $userManager = $this->legacyEnvironment->getUserManager();
         $userManager->resetLimits();
@@ -303,31 +304,18 @@ class PortalProxy
         $userManager->setModeratorLimit();
         $userManager->select();
 
-        /** @var \cs_list $moderators */
-        $moderators = $userManager->get();
-
-        if ($moderators->isEmpty()) {
-            if ($this->isClosed() && !$this->legacyEnvironment->isArchiveMode()) {
-                $userManager = $this->legacyEnvironment->getZzzUserManager();
-                $userManager->resetLimits();
-                $userManager->setContextLimit($this->getItemID());
-                $userManager->setModeratorLimit();
-                $userManager->select();
-                $moderators = $userManager->get();
-            }
-        }
-
-        return $moderators;
+        /** @var cs_list $moderators */
+        return $userManager->get();
     }
 
-    public function getCommunityList(): \cs_list
+    public function getCommunityList(): cs_list
     {
         $communityManager = $this->legacyEnvironment->getCommunityManager();
         $communityManager->resetLimits();
         $communityManager->setContextLimit($this->getItemId());
         $communityManager->select();
 
-        /** @var \cs_list $communityList */
+        /** @var cs_list $communityList */
         $communityList = $communityManager->get();
 
         return $communityList;

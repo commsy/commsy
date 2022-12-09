@@ -267,7 +267,7 @@ class UserController extends BaseController
             'showCategories' => false,
             'usageInfo' => $usageInfo,
             'view' => $view,
-            'isArchived' => $roomItem->isArchived(),
+            'isArchived' => $roomItem->getArchived(),
             'userTasks' => $userTasks,
             'isModerator' => $currentUser->isModerator(),
             'user' => $currentUser,
@@ -378,7 +378,7 @@ class UserController extends BaseController
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
         }
 
-        // get user list from manager service 
+        // get user list from manager service
         $itemsCountArray = $this->userService->getCountArray($roomId);
 
 

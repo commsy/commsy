@@ -444,7 +444,7 @@ class SearchController extends BaseController
             'totalHits' => $totalHits,
             'results' => $results,
             'searchData' => $searchData,
-            'isArchived' => $roomItem ? $roomItem->isArchived() : false,
+            'isArchived' => $roomItem ? $roomItem->getArchived() : false,
             'user' => $currentUser,
         ];
     }

@@ -1903,79 +1903,11 @@ class cs_user_item extends cs_item
     }
 
     /**
-     * @return cs_user_item|null User-Item from the community room
-     */
-    function getRelatedCommSyUserItem()
-    {
-        if (mb_strtoupper($this->getUserID(), 'UTF-8') == 'ROOT') {
-            $retour = $this;
-        } else {
-            $item_manager = $this->_environment->getItemManager();
-            $item = $item_manager->getItem($this->getContextID());
-
-            if (isset($item)) {
-                if ($item->getItemType() == CS_COMMUNITY_TYPE
-                    or $item->getItemType() == CS_PROJECT_TYPE
-                    or $item->getItemType() == CS_GROUPROOM_TYPE
-                ) {
-                    $room_manager = $this->_environment->getManager(CS_ROOM_TYPE);
-                    $room = $room_manager->getItem($this->getContextID());
-                    if (!empty($room)) {
-                        $portal_id = $room->getContextID();
-                    } else {
-                        $portal_id = $item->getContextID();
-                    }
-                } elseif ($item->getItemType() == CS_PRIVATEROOM_TYPE) {
-                    $room_manager = $this->_environment->getManager(CS_PRIVATEROOM_TYPE);
-                    $room = $room_manager->getItem($this->getContextID());
-                    $portal_id = $room->getContextID();
-                } elseif ($item->getItemType() == CS_PORTAL_TYPE) {
-                    $portal_id = $this->getContextID();
-                }
-            }
-
-            $retour = NULL;
-            $user_manager = $this->_environment->getUserManager();
-            $user_manager->resetLimits();
-            if (!isset($portal_id)) {
-                $portal_id = $this->getContextID();
-            }
-            $user_manager->setContextLimit($portal_id);
-            $user_manager->setAuthSourceLimit($this->getAuthSource());
-            $user_manager->setUserIDLimit($this->getUserID());
-            $user_manager->select();
-            $user_list = $user_manager->get();
-            if ($user_list->getCount() == 1) {
-                $retour = $user_list->getFirst();
-            } // archive
-            elseif ($user_list->getCount() == 0
-                and $this->_environment->isArchiveMode()
-            ) {
-                $this->_environment->deactivateArchiveMode();
-                $retour = $this->getRelatedCommSyUserItem();
-                $this->_environment->activateArchiveMode();
-            }
-            // archive
-
-        }
-        return $retour;
-    }
-
-    /**
      * @return cs_user_item
      */
     public function getRelatedPrivateRoomUserItem()
     {
         $retour = NULL;
-
-        // archive
-        $toggle_archive = false;
-        if ($this->_environment->isArchiveMode()) {
-            $toggle_archive = true;
-            $this->_environment->deactivateArchiveMode();
-        }
-        // archive
-
         $private_room_manager = $this->_environment->getPrivateRoomManager();
         $own_room = $private_room_manager->getRelatedOwnRoomForUser($this, $this->_environment->getCurrentPortalID());
         unset($private_room_manager);
@@ -1996,27 +1928,12 @@ class cs_user_item extends cs_item
         }
         unset($own_room);
 
-        // archive
-        if ($toggle_archive) {
-            $this->_environment->activateArchiveMode();
-        }
-        // archive
-
         return $retour;
     }
 
     function getRelatedPortalUserItem():?cs_user_item
     {
         $retour = NULL;
-
-        // archive
-        $toggle_archive = false;
-        if ($this->_environment->isArchiveMode()) {
-            $toggle_archive = true;
-            $this->_environment->deactivateArchiveMode();
-        }
-        // archive
-
         $user_manager = $this->_environment->getUserManager();
         $user_manager->resetLimits();
         $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
@@ -2029,12 +1946,6 @@ class cs_user_item extends cs_item
             $retour = $user_list->getFirst();
         }
         unset($user_list);
-
-        // archive
-        if ($toggle_archive) {
-            $this->_environment->activateArchiveMode();
-        }
-        // archive
 
         return $retour;
     }

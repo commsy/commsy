@@ -42,12 +42,6 @@ class RoomTitleResolver extends AbstractExtension
     public function resolveRoomTitle($roomId)
     {
         $room = $this->roomService->getRoomItem($roomId);
-        if ($room === null) {
-            $this->legacyEnvironment->toggleArchiveMode();
-            $room = $this->roomService->getRoomItem($roomId);
-            $this->legacyEnvironment->toggleArchiveMode();
-        }
-
         if ($room->isGroupRoom()) {
             $type = $this->translator->trans('grouproom', [], 'room');
         } else {

@@ -282,7 +282,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
     {
         // NOTE: the "Archived room: " room title prefix may be replaced by the template with a matching icon
         $title = $roomItem->getTitle();
-        if ($roomItem->isArchived()) {
+        if ($roomItem->getArchived()) {
             $title = $this->translator->trans('Archived room', [], 'room') . ": " . $title;
         }
 

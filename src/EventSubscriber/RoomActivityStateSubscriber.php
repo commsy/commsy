@@ -4,7 +4,6 @@ namespace App\EventSubscriber;
 
 use App\Entity\Portal;
 use App\Entity\Room;
-use App\Entity\ZzzRoom;
 use App\Mail\Factories\RoomMessageFactory;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
@@ -67,7 +66,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
      */
     public function guard(GuardEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         // Block all transitions if the portal configuration has disabled the account activity feature
@@ -112,7 +111,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
      */
     public function guardNotifyLock(GuardEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         /** @var Portal $portal */
@@ -133,7 +132,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
      */
     public function guardLock(GuardEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         /** @var Portal $portal */
@@ -153,7 +152,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
      */
     public function guardNotifyForsake(GuardEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         // Deny transition if the inactive period is not long enough
@@ -174,7 +173,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
      */
     public function guardForsake(GuardEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         // Deny transition if the inactive period is not long enough
@@ -194,7 +193,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
      */
     public function entered(EnteredEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         $this->roomManager->renewActivityUpdated($room, false);
@@ -207,7 +206,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
      */
     public function enteredActiveNotified(EnteredEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         $message = $this->roomMessageFactory->createRoomActivityLockWarningMessage($room);
@@ -227,7 +226,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
      */
     public function enteredIdle(EnteredEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         $legacyRoom = $this->itemService->getTypedItem($room->getItemId());
@@ -244,7 +243,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
      */
     public function enteredIdleNotified(EnteredEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         $message = $this->roomMessageFactory->createRoomActivityDeleteWarningMessage($room);
@@ -264,7 +263,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
      */
     public function enteredAbandoned(EnteredEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         $legacyRoom = $this->itemService->getTypedItem($room->getItemId());

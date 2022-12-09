@@ -67,10 +67,9 @@ class UserListBuilder
     }
 
     /**
-     * @param bool $includeArchive
      * @return $this
      */
-    public function withProjectRoomUser(bool $includeArchive = false): self
+    public function withProjectRoomUser(): self
     {
         if (!$this->account) {
             throw new LogicException("You must provide an account object.");
@@ -84,22 +83,13 @@ class UserListBuilder
         $projectRooms = $projectManager->getRelatedProjectListForUser($portalUser, $portalUser->getContextID());
         $this->contextIds = array_merge($this->contextIds, $projectRooms->getIDArray());
 
-        if ($includeArchive) {
-            $archivedProjectManager = $this->legacyEnvironment->getZzzProjectManager();
-            $archivedProjectManager->reset();
-            $archivedProjectManager->setAllStatusLimit(true);
-            $archivedProjectRooms = $archivedProjectManager->getRelatedProjectListForUser($portalUser, $portalUser->getContextID());
-            $this->contextIds = array_merge($this->contextIds, $archivedProjectRooms->getIDArray());
-        }
-
         return $this;
     }
 
     /**
-     * @param bool $includeArchive
      * @return $this
      */
-    public function withCommunityRoomUser(bool $includeArchive = false): self
+    public function withCommunityRoomUser(): self
     {
         if (!$this->account) {
             throw new LogicException("You must provide an account object.");
@@ -112,14 +102,6 @@ class UserListBuilder
         $communityManager->setAllStatusLimit(true);
         $communityRooms = $communityManager->getRelatedCommunityRooms($portalUser, $portalUser->getContextID());
         $this->contextIds = array_merge($this->contextIds, $communityRooms->getIDArray());
-
-        if ($includeArchive) {
-            $archivedCommunityManager = $this->legacyEnvironment->getZzzCommunityManager();
-            $archivedCommunityManager->reset();
-            $archivedCommunityManager->setAllStatusLimit(true);
-            $archivedCommunityRooms = $archivedCommunityManager->getRelatedCommunityRooms($portalUser, $portalUser->getContextID());
-            $this->contextIds = array_merge($this->contextIds, $archivedCommunityRooms->getIDArray());
-        }
 
         return $this;
     }
@@ -179,15 +161,6 @@ class UserListBuilder
         $userManager->select();
 
         $userList = $userManager->get();
-
-        $archivedUserMananger = $this->legacyEnvironment->getZzzUserManager();
-        $archivedUserMananger->resetLimits();
-        $archivedUserMananger->setContextArrayLimit($this->contextIds);
-        $archivedUserMananger->setUserIDLimit($this->account->getUsername());
-        $archivedUserMananger->setAuthSourceLimit($this->account->getAuthSource()->getId());
-        $archivedUserMananger->select();
-
-        $userList->addList($archivedUserMananger->get());
 
         $this->reset();
 

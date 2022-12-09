@@ -38,25 +38,13 @@ class cs_portal_item extends cs_guide_item {
 
    var $_project_list = NULL;
 
-   var $_privateroom_list = NULL;
-
    var $_room_list = NULL;
 
    var $_room_list_continuous = NULL;
 
    var $_cache_auth_source_list = NULL;
-
-   private $_community_id_array = NULL;
-   private $_project_id_array = NULL;
-   private $_group_id_array = NULL;
-   private $_community_id_array_archive = NULL;
-   private $_project_id_array_archive = NULL;
-   private $_group_id_array_archive = NULL;
    private $_room_list_continuous_nlct = NULL;
    private $_grouproom_list_count = NULL;
-   private $_count_archived_grouprooms = NULL;
-   private $_count_archived_project_and_community_rooms = NULL;
-   private $_count_project_and_community_rooms_without_templates = NULL;
 
    /** constructor: cs_server_item
     * the only available constructor, initial values for internal variables
@@ -235,75 +223,6 @@ class cs_portal_item extends cs_guide_item {
       $this->_addExtra('NUMBERROOMSONHOME',$value);
    }
 
-   public function getCommunityIDArray () {
-      $retour = array();
-      $archive = 'this->_community_id_array';
-      if ( $this->_environment->isArchiveMode() ) {
-         $archive .= '_archive';
-      }
-      if ( !isset($$archive) ) {
-         $manager = $this->_environment->getCommunityManager();
-         $manager->resetData();
-         $manager->resetLimits();
-         $manager->setContextLimit($this->getItemID());
-         $id_array = $manager->getIDArray();
-         unset($manager);
-         if ( is_array($id_array) ) {
-            $$archive = $id_array;
-         }
-      }
-      if ( !empty($$archive) ) {
-         $retour = $$archive;
-      }
-      return $retour;
-   }
-
-   public function getProjectIDArray () {
-      $retour = array();
-      $archive = 'this->_project_id_array';
-      if ( $this->_environment->isArchiveMode() ) {
-         $archive .= '_archive';
-      }
-      if ( !isset($$archive) ) {
-         $manager = $this->_environment->getProjectManager();
-         $manager->resetData();
-         $manager->resetLimits();
-         $manager->setContextLimit($this->getItemID());
-         $id_array = $manager->getIDArray();
-         unset($manager);
-         if ( is_array($id_array) ) {
-            $$archive = $id_array;
-         }
-      }
-      if ( !empty($$archive) ) {
-         $retour = $$archive;
-      }
-      return $retour;
-   }
-
-   public function getGroupIDArray () {
-      $retour = array();
-      $archive = 'this->_group_id_array';
-      if ( $this->_environment->isArchiveMode() ) {
-         $archive .= '_archive';
-      }
-      if ( !isset($$archive) ) {
-         $manager = $this->_environment->getGrouproomManager();
-         $manager->resetData();
-         $manager->resetLimits();
-         $manager->setContextLimit($this->getItemID());
-         $id_array = $manager->getIDArray();
-         unset($manager);
-         if ( is_array($id_array) ) {
-            $$archive = $id_array;
-         }
-      }
-      if ( !empty($$archive) ) {
-         $retour = $$archive;
-      }
-      return $retour;
-   }
-   
    /** get community list
     * this function returns a list of all community rooms
     * existing at this portal
@@ -330,17 +249,6 @@ class cs_portal_item extends cs_guide_item {
          unset($manager);
       }
       return $this->_project_list;
-   }
-
-   function getPrivateRoomList () {
-      if ( !isset($this->_privateroom_list) ) {
-         $manager = $this->_environment->getPrivateRoomManager();
-         $manager->setContextLimit($this->getItemID());
-         $manager->select();
-         $this->_privateroom_list = $manager->get();
-         unset($manager);
-      }
-      return $this->_privateroom_list;
    }
 
    function getRoomList () {
@@ -1319,7 +1227,7 @@ class cs_portal_item extends cs_guide_item {
       }
       return $list;
    }
-   
+
    function getAuthSource ($item_id) {
       $manager = $this->_environment->getAuthSourceManager();
       return $manager->getItem($item_id);
@@ -1820,7 +1728,7 @@ class cs_portal_item extends cs_guide_item {
    private function _setCountRoomRedundancy ( $value ) {
       $this->_addExtra('COUNT_ROOM_REDUNDANCY',(int)$value);
    }
-   
+
    // Datenschutz
    public function getLockTime() {
    	$retour = 0;
@@ -1829,24 +1737,24 @@ class cs_portal_item extends cs_guide_item {
    	}
    	return $retour;
    }
-   
+
    public function setLockTime($time) {
    	$this->_addExtra('LOCK_TIME', $time);
    }
-   
+
    public function getPasswordGeneration () {
    	$retour = 0;
    	if ($this->_issetExtra('PASSWORD_GENERATION')) {
    		$retour = $this->_getExtra('PASSWORD_GENERATION');
    	}
    	return $retour;
-   	
+
    }
-   
+
    public function setLockTimeInterval($seconds){
    	$this->_addExtra('LOCK_INTERVAL', $seconds);
    }
-   
+
    public function getLockTimeInterval(){
    	$retour = 0;
    	if($this->_issetExtra('LOCK_INTERVAL')){
@@ -1854,11 +1762,11 @@ class cs_portal_item extends cs_guide_item {
    	}
    	return $retour;
    }
-   
+
    public function setTryUntilLock($number){
    	$this->_addExtra('TRY_UNTIL_LOCK', $number);
    }
-   
+
    public function getTryUntilLock(){
    	$retour = 0;
    	if($this->_issetExtra('TRY_UNTIL_LOCK')){
@@ -1866,7 +1774,7 @@ class cs_portal_item extends cs_guide_item {
    	}
    	return $retour;
    }
-   
+
    public function isPasswordGenerationActive () {
    	$retour = false;
    	if($this->_issetExtra('PASSWORD_GENERATION')) {
@@ -1876,11 +1784,11 @@ class cs_portal_item extends cs_guide_item {
    	}
    	return $retour;
    }
-   
+
    public function setPasswordGeneration ($value) {
    	$this->_addExtra('PASSWORD_GENERATION', $value);
    }
-   
+
    public function isPasswordExpirationActive() {
    	$retour = false;
    	if($this->_issetExtra('PASSWORD_EXPIRATION')) {
@@ -1890,7 +1798,7 @@ class cs_portal_item extends cs_guide_item {
    	}
    	return $retour;
    }
-   
+
    public function getPasswordExpiration() {
    	$retour = 0;
    	if ($this->_issetExtra('PASSWORD_EXPIRATION')) {
@@ -1898,15 +1806,15 @@ class cs_portal_item extends cs_guide_item {
    	}
    	return $retour;
    }
-   
+
    public function setPasswordExpiration($value) {
    	$this->_addExtra('PASSWORD_EXPIRATION', $value);
    }
-   
+
    public function setDaysBeforeExpiringPasswordSendMail($days){
    	$this->_addExtra('DAYSBEFORE_EXPIRINGPW_SENDMAIL', $days);
    }
-   
+
    public function getDaysBeforeExpiringPasswordSendMail(){
    	$retour = 0;
    	if ($this->_issetExtra('DAYSBEFORE_EXPIRINGPW_SENDMAIL')) {
@@ -1914,13 +1822,13 @@ class cs_portal_item extends cs_guide_item {
    	}
    	return $retour;
    }
-   
+
    // Datenschutz
    public function setTemporaryLock($value) {
    	$this->_addExtra('TEMPORARY_LOCK',$value);
    }
-   
-   
+
+
    public function getTemporaryLock() {
    	$retour = '';
    	$value = $this->_getExtra('TEMPORARY_LOCK');
@@ -1929,7 +1837,7 @@ class cs_portal_item extends cs_guide_item {
    	}
    	return $retour;
    }
-    
+
    public function isTemporaryLockActivated(){
    	if(($this->getTemporaryLock() == 1)){
    		return true;
@@ -1937,7 +1845,7 @@ class cs_portal_item extends cs_guide_item {
    		return false;
    	}
    }
-   
+
    /** set wordpress url
     *
     * @param string url
@@ -1945,7 +1853,7 @@ class cs_portal_item extends cs_guide_item {
    public function setWordpressUrl($value){
    	$this->_addExtra('WP_URL', $value);
    }
-   
+
    /** get wordpress url
     *
     * @param string url
@@ -1958,7 +1866,7 @@ class cs_portal_item extends cs_guide_item {
    	}
    	return $retour;
    }
-   
+
    /** set activate wordpress blog
     *
     * @param boolean
@@ -1966,7 +1874,7 @@ class cs_portal_item extends cs_guide_item {
    public function setWordpressPortalActive($value){
    	$this->_addExtra('WP_PORTAL_ACTIVE', $value);
    }
-    
+
    /** get activate wordpress blog
     *
     * @param boolean

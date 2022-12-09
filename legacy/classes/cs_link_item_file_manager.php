@@ -259,9 +259,10 @@ class cs_link_item_file_manager extends cs_link_father_manager {
       return new cs_link_item_file($this->_environment);
    }
 
-    function moveFromDbToBackup($context_id)
+    function deleteFromDb($context_id)
     {
         $id_array = array();
+
         $item_manager = $this->_environment->getItemManager();
         $item_manager->setContextLimit($context_id);
         $item_manager->setNoIntervalLimit();
@@ -273,84 +274,12 @@ class cs_link_item_file_manager extends cs_link_father_manager {
             $temp_item = $item_list->getNext();
         }
 
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
         if (!empty($id_array)) {
-            if (!empty($context_id)) {
-                $query = 'INSERT INTO ' . $c_db_backup_prefix . '_' . $this->_db_table . ' SELECT * FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.item_iid IN (' . implode(",", $id_array) . ')';
-                $this->_db_connector->performQuery($query);
-
-                $this->deleteFromDb($context_id);
-            }
-        }
-    }
-
-    function moveFromBackupToDb($context_id)
-    {
-        $id_array = array();
-        $zzz_item_manager = $this->_environment->getZzzItemManager();
-        $zzz_item_manager->setContextLimit($context_id);
-        $zzz_item_manager->setNoIntervalLimit();
-        $zzz_item_manager->select();
-        $item_list = $zzz_item_manager->get();
-        $temp_item = $item_list->getFirst();
-        while ($temp_item) {
-            $id_array[] = $temp_item->getItemID();
-            $temp_item = $item_list->getNext();
-        }
-
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        if (!empty($id_array)) {
-            if (!empty($context_id)) {
-                $query = 'INSERT INTO ' . $this->_db_table . ' SELECT * FROM ' . $c_db_backup_prefix . '_' . $this->_db_table . ' WHERE ' . $c_db_backup_prefix . '_' . $this->_db_table . '.item_iid IN (' . implode(",", $id_array) . ')';
-                $this->_db_connector->performQuery($query);
-
-                $this->deleteFromDb($context_id, true);
-            }
-        }
-    }
-
-    function deleteFromDb($context_id, $from_backup = false)
-    {
-        global $symfonyContainer;
-        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-
-        $db_prefix = '';
-        $id_array = array();
-        if (!$from_backup) {
-            $item_manager = $this->_environment->getItemManager();
-            $item_manager->setContextLimit($context_id);
-            $item_manager->setNoIntervalLimit();
-            $item_manager->select();
-            $item_list = $item_manager->get();
-            $temp_item = $item_list->getFirst();
-            while ($temp_item) {
-                $id_array[] = $temp_item->getItemID();
-                $temp_item = $item_list->getNext();
-            }
-        } else {
-            $db_prefix .= $c_db_backup_prefix . '_';
-            $zzz_item_manager = $this->_environment->getZzzItemManager();
-            $zzz_item_manager->setContextLimit($context_id);
-            $zzz_item_manager->setNoIntervalLimit();
-            $zzz_item_manager->select();
-            $item_list = $zzz_item_manager->get();
-            $temp_item = $item_list->getFirst();
-            while ($temp_item) {
-                $id_array[] = $temp_item->getItemID();
-                $temp_item = $item_list->getNext();
-            }
-        }
-
-        if (!empty($id_array)) {
-            $query = 'DELETE FROM ' . $db_prefix . $this->_db_table . ' WHERE ' . $db_prefix . $this->_db_table . '.item_iid IN (' . implode(",", $id_array) . ')';
+            $query = 'DELETE FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.item_iid IN (' . implode(",", $id_array) . ')';
             $this->_db_connector->performQuery($query);
         }
     }
-   
+
    // used for ex- and import
    function insertDirectly ($item_id, $version_id, $file_id) {
       $query = 'INSERT INTO '.$this->_db_table.' (item_iid, item_vid, file_id) VALUES ('.$item_id.', '.$version_id.', '.$file_id.')';

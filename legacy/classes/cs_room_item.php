@@ -327,17 +327,17 @@ class cs_room_item extends cs_context_item {
       }
       $this->_setValue('in_time', $time_array, FALSE);
    }
-   
+
    /******************************************
     *  diese Funktion wird in der configuration_preferences verwendet,
     *  weil die obige aufgrund eines PHP-Bugs mehrmals aufgerufen wird
     *  und dies zu einer zeitlichen Verzögerung von 30 Sekunden kommt
-    *  
+    *
     *  Datum:  20.09.2013
     *  Autor:  Iver Jackewitz
     *  Kernel: Linux RZ-CS-WEB01 3.2.0-53-virtual #81-Ubuntu SMP Thu Aug 22 21:21:26 UTC 2013 x86_64
     *  PHP:    PHP Version 5.3.10-1ubuntu3.8
-    *  
+    *
     *  völlig unerklärlich
     */
    function setTimeListByID2 ($value) {
@@ -349,7 +349,7 @@ class cs_room_item extends cs_context_item {
    	}
    	$this->_setValue('in_time', $time_array, FALSE);
    }
-    
+
    /** set clock pulses of a room
    * this method sets a list of clock pulses which are linked to the room
    *
@@ -830,7 +830,7 @@ class cs_room_item extends cs_context_item {
       $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       $this->_addExtra('USAGE_INFO_FORM_HEADER',$value_array);
    }
-   
+
    public function renewFileIndex () {
    	$retour = true;
       $indexing_manager = $this->_environment->getFTSearchManager();
@@ -944,6 +944,16 @@ class cs_room_item extends cs_context_item {
         $this->_setValue('slug', $slug);
     }
 
+    public function getArchived(): bool
+    {
+        return $this->_getValue('archived') == '1';
+    }
+
+    public function setArchived(bool $archived): void
+    {
+        $this->_setValue('archived', $archived ? 1 : 0);
+    }
+
    public function isUsed ($start_date, $end_date) {
       $retour = false;
 
@@ -995,246 +1005,6 @@ class cs_room_item extends cs_context_item {
         $repository = $em->getRepository(Room::class);
 
         $this->deleteElasticItem($objectPersister, $repository);
-
-        $environment = $this->_environment;
-        // Managers that need data from other tables
-        $hash_manager = $environment->getHashManager();
-        $hash_manager->moveFromDbToBackup($this->getItemID());
-        unset($hash_manager);
-
-        $link_modifier_item_manager = $environment->getLinkModifierItemManager();
-        $link_modifier_item_manager->moveFromDbToBackup($this->getItemID());
-        unset($link_modifier_item_manager);
-
-        $link_item_file_manager = $environment->getLinkItemFileManager();
-        $link_item_file_manager->moveFromDbToBackup($this->getItemID());
-        unset($link_item_file_manager);
-
-        $noticed_manager = $environment->getNoticedManager();
-        $noticed_manager->moveFromDbToBackup($this->getItemID());
-        unset($noticed_manager);
-
-        $reader_manager = $environment->getReaderManager();
-        $reader_manager->moveFromDbToBackup($this->getItemID());
-        unset($reader_manager);
-
-        $item_manager = $environment->getItemManager();
-        $item_manager->moveFromDbToBackupWorkflow($this->getItemID());
-        unset($item_manager);
-
-        // Plain copy of the rest
-        $assessment_manager = $environment->getAssessmentManager();
-        $assessment_manager->moveFromDbToBackup($this->getItemID());
-        unset($assessment_manager);
-
-        $annotation_manager = $environment->getAnnotationManager();
-        $annotation_manager->moveFromDbToBackup($this->getItemID());
-        unset($annotation_manager);
-
-        $announcement_manager = $environment->getAnnouncementManager();
-        $announcement_manager->moveFromDbToBackup($this->getItemID());
-        unset($announcement_manager);
-
-        $dates_manager = $environment->getDatesManager();
-        $dates_manager->moveFromDbToBackup($this->getItemID());
-        unset($dates_manager);
-
-        $discussion_manager = $environment->getDiscussionManager();
-        $discussion_manager->moveFromDbToBackup($this->getItemID());
-        unset($discussion_manager);
-
-        $discussionarticles_manager = $environment->getDiscussionarticleManager();
-        $discussionarticles_manager->moveFromDbToBackup($this->getItemID());
-        unset($discussionarticles_manager);
-
-        $file_manager = $environment->getFileManager();
-        $file_manager->moveFromDbToBackup($this->getItemID());
-        unset($file_manager);
-
-        $item_manager = $environment->getItemManager();
-        $item_manager->moveFromDbToBackup($this->getItemID());
-        unset($item_manager);
-
-        $labels_manager = $environment->getLabelManager();
-        $labels_manager->moveFromDbToBackup($this->getItemID());
-        unset($labels_manager);
-
-        $links_manager = $environment->getLinkManager();
-        $links_manager->moveFromDbToBackup($this->getItemID());
-        unset($links_manager);
-
-        $link_item_manager = $environment->getLinkItemManager();
-        $link_item_manager->moveFromDbToBackup($this->getItemID());
-        unset($link_item_manager);
-
-        $material_manager = $environment->getMaterialManager();
-        $material_manager->moveFromDbToBackup($this->getItemID());
-        unset($material_manager);
-
-        $section_manager = $environment->getSectionManager();
-        $section_manager->moveFromDbToBackup($this->getItemID());
-        unset($section_manager);
-
-        $step_manager = $environment->getStepManager();
-        $step_manager->moveFromDbToBackup($this->getItemID());
-        unset($step_manager);
-
-        $tag_manager = $environment->getTagManager();
-        $tag_manager->moveFromDbToBackup($this->getItemID());
-        unset($tag_manager);
-
-        $tag2tag_manager = $environment->getTag2TagManager();
-        $tag2tag_manager->moveFromDbToBackup($this->getItemID());
-        unset($tag2tag_manager);
-
-        $task_manager = $environment->getTaskManager();
-        $task_manager->moveFromDbToBackup($this->getItemID());
-        unset($task_manager);
-
-        $todo_manager = $environment->getTodoManager();
-        $todo_manager->moveFromDbToBackup($this->getItemID());
-        unset($todo_manager);
-
-        $user_manager = $environment->getUserManager();
-        $user_manager->moveFromDbToBackup($this->getItemID());
-        unset($user_manager);
-
-        $room_manager = $environment->getRoomManager();
-        $room_manager->moveFromDbToBackup($this->getItemID());
-        unset($room_manager);
-
-        unset($environment);
-    }
-
-    public function backFromArchive()
-    {
-        $environment = $this->_environment;
-
-        // Managers that need data from other tables
-        $hash_manager = $environment->getHashManager();
-        $hash_manager->moveFromBackupToDb($this->getItemID());
-        unset($hash_manager);
-
-        $link_modifier_item_manager = $environment->getLinkModifierItemManager();
-        $link_modifier_item_manager->moveFromBackupToDb($this->getItemID());
-        unset($link_modifier_item_manager);
-
-        $link_item_file_manager = $environment->getLinkItemFileManager();
-        $link_item_file_manager->moveFromBackupToDb($this->getItemID());
-        unset($link_item_file_manager);
-
-        $noticed_manager = $environment->getNoticedManager();
-        $noticed_manager->moveFromBackupToDb($this->getItemID());
-        unset($noticed_manager);
-
-        $reader_manager = $environment->getReaderManager();
-        $reader_manager->moveFromBackupToDb($this->getItemID());
-        unset($reader_manager);
-
-        $item_manager = $environment->getItemManager();
-        $item_manager->moveFromBackupToDbWorkflow($this->getItemID());
-        unset($item_manager);
-
-        // Plain copy of the rest
-        $assessment_manager = $environment->getAssessmentManager();
-        $assessment_manager->moveFromBackupToDb($this->getItemID());
-        unset($assessment_manager);
-
-        $annotation_manager = $environment->getAnnotationManager();
-        $annotation_manager->moveFromBackupToDb($this->getItemID());
-        unset($annotation_manager);
-
-        $announcement_manager = $environment->getAnnouncementManager();
-        $announcement_manager->moveFromBackupToDb($this->getItemID());
-        unset($announcement_manager);
-
-        $dates_manager = $environment->getDatesManager();
-        $dates_manager->moveFromBackupToDb($this->getItemID());
-        unset($dates_manager);
-
-        $discussion_manager = $environment->getDiscussionManager();
-        $discussion_manager->moveFromBackupToDb($this->getItemID());
-        unset($discussion_manager);
-
-        $discussionarticles_manager = $environment->getDiscussionarticleManager();
-        $discussionarticles_manager->moveFromBackupToDb($this->getItemID());
-        unset($discussionarticles_manager);
-
-        $file_manager = $environment->getFileManager();
-        $file_manager->moveFromBackupToDb($this->getItemID());
-        unset($file_manager);
-
-        $item_manager = $environment->getItemManager();
-        $item_manager->moveFromBackupToDb($this->getItemID());
-        unset($item_manager);
-
-        $labels_manager = $environment->getLabelManager();
-        $labels_manager->moveFromBackupToDb($this->getItemID());
-        unset($labels_manager);
-
-        $links_manager = $environment->getLinkManager();
-        $links_manager->moveFromBackupToDb($this->getItemID());
-        unset($links_manager);
-
-        $link_item_manager = $environment->getLinkItemManager();
-        $link_item_manager->moveFromBackupToDb($this->getItemID());
-        unset($link_item_manager);
-
-        $material_manager = $environment->getMaterialManager();
-        $material_manager->moveFromBackupToDb($this->getItemID());
-        unset($material_manager);
-
-        $section_manager = $environment->getSectionManager();
-        $section_manager->moveFromBackupToDb($this->getItemID());
-        unset($section_manager);
-
-        $step_manager = $environment->getStepManager();
-        $step_manager->moveFromBackupToDb($this->getItemID());
-        unset($step_manager);
-
-        $tag_manager = $environment->getTagManager();
-        $tag_manager->moveFromBackupToDb($this->getItemID());
-        unset($tag_manager);
-
-        $tag2tag_manager = $environment->getTag2TagManager();
-        $tag2tag_manager->moveFromBackupToDb($this->getItemID());
-        unset($tag2tag_manager);
-
-        $task_manager = $environment->getTaskManager();
-        $task_manager->moveFromBackupToDb($this->getItemID());
-        unset($task_manager);
-
-        $todo_manager = $environment->getTodoManager();
-        $todo_manager->moveFromBackupToDb($this->getItemID());
-        unset($todo_manager);
-
-        $user_manager = $environment->getUserManager();
-        $user_manager->moveFromBackupToDb($this->getItemID());
-        unset($user_manager);
-
-        $room_manager = $environment->getRoomManager();
-        $room_manager->moveFromBackupToDb($this->getItemID());
-        unset($room_manager);
-
-        // move a project room's group rooms last, as these require users to be moved already
-        $type = $this->getRoomType();
-        if ($type == CS_PROJECT_TYPE) {
-            $this->backGrouproomsFromArchive();
-        }
-        unset($type);
-
-        unset($environment);
-
-        $this->open();
-        $this->saveWithoutChangingModificationInformation();
-
-        // set lastlogin to now
-        // cause than the archiving prozess will start now
-        // and not at the original last login date
-        $this->saveLastlogin();
-
-        // add room to elastic index
-        $this->updateElastic();
     }
 
     public function updateElastic()

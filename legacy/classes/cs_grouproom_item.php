@@ -28,7 +28,6 @@
 include_once('classes/cs_room_item.php');
 
 use App\Entity\Room;
-use App\Entity\ZzzRoom;
 use App\Mail\Mailer;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
@@ -223,12 +222,7 @@ class cs_grouproom_item extends cs_room_item {
       $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
       $repository = $em->getRepository(Room::class);
-
-       // use zzz repository if room is archived
-       if ($this->isArchived()) {
-           $repository = $em->getRepository(ZzzRoom::class);
-       }
-       $this->deleteElasticItem($objectPersister, $repository);
+      $this->deleteElasticItem($objectPersister, $repository);
    }
 
    public function undelete () {
@@ -957,13 +951,6 @@ class cs_grouproom_item extends cs_room_item {
       $translator = $this->_environment->getTranslationObject();
       $default_language = 'de';
 
-      // maybe in archive mode
-      $toggle_archive = false;
-      if ( $this->_environment->isArchiveMode() ) {
-      	$toggle_archive = true;
-      	$this->_environment->toggleArchiveMode();
-      }
-
       $current_portal = $this->_environment->getCurrentPortalItem();
       if ( empty($current_portal)
            or !$current_portal->isPortal()
@@ -976,11 +963,6 @@ class cs_grouproom_item extends cs_room_item {
          }
       }
       $current_user = $this->_environment->getCurrentUserItem();
-
-      if ( $toggle_archive ) {
-      	$this->_environment->toggleArchiveMode();
-      }
-      unset($toggle_archive);
 
       $moderator_list = $room_item->getModeratorList();
 

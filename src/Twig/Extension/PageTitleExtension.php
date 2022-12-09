@@ -68,12 +68,6 @@ class PageTitleExtension extends AbstractExtension
 
         // room title
         $room = $this->roomService->getRoomItem($roomId);
-        if (!$room) {
-            $this->legacyEnvironment->toggleArchiveMode();
-            $room = $this->roomService->getRoomItem($roomId);
-            $this->legacyEnvironment->toggleArchiveMode();
-        }
-
         if ($room) {
             if ($room->isPrivateRoom()) {
                 $pageTitleElements[] = $this->translator->trans('dashboard', [], 'menu');

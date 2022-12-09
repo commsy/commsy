@@ -153,8 +153,6 @@ class cs_user_manager extends cs_manager {
 
    private $_only_from_portal = false;
 
-   private $_limit_no_membership = NULL;
-
    private $_limit_email = NULL;
 
    private $_limit_connection_key = NULL;
@@ -203,7 +201,6 @@ class cs_user_manager extends cs_manager {
       $this->_limit_community = NULL;
       $this->_limit_project = NULL;
       $this->_limit_portal_id = NULL;
-      $this->_limit_no_membership = NULL;
       $this->_only_from_portal = false;
       $this->_limit_email = NULL;
       $this->_user_limit_binary = NULL;
@@ -427,10 +424,6 @@ class cs_user_manager extends cs_manager {
       $this->_limit_project = true;
    }
 
-   public function setNoMemberShipLimit () {
-      $this->_limit_no_membership = true;
-   }
-
    /** set order limit
     * this method sets an order limit for the select statement
     *
@@ -446,66 +439,6 @@ class cs_user_manager extends cs_manager {
      */
    function getIDs () {
       return $this->getIDArray();
-   }
-
-   private function _getSQLJoinForNoMemberShip () {
-      $retour  = '';
-      $current_portal = $this->_environment->getCurrentPortalItem();
-      $room_id_array = $current_portal->getCommunityIDArray();
-      $room_id_array = array_merge($room_id_array,$current_portal->getProjectIDArray());
-      $room_id_array = array_merge($room_id_array,$current_portal->getGroupIDArray());
-      if ( !empty($room_id_array) ) {
-         $tmp_db_name = 'usernomem';
-         $retour .= ' LEFT JOIN '.$this->addDatabasePrefix($this->_db_table).' AS '.$tmp_db_name;
-         $retour .= ' ON '.$this->addDatabasePrefix($this->_db_table).'.user_id='.$tmp_db_name.'.user_id';
-         $retour .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.auth_source='.$tmp_db_name.'.auth_source';
-         $retour .= ' AND '.$tmp_db_name.'.deleter_id IS NULL';
-         $retour .= ' AND '.$tmp_db_name.'.deletion_date IS NULL';
-         $retour .= ' AND '.$tmp_db_name.'.context_id IN ('.implode(',',$room_id_array).')';
-      }
-
-      // archive
-      if ( !$this->_environment->isArchiveMode() ) {
-         $this->_environment->activateArchiveMode();
-         $room_id_array = $current_portal->getCommunityIDArray();
-         $room_id_array = array_merge($room_id_array,$current_portal->getProjectIDArray());
-         $room_id_array = array_merge($room_id_array,$current_portal->getGroupIDArray());
-         if ( !empty($room_id_array) ) {
-            $tmp_db_name = 'usernomem_archive';
-            $this->setWithDatabasePrefix();
-
-            global $symfonyContainer;
-            $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
-
-            $retour .= ' LEFT JOIN '.$this->addDatabasePrefix($this->_db_table).' AS '.$tmp_db_name;
-            $this->_db_prefix = '';
-            $this->setWithoutDatabasePrefix();
-            $retour .= ' ON '.$this->addDatabasePrefix($this->_db_table).'.user_id='.$tmp_db_name.'.user_id';
-            $retour .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.auth_source='.$tmp_db_name.'.auth_source';
-            $retour .= ' AND '.$tmp_db_name.'.deleter_id IS NULL';
-            $retour .= ' AND '.$tmp_db_name.'.deletion_date IS NULL';
-            $retour .= ' AND '.$tmp_db_name.'.context_id IN ('.implode(',',$room_id_array).')';
-         }
-         $this->_environment->deactivateArchiveMode();
-      }
-      // archive
-
-      return $retour;
-   }
-
-   private function _getSQLLimitForNoMemberShip () {
-      $retour  = '';
-      $tmp_db_name = 'usernomem';
-      $retour .= ' AND '.$tmp_db_name.'.auth_source IS NULL';
-
-      // archive
-      if ( !$this->_environment->isArchiveMode() ) {
-         $tmp_db_name_archive = 'usernomem_archive';
-         $retour .= ' AND '.$tmp_db_name_archive.'.auth_source IS NULL';
-      }
-      // archive
-
-      return $retour;
    }
 
     /**
@@ -552,29 +485,11 @@ class cs_user_manager extends cs_manager {
                 if (isset($this->_is_user_in_context_cache[$user_id . $auth_source][$context_id]) &&
                     $this->_is_user_in_context_cache[$user_id . $auth_source][$context_id] == 'is_user') {
                     return true;
-                } else {
-                    if ($this->_environment->foundCurrentContextInArchive() &&
-                        !$this->_environment->isArchiveMode() &&
-                        !($this instanceof cs_zzz_user_manager)
-                    ) {
-                        $zzz_user_manager = $this->_environment->getZZZUserManager();
-                        return $zzz_user_manager->isUserInContext($user_id, $context_id, $auth_source);
-                    } else {
-                        return false;
-                    }
-                }
-            } else {
-                if ($this->_environment->foundCurrentContextInArchive() &&
-                    !$this->_environment->isArchiveMode() &&
-                    !($this instanceof cs_zzz_user_manager)
-                ) {
-                    $zzz_user_manager = $this->_environment->getZZZUserManager();
-                    return $zzz_user_manager->isUserInContext($user_id, $context_id, $auth_source);
-                } else {
-                    return false;
                 }
             }
         }
+
+        return false;
     }
 
    /** INTERNAL: perform database query to get user data
@@ -622,10 +537,6 @@ class cs_user_manager extends cs_manager {
         $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' AS user2 ON ( '.$this->addDatabasePrefix('user').'.user_id=user2.user_id and '.$this->addDatabasePrefix('user').'.auth_source=user2.auth_source ) ';
         $query .= ' INNER JOIN '.$this->addDatabasePrefix('room').' ON ( '.$this->addDatabasePrefix('room').'.deletion_date IS NULL AND user2.context_id=room.item_id ) ';
      }
-
-      if ( isset($this->_limit_no_membership) and  $this->_limit_no_membership  ) {
-         $query .= $this->_getSQLJoinForNoMemberShip();
-      }
 
      $query .= ' WHERE 1';
 
@@ -831,10 +742,6 @@ class cs_user_manager extends cs_manager {
            $query .= ' AND '.$this->addDatabasePrefix('room').'.type="'.CS_PROJECT_TYPE.'"';
         }
      }
-
-      if ( isset($this->_limit_no_membership) and  $this->_limit_no_membership  ) {
-         $query .= $this->_getSQLLimitForNoMemberShip();
-      }
 
        if ($this->modificationNewerThenLimit) {
            $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.modification_date >= "' . $this->modificationNewerThenLimit->format('Y-m-d H:i:s') . '"';

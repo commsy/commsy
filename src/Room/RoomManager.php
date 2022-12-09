@@ -3,7 +3,6 @@
 namespace App\Room;
 
 use App\Entity\Room;
-use App\Entity\ZzzRoom;
 use App\Utils\ItemService;
 use cs_community_item;
 use cs_list;
@@ -38,23 +37,13 @@ class RoomManager
 
     /**
      * @param int $roomId
-     * @return Room|ZzzRoom|null
+     * @return Room|null
      */
     public function getRoom(int $roomId): ?object
     {
         $roomRepository = $this->entityManager->getRepository(Room::class);
         $room = $roomRepository->findOneBy(['itemId' => $roomId]);
-        if ($room) {
-            return $room;
-        }
-
-        $zzzRoomRepository = $this->entityManager->getRepository(ZzzRoom::class);
-        $room = $zzzRoomRepository->findOneBy(['itemId' => $roomId]);
-        if ($room) {
-            return $room;
-        }
-
-        return null;
+        return $room ?? null;
     }
 
     /**
@@ -63,8 +52,8 @@ class RoomManager
      */
     public function getLinkedProjectRooms(object $room): cs_list
     {
-        if (!$room instanceof Room && !$room instanceof ZzzRoom) {
-            throw new LogicException('$room must be of type Room or ZzzRoom');
+        if (!$room instanceof Room) {
+            throw new LogicException('$room must be of type Room');
         }
 
         if (!$room->isCommunityRoom()) {
@@ -86,8 +75,8 @@ class RoomManager
      */
     public function renewActivityUpdated(object $room, bool $flush = true): void
     {
-        if (!$room instanceof Room && !$room instanceof ZzzRoom) {
-            throw new LogicException('$room must be of type Room or ZzzRoom');
+        if (!$room instanceof Room) {
+            throw new LogicException('$room must be of type Room');
         }
 
         $room->setActivityStateUpdated(new DateTime());
@@ -111,8 +100,8 @@ class RoomManager
         bool $flush = true
     ) : void
     {
-        if (!$room instanceof Room && !$room instanceof ZzzRoom) {
-            throw new LogicException('$room must be of type Room or ZzzRoom');
+        if (!$room instanceof Room) {
+            throw new LogicException('$room must be of type Room');
         }
 
         if ($resetLastLogin) {
@@ -137,12 +126,8 @@ class RoomManager
     public function resetInactivityToPreviousNonNotificationState(): void
     {
         $roomRepository = $this->entityManager->getRepository(Room::class);
-        $zzzRoomRepository = $this->entityManager->getRepository(ZzzRoom::class);
 
         $roomRepository->updateActivity(Room::ACTIVITY_IDLE_NOTIFIED, Room::ACTIVITY_IDLE);
         $roomRepository->updateActivity(Room::ACTIVITY_ACTIVE_NOTIFIED, Room::ACTIVITY_ACTIVE);
-
-        $zzzRoomRepository->updateActivity(Room::ACTIVITY_IDLE_NOTIFIED, Room::ACTIVITY_IDLE);
-        $zzzRoomRepository->updateActivity(Room::ACTIVITY_ACTIVE_NOTIFIED, Room::ACTIVITY_ACTIVE);
     }
 }

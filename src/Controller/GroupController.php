@@ -162,7 +162,7 @@ class GroupController extends BaseController
             'showCategories' => $roomItem->withTags(),
             'showAssociations' => false,
             'usageInfo' => $usageInfo,
-            'isArchived' => $roomItem->isArchived(),
+            'isArchived' => $roomItem->getArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'sort' => $sort,
         );
@@ -200,7 +200,7 @@ class GroupController extends BaseController
             $this->groupService->hideDeactivatedEntries();
         }
 
-        // get group list from manager service 
+        // get group list from manager service
         if ($sort === "none" || empty($sort)) {
             $sort = $this->session->get('sortGroups', 'date');
         }
@@ -211,7 +211,7 @@ class GroupController extends BaseController
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
         }
 
-        // get group list from manager service 
+        // get group list from manager service
         $itemsCountArray = $this->groupService->getCountArray($roomId);
 
         $html = $this->renderView('group/list_print.html.twig', [
@@ -420,7 +420,7 @@ class GroupController extends BaseController
             'annotationForm' => $form->createView(),
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
-            'isArchived' => $roomItem->isArchived(),
+            'isArchived' => $roomItem->getArchived(),
             'lastModeratorStanding' => $currentUserIsLastGrouproomModerator,
             'userRubricVisible' => in_array("user", $this->roomService->getRubricInformation($roomId)),
         );

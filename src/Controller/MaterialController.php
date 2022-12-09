@@ -251,7 +251,7 @@ class MaterialController extends BaseController
 
         $sort = $this->session->get('sortMaterials', 'date');
 
-        // get material list from manager service 
+        // get material list from manager service
         $itemsCountArray = $this->materialService->getCountArray($roomId);
 
         $usageInfo = false;
@@ -274,7 +274,7 @@ class MaterialController extends BaseController
             'catzExpanded' => $roomItem->isTagsShowExpanded(),
             'material_filter' => $filterForm,
             'usageInfo' => $usageInfo,
-            'isArchived' => $roomItem->isArchived(),
+            'isArchived' => $roomItem->getArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'isMaterialOpenForGuests' => $roomItem->isMaterialOpenForGuests(),
             'sort' => $sort,
@@ -312,7 +312,7 @@ class MaterialController extends BaseController
             $this->materialService->setFilterConditions($filterForm);
         }
 
-        // get material list from manager service 
+        // get material list from manager service
         if ($sort === "none" || empty($sort)) {
             $sort = $this->session->get('sortMaterials', 'date');
         }
@@ -334,7 +334,7 @@ class MaterialController extends BaseController
             $ratingList = $this->assessmentService->getListAverageRatings($itemIds);
         }
 
-        // get material list from manager service 
+        // get material list from manager service
         $itemsCountArray = $this->materialService->getCountArray($roomId);
 
         $html = $this->renderView('material/list_print.html.twig', [

@@ -239,7 +239,7 @@ class DateController extends BaseController
             'usageInfo' => $usageInfo,
             'iCal' => $iCal,
             'calendars' => $calendars,
-            'isArchived' => $roomItem->isArchived(),
+            'isArchived' => $roomItem->getArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'sort' => $sort,
             'showHashTags' => $roomItem->withBuzzwords(),
@@ -380,7 +380,7 @@ class DateController extends BaseController
             'usageInfo' => $usageInfo,
             'iCal' => $iCal,
             'calendars' => $calendars,
-            'isArchived' => $roomItem->isArchived(),
+            'isArchived' => $roomItem->getArchived(),
             'defaultView' => ($roomItem->getDatesPresentationStatus() === 'calendar')? 'agendaWeek': 'month'
         ];
     }

@@ -96,7 +96,7 @@ class TopicController extends BaseController
             $this->topicService->hideDeactivatedEntries();
         }
 
-        // get topic list from manager service 
+        // get topic list from manager service
         $itemsCountArray = $this->topicService->getCountArray($roomId);
 
         $usageInfo = false;
@@ -118,7 +118,7 @@ class TopicController extends BaseController
             'catzExpanded' => $roomItem->isTagsShowExpanded(),
             'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
             'usageInfo' => $usageInfo,
-            'isArchived' => $roomItem->isArchived(),
+            'isArchived' => $roomItem->getArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
         );
     }
@@ -162,7 +162,7 @@ class TopicController extends BaseController
             $this->topicService->hideDeactivatedEntries();
         }
 
-        // get topic list from manager service 
+        // get topic list from manager service
         $topics = $this->topicService->getListTopics($roomId, $max, $start);
 
         $readerList = array();
@@ -706,7 +706,7 @@ class TopicController extends BaseController
             // set filter conditions in announcement manager
             $this->topicService->setFilterConditions($filterForm);
         }
-        // get announcement list from manager service 
+        // get announcement list from manager service
         $topics = $this->topicService->getListTopics($roomId);
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -724,7 +724,7 @@ class TopicController extends BaseController
             $ratingList = $assessmentService->getListAverageRatings($itemIds);
         }
 
-        // get announcement list from manager service 
+        // get announcement list from manager service
         $itemsCountArray = $this->topicService->getCountArray($roomId);
 
         $html = $this->renderView('topic/list_print.html.twig', [

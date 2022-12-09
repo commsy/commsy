@@ -26,9 +26,6 @@ parameters:
     commsy.cookie.domain: ~
     commsy.cookie.path: ~
 
-    # Database
-    commsy.db.backup_prefix: 'zzz'
-
     # E-Mail
     commsy.email.from: '%env(EMAIL_FROM)%'
 

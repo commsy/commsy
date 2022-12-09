@@ -3,7 +3,6 @@
 namespace App\Mail\Factories;
 
 use App\Entity\Room;
-use App\Entity\ZzzRoom;
 use App\Mail\MessageInterface;
 use App\Mail\Messages\RoomActivityDeleteWarningMessage;
 use App\Mail\Messages\RoomActivityLockWarningMessage;
@@ -37,9 +36,9 @@ class RoomMessageFactory
      */
     public function createRoomActivityLockWarningMessage(object $room): ?MessageInterface
     {
-        /** @var Room|ZzzRoom $room */
-        if (!$room instanceof Room && !$room instanceof ZzzRoom) {
-            throw new LogicException('$room must be of type Room or ZzzRoom');
+        /** @var Room $room */
+        if (!$room instanceof Room) {
+            throw new LogicException('$room must be of type Room');
         }
 
         $portal = $this->portalRepository->find($room->getContextId());
@@ -56,9 +55,9 @@ class RoomMessageFactory
      */
     public function createRoomActivityDeleteWarningMessage(object $room): ?MessageInterface
     {
-        /** @var Room|ZzzRoom $room */
-        if (!$room instanceof Room && !$room instanceof ZzzRoom) {
-            throw new LogicException('$room must be of type Room or ZzzRoom');
+        /** @var Room $room */
+        if (!$room instanceof Room) {
+            throw new LogicException('$room must be of type Room');
         }
 
         $portal = $this->portalRepository->find($room->getContextId());

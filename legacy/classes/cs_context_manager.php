@@ -180,18 +180,12 @@ class cs_context_manager extends cs_manager
       $item = $this->_getNewRoomItem($db_array['type']);
       $item->_setItemData(encode(FROM_DB,$db_array));
 
-      if ( !empty($db_array['zzz_table'])
-      	  and $db_array['zzz_table'] == 1
-      	) {
-      	$item->setArchiveStatus();
-      }
-
       if ( $this->_cache_on ) {
          if ( empty($this->_cache_object[$item->getItemID()]) ) {
             $this->_cache_object[$item->getItemID()] = $item;
          }
       }
-      
+
       return $item;
    }
 
@@ -289,6 +283,10 @@ class cs_context_manager extends cs_manager
 
             if ($withExtras) {
                 $queryBuilder->addSelect('c.extras');
+            }
+
+            if ($this->_room_type !== 'privateroom') {
+                $queryBuilder->addSelect('c.archived');
             }
 
             if ($user_id !== 'guest') {
@@ -480,11 +478,6 @@ class cs_context_manager extends cs_manager
             } elseif ( !empty($result[0]) ) {
                $data_array = $result[0];
                if ( !empty($data_array) ) {
-               	if ( function_exists('get_called_class')
-               		  and strstr(get_called_class(),'_zzz_')
-               	   ) {
-               		$data_array['zzz_table'] = 1;
-               	}
                	if ($this->_db_table === 'portal') {
                	    // NOTE: as of migration Version20200617133036.php, the `portal` table has no `type` column
                     // anymore so we add the type here in order to maintain compatibility with `_getNewRoomItem()`
@@ -803,7 +796,7 @@ class cs_context_manager extends cs_manager
             trigger_error('Problems updating activity points ' . $this->_db_table . '.', E_USER_WARNING);
         }
     }
-   
+
    function checkOptions ($xml, $context_item, $options) {
       if (isset($options['check']['dates']['recurrence_id'])) {
          $dates_manager = $this->_environment->getDatesManager();

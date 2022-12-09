@@ -47,16 +47,6 @@ class FileController extends AbstractController
         $file = $fileService->getFile($fileId);
         $rootDir = $params->get('kernel.project_dir') . '/';
 
-        // fix for archived rooms
-        if (!$file->getPortalID()) {
-            $roomItem = $roomService->getArchivedRoomItem($file->getContextID());
-
-            if ($roomItem) {
-                $file->setPortalID($roomItem->getContextId());
-            }
-        }
-        // ~fix for archived rooms
-
         if (!file_exists($rootDir . $file->getDiskFileName())) {
             // fix for userrooms
             if ($legacyEnvironment->getEnvironment()->getCurrentContextItem()->getType() == 'userroom') {

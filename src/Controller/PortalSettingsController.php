@@ -929,9 +929,6 @@ class PortalSettingsController extends AbstractController
                 $materialManager = $legacyEnvironment->getMaterialManager();
                 $materialManager->unsetLicenses($delete->get(0));
 
-                $zzzMaterialManager = $legacyEnvironment->getZzzMaterialManager();
-                $zzzMaterialManager->unsetLicenses($delete->get(0));
-
                 $em->remove($delete->get(0));
                 $em->flush();
             }
@@ -2165,8 +2162,8 @@ class PortalSettingsController extends AbstractController
 
         $relatedUsers = $userListBuilder
             ->fromAccount($accountManager->getAccount($user, $portal->getId()))
-            ->withProjectRoomUser(true)
-            ->withCommunityRoomUser(true)
+            ->withProjectRoomUser()
+            ->withCommunityRoomUser()
             ->withUserRoomUser()
             ->withPrivateRoomUser()
             ->getList();
@@ -2174,7 +2171,7 @@ class PortalSettingsController extends AbstractController
         foreach ($relatedUsers as $relatedUser) {
             $contextID = $relatedUser->getContextID();
             $locked = $relatedUser->getStatus() === "0" ? "(".$translator->trans('Locked', [], 'portal'). ") " : "";
-            $relatedRoomItem = $roomService->getRoomItem($contextID) ?? $roomService->getArchivedRoomItem($contextID);
+            $relatedRoomItem = $roomService->getRoomItem($contextID);
             if ($relatedRoomItem->getType() === 'project') {
                 if ($relatedRoomItem->getStatus() == '2') {
                     $projectsArchivedListNames[] = $locked . $relatedRoomItem->getTitle() . '( ID: ' . $relatedRoomItem->getItemID() . ' ) (ARCH.)';
