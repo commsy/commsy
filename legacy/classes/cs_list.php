@@ -1,44 +1,33 @@
 <?php
-// $Id$
-//
-// Release $Name$
-//
-// Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
-// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez
-//
-//    This file is part of CommSy.
-//
-//    CommSy is free software; you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation; either version 2 of the License, or
-//    (at your option) any later version.
-//
-//    CommSy is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
-//
-//    You have received a copy of the GNU General Public License
-//    along with CommSy.
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 /** class for lists of commsy items (objects)
- * this class implements a list of objects. An object is a commsy item
+ * this class implements a list of objects. An object is a commsy item.
  */
 class cs_list implements IteratorAggregate
 {
     /**
-     * string - containing the type of the list resp. the type of the elements
+     * string - containing the type of the list resp. the type of the elements.
      */
     protected $type;
 
     /**
-     * array - containing the elements of the list
+     * array - containing the elements of the list.
      */
     protected array $data = [];
 
     /** constructor: cs_list
-     * the only available constructor, initial values for internal variables
+     * the only available constructor, initial values for internal variables.
      */
     public function __construct()
     {
@@ -46,19 +35,19 @@ class cs_list implements IteratorAggregate
     }
 
     /** is the type of the list = $type ?
-     * this method returns a boolean expressing if type of the list is $type or not
+     * this method returns a boolean expressing if type of the list is $type or not.
      *
      * @param string type string to compare with type of list ($type)
      *
-     * @return boolean   true - type of this list is $type
-     *                   false - type of this list is not $type
+     * @return bool true - type of this list is $type
+     *              false - type of this list is not $type
      */
     public function isA($type): bool
     {
         return $this->type == $type;
     }
 
-    /** reset internal variables
+    /** reset internal variables.
      *
      * this method resets the list
      */
@@ -67,7 +56,7 @@ class cs_list implements IteratorAggregate
         reset($this->data);
     }
 
-    /** reset internal cursor
+    /** reset internal cursor.
      *
      * this method resets the cursor
      */
@@ -77,17 +66,17 @@ class cs_list implements IteratorAggregate
     }
 
     /** get next element
-     * this method returns the next element from the internal array
+     * this method returns the next element from the internal array.
      *
      * @return object|false cs_item returns an object with the information about the next element
      */
-    public function getNext()
+    public function getNext(): object|false
     {
         return next($this->data);
     }
 
     /** add an element
-     * this method adds a new element to the list
+     * this method adds a new element to the list.
      *
      * @param object cs_item a commsy item (object)
      */
@@ -97,13 +86,14 @@ class cs_list implements IteratorAggregate
     }
 
     /** get first element
-     * this method returns the first element from the internal array
+     * this method returns the first element from the internal array.
      *
      * @return object|false cs_item an commsy item with the information about the first element
      */
-    public function getFirst()
+    public function getFirst(): object|false
     {
         $this->reset();
+
         return current($this->data);
     }
 
@@ -114,22 +104,22 @@ class cs_list implements IteratorAggregate
         foreach ($subdata_array as $subdata_item) {
             $sub_list->add($subdata_item);
         }
+
         return $sub_list;
     }
 
     /** get last element
-     * this method returns the last element from the internal array
+     * this method returns the last element from the internal array.
      *
      * @return object|false cs_item an commsy item with the information about the last element
      */
-    public function getLast()
+    public function getLast(): object|false
     {
         return end($this->data);
     }
 
-
     /** add a list of commsy items to this list
-     * this method adds a list of commsy items to this list, like array_merge
+     * this method adds a list of commsy items to this list, like array_merge.
      *
      * @param cs_list $list cs_list a list of commsy items (object)
      */
@@ -139,9 +129,9 @@ class cs_list implements IteratorAggregate
     }
 
     /** count list
-     * this method returns the number of elements
+     * this method returns the number of elements.
      *
-     * @return integer number of elements within the list
+     * @return int number of elements within the list
      */
     public function getCount(): int
     {
@@ -149,19 +139,19 @@ class cs_list implements IteratorAggregate
     }
 
     /** is list empty
-     * this method returns a boolean: true if list is empty
+     * this method returns a boolean: true if list is empty.
      *
-     * @return boolean list empty?
+     * @return bool list empty?
      */
     public function isEmpty(): bool
     {
-        return $this->getCount() === 0;
+        return 0 === $this->getCount();
     }
 
     /** is list not empty
-     * this method returns a boolean: true if list is not empty
+     * this method returns a boolean: true if list is not empty.
      *
-     * @return boolean list not empty?
+     * @return bool list not empty?
      */
     public function isNotEmpty(): bool
     {
@@ -169,56 +159,55 @@ class cs_list implements IteratorAggregate
     }
 
     /** sort list
-     * this method sort list by $sort_by
+     * this method sort list by $sort_by.
      *
      * @param string sort_by keyword for sorting list
      */
     public function sortby($sort_by): void
     {
+        $temp_array2 = [];
         // prepare temp array to sort
         if (count($this->data) > 1) {
             $old_list = $this->data;
-            $temp_array = array();
-            for ($i = 0; $i < count($old_list); $i++) {
+            $temp_array = [];
+            for ($i = 0; $i < count($old_list); ++$i) {
                 $temp_array2['position'] = $i;
-                if ($sort_by == 'name') {
+                if ('name' == $sort_by) {
                     $temp_array2[$sort_by] = $this->translateUmlaute($old_list[$i]->getName());
-                } elseif ($sort_by == 'lastname') {
+                } elseif ('lastname' == $sort_by) {
                     $temp_array2[$sort_by] = $this->translateUmlaute($old_list[$i]->getLastname());
-                } elseif ($sort_by == 'modification_date') {
+                } elseif ('modification_date' == $sort_by) {
                     $temp_array2[$sort_by] = $old_list[$i]->getModificationDate();
-                } elseif ($sort_by == 'title') {
+                } elseif ('title' == $sort_by) {
                     $temp_array2[$sort_by] = $this->translateUmlaute($old_list[$i]->getTitle());
-                } elseif ($sort_by == 'sorting') {
+                } elseif ('sorting' == $sort_by) {
                     $temp_array2[$sort_by] = $old_list[$i]->getSortingFieldContent();
-                } elseif ($sort_by == 'filename') {
+                } elseif ('filename' == $sort_by) {
                     $temp_array2[$sort_by] = $old_list[$i]->getDisplayName();
-                } elseif ($sort_by == 'date') {
-                    $temp_array2[$sort_by] = $old_list[$i]->getDateTime_start() . $old_list[$i]->getDateTime_end();
-                } elseif ($sort_by == 'treePosition') {
+                } elseif ('date' == $sort_by) {
+                    $temp_array2[$sort_by] = $old_list[$i]->getDateTime_start().$old_list[$i]->getDateTime_end();
+                } elseif ('treePosition' == $sort_by) {
                     $temp_array2[$sort_by] = $old_list[$i]->getPosition();
                 } else {
-                    throw new LogicException("not implemented");
+                    throw new LogicException('not implemented');
                 }
                 $temp_array[] = $temp_array2;
             }
 
             // sort temp array
-            usort($temp_array, function ($a, $b) use ($sort_by) {
-                return strnatcasecmp($a[$sort_by], $b[$sort_by]);
-            });
+            usort($temp_array, fn ($a, $b) => strnatcasecmp($a[$sort_by], $b[$sort_by]));
 
             // create sorted list array
             unset($this->data);
-            $this->data = array();
-            for ($i = 0; $i < count($temp_array); $i++) {
+            $this->data = [];
+            for ($i = 0; $i < count($temp_array); ++$i) {
                 $this->data[$i] = $old_list[$temp_array[$i]['position']];
             }
         }
     }
 
     /** reverse list elements
-     * this method reverse the list
+     * this method reverse the list.
      */
     public function reverse(): void
     {
@@ -226,14 +215,14 @@ class cs_list implements IteratorAggregate
     }
 
     /** list unique
-     * this method is like array_unique
+     * this method is like array_unique.
      */
     public function unique(): void
     {
         if (count($this->data) > 1) {
             $a = $this->data;
-            $r = array();
-            for ($i = 0; $i < count($a); $i++) {
+            $r = [];
+            for ($i = 0; $i < count($a); ++$i) {
                 if (!in_array($a[$i], $r)) {
                     $r[] = $a[$i];
                 }
@@ -259,6 +248,7 @@ class cs_list implements IteratorAggregate
                 $return_item = $list_item;
             }
         }
+
         return $return_item;
     }
 
@@ -267,7 +257,7 @@ class cs_list implements IteratorAggregate
         return $this->data[$pos];
     }
 
-    function inList($item): bool
+    public function inList($item): bool
     {
         if (isset($item)
             and $item->getItemID() > 0
@@ -301,10 +291,13 @@ class cs_list implements IteratorAggregate
     }
 
     /**
-     * Retrieve an external iterator
-     * @link https://php.net/manual/en/iteratoraggregate.getiterator.php
+     * Retrieve an external iterator.
+     *
+     * @see https://php.net/manual/en/iteratoraggregate.getiterator.php
+     *
      * @return Traversable An instance of an object implementing <b>Iterator</b> or
-     * <b>Traversable</b>
+     *                     <b>Traversable</b>
+     *
      * @since 5.0.0
      */
     public function getIterator()
@@ -320,6 +313,7 @@ class cs_list implements IteratorAggregate
         $value = str_replace('ä', 'azzz', $value);
         $value = str_replace('ö', 'ozzz', $value);
         $value = str_replace('ü', 'uzzz', $value);
+
         return $value;
     }
 }

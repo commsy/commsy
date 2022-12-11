@@ -1,58 +1,49 @@
-<?PHP
-// $Id$
-//
-// Release $Name$
-//
-// Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
-// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
-//
-//    This file is part of CommSy.
-//
-//    CommSy is free software; you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation; either version 2 of the License, or
-//    (at your option) any later version.
-//
-//    CommSy is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
-//
-//    You have received a copy of the GNU General Public License
-//    along with CommSy.
+<?php
 
-/** upper class of the label manager
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
-include_once('classes/cs_labels_manager.php');
 
-/** upper class of the time item
+/** upper class of the label manager.
  */
-include_once('classes/cs_time_item.php');
+include_once 'classes/cs_labels_manager.php';
+
+/** upper class of the time item.
+ */
+include_once 'classes/cs_time_item.php';
 
 /** class for database connection to the database table "labels"
  * this class implements a database manager for the table "labels". Labels are groups, topics, labels, ...
  */
-class cs_time_manager extends cs_labels_manager {
+class cs_time_manager extends cs_labels_manager
+{
+    /** constructor: cs_time_manager
+     * the only available constructor, initial values for internal variables.
+     *
+     * @param object cs_environment the environment
+     */
+    public function __construct($environment)
+    {
+        cs_labels_manager::__construct($environment);
+    }
 
-  /** constructor: cs_time_manager
-    * the only available constructor, initial values for internal variables
-    *
-    * @param object cs_environment the environment
-    */
-  function __construct($environment) {
-     cs_labels_manager::__construct($environment);
-  }
+     /** get an empty time item
+      *  get an empty label_item.
+      *
+      *  @return cs_label_item a time label
+      */
+     public function getNewItem($label_type = '')
+     {
+         $item = new cs_time_item($this->_environment);
+         $item->makeSystemLabel();
 
-  /** get an empty time item
-    *  get an empty label_item
-    *
-    *  @return cs_label_item a time label
-    */
-   function getNewItem($label_type = '') {
-      $item = new cs_time_item($this->_environment);
-      $item->makeSystemLabel();
-      return $item;
-   }
+         return $item;
+     }
 }
-?>

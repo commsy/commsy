@@ -1,73 +1,48 @@
-<?PHP
-// $Id$
-//
-// Release $Name$
-//
-// Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
-// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Jose Manuel Gonzalez Vazquez
-//
-//    This file is part of CommSy.
-//
-//    CommSy is free software; you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation; either version 2 of the License, or
-//    (at your option) any later version.
-//
-//    CommSy is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
-//
-//    You have received a copy of the GNU General Public License
-//    along with CommSy.
+<?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
-include_once('classes/cs_item.php');
+include_once 'classes/cs_item.php';
 
 /** class for a user
- * this class implements a user item
+ * this class implements a user item.
  */
 class cs_user_item extends cs_item
 {
-    /**
-     * @var string
-     */
     private string $oldStatus = 'new';
 
-    /**
-     * @var string|null
-     */
     private ?string $oldContact = null;
 
-    /**
-     * @var array
-     */
     private array $changedValues = [];
 
-    /**
-     * @var array|null
-     */
     private ?array $contextIdArray = null;
 
     /**
-     * the user room associated with this user
-     * @var cs_userroom_item|null
+     * the user room associated with this user.
      */
     private ?cs_userroom_item $userroomItem = null;
 
     /**
-     * for a user item in a user room, returns the project room user associated with this user
-     * @var cs_user_item|null
+     * for a user item in a user room, returns the project room user associated with this user.
      */
     private ?cs_user_item $projectUserItem = null;
 
     /** constructor: cs_user_item
-     * the only available constructor, initial values for internal variables
+     * the only available constructor, initial values for internal variables.
      */
     public function __construct($environment)
     {
@@ -79,7 +54,7 @@ class cs_user_item extends cs_item
      *
      * @param $data_array Is the prepared array from "_buildItem($db_array)"
      */
-    function _setItemData($data_array)
+    public function _setItemData($data_array)
     {
         $this->_data = $data_array;
         if (isset($data_array['status']) and !empty($data_array['status'])) {
@@ -89,70 +64,70 @@ class cs_user_item extends cs_item
     }
 
     /** get user id of the user
-     * this method returns the user id (account or Benutzerkennung) of the user
+     * this method returns the user id (account or Benutzerkennung) of the user.
      *
      * @return string user id of the user
      */
-    function getUserID()
+    public function getUserID()
     {
         return $this->_getValue('user_id');
     }
 
     /** set user id of the user
-     * this method sets the user id (account or Benutzerkennung) of the user
+     * this method sets the user id (account or Benutzerkennung) of the user.
      *
      * @param string value user id of the user
      */
-    function setUserID($value)
+    public function setUserID($value)
     {
         $this->_setValue('user_id', $value);
         $this->changedValues[] = 'user_id';
     }
 
-    function getAuthSource()
+    public function getAuthSource()
     {
         return $this->_getValue('auth_source');
     }
 
-    function setAuthSource($value)
+    public function setAuthSource($value)
     {
         $this->_setValue('auth_source', $value);
     }
 
     /** set groups of a news item by id
-     * this method sets a list of group item_ids which are linked to the user
+     * this method sets a list of group item_ids which are linked to the user.
      *
      * @param array of group ids, index of id must be 'iid'<br />
      * Example:<br />
      * array(array('iid' => value1), array('iid' => value2))
      */
-    function setGroupListByID($value)
+    public function setGroupListByID($value)
     {
         $this->setLinkedItemsByID(CS_GROUP_TYPE, $value);
     }
 
     /** set one group of a user item by id
-     * this method sets one group item id which is linked to the user
+     * this method sets one group item id which is linked to the user.
      *
-     * @param integer group id
+     * @param int group id
      */
-    function setGroupByID($value)
+    public function setGroupByID($value)
     {
-        $value_array = array();
+        $value_array = [];
         $value_array[] = $value;
         $this->setGroupListByID($value_array);
     }
 
     /** set one group of a user item
-     * this method sets one group which is linked to the user
+     * this method sets one group which is linked to the user.
      *
      * @param object cs_label group
      */
-    function setGroup($value)
+    public function setGroup($value)
     {
         if (isset($value)
             and $value->isA(CS_LABEL_TYPE)
-            and $value->getLabelType() == CS_GROUP_TYPE
+            and CS_GROUP_TYPE == $value->getLabelType()
             and $value->getItemID() > 0
         ) {
             $this->setGroupByID($value->getItemID());
@@ -161,63 +136,65 @@ class cs_user_item extends cs_item
     }
 
     /** get topics of a user
-     * this method returns a list of topics which are linked to the user
+     * this method returns a list of topics which are linked to the user.
      *
      * @return object cs_list a list of topics (cs_label_item)
      */
-    function getTopicList()
+    public function getTopicList()
     {
         $topic_manager = $this->_environment->getLabelManager();
         $topic_manager->setTypeLimit(CS_TOPIC_TYPE);
+
         return $this->_getLinkedItems($topic_manager, CS_TOPIC_TYPE);
     }
 
     /** set topics of a user
-     * this method sets a list of topics which are linked to the user
+     * this method sets a list of topics which are linked to the user.
      *
      * @param cs_list list of topics (cs_label_item)
      */
-    function setTopicList($value)
+    public function setTopicList($value)
     {
-        $this->_setObject(CS_TOPIC_TYPE, $value, FALSE);
+        $this->_setObject(CS_TOPIC_TYPE, $value, false);
     }
 
     /** set topics of a news item by id
-     * this method sets a list of topic item_ids which are linked to the user
+     * this method sets a list of topic item_ids which are linked to the user.
      *
      * @param array of topic ids, index of id must be 'iid'<br />
      * Example:<br />
      * array(array('iid' => value1), array('iid' => value2))
      */
-    function setTopicListByID($value)
+    public function setTopicListByID($value)
     {
         $this->setLinkedItemsByID(CS_TOPIC_TYPE, $value);
     }
 
     /** set one topic of a user item by id
-     * this method sets one topic item id which is linked to the user
+     * this method sets one topic item id which is linked to the user.
      *
-     * @param integer topic id
+     * @param int topic id
      */
-    function setTopicByID($value)
+    public function setTopicByID($value)
     {
-        $value_array = array();
+        $value_array = [];
         $value_array[] = $value;
         $this->setTopicListByID($value_array);
     }
 
     /** set one topic of a user item
-     * this method sets one topic which is linked to the user
+     * this method sets one topic which is linked to the user.
      *
      * @param object cs_label topic
      */
-    function setTopic($value)
+    public function setTopic($value)
     {
         $this->setTopicByID($value->getItemID());
     }
 
     /**
-     * For a user item in a project room, returns any user room associated with this user
+     * For a user item in a project room, returns any user room associated with this user.
+     *
      * @return cs_userroom_item|null the user room associated with this user
      */
     public function getLinkedUserroomItem(): ?cs_userroom_item
@@ -233,6 +210,7 @@ class cs_user_item extends cs_item
             if (isset($userroomItem) and !$userroomItem->isDeleted()) {
                 $this->userroomItem = $userroomItem;
             }
+
             return $this->userroomItem;
         }
 
@@ -244,12 +222,13 @@ class cs_user_item extends cs_item
         if ($this->_issetExtra('USERROOM_ITEM_ID')) {
             return $this->_getExtra('USERROOM_ITEM_ID');
         }
+
         return null;
     }
 
     public function setLinkedUserroomItemID($roomId)
     {
-        $this->_setExtra('USERROOM_ITEM_ID', (int)$roomId);
+        $this->_setExtra('USERROOM_ITEM_ID', (int) $roomId);
     }
 
     public function unsetLinkedUserroomItemID()
@@ -258,7 +237,8 @@ class cs_user_item extends cs_item
     }
 
     /**
-     * For a user item in a user room, returns the project room user who corresponds to this user
+     * For a user item in a user room, returns the project room user who corresponds to this user.
+     *
      * @return cs_user_item|null the project room user associated with this user
      */
     public function getLinkedProjectUserItem(): ?cs_user_item
@@ -275,6 +255,7 @@ class cs_user_item extends cs_item
                 if (isset($userItem) and !$userItem->isDeleted()) {
                     $this->projectUserItem = $userItem;
                 }
+
                 return $this->projectUserItem;
             }
         }
@@ -287,12 +268,13 @@ class cs_user_item extends cs_item
         if ($this->_issetExtra('PROJECT_USER_ITEM_ID')) {
             return $this->_getExtra('PROJECT_USER_ITEM_ID');
         }
+
         return null;
     }
 
     public function setLinkedProjectUserItemID($userId)
     {
-        $this->_setExtra('PROJECT_USER_ITEM_ID', (int)$userId);
+        $this->_setExtra('PROJECT_USER_ITEM_ID', (int) $userId);
     }
 
     public function unsetLinkedProjectUserItemID()
@@ -301,374 +283,388 @@ class cs_user_item extends cs_item
     }
 
     /** get firstname of the user
-     * this method returns the firstname of the user
+     * this method returns the firstname of the user.
      *
      * @return string firstname of the user
      */
-    function getFirstname()
+    public function getFirstname()
     {
-        return $this->_getValue("firstname");
+        return $this->_getValue('firstname');
     }
 
     /** set firstname of the user
-     * this method sets the firstname of the user
+     * this method sets the firstname of the user.
      *
      * @param string value firstname of the user
      */
-    function setFirstname($value)
+    public function setFirstname($value)
     {
-        $this->_setValue("firstname", $value);
+        $this->_setValue('firstname', $value);
         $this->changedValues[] = 'firstname';
     }
 
     /** get lastname of the user
-     * this method returns the lastname of the user
+     * this method returns the lastname of the user.
      *
      * @return string lastname of the user
      */
-    function getLastname()
+    public function getLastname()
     {
-        return $this->_getValue("lastname");
+        return $this->_getValue('lastname');
     }
 
     /** set lastname of the user
-     * this method sets the lastname of the user
+     * this method sets the lastname of the user.
      *
      * @param string value lastname of the user
      */
-    function setLastname($value)
+    public function setLastname($value)
     {
-        $this->_setValue("lastname", $value);
+        $this->_setValue('lastname', $value);
         $this->changedValues[] = 'lastname';
     }
 
-    function makeContactPerson()
+    public function makeContactPerson()
     {
-        $this->_setValue("is_contact", '1');
+        $this->_setValue('is_contact', '1');
     }
 
-    function makeNoContactPerson()
+    public function makeNoContactPerson()
     {
-        $this->_setValue("is_contact", '0');
+        $this->_setValue('is_contact', '0');
     }
 
-    function getContactStatus()
+    public function getContactStatus()
     {
-        $status = $this->_getValue("is_contact");
+        $status = $this->_getValue('is_contact');
+
         return $status;
     }
 
-    function isContact()
+    public function isContact()
     {
         $retour = false;
         $status = $this->getContactStatus();
-        if ($status == 1) {
+        if (1 == $status) {
             $retour = true;
         }
+
         return $retour;
     }
 
     /** get fullname of the user
-     * this method returns the fullname (firstname + lastname) of the user
+     * this method returns the fullname (firstname + lastname) of the user.
      *
      * @return string fullname of the user
      */
-    function getFullName()
+    public function getFullName()
     {
-        return ltrim($this->getFirstname() . ' ' . $this->getLastname());
+        return ltrim($this->getFirstname().' '.$this->getLastname());
     }
 
     /** set title of the user
-     * this method sets the title of the user
+     * this method sets the title of the user.
      *
      * @param string value title of the user
      */
-    function setTitle($value)
+    public function setTitle($value)
     {
-        $this->_addExtra('USERTITLE', (string)$value);
+        $this->_addExtra('USERTITLE', (string) $value);
     }
 
     /** get title of the user
-     * this method returns the title of the user
+     * this method returns the title of the user.
      *
      * @return string title of the user
      */
-    function getTitle()
+    public function getTitle()
     {
         $retour = '';
         if ($this->_issetExtra('USERTITLE')) {
             $retour = $this->_getExtra('USERTITLE');
         }
+
         return $retour;
     }
 
     /** set birthday of the user
-     * this method sets the birthday of the user
+     * this method sets the birthday of the user.
      *
      * @param string value birthday of the user
      */
-    function setBirthday($value)
+    public function setBirthday($value)
     {
-        $this->_addExtra('USERBIRTHDAY', (string)$value);
+        $this->_addExtra('USERBIRTHDAY', (string) $value);
     }
 
     /** get birthday of the user
-     * this method returns the birthday of the user
+     * this method returns the birthday of the user.
      *
      * @return string birthday of the user
      */
-    function getBirthday()
+    public function getBirthday()
     {
         $retour = '';
         if ($this->_issetExtra('USERBIRTHDAY')) {
             $retour = $this->_getExtra('USERBIRTHDAY');
         }
+
         return $retour;
     }
 
     /** set birthday of the user
-     * this method sets the birthday of the user
+     * this method sets the birthday of the user.
      *
      * @param string value birthday of the user
      */
-    function setTelephone($value)
+    public function setTelephone($value)
     {
-        $this->_addExtra('USERTELEPHONE', (string)$value);
+        $this->_addExtra('USERTELEPHONE', (string) $value);
     }
 
     /** get birthday of the user
-     * this method returns the birthday of the user
+     * this method returns the birthday of the user.
      *
      * @return string birthday of the user
      */
-    function getTelephone()
+    public function getTelephone()
     {
         $retour = '';
         if ($this->_issetExtra('USERTELEPHONE')) {
             $retour = $this->_getExtra('USERTELEPHONE');
         }
+
         return $retour;
     }
 
     /** set celluarphonenumber of the user
-     * this method sets the celluarphonenumber of the user
+     * this method sets the celluarphonenumber of the user.
      *
      * @param string value celluarphonenumber of the user
      */
-    function setCellularphone($value)
+    public function setCellularphone($value)
     {
-        $this->_addExtra('USERCELLULARPHONE', (string)$value);
+        $this->_addExtra('USERCELLULARPHONE', (string) $value);
     }
 
     /** get celluarphonenumber of the user
-     * this method returns the celluarphonenumber of the user
+     * this method returns the celluarphonenumber of the user.
      *
      * @return string celluarphonenumber of the user
      */
-    function getCellularphone()
+    public function getCellularphone()
     {
         $retour = '';
         if ($this->_issetExtra('USERCELLULARPHONE')) {
             $retour = $this->_getExtra('USERCELLULARPHONE');
         }
+
         return $retour;
     }
 
     /** set homepage of the user
-     * this method sets the homepage of the user
+     * this method sets the homepage of the user.
      *
      * @param string value homepage of the user
      */
-    function setHomepage($value)
+    public function setHomepage($value)
     {
-        if (!empty($value) and $value != '-1') {
-            if (!mb_ereg("https?://([a-z0-9_./?&=#:@]|-)*", $value)) {
-                $value = "http://" . $value;
+        if (!empty($value) and '-1' != $value) {
+            if (!mb_ereg('https?://([a-z0-9_./?&=#:@]|-)*', $value)) {
+                $value = 'http://'.$value;
             }
         }
-        $this->_addExtra('USERHOMEPAGE', (string)$value);
+        $this->_addExtra('USERHOMEPAGE', (string) $value);
     }
 
     /** get homepage of the user
-     * this method returns the homepage of the user
+     * this method returns the homepage of the user.
      *
      * @return string homepage of the user
      */
-    function getHomepage()
+    public function getHomepage()
     {
         $retour = '';
         if ($this->_issetExtra('USERHOMEPAGE')) {
             $retour = $this->_getExtra('USERHOMEPAGE');
         }
+
         return $retour;
     }
 
-    function setOrganisation($value)
+    public function setOrganisation($value)
     {
-        $this->_addExtra('USERORGANISATION', (string)$value);
+        $this->_addExtra('USERORGANISATION', (string) $value);
     }
 
-    function getOrganisation()
+    public function getOrganisation()
     {
         $retour = '';
         if ($this->_issetExtra('USERORGANISATION')) {
             $retour = $this->_getExtra('USERORGANISATION');
         }
+
         return $retour;
     }
 
-    function setPosition($value)
+    public function setPosition($value)
     {
-        $this->_addExtra('USERPOSITION', (string)$value);
+        $this->_addExtra('USERPOSITION', (string) $value);
     }
 
-    function getPosition()
+    public function getPosition()
     {
         $retour = '';
         if ($this->_issetExtra('USERPOSITION')) {
             $retour = $this->_getExtra('USERPOSITION');
         }
+
         return $retour;
     }
 
     /** set street of the user
-     * this method sets the street of the user
+     * this method sets the street of the user.
      *
      * @param string value street of the user
      */
-    function setStreet($value)
+    public function setStreet($value)
     {
-        $this->_addExtra('USERSTREET', (string)$value);
+        $this->_addExtra('USERSTREET', (string) $value);
     }
 
     /** get street of the user
-     * this method returns the street of the user
+     * this method returns the street of the user.
      *
      * @return string street of the user
      */
-    function getStreet()
+    public function getStreet()
     {
         $retour = '';
         if ($this->_issetExtra('USERSTREET')) {
             $retour = $this->_getExtra('USERSTREET');
         }
+
         return $retour;
     }
 
     /** set zipcode of the user
-     * this method sets the zipcode of the user
+     * this method sets the zipcode of the user.
      *
      * @param string value zipcode of the user
      */
-    function setZipcode($value)
+    public function setZipcode($value)
     {
-        $this->_addExtra('USERZIPCODE', (string)$value);
+        $this->_addExtra('USERZIPCODE', (string) $value);
     }
 
     /** get zipcode of the user
-     * this method returns the zipcode of the user
+     * this method returns the zipcode of the user.
      *
      * @return string zipcode of the user
      */
-    function getZipcode()
+    public function getZipcode()
     {
         $retour = '';
         if ($this->_issetExtra('USERZIPCODE')) {
             $retour = $this->_getExtra('USERZIPCODE');
         }
+
         return $retour;
     }
 
     /** set city of the user
-     * this method sets the city of the user
+     * this method sets the city of the user.
      *
      * @param string value city of the user
      */
-    function setCity($value)
+    public function setCity($value)
     {
         $this->_setValue('city', $value);
     }
 
     /** get city of the user
-     * this method returns the city of the user
+     * this method returns the city of the user.
      *
      * @return string city of the user
      */
-    function getCity()
+    public function getCity()
     {
         return $this->_getValue('city');
     }
 
     /** set room of the user
-     * this method sets the room of the user
+     * this method sets the room of the user.
      *
      * @param string value room of the user
      */
-    function setRoom($value)
+    public function setRoom($value)
     {
-        $this->_addExtra('USERROOM', (string)$value);
+        $this->_addExtra('USERROOM', (string) $value);
     }
 
     /** get room of the user
-     * this method returns the room of the user
+     * this method returns the room of the user.
      *
      * @return string room of the user
      */
-    function getRoom()
+    public function getRoom()
     {
         $retour = '';
         if ($this->_issetExtra('USERROOM')) {
             $retour = $this->_getExtra('USERROOM');
         }
+
         return $retour;
     }
 
     /** set description of the user
-     * this method sets the description of the user
+     * this method sets the description of the user.
      *
      * @param string value description of the user
      */
-    function setDescription($value)
+    public function setDescription($value)
     {
-        $this->_setValue('description', (string)$value);
+        $this->_setValue('description', (string) $value);
     }
 
     /** get description of the user
-     * this method returns the description of the user
+     * this method returns the description of the user.
      *
      * @return string description of the user
      */
-    function getDescription()
+    public function getDescription()
     {
         return $this->_getValue('description');
     }
 
     /** set picture filename of the user
-     * this method sets the picture filename of the user
+     * this method sets the picture filename of the user.
      *
      * @param string value picture filename of the user
      */
-    function setPicture($name)
+    public function setPicture($name)
     {
         $this->_addExtra('USERPICTURE', $name);
     }
 
     /** get description of the user
-     * this method returns the description of the user
+     * this method returns the description of the user.
      *
      * @return string description of the user
      */
-    function getPicture()
+    public function getPicture()
     {
         $retour = '';
         if ($this->_issetExtra('USERPICTURE')) {
             $retour = $this->_getExtra('USERPICTURE');
         }
+
         return $retour;
     }
 
     public function getPictureUrl($full = false, $amp = true)
     {
+        $params = [];
         $retour = '';
         $params['picture'] = $this->getPicture();
         if (!empty($params['picture'])) {
@@ -685,16 +681,17 @@ class cs_user_item extends cs_item
                     $domain_and_path .= $c_commsy_domain;
                 }
                 if (!empty($c_commsy_url_path)) {
-                    $domain_and_path .= $c_commsy_url_path . '/';
+                    $domain_and_path .= $c_commsy_url_path.'/';
                 }
-                if (substr($domain_and_path, strlen($domain_and_path) - 1) != '/') {
+                if ('/' != substr($domain_and_path, strlen($domain_and_path) - 1)) {
                     $domain_and_path .= '/';
                 }
                 if (!empty($domain_and_path)) {
-                    $retour = $domain_and_path . $retour;
+                    $retour = $domain_and_path.$retour;
                 }
             }
         }
+
         return $retour;
     }
 
@@ -719,154 +716,157 @@ class cs_user_item extends cs_item
         return $this->getRoomEmail();
     }
 
-    /** get room email of the user
+    /** get room email of the user.
      *
      * @return string room email of user
      */
-    function getRoomEmail()
+    public function getRoomEmail()
     {
         return $this->_getValue('email');
     }
 
     /** set email of the user
-     * this method sets the email of the user
+     * this method sets the email of the user.
      *
      * @param string value email of the user
      */
-    function setEmail($value)
+    public function setEmail($value)
     {
-        $this->_setValue('email', (string)$value);
+        $this->_setValue('email', (string) $value);
         $this->changedValues[] = 'email';
     }
 
     /** get deleter - do not use
-     * this method is a warning for coders, because if you want an object cs_user_item here, you get into an endless loop
+     * this method is a warning for coders, because if you want an object cs_user_item here, you get into an endless loop.
      */
-    function getDeleter()
+    public function getDeleter()
     {
-        echo('use getDeleterID()<br />');
+        echo 'use getDeleterID()<br />';
     }
 
-    /** set deleter of the user - overwritting parent method - do not use
+    /** set deleter of the user - overwritting parent method - do not use.
      *
      * @param object cs_user_item value deleter of the user
      */
-    function setDeleter($value)
+    public function setDeleter($value)
     {
-        echo('use setDeleterID( xxx )<br />');
+        echo 'use setDeleterID( xxx )<br />';
     }
 
     /** get user comment
-     * this method returns the users comment: why he or she wants an account
+     * this method returns the users comment: why he or she wants an account.
      *
      * @return string user comment
      */
-    function getUserComment()
+    public function getUserComment()
     {
         $retour = '';
         if ($this->_issetExtra('USERCOMMENT')) {
             $retour = $this->_getExtra('USERCOMMENT');
         }
+
         return $retour;
     }
 
     /** set user comment
-     * this method sets the users comment why he or she wants an account
+     * this method sets the users comment why he or she wants an account.
      *
      * @param string value user comment
      */
-    function setUserComment($value)
+    public function setUserComment($value)
     {
-        $this->_addExtra('USERCOMMENT', (string)$value);
+        $this->_addExtra('USERCOMMENT', (string) $value);
     }
 
     /** get comment of the moderators
-     * this method returns the comment of the moderators
+     * this method returns the comment of the moderators.
      *
      * @return string comment of the moderators
      */
-    function getAdminComment()
+    public function getAdminComment()
     {
         $retour = '';
         if ($this->_issetExtra('ADMINCOMMENT')) {
             $retour = $this->_getExtra('ADMINCOMMENT');
         }
+
         return $retour;
     }
 
     /** set comment of the moderators
-     * this method sets the comment of the moderators
+     * this method sets the comment of the moderators.
      *
      * @param string value comment
      */
-    function setAdminComment($value)
+    public function setAdminComment($value)
     {
         $this->_addExtra('ADMINCOMMENT', $value);
     }
 
     /** get flag, if moderator wants a mail at new accounts
-     * this method returns the getaccountwantmail flag
+     * this method returns the getaccountwantmail flag.
      *
-     * @return integer value no, moderator doesn't want an e-mail
-     *                       yes, moderator wants an e-mail
+     * @return int value no, moderator doesn't want an e-mail
+     *             yes, moderator wants an e-mail
      */
-    function getAccountWantMail()
+    public function getAccountWantMail()
     {
         $retour = 'yes';
         if ($this->_issetExtra('ACCOUNTWANTMAIL')) {
             $retour = $this->_getExtra('ACCOUNTWANTMAIL');
         }
+
         return $retour;
     }
 
     /** set flag if moderator wants a mail at new accounts
-     * this method sets the comment of the moderator
+     * this method sets the comment of the moderator.
      *
-     * @param integer value no, moderator doesn't want an e-mail
+     * @param int value no, moderator doesn't want an e-mail
      *                      yes, moderator wants an e-mail
      */
-    function setAccountWantMail($value)
+    public function setAccountWantMail($value)
     {
-        $this->_addExtra('ACCOUNTWANTMAIL', (string)$value);
+        $this->_addExtra('ACCOUNTWANTMAIL', (string) $value);
     }
 
     /** get flag, if moderator wants a mail at opening rooms
-     * this method returns the getopenroomwantmail flag
+     * this method returns the getopenroomwantmail flag.
      *
-     * @return integer value no, moderator doesn't want an e-mail
-     *                       yes, moderator wants an e-mail
+     * @return int value no, moderator doesn't want an e-mail
+     *             yes, moderator wants an e-mail
      */
-    function getOpenRoomWantMail()
+    public function getOpenRoomWantMail()
     {
         $retour = 'yes';
         if ($this->_issetExtra('ROOMWANTMAIL')) {
             $retour = $this->_getExtra('ROOMWANTMAIL');
         }
+
         return $retour;
     }
 
     /** set flag if moderator wants a mail at opening rooms
-     * this method sets the getopneroomwantmail flag
+     * this method sets the getopneroomwantmail flag.
      *
-     * @param integer value no, moderator doesn't want an e-mail
+     * @param int value no, moderator doesn't want an e-mail
      *                      yes, moderator wants an e-mail
      */
-    function setOpenRoomWantMail($value)
+    public function setOpenRoomWantMail($value)
     {
-        $this->_addExtra('ROOMWANTMAIL', (string)$value);
+        $this->_addExtra('ROOMWANTMAIL', (string) $value);
     }
 
-    function getRoomWantMail()
+    public function getRoomWantMail()
     {
         return $this->getOpenRoomWantMail();
     }
-
 
     public function setDeleteEntryWantMail(bool $enabled)
     {
         if ($enabled) {
             $this->_addExtra('DELETEENTRYMAIL', 'yes');
-        } else if ($this->_issetExtra('DELETEENTRYMAIL')) {
+        } elseif ($this->_issetExtra('DELETEENTRYMAIL')) {
             $this->_unsetExtra('DELETEENTRYMAIL');
         }
     }
@@ -877,37 +877,38 @@ class cs_user_item extends cs_item
     }
 
     /** get flag, if moderator wants a mail if he has to publish a material
-     * this method returns the getaccountwantmail flag
+     * this method returns the getaccountwantmail flag.
      *
-     * @return integer value 0, moderator doesn't want an e-mail
-     *                       1, moderator wants an e-mail
+     * @return int value 0, moderator doesn't want an e-mail
+     *             1, moderator wants an e-mail
      */
-    function getPublishMaterialWantMail()
+    public function getPublishMaterialWantMail()
     {
         $retour = 'yes';
         if ($this->_issetExtra('PUBLISHWANTMAIL')) {
             $retour = $this->_getExtra('PUBLISHWANTMAIL');
         }
+
         return $retour;
     }
 
     /** set flag if moderator wants a mail if he has to publish a material
-     * this method sets the comment of the moderator
+     * this method sets the comment of the moderator.
      *
-     * @param integer value no, moderator doesn't want an e-mail
+     * @param int value no, moderator doesn't want an e-mail
      *                      yes, moderator wants an e-mail
      */
-    function setPublishMaterialWantMail($value)
+    public function setPublishMaterialWantMail($value)
     {
-        $this->_addExtra('PUBLISHWANTMAIL', (string)$value);
+        $this->_addExtra('PUBLISHWANTMAIL', (string) $value);
     }
 
     /** get last login time
-     * this method returns the last login in datetime format
+     * this method returns the last login in datetime format.
      *
      * @return string last login
      */
-    function getLastLogin()
+    public function getLastLogin()
     {
         return $this->_getValue('lastlogin');
     }
@@ -917,12 +918,13 @@ class cs_user_item extends cs_item
      *
      * @return string user language
      */
-    function getLanguage()
+    public function getLanguage()
     {
         $retour = 'de';
         if ($this->_issetExtra('LANGUAGE')) {
             $retour = $this->_getExtra('LANGUAGE');
         }
+
         return $retour;
     }
 
@@ -931,17 +933,17 @@ class cs_user_item extends cs_item
      *
      * @param string value user language
      */
-    function setLanguage($value)
+    public function setLanguage($value)
     {
-        $this->_addExtra('LANGUAGE', (string)$value);
+        $this->_addExtra('LANGUAGE', (string) $value);
     }
 
     /** get Visible of the user
-     * this method returns the visible Property of the user
+     * this method returns the visible Property of the user.
      *
-     * @return integer visible of the user
+     * @return int visible of the user
      */
-    function getVisible()
+    public function getVisible()
     {
         if ($this->isVisibleForAll()) {
             return '2';
@@ -951,65 +953,67 @@ class cs_user_item extends cs_item
     }
 
     /** set visible property of the user
-     * this method sets the visible Property of the user
+     * this method sets the visible Property of the user.
      *
-     * @param integer value visible of the user
+     * @param int value visible of the user
      */
-    function setVisible($value)
+    public function setVisible($value)
     {
-        if ($value == '2') {
+        if ('2' == $value) {
             $this->_setValue('visible', $value);
         } else {
             $this->_setValue('visible', '1');
         }
     }
 
-    /** set visible property of the user to LoggedIn
+    /** set visible property of the user to LoggedIn.
      */
-    function setVisibleToLoggedIn()
+    public function setVisibleToLoggedIn()
     {
         $this->setVisible('1');
     }
 
     /** set visible property of the user to All
-     * this method sets an order limit for the select statement to name
+     * this method sets an order limit for the select statement to name.
      */
-    function setVisibleToAll()
+    public function setVisibleToAll()
     {
         $this->setVisible('2');
     }
 
-    function isEmailVisible()
+    public function isEmailVisible()
     {
         $retour = true;
         $value = $this->_getEmailVisibility();
-        if ($value == '-1') {
+        if ('-1' == $value) {
             $retour = false;
         }
+
         return $retour;
     }
 
-    function setEmailNotVisible()
+    public function setEmailNotVisible()
     {
         $this->_setEmailVisibility('-1');
     }
 
-    function setEmailVisible()
+    public function setEmailVisible()
     {
         $this->_setEmailVisibility('1');
     }
 
-    function _setEmailVisibility($value)
+    public function _setEmailVisibility($value)
     {
         $this->_addExtra('EMAIL_VISIBILITY', $value);
     }
 
-    function _getEmailVisibility()
+    public function _getEmailVisibility()
     {
         $retour = '';
         if ($this->_issetExtra('EMAIL_VISIBILITY')) {
             $retour = $this->_getExtra('EMAIL_VISIBILITY');
         }
+
         return $retour;
     }
 
@@ -1030,31 +1034,34 @@ class cs_user_item extends cs_item
             $retour = $this->_getExtra('DEFAULT_MAIL_VISIBILITY');
         }
 
-        if ($retour == '1') {
+        if ('1' == $retour) {
             $retour = true;
         } else {
             $retour = false;
         }
+
         return $retour;
     }
 
     // need anymore ??? (TBD)
-    function isCommSyContact()
+    public function isCommSyContact()
     {
         $retour = false;
-        if ($this->getVisible() == 1) {
+        if (1 == $this->getVisible()) {
             $retour = true;
         }
+
         return $retour;
     }
 
     // need anymore ??? (TBD)
-    function isWorldContact()
+    public function isWorldContact()
     {
         $retour = false;
-        if ($this->getVisible() == 2) {
+        if (2 == $this->getVisible()) {
             $retour = true;
         }
+
         return $retour;
     }
 
@@ -1100,205 +1107,218 @@ class cs_user_item extends cs_item
     }
 
     /** get status of user
-     * this method returns an integer value corresponding with the users status
+     * this method returns an integer value corresponding with the users status.
      *
      * @return int status
      */
-    function getStatus()
+    public function getStatus()
     {
         return $this->_getValue('status');
     }
 
     /** get status of user
-     * this method returns an integer value corresponding with the users status
+     * this method returns an integer value corresponding with the users status.
      *
      * @return int status
      */
-    function getLastStatus()
+    public function getLastStatus()
     {
         return $this->_getValue('status_last');
     }
 
     /** set user status last
-     * this method sets the last status of the user, if status changed
+     * this method sets the last status of the user, if status changed.
      *
      * @param int status
      */
-    function setLastStatus($value)
+    public function setLastStatus($value)
     {
-        $this->_setValue('status_last', (int)$value);
+        $this->_setValue('status_last', (int) $value);
     }
 
     /** set user status
-     * this method sets the status of the user
+     * this method sets the status of the user.
      *
      * @param int status
      */
-    function setStatus($value)
+    public function setStatus($value)
     {
         $this->setLastStatus($this->getStatus());
-        $this->_setValue('status', (int)$value);
+        $this->_setValue('status', (int) $value);
     }
 
     /** is user rejected ?
-     * this method returns a boolean explaining if user is rejected or not
+     * this method returns a boolean explaining if user is rejected or not.
      *
-     * @return boolean true, if user is rejected
-     *                 false, if user is not rejected
+     * @return bool true, if user is rejected
+     *              false, if user is not rejected
      */
-    function isRejected()
+    public function isRejected()
     {
-        return $this->_getValue('status') == 0;
+        return 0 == $this->_getValue('status');
     }
 
     /** is user a guest ?
-     * this method returns a boolean explaining if user is a guest or not
+     * this method returns a boolean explaining if user is a guest or not.
      *
-     * @return boolean true, if user is a guest
-     *                 false, if user is not a guest
+     * @return bool true, if user is a guest
+     *              false, if user is not a guest
      */
-    function isGuest()
+    public function isGuest()
     {
-        return $this->_getValue('status') == 0;
+        return 0 == $this->_getValue('status');
     }
 
     /** is user a guest ?
-     * this method returns a boolean explaining if user is a guest or not
+     * this method returns a boolean explaining if user is a guest or not.
      *
-     * @return boolean true, if user is a guest
-     *                 false, if user is not a guest
+     * @return bool true, if user is a guest
+     *              false, if user is not a guest
      */
-    function isReallyGuest()
+    public function isReallyGuest()
     {
-        return $this->_getValue('status') == 0 and mb_strtolower($this->_getValue('user_id'), 'UTF-8') == 'guest';
+        return 0 == $this->_getValue('status') and 'guest' == mb_strtolower($this->_getValue('user_id'), 'UTF-8');
     }
 
     /** user has requested an account
-     * this method returns a boolean explaining if user is still in request status
+     * this method returns a boolean explaining if user is still in request status.
      *
-     * @return boolean true, if user is in request status
-     *                 false, if user is not in request status
+     * @return bool true, if user is in request status
+     *              false, if user is not in request status
      */
-    function isRequested()
+    public function isRequested()
     {
-        return $this->_getValue('status') == 1;
+        return 1 == $this->_getValue('status');
     }
 
     /** is user a normal user ?
-     * this method returns a boolean explaining if user is a normal user or not
+     * this method returns a boolean explaining if user is a normal user or not.
      *
-     * @return boolean true, if user is a normal user or moderator
-     *                 false, if user is not a normal user or moderator
+     * @return bool true, if user is a normal user or moderator
+     *              false, if user is not a normal user or moderator
      */
-    function isUser()
+    public function isUser()
     {
         return $this->_getValue('status') >= 2;
     }
 
     /** is user a moderator ?
-     * this method returns a boolean explaining if user is a moderator or not
+     * this method returns a boolean explaining if user is a moderator or not.
      *
-     * @return boolean true, if user is a moderator
-     *                 false, if user is not a moderator
+     * @return bool true, if user is a moderator
+     *              false, if user is not a moderator
      */
-    function isModerator()
+    public function isModerator()
     {
-        return $this->_getValue('status') == 3;
+        return 3 == $this->_getValue('status');
     }
 
-    function isReadOnlyUser()
+    public function isReadOnlyUser()
     {
-        return $this->_getValue('status') == 4;
+        return 4 == $this->_getValue('status');
     }
 
-    function getRelatedRoomItem()
+    public function getRelatedRoomItem()
     {
         $room_manager = $this->_environment->getProjectManager();
+
         return $room_manager->getItem($this->getRoomID());
     }
 
-    function getUserRelatedCommunityList(bool $withExtras = true)
+    public function getUserRelatedCommunityList(bool $withExtras = true)
     {
         $manager = $this->_environment->getCommunityManager();
+
         return $manager->getUserRelatedCommunityListForUser($this, $withExtras);
     }
 
-    function getRelatedCommunityList()
+    public function getRelatedCommunityList()
     {
         $manager = $this->_environment->getCommunityManager();
+
         return $manager->getRelatedCommunityListForUser($this);
     }
 
-    function getRelatedCommunityListAllUserStatus()
+    public function getRelatedCommunityListAllUserStatus()
     {
         $manager = $this->_environment->getCommunityManager();
+
         return $manager->getRelatedCommunityListForUserAllUserStatus($this);
     }
 
-    public function getRelatedUserroomsList(bool $withExtras = true): \cs_list
+    public function getRelatedUserroomsList(bool $withExtras = true): cs_list
     {
         $manager = $this->_environment->getRoomManager();
+
         return $manager->getUserRoomsUserIsMemberOf($this, $withExtras);
     }
 
-    function getUserRelatedProjectList(bool $withExtras = true)
+    public function getUserRelatedProjectList(bool $withExtras = true)
     {
         $manager = $this->_environment->getProjectManager();
+
         return $manager->getUserRelatedProjectListForUser($this, $withExtras);
     }
 
     public function getRelatedProjectList()
     {
         $manager = $this->_environment->getProjectManager();
+
         return $manager->getRelatedProjectListForUser($this, null);
     }
 
-    function getRelatedProjectListAllUserStatus()
+    public function getRelatedProjectListAllUserStatus()
     {
         $manager = $this->_environment->getProjectManager();
         $list = $manager->getRelatedProjectListForUserAllUserStatus($this, null);
+
         return $list;
     }
 
-    function getUserRelatedGroupList()
+    public function getUserRelatedGroupList()
     {
         $manager = $this->_environment->getGrouproomManager();
         $list = $manager->getUserRelatedGroupListForUser($this);
+
         return $list;
     }
 
-    function getRelatedGroupList()
+    public function getRelatedGroupList()
     {
         $manager = $this->_environment->getGrouproomManager();
         $list = $manager->getRelatedGroupListForUser($this);
+
         return $list;
     }
 
-    function getRelatedProjectListSortByTime()
+    public function getRelatedProjectListSortByTime()
     {
         $manager = $this->_environment->getProjectManager();
         $list = $manager->getRelatedProjectListForUserSortByTime($this);
+
         return $list;
     }
 
-    function getRelatedProjectListForMyArea()
+    public function getRelatedProjectListForMyArea()
     {
         $manager = $this->_environment->getProjectManager();
         $list = $manager->getRelatedProjectListForUserForMyArea($this);
+
         return $list;
     }
 
-    function getRelatedProjectListSortByTimeForMyArea()
+    public function getRelatedProjectListSortByTimeForMyArea()
     {
         $manager = $this->_environment->getProjectManager();
         $list = $manager->getRelatedProjectListForUserSortByTimeForMyArea($this);
+
         return $list;
     }
 
     public function getContextIDArray()
     {
         if (!isset($this->contextIdArray)) {
-            $retour = array();
+            $retour = [];
             $manager = $this->_environment->getRoomManager();
             $manager->setUserIDLimit($this->getUserID());
             $manager->setAuthSourceLimit($this->getAuthSource());
@@ -1315,51 +1335,53 @@ class cs_user_item extends cs_item
             }
             $this->contextIdArray = $retour;
         }
+
         return $this->contextIdArray;
     }
 
-    function _getTaskList()
+    public function _getTaskList()
     {
         $task_manager = $this->_environment->getTaskManager();
+
         return $task_manager->getTaskListForItem($this);
     }
 
     /** is user root ?
-     * this method returns a boolean explaining if user is root or not
+     * this method returns a boolean explaining if user is root or not.
      *
-     * @return boolean true, if user is root
-     *                 false, if user is not root
+     * @return bool true, if user is root
+     *              false, if user is not root
      */
-    function isRoot()
+    public function isRoot()
     {
-        return ($this->_getValue('status') == 3)
-            and ($this->getUserID() == 'root')
+        return (3 == $this->_getValue('status'))
+            and ('root' == $this->getUserID())
             and ($this->getContextID() == $this->_environment->getServerID());
     }
 
     /** is user VisibleForAll ?
-     * this method returns a boolean explaining if user is Visible for everyone or not
+     * this method returns a boolean explaining if user is Visible for everyone or not.
      *
-     * @return boolean true, if user is Visible for the Public
-     *                 false, else
+     * @return bool true, if user is Visible for the Public
+     *              false, else
      */
-    function isVisibleForAll()
+    public function isVisibleForAll()
     {
-        return $this->_getValue('visible') == 2;
+        return 2 == $this->_getValue('visible');
     }
 
     /** is user VisibleForLoggedIn ?
-     * this method returns a boolean explaining if user is Visible for logged in members or not
+     * this method returns a boolean explaining if user is Visible for logged in members or not.
      *
-     * @return boolean true, if user is Visible for logged in members
-     *                 false, else
+     * @return bool true, if user is Visible for logged in members
+     *              false, else
      */
-    function isVisibleForLoggedIn()
+    public function isVisibleForLoggedIn()
     {
         return true;
     }
 
-    function save()
+    public function save()
     {
         $user_manager = $this->_environment->getUserManager();
         $this->_save($user_manager);
@@ -1377,7 +1399,7 @@ class cs_user_item extends cs_item
         // ContactPersonString
         $context_item = $this->getContextItem();
         // get grouproom
-        if ($context_item && $context_item->getType() == 'group') {
+        if ($context_item && 'group' == $context_item->getType()) {
             $grouproom_array = $context_item->_getItemData();
             $grouproom_id = $grouproom_array['extras']['GROUP_ROOM_ID'];
             $room_manager = $this->_environment->getRoomManager();
@@ -1388,7 +1410,7 @@ class cs_user_item extends cs_item
             and !$context_item->isPortal()
             and !$context_item->isServer()
             and $this->getUserID()
-            and mb_strtoupper($this->getUserID()) != 'GUEST'
+            and 'GUEST' != mb_strtoupper($this->getUserID())
             and (!isset($this->oldStatus)
                 or !isset($this->oldContact)
                 or $this->oldStatus != $this->getStatus()
@@ -1426,10 +1448,10 @@ class cs_user_item extends cs_item
         $user_manager->updateLastLoginOf($this);
     }
 
-    function getOwnRoom($context_id = NULL)
+    public function getOwnRoom($context_id = null)
     {
         if ($this->isRoot()) {
-            return NULL;
+            return null;
         } else {
             $private_room_manager = $this->_environment->getPrivateRoomManager();
             if (!empty($context_id)) {
@@ -1437,7 +1459,6 @@ class cs_user_item extends cs_item
             } else {
                 return $private_room_manager->getRelatedOwnRoomForUser($this, $this->_environment->getCurrentPortalID());
             }
-
         }
     }
 
@@ -1505,7 +1526,7 @@ class cs_user_item extends cs_item
     }
 
     /**
-     * Check if this user can be seen by $userItem
+     * Check if this user can be seen by $userItem.
      *
      * @see cs_item::mayPortfolioSee()
      */
@@ -1519,7 +1540,6 @@ class cs_user_item extends cs_item
     }
 
     /**
-     * @param cs_user_item $user_item
      * @return bool
      */
     public function maySee(cs_user_item $user_item)
@@ -1529,16 +1549,15 @@ class cs_user_item extends cs_item
                 or ($user_item->isGuest() and $this->isVisibleForAll())
                 or (($user_item->getContextID() == $this->getContextID()
                         or $user_item->getContextID() == $this->_environment->getCurrentContextID()
-                    )
-                    and (($user_item->isUser()
-                            and $this->isVisibleForLoggedIn()
-                        )
-                        or ($user_item->getUserID() == $this->getUserID()
-                            and $user_item->getAuthSource == $this->getAuthSource()
-                        )
-                        or ($user_item->isModerator()
-                        )
-                    ))) {
+                )
+                and (($user_item->isUser()
+                        and $this->isVisibleForLoggedIn()
+                )
+                or ($user_item->getUserID() == $this->getUserID()
+                    and $user_item->getAuthSource == $this->getAuthSource()
+                )
+                or $user_item->isModerator()
+                ))) {
                 $access = true;
             } else {
                 $access = false;
@@ -1557,7 +1576,7 @@ class cs_user_item extends cs_item
                     if (!$room->withRubric(CS_USER_TYPE)) {
                         if ($user_item->getUserID() == $this->getUserID() && $user_item->getAuthSource() == $this->getAuthSource()) {
                             $access = true;
-                        } elseif ($user_item->isModerator()){
+                        } elseif ($user_item->isModerator()) {
                             $access = true;
                         } else {
                             $access = false;
@@ -1568,16 +1587,17 @@ class cs_user_item extends cs_item
                 }
             }
         }
+
         return $access;
     }
 
     /**
-     * Checks whether the current user is editable by the given one
+     * Checks whether the current user is editable by the given one.
      *
      * @param cs_user_item $userItem the user object asking for permission
+     *
      * @return bool
      */
-
     public function mayEdit(cs_user_item $userItem)
     {
         // readonly users aren't allowed to edit anyone
@@ -1592,7 +1612,6 @@ class cs_user_item extends cs_item
 
         // if both live in the same context
         if ($userItem->getContextID() == $this->getContextID()) {
-
             // Moderators are only allowed to edit user in portal context
             if ($userItem->isModerator()) { // && $userItem->getContextItem()->isPortal()
                 return true;
@@ -1610,19 +1629,20 @@ class cs_user_item extends cs_item
         return false;
     }
 
-    function mayEditRegular($user_item)
+    public function mayEditRegular($user_item)
     {
         $access = false;
         if (!$user_item->isOnlyReadUser()) {
             $access = $this->getUserID() == $user_item->getUserID() and $this->getAuthSource() == $user_item->getAuthSource();
         }
+
         return $access;
     }
 
     /**
      * @param object cs_user User-Item with changed information
      */
-    function changeRelatedUser($dummy_item)
+    public function changeRelatedUser($dummy_item)
     {
         $related_user = $this->getRelatedUserList();
         if (!$related_user->isEmpty()) {
@@ -1639,88 +1659,88 @@ class cs_user_item extends cs_item
                 }
                 $value = $dummy_item->getTitle();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setTitle($value);
                 }
                 $value = $dummy_item->getTelephone();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setTelephone($value);
                 }
                 $value = $dummy_item->getBirthday();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setBirthday($value);
                 }
                 $value = $dummy_item->getCellularphone();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setCellularphone($value);
                 }
                 $value = $dummy_item->getHomepage();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setHomepage($value);
                 }
                 $value = $dummy_item->getOrganisation();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setOrganisation($value);
                 }
                 $value = $dummy_item->getPosition();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setPosition($value);
                 }
                 $value = $dummy_item->getStreet();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setStreet($value);
                 }
                 $value = $dummy_item->getZipCode();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setZipCode($value);
                 }
                 $value = $dummy_item->getCity();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setCity($value);
                 }
                 $value = $dummy_item->getDescription();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setDescription($value);
                 }
                 $value = $dummy_item->getPicture();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $new_picture_name = '';
                     } else {
                         $value_array = explode('_', $value);
-                        $value_array[0] = 'cid' . $user_item->getContextID();
+                        $value_array[0] = 'cid'.$user_item->getContextID();
                         $new_picture_name = implode('_', $value_array);
                         $disc_manager = $this->_environment->getDiscManager();
                         $disc_manager->copyImageFromRoomToRoom($value, $user_item->getContextID());
@@ -1729,7 +1749,7 @@ class cs_user_item extends cs_item
                 }
                 $value = $dummy_item->getEmail();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setEmail($value);
@@ -1742,49 +1762,49 @@ class cs_user_item extends cs_item
                 }
                 $value = $dummy_item->getRoom();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setRoom($value);
                 }
                 $value = $dummy_item->getICQ();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setICQ($value);
                 }
                 $value = $dummy_item->getJabber();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setJabber($value);
                 }
                 $value = $dummy_item->getMSN();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setMSN($value);
                 }
                 $value = $dummy_item->getSkype();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setSkype($value);
                 }
                 $value = $dummy_item->getYahoo();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setYahoo($value);
                 }
                 $value = $dummy_item->getExternalID();
                 if (!empty($value)) {
-                    if ($value == -1) {
+                    if (-1 == $value) {
                         $value = '';
                     }
                     $user_item->setExternalID($value);
@@ -1823,10 +1843,12 @@ class cs_user_item extends cs_item
      * related users from community rooms, project rooms and the user's private room are returned.
      *
      * @param bool $includeUserroomUsers whether related users from user rooms shall be returned as well
+     *
      * @return \cs_list list of user items connected to this item
      */
-    public function getRelatedUserList(bool $includeUserroomUsers = false): \cs_list
+    public function getRelatedUserList(bool $includeUserroomUsers = false): cs_list
     {
+        $roomIds = [];
         $emptyList = new cs_list();
         $currentContextId = $this->getContextID();
         $currentPortalId = $this->_environment->getCurrentPortalID();
@@ -1850,9 +1872,7 @@ class cs_user_item extends cs_item
 
         // gather all room IDs sans the current context ID
         $roomIds = array_merge($communityRooms->getIDArray(), $projectRooms->getIDArray(), $userRooms->getIDArray());
-        $roomIds = array_filter($roomIds, function (int $roomId) use ($currentContextId) {
-            return ($roomId != $currentContextId);
-        });
+        $roomIds = array_filter($roomIds, fn (int $roomId) => $roomId != $currentContextId);
 
         // NOTE: we reindex the $roomIds array (so that its array values start from 0) since cs_user_manager->_performQuery()
         //       for some reason requires a _context_array_limit array to start with index 0
@@ -1882,10 +1902,6 @@ class cs_user_item extends cs_item
         return $relatedUsers;
     }
 
-    /**
-     * @param $contextId
-     * @return cs_user_item|null
-     */
     public function getRelatedUserItemInContext($contextId): ?cs_user_item
     {
         $userManager = $this->_environment->getUserManager();
@@ -1895,7 +1911,7 @@ class cs_user_item extends cs_item
         $userManager->setAuthSourceLimit($this->getAuthSource());
         $userManager->select();
         $userList = $userManager->get();
-        if (isset($userList) && $userList->getCount() == 1) {
+        if (isset($userList) && 1 == $userList->getCount()) {
             return $userList->getFirst();
         }
 
@@ -1907,7 +1923,7 @@ class cs_user_item extends cs_item
      */
     public function getRelatedPrivateRoomUserItem()
     {
-        $retour = NULL;
+        $retour = null;
         $private_room_manager = $this->_environment->getPrivateRoomManager();
         $own_room = $private_room_manager->getRelatedOwnRoomForUser($this, $this->_environment->getCurrentPortalID());
         unset($private_room_manager);
@@ -1921,7 +1937,7 @@ class cs_user_item extends cs_item
             $user_manager->select();
             $user_list = $user_manager->get();
             unset($user_manager);
-            if ($user_list->getCount() == 1) {
+            if (1 == $user_list->getCount()) {
                 $retour = $user_list->getFirst();
             }
             unset($user_list);
@@ -1931,9 +1947,9 @@ class cs_user_item extends cs_item
         return $retour;
     }
 
-    function getRelatedPortalUserItem():?cs_user_item
+    public function getRelatedPortalUserItem(): ?cs_user_item
     {
-        $retour = NULL;
+        $retour = null;
         $user_manager = $this->_environment->getUserManager();
         $user_manager->resetLimits();
         $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
@@ -1942,7 +1958,7 @@ class cs_user_item extends cs_item
         $user_manager->select();
         $user_list = $user_manager->get();
         unset($user_manager);
-        if ($user_list->getCount() == 1) {
+        if (1 == $user_list->getCount()) {
             $retour = $user_list->getFirst();
         }
         unset($user_list);
@@ -1950,19 +1966,20 @@ class cs_user_item extends cs_item
         return $retour;
     }
 
-    function getModifiedItemIDArray($type, $creator_id)
+    public function getModifiedItemIDArray($type, $creator_id)
     {
-        $id_array = array();
+        $id_array = [];
         $link_manager = $this->_environment->getLinkItemManager();
         $context_item = $this->_environment->getCurrentContextItem();
         $link_ids = $link_manager->getModiefiedItemIDArray($type, $creator_id);
         foreach ($link_ids as $id) {
             $id_array[] = $id;
         }
+
         return $id_array;
     }
 
-    function cloneData()
+    public function cloneData()
     {
         $new_room_user = clone $this;
         $new_room_user->unsetContextID();
@@ -1973,43 +1990,43 @@ class cs_user_item extends cs_item
         $new_room_user->unsetLinkedUserroomItemID();
         $new_room_user->unsetLinkedProjectUserItemID();
         $new_room_user->_unsetValue('modifier_id');
+
         return $new_room_user;
     }
 
-    function unsetContextID()
+    public function unsetContextID()
     {
         $this->_unsetValue('context_id');
     }
 
-    function unsetItemID()
+    public function unsetItemID()
     {
         $this->_unsetValue('item_id');
     }
 
-    function unsetCreatorID()
+    public function unsetCreatorID()
     {
         $this->_unsetValue('creator_id');
     }
 
-    function unsetCreatorDate()
+    public function unsetCreatorDate()
     {
         $this->_unsetValue('creator_date');
     }
 
-    function setCreatorID2ItemID()
+    public function setCreatorID2ItemID()
     {
         $user_manager = $this->_environment->getUserManager();
         $user_manager->setCreatorID2ItemID($this);
     }
 
-    function deleteAllEntriesOfUser()
+    public function deleteAllEntriesOfUser()
     {
-
         // datenschutz: overwrite or not (03.09.2012 IJ)
         $overwrite = true;
         global $symfonyContainer;
         $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-        if (!empty($disable_overwrite) and $disable_overwrite === 'TRUE') {
+        if (!empty($disable_overwrite) and 'TRUE' === $disable_overwrite) {
             $overwrite = false;
         }
 
@@ -2026,7 +2043,6 @@ class cs_user_item extends cs_item
             $todo_manager = $this->_environment->getToDoManager();
             $step_manager = $this->_environment->getStepManager();
 
-
             // replace users entries with the standard message for deleted entries
             $announcement_manager->deleteAnnouncementsofUser($this->getItemID());
             $dates_manager->deleteDatesOfUser($this->getItemID());
@@ -2038,7 +2054,6 @@ class cs_user_item extends cs_item
             $todo_manager->deleteTodosOfUser($this->getItemID());
             $step_manager->deleteStepsOfUser($this->getItemID());
 
-
             // NOTE: we don't replace hashtags (aka buzzwords) and categories (aka tags) with the standard message for
             // deleted entries since these are structural elements benefitting all room users, and which have no direct
             // association in the UI to the user who created them.
@@ -2049,10 +2064,6 @@ class cs_user_item extends cs_item
         }
     }
 
-    /**
-     * @param DateTimeImmutable|null $agbAcceptanceDate
-     * @return $this
-     */
     public function setAGBAcceptanceDate(?DateTimeImmutable $agbAcceptanceDate): cs_user_item
     {
         $this->_addExtra(
@@ -2063,13 +2074,11 @@ class cs_user_item extends cs_item
         return $this;
     }
 
-    /**
-     * @return DateTimeImmutable|null
-     */
     public function getAGBAcceptanceDate(): ?DateTimeImmutable
     {
         if ($this->_issetExtra('AGB_ACCEPTANCE_DATE')) {
             $agbAcceptanceDate = $this->_getExtra('AGB_ACCEPTANCE_DATE') ?? '';
+
             return !empty($agbAcceptanceDate) ?
                 DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $agbAcceptanceDate) :
                 null;
@@ -2096,7 +2105,7 @@ class cs_user_item extends cs_item
      * $retour = true;
      * }
      * return $retour;
-     * }
+     * }.
      **/
     public function isAutoSaveOn()
     {
@@ -2108,9 +2117,10 @@ class cs_user_item extends cs_item
         } else {
             $value = -1;
         }
-        if (!empty($value) and $value == 1) {
+        if (!empty($value) and 1 == $value) {
             $retour = true;
         }
+
         return $retour;
     }
 
@@ -2120,6 +2130,7 @@ class cs_user_item extends cs_item
         if ($this->_issetExtra('CONFIG_AUTOSAVE_STATUS')) {
             $retour = $this->_getExtra('CONFIG_AUTOSAVE_STATUS');
         }
+
         return $retour;
     }
 
@@ -2148,9 +2159,10 @@ class cs_user_item extends cs_item
         } else {
             $value = 1;
         }
-        if (!empty($value) and $value == -1) {
+        if (!empty($value) and -1 == $value) {
             $retour = false;
         }
+
         return $retour;
     }
 
@@ -2160,6 +2172,7 @@ class cs_user_item extends cs_item
         if ($this->_issetExtra('CONFIG_NEW_UPLOAD_STATUS')) {
             $retour = $this->_getExtra('CONFIG_NEW_UPLOAD_STATUS');
         }
+
         return $retour;
     }
 
@@ -2178,7 +2191,6 @@ class cs_user_item extends cs_item
         $this->_setNewUploadStatus(-1);
     }
 
-
     public function setICQ($number)
     {
         if ($this->_issetExtra('ICQ')) {
@@ -2194,6 +2206,7 @@ class cs_user_item extends cs_item
         if ($this->_issetExtra('ICQ')) {
             $result = $this->_getExtra('ICQ');
         }
+
         return $result;
     }
 
@@ -2212,6 +2225,7 @@ class cs_user_item extends cs_item
         if ($this->_issetExtra('MSN')) {
             $result = $this->_getExtra('MSN');
         }
+
         return $result;
     }
 
@@ -2230,6 +2244,7 @@ class cs_user_item extends cs_item
         if ($this->_issetExtra('SKYPE')) {
             $result = $this->_getExtra('SKYPE');
         }
+
         return $result;
     }
 
@@ -2248,6 +2263,7 @@ class cs_user_item extends cs_item
         if ($this->_issetExtra('JABBER')) {
             $result = $this->_getExtra('JABBER');
         }
+
         return $result;
     }
 
@@ -2266,6 +2282,7 @@ class cs_user_item extends cs_item
         if ($this->_issetExtra('YAHOO')) {
             $result = $this->_getExtra('YAHOO');
         }
+
         return $result;
     }
 
@@ -2280,13 +2297,14 @@ class cs_user_item extends cs_item
             unset($group_list);
             unset($group_item);
         }
+
         return $retour;
     }
 
-
     public function isActiveDuringLast99Days()
     {
-        include_once('functions/date_functions.php');
+        include_once 'functions/date_functions.php';
+
         return $this->getLastLogin() > getCurrentDateTimeMinusDaysInMySQL(99);
     }
 
@@ -2340,10 +2358,11 @@ class cs_user_item extends cs_item
         $retour = false;
         global $c_read_account_array;
         if (isset($c_read_account_array)
-            and !empty($c_read_account_array[mb_strtolower($this->getUserID(), 'UTF-8') . '_' . $this->getAuthSource()])
+            and !empty($c_read_account_array[mb_strtolower($this->getUserID(), 'UTF-8').'_'.$this->getAuthSource()])
         ) {
             $retour = true;
         }
+
         return $retour;
     }
 
@@ -2356,12 +2375,13 @@ class cs_user_item extends cs_item
                 break;
             }
         }
+
         return $result;
     }
 
     private function _setHasToChangeEmail($value)
     {
-        $this->_addExtra('HASTOCHANGEEMAIL', (int)$value);
+        $this->_addExtra('HASTOCHANGEEMAIL', (int) $value);
     }
 
     public function setHasToChangeEmail()
@@ -2380,6 +2400,7 @@ class cs_user_item extends cs_item
         if ($this->_issetExtra('HASTOCHANGEEMAIL')) {
             $retour = $this->_getExtra('HASTOCHANGEEMAIL');
         }
+
         return $retour;
     }
 
@@ -2388,57 +2409,60 @@ class cs_user_item extends cs_item
         $retour = false;
         $temp = $this->_getHasToChangeEmail();
         if (!empty($temp)
-            and $temp == 1
+            and 1 == $temp
         ) {
             $retour = true;
         }
+
         return $retour;
     }
 
-    function setExternalID($value)
+    public function setExternalID($value)
     {
-        $this->_addExtra('EXTERNALID', (string)$value);
+        $this->_addExtra('EXTERNALID', (string) $value);
     }
 
-    function getExternalID()
+    public function getExternalID()
     {
         $retour = '';
         if ($this->_issetExtra('EXTERNALID')) {
             $retour = $this->_getExtra('EXTERNALID');
         }
+
         return $retour;
     }
 
     /** get lastlogin from plugin
-     * this method returns the users plugin lastlogin
+     * this method returns the users plugin lastlogin.
      *
      * @return string timestamp
      */
-    function getLastLoginPlugin($plugin)
+    public function getLastLoginPlugin($plugin)
     {
         $retour = '';
-        if ($this->_issetExtra('LASTLOGIN_' . mb_strtoupper($plugin))) {
-            $retour = $this->_getExtra('LASTLOGIN_' . mb_strtoupper($plugin));
+        if ($this->_issetExtra('LASTLOGIN_'.mb_strtoupper($plugin))) {
+            $retour = $this->_getExtra('LASTLOGIN_'.mb_strtoupper($plugin));
         }
+
         return $retour;
     }
 
     /** set user lastlogin from plugin
-     * this method sets the users users plugin lastlogin
+     * this method sets the users users plugin lastlogin.
      *
      * @param string value timestamp
      * @param string plugin plugin identifier
      */
-    function setLastLoginPlugin($value, $plugin)
+    public function setLastLoginPlugin($value, $plugin)
     {
-        $this->_addExtra('LASTLOGIN_' . mb_strtoupper($plugin), (string)$value);
+        $this->_addExtra('LASTLOGIN_'.mb_strtoupper($plugin), (string) $value);
     }
 
-    function isTemporaryLocked()
+    public function isTemporaryLocked()
     {
         $retour = false;
         if ($this->_issetExtra('TEMPORARY_LOCK')) {
-            include_once('functions/date_functions.php');
+            include_once 'functions/date_functions.php';
             $date = $this->_getExtra('TEMPORARY_LOCK');
             if (getCurrentDateTimeInMySQL() > $date) {
                 $retour = false;
@@ -2446,56 +2470,58 @@ class cs_user_item extends cs_item
                 $retour = true;
             }
         }
+
         return $retour;
     }
 
-    function setLock($days)
+    public function setLock($days)
     {
-        include_once('functions/date_functions.php');
+        include_once 'functions/date_functions.php';
         $this->_addExtra('LOCK', getCurrentDateTimePlusDaysInMySQL($days));
     }
 
-    function setTemporaryLock()
+    public function setTemporaryLock()
     {
-        include_once('functions/date_functions.php');
+        include_once 'functions/date_functions.php';
         $lock_time = $this->_environment->getCurrentContextItem()->getLockTime();
         $this->_addExtra('TEMPORARY_LOCK', getCurrentDateTimePlusMinutesInMySQL($lock_time));
     }
 
-    function getTemporaryLock()
+    public function getTemporaryLock()
     {
         $retour = '';
         if ($this->_issetExtra('TEMPORARY_LOCK')) {
             $retour = $this->_getExtra('TEMPORARY_LOCK');
         }
+
         return $retour;
     }
 
-    function unsetTemporaryLock()
+    public function unsetTemporaryLock()
     {
         $this->_unsetExtra('TEMPORARY_LOCK');
     }
 
     // save last used passwords
-    function setGenerationPassword($generation, $password)
+    public function setGenerationPassword($generation, $password)
     {
-        $this->_addExtra('PW_GENERATION_' . $generation, $password);
+        $this->_addExtra('PW_GENERATION_'.$generation, $password);
     }
 
-    function getGenerationPassword($generation)
+    public function getGenerationPassword($generation)
     {
-        if ($this->_issetExtra('PW_GENERATION_' . $generation)) {
-            $retour = $this->_getExtra('PW_GENERATION_' . $generation);
+        if ($this->_issetExtra('PW_GENERATION_'.$generation)) {
+            $retour = $this->_getExtra('PW_GENERATION_'.$generation);
         }
     }
 
-    function isPasswordInGeneration($password)
+    public function isPasswordInGeneration($password)
     {
         $portal_item = $this->_environment->getCurrentPortalItem();
 
         $retour = false;
         $i = $portal_item->getPasswordGeneration();
-        if ($i == 0) {
+        if (0 == $i) {
             $authentication = $this->_environment->getAuthenticationObject();
 
             $authManager = $authentication->getAuthManager($this->getAuthSource());
@@ -2504,9 +2530,9 @@ class cs_user_item extends cs_item
                 $retour = true;
             }
         } else {
-            for ($i; $i > 0; $i--) {
-                if ($this->_issetExtra('PW_GENERATION_' . ($i))) {
-                    if ($this->_getExtra('PW_GENERATION_' . $i) == $password) {
+            for ($i; $i > 0; --$i) {
+                if ($this->_issetExtra('PW_GENERATION_'.$i)) {
+                    if ($this->_getExtra('PW_GENERATION_'.$i) == $password) {
                         $retour = true;
                     }
                 }
@@ -2514,16 +2540,16 @@ class cs_user_item extends cs_item
         }
 
         unset($portal_item);
+
         return $retour;
     }
 
     /**
-     * @param bool $enabled
      * @return $this
      */
     public function setCanImpersonateAnotherUser(bool $enabled): self
     {
-        if ($enabled === true) {
+        if (true === $enabled) {
             if ($this->_issetExtra('DEACTIVATE_LOGIN_AS')) {
                 $this->_unsetExtra('DEACTIVATE_LOGIN_AS');
             }
@@ -2534,17 +2560,14 @@ class cs_user_item extends cs_item
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function getCanImpersonateAnotherUser(): bool
     {
         return !$this->_issetExtra('DEACTIVATE_LOGIN_AS');
     }
 
-    function setPasswordExpireDate($days)
+    public function setPasswordExpireDate($days)
     {
-        if ($days == 0) {
+        if (0 == $days) {
             $this->_setValue('expire_date', 'NULL');
         } else {
             $this->_setValue('expire_date', getCurrentDateTimePlusDaysInMySQL($days, true));
@@ -2552,12 +2575,12 @@ class cs_user_item extends cs_item
         $this->unsetPasswordExpiredEmailSend();
     }
 
-    function unsetPasswordExpireDate()
+    public function unsetPasswordExpireDate()
     {
         $this->_setValue('expire_date', '');
     }
 
-    function getPasswordExpireDate()
+    public function getPasswordExpireDate()
     {
         return $this->_getValue('expire_date');
 //    	$retour = '';
@@ -2567,42 +2590,39 @@ class cs_user_item extends cs_item
 //    	return $retour;
     }
 
-    function isPasswordExpired()
+    public function isPasswordExpired()
     {
         $retour = false;
         if ($this->_getValue('expire_date') < getCurrentDateTimeInMySQL()) {
             $retour = true;
         }
-        return $retour;
 
+        return $retour;
     }
 
-    function isPasswordExpiredEmailSend()
+    public function isPasswordExpiredEmailSend()
     {
         $retour = false;
         if ($this->_issetExtra('PASSWORD_EXPIRED_EMAIL')) {
             $retour = true;
         }
+
         return $retour;
     }
 
-    function setPasswordExpiredEmailSend()
+    public function setPasswordExpiredEmailSend()
     {
         $this->_addExtra('PASSWORD_EXPIRED_EMAIL', '1');
     }
 
-    function unsetPasswordExpiredEmailSend()
+    public function unsetPasswordExpiredEmailSend()
     {
         $this->_unsetExtra('PASSWORD_EXPIRED_EMAIL');
     }
 
-    /**
-     * @param DateTimeImmutable|null $expiry
-     * @return cs_user_item
-     */
     public function setImpersonateExpiryDate(?DateTimeImmutable $expiry): cs_user_item
     {
-        if ($expiry === null) {
+        if (null === $expiry) {
             $this->_unsetExtra('LOGIN_AS_TMSP');
         } else {
             $this->_addExtra('LOGIN_AS_TMSP', $expiry->format(DateTimeInterface::ATOM));
@@ -2611,9 +2631,6 @@ class cs_user_item extends cs_item
         return $this;
     }
 
-    /**
-     * @return DateTimeImmutable|null
-     */
     public function getImpersonateExpiryDate(): ?DateTimeImmutable
     {
         if ($this->_issetExtra('LOGIN_AS_TMSP')) {
@@ -2628,7 +2645,7 @@ class cs_user_item extends cs_item
         return null;
     }
 
-    ## commsy user connections: portal2portal
+    // # commsy user connections: portal2portal
     public function getOwnConnectionKey()
     {
         $retour = '';
@@ -2639,6 +2656,7 @@ class cs_user_item extends cs_item
             $this->_generateOwnConnectionKey();
             $retour = $this->_getExtra('CONNECTION_OWNKEY');
         }
+
         return $retour;
     }
 
@@ -2651,12 +2669,12 @@ class cs_user_item extends cs_item
     {
         $key = '';
         $key .= $this->getItemID();
-        $key .= rand(0, 9);
+        $key .= random_int(0, 9);
         $key .= $this->getFullName();
-        $key .= rand(0, 9);
+        $key .= random_int(0, 9);
         $key .= $this->getEmail();
-        $key .= rand(0, 9);
-        include_once('functions/date_functions.php');
+        $key .= random_int(0, 9);
+        include_once 'functions/date_functions.php';
         $key .= getCurrentDateTimeInMySQL();
         $this->_setOwnConnectionKey(md5($key));
         $this->save();
@@ -2673,7 +2691,7 @@ class cs_user_item extends cs_item
 
     private function _getExternalConnectionKeyArray()
     {
-        $retour = array();
+        $retour = [];
 
         $value = $this->_getExtra('CONNECTION_EXTERNAL_KEY_ARRAY');
         if (!empty($value)) {
@@ -2690,7 +2708,7 @@ class cs_user_item extends cs_item
 
     public function getPortalConnectionArrayDB()
     {
-        $retour = array();
+        $retour = [];
         $value = $this->_getExtra('CONNECTION_ARRAY');
         if (!empty($value)) {
             $retour = $value;
@@ -2716,7 +2734,7 @@ class cs_user_item extends cs_item
 
     public function getPortalConnectionInfo($id)
     {
-        $retour = array();
+        $retour = [];
         $connection_array = $this->getPortalConnectionArray();
         if (!empty($connection_array)) {
             foreach ($connection_array as $connection_info) {
@@ -2738,7 +2756,7 @@ class cs_user_item extends cs_item
     public function deletePortalConnectionFromServer($id)
     {
         $tab_array = $this->getPortalConnectionArray();
-        $tab_new_array = array();
+        $tab_new_array = [];
         if (!empty($tab_array)) {
             foreach ($tab_array as $tab_info) {
                 if ($tab_info['server_connection_id'] != $id) {
@@ -2749,23 +2767,24 @@ class cs_user_item extends cs_item
         }
     }
 
-    function setIsAllowedToCreateContext($value)
+    public function setIsAllowedToCreateContext($value)
     {
         $this->_addExtra('IS_ALLOWED_TO_CREATE_CONTEXT', $value);
     }
 
-    function getIsAllowedToCreateContext()
+    public function getIsAllowedToCreateContext()
     {
         $retour = 'standard';
         if ($this->_issetExtra('IS_ALLOWED_TO_CREATE_CONTEXT')) {
             $retour = $this->_getExtra('IS_ALLOWED_TO_CREATE_CONTEXT');
         }
+
         return $retour;
     }
 
     public function getUsePortalEmail()
     {
-        return ($this->_getValue('use_portal_email') == 1);
+        return 1 == $this->_getValue('use_portal_email');
     }
 
     public function setUsePortalEmail($value)
@@ -2782,8 +2801,8 @@ class cs_user_item extends cs_item
         if ($this->isRoot() || ($this->getContextItem()->isPortal() && $this->isModerator())) {
             return true;
         }
-        if ($this->getIsAllowedToCreateContext() != 'standard') {
-            if ($this->getIsAllowedToCreateContext() == -1) {
+        if ('standard' != $this->getIsAllowedToCreateContext()) {
+            if (-1 == $this->getIsAllowedToCreateContext()) {
                 return false;
             } else {
                 return true;
@@ -2799,7 +2818,7 @@ class cs_user_item extends cs_item
     }
 
     /**
-     * Deletes a user caused by inactivity, expects a portal user
+     * Deletes a user caused by inactivity, expects a portal user.
      *
      * @throws Exception
      */

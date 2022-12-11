@@ -1,30 +1,20 @@
 <?php
-// $Id$
-//
-// Release $Name$
-//
-// Copyright (c)2007 Iver Jackewitz
-//
-//    This file is part of CommSy.
-//
-//    CommSy is free software; you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation; either version 2 of the License, or
-//    (at your option) any later version.
-//
-//    CommSy is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
-//
-//    You have received a copy of the GNU General Public License
-//    along with CommSy.
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Result;
 
-require_once('functions/security_functions.php');
+require_once 'functions/security_functions.php';
 
 class db_mysql_connector
 {
@@ -33,7 +23,6 @@ class db_mysql_connector
     private array $queryArray = [];
     private bool $logQuery = false;
 
-    /** @var Connection */
     private Connection $connection;
 
     public function __construct()
@@ -43,12 +32,9 @@ class db_mysql_connector
     }
 
     /**
-     * @param $query
-     * @param array $params
-     * @return Result|array|string
      * @throws \Doctrine\DBAL\Exception
      */
-    public function performQuery($query, array $params = [])
+    public function performQuery($query, array $params = []): Result|array|string
     {
         try {
             $result = $this->connection->executeQuery($query, $params);
@@ -57,9 +43,9 @@ class db_mysql_connector
                 $this->queryArray[] = $query;
             }
 
-            if (mb_substr(trim($query), 0, 6) === 'SELECT' || mb_substr(trim($query), 0, 4) === 'SHOW') {
+            if ('SELECT' === mb_substr(trim($query), 0, 6) || 'SHOW' === mb_substr(trim($query), 0, 4)) {
                 return $result->fetchAllAssociative();
-            } elseif (mb_substr(trim($query), 0, 6) === 'INSERT') {
+            } elseif ('INSERT' === mb_substr(trim($query), 0, 6)) {
                 if (strstr($query, 'INSERT INTO item_link_file')
                     || strstr($query, 'INSERT INTO external2commsy_id')
                     || strstr($query, 'INSERT INTO links')
@@ -68,7 +54,6 @@ class db_mysql_connector
                     || strstr($query, 'INSERT INTO noticed')
                     || strstr($query, 'INSERT INTO reader')
                     || strstr($query, 'INSERT INTO section')) {
-
                     return $result;
                 } else {
                     return $this->connection->lastInsertId();
