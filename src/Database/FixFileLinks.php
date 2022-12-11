@@ -1,16 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 19.04.18
- * Time: 19:09
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Database;
 
-
 use App\Services\LegacyEnvironment;
-use cs_environment;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -19,29 +22,14 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class FixFileLinks implements DatabaseCheck
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
-
-    /**
-     * @var LoggerInterface
-     */
-    private LoggerInterface $cleanupLogger;
+    private \cs_environment $legacyEnvironment;
 
     public function __construct(
-        EntityManagerInterface $entityManager,
+        private EntityManagerInterface $entityManager,
         LegacyEnvironment $legacyEnvironment,
-        LoggerInterface $cleanupLogger
+        private LoggerInterface $cleanupLogger
     ) {
-        $this->entityManager = $entityManager;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->cleanupLogger = $cleanupLogger;
     }
 
     public function getPriority()
@@ -66,7 +54,7 @@ class FixFileLinks implements DatabaseCheck
         foreach ($files as $file) {
             $discManager->setPortalID($file['portalId']);
             $discManager->setContextID($file['context_id']);
-            $filePath = $discManager->getFilePath() . $file['files_id'] . '.' . $this->getFileExtension($file);
+            $filePath = $discManager->getFilePath().$file['files_id'].'.'.$this->getFileExtension($file);
 
             $conn = $this->entityManager->getConnection();
 
@@ -80,19 +68,19 @@ class FixFileLinks implements DatabaseCheck
 
             if (!$fileSystem->exists($filePath)) {
                 if ($io->isVerbose()) {
-                    $io->note('Deleting file and link in database with id "' . $file['files_id'] . '" - file was expected to be found in "' . $filePath . '"');
+                    $io->note('Deleting file and link in database with id "'.$file['files_id'].'" - file was expected to be found in "'.$filePath.'"');
                 }
 
                 $fileId = $file['files_id'];
-                $filesQb->setParameter(":fileId", $fileId);
-                $ilfQb->setParameter(":fileId", $fileId);
+                $filesQb->setParameter(':fileId', $fileId);
+                $ilfQb->setParameter(':fileId', $fileId);
 
                 $conn->beginTransaction();
                 try {
-                    $this->cleanupLogger->info('Deleting file and link in database with id "' . $file['files_id'] . '" - file was expected to be found in "' . $filePath . '"');
+                    $this->cleanupLogger->info('Deleting file and link in database with id "'.$file['files_id'].'" - file was expected to be found in "'.$filePath.'"');
 //                    $filesQb->execute();
 //                    $ilfQb->execute();
-                } catch (Exception $e) {
+                } catch (Exception) {
                     $conn->rollBack();
                 }
             }
@@ -101,10 +89,6 @@ class FixFileLinks implements DatabaseCheck
         return true;
     }
 
-    /**
-     * @param $file
-     * @return string
-     */
     private function getFileExtension($file): string
     {
         $filename = utf8_encode(rawurldecode($file['filename']));

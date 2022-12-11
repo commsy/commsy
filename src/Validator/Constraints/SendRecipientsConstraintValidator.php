@@ -1,11 +1,22 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Validator\Constraints;
 
 use App\Form\Model\Send;
+use App\Services\LegacyEnvironment;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-
-use App\Services\LegacyEnvironment;
 
 class SendRecipientsConstraintValidator extends ConstraintValidator
 {
@@ -21,36 +32,36 @@ class SendRecipientsConstraintValidator extends ConstraintValidator
         $values = $this->context->getRoot()->getData();
         $foundRecipient = false;
 
-        if(get_class($values) == Send::class){
-            if(sizeof($values->getAdditionalRecipients()) > 0 && isset($values->getAdditionalRecipients()[0])){
+        if (Send::class == $values::class) {
+            if (sizeof($values->getAdditionalRecipients()) > 0 && isset($values->getAdditionalRecipients()[0])) {
                 $foundRecipient = true;
             }
 
             $isSendToGroupAll = $values->getSendToGroupAll();
 
-            if(!isset($isSendToGroupAll)){
+            if (!isset($isSendToGroupAll)) {
                 $isSendToGroupAll = true;
             }
 
-            if(sizeof($values->getSendToGroups()) > 0 && isset($values->getSendToGroups()[0]) && $isSendToGroupAll){
-                    $foundRecipient = true;
-            }
-            if($values->getSendToGroupAll()){
+            if (sizeof($values->getSendToGroups()) > 0 && isset($values->getSendToGroups()[0]) && $isSendToGroupAll) {
                 $foundRecipient = true;
             }
-            if($values->getSendToAll()){
+            if ($values->getSendToGroupAll()) {
                 $foundRecipient = true;
             }
-            if($values->getSendToCreator()){
+            if ($values->getSendToAll()) {
                 $foundRecipient = true;
             }
-            if($values->getCopyToSender()){
+            if ($values->getSendToCreator()) {
                 $foundRecipient = true;
             }
-            if(!is_null($values->getSendToAttendees())){
+            if ($values->getCopyToSender()) {
                 $foundRecipient = true;
             }
-        }else{
+            if (!is_null($values->getSendToAttendees())) {
+                $foundRecipient = true;
+            }
+        } else {
             if (isset($values['additional_recipients'][0])) {
                 $foundRecipient = true;
             }
@@ -69,7 +80,7 @@ class SendRecipientsConstraintValidator extends ConstraintValidator
             if ($values['copy_to_sender']) {
                 $foundRecipient = true;
             }
-            if(isset($values['send_to_attendees'])){
+            if (isset($values['send_to_attendees'])) {
                 if ($values['send_to_attendees']) {
                     $foundRecipient = true;
                 }

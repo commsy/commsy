@@ -1,21 +1,32 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\DataTransformer;
 
-use DateTime;
-
-class AnnouncementTransformer  extends AbstractTransformer
+class AnnouncementTransformer extends AbstractTransformer
 {
     protected $entity = 'announcement';
 
     /**
-     * Transforms a cs_material_item object to an array
+     * Transforms a cs_material_item object to an array.
      *
      * @param \cs_announcement_item $announcementItem
+     *
      * @return array
      */
     public function transform($announcementItem)
     {
-        $announcementData = array();
+        $announcementData = [];
 
         if ($announcementItem) {
             $announcementData['title'] = html_entity_decode($announcementItem->getTitle());
@@ -27,26 +38,28 @@ class AnnouncementTransformer  extends AbstractTransformer
             $datetime = new \DateTime($announcementItem->getSecondDateTime());
             $announcementData['validdate']['date'] = $datetime;
             $announcementData['validdate']['time'] = $datetime;
-            
+
             if ($announcementItem->isNotActivated()) {
                 $announcementData['hidden'] = true;
-                
+
                 $activating_date = $announcementItem->getActivatingDate();
-                if (!stristr($activating_date,'9999')){
+                if (!stristr($activating_date, '9999')) {
                     $datetime = new \DateTime($activating_date);
                     $announcementData['hiddendate']['date'] = $datetime;
                     $announcementData['hiddendate']['time'] = $datetime;
                 }
             }
         }
+
         return $announcementData;
     }
 
     /**
-     * Applies an array of data to an existing object
+     * Applies an array of data to an existing object.
      *
      * @param \cs_announcement_item $announcementObject
-     * @param array $announcementData
+     * @param array                 $announcementData
+     *
      * @return \cs_announcement_item|null
      */
     public function applyTransformation($announcementObject, $announcementData)
@@ -63,20 +76,18 @@ class AnnouncementTransformer  extends AbstractTransformer
         if ($announcementData['validdate']['date'] && $announcementData['validdate']['time']) {
             // add validdate to validdate
             $datetime = $announcementData['validdate']['date'];
-            $time = explode(":", $announcementData['validdate']['time']->format('H:i'));
+            $time = explode(':', $announcementData['validdate']['time']->format('H:i'));
             $datetime->setTime($time[0], $time[1]);
             $announcementObject->setSecondDateTime($datetime->format('Y-m-d H:i:s'));
-
         }
 
-        
         if (isset($announcementData['hidden'])) {
             if ($announcementData['hidden']) {
                 if (isset($announcementData['hiddendate']['date'])) {
                     // add validdate to validdate
                     $datetime = $announcementData['hiddendate']['date'];
                     if ($announcementData['hiddendate']['time']) {
-                        $time = explode(":", $announcementData['hiddendate']['time']->format('H:i'));
+                        $time = explode(':', $announcementData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
                     $announcementObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
@@ -85,15 +96,15 @@ class AnnouncementTransformer  extends AbstractTransformer
                 }
             } else {
                 if ($announcementObject->isNotActivated()) {
-    	            $announcementObject->setActivationDate(null);
-    	        }
+                    $announcementObject->setActivationDate(null);
+                }
             }
         } else {
             if ($announcementObject->isNotActivated()) {
-	            $announcementObject->setActivationDate(null);
-	        }
+                $announcementObject->setActivationDate(null);
+            }
         }
-        
+
         return $announcementObject;
     }
 }

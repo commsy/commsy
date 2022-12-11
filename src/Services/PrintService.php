@@ -1,57 +1,37 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Services;
 
-use cs_environment;
 use Knp\Snappy\Pdf;
 use Symfony\Component\HttpFoundation\Response;
-use App\Services\LegacyEnvironment;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
- * Class PrintService
- *
- * @package App\Services
+ * Class PrintService.
  */
 class PrintService
 {
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
+    private \cs_environment $legacyEnvironment;
 
-    /**
-     * @var Pdf
-     */
-    private Pdf $pdf;
-
-    /**
-     * @var SessionInterface
-     */
-    private SessionInterface $session;
-
-    /**
-     * @var string
-     */
-    private string $proxyIp;
-
-    /**
-     * @var string
-     */
-    private string $proxyPort;
-    
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        Pdf $pdf,
-        SessionInterface $session,
-        string $proxyIp,
-        string $proxyPort
+        private Pdf $pdf,
+        private SessionInterface $session,
+        private string $proxyIp,
+        private string $proxyPort
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->pdf = $pdf;
-        $this->session = $session;
-        $this->proxyIp = $proxyIp;
-        $this->proxyPort = $proxyPort;
     }
 
     /**
@@ -71,8 +51,8 @@ class PrintService
     /**
      * Generates a pdf response, converting the given html content.
      *
-     * @param string $html HTML content
-     * @param bool $debug Return plain html, instead of a pdf document (helps debugging); defaults to false
+     * @param string $html     HTML content
+     * @param bool   $debug    Return plain html, instead of a pdf document (helps debugging); defaults to false
      * @param string $fileName the file name for the generated PDF document; defaults to "print.pdf"
      *
      * @return Response HTML Response containing the generated PDF
@@ -87,24 +67,25 @@ class PrintService
         // NOTE: with >=PHP7.3, we could also use `filter_var($fileName, FILTER_SANITIZE_ADD_SLASHES)`;
         $fileName = addslashes($fileName);
 
-        return new Response($this->getPdfContent($html), 200, [
+        return new Response($this->getPdfContent($html), \Symfony\Component\HttpFoundation\Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . $fileName . '"',
+            'Content-Disposition' => 'inline; filename="'.$fileName.'"',
         ]);
     }
 
     /**
-     * Sets wkhtmltopdf command line options
+     * Sets wkhtmltopdf command line options.
      */
-    private function setOptions() {
+    private function setOptions()
+    {
         $roomItem = $this->legacyEnvironment->getCurrentContextItem();
-        if ($roomItem->getRoomType() === CS_PRIVATEROOM_TYPE) {
+        if (CS_PRIVATEROOM_TYPE === $roomItem->getRoomType()) {
             $roomItem = $this->legacyEnvironment->getCurrentPortalItem();
         }
 
-        if($this->legacyEnvironment->getSelectedLanguage() == 'en'){
+        if ('en' == $this->legacyEnvironment->getSelectedLanguage()) {
             $dateFormat = 'm/d/y';
-        }else{
+        } else {
             $dateFormat = 'd.m.y';
         }
 
@@ -125,14 +106,14 @@ class PrintService
 
         // proxy support
         if ($this->proxyIp && $this->proxyPort) {
-            $proxy = 'http://' . $this->proxyIp . ':' . $this->proxyPort;
+            $proxy = 'http://'.$this->proxyIp.':'.$this->proxyPort;
 
             $this->pdf->setOption('proxy', $proxy);
         }
 
         // set cookie for authentication - needed to request images
         $this->pdf->setOption('cookie', [
-            'PHPSESSID' => $this->session->getId()
+            'PHPSESSID' => $this->session->getId(),
         ]);
     }
 }

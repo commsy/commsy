@@ -1,64 +1,42 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 16.07.18
- * Time: 22:41
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Controller;
 
-
 use App\Action\Delete\DeleteAction;
 use App\Action\Delete\DeleteSection;
 use App\Utils\MaterialService;
-use App\Utils\RoomService;
-use cs_room_item;
-use cs_step_item;
-use Exception;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 class SectionController extends BaseController
 {
-    ###################################################################################################
-    ## XHR Action requests
-    ###################################################################################################
-    /**
-     * @var MaterialService
-     */
-    private MaterialService $materialService;
-
-    /**
-     * @var DeleteAction
-     */
-    private DeleteAction $deleteAction;
-
     /**
      * SectionController constructor.
-     * @param MaterialService $materialService
-     * @param DeleteSection $deleteSection
-     * @param DeleteAction $deleteAction
      */
-    public function __construct(MaterialService $materialService, DeleteSection $deleteSection, DeleteAction $deleteAction)
+    public function __construct(private MaterialService $materialService, DeleteSection $deleteSection, private DeleteAction $deleteAction)
     {
-        $this->materialService = $materialService;
-        $this->deleteAction = $deleteAction;
         $this->deleteAction->setDeleteStrategy($deleteSection);
     }
 
-
     /**
-     * @Route("/room/{roomId}/section/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/section/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
         Request $request,
         int $roomId
-    ) {
+    ): \Symfony\Component\HttpFoundation\Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -67,11 +45,11 @@ class SectionController extends BaseController
     }
 
     /**
-     * @param Request $request
-     * @param cs_room_item $roomItem
-     * @param boolean $selectAll
-     * @param integer[] $itemIds
-     * @return cs_step_item[]
+     * @param \cs_room_item $roomItem
+     * @param bool          $selectAll
+     * @param int[]         $itemIds
+     *
+     * @return \cs_step_item[]
      */
     protected function getItemsByFilterConditions(
         Request $request,
@@ -79,7 +57,7 @@ class SectionController extends BaseController
         $selectAll,
         $itemIds = []
     ) {
-        if (count($itemIds) == 1) {
+        if (1 == count($itemIds)) {
             return [$this->materialService->getSection($itemIds[0])];
         }
 

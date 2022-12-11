@@ -1,4 +1,16 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Model;
 
 use App\Entity\SavedSearch;
@@ -7,136 +19,91 @@ use Symfony\Component\Validator\Constraints as Assert;
 class SearchData
 {
     /**
-     * @var SavedSearch|null $selectedSavedSearch the currently selected saved search (aka "view")
+     * @var SavedSearch|null the currently selected saved search (aka "view")
      */
-    private $selectedSavedSearch;
+    private ?\App\Entity\SavedSearch $selectedSavedSearch = null;
+
+    #[Assert\NotBlank(normalizer: 'trim', groups: ['save'])]
+    private ?string $selectedSavedSearchTitle = null;
 
     /**
-     * @var string|null
-     * @Assert\NotBlank(normalizer="trim", groups={"save"})
+     * @var SavedSearch[]|null array of all saved searches belonging to the current user's account
      */
-    private $selectedSavedSearchTitle;
+    private ?array $savedSearches = null;
 
-    /**
-     * @var SavedSearch[]|null $savedSearches array of all saved searches belonging to the current user's account
-     */
-    private $savedSearches;
+    private ?string $phrase = null;
 
-    /**
-     * @var string|null
-     */
-    private $phrase;
+    private ?bool $appearsInTitle = null;
 
-    /**
-     * @var boolean|null
-     */
-    private $appearsInTitle;
+    private ?bool $appearsInDescription = null;
 
-    /**
-     * @var boolean|null
-     */
-    private $appearsInDescription;
-
-    /**
-     * @var string|null
-     */
-    private $selectedReadStatus;
+    private ?string $selectedReadStatus = null;
 
     /**
      * @var array|null associative array of rubrics (key: rubric name, value: count)
      */
-    private $rubrics;
+    private ?array $rubrics = null;
 
-    /**
-     * @var string|null
-     */
-    private $selectedRubric;
+    private ?string $selectedRubric = null;
 
     /**
      * @var array|null associative array of context titles (key: context title, value: count)
      */
-    private $contexts;
+    private ?array $contexts = null;
 
-    /**
-     * @var string|null
-     */
-    private $selectedContext;
+    private ?string $selectedContext = null;
 
     /**
      * @var array|null associative array of creators (key: creator name, value: count)
      */
-    private $creators;
+    private ?array $creators = null;
 
-    /**
-     * @var string|null $selectedCreator
-     */
-    private $selectedCreator;
+    private ?string $selectedCreator = null;
 
     /**
      * @var array|null associative array of todo statuses (key: status int, value: count)
      */
-    private $todoStatuses;
+    private ?array $todoStatuses = null;
 
-    /**
-     * @var int|null $selectedTodoStatus
-     */
-    private $selectedTodoStatus;
+    private ?int $selectedTodoStatus = null;
 
     /**
      * @var array|null associative array of hashtags (key: hashtag name, value: count)
      */
-    private $hashtags;
+    private ?array $hashtags = null;
 
     /**
-     * @var string[]|null $selectedHashtags
+     * @var string[]|null
      */
-    private $selectedHashtags;
+    private ?array $selectedHashtags = null;
 
     /**
      * @var array|null associative array of categories (key: category name, value: count)
      */
-    private $categories;
+    private ?array $categories = null;
 
     /**
-     * @var string[]|null $selectedCategories
+     * @var string[]|null
      */
-    private $selectedCategories;
+    private ?array $selectedCategories = null;
 
-    /**
-     * @var \DateTime|null $creationDateFrom
-     */
-    private $creationDateFrom;
+    private ?\DateTime $creationDateFrom = null;
 
-    /**
-     * @var \DateTime|null $creationDateUntil
-     */
-    private $creationDateUntil;
+    private ?\DateTime $creationDateUntil = null;
 
-    /**
-     * @var \DateTime|null $modificationDateFrom
-     */
-    private $modificationDateFrom;
+    private ?\DateTime $modificationDateFrom = null;
 
-    /**
-     * @var \DateTime|null $modificationDateUntil
-     */
-    private $modificationDateUntil;
+    private ?\DateTime $modificationDateUntil = null;
 
-    /**
-     * @return SavedSearch|null
-     */
     public function getSelectedSavedSearch(): ?SavedSearch
     {
         return $this->selectedSavedSearch;
     }
 
-    /**
-     * @param SavedSearch|null $selectedSavedSearch
-     * @return SearchData
-     */
     public function setSelectedSavedSearch(?SavedSearch $selectedSavedSearch): SearchData
     {
         $this->selectedSavedSearch = $selectedSavedSearch;
+
         return $this;
     }
 
@@ -150,68 +117,48 @@ class SearchData
 
     /**
      * @param SavedSearch[]|null $savedSearches
-     * @return SearchData
      */
     public function setSavedSearches(?array $savedSearches): SearchData
     {
         $this->savedSearches = $savedSearches;
+
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getSelectedSavedSearchId(): int
     {
         if (!$this->selectedSavedSearch || !$this->selectedSavedSearch->getId()) {
             return 0;
         }
+
         return $this->selectedSavedSearch->getId();
     }
 
-    /**
-     * @return string|null
-     */
     public function getSelectedSavedSearchTitle(): ?string
     {
         return $this->selectedSavedSearchTitle;
     }
 
-    /**
-     * @param string|null $title
-     * @return SearchData
-     */
     public function setSelectedSavedSearchTitle(?string $title): SearchData
     {
         $this->selectedSavedSearchTitle = $title;
+
         return $this;
     }
 
-    /**
-     * @var string|null $sortBy
-     */
-    private $sortBy;
+    private ?string $sortBy = null;
 
-    /**
-     * @var string|null $sortOrder
-     */
-    private $sortOrder;
+    private ?string $sortOrder = null;
 
-    /**
-     * @return string|null
-     */
     public function getPhrase(): ?string
     {
         return $this->phrase;
     }
 
-    /**
-     * @param string|null $phrase
-     * @return self
-     */
     public function setPhrase(?string $phrase): self
     {
         $this->phrase = $phrase;
+
         return $this;
     }
 
@@ -227,69 +174,54 @@ class SearchData
         if ($this->getAppearsInDescription()) {
             $appearsIn[] = 'description';
         }
+
         return $appearsIn;
     }
 
     /**
      * @param array $appearsIn an array of field names describing the fields that must contain a search term
-     * @return self
      */
     public function setAppearsIn(array $appearsIn): self
     {
         $this->setAppearsInTitle(in_array('title', $appearsIn, true) ? true : false);
         $this->setAppearsInDescription(in_array('description', $appearsIn, true) ? true : false);
+
         return $this;
     }
 
-    /**
-     * @return boolean|null
-     */
     public function getAppearsInTitle(): ?bool
     {
         return $this->appearsInTitle;
     }
 
-    /**
-     * @param boolean $appearsInTitle
-     */
     public function setAppearsInTitle(bool $appearsInTitle): self
     {
         $this->appearsInTitle = $appearsInTitle;
+
         return $this;
     }
 
-    /**
-     * @return boolean|null
-     */
     public function getAppearsInDescription(): ?bool
     {
         return $this->appearsInDescription;
     }
 
-    /**
-     * @param boolean $appearsInDescription
-     */
     public function setAppearsInDescription(bool $appearsInDescription): self
     {
         $this->appearsInDescription = $appearsInDescription;
+
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getSelectedReadStatus(): ?string
     {
         return $this->selectedReadStatus;
     }
 
-    /**
-     * @param string|null $selectedReadStatus
-     * @return self
-     */
     public function setSelectedReadStatus(?string $selectedReadStatus): self
     {
         $this->selectedReadStatus = $selectedReadStatus;
+
         return $this;
     }
 
@@ -303,41 +235,35 @@ class SearchData
 
     /**
      * @param array $rubrics associative array of rubrics (key: rubric name, value: count)
-     * @return self
      */
     public function setRubrics(array $rubrics): self
     {
         $this->rubrics = $rubrics;
+
         return $this;
     }
 
     /**
      * @param array $rubrics associative array of rubrics (key: rubric name, value: count)
-     * @return self
      */
     public function addRubrics(array $rubrics): self
     {
         foreach ($rubrics as $name => $count) {
             $this->rubrics[$name] = $count;
         }
+
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getSelectedRubric(): ?string
     {
         return $this->selectedRubric;
     }
 
-    /**
-     * @param string|null $selectedRubric
-     * @return self
-     */
     public function setSelectedRubric(?string $selectedRubric): self
     {
         $this->selectedRubric = $selectedRubric;
+
         return $this;
     }
 
@@ -351,59 +277,47 @@ class SearchData
 
     /**
      * @param array $creators associative array of creators (key: creator name, value: count)
-     * @return self
      */
     public function setCreators(array $creators): self
     {
         $this->creators = $creators;
+
         return $this;
     }
 
     /**
      * @param array $creators associative array of creators (key: creator name, value: count)
-     * @return self
      */
     public function addCreators(array $creators): self
     {
         foreach ($creators as $name => $count) {
             $this->creators[$name] = $count;
         }
+
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getSelectedCreator(): ?string
     {
         return $this->selectedCreator;
     }
 
-    /**
-     * @param string|null $selectedCreator
-     * @return self
-     */
     public function setSelectedCreator(?string $selectedCreator): self
     {
         $this->selectedCreator = $selectedCreator;
+
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getTodoStatuses(): ?array
     {
         return $this->todoStatuses;
     }
 
-    /**
-     * @param array|null $todoStatuses
-     * @return SearchData
-     */
     public function setTodoStatuses(?array $todoStatuses): SearchData
     {
         $this->todoStatuses = $todoStatuses;
+
         return $this;
     }
 
@@ -416,17 +330,11 @@ class SearchData
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getSelectedTodoStatus(): ?int
     {
         return $this->selectedTodoStatus;
     }
 
-    /**
-     * @param int|null $selectedTodoStatus
-     */
     public function setSelectedTodoStatus(?int $selectedTodoStatus): void
     {
         $this->selectedTodoStatus = $selectedTodoStatus;
@@ -442,23 +350,23 @@ class SearchData
 
     /**
      * @param array $hashtags associative array of hashtags (key: hashtag name, value: count)
-     * @return self
      */
     public function setHashtags(array $hashtags): self
     {
         $this->hashtags = $hashtags;
+
         return $this;
     }
 
     /**
      * @param array $hashtags associative array of hashtags (key: hashtag name, value: count)
-     * @return self
      */
     public function addHashtags(array $hashtags): self
     {
         foreach ($hashtags as $name => $count) {
             $this->hashtags[$name] = $count;
         }
+
         return $this;
     }
 
@@ -472,11 +380,11 @@ class SearchData
 
     /**
      * @param string[] $selectedHashtags
-     * @return self
      */
     public function setSelectedHashtags(array $selectedHashtags): self
     {
         $this->selectedHashtags = $selectedHashtags;
+
         return $this;
     }
 
@@ -490,23 +398,23 @@ class SearchData
 
     /**
      * @param array $categories associative array of categories (key: category name, value: count)
-     * @return self
      */
     public function setCategories(array $categories): self
     {
         $this->categories = $categories;
+
         return $this;
     }
 
     /**
      * @param array $categories associative array of categories (key: category name, value: count)
-     * @return self
      */
     public function addCategories(array $categories): self
     {
         foreach ($categories as $name => $count) {
             $this->categories[$name] = $count;
         }
+
         return $this;
     }
 
@@ -520,11 +428,11 @@ class SearchData
 
     /**
      * @param string[] $selectedCategories
-     * @return self
      */
     public function setSelectedCategories(array $selectedCategories): self
     {
         $this->selectedCategories = $selectedCategories;
+
         return $this;
     }
 
@@ -541,7 +449,6 @@ class SearchData
 
     /**
      * @param array|null $creationDateRange an array of two items, start & end date, which may be \DateTime objects or null
-     * @return self
      */
     public function setCreationDateRange(?array $creationDateRange): self
     {
@@ -553,6 +460,7 @@ class SearchData
         if (isset($creationDateRange[1]) && $creationDateRange[1] instanceof \DateTime) {
             $this->setCreationDateUntil($creationDateRange[1]);
         }
+
         return $this;
     }
 
@@ -569,7 +477,6 @@ class SearchData
 
     /**
      * @param array|null $modificationDateRange an array of two items, start & end date, which may be \DateTime objects or null
-     * @return self
      */
     public function setModificationDateRange(?array $modificationDateRange): self
     {
@@ -579,160 +486,113 @@ class SearchData
         if (isset($modificationDateRange[1]) && $modificationDateRange[1] instanceof \DateTime) {
             $this->setModificationDateUntil($modificationDateRange[1]);
         }
+
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getCreationDateFrom(): ?\DateTime
     {
         return $this->creationDateFrom;
     }
 
-    /**
-     * @param \DateTime|null $creationDateFrom
-     * @return self
-     */
     public function setCreationDateFrom(?\DateTime $creationDateFrom): self
     {
         $this->creationDateFrom = $creationDateFrom;
+
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getCreationDateUntil(): ?\DateTime
     {
         return $this->creationDateUntil;
     }
 
-    /**
-     * @param \DateTime|null $creationDateUntil
-     * @return self
-     */
     public function setCreationDateUntil(?\DateTime $creationDateUntil): self
     {
         $this->creationDateUntil = $creationDateUntil;
+
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getModificationDateFrom(): ?\DateTime
     {
         return $this->modificationDateFrom;
     }
 
-    /**
-     * @param \DateTime|null $modificationDateFrom
-     * @return self
-     */
     public function setModificationDateFrom(?\DateTime $modificationDateFrom): self
     {
         $this->modificationDateFrom = $modificationDateFrom;
+
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
     public function getModificationDateUntil(): ?\DateTime
     {
         return $this->modificationDateUntil;
     }
 
-    /**
-     * @param \DateTime|null $modificationDateUntil
-     * @return self
-     */
     public function setModificationDateUntil(?\DateTime $modificationDateUntil): self
     {
         $this->modificationDateUntil = $modificationDateUntil;
+
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getContexts(): ?array
     {
         return $this->contexts;
     }
 
-    /**
-     * @param array|null $contexts
-     */
     public function setContexts(?array $contexts): void
     {
         $this->contexts = $contexts;
     }
 
-    /**
-     * @return string|null
-     */
     public function getSelectedContext(): ?string
     {
         return $this->selectedContext;
     }
 
-    /**
-     * @param string|null $selectedContext
-     * @return self
-     */
     public function setSelectedContext(?string $selectedContext): self
     {
         $this->selectedContext = $selectedContext;
+
         return $this;
     }
 
     /**
      * @param array $contexts associative array of context titles (key: context title, value: count)
-     * @return self
      */
     public function addContexts(array $contexts): self
     {
         foreach ($contexts as $name => $count) {
             $this->contexts[$name] = $count;
         }
+
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getSortBy(): ?string
     {
         return $this->sortBy;
     }
 
-    /**
-     * @param string|null $sortBy
-     * @return self
-     */
     public function setSortBy(?string $sortBy): self
     {
         $this->sortBy = $sortBy;
+
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getSortOrder(): ?string
     {
         return $this->sortOrder;
     }
 
-    /**
-     * @param string|null $sortOrder
-     * @return self
-     */
     public function setSortOrder(?string $sortOrder): self
     {
         $this->sortOrder = $sortOrder;
+
         return $this;
     }
 }

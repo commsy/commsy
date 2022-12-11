@@ -1,33 +1,35 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\Api\GetAccountsCheckLocalLogin;
 use App\Controller\Api\GetAccountsWorkspaces;
 use App\Dto\LocalLoginInput;
-use DateTime;
+use App\Repository\AccountsRepository;
+use App\Validator\Constraints\EmailRegex;
 use Doctrine\ORM\Mapping as ORM;
-use InvalidArgumentException;
+use Serializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherAwareInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Validator\Constraints\EmailRegex;
 
 /**
- * Account
+ * Account.
  *
- * @ORM\Table(name="accounts", uniqueConstraints={
- *     @ORM\UniqueConstraint(name="accounts_idx", columns={"context_id", "username", "auth_source_id"})
- * })
- * @ORM\Entity(repositoryClass="App\Repository\AccountsRepository")
- * @UniqueEntity(
- *     fields={"contextId", "username", "authSource"},
- *     errorPath="username",
- *     repositoryMethod="findOneByCredentialsArray"
- * )
  * @ApiResource(
  *     security="is_granted('ROLE_API_READ')",
  *     collectionOperations={
@@ -90,9 +92,14 @@ use App\Validator\Constraints\EmailRegex;
  *         "groups"={"api"}
  *     }
  * )
+ *
  * @EmailRegex
  */
-class Account implements UserInterface, EncoderAwareInterface, \Serializable
+#[ORM\Entity(repositoryClass: AccountsRepository::class)]
+#[UniqueEntity(fields: ['contextId', 'username', 'authSource'], errorPath: 'username', repositoryMethod: 'findOneByCredentialsArray')]
+#[ORM\Table(name: 'accounts')]
+#[ORM\UniqueConstraint(name: 'accounts_idx', columns: ['context_id', 'username', 'auth_source_id'])]
+class Account implements UserInterface, PasswordHasherAwareInterface, \Serializable
 {
     public const ACTIVITY_ACTIVE = 'active';
     public const ACTIVITY_ACTIVE_NOTIFIED = 'active_notified';
@@ -100,142 +107,80 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
     public const ACTIVITY_IDLE_NOTIFIED = 'idle_notified';
     public const ACTIVITY_ABANDONED = 'abandoned';
 
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue()
-     *
-     * @Groups({"api", "api_check_local_login"})
-     */
-    private ?int $id;
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[Groups(['api', 'api_check_local_login'])]
+    private ?int $id = null;
 
-    /**
-     * @var integer
-     *
-     * @ORM\Column(type="integer")
-     *
-     * @Assert\NotBlank(groups={"checkLocalLoginValidation"})
-     *
-     * @Groups({"api_check_local_login"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Assert\NotBlank(groups: ['checkLocalLoginValidation'])]
+    #[Groups(['api_check_local_login'])]
     private int $contextId;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=100)
-     *
-     * @Assert\NotBlank(groups={"Default", "checkLocalLoginValidation"})
-     * @Assert\Regex(pattern="/^(root|guest)$/i", match=false, message="{{ value }} is a reserved name")
-     *
-     * @Groups({"api", "api_check_local_login"})
-     */
+    #[ORM\Column(type: 'string', length: 100)]
+    #[Assert\NotBlank(groups: ['Default', 'checkLocalLoginValidation'])]
+    #[Assert\Regex(pattern: '/^(root|guest)$/i', match: false, message: '{{ value }} is a reserved name')]
+    #[Groups(['api', 'api_check_local_login'])]
     private string $username;
 
     /**
-     * @Assert\NotBlank()
-     * @Assert\NotCompromisedPassword()
-     * @Assert\Length(max=4096, min=8, allowEmptyString=false, minMessage="Your password must be at least {{ limit }} characters long.")
-     * @Assert\Regex(pattern="/(*UTF8)[\p{Ll}\p{Lm}\p{Lo}]/", message="Your password must contain at least one lowercase character.")
-     * @Assert\Regex(pattern="/(*UTF8)[\p{Lu}\p{Lt}]/", message="Your password must contain at least one uppercase character.")
-     * @Assert\Regex(pattern="/[[:punct:]]/", message="Your password must contain at least one special character.")
-     * @Assert\Regex(pattern="/\p{Nd}/", message="Your password must contain at least one numeric character.")
+     * @var mixed|null
      */
+    #[Assert\NotBlank]
+    #[Assert\NotCompromisedPassword]
+    #[Assert\Length(max: 4096, min: 8, minMessage: 'Your password must be at least {{ limit }} characters long.')]
+    #[Assert\Regex(pattern: '/(*UTF8)[\p{Ll}\p{Lm}\p{Lo}]/', message: 'Your password must contain at least one lowercase character.')]
+    #[Assert\Regex(pattern: '/(*UTF8)[\p{Lu}\p{Lt}]/', message: 'Your password must contain at least one uppercase character.')]
+    #[Assert\Regex(pattern: '/[[:punct:]]/', message: 'Your password must contain at least one special character.')]
+    #[Assert\Regex(pattern: '/\p{Nd}/', message: 'Your password must contain at least one numeric character.')]
     private $plainPassword;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=32, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 32, nullable: true)]
     private ?string $passwordMd5;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     *
-     * @Assert\NotBlank(groups={"checkLocalLoginValidation"})
-     *
-     * @Groups({"api_check_local_login"})
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\NotBlank(groups: ['checkLocalLoginValidation'])]
+    #[Groups(['api_check_local_login'])]
     private ?string $password;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=50)
-     *
-     * @Assert\NotBlank()
-     *
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: 'string', length: 50)]
+    #[Assert\NotBlank]
+    #[Groups(['api'])]
     private string $firstname;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=50)
-     *
-     * @Assert\NotBlank()
-     *
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: 'string', length: 50)]
+    #[Assert\NotBlank]
+    #[Groups(['api'])]
     private string $lastname;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=100)
-     *
-     * @Assert\Email()
-     *
-     * @Groups({"api"})
-     */
+    #[ORM\Column(name: 'email', type: 'string', length: 100)]
+    #[Assert\Email]
+    #[Groups(['api'])]
     private string $email;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="language", type="string", length=10)
-     */
+    #[ORM\Column(name: 'language', type: 'string', length: 10)]
     private string $language;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AuthSource")
-     * @ORM\JoinColumn()
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\AuthSource::class)]
+    #[ORM\JoinColumn]
     private AuthSource $authSource;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="locked", type="boolean")
-     *
-     * @Groups({"api"})
-     */
+    #[ORM\Column(name: 'locked', type: 'boolean')]
+    #[Groups(['api'])]
     private bool $locked = false;
 
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="last_login", type="datetime", nullable=true)
-     */
-    private ?DateTime $lastLogin;
+    #[ORM\Column(name: 'last_login', type: 'datetime', nullable: true)]
+    private ?\DateTime $lastLogin;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="activity_state", type="string", length=15, options={"default"="active"})
-     */
+    #[ORM\Column(name: 'activity_state', type: 'string', length: 15, options: ['default' => 'active'])]
     private string $activityState;
 
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="activity_state_updated", type="datetime", nullable=true)
-     */
-    private ?DateTime $activityStateUpdated;
+    #[ORM\Column(name: 'activity_state_updated', type: 'datetime', nullable: true)]
+    private ?\DateTime $activityStateUpdated = null;
 
     public function __construct()
     {
@@ -245,21 +190,15 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
         $this->activityState = self::ACTIVITY_ACTIVE;
     }
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int|null $id
-     * @return Account
-     */
     public function setId(?int $id): Account
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -295,13 +234,10 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
         return $this->password ?: $this->passwordMd5;
     }
 
-    /**
-     * @param string $password
-     * @return Account
-     */
     public function setPassword(string $password): Account
     {
         $this->password = $password;
+
         return $this;
     }
 
@@ -325,13 +261,10 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
         return $this->contextId;
     }
 
-    /**
-     * @param int $contextId
-     * @return Account
-     */
     public function setContextId(int $contextId): Account
     {
         $this->contextId = $contextId;
+
         return $this;
     }
 
@@ -345,13 +278,10 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
         return $this->username;
     }
 
-    /**
-     * @param string $username
-     * @return Account
-     */
     public function setUsername(string $username): Account
     {
         $this->username = $username;
+
         return $this;
     }
 
@@ -364,102 +294,81 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
     }
 
     /**
-     * @param mixed $plainPassword
      * @return Account
      */
-    public function setPlainPassword($plainPassword)
+    public function setPlainPassword(mixed $plainPassword)
     {
         $this->plainPassword = $plainPassword;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPasswordMd5(): string
     {
         return $this->passwordMd5;
     }
 
-    /**
-     * @param string|null $passwordMd5
-     * @return Account
-     */
     public function setPasswordMd5(?string $passwordMd5): Account
     {
         $this->passwordMd5 = $passwordMd5;
+
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getFirstname():? string
+    public function getFirstname(): ?string
     {
         return $this->firstname;
     }
 
-    /**
-     * @param string $firstname
-     * @return Account
-     */
     public function setFirstname(string $firstname): Account
     {
         $this->firstname = $firstname;
+
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getLastname():? string
+    public function getLastname(): ?string
     {
         return $this->lastname;
     }
 
-    /**
-     * @param string $lastname
-     * @return Account
-     */
     public function setLastname(string $lastname): Account
     {
         $this->lastname = $lastname;
+
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getEmail():? string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string $email
-     * @return Account
-     */
     public function setEmail(string $email): Account
     {
         $this->email = $email;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getLanguage(): string
     {
         return $this->language;
     }
 
-    /**
-     * @param string $language
-     * @return Account
-     */
     public function setLanguage(string $language): Account
     {
         $this->language = $language;
+
         return $this;
     }
 
@@ -475,10 +384,10 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
 
     public function hasLegacyPassword(): bool
     {
-        return $this->passwordMd5 !== null;
+        return null !== $this->passwordMd5;
     }
 
-    public function getEncoderName(): ?string
+    public function getPasswordHasherName(): ?string
     {
         if ($this->hasLegacyPassword()) {
             return 'legacy_encoder';
@@ -499,54 +408,35 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isLocked(): bool
     {
         return $this->locked;
     }
 
-    /**
-     * @param bool $locked
-     * @return Account
-     */
     public function setLocked(bool $locked): Account
     {
         $this->locked = $locked;
+
         return $this;
     }
 
-    /**
-     * @return DateTime|null
-     */
-    public function getLastLogin(): ?DateTime
+    public function getLastLogin(): ?\DateTime
     {
         return $this->lastLogin;
     }
 
-    /**
-     * @param DateTime|null $lastLogin
-     * @return Account
-     */
-    public function setLastLogin(?DateTime $lastLogin): Account
+    public function setLastLogin(?\DateTime $lastLogin): Account
     {
         $this->lastLogin = $lastLogin;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getActivityState(): string
     {
         return $this->activityState;
     }
 
-    /**
-     * @param string $activityState
-     * @return Account
-     */
     public function setActivityState(string $activityState): Account
     {
         if (!in_array($activityState, [
@@ -556,28 +446,26 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
             self::ACTIVITY_IDLE_NOTIFIED,
             self::ACTIVITY_ABANDONED,
         ])) {
-            throw new InvalidArgumentException("Invalid activity");
+            throw new \InvalidArgumentException('Invalid activity');
         }
 
         $this->activityState = $activityState;
+
         return $this;
     }
 
-    /**
-     * @return DateTime|null
-     */
-    public function getActivityStateUpdated(): ?DateTime
+    public function getActivityStateUpdated(): ?\DateTime
     {
         return $this->activityStateUpdated;
     }
 
     /**
-     * @param DateTime|null $activityStateUpdated
      * @return Room
      */
-    public function setActivityStateUpdated(?DateTime $activityStateUpdated): Account
+    public function setActivityStateUpdated(?\DateTime $activityStateUpdated): Account
     {
         $this->activityStateUpdated = $activityStateUpdated;
+
         return $this;
     }
 
@@ -601,4 +489,3 @@ class Account implements UserInterface, EncoderAwareInterface, \Serializable
         }
     }
 }
-

@@ -1,12 +1,22 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\EventSubscriber;
 
 use App\Entity\Account;
 use App\Entity\Portal;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
-use cs_environment;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -18,43 +28,16 @@ use Symfony\Component\Security\Core\Security;
 
 class TermsOfUseSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private UrlGeneratorInterface $urlGenerator;
-
-    /**
-     * @var Security
-     */
-    private Security $security;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var UserService
-     */
-    private UserService $userService;
+    private \cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        UrlGeneratorInterface $urlGenerator,
-        Security $security,
-        EntityManagerInterface $entityManager,
-        UserService $userService
+        private UrlGeneratorInterface $urlGenerator,
+        private Security $security,
+        private EntityManagerInterface $entityManager,
+        private UserService $userService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->urlGenerator = $urlGenerator;
-        $this->security = $security;
-        $this->entityManager = $entityManager;
-        $this->userService = $userService;
     }
 
     public static function getSubscribedEvents()
@@ -67,12 +50,12 @@ class TermsOfUseSubscriber implements EventSubscriberInterface
     public function onKernelController(ControllerEvent $event)
     {
         // Return early if this is not a master request
-        if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
+        if (HttpKernelInterface::MAIN_REQUEST !== $event->getRequestType()) {
             return;
         }
 
         // Return early if this is not a GET request are it is an XHR request
-        if ($event->getRequest()->getMethod() !== 'GET' || $event->getRequest()->isXmlHttpRequest()) {
+        if ('GET' !== $event->getRequest()->getMethod() || $event->getRequest()->isXmlHttpRequest()) {
             return;
         }
 
@@ -103,18 +86,16 @@ class TermsOfUseSubscriber implements EventSubscriberInterface
                 $portalToUDate = $portal->getAGBChangeDate();
                 $userAcceptedDate = $portalUser->getAGBAcceptanceDate();
 
-                if (!$portalUser->isRoot() && ($userAcceptedDate === null || $userAcceptedDate < $portalToUDate)) {
+                if (!$portalUser->isRoot() && (null === $userAcceptedDate || $userAcceptedDate < $portalToUDate)) {
                     // Redirect to tou site
-                    if ($event->getRequest()->attributes->get('_route') !== 'app_tou_portal' &&
-                        $event->getRequest()->attributes->get('_route') !== 'app_account_deleteaccount' &&
-                        $event->getRequest()->attributes->get('_route') !== 'app_logout'
+                    if ('app_tou_portal' !== $event->getRequest()->attributes->get('_route') &&
+                        'app_account_deleteaccount' !== $event->getRequest()->attributes->get('_route') &&
+                        'app_logout' !== $event->getRequest()->attributes->get('_route')
                     ) {
-                        $event->setController(function() use ($portal, $event) {
-                            return new RedirectResponse($this->urlGenerator->generate('app_tou_portal', [
-                                'portalId' => $portal->getId(),
-                                'redirect' => $event->getRequest()->getRequestUri(),
-                            ]));
-                        });
+                        $event->setController(fn () => new RedirectResponse($this->urlGenerator->generate('app_tou_portal', [
+                            'portalId' => $portal->getId(),
+                            'redirect' => $event->getRequest()->getRequestUri(),
+                        ])));
                     }
                 }
             }
@@ -122,7 +103,7 @@ class TermsOfUseSubscriber implements EventSubscriberInterface
 
         // Room terms
         $currentContext = $this->legacyEnvironment->getCurrentContextItem();
-        if ($currentContext->isProjectRoom() || $currentContext->isCommunityRoom() ||$currentContext->isGroupRoom()) {
+        if ($currentContext->isProjectRoom() || $currentContext->isCommunityRoom() || $currentContext->isGroupRoom()) {
             if ($currentContext->withAGB()) {
                 $contextUser = $this->legacyEnvironment->getCurrentUserItem();
 
@@ -130,18 +111,16 @@ class TermsOfUseSubscriber implements EventSubscriberInterface
                     $contextToUDate = $currentContext->getAGBChangeDate();
                     $userAcceptedDate = $contextUser->getAGBAcceptanceDate();
 
-                    if (!$contextUser->isRoot() && ($userAcceptedDate === null || $userAcceptedDate < $contextToUDate)) {
+                    if (!$contextUser->isRoot() && (null === $userAcceptedDate || $userAcceptedDate < $contextToUDate)) {
                         // Redirect to tou site
-                        if ($event->getRequest()->attributes->get('_route') !== 'app_tou_room' &&
-                            $event->getRequest()->attributes->get('_route') !== 'app_profile_deleteroomprofile' &&
-                            $event->getRequest()->attributes->get('_route') !== 'app_logout'
+                        if ('app_tou_room' !== $event->getRequest()->attributes->get('_route') &&
+                            'app_profile_deleteroomprofile' !== $event->getRequest()->attributes->get('_route') &&
+                            'app_logout' !== $event->getRequest()->attributes->get('_route')
                         ) {
-                            $event->setController(function() use ($currentContext, $event) {
-                                return new RedirectResponse($this->urlGenerator->generate('app_tou_room', [
-                                    'roomId' => $currentContext->getItemID(),
-                                    'redirect' => $event->getRequest()->getRequestUri(),
-                                ]));
-                            });
+                            $event->setController(fn () => new RedirectResponse($this->urlGenerator->generate('app_tou_room', [
+                                'roomId' => $currentContext->getItemID(),
+                                'redirect' => $event->getRequest()->getRequestUri(),
+                            ])));
                         }
                     }
                 }

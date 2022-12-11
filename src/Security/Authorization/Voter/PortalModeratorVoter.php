@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Security\Authorization\Voter;
 
 use App\Entity\Portal;
@@ -24,19 +35,19 @@ class PortalModeratorVoter extends Voter
 
     protected function supports($attribute, $subject)
     {
-        return $subject instanceof Portal && $attribute === self::PORTAL_MODERATOR;
+        return $subject instanceof Portal && self::PORTAL_MODERATOR === $attribute;
     }
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $user = $token->getUser();
 
-        // if the user is anonymous, do not grant access    
+        // if the user is anonymous, do not grant access
         if (!$user instanceof UserInterface) {
             return false;
         }
 
-        if ($user->getUsername() === 'root') {
+        if ('root' === $user->getUsername()) {
             return true;
         }
 
@@ -46,8 +57,8 @@ class PortalModeratorVoter extends Voter
                 if ($currentUserItem) {
                     /** @var $subject Portal */
                     if (
-                        (int) $currentUserItem->getStatus() === 3 &&
-                        $subject->getDeletionDate() === null &&
+                        3 === (int) $currentUserItem->getStatus() &&
+                        null === $subject->getDeletionDate() &&
                         (int) $currentUserItem->getContextID() === $subject->getId()
                     ) {
                         return true;

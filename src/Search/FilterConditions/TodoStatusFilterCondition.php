@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Search\FilterConditions;
-
 
 use Elastica\Query\AbstractQuery;
 use Elastica\Query\Range;
@@ -13,15 +22,12 @@ class TodoStatusFilterCondition implements FilterConditionInterface
     /**
      * @var int|null Todo status (1: 'pending', 2: 'in progress', 3: 'done')
      */
-    private ?int $todoStatus;
+    private ?int $todoStatus = null;
 
-    /**
-     * @param int $todoStatus
-     * @return self
-     */
     public function setTodoStatus(int $todoStatus): self
     {
         $this->todoStatus = $todoStatus;
+
         return $this;
     }
 
@@ -55,8 +61,8 @@ class TodoStatusFilterCondition implements FilterConditionInterface
                 // not done (pending + in progress)
                 $todoRange = new Range();
                 $todoRange->addField('status', [
-                    "gte" => 1,
-                    "lt" => 3,
+                    'gte' => 1,
+                    'lt' => 3,
                 ]);
                 $todoFilters[] = $todoRange;
                 break;
@@ -65,9 +71,6 @@ class TodoStatusFilterCondition implements FilterConditionInterface
         return $todoFilters;
     }
 
-    /**
-     * @return string
-     */
     public function getOperator(): string
     {
         return FilterConditionInterface::BOOL_MUST;

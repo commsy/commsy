@@ -1,38 +1,40 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Security\Authorization\Voter;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use App\Utils\UserService;
-use cs_room_item;
-use cs_user_item;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class UserVoter extends Voter
 {
-    const MODERATOR = 'MODERATOR';
-    const ROOM_MODERATOR = 'ROOM_MODERATOR';
-    const PARENT_ROOM_MODERATOR = 'PARENT_ROOM_MODERATOR';
+    public const MODERATOR = 'MODERATOR';
+    public const ROOM_MODERATOR = 'ROOM_MODERATOR';
+    public const PARENT_ROOM_MODERATOR = 'PARENT_ROOM_MODERATOR';
 
     private $legacyEnvironment;
-    private $userService;
-    private $roomService;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, UserService $userService, RoomService $roomService)
+    public function __construct(LegacyEnvironment $legacyEnvironment, private UserService $userService, private RoomService $roomService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->userService = $userService;
-        $this->roomService = $roomService;
     }
 
     protected function supports($attribute, $object)
     {
-        return in_array($attribute, array(
-            self::MODERATOR,
-            self::ROOM_MODERATOR,
-            self::PARENT_ROOM_MODERATOR,
-        ));
+        return in_array($attribute, [self::MODERATOR, self::ROOM_MODERATOR, self::PARENT_ROOM_MODERATOR]);
     }
 
     protected function voteOnAttribute($attribute, $object, TokenInterface $token)
@@ -40,42 +42,29 @@ class UserVoter extends Voter
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $roomId = $object;
-        /** @var cs_room_item $room */
+        /** @var \cs_room_item $room */
         $room = $this->roomService->getRoomItem($roomId);
 
-        switch ($attribute) {
-            case self::MODERATOR:
-                return $this->isModerator($currentUser);
-
-            case self::ROOM_MODERATOR:
-                return $this->isModeratorForRoom($currentUser, $room);
-
-            case self::PARENT_ROOM_MODERATOR:
-                return $this->isParentModeratorForRoom($currentUser, $room);
-        }
-
-        throw new \LogicException('This code should not be reached!');
+        return match ($attribute) {
+            self::MODERATOR => $this->isModerator($currentUser),
+            self::ROOM_MODERATOR => $this->isModeratorForRoom($currentUser, $room),
+            self::PARENT_ROOM_MODERATOR => $this->isParentModeratorForRoom($currentUser, $room),
+            default => throw new \LogicException('This code should not be reached!'),
+        };
     }
 
     /**
      * Checks whether the given user is a moderator in the user's context.
-     *
-     * @param cs_user_item $user
-     * @return bool
      */
-    private function isModerator(cs_user_item $user): bool
+    private function isModerator(\cs_user_item $user): bool
     {
         return $user->isModerator();
     }
 
     /**
      * Checks whether the given user is a moderator in the given room.
-     *
-     * @param cs_user_item $user
-     * @param cs_room_item|null $room
-     * @return bool
      */
-    private function isModeratorForRoom(cs_user_item $user, ?cs_room_item $room): bool
+    private function isModeratorForRoom(\cs_user_item $user, ?\cs_room_item $room): bool
     {
         if (!$room) {
             return false;
@@ -91,12 +80,8 @@ class UserVoter extends Voter
 
     /**
      * Checks whether the given user is a parent moderator for the given room.
-     *
-     * @param cs_user_item $user
-     * @param cs_room_item|null $room
-     * @return bool
      */
-    private function isParentModeratorForRoom(cs_user_item $user, ?cs_room_item $room): bool
+    private function isParentModeratorForRoom(\cs_user_item $user, ?\cs_room_item $room): bool
     {
         if (!$room) {
             return false;

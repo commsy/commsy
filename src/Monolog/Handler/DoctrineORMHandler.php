@@ -1,15 +1,24 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Monolog\Handler;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Monolog\Formatter\FormatterInterface;
-use Monolog\Logger;
-use Monolog\Handler\AbstractProcessingHandler;
-use Monolog\Processor\WebProcessor;
 use Monolog\Formatter\NormalizerFormatter;
-
-use Doctrine\ORM\EntityManager;
+use Monolog\Handler\AbstractProcessingHandler;
+use Monolog\Logger;
+use Monolog\Processor\WebProcessor;
 
 /**
  * Monolog Handler to write messages into the database using
@@ -17,15 +26,8 @@ use Doctrine\ORM\EntityManager;
  */
 class DoctrineORMHandler extends AbstractProcessingHandler
 {
-    /**
-     * @var EntityManager $em
-     */
-    private $em;
-
-    public function __construct(EntityManagerInterface $entityManager, $level = Logger::DEBUG, $bubble = true)
+    public function __construct(private EntityManagerInterface $em, $level = Logger::DEBUG, $bubble = true)
     {
-        $this->em = $entityManager;
-
         parent::__construct($level, $bubble);
 
         $this->pushProcessor(new WebProcessor());

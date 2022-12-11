@@ -1,62 +1,55 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Cron\Tasks;
 
 use App\Helper\PortalHelper;
 use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
-use cs_environment;
 use cs_room_item;
-use cs_time_item;
-use DateTimeImmutable;
 
 class CronRenewContinuousLinks implements CronTaskInterface
 {
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
-
-    /**
-     * @var PortalRepository
-     */
-    private PortalRepository $portalRepository;
-
-    /**
-     * @var PortalHelper
-     */
-    private PortalHelper $portalHelper;
+    private \cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        PortalRepository $portalRepository,
-        PortalHelper $portalHelper
+        private PortalRepository $portalRepository,
+        private PortalHelper $portalHelper
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->portalRepository = $portalRepository;
-        $this->portalHelper = $portalHelper;
     }
 
-    public function run(?DateTimeImmutable $lastRun): void
+    public function run(?\DateTimeImmutable $lastRun): void
     {
         $timeManager = $this->legacyEnvironment->getTimeManager();
         $timeManager->setTypeLimit('time');
 
         $portals = $this->portalRepository->findActivePortals();
         foreach ($portals as $portal) {
-            if (!$portal->getShowTimePulses() || $portal->getStatus() != 1) {
+            if (!$portal->getShowTimePulses() || 1 != $portal->getStatus()) {
                 continue;
             }
 
             $timeManager->setContextLimit($portal->getId());
 
-            /** @var cs_time_item $currentTime */
+            /** @var \cs_time_item $currentTime */
             $currentTime = $timeManager->getItemByName($this->portalHelper->getTitleOfCurrentTime($portal));
 
             if ($currentTime) {
                 $unlinkedContinuousRoomList = $this->portalHelper->getContinuousRoomListNotLinkedToTime($portal, $currentTime);
                 foreach ($unlinkedContinuousRoomList as $unlinkedContinuousRoom) {
-                    /** @var cs_room_item $unlinkedContinuousRoom */
+                    /* @var cs_room_item $unlinkedContinuousRoom */
                     $unlinkedContinuousRoom->setContinuous();
                     $unlinkedContinuousRoom->saveWithoutChangingModificationInformation();
                 }

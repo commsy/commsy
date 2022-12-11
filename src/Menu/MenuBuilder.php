@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Menu;
 
 use App\Entity\Account;
@@ -8,7 +19,6 @@ use App\Repository\PortalRepository;
 use App\Services\InvitationsService;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
-use cs_environment;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -19,79 +29,21 @@ use Symfony\Component\Security\Core\Security;
 
 class MenuBuilder
 {
-    /**
-     * @var FactoryInterface $factory
-     */
-    private FactoryInterface $factory;
+    private \cs_environment $legacyEnvironment;
 
-    /**
-     * @var RoomService
-     */
-    private RoomService $roomService;
-
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
-
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    private AuthorizationCheckerInterface $authorizationChecker;
-
-    /**
-     * @var InvitationsService
-     */
-    private InvitationsService $invitationsService;
-
-    /**
-     * @var PortalRepository
-     */
-    private PortalRepository $portalRepository;
-
-    /**
-     * @var Security
-     */
-    private Security $security;
-
-    /**
-     * @var RouterInterface
-     */
-    private RouterInterface $router;
-
-    /**
-     * @param FactoryInterface $factory
-     * @param RoomService $roomService
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param AuthorizationCheckerInterface $authorizationChecker
-     * @param InvitationsService $invitationsService
-     * @param PortalRepository $portalRepository
-     * @param Security $security
-     * @param RouterInterface $router
-     */
     public function __construct(
-        FactoryInterface $factory,
-        RoomService $roomService,
+        private FactoryInterface $factory,
+        private RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
-        AuthorizationCheckerInterface $authorizationChecker,
-        InvitationsService $invitationsService,
-        PortalRepository $portalRepository,
-        Security $security,
-        RouterInterface $router
+        private AuthorizationCheckerInterface $authorizationChecker,
+        private InvitationsService $invitationsService,
+        private PortalRepository $portalRepository,
+        private Security $security,
+        private RouterInterface $router
     ) {
-        $this->factory = $factory;
-        $this->roomService = $roomService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->authorizationChecker = $authorizationChecker;
-        $this->invitationsService = $invitationsService;
-        $this->portalRepository = $portalRepository;
-        $this->security = $security;
-        $this->router = $router;
     }
 
-    /**
-     * @return ItemInterface
-     */
     public function createAccountMenu(): ItemInterface
     {
         // create profile
@@ -99,14 +51,13 @@ class MenuBuilder
 
         /** @var Account $account */
         $account = $this->security->getUser();
-        $authSource = $account !== null ? $account->getAuthSource() : null;
+        $authSource = null !== $account ? $account->getAuthSource() : null;
 
         $userIsRoot = $this->security->isGranted('ROLE_ROOT');
 
         $menu = $this->factory->createItem('root');
 
-        if ($currentUser->getItemId() != '' && $account != null) {
-
+        if ('' != $currentUser->getItemId() && null != $account) {
             if (!$userIsRoot) {
                 $menu->addChild('personal', [
                     'route' => 'app_account_personal',
@@ -116,18 +67,18 @@ class MenuBuilder
                     'extras' => [
                         'icon' => 'uk-icon-user uk-icon-small uk-icon-justify',
                         'user' => $currentUser,
-                    ]
+                    ],
                 ])
                 ->setExtra('translation_domain', 'menu');
             }
 
-            if ($userIsRoot || ($authSource !== null && $authSource->isChangePassword())) {
+            if ($userIsRoot || (null !== $authSource && $authSource->isChangePassword())) {
                 $menu->addChild('changePassword', [
                     'route' => 'app_account_changepassword',
                     'extras' => [
                         'icon' => 'uk-icon-lock uk-icon-small uk-icon-justify',
                         'user' => $currentUser,
-                    ]
+                    ],
                 ])
                 ->setExtra('translation_domain', 'profile');
             }
@@ -142,7 +93,7 @@ class MenuBuilder
                     'extras' => [
                         'icon' => 'uk-icon-sitemap uk-icon-small uk-icon-justify',
                         'user' => $currentUser,
-                    ]
+                    ],
                 ])
                 ->setExtra('translation_domain', 'profile');
 
@@ -154,7 +105,7 @@ class MenuBuilder
                     'extras' => [
                         'icon' => 'uk-icon-newspaper-o uk-icon-small uk-icon-justify',
                         'user' => $currentUser,
-                    ]
+                    ],
                 ])
                 ->setExtra('translation_domain', 'menu');
 
@@ -168,7 +119,7 @@ class MenuBuilder
                         'extras' => [
                             'icon' => 'uk-icon-user-secret uk-icon-small uk-icon-justify',
                             'user' => $currentUser,
-                        ]
+                        ],
                     ])
                     ->setExtra('translation_domain', 'profile');
                 }
@@ -181,7 +132,7 @@ class MenuBuilder
                     'extras' => [
                         'icon' => 'uk-icon-plus-square uk-icon-small uk-icon-justify',
                         'user' => $currentUser,
-                    ]
+                    ],
                 ])
                 ->setExtra('translation_domain', 'menu');
 
@@ -205,10 +156,6 @@ class MenuBuilder
         return $menu;
     }
 
-    /**
-     * @param RequestStack $requestStack
-     * @return ItemInterface
-     */
     public function createProfileMenu(RequestStack $requestStack): ItemInterface
     {
         // create profile
@@ -217,8 +164,7 @@ class MenuBuilder
 
         $menu = $this->factory->createItem('root');
 
-        if ($currentUser->getItemId() != '') {
-
+        if ('' != $currentUser->getItemId()) {
             $menu->addChild('general', [
                 'route' => 'app_profile_general',
                 'routeParameters' => [
@@ -228,7 +174,7 @@ class MenuBuilder
                 'extras' => [
                     'icon' => 'uk-icon-building-o uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
-                ]
+                ],
             ])
             ->setExtra('translation_domain', 'menu');
 
@@ -241,7 +187,7 @@ class MenuBuilder
                 'extras' => [
                     'icon' => 'uk-icon-map-o uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
-                ]
+                ],
             ])
             ->setExtra('translation_domain', 'menu');
 
@@ -254,7 +200,7 @@ class MenuBuilder
                 'extras' => [
                     'icon' => 'uk-icon-at uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
-                ]
+                ],
             ])
             ->setExtra('translation_domain', 'menu');
 
@@ -268,7 +214,7 @@ class MenuBuilder
                     'extras' => [
                         'icon' => 'uk-icon-envelope uk-icon-small uk-icon-justify',
                         'user' => $currentUser,
-                    ]
+                    ],
                 ])
                 ->setExtra('translation_domain', 'menu');
             }
@@ -282,7 +228,7 @@ class MenuBuilder
                 'extras' => [
                     'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
-                ]
+                ],
             ])
                 ->setAttributes([
                     'class' => 'uk-button-danger',
@@ -293,11 +239,6 @@ class MenuBuilder
         return $menu;
     }
 
-    /**
-     * @param RequestStack $requestStack
-     * @param LegacyEnvironment $legacyEnvironment
-     * @return ItemInterface
-     */
     public function createSettingsMenu(RequestStack $requestStack, LegacyEnvironment $legacyEnvironment): ItemInterface
     {
         // get room Id
@@ -316,64 +257,33 @@ class MenuBuilder
 
         if ($roomId) {
             // general settings
-            $menu->addChild('General', array(
-                'label' => 'General',
-                'route' => 'app_settings_general',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-server uk-icon-small uk-icon-justify'),
-            ))
+            $menu->addChild('General', ['label' => 'General', 'route' => 'app_settings_general', 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => 'uk-icon-server uk-icon-small uk-icon-justify']])
             ->setExtra('translation_domain', 'menu');
 
             // moderation
-            $menu->addChild('Moderation', array(
-                'label' => 'Moderation',
-                'route' => 'app_settings_moderation',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-sitemap uk-icon-small uk-icon-justify'),
-            ))
+            $menu->addChild('Moderation', ['label' => 'Moderation', 'route' => 'app_settings_moderation', 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => 'uk-icon-sitemap uk-icon-small uk-icon-justify']])
             ->setExtra('translation_domain', 'menu');
 
             // additional settings
-            $menu->addChild('Additional', array(
-                'label' => 'Additional',
-                'route' => 'app_settings_additional',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-plus uk-icon-small uk-icon-justify'),
-            ))
+            $menu->addChild('Additional', ['label' => 'Additional', 'route' => 'app_settings_additional', 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => 'uk-icon-plus uk-icon-small uk-icon-justify']])
             ->setExtra('translation_domain', 'menu');
 
             // appearance
-            $menu->addChild('Appearance', array(
-                'label' => 'appearance',
-                'route' => 'app_settings_appearance',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-paint-brush uk-icon-small uk-icon-justify'),
-            ))
+            $menu->addChild('Appearance', ['label' => 'appearance', 'route' => 'app_settings_appearance', 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => 'uk-icon-paint-brush uk-icon-small uk-icon-justify']])
             ->setExtra('translation_domain', 'menu');
 
             // extensions
-            $menu->addChild('Extensions', array(
-                'label' => 'extensions',
-                'route' => 'app_settings_extensions',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-gears uk-icon-small uk-icon-justify'),
-            ))
+            $menu->addChild('Extensions', ['label' => 'extensions', 'route' => 'app_settings_extensions', 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => 'uk-icon-gears uk-icon-small uk-icon-justify']])
             ->setExtra('translation_domain', 'menu');
-
 
             // invitations
             if ($this->invitationsService->invitationsEnabled($portal)) {
-                $menu->addChild('Invitations', array(
-                    'label' => 'invitations',
-                    'route' => 'app_settings_invitations',
-                    'routeParameters' => array('roomId' => $roomId),
-                    'extras' => array('icon' => 'uk-icon-envelope uk-icon-small uk-icon-justify'),
-                ))
+                $menu->addChild('Invitations', ['label' => 'invitations', 'route' => 'app_settings_invitations', 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => 'uk-icon-envelope uk-icon-small uk-icon-justify']])
                 ->setExtra('translation_domain', 'menu');
             }
 
             // delete
-            if ($this->roomService->getRoomItem($roomId)->getType() !== 'userroom') {
+            if ('userroom' !== $this->roomService->getRoomItem($roomId)->getType()) {
                 $menu->addChild('Delete', [
                     'label' => 'delete',
                     'route' => 'app_settings_delete',
@@ -381,7 +291,7 @@ class MenuBuilder
                         'roomId' => $roomId,
                     ],
                     'extras' => [
-                        'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify'
+                        'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify',
                     ],
                 ])
                 ->setAttributes([
@@ -391,22 +301,13 @@ class MenuBuilder
             }
 
             $menu->addChild(' ', ['uri' => '#']);
-            $menu->addChild('room', array(
-                'label' => 'Back to room',
-                'route' => 'app_room_home',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-reply uk-icon-small uk-icon-justify')
-            ))
+            $menu->addChild('room', ['label' => 'Back to room', 'route' => 'app_room_home', 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => 'uk-icon-reply uk-icon-small uk-icon-justify']])
             ->setExtra('translation_domain', 'menu');
         }
 
         return $menu;
     }
 
-    /**
-     * @param RequestStack $requestStack
-     * @return ItemInterface
-     */
     public function createPortalSettingsMenu(RequestStack $requestStack): ItemInterface
     {
         $menu = $this->factory->createItem('root');
@@ -431,7 +332,7 @@ class MenuBuilder
                 'label' => 'Auth',
                 'route' => 'app_portalsettings_authlocal',
                 'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'credit-card']
+                'extras' => ['icon' => 'credit-card'],
             ])
             ->setChildrenAttribute('class', 'uk-nav-sub')
             ->setExtra('translation_domain', 'portal');
@@ -455,7 +356,7 @@ class MenuBuilder
                 'label' => 'Accounts',
                 'route' => 'app_portalsettings_accountindex',
                 'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'users']
+                'extras' => ['icon' => 'users'],
             ])
             ->setExtra('translation_domain', 'portal');
 
@@ -473,7 +374,7 @@ class MenuBuilder
                 'label' => 'Support requests',
                 'route' => 'app_portalsettings_support',
                 'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'question']
+                'extras' => ['icon' => 'question'],
             ])
             ->setExtra('translation_domain', 'portal');
 
@@ -482,7 +383,7 @@ class MenuBuilder
                 'label' => 'announcements',
                 'route' => 'app_portalsettings_announcements',
                 'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'bell']
+                'extras' => ['icon' => 'bell'],
             ])
             ->setExtra('translation_domain', 'portal');
 
@@ -491,7 +392,7 @@ class MenuBuilder
                 'label' => 'contents',
                 'route' => 'app_portalsettings_contents',
                 'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'file-text']
+                'extras' => ['icon' => 'file-text'],
             ])
             ->setChildrenAttribute('class', 'uk-nav-sub')
             ->setExtra('translation_domain', 'portal');
@@ -515,7 +416,7 @@ class MenuBuilder
                 'label' => 'Translations',
                 'route' => 'app_portalsettings_translations',
                 'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'location']
+                'extras' => ['icon' => 'location'],
             ])
             ->setExtra('translation_domain', 'portal');
 
@@ -524,7 +425,7 @@ class MenuBuilder
                 'label' => 'Portalhome',
                 'route' => 'app_portalsettings_portalhome',
                 'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'play-circle']
+                'extras' => ['icon' => 'play-circle'],
             ])
             ->setExtra('translation_domain', 'portal');
 
@@ -533,7 +434,7 @@ class MenuBuilder
                 'label' => 'Rooms',
                 'route' => 'app_portalsettings_roomcreation',
                 'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'plus-circle']
+                'extras' => ['icon' => 'plus-circle'],
             ])
             ->setExtra('translation_domain', 'portal');
 
@@ -542,7 +443,7 @@ class MenuBuilder
                 'label' => 'Time pulses',
                 'route' => 'app_portalsettings_timepulses',
                 'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'calendar']
+                'extras' => ['icon' => 'calendar'],
             ])
             ->setExtra('translation_domain', 'portal');
 
@@ -551,7 +452,7 @@ class MenuBuilder
                 'label' => 'Room categories',
                 'route' => 'app_portalsettings_roomcategories',
                 'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'tag']
+                'extras' => ['icon' => 'tag'],
             ])
             ->setExtra('translation_domain', 'portal');
 
@@ -560,7 +461,7 @@ class MenuBuilder
                 'label' => 'Licenses',
                 'route' => 'app_portalsettings_licenses',
                 'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'ban']
+                'extras' => ['icon' => 'ban'],
             ])
             ->setExtra('translation_domain', 'portal');
 
@@ -569,7 +470,7 @@ class MenuBuilder
                 'label' => 'Privacy',
                 'route' => 'app_portalsettings_privacy',
                 'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'lock']
+                'extras' => ['icon' => 'lock'],
             ])
             ->setExtra('translation_domain', 'portal');
 
@@ -578,7 +479,7 @@ class MenuBuilder
                 'label' => 'Deprovisioning',
                 'route' => 'app_portalsettings_inactive',
                 'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'minus-circle']
+                'extras' => ['icon' => 'minus-circle'],
             ])
             ->setExtra('translation_domain', 'portal');
 
@@ -587,7 +488,7 @@ class MenuBuilder
                 'label' => 'CSV-Import',
                 'route' => 'app_portalsettings_csvimport',
                 'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'move']
+                'extras' => ['icon' => 'move'],
             ])
             ->setExtra('translation_domain', 'portal');
 
@@ -596,7 +497,7 @@ class MenuBuilder
                 'label' => 'Mailtexts',
                 'route' => 'app_portalsettings_mailtexts',
                 'routeParameters' => ['portalId' => $portalId],
-                'extras' => ['icon' => 'mail']
+                'extras' => ['icon' => 'mail'],
             ])
             ->setExtra('translation_domain', 'portal');
         }
@@ -604,10 +505,6 @@ class MenuBuilder
         return $menu;
     }
 
-    /**
-     * @param RequestStack $requestStack
-     * @return ItemInterface
-     */
     public function createMainMenu(RequestStack $requestStack): ItemInterface
     {
         // get room id
@@ -635,55 +532,50 @@ class MenuBuilder
             }
         }
 
-        $label = "home";
-        $icon = "uk-icon-home";
-        $route = "app_room_home";
+        $label = 'home';
+        $icon = 'uk-icon-home';
+        $route = 'app_room_home';
 
         if (!$inPrivateRoom) {
             // rubric room information
             $rubrics = $this->roomService->getRubricInformation($roomId) ?: [];
 
             // moderators _always_ need access to the user rubric (to manage room memberships)
-            if (!in_array("user", $rubrics) && $currentUser->isModerator()) {
-                $rubrics[] = "user";
+            if (!in_array('user', $rubrics) && $currentUser->isModerator()) {
+                $rubrics[] = 'user';
             }
         } // dashboard menu
         else {
             $rubrics = [
-                "announcement" => "announcement",
-                "material" => "material",
-                "discussion" => "discussion",
-                "date" => "date",
-                "todo" => "todo",
+                'announcement' => 'announcement',
+                'material' => 'material',
+                'discussion' => 'discussion',
+                'date' => 'date',
+                'todo' => 'todo',
             ];
-            $label = "overview";
-            $icon = "uk-icon-justify uk-icon-qrcode";
-            $route = "app_dashboard_overview";
+            $label = 'overview';
+            $icon = 'uk-icon-justify uk-icon-qrcode';
+            $route = 'app_dashboard_overview';
         }
 
-        list($bundle, $controller, $action) = explode("_", $currentRequest->attributes->get('_route'));
+        [$bundle, $controller, $action] = explode('_', $currentRequest->attributes->get('_route'));
 
         // NOTE: hide dashboard menu in dashboard overview and room list!
         if (!$userIsRoot &&
-            (!$inPrivateRoom || ($action != "overview" && $action != "listall")) &&
-            ($controller != "marked" || $action != "list") &&
-            ($controller != "room" || $action != "detail")
+            (!$inPrivateRoom || ('overview' != $action && 'listall' != $action)) &&
+            ('marked' != $controller || 'list' != $action) &&
+            ('room' != $controller || 'detail' != $action)
         ) {
             // home navigation
-            $menu->addChild('room_home', array(
-                'label' => $label,
-                'route' => $route,
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => $icon . ' uk-icon-small')
-            ))
+            $menu->addChild('room_home', ['label' => $label, 'route' => $route, 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => $icon.' uk-icon-small']])
             ->setExtra('translation_domain', 'menu');
 
             // loop through rubrics to build the menu
             foreach ($rubrics as $value) {
-                $route = 'app_' . $value . '_list';
-                if ($value == 'date') {
+                $route = 'app_'.$value.'_list';
+                if ('date' == $value) {
                     $room = $this->roomService->getRoomItem($roomId);
-                    if ($room->getDatesPresentationStatus() != 'normal') {
+                    if ('normal' != $room->getDatesPresentationStatus()) {
                         $route = 'app_date_calendar';
                     }
                 }
@@ -697,10 +589,10 @@ class MenuBuilder
                             'routeParameters' => ['roomId' => $roomId],
                             'extras' => [
                                 'icon' => $this->getRubricIcon($value),
-                            ]
+                            ],
                         ])
                         ->setExtra('translation_domain', 'menu');
-                } catch (RouteNotFoundException $e) {
+                } catch (RouteNotFoundException) {
                 }
             }
         }
@@ -719,12 +611,7 @@ class MenuBuilder
 
                 if ($this->authorizationChecker->isGranted('MODERATOR')) {
                     $menu->addChild(' ', ['uri' => '#']);
-                    $menu->addChild('room_configuration', array(
-                        'label' => 'settings',
-                        'route' => 'app_settings_general',
-                        'routeParameters' => array('roomId' => $roomId),
-                        'extras' => array('icon' => 'uk-icon-wrench uk-icon-small')
-                    ))
+                    $menu->addChild('room_configuration', ['label' => 'settings', 'route' => 'app_settings_general', 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => 'uk-icon-wrench uk-icon-small']])
                     ->setExtra('translation_domain', 'menu');
                 }
             }
@@ -734,49 +621,28 @@ class MenuBuilder
     }
 
     /**
-     * returns the uikit icon classname for a specific rubric
+     * returns the uikit icon classname for a specific rubric.
+     *
      * @param string $rubric rubric name
-     * @return string         uikit icon class
+     *
+     * @return string uikit icon class
      */
     private function getRubricIcon(string $rubric): string
     {
-        // return uikit icon class for rubric
-        switch ($rubric) {
-            case 'announcement':
-                $class = "uk-icon-justify uk-icon-comment-o uk-icon-small";
-                break;
-            case 'date':
-                $class = "uk-icon-justify uk-icon-calendar uk-icon-small";
-                break;
-            case 'material':
-                $class = "uk-icon-justify uk-icon-file-o uk-icon-small";
-                break;
-            case 'discussion':
-                $class = "uk-icon-justify uk-icon-comments-o uk-icon-small";
-                break;
-            case 'user':
-                $class = "uk-icon-justify uk-icon-user uk-icon-small";
-                break;
-            case 'group':
-                $class = "uk-icon-justify uk-icon-group uk-icon-small";
-                break;
-            case 'todo':
-                $class = "uk-icon-justify uk-icon-check-square-o uk-icon-small";
-                break;
-            case 'topic':
-                $class = "uk-icon-justify uk-icon-book uk-icon-small";
-                break;
-            case 'project':
-                $class = "uk-icon-justify uk-icon-sitemap uk-icon-small";
-                break;
-            case 'institution':
-                $class = "uk-icon-justify uk-icon-institution uk-icon-small";
-                break;
+        $class = match ($rubric) {
+            'announcement' => 'uk-icon-justify uk-icon-comment-o uk-icon-small',
+            'date' => 'uk-icon-justify uk-icon-calendar uk-icon-small',
+            'material' => 'uk-icon-justify uk-icon-file-o uk-icon-small',
+            'discussion' => 'uk-icon-justify uk-icon-comments-o uk-icon-small',
+            'user' => 'uk-icon-justify uk-icon-user uk-icon-small',
+            'group' => 'uk-icon-justify uk-icon-group uk-icon-small',
+            'todo' => 'uk-icon-justify uk-icon-check-square-o uk-icon-small',
+            'topic' => 'uk-icon-justify uk-icon-book uk-icon-small',
+            'project' => 'uk-icon-justify uk-icon-sitemap uk-icon-small',
+            'institution' => 'uk-icon-justify uk-icon-institution uk-icon-small',
+            default => 'uk-icon-justify uk-icon-home uk-icon-small',
+        };
 
-            default:
-                $class = "uk-icon-justify uk-icon-home uk-icon-small";
-                break;
-        }
         return $class;
     }
 }

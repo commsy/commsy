@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
 use App\Entity\Account;
@@ -18,9 +29,6 @@ class RoomPrivateRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $portalId
-     * @param Account $account
-     * @return RoomPrivat|null
      * @throws NonUniqueResultException
      */
     public function findOneByPortalIdAndAccount(int $portalId, Account $account): ?RoomPrivat
@@ -38,7 +46,7 @@ class RoomPrivateRepository extends ServiceEntityRepository
             ->setParameters([
                 'portalId' => $portalId,
                 'username' => $account->getUsername(),
-                'authSource' => $account->getAuthSource()
+                'authSource' => $account->getAuthSource(),
             ])
             ->getQuery()
             ->setMaxResults(1)

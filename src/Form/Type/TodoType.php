@@ -1,10 +1,21 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type;
 
 use App\Form\Type\Custom\CategoryMappingType;
 use App\Form\Type\Custom\DateTimeSelectType;
 use App\Form\Type\Custom\HashtagMappingType;
-use cs_context_item;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -21,70 +32,14 @@ class TodoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, array(
-                'constraints' => array(
-                    new NotBlank(),
-                ),
-                'label' => 'title',
-                'attr' => array(
-                    'placeholder' => $options['placeholderText'],
-                    'class' => 'uk-form-width-medium cs-form-title',
-                ),
-                'translation_domain' => 'material',
-            ))
-            ->add('due_date', DateTimeSelectType::class, array(
-                'constraints' => array(
-                ),
-                'label' => 'due date',
-                'attr' => array(
-                    'placeholder' => 'due date',
-                    'class' => 'uk-form-width-medium',
-                ),
-                'translation_domain' => 'todo',
-                'required' => false,
-            ))
-            ->add('time_planned', TextType::class, array(
-                'constraints' => array(
-                ),
-                'label' => 'time planned',
-                'attr' => array(
-                ),
-                'translation_domain' => 'todo',
-                'required' => false,
-            ))
-            ->add('time_type', ChoiceType::class, array(
-                'choices' => array (
-                    'minutes' => '1',
-                    'hours' => '2',
-                    'days' => '3',
-                ),
-                'constraints' => array(
-                ),
-                'label' => 'time type',
-                'attr' => array(
-                ),
-                'translation_domain' => 'todo',
-            ))
-            ->add('status', ChoiceType::class, array(
-                'choices' => $options['statusChoices'],
-                'constraints' => array(
-                ),
-                'label' => 'status',
-                'attr' => array(
-                ),
-                'translation_domain' => 'todo',
-            ))
-            ->add('permission', CheckboxType::class, array(
-                'label' => 'permission',
-                'required' => false,
-            ))
-            ->add('hidden', CheckboxType::class, array(
-                'label' => 'hidden',
-                'required' => false,
-            ))
-            ->add('hiddendate', DateTimeSelectType::class, array(
-                'label' => 'hidden until',
-            ))
+            ->add('title', TextType::class, ['constraints' => [new NotBlank()], 'label' => 'title', 'attr' => ['placeholder' => $options['placeholderText'], 'class' => 'uk-form-width-medium cs-form-title'], 'translation_domain' => 'material'])
+            ->add('due_date', DateTimeSelectType::class, ['constraints' => [], 'label' => 'due date', 'attr' => ['placeholder' => 'due date', 'class' => 'uk-form-width-medium'], 'translation_domain' => 'todo', 'required' => false])
+            ->add('time_planned', TextType::class, ['constraints' => [], 'label' => 'time planned', 'attr' => [], 'translation_domain' => 'todo', 'required' => false])
+            ->add('time_type', ChoiceType::class, ['choices' => ['minutes' => '1', 'hours' => '2', 'days' => '3'], 'constraints' => [], 'label' => 'time type', 'attr' => [], 'translation_domain' => 'todo'])
+            ->add('status', ChoiceType::class, ['choices' => $options['statusChoices'], 'constraints' => [], 'label' => 'status', 'attr' => [], 'translation_domain' => 'todo'])
+            ->add('permission', CheckboxType::class, ['label' => 'permission', 'required' => false])
+            ->add('hidden', CheckboxType::class, ['label' => 'hidden', 'required' => false])
+            ->add('hiddendate', DateTimeSelectType::class, ['label' => 'hidden until'])
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $todo = $event->getData();
                 $form = $event->getForm();
@@ -97,7 +52,7 @@ class TodoType extends AbstractType
                 }
 
                 if ($todo['draft']) {
-                    /** @var cs_context_item $room */
+                    /** @var \cs_context_item $room */
                     $room = $formOptions['room'];
 
                     if ($room->withBuzzwords()) {
@@ -114,28 +69,16 @@ class TodoType extends AbstractType
                         $form->add('category_mapping', CategoryMappingType::class, $categoryOptions);
                     }
                 }
-
             })
-            ->add('save', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                ),
-                'label' => 'save',
-            ))
-            ->add('cancel', SubmitType::class, array(
-                'attr' => array(
-                    'formnovalidate' => '',
-                ),
-                'label' => 'cancel',
-            ))
+            ->add('save', SubmitType::class, ['attr' => ['class' => 'uk-button-primary'], 'label' => 'save'])
+            ->add('cancel', SubmitType::class, ['attr' => ['formnovalidate' => ''], 'label' => 'cancel'])
         ;
-        
     }
 
     /**
      * Configures the options for this type.
-     * 
-     * @param  OptionsResolver $resolver The resolver for the options
+     *
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -144,17 +87,5 @@ class TodoType extends AbstractType
         $resolver->setDefaults(['translation_domain' => 'form']);
 
         $resolver->setAllowedTypes('room', 'cs_context_item');
-    }
-
-    /**
-     * Returns the prefix of the template block name for this type.
-     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
-     * (e.g. "UserProfileType" => "user_profile").
-     * 
-     * @return string The prefix of the template block name
-     */
-    public function getBlockPrefix()
-    {
-        return 'todo';
     }
 }

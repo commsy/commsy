@@ -1,34 +1,32 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Database;
 
-
-use App\Database\Resolve\CreateGroupAllResolution;
 use App\Entity\Room;
 use App\Services\LegacyEnvironment;
-use cs_environment;
-use cs_group_item;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class FixGroupAll implements DatabaseCheck
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
+    private \cs_environment $legacyEnvironment;
 
     public function __construct(
-        EntityManagerInterface $entityManager,
+        private EntityManagerInterface $entityManager,
         LegacyEnvironment $legacyEnvironment
     ) {
-        $this->entityManager = $entityManager;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -60,7 +58,7 @@ class FixGroupAll implements DatabaseCheck
 
         foreach ($projectRooms as $projectRoom) {
             if ($io->isVerbose()) {
-                $io->text('Processing room ' . $projectRoom->getTitle() . '(' . $projectRoom->getItemId() . ')');
+                $io->text('Processing room '.$projectRoom->getTitle().'('.$projectRoom->getItemId().')');
             }
 
             // get group "ALL"
@@ -71,7 +69,7 @@ class FixGroupAll implements DatabaseCheck
             if (!$groupAll) {
                 $io->warning('Missing group found');
 
-                /** @var cs_group_item $group */
+                /** @var \cs_group_item $group */
                 $group = $groupManager->getNewItem('group');
                 $group->setName('ALL');
                 $group->setDescription('GROUP_ALL_DESC');

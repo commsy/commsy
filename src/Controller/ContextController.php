@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Event\UserJoinedRoomEvent;
@@ -13,10 +24,7 @@ use App\Utils\GroupService;
 use App\Utils\ProjectService;
 use App\Utils\UserService;
 use cs_user_item;
-use DateTimeImmutable;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,47 +35,31 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
- * Class ContextController
- * @package App\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
+ * Class ContextController.
  */
+#[Security("is_granted('ITEM_ENTER', roomId)")]
 class ContextController extends AbstractController
 {
-    /**
-     *
-     * @var Mailer
-     */
     private Mailer $mailer;
 
-    /**
-     * @required
-     * @param Mailer $mailer
-     */
+    #[\Symfony\Contracts\Service\Attribute\Required]
     public function setMailer(Mailer $mailer)
     {
         $this->mailer = $mailer;
     }
 
     /**
-     * @Route("/room/{roomId}/context")
-     *
-     * @param Request $request
-     * @param ProjectService $projectService
-     * @param $roomId
      * @return array
      */
+    #[Route(path: '/room/{roomId}/context')]
     public function listAction(
         Request $request,
         ProjectService $projectService,
         int $roomId
     ) {
         // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true
-        );
-        $filterForm = $this->createForm(ProjectFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('app_project_list', array('roomId' => $roomId)),
-        ));
+        $defaultFilterValues = ['activated' => true];
+        $filterForm = $this->createForm(ProjectFilterType::class, $defaultFilterValues, ['action' => $this->generateUrl('app_project_list', ['roomId' => $roomId])]);
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -78,31 +70,10 @@ class ContextController extends AbstractController
 
         $itemsCountArray = $projectService->getCountArray($roomId);
 
-        return array(
-            'roomId' => $roomId,
-            'form' => $filterForm->createView(),
-            'module' => 'context',
-            'itemsCountArray' => $itemsCountArray
-        );
+        return ['roomId' => $roomId, 'form' => $filterForm->createView(), 'module' => 'context', 'itemsCountArray' => $itemsCountArray];
     }
 
-    /**
-     * @Route("/room/{roomId}/context/{itemId}/request", requirements={
-     *     "itemId": "\d+"
-     * }))
-     * @IsGranted("IS_AUTHENTICATED_REMEMBERED")
-     * @Template()
-     *
-     * @param Request $request
-     * @param LegacyEnvironment $environment
-     * @param UserService $userService
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param MembershipManager $membershipManager
-     * @param GroupService $groupService
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|Response
-     */
+    #[Route(path: '/room/{roomId}/context/{itemId}/request', requirements: ['itemId' => '\d+'])]
     public function requestAction(
         Request $request,
         LegacyEnvironment $environment,
@@ -111,8 +82,11 @@ class ContextController extends AbstractController
         MembershipManager $membershipManager,
         GroupService $groupService,
         int $roomId,
-        int $itemId
-    ) {
+        int $itemId,
+        Request $mainRequest,
+        Request $defaultRequest,
+        Request $Request
+    ): array|Response {
         $legacyEnvironment = $environment->getEnvironment();
 
         $currentUserItem = $legacyEnvironment->getCurrentUserItem();
@@ -135,7 +109,7 @@ class ContextController extends AbstractController
         }
 
         $agbText = '';
-        if ($roomItem->getAGBStatus() != 2) {
+        if (2 != $roomItem->getAGBStatus()) {
             $formOptions['withAGB'] = true;
 
             // get agb text in users language
@@ -143,14 +117,13 @@ class ContextController extends AbstractController
         }
 
         if ($roomItem->checkNewMembersNever()) {
-            $formOptions['CheckNewMembersNever']  = true;
+            $formOptions['CheckNewMembersNever'] = true;
         }
 
         $form = $this->createForm(ContextRequestType::class, null, $formOptions);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             if (($form->has('request') && $form->get('request')->isClicked()) ||
                 ($form->has('coderequest') && $form->get('coderequest')->isClicked())
             ) {
@@ -195,7 +168,7 @@ class ContextController extends AbstractController
                 }
 
                 if ($roomItem->getAGBStatus()) {
-                    $newUser->setAGBAcceptanceDate(new DateTimeImmutable());
+                    $newUser->setAGBAcceptanceDate(new \DateTimeImmutable());
                 }
 
                 if ($legacyEnvironment->getCurrentPortalItem()->getConfigurationHideMailByDefault()) {
@@ -226,16 +199,14 @@ class ContextController extends AbstractController
 
                     // mail to moderators
                     $moderatorRecipients = RecipientFactory::createModerationRecipients(
-                        $roomItem, function ($moderator) {
-                            /** @var cs_user_item $moderator */
-                            return $moderator->getAccountWantMail() == 'yes';
-                        });
+                        $roomItem, fn ($moderator) => /* @var cs_user_item $moderator */
+'yes' == $moderator->getAccountWantMail());
 
                     // language
                     $language = $roomItem->getLanguage();
-                    if ($language == 'user') {
+                    if ('user' == $language) {
                         $language = $newUser->getLanguage();
-                        if ($language == 'browser') {
+                        if ('browser' == $language) {
                             $language = $legacyEnvironment->getSelectedLanguage();
                         }
                     }
@@ -246,12 +217,12 @@ class ContextController extends AbstractController
                         $savedLanguage = $translator->getSelectedLanguage();
                         $translator->setSelectedLanguage($language);
 
-                        $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(date("Y-m-d H:i:s")),
-                            $translator->getTimeInLang(date("Y-m-d H:i:s")));
+                        $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(date('Y-m-d H:i:s')),
+                            $translator->getTimeInLang(date('Y-m-d H:i:s')));
                         $body .= "\n\n";
 
                         if ($legacyEnvironment->getCurrentPortalItem()->getHideAccountname()) {
-                            $userId = 'XXX ' . $translator->getMessage('COMMON_DATASECURITY');
+                            $userId = 'XXX '.$translator->getMessage('COMMON_DATASECURITY');
                         } else {
                             $userId = $newUser->getUserID();
                         }
@@ -284,14 +255,14 @@ class ContextController extends AbstractController
 
                         $moderators = '';
                         foreach ($moderatorRecipients as $recipient) {
-                            $moderators .= $recipient->getFirstname() . ' ' . $recipient->getLastname() .  "\n";
+                            $moderators .= $recipient->getFirstname().' '.$recipient->getLastname()."\n";
                         }
 
                         $body .= $translator->getMessage('MAIL_SEND_TO', $moderators);
                         $body .= "\n";
 
                         if ($isRequest) {
-                            $body .= $translator->getMessage('MAIL_USER_FREE_LINK') . "\n";
+                            $body .= $translator->getMessage('MAIL_USER_FREE_LINK')."\n";
                             $body .= $this->generateUrl('app_user_list', [
                                 'roomId' => $roomItem->getItemID(),
                                 'user_filter' => [
@@ -322,8 +293,8 @@ class ContextController extends AbstractController
 
                     $contactModerator = $moderatorList->getFirst();
 
-                    $modFullName = "";
-                    $modEmail = "";
+                    $modFullName = '';
+                    $modEmail = '';
 
                     if ($contactModerator) {
                         $modFullName = $contactModerator->getFullname();
@@ -337,15 +308,15 @@ class ContextController extends AbstractController
                     $savedLanguage = $translator->getSelectedLanguage();
 
                     $language = $roomItem->getLanguage();
-                    if ($language == 'user') {
+                    if ('user' == $language) {
                         $language = $newUser->getLanguage();
-                        if ($language == 'browser') {
+                        if ('browser' == $language) {
                             $language = $legacyEnvironment->getSelectedLanguage();
                         }
                     }
 
                     if ($legacyEnvironment->getCurrentPortalItem()->getHideAccountname()) {
-                        $userId = 'XXX ' . $translator->getMessage('COMMON_DATASECURITY');
+                        $userId = 'XXX '.$translator->getMessage('COMMON_DATASECURITY');
                     } else {
                         $userId = $newUser->getUserID();
                     }
@@ -354,8 +325,8 @@ class ContextController extends AbstractController
 
                     $subject = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER', $roomItem->getTitle());
 
-                    $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(date("Y-m-d H:i:s")),
-                        $translator->getTimeInLang(date("Y-m-d H:i:s")));
+                    $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(date('Y-m-d H:i:s')),
+                        $translator->getTimeInLang(date('Y-m-d H:i:s')));
                     $body .= "\n\n";
                     $body .= $translator->getEmailMessage('MAIL_BODY_HELLO', $newUser->getFullname());
                     $body .= "\n\n";
@@ -381,7 +352,7 @@ class ContextController extends AbstractController
                     ], UrlGeneratorInterface::ABSOLUTE_URL);
 
                     $replyTo = [];
-                    if ($modEmail != '' && $modFullName != '') {
+                    if ('' != $modEmail && '' != $modFullName) {
                         $replyTo[] = new Address($modEmail, $modFullName);
                     }
 
@@ -402,7 +373,6 @@ class ContextController extends AbstractController
 
             // redirect to detail page
             if ($roomItem->isGroupRoom()) {
-
                 if ($form->get('cancel')->isClicked()) {
                     $account = $this->getUser();
                     $group = $groupService->getGroup($roomItem->getLinkedGroupItemID());
@@ -427,6 +397,7 @@ class ContextController extends AbstractController
                     ]);
                 }
             }
+
             return $route;
         }
 

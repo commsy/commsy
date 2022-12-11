@@ -1,9 +1,19 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Feed;
 
 use App\Services\LegacyEnvironment;
-use cs_environment;
 use Debril\RssAtomBundle\Exception\FeedException\FeedNotFoundException;
 use Debril\RssAtomBundle\Provider\FeedProviderInterface;
 use FeedIo\Feed;
@@ -13,26 +23,18 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CommsyFeedContentProvider implements FeedProviderInterface
 {
-    private cs_environment $legacyEnvironment;
-    private TranslatorInterface $translator;
-    private FeedCreatorFactory $feedCreatorFactory;
+    private \cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        TranslatorInterface $translator,
-        FeedCreatorFactory $feedCreatorFactory
+        private TranslatorInterface $translator,
+        private FeedCreatorFactory $feedCreatorFactory
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->translator = $translator;
-        $this->feedCreatorFactory = $feedCreatorFactory;
     }
 
     /**
-     * @param Request $request
-     *
-     * @return FeedInterface
      * @throws FeedNotFoundException
-     *
      */
     public function getFeed(Request $request): FeedInterface
     {
@@ -56,7 +58,7 @@ class CommsyFeedContentProvider implements FeedProviderInterface
             $feed->setLastModified($this->getLastModified());
             $feed->setTitle($this->getTitle($currentContextItem));
             $feed->setDescription($this->getDescription($currentContextItem));
-            $feed->setLink($request->getSchemeAndHttpHost() . $request->getBaseUrl());
+            $feed->setLink($request->getSchemeAndHttpHost().$request->getBaseUrl());
 
             $items = $this->getItems($currentContextItem);
 
@@ -117,13 +119,13 @@ class CommsyFeedContentProvider implements FeedProviderInterface
             $ownerUserItem = $currentContextItem->getOwnerUserItem();
             $ownerFullName = $ownerUserItem->getFullName();
             if (!empty($ownerFullName)) {
-                $title .= ': ' . $ownerFullName;
+                $title .= ': '.$ownerFullName;
             }
         } else {
             $title = $currentContextItem->getTitle();
         }
 
-        return $title . ' (RSS)';
+        return $title.' (RSS)';
     }
 
     private function getDescription($currentContextItem)

@@ -1,26 +1,29 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Search\QueryConditions;
-
 
 use DateTime;
 use Elastica\Query\MultiMatch;
 
 class MostFieldsQueryCondition implements QueryConditionInterface
 {
-    /**
-     * @var string|null $query
-     */
-    private ?string $query;
+    private ?string $query = null;
 
-    /**
-     * @param string $query
-     * @return MostFieldsQueryCondition
-     */
     public function setQuery(string $query): MostFieldsQueryCondition
     {
         $this->query = $query;
+
         return $this;
     }
 
@@ -29,7 +32,7 @@ class MostFieldsQueryCondition implements QueryConditionInterface
      */
     public function getConditions(): array
     {
-        if ($this->query === '') {
+        if ('' === $this->query) {
             return [];
         }
 
@@ -69,7 +72,6 @@ class MostFieldsQueryCondition implements QueryConditionInterface
             'discussionarticles.description^1.3',
             'discussionarticles.filesRaw',
 
-
             // user
             'fullName',
 
@@ -103,7 +105,7 @@ class MostFieldsQueryCondition implements QueryConditionInterface
          * In order to search in datetime fields we must ensure to send only search strings that are already in
          * a valid format.
          */
-        $queryAsDate = (DateTime::createFromFormat('d.m.Y', $this->query)) ?: DateTime::createFromFormat('Y-m-d', $this->query);
+        $queryAsDate = (\DateTime::createFromFormat('d.m.Y', $this->query)) ?: \DateTime::createFromFormat('Y-m-d', $this->query);
         if ($queryAsDate) {
             $fields[] = 'modificationDate';
             $multiMatch->setQuery($queryAsDate->format('Y-m-d'));
@@ -114,9 +116,6 @@ class MostFieldsQueryCondition implements QueryConditionInterface
         return [$multiMatch];
     }
 
-    /**
-     * @return string
-     */
     public function getOperator(): string
     {
         return QueryConditionInterface::BOOL_MUST;

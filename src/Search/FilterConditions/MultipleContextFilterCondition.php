@@ -1,23 +1,25 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Search\FilterConditions;
 
-
 use App\Utils\UserService;
-use cs_room_item;
 use Elastica\Query\Terms;
 
 class MultipleContextFilterCondition implements FilterConditionInterface
 {
-    /**
-     * @var UserService $userService
-     */
-    private UserService $userService;
-
-    public function __construct(UserService $userService)
+    public function __construct(private UserService $userService)
     {
-        $this->userService = $userService;
     }
 
     /**
@@ -28,9 +30,7 @@ class MultipleContextFilterCondition implements FilterConditionInterface
         $currentUser = $this->userService->getCurrentUserItem();
         $searchableRooms = $this->userService->getSearchableRooms($currentUser);
 
-        $contextIds = array_map(function (cs_room_item $room) {
-            return $room->getItemID();
-        }, $searchableRooms);
+        $contextIds = array_map(fn (\cs_room_item $room) => $room->getItemID(), $searchableRooms);
 
         $contextFilter = new Terms('contextId');
         $contextFilter->setTerms($contextIds);
@@ -38,9 +38,6 @@ class MultipleContextFilterCondition implements FilterConditionInterface
         return [$contextFilter];
     }
 
-    /**
-     * @return string
-     */
     public function getOperator(): string
     {
         return FilterConditionInterface::BOOL_MUST;

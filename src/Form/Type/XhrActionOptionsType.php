@@ -1,4 +1,16 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type;
 
 use App\Form\Type\Custom\Select2ChoiceType;
@@ -25,8 +37,8 @@ class XhrActionOptionsType extends AbstractType
                 'choices' => $options['choices'],
                 'multiple' => true,
                 'attr' => [
-                    'class' => 'uk-width-1-1'
-                ]
+                    'class' => 'uk-width-1-1',
+                ],
             ])
         ;
     }

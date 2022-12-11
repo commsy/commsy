@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use Doctrine\DBAL\Exception;
@@ -12,16 +23,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class GotoController extends AbstractController
 {
     /**
-     * @Route("/goto/{itemId}")
      * @param EntityManager $entityManager
-     * @param int $itemId
-     * @return RedirectResponse
+     *
      * @throws Exception
      */
+    #[Route(path: '/goto/{itemId}')]
     public function gotoAction(
         EntityManagerInterface $entityManager,
         int $itemId
-    ) {
+    ): RedirectResponse {
         // for now, we are using DBAL here, instead of ORM Entities
         $dbConnection = $entityManager->getConnection();
         $queryBuilder = $dbConnection->createQueryBuilder();
@@ -37,17 +47,17 @@ class GotoController extends AbstractController
         $item = $stmt->fetchAssociative();
 
         if (!$item) {
-            throw $this->createNotFoundException('No item found for id ' . $itemId);
+            throw $this->createNotFoundException('No item found for id '.$itemId);
         }
 
         if (in_array($item['type'], ['project', 'community'])) {
             // redirect to room
             return $this->redirectToRoute('app_room_home', [
-                'roomId' => $item['item_id']
+                'roomId' => $item['item_id'],
             ]);
         } else {
             // redirect to detail
-            return $this->redirectToRoute('app_' . $item['type'] . '_detail', [
+            return $this->redirectToRoute('app_'.$item['type'].'_detail', [
                 'roomId' => $item['context_id'],
                 'itemId' => $item['item_id'],
             ]);

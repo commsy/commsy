@@ -1,35 +1,33 @@
 <?php
 
-namespace App\Database;
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
+namespace App\Database;
 
 use App\Entity\Portal;
 use App\Entity\Room;
 use App\Services\LegacyEnvironment;
-use cs_environment;
-use cs_group_item;
-use cs_link_item;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class FixGroupAllUserRelation implements DatabaseCheck
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
+    private \cs_environment $legacyEnvironment;
 
     public function __construct(
-        EntityManagerInterface $entityManager,
+        private EntityManagerInterface $entityManager,
         LegacyEnvironment $legacyEnvironment
     ) {
-        $this->entityManager = $entityManager;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -54,7 +52,7 @@ class FixGroupAllUserRelation implements DatabaseCheck
 
         /** @var Portal[] $portals */
         foreach ($portals as $portal) {
-            $io->text('Inspecting relations between users and system group "ALL" in portal ' . $portal->getTitle() . '(' . $portal->getId() . ')');
+            $io->text('Inspecting relations between users and system group "ALL" in portal '.$portal->getTitle().'('.$portal->getId().')');
 
             $qb = $this->entityManager->createQueryBuilder()
                 ->select('r')
@@ -75,14 +73,14 @@ class FixGroupAllUserRelation implements DatabaseCheck
 
             foreach ($projectRooms as $projectRoom) {
                 if ($io->isVerbose()) {
-                    $io->text('Processing room "' . $projectRoom->getTitle() . '" - ' . $projectRoom->getItemId());
+                    $io->text('Processing room "'.$projectRoom->getTitle().'" - '.$projectRoom->getItemId());
                 }
 
                 // get group "ALL"
                 $groupManager->reset();
                 $groupManager->setContextLimit($projectRoom->getItemId());
 
-                /** @var cs_group_item $groupAll */
+                /** @var \cs_group_item $groupAll */
                 $groupAll = $groupManager->getItemByName('ALL');
                 $groupAllMembers = $groupAll->getMemberItemList();
 
@@ -104,7 +102,7 @@ class FixGroupAllUserRelation implements DatabaseCheck
 
                                 $linkManager = $this->legacyEnvironment->getLinkItemManager();
 
-                                /** @var cs_link_item $linkItem */
+                                /** @var \cs_link_item $linkItem */
                                 $linkItem = $linkManager->getNewItem();
 
                                 $linkItem->setCreatorItem($userItem);

@@ -1,30 +1,33 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Validator\Constraints;
 
-
 use App\Entity\Room;
-use App\Entity\User;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
-use Symfony\Component\Debug\Exception\UndefinedMethodException;
-use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Constraint;
-use Exception;
+use Symfony\Component\Validator\ConstraintValidator;
 
 class ModeratorAccountDeleteConstraintValidator extends ConstraintValidator
 {
-    private $userService;
-
     /**
      * @var \cs_environment
      */
     private $legacyEnvironment;
 
-    public function __construct(UserService $userService, LegacyEnvironment $legacyEnvironment)
+    public function __construct(private UserService $userService, LegacyEnvironment $legacyEnvironment)
     {
-        $this->userService = $userService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -33,38 +36,32 @@ class ModeratorAccountDeleteConstraintValidator extends ConstraintValidator
         $currentUser = $this->userService->getCurrentUserItem();
         $rooms = $this->getRoomsOnlyModeratedByUser($currentUser);
 
-        if(!empty($rooms)) {
+        if (!empty($rooms)) {
             $this->context->buildViolation($constraint->messageBeginning)
                 ->addViolation();
 
             // community rooms
-            $communityRooms = array_filter($rooms, function (\cs_room_item $room) {
-                return $room->isCommunityRoom();
-            });
-            
+            $communityRooms = array_filter($rooms, fn (\cs_room_item $room) => $room->isCommunityRoom());
+
             foreach ($communityRooms as $communityRoom) {
-                /** @var \cs_community_item $communityRoom */
+                /* @var \cs_community_item $communityRoom */
                 $this->context->buildViolation($constraint->itemMessage)
                     ->setParameter('{{ criteria }}', $communityRoom->getItemID())
                     ->addViolation();
             }
 
             // project rooms
-            $projectRooms = array_filter($rooms, function (\cs_room_item $room) {
-                return $room->isProjectRoom();
-            });
+            $projectRooms = array_filter($rooms, fn (\cs_room_item $room) => $room->isProjectRoom());
 
             foreach ($projectRooms as $projectRoom) {
-                /** @var \cs_project_item $projectRoom */
+                /* @var \cs_project_item $projectRoom */
                 $this->context->buildViolation($constraint->itemMessage)
                     ->setParameter('{{ criteria }}', $projectRoom->getItemID())
                     ->addViolation();
             }
 
             // group rooms
-            $groupRooms = array_filter($rooms, function (\cs_room_item $room) {
-                return $room->isGroupRoom();
-            });
+            $groupRooms = array_filter($rooms, fn (\cs_room_item $room) => $room->isGroupRoom());
 
             foreach ($groupRooms as $groupRoom) {
                 $this->context->buildViolation($constraint->itemMessage)
@@ -88,7 +85,7 @@ class ModeratorAccountDeleteConstraintValidator extends ConstraintValidator
                 continue;
             }
 
-            if ($userRoom->getModeratorList()->getCount() == 1) {
+            if (1 == $userRoom->getModeratorList()->getCount()) {
                 $roomsOnlyModeratedByUser[] = $userRoom;
             }
         }

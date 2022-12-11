@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -7,205 +18,139 @@ use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * User
- *
- * @ORM\Table(
- *     name="user",
- *     indexes={
- *         @ORM\Index(name="creator_idx", columns={"creator_id"}),
- *         @ORM\Index(name="deleted_idx", columns={"deletion_date", "deleter_id"}),
- *         @ORM\Index(name="context_idx", columns={"context_id"}),
- *     },
- *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="unique_non_soft_deleted_idx", columns={"user_id", "auth_source", "context_id", "not_deleted"})
- *     }
- * )
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * User.
  */
+#[ORM\Entity(repositoryClass: \App\Repository\UserRepository::class)]
+#[ORM\Table(name: 'user')]
+#[ORM\Index(name: 'creator_idx', columns: ['creator_id'])]
+#[ORM\Index(name: 'deleted_idx', columns: ['deletion_date', 'deleter_id'])]
+#[ORM\Index(name: 'context_idx', columns: ['context_id'])]
+#[ORM\UniqueConstraint(name: 'unique_non_soft_deleted_idx', columns: ['user_id', 'auth_source', 'context_id', 'not_deleted'])]
 class User
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="item_id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     *
-     * @Groups({"api_read"})
-     * @OA\Property(description="The unique identifier.")
-     */
-    public $itemId = '0';
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=true)
-     */
-    private $contextId;
-
-    /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id")
-     */
-    private $creator;
-
-    /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id")
-     */
-    private $modifier;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="deleter_id", type="integer", nullable=true)
-     */
-    private $deleterId;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="creation_date", type="datetime", nullable=false)
-     *
-     * @Groups({"api_read"})
-     */
-    private $creationDate = '0000-00-00 00:00:00';
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modification_date", type="datetime", nullable=true)
-     *
-     * @Groups({"api_read"})
-     */
-    private $modificationDate;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
-     */
-    private $deletionDate;
-
-    /**
-     * @ORM\Column(name="not_deleted", type="boolean", insertable=false, updatable=false,generated="ALWAYS",
-     *     columnDefinition="TINYINT(1) AS (IF (deleter_id IS NULL AND deletion_date IS NULL, 1, NULL)) PERSISTENT AFTER deletion_date"
-     * )
-     */
-    private $isNotDeleted;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="user_id", type="string", length=100, nullable=false)
-     *
-     * @Groups({"api_read"})
-     */
-    public $userId;
-
-    /**
      * @var int
      *
-     * @ORM\Column(name="status", type="smallint", nullable=false)
-     *
-     * @Groups({"api_read"})
+     * @OA\Property(description="The unique identifier.")
      */
+    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[Groups(['api_read'])]
+    public $itemId = '0';
+    /**
+     * @var int
+     */
+    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
+    private $contextId;
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
+    private ?\App\Entity\User $creator = null;
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
+    private ?\App\Entity\User $modifier = null;
+    /**
+     * @var int
+     */
+    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
+    private $deleterId;
+    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
+    #[Groups(['api_read'])]
+    private \DateTime $creationDate;
+    /**
+     * @var \DateTimeInterface
+     */
+    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
+    #[Groups(['api_read'])]
+    private $modificationDate;
+    /**
+     * @var \DateTimeInterface
+     */
+    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
+    private $deletionDate;
+    #[ORM\Column(name: 'not_deleted', type: 'boolean', insertable: false, updatable: false, generated: 'ALWAYS', columnDefinition: 'TINYINT(1) AS (IF (deleter_id IS NULL AND deletion_date IS NULL, 1, NULL)) PERSISTENT AFTER deletion_date')]
+    private $isNotDeleted;
+    /**
+     * @var string
+     */
+    #[ORM\Column(name: 'user_id', type: 'string', length: 100, nullable: false)]
+    #[Groups(['api_read'])]
+    public $userId;
+    /**
+     * @var int
+     */
+    #[ORM\Column(name: 'status', type: 'smallint', nullable: false)]
+    #[Groups(['api_read'])]
     private $status = '0';
-
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="is_contact", type="boolean", nullable=false)
+     * @var bool
      */
+    #[ORM\Column(name: 'is_contact', type: 'boolean', nullable: false)]
     private $isContact = '0';
-
     /**
      * @var string
-     *
-     * @ORM\Column(name="firstname", type="string", length=50, nullable=false)
-     *
-     * @Groups({"api_read"})
      */
+    #[ORM\Column(name: 'firstname', type: 'string', length: 50, nullable: false)]
+    #[Groups(['api_read'])]
     private $firstname;
-
     /**
      * @var string
-     *
-     * @ORM\Column(name="lastname", type="string", length=100, nullable=false)
-     *
-     * @Groups({"api_read"})
      */
+    #[ORM\Column(name: 'lastname', type: 'string', length: 100, nullable: false)]
+    #[Groups(['api_read'])]
     private $lastname;
-
     /**
      * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=100, nullable=false)
      */
+    #[ORM\Column(name: 'email', type: 'string', length: 100, nullable: false)]
     private $email;
-
     /**
      * @var string
-     *
-     * @ORM\Column(name="city", type="string", length=100, nullable=false)
      */
+    #[ORM\Column(name: 'city', type: 'string', length: 100, nullable: false)]
     private $city;
-
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="lastlogin", type="datetime", nullable=true)
+     * @var \DateTimeInterface
      */
+    #[ORM\Column(name: 'lastlogin', type: 'datetime', nullable: true)]
     private $lastlogin;
-
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="visible", type="boolean", nullable=false)
+     * @var bool
      */
+    #[ORM\Column(name: 'visible', type: 'boolean', nullable: false)]
     private $visible = '1';
-
     /**
      * @var string
-     *
-     * @ORM\Column(name="extras", type="text", length=16777215, nullable=true)
      */
+    #[ORM\Column(name: 'extras', type: 'text', length: 16_777_215, nullable: true)]
     private $extras;
-
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="auth_source", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'auth_source', type: 'integer', nullable: true)]
     private $authSource;
-
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="text", length=65535, nullable=true)
      */
+    #[ORM\Column(name: 'description', type: 'text', length: 65535, nullable: true)]
     private $description;
-
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="expire_date", type="datetime", nullable=true)
+     * @var \DateTimeInterface
      */
+    #[ORM\Column(name: 'expire_date', type: 'datetime', nullable: true)]
     private $expireDate;
-
-    /**
-     * @ORM\Column(name="use_portal_email", type="boolean")
-     */
+    #[ORM\Column(name: 'use_portal_email', type: 'boolean')]
     private $usePortalEmail = false;
 
+    public function __construct()
+    {
+        $this->creationDate = new \DateTime('0000-00-00 00:00:00');
+    }
+
     /**
-     * Set contextId
+     * Set contextId.
      *
-     * @param integer $contextId
+     * @param int $contextId
      *
      * @return User
      */
@@ -217,9 +162,9 @@ class User
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
-     * @return integer
+     * @return int
      */
     public function getContextId()
     {
@@ -227,13 +172,13 @@ class User
     }
 
     /**
-     * Set creator
+     * Set creator.
      *
      * @param \App\Entity\User $modifier
      *
      * @return User
      */
-    public function setCreator(\App\Entity\User $creator = null)
+    public function setCreator(User $creator = null)
     {
         $this->creator = $creator;
 
@@ -241,7 +186,7 @@ class User
     }
 
     /**
-     * Get creator
+     * Get creator.
      *
      * @return \App\Entity\User
      */
@@ -251,13 +196,11 @@ class User
     }
 
     /**
-     * Set modifier
-     *
-     * @param \App\Entity\User $modifier
+     * Set modifier.
      *
      * @return User
      */
-    public function setModifier(\App\Entity\User $modifier = null)
+    public function setModifier(User $modifier = null)
     {
         $this->modifier = $modifier;
 
@@ -265,7 +208,7 @@ class User
     }
 
     /**
-     * Get modifier
+     * Get modifier.
      *
      * @return \App\Entity\User
      */
@@ -275,9 +218,9 @@ class User
     }
 
     /**
-     * Set deleterId
+     * Set deleterId.
      *
-     * @param integer $deleterId
+     * @param int $deleterId
      *
      * @return User
      */
@@ -289,9 +232,9 @@ class User
     }
 
     /**
-     * Get deleterId
+     * Get deleterId.
      *
-     * @return integer
+     * @return int
      */
     public function getDeleterId()
     {
@@ -299,17 +242,15 @@ class User
     }
 
     /**
-     * isDeleted
-     *
-     * @return boolean
+     * isDeleted.
      */
     public function isDeleted(): bool
     {
-        return ($this->deleterId !== null && $this->deletionDate !== null);
+        return null !== $this->deleterId && null !== $this->deletionDate;
     }
 
     /**
-     * Set creationDate
+     * Set creationDate.
      *
      * @param \DateTime $creationDate
      *
@@ -323,7 +264,7 @@ class User
     }
 
     /**
-     * Get creationDate
+     * Get creationDate.
      *
      * @return \DateTime
      */
@@ -333,7 +274,7 @@ class User
     }
 
     /**
-     * Set modificationDate
+     * Set modificationDate.
      *
      * @param \DateTime $modificationDate
      *
@@ -347,7 +288,7 @@ class User
     }
 
     /**
-     * Get modificationDate
+     * Get modificationDate.
      *
      * @return \DateTime
      */
@@ -357,7 +298,7 @@ class User
     }
 
     /**
-     * Set deletionDate
+     * Set deletionDate.
      *
      * @param \DateTime $deletionDate
      *
@@ -371,7 +312,7 @@ class User
     }
 
     /**
-     * Get deletionDate
+     * Get deletionDate.
      *
      * @return \DateTime
      */
@@ -381,7 +322,7 @@ class User
     }
 
     /**
-     * Set userId
+     * Set userId.
      *
      * @param string $userId
      *
@@ -395,7 +336,7 @@ class User
     }
 
     /**
-     * Get userId
+     * Get userId.
      *
      * @return string
      */
@@ -405,11 +346,7 @@ class User
     }
 
     /**
-     * Set status
-     *
-     * @param int $status
-     *
-     * @return User
+     * Set status.
      */
     public function setStatus(int $status): self
     {
@@ -419,9 +356,7 @@ class User
     }
 
     /**
-     * Get status
-     *
-     * @return int
+     * Get status.
      */
     public function getStatus(): int
     {
@@ -429,9 +364,9 @@ class User
     }
 
     /**
-     * Set isContact
+     * Set isContact.
      *
-     * @param boolean $isContact
+     * @param bool $isContact
      *
      * @return User
      */
@@ -443,9 +378,9 @@ class User
     }
 
     /**
-     * Get isContact
+     * Get isContact.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsContact()
     {
@@ -453,7 +388,7 @@ class User
     }
 
     /**
-     * Set firstname
+     * Set firstname.
      *
      * @param string $firstname
      *
@@ -467,7 +402,7 @@ class User
     }
 
     /**
-     * Get firstname
+     * Get firstname.
      *
      * @return string
      */
@@ -477,7 +412,7 @@ class User
     }
 
     /**
-     * Set lastname
+     * Set lastname.
      *
      * @param string $lastname
      *
@@ -491,7 +426,7 @@ class User
     }
 
     /**
-     * Get lastname
+     * Get lastname.
      *
      * @return string
      */
@@ -501,7 +436,7 @@ class User
     }
 
     /**
-     * Set email
+     * Set email.
      *
      * @param string $email
      *
@@ -515,7 +450,7 @@ class User
     }
 
     /**
-     * Get email
+     * Get email.
      *
      * @return string
      */
@@ -525,7 +460,7 @@ class User
     }
 
     /**
-     * Set city
+     * Set city.
      *
      * @param string $city
      *
@@ -539,7 +474,7 @@ class User
     }
 
     /**
-     * Get city
+     * Get city.
      *
      * @return string
      */
@@ -549,7 +484,7 @@ class User
     }
 
     /**
-     * Set lastlogin
+     * Set lastlogin.
      *
      * @param \DateTime $lastlogin
      *
@@ -563,7 +498,7 @@ class User
     }
 
     /**
-     * Get lastlogin
+     * Get lastlogin.
      *
      * @return \DateTime
      */
@@ -573,9 +508,9 @@ class User
     }
 
     /**
-     * Set visible
+     * Set visible.
      *
-     * @param boolean $visible
+     * @param bool $visible
      *
      * @return User
      */
@@ -587,9 +522,9 @@ class User
     }
 
     /**
-     * Get visible
+     * Get visible.
      *
-     * @return boolean
+     * @return bool
      */
     public function getVisible()
     {
@@ -597,7 +532,7 @@ class User
     }
 
     /**
-     * Set extras
+     * Set extras.
      *
      * @param string $extras
      *
@@ -611,7 +546,7 @@ class User
     }
 
     /**
-     * Get extras
+     * Get extras.
      *
      * @return string
      */
@@ -621,9 +556,9 @@ class User
     }
 
     /**
-     * Set authSource
+     * Set authSource.
      *
-     * @param integer $authSource
+     * @param int $authSource
      *
      * @return User
      */
@@ -635,9 +570,9 @@ class User
     }
 
     /**
-     * Get authSource
+     * Get authSource.
      *
-     * @return integer
+     * @return int
      */
     public function getAuthSource()
     {
@@ -645,7 +580,7 @@ class User
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -659,7 +594,7 @@ class User
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -669,7 +604,7 @@ class User
     }
 
     /**
-     * Set expireDate
+     * Set expireDate.
      *
      * @param \DateTime $expireDate
      *
@@ -683,7 +618,7 @@ class User
     }
 
     /**
-     * Get expireDate
+     * Get expireDate.
      *
      * @return \DateTime
      */
@@ -693,9 +628,9 @@ class User
     }
 
     /**
-     * Get itemId
+     * Get itemId.
      *
-     * @return integer
+     * @return int
      */
     public function getItemId()
     {
@@ -704,11 +639,11 @@ class User
 
     public function isIndexable()
     {
-        return ($this->deleterId == null && $this->deletionDate == null);
+        return null == $this->deleterId && null == $this->deletionDate;
     }
 
     public function getFullname()
     {
-        return trim($this->getFirstname() . ' ' . $this->getLastname());
+        return trim($this->getFirstname().' '.$this->getLastname());
     }
 }

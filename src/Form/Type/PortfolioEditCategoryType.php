@@ -1,4 +1,16 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type;
 
 use App\Validator\Constraints\UniquePortfolioCategory;
@@ -17,17 +29,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class PortfolioEditCategoryType extends AbstractType
 {
     /**
-     * @var TranslatorInterface $translator
-     */
-    private TranslatorInterface $translator;
-
-    /**
      * PortfolioType constructor.
-     * @param TranslatorInterface $translator
      */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(private TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -41,6 +46,7 @@ class PortfolioEditCategoryType extends AbstractType
                 'choice_label' => function ($choice, $key, $value) {
                     // remove the trailing category ID from $key (which was used in buildChoices() to uniquify the key)
                     $label = implode('_', explode('_', $key, -1));
+
                     return $label;
                 },
                 'translation_domain' => 'portfolio',
@@ -55,23 +61,18 @@ class PortfolioEditCategoryType extends AbstractType
                     ]),
                     new UniquePortfolioCategory([
                         'portfolioId' => $options['portfolioId'],
-                    ])
+                    ]),
                 ],
             ])
             ->add('addCategory', SubmitType::class, [
                 'label' => 'Add category',
                 'validation_groups' => false,
-                'translation_domain' => 'portfolio'
+                'translation_domain' => 'portfolio',
             ])
-            ->add('title', TextType::class, array(
-                'label' => false,
-                'required' => false,
-                'attr' => [
-                    'placeholder' => 'New Category',
-                    'class' => 'uk-form-width-medium',
-                ],
-                'translation_domain' => 'category',
-            ))
+            ->add('title', TextType::class, ['label' => false, 'required' => false, 'attr' => [
+                'placeholder' => 'New Category',
+                'class' => 'uk-form-width-medium',
+            ], 'translation_domain' => 'category'])
             ->add('description', TextareaType::class, [
                 'attr' => [
                     'rows' => 10,
@@ -119,7 +120,7 @@ class PortfolioEditCategoryType extends AbstractType
     /**
      * Configures the options for this type.
      *
-     * @param  OptionsResolver $resolver The resolver for the options
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -141,16 +142,17 @@ class PortfolioEditCategoryType extends AbstractType
         return 'portfolio';
     }
 
-    private function buildChoices($categories) {
+    private function buildChoices($categories)
+    {
         $choices = [];
 
         foreach ($categories as $category) {
             // NOTE: in order to form unique array keys, we append the category ID to the category title;
             // the category ID will be stripped again from the title via the `choice_label` field option
-            $choices[$category['title'] . '_' . $category['item_id']] = $category['item_id'];
+            $choices[$category['title'].'_'.$category['item_id']] = $category['item_id'];
 
             if (!empty($category['children'])) {
-                $choices[$category['title'] . '_sub' . '_' . $category['item_id']] = $this->buildChoices($category['children']);
+                $choices[$category['title'].'_sub_'.$category['item_id']] = $this->buildChoices($category['children']);
             }
         }
 

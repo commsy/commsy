@@ -1,14 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 29.07.18
- * Time: 23:32
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Form\Model\Csv;
 
-use App\Form\Model\Csv\CsvUserDataset;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -16,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Base64CsvFile
 {
     /**
-     * @var bool
+     * @var mixed|null
      */
     private $checked;
 
@@ -27,15 +31,14 @@ class Base64CsvFile
 
     /**
      * @var CsvUserDataset[]
-     * @Assert\Valid()
      */
-    private $csvUserDatasets;
+    #[Assert\Valid]
+    private \Doctrine\Common\Collections\ArrayCollection|\Doctrine\Common\Collections\Collection $csvUserDatasets;
 
     public function __construct()
     {
         $this->csvUserDatasets = new ArrayCollection();
     }
-
 
     public function setChecked($checked): Base64CsvFile
     {
@@ -51,7 +54,7 @@ class Base64CsvFile
 
     public function getFilename(): string
     {
-        return "file123";
+        return 'file123';
     }
 
 //    public function setBase64Content(array $base64Content): Base64CsvFile

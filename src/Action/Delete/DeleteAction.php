@@ -1,72 +1,41 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 03.07.18
- * Time: 16:35
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Action\Delete;
-
 
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
 use App\Http\JsonRedirectResponse;
 use App\Services\LegacyEnvironment;
-use App\Utils\ItemService;
 use App\Utils\UserService;
-use cs_environment;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DeleteAction implements ActionInterface
 {
-    /**
-     * @var DeleteInterface
-     */
-    private DeleteInterface $deleteStrategy;
+    private \cs_environment $legacyEnvironment;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private TranslatorInterface $translator;
-
-    /**
-     * @var ItemService
-     */
-    private ItemService $itemService;
-
-    /**
-     * @var UserService
-     */
-    private UserService $userService;
-
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
-
-
-    /**
-     * @param DeleteInterface $deleteStrategy
-     */
     public function setDeleteStrategy(DeleteInterface $deleteStrategy): void
     {
         $this->deleteStrategy = $deleteStrategy;
     }
 
-
     public function __construct(
-        DeleteGeneric $deleteGeneric,
-        TranslatorInterface $translator,
-        ItemService $itemService,
-        UserService $userService,
+        private DeleteGeneric $deleteStrategy,
+        private TranslatorInterface $translator,
+        private UserService $userService,
         LegacyEnvironment $legacyEnvironment
     ) {
-        $this->deleteStrategy = $deleteGeneric;
-        $this->translator = $translator;
-        $this->itemService = $itemService;
-        $this->userService = $userService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -83,7 +52,7 @@ class DeleteAction implements ActionInterface
             if ($this->isDeletionAllowed($roomItem, $item)) {
                 $this->deleteStrategy->delete($item);
 
-                $numDeletedItems++;
+                ++$numDeletedItems;
             }
         }
 
@@ -94,7 +63,7 @@ class DeleteAction implements ActionInterface
         }
 
         return new JsonDataResponse([
-            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> ' . $this->translator->trans('%count% deleted entries', [
+            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> '.$this->translator->trans('%count% deleted entries', [
                 '%count%' => $numDeletedItems,
             ]),
         ]);
@@ -113,7 +82,7 @@ class DeleteAction implements ActionInterface
         }
 
         // it is not allowed to delete the last moderator of a room
-        if ($item->getItemType() == 'user') {
+        if ('user' == $item->getItemType()) {
             if (!$this->userService->contextHasModerators($room->getItemId(), [$item->getItemId()])) {
                 return false;
             }

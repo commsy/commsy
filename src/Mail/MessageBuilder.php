@@ -1,13 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 2019-03-08
- * Time: 18:36
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Mail;
-
 
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mime\Address;
@@ -16,29 +20,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MessageBuilder
 {
-    /**
-     * @var TranslatorInterface $translator
-     */
-    private TranslatorInterface $translator;
-
-    /**
-     * @var string $emailFrom
-     */
-    private string $emailFrom;
-
-    public function __construct(
-        TranslatorInterface $translator,
-        string $emailFrom
-    ) {
-        $this->translator = $translator;
-        $this->emailFrom = $emailFrom;
+    public function __construct(private TranslatorInterface $translator, private string $emailFrom)
+    {
     }
 
-    /**
-     * @param Email $email
-     * @param string $fromSenderName
-     * @return Email
-     */
     public function generateFromEmail(
         Email $email,
         string $fromSenderName
@@ -48,15 +33,6 @@ class MessageBuilder
         return $email;
     }
 
-    /**
-     * @param string $subject
-     * @param string $message
-     * @param string $fromSenderName
-     * @param Recipient $recipient
-     * @param array $replyTo
-     * @param array $cc
-     * @return Email
-     */
     public function generateFromString(
         string $subject,
         string $message,
@@ -74,7 +50,7 @@ class MessageBuilder
         if (!empty($recipient->getFirstname()) || !empty($recipient->getLastname())) {
             $email->to(new Address(
                 $recipient->getEmail(),
-                $recipient->getFirstname() . ' ' . $recipient->getLastname()
+                $recipient->getFirstname().' '.$recipient->getLastname()
             ));
         } else {
             $email->to(new Address($recipient->getEmail()));
@@ -93,13 +69,6 @@ class MessageBuilder
         return $email;
     }
 
-    /**
-     * @param MessageInterface $message
-     * @param string $fromSenderName
-     * @param Recipient $recipient
-     * @param array $replyTo
-     * @return Email
-     */
     public function generateFromMessage(
         MessageInterface $message,
         string $fromSenderName,
@@ -120,7 +89,7 @@ class MessageBuilder
         if (!empty($recipient->getFirstname()) || !empty($recipient->getLastname())) {
             $email->to(new Address(
                 $recipient->getEmail(),
-                $recipient->getFirstname() . ' ' . $recipient->getLastname()
+                $recipient->getFirstname().' '.$recipient->getLastname()
             ));
         } else {
             $email->to(new Address($recipient->getEmail()));

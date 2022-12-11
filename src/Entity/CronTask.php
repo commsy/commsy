@@ -1,44 +1,46 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use App\Repository\CronTaskRepository;
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=CronTaskRepository::class)
- */
+#[ORM\Entity(repositoryClass: CronTaskRepository::class)]
 class CronTask
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
     private int $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
     private string $name;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private DateTimeInterface $lastRun;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    private \DateTimeInterface $lastRun;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getLastRun(): DateTimeInterface
+    public function getLastRun(): \DateTimeInterface
     {
         return $this->lastRun;
     }
 
-    public function setLastRun(DateTimeInterface $lastRun): self
+    public function setLastRun(\DateTimeInterface $lastRun): self
     {
         $this->lastRun = $lastRun;
 

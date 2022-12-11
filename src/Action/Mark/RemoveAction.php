@@ -1,13 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 24.07.18
- * Time: 15:28
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Action\Mark;
-
 
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
@@ -17,22 +21,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RemoveAction implements ActionInterface
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private TranslatorInterface $translator;
-
-    /**
-     * @var MarkedService
-     */
-    private MarkedService $markedService;
-
-    public function __construct(
-        TranslatorInterface $translator,
-        MarkedService $markedService
-    ) {
-        $this->translator = $translator;
-        $this->markedService = $markedService;
+    public function __construct(private TranslatorInterface $translator, private MarkedService $markedService)
+    {
     }
 
     public function execute(\cs_room_item $roomItem, array $items): Response
@@ -45,7 +35,7 @@ class RemoveAction implements ActionInterface
         $this->markedService->removeEntries($roomItem->getItemID(), $ids);
 
         return new JsonDataResponse([
-            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-remove\'></i> ' . $this->translator->trans('removed %count% entries from list', [
+            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-remove\'></i> '.$this->translator->trans('removed %count% entries from list', [
                     '%count%' => count($items),
                 ]),
         ]);

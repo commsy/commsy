@@ -1,131 +1,111 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * LogArchive
- *
- * @ORM\Table(name="log_archive", indexes={@ORM\Index(name="ulogin", columns={"ulogin"}), @ORM\Index(name="cid", columns={"cid"})})
- * @ORM\Entity
+ * LogArchive.
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'log_archive')]
+#[ORM\Index(name: 'ulogin', columns: ['ulogin'])]
+#[ORM\Index(name: 'cid', columns: ['cid'])]
 class LogArchive
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @var int
      */
-    private $id;
-
+    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    private ?int $id = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="ip", type="string", length=15, nullable=true)
      */
-    private $ip;
-
+    #[ORM\Column(name: 'ip', type: \Doctrine\DBAL\Types\Types::STRING, length: 15, nullable: true)]
+    private ?string $ip = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="agent", type="string", length=250, nullable=true)
      */
-    private $agent;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="timestamp", type="datetime", nullable=false)
-     */
-    private $timestamp = 'CURRENT_TIMESTAMP';
-
+    #[ORM\Column(name: 'agent', type: \Doctrine\DBAL\Types\Types::STRING, length: 250, nullable: true)]
+    private ?string $agent = null;
+    #[ORM\Column(name: 'timestamp', type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    private \DateTime $timestamp;
     /**
      * @var string
-     *
-     * @ORM\Column(name="request", type="string", length=250, nullable=true)
      */
-    private $request;
-
+    #[ORM\Column(name: 'request', type: \Doctrine\DBAL\Types\Types::STRING, length: 250, nullable: true)]
+    private ?string $request = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="post_content", type="text", length=16777215, nullable=true)
      */
-    private $postContent;
-
+    #[ORM\Column(name: 'post_content', type: \Doctrine\DBAL\Types\Types::TEXT, length: 16_777_215, nullable: true)]
+    private ?string $postContent = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="method", type="string", length=10, nullable=true)
      */
-    private $method;
-
+    #[ORM\Column(name: 'method', type: \Doctrine\DBAL\Types\Types::STRING, length: 10, nullable: true)]
+    private ?string $method = null;
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="uid", type="integer", nullable=true)
+     * @var int
      */
-    private $uid;
-
+    #[ORM\Column(name: 'uid', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    private ?int $uid = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="ulogin", type="string", length=250, nullable=true)
      */
-    private $ulogin;
-
+    #[ORM\Column(name: 'ulogin', type: \Doctrine\DBAL\Types\Types::STRING, length: 250, nullable: true)]
+    private ?string $ulogin = null;
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="cid", type="integer", nullable=true)
+     * @var int
      */
-    private $cid;
-
+    #[ORM\Column(name: 'cid', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    private ?int $cid = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="module", type="string", length=250, nullable=true)
      */
-    private $module;
-
+    #[ORM\Column(name: 'module', type: \Doctrine\DBAL\Types\Types::STRING, length: 250, nullable: true)]
+    private ?string $module = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="fct", type="string", length=250, nullable=true)
      */
-    private $fct;
-
+    #[ORM\Column(name: 'fct', type: \Doctrine\DBAL\Types\Types::STRING, length: 250, nullable: true)]
+    private ?string $fct = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="param", type="string", length=250, nullable=true)
      */
-    private $param;
-
+    #[ORM\Column(name: 'param', type: \Doctrine\DBAL\Types\Types::STRING, length: 250, nullable: true)]
+    private ?string $param = null;
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="iid", type="integer", nullable=true)
+     * @var int
      */
-    private $iid;
-
+    #[ORM\Column(name: 'iid', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    private ?int $iid = null;
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="queries", type="smallint", nullable=true)
+     * @var int
      */
-    private $queries;
-
+    #[ORM\Column(name: 'queries', type: \Doctrine\DBAL\Types\Types::SMALLINT, nullable: true)]
+    private ?int $queries = null;
     /**
      * @var float
-     *
-     * @ORM\Column(name="time", type="float", precision=10, scale=0, nullable=true)
      */
-    private $time;
+    #[ORM\Column(name: 'time', type: \Doctrine\DBAL\Types\Types::FLOAT, precision: 10, nullable: true)]
+    private ?float $time = null;
 
-
+    public function __construct()
+    {
+        $this->timestamp = new \DateTime('CURRENT_TIMESTAMP');
+    }
 }
-

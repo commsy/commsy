@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Security;
-
 
 use App\Account\AccountManager;
 use App\Entity\Account;
@@ -31,40 +40,15 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
 {
     use TargetPathTrait;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var CsrfTokenManagerInterface
-     */
-    private CsrfTokenManagerInterface $csrfTokenManager;
-
-    /**
-     * @var AccountCreatorFacade
-     */
-    private AccountCreatorFacade $accountCreator;
-
-    /**
-     * @var AccountManager
-     */
-    private AccountManager $accountManager;
-
     public function __construct(
-        EntityManagerInterface $entityManager,
+        private EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
-        CsrfTokenManagerInterface $csrfTokenManager,
-        AccountCreatorFacade $accountCreator,
+        private CsrfTokenManagerInterface $csrfTokenManager,
+        private AccountCreatorFacade $accountCreator,
         RequestContext $requestContext,
-        AccountManager $accountManager
+        private AccountManager $accountManager
     ) {
         parent::__construct($urlGenerator, $requestContext);
-
-        $this->entityManager = $entityManager;
-        $this->csrfTokenManager = $csrfTokenManager;
-        $this->accountCreator = $accountCreator;
-        $this->accountManager = $accountManager;
     }
 
     protected function getPostParameterName(): string
@@ -79,7 +63,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
 
             // If context is "server" this will be a root login as system administrator. The form authenticator
             // is the only one that handles these requests
-            if ($context === 'server') {
+            if ('server' === $context) {
                 return false;
             }
 
@@ -107,10 +91,8 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      * null, then a UsernameNotFoundException is thrown for you.
      *
      * @param mixed $credentials
-     * @param UserProviderInterface $userProvider
      *
      * @return UserInterface|null
-     *
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
@@ -119,7 +101,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
             throw new InvalidCsrfTokenException();
         }
 
-        $context = $credentials['context'] === 'server' ? 99 : $credentials['context'];
+        $context = 'server' === $credentials['context'] ? 99 : $credentials['context'];
 
         /** @var AuthSourceLdap $ldapSource */
         $ldapSource = $this->entityManager->getRepository(AuthSourceLdap::class)
@@ -131,7 +113,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
         /**
          * TODO: Instead of creating a new user provider here we should utilize security.yaml or the service container
          * to already get a useful UserProvider from the parameter (check chained user provider or a compiler
-         * pass or ...)
+         * pass or ...).
          */
         $ldap = Ldap::create('ext_ldap', [
             'connection_string' => $ldapSource->getServerUrl(),
@@ -155,7 +137,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
             ->findOneByCredentials($credentials['email'], $credentials['context'], $ldapSource);
         $extraFields = $ldapUser->getExtraFields();
 
-        if ($account === null) {
+        if (null === $account) {
             // if we did not found an existing account, create one
             $account = new Account();
             $account->setAuthSource($ldapSource);
@@ -191,7 +173,6 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      * The *credentials* are the return value from getCredentials()
      *
      * @param mixed $credentials
-     * @param UserInterface $user
      *
      * @return bool
      *
@@ -234,7 +215,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
             $ldap->bind($dn, $credentials['password']);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
         }
 
         return false;
@@ -248,9 +229,6 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      *
      * If you return null, the request will continue, but the user will
      * not be authenticated. This is probably not what you want to do.
-     *
-     * @param Request $request
-     * @param AuthenticationException $exception
      *
      * @return Response|null
      */
@@ -275,8 +253,6 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
      * If you return null, the current request will continue, and the user
      * will be authenticated. This makes sense, for example, with an API.
      *
-     * @param Request $request
-     * @param TokenInterface $token
      * @param string $providerKey The provider (i.e. firewall) key
      *
      * @return Response|null

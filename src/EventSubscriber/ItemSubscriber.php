@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\EventSubscriber;
-
 
 use App\Event\ItemDeletedEvent;
 use App\Event\ItemReindexEvent;
@@ -15,20 +24,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ItemSubscriber implements EventSubscriberInterface
 {
-    private $mailer;
-    private $itemService;
     private $legacyEnvironment;
 
-    /**
-     * @var ReaderService $readerService
-     */
-    private $readerService;
-
-    public function __construct(Mailer $mailer, LegacyEnvironment $legacyEnvironment, ItemService $itemService, ReaderService $readerService)
+    public function __construct(private Mailer $mailer, LegacyEnvironment $legacyEnvironment, private ItemService $itemService, private ReaderService $readerService)
     {
-        $this->mailer = $mailer;
-        $this->itemService = $itemService;
-        $this->readerService = $readerService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -63,9 +62,7 @@ class ItemSubscriber implements EventSubscriberInterface
         }
 
         // Grab all moderators who want to get informed about item deletions
-        $moderatorRecipients = \App\Mail\RecipientFactory::createModerationRecipients($context, function (\cs_user_item $moderator) {
-            return $moderator->getDeleteEntryWantMail();
-        });
+        $moderatorRecipients = \App\Mail\RecipientFactory::createModerationRecipients($context, fn (\cs_user_item $moderator) => $moderator->getDeleteEntryWantMail());
 
         $message = new ItemDeletedMessage($typedItem, $this->legacyEnvironment->getCurrentUserItem());
         $this->mailer->sendMultiple($message, $moderatorRecipients);
@@ -82,9 +79,11 @@ class ItemSubscriber implements EventSubscriberInterface
 
     /**
      * Updates the Elastic search index for the given item, and invalidates its cached read status.
-     * @param \cs_item $item The item whose search index entry shall be updated.
+     *
+     * @param \cs_item $item the item whose search index entry shall be updated
      */
-    private function updateSearchIndex(\cs_item $item) {
+    private function updateSearchIndex(\cs_item $item)
+    {
         if (method_exists($item, 'updateElastic')) {
             $item->updateElastic();
 

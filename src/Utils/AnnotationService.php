@@ -1,7 +1,17 @@
 <?php
-namespace App\Utils;
 
-use Symfony\Component\Form\Form;
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
+namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
 
@@ -21,7 +31,7 @@ class AnnotationService
 
     public function getListAnnotations($roomId, $linkedItemId, $max, $start)
     {
-        /**
+        /*
          * Annotating entries in a portfolio of another user results in annotations with the context id of the
          * user's private room who annotated, not the context of the private room the item belongs to. Setting the
          * context limit to null will remove the query restrictions on the context id.
@@ -60,25 +70,27 @@ class AnnotationService
         $annotationItem->save();
 
         $reader = $readerManager->getLatestReader($annotationItem->getItemID());
-        if(empty($reader) || $reader['read_date'] < $annotationItem->getModificationDate()) {
+        if (empty($reader) || $reader['read_date'] < $annotationItem->getModificationDate()) {
             $readerManager->markRead($annotationItem->getItemID(), 0);
         }
 
         $noticed = $noticedManager->getLatestNoticed($annotationItem->getItemID());
-        if(empty($noticed) || $noticed['read_date'] < $annotationItem->getModificationDate()) {
+        if (empty($noticed) || $noticed['read_date'] < $annotationItem->getModificationDate()) {
             $noticedManager->markNoticed($annotationItem->getItemID(), 0);
         }
+
         return $annotationItem->getItemID();
     }
 
-    public function markAnnotationsReadedAndNoticed($annotationList) {
+    public function markAnnotationsReadedAndNoticed($annotationList)
+    {
         $readerManager = $this->legacyEnvironment->getReaderManager();
         $noticedManager = $this->legacyEnvironment->getNoticedManager();
 
         // collect an array of all ids and precach
-        $idArray = array();
+        $idArray = [];
         $annotation = $annotationList->getFirst();
-        while($annotation) {
+        while ($annotation) {
             $idArray[] = $annotation->getItemID();
 
             $annotation = $annotationList->getNext();
@@ -89,14 +101,14 @@ class AnnotationService
 
         // mark if needed
         $annotation = $annotationList->getFirst();
-        while($annotation) {
+        while ($annotation) {
             $reader = $readerManager->getLatestReader($annotation->getItemID());
-            if(empty($reader) || $reader['read_date'] < $annotation->getModificationDate()) {
+            if (empty($reader) || $reader['read_date'] < $annotation->getModificationDate()) {
                 $readerManager->markRead($annotation->getItemID(), 0);
             }
 
             $noticed = $noticedManager->getLatestNoticed($annotation->getItemID());
-            if(empty($noticed) || $noticed['read_date'] < $annotation->getModificationDate()) {
+            if (empty($noticed) || $noticed['read_date'] < $annotation->getModificationDate()) {
                 $noticedManager->markNoticed($annotation->getItemID(), 0);
             }
 

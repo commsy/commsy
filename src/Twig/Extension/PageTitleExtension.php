@@ -1,50 +1,34 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 22.08.18
- * Time: 08:01
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Twig\Extension;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
-use cs_environment;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class PageTitleExtension extends AbstractExtension
 {
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
+    private \cs_environment $legacyEnvironment;
 
-    /**
-     * @var RoomService
-     */
-    private RoomService $roomService;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private TranslatorInterface $translator;
-
-    /**
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param RoomService $roomService
-     * @param TranslatorInterface $translator
-     */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        RoomService $roomService,
-        TranslatorInterface $translator
+        private RoomService $roomService,
+        private TranslatorInterface $translator
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->roomService = $roomService;
-        $this->translator = $translator;
     }
 
     /**
@@ -58,10 +42,6 @@ class PageTitleExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @param $roomId
-     * @return string
-     */
     public function pageTitle($roomId): string
     {
         $pageTitleElements = [];
@@ -96,9 +76,6 @@ class PageTitleExtension extends AbstractExtension
         return 'CommSy';
     }
 
-    /**
-     * @return string
-     */
     public function shortPageTitle(): string
     {
         $portal = $this->legacyEnvironment->getCurrentPortalItem();

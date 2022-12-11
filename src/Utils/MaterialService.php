@@ -1,7 +1,17 @@
 <?php
-namespace App\Utils;
 
-use Symfony\Component\Form\Form;
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
+namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
 use Symfony\Component\Form\FormInterface;
@@ -11,7 +21,7 @@ class MaterialService
     private $legacyEnvironment;
 
     private $materialManager;
-    
+
     private $sectionManager;
 
     /**
@@ -30,7 +40,7 @@ class MaterialService
 
         $this->materialManager = $this->legacyEnvironment->getMaterialManager();
         $this->materialManager->reset();
-        
+
         $this->sectionManager = $this->legacyEnvironment->getSectionManager();
         $this->sectionManager->reset();
 
@@ -38,10 +48,10 @@ class MaterialService
         $this->readerManager = $this->legacyEnvironment->getReaderManager();
     }
 
-    public function getListMaterials($roomId, $max = NULL, $start = NULL, $sort = NULL)
+    public function getListMaterials($roomId, $max = null, $start = null, $sort = null)
     {
         $this->materialManager->setContextLimit($roomId);
-        if ($max !== NULL && $start !== NULL) {
+        if (null !== $max && null !== $start) {
             $this->materialManager->setIntervalLimit($start, $max);
         }
 
@@ -56,11 +66,13 @@ class MaterialService
     }
 
     /**
-     * @param integer $roomId
-     * @param integer[] $ids
+     * @param int   $roomId
+     * @param int[] $ids
+     *
      * @return \cs_material_item[]
      */
-    public function getMaterialsById($roomId, $ids) {
+    public function getMaterialsById($roomId, $ids)
+    {
         $this->materialManager->setContextLimit($roomId);
         $this->materialManager->setIDArrayLimit($ids);
 
@@ -74,7 +86,7 @@ class MaterialService
     {
         $this->materialManager->setContextLimit($roomId);
         $this->materialManager->select();
-        $countMaterialArray = array();
+        $countMaterialArray = [];
         $countMaterialArray['count'] = sizeof($this->materialManager->get()->to_array());
         $this->materialManager->resetLimits();
         $this->materialManager->select();
@@ -89,11 +101,11 @@ class MaterialService
 
         // activated
         if ($formData['hide-deactivated-entries']) {
-            if ($formData['hide-deactivated-entries'] === 'only_activated') {
+            if ('only_activated' === $formData['hide-deactivated-entries']) {
                 $this->materialManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
-            } else if ($formData['hide-deactivated-entries'] === 'only_deactivated') {
+            } elseif ('only_deactivated' === $formData['hide-deactivated-entries']) {
                 $this->materialManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
-            } else if ($formData['hide-deactivated-entries'] === 'all') {
+            } elseif ('all' === $formData['hide-deactivated-entries']) {
                 $this->materialManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
             }
         }
@@ -105,7 +117,7 @@ class MaterialService
                 $relatedLabel = $formData['rubrics']['group'];
                 $this->materialManager->setGroupLimit($relatedLabel->getItemId());
             }
-            
+
             // topic
             if (isset($formData['rubrics']['topic'])) {
                 $relatedLabel = $formData['rubrics']['topic'];
@@ -134,44 +146,39 @@ class MaterialService
         }
     }
 
-    public function getMaterial($itemId) : ?\cs_material_item
+    public function getMaterial($itemId): ?\cs_material_item
     {
         return $this->materialManager->getItem($itemId);
     }
 
-    /**
-     * @param $itemId
-     * @param $versionId
-     * @return \cs_material_item
-     */
-    public function getMaterialByVersion($itemId, $versionId) : \cs_material_item
+    public function getMaterialByVersion($itemId, $versionId): \cs_material_item
     {
         return $this->materialManager->getItemByVersion($itemId, $versionId);
     }
-    
+
     public function getSection($itemId)
     {
         return $this->sectionManager->getItem($itemId);
     }
-    
+
     public function getNewMaterial()
     {
         return $this->materialManager->getNewItem();
     }
 
-    public function getNewSection() : \cs_section_item
+    public function getNewSection(): \cs_section_item
     {
         return $this->sectionManager->getNewItem();
     }
-    
-    public function getVersionList($itemId) : \cs_list
+
+    public function getVersionList($itemId): \cs_list
     {
         return $this->materialManager->getVersionList($itemId);
     }
 
     /** Marks the material item with the given ID as read and noticed.
-     * @param int $itemId the identifier of the material item to be marked as read and noticed
-     * @param bool $markSections whether the material item's sections should be also marked as read and noticed
+     * @param int  $itemId          the identifier of the material item to be marked as read and noticed
+     * @param bool $markSections    whether the material item's sections should be also marked as read and noticed
      * @param bool $markAnnotations whether the materials item's annotations should be also marked as read and noticed
      */
     public function markMaterialReadAndNoticed(int $itemId, bool $markSections = true, bool $markAnnotations = true)
@@ -187,7 +194,7 @@ class MaterialService
         $this->readerManager->markRead($itemId, $versionId);
 
         // sections
-        if ($markSections === true) {
+        if (true === $markSections) {
             $sectionList = $item->getSectionList();
             if (!empty($sectionList)) {
                 $sectionItem = $sectionList->getFirst();
@@ -201,7 +208,7 @@ class MaterialService
         }
 
         // annotations
-        if ($markAnnotations === true) {
+        if (true === $markAnnotations) {
             $annotationList = $item->getAnnotationList();
             if (!empty($annotationList)) {
                 $annotationItem = $annotationList->getFirst();

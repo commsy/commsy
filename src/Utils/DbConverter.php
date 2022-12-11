@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Utils;
-
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
@@ -11,29 +20,29 @@ class DbConverter
 {
     public static function convertToPHPValue($value)
     {
-        if ($value === null) {
+        if (null === $value) {
             return null;
         }
 
         $value = (is_resource($value)) ? stream_get_contents($value) : $value;
 
         if (empty($value)) {
-            return array();
+            return [];
         }
 
-        $value = preg_replace_callback('/s\:(\d+)\:\"(.*?)\";/s', function($match) {
+        $value = preg_replace_callback('/s\:(\d+)\:\"(.*?)\";/s', function ($match) {
             $length = strlen($match[2]);
             $data = $match[2];
 
             return "s:$length:\"$data\";";
-        }, $value );
+        }, $value);
 
         $val = @unserialize($value);
-        if ($val === false && $value != 'b:0;') {
+        if (false === $val && 'b:0;' != $value) {
             // TODO: this is temporary, we need to fix db entries
-            return array();
+            return [];
 
-            //throw ConversionException::conversionFailed($value, $this->getName());
+            // throw ConversionException::conversionFailed($value, $this->getName());
         }
 
         return $val;
@@ -44,8 +53,8 @@ class DbConverter
         $secondContext = (string) $fileContextId;
         $secondContextLength = strlen($secondContext);
         $secondFolder = '';
-        for ($i = 0; $i < $secondContextLength; $i++) {
-            if ($i > 0 && $i % 4 == 0) {
+        for ($i = 0; $i < $secondContextLength; ++$i) {
+            if ($i > 0 && 0 == $i % 4) {
                 $secondFolder .= '/';
             }
 
@@ -53,15 +62,12 @@ class DbConverter
         }
         $secondFolder .= '_';
 
-        return '../files/' . $portalId . '/' . $secondFolder . '/';
+        return '../files/'.$portalId.'/'.$secondFolder.'/';
     }
 
     /**
-     * @param Connection $connection
-     * @param string $tableName
-     * @param string $idColumnIdentifier
-     * @param array $remove
      * @return void
+     *
      * @throws Exception
      */
     public static function removeExtra(
@@ -74,9 +80,9 @@ class DbConverter
 
         foreach ($remove as $extraToRemove) {
             $qb = $queryBuilder
-                ->select('t.' . $idColumnIdentifier, 't.extras')
+                ->select('t.'.$idColumnIdentifier, 't.extras')
                 ->from($tableName, 't')
-                ->where('t.extras LIKE "%' . $extraToRemove . '%"');
+                ->where('t.extras LIKE "%'.$extraToRemove.'%"');
             $entries = $qb->executeQuery()->fetchAllAssociative();
 
             foreach ($entries as $entry) {

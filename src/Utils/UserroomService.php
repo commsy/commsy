@@ -1,13 +1,23 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Utils;
 
+use App\Room\RoomManager;
 use App\Services\LegacyEnvironment;
-use App\Utils\RoomService;
-use App\Utils\UserService;
 
 /**
- * Implements services for user rooms
+ * Implements services for user rooms.
  *
  * A user room gets used inside project rooms for bilateral exchange between a single user and the room's moderators
  */
@@ -15,27 +25,21 @@ class UserroomService
 {
     private $legacyEnvironment;
 
-    /**
-     * @var RoomService
-     */
-    private $roomService;
-
-    /**
-     * @var UserService
-     */
-    private $userService;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, UserService $userService)
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private RoomService $roomService,
+        private UserService $userService,
+        private RoomManager $roomManager)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->roomService = $roomService;
-        $this->userService = $userService;
     }
 
     /**
-     * Creates a new user room within the given project room for the given user
+     * Creates a new user room within the given project room for the given user.
+     *
      * @param \cs_project_item $room the project room that will host the created user room
-     * @param \cs_user_item $user the project room user who will be associated with the created user room
+     * @param \cs_user_item    $user the project room user who will be associated with the created user room
+     *
      * @return \cs_userroom_item|null the newly created user room, or null if an error occurred
      */
     public function createUserroom(\cs_project_item $room, \cs_user_item $user): ?\cs_userroom_item
@@ -53,7 +57,7 @@ class UserroomService
         /**
          * @var $newRoom \cs_userroom_item
          */
-        $newRoom = $this->roomService->createRoom($roomManager, $roomContext, $roomTitle, "", $userroomTemplate);
+        $newRoom = $this->roomManager->createRoom($roomManager, $roomContext, $roomTitle, '', $userroomTemplate);
         if (!$newRoom) {
             return null;
         }
@@ -99,12 +103,12 @@ class UserroomService
         $roomManager = $this->legacyEnvironment->getUserroomManager();
         $room = $roomManager->getItem($roomId);
         $userroomTemplate = $room->getUserRoomTemplateItem();
-        $this->roomService->updateRoomTemplate($roomId, $roomTemplate, $roomManager);
-
+        $this->roomService->updateRoomTemplate($roomId, $roomTemplate);
     }
 
     /**
-     * Creates new user rooms within the given project room for all users who don't have user rooms yet
+     * Creates new user rooms within the given project room for all users who don't have user rooms yet.
+     *
      * @param \cs_room_item $room the project room for which user rooms shall be created for all its existing users
      */
     public function createUserroomsForRoomUsers(\cs_room_item $room)
@@ -123,16 +127,17 @@ class UserroomService
     }
 
     /**
-     * Updates the title of the user room for the given user, and updates the names of all corresponding user room users
+     * Updates the title of the user room for the given user, and updates the names of all corresponding user room users.
+     *
      * @param \cs_user_item $changedProjectUser the project room user whose user room and related user room users shall be renamed
-     * @param string $newFirstname (optional) the first name to be used for renaming; if not given, defaults to the $changedProjectUser's first name
-     * @param string $newLastname (optional) the last name to be used for renaming; if not given, defaults to the $changedProjectUser's last name
+     * @param string        $newFirstname       (optional) the first name to be used for renaming; if not given, defaults to the $changedProjectUser's first name
+     * @param string        $newLastname        (optional) the last name to be used for renaming; if not given, defaults to the $changedProjectUser's last name
      */
     public function updateNameInUserroomsForUser(\cs_user_item $changedProjectUser, string $newFirstname = null, string $newLastname = null)
     {
         $room = $changedProjectUser->getContextItem();
-        $newFirstname = $newFirstname ?? $changedProjectUser->getFirstname();
-        $newLastname = $newLastname ?? $changedProjectUser->getLastname();
+        $newFirstname ??= $changedProjectUser->getFirstname();
+        $newLastname ??= $changedProjectUser->getLastname();
 
         $projectUsers = $room->getUserList()->to_array();
         foreach ($projectUsers as $projectUser) {
@@ -149,7 +154,7 @@ class UserroomService
                 // get the project room user who corresponds to (i.e., represents) this user room user
                 $projectUserRelatedToUserroomUser = $userroomUser->getLinkedProjectUserItem();
 
-                $userroomUserIsRelatedToProjectUser = $projectUserRelatedToUserroomUser !== null && $projectUserRelatedToUserroomUser->getItemID() === $changedProjectUser->getItemID();
+                $userroomUserIsRelatedToProjectUser = null !== $projectUserRelatedToUserroomUser && $projectUserRelatedToUserroomUser->getItemID() === $changedProjectUser->getItemID();
                 if ($userroomUserIsRelatedToProjectUser) {
                     // rename user room user who represents $projectUser
                     $userroomUser->setFirstname($newFirstname);
@@ -164,7 +169,7 @@ class UserroomService
                         // rename user room owned by $projectUser
                         // NOTE: preferring $newFirstname & $newLastname over the $projectUser properties helps in cases where,
                         // after a user's account was renamed, the given $projectUser doesn't have the updated name yet
-                        $roomTitle = $newFirstname . ' ' . $newLastname . ' – ' . $room->getTitle();
+                        $roomTitle = $newFirstname.' '.$newLastname.' – '.$room->getTitle();
                         $this->renameUserroom($userroom, $changedProjectUser, $roomTitle);
                     }
                 }
@@ -174,14 +179,15 @@ class UserroomService
 
     /**
      * Updates the system language of the user room for the given project room user, and updates the system language of the
-     * related user room user
+     * related user room user.
+     *
      * @param \cs_user_item $changedProjectUser the project room user whose user room's system language shall be updated
-     * @param string $newLanguage (optional) the language identifier describing the system language to be used; if not given,
-     * defaults to the $changedProjectUser's language
+     * @param string        $newLanguage        (optional) the language identifier describing the system language to be used; if not given,
+     *                                          defaults to the $changedProjectUser's language
      */
     public function updateLanguageInUserroomOfUser(\cs_user_item $changedProjectUser, string $newLanguage = null)
     {
-        $newLanguage = $newLanguage ?? $changedProjectUser->getLanguage();
+        $newLanguage ??= $changedProjectUser->getLanguage();
 
         $userroom = $changedProjectUser->getLinkedUserroomItem();
 
@@ -192,7 +198,7 @@ class UserroomService
         // update the system language for the project room user's user room
         // NOTE: if the user has chosen to dynamically map her system language to the browser's current language, we
         // setup her user room in a similar fashion, so that it honors the user's currently chosen system language
-        $userroomLanguage = ($newLanguage !== 'browser') ? $newLanguage : 'user';
+        $userroomLanguage = ('browser' !== $newLanguage) ? $newLanguage : 'user';
         $userroom->setLanguage($userroomLanguage);
         $userroom->save();
 
@@ -213,8 +219,9 @@ class UserroomService
         }
     }
 
-        /**
-     * Updates the room titles of all user rooms of the given project room so that they include the project room's current title
+    /**
+     * Updates the room titles of all user rooms of the given project room so that they include the project room's current title.
+     *
      * @param \cs_room_item $room the project room whose user rooms shall be updated
      */
     public function renameUserroomsForRoom(\cs_room_item $room)
@@ -226,12 +233,13 @@ class UserroomService
                 continue;
             }
 
-            $roomTitle = $user->getFullName() . ' – ' . $room->getTitle();
+            $roomTitle = $user->getFullName().' – '.$room->getTitle();
             $this->renameUserroom($existingUserroom, $user, $roomTitle);
         }
     }
 
-    public function updateTemplateInUserroomsForRoom(\cs_room_item $room){
+    public function updateTemplateInUserroomsForRoom(\cs_room_item $room)
+    {
         $roomManager = $this->legacyEnvironment->getUserroomManager();
         $roomUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
         foreach ($roomUsers as $user) {
@@ -240,13 +248,14 @@ class UserroomService
                 continue;
             }
 
-            $this->updateUserroomTemplate($existingUserroom, $user, $room->getUserRoomTemplateID(), $roomManager);
+            $this->updateUserroomTemplate($existingUserroom, $user, $room->getUserRoomTemplateID());
         }
     }
 
     /**
-     * Updates the user status of the given user for its related users in all user rooms of the given project room
-     * @param \cs_room_item $room the project room whose user rooms shall be updated
+     * Updates the user status of the given user for its related users in all user rooms of the given project room.
+     *
+     * @param \cs_room_item $room        the project room whose user rooms shall be updated
      * @param \cs_user_item $changedUser the project room user whose related user room users shall be updated
      */
     public function changeUserStatusInUserroomsForRoom(\cs_room_item $room, \cs_user_item $changedUser)
@@ -265,14 +274,13 @@ class UserroomService
             // get the project room user who's associated with this user room
             $projectUserRelatedToUserroom = $userroom->getLinkedUserItem();
             // is this user room the $changedUser's own roon?
-            $userroomBelongsToChangedUser = $projectUserRelatedToUserroom !== null && $projectUserRelatedToUserroom->getItemID() === $changedUser->getItemID();
+            $userroomBelongsToChangedUser = null !== $projectUserRelatedToUserroom && $projectUserRelatedToUserroom->getItemID() === $changedUser->getItemID();
 
             // does this user room contain a user who corresponds to (i.e., represents) the $changedUser?
             $changedUserHasRelatedUserroomUser = false;
 
             $userroomUsers = $this->userService->getListUsers($userroom->getItemID(), null, null, true);
             foreach ($userroomUsers as $userroomUser) {
-
                 // get the project room user who corresponds to (i.e., represents) this user room user
                 $projectUserRelatedToUserroomUser = $userroomUser->getLinkedProjectUserItem();
 
@@ -289,7 +297,7 @@ class UserroomService
                     }
                 }
 
-                $userroomUserIsRelatedToChangedUser = $projectUserRelatedToUserroomUser !== null && $projectUserRelatedToUserroomUser->getItemID() === $changedUser->getItemID();
+                $userroomUserIsRelatedToChangedUser = null !== $projectUserRelatedToUserroomUser && $projectUserRelatedToUserroomUser->getItemID() === $changedUser->getItemID();
                 if ($userroomUserIsRelatedToChangedUser) {
                     $changedUserHasRelatedUserroomUser = true;
 
@@ -311,8 +319,9 @@ class UserroomService
     }
 
     /**
-     * Removes all users related to the given user from all user rooms of the given project room
-     * @param \cs_room_item $room the project room whose associated user rooms shall be purged
+     * Removes all users related to the given user from all user rooms of the given project room.
+     *
+     * @param \cs_room_item $room        the project room whose associated user rooms shall be purged
      * @param \cs_user_item $deletedUser the project room user whose related user room users shall be deleted
      */
     public function removeUserFromUserroomsForRoom(\cs_room_item $room, \cs_user_item $deletedUser)
@@ -326,7 +335,6 @@ class UserroomService
 
             $userroomUsers = $this->userService->getListUsers($userroom->getItemID(), null, null, true);
             foreach ($userroomUsers as $userroomUser) {
-
                 // get the ID of the project room user who corresponds to (i.e., represents) this user room user
                 // NOTE: we cannot use `cs_user_item->getLinkedProjectUserItem()` since that only returns non-deleted items
                 $projectUserIdRelatedToUserroomUser = $userroomUser->getLinkedProjectUserItemID();
@@ -343,13 +351,12 @@ class UserroomService
     public function deleteUserroomsForProjectRoomId(int $projectRoomId)
     {
         $roomItem = $this->roomService->getRoomItem($projectRoomId);
-        if ($roomItem->getType() === 'project') {
-
+        if ('project' === $roomItem->getType()) {
             $userList = $roomItem->getUserList();
 
             foreach ($userList as $roomUser) {
                 $linkedUserRoomItem = $roomUser->getLinkedUserroomItem();
-                if($linkedUserRoomItem !== null) {
+                if (null !== $linkedUserRoomItem) {
                     if ($linkedUserRoomItem->getContextID() === $projectRoomId) {
                         $linkedUserRoomItem->delete();
                         $linkedUserRoomItem->save();
@@ -359,18 +366,19 @@ class UserroomService
             $roomItem->setShouldCreateUserRooms(false);
             $roomItem->save();
         } else {
-            throw $this->createNotFoundException('No project room found for id ' . $projectRoomId);
+            throw $this->createNotFoundException('No project room found for id '.$projectRoomId);
         }
     }
 
     /**
      * Renames the given user room with the default title
      * The user room's default title consists of the full name of its room "owner", followed by the title of the hosting
-     * project room
-     * @param \cs_userroom_item $userroom the user room that should be renamed
-     * @param \cs_user_item $roomOwner the project room user who is associated with the given user room
-     * @param string $newRoomTitle (optional) the name to be used for renaming; if not given, defaults to the name returned
-     * by defaultUserroomTitle()
+     * project room.
+     *
+     * @param \cs_userroom_item $userroom     the user room that should be renamed
+     * @param \cs_user_item     $roomOwner    the project room user who is associated with the given user room
+     * @param string            $newRoomTitle (optional) the name to be used for renaming; if not given, defaults to the name returned
+     *                                        by defaultUserroomTitle()
      */
     private function renameUserroom(\cs_userroom_item $userroom, \cs_user_item $roomOwner, string $newRoomTitle = null)
     {
@@ -403,14 +411,16 @@ class UserroomService
     }
 
     /**
-     * Returns the default room title for a user room to be created for the given room and user
+     * Returns the default room title for a user room to be created for the given room and user.
+     *
      * @param \cs_room_item $room the project room that would host the created user room
      * @param \cs_user_item $user the project room user who would be associated with the created user room
+     *
      * @return string the user room's suggested default title
      */
     private function defaultUserroomTitle(\cs_room_item $room, \cs_user_item $user): string
     {
-        $roomTitle = $user->getFullName() . ' – ' . $room->getTitle();
+        $roomTitle = $user->getFullName().' – '.$room->getTitle();
 
         return $roomTitle;
     }

@@ -1,14 +1,25 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Action\Activate\ActivateAction;
 use App\Action\Activate\DeactivateAction;
+use App\Action\Delete\DeleteAction;
+use App\Action\Download\DownloadAction;
 use App\Action\Mark\CategorizeAction;
 use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
-use App\Action\Delete\DeleteAction;
-use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\DiscussionFilterType;
@@ -23,12 +34,7 @@ use App\Utils\CategoryService;
 use App\Utils\DiscussionService;
 use App\Utils\LabelService;
 use App\Utils\TopicService;
-use cs_discussion_item;
-use cs_discussionarticle_item;
-use cs_room_item;
-use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -39,47 +45,27 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class DiscussionController
- * @package App\Controller
- * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'discussion')")
+ * Class DiscussionController.
  */
+#[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'discussion')")]
 class DiscussionController extends BaseController
 {
-    /**
-     * @var DiscussionService
-     */
     private DiscussionService $discussionService;
     private SessionInterface $session;
 
-    /**
-     * @required
-     * @param DiscussionService $discussionService
-     */
+    #[\Symfony\Contracts\Service\Attribute\Required]
     public function setDiscussionService(DiscussionService $discussionService): void
     {
         $this->discussionService = $discussionService;
     }
 
-    /**
-     * @required
-     * @param SessionInterface $session
-     */
+    #[\Symfony\Contracts\Service\Attribute\Required]
     public function setSession(SessionInterface $session): void
     {
         $this->session = $session;
     }
 
-    /**
-     * @Route("/room/{roomId}/discussion/feed/{start}/{sort}")
-     * @Template()
-     * @param Request $request
-     * @param AssessmentService $assessmentService
-     * @param int $roomId
-     * @param int $max
-     * @param int $start
-     * @param string $sort
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/discussion/feed/{start}/{sort}')]
     public function feedAction(
         Request $request,
         AssessmentService $assessmentService,
@@ -87,7 +73,7 @@ class DiscussionController extends BaseController
         int $max = 10,
         int $start = 0,
         string $sort = ''
-    ) {
+    ): Response {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $discussionFilter = $request->get('discussionFilter');
@@ -123,48 +109,34 @@ class DiscussionController extends BaseController
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = array();
-        $allowedActions = array();
+        $readerList = [];
+        $allowedActions = [];
         foreach ($discussions as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'categorize', 'hashtag', 'activate', 'deactivate', 'save', 'delete');
+                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'categorize', 'hashtag', 'activate', 'deactivate', 'save', 'delete'];
             } else {
-                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save');
+                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'save'];
             }
         }
 
-        $ratingList = array();
+        $ratingList = [];
         if ($current_context->isAssessmentActive()) {
-            $itemIds = array();
+            $itemIds = [];
             foreach ($discussions as $discussion) {
                 $itemIds[] = $discussion->getItemId();
             }
             $ratingList = $assessmentService->getListAverageRatings($itemIds);
         }
 
-        return array(
-            'roomId' => $roomId,
-            'discussions' => $discussions,
-            'readerList' => $readerList,
-            'showRating' => $current_context->isAssessmentActive(),
-            'showWorkflow' => $current_context->withWorkflow(),
-            'ratingList' => $ratingList,
-            'allowedActions' => $allowedActions,
-        );
+        return $this->render('discussion/feed.html.twig', ['roomId' => $roomId, 'discussions' => $discussions, 'readerList' => $readerList, 'showRating' => $current_context->isAssessmentActive(), 'showWorkflow' => $current_context->withWorkflow(), 'ratingList' => $ratingList, 'allowedActions' => $allowedActions]);
     }
 
-    /**
-     * @Route("/room/{roomId}/discussion")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/discussion')]
     public function listAction(
         Request $request,
         int $roomId
-    ) {
+    ): Response {
         $roomItem = $this->getRoom($roomId);
 
         if (!$roomItem) {
@@ -189,48 +161,22 @@ class DiscussionController extends BaseController
         $itemsCountArray = $this->discussionService->getCountArray($roomId);
 
         $usageInfo = false;
-        if ($roomItem->getUsageInfoTextForRubricInForm('discussion') != '') {
+        if ('' != $roomItem->getUsageInfoTextForRubricInForm('discussion')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('discussion');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('discussion');
         }
 
-        return array(
-            'roomId' => $roomId,
-            'form' => $filterForm->createView(),
-            'module' => 'discussion',
-            'itemsCountArray' => $itemsCountArray,
-            'showRating' => $roomItem->isAssessmentActive(),
-            'showWorkflow' => $roomItem->withWorkflow(),
-            'showHashTags' => $roomItem->withBuzzwords(),
-            'showAssociations' => $roomItem->isAssociationShowExpanded(),
-            'showCategories' => $roomItem->withTags(),
-            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
-            'catzExpanded' => $roomItem->isTagsShowExpanded(),
-            'usageInfo' => $usageInfo,
-            'isArchived' => $roomItem->getArchived(),
-            'user' => $this->legacyEnvironment->getCurrentUserItem(),
-            'sort' => $sort,
-        );
-
+        return $this->render('discussion/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm->createView(), 'module' => 'discussion', 'itemsCountArray' => $itemsCountArray, 'showRating' => $roomItem->isAssessmentActive(), 'showWorkflow' => $roomItem->withWorkflow(), 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => $roomItem->isAssociationShowExpanded(), 'showCategories' => $roomItem->withTags(), 'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(), 'catzExpanded' => $roomItem->isTagsShowExpanded(), 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'sort' => $sort]);
     }
 
-    /**
-     * @Route("/room/{roomId}/discussion/print/{sort}", defaults={"sort" = "none"})
-     * @Template()
-     * @param Request $request
-     * @param AssessmentService $assessmentService
-     * @param PrintService $printService
-     * @param int $roomId
-     * @param string $sort
-     * @return Response
-     */
+    #[Route(path: '/room/{roomId}/discussion/print/{sort}', defaults: ['sort' => 'none'])]
     public function printlistAction(
         Request $request,
         AssessmentService $assessmentService,
         PrintService $printService,
         int $roomId,
         string $sort
-    ) {
+    ): Response {
         $roomItem = $this->getRoom($roomId);
 
         if (!$roomItem) {
@@ -249,21 +195,21 @@ class DiscussionController extends BaseController
         }
 
         // get discussion list from manager service
-        if ($sort === "none" || empty($sort)) {
+        if ('none' === $sort || empty($sort)) {
             $sort = $this->session->get('sortDiscussions', 'latest');
         }
         $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = array();
+        $readerList = [];
         foreach ($discussions as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
         }
 
-        $ratingList = array();
+        $ratingList = [];
         if ($current_context->isAssessmentActive()) {
-            $itemIds = array();
+            $itemIds = [];
             foreach ($discussions as $discussion) {
                 $itemIds[] = $discussion->getItemId();
             }
@@ -272,7 +218,6 @@ class DiscussionController extends BaseController
 
         // get material list from manager service
         $itemsCountArray = $this->discussionService->getCountArray($roomId);
-
 
         $html = $this->renderView('discussion/list_print.html.twig', [
             'roomId' => $roomId,
@@ -294,20 +239,9 @@ class DiscussionController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/discussion/{itemId}", requirements={
-     *     "itemId": "\d+"
-     * }))
-     * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
-     * @param Request $request
-     * @param TopicService $topicService
-     * @param LegacyMarkup $legacyMarkup
-     * @param int $roomId
-     * @param int $itemId
-     * @param AssessmentService $assessmentService
-     * @param CategoryService $categoryService
      * @return array
      */
+    #[Route(path: '/room/{roomId}/discussion/{itemId}', requirements: ['itemId' => '\d+'])]
     public function detailAction(
         Request $request,
         TopicService $topicService,
@@ -316,13 +250,13 @@ class DiscussionController extends BaseController
         int $itemId,
         AssessmentService $assessmentService,
         CategoryService $categoryService
-    ) {
+    ): Response {
         $infoArray = $this->getDetailInfo($roomId, $itemId, $legacyMarkup, $assessmentService, $categoryService);
 
         $alert = null;
         if ($infoArray['discussion']->isLocked()) {
             $alert['type'] = 'warning';
-            $alert['content'] = $this->translator->trans('item is locked', array(), 'item');
+            $alert['content'] = $this->translator->trans('item is locked', [], 'item');
         }
 
         $pathTopicItem = null;
@@ -369,7 +303,7 @@ class DiscussionController extends BaseController
         AssessmentService $assessmentService,
         CategoryService $categoryService
     ) {
-        $infoArray = array();
+        $infoArray = [];
 
         $discussion = $this->discussionService->getDiscussion($itemId);
         $articleList = $discussion->getAllArticles();
@@ -390,7 +324,7 @@ class DiscussionController extends BaseController
 
         // mark discussion articles as read / noticed
         foreach ($articleList as $article) {
-            /** @var cs_discussionarticle_item $article */
+            /** @var \cs_discussionarticle_item $article */
             $latestReader = $readerManager->getLatestReader($article->getItemID());
             if (empty($latestReader) || $latestReader['read_date'] < $article->getModificationDate()) {
                 $readerManager->markRead($article->getItemID(), 0);
@@ -426,16 +360,16 @@ class DiscussionController extends BaseController
                 $user->getItemID());
             if (!empty($current_reader)) {
                 if ($current_reader['read_date'] >= $discussion->getModificationDate()) {
-                    $read_count++;
-                    $read_since_modification_count++;
+                    ++$read_count;
+                    ++$read_since_modification_count;
                 } else {
-                    $read_count++;
+                    ++$read_count;
                 }
             }
         }
 
-        $readerList = array();
-        $modifierList = array();
+        $readerList = [];
+        $modifierList = [];
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
             if (empty($reader)) {
@@ -448,7 +382,7 @@ class DiscussionController extends BaseController
         }
 
         $discussions = $this->discussionService->getListDiscussions($roomId);
-        $discussionList = array();
+        $discussionList = [];
         $counterBefore = 0;
         $counterAfter = 0;
         $counterPosition = 0;
@@ -462,7 +396,7 @@ class DiscussionController extends BaseController
                 if ($counterBefore > 5) {
                     array_shift($discussionList);
                 } else {
-                    $counterBefore++;
+                    ++$counterBefore;
                 }
                 $discussionList[] = $tempDiscussion;
                 if ($tempDiscussion->getItemID() == $discussion->getItemID()) {
@@ -471,11 +405,11 @@ class DiscussionController extends BaseController
                 if (!$foundDiscussion) {
                     $prevItemId = $tempDiscussion->getItemId();
                 }
-                $counterPosition++;
+                ++$counterPosition;
             } else {
                 if ($counterAfter < 5) {
                     $discussionList[] = $tempDiscussion;
-                    $counterAfter++;
+                    ++$counterAfter;
                     if (!$nextItemId) {
                         $nextItemId = $tempDiscussion->getItemId();
                     }
@@ -493,7 +427,7 @@ class DiscussionController extends BaseController
             }
         }
 
-        $ratingDetail = array();
+        $ratingDetail = [];
         if ($current_context->isAssessmentActive()) {
             $ratingDetail = $assessmentService->getRatingDetail($discussion);
             $ratingAverageDetail = $assessmentService->getAverageRatingDetail($discussion);
@@ -514,7 +448,7 @@ class DiscussionController extends BaseController
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
-        $categories = array();
+        $categories = [];
         if ($current_context->withTags()) {
             $roomCategories = $categoryService->getTags($roomId);
             $discussionCategories = $discussion->getTagsArray();
@@ -558,8 +492,8 @@ class DiscussionController extends BaseController
 
     private function getTagDetailArray($baseCategories, $itemCategories)
     {
-        $result = array();
-        $tempResult = array();
+        $result = [];
+        $tempResult = [];
         $addCategory = false;
         foreach ($baseCategories as $baseCategory) {
             if (!empty($baseCategory['children'])) {
@@ -573,41 +507,30 @@ class DiscussionController extends BaseController
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {
                     if ($addCategory) {
-                        $result[] = array(
-                            'title' => $baseCategory['title'],
-                            'item_id' => $baseCategory['item_id'],
-                            'children' => $tempResult
-                        );
+                        $result[] = ['title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult];
                     } else {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                        $result[] = ['title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']];
                     }
                     $foundCategory = true;
                 }
             }
             if (!$foundCategory) {
                 if ($addCategory) {
-                    $result[] = array(
-                        'title' => $baseCategory['title'],
-                        'item_id' => $baseCategory['item_id'],
-                        'children' => $tempResult
-                    );
+                    $result[] = ['title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult];
                 }
             }
-            $tempResult = array();
+            $tempResult = [];
             $addCategory = false;
         }
+
         return $result;
     }
 
-    /**
-     * @Route("/room/{roomId}/discussion/create")
-     * @param int $roomId
-     * @return RedirectResponse
-     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'discussion')")
-     */
+    #[Route(path: '/room/{roomId}/discussion/create')]
+    #[Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'discussion')")]
     public function createAction(
         int $roomId
-    ) {
+    ): RedirectResponse {
         // create a new discussion
         $discussionItem = $this->discussionService->getNewDiscussion();
         $discussionItem->setDraftStatus(1);
@@ -620,16 +543,7 @@ class DiscussionController extends BaseController
         ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/discussion/{itemId}/print")
-     * @param PrintService $printService
-     * @param LegacyMarkup $legacyMarkup
-     * @param int $roomId
-     * @param int $itemId
-     * @param AssessmentService $assessmentService
-     * @param CategoryService $categoryService
-     * @return Response
-     */
+    #[Route(path: '/room/{roomId}/discussion/{itemId}/print')]
     public function printAction(
         PrintService $printService,
         LegacyMarkup $legacyMarkup,
@@ -637,7 +551,7 @@ class DiscussionController extends BaseController
         int $itemId,
         AssessmentService $assessmentService,
         CategoryService $categoryService
-    ) {
+    ): Response {
         $infoArray = $this->getDetailInfo($roomId, $itemId, $legacyMarkup, $assessmentService, $categoryService);
 
         $html = $this->renderView('discussion/detail_print.html.twig', [
@@ -671,15 +585,8 @@ class DiscussionController extends BaseController
         return $printService->buildPdfResponse($html);
     }
 
-    /**
-     * @Route("/room/{roomId}/discussion/{itemId}/createarticle")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
-     * @param Request $request
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/discussion/{itemId}/createarticle')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")]
     public function createArticleAction(
         Request $request,
         DiscussionTransformer $transformer,
@@ -687,7 +594,7 @@ class DiscussionController extends BaseController
         int $itemId,
         TranslatorInterface $translator,
         DiscussionTransformer $discussionTransformer
-    ) {
+    ): Response {
         $discussion = $this->discussionService->getDiscussion($itemId);
         $articleList = $discussion->getAllArticles();
 
@@ -706,7 +613,7 @@ class DiscussionController extends BaseController
         /**
          * TODO: Instead of iteration all articles to find the latest in the parents branch
          * it would be much better to ask only for all childs of an article or directly
-         * for the latest position
+         * for the latest position.
          */
         $numParentDots = substr_count($parentPosition, '.');
         $article = $articleList->getFirst();
@@ -716,8 +623,8 @@ class DiscussionController extends BaseController
 
             $numDots = substr_count($position, '.');
 
-            if ($parentPosition == 0) {
-                if ($numDots == 0) {
+            if (0 == $parentPosition) {
+                if (0 == $numDots) {
                     // compare against our latest stored position
                     if (sprintf('%1$04d', $newRelativeNumericPosition) <= $position) {
                         $newRelativeNumericPosition = $position + 1;
@@ -728,7 +635,7 @@ class DiscussionController extends BaseController
                 // if the parent position is one level above the child ones and
                 // the position string is start of the child position
                 if ($numDots == $numParentDots + 1 && substr($position, 0,
-                        strlen($parentPosition)) == $parentPosition) {
+                    strlen($parentPosition)) == $parentPosition) {
                     // extract the last position part
                     $positionExp = explode('.', $position);
                     $lastPositionPart = $positionExp[sizeof($positionExp) - 1];
@@ -745,8 +652,8 @@ class DiscussionController extends BaseController
 
         // new position is relative to the parent position
         $newPosition = '';
-        if ($parentPosition != 0) {
-            $newPosition .= $parentPosition . '.';
+        if (0 != $parentPosition) {
+            $newPosition .= $parentPosition.'.';
         }
         $newPosition .= sprintf('%1$04d', $newRelativeNumericPosition);
 
@@ -761,58 +668,27 @@ class DiscussionController extends BaseController
         $form = $this->createForm(DiscussionArticleType::class, $formData, [
             'action' => $this->generateUrl('app_discussion_savearticle', [
                 'roomId' => $roomId,
-                'itemId' => $article->getItemID()
+                'itemId' => $article->getItemID(),
             ]),
-            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
+            'placeholderText' => '['.$this->translator->trans('insert title').']',
         ]);
 
-        return [
+        return $this->render('discussion/create_article.html.twig', [
             'form' => $form->createView(),
             'articleList' => $articleList,
             'discussion' => $discussion,
             'article' => $article,
-            'modifierList' => array(),
+            'modifierList' => [],
             'userCount' => 0,
             'readCount' => 0,
             'readSinceModificationCount' => 0,
             'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
             'parentId' => $parentId,
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/discussion/{itemId}/editarticles")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
-     * @param int $itemId
-     * @return array
-     */
-    public function editArticlesAction(
-        int $itemId
-    ) {
-        $discussion = $this->discussionService->getDiscussion($itemId);
-
-        $articlesList = $discussion->getAllArticles()->to_array();
-
-        return array(
-            'articlesList' => $articlesList,
-            'discussion' => $discussion
-        );
-    }
-
-    /**
-     * @Route("/room/{roomId}/discussion/{itemId}/edit")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
-     * @param Request $request
-     * @param CategoryService $categoryService
-     * @param LabelService $labelService
-     * @param DiscussionTransformer $discussionTransformer
-     * @param DiscussionarticleTransformer $discussionarticleTransformer
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/discussion/{itemId}/edit')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")]
     public function editAction(
         Request $request,
         CategoryService $categoryService,
@@ -823,12 +699,13 @@ class DiscussionController extends BaseController
         int $itemId,
         TranslatorInterface $translator,
         EventDispatcherInterface $eventDispatcher
-    ) {
+    ): Response {
+        $form = null;
         $item = $this->itemService->getItem($itemId);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $formData = array();
+        $formData = [];
         $discussionItem = null;
         $discussionArticleItem = null;
 
@@ -836,66 +713,51 @@ class DiscussionController extends BaseController
 
         $transformer = null;
 
-        if ($item->getItemType() == 'discussion') {
+        if ('discussion' == $item->getItemType()) {
             $transformer = $discussionTransformer;
         } else {
-            if ($item->getItemType() == 'discarticle') {
+            if ('discarticle' == $item->getItemType()) {
                 $transformer = $discussionarticleTransformer;
             }
         }
 
-        if ($item->getItemType() == 'discussion') {
+        if ('discussion' == $item->getItemType()) {
             // get discussion from DiscussionService
             /** @var \cs_discussion_item $discussionItem */
             $discussionItem = $this->discussionService->getDiscussion($itemId);
             $discussionItem->setDraftStatus($isDraft);
             if (!$discussionItem) {
-                throw $this->createNotFoundException('No discussion found for id ' . $itemId);
+                throw $this->createNotFoundException('No discussion found for id '.$itemId);
             }
             $formData = $transformer->transform($discussionItem);
             $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
             $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
             $formData['draft'] = $isDraft;
-            $form = $this->createForm(DiscussionType::class, $formData, array(
-                'action' => $this->generateUrl('app_discussion_edit', array(
-                    'roomId' => $roomId,
-                    'itemId' => $itemId,
-                )),
-                'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
-                'categoryMappingOptions' => [
-                    'categories' => $labelService->getCategories($roomId),
-                    'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
-                    'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
-                ],
-                'hashtagMappingOptions' => [
-                    'hashtags' => $labelService->getHashtags($roomId),
-                    'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
-                    'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
-                ],
-                'room' => $current_context,
-            ));
+            $form = $this->createForm(DiscussionType::class, $formData, ['action' => $this->generateUrl('app_discussion_edit', ['roomId' => $roomId, 'itemId' => $itemId]), 'placeholderText' => '['.$this->translator->trans('insert title').']', 'categoryMappingOptions' => [
+                'categories' => $labelService->getCategories($roomId),
+                'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
+                'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId]),
+            ], 'hashtagMappingOptions' => [
+                'hashtags' => $labelService->getHashtags($roomId),
+                'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
+                'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
+            ], 'room' => $current_context]);
         } else {
-            if ($item->getItemType() == 'discarticle') {
+            if ('discarticle' == $item->getItemType()) {
                 // get section from DiscussionService
                 $discussionArticleItem = $this->discussionService->getArticle($itemId);
                 if (!$discussionArticleItem) {
-                    throw $this->createNotFoundException('No discussion article found for id ' . $itemId);
+                    throw $this->createNotFoundException('No discussion article found for id '.$itemId);
                 }
                 $formData = $transformer->transform($discussionArticleItem);
-                $form = $this->createForm(DiscussionArticleType::class, $formData, array(
-                    'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
-                    'categories' => $labelService->getCategories($roomId),
-                    'hashtags' => $labelService->getHashtags($roomId),
-                    'hashTagPlaceholderText' => $this->translator->trans('Hashtag', [], 'hashtag'),
-                    'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-                ));
+                $form = $this->createForm(DiscussionArticleType::class, $formData, ['placeholderText' => '['.$this->translator->trans('insert title').']', 'categories' => $labelService->getCategories($roomId), 'hashtags' => $labelService->getHashtags($roomId), 'hashTagPlaceholderText' => $this->translator->trans('Hashtag', [], 'hashtag'), 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])]);
             }
         }
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                if ($item->getItemType() == 'discussion') {
+                if ('discussion' == $item->getItemType()) {
                     $discussionItem = $transformer->applyTransformation($discussionItem, $form->getData());
                     // update modifier
                     $discussionItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
@@ -930,7 +792,7 @@ class DiscussionController extends BaseController
 
                     $discussionItem->save();
                 } else {
-                    if ($item->getItemType() == 'discarticle') {
+                    if ('discarticle' == $item->getItemType()) {
                         $discussionArticleItem = $transformer->applyTransformation($discussionArticleItem,
                             $form->getData());
                         // update modifier
@@ -948,50 +810,39 @@ class DiscussionController extends BaseController
                     // ToDo ...
                 }
             }
-            return $this->redirectToRoute('app_discussion_save', array('roomId' => $roomId, 'itemId' => $itemId));
+
+            return $this->redirectToRoute('app_discussion_save', ['roomId' => $roomId, 'itemId' => $itemId]);
         }
 
-        if ($item->getItemType() == 'discussion') {
+        if ('discussion' == $item->getItemType()) {
             $this->eventDispatcher->dispatch(new CommsyEditEvent($discussionItem), CommsyEditEvent::EDIT);
         } else {
             $discussionItem = $this->discussionService->getDiscussion($discussionArticleItem->getDiscussionID());
             $this->eventDispatcher->dispatch(new CommsyEditEvent($discussionItem), CommsyEditEvent::EDIT);
         }
 
-
-        return array(
-            'form' => $form->createView(),
-            'discussion' => $discussionItem,
-            'discussionArticle' => $discussionArticleItem,
-            'isDraft' => $isDraft,
-            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
-        );
+        return $this->render('discussion/edit.html.twig', ['form' => $form->createView(), 'discussion' => $discussionItem, 'discussionArticle' => $discussionArticleItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
     }
 
-    /**
-     * @Route("/room/{roomId}/discussion/{itemId}/save")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/discussion/{itemId}/save')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")]
     public function saveAction(
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
+        $typedItem = null;
         $item = $this->itemService->getItem($itemId);
 
-        if ($item->getItemType() == 'discussion') {
+        if ('discussion' == $item->getItemType()) {
             $typedItem = $this->discussionService->getDiscussion($itemId);
         } else {
-            if ($item->getItemType() == 'discarticle') {
+            if ('discarticle' == $item->getItemType()) {
                 $typedItem = $this->discussionService->getArticle($itemId);
             }
         }
 
-        $itemArray = array($typedItem);
-        $modifierList = array();
+        $itemArray = [$typedItem];
+        $modifierList = [];
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
@@ -1008,7 +859,7 @@ class DiscussionController extends BaseController
         $read_since_modification_count = 0;
 
         $current_user = $user_list->getFirst();
-        $id_array = array();
+        $id_array = [];
         while ($current_user) {
             $id_array[] = $current_user->getItemID();
             $current_user = $user_list->getNext();
@@ -1020,17 +871,17 @@ class DiscussionController extends BaseController
                 $current_user->getItemID());
             if (!empty($current_reader)) {
                 if ($current_reader['read_date'] >= $typedItem->getModificationDate()) {
-                    $read_count++;
-                    $read_since_modification_count++;
+                    ++$read_count;
+                    ++$read_since_modification_count;
                 } else {
-                    $read_count++;
+                    ++$read_count;
                 }
             }
             $current_user = $user_list->getNext();
         }
 
-        $readerList = array();
-        $modifierList = array();
+        $readerList = [];
+        $modifierList = [];
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
             if (empty($reader)) {
@@ -1042,40 +893,25 @@ class DiscussionController extends BaseController
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
-        if ($item->getItemType() == 'discussion') {
+        if ('discussion' == $item->getItemType()) {
             $this->eventDispatcher->dispatch(new CommsyEditEvent($typedItem), CommsyEditEvent::SAVE);
         } else {
             $discussionItem = $this->discussionService->getDiscussion($typedItem->getDiscussionID());
             $this->eventDispatcher->dispatch(new CommsyEditEvent($discussionItem), CommsyEditEvent::SAVE);
         }
 
-        return array(
-            'roomId' => $roomId,
-            'item' => $typedItem,
-            'modifierList' => $modifierList,
-            'userCount' => $all_user_count,
-            'readCount' => $read_count,
-            'readSinceModificationCount' => $read_since_modification_count,
-        );
+        return $this->render('discussion/save.html.twig', ['roomId' => $roomId, 'item' => $typedItem, 'modifierList' => $modifierList, 'userCount' => $all_user_count, 'readCount' => $read_count, 'readSinceModificationCount' => $read_since_modification_count]);
     }
 
-    /**
-     * @Route("/room/{roomId}/discussion/{itemId}/rating/{vote}")
-     * @Template()
-     * @param AssessmentService $assessmentService
-     * @param int $roomId
-     * @param int $itemId
-     * @param $vote
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/discussion/{itemId}/rating/{vote}')]
     public function ratingAction(
         AssessmentService $assessmentService,
         int $roomId,
         int $itemId,
         $vote
-    ) {
+    ): Response {
         $discussion = $this->discussionService->getDiscussion($itemId);
-        if ($vote != 'remove') {
+        if ('remove' != $vote) {
             $assessmentService->rateItem($discussion, $vote);
         } else {
             $assessmentService->removeRating($discussion);
@@ -1084,42 +920,24 @@ class DiscussionController extends BaseController
         $ratingAverageDetail = $assessmentService->getAverageRatingDetail($discussion);
         $ratingOwnDetail = $assessmentService->getOwnRatingDetail($discussion);
 
-        return array(
-            'roomId' => $roomId,
-            'discussion' => $discussion,
-            'ratingArray' => array(
-                'ratingDetail' => $ratingDetail,
-                'ratingAverageDetail' => $ratingAverageDetail,
-                'ratingOwnDetail' => $ratingOwnDetail,
-            ),
-        );
+        return $this->render('discussion/rating.html.twig', ['roomId' => $roomId, 'discussion' => $discussion, 'ratingArray' => ['ratingDetail' => $ratingDetail, 'ratingAverageDetail' => $ratingAverageDetail, 'ratingOwnDetail' => $ratingOwnDetail]]);
     }
 
-    /**
-     * @Route("/room/{roomId}/discussion/{itemId}/savearticle")
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
-     * @param Request $request
-     * @param DiscussionTransformer $transformer
-     * @param int $roomId
-     * @param int $itemId
-     * @return RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/discussion/{itemId}/savearticle')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")]
     public function saveArticleAction(
         Request $request,
         DiscussionTransformer $transformer,
         int $roomId,
         int $itemId,
         TranslatorInterface $translator
-    ) {
+    ): RedirectResponse {
         $item = $this->itemService->getItem($itemId);
         $article = $this->discussionService->getArticle($itemId);
         $formData = $transformer->transform($article);
 
-        $form = $this->createForm(DiscussionArticleType::class, $formData, array(
-            'action' => $this->generateUrl('app_discussion_savearticle',
-                array('roomId' => $roomId, 'itemId' => $article->getItemID())),
-            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
-        ));
+        $form = $this->createForm(DiscussionArticleType::class, $formData, ['action' => $this->generateUrl('app_discussion_savearticle',
+            ['roomId' => $roomId, 'itemId' => $article->getItemID()]), 'placeholderText' => '['.$this->translator->trans('insert title').']']);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -1142,7 +960,6 @@ class DiscussionController extends BaseController
                 $article->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                 $article->save();
-
             } else {
                 if ($form->get('cancel')->isClicked()) {
                     // remove not saved item
@@ -1154,44 +971,36 @@ class DiscussionController extends BaseController
         }
 
         return $this->redirectToRoute('app_discussion_detail',
-            array('roomId' => $roomId, 'itemId' => $article->getDiscussionID()));
+            ['roomId' => $roomId, 'itemId' => $article->getDiscussionID()]);
     }
 
     /**
-     * @Route("/room/{roomId}/discussion/download")
-     * @param Request $request
-     * @param DownloadAction $action
-     * @param int $roomId
-     * @return Response
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/discussion/download')]
     public function downloadAction(
         Request $request,
         DownloadAction $action,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $action->execute($room, $items);
     }
 
-    ###################################################################################################
-    ## XHR Action requests
-    ###################################################################################################
-
+    // ##################################################################################################
+    // # XHR Action requests
+    // ##################################################################################################
     /**
-     * @Route("/room/{roomId}/discussion/xhr/markread", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/discussion/xhr/markread', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkReadAction(
         Request $request,
         MarkReadAction $markReadAction,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -1199,17 +1008,14 @@ class DiscussionController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/discussion/xhr/mark", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/discussion/xhr/mark', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkAction(
         Request $request,
         MarkAction $action,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -1217,49 +1023,42 @@ class DiscussionController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/discussion/xhr/categorize", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param CategorizeAction $action
-     * @param int $roomId
      * @return mixed
-     * @throws Exception
+     *
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/discussion/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
     public function xhrCategorizeAction(
         Request $request,
         CategorizeAction $action,
         int $roomId
-    ) {
+    ): Response {
         return parent::handleCategoryActionOptions($request, $action, $roomId);
     }
 
     /**
-     * @Route("/room/{roomId}/discussion/xhr/hashtag", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param HashtagAction $action
-     * @param int $roomId
      * @return mixed
-     * @throws Exception
+     *
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/discussion/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
     public function xhrHashtagAction(
         Request $request,
         HashtagAction $action,
         int $roomId
-    ) {
+    ): Response {
         return parent::handleHashtagActionOptions($request, $action, $roomId);
     }
 
     /**
-     * @Route("/room/{roomId}/discussion/xhr/activate", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/discussion/xhr/activate', condition: 'request.isXmlHttpRequest()')]
     public function xhrActivateAction(
         Request $request,
         ActivateAction $action,
         $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -1267,17 +1066,14 @@ class DiscussionController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/discussion/xhr/deactivate", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/discussion/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeactivateAction(
         Request $request,
         DeactivateAction $action,
         $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -1285,17 +1081,14 @@ class DiscussionController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/discussion/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/discussion/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
         Request $request,
         DeleteAction $action,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -1303,11 +1096,10 @@ class DiscussionController extends BaseController
     }
 
     /**
-     * @param cs_room_item $room
      * @return FormInterface
      */
     private function createFilterForm(
-        cs_room_item $room
+        \cs_room_item $room
     ) {
         // setup filter form default values
         $defaultFilterValues = [
@@ -1324,11 +1116,11 @@ class DiscussionController extends BaseController
     }
 
     /**
-     * @param Request $request
-     * @param cs_room_item $roomItem
-     * @param boolean $selectAll
-     * @param integer[] $itemIds
-     * @return cs_discussion_item[]
+     * @param \cs_room_item $roomItem
+     * @param bool          $selectAll
+     * @param int[]         $itemIds
+     *
+     * @return \cs_discussion_item[]
      */
     public function getItemsByFilterConditions(
         Request $request,

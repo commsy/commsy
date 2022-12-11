@@ -1,4 +1,16 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Command;
 
 use App\Database\DatabaseChecks;
@@ -9,33 +21,23 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DBCheckCommand extends Command
 {
-    private DatabaseChecks $databaseChecks;
+    protected static $defaultName = 'commsy:db:check';
+    protected static $defaultDescription = 'Checks the database tables';
 
-    public function __construct(DatabaseChecks $databaseChecks)
+    public function __construct(private DatabaseChecks $databaseChecks)
     {
         parent::__construct();
-
-        $this->databaseChecks = $databaseChecks;
     }
 
     protected function configure()
     {
-        $this
-            ->setName('commsy:db:check')
-            ->setDescription('Checks the database tables')
-            ->addOption(
-                'limit',
-                'l',
-                InputOption::VALUE_REQUIRED,
-                'Limit the checks to run'
-            );
-        ;
+        $this->addOption('limit', 'l', InputOption::VALUE_REQUIRED, 'Limit the checks to run');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->databaseChecks->runChecks($input, $output);
 
-        return 0;
+        return \Symfony\Component\Console\Command\Command::SUCCESS;
     }
 }

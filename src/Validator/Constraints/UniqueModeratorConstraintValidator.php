@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Validator\Constraints;
 
 use App\Services\LegacyEnvironment;
@@ -10,26 +21,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UniqueModeratorConstraintValidator extends ConstraintValidator
 {
-    /**
-     * @var UserService
-     */
-    private UserService $userService;
-
-    /**
-     * @var LegacyEnvironment
-     */
-    private LegacyEnvironment $legacyEnvironment;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private TranslatorInterface $translator;
-
-    public function __construct(UserService $userService, LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator)
+    public function __construct(private UserService $userService, private LegacyEnvironment $legacyEnvironment, private TranslatorInterface $translator)
     {
-        $this->userService = $userService;
-        $this->legacyEnvironment = $legacyEnvironment;
-        $this->translator = $translator;
     }
 
     public function validate($submittedDeleteString, Constraint $constraint)
@@ -43,9 +36,7 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
         $users = [];
 
         if (!empty($userIds)) {
-            $users = array_map(function (int $userId) {
-                return $this->userService->getUser($userId);
-            }, $userIds);
+            $users = array_map(fn (int $userId) => $this->userService->getUser($userId), $userIds);
         } else {
             if ($currentUser = $this->userService->getCurrentUserItem()) {
                 $users[] = $currentUser;
@@ -76,11 +67,11 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
 
         // TODO: link to rooms similar to ModeratorAccountDeleteConstraintValidator / delete_account.html.twig?
         if (!$contextHasModerators) {
-            $roomName = " - " . $roomItem->getTitle();
+            $roomName = ' - '.$roomItem->getTitle();
             $roomType = ($roomItem->isGroupRoom())
                 ? $this->translator->trans('grouproom', [], 'room')
                 : $this->translator->trans($roomItem->getType(), [], 'room');
-            $roomName = $roomName . " (" . $roomType . ")";
+            $roomName = $roomName.' ('.$roomType.')';
 
             $this->context->buildViolation($constraint->itemMessage)
                 ->setParameter('{{ criteria }}', $roomName)
@@ -89,7 +80,7 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
 
         foreach ($orphanedGroupRooms as $groupRoom) {
             $this->context->buildViolation($constraint->itemMessage)
-                ->setParameter('{{ criteria }}', " - " . $groupRoom->getTitle() . " (" . $this->translator->trans('grouproom', [], 'room') . ")")
+                ->setParameter('{{ criteria }}', ' - '.$groupRoom->getTitle().' ('.$this->translator->trans('grouproom', [], 'room').')')
                 ->addViolation();
         }
 

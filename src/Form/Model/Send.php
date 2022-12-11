@@ -1,38 +1,88 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Form\Model;
 
-use Symfony\Component\Validator\Constraints as Assert;
-
 class Send
 {
+    /**
+     * @var mixed|null
+     */
     private $subject;
 
+    /**
+     * @var mixed|null
+     */
     private $message;
 
+    /**
+     * @var mixed|null
+     */
     private $sendToAttendees;
 
+    /**
+     * @var mixed|null
+     */
     private $sendToAssigned;
 
+    /**
+     * @var mixed|null
+     */
     private $sendToGroupAll;
 
+    /**
+     * @var mixed|null
+     */
     private $sendToGroups;
 
+    /**
+     * @var mixed|null
+     */
     private $sendToInstitutions;
 
+    /**
+     * @var mixed|null
+     */
     private $sendToAll;
 
+    /**
+     * @var mixed|null
+     */
     private $sendToSelected;
 
+    /**
+     * @var mixed|null
+     */
     private $sendToCreator;
 
+    /**
+     * @var mixed|null
+     */
     private $copyToSender;
 
+    /**
+     * @var mixed|null
+     */
     private $additionalRecipients;
 
+    /**
+     * @var mixed|null
+     */
     private $upload;
 
+    /**
+     * @var mixed|null
+     */
     private $files;
 
     /**
@@ -43,10 +93,7 @@ class Send
         return $this->subject;
     }
 
-    /**
-     * @param mixed $subject
-     */
-    public function setSubject($subject): void
+    public function setSubject(mixed $subject): void
     {
         $this->subject = $subject;
     }
@@ -59,10 +106,7 @@ class Send
         return $this->message;
     }
 
-    /**
-     * @param mixed $message
-     */
-    public function setMessage($message): void
+    public function setMessage(mixed $message): void
     {
         $this->message = $message;
     }
@@ -75,10 +119,7 @@ class Send
         return $this->sendToAttendees;
     }
 
-    /**
-     * @param mixed $sendToAttendees
-     */
-    public function setSendToAttendees($sendToAttendees): void
+    public function setSendToAttendees(mixed $sendToAttendees): void
     {
         $this->sendToAttendees = $sendToAttendees;
     }
@@ -91,10 +132,7 @@ class Send
         return $this->sendToAssigned;
     }
 
-    /**
-     * @param mixed $sendToAssigned
-     */
-    public function setSendToAssigned($sendToAssigned): void
+    public function setSendToAssigned(mixed $sendToAssigned): void
     {
         $this->sendToAssigned = $sendToAssigned;
     }
@@ -107,10 +145,7 @@ class Send
         return $this->sendToGroupAll;
     }
 
-    /**
-     * @param mixed $sendToGroupAll
-     */
-    public function setSendToGroupAll($sendToGroupAll): void
+    public function setSendToGroupAll(mixed $sendToGroupAll): void
     {
         $this->sendToGroupAll = $sendToGroupAll;
     }
@@ -123,10 +158,7 @@ class Send
         return $this->sendToGroups;
     }
 
-    /**
-     * @param mixed $sendToGroups
-     */
-    public function setSendToGroups($sendToGroups): void
+    public function setSendToGroups(mixed $sendToGroups): void
     {
         $this->sendToGroups = $sendToGroups;
     }
@@ -139,10 +171,7 @@ class Send
         return $this->sendToInstitutions;
     }
 
-    /**
-     * @param mixed $sendToInstitutions
-     */
-    public function setSendToInstitutions($sendToInstitutions): void
+    public function setSendToInstitutions(mixed $sendToInstitutions): void
     {
         $this->sendToInstitutions = $sendToInstitutions;
     }
@@ -155,10 +184,7 @@ class Send
         return $this->sendToAll;
     }
 
-    /**
-     * @param mixed $sendToAll
-     */
-    public function setSendToAll($sendToAll): void
+    public function setSendToAll(mixed $sendToAll): void
     {
         $this->sendToAll = $sendToAll;
     }
@@ -171,10 +197,7 @@ class Send
         return $this->sendToSelected;
     }
 
-    /**
-     * @param mixed $sendToSelected
-     */
-    public function setSendToSelected($sendToSelected): void
+    public function setSendToSelected(mixed $sendToSelected): void
     {
         $this->sendToSelected = $sendToSelected;
     }
@@ -187,10 +210,7 @@ class Send
         return $this->sendToCreator;
     }
 
-    /**
-     * @param mixed $sendToCreator
-     */
-    public function setSendToCreator($sendToCreator): void
+    public function setSendToCreator(mixed $sendToCreator): void
     {
         $this->sendToCreator = $sendToCreator;
     }
@@ -203,10 +223,7 @@ class Send
         return $this->copyToSender;
     }
 
-    /**
-     * @param mixed $copyToSender
-     */
-    public function setCopyToSender($copyToSender): void
+    public function setCopyToSender(mixed $copyToSender): void
     {
         $this->copyToSender = $copyToSender;
     }
@@ -219,10 +236,7 @@ class Send
         return $this->additionalRecipients;
     }
 
-    /**
-     * @param mixed $additionalRecipients
-     */
-    public function setAdditionalRecipients($additionalRecipients): void
+    public function setAdditionalRecipients(mixed $additionalRecipients): void
     {
         $this->additionalRecipients = $additionalRecipients;
     }
@@ -235,10 +249,7 @@ class Send
         return $this->upload;
     }
 
-    /**
-     * @param mixed $upload
-     */
-    public function setUpload($upload): void
+    public function setUpload(mixed $upload): void
     {
         $this->upload = $upload;
     }
@@ -251,10 +262,7 @@ class Send
         return $this->files;
     }
 
-    /**
-     * @param mixed $files
-     */
-    public function setFiles($files): void
+    public function setFiles(mixed $files): void
     {
         $this->files = $files;
     }

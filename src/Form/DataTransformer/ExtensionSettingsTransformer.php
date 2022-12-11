@@ -1,17 +1,25 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
-use cs_environment;
 use cs_room_item;
 
 class ExtensionSettingsTransformer extends AbstractTransformer
 {
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
+    private \cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService)
     {
@@ -19,48 +27,48 @@ class ExtensionSettingsTransformer extends AbstractTransformer
     }
 
     /**
-     * Transforms a cs_room_item object to an array
+     * Transforms a cs_room_item object to an array.
      *
-     * @param cs_room_item $roomItem
+     * @param \cs_room_item $roomItem
+     *
      * @return array
      */
     public function transform($roomItem)
     {
-        $roomData = array();
+        $roomData = [];
 
         if ($roomItem) {
-
             $translator = $this->legacyEnvironment->getTranslationObject();
 
             $roomData['assessment'] = $roomItem->isAssessmentActive();
-            $roomData['workflow'] = array();
+            $roomData['workflow'] = [];
 
             // traffic light options
-            $traffic_light = array();
-            $traffic_light['status_view']= $roomItem->withWorkflowTrafficLight();
+            $traffic_light = [];
+            $traffic_light['status_view'] = $roomItem->withWorkflowTrafficLight();
             $traffic_light['default_status'] = $roomItem->getWorkflowTrafficLightDefault();
-            if($roomItem->getWorkflowTrafficLightTextGreen() != ''){
-               $traffic_light['green_text'] = $roomItem->getWorkflowTrafficLightTextGreen();
+            if ('' != $roomItem->getWorkflowTrafficLightTextGreen()) {
+                $traffic_light['green_text'] = $roomItem->getWorkflowTrafficLightTextGreen();
             } else {
-               $traffic_light['green_text'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT');
+                $traffic_light['green_text'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT');
             }
-            if($roomItem->getWorkflowTrafficLightTextYellow() != ''){
-               $traffic_light['yellow_text'] = $roomItem->getWorkflowTrafficLightTextYellow();
+            if ('' != $roomItem->getWorkflowTrafficLightTextYellow()) {
+                $traffic_light['yellow_text'] = $roomItem->getWorkflowTrafficLightTextYellow();
             } else {
-               $traffic_light['yellow_text'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT');
+                $traffic_light['yellow_text'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT');
             }
-            if($roomItem->getWorkflowTrafficLightTextRed() != ''){
-               $traffic_light['red_text'] = $roomItem->getWorkflowTrafficLightTextRed();
+            if ('' != $roomItem->getWorkflowTrafficLightTextRed()) {
+                $traffic_light['red_text'] = $roomItem->getWorkflowTrafficLightTextRed();
             } else {
-               $traffic_light['red_text'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT');
+                $traffic_light['red_text'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT');
             }
 
             $roomData['workflow']['traffic_light'] = $traffic_light;
             $roomData['workflow']['resubmission'] = $roomItem->withWorkflowResubmission();
             $roomData['workflow']['validity'] = $roomItem->withWorkflowValidity();
             $roomData['workflow']['reader'] = $roomItem->withWorkflowReader();
-            $roomData['workflow']['reader_group'] = ($roomItem->getWorkflowReaderGroup() === '1');
-            $roomData['workflow']['reader_person'] = ($roomItem->getWorkflowReaderPerson() === '1');
+            $roomData['workflow']['reader_group'] = ('1' === $roomItem->getWorkflowReaderGroup());
+            $roomData['workflow']['reader_person'] = ('1' === $roomItem->getWorkflowReaderPerson());
             $roomData['workflow']['resubmission_show_to'] = $roomItem->getWorkflowReaderShowTo();
 
             $roomData['createUserRooms'] = ($roomItem->isProjectRoom()) ? $roomItem->getShouldCreateUserRooms() : false;
@@ -70,20 +78,22 @@ class ExtensionSettingsTransformer extends AbstractTransformer
     }
 
     /**
-     * Save extension settings
+     * Save extension settings.
      *
      * @param object $roomObject
-     * @param array $roomData
-     * @return cs_room_item|null
-     * @throws TransformationFailedException if room item is not found.
+     * @param array  $roomData
+     *
+     * @return \cs_room_item|null
+     *
+     * @throws TransformationFailedException if room item is not found
      */
     public function applyTransformation($roomObject, $roomData)
     {
-        if ( isset($roomData['dates_status']) ) {
+        if (isset($roomData['dates_status'])) {
             $roomObject->setDatesPresentationStatus($roomData['dates_status']);
         }
 
-        if($roomData['assessment']) {
+        if ($roomData['assessment']) {
             $roomObject->setAssessmentActive();
         } else {
             $roomObject->setAssessmentInactive();
@@ -99,65 +109,65 @@ class ExtensionSettingsTransformer extends AbstractTransformer
 
         $traffic_light = $workflow['traffic_light'];
 
-        if ( $traffic_light['status_view'] ) {
-           $roomObject->setWithWorkflowTrafficLight();
-           $isset_workflow = true;
+        if ($traffic_light['status_view']) {
+            $roomObject->setWithWorkflowTrafficLight();
+            $isset_workflow = true;
         } else {
-           $roomObject->setWithoutWorkflowTrafficLight();
+            $roomObject->setWithoutWorkflowTrafficLight();
         }
 
-        if ( $workflow['resubmission']) {
-           $roomObject->setWithWorkflowResubmission();
-           $isset_workflow = true;
+        if ($workflow['resubmission']) {
+            $roomObject->setWithWorkflowResubmission();
+            $isset_workflow = true;
         } else {
-           $roomObject->setWithoutWorkflowResubmission();
+            $roomObject->setWithoutWorkflowResubmission();
         }
 
-        if ( $workflow['validity'] ) {
-           $roomObject->setWithWorkflowValidity();
-           $isset_workflow = true;
+        if ($workflow['validity']) {
+            $roomObject->setWithWorkflowValidity();
+            $isset_workflow = true;
         } else {
-           $roomObject->setWithoutWorkflowValidity();
+            $roomObject->setWithoutWorkflowValidity();
         }
 
-        if ( $workflow['reader']) {
-           $roomObject->setWithWorkflowReader();
-           $isset_workflow = true;
+        if ($workflow['reader']) {
+            $roomObject->setWithWorkflowReader();
+            $isset_workflow = true;
         } else {
-           $roomObject->setWithoutWorkflowReader();
+            $roomObject->setWithoutWorkflowReader();
         }
 
-        if($isset_workflow){
-           $roomObject->setWithWorkflow();
+        if ($isset_workflow) {
+            $roomObject->setWithWorkflow();
         } else {
-           $roomObject->setWithoutWorkflow();
+            $roomObject->setWithoutWorkflow();
         }
 
         $roomObject->setWorkflowTrafficLightDefault($traffic_light['default_status']);
 
-        if ( isset($traffic_light['green_text']) and !empty($traffic_light['green_text'])) {
-           $roomObject->setWorkflowTrafficLightTextGreen($traffic_light['green_text']);
+        if (isset($traffic_light['green_text']) and !empty($traffic_light['green_text'])) {
+            $roomObject->setWorkflowTrafficLightTextGreen($traffic_light['green_text']);
         }
-        if ( isset($traffic_light['yellow_text']) and !empty($traffic_light['yellow_text'])) {
-           $roomObject->setWorkflowTrafficLightTextYellow($traffic_light['yellow_text']);
+        if (isset($traffic_light['yellow_text']) and !empty($traffic_light['yellow_text'])) {
+            $roomObject->setWorkflowTrafficLightTextYellow($traffic_light['yellow_text']);
         }
-        if ( isset($traffic_light['red_text']) and !empty($traffic_light['red_text'])) {
-           $roomObject->setWorkflowTrafficLightTextRed($traffic_light['red_text']);
-        }
-
-        if ( $workflow['reader_group'] ) {
-           $roomObject->setWithWorkflowReaderGroup();
-        } else {
-           $roomObject->setWithoutWorkflowReaderGroup();
-        }
-        if ( $workflow['reader_person'] ) {
-           $roomObject->setWithWorkflowReaderPerson();
-        } else {
-           $roomObject->setWithoutWorkflowReaderPerson();
+        if (isset($traffic_light['red_text']) and !empty($traffic_light['red_text'])) {
+            $roomObject->setWorkflowTrafficLightTextRed($traffic_light['red_text']);
         }
 
-        if ( isset($workflow['resubmission_show_to']) and !empty($workflow['resubmission_show_to'])) {
-           $roomObject->setWorkflowReaderShowTo($workflow['resubmission_show_to']);
+        if ($workflow['reader_group']) {
+            $roomObject->setWithWorkflowReaderGroup();
+        } else {
+            $roomObject->setWithoutWorkflowReaderGroup();
+        }
+        if ($workflow['reader_person']) {
+            $roomObject->setWithWorkflowReaderPerson();
+        } else {
+            $roomObject->setWithoutWorkflowReaderPerson();
+        }
+
+        if (isset($workflow['resubmission_show_to']) and !empty($workflow['resubmission_show_to'])) {
+            $roomObject->setWorkflowReaderShowTo($workflow['resubmission_show_to']);
         }
 
         return $roomObject;

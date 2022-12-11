@@ -1,38 +1,32 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 16.07.18
- * Time: 23:22
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Action\Delete;
-
 
 use Symfony\Component\Routing\RouterInterface;
 
 class DeleteDiscussionArticle implements DeleteInterface
 {
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    public function __construct(RouterInterface $router)
+    public function __construct(private RouterInterface $router)
     {
-        $this->router = $router;
     }
 
-    /**
-     * @param \cs_item $item
-     */
     public function delete(\cs_item $item): void
     {
         $item->delete();
     }
 
     /**
-     * @param \cs_item $item
      * @return string|null
      */
     public function getRedirectRoute(\cs_item $item)

@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type\Account;
 
 use App\Entity\AuthSource;
@@ -21,7 +32,7 @@ class MergeAccountsType extends AbstractType
      * Type extensions can further modify the form.
      *
      * @param FormBuilderInterface $builder The form builder
-     * @param array $options The options
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -38,15 +49,11 @@ class MergeAccountsType extends AbstractType
             ])
             ->add('auth_source', EntityType::class, [
                 'class' => AuthSource::class,
-                'query_builder' => function (AuthSourceRepository $er) use ($portal) {
-                    return $er->createQueryBuilder('a')
-                        ->where('a.portal = :portal')
-                        ->andWhere('a.enabled = true')
-                        ->setParameter('portal', $portal);
-                },
-                'choice_label' => function (AuthSource $authSource) {
-                    return $authSource->getTitle() . '(' . $authSource->getType() . ')';
-                },
+                'query_builder' => fn (AuthSourceRepository $er) => $er->createQueryBuilder('a')
+                    ->where('a.portal = :portal')
+                    ->andWhere('a.enabled = true')
+                    ->setParameter('portal', $portal),
+                'choice_label' => fn (AuthSource $authSource) => $authSource->getTitle().'('.$authSource->getType().')',
                 'label' => 'authSource',
             ])
             ->add('save', SubmitType::class, [
@@ -82,5 +89,4 @@ class MergeAccountsType extends AbstractType
     {
         return 'profile_mergeaccounts';
     }
-
 }

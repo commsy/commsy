@@ -1,50 +1,50 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\EventSubscriber;
 
 use App\Event\CommsyEditEvent;
 use App\Utils\ReaderService;
-use cs_item;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class CommsyEditSubscriber implements EventSubscriberInterface {
-
-    /**
-     * @var ContainerInterface $container
-     */
-    private $container;
-
-    /**
-     * @var ReaderService $readerService
-     */
-    private $readerService;
-
-    public function __construct(ContainerInterface $container, ReaderService $readerService)
+class CommsyEditSubscriber implements EventSubscriberInterface
+{
+    public function __construct(private ContainerInterface $container, private ReaderService $readerService, private \App\Services\CalendarsService $calendarsService)
     {
-        $this->container = $container;
-        $this->readerService = $readerService;
     }
 
-    public function onCommsyEdit(CommsyEditEvent $event) {
-        if ($event->getItem() instanceof cs_item) {
+    public function onCommsyEdit(CommsyEditEvent $event)
+    {
+        if ($event->getItem() instanceof \cs_item) {
             if ($event->getItem()->hasLocking()) {
                 $event->getItem()->lock();
             }
         }
     }
 
-    public function onCommsySave(CommsyEditEvent $event) {
-        if ($event->getItem() instanceof cs_item) {
-            /** @var cs_item $item */
+    public function onCommsySave(CommsyEditEvent $event)
+    {
+        if ($event->getItem() instanceof \cs_item) {
+            /** @var \cs_item $item */
             $item = $event->getItem();
 
             if ($item->hasLocking()) {
                 $item->unlock();
             }
-            if ($item->getItemType() == CS_DATE_TYPE) {
+            if (CS_DATE_TYPE == $item->getItemType()) {
                 if (!$item->isDraft()) {
-                    $this->container->get('commsy.calendars_service')->updateSynctoken($item->getCalendarId());
+                    $this->calendarsService->updateSynctoken($item->getCalendarId());
                 }
             }
 
@@ -52,27 +52,27 @@ class CommsyEditSubscriber implements EventSubscriberInterface {
         }
     }
 
-    public function onCommsyCancel(CommsyEditEvent $event) {
-        if ($event->getItem() instanceof cs_item) {
+    public function onCommsyCancel(CommsyEditEvent $event)
+    {
+        if ($event->getItem() instanceof \cs_item) {
             if ($event->getItem()->hasLocking()) {
                 $event->getItem()->unlock();
             }
         }
     }
 
-    public static function getSubscribedEvents() {
-        return array(
-            CommsyEditEvent::EDIT => array('onCommsyEdit', 0),
-            CommsyEditEvent::SAVE => array('onCommsySave', 0),
-            CommsyEditEvent::CANCEL => array('onCommsyCancel', 0)
-        );
+    public static function getSubscribedEvents()
+    {
+        return [CommsyEditEvent::EDIT => ['onCommsyEdit', 0], CommsyEditEvent::SAVE => ['onCommsySave', 0], CommsyEditEvent::CANCEL => ['onCommsyCancel', 0]];
     }
 
     /**
      * Updates the Elastic search index for the given item, and invalidates its cached read status.
-     * @param cs_item $item The item whose search index entry shall be updated.
+     *
+     * @param \cs_item $item the item whose search index entry shall be updated
      */
-    private function updateSearchIndex(cs_item $item) {
+    private function updateSearchIndex(\cs_item $item)
+    {
         if (method_exists($item, 'updateElastic')) {
             $item->updateElastic();
 

@@ -1,122 +1,106 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Files
- *
- * @ORM\Table(name="files", indexes={
- *     @ORM\Index(name="context_id", columns={"context_id"}),
- *     @ORM\Index(name="creator_id", columns={"creator_id"})
- * })
- * @ORM\Entity(repositoryClass="App\Repository\FilesRepository")
+ * Files.
  */
+#[ORM\Entity(repositoryClass: \App\Repository\FilesRepository::class)]
+#[ORM\Table(name: 'files')]
+#[ORM\Index(name: 'context_id', columns: ['context_id'])]
+#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 class Files
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="files_id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @var int
      */
-    private $filesId;
-
+    #[ORM\Column(name: 'files_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    private ?int $filesId = null;
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=false)
+     * @var int
      */
-    private $contextId;
-
+    #[ORM\Column(name: 'context_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    private ?int $contextId = null;
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="creator_id", type="integer", nullable=false)
+     * @var int
      */
-    private $creatorId = '0';
-
+    #[ORM\Column(name: 'creator_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    private ?int $creatorId = 0;
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="deleter_id", type="integer", nullable=true)
+     * @var int
      */
-    private $deleterId;
-
+    #[ORM\Column(name: 'deleter_id', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    private ?int $deleterId = null;
+    #[ORM\Column(name: 'creation_date', type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    private \DateTime $creationDate;
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="creation_date", type="datetime", nullable=false)
+     * @var \DateTimeInterface
      */
-    private $creationDate = '0000-00-00 00:00:00';
-
+    #[ORM\Column(name: 'modification_date', type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $modificationDate = null;
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modification_date", type="datetime", nullable=true)
+     * @var \DateTimeInterface
      */
-    private $modificationDate;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
-     */
-    private $deletionDate;
-
+    #[ORM\Column(name: 'deletion_date', type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $deletionDate = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="filename", type="string", length=255, nullable=false)
      */
-    private $filename;
-
+    #[ORM\Column(name: 'filename', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    private ?string $filename = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="filepath", type="string", length=255, nullable=false)
      */
-    private $filepath;
-
+    #[ORM\Column(name: 'filepath', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    private ?string $filepath = null;
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="size", type="integer", nullable=true)
+     * @var int
      */
-    private $size;
-
+    #[ORM\Column(name: 'size', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    private ?int $size = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="has_html", type="string", nullable=false)
      */
-    private $hasHtml = '0';
-
+    #[ORM\Column(name: 'has_html', type: \Doctrine\DBAL\Types\Types::STRING)]
+    private ?string $hasHtml = '0';
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="scan", type="boolean", nullable=false)
+     * @var bool
      */
-    private $scan = '-1';
-
+    #[ORM\Column(name: 'scan', type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    private ?bool $scan = false;
     /**
      * @var string
-     *
-     * @ORM\Column(name="extras", type="text", length=16777215, nullable=true)
      */
-    private $extras;
-
+    #[ORM\Column(name: 'extras', type: \Doctrine\DBAL\Types\Types::TEXT, length: 16_777_215, nullable: true)]
+    private ?string $extras = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="temp_upload_session_id", type="string", length=255, nullable=true)
      */
-    private $tempUploadSessionId;
+    #[ORM\Column(name: 'temp_upload_session_id', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: true)]
+    private ?string $tempUploadSessionId = null;
+
+    public function __construct()
+    {
+        $this->creationDate = new \DateTime('0000-00-00 00:00:00');
+    }
 
     /**
-     * Get file content base64 encoded
+     * Get file content base64 encoded.
      *
      * @return string (base64)
      */
@@ -126,7 +110,7 @@ class Files
 
         if (file_exists($filePath)) {
             return file_get_contents(
-                $filePath, 
+                $filePath,
                 'r'
             );
         } else {
@@ -135,9 +119,9 @@ class Files
     }
 
     /**
-     * Get filesId
+     * Get filesId.
      *
-     * @return integer
+     * @return int
      */
     public function getFilesId()
     {
@@ -145,9 +129,9 @@ class Files
     }
 
     /**
-     * Set contextId
+     * Set contextId.
      *
-     * @param integer $contextId
+     * @param int $contextId
      *
      * @return Files
      */
@@ -159,9 +143,9 @@ class Files
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
-     * @return integer
+     * @return int
      */
     public function getContextId()
     {
@@ -169,9 +153,9 @@ class Files
     }
 
     /**
-     * Set creatorId
+     * Set creatorId.
      *
-     * @param integer $creatorId
+     * @param int $creatorId
      *
      * @return Files
      */
@@ -183,9 +167,9 @@ class Files
     }
 
     /**
-     * Get creatorId
+     * Get creatorId.
      *
-     * @return integer
+     * @return int
      */
     public function getCreatorId()
     {
@@ -193,9 +177,9 @@ class Files
     }
 
     /**
-     * Set deleterId
+     * Set deleterId.
      *
-     * @param integer $deleterId
+     * @param int $deleterId
      *
      * @return Files
      */
@@ -207,9 +191,9 @@ class Files
     }
 
     /**
-     * Get deleterId
+     * Get deleterId.
      *
-     * @return integer
+     * @return int
      */
     public function getDeleterId()
     {
@@ -217,7 +201,7 @@ class Files
     }
 
     /**
-     * Set creationDate
+     * Set creationDate.
      *
      * @param \DateTime $creationDate
      *
@@ -231,7 +215,7 @@ class Files
     }
 
     /**
-     * Get creationDate
+     * Get creationDate.
      *
      * @return \DateTime
      */
@@ -241,7 +225,7 @@ class Files
     }
 
     /**
-     * Set modificationDate
+     * Set modificationDate.
      *
      * @param \DateTime $modificationDate
      *
@@ -255,7 +239,7 @@ class Files
     }
 
     /**
-     * Get modificationDate
+     * Get modificationDate.
      *
      * @return \DateTime
      */
@@ -265,7 +249,7 @@ class Files
     }
 
     /**
-     * Set deletionDate
+     * Set deletionDate.
      *
      * @param \DateTime $deletionDate
      *
@@ -279,7 +263,7 @@ class Files
     }
 
     /**
-     * Get deletionDate
+     * Get deletionDate.
      *
      * @return \DateTime
      */
@@ -289,7 +273,7 @@ class Files
     }
 
     /**
-     * Set filename
+     * Set filename.
      *
      * @param string $filename
      *
@@ -303,7 +287,7 @@ class Files
     }
 
     /**
-     * Get filename
+     * Get filename.
      *
      * @return string
      */
@@ -313,7 +297,7 @@ class Files
     }
 
     /**
-     * Set filepath
+     * Set filepath.
      *
      * @param string $filepath
      *
@@ -327,7 +311,7 @@ class Files
     }
 
     /**
-     * Get filepath
+     * Get filepath.
      *
      * @return string
      */
@@ -337,9 +321,9 @@ class Files
     }
 
     /**
-     * Set size
+     * Set size.
      *
-     * @param integer $size
+     * @param int $size
      *
      * @return Files
      */
@@ -351,9 +335,9 @@ class Files
     }
 
     /**
-     * Get size
+     * Get size.
      *
-     * @return integer
+     * @return int
      */
     public function getSize()
     {
@@ -361,7 +345,7 @@ class Files
     }
 
     /**
-     * Set hasHtml
+     * Set hasHtml.
      *
      * @param string $hasHtml
      *
@@ -375,7 +359,7 @@ class Files
     }
 
     /**
-     * Get hasHtml
+     * Get hasHtml.
      *
      * @return string
      */
@@ -385,9 +369,9 @@ class Files
     }
 
     /**
-     * Set scan
+     * Set scan.
      *
-     * @param boolean $scan
+     * @param bool $scan
      *
      * @return Files
      */
@@ -399,9 +383,9 @@ class Files
     }
 
     /**
-     * Get scan
+     * Get scan.
      *
-     * @return boolean
+     * @return bool
      */
     public function getScan()
     {
@@ -409,7 +393,7 @@ class Files
     }
 
     /**
-     * Set extras
+     * Set extras.
      *
      * @param string $extras
      *
@@ -423,7 +407,7 @@ class Files
     }
 
     /**
-     * Get extras
+     * Get extras.
      *
      * @return string
      */
@@ -433,7 +417,7 @@ class Files
     }
 
     /**
-     * Set tempUploadSessionId
+     * Set tempUploadSessionId.
      *
      * @param string $tempUploadSessionId
      *
@@ -447,7 +431,7 @@ class Files
     }
 
     /**
-     * Get tempUploadSessionId
+     * Get tempUploadSessionId.
      *
      * @return string
      */

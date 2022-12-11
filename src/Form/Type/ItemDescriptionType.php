@@ -1,17 +1,23 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
-
-use App\Services\LegacyEnvironment;
-use App\Entity\Materials;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ItemDescriptionType extends AbstractType
 {
@@ -19,9 +25,9 @@ class ItemDescriptionType extends AbstractType
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
      * Type extensions can further modify the form.
-     * 
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -32,7 +38,7 @@ class ItemDescriptionType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Description',
                     'class' => 'uk-form-width-large ckeditor-upload',
-                    'data-cs-filelisturl' => '{"path": "' . $options['filelistUrl'] . '"}'
+                    'data-cs-filelisturl' => '{"path": "'.$options['filelistUrl'].'"}',
                 ],
                 'config' => [
                     // NOTE: the form-based editor upload method has to be set explicitly, since CKEditor >=4.9.0 uses 'xhr'
@@ -45,7 +51,7 @@ class ItemDescriptionType extends AbstractType
                 'required' => false,
             ])
         ;
-            
+
         if (!isset($options['attr']['unsetRecurrence'])) {
             $builder
                 ->add('save', SubmitType::class, [
@@ -89,8 +95,8 @@ class ItemDescriptionType extends AbstractType
 
     /**
      * Configures the options for this type.
-     * 
-     * @param  OptionsResolver $resolver The resolver for the options
+     *
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -104,7 +110,7 @@ class ItemDescriptionType extends AbstractType
      * Returns the prefix of the template block name for this type.
      * The block prefix defaults to the underscored short class name with the "Type" suffix removed
      * (e.g. "UserProfileType" => "user_profile").
-     * 
+     *
      * @return string The prefix of the template block name
      */
     public function getBlockPrefix()
@@ -115,9 +121,9 @@ class ItemDescriptionType extends AbstractType
     /**
      * For a PHP configuration key whose value describes a size in (kilo/mega)bytes, returns the value in bytes.
      * Returns 0.0 on failure.
+     *
      * @param string $configName The PHP configuration key whose size value shall be retrieved via `ini_get`.
-     * Note that the value must resolve to a number or a number followed by a one-letter suffix (like "1k" or "2M").
-     * @return float
+     *                           Note that the value must resolve to a number or a number followed by a one-letter suffix (like "1k" or "2M").
      */
     private function getConfigValueInBytes(string $configName): float
     {
@@ -130,15 +136,10 @@ class ItemDescriptionType extends AbstractType
         $value = trim($value);
         $suffix = strtolower($value[strlen($value) - 1]);
         $value = intval($value);
-        switch ($suffix) {
-            case 'k':
-                $value *= 1024;
-                break;
-            case 'm':
-                $value *= 1048576;
-                break;
-        }
-
-        return $value;
+        match ($suffix) {
+            'k' => $value *= 1024,
+            'm' => $value *= 1_048_576,
+            default => $value,
+        };
     }
 }

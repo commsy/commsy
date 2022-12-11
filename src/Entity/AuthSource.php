@@ -1,24 +1,27 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\Api\GetAuthSourceDirectLoginUrl;
 use Doctrine\ORM\Mapping as ORM;
-use InvalidArgumentException;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * AuthSource
+ * AuthSource.
  *
- * @ORM\Table(name="auth_source", indexes={
- *     @ORM\Index(name="portal_id", columns={"portal_id"})
- * })
- * @ORM\Entity(repositoryClass="App\Repository\AuthSourceRepository")
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({"local" = "AuthSourceLocal", "oidc" = "AuthSourceOIDC", "ldap" = "AuthSourceLdap", "shib" = "AuthSourceShibboleth", "guest" = "AuthSourceGuest"})
  * @ApiResource(
  *     security="is_granted('ROLE_API_READ')",
  *     collectionOperations={
@@ -60,6 +63,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     }
  * )
  */
+#[ORM\Entity(repositoryClass: \App\Repository\AuthSourceRepository::class)]
+#[ORM\InheritanceType('SINGLE_TABLE')]
+#[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
+#[ORM\DiscriminatorMap(['local' => 'AuthSourceLocal', 'oidc' => 'AuthSourceOIDC', 'ldap' => 'AuthSourceLdap', 'shib' => 'AuthSourceShibboleth', 'guest' => 'AuthSourceGuest'])]
+#[ORM\Table(name: 'auth_source')]
+#[ORM\Index(name: 'portal_id', columns: ['portal_id'])]
 abstract class AuthSource
 {
     public const ADD_ACCOUNT_YES = 'yes';
@@ -67,123 +76,84 @@ abstract class AuthSource
     public const ADD_ACCOUNT_INVITE = 'invitation';
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="AUTO")
-     *
-     * @Groups({"api"})
      * @OA\Property(description="The unique identifier.")
      */
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[Groups(['api'])]
     private int $id;
 
     /**
      * @var ?string
      *
-     * @ORM\Column(type="string", length=255, nullable=false)
-     *
-     * @Groups({"api"})
      * @OA\Property(type="string", maxLength=255)
      */
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[Groups(['api'])]
     private ?string $title = null;
 
     /**
      * @var ?string
      *
-     * @ORM\Column(type="string", length=255, nullable=true)
-     *
-     * @Groups({"api"})
      * @OA\Property(type="string", maxLength=255)
      */
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: true)]
+    #[Groups(['api'])]
     private ?string $description = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Portal", inversedBy="authSources")
-     * @ORM\JoinColumn(name="portal_id", referencedColumnName="id")
-     */
-    private ?Portal $portal;
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Portal::class, inversedBy: 'authSources')]
+    #[ORM\JoinColumn(name: 'portal_id')]
+    private ?Portal $portal = null;
 
     /**
-     * @var boolean
+     * @var bool
      *
-     * @ORM\Column(type="boolean")
-     *
-     * @Groups({"api"})
      * @OA\Property(type="boolean")
      */
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[Groups(['api'])]
     private ?bool $enabled = null;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="`default`", type="boolean")
+     * @var bool
      */
+    #[ORM\Column(name: '`default`', type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
     private ?bool $default = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=10, nullable=false, columnDefinition="ENUM('yes', 'no', 'invitation')")
-     */
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 10, columnDefinition: "ENUM('yes', 'no', 'invitation')")]
     protected string $addAccount;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
     protected bool $changeUsername;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
     protected bool $deleteAccount;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
     protected bool $changeUserdata;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
     protected bool $changePassword;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
     protected bool $createRoom = true;
 
     /**
-     * @var string
-     *
-     * @Groups({"api"})
      * @OA\Property(type="string")
      */
+    #[Groups(['api'])]
     protected string $type = '';
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     * @return self
-     */
     public function setId(int $id): self
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -195,13 +165,10 @@ abstract class AuthSource
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     * @return self
-     */
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -213,13 +180,10 @@ abstract class AuthSource
         return $this->description;
     }
 
-    /**
-     * @param ?string $description
-     * @return self
-     */
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -255,13 +219,10 @@ abstract class AuthSource
         return $this->enabled;
     }
 
-    /**
-     * @param bool $enabled
-     * @return self
-     */
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
+
         return $this;
     }
 
@@ -273,113 +234,77 @@ abstract class AuthSource
         return $this->default;
     }
 
-    /**
-     * @param bool $default
-     * @return self
-     */
     public function setDefault(bool $default): self
     {
         $this->default = $default;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddAccount(): string
     {
         return $this->addAccount;
     }
 
-    /**
-     * @param string $addAccount
-     * @return self
-     */
     public function setAddAccount(string $addAccount): self
     {
         if (!in_array($addAccount, [self::ADD_ACCOUNT_YES, self::ADD_ACCOUNT_NO, self::ADD_ACCOUNT_INVITE])) {
-            throw new InvalidArgumentException('invalid value for add_account');
+            throw new \InvalidArgumentException('invalid value for add_account');
         }
 
         $this->addAccount = $addAccount;
+
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isChangeUsername(): bool
     {
         return $this->changeUsername;
     }
 
-    /**
-     * @param bool $changeUsername
-     * @return self
-     */
     public function setChangeUsername(bool $changeUsername): self
     {
         $this->changeUsername = $changeUsername;
+
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isDeleteAccount(): bool
     {
         return $this->deleteAccount;
     }
 
-    /**
-     * @param bool $deleteAccount
-     * @return self
-     */
     public function setDeleteAccount(bool $deleteAccount): self
     {
         $this->deleteAccount = $deleteAccount;
+
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isChangeUserdata(): bool
     {
         return $this->changeUserdata;
     }
 
-    /**
-     * @param bool $changeUserdata
-     * @return self
-     */
     public function setChangeUserdata(bool $changeUserdata): self
     {
         $this->changeUserdata = $changeUserdata;
+
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isChangePassword(): bool
     {
         return $this->changePassword;
     }
 
-    /**
-     * @param bool $changePassword
-     * @return self
-     */
     public function setChangePassword(bool $changePassword): self
     {
         $this->changePassword = $changePassword;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return $this->type;
