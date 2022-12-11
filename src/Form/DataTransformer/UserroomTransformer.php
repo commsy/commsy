@@ -1,4 +1,16 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\DataTransformer;
 
 class UserroomTransformer extends AbstractTransformer
@@ -6,9 +18,10 @@ class UserroomTransformer extends AbstractTransformer
     protected $entity = 'userroom';
 
     /**
-     * Transforms a cs_userroom_item object to an array
+     * Transforms a cs_userroom_item object to an array.
      *
      * @param \cs_userroom_item $userroom
+     *
      * @return array
      */
     public function transform($userroom)
@@ -24,12 +37,14 @@ class UserroomTransformer extends AbstractTransformer
     }
 
     /**
-     * Applies an array of data to an existing object
+     * Applies an array of data to an existing object.
      *
      * @param object $userroomObject
-     * @param array $userroomData
+     * @param array  $userroomData
+     *
      * @return \cs_userroom_item|null
-     * @throws TransformationFailedException if room item is not found.
+     *
+     * @throws TransformationFailedException if room item is not found
      */
     public function applyTransformation($userroomObject, $userroomData)
     {

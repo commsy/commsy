@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Entity\Portal;
@@ -8,13 +19,12 @@ use App\Entity\Server;
 use App\Entity\User;
 use App\Facade\PortalCreatorFacade;
 use App\Form\Type\Portal\PortalGeneralType;
-use App\Form\Type\PortalType;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ServerController extends AbstractController
@@ -23,10 +33,10 @@ class ServerController extends AbstractController
      * Calls the external website URL defined for this installation, or,
      * if no URL was defined, displays the list of active portals.
      *
-     * @Route("/portal/linkout")
      * @return RedirectResponse
      */
-    public function linkout(EntityManagerInterface $entityManager)
+    #[Route(path: '/portal/linkout')]
+    public function linkout(EntityManagerInterface $entityManager): Response
     {
         $server = $entityManager->getRepository(Server::class)->getServer();
         $url = $server->getCommsyIconLink();
@@ -39,12 +49,10 @@ class ServerController extends AbstractController
     }
 
     /**
-     * Shows a list of all active portals in this installation
-     *
-     * @Route("/portal/show")
-     * @Template()
+     * Shows a list of all active portals in this installation.
      */
-    public function show(EntityManagerInterface $entityManager)
+    #[Route(path: '/portal/show')]
+    public function show(EntityManagerInterface $entityManager): Response
     {
         $server = $entityManager->getRepository(Server::class)->getServer();
 
@@ -67,28 +75,23 @@ class ServerController extends AbstractController
             $totalMaxActivity = max($totalMaxActivity, $activePortal->getActivity());
         }
 
-        return [
+        return $this->render('server/show.html.twig', [
             'activePortals' => $activePortals,
             'usageInformation' => $usageInformation,
             'totalMaxActivity' => $totalMaxActivity,
             'server' => $server,
-        ];
+        ]);
     }
 
     /**
-     * Creates a new portal
-     *
-     * @Route("/portal/create")
-     * @IsGranted("ROLE_ROOT")
-     * @Template()
-     * @param PortalCreatorFacade $portalCreator
-     * @param Request $request
-     * @return array|RedirectResponse
+     * Creates a new portal.
      */
+    #[Route(path: '/portal/create')]
+    #[IsGranted('ROLE_ROOT')]
     public function createPortal(
         PortalCreatorFacade $portalCreator,
         Request $request
-    ) {
+    ): Response {
         $portal = new Portal();
 
         $form = $this->createForm(PortalGeneralType::class, $portal);
@@ -101,56 +104,47 @@ class ServerController extends AbstractController
             return $this->redirectToRoute('app_server_show');
         }
 
-        return [
+        return $this->render('server/create_portal.html.twig', [
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/server/impressum")
-     * @Template()
-     */
-    public function impressum(EntityManagerInterface $entityManager)
+    #[Route(path: '/server/impressum')]
+    public function impressum(EntityManagerInterface $entityManager): Response
     {
         $server = $entityManager->getRepository(Server::class)->getServer();
         if (!$server->hasImpressumEnabled()) {
             throw $this->createNotFoundException();
         }
 
-        return [
+        return $this->render('server/impressum.html.twig', [
             'content' => $server->getImpressumText(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/server/data_privacy")
-     * @Template()
-     */
-    public function dataPrivacy(EntityManagerInterface $entityManager)
+    #[Route(path: '/server/data_privacy')]
+    public function dataPrivacy(EntityManagerInterface $entityManager): Response
     {
         $server = $entityManager->getRepository(Server::class)->getServer();
         if (!$server->hasDataPrivacyEnabled()) {
             throw $this->createNotFoundException();
         }
 
-        return [
+        return $this->render('server/data_privacy.html.twig', [
             'content' => $server->getDataPrivacyText(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/server/accessibility")
-     * @Template()
-     */
-    public function accessibility(EntityManagerInterface $entityManager)
+    #[Route(path: '/server/accessibility')]
+    public function accessibility(EntityManagerInterface $entityManager): Response
     {
         $server = $entityManager->getRepository(Server::class)->getServer();
         if (!$server->hasAccessibilityEnabled()) {
             throw $this->createNotFoundException();
         }
 
-        return [
+        return $this->render('server/accessibility.html.twig', [
             'content' => $server->getAccessibilityText(),
-        ];
+        ]);
     }
 }

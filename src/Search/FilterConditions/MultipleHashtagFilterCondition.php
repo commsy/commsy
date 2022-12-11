@@ -1,25 +1,34 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Search\FilterConditions;
-
 
 use Elastica\Query\Term;
 
 class MultipleHashtagFilterCondition implements FilterConditionInterface
 {
     /**
-     * @var string[] $hashtags
+     * @var string[]
      */
     private array $hashtags;
 
     /**
      * @param string[] $hashtags
-     * @return MultipleHashtagFilterCondition
      */
     public function setHashtags(array $hashtags): MultipleHashtagFilterCondition
     {
         $this->hashtags = $hashtags;
+
         return $this;
     }
 
@@ -38,12 +47,8 @@ class MultipleHashtagFilterCondition implements FilterConditionInterface
         return $terms;
     }
 
-    /**
-     * @return string
-     */
     public function getOperator(): string
     {
         return FilterConditionInterface::BOOL_MUST;
     }
-
 }

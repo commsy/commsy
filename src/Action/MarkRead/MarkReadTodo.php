@@ -1,31 +1,26 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 03.07.18
- * Time: 15:24
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Action\MarkRead;
-
 
 use App\Utils\TodoService;
 
 class MarkReadTodo implements MarkReadInterface
 {
-    /**
-     * @var TodoService
-     */
-    private $todoService;
-
-    public function __construct(TodoService $todoService)
+    public function __construct(private TodoService $todoService)
     {
-        $this->todoService = $todoService;
     }
 
-    /**
-     * @param \cs_item $item
-     */
     public function markRead(\cs_item $item): void
     {
         $this->todoService->markTodoReadAndNoticed($item->getItemId());

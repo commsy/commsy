@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Action\Mark\CategorizeAction;
@@ -8,53 +19,33 @@ use App\Action\Mark\InsertAction;
 use App\Action\Mark\RemoveAction;
 use App\Filter\MarkedFilterType;
 use App\Services\MarkedService;
-use cs_item;
-use cs_room_item;
-use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class MarkedController
- * @package App\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
+ * Class MarkedController.
  */
+#[Security("is_granted('ITEM_ENTER', roomId)")]
 class MarkedController extends BaseController
 {
-    /**
-     * @var MarkedService
-     */
     private MarkedService $markedService;
 
-    /**
-     * @required
-     * @param MarkedService $markedService
-     */
-    public function setMarkedService (MarkedService $markedService): void
+    #[\Symfony\Contracts\Service\Attribute\Required]
+    public function setMarkedService(MarkedService $markedService): void
     {
         $this->markedService = $markedService;
     }
 
-    /**
-     * @Route("/room/{roomId}/mark/feed/{start}/{sort}")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     * @param int $max
-     * @param int $start
-     * @param string $sort
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/mark/feed/{start}/{sort}')]
     public function feedAction(
         Request $request,
         int $roomId,
         int $max = 10,
         int $start = 0,
         string $sort = 'date'
-    ) {
+    ): \Symfony\Component\HttpFoundation\Response {
         // extract current filter from parameter bag (embedded controller call)
         // or from query parameters (AJAX)
         $markedFilter = $request->get('markFilter');
@@ -66,11 +57,11 @@ class MarkedController extends BaseController
 
         if ($roomItem->isPrivateRoom()) {
             $rubrics = [
-                "announcement" => "announcement",
-                "material" => "material",
-                "discussion" => "discussion",
-                "date" => "date",
-                "todo" => "todo",
+                'announcement' => 'announcement',
+                'material' => 'material',
+                'discussion' => 'discussion',
+                'date' => 'date',
+                'todo' => 'todo',
             ];
         } else {
             $rubrics = $this->roomService->getRubricInformation($roomId);
@@ -88,12 +79,12 @@ class MarkedController extends BaseController
             $this->markedService->setFilterConditions($filterForm);
         }
 
-        // get announcement list from manager service 
+        // get announcement list from manager service
         $entries = $this->markedService->getListEntries($max, $start, $sort);
 
         $stackRubrics = ['date', 'material', 'discussion', 'todo'];
 
-        $allowedActions = array();
+        $allowedActions = [];
         foreach ($entries as $item) {
             if (in_array($item->getItemType(), $rubrics)) {
                 $allowedActions[$item->getItemID()][] = 'insert';
@@ -111,24 +102,18 @@ class MarkedController extends BaseController
             }
         }
 
-        return [
+        return $this->render('marked/feed.html.twig', [
             'roomId' => $roomId,
             'entries' => $entries,
             'allowedActions' => $allowedActions,
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/mark")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/mark')]
     public function listAction(
         Request $request,
         int $roomId
-    ) {
+    ): \Symfony\Component\HttpFoundation\Response {
         $roomItem = $this->loadRoom($roomId);
         $filterForm = $this->createFilterForm($roomItem);
 
@@ -142,7 +127,7 @@ class MarkedController extends BaseController
         // get number of items
         $itemsCountArray = $this->markedService->getCountArray($roomId);
 
-        return [
+        return $this->render('marked/list.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
             'module' => 'marked',
@@ -151,25 +136,21 @@ class MarkedController extends BaseController
             'roomname' => $roomItem->getTitle(),
             'showHashTags' => $roomItem->withBuzzwords(),
             'showCategories' => $roomItem->withTags(),
-        ];
+        ]);
     }
 
-    ###################################################################################################
-    ## XHR Action requests
-    ###################################################################################################
-
+    // ##################################################################################################
+    // # XHR Action requests
+    // ##################################################################################################
     /**
-     * @Route("/room/{roomId}/mark/xhr/insert", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/mark/xhr/insert', condition: 'request.isXmlHttpRequest()')]
     public function xhrInsertAction(
         Request $request,
         InsertAction $action,
         int $roomId
-    ) {
+    ): \Symfony\Component\HttpFoundation\Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -177,16 +158,15 @@ class MarkedController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/mark/xhr/remove", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
      * @return mixed
-     * @throws Exception
+     *
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/mark/xhr/remove', condition: 'request.isXmlHttpRequest()')]
     public function xhrRemoveAction(
         Request $request,
         RemoveAction $action,
-        int $roomId)
+        int $roomId): \Symfony\Component\HttpFoundation\Response
     {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
@@ -195,43 +175,38 @@ class MarkedController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/mark/xhr/categorize", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param CategorizeAction $action
-     * @param int $roomId
      * @return mixed
-     * @throws Exception
+     *
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/mark/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
     public function xhrCategorizeAction(
         Request $request,
         CategorizeAction $action,
         int $roomId
-    ) {
+    ): \Symfony\Component\HttpFoundation\Response {
         return parent::handleCategoryActionOptions($request, $action, $roomId);
     }
 
     /**
-     * @Route("/room/{roomId}/mark/xhr/hashtag", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param HashtagAction $action
-     * @param int $roomId
      * @return mixed
-     * @throws Exception
+     *
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/mark/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
     public function xhrHashtagAction(
         Request $request,
         HashtagAction $action,
         int $roomId
-    ) {
+    ): \Symfony\Component\HttpFoundation\Response {
         return parent::handleHashtagActionOptions($request, $action, $roomId);
     }
 
     /**
-     * @param Request $request
-     * @param $roomItem
-     * @param boolean $selectAll
-     * @param integer[] $itemIds
-     * @return cs_item[]
+     * @param bool  $selectAll
+     * @param int[] $itemIds
+     *
+     * @return \cs_item[]
      */
     public function getItemsByFilterConditions(
         Request $request,
@@ -239,7 +214,6 @@ class MarkedController extends BaseController
         $selectAll,
         $itemIds = []
     ) {
-
         if ($selectAll) {
             if ($request->query->has('marked_filter')) {
                 $currentFilter = $request->query->get('marked_filter');
@@ -259,19 +233,18 @@ class MarkedController extends BaseController
     }
 
     /**
-     * @param cs_room_item $room
      * @return FormInterface
      */
     private function createFilterForm(
-        cs_room_item $room
+        \cs_room_item $room
     ) {
         if ($room->isPrivateRoom()) {
             $rubrics = [
-                "announcement" => "announcement",
-                "material" => "material",
-                "discussion" => "discussion",
-                "date" => "date",
-                "todo" => "todo",
+                'announcement' => 'announcement',
+                'material' => 'material',
+                'discussion' => 'discussion',
+                'date' => 'date',
+                'todo' => 'todo',
             ];
         } else {
             $rubrics = $this->roomService->getRubricInformation($room->getItemID());
@@ -289,7 +262,6 @@ class MarkedController extends BaseController
     private function loadRoom(
         int $roomId
     ) {
-
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
@@ -301,6 +273,7 @@ class MarkedController extends BaseController
                 throw $this->createNotFoundException('The requested room does not exist');
             }
         }
+
         return $roomItem;
     }
 }

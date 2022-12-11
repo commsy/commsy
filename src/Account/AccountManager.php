@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Account;
-
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
@@ -10,75 +19,39 @@ use App\Entity\Portal;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
 use cs_environment;
-use cs_list;
-use cs_room_item;
 use cs_user_item;
 use cs_user_manager;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class AccountManager
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
-
-    /**
-     * @var UserService
-     */
-    private UserService $userService;
-
-    /**
-     * @var SessionInterface
-     */
-    private SessionInterface $session;
+    private \cs_environment $legacyEnvironment;
 
     /**
      * AccountManager constructor.
-     * @param EntityManagerInterface $entityManager
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param UserService $userService
-     * @param SessionInterface $session
      */
     public function __construct(
-        EntityManagerInterface $entityManager,
+        private EntityManagerInterface $entityManager,
         LegacyEnvironment $legacyEnvironment,
-        UserService $userService,
-        SessionInterface $session
+        private UserService $userService,
+        private SessionInterface $session
     ) {
-        $this->entityManager = $entityManager;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->userService = $userService;
-        $this->session = $session;
     }
 
-    /**
-     * @param Account $account
-     * @param cs_user_item $user
-     * @param string $username
-     * @return bool
-     */
-    public function propagateUsernameChange(Account $account, cs_user_item $user, string $username): bool
+    public function propagateUsernameChange(Account $account, \cs_user_item $user, string $username): bool
     {
         $account->setUsername($username);
         $this->entityManager->persist($account);
         $this->entityManager->flush();
 
-        /** @var cs_user_manager $userManager */
+        /** @var \cs_user_manager $userManager */
         $userManager = $this->legacyEnvironment->getUserManager();
+
         return $userManager->changeUserID($username, $user);
     }
 
-    /**
-     * @param Account $account
-     */
     public function propagateAccountDataToProfiles(Account $account): void
     {
         /*
@@ -93,12 +66,12 @@ class AccountManager
             $relatedUsers = $portalUser->getRelatedUserList();
             $relatedUsers->add($portalUser);
 
-            /**
+            /*
              * TODO: This is still very slow when changes occur, but will drastically improve login performance in
              * most of the "normal" cases
              */
             foreach ($relatedUsers as $relatedUser) {
-                /** @var cs_user_item $relatedUser */
+                /** @var \cs_user_item $relatedUser */
                 if ($relatedUser->getFirstname() !== $account->getFirstname() ||
                     $relatedUser->getLastname() !== $account->getLastname() ||
                     $relatedUser->getEmail() !== $account->getEmail()
@@ -120,7 +93,7 @@ class AccountManager
 
         $portalUser = $this->userService->getPortalUser($account);
         if ($portalUser) {
-            $roomList = new cs_list();
+            $roomList = new \cs_list();
             $roomList->addList($projectManager->getRelatedProjectRooms($portalUser, $portalUser->getContextID()));
             $roomList->addList($communityManager->getRelatedCommunityRooms($portalUser, $portalUser->getContextID()));
 
@@ -134,39 +107,29 @@ class AccountManager
         return false;
     }
 
-    public function accountIsLastModeratorForRoom(cs_room_item $room, Account $account): bool
+    public function accountIsLastModeratorForRoom(\cs_room_item $room, Account $account): bool
     {
         $roomModeratorIds = $room->getModeratorList()->getIDArray();
         $userInContext = $this->userService->getUserInContext($account, $room->getItemID());
 
-        return (count($roomModeratorIds) === 1) && $userInContext && $userInContext->isModerator();
+        return ((is_countable($roomModeratorIds) ? count($roomModeratorIds) : 0) === 1) && $userInContext && $userInContext->isModerator();
     }
 
-    /**
-     * @param cs_user_item $user
-     * @param int $portalId
-     * @return Account|null
-     */
-    public function getAccount(cs_user_item $user, int $portalId): ?Account
+    public function getAccount(\cs_user_item $user, int $portalId): ?Account
     {
         $accountRepository = $this->entityManager->getRepository(Account::class);
         $authSource = $this->entityManager->getRepository(AuthSource::class)->find($user->getAuthSource());
+
         return $accountRepository->findOneByCredentials($user->getUserID(), $portalId, $authSource);
     }
 
-    /**
-     * @param Account $account
-     * @return Portal|null
-     */
     public function getPortal(Account $account): ?Portal
     {
         $portalRepository = $this->entityManager->getRepository(Portal::class);
+
         return $portalRepository->find($account->getContextId());
     }
 
-    /**
-     * @param Account $account
-     */
     public function delete(Account $account)
     {
         // NOTE: normally, we'd fire an `AccountDeletedEvent` here; however, this is actually done in the legacy code:
@@ -176,7 +139,7 @@ class AccountManager
         if ($portalUser) {
             $userList = $portalUser->getRelatedUserList();
             foreach ($userList as $user) {
-                /** @var $user cs_user_item */
+                /* @var $user cs_user_item */
                 $user->delete();
             }
 
@@ -187,9 +150,6 @@ class AccountManager
         }
     }
 
-    /**
-     * @param Account $account
-     */
     public function lock(Account $account)
     {
         $portalUser = $this->userService->getPortalUser($account);
@@ -204,9 +164,6 @@ class AccountManager
         $this->entityManager->flush();
     }
 
-    /**
-     * @param Account $account
-     */
     public function unlock(Account $account)
     {
         $account->setLocked(false);
@@ -216,10 +173,6 @@ class AccountManager
         $this->entityManager->flush();
     }
 
-    /**
-     * @param Account $account
-     * @param string $locale
-     */
     public function updateUserLocale(Account $account, string $locale): void
     {
         $account->setLanguage($locale);
@@ -231,13 +184,9 @@ class AccountManager
         $this->session->set('_locale', $account->getLanguage());
     }
 
-    /**
-     * @param Account $account
-     * @param bool $flush
-     */
     public function renewActivityUpdated(Account $account, bool $flush = true): void
     {
-        $account->setActivityStateUpdated(new DateTime());
+        $account->setActivityStateUpdated(new \DateTime());
         $this->entityManager->persist($account);
 
         if ($flush) {
@@ -245,21 +194,14 @@ class AccountManager
         }
     }
 
-    /**
-     * @param Account $account
-     * @param bool $resetLastLogin
-     * @param bool $resetActivityState
-     * @param bool $flush
-     */
     public function resetInactivity(
         Account $account,
         bool $resetLastLogin = true,
         bool $resetActivityState = true,
         bool $flush = true
-    ) : void
-    {
+    ): void {
         if ($resetLastLogin) {
-            $account->setLastLogin(new DateTime());
+            $account->setLastLogin(new \DateTime());
         }
 
         if ($resetActivityState) {
@@ -274,9 +216,6 @@ class AccountManager
         }
     }
 
-    /**
-     *
-     */
     public function resetInactivityToPreviousNonNotificationState(): void
     {
         $accountRepository = $this->entityManager->getRepository(Account::class);

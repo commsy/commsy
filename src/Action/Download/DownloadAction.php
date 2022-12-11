@@ -1,30 +1,28 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 03.07.18
- * Time: 16:05
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Action\Download;
 
-
-use App\Utils\DownloadService;
 use App\Action\ActionInterface;
+use App\Utils\DownloadService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class DownloadAction implements ActionInterface
 {
-    /**
-     * @var DownloadService
-     */
-    private $downloadService;
-
-    public function __construct(DownloadService $downloadService)
+    public function __construct(private DownloadService $downloadService)
     {
-        $this->downloadService = $downloadService;
     }
 
     public function execute(\cs_room_item $roomItem, array $items): Response

@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Action\Activate\ActivateAction;
@@ -29,125 +40,82 @@ use App\Utils\CategoryService;
 use App\Utils\LabelService;
 use App\Utils\MaterialService;
 use App\Utils\TopicService;
-use cs_material_item;
-use cs_room_item;
-use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
- * Class MaterialController
- * @package App\Controller
- * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'material')")
+ * Class MaterialController.
  */
+#[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'material')")]
 class MaterialController extends BaseController
 {
-    /**
-     * @var MaterialService
-     */
-    private $materialService;
+    private MaterialService $materialService;
 
-    /**
-     * @var AnnotationService
-     */
-    private $annotationService;
+    private AnnotationService $annotationService;
 
-    /**
-     * @var CategoryService
-     */
-    private $categoryService;
+    private CategoryService $categoryService;
 
-    /**
-     * @var MaterialTransformer
-     */
-    private $materialTransformer;
+    private MaterialTransformer $materialTransformer;
 
-    /**
-     * @var AssessmentService
-     */
-    private $assessmentService;
+    private AssessmentService $assessmentService;
     private SessionInterface $session;
 
-    /**
-     * @required
-     * @param CategoryService $categoryService
-     */
+    #[Required]
     public function setCategoryService(CategoryService $categoryService)
     {
         $this->categoryService = $categoryService;
     }
 
     /**
-     * @required
      * @param mixed $materialService
      */
+    #[Required]
     public function setMaterialService(MaterialService $materialService): void
     {
         $this->materialService = $materialService;
     }
 
     /**
-     * @required
      * @param mixed $annotationService
      */
+    #[Required]
     public function setAnnotationService(AnnotationService $annotationService): void
     {
         $this->annotationService = $annotationService;
     }
 
-    /**
-     * @required
-     * @param MaterialTransformer $materialTransformer
-     */
+    #[Required]
     public function setMaterialTransformer(MaterialTransformer $materialTransformer)
     {
         $this->materialTransformer = $materialTransformer;
     }
 
-    /**
-     * @required
-     * @param AssessmentService $assessmentService
-     */
+    #[Required]
     public function setAssessmentService(AssessmentService $assessmentService): void
     {
         $this->assessmentService = $assessmentService;
     }
 
-    /**
-     * @required
-     * @param SessionInterface $session
-     */
+    #[Required]
     public function setSession(SessionInterface $session): void
     {
         $this->session = $session;
     }
 
-
-
-    /**
-     * @Route("/room/{roomId}/material/feed/{start}/{sort}")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     * @param int $max
-     * @param int $start
-     * @param string $sort
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/material/feed/{start}/{sort}')]
     public function feedAction(
         Request $request,
         int $roomId,
         int $max = 10,
         int $start = 0,
         string $sort = ''
-    ) {
+    ): Response {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $materialFilter = $request->get('materialFilter');
@@ -183,55 +151,39 @@ class MaterialController extends BaseController
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = array();
-        $allowedActions = array();
+        $readerList = [];
+        $allowedActions = [];
         foreach ($materials as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'categorize', 'hashtag', 'activate', 'deactivate', 'save', 'delete');
+                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'categorize', 'hashtag', 'activate', 'deactivate', 'save', 'delete'];
             } else {
-                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save');
+                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'save'];
             }
         }
 
-        $ratingList = array();
+        $ratingList = [];
         if ($current_context->isAssessmentActive()) {
-            $itemIds = array();
+            $itemIds = [];
             foreach ($materials as $material) {
                 $itemIds[] = $material->getItemId();
             }
             $ratingList = $this->assessmentService->getListAverageRatings($itemIds);
         }
 
-        return array(
-            'roomId' => $roomId,
-            'materials' => $materials,
-            'readerList' => $readerList,
-            'showRating' => $current_context->isAssessmentActive(),
-            'showWorkflow' => $current_context->withWorkflow(),
-            'ratingList' => $ratingList,
-            'allowedActions' => $allowedActions,
-            'workflowTitles' => [
-                '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
-                '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
-                '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
-                '3_none' => '',
-            ]
-        );
+        return $this->render('material/feed.html.twig', ['roomId' => $roomId, 'materials' => $materials, 'readerList' => $readerList, 'showRating' => $current_context->isAssessmentActive(), 'showWorkflow' => $current_context->withWorkflow(), 'ratingList' => $ratingList, 'allowedActions' => $allowedActions, 'workflowTitles' => [
+            '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
+            '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
+            '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
+            '3_none' => '',
+        ]]);
     }
 
-    /**
-     * @Route("/room/{roomId}/material")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/material')]
     public function listAction(
         Request $request,
         int $roomId
-    ) {
-
+    ): Response {
         $roomItem = $this->getRoom($roomId);
 
         if (!$roomItem) {
@@ -255,46 +207,21 @@ class MaterialController extends BaseController
         $itemsCountArray = $this->materialService->getCountArray($roomId);
 
         $usageInfo = false;
-        if ($roomItem->getUsageInfoTextForRubricInForm('material') != '') {
+        if ('' != $roomItem->getUsageInfoTextForRubricInForm('material')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('material');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('material');
         }
 
-        return array(
-            'roomId' => $roomId,
-            'form' => $filterForm->createView(),
-            'module' => 'material',
-            'itemsCountArray' => $itemsCountArray,
-            'showRating' => $roomItem->isAssessmentActive(),
-            'showAssociations' => $roomItem->withAssociations(),
-            'showWorkflow' => $roomItem->withWorkflow(),
-            'showHashTags' => $roomItem->withBuzzwords(),
-            'showCategories' => $roomItem->withTags(),
-            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
-            'catzExpanded' => $roomItem->isTagsShowExpanded(),
-            'material_filter' => $filterForm,
-            'usageInfo' => $usageInfo,
-            'isArchived' => $roomItem->getArchived(),
-            'user' => $this->legacyEnvironment->getCurrentUserItem(),
-            'isMaterialOpenForGuests' => $roomItem->isMaterialOpenForGuests(),
-            'sort' => $sort,
-        );
+        return $this->render('material/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm->createView(), 'module' => 'material', 'itemsCountArray' => $itemsCountArray, 'showRating' => $roomItem->isAssessmentActive(), 'showAssociations' => $roomItem->withAssociations(), 'showWorkflow' => $roomItem->withWorkflow(), 'showHashTags' => $roomItem->withBuzzwords(), 'showCategories' => $roomItem->withTags(), 'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(), 'catzExpanded' => $roomItem->isTagsShowExpanded(), 'material_filter' => $filterForm, 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'isMaterialOpenForGuests' => $roomItem->isMaterialOpenForGuests(), 'sort' => $sort]);
     }
 
-    /**
-     * @Route("/room/{roomId}/material/print/{sort}", defaults={"sort" = "none"})
-     * @param Request $request
-     * @param PrintService $printService
-     * @param int $roomId
-     * @param string $sort
-     * @return Response
-     */
+    #[Route(path: '/room/{roomId}/material/print/{sort}', defaults: ['sort' => 'none'])]
     public function printlistAction(
         Request $request,
         PrintService $printService,
         int $roomId,
         string $sort
-    ) {
+    ): Response {
         $roomItem = $this->getRoom($roomId);
 
         if (!$roomItem) {
@@ -313,21 +240,21 @@ class MaterialController extends BaseController
         }
 
         // get material list from manager service
-        if ($sort === "none" || empty($sort)) {
+        if ('none' === $sort || empty($sort)) {
             $sort = $this->session->get('sortMaterials', 'date');
         }
         $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = array();
+        $readerList = [];
         foreach ($materials as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
         }
 
-        $ratingList = array();
+        $ratingList = [];
         if ($current_context->isAssessmentActive()) {
-            $itemIds = array();
+            $itemIds = [];
             foreach ($materials as $material) {
                 $itemIds[] = $material->getItemId();
             }
@@ -346,27 +273,15 @@ class MaterialController extends BaseController
             'showRating' => $current_context->isAssessmentActive(),
             'showWorkflow' => $current_context->withWorkflow(),
             'ratingList' => $ratingList,
-
         ]);
 
         return $printService->buildPdfResponse($html);
     }
 
     /**
-     * @Route("/room/{roomId}/material/{itemId}/{versionId}", requirements={
-     *     "itemId": "\d+",
-     *     "versionId": "\d+"
-     * }))
-     * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'material')")
-     * @param Request $request
-     * @param TopicService $topicService
-     * @param LegacyMarkup $legacyMarkup
-     * @param int $roomId
-     * @param int $itemId
-     * @param int|null $versionId
      * @return array
      */
+    #[Route(path: '/room/{roomId}/material/{itemId}/{versionId}', requirements: ['itemId' => '\d+', 'versionId' => '\d+'])]
     public function detailAction(
         Request $request,
         TopicService $topicService,
@@ -374,9 +289,9 @@ class MaterialController extends BaseController
         int $roomId,
         int $itemId,
         int $versionId = null
-    ) {
+    ): Response {
         $roomItem = $this->getRoom($roomId);
-        if ($versionId === null) {
+        if (null === $versionId) {
             $material = $this->materialService->getMaterial($itemId);
         } else {
             $material = $this->materialService->getMaterialByVersion($itemId, $versionId);
@@ -394,7 +309,7 @@ class MaterialController extends BaseController
         $alert = null;
         if ($material->isLocked()) {
             $alert['type'] = 'warning';
-            $alert['content'] = $this->translator->trans('item is locked', array(), 'item');
+            $alert['content'] = $this->translator->trans('item is locked', [], 'item');
         }
 
         $pathTopicItem = null;
@@ -407,72 +322,25 @@ class MaterialController extends BaseController
         $amountAnnotations = $this->annotationService->getListAnnotations($roomId, $infoArray['material']->getItemId(),
             null, null);
 
-        return array(
-            'roomId' => $roomId,
-            'material' => $infoArray['material'],
-            'amountAnnotations' => sizeof($amountAnnotations),
-            'sectionList' => $infoArray['sectionList'],
-            'readerList' => $infoArray['readerList'],
-            'modifierList' => $infoArray['modifierList'],
-            'materialList' => $infoArray['materialList'],
-            'counterPosition' => $infoArray['counterPosition'],
-            'count' => $infoArray['count'],
-            'firstItemId' => $infoArray['firstItemId'],
-            'prevItemId' => $infoArray['prevItemId'],
-            'nextItemId' => $infoArray['nextItemId'],
-            'lastItemId' => $infoArray['lastItemId'],
-            'readCount' => $infoArray['readCount'],
-            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
-            'userCount' => $infoArray['userCount'],
-            'workflowGroupArray' => $infoArray['workflowGroupArray'],
-            'workflowUserArray' => $infoArray['workflowUserArray'],
-            'workflowText' => $infoArray['workflowText'],
-            'workflowValidityDate' => $infoArray['workflowValidityDate'],
-            'workflowResubmissionDate' => $infoArray['workflowResubmissionDate'],
-            'workflowUnread' => $infoArray['workflowUnread'],
-            'workflowRead' => $infoArray['workflowRead'],
-            'draft' => $infoArray['draft'],
-            'showRating' => $infoArray['showRating'],
-            'showWorkflow' => $infoArray['showWorkflow'],
-            'withTrafficLight' => $roomItem->withWorkflowTrafficLight(),
-            'withResubmission' => $roomItem->withWorkflowResubmission(),
-            'withValidity' => $roomItem->withWorkflowValidity(),
-            'withReader' => $roomItem->withWorkflowReader(),
-            'showHashtags' => $infoArray['showHashtags'],
-            'showAssociations' => $infoArray['showAssociations'],
-            'showCategories' => $infoArray['showCategories'],
-            'buzzExpanded' => $infoArray['buzzExpanded'],
-            'catzExpanded' => $infoArray['catzExpanded'],
-            'user' => $infoArray['user'],
-            'annotationForm' => $form->createView(),
-            'ratingArray' => $infoArray['ratingArray'],
-            'canExportToWordpress' => $canExportToWordpress,
-            'roomCategories' => $infoArray['roomCategories'],
-            'versions' => $infoArray['versions'],
-            'workflowTitles' => [
-                '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
-                '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
-                '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
-                '3_none' => '',
-            ],
-            'alert' => $alert,
-            'pathTopicItem' => $pathTopicItem,
-        );
+        return ['roomId' => $roomId, 'material' => $infoArray['material'], 'amountAnnotations' => sizeof($amountAnnotations), 'sectionList' => $infoArray['sectionList'], 'readerList' => $infoArray['readerList'], 'modifierList' => $infoArray['modifierList'], 'materialList' => $infoArray['materialList'], 'counterPosition' => $infoArray['counterPosition'], 'count' => $infoArray['count'], 'firstItemId' => $infoArray['firstItemId'], 'prevItemId' => $infoArray['prevItemId'], 'nextItemId' => $infoArray['nextItemId'], 'lastItemId' => $infoArray['lastItemId'], 'readCount' => $infoArray['readCount'], 'readSinceModificationCount' => $infoArray['readSinceModificationCount'], 'userCount' => $infoArray['userCount'], 'workflowGroupArray' => $infoArray['workflowGroupArray'], 'workflowUserArray' => $infoArray['workflowUserArray'], 'workflowText' => $infoArray['workflowText'], 'workflowValidityDate' => $infoArray['workflowValidityDate'], 'workflowResubmissionDate' => $infoArray['workflowResubmissionDate'], 'workflowUnread' => $infoArray['workflowUnread'], 'workflowRead' => $infoArray['workflowRead'], 'draft' => $infoArray['draft'], 'showRating' => $infoArray['showRating'], 'showWorkflow' => $infoArray['showWorkflow'], 'withTrafficLight' => $roomItem->withWorkflowTrafficLight(), 'withResubmission' => $roomItem->withWorkflowResubmission(), 'withValidity' => $roomItem->withWorkflowValidity(), 'withReader' => $roomItem->withWorkflowReader(), 'showHashtags' => $infoArray['showHashtags'], 'showAssociations' => $infoArray['showAssociations'], 'showCategories' => $infoArray['showCategories'], 'buzzExpanded' => $infoArray['buzzExpanded'], 'catzExpanded' => $infoArray['catzExpanded'], 'user' => $infoArray['user'], 'annotationForm' => $form->createView(), 'ratingArray' => $infoArray['ratingArray'], 'canExportToWordpress' => $canExportToWordpress, 'roomCategories' => $infoArray['roomCategories'], 'versions' => $infoArray['versions'], 'workflowTitles' => [
+            '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
+            '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
+            '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
+            '3_none' => '',
+        ], 'alert' => $alert, 'pathTopicItem' => $pathTopicItem];
     }
 
     /**
-     * @Route("/room/{roomId}/material/{itemId}/workflow", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @param int $itemId
      * @return JsonRedirectResponse
-     * @throws Exception
+     *
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/material/{itemId}/workflow', condition: 'request.isXmlHttpRequest()')]
     public function workflowAction(
         Request $request,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         if ($request->request->has('payload')) {
             $payload = $request->request->get('payload');
 
@@ -484,38 +352,31 @@ class MaterialController extends BaseController
                 $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
 
                 if ($currentContextItem->withWorkflow()) {
-                    if ($read == 'true') {
+                    if ('true' == $read) {
                         $itemManager->markItemAsWorkflowRead($itemId, $currentUserItem->getItemID());
                     } else {
                         $itemManager->markItemAsWorkflowNotRead($itemId, $currentUserItem->getItemID());
                     }
                 } else {
-                    throw new Exception('workflow is not enabled');
+                    throw new \Exception('workflow is not enabled');
                 }
             }
         }
 
         return new JsonRedirectResponse($this->generateUrl('app_material_detail', [
             'roomId' => $roomId,
-            'itemId' => $itemId
+            'itemId' => $itemId,
         ]));
     }
 
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/rating/{vote}")
-     * @Template()
-     * @param int $roomId
-     * @param int $itemId
-     * @param string $vote
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/material/{itemId}/rating/{vote}')]
     public function ratingAction(
         int $roomId,
         int $itemId,
         string $vote
-    ) {
+    ): Response {
         $material = $this->materialService->getMaterial($itemId);
-        if ($vote != 'remove') {
+        if ('remove' != $vote) {
             $this->assessmentService->rateItem($material, $vote);
         } else {
             $this->assessmentService->removeRating($material);
@@ -524,15 +385,7 @@ class MaterialController extends BaseController
         $ratingAverageDetail = $this->assessmentService->getAverageRatingDetail($material);
         $ratingOwnDetail = $this->assessmentService->getOwnRatingDetail($material);
 
-        return array(
-            'roomId' => $roomId,
-            'material' => $material,
-            'ratingArray' => array(
-                'ratingDetail' => $ratingDetail,
-                'ratingAverageDetail' => $ratingAverageDetail,
-                'ratingOwnDetail' => $ratingOwnDetail,
-            ),
-        );
+        return $this->render('material/rating.html.twig', ['roomId' => $roomId, 'material' => $material, 'ratingArray' => ['ratingDetail' => $ratingDetail, 'ratingAverageDetail' => $ratingAverageDetail, 'ratingOwnDetail' => $ratingOwnDetail]]);
     }
 
     private function getDetailInfo(
@@ -540,24 +393,24 @@ class MaterialController extends BaseController
         int $itemId,
         int $versionId = null
     ) {
-        $infoArray = array();
+        $infoArray = [];
 
-        /** @var cs_material_item $material */
+        /** @var \cs_material_item $material */
         $material = null;
-        if ($versionId === null) {
+        if (null === $versionId) {
             $material = $this->materialService->getMaterial($itemId);
         } else {
             $material = $this->materialService->getMaterialByVersion($itemId, $versionId);
         }
 
-        if ($material == null) {
+        if (null == $material) {
             $section = $this->materialService->getSection($itemId);
             $material = $this->materialService->getMaterial($section->getLinkedItemID());
         }
 
         $sectionList = $material->getSectionList()->to_array();
 
-        $itemArray = array($material);
+        $itemArray = [$material];
         $itemArray = array_merge($itemArray, $sectionList);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
@@ -574,7 +427,7 @@ class MaterialController extends BaseController
         $read_since_modification_count = 0;
 
         $current_user = $user_list->getFirst();
-        $id_array = array();
+        $id_array = [];
         while ($current_user) {
             $id_array[] = $current_user->getItemID();
             $current_user = $user_list->getNext();
@@ -586,17 +439,17 @@ class MaterialController extends BaseController
                 $current_user->getItemID());
             if (!empty($current_reader)) {
                 if ($current_reader['read_date'] >= $material->getModificationDate()) {
-                    $read_count++;
-                    $read_since_modification_count++;
+                    ++$read_count;
+                    ++$read_since_modification_count;
                 } else {
-                    $read_count++;
+                    ++$read_count;
                 }
             }
             $current_user = $user_list->getNext();
         }
 
-        $readerList = array();
-        $modifierList = array();
+        $readerList = [];
+        $modifierList = [];
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
             if (empty($reader)) {
@@ -609,7 +462,7 @@ class MaterialController extends BaseController
         }
 
         $materials = $this->materialService->getListMaterials($roomId);
-        $materialList = array();
+        $materialList = [];
         $counterBefore = 0;
         $counterAfter = 0;
         $counterPosition = 0;
@@ -623,7 +476,7 @@ class MaterialController extends BaseController
                 if ($counterBefore > 5) {
                     array_shift($materialList);
                 } else {
-                    $counterBefore++;
+                    ++$counterBefore;
                 }
                 $materialList[] = $tempMaterial;
                 if ($tempMaterial->getItemID() == $material->getItemID()) {
@@ -632,11 +485,11 @@ class MaterialController extends BaseController
                 if (!$foundMaterial) {
                     $prevItemId = $tempMaterial->getItemId();
                 }
-                $counterPosition++;
+                ++$counterPosition;
             } else {
                 if ($counterAfter < 5) {
                     $materialList[] = $tempMaterial;
-                    $counterAfter++;
+                    ++$counterAfter;
                     if (!$nextItemId) {
                         $nextItemId = $tempMaterial->getItemId();
                     }
@@ -663,12 +516,12 @@ class MaterialController extends BaseController
         if ($current_context->withWorkflowReader()) {
             $itemManager = $this->legacyEnvironment->getItemManager();
             $users_read_array = $itemManager->getUsersMarkedAsWorkflowReadForItem($material->getItemID());
-            $persons_array = array();
+            $persons_array = [];
             foreach ($users_read_array as $user_read) {
                 $persons_array[] = $userManager->getItem($user_read['user_id']);
             }
 
-            if ($current_context->getWorkflowReaderGroup() == '1') {
+            if ('1' == $current_context->getWorkflowReaderGroup()) {
                 $group_manager = $this->legacyEnvironment->getGroupManager();
                 $group_manager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
                 $group_manager->setTypeLimit('group');
@@ -687,13 +540,13 @@ class MaterialController extends BaseController
                             while ($temp_link_item) {
                                 $temp_group_item = $temp_link_item->getLinkedItem($person);
                                 if ($group_item->getItemID() == $temp_group_item->getItemID()) {
-                                    $user_count++;
+                                    ++$user_count;
                                 }
                                 $temp_link_item = $temp_link_list->getNext();
                             }
                         }
                     }
-                    $tmpArray = array();
+                    $tmpArray = [];
                     $tmpArray['iid'] = $group_item->getItemID();
                     $tmpArray['title'] = $group_item->getTitle();
                     $tmpArray['userCount'] = $user_count;
@@ -703,10 +556,10 @@ class MaterialController extends BaseController
                 }
             }
 
-            if ($current_context->getWorkflowReaderPerson() == '1') {
+            if ('1' == $current_context->getWorkflowReaderPerson()) {
                 foreach ($persons_array as $person) {
                     if (!empty($persons_array[0])) {
-                        $tmpArray = array();
+                        $tmpArray = [];
                         $tmpArray['iid'] = $person->getItemID();
                         $tmpArray['name'] = $person->getFullname();
                         $workflowUserArray[] = $tmpArray;
@@ -730,23 +583,15 @@ class MaterialController extends BaseController
 
         $workflowText = '';
         if ($current_context->withWorkflow()) {
-            switch ($material->getWorkflowTrafficLight()) {
-                case '0_green':
-                    $workflowText = $current_context->getWorkflowTrafficLightTextGreen();
-                    break;
-                case '1_yellow':
-                    $workflowText = $current_context->getWorkflowTrafficLightTextYellow();
-                    break;
-                case '2_red':
-                    $workflowText = $current_context->getWorkflowTrafficLightTextRed();
-                    break;
-                default:
-                    $workflowText = '';
-                    break;
-            }
+            $workflowText = match ($material->getWorkflowTrafficLight()) {
+                '0_green' => $current_context->getWorkflowTrafficLightTextGreen(),
+                '1_yellow' => $current_context->getWorkflowTrafficLightTextYellow(),
+                '2_red' => $current_context->getWorkflowTrafficLightTextRed(),
+                default => '',
+            };
         }
 
-        $ratingDetail = array();
+        $ratingDetail = [];
         if ($current_context->isAssessmentActive()) {
             $ratingDetail = $this->assessmentService->getRatingDetail($material);
             $ratingAverageDetail = $this->assessmentService->getAverageRatingDetail($material);
@@ -784,17 +629,17 @@ class MaterialController extends BaseController
             $section = $readsectionList->getNext();
         }
 
-        $categories = array();
+        $categories = [];
         if ($current_context->withTags()) {
             $roomCategories = $this->categoryService->getTags($roomId);
             $materialCategories = $material->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $materialCategories);
         }
 
-        $versions = array();
+        $versions = [];
         $versionList = $this->materialService->getVersionList($material->getItemId())->to_array();
 
-        if (count($versionList) > 1) {
+        if ((is_countable($versionList) ? count($versionList) : 0) > 1) {
             $minTimestamp = time();
             $maxTimestamp = -1;
             $first = true;
@@ -805,7 +650,7 @@ class MaterialController extends BaseController
                 $tempDateTime->setTime($tempParsedDate['hour'], $tempParsedDate['minute'], $tempParsedDate['second']);
                 $tempTimeStamp = $tempDateTime->getTimeStamp();
                 $current = false;
-                if ($versionId !== null) {
+                if (null !== $versionId) {
                     if ($versionId == $versionItem->getVersionId()) {
                         $current = true;
                     }
@@ -815,11 +660,7 @@ class MaterialController extends BaseController
                         $first = false;
                     }
                 }
-                $versions[$tempTimeStamp] = array(
-                    'item' => $versionItem,
-                    'date' => date('d.m.Y H:i', $tempTimeStamp),
-                    'current' => $current
-                );
+                $versions[$tempTimeStamp] = ['item' => $versionItem, 'date' => date('d.m.Y H:i', $tempTimeStamp), 'current' => $current];
                 if ($tempTimeStamp > $maxTimestamp) {
                     $maxTimestamp = $tempTimeStamp;
                 }
@@ -843,7 +684,7 @@ class MaterialController extends BaseController
                 if (!$first) {
                     if (($tempPercent - $lastPercent) < 2) {
                         while (($tempPercent - $lastPercent) < 2 && ($tempPercent - $lastPercent) < $minPercentDiff) {
-                            $tempPercent += 1;
+                            ++$tempPercent;
                         }
                     }
                 } else {
@@ -851,14 +692,14 @@ class MaterialController extends BaseController
                 }
 
                 if ($tempPercent >= 95) {
-                    if ($toFollow != 0) {
+                    if (0 != $toFollow) {
                         $tempPercent = $tempPercent - ($toFollow * 2);
                     }
                 }
 
                 $versions[$timestamp]['percent'] = $tempPercent;
                 $lastPercent = $tempPercent;
-                $toFollow--;
+                --$toFollow;
             }
         }
 
@@ -907,8 +748,8 @@ class MaterialController extends BaseController
         $baseCategories,
         $itemCategories
     ) {
-        $result = array();
-        $tempResult = array();
+        $result = [];
+        $tempResult = [];
         $addCategory = false;
         foreach ($baseCategories as $baseCategory) {
             if (!empty($baseCategory['children'])) {
@@ -917,115 +758,71 @@ class MaterialController extends BaseController
             if (!empty($tempResult)) {
                 $addCategory = true;
             }
-            $tempArray = array();
+            $tempArray = [];
             $foundCategory = false;
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {
                     if ($addCategory) {
-                        $result[] = array(
-                            'title' => $baseCategory['title'],
-                            'item_id' => $baseCategory['item_id'],
-                            'children' => $tempResult
-                        );
+                        $result[] = ['title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult];
                     } else {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                        $result[] = ['title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']];
                     }
                     $foundCategory = true;
                 }
             }
             if (!$foundCategory) {
                 if ($addCategory) {
-                    $result[] = array(
-                        'title' => $baseCategory['title'],
-                        'item_id' => $baseCategory['item_id'],
-                        'children' => $tempResult
-                    );
+                    $result[] = ['title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult];
                 }
             }
-            $tempResult = array();
+            $tempResult = [];
             $addCategory = false;
         }
+
         return $result;
     }
 
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/saveworkflow")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/material/{itemId}/saveworkflow')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
     public function saveWorkflowAction(
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $roomItem = $this->getRoom($roomId);
         $item = $this->itemService->getItem($itemId);
         $tempItem = null;
 
-        if ($item->getItemType() == 'material') {
+        if ('material' == $item->getItemType()) {
             $tempItem = $this->materialService->getMaterial($itemId);
         }
 
-        $itemArray = array($tempItem);
+        $itemArray = [$tempItem];
 
-        $modifierList = array();
+        $modifierList = [];
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
-        return array(
-            'roomId' => $roomId,
-            'item' => $tempItem,
-            'modifierList' => $modifierList,
-            'workflowGroupArray' => $infoArray['workflowGroupArray'],
-            'workflowUserArray' => $infoArray['workflowUserArray'],
-            'workflowText' => $infoArray['workflowText'],
-            'workflowValidityDate' => $infoArray['workflowValidityDate'],
-            'workflowResubmissionDate' => $infoArray['workflowResubmissionDate'],
-            'workflowTitles' => [
-                '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
-                '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
-                '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
-                '3_none' => '',
-            ]
-        );
+        return $this->render('material/save_workflow.html.twig', ['roomId' => $roomId, 'item' => $tempItem, 'modifierList' => $modifierList, 'workflowGroupArray' => $infoArray['workflowGroupArray'], 'workflowUserArray' => $infoArray['workflowUserArray'], 'workflowText' => $infoArray['workflowText'], 'workflowValidityDate' => $infoArray['workflowValidityDate'], 'workflowResubmissionDate' => $infoArray['workflowResubmissionDate'], 'workflowTitles' => [
+            '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
+            '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
+            '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
+            '3_none' => '',
+        ]]);
     }
 
-    /**
-     * @Route("/room/{roomId}/material/new")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     */
-    public function newAction(
-        Request $request,
-        int $roomId
-    ) {
-
-    }
-
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/edit")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
-     * @param Request $request
-     * @param CategoryService $categoryService
-     * @param LabelService $labelService
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/material/{itemId}/edit')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
     public function editAction(
         Request $request,
         CategoryService $categoryService,
         LabelService $labelService,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
+        $form = null;
         // NOTE: this method currently gets used for both, material & section items
         // TODO: move handling of sections into a dedicated `editSectionAction()`
         $item = $this->itemService->getItem($itemId);
@@ -1040,7 +837,7 @@ class MaterialController extends BaseController
         $licenses = [];
         $licensesContent = [];
 
-        if ($item->getItemType() == 'material') {
+        if ('material' == $item->getItemType()) {
             $isMaterial = true;
             if ($item->isDraft()) {
                 $isDraft = true;
@@ -1051,7 +848,7 @@ class MaterialController extends BaseController
             $typedItem = $materialItem;
             $materialItem->setDraftStatus($item->isDraft());
             if (!$materialItem) {
-                throw $this->createNotFoundException('No material found for id ' . $roomId);
+                throw $this->createNotFoundException('No material found for id '.$roomId);
             }
 
             $formData = $this->materialTransformer->transform($materialItem);
@@ -1065,40 +862,27 @@ class MaterialController extends BaseController
                 $licensesContent[$availableLicense->getId()] = $availableLicense->getContent();
             }
 
-            $form = $this->createForm(MaterialType::class, $formData, array(
-                'action' => $this->generateUrl('app_material_edit', array(
-                    'roomId' => $roomId,
-                    'itemId' => $itemId,
-                )),
-                'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
-                'categoryMappingOptions' => [
-                    'categories' => $labelService->getCategories($roomId),
-                    'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
-                    'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
-                ],
-                'hashtagMappingOptions' => [
-                    'hashtags' => $labelService->getHashtags($roomId),
-                    'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
-                    'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
-                ],
-                'licenses' => $licenses,
-                'room' => $current_context,
-            ));
+            $form = $this->createForm(MaterialType::class, $formData, ['action' => $this->generateUrl('app_material_edit', ['roomId' => $roomId, 'itemId' => $itemId]), 'placeholderText' => '['.$this->translator->trans('insert title').']', 'categoryMappingOptions' => [
+                'categories' => $labelService->getCategories($roomId),
+                'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
+                'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId]),
+            ], 'hashtagMappingOptions' => [
+                'hashtags' => $labelService->getHashtags($roomId),
+                'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
+                'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
+            ], 'licenses' => $licenses, 'room' => $current_context]);
 
             $this->eventDispatcher->dispatch(new CommsyEditEvent($materialItem), CommsyEditEvent::EDIT);
-
         } else {
-            if ($item->getItemType() == 'section') {
+            if ('section' == $item->getItemType()) {
                 // get section from MaterialService
                 $section = $this->materialService->getSection($itemId);
                 $typedItem = $section;
                 if (!$section) {
-                    throw $this->createNotFoundException('No section found for id ' . $roomId);
+                    throw $this->createNotFoundException('No section found for id '.$roomId);
                 }
                 $formData = $this->materialTransformer->transform($section);
-                $form = $this->createForm(SectionType::class, $formData, array(
-                    'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
-                ));
+                $form = $this->createForm(SectionType::class, $formData, ['placeholderText' => '['.$this->translator->trans('insert title').']']);
 
                 $this->eventDispatcher->dispatch(new CommsyEditEvent($this->materialService->getMaterial($section->getlinkedItemID())),
                     CommsyEditEvent::EDIT);
@@ -1138,7 +922,6 @@ class MaterialController extends BaseController
 
                         $newHashtag = $labelService->getNewHashtag($newHashtagTitle, $roomId);
                         $hashtagIds[] = $newHashtag->getItemID();
-
                     }
 
                     if (!empty($hashtagIds)) {
@@ -1153,49 +936,34 @@ class MaterialController extends BaseController
                     $item->saveAsItem();
                 }
 
-                if ($typedItem->getItemType() == CS_SECTION_TYPE) {
+                if (CS_SECTION_TYPE == $typedItem->getItemType()) {
                     $linkedMaterialItem = $this->materialService->getMaterial($typedItem->getlinkedItemID());
                     $linkedMaterialItem->save();
                 }
 
-                return $this->redirectToRoute('app_material_save', array('roomId' => $roomId, 'itemId' => $itemId));
+                return $this->redirectToRoute('app_material_save', ['roomId' => $roomId, 'itemId' => $itemId]);
             }
         }
 
-        return array(
-            'isSaved' => $isSaved,
-            'isDraft' => $isDraft,
-            'isMaterial' => $isMaterial,
-            'form' => $form->createView(),
-            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
-            'material' => $typedItem,
-            'licenses' => $licenses,
-            'licensesContent' => $licensesContent,
-        );
+        return $this->render('material/edit.html.twig', ['isSaved' => $isSaved, 'isDraft' => $isDraft, 'isMaterial' => $isMaterial, 'form' => $form->createView(), 'currentUser' => $this->legacyEnvironment->getCurrentUserItem(), 'material' => $typedItem, 'licenses' => $licenses, 'licensesContent' => $licensesContent]);
     }
 
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/save")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/material/{itemId}/save')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
     public function saveAction(
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $roomItem = $this->getRoom($roomId);
         $item = $this->itemService->getItem($itemId);
         $tempItem = null;
 
-        if ($item->getItemType() == 'material') {
+        if ('material' == $item->getItemType()) {
             $tempItem = $this->materialService->getMaterial($itemId);
 
             $this->eventDispatcher->dispatch(new CommsyEditEvent($tempItem), CommsyEditEvent::SAVE);
         } else {
-            if ($item->getItemType() == 'section') {
+            if ('section' == $item->getItemType()) {
                 $tempItem = $this->materialService->getSection($itemId);
 
                 $this->eventDispatcher->dispatch(new CommsyEditEvent($this->materialService->getMaterial($tempItem->getLinkedItemID())),
@@ -1203,44 +971,28 @@ class MaterialController extends BaseController
             }
         }
 
-        $itemArray = array($tempItem);
-        $modifierList = array();
+        $itemArray = [$tempItem];
+        $modifierList = [];
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
-        return array(
-            'roomId' => $roomId,
-            'item' => $tempItem,
-            'modifierList' => $modifierList,
-            'userCount' => $infoArray['userCount'],
-            'readCount' => $infoArray['readCount'],
-            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
-            'showRating' => $infoArray['showRating'],
-            'showWorkflow' => $infoArray['showWorkflow'],
-            'workflowTitles' => [
-                '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
-                '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
-                '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
-                '3_none' => '',
-            ]
-        );
+        return $this->render('material/save.html.twig', ['roomId' => $roomId, 'item' => $tempItem, 'modifierList' => $modifierList, 'userCount' => $infoArray['userCount'], 'readCount' => $infoArray['readCount'], 'readSinceModificationCount' => $infoArray['readSinceModificationCount'], 'showRating' => $infoArray['showRating'], 'showWorkflow' => $infoArray['showWorkflow'], 'workflowTitles' => [
+            '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
+            '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
+            '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
+            '3_none' => '',
+        ]]);
     }
 
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/print")
-     * @param PrintService $printService
-     * @param int $roomId
-     * @param int $itemId
-     * @return Response
-     */
+    #[Route(path: '/room/{roomId}/material/{itemId}/print')]
     public function printAction(
         PrintService $printService,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         $html = $this->renderView('material/detail_print.html.twig', [
@@ -1283,15 +1035,13 @@ class MaterialController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/material/create")
-     * @Template()
-     * @param int $roomId
      * @return RedirectResponse
-     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'material')")
      */
+    #[Route(path: '/room/{roomId}/material/create')]
+    #[Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'material')")]
     public function createAction(
         int $roomId
-    ) {
+    ): Response {
         $roomItem = $this->getRoom($roomId);
 
         // create new material item
@@ -1305,21 +1055,15 @@ class MaterialController extends BaseController
         $materialItem->save();
 
         return $this->redirectToRoute('app_material_detail',
-            array('roomId' => $roomId, 'itemId' => $materialItem->getItemId()));
+            ['roomId' => $roomId, 'itemId' => $materialItem->getItemId()]);
     }
 
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/createsection")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/material/{itemId}/createsection')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
     public function createSectionAction(
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $material = $this->materialService->getMaterial($itemId);
         $sectionList = $material->getSectionList();
         $countSections = $sectionList->getCount();
@@ -1332,37 +1076,19 @@ class MaterialController extends BaseController
         $section->save();
 
         $formData = $this->materialTransformer->transform($section);
-        $form = $this->createForm(SectionType::class, $formData, array(
-            'action' => $this->generateUrl('app_material_savesection',
-                array('roomId' => $roomId, 'itemId' => $section->getItemID())),
-            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
-        ));
+        $form = $this->createForm(SectionType::class, $formData, ['action' => $this->generateUrl('app_material_savesection',
+            ['roomId' => $roomId, 'itemId' => $section->getItemID()]), 'placeholderText' => '['.$this->translator->trans('insert title').']']);
 
-        return array(
-            'form' => $form->createView(),
-            'sectionList' => $sectionList,
-            'material' => $material,
-            'section' => $section,
-            'modifierList' => array(),
-            'userCount' => 0,
-            'readCount' => 0,
-            'readSinceModificationCount' => 0
-        );
+        return $this->render('material/create_section.html.twig', ['form' => $form->createView(), 'sectionList' => $sectionList, 'material' => $material, 'section' => $section, 'modifierList' => [], 'userCount' => 0, 'readCount' => 0, 'readSinceModificationCount' => 0]);
     }
 
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/savesection")
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
-     * @param Request $request
-     * @param int $roomId
-     * @param int $itemId
-     * @return RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/material/{itemId}/savesection')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
     public function saveSectionAction(
         Request $request,
         int $roomId,
         int $itemId
-    ) {
+    ): RedirectResponse {
         $item = $this->itemService->getItem($itemId);
 
         // get section
@@ -1370,11 +1096,8 @@ class MaterialController extends BaseController
 
         $formData = $this->materialTransformer->transform($section);
 
-        $form = $this->createForm(SectionType::class, $formData, array(
-            'action' => $this->generateUrl('app_material_savesection',
-                array('roomId' => $roomId, 'itemId' => $section->getItemID())),
-            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
-        ));
+        $form = $this->createForm(SectionType::class, $formData, ['action' => $this->generateUrl('app_material_savesection',
+            ['roomId' => $roomId, 'itemId' => $section->getItemID()]), 'placeholderText' => '['.$this->translator->trans('insert title').']']);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -1396,7 +1119,6 @@ class MaterialController extends BaseController
 
                 // this will also update the material item's modification date to indicate that it has changes
                 $section->getLinkedItem()->save();
-
             } else {
                 if ($form->get('cancel')->isClicked()) {
                     // remove not saved item
@@ -1408,25 +1130,19 @@ class MaterialController extends BaseController
         }
 
         return $this->redirectToRoute('app_material_detail',
-            array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
+            ['roomId' => $roomId, 'itemId' => $section->getLinkedItemID()]);
     }
 
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/sortsections")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
-     * @param Request $request
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/material/{itemId}/sortsections')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
     public function sortSectionsAction(
         Request $request,
         int $itemId
-    ) {
+    ): Response {
         // get section
         $material = $this->materialService->getMaterial($itemId);
 
-        $json = json_decode($request->getContent());
+        $json = json_decode($request->getContent(), null, 512, JSON_THROW_ON_ERROR);
 
         $i = 1;
         foreach ($json as $key => $value) {
@@ -1434,48 +1150,32 @@ class MaterialController extends BaseController
             $section = $this->materialService->getSection($value[0]);
             $section->setNumber($i);
             $section->save();
-            $i++;
+            ++$i;
         }
-
 
         $sectionList = $material->getSectionList()->to_array();
 
-        return array(
-            'sectionList' => $sectionList,
-            'material' => $material
-        );
+        return $this->render('material/sort_sections.html.twig', ['sectionList' => $sectionList, 'material' => $material]);
     }
 
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/editsections")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
-     * @param Request $request
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/material/{itemId}/editsections')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
     public function editSectionsAction(
         Request $request,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $material = $this->materialService->getMaterial($itemId);
         $item = $this->itemService->getItem($itemId);
 
         if (!$material) {
-            throw $this->createNotFoundException('No material found for id ' . $itemId);
+            throw $this->createNotFoundException('No material found for id '.$itemId);
         }
         $formData = $this->materialTransformer->transform($material);
 
-        $formOptions = array(
-            'action' => $this->generateUrl('app_material_editsections', array(
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            )),
-        );
+        $formOptions = ['action' => $this->generateUrl('app_material_editsections', ['roomId' => $roomId, 'itemId' => $itemId])];
 
-        $this->eventDispatcher->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($material));
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($material), CommsyEditEvent::EDIT);
 
         $form = $this->createForm(MaterialSectionType::class, $formData, $formOptions);
 
@@ -1483,7 +1183,7 @@ class MaterialController extends BaseController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
-            if ($saveType == 'save') {
+            if ('save' == $saveType) {
                 $formData = $form->getData();
 
                 $material = $this->materialTransformer->applyTransformation($material, $formData);
@@ -1499,54 +1199,40 @@ class MaterialController extends BaseController
             } else {
                 if ($form->get('cancel')->isClicked()) {
                     return $this->redirectToRoute('app_material_detail',
-                        array('roomId' => $roomId, 'itemId' => $itemId));
+                        ['roomId' => $roomId, 'itemId' => $itemId]);
                 }
             }
-            return $this->redirectToRoute('app_material_savesections', array('roomId' => $roomId, 'itemId' => $itemId));
+
+            return $this->redirectToRoute('app_material_savesections', ['roomId' => $roomId, 'itemId' => $itemId]);
         }
 
-        return array(
-            'material' => $material,
-            'form' => $form->createView(),
-            'sectionList' => $material->getSectionList()->to_array(),
-        );
+        return $this->render('material/edit_sections.html.twig', ['material' => $material, 'form' => $form->createView(), 'sectionList' => $material->getSectionList()->to_array()]);
     }
 
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/savesections")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/material/{itemId}/savesections')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
     public function savesectionsAction(
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $item = $this->itemService->getItem($itemId);
         $material = $this->materialService->getMaterial($itemId);
         $this->eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
-        return [
+
+        return $this->render('material/savesections.html.twig', [
             'roomId' => $roomId,
             'item' => $material,
             'sections' => $material->getSectionList()->to_array(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/{versionId}/createversion/")
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
-     * @param int $roomId
-     * @param int $itemId
-     * @param int $versionId
-     * @return RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/material/{itemId}/{versionId}/createversion/')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
     public function createVersionAction(
         int $roomId,
         int $itemId,
         int $versionId
-    ) {
+    ): RedirectResponse {
         $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
 
         $material = $this->materialService->getMaterialByVersion($itemId, $versionId);
@@ -1562,64 +1248,54 @@ class MaterialController extends BaseController
         return $this->redirectToRoute('app_material_detail', [
             'roomId' => $roomId,
             'itemId' => $itemId,
-            'versionId' => $newVersionId
+            'versionId' => $newVersionId,
         ]);
     }
 
     /**
-     * @Route("/room/{roomId}/material/download")
-     * @param Request $request
-     * @param DownloadAction $action
-     * @param int $roomId
-     * @return Response
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/material/download')]
     public function downloadAction(
         Request $request,
         DownloadAction $action,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $action->execute($room, $items);
     }
 
-    ###################################################################################################
-    ## XHR Action requests
-    ###################################################################################################
-
+    // ##################################################################################################
+    // # XHR Action requests
+    // ##################################################################################################
     /**
-     * @Route("/room/{roomId}/material/xhr/markread", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/material/xhr/markread', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkReadAction(
         Request $request,
         MarkReadAction $markReadAction,
         MarkReadMaterial $markReadMaterial,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
         $markReadAction->setMarkReadStrategy($markReadMaterial);
+
         return $markReadAction->execute($room, $items);
     }
 
     /**
-     * @Route("/room/{roomId}/material/xhr/mark", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/material/xhr/mark', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkAction(
         Request $request,
         MarkAction $action,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -1627,49 +1303,42 @@ class MaterialController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/material/xhr/categorize", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param CategorizeAction $action
-     * @param int $roomId
      * @return mixed
-     * @throws Exception
+     *
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/material/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
     public function xhrCategorizeAction(
         Request $request,
         CategorizeAction $action,
         int $roomId
-    ) {
+    ): Response {
         return parent::handleCategoryActionOptions($request, $action, $roomId);
     }
 
     /**
-     * @Route("/room/{roomId}/material/xhr/hashtag", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param HashtagAction $action
-     * @param int $roomId
      * @return mixed
-     * @throws Exception
+     *
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/material/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
     public function xhrHashtagAction(
         Request $request,
         HashtagAction $action,
         int $roomId
-    ) {
+    ): Response {
         return parent::handleHashtagActionOptions($request, $action, $roomId);
     }
 
     /**
-     * @Route("/room/{roomId}/material/xhr/activate", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/material/xhr/activate', condition: 'request.isXmlHttpRequest()')]
     public function xhrActivateAction(
         Request $request,
         ActivateAction $action,
         $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -1677,17 +1346,14 @@ class MaterialController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/material/xhr/deactivate", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/material/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeactivateAction(
         Request $request,
         DeactivateAction $action,
         $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -1695,31 +1361,28 @@ class MaterialController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/material/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/material/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
         Request $request,
         DeleteAction $deleteAction,
         DeleteMaterial $deleteMaterial,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
         $deleteAction->setDeleteStrategy($deleteMaterial);
+
         return $deleteAction->execute($room, $items);
     }
 
     /**
-     * @param cs_room_item $room
      * @return FormInterface
      */
     private function createFilterForm(
-        cs_room_item $room
+        \cs_room_item $room
     ) {
         // setup filter form default values
         $defaultFilterValues = [
@@ -1736,11 +1399,11 @@ class MaterialController extends BaseController
     }
 
     /**
-     * @param Request $request
-     * @param cs_room_item $roomItem
-     * @param boolean $selectAll
-     * @param integer[] $itemIds
-     * @return cs_material_item[]
+     * @param \cs_room_item $roomItem
+     * @param bool          $selectAll
+     * @param int[]         $itemIds
+     *
+     * @return \cs_material_item[]
      */
     public function getItemsByFilterConditions(
         Request $request,

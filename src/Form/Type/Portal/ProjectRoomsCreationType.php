@@ -1,4 +1,16 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type\Portal;
 
 use App\Entity\Portal;
@@ -12,15 +24,15 @@ class ProjectRoomsCreationType extends AbstractType
     /**
      * Builds the form.
      *
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('projectRoomCreationStatus', Types\ChoiceType::class, [
                 'label' => 'Room creation',
                 'expanded' => true,
-                'choices'  => [
+                'choices' => [
                     'Project room creation on portal' => 'portal',
                     'Project room creation in community rooms only' => 'communityroom',
                 ],
@@ -45,7 +57,7 @@ class ProjectRoomsCreationType extends AbstractType
             ->add('projectShowDeactivatedEntriesTitle', Types\ChoiceType::class, [
                 'label' => 'portal.form.workspaces.show_deactivated_entries_label',
                 'expanded' => true,
-                'choices'  => [
+                'choices' => [
                     'portal.form.workspaces.show_deactivated_entries_label.show_title' => true,
                     'portal.form.workspaces.show_deactivated_entries_label.hide_title' => false,
                 ],
@@ -60,7 +72,7 @@ class ProjectRoomsCreationType extends AbstractType
     /**
      * Configures the options for this type.
      *
-     * @param  OptionsResolver $resolver The resolver for the options
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {

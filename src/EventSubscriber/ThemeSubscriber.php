@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\EventSubscriber;
 
 use App\Utils\RoomService;
@@ -13,36 +24,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 final class ThemeSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var ThemeRepositoryInterface
-     */
-    private ThemeRepositoryInterface $themeRepository;
-
-    /**
-     * @var SettableThemeContext
-     */
-    private SettableThemeContext $themeContext;
-
-    /**
-     * @var ParameterBagInterface
-     */
-    private ParameterBagInterface $parameterBag;
-
-    /**
-     * @var RoomService
-     */
-    private RoomService $roomService;
-
-    public function __construct(
-        ThemeRepositoryInterface $themeRepository,
-        SettableThemeContext $themeContext,
-        ParameterBagInterface $parameterBag,
-        RoomService $roomService
-    ) {
-        $this->themeRepository = $themeRepository;
-        $this->themeContext = $themeContext;
-        $this->parameterBag = $parameterBag;
-        $this->roomService = $roomService;
+    public function __construct(private ThemeRepositoryInterface $themeRepository, private SettableThemeContext $themeContext, private ParameterBagInterface $parameterBag, private RoomService $roomService)
+    {
     }
 
     public static function getSubscribedEvents()
@@ -54,7 +37,7 @@ final class ThemeSubscriber implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event)
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
+        if (HttpKernelInterface::MAIN_REQUEST !== $event->getRequestType()) {
             return;
         }
 
@@ -64,6 +47,7 @@ final class ThemeSubscriber implements EventSubscriberInterface
             $theme = $this->themeRepository->findOneByName("commsy/{$forceTheme}");
             if ($theme) {
                 $this->themeContext->setTheme($theme);
+
                 return;
             }
         }

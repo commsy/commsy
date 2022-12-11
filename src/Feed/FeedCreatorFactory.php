@@ -1,51 +1,38 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Feed;
 
 use App\Feed\Creators\Creator;
-
-use App\Utils\ItemService;
 use App\Services\LegacyEnvironment;
-
-use cs_environment;
+use App\Utils\ItemService;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FeedCreatorFactory
 {
-    /**
-     * @var ItemService
-     */
-    private ItemService $itemService;
+    private \cs_environment $legacyEnvironment;
 
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private TranslatorInterface $translator;
-
-    /**
-     * @var RouterInterface
-     */
-    private RouterInterface $router;
-
-    private $creators = [];
+    private array $creators = [];
     private $isGuestAccess = false;
 
     public function __construct(
-        ItemService $itemService,
+        private ItemService $itemService,
         LegacyEnvironment $legacyEnvironment,
-        TranslatorInterface $translator,
-        RouterInterface $router
+        private TranslatorInterface $translator,
+        private RouterInterface $router
     ) {
-        $this->itemService = $itemService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->translator = $translator;
-        $this->router = $router;
     }
 
     public function addCreator(Creator $creator)
@@ -62,7 +49,8 @@ class FeedCreatorFactory
         $this->isGuestAccess = $isGuestAccess;
     }
 
-    public function createItem($item) {
+    public function createItem($item)
+    {
         $type = $item['type'];
         $commsyItem = $this->itemService->getTypedItem($item['item_id']);
 
@@ -70,7 +58,7 @@ class FeedCreatorFactory
             return;
         }
 
-        if ($commsyItem->getType() === 'label') {
+        if ('label' === $commsyItem->getType()) {
             $type = $commsyItem->getLabelType();
             if (in_array($type, ['buzzword'])) {
                 return;
@@ -82,7 +70,7 @@ class FeedCreatorFactory
 
         $creator = $this->findAccurateCreator($type);
         $creator->setGuestAccess($this->isGuestAccess);
-        
+
         $feedItem = $creator->createItem($commsyItem);
 
         return $feedItem;
@@ -96,6 +84,6 @@ class FeedCreatorFactory
             }
         }
 
-        throw new \RuntimeException('No creator found that supports the rubric "' . $rubric . '"');
+        throw new \RuntimeException('No creator found that supports the rubric "'.$rubric.'"');
     }
 }

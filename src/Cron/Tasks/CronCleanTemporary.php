@@ -1,25 +1,29 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Cron\Tasks;
 
-use DateTimeImmutable;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 class CronCleanTemporary implements CronTaskInterface
 {
-    /**
-     * @var ParameterBagInterface
-     */
-    private ParameterBagInterface $parameterBag;
-
-    public function __construct(ParameterBagInterface $parameterBag)
+    public function __construct(private ParameterBagInterface $parameterBag)
     {
-        $this->parameterBag = $parameterBag;
     }
 
-    public function run(?DateTimeImmutable $lastRun): void
+    public function run(?\DateTimeImmutable $lastRun): void
     {
         $temporaryFolders = [
             'var/temp',
@@ -32,11 +36,11 @@ class CronCleanTemporary implements CronTaskInterface
 
         try {
             foreach ($temporaryFolders as $temporaryFolder) {
-                $dir = $projectDir . '/' . $temporaryFolder;
+                $dir = $projectDir.'/'.$temporaryFolder;
                 $filesystem->remove($dir);
                 $filesystem->mkdir($dir, 0750);
             }
-        } catch (IOExceptionInterface $exception) {
+        } catch (IOExceptionInterface) {
         }
     }
 

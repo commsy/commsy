@@ -1,14 +1,25 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Action\Activate\ActivateAction;
 use App\Action\Activate\DeactivateAction;
+use App\Action\Delete\DeleteAction;
+use App\Action\Download\DownloadAction;
 use App\Action\Mark\CategorizeAction;
 use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
-use App\Action\Delete\DeleteAction;
-use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\AnnouncementFilterType;
@@ -23,116 +34,73 @@ use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
 use App\Utils\LabelService;
 use App\Utils\TopicService;
-use cs_announcement_item;
-use cs_room_item;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
- * Class AnnouncementController
- * @package App\Controller
- * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'announcement')")
+ * Class AnnouncementController.
  */
+#[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'announcement')")]
 class AnnouncementController extends BaseController
 {
-
-    /**
-     * @var AnnouncementService
-     */
     protected AnnouncementService $announcementService;
 
-    /**
-     * @var AnnotationService
-     */
     protected AnnotationService $annotationService;
 
-    /**
-     * @var AssessmentService
-     */
     protected AssessmentService $assessmentService;
 
-    /**
-     * @var CategoryService
-     */
     protected CategoryService $categoryService;
 
-
-    /**
-     * @var SessionInterface
-     */
     private SessionInterface $session;
 
-    /**
-     * @required
-     * @param AnnotationService $annotationService
-     */
+    #[Required]
     public function setAnnotationService(AnnotationService $annotationService): void
     {
         $this->annotationService = $annotationService;
     }
 
-    /**
-     * @required
-     * @param AnnouncementService $announcementService
-     */
+    #[Required]
     public function setAnnouncementService(AnnouncementService $announcementService): void
     {
         $this->announcementService = $announcementService;
     }
 
     /**
-     * @required
      * @param mixed $assessmentService
      */
+    #[Required]
     public function setAssessmentService(AssessmentService $assessmentService): void
     {
         $this->assessmentService = $assessmentService;
     }
 
-    /**
-     * @required
-     * @param CategoryService $categoryService
-     */
+    #[Required]
     public function setCategoryService(CategoryService $categoryService): void
     {
         $this->categoryService = $categoryService;
     }
 
-    /**
-     * @required
-     * @param SessionInterface $session
-     */
+    #[Required]
     public function setSession(SessionInterface $session): void
     {
         $this->session = $session;
     }
 
-
-
-    /**
-     * @Route("/room/{roomId}/announcement/feed/{start}/{sort}")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     * @param int $max
-     * @param int $start
-     * @param string $sort
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/announcement/feed/{start}/{sort}')]
     public function feedAction(
         Request $request,
         int $roomId,
         int $max = 10,
         int $start = 0,
         string $sort = ''
-    ) {
+    ): Response {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $announcementFilter = $request->get('announcementFilter');
@@ -140,7 +108,7 @@ class AnnouncementController extends BaseController
             $announcementFilter = $request->query->get('announcement_filter');
         }
 
-        /** @var cs_room_item $roomItem */
+        /** @var \cs_room_item $roomItem */
         $roomItem = $this->roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
@@ -166,58 +134,45 @@ class AnnouncementController extends BaseController
         $this->session->set('sortAnnouncements', $sort);
 
         // get announcement list from manager service
-        /** @var cs_announcement_item[] $announcements */
+        /** @var \cs_announcement_item[] $announcements */
         $announcements = $this->announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = array();
-        $allowedActions = array();
+        $readerList = [];
+        $allowedActions = [];
         foreach ($announcements as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'categorize', 'hashtag', 'activate', 'deactivate', 'save', 'delete');
+                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'categorize', 'hashtag', 'activate', 'deactivate', 'save', 'delete'];
             } else {
-                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save');
+                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'save'];
             }
         }
 
-        $ratingList = array();
+        $ratingList = [];
         if ($current_context->isAssessmentActive()) {
-            $itemIds = array();
+            $itemIds = [];
             foreach ($announcements as $announcement) {
                 $itemIds[] = $announcement->getItemId();
             }
             $ratingList = $this->assessmentService->getListAverageRatings($itemIds);
         }
 
-        return array(
-            'roomId' => $roomId,
-            'announcements' => $announcements,
-            'readerList' => $readerList,
-            'showRating' => $current_context->isAssessmentActive(),
-            'ratingList' => $ratingList,
-            'allowedActions' => $allowedActions,
-        );
+        return $this->render('Announcement/feed.html.twig', ['roomId' => $roomId, 'announcements' => $announcements, 'readerList' => $readerList, 'showRating' => $current_context->isAssessmentActive(), 'ratingList' => $ratingList, 'allowedActions' => $allowedActions]);
     }
 
     /**
-     * @Route("/room/{roomId}/announcement/shortfeed/{start}/{sort}")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     * @param int $max
-     * @param int $start
      * @param null $sort
-     * @return array|void
      */
+    #[Route(path: '/room/{roomId}/announcement/shortfeed/{start}/{sort}')]
     public function shortfeedAction(
         Request $request,
         int $roomId,
         int $max = 10,
         int $start = 0,
         $sort = null
-    ) {
+    ): Response {
         $roomItem = $this->roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
@@ -239,46 +194,33 @@ class AnnouncementController extends BaseController
         $this->announcementService->hideDeactivatedEntries();
 
         // get announcement list from manager service
-        /** @var cs_announcement_item[] $announcements */
+        /** @var \cs_announcement_item[] $announcements */
         $announcements = $this->announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-
-        $readerList = array();
+        $readerList = [];
         foreach ($announcements as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
         }
 
-        $ratingList = array();
+        $ratingList = [];
         if ($current_context->isAssessmentActive()) {
-            $itemIds = array();
+            $itemIds = [];
             foreach ($announcements as $announcement) {
                 $itemIds[] = $announcement->getItemId();
             }
             $ratingList = $this->assessmentService->getListAverageRatings($itemIds);
         }
 
-        return array(
-            'roomId' => $roomId,
-            'announcements' => $announcements,
-            'readerList' => $readerList,
-            'showRating' => $current_context->isAssessmentActive(),
-            'ratingList' => $ratingList
-        );
+        return $this->render('Announcement/shortfeed.html.twig', ['roomId' => $roomId, 'announcements' => $announcements, 'readerList' => $readerList, 'showRating' => $current_context->isAssessmentActive(), 'ratingList' => $ratingList]);
     }
 
-    /**
-     * @Route("/room/{roomId}/announcement")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/announcement')]
     public function listAction(
         Request $request,
         int $roomId
-    ) {
+    ): Response {
         $roomItem = $this->roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
@@ -303,44 +245,24 @@ class AnnouncementController extends BaseController
         $itemsCountArray = $this->announcementService->getCountArray($roomId);
 
         $usageInfo = false;
-        /** @noinspection PhpUndefinedMethodInspection */
-        if ($roomItem->getUsageInfoTextForRubricInForm('announcement') != '') {
+        /* @noinspection PhpUndefinedMethodInspection */
+        if ('' != $roomItem->getUsageInfoTextForRubricInForm('announcement')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('announcement');
-            /** @noinspection PhpUndefinedMethodInspection */
-            /** @noinspection PhpUndefinedMethodInspection */
+            /* @noinspection PhpUndefinedMethodInspection */
+            /* @noinspection PhpUndefinedMethodInspection */
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('announcement');
         }
 
-        return array(
-            'roomId' => $roomId,
-            'form' => $filterForm->createView(),
-            'module' => 'announcement',
-            'itemsCountArray' => $itemsCountArray,
-            'showRating' => $roomItem->isAssessmentActive(),
-            'showHashTags' => $roomItem->withBuzzwords(),
-            'showAssociations' => $roomItem->withAssociations(),
-            'showCategories' => $roomItem->withTags(),
-            'usageInfo' => $usageInfo,
-            'isArchived' => $roomItem->getArchived(),
-            'user' => $this->legacyEnvironment->getCurrentUserItem(),
-            'sort' => $sort,
-        );
+        return $this->render('Announcement/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm->createView(), 'module' => 'announcement', 'itemsCountArray' => $itemsCountArray, 'showRating' => $roomItem->isAssessmentActive(), 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => $roomItem->withAssociations(), 'showCategories' => $roomItem->withTags(), 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'sort' => $sort]);
     }
 
-    /**
-     * @Route("/room/{roomId}/announcement/print/{sort}", defaults={"sort" = "none"})
-     * @param Request $request
-     * @param PrintService $printService
-     * @param int $roomId
-     * @param string $sort
-     * @return Response
-     */
+    #[Route(path: '/room/{roomId}/announcement/print/{sort}', defaults: ['sort' => 'none'])]
     public function printlistAction(
         Request $request,
         PrintService $printService,
         int $roomId,
         string $sort
-    ) {
+    ): Response {
         $roomItem = $this->roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
@@ -362,22 +284,22 @@ class AnnouncementController extends BaseController
         }
 
         // get announcement list from manager service
-        if ($sort === "none" || empty($sort)) {
+        if ('none' === $sort || empty($sort)) {
             $sort = $this->session->get('sortAnnouncements', 'date');
         }
-        /** @var cs_announcement_item[] $announcements */
+        /** @var \cs_announcement_item[] $announcements */
         $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = array();
+        $readerList = [];
         foreach ($announcements as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
         }
 
-        $ratingList = array();
+        $ratingList = [];
         if ($current_context->isAssessmentActive()) {
-            $itemIds = array();
+            $itemIds = [];
             foreach ($announcements as $announcement) {
                 $itemIds[] = $announcement->getItemId();
             }
@@ -407,18 +329,9 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/announcement/{itemId}", requirements={
-     *     "itemId": "\d+"
-     * }))
-     * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
-     * @param Request $request
-     * @param LegacyMarkup $legacyMarkup
-     * @param TopicService $topicService
-     * @param int $roomId
-     * @param int $itemId
      * @return array
      */
+    #[Route(path: '/room/{roomId}/announcement/{itemId}', requirements: ['itemId' => '\d+'])]
     public function detailAction(
         Request $request,
         LegacyMarkup $legacyMarkup,
@@ -426,7 +339,7 @@ class AnnouncementController extends BaseController
         AnnotationService $annotationService,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         // annotation form
@@ -434,9 +347,8 @@ class AnnouncementController extends BaseController
 
         $alert = null;
         if ($infoArray['announcement']->isLocked()) {
-
             $alert['type'] = 'warning';
-            $alert['content'] = $this->translator->trans('item is locked', array(), 'item');
+            $alert['content'] = $this->translator->trans('item is locked', [], 'item');
         }
 
         $pathTopicItem = null;
@@ -448,51 +360,15 @@ class AnnouncementController extends BaseController
         $amountAnnotations = $annotationService->getListAnnotations($roomId, $infoArray['announcement']->getItemId(),
             null, null);
 
-        return array(
-            'roomId' => $roomId,
-            'announcement' => $infoArray['announcement'],
-            'amountAnnotations' => sizeof($amountAnnotations),
-            'readerList' => $infoArray['readerList'],
-            'modifierList' => $infoArray['modifierList'],
-            'announcementList' => $infoArray['announcementList'],
-            'counterPosition' => $infoArray['counterPosition'],
-            'count' => $infoArray['count'],
-            'firstItemId' => $infoArray['firstItemId'],
-            'prevItemId' => $infoArray['prevItemId'],
-            'nextItemId' => $infoArray['nextItemId'],
-            'lastItemId' => $infoArray['lastItemId'],
-            'readCount' => $infoArray['readCount'],
-            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
-            'userCount' => $infoArray['userCount'],
-            'draft' => $infoArray['draft'],
-            'showRating' => $infoArray['showRating'],
-            'showWorkflow' => $infoArray['showWorkflow'],
-            'showHashtags' => $infoArray['showHashtags'],
-            'showAssociations' => $infoArray['showAssociations'],
-            'showCategories' => $infoArray['showCategories'],
-            'roomCategories' => $infoArray['categories'],
-            'buzzExpanded' => $infoArray['buzzExpanded'],
-            'catzExpanded' => $infoArray['catzExpanded'],
-            'user' => $infoArray['user'],
-            'annotationForm' => $form->createView(),
-            'ratingArray' => $infoArray['ratingArray'],
-            'alert' => $alert,
-            'pathTopicItem' => $pathTopicItem,
-        );
+        return ['roomId' => $roomId, 'announcement' => $infoArray['announcement'], 'amountAnnotations' => sizeof($amountAnnotations), 'readerList' => $infoArray['readerList'], 'modifierList' => $infoArray['modifierList'], 'announcementList' => $infoArray['announcementList'], 'counterPosition' => $infoArray['counterPosition'], 'count' => $infoArray['count'], 'firstItemId' => $infoArray['firstItemId'], 'prevItemId' => $infoArray['prevItemId'], 'nextItemId' => $infoArray['nextItemId'], 'lastItemId' => $infoArray['lastItemId'], 'readCount' => $infoArray['readCount'], 'readSinceModificationCount' => $infoArray['readSinceModificationCount'], 'userCount' => $infoArray['userCount'], 'draft' => $infoArray['draft'], 'showRating' => $infoArray['showRating'], 'showWorkflow' => $infoArray['showWorkflow'], 'showHashtags' => $infoArray['showHashtags'], 'showAssociations' => $infoArray['showAssociations'], 'showCategories' => $infoArray['showCategories'], 'roomCategories' => $infoArray['categories'], 'buzzExpanded' => $infoArray['buzzExpanded'], 'catzExpanded' => $infoArray['catzExpanded'], 'user' => $infoArray['user'], 'annotationForm' => $form->createView(), 'ratingArray' => $infoArray['ratingArray'], 'alert' => $alert, 'pathTopicItem' => $pathTopicItem];
     }
 
-    /**
-     * @Route("/room/{roomId}/announcement/{itemId}/print")
-     * @param PrintService $printService
-     * @param $roomId
-     * @param $itemId
-     * @return Response
-     */
+    #[Route(path: '/room/{roomId}/announcement/{itemId}/print')]
     public function printAction(
         PrintService $printService,
         $roomId,
         $itemId
-    ) {
+    ): Response {
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         // annotation form
@@ -529,15 +405,13 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/announcement/create")
-     * @param int $roomId
-     * @return RedirectResponse
-     * @throws Exception
-     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'announcement')")
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/announcement/create')]
+    #[Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'announcement')")]
     public function createAction(
         int $roomId
-    ) {
+    ): RedirectResponse {
         // create new announcement item
         $announcementItem = $this->announcementService->getNewAnnouncement();
         $dateTime = new \DateTime('now');
@@ -545,8 +419,7 @@ class AnnouncementController extends BaseController
 
         try {
             $dateTime->add(new \DateInterval('P2W'));
-        } catch (Exception $e) {
-
+        } catch (Exception) {
         }
 
         $announcementItem->setSecondDateTime($dateTime->format('Y-m-d H:i:s'));
@@ -555,21 +428,11 @@ class AnnouncementController extends BaseController
         $announcementItem->save();
 
         return $this->redirectToRoute('app_announcement_detail',
-            array('roomId' => $roomId, 'itemId' => $announcementItem->getItemId()));
+            ['roomId' => $roomId, 'itemId' => $announcementItem->getItemId()]);
     }
 
-    /**
-     * @Route("/room/{roomId}/announcement/{itemId}/edit")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
-     * @param Request $request
-     * @param LabelService $labelService
-     * @param CategoryService $categoryService
-     * @param AnnouncementTransformer $transformer
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/announcement/{itemId}/edit')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")]
     public function editAction(
         Request $request,
         LabelService $labelService,
@@ -577,7 +440,8 @@ class AnnouncementController extends BaseController
         AnnouncementTransformer $transformer,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
+        $form = null;
         /** @var \cs_item $item */
         $item = $this->itemService->getItem($itemId);
 
@@ -587,42 +451,33 @@ class AnnouncementController extends BaseController
 
         $isDraft = $item->isDraft();
 
-        if ($item->getItemType() == 'announcement') {
+        if ('announcement' == $item->getItemType()) {
             // get announcement from announcementService
-            /** @var cs_announcement_item $announcementItem */
+            /** @var \cs_announcement_item $announcementItem */
             $announcementItem = $this->announcementService->getannouncement($itemId);
             $announcementItem->setDraftStatus($item->isDraft());
             if (!$announcementItem) {
-                throw $this->createNotFoundException('No announcement found for id ' . $roomId);
+                throw $this->createNotFoundException('No announcement found for id '.$roomId);
             }
             $formData = $transformer->transform($announcementItem);
             $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
             $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
-            $form = $this->createForm(AnnouncementType::class, $formData, array(
-                'action' => $this->generateUrl('app_announcement_edit', array(
-                    'roomId' => $roomId,
-                    'itemId' => $itemId,
-                )),
-                'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
-                'categoryMappingOptions' => [
-                    'categories' => $labelService->getCategories($roomId),
-                    'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
-                    'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
-                ],
-                'hashtagMappingOptions' => [
-                    'hashtags' => $labelService->getHashtags($roomId),
-                    'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
-                    'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-                ],
-                'room' => $current_context,
-            ));
+            $form = $this->createForm(AnnouncementType::class, $formData, ['action' => $this->generateUrl('app_announcement_edit', ['roomId' => $roomId, 'itemId' => $itemId]), 'placeholderText' => '['.$this->translator->trans('insert title').']', 'categoryMappingOptions' => [
+                'categories' => $labelService->getCategories($roomId),
+                'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
+                'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId]),
+            ], 'hashtagMappingOptions' => [
+                'hashtags' => $labelService->getHashtags($roomId),
+                'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
+                'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
+            ], 'room' => $current_context]);
         }
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
-            if ($saveType == 'save') {
+            if ('save' == $saveType) {
                 $announcementItem = $transformer->applyTransformation($announcementItem, $form->getData());
 
                 // update modifier
@@ -665,35 +520,23 @@ class AnnouncementController extends BaseController
                 }
             }
 
-            return $this->redirectToRoute('app_announcement_save', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_announcement_save', ['roomId' => $roomId, 'itemId' => $itemId]);
         }
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($announcementItem), CommsyEditEvent::EDIT);
 
-        return array(
-            'form' => $form->createView(),
-            'announcement' => $announcementItem,
-            'isDraft' => $isDraft,
-            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
-        );
+        return $this->render('Announcement/edit.html.twig', ['form' => $form->createView(), 'announcement' => $announcementItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
     }
 
-
-    /**
-     * @Route("/room/{roomId}/announcement/{itemId}/save")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/announcement/{itemId}/save')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")]
     public function saveAction(
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $tempItem = $this->announcementService->getannouncement($itemId);
-        $itemArray = array($tempItem);
-        $modifierList = array();
+        $itemArray = [$tempItem];
+        $modifierList = [];
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
@@ -702,32 +545,17 @@ class AnnouncementController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($tempItem), CommsyEditEvent::SAVE);
 
-        return array(
-            'roomId' => $roomId,
-            'item' => $tempItem,
-            'modifierList' => $modifierList,
-            'userCount' => $infoArray['userCount'],
-            'readCount' => $infoArray['readCount'],
-            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
-            'showRating' => $infoArray['showRating'],
-        );
+        return $this->render('Announcement/save.html.twig', ['roomId' => $roomId, 'item' => $tempItem, 'modifierList' => $modifierList, 'userCount' => $infoArray['userCount'], 'readCount' => $infoArray['readCount'], 'readSinceModificationCount' => $infoArray['readSinceModificationCount'], 'showRating' => $infoArray['showRating']]);
     }
 
-    /**
-     * @Route("/room/{roomId}/announcement/{itemId}/rating/{vote}")
-     * @Template()
-     * @param int $roomId
-     * @param int $itemId
-     * @param $vote
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/announcement/{itemId}/rating/{vote}')]
     public function ratingAction(
         int $roomId,
         int $itemId,
         $vote
-    ) {
+    ): Response {
         $announcement = $this->announcementService->getAnnouncement($itemId);
-        if ($vote != 'remove') {
+        if ('remove' != $vote) {
             $this->assessmentService->rateItem($announcement, $vote);
         } else {
             $this->assessmentService->removeRating($announcement);
@@ -736,69 +564,51 @@ class AnnouncementController extends BaseController
         $ratingAverageDetail = $this->assessmentService->getAverageRatingDetail($announcement);
         $ratingOwnDetail = $this->assessmentService->getOwnRatingDetail($announcement);
 
-        return array(
-            'roomId' => $roomId,
-            'announcement' => $announcement,
-            'ratingArray' => array(
-                'ratingDetail' => $ratingDetail,
-                'ratingAverageDetail' => $ratingAverageDetail,
-                'ratingOwnDetail' => $ratingOwnDetail,
-            ),
-        );
+        return $this->render('Announcement/rating.html.twig', ['roomId' => $roomId, 'announcement' => $announcement, 'ratingArray' => ['ratingDetail' => $ratingDetail, 'ratingAverageDetail' => $ratingAverageDetail, 'ratingOwnDetail' => $ratingOwnDetail]]);
     }
 
     /**
-     * @Route("/room/{roomId}/announcement/download")
-     * @param Request $request
-     * @param DownloadAction $action
-     * @param int $roomId
-     * @return Response
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/announcement/download')]
     public function downloadAction(
         Request $request,
         DownloadAction $action,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $action->execute($room, $items);
     }
 
-    ###################################################################################################
-    ## XHR Action requests
-    ###################################################################################################
-
+    // ##################################################################################################
+    // # XHR Action requests
+    // ##################################################################################################
     /**
-     * @Route("/room/{roomId}/announcement/xhr/markread", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/announcement/xhr/markread', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkReadAction(
         Request $request,
         MarkReadAction $markReadAction,
         $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
+
         return $markReadAction->execute($room, $items);
     }
 
     /**
-     * @Route("/room/{roomId}/announcement/xhr/mark", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/announcement/xhr/mark', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkAction(
         Request $request,
         MarkAction $action,
         $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -806,49 +616,42 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/announcement/xhr/categorize", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param CategorizeAction $action
-     * @param int $roomId
      * @return mixed
-     * @throws Exception
+     *
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/announcement/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
     public function xhrCategorizeAction(
         Request $request,
         CategorizeAction $action,
         int $roomId
-    ) {
+    ): Response {
         return parent::handleCategoryActionOptions($request, $action, $roomId);
     }
 
     /**
-     * @Route("/room/{roomId}/announcement/xhr/hashtag", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param HashtagAction $action
-     * @param int $roomId
      * @return mixed
-     * @throws Exception
+     *
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/announcement/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
     public function xhrHashtagAction(
         Request $request,
         HashtagAction $action,
         int $roomId
-    ) {
+    ): Response {
         return parent::handleHashtagActionOptions($request, $action, $roomId);
     }
 
     /**
-     * @Route("/room/{roomId}/announcement/xhr/activate", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/announcement/xhr/activate', condition: 'request.isXmlHttpRequest()')]
     public function xhrActivateAction(
         Request $request,
         ActivateAction $action,
         $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -856,17 +659,14 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/announcement/xhr/deactivate", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/announcement/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeactivateAction(
         Request $request,
         DeactivateAction $action,
         $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -874,28 +674,25 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/announcement/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param $roomId
-     * @return
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/room/{roomId}/announcement/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
         DeleteAction $action,
         Request $request,
         $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
+
         return $action->execute($room, $items);
     }
 
     /**
-     * @param Request $request
-     * @param cs_room_item $roomItem
-     * @param $selectAll
-     * @param integer[] $itemIds
-     * @return cs_announcement_item[]
+     * @param \cs_room_item $roomItem
+     * @param int[]         $itemIds
+     *
+     * @return \cs_announcement_item[]
      */
     public function getItemsByFilterConditions(
         Request $request,
@@ -925,11 +722,10 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @param cs_room_item $room
      * @return FormInterface
      */
     private function createFilterForm(
-        cs_room_item $room
+        \cs_room_item $room
     ) {
         // setup filter form default values
         $defaultFilterValues = [
@@ -950,7 +746,7 @@ class AnnouncementController extends BaseController
         int $roomId,
         int $itemId
     ) {
-        $infoArray = array();
+        $infoArray = [];
 
         $announcement = $this->announcementService->getAnnouncement($itemId);
 
@@ -982,7 +778,7 @@ class AnnouncementController extends BaseController
 
         /** @var \cs_user_item $current_user */
         $current_user = $user_list->getFirst();
-        $id_array = array();
+        $id_array = [];
         while ($current_user) {
             $id_array[] = $current_user->getItemID();
             $current_user = $user_list->getNext();
@@ -994,17 +790,17 @@ class AnnouncementController extends BaseController
                 $current_user->getItemID());
             if (!empty($current_reader)) {
                 if ($current_reader['read_date'] >= $announcement->getModificationDate()) {
-                    $read_count++;
-                    $read_since_modification_count++;
+                    ++$read_count;
+                    ++$read_since_modification_count;
                 } else {
-                    $read_count++;
+                    ++$read_count;
                 }
             }
             $current_user = $user_list->getNext();
         }
 
-        $readerList = array();
-        $modifierList = array();
+        $readerList = [];
+        $modifierList = [];
         $reader = $this->readerService->getLatestReader($announcement->getItemId());
         if (empty($reader)) {
             $readerList[$item->getItemId()] = 'new';
@@ -1014,9 +810,9 @@ class AnnouncementController extends BaseController
 
         $modifierList[$announcement->getItemId()] = $this->itemService->getAdditionalEditorsForItem($announcement);
 
-        /** @var cs_announcement_item[] $announcements */
+        /** @var \cs_announcement_item[] $announcements */
         $announcements = $this->announcementService->getListAnnouncements($roomId);
-        $announcementList = array();
+        $announcementList = [];
         $counterBefore = 0;
         $counterAfter = 0;
         $counterPosition = 0;
@@ -1030,7 +826,7 @@ class AnnouncementController extends BaseController
                 if ($counterBefore > 5) {
                     array_shift($announcementList);
                 } else {
-                    $counterBefore++;
+                    ++$counterBefore;
                 }
                 $announcementList[] = $tempAnnouncement;
                 if ($tempAnnouncement->getItemID() == $announcement->getItemID()) {
@@ -1039,11 +835,11 @@ class AnnouncementController extends BaseController
                 if (!$foundAnnouncement) {
                     $prevItemId = $tempAnnouncement->getItemId();
                 }
-                $counterPosition++;
+                ++$counterPosition;
             } else {
                 if ($counterAfter < 5) {
                     $announcementList[] = $tempAnnouncement;
-                    $counterAfter++;
+                    ++$counterAfter;
                     if (!$nextItemId) {
                         $nextItemId = $tempAnnouncement->getItemId();
                     }
@@ -1060,14 +856,14 @@ class AnnouncementController extends BaseController
                 $lastItemId = $announcements[sizeof($announcements) - 1]->getItemId();
             }
         }
-        $categories = array();
+        $categories = [];
         if ($current_context->withTags()) {
             $roomCategories = $this->categoryService->getTags($roomId);
             $announcementCategories = $announcement->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $announcementCategories);
         }
 
-        $ratingDetail = array();
+        $ratingDetail = [];
         if ($current_context->isAssessmentActive()) {
             $ratingDetail = $this->assessmentService->getRatingDetail($announcement);
             $ratingAverageDetail = $this->assessmentService->getAverageRatingDetail($announcement);
@@ -1111,8 +907,8 @@ class AnnouncementController extends BaseController
 
     private function getTagDetailArray($baseCategories, $itemCategories)
     {
-        $result = array();
-        $tempResult = array();
+        $result = [];
+        $tempResult = [];
         $addCategory = false;
         foreach ($baseCategories as $baseCategory) {
             if (!empty($baseCategory['children'])) {
@@ -1125,29 +921,22 @@ class AnnouncementController extends BaseController
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {
                     if ($addCategory) {
-                        $result[] = array(
-                            'title' => $baseCategory['title'],
-                            'item_id' => $baseCategory['item_id'],
-                            'children' => $tempResult
-                        );
+                        $result[] = ['title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult];
                     } else {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                        $result[] = ['title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']];
                     }
                     $foundCategory = true;
                 }
             }
             if (!$foundCategory) {
                 if ($addCategory) {
-                    $result[] = array(
-                        'title' => $baseCategory['title'],
-                        'item_id' => $baseCategory['item_id'],
-                        'children' => $tempResult
-                    );
+                    $result[] = ['title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult];
                 }
             }
-            $tempResult = array();
+            $tempResult = [];
             $addCategory = false;
         }
+
         return $result;
     }
 }

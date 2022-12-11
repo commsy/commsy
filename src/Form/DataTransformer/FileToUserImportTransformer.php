@@ -1,5 +1,15 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Form\DataTransformer;
 
@@ -16,29 +26,20 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-
 class FileToUserImportTransformer implements DataTransformerInterface
 {
-    /**
-     * @var string
-     */
     private string $tempUploadDir;
 
-    /**
-     * @var ValidatorInterface
-     */
-    private ValidatorInterface $validator;
-
-    public function __construct(ParameterBagInterface $parameterBag, ValidatorInterface $validator)
+    public function __construct(ParameterBagInterface $parameterBag, private ValidatorInterface $validator)
     {
-        $this->tempUploadDir = $parameterBag->get('files_directory') . '/temp/';
-        $this->validator = $validator;
+        $this->tempUploadDir = $parameterBag->get('files_directory').'/temp/';
     }
 
     /**
-     * Transforms into a file
+     * Transforms into a file.
      *
      * @param mixed $value
+     *
      * @return null
      */
     public function transform($value)
@@ -49,27 +50,27 @@ class FileToUserImportTransformer implements DataTransformerInterface
     }
 
     /**
-     * Transforms an uploaded file into an ArrayCollection of CsvUserDataset objects
+     * Transforms an uploaded file into an ArrayCollection of CsvUserDataset objects.
      *
      * @param UploadedFile $uploadedFile
-     * @return ArrayCollection
+     *
      * @noinspection PhpParameterNameChangedDuringInheritanceInspection
      */
     public function reverseTransform($uploadedFile): ArrayCollection
     {
         $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
-        $fileName = $safeFilename . '-' . uniqid() . '.' . $uploadedFile->guessExtension();
+        $fileName = $safeFilename.'-'.uniqid().'.'.$uploadedFile->guessExtension();
 
         $collection = new ArrayCollection();
 
         try {
             $uploadedFile->move($this->tempUploadDir, $fileName);
 
-            $content = file_get_contents($this->tempUploadDir . $fileName);
+            $content = file_get_contents($this->tempUploadDir.$fileName);
 
             $fileSystem = new Filesystem();
-            $fileSystem->remove($this->tempUploadDir . $fileName);
+            $fileSystem->remove($this->tempUploadDir.$fileName);
 
             $serializer = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
             $rows = $serializer->decode($content, 'csv');
@@ -94,7 +95,7 @@ class FileToUserImportTransformer implements DataTransformerInterface
 
                 $collection->add($userDataset);
             }
-        } catch (FileException $e) {
+        } catch (FileException) {
         }
 
         return $collection;
@@ -102,6 +103,6 @@ class FileToUserImportTransformer implements DataTransformerInterface
 
     private function checkCsvHeader(array $header): bool
     {
-        return array_diff($header, [ 'firstname', 'lastname', 'email', 'identifier', 'password', 'rooms' ]) === [];
+        return [] === array_diff($header, ['firstname', 'lastname', 'email', 'identifier', 'password', 'rooms']);
     }
 }

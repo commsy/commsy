@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Form\DataTransformer\AnnotationTransformer;
@@ -10,35 +21,20 @@ use App\Utils\ItemService;
 use App\Utils\PortfolioService;
 use App\Utils\ReaderService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class AnnotationController
- * @package App\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
+ * Class AnnotationController.
  */
+#[Security("is_granted('ITEM_ENTER', roomId)")]
 class AnnotationController extends AbstractController
 {
-    /**
-     * @Route("/room/{roomId}/annotation/feed/{linkedItemId}/{start}/{firstTagId}/{secondTagId}")
-     * @Template()
-     * @param AnnotationService $annotationService
-     * @param ItemService $itemService
-     * @param ReaderService $readerService
-     * @param PortfolioService $portfolioService
-     * @param int $roomId
-     * @param int $linkedItemId
-     * @param int $max
-     * @param int $start
-     * @param int|null $firstTagId
-     * @param int|null $secondTagId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/annotation/feed/{linkedItemId}/{start}/{firstTagId}/{secondTagId}')]
     public function feedAction(
         AnnotationService $annotationService,
         ItemService $itemService,
@@ -50,8 +46,8 @@ class AnnotationController extends AbstractController
         int $start = 0,
         int $firstTagId = null,
         int $secondTagId = null
-    ): array {
-        // get annotation list from manager service 
+    ): Response {
+        // get annotation list from manager service
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
 
         if ($firstTagId && $secondTagId) {
@@ -79,24 +75,14 @@ class AnnotationController extends AbstractController
         $annotationList = $itemAnnotation->getAnnotationList();
         $annotationService->markAnnotationsReadedAndNoticed($annotationList);
 
-        return [
+        return $this->render('annotation/feed.html.twig', [
             'roomId' => $roomId,
             'annotations' => $annotations,
             'readerList' => $readerList,
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/annotation/feed/{linkedItemId}/{start}")
-     * @Template()
-     * @param AnnotationService $annotationService
-     * @param ReaderService $readerService
-     * @param int $roomId
-     * @param int $linkedItemId
-     * @param int $max
-     * @param int $start
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/annotation/feed/{linkedItemId}/{start}')]
     public function feedPrintAction(
         AnnotationService $annotationService,
         ReaderService $readerService,
@@ -104,8 +90,8 @@ class AnnotationController extends AbstractController
         int $linkedItemId,
         int $max = 10,
         int $start = 0
-    ): array {
-        // get annotation list from manager service 
+    ): Response {
+        // get annotation list from manager service
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
 
         $readerList = [];
@@ -113,25 +99,15 @@ class AnnotationController extends AbstractController
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
         }
 
-        return [
+        return $this->render('annotation/feed_print.html.twig', [
             'roomId' => $roomId,
             'annotations' => $annotations,
             'readerList' => $readerList,
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/annotation/{itemId}/edit", methods={"GET", "POST"})
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param ItemService $itemService
-     * @param AnnotationTransformer $transformer
-     * @param LegacyEnvironment $environment
-     * @param int $roomId
-     * @param int $itemId
-     * @param Request $request
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/annotation/{itemId}/edit', methods: ['GET', 'POST'])]
+    #[Security("is_granted('ITEM_EDIT', itemId)")]
     public function editAction(
         ItemService $itemService,
         AnnotationTransformer $transformer,
@@ -139,7 +115,7 @@ class AnnotationController extends AbstractController
         int $roomId,
         int $itemId,
         Request $request
-    ) {
+    ): Response {
         $item = $itemService->getTypedItem($itemId);
         $formData = $transformer->transform($item);
         $form = $this->createForm(AnnotationType::class, $formData);
@@ -163,44 +139,30 @@ class AnnotationController extends AbstractController
             ]);
         }
 
-        return [
+        return $this->render('annotation/edit.html.twig', [
             'itemId' => $itemId,
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/annotation/{itemId}/success", methods={"GET"})
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param ItemService $itemService
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/annotation/{itemId}/success', methods: ['GET'])]
+    #[Security("is_granted('ITEM_EDIT', itemId)")]
     public function successAction(
         ItemService $itemService,
         int $itemId
-    ) {
+    ): Response {
         $item = $itemService->getTypedItem($itemId);
-        return [
+
+        return $this->render('annotation/success.html.twig', [
             'annotation' => $item,
-        ];
+        ]);
     }
 
     /**
-     * @Route("/room/{roomId}/annotation/{itemId}/create/{firstTagId}/{secondTagId}", methods={"POST"})
-     * @Template()
-     * @Security("is_granted('ITEM_ANNOTATE', itemId)")
-     * @param ItemService $itemService
-     * @param AnnotationService $annotationService
-     * @param Request $request
-     * @param PortfolioService $portfolioService
-     * @param int $roomId
-     * @param int $itemId
-     * @param int|null $firstTagId
-     * @param int|null $secondTagId
      * @return RedirectResponse
      */
+    #[Route(path: '/room/{roomId}/annotation/{itemId}/create/{firstTagId}/{secondTagId}', methods: ['POST'])]
+    #[Security("is_granted('ITEM_ANNOTATE', itemId)")]
     public function createAction(
         ItemService $itemService,
         AnnotationService $annotationService,
@@ -210,7 +172,7 @@ class AnnotationController extends AbstractController
         int $itemId,
         int $firstTagId = null,
         int $secondTagId = null
-    ) {
+    ): Response {
         $item = $itemService->getTypedItem($itemId);
         $itemType = $item->getItemType();
 
@@ -226,8 +188,8 @@ class AnnotationController extends AbstractController
                 $routeArray = [];
                 $routeArray['roomId'] = $roomId;
                 $routeArray['itemId'] = $itemId;
-                $routeArray['_fragment'] = 'description' . $annotationId;
-                if ($itemType == 'portfolio') {
+                $routeArray['_fragment'] = 'description'.$annotationId;
+                if ('portfolio' == $itemType) {
                     $routeArray['portfolioId'] = $itemId;
                     $routeArray['firstTagId'] = $firstTagId;
                     $routeArray['secondTagId'] = $secondTagId;
@@ -241,7 +203,7 @@ class AnnotationController extends AbstractController
                 return $this->redirectToRoute('app_'.$itemType.'_detail', $routeArray);
             }
             if ($form->get('cancel')->isClicked()) {
-                if ($itemType == 'portfolio') {
+                if ('portfolio' == $itemType) {
                     return $this->redirectToRoute('app_portfolio_index', [
                         'roomId' => $roomId,
                     ]);
@@ -249,26 +211,25 @@ class AnnotationController extends AbstractController
             }
         }
 
-        return $this->redirectToRoute('app_'.$itemType.'_detail', array('roomId' => $roomId, 'itemId' => $itemId));
+        return $this->redirectToRoute('app_'.$itemType.'_detail', ['roomId' => $roomId, 'itemId' => $itemId]);
     }
 
     /**
-     * @Route("/room/{roomId}/annotation/{itemId}/delete", methods={"GET"})
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param ItemService $itemService
-     * @param int $itemId
      * @return JsonResponse
      */
+    #[Route(path: '/room/{roomId}/annotation/{itemId}/delete', methods: ['GET'])]
+    #[Security("is_granted('ITEM_EDIT', itemId)")]
     public function deleteAction(
         ItemService $itemService,
         int $itemId
-    ) {
+    ): Response {
         $item = $itemService->getTypedItem($itemId);
         $item->delete();
         $response = new JsonResponse();
         $response->setData([
             'deleted' => true,
         ]);
+
         return $response;
     }
 }

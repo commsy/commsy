@@ -1,5 +1,15 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Entity;
 
@@ -8,70 +18,38 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class AuthSourceShibboleth extends AuthSource
 {
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", length=255, nullable=false)
-     * @Assert\Length(max=255)
-     */
-    private ?string $loginUrl;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[Assert\Length(max: 255)]
+    private ?string $loginUrl = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", length=255, nullable=false)
-     * @Assert\Length(max=255)
-     */
-    private ?string $logoutUrl;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[Assert\Length(max: 255)]
+    private ?string $logoutUrl = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", length=255, nullable=false)
-     * @Assert\Length(max=255)
-     */
-    private ?string $passwordResetUrl;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[Assert\Length(max: 255)]
+    private ?string $passwordResetUrl = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", length=50, nullable=false)
-     * @Assert\Length(max=50)
-     */
-    private ?string $mappingUsername;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 50)]
+    #[Assert\Length(max: 50)]
+    private ?string $mappingUsername = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", length=50, nullable=false)
-     * @Assert\Length(max=50)
-     */
-    private ?string $mappingFirstname;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 50)]
+    #[Assert\Length(max: 50)]
+    private ?string $mappingFirstname = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", length=50, nullable=false)
-     * @Assert\Length(max=50)
-     */
-    private ?string $mappingLastname;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 50)]
+    #[Assert\Length(max: 50)]
+    private ?string $mappingLastname = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", length=50, nullable=false)
-     * @Assert\Length(max=50)
-     */
-    private ?string $mappingEmail;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 50)]
+    #[Assert\Length(max: 50)]
+    private ?string $mappingEmail = null;
 
-    /**
-     * @ORM\Column(type="array", name="identity_provider")
-     */
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::ARRAY, name: 'identity_provider')]
     private ?Collection $identityProviders;
 
     protected string $type = 'shib';
@@ -94,13 +72,10 @@ class AuthSourceShibboleth extends AuthSource
         return $this->loginUrl;
     }
 
-    /**
-     * @param string $loginUrl
-     * @return self
-     */
     public function setLoginUrl(string $loginUrl): self
     {
         $this->loginUrl = $loginUrl;
+
         return $this;
     }
 
@@ -112,13 +87,10 @@ class AuthSourceShibboleth extends AuthSource
         return $this->logoutUrl;
     }
 
-    /**
-     * @param string|null $logoutUrl
-     * @return self
-     */
     public function setLogoutUrl(?string $logoutUrl): self
     {
         $this->logoutUrl = $logoutUrl;
+
         return $this;
     }
 
@@ -130,13 +102,10 @@ class AuthSourceShibboleth extends AuthSource
         return $this->passwordResetUrl;
     }
 
-    /**
-     * @param string|null $passwordResetUrl
-     * @return self
-     */
     public function setPasswordResetUrl(?string $passwordResetUrl): self
     {
         $this->passwordResetUrl = $passwordResetUrl;
+
         return $this;
     }
 
@@ -148,13 +117,10 @@ class AuthSourceShibboleth extends AuthSource
         return $this->mappingUsername;
     }
 
-    /**
-     * @param string $mappingUsername
-     * @return self
-     */
     public function setMappingUsername(string $mappingUsername): self
     {
         $this->mappingUsername = $mappingUsername;
+
         return $this;
     }
 
@@ -166,13 +132,10 @@ class AuthSourceShibboleth extends AuthSource
         return $this->mappingFirstname;
     }
 
-    /**
-     * @param string $mappingFirstname
-     * @return self
-     */
     public function setMappingFirstname(string $mappingFirstname): self
     {
         $this->mappingFirstname = $mappingFirstname;
+
         return $this;
     }
 
@@ -184,13 +147,10 @@ class AuthSourceShibboleth extends AuthSource
         return $this->mappingLastname;
     }
 
-    /**
-     * @param string $mappingLastname
-     * @return self
-     */
     public function setMappingLastname(string $mappingLastname): self
     {
         $this->mappingLastname = $mappingLastname;
+
         return $this;
     }
 
@@ -202,13 +162,10 @@ class AuthSourceShibboleth extends AuthSource
         return $this->mappingEmail;
     }
 
-    /**
-     * @param string $mappingEmail
-     * @return self
-     */
     public function setMappingEmail(string $mappingEmail): self
     {
         $this->mappingEmail = $mappingEmail;
+
         return $this;
     }
 
@@ -227,6 +184,7 @@ class AuthSourceShibboleth extends AuthSource
         foreach ($identityProviders as $provider) {
             $this->identityProviders->add($provider);
         }
+
         return $this;
     }
 }

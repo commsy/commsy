@@ -1,14 +1,25 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Security\Authorization\Voter;
 
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-
 use App\Services\LegacyEnvironment;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class RubricVoter extends Voter
 {
-    const RUBRIC_SEE = 'RUBRIC_SEE';
+    public const RUBRIC_SEE = 'RUBRIC_SEE';
 
     private $legacyEnvironment;
 
@@ -19,9 +30,7 @@ class RubricVoter extends Voter
 
     protected function supports($attribute, $object)
     {
-        return in_array($attribute, array(
-            self::RUBRIC_SEE,
-        ));
+        return in_array($attribute, [self::RUBRIC_SEE]);
     }
 
     protected function voteOnAttribute($attribute, $rubricName, TokenInterface $token)
@@ -30,12 +39,10 @@ class RubricVoter extends Voter
 
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
-        switch ($attribute) {
-            case self::RUBRIC_SEE:
-                return $this->canView($roomItem, $currentUser, $rubricName);
-        }
-
-        throw new \LogicException('This code should not be reached!');
+        return match ($attribute) {
+            self::RUBRIC_SEE => $this->canView($roomItem, $currentUser, $rubricName),
+            default => throw new \LogicException('This code should not be reached!'),
+        };
     }
 
     private function canView($roomItem, $currentUser, $rubric)
@@ -46,10 +53,10 @@ class RubricVoter extends Voter
         if ($roomItem->isPrivateRoom() && in_array($rubric, ['material', 'date', 'discussion', 'announcement', 'todo'])) {
             return true;
         }
-        if ($rubric == 'user' && $currentUser->isModerator()) {
+        if ('user' == $rubric && $currentUser->isModerator()) {
             return true;
         }
+
         return in_array($rubric, $roomItem->getAvailableRubrics());
     }
-
 }

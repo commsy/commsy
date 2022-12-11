@@ -1,11 +1,20 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\EventSubscriber;
 
 use App\Services\LegacyEnvironment;
-use App\Utils\FileService;
 use App\Utils\ItemService;
-use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -14,60 +23,44 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Class KernelSubscriber
+ * Class KernelSubscriber.
  *
  * Listens to kernel request events and hands execution to the legacy kernel.
  * This allows to write new parts of the system using Symfony and every old route found
  * will be handled by the legacy application.
- *
- * @package EventSubscriber;
  */
 class KernelSubscriber implements EventSubscriberInterface
 {
     private $legacyEnvironment;
 
-    private $itemService;
-
-    private $urlGenerator;
-
-    /**
-     * @param ItemService $itemService
-     * @param UrlGeneratorInterface $urlGenerator
-     * @param LegacyEnvironment $legacyEnvironment
-     */
     public function __construct(
-        ItemService $itemService,
-        UrlGeneratorInterface $urlGenerator,
+        private ItemService $itemService,
+        private UrlGeneratorInterface $urlGenerator,
         LegacyEnvironment $legacyEnvironment
     ) {
-        $this->itemService = $itemService;
-        $this->urlGenerator = $urlGenerator;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     /**
-     * {@inheritDocs}
+     * {@inheritDoc}
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => [
-                'onKernelRequest',
-                512,
-            ],
-        );
+        return [KernelEvents::REQUEST => [
+            'onKernelRequest',
+            512,
+        ]];
     }
 
     /**
-     * Catches all legacy requests and hands them over to legacy kernel
+     * Catches all legacy requests and hands them over to legacy kernel.
      *
-     * @param RequestEvent $event
-     * @throws Exception
+     * @throws \Exception
      */
     public function onKernelRequest(RequestEvent $event)
     {
         // the legacy kernel only deals with master requests
-        if (HttpKernelInterface::MASTER_REQUEST != $event->getRequestType()) {
+        if (HttpKernelInterface::MAIN_REQUEST != $event->getRequestType()) {
             return;
         }
 
@@ -77,7 +70,7 @@ class KernelSubscriber implements EventSubscriberInterface
         if ($currentRequest->query->has('cid')) {
             $pathInfo = $currentRequest->getPathInfo();
             if (strlen($pathInfo) > 1) {
-                $url = $currentRequest->getSchemeAndHttpHost() . '?cid=' . $currentRequest->query->get('cid');
+                $url = $currentRequest->getSchemeAndHttpHost().'?cid='.$currentRequest->query->get('cid');
                 $response = new RedirectResponse($url);
                 $event->setResponse($response);
             } else {
@@ -91,7 +84,7 @@ class KernelSubscriber implements EventSubscriberInterface
             }
         }
 
-         // set user language
+        // set user language
         $currentRequest = $event->getRequest();
         $currentRequest->setLocale($this->legacyEnvironment->getSelectedLanguage());
     }

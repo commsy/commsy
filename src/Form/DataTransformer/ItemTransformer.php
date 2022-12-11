@@ -1,4 +1,16 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\DataTransformer;
 
 class ItemTransformer extends AbstractTransformer
@@ -6,35 +18,36 @@ class ItemTransformer extends AbstractTransformer
     protected $entity = 'item';
 
     /**
-     * Transforms fields of a cs_item object to an array
+     * Transforms fields of a cs_item object to an array.
      *
      * @param cs_material_item $materialItem
+     *
      * @return array
      */
     public function transform($item)
     {
-        $itemData = array();
+        $itemData = [];
 
         if ($item) {
             $itemData['workflowTrafficLight'] = $item->getWorkflowTrafficLight();
-            if ($item->getWorkflowResubmission() == '1') {
+            if ('1' == $item->getWorkflowResubmission()) {
                 $itemData['workflowResubmission'] = true;
             } else {
                 $itemData['workflowResubmission'] = false;
             }
-            if ($item->getWorkflowResubmissionDate() != '0000-00-00 00:00:00') {
+            if ('0000-00-00 00:00:00' != $item->getWorkflowResubmissionDate()) {
                 $itemData['workflowResubmissionDate'] = new \DateTime($item->getWorkflowResubmissionDate());
             }
-            
+
             $itemData['workflowResubmissionWho'] = $item->getWorkflowResubmissionWho();
             $itemData['workflowResubmissionWhoAdditional'] = $item->getWorkflowResubmissionWhoAdditional();
             $itemData['workflowResubmissionTrafficLight'] = $item->getWorkflowResubmissionTrafficLight();
-            if ($item->getWorkflowValidity() == '1') {
+            if ('1' == $item->getWorkflowValidity()) {
                 $itemData['workflowValidity'] = true;
             } else {
                 $itemData['workflowValidity'] = false;
             }
-            if ($item->getWorkflowValidityDate() != '0000-00-00 00:00:00') {
+            if ('0000-00-00 00:00:00' != $item->getWorkflowValidityDate()) {
                 $itemData['workflowValidityDate'] = new \DateTime($item->getWorkflowValidityDate());
             }
             $itemData['workflowValidityWho'] = $item->getWorkflowValidityWho();
@@ -46,10 +59,11 @@ class ItemTransformer extends AbstractTransformer
     }
 
     /**
-     * Applies an array of data to an existing object
+     * Applies an array of data to an existing object.
      *
      * @param object $materialObject
-     * @param array $materialData
+     * @param array  $materialData
+     *
      * @return \cs_item
      */
     public function applyTransformation($item, $itemData)
@@ -79,7 +93,7 @@ class ItemTransformer extends AbstractTransformer
         // workflow validity
         if ($itemData['workflowValidity']) {
             $item->setWorkflowValidity('1');
-            
+
             if ($itemData['workflowValidityDate']) {
                 $item->setWorkflowValidityDate($itemData['workflowValidityDate']->format('Y-m-d H:i:s'));
             } else {
@@ -96,7 +110,7 @@ class ItemTransformer extends AbstractTransformer
             $item->setWorkflowValidityWhoAdditional(null);
             $item->setWorkflowValidityTrafficLight('3_none');
         }
-        
+
         return $item;
     }
 }

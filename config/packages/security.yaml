@@ -1,7 +1,6 @@
 security:
 
-    # Which password encoder is used depends on the getEncoderName() method in App\Entity\Auth
-    encoders:
+    password_hashers:
         # This is the new default encoder used by all migrated users
         App\Entity\Account:
             algorithm: bcrypt

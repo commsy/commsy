@@ -1,27 +1,29 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
-use ApiPlatform\Core\Action\NotFoundAction;
-use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\Api\GetServerAnnouncement;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
- * Server
+ * Server.
  *
- * @ORM\Table(name="server", indexes={
- *     @ORM\Index(name="context_id", columns={"context_id"}),
- *     @ORM\Index(name="creator_id", columns={"creator_id"})
- * })
- * @ORM\Entity(repositoryClass="App\Repository\ServerRepository")
  * @Vich\Uploadable
  * @ApiResource(
  *     security="is_granted('ROLE_API_READ')",
@@ -73,152 +75,94 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  *     }
  * )
  */
+#[ORM\Entity(repositoryClass: \App\Repository\ServerRepository::class)]
+#[ORM\Table(name: 'server')]
+#[ORM\Index(name: 'context_id', columns: ['context_id'])]
+#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 class Server
 {
     /**
-     * @var integer
-     *
-     * @ORM\Id
-     * @ORM\Column(name="item_id", type="integer")
-     * @ORM\GeneratedValue()
-     *
-     * @Groups({"api"})
      * @OA\Property(description="The unique identifier.")
      */
+    #[ORM\Id]
+    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\GeneratedValue]
+    #[Groups(['api'])]
     private int $id;
 
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
     private int $contextId;
-
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="creator_id", type="integer", nullable=false)
+     * @var int
      */
+    #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
     private $creatorId = '0';
 
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="modifier_id", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: true)]
     private int $modifierId;
 
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="deleter_id", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private int $deleterId;
-
+    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
+    private \DateTime $creationDate;
+    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
+    private ?\DateTime $modificationDate = null;
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="creation_date", type="datetime", nullable=false)
+     * @var \DateTimeInterface
      */
-    private $creationDate = '0000-00-00 00:00:00';
-
-    /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="modification_date", type="datetime", nullable=false)
-     */
-    private $modificationDate;
-
-    /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
-     */
+    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
-     */
+    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private string $title;
 
-    /**
-     * @var array|null
-     *
-     * @ORM\Column(name="extras", type="array", nullable=true)
-     */
+    #[ORM\Column(name: 'extras', type: 'array', nullable: true)]
     private ?array $extras;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="status", type="string", length=20, nullable=false)
-     */
+    #[ORM\Column(name: 'status', type: 'string', length: 20, nullable: false)]
     private string $status;
-
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="activity", type="integer", nullable=false)
+     * @var int
      */
+    #[ORM\Column(name: 'activity', type: 'integer', nullable: false)]
     private $activity = '0';
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="type", type="string", length=10, nullable=false)
-     */
+    #[ORM\Column(name: 'type', type: 'string', length: 10, nullable: false)]
     private string $type = 'server';
-
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="is_open_for_guests", type="boolean", nullable=false)
+     * @var bool
      */
+    #[ORM\Column(name: 'is_open_for_guests', type: 'boolean', nullable: false)]
     private $isOpenForGuests = '1';
 
+    #[ORM\Column(name: 'url', type: 'string', length: 255, nullable: true)]
+    private ?string $url = null;
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="url", type="string", length=255, nullable=true)
-     */
-    private ?string $url;
-
-    /**
-     * @var File|null
-     *
      * @Vich\UploadableField(mapping="server_logo", fileNameProperty="logoImageName")
      */
-    private $logoImageFile;
+    private ?\Symfony\Component\HttpFoundation\File\File $logoImageFile = null;
+
+    #[ORM\Column(name: 'logo_image_name', type: 'string', length: 255, nullable: true)]
+    private ?string $logoImageName = null;
+
+    #[ORM\Column(name: 'commsy_icon_link', type: 'string', length: 255, nullable: true)]
+    private ?string $commsyIconLink = null;
+
+    public function __construct()
+    {
+        $this->creationDate = new \DateTime('0000-00-00 00:00:00');
+    }
 
     /**
-     * @var string|null
+     * Get id.
      *
-     * @ORM\Column(name="logo_image_name", type="string", length=255, nullable=true)
-     */
-    private ?string $logoImageName;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="commsy_icon_link", type="string", length=255, nullable=true)
-     */
-    private ?string $commsyIconLink;
-
-    /**
-     * Get id
-     *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @return File|null
-     */
     public function getLogoImageFile(): ?File
     {
         return $this->logoImageFile;
@@ -230,15 +174,12 @@ class Server
      * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
      * must be able to accept an instance of 'File' as the bundle will inject one here
      * during Doctrine hydration.
-     *
-     * @param File|null $logoImageFile
-     * @return self
      */
     public function setLogoImageFile(?File $logoImageFile = null): self
     {
         $this->logoImageFile = $logoImageFile;
 
-        if ($logoImageFile !== null) {
+        if (null !== $logoImageFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
             $this->modificationDate = new \DateTimeImmutable();
@@ -247,46 +188,32 @@ class Server
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getLogoImageName(): ?string
     {
         return $this->logoImageName;
     }
 
-    /**
-     * @param string|null $logoImageName
-     * @return self
-     */
     public function setLogoImageName(?string $logoImageName): self
     {
         $this->logoImageName = $logoImageName;
+
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCommsyIconLink(): ?string
     {
         return $this->commsyIconLink;
     }
 
-    /**
-     * @param string|null $commsyIconLink
-     * @return self
-     */
     public function setCommsyIconLink(?string $commsyIconLink): self
     {
         $this->commsyIconLink = $commsyIconLink;
+
         return $this;
     }
 
     /**
-     * Set extras
-     *
-     * @param array $extras
+     * Set extras.
      *
      * @return Portal
      */
@@ -298,9 +225,7 @@ class Server
     }
 
     /**
-     * Get extras
-     *
-     * @return array|null
+     * Get extras.
      */
     public function getExtras(): ?array
     {
@@ -315,6 +240,7 @@ class Server
     public function setAnnouncementText(?string $text): self
     {
         $this->extras['ANNOUNCEMENT_TEXT'] = $text;
+
         return $this;
     }
 
@@ -326,6 +252,7 @@ class Server
     public function setAnnouncementTitle(string $title): self
     {
         $this->extras['ANNOUNCEMENT_TITLE'] = $title;
+
         return $this;
     }
 
@@ -337,6 +264,7 @@ class Server
     public function setAnnouncementSeverity(string $severity): self
     {
         $this->extras['ANNOUNCEMENT_SEVERITY'] = $severity;
+
         return $this;
     }
 
@@ -348,6 +276,7 @@ class Server
     public function setAnnouncementEnabled(bool $enabled): self
     {
         $this->extras['ANNOUNCEMENT_ENABLED'] = $enabled;
+
         return $this;
     }
 
@@ -359,6 +288,7 @@ class Server
     public function setDataPrivacyEnabled(bool $enabled): self
     {
         $this->extras['CONTENT_DATAPRIVACY_ENABLED'] = $enabled;
+
         return $this;
     }
 
@@ -370,6 +300,7 @@ class Server
     public function setDataPrivacyText(?string $text): self
     {
         $this->extras['CONTENT_DATAPRIVACY_TEXT'] = $text;
+
         return $this;
     }
 
@@ -381,6 +312,7 @@ class Server
     public function setImpressumEnabled(bool $enabled): self
     {
         $this->extras['CONTENT_IMPRESSUM_ENABLED'] = $enabled;
+
         return $this;
     }
 
@@ -392,6 +324,7 @@ class Server
     public function setImpressumText(?string $text): self
     {
         $this->extras['CONTENT_IMPRESSUM_TEXT'] = $text;
+
         return $this;
     }
 
@@ -403,6 +336,7 @@ class Server
     public function setAccessibilityEnabled(bool $enabled): self
     {
         $this->extras['CONTENT_ACCESSIBILITY_ENABLED'] = $enabled;
+
         return $this;
     }
 
@@ -414,7 +348,7 @@ class Server
     public function setAccessibilityText(?string $text): self
     {
         $this->extras['CONTENT_ACCESSIBILITY_TEXT'] = $text;
+
         return $this;
     }
 }
-

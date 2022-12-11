@@ -1,36 +1,37 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Security\Authorization\Voter;
 
 use App\Entity\Account;
-use cs_environment;
-use cs_file_item;
-use cs_user_item;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-
 use App\Services\LegacyEnvironment;
-use App\Utils\ItemService;
 use App\Utils\FileService;
+use App\Utils\ItemService;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class FileVoter extends Voter
 {
-    const DOWNLOAD = 'FILE_DOWNLOAD';
+    public const DOWNLOAD = 'FILE_DOWNLOAD';
 
-    private cs_environment $legacyEnvironment;
-
-    private ItemService $itemService;
-
-    private FileService $fileService;
+    private \cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        ItemService $itemService,
-        FileService $fileService
+        private ItemService $itemService,
+        private FileService $fileService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->itemService = $itemService;
-        $this->fileService = $fileService;
     }
 
     protected function supports($attribute, $object)
@@ -38,6 +39,7 @@ class FileVoter extends Voter
         $supported = in_array($attribute, [
             self::DOWNLOAD,
         ]);
+
         return $supported;
     }
 
@@ -51,7 +53,7 @@ class FileVoter extends Voter
         /** @var ?Account $user */
         $user = $token->getUser();
 
-        if ($fileItem && $attribute === self::DOWNLOAD) {
+        if ($fileItem && self::DOWNLOAD === $attribute) {
             return $this->canDownload($fileItem, $currentUser, $user);
         }
 
@@ -59,8 +61,8 @@ class FileVoter extends Voter
     }
 
     private function canDownload(
-        cs_file_item $fileItem,
-        cs_user_item $currentUser,
+        \cs_file_item $fileItem,
+        \cs_user_item $currentUser,
         ?Account $user)
     {
         if ($fileItem->maySee($currentUser)) {

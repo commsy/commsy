@@ -1,58 +1,46 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Translation
- *
- * @ORM\Table(name="translation")
- * @ORM\Entity(repositoryClass="App\Repository\TranslationRepository")
+ * Translation.
  */
+#[ORM\Entity(repositoryClass: \App\Repository\TranslationRepository::class)]
+#[ORM\Table(name: 'translation')]
 class Translation
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private int $id;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="context_id", type="integer")
-     */
+    #[ORM\Column(name: 'context_id', type: 'integer')]
     private int $contextId;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="translation_key", type="string", length=255)
-     */
+    #[ORM\Column(name: 'translation_key', type: 'string', length: 255)]
     private string $translationKey;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="translation_de", type="string", length=2000)
-     */
+    #[ORM\Column(name: 'translation_de', type: 'string', length: 2000)]
     private string $translationDe;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="translation_en", type="string", length=2000)
-     */
+    #[ORM\Column(name: 'translation_en', type: 'string', length: 2000)]
     private string $translationEn;
 
     /**
-     * Get id
-     *
-     * @return int
+     * Get id.
      */
     public function getId(): int
     {
@@ -60,11 +48,7 @@ class Translation
     }
 
     /**
-     * Set contextId
-     *
-     * @param int $contextId
-     *
-     * @return Translation
+     * Set contextId.
      */
     public function setContextId(int $contextId): self
     {
@@ -74,9 +58,7 @@ class Translation
     }
 
     /**
-     * Get contextId
-     *
-     * @return int
+     * Get contextId.
      */
     public function getContextId(): int
     {
@@ -84,11 +66,7 @@ class Translation
     }
 
     /**
-     * Set translationKey
-     *
-     * @param string $translationKey
-     *
-     * @return Translation
+     * Set translationKey.
      */
     public function setTranslationKey(string $translationKey): self
     {
@@ -98,9 +76,7 @@ class Translation
     }
 
     /**
-     * Get translationKey
-     *
-     * @return string
+     * Get translationKey.
      */
     public function getTranslationKey(): string
     {
@@ -108,9 +84,7 @@ class Translation
     }
 
     /**
-     * Get german translation
-     *
-     * @return string
+     * Get german translation.
      */
     public function getTranslationDe(): string
     {
@@ -118,7 +92,7 @@ class Translation
     }
 
     /**
-     * Set german translation
+     * Set german translation.
      */
     public function setTranslationDe(string $translationDe): self
     {
@@ -128,9 +102,7 @@ class Translation
     }
 
     /**
-     * Get english translation
-     *
-     * @return string
+     * Get english translation.
      */
     public function getTranslationEn(): string
     {
@@ -138,7 +110,7 @@ class Translation
     }
 
     /**
-     * Set english translation
+     * Set english translation.
      */
     public function setTranslationEn(string $translationEn): self
     {
@@ -149,10 +121,13 @@ class Translation
 
     public function getTranslationForLocale($locale): string
     {
-        if ($locale === 'de')  return $this->getTranslationDe();
-        if ($locale === 'en') return $this->getTranslationEn();
+        if ('de' === $locale) {
+            return $this->getTranslationDe();
+        }
+        if ('en' === $locale) {
+            return $this->getTranslationEn();
+        }
 
         return '';
     }
 }
-

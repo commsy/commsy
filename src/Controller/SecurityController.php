@@ -1,10 +1,20 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Entity\Account;
 use App\Entity\AuthSourceLocal;
-use App\Entity\ShibbolethIdentityProvider;
 use App\Entity\Portal;
 use App\Entity\Server;
 use App\Form\Model\LocalAccount;
@@ -18,37 +28,29 @@ use App\Model\Password;
 use App\Model\ResetPasswordToken;
 use App\Security\AbstractCommsyGuardAuthenticator;
 use App\Services\LegacyEnvironment;
-use App\Utils\MailAssistant;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
-use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-
 class SecurityController extends AbstractController
 {
-    /**
-     * @Route("/admin")
-     * @return Response
-     */
+    #[Route(path: '/admin')]
     public function admin(): Response
     {
         /** @var Account $user */
         $user = $this->getUser();
 
         // If the user is not authenticated, redirect to admin login
-        if ($user === null) {
+        if (null === $user) {
             return $this->redirectToRoute('app_login', [
                 'context' => 'server',
             ]);
@@ -58,12 +60,7 @@ class SecurityController extends AbstractController
         return $this->redirectToRoute('app_server_show');
     }
 
-    /**
-     * @Route("/login/{context}", name="app_login")
-     * @param AuthenticationUtils $authenticationUtils
-     * @param string $context
-     * @return Response
-     */
+    #[Route(path: '/login/{context}', name: 'app_login')]
     public function login(
         AuthenticationUtils $authenticationUtils,
         EntityManagerInterface $entityManager,
@@ -76,7 +73,7 @@ class SecurityController extends AbstractController
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        if ($context !== 'server') {
+        if ('server' !== $context) {
             $portal = $entityManager->getRepository(Portal::class)->find($context);
             if (!$portal) {
                 throw $this->createNotFoundException('Portal not found');
@@ -101,7 +98,7 @@ class SecurityController extends AbstractController
 //            }
 //        }
         $choices = [];
-        foreach($idps as $currentIpd) {
+        foreach ($idps as $currentIpd) {
             $choices[$currentIpd->getName()] = $currentIpd->getId();
         }
 
@@ -117,33 +114,24 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/logout", name="app_logout", methods={"GET"})
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/logout', name: 'app_logout', methods: ['GET'])]
     public function logout()
     {
         // controller can be blank: it will never be executed!
-        throw new Exception('Don\'t forget to activate logout in security.yaml');
+        throw new \Exception('Don\'t forget to activate logout in security.yaml');
     }
 
-    /**
-     * @Route("/login/{portalId}/request_accounts")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @Template
-     * @param Portal $portal
-     * @param Request $request
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param Mailer $mailer
-     * @param TranslatorInterface $symfonyTranslator
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/login/{portalId}/request_accounts')]
+    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     public function requestAccounts(
         Portal $portal,
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         Mailer $mailer,
         TranslatorInterface $symfonyTranslator
-    ) {
+    ): Response {
         $requestAccounts = new RequestAccounts($portal->getId());
         $form = $this->createForm(RequestAccountsType::class, $requestAccounts);
 
@@ -151,13 +139,13 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $clickedButtonName = $form->getClickedButton()->getName();
 
-            if ($clickedButtonName === 'cancel') {
+            if ('cancel' === $clickedButtonName) {
                 return $this->redirectToRoute('app_login', [
                     'context' => $portal->getId(),
                 ]);
             }
 
-            if ($clickedButtonName === 'submit') {
+            if ('submit' === $clickedButtonName) {
                 $accountsRepository = $this->getDoctrine()->getRepository(Account::class);
                 $matchingAccounts = $accountsRepository->findByEmailAndPortalId(
                     $requestAccounts->getEmail(),
@@ -167,18 +155,18 @@ class SecurityController extends AbstractController
                 if ($matchingAccounts) {
                     $usernames = [];
                     foreach ($matchingAccounts as $matchingAccount) {
-                        /** @var Account $matchingAccount */
+                        /* @var Account $matchingAccount */
                         $usernames[] = $matchingAccount->getUsername();
                     }
 
                     /**
-                     * TODO: Refactor message creation, do not use legacy translator
+                     * TODO: Refactor message creation, do not use legacy translator.
                      */
                     $translator = $legacyEnvironment->getEnvironment()->getTranslationObject();
                     $subject = $translator->getMessage('USER_ACCOUNT_FORGET_HEADLINE', $portal->getTitle());
                     $body = $translator->getMessage('USER_ACCOUNT_FORGET_MAIL_BODY', $portal->getTitle(),
                         implode(', ', $usernames));
-                    $body .= '. <br><br>' . $translator->getMessage('MAIL_BODY_CIAO_GR', 'CommSy', $portal->getTitle());
+                    $body .= '. <br><br>'.$translator->getMessage('MAIL_BODY_CIAO_GR', 'CommSy', $portal->getTitle());
 
                     $mailer->sendRaw(
                         $subject,
@@ -203,30 +191,23 @@ class SecurityController extends AbstractController
             }
         }
 
-        return [
+        return $this->render('security/request_accounts.html.twig', [
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
     /**
-     * @Route("/login/{portalId}/request_password_reset")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @Template
-     * @param Portal $portal
-     * @param Request $request
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param Mailer $mailer
-     * @param RouterInterface $router
-     * @return array|RedirectResponse
      * @throws NonUniqueResultException
      */
+    #[Route(path: '/login/{portalId}/request_password_reset')]
+    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     public function requestPasswordReset(
         Portal $portal,
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         Mailer $mailer,
         RouterInterface $router
-    ) {
+    ): Response {
         $localAccount = new LocalAccount($portal->getId());
         $form = $this->createForm(RequestPasswordResetType::class, $localAccount);
 
@@ -234,13 +215,13 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $clickedButtonName = $form->getClickedButton()->getName();
 
-            if ($clickedButtonName === 'cancel') {
+            if ('cancel' === $clickedButtonName) {
                 return $this->redirectToRoute('app_login', [
                     'context' => $portal->getId(),
                 ]);
             }
 
-            if ($clickedButtonName === 'submit') {
+            if ('submit' === $clickedButtonName) {
                 $localSource = $this->getDoctrine()->getRepository(AuthSourceLocal::class)
                     ->findOneBy([
                         'portal' => $localAccount->getContextId(),
@@ -275,7 +256,7 @@ class SecurityController extends AbstractController
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
 
                 /**
-                 * TODO: Refactor message creation, do not use legacy translator
+                 * TODO: Refactor message creation, do not use legacy translator.
                  */
                 $translator = $legacyEnvironment->getEnvironment()->getTranslationObject();
                 $subject = $translator->getMessage('USER_PASSWORD_MAIL_SUBJECT', $portal->getTitle());
@@ -303,30 +284,23 @@ class SecurityController extends AbstractController
             }
         }
 
-        return [
+        return $this->render('security/request_password_reset.html.twig', [
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
     /**
-     * @Route("/login/{portalId}/password_reset/{token}")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @Template
-     * @param Portal $portal
-     * @param string $token
-     * @param Request $request
-     * @param EntityManagerInterface $entityManager
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @return array|RedirectResponse
      * @throws NonUniqueResultException
      */
+    #[Route(path: '/login/{portalId}/password_reset/{token}')]
+    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     public function passwordReset(
         Portal $portal,
         string $token,
         Request $request,
         EntityManagerInterface $entityManager,
-        UserPasswordEncoderInterface $passwordEncoder
-    ) {
+        UserPasswordHasherInterface $passwordHasher
+    ): Response {
         $session = $request->getSession();
         if (!$session->has('ResetPasswordToken')) {
             throw $this->createAccessDeniedException();
@@ -377,7 +351,7 @@ class SecurityController extends AbstractController
                 );
 
             $localAccount->setPasswordMd5(null);
-            $localAccount->setPassword($passwordEncoder->encodePassword($localAccount, $password->getPassword()));
+            $localAccount->setPassword($passwordHasher->hashPassword($localAccount, $password->getPassword()));
 
             $entityManager->persist($localAccount);
             $entityManager->flush();
@@ -390,18 +364,15 @@ class SecurityController extends AbstractController
             ]);
         }
 
-        return [
+        return $this->render('security/password_reset.html.twig', [
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/login/{portalId}/simultaneous")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @Template
-     */
-    public function simultaneousLogin(Portal $portal)
+    #[Route(path: '/login/{portalId}/simultaneous')]
+    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
+    public function simultaneousLogin(Portal $portal): Response
     {
-        return [];
+        return $this->render('security/simultaneous_login.html.twig');
     }
 }

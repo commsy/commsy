@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Metrics;
 
 use Prometheus\CollectorRegistry;
@@ -11,25 +22,17 @@ abstract class AbstractMetric
 {
     private string $cacheKey;
 
-    /**
-     * @required
-     */
+    #[\Symfony\Contracts\Service\Attribute\Required]
     public function setCacheKey(ParameterBagInterface $params)
     {
         $this->cacheKey = $params->get('commsy.metrics.cache_namespace');
     }
 
-    /**
-     * @return string
-     */
     protected function getNamespace(): string
     {
         return 'commsy';
     }
 
-    /**
-     * @return RegistryInterface
-     */
     public function getCollectorRegistry(): RegistryInterface
     {
         return new CollectorRegistry(new APC($this->cacheKey));

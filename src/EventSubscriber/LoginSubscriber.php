@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\EventSubscriber;
 
 use App\Account\AccountManager;
@@ -16,26 +27,8 @@ use Symfony\Component\Security\Http\SecurityEvents;
 
 class LoginSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var Security
-     */
-    private Security $security;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private UrlGeneratorInterface $urlGenerator;
-
-    private AccountManager $accountManager;
-
-    public function __construct(
-        Security $security,
-        UrlGeneratorInterface $urlGenerator,
-        AccountManager $accountManager
-    ) {
-        $this->security = $security;
-        $this->urlGenerator = $urlGenerator;
-        $this->accountManager = $accountManager;
+    public function __construct(private Security $security, private UrlGeneratorInterface $urlGenerator, private AccountManager $accountManager)
+    {
     }
 
     public static function getSubscribedEvents()
@@ -48,7 +41,7 @@ class LoginSubscriber implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event)
     {
-        if ($event->getRequestType() != HttpKernelInterface::MAIN_REQUEST) {
+        if (HttpKernelInterface::MAIN_REQUEST != $event->getRequestType()) {
             return;
         }
 
@@ -58,14 +51,14 @@ class LoginSubscriber implements EventSubscriberInterface
             return;
         }
 
-        /**
+        /*
          * Make sure that there is a valid user object and as a result an authentication token in the token storage.
          * If missing, ->isGranted() will cause development-only urls like _wdt/ to
          * throw an AuthenticationCredentialsNotFoundException
          */
         if (
-            $event->getRequest()->attributes->get('_route') === 'app_migration_password' ||
-            $this->security->isGranted('ROLE_PREVIOUS_ADMIN')
+            'app_migration_password' === $event->getRequest()->attributes->get('_route') ||
+            $this->security->isGranted('IS_IMPERSONATOR')
         ) {
             return;
         }

@@ -1,4 +1,16 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
 use App\Entity\SavedSearch;
@@ -14,7 +26,9 @@ class SavedSearchRepository extends ServiceEntityRepository
 
     /**
      * Returns a list of saved searches belonging to the given account ID.
+     *
      * @param int $accountId The ID of the user account whose saved searches shall be returned
+     *
      * @return SavedSearch[] The list of saved searches belonging to the given account ID
      */
     public function getSavedSearchesByAccountId(int $accountId): array
@@ -34,6 +48,7 @@ class SavedSearchRepository extends ServiceEntityRepository
 
     /**
      * Deletes any saved searches belonging to the given account ID.
+     *
      * @param int $accountId The ID of the user account whose saved searches shall be deleted
      */
     public function removeSavedSearchesByAccountId(int $accountId)
@@ -54,7 +69,6 @@ class SavedSearchRepository extends ServiceEntityRepository
 
     /**
      * Deletes the given saved search.
-     * @param SavedSearch $savedSearch
      */
     public function removeSavedSearch(SavedSearch $savedSearch)
     {

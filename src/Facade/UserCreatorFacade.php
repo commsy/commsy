@@ -1,13 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 30.07.18
- * Time: 19:54
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Facade;
-
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
@@ -15,57 +19,24 @@ use App\Entity\Room;
 use App\Form\Model\Csv\CsvUserDataset;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
-use cs_environment;
-use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserCreatorFacade
 {
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
-
-    /**
-     * @var AccountCreatorFacade
-     */
-    private AccountCreatorFacade $accountFacade;
-
-    /**
-     * @var UserService
-     */
-    private UserService $userService;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var UserPasswordEncoderInterface
-     */
-    private UserPasswordEncoderInterface $passwordEncoder;
+    private \cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        AccountCreatorFacade $accountFacade,
-        UserService $userService,
-        EntityManagerInterface $entityManager,
-        UserPasswordEncoderInterface $passwordEncoder
+        private AccountCreatorFacade $accountFacade,
+        private UserService $userService,
+        private EntityManagerInterface $entityManager,
+        private \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $passwordEncoder
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->accountFacade = $accountFacade;
-        $this->userService = $userService;
-        $this->entityManager = $entityManager;
-        $this->passwordEncoder = $passwordEncoder;
     }
 
     /**
-     * @param AuthSource $authSource
-     * @param CsvUserDataset $csvUserDataset
-     * @throws Exception
+     * @throws \Exception
      */
     public function createFromCsvDataset(
         AuthSource $authSource,
@@ -95,8 +66,6 @@ class UserCreatorFacade
      * If the provided identifier is already used, search continues by appending a numeric
      * suffix until a free account ist found.
      *
-     * @param string $identifier
-     * @param AuthSource $authSource
      * @return string The free user identifier
      */
     private function findFreeIdentifier(string $identifier, AuthSource $authSource): string
@@ -107,8 +76,8 @@ class UserCreatorFacade
         $suffix = 0;
 
         while ($accountRepository->findOneByCredentials($lookup, $portalId, $authSource)) {
-            $suffix++;
-            $lookup = $identifier . $suffix;
+            ++$suffix;
+            $lookup = $identifier.$suffix;
         }
 
         return $lookup;
@@ -116,7 +85,8 @@ class UserCreatorFacade
 
     /**
      * @return bool|string The password or false on error
-     * @throws Exception
+     *
+     * @throws \Exception
      */
     private function generatePassword(): string
     {
@@ -126,14 +96,6 @@ class UserCreatorFacade
     /**
      * Creates entries in auth and user table as needed. Only the local authentication persisted in the commsy
      * database needs to create an authentication item. See the different auth implementations for detail.
-     *
-     * @param string $identifier
-     * @param string $password
-     * @param string $firstname
-     * @param string $lastname
-     * @param string $email
-     * @param AuthSource $authSource
-     * @return cs_user_item
      */
     private function createAccountAndUser(
         string $identifier,
@@ -142,7 +104,7 @@ class UserCreatorFacade
         string $lastname,
         string $email,
         AuthSource $authSource
-    ): cs_user_item {
+    ): \cs_user_item {
         $account = new Account();
         $account->setUsername($identifier);
         $account->setFirstname($firstname);
@@ -160,7 +122,7 @@ class UserCreatorFacade
     /**
      * Adds users representing the given account to the rooms with the given room slugs.
      *
-     * @param Account $account the account for whom room users shall be created
+     * @param Account  $account   the account for whom room users shall be created
      * @param string[] $roomSlugs list of room slugs (i.e., unique textual identifiers for the rooms)
      */
     public function addUserToRoomsWithSlugs(Account $account, array $roomSlugs): void
@@ -174,6 +136,7 @@ class UserCreatorFacade
         // map room slugs to actual room IDs
         $roomIds = array_map(function (string $roomSlug) use ($roomRepository, $account) {
             $room = $roomRepository->findOneByRoomSlug(trim($roomSlug), $account->getContextId());
+
             return ($room) ? $room->getItemId() : null;
         }, $roomSlugs);
 
@@ -188,10 +151,10 @@ class UserCreatorFacade
     /**
      * Adds users representing the given user to the rooms with the given IDs.
      *
-     * @param cs_user_item $user the user for whom room users shall be created
-     * @param array $roomIds list of room IDs
+     * @param \cs_user_item $user    the user for whom room users shall be created
+     * @param array         $roomIds list of room IDs
      */
-    private function addUserToRoomsWithIds(cs_user_item $user, array $roomIds): void
+    private function addUserToRoomsWithIds(\cs_user_item $user, array $roomIds): void
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $privateRoomUser = $user->getRelatedPrivateRoomUserItem();

@@ -1,242 +1,213 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Dates
- *
- * @ORM\Table(name="dates", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"})})
- * @ORM\Entity
+ * Dates.
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'dates')]
+#[ORM\Index(name: 'context_id', columns: ['context_id'])]
+#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 class Dates
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="item_id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @var int
      */
+    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $itemId = '0';
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
     private $contextId;
-    
-    /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id")
-     */
-    private $creator;
+
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
+    private ?\App\Entity\User $creator = null;
+
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
+    private ?\App\Entity\User $modifier = null;
 
     /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id")
+     * @var int
      */
-    private $modifier;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="deleter_id", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private $deleterId;
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="creation_date", type="datetime", nullable=false)
+     * @var \DateTime
      */
+    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private $creationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="modification_date", type="datetime", nullable=false)
+     * @var \DateTime
      */
+    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
     private $modificationDate = '0000-00-00 00:00:00';
 
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="activation_date", type="datetime")
-     */
-    private ?DateTime $activationDate;
+    #[ORM\Column(name: 'activation_date', type: 'datetime')]
+    private ?\DateTime $activationDate = null;
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
+     * @var \DateTime
      */
+    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private $title;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="text", length=16777215, nullable=true)
      */
+    #[ORM\Column(name: 'description', type: 'text', length: 16777215, nullable: true)]
     private $description;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="start_time", type="string", length=100, nullable=true)
      */
+    #[ORM\Column(name: 'start_time', type: 'string', length: 100, nullable: true)]
     private $startTime;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="end_time", type="string", length=100, nullable=true)
      */
+    #[ORM\Column(name: 'end_time', type: 'string', length: 100, nullable: true)]
     private $endTime;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="start_day", type="string", length=100, nullable=false)
      */
+    #[ORM\Column(name: 'start_day', type: 'string', length: 100, nullable: false)]
     private $startDay;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="end_day", type="string", length=100, nullable=true)
      */
+    #[ORM\Column(name: 'end_day', type: 'string', length: 100, nullable: true)]
     private $endDay;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="place", type="string", length=100, nullable=true)
      */
+    #[ORM\Column(name: 'place', type: 'string', length: 100, nullable: true)]
     private $place;
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="datetime_start", type="datetime", nullable=false)
+     * @var \DateTime
      */
+    #[ORM\Column(name: 'datetime_start', type: 'datetime', nullable: false)]
     private $datetimeStart = '0000-00-00 00:00:00';
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="datetime_end", type="datetime", nullable=false)
+     * @var \DateTime
      */
+    #[ORM\Column(name: 'datetime_end', type: 'datetime', nullable: false)]
     private $datetimeEnd = '0000-00-00 00:00:00';
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="public", type="boolean", nullable=false)
+     * @var bool
      */
+    #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
     private $public = '0';
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="date_mode", type="boolean", nullable=false)
+     * @var bool
      */
+    #[ORM\Column(name: 'date_mode', type: 'boolean', nullable: false)]
     private $dateMode = '0';
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="extras", type="text", length=65535, nullable=true)
      */
+    #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
     private $extras;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="color", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'color', type: 'string', length: 255, nullable: true)]
     private $color;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="recurrence_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'recurrence_id', type: 'integer', nullable: true)]
     private $recurrenceId;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="recurrence_pattern", type="text", length=65535, nullable=true)
      */
+    #[ORM\Column(name: 'recurrence_pattern', type: 'text', length: 65535, nullable: true)]
     private $recurrencePattern;
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="locking_date", type="datetime", nullable=true)
+     * @var \DateTime
      */
+    #[ORM\Column(name: 'locking_date', type: 'datetime', nullable: true)]
     private $lockingDate;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="locking_user_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'locking_user_id', type: 'integer', nullable: true)]
     private $lockingUserId;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="external", type="boolean", nullable=false)
+     * @var bool
      */
+    #[ORM\Column(name: 'external', type: 'boolean', nullable: false)]
     private $external = '0';
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="whole_day", type="boolean", nullable=false)
+     * @var bool
      */
+    #[ORM\Column(name: 'whole_day', type: 'boolean', nullable: false)]
     private $wholeDay = '0';
 
     /**
      * @var uid
-     *
-     * @ORM\Column(name="uid", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'uid', type: 'string', length: 255, nullable: true)]
     private $uid;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="calendar_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'calendar_id', type: 'integer', nullable: true)]
     private $calendarId;
-    
+
     public function isIndexable()
     {
-        return ($this->deleterId == null && $this->deletionDate == null);
+        return null == $this->deleterId && null == $this->deletionDate;
     }
 
-
     /**
-     * Get itemId
+     * Get itemId.
      *
-     * @return integer
+     * @return int
      */
     public function getItemId()
     {
@@ -244,9 +215,9 @@ class Dates
     }
 
     /**
-     * Set contextId
+     * Set contextId.
      *
-     * @param integer $contextId
+     * @param int $contextId
      *
      * @return Dates
      */
@@ -258,9 +229,9 @@ class Dates
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
-     * @return integer
+     * @return int
      */
     public function getContextId()
     {
@@ -268,9 +239,9 @@ class Dates
     }
 
     /**
-     * Set deleterId
+     * Set deleterId.
      *
-     * @param integer $deleterId
+     * @param int $deleterId
      *
      * @return Dates
      */
@@ -282,9 +253,9 @@ class Dates
     }
 
     /**
-     * Get deleterId
+     * Get deleterId.
      *
-     * @return integer
+     * @return int
      */
     public function getDeleterId()
     {
@@ -292,9 +263,9 @@ class Dates
     }
 
     /**
-     * Set creationDate
+     * Set creationDate.
      *
-     * @param DateTime $creationDate
+     * @param \DateTime $creationDate
      *
      * @return Dates
      */
@@ -306,9 +277,9 @@ class Dates
     }
 
     /**
-     * Get creationDate
+     * Get creationDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getCreationDate()
     {
@@ -316,9 +287,9 @@ class Dates
     }
 
     /**
-     * Set modificationDate
+     * Set modificationDate.
      *
-     * @param DateTime $modificationDate
+     * @param \DateTime $modificationDate
      *
      * @return Dates
      */
@@ -330,9 +301,9 @@ class Dates
     }
 
     /**
-     * Get modificationDate
+     * Get modificationDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getModificationDate()
     {
@@ -340,13 +311,9 @@ class Dates
     }
 
     /**
-     * Set activationDate
-     *
-     * @param DateTime $activationDate
-     *
-     * @return Dates
+     * Set activationDate.
      */
-    public function setActivationDate(DateTime $activationDate): self
+    public function setActivationDate(\DateTime $activationDate): self
     {
         $this->activationDate = $activationDate;
 
@@ -354,19 +321,17 @@ class Dates
     }
 
     /**
-     * Get activationDate
-     *
-     * @return DateTime|null
+     * Get activationDate.
      */
-    public function getActivationDate(): ?DateTime
+    public function getActivationDate(): ?\DateTime
     {
         return $this->activationDate;
     }
 
     /**
-     * Set deletionDate
+     * Set deletionDate.
      *
-     * @param DateTime $deletionDate
+     * @param \DateTime $deletionDate
      *
      * @return Dates
      */
@@ -378,9 +343,9 @@ class Dates
     }
 
     /**
-     * Get deletionDate
+     * Get deletionDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDeletionDate()
     {
@@ -388,7 +353,7 @@ class Dates
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -402,7 +367,7 @@ class Dates
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -412,7 +377,7 @@ class Dates
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -426,7 +391,7 @@ class Dates
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -436,7 +401,7 @@ class Dates
     }
 
     /**
-     * Set startTime
+     * Set startTime.
      *
      * @param string $startTime
      *
@@ -450,7 +415,7 @@ class Dates
     }
 
     /**
-     * Get startTime
+     * Get startTime.
      *
      * @return string
      */
@@ -460,7 +425,7 @@ class Dates
     }
 
     /**
-     * Set endTime
+     * Set endTime.
      *
      * @param string $endTime
      *
@@ -474,7 +439,7 @@ class Dates
     }
 
     /**
-     * Get endTime
+     * Get endTime.
      *
      * @return string
      */
@@ -484,7 +449,7 @@ class Dates
     }
 
     /**
-     * Set startDay
+     * Set startDay.
      *
      * @param string $startDay
      *
@@ -498,7 +463,7 @@ class Dates
     }
 
     /**
-     * Get startDay
+     * Get startDay.
      *
      * @return string
      */
@@ -508,7 +473,7 @@ class Dates
     }
 
     /**
-     * Set endDay
+     * Set endDay.
      *
      * @param string $endDay
      *
@@ -522,7 +487,7 @@ class Dates
     }
 
     /**
-     * Get endDay
+     * Get endDay.
      *
      * @return string
      */
@@ -532,7 +497,7 @@ class Dates
     }
 
     /**
-     * Set place
+     * Set place.
      *
      * @param string $place
      *
@@ -546,7 +511,7 @@ class Dates
     }
 
     /**
-     * Get place
+     * Get place.
      *
      * @return string
      */
@@ -556,9 +521,9 @@ class Dates
     }
 
     /**
-     * Set datetimeStart
+     * Set datetimeStart.
      *
-     * @param DateTime $datetimeStart
+     * @param \DateTime $datetimeStart
      *
      * @return Dates
      */
@@ -570,9 +535,9 @@ class Dates
     }
 
     /**
-     * Get datetimeStart
+     * Get datetimeStart.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDatetimeStart()
     {
@@ -580,9 +545,9 @@ class Dates
     }
 
     /**
-     * Set datetimeEnd
+     * Set datetimeEnd.
      *
-     * @param DateTime $datetimeEnd
+     * @param \DateTime $datetimeEnd
      *
      * @return Dates
      */
@@ -594,9 +559,9 @@ class Dates
     }
 
     /**
-     * Get datetimeEnd
+     * Get datetimeEnd.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDatetimeEnd()
     {
@@ -604,9 +569,9 @@ class Dates
     }
 
     /**
-     * Set public
+     * Set public.
      *
-     * @param boolean $public
+     * @param bool $public
      *
      * @return Dates
      */
@@ -618,9 +583,9 @@ class Dates
     }
 
     /**
-     * Get public
+     * Get public.
      *
-     * @return boolean
+     * @return bool
      */
     public function getPublic()
     {
@@ -628,9 +593,9 @@ class Dates
     }
 
     /**
-     * Set dateMode
+     * Set dateMode.
      *
-     * @param boolean $dateMode
+     * @param bool $dateMode
      *
      * @return Dates
      */
@@ -642,9 +607,9 @@ class Dates
     }
 
     /**
-     * Get dateMode
+     * Get dateMode.
      *
-     * @return boolean
+     * @return bool
      */
     public function getDateMode()
     {
@@ -652,7 +617,7 @@ class Dates
     }
 
     /**
-     * Set extras
+     * Set extras.
      *
      * @param string $extras
      *
@@ -666,7 +631,7 @@ class Dates
     }
 
     /**
-     * Get extras
+     * Get extras.
      *
      * @return string
      */
@@ -676,7 +641,7 @@ class Dates
     }
 
     /**
-     * Set color
+     * Set color.
      *
      * @param string $color
      *
@@ -690,7 +655,7 @@ class Dates
     }
 
     /**
-     * Get color
+     * Get color.
      *
      * @return string
      */
@@ -700,9 +665,9 @@ class Dates
     }
 
     /**
-     * Set recurrenceId
+     * Set recurrenceId.
      *
-     * @param integer $recurrenceId
+     * @param int $recurrenceId
      *
      * @return Dates
      */
@@ -714,9 +679,9 @@ class Dates
     }
 
     /**
-     * Get recurrenceId
+     * Get recurrenceId.
      *
-     * @return integer
+     * @return int
      */
     public function getRecurrenceId()
     {
@@ -724,7 +689,7 @@ class Dates
     }
 
     /**
-     * Set recurrencePattern
+     * Set recurrencePattern.
      *
      * @param string $recurrencePattern
      *
@@ -738,7 +703,7 @@ class Dates
     }
 
     /**
-     * Get recurrencePattern
+     * Get recurrencePattern.
      *
      * @return string
      */
@@ -748,9 +713,9 @@ class Dates
     }
 
     /**
-     * Set lockingDate
+     * Set lockingDate.
      *
-     * @param DateTime $lockingDate
+     * @param \DateTime $lockingDate
      *
      * @return Dates
      */
@@ -762,9 +727,9 @@ class Dates
     }
 
     /**
-     * Get lockingDate
+     * Get lockingDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getLockingDate()
     {
@@ -772,9 +737,9 @@ class Dates
     }
 
     /**
-     * Set lockingUserId
+     * Set lockingUserId.
      *
-     * @param integer $lockingUserId
+     * @param int $lockingUserId
      *
      * @return Dates
      */
@@ -786,9 +751,9 @@ class Dates
     }
 
     /**
-     * Get lockingUserId
+     * Get lockingUserId.
      *
-     * @return integer
+     * @return int
      */
     public function getLockingUserId()
     {
@@ -796,13 +761,11 @@ class Dates
     }
 
     /**
-     * Set creator
-     *
-     * @param \App\Entity\User $creator
+     * Set creator.
      *
      * @return Dates
      */
-    public function setCreator(\App\Entity\User $creator = null)
+    public function setCreator(User $creator = null)
     {
         $this->creator = $creator;
 
@@ -810,7 +773,7 @@ class Dates
     }
 
     /**
-     * Get creator
+     * Get creator.
      *
      * @return \App\Entity\User
      */
@@ -820,13 +783,11 @@ class Dates
     }
 
     /**
-     * Set modifier
-     *
-     * @param \App\Entity\User $modifier
+     * Set modifier.
      *
      * @return Dates
      */
-    public function setModifier(\App\Entity\User $modifier = null)
+    public function setModifier(User $modifier = null)
     {
         $this->modifier = $modifier;
 
@@ -834,7 +795,7 @@ class Dates
     }
 
     /**
-     * Get modifier
+     * Get modifier.
      *
      * @return \App\Entity\User
      */
@@ -844,9 +805,9 @@ class Dates
     }
 
     /**
-     * Set calendarId
+     * Set calendarId.
      *
-     * @param integer $calendarId
+     * @param int $calendarId
      *
      * @return Dates
      */
@@ -858,9 +819,9 @@ class Dates
     }
 
     /**
-     * Get calendarId
+     * Get calendarId.
      *
-     * @return integer
+     * @return int
      */
     public function getCalendarId()
     {
@@ -868,9 +829,9 @@ class Dates
     }
 
     /**
-     * Set external
+     * Set external.
      *
-     * @param boolean $external
+     * @param bool $external
      *
      * @return Dates
      */
@@ -882,9 +843,9 @@ class Dates
     }
 
     /**
-     * Get external
+     * Get external.
      *
-     * @return boolean
+     * @return bool
      */
     public function getExternal()
     {
@@ -892,7 +853,7 @@ class Dates
     }
 
     /**
-     * Set uid
+     * Set uid.
      *
      * @param string $uid
      *
@@ -906,7 +867,7 @@ class Dates
     }
 
     /**
-     * Get uid
+     * Get uid.
      *
      * @return string
      */
@@ -916,9 +877,9 @@ class Dates
     }
 
     /**
-     * Set whole day
+     * Set whole day.
      *
-     * @param boolean $wholeDay
+     * @param bool $wholeDay
      *
      * @return Dates
      */
@@ -930,9 +891,9 @@ class Dates
     }
 
     /**
-     * Get whole day
+     * Get whole day.
      *
-     * @return boolean
+     * @return bool
      */
     public function getWholeDay()
     {

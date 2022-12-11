@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Security;
-
 
 use App\Entity\Account;
 use App\Entity\AuthSourceShibboleth;
@@ -16,31 +25,14 @@ use Symfony\Component\Security\Http\Logout\DefaultLogoutSuccessHandler;
 class LogoutSuccessHandler extends DefaultLogoutSuccessHandler
 {
     /**
-     * @var Security
-     */
-    private Security $security;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private UrlGeneratorInterface $urlGenerator;
-
-    /**
      * LogoutSuccessHandler constructor.
-     * @param Security $security
-     * @param HttpUtils $httpUtils
-     * @param UrlGeneratorInterface $urlGenerator
-     * @param string $targetUrl
      */
     public function __construct(
-        Security $security,
+        private Security $security,
         HttpUtils $httpUtils,
-        UrlGeneratorInterface $urlGenerator,
+        private UrlGeneratorInterface $urlGenerator,
         string $targetUrl = '/'
     ) {
-        $this->security = $security;
-        $this->urlGenerator = $urlGenerator;
-
         parent::__construct($httpUtils, $targetUrl);
     }
 
@@ -63,10 +55,11 @@ class LogoutSuccessHandler extends DefaultLogoutSuccessHandler
                 // Redirect to portal login if we find the id in the session
                 $session = $request->getSession();
                 if ($session->has('context')) {
-                    $context = $session->get('context') === 99 ? 'server' : $session->get('context');
+                    $context = 99 === $session->get('context') ? 'server' : $session->get('context');
                     $loginUrl = $this->urlGenerator->generate('app_login', [
                         'context' => $context,
                     ]);
+
                     return $this->httpUtils->createRedirectResponse($request, $loginUrl);
                 }
             }

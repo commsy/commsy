@@ -1,16 +1,19 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Services\LegacyEnvironment;
-use cs_dates_item;
-use cs_environment;
-use cs_item;
-use cs_list;
-use DateInterval;
-use DateTime;
-use DateTimeImmutable;
-use DateTimeZone;
 use Eluceo\iCal\Domain\Entity\Attendee;
 use Eluceo\iCal\Domain\Entity\Calendar;
 use Eluceo\iCal\Domain\Entity\Event;
@@ -26,8 +29,6 @@ use Eluceo\iCal\Domain\ValueObject\TimeSpan;
 use Eluceo\iCal\Domain\ValueObject\UniqueIdentifier;
 use Eluceo\iCal\Domain\ValueObject\Uri;
 use Eluceo\iCal\Presentation\Factory\CalendarFactory;
-use Exception;
-use Generator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,42 +40,25 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ICalController extends AbstractController
 {
+    protected \cs_environment $legacyEnvironment;
 
-    /**
-     * @var cs_environment
-     */
-    protected cs_environment $legacyEnvironment;
-
-    /**
-     * @var TranslatorInterface
-     */
     protected TranslatorInterface $translator;
 
-    /**
-     * @required
-     * @param LegacyEnvironment $legacyEnvironment
-     */
+    #[\Symfony\Contracts\Service\Attribute\Required]
     public function setLegacyEnvironment(LegacyEnvironment $legacyEnvironment): void
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    /**
-     * @param TranslatorInterface $translator
-     */
     public function setTranslator(TranslatorInterface $translator): void
     {
         $this->translator = $translator;
     }
 
     /**
-     * @Route("/ical/{contextId}")
-     * @param Request $request
-     * @param LegacyEnvironment $environment
-     * @param int $contextId
-     * @return Response
-     * @throws Exception
+     * @throws \Exception
      */
+    #[Route(path: '/ical/{contextId}')]
     public function getContentAction(
         Request $request,
         LegacyEnvironment $environment,
@@ -132,7 +116,7 @@ class ICalController extends AbstractController
         $response->setCharset('utf-8');
         $disposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $contextId . '.ics'
+            $contextId.'.ics'
         );
         $response->headers->set('Content-Disposition', $disposition);
 
@@ -140,7 +124,7 @@ class ICalController extends AbstractController
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     private function createCalendar(
         $currentContextItem,
@@ -152,11 +136,11 @@ class ICalController extends AbstractController
         $calendar->setProductIdentifier('www.commsy.net');
 
         // time zone
-        $dtz = new DateTimeZone($this->getParameter('commsy.dates.timezone'));
+        $dtz = new \DateTimeZone($this->getParameter('commsy.dates.timezone'));
         $timeZone = TimeZone::createFromPhpDateTimeZone(
             $dtz,
-            (new DateTimeImmutable())->sub(new DateInterval('P5Y')),
-            (new DateTimeImmutable())->add(new DateInterval('P5Y')),
+            (new \DateTimeImmutable())->sub(new \DateInterval('P5Y')),
+            (new \DateTimeImmutable())->add(new \DateInterval('P5Y')),
         );
         $calendar->addTimeZone($timeZone);
 
@@ -164,16 +148,16 @@ class ICalController extends AbstractController
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
-    private function generateEvents(cs_item $currentContextItem, bool $export, int $calendarId): Generator
+    private function generateEvents(\cs_item $currentContextItem, bool $export, int $calendarId): \Generator
     {
         $dateList = $this->getDateList($currentContextItem, $export, $calendarId);
 
         // get ids auf all items
         $itemIdArray = [];
         foreach ($dateList as $date) {
-            /** @var $date */
+            /* @var $date */
             $itemIdArray[] = $date->getItemID();
         }
 
@@ -215,7 +199,7 @@ class ICalController extends AbstractController
         $userList = $userManager->get();
 
         foreach ($dateList as $item) {
-            /** @var cs_dates_item $item */
+            /** @var \cs_dates_item $item */
 
             // create new calendar event
             $event = new Event(new UniqueIdentifier($item->getItemID()));
@@ -246,7 +230,7 @@ class ICalController extends AbstractController
             // title
             $summary = html_entity_decode($item->getTitle());
             if ($item->issetPrivatDate()) {
-                $summary .= ' [' . $this->translator->trans('date.private', [], 'date') . ']';
+                $summary .= ' ['.$this->translator->trans('date.private', [], 'date').']';
             }
             $event->setSummary($summary);
 
@@ -263,16 +247,16 @@ class ICalController extends AbstractController
             $event->setUrl(new Uri($url));
 
             // start / end
-            $dtz = new DateTimeZone($this->getParameter('commsy.dates.timezone'));
-            $startTime = new DateTime($item->getDateTime_start());
-            $endTime = new DateTime($item->getDateTime_end());
+            $dtz = new \DateTimeZone($this->getParameter('commsy.dates.timezone'));
+            $startTime = new \DateTime($item->getDateTime_start());
+            $endTime = new \DateTime($item->getDateTime_end());
             $startTime->setTimezone($dtz);
             $endTime->setTimezone($dtz);
 
             // Ending dates ending not at the starting day, with starting time and without an exact ending time are considered to
             // span the whole day
             if ($startTime != $endTime && !empty($item->getStartingTime()) && empty($item->getEndingTime())) {
-                $endTime->add(new DateInterval('P1D'));
+                $endTime->add(new \DateInterval('P1D'));
             }
 
             if ($item->isWholeDay()) {
@@ -287,7 +271,7 @@ class ICalController extends AbstractController
             } else {
                 $start = new EventDateTime($startTime, false);
                 $end = new EventDateTime($endTime, false);
-                $event->setOccurrence(new TimeSpan($start,$end));
+                $event->setOccurrence(new TimeSpan($start, $end));
             }
 
             // description
@@ -301,7 +285,7 @@ class ICalController extends AbstractController
         $currentContextItem,
         $export,
         $calendarId
-    ): ?cs_list {
+    ): ?\cs_list {
         $datesManager = $this->legacyEnvironment->getDatesManager();
 
         $datesManager->setWithoutDateModeLimit();
@@ -316,7 +300,7 @@ class ICalController extends AbstractController
             }
 
             $dateSelAssignment = $currentContextItem->getRubrikSelection('date', 'assignment');
-            if (!empty($dateSelAssignment) && $dateSelAssignment != '2') {
+            if (!empty($dateSelAssignment) && '2' != $dateSelAssignment) {
                 $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
                 $userList = $currentUserItem->getRelatedUserList();
 
@@ -336,8 +320,8 @@ class ICalController extends AbstractController
             foreach ($myEntries as $entry) {
                 $expEntry = explode('_', $entry);
 
-                if (sizeof($expEntry) == 2) {
-                    if ($expEntry[1] == 'dates' || $expEntry[1] == 'todo') {
+                if (2 == sizeof($expEntry)) {
+                    if ('dates' == $expEntry[1] || 'todo' == $expEntry[1]) {
                         $entry = str_replace('_dates', '', $entry);
                         $entry = str_replace('_todo', '', $entry);
 
@@ -365,7 +349,7 @@ class ICalController extends AbstractController
             $myEntries = $currentContextItem->getMyCalendarDisplayConfig();
 
             if (in_array('mycalendar_dates_assigned_to_me', $myEntries)) {
-                $tempList = new cs_list();
+                $tempList = new \cs_list();
 
                 $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
                 $currentUserList = $currentUserItem->getRelatedUserList();

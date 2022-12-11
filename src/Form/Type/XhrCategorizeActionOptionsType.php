@@ -1,27 +1,32 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type;
 
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
-use cs_environment;
-use cs_tag2tag_manager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class XhrCategorizeActionOptionsType extends AbstractType
 {
-    /** @var cs_environment $legacyEnvironment */
-    private cs_environment $legacyEnvironment;
+    private \cs_environment $legacyEnvironment;
 
-    /** @var CategoryService $categoryService */
-    private CategoryService $categoryService;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment, CategoryService $categoryService)
+    public function __construct(LegacyEnvironment $legacyEnvironment, private CategoryService $categoryService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->categoryService = $categoryService;
     }
 
     /**
@@ -34,7 +39,7 @@ class XhrCategorizeActionOptionsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /** @var cs_tag2tag_manager $tag2TagManager */
+        /** @var \cs_tag2tag_manager $tag2TagManager */
         $tag2TagManager = $this->legacyEnvironment->getTag2TagManager();
 
         $builder
@@ -58,20 +63,20 @@ class XhrCategorizeActionOptionsType extends AbstractType
                         }, $parentCategoryIds);
 
                         // the prefix helps to indent sub-categories visually
-                        $prefix = str_repeat('- ', count($parentCategoryIds));
+                        $prefix = str_repeat('- ', is_countable($parentCategoryIds) ? count($parentCategoryIds) : 0);
 
                         // display name examples for 2nd- and 3rd-level categories:
                         // - Subcategory 1 (Category 1)
                         // -- Subsubcategory 1 (Category 1 > Subcategory 1)
-                        $displayName = $prefix . $displayName . ' (' . implode(' > ', array_reverse($parentCategoryNames)) . ')';
+                        $displayName = $prefix.$displayName.' ('.implode(' > ', array_reverse($parentCategoryNames)).')';
                     }
 
                     return $displayName;
                 },
                 'multiple' => true,
                 'attr' => [
-                    'class' => 'uk-width-1-1'
-                ]
+                    'class' => 'uk-width-1-1',
+                ],
             ])
         ;
     }

@@ -1,29 +1,35 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Utils;
 
 use App\Form\Model\File;
 use App\Form\Model\Send;
 use App\Services\LegacyEnvironment;
-use cs_environment;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Twig\Environment;
 
-
 class MailAssistant
 {
-    private cs_environment $legacyEnvironment;
-
-    private Environment $twig;
+    private \cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        Environment $twig
+        private Environment $twig
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->twig = $twig;
     }
 
     public function prepareMessage($item)
@@ -39,8 +45,9 @@ class MailAssistant
         ]);
     }
 
-    public function showGroupRecipients($item) {
-        $groupArray = $this->getChoicesByLabelType("group");
+    public function showGroupRecipients($item)
+    {
+        $groupArray = $this->getChoicesByLabelType('group');
 
         if ($this->legacyEnvironment->inProjectRoom() && !empty($groupArray)) {
             $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
@@ -53,8 +60,9 @@ class MailAssistant
         return false;
     }
 
-    public function showInstitutionRecipients($item) {
-        $institutionArray = $this->getChoicesByLabelType("institution");
+    public function showInstitutionRecipients($item)
+    {
+        $institutionArray = $this->getChoicesByLabelType('institution');
 
         if ($this->legacyEnvironment->inCommunityRoom() && !empty($institutionArray)) {
             $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
@@ -67,14 +75,15 @@ class MailAssistant
         return false;
     }
 
-    public function showGroupAllRecipients($item) {
+    public function showGroupAllRecipients($item)
+    {
         $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
 
         if ($currentContextItem->isProjectRoom() && !$currentContextItem->withRubric('group')) {
             return true;
         }
 
-        if($currentContextItem->isCommunityRoom() && !$currentContextItem->withRubric('group')){
+        if ($currentContextItem->isCommunityRoom() && !$currentContextItem->withRubric('group')) {
             return true;
         }
 
@@ -83,12 +92,12 @@ class MailAssistant
 
     public function getGroupChoices($item)
     {
-        return $this->getChoicesByLabelType("group");
+        return $this->getChoicesByLabelType('group');
     }
 
     public function getInstitutionChoices($item)
     {
-        return $this->getChoicesByLabelType("institution");
+        return $this->getChoicesByLabelType('institution');
     }
 
     public function showAllMembersRecipients($item)
@@ -97,7 +106,6 @@ class MailAssistant
 
         if ($currentContextItem->isCommunityRoom() && !$currentContextItem->withRubric('project') ||
             $currentContextItem->isGroupRoom()) {
-
             return true;
         }
 
@@ -119,9 +127,9 @@ class MailAssistant
         ];
 
         $recipients['to'][$item->getEmail()] = $item->getFullName();
-        if(!is_null($moderatorIds)){
+        if (!is_null($moderatorIds)) {
             $moderatorIds = explode(', ', $moderatorIds);
-            foreach($moderatorIds as $moderatorId){
+            foreach ($moderatorIds as $moderatorId) {
                 $moderator = $userService->getUser($moderatorId);
                 $recipients['to'][$moderator->getEmail()] = $moderator->getFullName();
             }
@@ -240,8 +248,8 @@ class MailAssistant
 
     public function getAccountIndexPasswordMessage(
         FormInterface $form,
-        $item)
-    : Email {
+        $item): Email
+    {
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         $formData = $form->getData();
 
@@ -281,29 +289,28 @@ class MailAssistant
         $userManager->select();
         $portaluserList = $userManager->get();
         $moderators = [];
-        foreach($portaluserList as $portalUser){
-            if($portalUser->getStatus() == 3){
+        foreach ($portaluserList as $portalUser) {
+            if (3 == $portalUser->getStatus()) {
                 array_push($moderators, $portalUser);
             }
         }
 
-        if($form->getData()->getCopyCCToModertor()){
-            foreach($moderators as $moderator){
+        if ($form->getData()->getCopyCCToModertor()) {
+            foreach ($moderators as $moderator) {
                 $toCC[$moderator->getEmail()] = $moderator->getFullName();
             }
         }
-        if($form->getData()->getCopyBCCToModerator()){
-            foreach($moderators as $moderator){
+        if ($form->getData()->getCopyBCCToModerator()) {
+            foreach ($moderators as $moderator) {
                 $toBCC[$moderator->getEmail()] = $moderator->getFullName();
             }
         }
-        if($form->getData()->getCopyCCToSender()){
+        if ($form->getData()->getCopyCCToSender()) {
             $toCC[$currentUserEmail] = $currentUserName;
         }
-        if($form->getData()->getCopyBCCToSender()){
+        if ($form->getData()->getCopyBCCToSender()) {
             $toBCC[$currentUserEmail] = $currentUserName;
         }
-
 
         if (!empty($to)) {
             $message->to(...$this->convertArrayToAddresses($to));
@@ -336,11 +343,9 @@ class MailAssistant
             $replyTo[] = new Address($currentUserEmail, $currentUserName);
         }
 
-        $formDataSubject = (get_class($formData) == Send::class ? (is_null($formData->getSubject())
-            ? false : $formData->getSubject()) : $formData['subject']);
+        $formDataSubject = (Send::class == $formData::class ? (is_null($formData->getSubject()) ? false : $formData->getSubject()) : $formData['subject']);
 
-        $formDataMessage = (get_class($formData) == Send::class ? (is_null($formData->getMessage())
-            ? false : $formData->getMessage()) : $formData['message']);
+        $formDataMessage = (Send::class == $formData::class ? (is_null($formData->getMessage()) ? false : $formData->getMessage()) : $formData['message']);
 
         $message = (new Email())
             ->subject($formDataSubject)
@@ -348,8 +353,7 @@ class MailAssistant
             ->replyTo(...$replyTo);
 
         // form option: files
-        $formDataFiles = (get_class($formData) == Send::class ? (is_null($formData->getFiles())
-            ? false : $formData->getFiles()) : $formData['files']);
+        $formDataFiles = (Send::class == $formData::class ? (is_null($formData->getFiles()) ? false : $formData->getFiles()) : $formData['files']);
 
         if ($formDataFiles) {
             $message = $this->addAttachments($formDataFiles, $message);
@@ -358,8 +362,7 @@ class MailAssistant
         // form option: copy_to_sender
         $toCC = [];
 
-        $isSendToCreator = (get_class($formData) == Send::class ? (is_null($formData->getSendToCreator())
-            ? false : $formData->getSendToCreator()) : $form->has('send_to_creator') && $formData['send_to_creator']);
+        $isSendToCreator = (Send::class == $formData::class ? (is_null($formData->getSendToCreator()) ? false : $formData->getSendToCreator()) : $form->has('send_to_creator') && $formData['send_to_creator']);
 
         if ($isSendToCreator) {
             /** @var \cs_user_item $itemCreator */
@@ -371,8 +374,7 @@ class MailAssistant
             }
         }
 
-        $isCopyToSender = (get_class($formData) == Send::class ? (is_null($formData->getCopyToSender())
-            ? false : $formData->getCopyToSender()) : $form->has('copy_to_sender') && $formData['copy_to_sender']);
+        $isCopyToSender = (Send::class == $formData::class ? (is_null($formData->getCopyToSender()) ? false : $formData->getCopyToSender()) : $form->has('copy_to_sender') && $formData['copy_to_sender']);
 
         if ($isCopyToSender) {
             if ($currentUser->isEmailVisible()) {
@@ -383,11 +385,11 @@ class MailAssistant
         }
 
         // form option: additional_recipients
-        $isAdditionalRecipients = (get_class($formData) == Send::class ? (is_null($formData->getAdditionalRecipients())
+        $isAdditionalRecipients = (Send::class == $formData::class ? (is_null($formData->getAdditionalRecipients())
             ? false : true) : $form->has('additional_recipients'));
 
         if ($isAdditionalRecipients) {
-            $formDataAdditionalRecipients = (get_class($formData) == Send::class
+            $formDataAdditionalRecipients = (Send::class == $formData::class
                 ? ($formData->getAdditionalRecipients()) : $formData['additional_recipients']);
             $additionalRecipients = array_filter($formDataAdditionalRecipients);
 
@@ -410,8 +412,7 @@ class MailAssistant
         ];
 
         $formData = $form->getData();
-        $isSendToAll = (get_class($formData) == Send::class ? (is_null($formData->getSendToAll())
-            ? false : $formData->getSendToAll()) : $form->has('send_to_all') && $formData['send_to_all']);
+        $isSendToAll = (Send::class == $formData::class ? (is_null($formData->getSendToAll()) ? false : $formData->getSendToAll()) : $form->has('send_to_all') && $formData['send_to_all']);
 
         if ($isSendToAll) {
             $userManager = $this->legacyEnvironment->getUserManager();
@@ -424,8 +425,7 @@ class MailAssistant
             $this->addRecipients($recipients, $userList);
         }
 
-        $isSendToAttendees = (get_class($formData) == Send::class ? (is_null($formData->getSendToAttendees())
-            ? false : $formData->getSendToAttendees()) : $form->has('send_to_attendees') && $formData['send_to_attendees']);
+        $isSendToAttendees = (Send::class == $formData::class ? (is_null($formData->getSendToAttendees()) ? false : $formData->getSendToAttendees()) : $form->has('send_to_attendees') && $formData['send_to_attendees']);
 
         // form option: send_to_attendees
         if ($isSendToAttendees) {
@@ -436,8 +436,7 @@ class MailAssistant
         }
 
         // form option: send_to_assigned
-        $isSendToAssigned = (get_class($formData) == Send::class ? (is_null($formData->getSendToAttendees())
-            ? false : $formData->getSendToAttendees()) : $form->has('send_to_assigned') && $formData['send_to_assigned']);
+        $isSendToAssigned = (Send::class == $formData::class ? (is_null($formData->getSendToAttendees()) ? false : $formData->getSendToAttendees()) : $form->has('send_to_assigned') && $formData['send_to_assigned']);
 
         if ($isSendToAssigned) {
             if ($item instanceof \cs_todo_item) {
@@ -447,8 +446,7 @@ class MailAssistant
         }
 
         // form option: send_to_group_all - if group rubric is not active
-        $isSendToGroupAll = (get_class($formData) == Send::class ? (is_null($formData->getSendToGroupAll())
-            ? false : $formData->getSendToGroupAll()) : $form->has('send_to_group_all') && $formData['send_to_group_all']);
+        $isSendToGroupAll = (Send::class == $formData::class ? (is_null($formData->getSendToGroupAll()) ? false : $formData->getSendToGroupAll()) : $form->has('send_to_group_all') && $formData['send_to_group_all']);
 
         if ($isSendToGroupAll) {
             $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
@@ -458,13 +456,12 @@ class MailAssistant
         }
 
         // form option: send_to_groups
-        $isSendToGroups = (get_class($formData) == Send::class ? (is_null($formData->getSendToGroups())
+        $isSendToGroups = (Send::class == $formData::class ? (is_null($formData->getSendToGroups())
             ? false : $formData->getSendToGroups()) : $form->has('send_to_groups') && !empty($formData['send_to_groups']));
 
         if ($isSendToGroups && $form->has('send_to_groups')) {
             $labelManager = $this->legacyEnvironment->getLabelManager();
             $groups = $labelManager->getItemList($formData->getSendToGroups());
-
 
             $userManager = $this->legacyEnvironment->getUserManager();
             $userManager->resetLimits();
@@ -488,7 +485,7 @@ class MailAssistant
     private function addRecipients(&$recipients, $userList)
     {
         $user = $userList->getFirst();
-        while($user) {
+        while ($user) {
             if ($user->isEmailVisible()) {
                 if (!array_key_exists($user->getEmail(), $recipients['to'])) {
                     $recipients['to'][$user->getEmail()] = $user->getFullName();
@@ -505,9 +502,11 @@ class MailAssistant
 
     /**
      * Adds the given files as attachments to the given message.
-     * @param File[] $files The array of File objects which shall be added as attachments to the given message.
-     * @param Email $message The message to which the given files shall be added as attachments.
-     * @return Email The message with added attachments.
+     *
+     * @param File[] $files   the array of File objects which shall be added as attachments to the given message
+     * @param Email  $message the message to which the given files shall be added as attachments
+     *
+     * @return Email the message with added attachments
      */
     public function addAttachments(array $files, Email $message): Email
     {
@@ -529,8 +528,9 @@ class MailAssistant
         return $message;
     }
 
-    /** Retrieves all form choices by label type in the current context
+    /** Retrieves all form choices by label type in the current context.
      *   @param $type: typ of label, e.g. 'topic', 'group' or 'institution'
+     *
      *   @return array with label name as key and id as value
      */
     private function getChoicesByLabelType($type)
@@ -542,24 +542,20 @@ class MailAssistant
         $labelManager->select();
         $labelList = $labelManager->get();
 
-        $choiceArray = array();
+        $choiceArray = [];
         if ($labelList->getCount() > 0) {
-            $labelItem =  $labelList->getFirst();
+            $labelItem = $labelList->getFirst();
 
             while ($labelItem) {
                 $choiceArray[$labelItem->getName()] = $labelItem->getItemID();
 
-                $labelItem =  $labelList->getNext();
+                $labelItem = $labelList->getNext();
             }
         }
 
         return $choiceArray;
     }
 
-    /**
-     * @param array $recipients
-     * @return array
-     */
     public function convertArrayToAddresses(array $recipients): array
     {
         $addresses = [];

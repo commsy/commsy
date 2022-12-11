@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type\Account;
 
 use App\Services\LegacyEnvironment;
@@ -30,7 +41,7 @@ class ChangePasswordType extends AbstractType
      * Type extensions can further modify the form.
      *
      * @param FormBuilderInterface $builder The form builder
-     * @param array $options The options
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -47,7 +58,7 @@ class ChangePasswordType extends AbstractType
                 'invalid_message' => 'Passwords do not match',
                 'label' => 'newPassword',
                 'options' => [
-                    'required' => true
+                    'required' => true,
                 ],
                 'first_options' => [
                     'label' => 'newPassword',
@@ -57,7 +68,6 @@ class ChangePasswordType extends AbstractType
                         new Length([
                             'min' => 8,
                             'minMessage' => 'Your password must be at least {{ limit }} characters long.',
-                            'allowEmptyString' => false,
                             ]),
                         new Regex([
                             'pattern' => '/(*UTF8)[\p{Ll}\p{Lm}\p{Lo}]/', // any lowercase/modifier/other Unicode letters
@@ -74,11 +84,11 @@ class ChangePasswordType extends AbstractType
                         new Regex([
                             'pattern' => '/\p{Nd}/', // any decimal numbers
                             'message' => 'Your password must contain at least one numeric character.',
-                        ])
+                        ]),
                     ],
                 ],
                 'second_options' => [
-                    'label' => 'newPasswordConfirm'
+                    'label' => 'newPasswordConfirm',
                 ],
             ])
             ->add('save', SubmitType::class, [

@@ -1,11 +1,21 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\EventSubscriber;
 
 use App\Entity\Portal;
 use App\Room\RoomManager;
 use App\Services\LegacyEnvironment;
-use cs_environment;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\TerminateEvent;
@@ -13,29 +23,14 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class ActivitySubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var RoomManager
-     */
-    private RoomManager $roomManager;
+    private \cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        EntityManagerInterface $entityManager,
-        RoomManager $roomManager
+        private EntityManagerInterface $entityManager,
+        private RoomManager $roomManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->entityManager = $entityManager;
-        $this->roomManager = $roomManager;
     }
 
     public static function getSubscribedEvents()
@@ -50,13 +45,12 @@ class ActivitySubscriber implements EventSubscriberInterface
         if ($event->isMainRequest()) {
             $request = $event->getRequest();
             if (!$request->isXmlHttpRequest()) {
-
                 $countRequest = true;
                 if (preg_match('~\/room\/(\d)+\/user\/(\d)+\/image~', $request->getUri())) {
                     $countRequest = false;
-                } else if (preg_match('~\/room\/(\d)+\/theme\/background~', $request->getUri())) {
+                } elseif (preg_match('~\/room\/(\d)+\/theme\/background~', $request->getUri())) {
                     $countRequest = false;
-                } else if (preg_match('~\/room\/(\d)+\/logo~', $request->getUri())) {
+                } elseif (preg_match('~\/room\/(\d)+\/logo~', $request->getUri())) {
                     $countRequest = false;
                 }
 

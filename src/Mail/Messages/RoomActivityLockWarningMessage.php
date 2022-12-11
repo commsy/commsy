@@ -1,39 +1,32 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Mail\Messages;
 
 use App\Entity\Portal;
 use App\Mail\Message;
 use App\Services\LegacyEnvironment;
-use cs_environment;
-use DateTimeImmutable;
 
 class RoomActivityLockWarningMessage extends Message
 {
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
-
-    /**
-     * @var Portal
-     */
-    private Portal $portal;
-
-    /**
-     * @var object
-     */
-    private object $room;
+    private \cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        Portal $portal,
-        object $room
-
+        private Portal $portal,
+        private object $room
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->portal = $portal;
-        $this->room = $room;
     }
 
     public function getSubject(): string
@@ -50,8 +43,8 @@ class RoomActivityLockWarningMessage extends Message
     {
         $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
 
-        $now = new DateTimeImmutable();
-        $numDaysInactive = $now->diff($this->room->getLastLogin(), true)->format("%a");
+        $now = new \DateTimeImmutable();
+        $numDaysInactive = $now->diff($this->room->getLastLogin(), true)->format('%a');
 
         return [
             'room' => $this->room,
@@ -60,7 +53,7 @@ class RoomActivityLockWarningMessage extends Message
                 $this->room->getTitle(),
                 $numDaysInactive,
                 $this->portal->getClearInactiveRoomsLockDays(),
-            )
+            ),
         ];
     }
 

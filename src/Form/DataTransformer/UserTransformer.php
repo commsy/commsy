@@ -1,11 +1,21 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\DataTransformer;
 
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
-use cs_environment;
-use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -13,67 +23,46 @@ class UserTransformer extends AbstractTransformer
 {
     protected $entity = 'user';
 
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var Security
-     */
-    private Security $security;
-
-    /**
-     * @var AccountManager
-     */
-    private AccountManager $accountManager;
+    private \cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        EntityManagerInterface $entityManager,
-        Security $security,
-        AccountManager $accountManager
+        private EntityManagerInterface $entityManager,
+        private Security $security,
+        private AccountManager $accountManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->entityManager = $entityManager;
-        $this->security = $security;
-        $this->accountManager = $accountManager;
     }
 
     /**
-     * Transforms a cs_room_item object to an array
+     * Transforms a cs_room_item object to an array.
      *
-     * @param cs_user_item $userItem
+     * @param \cs_user_item $userItem
+     *
      * @return array
      */
     public function transform($userItem)
     {
-
         // get portal user if in room context
-        if ( !$this->legacyEnvironment->inPortal() ) {
+        if (!$this->legacyEnvironment->inPortal()) {
             $portalUser = $this->legacyEnvironment->getPortalUserItem();
         } else {
             $portalUser = $this->legacyEnvironment->getCurrentUserItem();
         }
 
-        $userData = array();
+        $userData = [];
         if ($userItem) {
             $userData['userId'] = $userItem->getUserId();
             $userData['firstname'] = $userItem->getFirstname();
             $userData['lastname'] = $userItem->getLastname();
             $userData['language'] = $userItem->getLanguage();
-            if ($userItem->getAutoSaveStatus() == '1') {
+            if ('1' == $userItem->getAutoSaveStatus()) {
                 $userData['autoSaveStatus'] = true;
             } else {
                 $userData['autoSaveStatus'] = false;
             }
             $userData['title'] = $userItem->getTitle();
-            if($userItem->getBirthday()){
+            if ($userItem->getBirthday()) {
                 $userData['dateOfBirth'] = new \DateTime($userItem->getBirthday());
             }
             $userData['emailRoom'] = $userItem->getRoomEmail();
@@ -97,19 +86,21 @@ class UserTransformer extends AbstractTransformer
             $userData['description'] = $userItem->getDescription();
             $userData['language'] = $userItem->getLanguage();
         }
+
         return $userData;
     }
 
     /**
-     * Applies an array of data to an existing object
+     * Applies an array of data to an existing object.
      *
      * @param object $userObject
-     * @param array $userData
-     * @return cs_user_item|null
+     * @param array  $userData
+     *
+     * @return \cs_user_item|null
      */
     public function applyTransformation($userObject, $userData)
     {
-        /** @var cs_user_item $userObject */
+        /** @var \cs_user_item $userObject */
         if ($userObject) {
             $userObject->setUserId($userData['userId']);
 
@@ -130,7 +121,7 @@ class UserTransformer extends AbstractTransformer
                     if ($this->accountManager->propagateUsernameChange($account, $portalUser, $userData['userId'])) {
                         $portalUser->setUserId($newUserId); // Important, as this object is saved again later!
                     } else {
-                        die("ERROR: changing User ID not successful");
+                        exit('ERROR: changing User ID not successful');
                     }
                 }
             }
@@ -167,10 +158,10 @@ class UserTransformer extends AbstractTransformer
             if (array_key_exists('dateOfBirth', $userData) && $userData['dateOfBirth']) {
                 $userObject->setBirthday($userData['dateOfBirth']->format('Y-m-d'));
             } else {
-                $userObject->setBirthday("");
+                $userObject->setBirthday('');
             }
 
-            if ($userData['emailChoice'] === 'account') {
+            if ('account' === $userData['emailChoice']) {
                 $userObject->setUsePortalEmail(1);
             } else {
                 $userObject->setUsePortalEmail(0);
@@ -233,6 +224,7 @@ class UserTransformer extends AbstractTransformer
                 $privateRoomUserItem->save();
             }
         }
+
         return $userObject;
     }
 }

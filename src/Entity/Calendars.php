@@ -1,79 +1,82 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Invitations
- *
- * @ORM\Table(name="calendars", indexes={@ORM\Index(name="id", columns={"id"})})
- * @ORM\Entity
+ * Invitations.
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'calendars')]
+#[ORM\Index(name: 'id', columns: ['id'])]
 class Calendars
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @var int
      */
-    private $id = '0';
+    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = 0;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=false)
+     * @var int
      */
-    private $context_id;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
-     */
-    private $title;
+    #[ORM\Column(name: 'context_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    private ?int $context_id = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="color", type="string", length=255, nullable=false)
      */
-    private $color;
+    #[ORM\Column(name: 'title', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    private ?string $title = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="external_url", type="string", length=255, nullable=true)
      */
-    private $external_url;
+    #[ORM\Column(name: 'color', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    private ?string $color = null;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="default_calendar", type="boolean", nullable=false)
+     * @var string
      */
-    private $default_calendar = '0';
+    #[ORM\Column(name: 'external_url', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: true)]
+    private ?string $external_url = null;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="creator_id", type="integer", nullable=true)
+     * @var bool
      */
-    private $creator_id;
+    #[ORM\Column(name: 'default_calendar', type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    private ?bool $default_calendar = false;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="synctoken", type="integer", nullable=true)
+     * @var int
      */
-    private $synctoken;
+    #[ORM\Column(name: 'creator_id', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    private ?int $creator_id = null;
 
     /**
-     * Get id
+     * @var int
+     */
+    #[ORM\Column(name: 'synctoken', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    private ?int $synctoken = null;
+
+    /**
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -81,9 +84,9 @@ class Calendars
     }
 
     /**
-     * Set contextId
+     * Set contextId.
      *
-     * @param integer $contextId
+     * @param int $contextId
      *
      * @return Calendars
      */
@@ -95,9 +98,9 @@ class Calendars
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
-     * @return integer
+     * @return int
      */
     public function getContextId()
     {
@@ -105,7 +108,7 @@ class Calendars
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -119,7 +122,7 @@ class Calendars
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -129,7 +132,7 @@ class Calendars
     }
 
     /**
-     * Set color
+     * Set color.
      *
      * @param string $color
      *
@@ -143,7 +146,7 @@ class Calendars
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -153,7 +156,7 @@ class Calendars
     }
 
     /**
-     * Set external_url
+     * Set external_url.
      *
      * @param string $external_url
      *
@@ -167,7 +170,7 @@ class Calendars
     }
 
     /**
-     * Get external_url
+     * Get external_url.
      *
      * @return string
      */
@@ -177,9 +180,9 @@ class Calendars
     }
 
     /**
-     * Set default
+     * Set default.
      *
-     * @param boolean $default_calendar
+     * @param bool $default_calendar
      *
      * @return Calendars
      */
@@ -191,9 +194,9 @@ class Calendars
     }
 
     /**
-     * Get default
+     * Get default.
      *
-     * @return boolean
+     * @return bool
      */
     public function getDefaultCalendar()
     {
@@ -201,9 +204,9 @@ class Calendars
     }
 
     /**
-     * Set creatorId
+     * Set creatorId.
      *
-     * @param integer $creatorId
+     * @param int $creatorId
      *
      * @return Calendars
      */
@@ -215,21 +218,22 @@ class Calendars
     }
 
     /**
-     * Get creatorId
+     * Get creatorId.
      *
-     * @return integer
+     * @return int
      */
     public function getCreatorId()
     {
         return $this->creator_id;
     }
 
-    public function hasLightColor(){
+    public function hasLightColor()
+    {
         $hexColor = str_ireplace('#', '', $this->getColor());
 
-        $r = hexdec(substr($hexColor,0,2));
-        $g = hexdec(substr($hexColor,2,2));
-        $b = hexdec(substr($hexColor,4,2));
+        $r = hexdec(substr($hexColor, 0, 2));
+        $g = hexdec(substr($hexColor, 2, 2));
+        $b = hexdec(substr($hexColor, 4, 2));
 
         $squared_contrast = (
             $r * $r * .299 +
@@ -237,15 +241,15 @@ class Calendars
             $b * $b * .114
         );
 
-        if($squared_contrast > pow(220, 2)){ // 220 -> 75% max
+        if ($squared_contrast > 220 ** 2) { // 220 -> 75% max
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
     /**
-     * Set synctoken
+     * Set synctoken.
      *
      * @param int $synctoken
      *
@@ -259,7 +263,7 @@ class Calendars
     }
 
     /**
-     * Get synctoken
+     * Get synctoken.
      *
      * @return int
      */

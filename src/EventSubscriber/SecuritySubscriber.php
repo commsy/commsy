@@ -1,11 +1,21 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\EventSubscriber;
 
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use App\Utils\RequestContext;
-use cs_environment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -18,40 +28,22 @@ use Symfony\Component\Security\Http\SecurityEvents;
 class SecuritySubscriber implements EventSubscriberInterface
 {
     /**
-     * @var cs_environment|LegacyEnvironment
+     * @var \cs_environment|LegacyEnvironment
      */
-    private cs_environment $legacyEnvironment;
-
-    /**
-     * @var RouterInterface
-     */
-    private RouterInterface $router;
-
-    /**
-     * @var Security
-     */
-    private Security $security;
-
-    /**
-     * @var RequestContext
-     */
-    private RequestContext $requestContext;
+    private \cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        RouterInterface $router,
-        Security $security,
-        RequestContext $requestContext
+        private RouterInterface $router,
+        private Security $security,
+        private RequestContext $requestContext
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->router = $router;
-        $this->security = $security;
-        $this->requestContext = $requestContext;
     }
 
     public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
     {
-        if ($event->getRequest()->attributes->get('_route') === 'app_account_personal') {
+        if ('app_account_personal' === $event->getRequest()->attributes->get('_route')) {
             return;
         }
 
@@ -80,19 +72,19 @@ class SecuritySubscriber implements EventSubscriberInterface
     {
         $request = $event->getRequest();
 
-        if ($request->attributes->get('_route') === 'app_security_simultaneouslogin') {
+        if ('app_security_simultaneouslogin' === $request->attributes->get('_route')) {
             return;
         }
 
         /** @var Account $account */
         $account = $this->security->getUser();
 
-        if ($account === null || $account->getUsername() === 'root') {
+        if (null === $account || 'root' === $account->getUsername()) {
             return;
         }
 
         $portal = $this->requestContext->fetchPortal($request);
-        if ($portal === null) {
+        if (null === $portal) {
             return;
         }
 
@@ -106,7 +98,7 @@ class SecuritySubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            SecurityEvents::INTERACTIVE_LOGIN  => 'onSecurityInteractiveLogin',
+            SecurityEvents::INTERACTIVE_LOGIN => 'onSecurityInteractiveLogin',
             KernelEvents::REQUEST => 'onKernelRequest',
         ];
     }

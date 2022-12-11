@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Entity\Account;
@@ -7,33 +18,23 @@ use App\Entity\Portal;
 use App\Form\Type\TouAcceptType;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
-use DateTimeImmutable;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
 class TouController extends AbstractController
 {
-    /**
-     * @Route("/portal/{portalId}/terms")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @Template("tou/portal.html.twig")
-     * @param Portal $portal
-     * @param Security $security
-     * @param Request $request
-     * @param UserService $userService
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/portal/{portalId}/terms')]
+    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     public function portal(
         Portal $portal,
         Security $security,
         Request $request,
         UserService $userService
-    ) {
+    ): Response {
         if (!$portal->hasAGBEnabled()) {
             throw $this->createNotFoundException('terms are disabled');
         }
@@ -46,7 +47,7 @@ class TouController extends AbstractController
         ]);
 
         $portalUser = null;
-        if ($account !== null) {
+        if (null !== $account) {
             $portalUser = $userService->getPortalUser($account);
 
             if ($portalUser->getAGBAcceptanceDate() < $portal->getAGBChangeDate()) {
@@ -59,7 +60,7 @@ class TouController extends AbstractController
                     }
 
                     if ($form->get('accept')->isClicked()) {
-                        $portalUser->setAGBAcceptanceDate(new DateTimeImmutable());
+                        $portalUser->setAGBAcceptanceDate(new \DateTimeImmutable());
                         $portalUser->save();
 
                         return $this->redirect($request->get('redirect'));
@@ -68,26 +69,19 @@ class TouController extends AbstractController
             }
         }
 
-        return [
+        return $this->render('tou/portal.html.twig', [
             'form' => $form->createView(),
             'portal' => $portal,
             'portalUser' => $portalUser,
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/terms")
-     * @Template("tou/room.html.twig")
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param Request $request
-     * @param int $roomId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/terms')]
     public function room(
         LegacyEnvironment $legacyEnvironment,
         Request $request,
         int $roomId
-    ) {
+    ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $currentContext = $legacyEnvironment->getCurrentContextItem();
 
@@ -110,17 +104,17 @@ class TouController extends AbstractController
             }
 
             if ($form->get('accept')->isClicked()) {
-                $currentUser->setAGBAcceptanceDate(new DateTimeImmutable());
+                $currentUser->setAGBAcceptanceDate(new \DateTimeImmutable());
                 $currentUser->save();
 
                 return $this->redirect($request->get('redirect'));
             }
         }
 
-        return [
+        return $this->render('tou/room.html.twig', [
             'context' => $currentContext,
             'touText' => $touText,
             'form' => $form->createView(),
-        ];
+        ]);
     }
 }

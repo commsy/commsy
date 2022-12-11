@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\EventSubscriber;
 
 use App\Account\AccountManager;
@@ -9,51 +20,18 @@ use App\Mail\Factories\AccountMessageFactory;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
-use DateInterval;
-use DateTime;
-use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\EnteredEvent;
 use Symfony\Component\Workflow\Event\GuardEvent;
 
 class AccountActivityStateSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var PortalRepository
-     */
-    private PortalRepository $portalRepository;
-
-    /**
-     * @var AccountManager
-     */
-    private AccountManager $accountManager;
-
-    /**
-     * @var AccountMessageFactory
-     */
-    private AccountMessageFactory $accountMessageFactory;
-
-    /**
-     * @var Mailer
-     */
-    private Mailer $mailer;
-
-    public function __construct(
-        PortalRepository $portalRepository,
-        AccountManager $accountManager,
-        AccountMessageFactory $messageFactory,
-        Mailer $mailer
-    ) {
-        $this->portalRepository = $portalRepository;
-        $this->accountManager = $accountManager;
-        $this->accountMessageFactory = $messageFactory;
-        $this->mailer = $mailer;
+    public function __construct(private PortalRepository $portalRepository, private AccountManager $accountManager, private AccountMessageFactory $accountMessageFactory, private Mailer $mailer)
+    {
     }
 
     /**
-     * Called on all transitions, perform general checks here
-     *
-     * @param GuardEvent $event
+     * Called on all transitions, perform general checks here.
      */
     public function guard(GuardEvent $event)
     {
@@ -65,12 +43,14 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
         $portal = $this->portalRepository->find($account->getContextId());
         if (!$portal->isClearInactiveAccountsFeatureEnabled()) {
             $event->setBlocked(true);
+
             return;
         }
 
         // Deny, if the account is the root account
-        if ($account->getUsername() === 'root') {
+        if ('root' === $account->getUsername()) {
             $event->setBlocked(true);
+
             return;
         }
 
@@ -83,10 +63,9 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Decides if an account can make the transition to the active_notified state
+     * Decides if an account can make the transition to the active_notified state.
      *
-     * @param GuardEvent $event
-     * @throws Exception
+     * @throws \Exception
      */
     public function guardNotifyLock(GuardEvent $event)
     {
@@ -103,10 +82,9 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Decides if an account can make the transition to the idle state
+     * Decides if an account can make the transition to the idle state.
      *
-     * @param GuardEvent $event
-     * @throws Exception
+     * @throws \Exception
      */
     public function guardLock(GuardEvent $event)
     {
@@ -123,10 +101,9 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Decides if an account can make the transition to the idle_notified state
+     * Decides if an account can make the transition to the idle_notified state.
      *
-     * @param GuardEvent $event
-     * @throws Exception
+     * @throws \Exception
      */
     public function guardNotifyForsake(GuardEvent $event)
     {
@@ -144,10 +121,9 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Decides if an account can make the transition to the abandoned state
+     * Decides if an account can make the transition to the abandoned state.
      *
-     * @param GuardEvent $event
-     * @throws Exception
+     * @throws \Exception
      */
     public function guardForsake(GuardEvent $event)
     {
@@ -166,8 +142,6 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
 
     /**
      * The account has entered a new state and the marking is updated.
-     *
-     * @param EnteredEvent $event
      */
     public function entered(EnteredEvent $event)
     {
@@ -179,8 +153,6 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
 
     /**
      * The account has entered the active_notified state. The marking is updated.
-     *
-     * @param EnteredEvent $event
      */
     public function enteredActiveNotified(EnteredEvent $event)
     {
@@ -195,8 +167,6 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
 
     /**
      * The account has entered the idle state. The marking is updated.
-     *
-     * @param EnteredEvent $event
      */
     public function enteredIdle(EnteredEvent $event)
     {
@@ -213,8 +183,6 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
 
     /**
      * The account has entered the idle_notified state. The marking is updated.
-     *
-     * @param EnteredEvent $event
      */
     public function enteredIdleNotified(EnteredEvent $event)
     {
@@ -229,8 +197,6 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
 
     /**
      * The account has entered the abandoned state. The marking is updated.
-     *
-     * @param EnteredEvent $event
      */
     public function enteredAbandoned(EnteredEvent $event)
     {
@@ -246,15 +212,15 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param DateTime $compare
-     * @param int $numDays
      * @return void
-     * @throws Exception
+     *
+     * @throws \Exception
      */
-    private function datePassedDays(DateTime $compare, int $numDays): bool
+    private function datePassedDays(\DateTime $compare, int $numDays): bool
     {
-        $threshold = new DateTime();
-        $threshold->sub(new DateInterval('P' . $numDays . 'D'));
+        $threshold = new \DateTime();
+        $threshold->sub(new \DateInterval('P'.$numDays.'D'));
+
         return $compare < $threshold;
     }
 
@@ -267,9 +233,9 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
             'workflow.account_activity.guard.notify_forsake' => ['guardNotifyForsake'],
             'workflow.account_activity.guard.forsake' => ['guardForsake'],
             'workflow.account_activity.entered' => ['entered'],
-            'workflow.account_activity.entered.active_notified' =>  ['enteredActiveNotified'],
-            'workflow.account_activity.entered.idle' =>  ['enteredIdle'],
-            'workflow.account_activity.entered.idle_notified' =>  ['enteredIdleNotified'],
+            'workflow.account_activity.entered.active_notified' => ['enteredActiveNotified'],
+            'workflow.account_activity.entered.idle' => ['enteredIdle'],
+            'workflow.account_activity.entered.idle_notified' => ['enteredIdleNotified'],
             'workflow.account_activity.entered.abandoned' => ['enteredAbandoned'],
         ];
     }

@@ -1,219 +1,179 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
-use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
-use Doctrine\Common\Collections\ArrayCollection;
-
 /**
- * Materials
- *
- * @ORM\Table(name="materials", indexes={
- *     @ORM\Index(name="context_id", columns={"context_id"}),
- *     @ORM\Index(name="creator_id", columns={"creator_id"}),
- *     @ORM\Index(name="modifier_id", columns={"modifier_id"})
- * })
- * @ORM\Entity(repositoryClass="App\Repository\MaterialsRepository")
+ * Materials.
  */
+#[ORM\Entity(repositoryClass: \App\Repository\MaterialsRepository::class)]
+#[ORM\Table(name: 'materials')]
+#[ORM\Index(name: 'context_id', columns: ['context_id'])]
+#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
+#[ORM\Index(name: 'modifier_id', columns: ['modifier_id'])]
 class Materials
 {
     /**
-     * @var integer
-     *
-     * @ORM\Id
-     * @ORM\Column(name="item_id", type="integer")
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @var int
      */
-    private $itemId;
-
-    /**
-     * @var integer
-     *
-     * Todo: Id
-     * @ORM\Column(name="version_id", type="integer")
-     */
-    private $versionId;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
     private $contextId;
 
-    /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id")
-     */
-    private $creator;
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
+    private ?\App\Entity\User $creator = null;
+
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id')]
+    private ?\App\Entity\User $deleter = null;
 
     /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="deleter_id", referencedColumnName="item_id")
+     * @var \DateTime
      */
-    private $deleter;
-
-    /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="creation_date", type="datetime", nullable=false)
-     */
+    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private $creationDate = '0000-00-00 00:00:00';
 
-    /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id")
-     */
-    private $modifier;
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
+    private ?\App\Entity\User $modifier = null;
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="modification_date", type="datetime", nullable=true)
+     * @var \DateTime
      */
+    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
     private $modificationDate;
 
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="activation_date", type="datetime")
-     */
-    private ?DateTime $activationDate;
+    #[ORM\Column(name: 'activation_date', type: 'datetime')]
+    private ?\DateTime $activationDate = null;
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
+     * @var \DateTime
      */
+    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private $title;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="text", length=16777215, nullable=true)
      */
+    #[ORM\Column(name: 'description', type: 'text', length: 16777215, nullable: true)]
     private $description;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="author", type="string", length=200, nullable=true)
      */
+    #[ORM\Column(name: 'author', type: 'string', length: 200, nullable: true)]
     private $author;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="publishing_date", type="string", length=20, nullable=true)
      */
+    #[ORM\Column(name: 'publishing_date', type: 'string', length: 20, nullable: true)]
     private $publishingDate;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="public", type="boolean", nullable=false)
+     * @var bool
      */
+    #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
     private $public = '0';
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="world_public", type="smallint", nullable=false)
+     * @var int
      */
+    #[ORM\Column(name: 'world_public', type: 'smallint', nullable: false)]
     private $worldPublic = '0';
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="extras", type="mbarray", nullable=true)
      */
+    #[ORM\Column(name: 'extras', type: 'mbarray', nullable: true)]
     private $extras;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="new_hack", type="boolean", nullable=false)
+     * @var bool
      */
+    #[ORM\Column(name: 'new_hack', type: 'boolean', nullable: false)]
     private $newHack = '0';
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="copy_of", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'copy_of', type: 'integer', nullable: true)]
     private $copyOf;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="workflow_status", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'workflow_status', type: 'string', length: 255, nullable: false)]
     private $workflowStatus = '3_none';
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="workflow_resubmission_date", type="datetime", nullable=true)
+     * @var \DateTime
      */
+    #[ORM\Column(name: 'workflow_resubmission_date', type: 'datetime', nullable: true)]
     private $workflowResubmissionDate;
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="workflow_validity_date", type="datetime", nullable=true)
+     * @var \DateTime
      */
+    #[ORM\Column(name: 'workflow_validity_date', type: 'datetime', nullable: true)]
     private $workflowValidityDate;
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="locking_date", type="datetime", nullable=true)
+     * @var \DateTime
      */
+    #[ORM\Column(name: 'locking_date', type: 'datetime', nullable: true)]
     private $lockingDate;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="locking_user_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'locking_user_id', type: 'integer', nullable: true)]
     private $lockingUserId;
 
+    #[ORM\OneToMany(targetEntity: 'Section', mappedBy: 'material')]
+    private \Doctrine\Common\Collections\ArrayCollection|array $sections;
+
     /**
-     * @ORM\OneToMany(targetEntity="Section", mappedBy="material")
+     * @param int $itemId
+     * @param int $versionId
      */
-    private $sections;
-
-    public function __construct($itemId, $versionId)
+    public function __construct(#[ORM\Id]
+    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    private $itemId, /**
+     * Todo: Id.
+     */
+    #[ORM\Column(name: 'version_id', type: 'integer')]
+    private $versionId)
     {
-        $this->itemId = $itemId;
-        $this->versionId = $versionId;
-
         $this->sections = new ArrayCollection();
     }
 
     /**
-     * Add section
-     *
-     * @param \App\Entity\Section $section
+     * Add section.
      *
      * @return Materials
      */
-    public function addSection(\App\Entity\Section $section)
+    public function addSection(Section $section)
     {
         $this->sections[] = $section;
 
@@ -221,17 +181,15 @@ class Materials
     }
 
     /**
-     * Remove section
-     *
-     * @param \App\Entity\Section $section
+     * Remove section.
      */
-    public function removeSection(\App\Entity\Section $section)
+    public function removeSection(Section $section)
     {
         $this->sections->removeElement($section);
     }
 
     /**
-     * Get sections
+     * Get sections.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
@@ -241,9 +199,9 @@ class Materials
     }
 
     /**
-     * Set itemId
+     * Set itemId.
      *
-     * @param integer $itemId
+     * @param int $itemId
      *
      * @return Materials
      */
@@ -255,9 +213,9 @@ class Materials
     }
 
     /**
-     * Get itemId
+     * Get itemId.
      *
-     * @return integer
+     * @return int
      */
     public function getItemId()
     {
@@ -265,9 +223,9 @@ class Materials
     }
 
     /**
-     * Set versionId
+     * Set versionId.
      *
-     * @param integer $versionId
+     * @param int $versionId
      *
      * @return Materials
      */
@@ -279,9 +237,9 @@ class Materials
     }
 
     /**
-     * Get versionId
+     * Get versionId.
      *
-     * @return integer
+     * @return int
      */
     public function getVersionId()
     {
@@ -289,9 +247,9 @@ class Materials
     }
 
     /**
-     * Set contextId
+     * Set contextId.
      *
-     * @param integer $contextId
+     * @param int $contextId
      *
      * @return Materials
      */
@@ -303,9 +261,9 @@ class Materials
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
-     * @return integer
+     * @return int
      */
     public function getContextId()
     {
@@ -313,9 +271,9 @@ class Materials
     }
 
     /**
-     * Set creationDate
+     * Set creationDate.
      *
-     * @param DateTime $creationDate
+     * @param \DateTime $creationDate
      *
      * @return Materials
      */
@@ -327,9 +285,9 @@ class Materials
     }
 
     /**
-     * Get creationDate
+     * Get creationDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getCreationDate()
     {
@@ -337,9 +295,9 @@ class Materials
     }
 
     /**
-     * Set modificationDate
+     * Set modificationDate.
      *
-     * @param DateTime $modificationDate
+     * @param \DateTime $modificationDate
      *
      * @return Materials
      */
@@ -351,9 +309,9 @@ class Materials
     }
 
     /**
-     * Get modificationDate
+     * Get modificationDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getModificationDate()
     {
@@ -361,13 +319,9 @@ class Materials
     }
 
     /**
-     * Set activationDate
-     *
-     * @param DateTime $activationDate
-     *
-     * @return Materials
+     * Set activationDate.
      */
-    public function setActivationDate(DateTime $activationDate): self
+    public function setActivationDate(\DateTime $activationDate): self
     {
         $this->activationDate = $activationDate;
 
@@ -375,19 +329,17 @@ class Materials
     }
 
     /**
-     * Get activationDate
-     *
-     * @return DateTime|null
+     * Get activationDate.
      */
-    public function getActivationDate(): ?DateTime
+    public function getActivationDate(): ?\DateTime
     {
         return $this->activationDate;
     }
 
     /**
-     * Set deletionDate
+     * Set deletionDate.
      *
-     * @param DateTime $deletionDate
+     * @param \DateTime $deletionDate
      *
      * @return Materials
      */
@@ -399,9 +351,9 @@ class Materials
     }
 
     /**
-     * Get deletionDate
+     * Get deletionDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDeletionDate()
     {
@@ -409,7 +361,7 @@ class Materials
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -423,7 +375,7 @@ class Materials
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -433,7 +385,7 @@ class Materials
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -447,7 +399,7 @@ class Materials
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -457,7 +409,7 @@ class Materials
     }
 
     /**
-     * Set author
+     * Set author.
      *
      * @param string $author
      *
@@ -471,7 +423,7 @@ class Materials
     }
 
     /**
-     * Get author
+     * Get author.
      *
      * @return string
      */
@@ -481,7 +433,7 @@ class Materials
     }
 
     /**
-     * Set publishingDate
+     * Set publishingDate.
      *
      * @param string $publishingDate
      *
@@ -495,7 +447,7 @@ class Materials
     }
 
     /**
-     * Get publishingDate
+     * Get publishingDate.
      *
      * @return string
      */
@@ -505,9 +457,9 @@ class Materials
     }
 
     /**
-     * Set public
+     * Set public.
      *
-     * @param boolean $public
+     * @param bool $public
      *
      * @return Materials
      */
@@ -519,9 +471,9 @@ class Materials
     }
 
     /**
-     * Get public
+     * Get public.
      *
-     * @return boolean
+     * @return bool
      */
     public function getPublic()
     {
@@ -529,9 +481,9 @@ class Materials
     }
 
     /**
-     * Set worldPublic
+     * Set worldPublic.
      *
-     * @param integer $worldPublic
+     * @param int $worldPublic
      *
      * @return Materials
      */
@@ -543,9 +495,9 @@ class Materials
     }
 
     /**
-     * Get worldPublic
+     * Get worldPublic.
      *
-     * @return integer
+     * @return int
      */
     public function getWorldPublic()
     {
@@ -553,7 +505,7 @@ class Materials
     }
 
     /**
-     * Set extras
+     * Set extras.
      *
      * @param string $extras
      *
@@ -567,7 +519,7 @@ class Materials
     }
 
     /**
-     * Get extras
+     * Get extras.
      *
      * @return string
      */
@@ -577,9 +529,9 @@ class Materials
     }
 
     /**
-     * Set newHack
+     * Set newHack.
      *
-     * @param boolean $newHack
+     * @param bool $newHack
      *
      * @return Materials
      */
@@ -591,9 +543,9 @@ class Materials
     }
 
     /**
-     * Get newHack
+     * Get newHack.
      *
-     * @return boolean
+     * @return bool
      */
     public function getNewHack()
     {
@@ -601,9 +553,9 @@ class Materials
     }
 
     /**
-     * Set copyOf
+     * Set copyOf.
      *
-     * @param integer $copyOf
+     * @param int $copyOf
      *
      * @return Materials
      */
@@ -615,9 +567,9 @@ class Materials
     }
 
     /**
-     * Get copyOf
+     * Get copyOf.
      *
-     * @return integer
+     * @return int
      */
     public function getCopyOf()
     {
@@ -625,7 +577,7 @@ class Materials
     }
 
     /**
-     * Set workflowStatus
+     * Set workflowStatus.
      *
      * @param string $workflowStatus
      *
@@ -639,7 +591,7 @@ class Materials
     }
 
     /**
-     * Get workflowStatus
+     * Get workflowStatus.
      *
      * @return string
      */
@@ -649,9 +601,9 @@ class Materials
     }
 
     /**
-     * Set workflowResubmissionDate
+     * Set workflowResubmissionDate.
      *
-     * @param DateTime $workflowResubmissionDate
+     * @param \DateTime $workflowResubmissionDate
      *
      * @return Materials
      */
@@ -663,9 +615,9 @@ class Materials
     }
 
     /**
-     * Get workflowResubmissionDate
+     * Get workflowResubmissionDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getWorkflowResubmissionDate()
     {
@@ -673,9 +625,9 @@ class Materials
     }
 
     /**
-     * Set workflowValidityDate
+     * Set workflowValidityDate.
      *
-     * @param DateTime $workflowValidityDate
+     * @param \DateTime $workflowValidityDate
      *
      * @return Materials
      */
@@ -687,9 +639,9 @@ class Materials
     }
 
     /**
-     * Get workflowValidityDate
+     * Get workflowValidityDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getWorkflowValidityDate()
     {
@@ -697,9 +649,9 @@ class Materials
     }
 
     /**
-     * Set lockingDate
+     * Set lockingDate.
      *
-     * @param DateTime $lockingDate
+     * @param \DateTime $lockingDate
      *
      * @return Materials
      */
@@ -711,9 +663,9 @@ class Materials
     }
 
     /**
-     * Get lockingDate
+     * Get lockingDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getLockingDate()
     {
@@ -721,9 +673,9 @@ class Materials
     }
 
     /**
-     * Set lockingUserId
+     * Set lockingUserId.
      *
-     * @param integer $lockingUserId
+     * @param int $lockingUserId
      *
      * @return Materials
      */
@@ -735,9 +687,9 @@ class Materials
     }
 
     /**
-     * Get lockingUserId
+     * Get lockingUserId.
      *
-     * @return integer
+     * @return int
      */
     public function getLockingUserId()
     {
@@ -746,17 +698,15 @@ class Materials
 
     public function isIndexable()
     {
-        return ($this->deleter == null && $this->deletionDate == null);
+        return null == $this->deleter && null == $this->deletionDate;
     }
 
     /**
-     * Set creator
-     *
-     * @param \App\Entity\User $creator
+     * Set creator.
      *
      * @return Materials
      */
-    public function setCreator(\App\Entity\User $creator = null)
+    public function setCreator(User $creator = null)
     {
         $this->creator = $creator;
 
@@ -764,7 +714,7 @@ class Materials
     }
 
     /**
-     * Get creator
+     * Get creator.
      *
      * @return \App\Entity\User
      */
@@ -774,13 +724,11 @@ class Materials
     }
 
     /**
-     * Set deleter
-     *
-     * @param \App\Entity\User $deleter
+     * Set deleter.
      *
      * @return Materials
      */
-    public function setDeleter(\App\Entity\User $deleter = null)
+    public function setDeleter(User $deleter = null)
     {
         $this->deleter = $deleter;
 
@@ -788,7 +736,7 @@ class Materials
     }
 
     /**
-     * Get deleter
+     * Get deleter.
      *
      * @return \App\Entity\User
      */
@@ -798,13 +746,11 @@ class Materials
     }
 
     /**
-     * Set modifier
-     *
-     * @param \App\Entity\User $modifier
+     * Set modifier.
      *
      * @return Materials
      */
-    public function setModifier(\App\Entity\User $modifier = null)
+    public function setModifier(User $modifier = null)
     {
         $this->modifier = $modifier;
 
@@ -812,7 +758,7 @@ class Materials
     }
 
     /**
-     * Get modifier
+     * Get modifier.
      *
      * @return \App\Entity\User
      */

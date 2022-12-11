@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Validator\Constraints;
 
-use cs_room_item;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\MissingOptionsException;
 
@@ -13,7 +22,7 @@ use Symfony\Component\Validator\Exception\MissingOptionsException;
 class MandatoryProjectRoomAssignment extends Constraint
 {
     /**
-     * @var cs_room_item
+     * @var \cs_room_item
      */
     public $room;
 
@@ -25,9 +34,8 @@ class MandatoryProjectRoomAssignment extends Constraint
     {
         parent::__construct($options);
 
-        if ($this->room === null) {
-            throw new MissingOptionsException(sprintf('Option "room" must be given for constraint %s', __CLASS__),
-                ['room']);
+        if (null === $this->room) {
+            throw new MissingOptionsException(sprintf('Option "room" must be given for constraint %s', self::class), ['room']);
         }
     }
 }

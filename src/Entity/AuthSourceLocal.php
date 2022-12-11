@@ -1,22 +1,27 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class AuthSourceLocal extends AuthSource
 {
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", length=100, nullable=false)
-     * @Assert\Length(max=100)
-     */
-    private ?string $mailRegex;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 100)]
+    #[Assert\Length(max: 100)]
+    private ?string $mailRegex = null;
 
     protected string $type = 'local';
 
@@ -37,13 +42,10 @@ class AuthSourceLocal extends AuthSource
         return $this->mailRegex;
     }
 
-    /**
-     * @param string $mailRegex
-     * @return self
-     */
     public function setMailRegex(string $mailRegex): self
     {
         $this->mailRegex = $mailRegex;
+
         return $this;
     }
 }

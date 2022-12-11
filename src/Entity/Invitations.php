@@ -1,72 +1,69 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Invitations
- *
- * @ORM\Table(name="invitations")
- * @ORM\Entity
+ * Invitations.
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'invitations')]
 class Invitations
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @var int
      */
-    private $id;
-
+    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    private ?int $id = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="hash", type="string", nullable=false)
      */
-    private $hash;
-
+    #[ORM\Column(name: 'hash', type: \Doctrine\DBAL\Types\Types::STRING)]
+    private ?string $hash = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="email", type="string", nullable=false)
      */
-    private $email;
+    #[ORM\Column(name: 'email', type: \Doctrine\DBAL\Types\Types::STRING)]
+    private ?string $email = null;
+    /**
+     * @var int
+     */
+    #[ORM\Column(name: 'authsource_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    private ?int $authSourceId = null;
+    /**
+     * @var int
+     */
+    #[ORM\Column(name: 'context_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    private ?int $contextId = null;
+    #[ORM\Column(name: 'creation_date', type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    private \DateTime $creationDate;
+    #[ORM\Column(name: 'expiration_date', type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
+    private \DateTime $expirationDate;
+
+    public function __construct()
+    {
+        $this->creationDate = new \DateTime('0000-00-00 00:00:00');
+        $this->expirationDate = new \DateTime('0000-00-00 00:00:00');
+    }
 
     /**
-     * @var integer
+     * Get id.
      *
-     * @ORM\Column(name="authsource_id", type="integer", nullable=false)
-     */
-    private $authSourceId;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=false)
-     */
-    private $contextId;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="creation_date", type="datetime", nullable=false)
-     */
-    private $creationDate = '0000-00-00 00:00:00';
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="expiration_date", type="datetime", nullable=true)
-     */
-    private $expirationDate = '0000-00-00 00:00:00';
-
-    /**
-     * Get id
-     *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -74,7 +71,7 @@ class Invitations
     }
 
     /**
-     * Set hash
+     * Set hash.
      *
      * @param string $hash
      *
@@ -88,7 +85,7 @@ class Invitations
     }
 
     /**
-     * Get hash
+     * Get hash.
      *
      * @return string
      */
@@ -98,7 +95,7 @@ class Invitations
     }
 
     /**
-     * Set email
+     * Set email.
      *
      * @param string $email
      *
@@ -112,7 +109,7 @@ class Invitations
     }
 
     /**
-     * Get email
+     * Get email.
      *
      * @return string
      */
@@ -122,9 +119,9 @@ class Invitations
     }
 
     /**
-     * Set authSourceId
+     * Set authSourceId.
      *
-     * @param integer $authSourceId
+     * @param int $authSourceId
      *
      * @return Invitations
      */
@@ -136,9 +133,9 @@ class Invitations
     }
 
     /**
-     * Get authSourceId
+     * Get authSourceId.
      *
-     * @return integer
+     * @return int
      */
     public function getAuthSourceId()
     {
@@ -146,9 +143,9 @@ class Invitations
     }
 
     /**
-     * Set contextId
+     * Set contextId.
      *
-     * @param integer $contextId
+     * @param int $contextId
      *
      * @return Invitations
      */
@@ -160,9 +157,9 @@ class Invitations
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
-     * @return integer
+     * @return int
      */
     public function getContextId()
     {
@@ -170,7 +167,7 @@ class Invitations
     }
 
     /**
-     * Set creationDate
+     * Set creationDate.
      *
      * @param \DateTime $creationDate
      *
@@ -184,7 +181,7 @@ class Invitations
     }
 
     /**
-     * Get creationDate
+     * Get creationDate.
      *
      * @return \DateTime
      */
@@ -194,7 +191,7 @@ class Invitations
     }
 
     /**
-     * Set expirationDate
+     * Set expirationDate.
      *
      * @param \DateTime $expirationDate
      *
@@ -208,7 +205,7 @@ class Invitations
     }
 
     /**
-     * Get expirationDate
+     * Get expirationDate.
      *
      * @return \DateTime
      */

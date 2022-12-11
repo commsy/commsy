@@ -1,48 +1,55 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Services;
 
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 
 class LegacyEnvironment
 {
+    /**
+     * @var \cs_environment|null
+     */
     private $environment;
 
     /**
-     * @var String
+     * @param string $projectDir
      */
-    private $projectDir;
-
-    /**
-     * Symfony service container
-     */
-    private $serviceContainer;
-
-    /**
-     * @param $projectDir
-     * @param Container $container
-     */
-    public function __construct($projectDir, Container $container)
-    {
-        $this->projectDir = $projectDir;
-        $this->serviceContainer = $container;
+    public function __construct(
+        private $projectDir,
+        /**
+         * Symfony service container.
+         */
+        private Container $serviceContainer,
+        private \Symfony\Component\HttpFoundation\RequestStack $requestStack
+    ) {
     }
 
-    public function getEnvironment()
+    public function getEnvironment(): \cs_environment
     {
-        if ($this->environment === null) {
-            $legacyDir = $this->projectDir . '/legacy';
-            set_include_path(get_include_path() . PATH_SEPARATOR . $legacyDir);
+        if (null === $this->environment) {
+            $legacyDir = $this->projectDir.'/legacy';
+            set_include_path(get_include_path().PATH_SEPARATOR.$legacyDir);
 
             global $cs_color;
             global $db;
-            include_once('etc/cs_constants.php');
-            include_once('functions/misc_functions.php');
+            include_once 'etc/cs_constants.php';
+            include_once 'functions/misc_functions.php';
 
             global $symfonyContainer;
             $symfonyContainer = $this->serviceContainer;
 
-            include_once('classes/cs_environment.php');
+            include_once 'classes/cs_environment.php';
             global $environment;
             $environment = new \cs_environment();
             $this->environment = $environment;
@@ -57,13 +64,13 @@ class LegacyEnvironment
 
     /**
      * This method tries to guess the current context id by analysing the client request.
-     * If no context id could be found, we will fall back to 99 (the "server context")
+     * If no context id could be found, we will fall back to 99 (the "server context").
      *
      * @return int context id
      */
     private function guessContextId()
     {
-        $requestStack = $this->serviceContainer->get('request_stack');
+        $requestStack = $this->requestStack;
         $currentRequest = $requestStack->getCurrentRequest();
 
         // current request could be empty
@@ -76,9 +83,10 @@ class LegacyEnvironment
 
             // check request uri
             $requestUri = $currentRequest->getRequestUri();
-                
+
             if (preg_match('/(room|dashboard|portal)\/(\d+)/', $requestUri, $matches)) {
                 $roomId = $matches[2];
+
                 return $roomId;
             }
         }

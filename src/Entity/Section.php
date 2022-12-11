@@ -1,134 +1,115 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Section
- *
- * @ORM\Table(name="section", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"}), @ORM\Index(name="material_item_id", columns={"material_item_id"})})
- * @ORM\Entity
+ * Section.
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'section')]
+#[ORM\Index(name: 'context_id', columns: ['context_id'])]
+#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
+#[ORM\Index(name: 'material_item_id', columns: ['material_item_id'])]
 class Section
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="item_id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @var int
      */
+    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     private $itemId = '0';
-
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="version_id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @var int
      */
+    #[ORM\Column(name: 'version_id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     private $versionId = '0';
-
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
     private $contextId;
-
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="creator_id", type="integer", nullable=false)
+     * @var int
      */
+    #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
     private $creatorId = '0';
-
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="modifier_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: true)]
     private $modifierId;
-
+    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: true)]
+    private \DateTime $creationDate;
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="creation_date", type="datetime", nullable=true)
+     * @var int
      */
-    private $creationDate = '0000-00-00 00:00:00';
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="deleter_id", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private $deleterId;
-
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
+     * @var \DateTimeInterface
      */
+    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
-
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modification_date", type="datetime", nullable=true)
+     * @var \DateTimeInterface
      */
+    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
     private $modificationDate;
-
     /**
      * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private $title;
-
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="text", length=16777215, nullable=true)
      */
+    #[ORM\Column(name: 'description', type: 'text', length: 16_777_215, nullable: true)]
     private $description;
-
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="number", type="smallint", nullable=false)
+     * @var int
      */
+    #[ORM\Column(name: 'number', type: 'smallint', nullable: false)]
     private $number = '0';
-
-    /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="Materials", inversedBy="sections")
-     * @ORM\JoinColumns({
-     *     @ORM\JoinColumn(name="material_item_id", referencedColumnName="item_id"),
-     *     @ORM\JoinColumn(name="version_id", referencedColumnName="version_id")
-     * })
-     */
-    private $material;
-
+    #[ORM\ManyToOne(targetEntity: 'Materials', inversedBy: 'sections')]
+    #[ORM\JoinColumn(name: 'material_item_id', referencedColumnName: 'item_id')]
+    #[ORM\JoinColumn(name: 'version_id', referencedColumnName: 'version_id')]
+    private ?\App\Entity\Materials $material = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="extras", type="text", length=65535, nullable=true)
      */
+    #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
     private $extras;
-
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="public", type="boolean", nullable=false)
+     * @var bool
      */
+    #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
     private $public = '0';
 
+    public function __construct()
+    {
+        $this->creationDate = new \DateTime('0000-00-00 00:00:00');
+    }
+
     /**
-     * Set itemId
+     * Set itemId.
      *
-     * @param integer $itemId
+     * @param int $itemId
      *
      * @return Section
      */
@@ -140,9 +121,9 @@ class Section
     }
 
     /**
-     * Get itemId
+     * Get itemId.
      *
-     * @return integer
+     * @return int
      */
     public function getItemId()
     {
@@ -150,9 +131,9 @@ class Section
     }
 
     /**
-     * Set versionId
+     * Set versionId.
      *
-     * @param integer $versionId
+     * @param int $versionId
      *
      * @return Section
      */
@@ -164,9 +145,9 @@ class Section
     }
 
     /**
-     * Get versionId
+     * Get versionId.
      *
-     * @return integer
+     * @return int
      */
     public function getVersionId()
     {
@@ -174,9 +155,9 @@ class Section
     }
 
     /**
-     * Set contextId
+     * Set contextId.
      *
-     * @param integer $contextId
+     * @param int $contextId
      *
      * @return Section
      */
@@ -188,9 +169,9 @@ class Section
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
-     * @return integer
+     * @return int
      */
     public function getContextId()
     {
@@ -198,9 +179,9 @@ class Section
     }
 
     /**
-     * Set creatorId
+     * Set creatorId.
      *
-     * @param integer $creatorId
+     * @param int $creatorId
      *
      * @return Section
      */
@@ -212,9 +193,9 @@ class Section
     }
 
     /**
-     * Get creatorId
+     * Get creatorId.
      *
-     * @return integer
+     * @return int
      */
     public function getCreatorId()
     {
@@ -222,9 +203,9 @@ class Section
     }
 
     /**
-     * Set modifierId
+     * Set modifierId.
      *
-     * @param integer $modifierId
+     * @param int $modifierId
      *
      * @return Section
      */
@@ -236,9 +217,9 @@ class Section
     }
 
     /**
-     * Get modifierId
+     * Get modifierId.
      *
-     * @return integer
+     * @return int
      */
     public function getModifierId()
     {
@@ -246,7 +227,7 @@ class Section
     }
 
     /**
-     * Set creationDate
+     * Set creationDate.
      *
      * @param \DateTime $creationDate
      *
@@ -260,7 +241,7 @@ class Section
     }
 
     /**
-     * Get creationDate
+     * Get creationDate.
      *
      * @return \DateTime
      */
@@ -270,9 +251,9 @@ class Section
     }
 
     /**
-     * Set deleterId
+     * Set deleterId.
      *
-     * @param integer $deleterId
+     * @param int $deleterId
      *
      * @return Section
      */
@@ -284,9 +265,9 @@ class Section
     }
 
     /**
-     * Get deleterId
+     * Get deleterId.
      *
-     * @return integer
+     * @return int
      */
     public function getDeleterId()
     {
@@ -294,7 +275,7 @@ class Section
     }
 
     /**
-     * Set deletionDate
+     * Set deletionDate.
      *
      * @param \DateTime $deletionDate
      *
@@ -308,7 +289,7 @@ class Section
     }
 
     /**
-     * Get deletionDate
+     * Get deletionDate.
      *
      * @return \DateTime
      */
@@ -318,7 +299,7 @@ class Section
     }
 
     /**
-     * Set modificationDate
+     * Set modificationDate.
      *
      * @param \DateTime $modificationDate
      *
@@ -332,7 +313,7 @@ class Section
     }
 
     /**
-     * Get modificationDate
+     * Get modificationDate.
      *
      * @return \DateTime
      */
@@ -342,7 +323,7 @@ class Section
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -356,7 +337,7 @@ class Section
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -366,7 +347,7 @@ class Section
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -380,7 +361,7 @@ class Section
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -390,9 +371,9 @@ class Section
     }
 
     /**
-     * Set number
+     * Set number.
      *
-     * @param integer $number
+     * @param int $number
      *
      * @return Section
      */
@@ -404,9 +385,9 @@ class Section
     }
 
     /**
-     * Get number
+     * Get number.
      *
-     * @return integer
+     * @return int
      */
     public function getNumber()
     {
@@ -414,7 +395,7 @@ class Section
     }
 
     /**
-     * Set extras
+     * Set extras.
      *
      * @param string $extras
      *
@@ -428,7 +409,7 @@ class Section
     }
 
     /**
-     * Get extras
+     * Get extras.
      *
      * @return string
      */
@@ -438,9 +419,9 @@ class Section
     }
 
     /**
-     * Set public
+     * Set public.
      *
-     * @param boolean $public
+     * @param bool $public
      *
      * @return Section
      */
@@ -452,9 +433,9 @@ class Section
     }
 
     /**
-     * Get public
+     * Get public.
      *
-     * @return boolean
+     * @return bool
      */
     public function getPublic()
     {
@@ -462,13 +443,11 @@ class Section
     }
 
     /**
-     * Set material
-     *
-     * @param \App\Entity\Materials $material
+     * Set material.
      *
      * @return Section
      */
-    public function setMaterial(\App\Entity\Materials $material = null)
+    public function setMaterial(Materials $material = null)
     {
         $this->material = $material;
 
@@ -476,7 +455,7 @@ class Section
     }
 
     /**
-     * Get material
+     * Get material.
      *
      * @return \App\Entity\Materials
      */

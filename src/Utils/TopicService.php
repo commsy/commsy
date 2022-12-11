@@ -1,17 +1,24 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
-use cs_topic_manager;
 use Symfony\Component\Form\FormInterface;
 
 class TopicService
 {
-    /**
-     * @var cs_topic_manager
-     */
-    private cs_topic_manager $topicManager;
+    private \cs_topic_manager $topicManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -19,9 +26,9 @@ class TopicService
         $this->topicManager->reset();
     }
 
-
     public function getCountArray($roomId)
     {
+        $countTopicArray = [];
         $this->topicManager->setContextLimit($roomId);
         $this->topicManager->select();
         $countTopicArray['count'] = sizeof($this->topicManager->get()->to_array());
@@ -34,25 +41,26 @@ class TopicService
 
     /**
      * @param int $itemId
-     * @return \cs_topic_item
      */
     public function getTopic($itemId): \cs_topic_item
     {
         /** @var \cs_topic_item $topic */
         $topic = $this->topicManager->getItem($itemId);
+
         return $topic;
     }
 
     /**
-     * @param integer $roomId
-     * @param integer $max
-     * @param integer $start
+     * @param int $roomId
+     * @param int $max
+     * @param int $start
+     *
      * @return \cs_topic_item[]
      */
-    public function getListTopics($roomId, $max = NULL, $start = NULL)
+    public function getListTopics($roomId, $max = null, $start = null)
     {
         $this->topicManager->setContextLimit($roomId);
-        if ($max !== NULL && $start !== NULL) {
+        if (null !== $max && null !== $start) {
             $this->topicManager->setIntervalLimit($start, $max);
         }
 
@@ -63,8 +71,9 @@ class TopicService
     }
 
     /**
-     * @param integer $roomId
-     * @param integer[] $ids
+     * @param int   $roomId
+     * @param int[] $ids
+     *
      * @return \cs_topic_item[]
      */
     public function getTopicsById($roomId, $ids)
@@ -77,23 +86,23 @@ class TopicService
 
         return $userList->to_array();
     }
-    
+
     public function setFilterConditions(FormInterface $filterForm)
     {
         $formData = $filterForm->getData();
 
         // activated
         if ($formData['hide-deactivated-entries']) {
-            if ($formData['hide-deactivated-entries'] === 'only_activated') {
+            if ('only_activated' === $formData['hide-deactivated-entries']) {
                 $this->topicManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
-            } else if ($formData['hide-deactivated-entries'] === 'only_deactivated') {
+            } elseif ('only_deactivated' === $formData['hide-deactivated-entries']) {
                 $this->topicManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
-            } else if ($formData['hide-deactivated-entries'] === 'all') {
+            } elseif ('all' === $formData['hide-deactivated-entries']) {
                 $this->topicManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
             }
         }
     }
-    
+
     public function getNewTopic()
     {
         return $this->topicManager->getNewItem();

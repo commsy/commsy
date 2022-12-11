@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -14,7 +25,7 @@ class ElasticaCompilerPass implements CompilerPassInterface
         ];
 
         foreach ($container->getDefinitions() as $id => $definition) {
-            if (strpos($id, 'fos_elastica.object_persister.') !== false) {
+            if (str_contains($id, 'fos_elastica.object_persister.')) {
                 $definition->setArgument('index_4', $options);
             }
         }

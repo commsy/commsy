@@ -1,139 +1,122 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Announcement
- *
- * @ORM\Table(name="announcement", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"})})
- * @ORM\Entity
+ * Announcement.
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'announcement')]
+#[ORM\Index(name: 'context_id', columns: ['context_id'])]
+#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 class Announcement
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="item_id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @var int
      */
+    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $itemId = '0';
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
     private $contextId;
 
-    /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id")
-     */
-    private $creator;
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
+    private ?\App\Entity\User $creator = null;
+
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
+    private ?\App\Entity\User $modifier = null;
+
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id')]
+    private ?\App\Entity\User $deleter = null;
 
     /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id")
+     * @var \DateTime
      */
-    private $modifier;
-
-    /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="deleter_id", referencedColumnName="item_id")
-     */
-    private $deleter;
-
-    /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="creation_date", type="datetime", nullable=false)
-     */
+    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private $creationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="modification_date", type="datetime", nullable=true)
+     * @var \DateTime
      */
+    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
     private $modificationDate;
 
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="activation_date", type="datetime")
-     */
-    private ?DateTime $activationDate;
+    #[ORM\Column(name: 'activation_date', type: 'datetime')]
+    private ?\DateTime $activationDate = null;
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
+     * @var \DateTime
      */
+    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private $title;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="text", length=16777215, nullable=true)
      */
+    #[ORM\Column(name: 'description', type: 'text', length: 16777215, nullable: true)]
     private $description;
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="enddate", type="datetime", nullable=false)
+     * @var \DateTime
      */
+    #[ORM\Column(name: 'enddate', type: 'datetime', nullable: false)]
     private $enddate = '0000-00-00 00:00:00';
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="public", type="boolean", nullable=false)
+     * @var bool
      */
+    #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
     private $public = '0';
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="extras", type="text", length=65535, nullable=true)
      */
+    #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
     private $extras;
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="locking_date", type="datetime", nullable=true)
+     * @var \DateTime
      */
+    #[ORM\Column(name: 'locking_date', type: 'datetime', nullable: true)]
     private $lockingDate;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="locking_user_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'locking_user_id', type: 'integer', nullable: true)]
     private $lockingUserId;
 
     /**
-     * Get itemId
+     * Get itemId.
      *
-     * @return integer
+     * @return int
      */
     public function getItemId()
     {
@@ -141,9 +124,9 @@ class Announcement
     }
 
     /**
-     * Set contextId
+     * Set contextId.
      *
-     * @param integer $contextId
+     * @param int $contextId
      *
      * @return Announcement
      */
@@ -155,9 +138,9 @@ class Announcement
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
-     * @return integer
+     * @return int
      */
     public function getContextId()
     {
@@ -165,20 +148,19 @@ class Announcement
     }
 
     /**
-     * Get creationDate
+     * Get creationDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getCreationDate()
     {
         return $this->creationDate;
     }
 
-
     /**
-     * Set deletionDate
+     * Set deletionDate.
      *
-     * @param DateTime $deletionDate
+     * @param \DateTime $deletionDate
      *
      * @return Announcement
      */
@@ -191,14 +173,13 @@ class Announcement
 
     public function isIndexable()
     {
-        return ($this->deleter == null && $this->deletionDate == null);
+        return null == $this->deleter && null == $this->deletionDate;
     }
 
-
     /**
-     * Set modificationDate
+     * Set modificationDate.
      *
-     * @param DateTime $modificationDate
+     * @param \DateTime $modificationDate
      *
      * @return Materials
      */
@@ -210,9 +191,9 @@ class Announcement
     }
 
     /**
-     * Get modificationDate
+     * Get modificationDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getModificationDate()
     {
@@ -220,13 +201,9 @@ class Announcement
     }
 
     /**
-     * Set activationDate
-     *
-     * @param DateTime $activationDate
-     *
-     * @return Announcement
+     * Set activationDate.
      */
-    public function setActivationDate(DateTime $activationDate): self
+    public function setActivationDate(\DateTime $activationDate): self
     {
         $this->activationDate = $activationDate;
 
@@ -234,19 +211,17 @@ class Announcement
     }
 
     /**
-     * Get activationDate
-     *
-     * @return DateTime|null
+     * Get activationDate.
      */
-    public function getActivationDate(): ?DateTime
+    public function getActivationDate(): ?\DateTime
     {
         return $this->activationDate;
     }
 
     /**
-     * Get deletionDate
+     * Get deletionDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDeletionDate()
     {
@@ -254,7 +229,7 @@ class Announcement
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -268,7 +243,7 @@ class Announcement
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -278,7 +253,7 @@ class Announcement
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -292,7 +267,7 @@ class Announcement
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -302,9 +277,9 @@ class Announcement
     }
 
     /**
-     * Set enddate
+     * Set enddate.
      *
-     * @param DateTime $enddate
+     * @param \DateTime $enddate
      *
      * @return Announcement
      */
@@ -316,9 +291,9 @@ class Announcement
     }
 
     /**
-     * Get enddate
+     * Get enddate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getEnddate()
     {
@@ -326,9 +301,9 @@ class Announcement
     }
 
     /**
-     * Set public
+     * Set public.
      *
-     * @param boolean $public
+     * @param bool $public
      *
      * @return Announcement
      */
@@ -340,9 +315,9 @@ class Announcement
     }
 
     /**
-     * Get public
+     * Get public.
      *
-     * @return boolean
+     * @return bool
      */
     public function getPublic()
     {
@@ -350,7 +325,7 @@ class Announcement
     }
 
     /**
-     * Set extras
+     * Set extras.
      *
      * @param string $extras
      *
@@ -364,7 +339,7 @@ class Announcement
     }
 
     /**
-     * Get extras
+     * Get extras.
      *
      * @return string
      */
@@ -374,9 +349,9 @@ class Announcement
     }
 
     /**
-     * Set lockingDate
+     * Set lockingDate.
      *
-     * @param DateTime $lockingDate
+     * @param \DateTime $lockingDate
      *
      * @return Announcement
      */
@@ -388,9 +363,9 @@ class Announcement
     }
 
     /**
-     * Get lockingDate
+     * Get lockingDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getLockingDate()
     {
@@ -398,9 +373,9 @@ class Announcement
     }
 
     /**
-     * Set lockingUserId
+     * Set lockingUserId.
      *
-     * @param integer $lockingUserId
+     * @param int $lockingUserId
      *
      * @return Announcement
      */
@@ -412,9 +387,9 @@ class Announcement
     }
 
     /**
-     * Get lockingUserId
+     * Get lockingUserId.
      *
-     * @return integer
+     * @return int
      */
     public function getLockingUserId()
     {
@@ -422,13 +397,11 @@ class Announcement
     }
 
     /**
-     * Set creator
-     *
-     * @param \App\Entity\User $creator
+     * Set creator.
      *
      * @return Announcement
      */
-    public function setCreator(\App\Entity\User $creator = null)
+    public function setCreator(User $creator = null)
     {
         $this->creator = $creator;
 
@@ -436,7 +409,7 @@ class Announcement
     }
 
     /**
-     * Get creator
+     * Get creator.
      *
      * @return \App\Entity\User
      */
@@ -446,13 +419,11 @@ class Announcement
     }
 
     /**
-     * Set modifier
-     *
-     * @param \App\Entity\User $modifier
+     * Set modifier.
      *
      * @return Announcement
      */
-    public function setModifier(\App\Entity\User $modifier = null)
+    public function setModifier(User $modifier = null)
     {
         $this->modifier = $modifier;
 
@@ -460,7 +431,7 @@ class Announcement
     }
 
     /**
-     * Get modifier
+     * Get modifier.
      *
      * @return \App\Entity\User
      */
@@ -470,13 +441,11 @@ class Announcement
     }
 
     /**
-     * Set deleter
-     *
-     * @param \App\Entity\User $deleter
+     * Set deleter.
      *
      * @return Announcement
      */
-    public function setDeleter(\App\Entity\User $deleter = null)
+    public function setDeleter(User $deleter = null)
     {
         $this->deleter = $deleter;
 
@@ -484,7 +453,7 @@ class Announcement
     }
 
     /**
-     * Get deleter
+     * Get deleter.
      *
      * @return \App\Entity\User
      */

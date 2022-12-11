@@ -1,47 +1,44 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use App\Utils\UserService;
-use cs_environment;
 use cs_room_item;
 
-class GeneralSettingsTransformer  extends AbstractTransformer
+class GeneralSettingsTransformer extends AbstractTransformer
 {
     protected $entity = 'general_settings';
 
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
+    private \cs_environment $legacyEnvironment;
 
-    /**
-     * @var RoomService
-     */
-    private RoomService $roomService;
-
-    /**
-     * @var UserService
-     */
-    private UserService $userService;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, UserService $userService)
+    public function __construct(LegacyEnvironment $legacyEnvironment, private RoomService $roomService, private UserService $userService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->roomService = $roomService;
-        $this->userService = $userService;
     }
 
     /**
-     * Transforms a cs_room_item object to an array
+     * Transforms a cs_room_item object to an array.
      *
-     * @param cs_room_item $roomItem
+     * @param \cs_room_item $roomItem
+     *
      * @return array
      */
     public function transform($roomItem)
     {
-        $roomData = array();
+        $roomData = [];
 
         $defaultRubrics = $roomItem->getAvailableDefaultRubricArray();
 
@@ -51,9 +48,9 @@ class GeneralSettingsTransformer  extends AbstractTransformer
 
             if ($roomItem->checkNewMembersAlways()) {
                 $roomData['access_check'] = 'always';
-            } else if ($roomItem->checkNewMembersNever()) {
+            } elseif ($roomItem->checkNewMembersNever()) {
                 $roomData['access_check'] = 'never';
-            } else if ($roomItem->checkNewMembersWithCode()) {
+            } elseif ($roomItem->checkNewMembersWithCode()) {
                 $roomData['access_check'] = 'withcode';
                 $roomData['access_code'] = $roomItem->getCheckNewMemberCode();
             }
@@ -62,12 +59,12 @@ class GeneralSettingsTransformer  extends AbstractTransformer
             $roomData['room_slug'] = $roomItem->getSlug() ?? '';
 
             // $rubrics = array_combine($defaultRubrics, array_fill(0, count($defaultRubrics), 'off'));
-            $rubrics = array();
+            $rubrics = [];
             foreach ($this->roomService->getRubricInformation($roomItem->getItemID(), true) as $rubric) {
-                list($rubricName, $modifier) = explode('_', $rubric);
+                [$rubricName, $modifier] = explode('_', $rubric);
                 $rubrics[$rubricName] = $modifier;
             }
-            foreach(array_diff($defaultRubrics, array_keys($rubrics)) as $deactivated_rubric){
+            foreach (array_diff($defaultRubrics, array_keys($rubrics)) as $deactivated_rubric) {
                 $rubrics[$deactivated_rubric] = 'off';
             }
             $roomData['rubrics'] = $rubrics;
@@ -78,7 +75,7 @@ class GeneralSettingsTransformer  extends AbstractTransformer
 
             $roomData['material_open_for_guest'] = $roomItem->isMaterialOpenForGuests();
 
-            $linkedCommunityRooms = array();
+            $linkedCommunityRooms = [];
 
             if (!$roomItem->isGroupRoom() && !$roomItem->isUserroom()) {
                 foreach ($roomItem->getCommunityList()->to_array() as $key => $communityRoom) {
@@ -107,25 +104,29 @@ class GeneralSettingsTransformer  extends AbstractTransformer
                 }
             }
         }
+
         return $roomData;
     }
 
-  /**
-     * Save general settings
+    /**
+     * Save general settings.
      *
      * @param object $roomObject
-     * @param array $roomData
-     * @return cs_room_item|null
-     * @throws TransformationFailedException if room item is not found.
+     * @param array  $roomData
+     *
+     * @return \cs_room_item|null
+     *
+     * @throws TransformationFailedException if room item is not found
      */
     public function applyTransformation($roomObject, $roomData)
     {
-        foreach(explode(",", $roomData['rubricOrder']) as $rubricName){
+        $rubricArray = [];
+        foreach (explode(',', $roomData['rubricOrder']) as $rubricName) {
             $rubricValue = $roomData['rubrics'][$rubricName];
-            if (strcmp($rubricValue, 'off') == 0) {
+            if (0 == strcmp($rubricValue, 'off')) {
                 continue;
             }
-            $rubricArray[] = $rubricName . "_" . $rubricValue;
+            $rubricArray[] = $rubricName.'_'.$rubricValue;
         }
 
         $roomObject->setHomeConf(implode($rubricArray, ','));
@@ -136,50 +137,58 @@ class GeneralSettingsTransformer  extends AbstractTransformer
             $roomObject->setLanguage($roomData['language']);
         }
 
-        if(isset($roomData['room_description'])) 
+        if (isset($roomData['room_description'])) {
             $roomObject->setDescription(strip_tags($roomData['room_description']));
-        else 
+        } else {
             $roomObject->setDescription('');
+        }
 
         // NOTE: validation of character input for the room_slug form field is handled by form field constraints
         $roomObject->setSlug($roomData['room_slug'] ?? '');
 
         // assignment
-        if($roomObject->isProjectRoom() && isset($roomData['community_rooms'])) {
+        if ($roomObject->isProjectRoom() && isset($roomData['community_rooms'])) {
             /*
              * if assignment is mandatory, the array must not be empty
              */
-            if ($this->legacyEnvironment->getCurrentPortalItem()->getProjectRoomLinkStatus() !== "mandatory" || sizeof($roomData['community_rooms']) > 0 )
-            {
+            if ('mandatory' !== $this->legacyEnvironment->getCurrentPortalItem()->getProjectRoomLinkStatus() || sizeof($roomData['community_rooms']) > 0) {
                 $roomObject->setCommunityListByID(array_values($roomData['community_rooms']));
             }
-
-        } elseif($roomObject->isCommunityRoom()) {
-            if(isset($roomData['assignment_restricted'])) {
-                if($roomData['assignment_restricted']) $roomObject->setAssignmentOnlyOpenForRoomMembers();
-                else $roomObject->setAssignmentOpenForAnybody();
+        } elseif ($roomObject->isCommunityRoom()) {
+            if (isset($roomData['assignment_restricted'])) {
+                if ($roomData['assignment_restricted']) {
+                    $roomObject->setAssignmentOnlyOpenForRoomMembers();
+                } else {
+                    $roomObject->setAssignmentOpenForAnybody();
+                }
             }
-            if(isset($roomData['open_for_guest'])){
-                if($roomData['open_for_guest']) $roomObject->setOpenForGuests();
-                else $roomObject->setClosedForGuests();
+            if (isset($roomData['open_for_guest'])) {
+                if ($roomData['open_for_guest']) {
+                    $roomObject->setOpenForGuests();
+                } else {
+                    $roomObject->setClosedForGuests();
+                }
             }
-            if(isset($roomData['material_open_for_guest'])){
-                if($roomData['material_open_for_guest']) $roomObject->setMaterialOpenForGuests();
-                else $roomObject->setMaterialClosedForGuests();
+            if (isset($roomData['material_open_for_guest'])) {
+                if ($roomData['material_open_for_guest']) {
+                    $roomObject->setMaterialOpenForGuests();
+                } else {
+                    $roomObject->setMaterialClosedForGuests();
+                }
             }
         }
 
         // check member
         if (isset($roomData['access_check'])) {
-            switch($roomData['access_check']) {
-                case "never":
+            switch ($roomData['access_check']) {
+                case 'never':
                     $this->userService->grantAccessToAllPendingApplications();
                     $roomObject->setCheckNewMemberNever();
                     break;
-                case "always":
+                case 'always':
                     $roomObject->setCheckNewMemberAlways();
                     break;
-                case "withcode":
+                case 'withcode':
                     $roomObject->setCheckNewMemberWithCode();
                     $roomObject->setCheckNewMemberCode($roomData['access_code']);
                     break;

@@ -1,9 +1,19 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
-use cs_discussion_item;
-use cs_discussionarticle_item;
 use Symfony\Component\Form\FormInterface;
 
 class DiscussionService
@@ -11,7 +21,7 @@ class DiscussionService
     private $legacyEnvironment;
 
     private $discussionManager;
-    
+
     private $discussionArticleManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
@@ -20,22 +30,23 @@ class DiscussionService
 
         $this->discussionManager = $this->legacyEnvironment->getDiscussionManager();
         $this->discussionManager->reset();
-        
+
         $this->discussionArticleManager = $this->legacyEnvironment->getDiscussionArticlesManager();
         $this->discussionArticleManager->reset();
     }
 
     /**
-     * @param integer $roomId
-     * @param integer $max
-     * @param integer $start
+     * @param int    $roomId
+     * @param int    $max
+     * @param int    $start
      * @param string $sort
-     * @return cs_discussion_item[]
+     *
+     * @return \cs_discussion_item[]
      */
-    public function getListDiscussions($roomId, $max = NULL, $start = NULL, $sort = NULL)
+    public function getListDiscussions($roomId, $max = null, $start = null, $sort = null)
     {
         $this->discussionManager->setContextLimit($roomId);
-        if ($max !== NULL && $start !== NULL) {
+        if (null !== $max && null !== $start) {
             $this->discussionManager->setIntervalLimit($start, $max);
         }
 
@@ -47,15 +58,16 @@ class DiscussionService
         $discussionList = $this->discussionManager->get();
 
         return $discussionList->to_array();
-        
     }
 
     /**
-     * @param integer $roomId
-     * @param integer[] $ids
-     * @return cs_discussion_item[]
+     * @param int   $roomId
+     * @param int[] $ids
+     *
+     * @return \cs_discussion_item[]
      */
-    public function getDiscussionsById($roomId, $ids) {
+    public function getDiscussionsById($roomId, $ids)
+    {
         $this->discussionManager->setContextLimit($roomId);
         $this->discussionManager->setIDArrayLimit($ids);
 
@@ -67,9 +79,10 @@ class DiscussionService
 
     public function getCountArray($roomId)
     {
+        $countDiscussionArray = [];
         $this->discussionManager->setContextLimit($roomId);
         $this->discussionManager->select();
-        $countDiscussion = array();
+        $countDiscussion = [];
         $countDiscussionArray['count'] = sizeof($this->discussionManager->get()->to_array());
         $this->discussionManager->resetLimits();
         $this->discussionManager->select();
@@ -84,11 +97,11 @@ class DiscussionService
 
         // activated
         if ($formData['hide-deactivated-entries']) {
-            if ($formData['hide-deactivated-entries'] === 'only_activated') {
+            if ('only_activated' === $formData['hide-deactivated-entries']) {
                 $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
-            } else if ($formData['hide-deactivated-entries'] === 'only_deactivated') {
+            } elseif ('only_deactivated' === $formData['hide-deactivated-entries']) {
                 $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
-            } else if ($formData['hide-deactivated-entries'] === 'all') {
+            } elseif ('all' === $formData['hide-deactivated-entries']) {
                 $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
             }
         }
@@ -100,14 +113,14 @@ class DiscussionService
                 $relatedLabel = $formData['rubrics']['group'];
                 $this->discussionManager->setGroupLimit($relatedLabel->getItemId());
             }
-            
+
             // topic
             if (isset($formData['rubrics']['topic'])) {
                 $relatedLabel = $formData['rubrics']['topic'];
                 $this->discussionManager->setTopicLimit($relatedLabel->getItemId());
             }
         }
-        
+
         // hashtag
         if (isset($formData['hashtag'])) {
             if (isset($formData['hashtag']['hashtag'])) {
@@ -128,17 +141,17 @@ class DiscussionService
             }
         }
     }
-    
-    public function getDiscussion($itemId): ?cs_discussion_item
+
+    public function getDiscussion($itemId): ?\cs_discussion_item
     {
         return $this->discussionManager->getItem($itemId);
     }
-    
+
     public function getArticle($itemId)
     {
         return $this->discussionArticleManager->getItem($itemId);
     }
-    
+
     public function getNewDiscussion()
     {
         $discussion = $this->discussionManager->getNewItem();
@@ -146,12 +159,12 @@ class DiscussionService
 
         return $discussion;
     }
-    
+
     public function getNewArticle()
     {
         return $this->discussionArticleManager->getNewItem();
     }
-    
+
     public function hideDeactivatedEntries()
     {
         $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
@@ -162,11 +175,11 @@ class DiscussionService
         $tree = [];
 
         foreach ($articleList as $article) {
-            /** @var cs_discussionarticle_item $article */
-            $base =& $tree;
+            /** @var \cs_discussionarticle_item $article */
+            $base = &$tree;
             $expLevel = explode('.', $article->getPosition());
             foreach ($expLevel as $level) {
-                $base =& $base['children'][$level];
+                $base = &$base['children'][$level];
             }
 
             $base['item'] = $article;

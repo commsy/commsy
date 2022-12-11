@@ -1,14 +1,25 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type\Bibliographic;
 
 use App\Services\LegacyEnvironment;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class BiblioPictureType extends AbstractType
 {
-
     private $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
@@ -20,9 +31,9 @@ class BiblioPictureType extends AbstractType
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
      * Type extensions can further modify the form.
-     * 
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -30,42 +41,16 @@ class BiblioPictureType extends AbstractType
         $language = $this->legacyEnvironment->getSelectedLanguage();
 
         $builder
-            ->add('foto_copyright', TextType::class, array(
-                'label' => 'picture copyright',
-                'translation_domain' => $translationDomain,
-                ))
-            ->add('foto_reason', TextType::class, array(
-                'label' => 'picture reason',
-                'translation_domain' => $translationDomain,
-                ))
+            ->add('foto_copyright', TextType::class, ['label' => 'picture copyright', 'translation_domain' => $translationDomain])
+            ->add('foto_reason', TextType::class, ['label' => 'picture reason', 'translation_domain' => $translationDomain])
         ;
 
-        if($language == 'en'){
+        if ('en' == $language) {
             $format = '{format:\'MM/DD/YYYY\'}';
-        } else{
+        } else {
             $format = '{format:\'DD.MM.YYYY\'}';
         }
 
-        $builder->add('foto_date', TextType::class, array(
-            'label' => 'picture date',
-            'translation_domain' => $translationDomain,
-            'required' => false,
-            'attr' => array(
-                'data-uk-datepicker' => $format
-            )
-        ));
+        $builder->add('foto_date', TextType::class, ['label' => 'picture date', 'translation_domain' => $translationDomain, 'required' => false, 'attr' => ['data-uk-datepicker' => $format]]);
     }
-
-    /**
-     * Returns the prefix of the template block name for this type.
-     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
-     * (e.g. "UserProfileType" => "user_profile").
-     * 
-     * @return string The prefix of the template block name
-     */
-    public function getBlockPrefix()
-    {
-        return 'biblio_picture';
-    }
-
 }

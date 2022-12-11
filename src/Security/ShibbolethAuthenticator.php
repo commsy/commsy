@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Security;
-
 
 use App\Account\AccountManager;
 use App\Entity\Account;
@@ -28,33 +37,14 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
 {
     use TargetPathTrait;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var AccountCreatorFacade
-     */
-    private AccountCreatorFacade $accountCreator;
-
-    /**
-     * @var AccountManager
-     */
-    private AccountManager $accountManager;
-
     public function __construct(
-        EntityManagerInterface $entityManager,
+        private EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
-        AccountCreatorFacade $accountCreator,
+        private AccountCreatorFacade $accountCreator,
         RequestContext $requestContext,
-        AccountManager $accountManager
+        private AccountManager $accountManager
     ) {
         parent::__construct($urlGenerator, $requestContext);
-
-        $this->entityManager = $entityManager;
-        $this->accountCreator = $accountCreator;
-        $this->accountManager = $accountManager;
     }
 
     /**
@@ -112,8 +102,6 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
      *
      *      return ['api_key' => $request->headers->get('X-API-TOKEN')];
      *
-     * @param Request $request
-     *
      * @return mixed Any non-null value
      *
      * @throws \UnexpectedValueException If null is returned
@@ -154,34 +142,31 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
      * null, then a UsernameNotFoundException is thrown for you.
      *
      * @param mixed $credentials
-     * @param UserProviderInterface $userProvider
      *
      * @return UserInterface|null
-     * @throws AuthenticationException
      *
+     * @throws AuthenticationException
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         // Check we got all parameters we need
-        if ($credentials['context'] === null ||
-            $credentials['username'] === null ||
-            $credentials['firstname'] === null ||
-            $credentials['lastname'] === null ||
-            $credentials['email'] === null
+        if (null === $credentials['context'] ||
+            null === $credentials['username'] ||
+            null === $credentials['firstname'] ||
+            null === $credentials['lastname'] ||
+            null === $credentials['email']
         ) {
             throw new AuthenticationException();
         }
 
         /** @var Collection $authSources */
         $authSources = $this->entityManager->getRepository(Portal::class)->find($credentials['context'])->getAuthSources();
-        $shibAuthSource = $authSources->filter(function (AuthSource $authSource) {
-            return $authSource instanceof AuthSourceShibboleth;
-        })->first();
+        $shibAuthSource = $authSources->filter(fn (AuthSource $authSource) => $authSource instanceof AuthSourceShibboleth)->first();
 
         $account = $this->entityManager->getRepository(Account::class)
             ->findOneByCredentials($credentials['username'], $credentials['context'], $shibAuthSource);
 
-        if ($account === null) {
+        if (null === $account) {
             // if we did not found an existing account, create one
             $account = new Account();
             $account->setAuthSource($shibAuthSource);
@@ -218,7 +203,6 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
      * The *credentials* are the return value from getCredentials()
      *
      * @param mixed $credentials
-     * @param UserInterface $user
      *
      * @return bool
      *
@@ -238,9 +222,6 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
      *
      * If you return null, the request will continue, but the user will
      * not be authenticated. This is probably not what you want to do.
-     *
-     * @param Request $request
-     * @param AuthenticationException $exception
      *
      * @return Response|null
      */
@@ -265,8 +246,6 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
      * If you return null, the current request will continue, and the user
      * will be authenticated. This makes sense, for example, with an API.
      *
-     * @param Request $request
-     * @param TokenInterface $token
      * @param string $providerKey The provider (i.e. firewall) key
      *
      * @return Response|null

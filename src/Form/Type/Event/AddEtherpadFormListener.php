@@ -1,27 +1,33 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type\Event;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class AddEtherpadFormListener implements EventSubscriberInterface
 {
-    private $container;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(private ContainerInterface $container)
     {
-        $this->container = $container;
     }
 
     public static function getSubscribedEvents()
     {
-        return array(
-            FormEvents::PRE_SET_DATA => 'onPreSetData',
-        );
+        return [FormEvents::PRE_SET_DATA => 'onPreSetData'];
     }
 
     public function onPreSetData(FormEvent $event)
@@ -32,19 +38,9 @@ class AddEtherpadFormListener implements EventSubscriberInterface
         $form = $event->getForm();
 
         if ($data['draft'] && $enabled) {
-            $form->add('editor_switch', CheckboxType::class, array(
-                'label' => 'use etherpad',
-                'required' => false,
-                'translation_domain' => 'form',
-            ));
+            $form->add('editor_switch', CheckboxType::class, ['label' => 'use etherpad', 'required' => false, 'translation_domain' => 'form']);
         } else {
-            $form->add('editor_switch', CheckboxType::class, array(
-                'label' => 'use etherpad',
-                'required' => false,
-                'translation_domain' => 'form',
-                'disabled' => 'true',
-                'label_attr' => ['class' => 'uk-text-muted'],
-            ));
+            $form->add('editor_switch', CheckboxType::class, ['label' => 'use etherpad', 'required' => false, 'translation_domain' => 'form', 'disabled' => 'true', 'label_attr' => ['class' => 'uk-text-muted']]);
         }
     }
 }

@@ -1,4 +1,16 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type;
 
 use App\Utils\MailAssistant;
@@ -16,22 +28,17 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SendListType extends AbstractType
 {
-    /**
-     * @var MailAssistant
-     */
-    private MailAssistant $mailAssistant;
-
-    public function __construct(MailAssistant $mailAssistant) {
-        $this->mailAssistant = $mailAssistant;
+    public function __construct(private MailAssistant $mailAssistant)
+    {
     }
 
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
      * Type extensions can further modify the form.
-     * 
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -53,9 +60,9 @@ class SendListType extends AbstractType
                 'label' => 'Message',
                 'translation_domain' => 'form',
                 'required' => true,
-                'attr' => array('cols' => '80', 'rows' => '10'),
+                'attr' => ['cols' => '80', 'rows' => '10'],
             ])
-            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options, $mailAssistant) {
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $form = $event->getForm();
                 /* $item = $options['item'];
 
@@ -177,24 +184,22 @@ class SendListType extends AbstractType
                 'required' => false,
                 'translation_domain' => 'mail',
             ]) */
-            ->add('entries', HiddenType::class, array(
-                'data' => '',
-            ))
+            ->add('entries', HiddenType::class, ['data' => ''])
             ->add('save', SubmitType::class, [
                 'label' => 'Send',
                 'translation_domain' => 'mail',
             ])
             ->add('cancel', SubmitType::class, [
                 'label' => 'cancel',
-                'translation_domain' => 'form'
+                'translation_domain' => 'form',
             ])
         ;
     }
 
     /**
      * Configures the options for this type.
-     * 
-     * @param  OptionsResolver $resolver The resolver for the options
+     *
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -208,7 +213,7 @@ class SendListType extends AbstractType
      * Returns the prefix of the template block name for this type.
      * The block prefix defaults to the underscored short class name with the "Type" suffix removed
      * (e.g. "UserProfileType" => "user_profile").
-     * 
+     *
      * @return string The prefix of the template block name
      */
     public function getBlockPrefix()

@@ -1,65 +1,37 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 16.07.18
- * Time: 19:34
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Action\Delete;
 
-
 use App\Services\CalendarsService;
-use App\Services\MarkedService;
 use App\Services\LegacyEnvironment;
-use cs_dates_item;
-use cs_environment;
-use cs_item;
-use cs_list;
-use DateTime;
+use App\Services\MarkedService;
 use Symfony\Component\Routing\RouterInterface;
 
 class DeleteDate implements DeleteInterface
 {
-    /**
-     * @var RouterInterface
-     */
-    private RouterInterface $router;
-
-    /**
-     * @var bool
-     */
     private bool $recurring;
 
-    /**
-     * @var string
-     */
     private string $dateMode = 'normal';
 
-    /**
-     * @var MarkedService
-     */
-    private MarkedService $markedService;
-
-    /**
-     * @var CalendarsService
-     */
-    private CalendarsService $calendarsService;
-
-    /**
-     * @var cs_environment
-     */
-    private cs_environment $legacyEnvironment;
+    private \cs_environment $legacyEnvironment;
 
     public function __construct(
-        RouterInterface $router,
-        MarkedService $markedService,
-        CalendarsService $calendarsService,
+        private RouterInterface $router,
+        private MarkedService $markedService,
+        private CalendarsService $calendarsService,
         LegacyEnvironment $legacyEnvironment
     ) {
-        $this->router = $router;
-        $this->markedService = $markedService;
-        $this->calendarsService = $calendarsService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -73,16 +45,13 @@ class DeleteDate implements DeleteInterface
         $this->dateMode = $dateMode;
     }
 
-    /**
-     * @param cs_item $item
-     */
-    public function delete(cs_item $item): void
+    public function delete(\cs_item $item): void
     {
         $item->delete();
 
         $this->markedService->removeItemFromClipboard($item->getItemId());
 
-        /** @var cs_dates_item $date */
+        /** @var \cs_dates_item $date */
         $date = $item;
 
         $this->calendarsService->updateSynctoken($date->getCalendarId());
@@ -93,10 +62,10 @@ class DeleteDate implements DeleteInterface
         $datesManager->setWithoutDateModeLimit();
         $datesManager->select();
 
-        /** @var cs_list $recurringDates */
+        /** @var \cs_list $recurringDates */
         $recurringDates = $datesManager->get();
 
-        if ($this->recurring && $date->getRecurrenceId() != '') {
+        if ($this->recurring && '' != $date->getRecurrenceId()) {
             $recurringDate = $recurringDates->getFirst();
             while ($recurringDate) {
                 $recurringDate->delete();
@@ -106,7 +75,7 @@ class DeleteDate implements DeleteInterface
             $recurringDate = $recurringDates->getFirst();
             while ($recurringDate) {
                 $recurrencePattern = $recurringDate->getRecurrencePattern();
-                $recurrencePatternExcludeDate = new DateTime($date->getDateTime_start());
+                $recurrencePatternExcludeDate = new \DateTime($date->getDateTime_start());
                 if (!isset($recurrencePattern['recurringExclude'])) {
                     $recurrencePattern['recurringExclude'] = [$recurrencePatternExcludeDate->format('Ymd\THis')];
                 } else {
@@ -121,15 +90,14 @@ class DeleteDate implements DeleteInterface
     }
 
     /**
-     * @param cs_item $item
      * @return string|null
      */
-    public function getRedirectRoute(cs_item $item)
+    public function getRedirectRoute(\cs_item $item)
     {
-        /** @var cs_dates_item $date */
+        /** @var \cs_dates_item $date */
         $date = $item;
 
-        if ($this->dateMode == 'normal') {
+        if ('normal' == $this->dateMode) {
             return $this->router->generate('app_date_list', [
                 'roomId' => $date->getContextID(),
             ]);
