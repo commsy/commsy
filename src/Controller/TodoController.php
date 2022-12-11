@@ -329,11 +329,37 @@ class TodoController extends BaseController
         $amountAnnotations = $annotationService->getListAnnotations($roomId,
             $this->todoService->getTodo($itemId)->getItemId(), null, null);
 
-        return ['roomId' => $roomId, 'todo' => $this->todoService->getTodo($itemId), 'amountAnnotations' => sizeof($amountAnnotations), 'stepList' => $steps, 'timeSpendSum' => $timeSpendSum, 'readerList' => $readerList, 'modifierList' => $modifierList, 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'annotationForm' => $form->createView(), 'userCount' => $all_user_count, 'readCount' => $read_count, 'readSinceModificationCount' => $read_since_modification_count, 'draft' => $this->itemService->getItem($itemId)->isDraft(), 'showCategories' => $current_context->withTags(), 'showHashtags' => $current_context->withBuzzwords(), 'showAssociations' => $current_context->withAssociations(), 'buzzExpanded' => $current_context->isBuzzwordShowExpanded(), 'catzExpanded' => $current_context->isTagsShowExpanded(), 'roomCategories' => $categories, 'showRating' => $current_context->isAssessmentActive(), 'ratingArray' => $current_context->isAssessmentActive() ? [
-            'ratingDetail' => $ratingDetail,
-            'ratingAverageDetail' => $ratingAverageDetail,
-            'ratingOwnDetail' => $ratingOwnDetail,
-        ] : [], 'isParticipating' => $todo->isProcessor($this->legacyEnvironment->getCurrentUserItem()), 'alert' => $alert, 'pathTopicItem' => $pathTopicItem, 'isArchived' => $current_context->isArchived()];
+        return $this->render('todo/detail.html.twig', [
+            'roomId' => $roomId,
+            'todo' => $this->todoService->getTodo($itemId),
+            'amountAnnotations' => sizeof($amountAnnotations),
+            'stepList' => $steps,
+            'timeSpendSum' => $timeSpendSum,
+            'readerList' => $readerList,
+            'modifierList' => $modifierList,
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'annotationForm' => $form->createView(),
+            'userCount' => $all_user_count,
+            'readCount' => $read_count,
+            'readSinceModificationCount' => $read_since_modification_count,
+            'draft' => $this->itemService->getItem($itemId)->isDraft(),
+            'showCategories' => $current_context->withTags(),
+            'showHashtags' => $current_context->withBuzzwords(),
+            'showAssociations' => $current_context->withAssociations(),
+            'buzzExpanded' => $current_context->isBuzzwordShowExpanded(),
+            'catzExpanded' => $current_context->isTagsShowExpanded(),
+            'roomCategories' => $categories,
+            'showRating' => $current_context->isAssessmentActive(),
+            'ratingArray' => $current_context->isAssessmentActive() ? [
+                'ratingDetail' => $ratingDetail,
+                'ratingAverageDetail' => $ratingAverageDetail,
+                'ratingOwnDetail' => $ratingOwnDetail,
+            ] : [],
+            'isParticipating' => $todo->isProcessor($this->legacyEnvironment->getCurrentUserItem()),
+            'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem,
+            'isArchived' => $current_context->isArchived()
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/createstep')]

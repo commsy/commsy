@@ -467,7 +467,30 @@ class DateController extends BaseController
         $amountAnnotations = $annotationService->getListAnnotations($roomId,
             $this->dateService->getDate($itemId)->getItemId(), null, null);
 
-        return ['roomId' => $roomId, 'date' => $this->dateService->getDate($itemId), 'amountAnnotations' => sizeof($amountAnnotations), 'readerList' => $readerList, 'modifierList' => $modifierList, 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'annotationForm' => $form->createView(), 'userCount' => $all_user_count, 'readCount' => $read_count, 'readSinceModificationCount' => $read_since_modification_count, 'draft' => $this->itemService->getItem($itemId)->isDraft(), 'showCategories' => $current_context->withTags(), 'showHashtags' => $current_context->withBuzzwords(), 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'showAssociations' => $current_context->isAssociationShowExpanded(), 'buzzExpanded' => $current_context->isBuzzwordShowExpanded(), 'catzExpanded' => $current_context->isTagsShowExpanded(), 'roomCategories' => $categories, 'isParticipating' => $date->isParticipant($this->legacyEnvironment->getCurrentUserItem()), 'isRecurring' => ('' != $date->getRecurrenceId()), 'alert' => $alert, 'pathTopicItem' => $pathTopicItem];
+        return $this->render('date/detail.html.twig', [
+            'roomId' => $roomId,
+            'date' => $this->dateService->getDate($itemId),
+            'amountAnnotations' => sizeof($amountAnnotations),
+            'readerList' => $readerList,
+            'modifierList' => $modifierList,
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'annotationForm' => $form->createView(),
+            'userCount' => $all_user_count,
+            'readCount' => $read_count,
+            'readSinceModificationCount' => $read_since_modification_count,
+            'draft' => $this->itemService->getItem($itemId)->isDraft(),
+            'showCategories' => $current_context->withTags(),
+            'showHashtags' => $current_context->withBuzzwords(),
+            'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
+            'showAssociations' => $current_context->isAssociationShowExpanded(),
+            'buzzExpanded' => $current_context->isBuzzwordShowExpanded(),
+            'catzExpanded' => $current_context->isTagsShowExpanded(),
+            'roomCategories' => $categories,
+            'isParticipating' => $date->isParticipant($this->legacyEnvironment->getCurrentUserItem()),
+            'isRecurring' => ('' != $date->getRecurrenceId()),
+            'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem,
+        ]);
     }
 
     /**

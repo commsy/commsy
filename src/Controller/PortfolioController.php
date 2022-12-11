@@ -139,7 +139,14 @@ class PortfolioController extends AbstractController
             $external = true;
         }
 
-        return ['roomId' => $roomId, 'portfolioId' => $portfolioId, 'portfolio' => $portfolio, 'linkPositions' => $linkPositions, 'creator_fullname' => $portfolio['creator'], 'external' => $external];
+        return $this->render('portfolio/portfolio.html.twig', [
+            'roomId' => $roomId,
+            'portfolioId' => $portfolioId,
+            'portfolio' => $portfolio,
+            'linkPositions' => $linkPositions,
+            'creator_fullname' => $portfolio['creator'],
+            'external' => $external
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/portfolio/portfoliosource/{source}')]

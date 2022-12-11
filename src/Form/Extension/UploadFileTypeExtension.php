@@ -72,9 +72,9 @@ class UploadFileTypeExtension extends AbstractTypeExtension
         $value = trim($value);
         $suffix = strtolower($value[strlen($value) - 1]);
         $value = intval($value);
-        match ($suffix) {
-            'k' => $value *= 1024,
-            'm' => $value *= 1_048_576,
+        return match ($suffix) {
+            'k' => $value * 1024,
+            'm' => $value * 1_048_576,
             default => $value,
         };
     }

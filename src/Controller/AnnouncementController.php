@@ -159,7 +159,7 @@ class AnnouncementController extends BaseController
             $ratingList = $this->assessmentService->getListAverageRatings($itemIds);
         }
 
-        return $this->render('Announcement/feed.html.twig', ['roomId' => $roomId, 'announcements' => $announcements, 'readerList' => $readerList, 'showRating' => $current_context->isAssessmentActive(), 'ratingList' => $ratingList, 'allowedActions' => $allowedActions]);
+        return $this->render('announcement/feed.html.twig', ['roomId' => $roomId, 'announcements' => $announcements, 'readerList' => $readerList, 'showRating' => $current_context->isAssessmentActive(), 'ratingList' => $ratingList, 'allowedActions' => $allowedActions]);
     }
 
     /**
@@ -213,7 +213,7 @@ class AnnouncementController extends BaseController
             $ratingList = $this->assessmentService->getListAverageRatings($itemIds);
         }
 
-        return $this->render('Announcement/shortfeed.html.twig', ['roomId' => $roomId, 'announcements' => $announcements, 'readerList' => $readerList, 'showRating' => $current_context->isAssessmentActive(), 'ratingList' => $ratingList]);
+        return $this->render('announcement/shortfeed.html.twig', ['roomId' => $roomId, 'announcements' => $announcements, 'readerList' => $readerList, 'showRating' => $current_context->isAssessmentActive(), 'ratingList' => $ratingList]);
     }
 
     #[Route(path: '/room/{roomId}/announcement')]
@@ -253,7 +253,7 @@ class AnnouncementController extends BaseController
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('announcement');
         }
 
-        return $this->render('Announcement/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm->createView(), 'module' => 'announcement', 'itemsCountArray' => $itemsCountArray, 'showRating' => $roomItem->isAssessmentActive(), 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => $roomItem->withAssociations(), 'showCategories' => $roomItem->withTags(), 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'sort' => $sort]);
+        return $this->render('announcement/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm->createView(), 'module' => 'announcement', 'itemsCountArray' => $itemsCountArray, 'showRating' => $roomItem->isAssessmentActive(), 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => $roomItem->withAssociations(), 'showCategories' => $roomItem->withTags(), 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'sort' => $sort]);
     }
 
     #[Route(path: '/room/{roomId}/announcement/print/{sort}', defaults: ['sort' => 'none'])]
@@ -360,7 +360,37 @@ class AnnouncementController extends BaseController
         $amountAnnotations = $annotationService->getListAnnotations($roomId, $infoArray['announcement']->getItemId(),
             null, null);
 
-        return ['roomId' => $roomId, 'announcement' => $infoArray['announcement'], 'amountAnnotations' => sizeof($amountAnnotations), 'readerList' => $infoArray['readerList'], 'modifierList' => $infoArray['modifierList'], 'announcementList' => $infoArray['announcementList'], 'counterPosition' => $infoArray['counterPosition'], 'count' => $infoArray['count'], 'firstItemId' => $infoArray['firstItemId'], 'prevItemId' => $infoArray['prevItemId'], 'nextItemId' => $infoArray['nextItemId'], 'lastItemId' => $infoArray['lastItemId'], 'readCount' => $infoArray['readCount'], 'readSinceModificationCount' => $infoArray['readSinceModificationCount'], 'userCount' => $infoArray['userCount'], 'draft' => $infoArray['draft'], 'showRating' => $infoArray['showRating'], 'showWorkflow' => $infoArray['showWorkflow'], 'showHashtags' => $infoArray['showHashtags'], 'showAssociations' => $infoArray['showAssociations'], 'showCategories' => $infoArray['showCategories'], 'roomCategories' => $infoArray['categories'], 'buzzExpanded' => $infoArray['buzzExpanded'], 'catzExpanded' => $infoArray['catzExpanded'], 'user' => $infoArray['user'], 'annotationForm' => $form->createView(), 'ratingArray' => $infoArray['ratingArray'], 'alert' => $alert, 'pathTopicItem' => $pathTopicItem];
+        return $this->render('announcement_detail.html.twig', [
+            'roomId' => $roomId,
+            'announcement' => $infoArray['announcement'],
+            'amountAnnotations' => sizeof($amountAnnotations),
+            'readerList' => $infoArray['readerList'],
+            'modifierList' => $infoArray['modifierList'],
+            'announcementList' => $infoArray['announcementList'],
+            'counterPosition' => $infoArray['counterPosition'],
+            'count' => $infoArray['count'],
+            'firstItemId' => $infoArray['firstItemId'],
+            'prevItemId' => $infoArray['prevItemId'],
+            'nextItemId' => $infoArray['nextItemId'],
+            'lastItemId' => $infoArray['lastItemId'],
+            'readCount' => $infoArray['readCount'],
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'userCount' => $infoArray['userCount'],
+            'draft' => $infoArray['draft'],
+            'showRating' => $infoArray['showRating'],
+            'showWorkflow' => $infoArray['showWorkflow'],
+            'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
+            'showCategories' => $infoArray['showCategories'],
+            'roomCategories' => $infoArray['categories'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
+            'user' => $infoArray['user'],
+            'annotationForm' => $form->createView(),
+            'ratingArray' => $infoArray['ratingArray'],
+            'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/announcement/{itemId}/print')]
@@ -525,7 +555,7 @@ class AnnouncementController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($announcementItem), CommsyEditEvent::EDIT);
 
-        return $this->render('Announcement/edit.html.twig', ['form' => $form->createView(), 'announcement' => $announcementItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('announcement/edit.html.twig', ['form' => $form->createView(), 'announcement' => $announcementItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
     }
 
     #[Route(path: '/room/{roomId}/announcement/{itemId}/save')]
@@ -545,7 +575,7 @@ class AnnouncementController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($tempItem), CommsyEditEvent::SAVE);
 
-        return $this->render('Announcement/save.html.twig', ['roomId' => $roomId, 'item' => $tempItem, 'modifierList' => $modifierList, 'userCount' => $infoArray['userCount'], 'readCount' => $infoArray['readCount'], 'readSinceModificationCount' => $infoArray['readSinceModificationCount'], 'showRating' => $infoArray['showRating']]);
+        return $this->render('announcement/save.html.twig', ['roomId' => $roomId, 'item' => $tempItem, 'modifierList' => $modifierList, 'userCount' => $infoArray['userCount'], 'readCount' => $infoArray['readCount'], 'readSinceModificationCount' => $infoArray['readSinceModificationCount'], 'showRating' => $infoArray['showRating']]);
     }
 
     #[Route(path: '/room/{roomId}/announcement/{itemId}/rating/{vote}')]
@@ -564,7 +594,7 @@ class AnnouncementController extends BaseController
         $ratingAverageDetail = $this->assessmentService->getAverageRatingDetail($announcement);
         $ratingOwnDetail = $this->assessmentService->getOwnRatingDetail($announcement);
 
-        return $this->render('Announcement/rating.html.twig', ['roomId' => $roomId, 'announcement' => $announcement, 'ratingArray' => ['ratingDetail' => $ratingDetail, 'ratingAverageDetail' => $ratingAverageDetail, 'ratingOwnDetail' => $ratingOwnDetail]]);
+        return $this->render('announcement/rating.html.twig', ['roomId' => $roomId, 'announcement' => $announcement, 'ratingArray' => ['ratingDetail' => $ratingDetail, 'ratingAverageDetail' => $ratingAverageDetail, 'ratingOwnDetail' => $ratingOwnDetail]]);
     }
 
     /**

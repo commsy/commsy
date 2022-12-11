@@ -312,7 +312,41 @@ class GroupController extends BaseController
 
         $currentUserIsLastGrouproomModerator = $this->userService->userIsLastModeratorForRoom($infoArray['group']->getGroupRoomItem());
 
-        return ['roomId' => $roomId, 'group' => $infoArray['group'], 'readerList' => $infoArray['readerList'], 'modifierList' => $infoArray['modifierList'], 'groupList' => $infoArray['groupList'], 'counterPosition' => $infoArray['counterPosition'], 'count' => $infoArray['count'], 'firstItemId' => $infoArray['firstItemId'], 'prevItemId' => $infoArray['prevItemId'], 'nextItemId' => $infoArray['nextItemId'], 'lastItemId' => $infoArray['lastItemId'], 'readCount' => $infoArray['readCount'], 'readSinceModificationCount' => $infoArray['readSinceModificationCount'], 'userCount' => $infoArray['userCount'], 'draft' => $infoArray['draft'], 'showRating' => $infoArray['showRating'], 'showWorkflow' => $infoArray['showWorkflow'], 'showHashtags' => $infoArray['showHashtags'], 'showAssociations' => $infoArray['showAssociations'], 'showCategories' => $infoArray['showCategories'], 'roomCategories' => $infoArray['roomCategories'], 'buzzExpanded' => $infoArray['buzzExpanded'], 'catzExpanded' => $infoArray['catzExpanded'], 'members' => $infoArray['members'], 'user' => $infoArray['user'], 'userIsMember' => $infoArray['userIsMember'], 'memberStatus' => $memberStatus, 'annotationForm' => $form->createView(), 'alert' => $alert, 'pathTopicItem' => $pathTopicItem, 'isArchived' => $roomItem->getArchived(), 'lastModeratorStanding' => $currentUserIsLastGrouproomModerator, 'userRubricVisible' => in_array('user', $this->roomService->getRubricInformation($roomId))];
+        return $this->render('group/detail.html.twig', [
+            'roomId' => $roomId,
+            'group' => $infoArray['group'],
+            'readerList' => $infoArray['readerList'],
+            'modifierList' => $infoArray['modifierList'],
+            'groupList' => $infoArray['groupList'],
+            'counterPosition' => $infoArray['counterPosition'],
+            'count' => $infoArray['count'],
+            'firstItemId' => $infoArray['firstItemId'],
+            'prevItemId' => $infoArray['prevItemId'],
+            'nextItemId' => $infoArray['nextItemId'],
+            'lastItemId' => $infoArray['lastItemId'],
+            'readCount' => $infoArray['readCount'],
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'userCount' => $infoArray['userCount'],
+            'draft' => $infoArray['draft'],
+            'showRating' => $infoArray['showRating'],
+            'showWorkflow' => $infoArray['showWorkflow'],
+            'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
+            'showCategories' => $infoArray['showCategories'],
+            'roomCategories' => $infoArray['roomCategories'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
+            'members' => $infoArray['members'],
+            'user' => $infoArray['user'],
+            'userIsMember' => $infoArray['userIsMember'],
+            'memberStatus' => $memberStatus,
+            'annotationForm' => $form->createView(),
+            'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem,
+            'isArchived' => $roomItem->getArchived(),
+            'lastModeratorStanding' => $currentUserIsLastGrouproomModerator,
+            'userRubricVisible' => in_array('user', $this->roomService->getRubricInformation($roomId))
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/group/{itemId}/print')]
@@ -849,10 +883,10 @@ class GroupController extends BaseController
         $membersList = $group->getMemberItemList();
         $members = $membersList->to_array();
 
-        return [
+        return $this->render('group/members.html.twig', [
             'group' => $group,
             'members' => $members,
-        ];
+        ]);
     }
 
     /**

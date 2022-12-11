@@ -14,6 +14,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -150,7 +151,7 @@ class Materials
     private $lockingUserId;
 
     #[ORM\OneToMany(targetEntity: 'Section', mappedBy: 'material')]
-    private \Doctrine\Common\Collections\ArrayCollection|array $sections;
+    private Collection $sections;
 
     /**
      * @param int $itemId

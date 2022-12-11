@@ -79,7 +79,6 @@ class UserController extends BaseController
      * @return array
      */
     #[Route(path: '/room/{roomId}/user/feed/{start}/{sort}')]
-    #[Template]
     #[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")]
     public function feedAction(
         Request $request,
@@ -88,14 +87,15 @@ class UserController extends BaseController
         int $start = 0,
         string $sort = ''
     ): Response {
-        return $this->gatherUsers($roomId, 'feedView', $request, $max, $start, $sort);
+        return $this->render('user/feed.html.twig',
+            $this->gatherUsers($roomId, 'feedView', $request, $max, $start, $sort)
+        );
     }
 
     /**
      * @return array
      */
     #[Route(path: '/room/{roomId}/user/grid/{start}/{sort}')]
-    #[Template]
     #[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")]
     public function gridAction(
         Request $request,
@@ -104,7 +104,9 @@ class UserController extends BaseController
         int $start = 0,
         string $sort = ''
     ): Response {
-        return $this->gatherUsers($roomId, 'gridView', $request, $max, $start, $sort);
+        return $this->render('user/grid.html.twig',
+            $this->gatherUsers($roomId, 'gridView', $request, $max, $start, $sort)
+        );
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/contactForm/{originPath}/{moderatorIds}')]
@@ -578,7 +580,38 @@ class UserController extends BaseController
             }
         }
 
-        return ['roomId' => $roomId, 'user' => $infoArray['user'], 'readerList' => $infoArray['readerList'], 'modifierList' => $infoArray['modifierList'], 'userList' => $infoArray['userList'], 'counterPosition' => $infoArray['counterPosition'], 'count' => $infoArray['count'], 'firstItemId' => $infoArray['firstItemId'], 'prevItemId' => $infoArray['prevItemId'], 'nextItemId' => $infoArray['nextItemId'], 'lastItemId' => $infoArray['lastItemId'], 'readCount' => $infoArray['readCount'], 'moderatorIds' => implode(', ', $moderatorIds), 'readSinceModificationCount' => $infoArray['readSinceModificationCount'], 'userCount' => $infoArray['userCount'], 'draft' => $infoArray['draft'], 'showRating' => false, 'userRoomItem' => $userRoomItem, 'userRoomItemMemberCount' => null == $userRoomItem ? [] : $userRoomItem->getUserList()->getCount(), 'userRoomLinksCount' => count(null == $userRoomItem ? [] : $userRoomItem->getAllLinkedItemIDArray()), 'showHashtags' => $infoArray['showHashtags'], 'showCategories' => $infoArray['showCategories'], 'currentUser' => $infoArray['currentUser'], 'linkedGroups' => $infoArray['linkedGroups'], 'userComment' => $infoArray['comment'], 'status' => $infoArray['status'], 'alert' => $alert, 'pathTopicItem' => $pathTopicItem, 'isSelf' => $isSelf, 'moderatorListLength' => $moderatorListLength];
+        return $this->render('user/detail.html.twig', [
+            'roomId' => $roomId,
+            'user' => $infoArray['user'],
+            'readerList' => $infoArray['readerList'],
+            'modifierList' => $infoArray['modifierList'],
+            'userList' => $infoArray['userList'],
+            'counterPosition' => $infoArray['counterPosition'],
+            'count' => $infoArray['count'],
+            'firstItemId' => $infoArray['firstItemId'],
+            'prevItemId' => $infoArray['prevItemId'],
+            'nextItemId' => $infoArray['nextItemId'],
+            'lastItemId' => $infoArray['lastItemId'],
+            'readCount' => $infoArray['readCount'],
+            'moderatorIds' => implode(', ', $moderatorIds),
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'userCount' => $infoArray['userCount'],
+            'draft' => $infoArray['draft'],
+            'showRating' => false,
+            'userRoomItem' => $userRoomItem,
+            'userRoomItemMemberCount' => null == $userRoomItem ? [] : $userRoomItem->getUserList()->getCount(),
+            'userRoomLinksCount' => count(null == $userRoomItem ? [] : $userRoomItem->getAllLinkedItemIDArray()),
+            'showHashtags' => $infoArray['showHashtags'],
+            'showCategories' => $infoArray['showCategories'],
+            'currentUser' => $infoArray['currentUser'],
+            'linkedGroups' => $infoArray['linkedGroups'],
+            'userComment' => $infoArray['comment'],
+            'status' => $infoArray['status'],
+            'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem,
+            'isSelf' => $isSelf,
+            'moderatorListLength' => $moderatorListLength
+        ]);
     }
 
     private function getDetailInfo(
