@@ -19,7 +19,7 @@ use Symfony\Component\Finder\Finder;
 
 class AppFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $finder = new Finder();
         $finder->files()->in('src/Resources/fixtures');

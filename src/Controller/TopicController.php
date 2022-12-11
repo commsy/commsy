@@ -189,7 +189,37 @@ class TopicController extends BaseController
 
         $legacyMarkup->addFiles($this->itemService->getItemFileList($itemId));
 
-        return ['roomId' => $roomId, 'topic' => $infoArray['topic'], 'readerList' => $infoArray['readerList'], 'modifierList' => $infoArray['modifierList'], 'topicList' => $infoArray['topicList'], 'counterPosition' => $infoArray['counterPosition'], 'count' => $infoArray['count'], 'firstItemId' => $infoArray['firstItemId'], 'prevItemId' => $infoArray['prevItemId'], 'nextItemId' => $infoArray['nextItemId'], 'lastItemId' => $infoArray['lastItemId'], 'readCount' => $infoArray['readCount'], 'readSinceModificationCount' => $infoArray['readSinceModificationCount'], 'userCount' => $infoArray['userCount'], 'draft' => $infoArray['draft'], 'showRating' => $infoArray['showRating'], 'showWorkflow' => $infoArray['showWorkflow'], 'buzzExpanded' => $infoArray['buzzExpanded'], 'showHashtags' => $infoArray['showHashtags'], 'language' => $infoArray['language'], 'catzExpanded' => $infoArray['catzExpanded'], 'showAssociations' => $infoArray['showAssociations'], 'showCategories' => $infoArray['showCategories'], 'roomCategories' => $categories, 'user' => $infoArray['user'], 'annotationForm' => $form->createView(), 'alert' => $alert, 'pathTopicItem' => $pathTopicItem, 'isLinkedToItems' => $isLinkedToItems];
+        return $this->render('topic/detail.html.twig', [
+            'roomId' => $roomId,
+            'topic' => $infoArray['topic'],
+            'readerList' => $infoArray['readerList'],
+            'modifierList' => $infoArray['modifierList'],
+            'topicList' => $infoArray['topicList'],
+            'counterPosition' => $infoArray['counterPosition'],
+            'count' => $infoArray['count'],
+            'firstItemId' => $infoArray['firstItemId'],
+            'prevItemId' => $infoArray['prevItemId'],
+            'nextItemId' => $infoArray['nextItemId'],
+            'lastItemId' => $infoArray['lastItemId'],
+            'readCount' => $infoArray['readCount'],
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'userCount' => $infoArray['userCount'],
+            'draft' => $infoArray['draft'],
+            'showRating' => $infoArray['showRating'],
+            'showWorkflow' => $infoArray['showWorkflow'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'showHashtags' => $infoArray['showHashtags'],
+            'language' => $infoArray['language'],
+            'catzExpanded' => $infoArray['catzExpanded'],
+            'showAssociations' => $infoArray['showAssociations'],
+            'showCategories' => $infoArray['showCategories'],
+            'roomCategories' => $categories,
+            'user' => $infoArray['user'],
+            'annotationForm' => $form->createView(),
+            'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem,
+            'isLinkedToItems' => $isLinkedToItems
+        ]);
     }
 
     private function getDetailInfo(

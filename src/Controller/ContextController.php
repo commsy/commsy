@@ -48,31 +48,6 @@ class ContextController extends AbstractController
         $this->mailer = $mailer;
     }
 
-    /**
-     * @return array
-     */
-    #[Route(path: '/room/{roomId}/context')]
-    public function listAction(
-        Request $request,
-        ProjectService $projectService,
-        int $roomId
-    ) {
-        // setup filter form
-        $defaultFilterValues = ['activated' => true];
-        $filterForm = $this->createForm(ProjectFilterType::class, $defaultFilterValues, ['action' => $this->generateUrl('app_project_list', ['roomId' => $roomId])]);
-
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
-            // set filter conditions in material manager
-            $projectService->setFilterConditions($filterForm);
-        }
-
-        $itemsCountArray = $projectService->getCountArray($roomId);
-
-        return ['roomId' => $roomId, 'form' => $filterForm->createView(), 'module' => 'context', 'itemsCountArray' => $itemsCountArray];
-    }
-
     #[Route(path: '/room/{roomId}/context/{itemId}/request', requirements: ['itemId' => '\d+'])]
     public function requestAction(
         Request $request,
@@ -82,10 +57,7 @@ class ContextController extends AbstractController
         MembershipManager $membershipManager,
         GroupService $groupService,
         int $roomId,
-        int $itemId,
-        Request $mainRequest,
-        Request $defaultRequest,
-        Request $Request
+        int $itemId
     ): array|Response {
         $legacyEnvironment = $environment->getEnvironment();
 
@@ -199,8 +171,10 @@ class ContextController extends AbstractController
 
                     // mail to moderators
                     $moderatorRecipients = RecipientFactory::createModerationRecipients(
-                        $roomItem, fn ($moderator) => /* @var cs_user_item $moderator */
-'yes' == $moderator->getAccountWantMail());
+                        $roomItem, fn ($moderator) =>
+                            /* @var cs_user_item $moderator */
+                            'yes' == $moderator->getAccountWantMail()
+                    );
 
                     // language
                     $language = $roomItem->getLanguage();
@@ -401,10 +375,10 @@ class ContextController extends AbstractController
             return $route;
         }
 
-        return [
+        return $this->render('context/request.html.twig', [
             'form' => $form->createView(),
             'agbText' => $agbText,
             'title' => html_entity_decode($roomItem->getTitle()),
-        ];
+        ]);
     }
 }

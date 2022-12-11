@@ -264,7 +264,7 @@ class DiscussionController extends BaseController
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
-        return [
+        return $this->render('discussion/detail.html.twig', [
             'roomId' => $roomId,
             'discussion' => $infoArray['discussion'],
             'articleList' => $infoArray['articleList'],
@@ -293,7 +293,7 @@ class DiscussionController extends BaseController
             'roomCategories' => $infoArray['roomCategories'],
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
-        ];
+        ]);
     }
 
     private function getDetailInfo(

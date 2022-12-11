@@ -1,6 +1,12 @@
 framework:
     messenger:
         failure_transport: failed
+        
+        # reset services after consuming messages
+        reset_on_message: true
+
+        # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
+        # failure_transport: failed
 
         transports:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
@@ -13,3 +19,9 @@ framework:
             'FOS\ElasticaBundle\Message\AsyncPersistPage': async
             'App\Message\AccountActivityStateTransitions': async
             'App\Message\WorkspaceActivityStateTransitions': async
+
+when@test:
+    framework:
+        messenger:
+            transports:
+                async: 'in-memory://'

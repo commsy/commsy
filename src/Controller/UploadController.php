@@ -182,7 +182,7 @@ class UploadController extends AbstractController
         int $roomId,
         int $itemId,
         int $versionId = null
-    ): array|RedirectResponse {
+    ): Response {
         /**
          * Setting the default value of versionId to 0 does not seem to work and will always cut off the versionId from
          * routes. Instead we default to -1.
@@ -291,9 +291,9 @@ class UploadController extends AbstractController
             return $this->redirectToRoute('app_upload_uploadsave', ['roomId' => $roomId, 'itemId' => $itemId]);
         }
 
-        return [
+        return $this->render('upload/upload_form.html.twig', [
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/upload/{itemId}/saveupload')]

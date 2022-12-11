@@ -33,6 +33,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -147,7 +148,7 @@ class ProjectController extends AbstractController
 
         $legacyMarkup->addFiles($itemService->getItemFileList($itemId));
 
-        return [
+        return $this->render('project/detail.html.twig', [
             'roomId' => $roomId,
             'item' => $roomItem,
             'currentUser' => $currentUser,
@@ -157,7 +158,7 @@ class ProjectController extends AbstractController
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'memberStatus' => $memberStatus,
             'contactModeratorItems' => $contactModeratorItems,
-        ];
+        ]);
     }
 
     /**
@@ -174,7 +175,7 @@ class ProjectController extends AbstractController
         EventDispatcherInterface $eventDispatcher,
         LegacyCopy $legacyCopy,
         int $roomId
-    ): array|RedirectResponse {
+    ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $currentUser = $legacyEnvironment->getCurrentUserItem();
@@ -298,9 +299,9 @@ class ProjectController extends AbstractController
             }
         }
 
-        return [
+        return $this->render('project/create.html.twig', [
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/project/{itemId}/edit', requirements: ['itemId' => '\d+'])]
@@ -315,7 +316,7 @@ class ProjectController extends AbstractController
         TranslatorInterface $translator,
         int $roomId,
         int $itemId
-    ): array|RedirectResponse {
+    ): Response {
         $roomItem = $roomService->getRoomItem($itemId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id '.$itemId);
@@ -334,9 +335,9 @@ class ProjectController extends AbstractController
             return $this->redirectToRoute('app_project_list', ['roomId' => $roomId]);
         }
 
-        return [
+        return $this->render('project/delete.html.twig', [
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
     private function getDetailInfo(

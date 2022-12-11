@@ -322,12 +322,57 @@ class MaterialController extends BaseController
         $amountAnnotations = $this->annotationService->getListAnnotations($roomId, $infoArray['material']->getItemId(),
             null, null);
 
-        return ['roomId' => $roomId, 'material' => $infoArray['material'], 'amountAnnotations' => sizeof($amountAnnotations), 'sectionList' => $infoArray['sectionList'], 'readerList' => $infoArray['readerList'], 'modifierList' => $infoArray['modifierList'], 'materialList' => $infoArray['materialList'], 'counterPosition' => $infoArray['counterPosition'], 'count' => $infoArray['count'], 'firstItemId' => $infoArray['firstItemId'], 'prevItemId' => $infoArray['prevItemId'], 'nextItemId' => $infoArray['nextItemId'], 'lastItemId' => $infoArray['lastItemId'], 'readCount' => $infoArray['readCount'], 'readSinceModificationCount' => $infoArray['readSinceModificationCount'], 'userCount' => $infoArray['userCount'], 'workflowGroupArray' => $infoArray['workflowGroupArray'], 'workflowUserArray' => $infoArray['workflowUserArray'], 'workflowText' => $infoArray['workflowText'], 'workflowValidityDate' => $infoArray['workflowValidityDate'], 'workflowResubmissionDate' => $infoArray['workflowResubmissionDate'], 'workflowUnread' => $infoArray['workflowUnread'], 'workflowRead' => $infoArray['workflowRead'], 'draft' => $infoArray['draft'], 'showRating' => $infoArray['showRating'], 'showWorkflow' => $infoArray['showWorkflow'], 'withTrafficLight' => $roomItem->withWorkflowTrafficLight(), 'withResubmission' => $roomItem->withWorkflowResubmission(), 'withValidity' => $roomItem->withWorkflowValidity(), 'withReader' => $roomItem->withWorkflowReader(), 'showHashtags' => $infoArray['showHashtags'], 'showAssociations' => $infoArray['showAssociations'], 'showCategories' => $infoArray['showCategories'], 'buzzExpanded' => $infoArray['buzzExpanded'], 'catzExpanded' => $infoArray['catzExpanded'], 'user' => $infoArray['user'], 'annotationForm' => $form->createView(), 'ratingArray' => $infoArray['ratingArray'], 'canExportToWordpress' => $canExportToWordpress, 'roomCategories' => $infoArray['roomCategories'], 'versions' => $infoArray['versions'], 'workflowTitles' => [
-            '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
-            '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
-            '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
-            '3_none' => '',
-        ], 'alert' => $alert, 'pathTopicItem' => $pathTopicItem];
+        return $this->render('material/detail.html.twig', [
+            'roomId' => $roomId,
+            'material' => $infoArray['material'],
+            'amountAnnotations' => sizeof($amountAnnotations),
+            'sectionList' => $infoArray['sectionList'],
+            'readerList' => $infoArray['readerList'],
+            'modifierList' => $infoArray['modifierList'],
+            'materialList' => $infoArray['materialList'],
+            'counterPosition' => $infoArray['counterPosition'],
+            'count' => $infoArray['count'],
+            'firstItemId' => $infoArray['firstItemId'],
+            'prevItemId' => $infoArray['prevItemId'],
+            'nextItemId' => $infoArray['nextItemId'],
+            'lastItemId' => $infoArray['lastItemId'],
+            'readCount' => $infoArray['readCount'],
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'userCount' => $infoArray['userCount'],
+            'workflowGroupArray' => $infoArray['workflowGroupArray'],
+            'workflowUserArray' => $infoArray['workflowUserArray'],
+            'workflowText' => $infoArray['workflowText'],
+            'workflowValidityDate' => $infoArray['workflowValidityDate'],
+            'workflowResubmissionDate' => $infoArray['workflowResubmissionDate'],
+            'workflowUnread' => $infoArray['workflowUnread'],
+            'workflowRead' => $infoArray['workflowRead'],
+            'draft' => $infoArray['draft'],
+            'showRating' => $infoArray['showRating'],
+            'showWorkflow' => $infoArray['showWorkflow'],
+            'withTrafficLight' => $roomItem->withWorkflowTrafficLight(),
+            'withResubmission' => $roomItem->withWorkflowResubmission(),
+            'withValidity' => $roomItem->withWorkflowValidity(),
+            'withReader' => $roomItem->withWorkflowReader(),
+            'showHashtags' => $infoArray['showHashtags'],
+            'showAssociations' => $infoArray['showAssociations'],
+            'showCategories' => $infoArray['showCategories'],
+            'buzzExpanded' => $infoArray['buzzExpanded'],
+            'catzExpanded' => $infoArray['catzExpanded'],
+            'user' => $infoArray['user'],
+            'annotationForm' => $form->createView(),
+            'ratingArray' => $infoArray['ratingArray'],
+            'canExportToWordpress' => $canExportToWordpress,
+            'roomCategories' => $infoArray['roomCategories'],
+            'versions' => $infoArray['versions'],
+            'workflowTitles' => [
+                '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
+                '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
+                '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
+                '3_none' => '',
+            ],
+            'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem
+        ]);
     }
 
     /**

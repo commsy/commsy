@@ -14,6 +14,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -135,7 +136,7 @@ class Todos
     private $lockingUserId;
 
     #[ORM\OneToMany(targetEntity: 'Step', mappedBy: 'todo')]
-    private \Doctrine\Common\Collections\ArrayCollection|array $steps;
+    private Collection $steps;
 
     public function __construct()
     {

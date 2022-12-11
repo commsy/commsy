@@ -10,4 +10,4 @@ modules:
 #                chromeOptions:
 #                    args: ["--headless", "--disable-gpu"]
         Db:
-            dsn: 'mysql:host=127.0.0.1;dbname=commsy_test'
+            dsn: 'mysql:host=127.0.0.1;dbname='
