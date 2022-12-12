@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\EventSubscriber;
 
 use App\Services\LegacyEnvironment;
@@ -11,64 +22,26 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use WhiteOctober\BreadcrumbsBundle\Model\Breadcrumbs;
 
 class BreadcrumbSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
 
-    /**
-     * @var RoomService
-     */
-    private RoomService $roomService;
-
-    /**
-     * @var ItemService
-     */
-    private ItemService $itemService;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private TranslatorInterface $translator;
-
-    /**
-     * @var Breadcrumbs
-     */
-    private Breadcrumbs $breadcrumbs;
-
-    /**
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param RoomService $roomService
-     * @param ItemService $itemService
-     * @param TranslatorInterface $translator
-     * @param Breadcrumbs $whiteOctoberBreadcrumbs
-     */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        RoomService $roomService,
-        ItemService $itemService,
-        TranslatorInterface $translator,
-        Breadcrumbs $whiteOctoberBreadcrumbs
+        private RoomService $roomService,
+        private ItemService $itemService,
+        private TranslatorInterface $translator,
+        private Breadcrumbs $breadcrumbs
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->roomService = $roomService;
-        $this->itemService = $itemService;
-        $this->breadcrumbs = $whiteOctoberBreadcrumbs;
-        $this->translator = $translator;
     }
 
-    /**
-     * @param ControllerEvent $event
-     */
     public function onControllerEvent(ControllerEvent $event)
     {
-        if ($event->getRequestType() != HttpKernelInterface::MASTER_REQUEST) {
+        if (HttpKernelInterface::MAIN_REQUEST != $event->getRequestType()) {
             return;
         }
         $request = $event->getRequest();
@@ -79,7 +52,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
             return;
         }
 
-        list($bundle, $controller, $action) = $route;
+        [$bundle, $controller, $action] = $route;
 
         $routeParameters = $request->get('_route_params');
 
@@ -90,67 +63,62 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
 
         $this->addPortalCrumb($request);
 
-        if ($roomItem == null) {
+        if (null == $roomItem) {
             return;
         }
 
-        if ($controller == 'profile') {
+        if ('profile' == $controller) {
             $this->addProfileCrumbs($roomItem, $routeParameters, $action);
-        } elseif ($controller == 'room' && $action == 'home') {
+        } elseif ('room' == $controller && 'home' == $action) {
             $this->addRoom($roomItem, false);
-        } elseif ($controller == 'dashboard' && $action == 'overview') {
+        } elseif ('dashboard' == $controller && 'overview' == $action) {
             $this->breadcrumbs->addItem($this->translator->trans($controller, [], 'menu'));
-        } elseif ($controller == 'category') {
+        } elseif ('category' == $controller) {
             $this->addRoom($roomItem, true);
             $this->breadcrumbs->addItem($this->translator->trans('Categories', [], 'category'));
-        } elseif ($controller == 'hashtag') {
+        } elseif ('hashtag' == $controller) {
             $this->addRoom($roomItem, true);
             $this->breadcrumbs->addItem($this->translator->trans('hashtags', [], 'room'));
-        }
-        elseif ($controller == 'cancellablelockanddelete' && $action == 'deleteorlock') {
+        } elseif ('cancellablelockanddelete' == $controller && 'deleteorlock' == $action) {
             $itemId = $routeParameters['itemId'] ?? null;
             if ($itemId) {
                 $room = $this->roomService->getRoomItem(intval($itemId));
                 $this->addRoom($room, true);
             }
-        }
-        else {
+        } else {
             $this->addRoom($roomItem, true);
 
             // rubric & entry
             if (array_key_exists('itemId', $routeParameters)) {
-
                 // link to rubric
                 $route[2] = 'list';
                 unset($routeParameters['itemId']);
                 try {
-                    if ($controller == 'context' && $action == 'request') {
+                    if ('context' == $controller && 'request' == $action) {
                         if ($roomItem->isCommunityRoom()) {
                             $this->addChildRoomListCrumb($roomItem, 'project');
                         } elseif ($roomItem->isProjectRoom()) {
                             $this->addChildRoomListCrumb($roomItem, 'group');
                         }
                     } else {
-                        $routerImplode = implode("_", $route);
-                        if($this->isDateCalendar($roomItem, $controller)){
+                        $routerImplode = implode('_', $route);
+                        if ($this->isDateCalendar($roomItem, $controller)) {
                             $routerImplode = 'app_date_calendar';
                         }
-                        $this->breadcrumbs->addRouteItem($this->translator->trans($controller, [], 'menu')
-                            , $routerImplode
-                            , $routeParameters);
+                        $this->breadcrumbs->addRouteItem($this->translator->trans($controller, [], 'menu'), $routerImplode, $routeParameters);
                     }
-                } catch (RouteNotFoundException $e) {
+                } catch (RouteNotFoundException) {
                     // we don't need breadcrumbs for routes like app_item_editdetails etc. to ajax controller actions
                 }
 
                 // entry title
                 $item = $this->itemService->getTypedItem($request->get('itemId'));
                 if ($item) {
-                    $this->breadcrumbs->addItem($item->getItemType() == 'user' ? $item->getFullName() : $item->getTitle());
+                    $this->breadcrumbs->addItem('user' == $item->getItemType() ? $item->getFullName() : $item->getTitle());
                 }
             } // rubric only
             else {
-                if ($controller == 'room' && $action == 'listall') {
+                if ('room' == $controller && 'listall' == $action) {
                     $this->breadcrumbs->addItem($this->translator->trans('All rooms', [], 'room'));
                 } else {
                     $this->breadcrumbs->addItem($this->translator->trans($controller, [], 'menu'));
@@ -169,22 +137,15 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param $request
-     */
     private function addPortalCrumb($request)
     {
         $portal = $this->legacyEnvironment->getCurrentPortalItem();
         if ($portal) {
-            $this->breadcrumbs->addRouteItem($portal->getTitle(), "app_helper_portalenter",
-                ["context" => $portal->getItemId()]);
+            $this->breadcrumbs->addRouteItem($portal->getTitle(), 'app_helper_portalenter',
+                ['context' => $portal->getItemId()]);
         }
     }
 
-    /**
-     * @param $roomItem
-     * @param $asLink
-     */
     private function addRoom($roomItem, $asLink)
     {
         if ($roomItem->isGroupRoom()) {
@@ -200,29 +161,17 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param $roomItem
-     * @param $asLink
-     */
     private function addDashboard($roomItem, $asLink)
     {
-        $this->breadcrumbs->addRouteItem($this->translator->trans('dashboard', [], 'menu'), "app_dashboard_overview",
-            ["roomId" => $roomItem->getItemId()]);
+        $this->breadcrumbs->addRouteItem($this->translator->trans('dashboard', [], 'menu'), 'app_dashboard_overview',
+            ['roomId' => $roomItem->getItemId()]);
     }
 
-    /**
-     * @param $roomItem
-     * @param $asLink
-     */
     private function addCommunityRoom($roomItem, $asLink)
     {
         $this->addRoomCrumb($roomItem, $asLink);
     }
 
-    /**
-     * @param $roomItem
-     * @param $asLink
-     */
     private function addProjectRoom($roomItem, $asLink)
     {
         // TODO: when called from addUserRoom(), $communityRoomItem is empty (even if the project room belongs to a community room)
@@ -234,10 +183,6 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
         $this->addRoomCrumb($roomItem, $asLink);
     }
 
-    /**
-     * @param $roomItem
-     * @param $asLink
-     */
     private function addGroupRoom($roomItem, $asLink)
     {
         $groupItem = $roomItem->getLinkedGroupItem();
@@ -249,7 +194,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
                 // "Groups" rubric in project room
                 $this->addChildRoomListCrumb($projectRoom, 'group');
                 // Group (with name)
-                $this->breadcrumbs->addRouteItem($groupItem->getTitle(), "app_group_detail",
+                $this->breadcrumbs->addRouteItem($groupItem->getTitle(), 'app_group_detail',
                     ['roomId' => $projectRoom->getItemId(), 'itemId' => $groupItem->getItemId()]);
                 // Grouproom
                 $this->addRoomCrumb($roomItem, $asLink);
@@ -257,10 +202,6 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param $roomItem
-     * @param $asLink
-     */
     private function addUserRoom($roomItem, $asLink)
     {
         $projectRoom = $roomItem->getLinkedProjectItem();
@@ -274,22 +215,18 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param cs_room_item $roomItem
-     * @param $asZelda
-     */
     private function addRoomCrumb(cs_room_item $roomItem, $asZelda)
     {
         // NOTE: the "Archived room: " room title prefix may be replaced by the template with a matching icon
         $title = $roomItem->getTitle();
         if ($roomItem->getArchived()) {
-            $title = $this->translator->trans('Archived room', [], 'room') . ": " . $title;
+            $title = $this->translator->trans('Archived room', [], 'room').': '.$title;
         }
 
         $asZelda &= $roomItem->mayEnter($this->legacyEnvironment->getCurrentUserItem());
 
-        if ($asZelda == true) {
-            $this->breadcrumbs->addRouteItem($title, "app_room_home", [
+        if (true == $asZelda) {
+            $this->breadcrumbs->addRouteItem($title, 'app_room_home', [
                 'roomId' => $roomItem->getItemID(),
             ]);
         } else {
@@ -297,60 +234,46 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param $roomItem
-     * @param $routeParameters
-     * @param $action
-     */
     private function addProfileCrumbs($roomItem, $routeParameters, $action)
     {
-        if ($action == 'general' || $action == 'address' || $action == 'contact' || $action == 'deleteroomprofile' || $action == 'notifications') {
+        if ('general' == $action || 'address' == $action || 'contact' == $action || 'deleteroomprofile' == $action || 'notifications' == $action) {
             $this->addRoom($roomItem, true);
             $this->breadcrumbs->addRouteItem($this->translator->trans('Room profile', [], 'menu'),
-                "app_profile_" . $action, $routeParameters);
+                'app_profile_'.$action, $routeParameters);
         } else {
-            $this->breadcrumbs->addRouteItem($this->translator->trans('Account', [], 'menu'), "app_profile_" . $action,
+            $this->breadcrumbs->addRouteItem($this->translator->trans('Account', [], 'menu'), 'app_profile_'.$action,
                 $routeParameters);
         }
-
     }
 
-    /**
-     * @param $roomItem
-     * @param $childRoomClass
-     */
     private function addChildRoomListCrumb($roomItem, $childRoomClass)
     {
-        if ($childRoomClass == 'project' || $childRoomClass == 'group') {
+        if ('project' == $childRoomClass || 'group' == $childRoomClass) {
             $asLink = $roomItem->mayEnter($this->legacyEnvironment->getCurrentUserItem());
             $title = ucfirst($this->translator->trans($childRoomClass, [], 'menu'));
             if ($asLink) {
                 $this->breadcrumbs->addRouteItem($title,
-                    "app_" . $childRoomClass . "_list", ['roomId' => $roomItem->getItemId()]);
+                    'app_'.$childRoomClass.'_list', ['roomId' => $roomItem->getItemId()]);
             } else {
                 $this->breadcrumbs->addItem($title);
             }
-
         } else {
-            if ($childRoomClass == 'userroom') {
+            if ('userroom' == $childRoomClass) {
                 $this->breadcrumbs->addRouteItem(ucfirst($this->translator->trans($childRoomClass, [], 'menu')),
-                    "app_user_list", ['roomId' => $roomItem->getItemId()]);
+                    'app_user_list', ['roomId' => $roomItem->getItemId()]);
             }
         }
     }
 
-
     /**
      * Return true, if configuration is  week or month.
-     * @param $room
-     * @param $controller
-     * @return bool
      */
     private function isDateCalendar($room, $controller): bool
     {
-        if($controller == 'date' and $room->getDatesPresentationStatus() !== 'normal'){
+        if ('date' == $controller and 'normal' !== $room->getDatesPresentationStatus()) {
             return true;
         }
+
         return false;
     }
 }

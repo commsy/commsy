@@ -1,22 +1,31 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type\Portal;
 
 use App\Entity\AccountIndex;
-use App\Entity\AccountIndexUser;
-use App\Entity\Portal;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type as Types;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class AccountIndexType extends AbstractType
 {
     /**
      * Builds the form.
      *
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -28,7 +37,7 @@ class AccountIndexType extends AbstractType
                 'help' => 'Account index search string help',
             ])
             ->add('userIndexFilterChoice', Types\ChoiceType::class, [
-                'choices'  => [
+                'choices' => [
                     'All' => 0,
                     'Members' => 1,
                     '-----------------' => 14,
@@ -61,7 +70,7 @@ class AccountIndexType extends AbstractType
                 'required' => false,
             ])
             ->add('indexViewAction', Types\ChoiceType::class, [
-                'choices'  => [
+                'choices' => [
                     'No action' => 0,
                     '-----------------' => 16,
                     'Delete user id(s)' => 1,
@@ -95,7 +104,7 @@ class AccountIndexType extends AbstractType
     /**
      * Configures the options for this type.
      *
-     * @param  OptionsResolver $resolver The resolver for the options
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {

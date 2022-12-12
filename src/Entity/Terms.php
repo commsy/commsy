@@ -1,57 +1,62 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
+use App\Repository\TermsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Term
- *
- * @ORM\Table(name="terms")
- * @ORM\Entity(repositoryClass="App\Repository\TermsRepository")
+ * Term.
  */
+#[ORM\Entity(repositoryClass: TermsRepository::class)]
+#[ORM\Table(name: 'terms')]
 class Terms
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id;
 
     /**
      * @var contextId
-     *
-     * @ORM\Column(name="context_id", type="integer")
      */
+    #[ORM\Column(name: 'context_id', type: 'integer')]
     private $contextId;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255)
      */
+    #[ORM\Column(name: 'title', type: 'string', length: 255)]
     private $title;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="content_de", type="text")
      */
+    #[ORM\Column(name: 'content_de', type: 'text')]
     private $contentDe;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="content_en", type="text")
      */
+    #[ORM\Column(name: 'content_en', type: 'text')]
     private $contentEn;
 
-
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -61,7 +66,7 @@ class Terms
     }
 
     /**
-     * Set contextId
+     * Set contextId.
      *
      * @param string $contextId
      *
@@ -75,7 +80,7 @@ class Terms
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
      * @return string
      */
@@ -85,7 +90,7 @@ class Terms
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -99,7 +104,7 @@ class Terms
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -109,7 +114,7 @@ class Terms
     }
 
     /**
-     * Set contentDe
+     * Set contentDe.
      *
      * @param string $contentDe
      *
@@ -123,7 +128,7 @@ class Terms
     }
 
     /**
-     * Get contentDe
+     * Get contentDe.
      *
      * @return string
      */
@@ -133,7 +138,7 @@ class Terms
     }
 
     /**
-     * Set contentEn
+     * Set contentEn.
      *
      * @param string $contentEn
      *
@@ -147,7 +152,7 @@ class Terms
     }
 
     /**
-     * Get contentEn
+     * Get contentEn.
      *
      * @return string
      */
@@ -156,4 +161,3 @@ class Terms
         return $this->contentEn;
     }
 }
-

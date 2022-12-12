@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Form\Type\Profile;
-
 
 use App\Form\Type\CheckedFileType;
 use App\Services\LegacyEnvironment;
@@ -21,22 +30,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AccountContactFormType extends AbstractType
 {
-
-    private $em;
     private $legacyEnvironment;
 
     private $userItem;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator)
+    public function __construct(private EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment, private TranslatorInterface $translator)
     {
-        $this->em = $em;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->translator = $translator;
     }
 
     /**
@@ -44,12 +44,11 @@ class AccountContactFormType extends AbstractType
      * This method is called for each type in the hierarchy starting from the top most type.
      * Type extensions can further modify the form.
      *
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $uploadErrorMessage = $this->translator->trans('upload error', [], 'error');
         $noFileIdsMessage = $this->translator->trans('upload error', [], 'error');
 
@@ -90,7 +89,7 @@ class AccountContactFormType extends AbstractType
             ])
             ->add('upload', FileType::class, [
                 'attr' => [
-                    'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '", "errorMessage": "'.$uploadErrorMessage.'", "noFileIdsMessage": "'.$noFileIdsMessage.'"}',
+                    'data-uk-csupload' => '{"path": "'.$options['uploadUrl'].'", "errorMessage": "'.$uploadErrorMessage.'", "noFileIdsMessage": "'.$noFileIdsMessage.'"}',
                 ],
                 'required' => false,
                 'multiple' => true,
@@ -125,7 +124,7 @@ class AccountContactFormType extends AbstractType
     /**
      * Configures the options for this type.
      *
-     * @param  OptionsResolver $resolver The resolver for the options
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {

@@ -1,4 +1,16 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type;
 
 use App\Form\Type\Custom\CategoryMappingType;
@@ -7,6 +19,7 @@ use App\Form\Type\Custom\HashtagMappingType;
 use cs_context_item;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,24 +27,13 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class GroupType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, array(
-                'constraints' => array(
-                    new NotBlank(),
-                ),
-                'label' => 'title',
-                'attr' => array(
-                    'placeholder' => $options['placeholderText'],
-                    'class' => 'uk-form-width-medium cs-form-title',
-                ),
-                'translation_domain' => 'material',
-            ))
+            ->add('title', TextType::class, ['constraints' => [new NotBlank()], 'label' => 'title', 'attr' => ['placeholder' => $options['placeholderText'], 'class' => 'uk-form-width-medium cs-form-title'], 'translation_domain' => 'material'])
             ->add('master_template', ChoiceType::class, [
                 'choices' => $options['templates'],
                 'placeholder' => 'Choose a template',
@@ -40,17 +42,9 @@ class GroupType extends AbstractType
                 'label' => 'Template',
                 'translation_domain' => 'group',
             ])
-            ->add('hidden', CheckboxType::class, array(
-                'label' => 'hidden',
-                'required' => false,
-            ))
-            ->add('hiddendate', DateTimeSelectType::class, array(
-                'label' => 'hidden until',
-            ))
-            ->add('permission', CheckboxType::class, array(
-                'label' => 'permission',
-                'required' => false,
-            ))
+            ->add('hidden', CheckboxType::class, ['label' => 'hidden', 'required' => false])
+            ->add('hiddendate', DateTimeSelectType::class, ['label' => 'hidden until'])
+            ->add('permission', CheckboxType::class, ['label' => 'permission', 'required' => false])
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $group = $event->getData();
                 $form = $event->getForm();
@@ -75,26 +69,15 @@ class GroupType extends AbstractType
                     }
                 }
             })
-            ->add('save', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                ),
-                'label' => 'save',
-            ))
-            ->add('cancel', SubmitType::class, array(
-                'attr' => array(
-                    'formnovalidate' => '',
-                ),
-                'label' => 'cancel',
-            ))
+            ->add('save', SubmitType::class, ['attr' => ['class' => 'uk-button-primary'], 'label' => 'save'])
+            ->add('cancel', SubmitType::class, ['attr' => ['formnovalidate' => ''], 'label' => 'cancel'])
         ;
-        
     }
 
     /**
      * Configures the options for this type.
-     * 
-     * @param  OptionsResolver $resolver The resolver for the options
+     *
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -103,17 +86,5 @@ class GroupType extends AbstractType
         $resolver->setDefaults(['translation_domain' => 'form']);
 
         $resolver->setAllowedTypes('room', 'cs_context_item');
-    }
-
-    /**
-     * Returns the prefix of the template block name for this type.
-     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
-     * (e.g. "UserProfileType" => "user_profile").
-     * 
-     * @return string The prefix of the template block name
-     */
-    public function getBlockPrefix()
-    {
-        return 'group';
     }
 }

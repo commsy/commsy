@@ -1,13 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 24.04.18
- * Time: 15:55
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Database;
-
 
 use App\Repository\FilesRepository;
 use App\Repository\ItemRepository;
@@ -23,50 +27,8 @@ use Symfony\Component\Finder\Finder;
 
 class FixPhysicalFiles implements DatabaseCheck
 {
-    /**
-     * @var ParameterBagInterface
-     */
-    private ParameterBagInterface $parameterBag;
-
-    /**
-     * @var PortalRepository
-     */
-    private PortalRepository $portalRepository;
-
-    /**
-     * @var RoomRepository
-     */
-    private RoomRepository $roomRepository;
-
-    /**
-     * @var FilesRepository
-     */
-    private FilesRepository $filesRespository;
-
-    /**
-     * @var ItemRepository
-     */
-    private ItemRepository $itemRepository;
-
-    /**
-     * @var LoggerInterface
-     */
-    private LoggerInterface $cleanupLogger;
-
-    public function __construct(
-        ParameterBagInterface $parameterBag,
-        PortalRepository $portalRepository,
-        RoomRepository $roomRepository,
-        FilesRepository $filesRespository,
-        ItemRepository $itemRepository,
-        LoggerInterface $cleanupLogger
-    ) {
-        $this->parameterBag = $parameterBag;
-        $this->portalRepository = $portalRepository;
-        $this->roomRepository = $roomRepository;
-        $this->filesRespository = $filesRespository;
-        $this->itemRepository = $itemRepository;
-        $this->cleanupLogger = $cleanupLogger;
+    public function __construct(private ParameterBagInterface $parameterBag, private PortalRepository $portalRepository, private RoomRepository $roomRepository, private FilesRepository $filesRespository, private ItemRepository $itemRepository, private LoggerInterface $cleanupLogger)
+    {
     }
 
     public function getPriority()
@@ -93,7 +55,6 @@ class FixPhysicalFiles implements DatabaseCheck
             ->in($filesDirectory);
 
         if ($directories->hasResults()) {
-
             $allowedFirstLevelFolderNames = $this->getValidFirstLevelFolderNames();
 
             // only remove dirs at the end of all checks
@@ -117,19 +78,19 @@ class FixPhysicalFiles implements DatabaseCheck
 
                         break;
 
-                    // check second level: must be numeric, can only be 4 digits long
-                    // e.g. 99/1234: okay; 99/123: wrong; 99/12345: wrong; 99/somefolder: wrong
+                        // check second level: must be numeric, can only be 4 digits long
+                        // e.g. 99/1234: okay; 99/123: wrong; 99/12345: wrong; 99/somefolder: wrong
                     case 2:
                         $secondLevelFolderName = $relativePathNameExp[1];
 
-                        if (!is_numeric($secondLevelFolderName) || strlen($secondLevelFolderName) != 4) {
+                        if (!is_numeric($secondLevelFolderName) || 4 != strlen($secondLevelFolderName)) {
                             $markedForRemoval[] = $directory;
                         }
 
                         break;
 
-                    // check third level
-                    // check on e.g. 123_
+                        // check third level
+                        // check on e.g. 123_
                     case 3:
                         $secondLevelFolderName = $relativePathNameExp[1];
                         $thirdLevelFolderName = $relativePathNameExp[2];
@@ -139,7 +100,7 @@ class FixPhysicalFiles implements DatabaseCheck
                             break;
                         }
 
-                        $lookupId = $secondLevelFolderName . substr($thirdLevelFolderName, 0, -1);
+                        $lookupId = $secondLevelFolderName.substr($thirdLevelFolderName, 0, -1);
                         if (!$this->roomExists($lookupId)) {
                             $markedForRemoval[] = $directory;
                         }
@@ -155,9 +116,9 @@ class FixPhysicalFiles implements DatabaseCheck
             // remove all dirs marked for removal
             foreach ($markedForRemoval as $removal) {
                 if ($io->isVerbose()) {
-                    $io->note('Deleting ' . $removal);
+                    $io->note('Deleting '.$removal);
                 }
-                $this->cleanupLogger->info('Deleting ' . $removal);
+                $this->cleanupLogger->info('Deleting '.$removal);
                 $filesystem->remove($removal);
             }
         }
@@ -174,7 +135,7 @@ class FixPhysicalFiles implements DatabaseCheck
                             $relativePathNameExp = explode('/', $file->getRelativePath());
                             $secondLevelFolderName = $relativePathNameExp[1];
                             $thirdLevelFolderName = $relativePathNameExp[2];
-                            $contextId = $secondLevelFolderName . substr($thirdLevelFolderName, 0, -1);
+                            $contextId = $secondLevelFolderName.substr($thirdLevelFolderName, 0, -1);
 
                             if ($this->fileExists($filenameWithoutExtension, $contextId)) {
                                 continue;
@@ -198,9 +159,9 @@ class FixPhysicalFiles implements DatabaseCheck
 
                 // delete if no allowed pattern could be found
                 if ($io->isVerbose()) {
-                    $io->note('Deleting ' . $file);
+                    $io->note('Deleting '.$file);
                 }
-                $this->cleanupLogger->info('Deleting ' . $file);
+                $this->cleanupLogger->info('Deleting '.$file);
                 $filesystem->remove($file);
             }
         }
@@ -208,9 +169,6 @@ class FixPhysicalFiles implements DatabaseCheck
         return true;
     }
 
-    /**
-     * @return array
-     */
     private function getValidFirstLevelFolderNames(): array
     {
         $validNames = [99, 'temp'];
@@ -224,29 +182,20 @@ class FixPhysicalFiles implements DatabaseCheck
         return array_merge($validNames, $this->roomRepository->getProjectAndUserRoomIds());
     }
 
-    /**
-     * @param int $fileId
-     * @param int $contextId
-     * @return bool
-     */
     private function fileExists(int $fileId, int $contextId): bool
     {
         try {
             return $this->filesRespository->getNumFiles($fileId, $contextId) > 0;
-        } catch (NoResultException|NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
             return true;
         }
     }
 
-    /**
-     * @param int $roomId
-     * @return bool
-     */
     private function roomExists(int $roomId): bool
     {
         try {
             return $this->itemRepository->getNumItems($roomId) > 0;
-        } catch (NoResultException|NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
             return true;
         }
     }

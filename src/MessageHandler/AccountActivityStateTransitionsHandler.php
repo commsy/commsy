@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\MessageHandler;
 
 use App\Entity\Account;
@@ -11,30 +22,8 @@ use Symfony\Component\Workflow\WorkflowInterface;
 
 class AccountActivityStateTransitionsHandler implements MessageHandlerInterface
 {
-    /**
-     * @var AccountsRepository
-     */
-    private AccountsRepository $accountRepository;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var WorkflowInterface
-     */
-    private WorkflowInterface $accountActivityStateMachine;
-
-    public function __construct(
-        AccountsRepository $accountsRepository,
-        EntityManagerInterface $entityManager,
-        WorkflowInterface $accountActivityStateMachine
-    ) {
-        $this->accountRepository = $accountsRepository;
-
-        $this->entityManager = $entityManager;
-        $this->accountActivityStateMachine = $accountActivityStateMachine;
+    public function __construct(private AccountsRepository $accountRepository, private EntityManagerInterface $entityManager, private WorkflowInterface $accountActivityStateMachine)
+    {
     }
 
     public function __invoke(AccountActivityStateTransitions $message)
@@ -50,7 +39,7 @@ class AccountActivityStateTransitionsHandler implements MessageHandlerInterface
 
                 if ($this->accountActivityStateMachine->can($accountActivityObject, $transitionName)) {
                     $this->accountActivityStateMachine->apply($accountActivityObject, $transitionName);
-                    if ($accountActivityObject->getActivityState() !== Account::ACTIVITY_ABANDONED) {
+                    if (Account::ACTIVITY_ABANDONED !== $accountActivityObject->getActivityState()) {
                         $this->entityManager->persist($accountActivityObject);
                     }
                 }

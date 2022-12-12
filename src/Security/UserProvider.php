@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Security;
-
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
@@ -10,26 +19,14 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
 {
-    /**
-     * @var RequestStack
-     */
-    private RequestStack $requestStack;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(RequestStack $requestStack, EntityManagerInterface $entityManager)
+    public function __construct(private RequestStack $requestStack, private EntityManagerInterface $entityManager)
     {
-        $this->requestStack = $requestStack;
-        $this->entityManager = $entityManager;
     }
 
     /**
@@ -39,10 +36,7 @@ class UserProvider implements UserProviderInterface
      * If you're not using these features, you do not need to implement
      * this method.
      *
-     * @param $username
-     * @return Account
-     *
-     * @throws UsernameNotFoundException if the user is not found
+     * @throws UserNotFoundException if the user is not found
      */
     public function loadUserByUsername($username): Account
     {
@@ -55,7 +49,7 @@ class UserProvider implements UserProviderInterface
             $this->extractContexIdFromRequest(),
             $this->extractAuthSourceIdFromRequest()
         );
-        if ($account === null) {
+        if (null === $account) {
             $account = $this->loadUser(
                 $username,
                 $this->extractContexIdFromRequest('takeover_context'),
@@ -63,8 +57,8 @@ class UserProvider implements UserProviderInterface
             );
         }
 
-        if ($account === null) {
-            throw new UsernameNotFoundException();
+        if (null === $account) {
+            throw new UserNotFoundException();
         }
 
         return $account;
@@ -81,15 +75,12 @@ class UserProvider implements UserProviderInterface
      * If your firewall is "stateless: true" (for a pure API), this
      * method is not called.
      *
-     * @param UserInterface $user
-     * @return Account
-     *
-     * @throws UsernameNotFoundException if the user is not found
+     * @throws UserNotFoundException if the user is not found
      */
     public function refreshUser(UserInterface $user): Account
     {
         if (!$user instanceof Account) {
-            throw new UnsupportedUserException(sprintf('Invalid user class "%s".', get_class($user)));
+            throw new UnsupportedUserException(sprintf('Invalid user class "%s".', $user::class));
         }
 
         // Return a User object after making sure its data is "fresh".
@@ -99,7 +90,7 @@ class UserProvider implements UserProviderInterface
             $this->extractContexIdFromRequest(),
             $this->extractAuthSourceIdFromRequest()
         );
-        if ($account === null) {
+        if (null === $account) {
             $account = $this->loadUser(
                 $user->getUsername(),
                 $this->extractContexIdFromRequest('takeover_context'),
@@ -107,8 +98,8 @@ class UserProvider implements UserProviderInterface
             );
         }
 
-        if ($account === null) {
-            throw new UsernameNotFoundException();
+        if (null === $account) {
+            throw new UserNotFoundException();
         }
 
         return $account;
@@ -126,19 +117,17 @@ class UserProvider implements UserProviderInterface
     {
         try {
             $authSource = $this->entityManager->getRepository(AuthSource::class)->find($authSourceId);
+
             return $this->entityManager->getRepository(Account::class)
                 ->findOneByCredentials($username, $contextId, $authSource);
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
         }
 
         return null;
     }
 
     /**
-     * Extracts context id from the request
-     *
-     * @param string $key
-     * @return int
+     * Extracts context id from the request.
      */
     private function extractContexIdFromRequest(string $key = 'context'): int
     {
@@ -147,19 +136,16 @@ class UserProvider implements UserProviderInterface
             $session = $currentRequest->getSession();
             $contextId = $session->get($key);
 
-            if ($contextId !== null) {
+            if (null !== $contextId) {
                 return $contextId;
             }
         }
 
-        throw new UsernameNotFoundException();
+        throw new UserNotFoundException();
     }
 
     /**
-     * Extracts auth source id from the request
-     *
-     * @param string $key
-     * @return int
+     * Extracts auth source id from the request.
      */
     private function extractAuthSourceIdFromRequest(string $key = 'authSourceId'): int
     {
@@ -168,11 +154,11 @@ class UserProvider implements UserProviderInterface
             $session = $currentRequest->getSession();
             $authSourceId = $session->get($key);
 
-            if ($authSourceId !== null) {
+            if (null !== $authSourceId) {
                 return $authSourceId;
             }
         }
 
-        throw new UsernameNotFoundException();
+        throw new UserNotFoundException();
     }
 }

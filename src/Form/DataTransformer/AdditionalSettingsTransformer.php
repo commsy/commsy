@@ -1,9 +1,19 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
-use App\Utils\RoomService;
-use App\Utils\UserService;
 use cs_environment;
 use cs_room_item;
 use DateTimeImmutable;
@@ -12,9 +22,6 @@ class AdditionalSettingsTransformer extends AbstractTransformer
 {
     protected $entity = 'additional_settings';
 
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
@@ -23,14 +30,15 @@ class AdditionalSettingsTransformer extends AbstractTransformer
     }
 
     /**
-     * Transforms a cs_room_item object into an array
+     * Transforms a cs_room_item object into an array.
      *
      * @param cs_room_item $roomItem
+     *
      * @return array
      */
     public function transform($roomItem)
     {
-        $roomData = array();
+        $roomData = [];
 
         if ($roomItem) {
             // structural auxilaries
@@ -49,15 +57,14 @@ class AdditionalSettingsTransformer extends AbstractTransformer
             $roomData['structural_auxilaries']['calendars']['external'] = $roomItem->usersCanSetExternalCalendarsUrl();
 
             // tasks
-            $roomData['tasks']['additional_status']  = $roomItem->getExtraToDoStatusArray();
+            $roomData['tasks']['additional_status'] = $roomItem->getExtraToDoStatusArray();
 
             // templates
             $roomData['template']['status'] = $roomItem->isTemplate();
             $roomData['template']['template_description'] = $roomItem->getTemplateDescription();
-            if($roomItem->isCommunityRoom()){
+            if ($roomItem->isCommunityRoom()) {
                 $roomData['template']['template_availability'] = $roomItem->getCommunityTemplateAvailability();
-            }
-            else{
+            } else {
                 $roomData['template']['template_availability'] = $roomItem->getTemplateAvailability();
             }
 
@@ -73,7 +80,7 @@ class AdditionalSettingsTransformer extends AbstractTransformer
 
             // terms and conditions
             $roomData['terms']['status'] = $roomItem->getAGBStatus();
-            if ($roomData['terms']['status'] != '1'){
+            if ('1' != $roomData['terms']['status']) {
                 $roomData['terms']['status'] = '2';
             }
 
@@ -81,25 +88,29 @@ class AdditionalSettingsTransformer extends AbstractTransformer
             $languages = $this->legacyEnvironment->getAvailableLanguageArray();
             foreach ($languages as $language) {
                 if (!empty($agb_text_array[cs_strtoupper($language)])) {
-                   $roomData['terms']['agb_text_'.$language] = $agb_text_array[cs_strtoupper($language)];
+                    $roomData['terms']['agb_text_'.$language] = $agb_text_array[cs_strtoupper($language)];
                 } else {
-                   $roomData['terms']['agb_text_'.$language] = '';
+                    $roomData['terms']['agb_text_'.$language] = '';
                 }
             }
         }
+
         return $roomData;
     }
 
     /**
-     * Save additional settings
+     * Save additional settings.
      *
      * @param object $roomObject
-     * @param array $roomData
+     * @param array  $roomData
+     *
      * @return cs_room_item|null
-     * @throws TransformationFailedException if room item is not found.
+     *
+     * @throws TransformationFailedException if room item is not found
      */
     public function applyTransformation($roomObject, $roomData)
     {
+        $agbtext_array = [];
         /********* save buzzword and tag options ******/
         $associations = $roomData['structural_auxilaries']['associations'];
         $buzzwords = $roomData['structural_auxilaries']['buzzwords'];
@@ -107,58 +118,58 @@ class AdditionalSettingsTransformer extends AbstractTransformer
         $calendars = $roomData['structural_auxilaries']['calendars'];
 
         // association options
-        if ( isset($associations['show_expanded']) and !empty($associations['show_expanded']) and $associations['show_expanded'] == true) {
+        if (isset($associations['show_expanded']) and !empty($associations['show_expanded']) and true == $associations['show_expanded']) {
             $roomObject->setAssociationShowExpanded();
         } else {
             $roomObject->unsetAssociationShowExpanded();
         }
 
         // buzzword options
-        if ( isset($buzzwords['activate']) and !empty($buzzwords['activate']) and $buzzwords['activate'] == true) {
+        if (isset($buzzwords['activate']) and !empty($buzzwords['activate']) and true == $buzzwords['activate']) {
             $roomObject->setWithBuzzwords();
         } else {
             $roomObject->setWithoutBuzzwords();
         }
-        if ( isset($buzzwords['show_expanded']) and !empty($buzzwords['show_expanded']) and $buzzwords['show_expanded'] == true) {
+        if (isset($buzzwords['show_expanded']) and !empty($buzzwords['show_expanded']) and true == $buzzwords['show_expanded']) {
             $roomObject->setBuzzwordShowExpanded();
         } else {
             $roomObject->unsetBuzzwordShowExpanded();
         }
-        if ( isset($buzzwords['mandatory']) and !empty($buzzwords['mandatory']) and $buzzwords['mandatory'] == true ) {
+        if (isset($buzzwords['mandatory']) and !empty($buzzwords['mandatory']) and true == $buzzwords['mandatory']) {
             $roomObject->setBuzzwordMandatory();
         } else {
             $roomObject->unsetBuzzwordMandatory();
         }
 
         // tag options
-        if ( isset($categories['activate']) and !empty($categories['activate']) and $categories['activate'] == true) {
+        if (isset($categories['activate']) and !empty($categories['activate']) and true == $categories['activate']) {
             $roomObject->setWithTags();
         } else {
             $roomObject->setWithoutTags();
         }
-        if ( isset($categories['show_expanded']) and !empty($categories['show_expanded']) and $categories['show_expanded'] == true) {
+        if (isset($categories['show_expanded']) and !empty($categories['show_expanded']) and true == $categories['show_expanded']) {
             $roomObject->setTagsShowExpanded();
         } else {
             $roomObject->unsetTagsShowExpanded();
         }
-        if ( isset($categories['mandatory']) and !empty($categories['mandatory']) and $categories['mandatory'] == true ) {
+        if (isset($categories['mandatory']) and !empty($categories['mandatory']) and true == $categories['mandatory']) {
             $roomObject->setTagMandatory();
         } else {
             $roomObject->unsetTagMandatory();
         }
-        if ( isset($categories['edit']) and !empty($categories['edit']) and $categories['edit'] == true ) {
+        if (isset($categories['edit']) and !empty($categories['edit']) and true == $categories['edit']) {
             $roomObject->setTagEditedByModerator();
         } else {
             $roomObject->setTagEditedByAll();
         }
 
         // calendar options
-        if ( isset($calendars['edit']) and !empty($calendars['edit']) and $calendars['edit'] == true ) {
+        if (isset($calendars['edit']) and !empty($calendars['edit']) and true == $calendars['edit']) {
             $roomObject->setUsersCanEditCalendars();
         } else {
             $roomObject->unsetUsersCanEditCalendars();
         }
-        if ( isset($calendars['external']) and !empty($calendars['external']) and $calendars['external'] == true ) {
+        if (isset($calendars['external']) and !empty($calendars['external']) and true == $calendars['external']) {
             $roomObject->setUsersCanSetExternalCalendarsUrl();
         } else {
             $roomObject->unsetUsersCanSetExternalCalendarsUrl();
@@ -167,35 +178,35 @@ class AdditionalSettingsTransformer extends AbstractTransformer
         /********* save template options ******/
         $template = $roomData['template'];
 
-        if ( isset($template['status']) and !empty($template['status'])) {
-            if ( $template['status'] == true ) {
-               $roomObject->setTemplate();
+        if (isset($template['status']) and !empty($template['status'])) {
+            if (true == $template['status']) {
+                $roomObject->setTemplate();
             } else {
-               $roomObject->setNotTemplate();
+                $roomObject->setNotTemplate();
             }
-        } elseif ( $roomObject->isProjectRoom()
+        } elseif ($roomObject->isProjectRoom()
                 or $roomObject->isCommunityRoom()
                 or $roomObject->isPrivateRoom()
                 or $roomObject->isGroupRoom()
-              ) {
+        ) {
             $roomObject->setNotTemplate();
         }
-        if ( isset($template['template_availability'])){
-            if ( $roomObject->isCommunityRoom() ){
-               $roomObject->setCommunityTemplateAvailability($template['template_availability']);
-            } else{
-               $roomObject->setTemplateAvailability($template['template_availability']);
+        if (isset($template['template_availability'])) {
+            if ($roomObject->isCommunityRoom()) {
+                $roomObject->setCommunityTemplateAvailability($template['template_availability']);
+            } else {
+                $roomObject->setTemplateAvailability($template['template_availability']);
             }
         }
-        if ( isset($template['template_description'])){
+        if (isset($template['template_description'])) {
             $roomObject->setTemplateDescription($template['template_description']);
         }
 
         /********* rss options ******/
         if (isset($roomData['rss']['status'])) {
-            if ($roomData['rss']['status'] === '1') {
+            if ('1' === $roomData['rss']['status']) {
                 $roomObject->turnRSSOn();
-            } else if ($roomData['rss']['status'] === '2') {
+            } elseif ('2' === $roomData['rss']['status']) {
                 $roomObject->turnRSSOff();
             }
         } else {
@@ -223,18 +234,18 @@ class AdditionalSettingsTransformer extends AbstractTransformer
             if (!empty($roomData['terms']['agb_text_'.mb_strtolower($language, 'UTF-8')])) {
                 $agbtext_array[mb_strtoupper($language, 'UTF-8')] = $roomData['terms']['agb_text_'.mb_strtolower($language, 'UTF-8')];
             } else {
-               $agbtext_array[mb_strtoupper($language, 'UTF-8')] = '';
+                $agbtext_array[mb_strtoupper($language, 'UTF-8')] = '';
             }
-         }
+        }
 
-        if(($agbtext_array != $roomObject->getAGBTextArray()) or ($roomData['terms']['status'] != $roomObject->getAGBStatus())) {
+        if (($agbtext_array != $roomObject->getAGBTextArray()) or ($roomData['terms']['status'] != $roomObject->getAGBStatus())) {
             $now = new DateTimeImmutable();
             $roomObject->setAGBStatus($roomData['terms']['status']);
             $roomObject->setAGBTextArray($agbtext_array);
             $roomObject->setAGBChangeDate($now);
             $current_user->setAGBAcceptanceDate($now);
             $current_user->save();
-         }
+        }
 
         /***************** save extra task status ************/
         $roomObject->setExtraToDoStatusArray(array_filter($roomData['tasks']['additional_status']));

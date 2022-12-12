@@ -1,25 +1,28 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Search\QueryConditions;
-
 
 use Elastica\Query\MultiMatch;
 
 class DescriptionQueryCondition implements QueryConditionInterface
 {
-    /**
-     * @var string|null $description
-     */
-    private ?string $description;
+    private ?string $description = null;
 
-    /**
-     * @param string $description
-     * @return DescriptionQueryCondition
-     */
     public function setDescription(string $description): DescriptionQueryCondition
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -28,7 +31,7 @@ class DescriptionQueryCondition implements QueryConditionInterface
      */
     public function getConditions(): array
     {
-        if ($this->description === '') {
+        if ('' === $this->description) {
             return [];
         }
 
@@ -53,9 +56,6 @@ class DescriptionQueryCondition implements QueryConditionInterface
         return [$descriptionMatch];
     }
 
-    /**
-     * @return string
-     */
     public function getOperator(): string
     {
         return QueryConditionInterface::BOOL_MUST;

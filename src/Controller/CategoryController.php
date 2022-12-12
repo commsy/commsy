@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Entity\Tag;
@@ -9,77 +20,48 @@ use App\Utils\CategoryService;
 use App\Utils\RoomService;
 use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CategoryController extends AbstractController
 {
-    /**
-     * @Template("category/show.html.twig")
-     * @param CategoryService $categoryService
-     * @param int $roomId
-     * @return array
-     */
     public function show(
         CategoryService $categoryService,
         int $roomId
-    ) {
+    ): Response {
         // get categories from CategoryManager
         $roomTags = $categoryService->getTags($roomId);
 
-        $defaultData = array(
-            'roomId' => $roomId,
-        );
-        $form = $this->createForm(Types\TagType::class, $defaultData, array(
-            'action' => $this->generateUrl('app_category_new', array('roomId' => $roomId)),
-        ));
+        $defaultData = ['roomId' => $roomId];
+        $form = $this->createForm(Types\TagType::class, $defaultData, ['action' => $this->generateUrl('app_category_new', ['roomId' => $roomId])]);
 
-        return array(
-            'tags' => $roomTags,
-            'form' => $form->createView(),
-        );
+        return $this->render('category/show.html.twig', ['tags' => $roomTags, 'form' => $form->createView()]);
     }
 
-
-    /**
-     * @Template("category/showDetail.html.twig")
-     * @param CategoryService $categoryService
-     * @param int $roomId
-     * @return array
-     */
     public function showDetail(
         CategoryService $categoryService,
         int $roomId
-    ) {
+    ): Response {
         // get categories
         $roomTags = $categoryService->getTags($roomId);
 
-        $defaultData = array(
-            'roomId' => $roomId,
-        );
-        $form = $this->createForm(Types\TagType::class, $defaultData, array(
-            'action' => $this->generateUrl('app_category_new', array('roomId' => $roomId)),
-        ));
+        $defaultData = ['roomId' => $roomId];
+        $form = $this->createForm(Types\TagType::class, $defaultData, ['action' => $this->generateUrl('app_category_new', ['roomId' => $roomId])]);
 
-        return array(
-            'tags' => $roomTags,
-            'form' => $form->createView(),
-        );
+        return $this->render('category/showDetail.html.twig', ['tags' => $roomTags, 'form' => $form->createView()]);
     }
 
-    /**
-     * @Route("/room/{roomId}/category/add")
-     * @Security("is_granted('CATEGORY_EDIT')")
-     */
+    #[Route(path: '/room/{roomId}/category/add')]
+    #[Security("is_granted('CATEGORY_EDIT')")]
     public function add(
         $roomId,
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         CategoryService $categoryService
-    ) {
+    ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -103,19 +85,13 @@ class CategoryController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/room/{roomId}/category/new", methods={"POST"})
-     * @Security("is_granted('CATEGORY_EDIT')")
-     * @param Request $request
-     * @param CategoryService $categoryService
-     * @param $roomId
-     * @return RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/category/new', methods: ['POST'])]
+    #[Security("is_granted('CATEGORY_EDIT')")]
     public function new(
         Request $request,
         CategoryService $categoryService,
         $roomId
-    ) {
+    ): RedirectResponse {
         $form = $this->createForm(Types\TagType::class);
 
         $form->handleRequest($request);
@@ -126,15 +102,13 @@ class CategoryController extends AbstractController
             // persist new category
             $categoryService->addTag($data['title'], $roomId);
 
-            return $this->redirectToRoute('app_room_home', array('roomId' => $roomId));
+            return $this->redirectToRoute('app_room_home', ['roomId' => $roomId]);
         }
     }
 
-    /**
-     * @Route("/room/{roomId}/category/delete/{categoryId}")
-     * @Security("is_granted('CATEGORY_EDIT')")
-     */
-    public function delete($roomId, $categoryId, CategoryService $categoryService)
+    #[Route(path: '/room/{roomId}/category/delete/{categoryId}')]
+    #[Security("is_granted('CATEGORY_EDIT')")]
+    public function delete($roomId, $categoryId, CategoryService $categoryService): RedirectResponse
     {
         $categoryService->removeTag($categoryId, $roomId);
 
@@ -143,19 +117,8 @@ class CategoryController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/category/edit/{categoryId}")
-     * @Template()
-     * @Security("is_granted('CATEGORY_EDIT')")
-     * @param Request $request
-     * @param RoomService $roomService
-     * @param CategoryService $categoryService
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param ManagerRegistry $doctrine
-     * @param int $roomId
-     * @param int|null $categoryId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/category/edit/{categoryId}')]
+    #[Security("is_granted('CATEGORY_EDIT')")]
     public function edit(
         Request $request,
         RoomService $roomService,
@@ -164,7 +127,7 @@ class CategoryController extends AbstractController
         ManagerRegistry $doctrine,
         int $roomId,
         int $categoryId = null
-    ) {
+    ): Response {
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem->withTags()) {
@@ -184,12 +147,12 @@ class CategoryController extends AbstractController
 
         $categoryEditTitle = '';
 
-        if($createNewForm->has('new')){
+        if ($createNewForm->has('new')) {
             $categoryEditTitle = 'Create new category';
         } elseif ($createNewForm->has('update')) {
             $categoryEditTitle = 'Edit category';
         }
-        
+
         $createNewForm->handleRequest($request);
         if ($createNewForm->isSubmitted() && $createNewForm->isValid()) {
             if ($createNewForm->has('new') && $createNewForm->get('new')->isClicked()) {
@@ -199,7 +162,7 @@ class CategoryController extends AbstractController
             if ($createNewForm->has('update') && $createNewForm->get('update')->isClicked()) {
                 $categoryService->updateTag($category->getItemId(), $category->getTitle());
             }
-            
+
             return $this->redirectToRoute('app_category_edit', [
                 'roomId' => $roomId,
                 'editTitle' => $categoryEditTitle,
@@ -227,7 +190,7 @@ class CategoryController extends AbstractController
             $structure = $data['structure'];
             if ($structure) {
                 // decode into array
-                $structure = json_decode($structure, true);
+                $structure = json_decode($structure, true, 512, JSON_THROW_ON_ERROR);
 
                 $categoryService->updateStructure($structure, $roomId);
             }
@@ -238,8 +201,7 @@ class CategoryController extends AbstractController
             ]);
         }
 
-
-        $mergeForm = $this->createForm(Types\CategoryMergeType::class, null, ['roomId'=>$roomId]);
+        $mergeForm = $this->createForm(Types\CategoryMergeType::class, null, ['roomId' => $roomId]);
 
         $mergeForm->handleRequest($request);
         if ($mergeForm->isSubmitted() && $mergeForm->isValid()) {
@@ -257,14 +219,14 @@ class CategoryController extends AbstractController
                 $tagIdOne = $tagIdTwo;
                 $tagIdTwo = $tagIdOneTemp;
             }
-            
+
             // get both
             $tagItemOne = $tagManager->getItem($tagIdOne);
             $tagItemTwo = $tagManager->getItem($tagIdTwo);
-            
+
             // we put the combined tag under the parent of the first one
             $putId = $tag2TagManager->getFatherItemId($tagIdOne);
-            
+
             // merge them
             $tag2TagManager->combine($tagIdOne, $tagIdTwo, $putId);
 
@@ -273,12 +235,12 @@ class CategoryController extends AbstractController
             ]);
         }
 
-        return [
+        return $this->render('category/edit.html.twig', [
             'newForm' => $createNewForm->createView(),
             'editForm' => $editForm->createView(),
             'roomId' => $roomId,
             'editTitle' => $categoryEditTitle,
             'mergeForm' => $mergeForm->createView(),
-        ];
+        ]);
     }
 }

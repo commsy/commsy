@@ -1,11 +1,22 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Security\Authorization\Voter;
 
-
 use App\Entity\Account;
 use App\Utils\UserService;
+use cs_user_item;
+use DateTimeImmutable;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
@@ -13,22 +24,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class SwitchToUserVoter extends Voter
 {
-    private $security;
-    private $userService;
-
     /**
      * SwitchToUserVoter constructor.
-     * @param Security $security
-     * @param UserService $userService
      */
-    public function __construct(Security $security, UserService $userService)
+    public function __construct(private Security $security, private UserService $userService)
     {
-        $this->security = $security;
-        $this->userService = $userService;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function supports($attribute, $subject)
     {
@@ -37,7 +41,7 @@ class SwitchToUserVoter extends Voter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
@@ -48,15 +52,15 @@ class SwitchToUserVoter extends Voter
             return false;
         }
 
-        /** @var \cs_user_item $portalUser */
+        /** @var cs_user_item $portalUser */
         $portalUser = $this->userService->getPortalUser($account);
 
         // check if the user is allowed to impersonate by flag
         if ($portalUser->getCanImpersonateAnotherUser()) {
             // check if the impersonate grant is expired
-            $now = new \DateTimeImmutable();
+            $now = new DateTimeImmutable();
             $expiryDate = $portalUser->getImpersonateExpiryDate();
-            if ($expiryDate === null || $expiryDate >= $now) {
+            if (null === $expiryDate || $expiryDate >= $now) {
                 return true;
             }
         }

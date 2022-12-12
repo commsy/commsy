@@ -1,30 +1,28 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\EventSubscriber;
-
 
 use App\Event\ReadStatusPreChangeEvent;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
+use cs_annotation_item;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ReadStatusSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var ItemService $itemService
-     */
-    private $itemService;
-
-    /**
-     * @var ReaderService $readerService
-     */
-    private $readerService;
-
-    public function __construct(ItemService $itemService, ReaderService $readerService)
+    public function __construct(private ItemService $itemService, private ReaderService $readerService)
     {
-        $this->itemService = $itemService;
-        $this->readerService = $readerService;
     }
 
     public static function getSubscribedEvents()
@@ -44,8 +42,8 @@ class ReadStatusSubscriber implements EventSubscriberInterface
         }
 
         // for annotations, invalidate the read status cache of their linked (hosting) item
-        if ($item->getItemType() === CS_ANNOTATION_TYPE) {
-            /** @var \cs_annotation_item $annotation */
+        if (CS_ANNOTATION_TYPE === $item->getItemType()) {
+            /** @var cs_annotation_item $annotation */
             $annotation = $this->itemService->getTypedItem($itemId);
             $linkedItem = $annotation->getLinkedItem();
             if ($linkedItem) {

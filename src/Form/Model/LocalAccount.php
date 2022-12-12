@@ -1,30 +1,29 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Form\Model;
 
+use App\Validator\Constraints\LocalAccount as LocalAccountConstraint;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Validator\Constraints\LocalAccount as LocalAccountAssert;
 
-/**
- * @LocalAccountAssert()
- */
+#[LocalAccountConstraint]
 class LocalAccount
 {
-    /**
-     * @var string
-     * @Assert\NotBlank()
-     */
-    private $username;
+    #[Assert\NotBlank]
+    private ?string $username = null;
 
-    /**
-     * @var int
-     */
-    private $contextId;
-
-    public function __construct(int $contextId)
+    public function __construct(private int $contextId)
     {
-        $this->contextId = $contextId;
     }
 
     /**
@@ -35,33 +34,22 @@ class LocalAccount
         return $this->username;
     }
 
-    /**
-     * @param string $username
-     * @return self
-     */
     public function setUsername(string $username): self
     {
         $this->username = $username;
+
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getContextId(): int
     {
         return $this->contextId;
     }
 
-    /**
-     * @param int $contextId
-     * @return self
-     */
     public function setContextId(int $contextId): self
     {
         $this->contextId = $contextId;
+
         return $this;
     }
-
-
 }

@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Form\Type\Portal;
-
 
 use App\Entity\Portal;
 use Symfony\Component\Form\AbstractType;
@@ -14,14 +23,8 @@ use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class PortalAppearanceType extends AbstractType
 {
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    public function __construct(RouterInterface $router)
+    public function __construct(private RouterInterface $router)
     {
-        $this->router = $router;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)

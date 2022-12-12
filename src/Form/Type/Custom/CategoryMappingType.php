@@ -1,4 +1,16 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type\Custom;
 
 use App\Form\Type\TreeChoiceType;
@@ -19,10 +31,8 @@ class CategoryMappingType extends AbstractType
             ->add('categories', TreeChoiceType::class, [
                 'placeholder' => false,
                 'choices' => $options['categories'],
-                'choice_label' => function ($choice, $key, $value) {
-                    // remove the trailing category ID from $key (which was used in LabelService->transformTagArray() to uniquify the key)
-                    return implode('_', explode('_', $key, -1));
-                },
+                'choice_label' => fn ($choice, $key, $value) => // remove the trailing category ID from $key (which was used in LabelService->transformTagArray() to uniquify the key)
+implode('_', explode('_', $key, -1)),
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
@@ -45,8 +55,8 @@ class CategoryMappingType extends AbstractType
 
     /**
      * Configures the options for this type.
-     * 
-     * @param  OptionsResolver $resolver The resolver for the options
+     *
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {

@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Metrics;
 
 use App\Utils\RequestContext;
@@ -9,17 +20,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class RequestsMetric extends AbstractMetric implements MetricInterface, EventSubscriberInterface
 {
-    /**
-     * @var RequestContext
-     */
-    private RequestContext $requestContext;
-
-    /**
-     * @param RequestContext $requestContext
-     */
-    public function __construct(RequestContext $requestContext)
+    public function __construct(private RequestContext $requestContext)
     {
-        $this->requestContext = $requestContext;
     }
 
     public static function getSubscribedEvents()
@@ -31,7 +33,7 @@ class RequestsMetric extends AbstractMetric implements MetricInterface, EventSub
 
     public function onKernelTerminate(TerminateEvent $event)
     {
-        if (!$event->isMasterRequest()) {
+        if (!$event->isMainRequest()) {
             return;
         }
 

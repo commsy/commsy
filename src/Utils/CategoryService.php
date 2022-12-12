@@ -1,16 +1,25 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_tag_item;
 
 class CategoryService
 {
-    private $legacyEnvironment;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment)
+    public function __construct(private LegacyEnvironment $legacyEnvironment)
     {
-        $this->legacyEnvironment = $legacyEnvironment;
     }
 
     public function getTag($tagId)
@@ -32,17 +41,16 @@ class CategoryService
         $tagManager = $this->legacyEnvironment->getEnvironment()->getTagManager();
 
         $rootItem = $tagManager->getRootTagItemFor($roomId);
+
         return $this->buildTagArray($rootItem);
     }
 
     /**
      * Creates and returns a new category (aka tag) with the given title, context and parent.
-     * @param $title
-     * @param $roomId
+     *
      * @param null $parentTagId
-     * @return \cs_tag_item
      */
-    public function addTag($title, $roomId, $parentTagId = null): \cs_tag_item
+    public function addTag($title, $roomId, $parentTagId = null): cs_tag_item
     {
         $environment = $this->legacyEnvironment->getEnvironment();
         $environment->setCurrentContextID($roomId);
@@ -66,7 +74,7 @@ class CategoryService
         $tagItem->setTitle($title);
         $tagItem->setContextID($roomId);
         $tagItem->setCreatorItem($currentUserItem);
-        $tagItem->setCreationDate(date("Y-m-d H:i:s"));
+        $tagItem->setCreationDate(date('Y-m-d H:i:s'));
         $tagItem->setPosition($parentTagId, $parentTagItem->getChildrenList()->getCount() + 1);
 
         $tagItem->save();
@@ -99,7 +107,7 @@ class CategoryService
         foreach ($structure as $position => $tagInformation) {
             // persist new position
             $tagItem = $tagManager->getItem($tagInformation['itemId']);
-            $tagItem->setPosition($rootItem->getItemId(), $position+1);
+            $tagItem->setPosition($rootItem->getItemId(), $position + 1);
             $tagItem->save();
 
             if (!empty($tagInformation['children'])) {
@@ -110,21 +118,16 @@ class CategoryService
 
     private function buildTagArray($item, $level = 0)
     {
-        $return = array();
+        $return = [];
 
         if (isset($item)) {
             $childrenList = $item->getChildrenList();
-            $level++;
+            ++$level;
 
             $item = $childrenList->getFirst();
             while ($item) {
                 // attach to return
-                $return[] = array(
-                    'title'     => $item->getTitle(),
-                    'item_id'   => $item->getItemID(),
-                    'level'     => $level,
-                    'children'  => $this->buildTagArray($item, $level)
-                );
+                $return[] = ['title' => $item->getTitle(), 'item_id' => $item->getItemID(), 'level' => $level, 'children' => $this->buildTagArray($item, $level)];
 
                 $item = $childrenList->getNext();
             }

@@ -1,4 +1,16 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
 use App\Entity\Account;
@@ -6,8 +18,8 @@ use App\Entity\Portal;
 use App\Entity\Room;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -23,12 +35,10 @@ class RoomRepository extends ServiceEntityRepository
      * Returns a new QueryBuilder instance with a query that returns all non-deleted project and/or community rooms
      * for the given portal ID.
      *
-     * @param int $portalId portal ID
+     * @param int   $portalId  portal ID
      * @param array $roomTypes array of room type strings ('project' and/or 'community'), indicating which rooms shall be returned
-     * @param string $sort
-     * @return QueryBuilder
      */
-    public function getMainRoomQueryBuilder(int $portalId, array $roomTypes = ['project', 'community'], string $sort='activity'): QueryBuilder
+    public function getMainRoomQueryBuilder(int $portalId, array $roomTypes = ['project', 'community'], string $sort = 'activity'): QueryBuilder
     {
         // TODO: support portal settings option "All workspaces > Show templates in workplace list"
 
@@ -36,8 +46,8 @@ class RoomRepository extends ServiceEntityRepository
 
         $sortExploded = explode('_', $sort);
 
-        if ($sortExploded[0] === 'activity' || $sortExploded[0] === 'title') {
-            $orderBy = 'r.' . $sortExploded[0];
+        if ('activity' === $sortExploded[0] || 'title' === $sortExploded[0]) {
+            $orderBy = 'r.'.$sortExploded[0];
         } else {
             $orderBy = 'r.activity';
         }
@@ -46,9 +56,9 @@ class RoomRepository extends ServiceEntityRepository
         //       $sort = 'activity' -> DESC
         //       $sort = 'activity_rev' -> ASC
         if (isset($sortExploded[1])) {
-            $order = $sortExploded[0] === 'activity' ? 'ASC' : 'DESC';
+            $order = 'activity' === $sortExploded[0] ? 'ASC' : 'DESC';
         } else {
-            $order = $sortExploded[0] === 'activity' ? 'DESC' : 'ASC';
+            $order = 'activity' === $sortExploded[0] ? 'DESC' : 'ASC';
         }
 
         return $qb
@@ -66,8 +76,6 @@ class RoomRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $portalId
-     * @return int
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
@@ -102,9 +110,6 @@ class RoomRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @return array
-     */
     public function getProjectAndUserRoomIds(): array
     {
         $query = $this->getEntityManager()->createQuery('
@@ -120,8 +125,6 @@ class RoomRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string $oldState
-     * @param string $newState
      * @return int|mixed|string
      */
     public function updateActivity(string $oldState, string $newState)
@@ -140,7 +143,7 @@ class RoomRepository extends ServiceEntityRepository
      * NOTE: This may be used by a UniqueEntity/UniqueRoomSlug annotation in App\Entity\Room.
      *
      * @param array $fields associative array of room identifiers with keys: `slug`, `contextId`
-     * @return Room|null
+     *
      * @throws NonUniqueResultException
      */
     public function findOneByRoomIdentifiersArray(array $fields): ?Room
@@ -150,8 +153,7 @@ class RoomRepository extends ServiceEntityRepository
 
     /**
      * @param string $slug
-     * @param int $context
-     * @return Room|null
+     *
      * @throws NonUniqueResultException
      */
     public function findOneByRoomSlug(string $roomSlug, int $context): ?Room

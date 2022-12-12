@@ -1,13 +1,21 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Account;
-
 
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
-use cs_context_item;
 use cs_environment;
 use cs_room_item;
 use cs_user_item;
@@ -15,41 +23,19 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class AccountMerger
 {
-    /**
-     * @var UserService
-     */
-    private UserService $userService;
-
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
 
     /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    /**
      * AccountMerger constructor.
-     * @param UserService $userService
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param EntityManagerInterface $entityManager
      */
     public function __construct(
-        UserService $userService,
+        private UserService $userService,
         LegacyEnvironment $legacyEnvironment,
-        EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager
     ) {
-        $this->userService = $userService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->entityManager = $entityManager;
     }
 
-    /**
-     * @param Account $from
-     * @param Account $into
-     */
     public function mergeAccounts(Account $from, Account $into)
     {
         if ($from === $into) {
@@ -70,16 +56,12 @@ class AccountMerger
         $this->entityManager->flush();
     }
 
-    /**
-     * @param Account $from
-     * @param Account $into
-     */
     private function doMerge(Account $from, Account $into)
     {
         $fromPortalUser = $this->userService->getPortalUser($from);
         $intoPortalUser = $this->userService->getPortalUser($into);
 
-        list('duplicated' => $duplicated, 'nonDuplicated' => $nonDuplicated) =
+        ['duplicated' => $duplicated, 'nonDuplicated' => $nonDuplicated] =
             $this->prepareRoomLists($fromPortalUser, $intoPortalUser);
 
         // non duplicates
@@ -94,8 +76,6 @@ class AccountMerger
     }
 
     /**
-     * @param cs_user_item $fromPortalUser
-     * @param cs_user_item $intoPortalUser
      * @return array[]
      */
     private function prepareRoomLists(cs_user_item $fromPortalUser, cs_user_item $intoPortalUser): array
@@ -123,11 +103,6 @@ class AccountMerger
         ];
     }
 
-    /**
-     * @param Account $account
-     * @param int $contextId
-     * @return cs_user_item|null
-     */
     private function getUserInContext(Account $account, int $contextId): ?cs_user_item
     {
         $userManager = $this->legacyEnvironment->getUserManager();
@@ -136,21 +111,16 @@ class AccountMerger
         $userManager->setAuthSourceLimit($account->getAuthSource()->getId());
         $userManager->select();
         $users = $userManager->get();
-        if ($users->getCount() === 1) {
+        if (1 === $users->getCount()) {
             /** @var cs_user_item $user */
             $user = $users->getFirst();
+
             return $user;
         }
 
         return null;
     }
 
-    /**
-     * @param Account $from
-     * @param Account $into
-     * @param cs_room_item $room
-     * @param cs_user_item|null $nameSource
-     */
     private function rewriteRoomUser(Account $from, Account $into, cs_room_item $room, cs_user_item $nameSource = null)
     {
         $roomUser = $this->getUserInContext($from, $room->getItemID());
@@ -163,11 +133,6 @@ class AccountMerger
         $roomUser->save();
     }
 
-    /**
-     * @param Account $from
-     * @param Account $into
-     * @param int $contextId
-     */
     private function rewriteContextUserAndContent(Account $from, Account $into, int $contextId)
     {
         $fromRoomUser = $this->getUserInContext($from, $contextId);
@@ -197,7 +162,7 @@ class AccountMerger
             CS_TODO_TYPE,
             CS_TAG_TYPE,
             CS_TAG2TAG_TYPE,
-            CS_ITEM_TYPE
+            CS_ITEM_TYPE,
         ];
 
         foreach ($managerList as $managerName) {
@@ -208,10 +173,6 @@ class AccountMerger
         $fromRoomUser->delete();
     }
 
-    /**
-     * @param Account $from
-     * @param Account $into
-     */
     private function rewritePrivateRoom(Account $from, Account $into)
     {
         $fromPortalUser = $this->userService->getPortalUser($from);

@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Command;
 
 use App\Mail\Mailer;
@@ -13,117 +24,63 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EmailUploadCommand extends Command
 {
-    /**
-     * @var cs_environment
-     */
+    protected static $defaultName = 'commsy:cron:emailupload';
+    protected static $defaultDescription = 'commsy email upload cron';
+
     private cs_environment $legacyEnvironment;
 
     /**
-     * @var Mailer
-     */
-    private Mailer $mailer;
-
-    /**
-     * @var string
-     */
-    private string $projectDir;
-
-    /**
-     * @var string
-     */
-    private string $uploadEnabled;
-
-    /**
-     * @var string
-     */
-    private string $uploadServer;
-
-    /**
-     * @var string
-     */
-    private string $uploadPort;
-
-    /**
-     * @var string
-     */
-    private string $uploadOptions;
-
-    /**
-     * @var string
-     */
-    private string $uploadAccount;
-
-    /**
-     * @var string
-     */
-    private string $uploadPassword;
-
-    /**
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param Mailer $mailer
-     * @param $projectDir
-     * @param $uploadEnabled
-     * @param $uploadServer
-     * @param $uploadPort
-     * @param $uploadOptions
-     * @param $uploadAccount
-     * @param $uploadPassword
+     * @param string $projectDir
+     * @param string $uploadEnabled
+     * @param string $uploadServer
+     * @param string $uploadPort
+     * @param string $uploadOptions
+     * @param string $uploadAccount
+     * @param string $uploadPassword
      */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        Mailer $mailer,
-        $projectDir,
-        $uploadEnabled,
-        $uploadServer,
-        $uploadPort,
-        $uploadOptions,
-        $uploadAccount,
-        $uploadPassword
+        private Mailer $mailer,
+        private $projectDir,
+        private $uploadEnabled,
+        private $uploadServer,
+        private $uploadPort,
+        private $uploadOptions,
+        private $uploadAccount,
+        private $uploadPassword
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->mailer = $mailer;
-
-        $this->projectDir = $projectDir;
-        $this->uploadEnabled = $uploadEnabled;
-        $this->uploadServer = $uploadServer;
-        $this->uploadPort = $uploadPort;
-        $this->uploadOptions = $uploadOptions;
-        $this->uploadAccount = $uploadAccount;
-        $this->uploadPassword = $uploadPassword;
 
         parent::__construct();
     }
 
     protected function configure()
     {
-        $this
-            ->setName('commsy:cron:emailupload')
-            ->setDescription('commsy email upload cron')
-        ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        chdir($this->projectDir . '/legacy/');
+        chdir($this->projectDir.'/legacy/');
         $this->legacyEnvironment->setCacheOff();
 
         if (!$this->uploadEnabled) {
             $output->writeln('<info>Upload is disabled</info>');
-            return;
+
+            return Command::SUCCESS;
         }
 
         $output->writeln('<info>Connecting to mailbox</info>');
         $mailbox = new Mailbox(
-            '{' . $this->uploadServer . ':' . $this->uploadPort . $this->uploadOptions . '}INBOX',
+            '{'.$this->uploadServer.':'.$this->uploadPort.$this->uploadOptions.'}INBOX',
             $this->uploadAccount,
             $this->uploadPassword,
-            $this->projectDir . '/var/temp/'
+            $this->projectDir.'/var/temp/'
         );
 
         // read all messages
         $mailIds = $mailbox->searchMailbox('ALL');
 
-        $output->writeln('<info>Processing ' . sizeof($mailIds) . ' Mails</info>');
+        $output->writeln('<info>Processing '.sizeof($mailIds).' Mails</info>');
 
         foreach ($mailIds as $mailId) {
             $mail = $mailbox->getMail($mailId);
@@ -133,10 +90,13 @@ class EmailUploadCommand extends Command
         }
 
         $mailbox->expungeDeletedMails();
+
+        return Command::SUCCESS;
     }
 
     private function emailToCommsy($mail)
     {
+        $translation = [];
         $translator = $this->legacyEnvironment->getTranslationObject();
 
         // split the plain text part
@@ -153,7 +113,7 @@ class EmailUploadCommand extends Command
         $hasFooter = false;
         $footerStart = 0;
         foreach ($bodyLines as $line => $bodyLine) {
-            if (strip_tags($bodyLine) == '-- ') {
+            if ('-- ' == strip_tags($bodyLine)) {
                 $hasFooter = true;
                 $footerStart = $line;
             }
@@ -174,8 +134,8 @@ class EmailUploadCommand extends Command
 
                 if (empty($account)) {
                     foreach (['de', 'en'] as $language) {
-                        if (stristr($bodyLine, $translation[$language]['account'])) {
-                            $accountLine = str_ireplace($translation[$language]['account'] . ':', '', $bodyLine);
+                        if (stristr($bodyLine, (string) $translation[$language]['account'])) {
+                            $accountLine = str_ireplace($translation[$language]['account'].':', '', $bodyLine);
                             $accountLineExp = explode(' ', trim($accountLine));
                             $account = $accountLineExp[0];
                             $isNonMetaLine = false;
@@ -186,8 +146,8 @@ class EmailUploadCommand extends Command
 
                 if (empty($secret)) {
                     foreach (['de', 'en'] as $language) {
-                        if (stristr($bodyLine, $translation[$language]['password'])) {
-                            $passwordLine = str_ireplace($translation[$language]['password'] . ':', '', $bodyLine);
+                        if (stristr($bodyLine, (string) $translation[$language]['password'])) {
+                            $passwordLine = str_ireplace($translation[$language]['password'].':', '', $bodyLine);
                             $passwordLineExp = explode(' ', trim($passwordLine));
                             $secret = $passwordLineExp[0];
                             $isNonMetaLine = false;
@@ -204,7 +164,7 @@ class EmailUploadCommand extends Command
             }
         }
 
-        $nonMetaBody = implode("<br/>", $nonMetaLines);
+        $nonMetaBody = implode('<br/>', $nonMetaLines);
 
         $serverItem = $this->legacyEnvironment->getServerItem();
         $portalIds = $serverItem->getPortalIDArray();
@@ -252,7 +212,7 @@ class EmailUploadCommand extends Command
                         $materialManager = $this->legacyEnvironment->getMaterialManager();
 
                         $materialItem = $materialManager->getNewItem();
-                        $materialItem->setTitle(trim(str_replace($privateSecret . ':', '', $mail->subject)));
+                        $materialItem->setTitle(trim(str_replace($privateSecret.':', '', $mail->subject)));
                         $materialItem->setDescription($nonMetaBody);
 
                         // attach files
@@ -270,7 +230,7 @@ class EmailUploadCommand extends Command
                             $file = [
                                 'name' => $attachment->name,
                                 'tmp_name' => $attachment->filePath,
-                                'file_id' => $attachment->name . '_' . date("Y-m-d H:i:s"),
+                                'file_id' => $attachment->name.'_'.date('Y-m-d H:i:s'),
                                 'file_size' => filesize($attachment->filePath),
                             ];
 
@@ -293,16 +253,16 @@ class EmailUploadCommand extends Command
                         $materialItem->save();
 
                         // send e-mail with 'material created in your private room' back to sender
-                        $body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_SUCCESS', $privateRoomUser->getFullName()) . "\n\n";
+                        $body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_SUCCESS', $privateRoomUser->getFullName())."\n\n";
 
                         if (!empty($sizeErrors)) {
                             $filesToLarge = '';
 
                             foreach ($sizeErrors as $sizeError) {
-                                $filesToLarge .= '- ' . $sizeError['name'].' ('.round($sizeError['size'] / (1024*1024), 2).' MB)'."\n";
+                                $filesToLarge .= '- '.$sizeError['name'].' ('.round($sizeError['size'] / (1024 * 1024), 2).' MB)'."\n";
                             }
 
-                            $body .= $translator->getMessage('EMAIL_TO_COMMSY_RESULT_FILES_TO_LARGE', $portalMaxFileSize / (1024*1024), $filesToLarge) . "\n\n";
+                            $body .= $translator->getMessage('EMAIL_TO_COMMSY_RESULT_FILES_TO_LARGE', $portalMaxFileSize / (1024 * 1024), $filesToLarge)."\n\n";
                         }
 
                         $body .= $translator->getMessage('EMAIL_TO_COMMSY_RESULT_REGARDS');

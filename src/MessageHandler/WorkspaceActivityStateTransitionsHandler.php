@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\MessageHandler;
 
 use App\Entity\Room;
@@ -11,30 +22,8 @@ use Symfony\Component\Workflow\WorkflowInterface;
 
 class WorkspaceActivityStateTransitionsHandler implements MessageHandlerInterface
 {
-    /**
-     * @var RoomRepository
-     */
-    private RoomRepository $roomRepository;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var WorkflowInterface
-     */
-    private WorkflowInterface $roomActivityStateMachine;
-
-    public function __construct(
-        RoomRepository $roomRepository,
-        EntityManagerInterface $entityManager,
-        WorkflowInterface $roomActivityStateMachine
-    ) {
-        $this->roomRepository = $roomRepository;
-
-        $this->entityManager = $entityManager;
-        $this->roomActivityStateMachine = $roomActivityStateMachine;
+    public function __construct(private RoomRepository $roomRepository, private EntityManagerInterface $entityManager, private WorkflowInterface $roomActivityStateMachine)
+    {
     }
 
     public function __invoke(WorkspaceActivityStateTransitions $message)
@@ -51,7 +40,7 @@ class WorkspaceActivityStateTransitionsHandler implements MessageHandlerInterfac
                 if ($this->roomActivityStateMachine->can($roomActivityObject, $transitionName)) {
                     $this->roomActivityStateMachine->apply($roomActivityObject, $transitionName);
 
-                    if ($roomActivityObject->getActivityState() !== Room::ACTIVITY_ABANDONED) {
+                    if (Room::ACTIVITY_ABANDONED !== $roomActivityObject->getActivityState()) {
                         $this->entityManager->persist($roomActivityObject);
                     }
                 }

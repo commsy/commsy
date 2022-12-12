@@ -2,7 +2,7 @@
 # Files in the packages/ subdirectory configure your dependencies.
 
 # Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     locale: '%env(LOCALE)%'
 
@@ -58,12 +58,6 @@ parameters:
     commsy.settings.proxy_port: '%env(PROXY_PORT)%'      # Propxy Port
     commsy.settings.single_cat_selection: false     # Single selection for categories
     commsy.settings.item_locking: true     # Temporary protect items from beeing edited by different users simultaneously
-
-    # Wordpress
-    commsy.wordpress.enabled: false     # For activating wordpress please set the following variable on true
-
-    # Limesurvey
-    commsy.limesurvey.enabled: false        # et the following variable to activate limesurvey extension
 
     # Etherpad
     commsy.etherpad.enabled: '%env(bool:ETHERPAD_ENABLED)%'
@@ -276,31 +270,6 @@ services:
         autowire: true
         autoconfigure: true
 
-    # EventListener
-    commsy.listener.get_room_membership_filter:
-        class: App\EventListener\RoomMembershipFilterConditionListener
-        arguments: ['@commsy_legacy.user_service']
-        tags:
-            - { name: kernel.event_listener, event: lexik_form_filter.apply.orm.room_filter.membership , method: onGetFilterCondition }
-
-    commsy.listener.get_room_time_pulses_filter:
-        class: App\EventListener\RoomTimePulsesFilterConditionListener
-        arguments: ['@commsy_legacy.room_service']
-        tags:
-            - { name: kernel.event_listener, event: lexik_form_filter.apply.orm.room_filter.timePulses , method: onGetFilterCondition }
-
-    commsy.listener.command_error:
-        class: App\EventListener\ConsoleErrorListener
-        arguments: ['@logger']
-        tags:
-            - { name: kernel.event_listener, event: console.terminate }
-
-    commsy.listener.command_exception:
-        class: App\EventListener\ConsoleExceptionListener
-        arguments: ['@logger']
-        tags:
-            - { name: kernel.event_listener, event: console.exception }
-
     commsy.etherpad_form_listener:
         class: App\Form\Type\Event\AddEtherpadFormListener
         arguments: ["@service_container"]
@@ -479,7 +448,7 @@ services:
     # Database checks
     App\Database\DatabaseChecks:
         arguments:
-            $databaseChecks: !tagged_iterator app.database.check
+            $checks: !tagged_iterator app.database.check
 
     # Feed
     debril.rss_atom.provider:
@@ -584,14 +553,6 @@ services:
             - '@commsy_legacy.item_service'
 
     # actions
-
-    App\Action\MarkRead\MarkReadGeneric:
-        autowire: true
-    App\Action\MarkRead\MarkReadMaterial:
-        autowire: true
-    App\Action\MarkRead\MarkReadTodo:
-        autowire: true
-
     commsy.action.mark_read.generic:
         class: App\Action\MarkRead\MarkReadAction
         autowire: true
@@ -600,75 +561,6 @@ services:
 
 
     App\Action\MarkRead\MarkReadAction: '@commsy.action.mark_read.generic'
-
-    App\Action\Mark\MarkAction:
-        autowire: true
-
-    App\Action\Mark\InsertAction:
-        autowire: true
-
-    App\Action\Mark\RemoveAction:
-        autowire: true
-
-    App\Action\Mark\CategorizeAction:
-        autowire: true
-
-    App\Action\Mark\HashtagAction:
-        autowire: true
-
-    App\Action\Activate\ActivateAction:
-        autowire: true
-
-    App\Action\Activate\DeactivateAction:
-        autowire: true
-
-    App\Action\Download\DownloadAction:
-        autowire: true
-
-    App\Action\TodoStatus\TodoStatusAction:
-        autowire: true
-
-    App\Action\UserStatus\UserStatusAction:
-        autowire: true
-
-    App\Action\Delete\DeleteGeneric:
-        autowire: true
-    App\Action\Delete\DeleteStep:
-        autowire: true
-    App\Action\Delete\DeleteSection:
-        autowire: true
-    App\Action\Delete\DeleteDiscussionArticle:
-        autowire: true
-    App\Action\Delete\DeleteDate:
-        autowire: true
-
-
-    commsy.action.delete.generic:
-        class: App\Action\Delete\DeleteAction
-        autowire: true
-
-
-    commsy.action.delete.step:
-        class: App\Action\Delete\DeleteAction
-        autowire: true
-
-    commsy.action.delete.section:
-        class: App\Action\Delete\DeleteAction
-        autowire: true
-
-    commsy.action.delete.discussion_article:
-        class: App\Action\Delete\DeleteAction
-        autowire: true
-
-    commsy.action.delete.date:
-        class: App\Action\Delete\DeleteAction
-        autowire: true
-
-    commsy.action.delete.material:
-        class: App\Action\Delete\DeleteAction
-        autowire: true
-
-    App\Action\Delete\DeleteAction: '@commsy.action.delete.generic'
 
     # Response
     App\Http\JsonDataResponse:

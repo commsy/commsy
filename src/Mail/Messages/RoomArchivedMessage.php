@@ -1,32 +1,31 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 2019-03-08
- * Time: 16:00
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Mail\Messages;
 
-
 use App\Mail\Message;
+use cs_room_item;
 
 class RoomArchivedMessage extends Message
 {
     /**
-     * @var \cs_room_item $room
+     * @var cs_room_item
      */
     private $room;
 
-    /**
-     * @var int $numDays;
-     */
-    private $numDays;
-
-    public function __construct(\cs_room_item $roomItem, int $numDays)
+    public function __construct(cs_room_item $roomItem, private int $numDays)
     {
         $this->room = $roomItem;
-        $this->numDays = $numDays;
     }
 
     public function getSubject(): string
@@ -54,39 +53,27 @@ class RoomArchivedMessage extends Message
         ];
     }
 
-    /**
-     * @return \cs_room_item
-     */
-    public function getRoom(): \cs_room_item
+    public function getRoom(): cs_room_item
     {
         return $this->room;
     }
 
-    /**
-     * @param \cs_room_item $room
-     * @return RoomArchivedMessage
-     */
-    public function setRoom(\cs_room_item $room): RoomArchivedMessage
+    public function setRoom(cs_room_item $room): RoomArchivedMessage
     {
         $this->room = $room;
+
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getNumDays(): int
     {
         return $this->numDays;
     }
 
-    /**
-     * @param int $numDays
-     * @return RoomArchivedMessage
-     */
     public function setNumDays(int $numDays): RoomArchivedMessage
     {
         $this->numDays = $numDays;
+
         return $this;
     }
 }

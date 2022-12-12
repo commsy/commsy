@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type\Account;
 
 use Symfony\Component\Form\AbstractType;
@@ -18,7 +29,7 @@ class AdditionalType extends AbstractType
      * Type extensions can further modify the form.
      *
      * @param FormBuilderInterface $builder The form builder
-     * @param array $options The options
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -28,7 +39,7 @@ class AdditionalType extends AbstractType
                 'choices' => [
                     'browser' => 'browser',
                     'de' => 'de',
-                    'en' => 'en'
+                    'en' => 'en',
                 ],
                 'label' => 'language',
                 'required' => false,
@@ -64,7 +75,7 @@ class AdditionalType extends AbstractType
                 'translation_domain' => 'form',
                 'attr' => [
                     'class' => 'uk-button-primary',
-                ]
+                ],
             ]);
     }
 
@@ -91,5 +102,4 @@ class AdditionalType extends AbstractType
     {
         return 'room_profile';
     }
-
 }

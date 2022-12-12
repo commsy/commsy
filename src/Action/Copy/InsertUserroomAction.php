@@ -1,13 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 24.07.18
- * Time: 14:35
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Action\Copy;
-
 
 use App\Entity\Account;
 use App\Http\JsonDataResponse;
@@ -15,58 +19,40 @@ use App\Http\JsonErrorResponse;
 use App\Services\LegacyEnvironment;
 use App\Services\MarkedService;
 use cs_environment;
+use cs_item;
+use cs_room_item;
+use cs_user_item;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class InsertUserroomAction
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private TranslatorInterface $translator;
-
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
 
-    /**
-     * @var MarkedService
-     */
-    private MarkedService $markService;
-
-    /**
-     * @var Security
-     */
-    private $security;
-
     public function __construct(
-        TranslatorInterface $translator,
+        private TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
-        MarkedService $markService,
-        Security $security
+        private MarkedService $markService,
+        private Security $security
     ) {
-        $this->translator = $translator;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->markService = $markService;
-        $this->security = $security;
     }
 
-    public function execute(\cs_room_item $roomItem, array $users): Response
+    public function execute(cs_room_item $roomItem, array $users): Response
     {
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         if (method_exists($roomItem, 'getArchived') && $roomItem->getArchived()) {
-            return new JsonErrorResponse('<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i>' . $this->translator->trans('copy items in archived workspaces is not allowed'));
+            return new JsonErrorResponse('<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i>'.$this->translator->trans('copy items in archived workspaces is not allowed'));
         }
 
         if ($this->legacyEnvironment->inPortal()) {
-            return new JsonErrorResponse('<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i>' . $this->translator->trans('copy items in portal is not allowed'));
+            return new JsonErrorResponse('<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i>'.$this->translator->trans('copy items in portal is not allowed'));
         }
 
         if ($currentUser->isOnlyReadUser()) {
-            return new JsonErrorResponse('<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i>' . $this->translator->trans('copy items as read only user is not allowed'));
+            return new JsonErrorResponse('<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i>'.$this->translator->trans('copy items as read only user is not allowed'));
         }
 
         $readerManager = $this->legacyEnvironment->getReaderManager();
@@ -79,7 +65,7 @@ class InsertUserroomAction
 
         // for each given (project room) user, copy each import item into his/her user room
         foreach ($users as $user) {
-            /** @var \cs_user_item $user */
+            /** @var cs_user_item $user */
             $userRoom = $user->getLinkedUserroomItem();
             if (!$userRoom) {
                 continue;
@@ -89,7 +75,7 @@ class InsertUserroomAction
             $userRoomIds[] = $userRoomId;
 
             foreach ($imports as $import) {
-                /** @var \cs_item $import */
+                /** @var cs_item $import */
 
                 // copy item
                 $oldContextId = $this->legacyEnvironment->getCurrentContextID();
@@ -116,14 +102,12 @@ class InsertUserroomAction
             $userManager = $this->legacyEnvironment->getUserManager();
 
             // for the current user, get his/her related users from the user rooms identified by the IDs in $userRoomIds
-            /** @var \cs_user_item[] $relatedUsers */
+            /** @var cs_user_item[] $relatedUsers */
             $relatedUsers = $userManager->getAllUsersByUserAndRoomIDLimit($currentUser->getUserId(), $userRoomIds, $authSource->getId());
 
             // for all found related users, mark the copied items as read & noticed
             if (!empty($relatedUsers)) {
-                $relatedUserIds = array_map(function (\cs_user_item $user) {
-                    return $user->getItemID();
-                }, $relatedUsers);
+                $relatedUserIds = array_map(fn (cs_user_item $user) => $user->getItemID(), $relatedUsers);
 
                 foreach ($versionIdsByCopyIds as $copyId => $versionId) {
                     // TODO: allowing markItemsAsRead() & markItemsAsNoticed() to accept a matching array of version IDs would avoid this foreach loop
@@ -134,7 +118,7 @@ class InsertUserroomAction
         }
 
         return new JsonDataResponse([
-            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-paste\'></i> ' . $this->translator->trans('inserted %count% entries into %usercount% personal workspaces', [
+            'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-paste\'></i> '.$this->translator->trans('inserted %count% entries into %usercount% personal workspaces', [
                     '%count%' => count($imports),
                     '%usercount%' => count($users),
                 ]),

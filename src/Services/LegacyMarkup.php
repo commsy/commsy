@@ -1,9 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 18.08.17
- * Time: 16:43
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Services;
@@ -13,24 +18,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LegacyMarkup
 {
-    /**
-     * @var RouterInterface
-     */
-    private RouterInterface $router;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private TranslatorInterface $translator;
-
     private array $files = [];
 
-    public function __construct(
-        RouterInterface $router,
-        TranslatorInterface $translator
-    ) {
-        $this->router = $router;
-        $this->translator = $translator;
+    public function __construct(private RouterInterface $router, private TranslatorInterface $translator)
+    {
     }
 
     public function addFiles($files)
@@ -73,10 +64,10 @@ class LegacyMarkup
                 $matches[0] = array_unique($matches[0]); // doppelte einsparen
 
                 foreach ($matches[0] as $value) {
-                    # delete HTML-tags and string conversion #########
+                    // delete HTML-tags and string conversion #########
                     $valueNew = strip_tags($value);
-                    $valueNew = str_replace('&nbsp;',' ', $valueNew);
-                    ##################################################
+                    $valueNew = str_replace('&nbsp;', ' ', $valueNew);
+                    // #################################################
 
                     foreach ($regExpArray as $markup => $regExp) {
                         $check = false;
@@ -84,8 +75,7 @@ class LegacyMarkup
 
                         foreach ($args as $arg) {
                             if (strstr($arg, "'") &&
-                                (substr_count($arg, "'") % 2) == 1)
-                            {
+                                (substr_count($arg, "'") % 2) == 1) {
                                 $check = true;
                                 break;
                             }
@@ -94,29 +84,29 @@ class LegacyMarkup
                         if ($check) {
                             $value = $this->getSubText($text, $value);
 
-                            # delete HTML-tags and string conversion #########
+                            // delete HTML-tags and string conversion #########
                             $valueNew = strip_tags($value);
                             $valueNew = str_replace('&nbsp;', ' ', $valueNew);
-                            ##################################################
+                            // #################################################
 
                             $args = $this->getArgs2($valueNew, $regExp);
                         }
 
-                        if ($markup == '(:file' && mb_stristr($valueNew, '(:file')) {
+                        if ('(:file' == $markup && mb_stristr($valueNew, '(:file')) {
                             $valueNew = $this->formatFile($valueNew, $args);
                             break;
                         }
 
-                        if ($markup == '(:image' && mb_stristr($valueNew, '(:image')) {
+                        if ('(:image' == $markup && mb_stristr($valueNew, '(:image')) {
                             $valueNew = $this->formatImage($valueNew, $args);
                         }
 
-                        if ($markup == '(:item' && mb_stristr($valueNew, '(:item')) {
+                        if ('(:item' == $markup && mb_stristr($valueNew, '(:item')) {
                             $valueNew = $this->formatItem($valueNew, $args);
                             break;
                         }
 
-                        if ($markup == '(:link' && mb_stristr($valueNew, '(:link')) {
+                        if ('(:link' == $markup && mb_stristr($valueNew, '(:link')) {
                             $valueNew = $this->formatLink($valueNew, $args);
                             break;
                         }
@@ -126,43 +116,43 @@ class LegacyMarkup
 //                            break;
 //                        }
 
-                        if ($markup == '(:wmplayer' && mb_stristr($valueNew, '(:wmplayer')) {
+                        if ('(:wmplayer' == $markup && mb_stristr($valueNew, '(:wmplayer')) {
                             $valueNew = $this->formatDeprecated($valueNew, $args);
 
                             break;
                         }
 
-                        if ($markup == '(:quicktime' && mb_stristr($valueNew, '(:quicktime')) {
+                        if ('(:quicktime' == $markup && mb_stristr($valueNew, '(:quicktime')) {
                             $valueNew = $this->formatDeprecated($valueNew, $args);
                             break;
                         }
 
-                        if ($markup == '(:youtube' && mb_stristr($valueNew, '(:youtube')) {
+                        if ('(:youtube' == $markup && mb_stristr($valueNew, '(:youtube')) {
                             $valueNew = $this->formatYoutube($valueNew, $args);
                             break;
                         }
 
-                        if ($markup == '(:googlevideo' && mb_stristr($valueNew, '(:googlevideo')) {
+                        if ('(:googlevideo' == $markup && mb_stristr($valueNew, '(:googlevideo')) {
                             $valueNew = $this->formatDeprecated($valueNew, $args);
                             break;
                         }
 
-                        if ($markup == '(:podcampus' && mb_stristr($valueNew, '(:podcampus')) {
+                        if ('(:podcampus' == $markup && mb_stristr($valueNew, '(:podcampus')) {
                             $valueNew = $this->formatDeprecated($valueNew, $args);
                             break;
                         }
 
-                        if ($markup == '(:vimeo' && mb_stristr($valueNew, '(:vimeo')) {
+                        if ('(:vimeo' == $markup && mb_stristr($valueNew, '(:vimeo')) {
                             $valueNew = $this->formatDeprecated($valueNew, $args);
                             break;
                         }
 
-                        if ($markup == '(:mp3' && mb_stristr($valueNew, '(:mp3')) {
+                        if ('(:mp3' == $markup && mb_stristr($valueNew, '(:mp3')) {
                             $valueNew = $this->formatDeprecated($valueNew, $args);
                             break;
                         }
 
-                        if ($markup == '(:lecture2go' && mb_stristr($valueNew, '(:lecture2go')) {
+                        if ('(:lecture2go' == $markup && mb_stristr($valueNew, '(:lecture2go')) {
                             $valueNew = $this->formatLecture2Go($valueNew, $args);
                             break;
                         }
@@ -177,7 +167,7 @@ class LegacyMarkup
 //                            break;
 //                        }
 
-                        if ($markup == '(:flickr' && mb_stristr($valueNew, '(:flickr')) {
+                        if ('(:flickr' == $markup && mb_stristr($valueNew, '(:flickr')) {
                             $valueNew = $this->formatDeprecated($valueNew, $args);
                             break;
                         }
@@ -217,53 +207,54 @@ class LegacyMarkup
         return $text;
     }
 
-    private function getArgs($data,$reg_exp)
+    private function getArgs($data, $reg_exp)
     {
-        $variable_array = array();
-        $matches = array();
-        preg_match_all($reg_exp,$data,$matches);
+        $variable_array = [];
+        $matches = [];
+        preg_match_all($reg_exp, $data, $matches);
         $j = 0;
         while (isset($matches[$j][0])) {
             $variable_array[$j] = trim($matches[$j][0]);
-            $j++;
+            ++$j;
         }
+
         return $variable_array;
     }
 
-    private function getArgs2($data,$reg_exp)
+    private function getArgs2($data, $reg_exp)
     {
-        $reg_exp = str_replace('?)?',')',$reg_exp);
-        $variable_array = array();
-        $matches = array();
-        preg_match_all($reg_exp,$data,$matches);
+        $reg_exp = str_replace('?)?', ')', $reg_exp);
+        $variable_array = [];
+        $matches = [];
+        preg_match_all($reg_exp, $data, $matches);
         $j = 0;
         while (isset($matches[$j][0])) {
             $variable_array[$j] = trim($matches[$j][0]);
-            $j++;
+            ++$j;
         }
         $last_element = array_pop($variable_array);
-        if ( !empty($last_element) ) {
-            $temp_array = explode(' ',$last_element);
+        if (!empty($last_element)) {
+            $temp_array = explode(' ', $last_element);
             $komma = false;
             $cache = '';
             foreach ($temp_array as $value) {
-                if ( !strstr($value,"'") ) {
-                    if ( !$komma ) {
+                if (!strstr($value, "'")) {
+                    if (!$komma) {
                         $variable_array[] = $value;
                     } else {
                         $cache .= ' '.$value;
                     }
                 }
-                if ( strstr($value,"'") ) {
-                    if ( !$komma ) {
-                        if ( substr_count($value,"'") % 2 == 1 ) {
+                if (strstr($value, "'")) {
+                    if (!$komma) {
+                        if (1 == substr_count($value, "'") % 2) {
                             $komma = true;
                             $cache .= ' '.$value;
                         } else {
                             $result_array[] = $value;
                         }
                     } else {
-                        if ( substr_count($value,"'") % 2 == 1 ) {
+                        if (1 == substr_count($value, "'") % 2) {
                             $komma = false;
                             $cache .= ' '.$value;
                             $variable_array[] = trim($cache);
@@ -275,50 +266,60 @@ class LegacyMarkup
                 }
             }
         }
+
         return $variable_array;
     }
 
     private function getSubText($text, $search)
     {
         $retour = '';
-        $pos = strpos($text,$search);
+        $pos = strpos($text, (string) $search);
         $komma_closed = false;
         $end_tag_begin = false;
-        for ( $i = $pos+strlen($search); $i < strlen($text); $i++ ) {
-            if ( $end_tag_begin
-                and $text[$i] == ")"
-                and $komma_closed ) {
+        for ($i = $pos + strlen($search); $i < strlen($text); ++$i) {
+            if ($end_tag_begin
+                and ')' == $text[$i]
+                and $komma_closed) {
                 break;
             }
-            if ( $text[$i] == "'") {
+            if ("'" == $text[$i]) {
                 $komma_closed = !$komma_closed;
             }
-            if ( $text[$i] == ":") {
+            if (':' == $text[$i]) {
                 $end_tag_begin = true;
             } else {
                 $end_tag_begin = false;
             }
         }
         if ($end_tag_begin) {
-            $retour = substr($text,$pos,$i-$pos+1);
+            $retour = substr($text, $pos, $i - $pos + 1);
         }
+
         return $retour;
     }
 
     private function parseArgs($x)
     {
-        $z = array();
+        $z = [];
         $x = str_replace('&#39;', "'", $x);
         $x = str_replace('&quot;', '"', $x);
-        preg_match_all('~([-+]|(?>(\\w+)[:=]{0,1}))?("[^"]*"|\'[^\']*\'|\\S+)~u',$x, $terms, PREG_SET_ORDER);
-        foreach($terms as $t) {
+        preg_match_all('~([-+]|(?>(\\w+)[:=]{0,1}))?("[^"]*"|\'[^\']*\'|\\S+)~u', $x, $terms, PREG_SET_ORDER);
+        foreach ($terms as $t) {
             $v = preg_replace('~^([\'"])?(.*)\\1$~u', '$2', $t[3]);
-            if ($t[2]) { $z['#'][] = $t[2]; $z[$t[2]] = $v; }
+            if ($t[2]) {
+                $z['#'][] = $t[2];
+                $z[$t[2]] = $v;
+            }
             // bugfix since php 5.4.9
-            elseif (empty($t[2])) { $z[$t[0]][] = $v; }
-            else { $z['#'][] = $t[1]; $z[$t[1]][] = $v; }
+            elseif (empty($t[2])) {
+                $z[$t[0]][] = $v;
+            } else {
+                $z['#'][] = $t[1];
+                $z[$t[1]][] = $v;
+            }
             $z['#'][] = $v;
         }
+
         return $z;
     }
 
@@ -333,7 +334,7 @@ class LegacyMarkup
             $args = $this->parseArgs($array[3]);
         }
 
-        $src = $array[1] . $array[2];
+        $src = $array[1].$array[2];
         if (empty($array[1])) {
             if (!empty($array[2])) {
                 $lookupFileName = htmlentities($array[2], ENT_NOQUOTES, 'UTF-8');
@@ -346,11 +347,10 @@ class LegacyMarkup
 
                     if ($file) {
                         $lowerFilename = mb_strtolower($file->getFilename(), 'UTF-8');
-                        if (    mb_stristr($lowerFilename, 'png') ||
+                        if (mb_stristr($lowerFilename, 'png') ||
                             mb_stristr($lowerFilename, 'jpg') ||
                             mb_stristr($lowerFilename, 'jpeg') ||
                             mb_stristr($lowerFilename, 'gif')) {
-
                             $src = $this->router->generate('app_file_getfile', [
                                 'fileId' => $file->getFileID(),
                                 'disposition' => 'inline',
@@ -361,18 +361,18 @@ class LegacyMarkup
             }
         }
 
-        $imageHTML = '<div class="ckeditor-commsy-image"><img src="' . $src . '"';
+        $imageHTML = '<div class="ckeditor-commsy-image"><img src="'.$src.'"';
 
         if (isset($args['width']) && is_numeric($args['width'])) {
-            $imageHTML .= ' width="' . $args['width'] . '"';
+            $imageHTML .= ' width="'.$args['width'].'"';
         }
 
         if (isset($args['height']) && is_numeric($args['height'])) {
-            $imageHTML .= ' height="' . $args['height'] . '"';
+            $imageHTML .= ' height="'.$args['height'].'"';
         }
 
         if (isset($args['alt'])) {
-            $imageHTML .= ' alt="' . $args['alt'] . '"';
+            $imageHTML .= ' alt="'.$args['alt'].'"';
         }
 
         if (isset($args['lfloat'])) {
@@ -400,9 +400,9 @@ class LegacyMarkup
             $word = $args['text'];
         }
 
-        if ( !empty($args['target']) ) {
+        if (!empty($args['target'])) {
             $target = $args['target'];
-        } elseif ( !empty($args['newwin']) ) {
+        } elseif (!empty($args['newwin'])) {
             $target = '_blank';
         } else {
             $target = '';
@@ -419,7 +419,7 @@ class LegacyMarkup
                 'itemId' => $itemId,
             ]);
 
-            $text = '<a href="' . $url . '" target="' . $target . '">' . $word . '</a>';
+            $text = '<a href="'.$url.'" target="'.$target.'">'.$word.'</a>';
         }
 
         return $text;
@@ -428,40 +428,40 @@ class LegacyMarkup
     private function formatLink($text, $array)
     {
         $image_text = '';
-        if ( !empty($array[3]) ) {
+        if (!empty($array[3])) {
             $args = $this->parseArgs($array[3]);
         } else {
-            $args = array();
+            $args = [];
         }
 
-        if ( !empty($args['text']) ) {
+        if (!empty($args['text'])) {
             $word = $args['text'];
         } else {
             $word = '';
         }
 
-        if ( !empty($args['target']) ) {
+        if (!empty($args['target'])) {
             $target = ' target="'.$args['target'].'"';
-        } elseif ( !empty($args['newwin']) ) {
+        } elseif (!empty($args['newwin'])) {
             $target = ' target=_blank;';
         } else {
             $target = '';
         }
 
-        if ( empty($array[1]) ) {
+        if (empty($array[1])) {
             $source = 'http://'.$array[2];
         } else {
             $source = $array[1].$array[2];
         }
 
-        if ( !empty($source) ) {
-            if ( empty($word) ) {
+        if (!empty($source)) {
+            if (empty($word)) {
                 $word = $source;
             }
-            $image_text = '<a href="'.$source.'"'.$target.'>' . $word . '</a>';
+            $image_text = '<a href="'.$source.'"'.$target.'>'.$word.'</a>';
         }
-        if ( !empty($image_text) ) {
-            $text = str_replace($array[0],$image_text,$text);
+        if (!empty($image_text)) {
+            $text = str_replace($array[0], $image_text, $text);
         }
 
         return $text;
@@ -500,7 +500,7 @@ class LegacyMarkup
                 'fileId' => $file->getFileId(),
             ]);
 
-            $fileText = '<a href="' . $src . '">' . $name . '</a>';
+            $fileText = '<a href="'.$src.'">'.$name.'</a>';
 
             return str_replace($array[0], $fileText, $text);
         }
@@ -518,7 +518,6 @@ class LegacyMarkup
         ], 'error');
         $return .= '</p></div>';
 
-
         return $return;
     }
 
@@ -528,21 +527,21 @@ class LegacyMarkup
             return $text;
         }
 
-        $src = 'https://www.youtube.com/embed/' . $array[1];
+        $src = 'https://www.youtube.com/embed/'.$array[1];
 
         $args = [];
         if (!empty($array[2])) {
             $args = $this->parseArgs($array[2]);
         }
 
-        $youTubeHTML = '<div class="ckeditor-commsy-video" data-type="youtube"><iframe allowfullscreen frameborder="0" src="' . $src . '"';
+        $youTubeHTML = '<div class="ckeditor-commsy-video" data-type="youtube"><iframe allowfullscreen frameborder="0" src="'.$src.'"';
 
         if (isset($args['width']) && is_numeric($args['width'])) {
-            $youTubeHTML .= ' width="' . $args['width'] . '"';
+            $youTubeHTML .= ' width="'.$args['width'].'"';
         }
 
         if (isset($args['height']) && is_numeric($args['height'])) {
-            $youTubeHTML .= ' height="' . $args['height'] . '"';
+            $youTubeHTML .= ' height="'.$args['height'].'"';
         }
 
         $youTubeHTML .= '></iframe></div>';
@@ -550,14 +549,13 @@ class LegacyMarkup
         return $youTubeHTML;
     }
 
-
     private function formatLecture2Go($text, $array)
     {
         if (empty($array[1])) {
             return $text;
         }
 
-        $src = 'https://lecture2go.uni-hamburg.de/lecture2go-portlet/player/iframe/?v=' . $array[1];
+        $src = 'https://lecture2go.uni-hamburg.de/lecture2go-portlet/player/iframe/?v='.$array[1];
 
         $args = [];
         $heightSet = false;
@@ -567,19 +565,19 @@ class LegacyMarkup
             $args = $this->parseArgs($array[2]);
         }
 
-        $lecture2GoHTML = '<div class="ckeditor-commsy-video" data-type="l2g"><iframe frameborder="0" allowfullscreen src="' . $src . '"';
+        $lecture2GoHTML = '<div class="ckeditor-commsy-video" data-type="l2g"><iframe frameborder="0" allowfullscreen src="'.$src.'"';
 
         if (isset($args['width']) && is_numeric($args['width'])) {
-            $lecture2GoHTML .= ' width="' . $args['width'] . '"';
+            $lecture2GoHTML .= ' width="'.$args['width'].'"';
             $heightSet = !$heightSet;
         }
 
         if (isset($args['height']) && is_numeric($args['height'])) {
-            $lecture2GoHTML .= ' height="' . $args['height'] . '"';
+            $lecture2GoHTML .= ' height="'.$args['height'].'"';
             $widthSet = !$widthSet;
         }
 
-        if(!$heightSet or !$widthSet){
+        if (!$heightSet or !$widthSet) {
             $lecture2GoHTML .= ' height="500"';
             $lecture2GoHTML .= ' width="100%';
         }
@@ -596,7 +594,7 @@ class LegacyMarkup
             'disposition' => 'inline',
         ]);
 
-        $videoHTML = '<div class="ckeditor-commsy-video" data-type="commsy"><video class="video-js vjs-default-skin" controls src="' . $src . '"';
+        $videoHTML = '<div class="ckeditor-commsy-video" data-type="commsy"><video class="video-js vjs-default-skin" controls src="'.$src.'"';
 
         $videoHTML .= '></video></div>';
 
@@ -624,7 +622,7 @@ class LegacyMarkup
             $style = $styleMatches[1];
         }
 
-        $imageHTML = '<img alt="' . $alt . '" src="' . $src . '" style="' . $style . '"/>';
+        $imageHTML = '<img alt="'.$alt.'" src="'.$src.'" style="'.$style.'"/>';
 
         return $imageHTML;
     }

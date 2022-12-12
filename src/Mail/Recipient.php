@@ -1,23 +1,27 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 2019-03-18
- * Time: 17:21
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Mail;
 
-
 class Recipient
 {
-    private $email;
+    private ?string $email = null;
 
-    private $firstname;
+    private ?string $firstname = null;
 
-    private $lastname;
+    private ?string $lastname = null;
 
-    private $language;
+    private ?string $language = null;
 
     /**
      * @return mixed
@@ -29,11 +33,11 @@ class Recipient
 
     /**
      * @param mixed $email
-     * @return Recipient
      */
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -47,11 +51,11 @@ class Recipient
 
     /**
      * @param mixed $firstname
-     * @return Recipient
      */
     public function setFirstname(string $firstname): self
     {
         $this->firstname = $firstname;
+
         return $this;
     }
 
@@ -65,11 +69,11 @@ class Recipient
 
     /**
      * @param mixed $lastname
-     * @return Recipient
      */
     public function setLastname(string $lastname): self
     {
         $this->lastname = $lastname;
+
         return $this;
     }
 
@@ -83,11 +87,11 @@ class Recipient
 
     /**
      * @param mixed $language
-     * @return Recipient
      */
     public function setLanguage(string $language): self
     {
         $this->language = $language;
+
         return $this;
     }
 }

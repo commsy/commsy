@@ -1,135 +1,117 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Discussionarticles
- *
- * @ORM\Table(name="discussionarticles", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="discussion_id", columns={"discussion_id"}), @ORM\Index(name="creator_id", columns={"creator_id"})})
- * @ORM\Entity
+ * Discussionarticles.
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'discussionarticles')]
+#[ORM\Index(name: 'context_id', columns: ['context_id'])]
+#[ORM\Index(name: 'discussion_id', columns: ['discussion_id'])]
+#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 class Discussionarticles
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="item_id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @var int
      */
-    private $itemId = '0';
-
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    private ?int $itemId = 0;
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=true)
+     * @var int
      */
-    private $contextId;
-
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
+    private ?int $contextId = null;
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="discussion_id", type="integer", nullable=false)
+     * @var int
      */
-    private $discussionId = '0';
-
+    #[ORM\Column(name: 'discussion_id', type: Types::INTEGER)]
+    private ?int $discussionId = 0;
+    #[ORM\ManyToOne(targetEntity: 'Discussions', inversedBy: 'discussionarticles')]
+    #[ORM\JoinColumn(name: 'discussion_id', referencedColumnName: 'item_id')]
+    private ?Discussions $discussion = null;
     /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="Discussions", inversedBy="discussionarticles")
-     * @ORM\JoinColumns({
-     *     @ORM\JoinColumn(name="discussion_id", referencedColumnName="item_id")
-     * })
+     * @var int
      */
-    private $discussion;
-
+    #[ORM\Column(name: 'creator_id', type: Types::INTEGER)]
+    private ?int $creatorId = 0;
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="creator_id", type="integer", nullable=false)
+     * @var int
      */
-    private $creatorId = '0';
-
+    #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
+    private ?int $modifierId = null;
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="modifier_id", type="integer", nullable=true)
+     * @var int
      */
-    private $modifierId;
-
+    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
+    private ?int $deleterId = null;
+    #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
+    private DateTime $creationDate;
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="deleter_id", type="integer", nullable=true)
+     * @var DateTimeInterface
      */
-    private $deleterId;
-
+    #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $modificationDate = null;
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="creation_date", type="datetime", nullable=false)
+     * @var DateTimeInterface
      */
-    private $creationDate = '0000-00-00 00:00:00';
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modification_date", type="datetime", nullable=true)
-     */
-    private $modificationDate;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
-     */
-    private $deletionDate;
-
+    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $deletionDate = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="subject", type="string", length=255, nullable=false)
      */
-    private $subject;
-
+    #[ORM\Column(name: 'subject', type: Types::STRING, length: 255)]
+    private ?string $subject = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="text", length=16777215, nullable=true)
      */
-    private $description;
-
+    #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
+    private ?string $description = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="position", type="string", length=255, nullable=false)
      */
-    private $position = '1';
-
+    #[ORM\Column(name: 'position', type: Types::STRING, length: 255)]
+    private ?string $position = '1';
     /**
      * @var string
-     *
-     * @ORM\Column(name="extras", type="text", length=65535, nullable=true)
      */
-    private $extras;
+    #[ORM\Column(name: 'extras', type: Types::TEXT, length: 65535, nullable: true)]
+    private ?string $extras = null;
+    /**
+     * @var bool
+     */
+    #[ORM\Column(name: 'public', type: Types::BOOLEAN)]
+    private ?bool $public = false;
+
+    public function __construct()
+    {
+        $this->creationDate = new DateTime('0000-00-00 00:00:00');
+    }
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="public", type="boolean", nullable=false)
-     */
-    private $public = '0';
-
-    /**
-     * Set discussion
-     *
-     * @param \App\Entity\Discussions $discussion
+     * Set discussion.
      *
      * @return Discussion
      */
-    public function setDiscussion(\App\Entity\Discussions $discussion = null)
+    public function setDiscussion(Discussions $discussion = null)
     {
         $this->discussion = $discussion;
 
@@ -137,9 +119,9 @@ class Discussionarticles
     }
 
     /**
-     * Get discussion
+     * Get discussion.
      *
-     * @return \App\Entity\Discussions
+     * @return Discussions
      */
     public function getDiscussion()
     {
@@ -147,9 +129,9 @@ class Discussionarticles
     }
 
     /**
-     * Get itemId
+     * Get itemId.
      *
-     * @return integer
+     * @return int
      */
     public function getItemId()
     {
@@ -157,9 +139,9 @@ class Discussionarticles
     }
 
     /**
-     * Set contextId
+     * Set contextId.
      *
-     * @param integer $contextId
+     * @param int $contextId
      *
      * @return Discussionarticles
      */
@@ -171,9 +153,9 @@ class Discussionarticles
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
-     * @return integer
+     * @return int
      */
     public function getContextId()
     {
@@ -181,9 +163,9 @@ class Discussionarticles
     }
 
     /**
-     * Set discussionId
+     * Set discussionId.
      *
-     * @param integer $discussionId
+     * @param int $discussionId
      *
      * @return Discussionarticles
      */
@@ -195,9 +177,9 @@ class Discussionarticles
     }
 
     /**
-     * Get discussionId
+     * Get discussionId.
      *
-     * @return integer
+     * @return int
      */
     public function getDiscussionId()
     {
@@ -205,9 +187,9 @@ class Discussionarticles
     }
 
     /**
-     * Set creatorId
+     * Set creatorId.
      *
-     * @param integer $creatorId
+     * @param int $creatorId
      *
      * @return Discussionarticles
      */
@@ -219,9 +201,9 @@ class Discussionarticles
     }
 
     /**
-     * Get creatorId
+     * Get creatorId.
      *
-     * @return integer
+     * @return int
      */
     public function getCreatorId()
     {
@@ -229,9 +211,9 @@ class Discussionarticles
     }
 
     /**
-     * Set modifierId
+     * Set modifierId.
      *
-     * @param integer $modifierId
+     * @param int $modifierId
      *
      * @return Discussionarticles
      */
@@ -243,9 +225,9 @@ class Discussionarticles
     }
 
     /**
-     * Get modifierId
+     * Get modifierId.
      *
-     * @return integer
+     * @return int
      */
     public function getModifierId()
     {
@@ -253,9 +235,9 @@ class Discussionarticles
     }
 
     /**
-     * Set deleterId
+     * Set deleterId.
      *
-     * @param integer $deleterId
+     * @param int $deleterId
      *
      * @return Discussionarticles
      */
@@ -267,9 +249,9 @@ class Discussionarticles
     }
 
     /**
-     * Get deleterId
+     * Get deleterId.
      *
-     * @return integer
+     * @return int
      */
     public function getDeleterId()
     {
@@ -277,9 +259,9 @@ class Discussionarticles
     }
 
     /**
-     * Set creationDate
+     * Set creationDate.
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Discussionarticles
      */
@@ -291,9 +273,9 @@ class Discussionarticles
     }
 
     /**
-     * Get creationDate
+     * Get creationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -301,9 +283,9 @@ class Discussionarticles
     }
 
     /**
-     * Set modificationDate
+     * Set modificationDate.
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Discussionarticles
      */
@@ -315,9 +297,9 @@ class Discussionarticles
     }
 
     /**
-     * Get modificationDate
+     * Get modificationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -325,9 +307,9 @@ class Discussionarticles
     }
 
     /**
-     * Set deletionDate
+     * Set deletionDate.
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Discussionarticles
      */
@@ -339,9 +321,9 @@ class Discussionarticles
     }
 
     /**
-     * Get deletionDate
+     * Get deletionDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {
@@ -349,7 +331,7 @@ class Discussionarticles
     }
 
     /**
-     * Set subject
+     * Set subject.
      *
      * @param string $subject
      *
@@ -363,7 +345,7 @@ class Discussionarticles
     }
 
     /**
-     * Get subject
+     * Get subject.
      *
      * @return string
      */
@@ -373,7 +355,7 @@ class Discussionarticles
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -387,7 +369,7 @@ class Discussionarticles
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -397,7 +379,7 @@ class Discussionarticles
     }
 
     /**
-     * Set position
+     * Set position.
      *
      * @param string $position
      *
@@ -411,7 +393,7 @@ class Discussionarticles
     }
 
     /**
-     * Get position
+     * Get position.
      *
      * @return string
      */
@@ -421,7 +403,7 @@ class Discussionarticles
     }
 
     /**
-     * Set extras
+     * Set extras.
      *
      * @param string $extras
      *
@@ -435,7 +417,7 @@ class Discussionarticles
     }
 
     /**
-     * Get extras
+     * Get extras.
      *
      * @return string
      */
@@ -445,9 +427,9 @@ class Discussionarticles
     }
 
     /**
-     * Set public
+     * Set public.
      *
-     * @param boolean $public
+     * @param bool $public
      *
      * @return Discussionarticles
      */
@@ -459,9 +441,9 @@ class Discussionarticles
     }
 
     /**
-     * Get public
+     * Get public.
      *
-     * @return boolean
+     * @return bool
      */
     public function getPublic()
     {

@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Entity\Account;
@@ -7,48 +18,33 @@ use App\Facade\MembershipManager;
 use App\Form\DataTransformer\PrivateRoomTransformer;
 use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\Profile\DeleteType;
-use App\Form\Type\Profile\ProfileAccountType;
-use App\Form\Type\Profile\ProfileCalendarsType;
 use App\Form\Type\Profile\RoomProfileAddressType;
 use App\Form\Type\Profile\RoomProfileContactType;
 use App\Form\Type\Profile\RoomProfileGeneralType;
 use App\Form\Type\Profile\RoomProfileNotificationsType;
 use App\Services\LegacyEnvironment;
 use App\Utils\DiscService;
+use App\Utils\GroupService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
-use App\Utils\GroupService;
+use cs_environment;
 use cs_user_item;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-
 /**
- * Class ProfileController
- * @package App\Controller
+ * Class ProfileController.
  */
 class ProfileController extends AbstractController
 {
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/general")
-     * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
-     * @param Request $request
-     * @param DiscService $discService
-     * @param RoomService $roomService
-     * @param UserService $userService
-     * @param UserTransformer $userTransformer
-     * @param LegacyEnvironment $environment
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/user/{itemId}/general')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")]
     public function general(
         Request $request,
         DiscService $discService,
@@ -58,8 +54,8 @@ class ProfileController extends AbstractController
         LegacyEnvironment $environment,
         int $roomId,
         int $itemId
-    ) {
-        /** @var \cs_environment $legacyEnvironment */
+    ): Response {
+        /** @var cs_environment $legacyEnvironment */
         $legacyEnvironment = $environment->getEnvironment();
         $discManager = $legacyEnvironment->getDiscManager();
 
@@ -67,11 +63,11 @@ class ProfileController extends AbstractController
         $userItem = $userService->getUser($itemId);
 
         if (!$userItem) {
-            throw $this->createNotFoundException('No user found for id ' . $itemId);
+            throw $this->createNotFoundException('No user found for id '.$itemId);
         }
 
         $userData = $userTransformer->transform($userItem);
-        $userData['useProfileImage'] = $userItem->getPicture() != "";
+        $userData['useProfileImage'] = '' != $userItem->getPicture();
 
         $form = $this->createForm(RoomProfileGeneralType::class, $userData, [
             'itemId' => $itemId,
@@ -88,7 +84,7 @@ class ProfileController extends AbstractController
             // use custom profile picture if given
             if ($formData['useProfileImage']) {
                 if ($formData['image_data']) {
-                    $saveDir = implode("/", [
+                    $saveDir = implode('/', [
                         $this->getParameter('files_directory'),
                         $roomService->getRoomFileDirectory($userItem->getContextID()),
                     ]);
@@ -96,16 +92,16 @@ class ProfileController extends AbstractController
                         mkdir($saveDir, 0777, true);
                     }
                     $data = $formData['image_data'];
-                    list($fileName, $type, $data) = explode(";", $data);
-                    list(, $data) = explode(",", $data);
-                    list(, $extension) = explode("/", $type);
+                    [$fileName, $type, $data] = explode(';', $data);
+                    [, $data] = explode(',', $data);
+                    [, $extension] = explode('/', $type);
                     $data = base64_decode($data);
-                    $fileName = implode("_", [
-                        'cid' . $userItem->getContextID(),
+                    $fileName = implode('_', [
+                        'cid'.$userItem->getContextID(),
                         $userItem->getUserID(),
                         $fileName,
                     ]);
-                    $absoluteFilepath = implode("/", [$saveDir, $fileName]);
+                    $absoluteFilepath = implode('/', [$saveDir, $fileName]);
                     file_put_contents($absoluteFilepath, $data);
                     $userItem->setPicture($fileName);
 
@@ -117,7 +113,7 @@ class ProfileController extends AbstractController
                 if ($discManager->existsFile($userItem->getPicture())) {
                     $discManager->unlinkFile($userItem->getPicture());
                 }
-                $userItem->setPicture("");
+                $userItem->setPicture('');
                 $userItem->save();
             }
 
@@ -140,8 +136,7 @@ class ProfileController extends AbstractController
                         if ($discManager->existsFile($tempUserItem->getPicture())) {
                             $discManager->unlinkFile($tempUserItem->getPicture());
                         }
-                        $tempUserItem->setPicture("");
-
+                        $tempUserItem->setPicture('');
                     }
                     $tempUserItem->save();
                     $tempUserItem = $userList->getNext();
@@ -156,26 +151,16 @@ class ProfileController extends AbstractController
 
         $roomItem = $roomService->getRoomItem($roomId);
 
-        return [
+        return $this->render('profile/general.html.twig', [
             'roomId' => $roomId,
             'roomTitle' => $roomItem->getTitle(),
             'user' => $userItem,
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/address")
-     * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
-     * @param Request $request
-     * @param UserService $userService
-     * @param PrivateRoomTransformer $privateRoomTransformer
-     * @param UserTransformer $userTransformer
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/user/{itemId}/address')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")]
     public function address(
         Request $request,
         UserService $userService,
@@ -183,7 +168,7 @@ class ProfileController extends AbstractController
         UserTransformer $userTransformer,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
@@ -193,9 +178,7 @@ class ProfileController extends AbstractController
 
         $userData = array_merge($userData, $privateRoomData);
 
-        $form = $this->createForm(RoomProfileAddressType::class, $userData, array(
-            'itemId' => $itemId,
-        ));
+        $form = $this->createForm(RoomProfileAddressType::class, $userData, ['itemId' => $itemId]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -231,26 +214,14 @@ class ProfileController extends AbstractController
                 $tempUserItem = $userList->getNext();
             }
 
-            return $this->redirectToRoute('app_profile_address', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_profile_address', ['roomId' => $roomId, 'itemId' => $itemId]);
         }
 
-        return array(
-            'form' => $form->createView(),
-        );
+        return $this->render('profile/address.html.twig', ['form' => $form->createView()]);
     }
 
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/contact")
-     * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
-     * @param Request $request
-     * @param PrivateRoomTransformer $privateRoomTransformer
-     * @param UserService $userService
-     * @param UserTransformer $userTransformer
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/user/{itemId}/contact')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")]
     public function contact(
         Request $request,
         PrivateRoomTransformer $privateRoomTransformer,
@@ -258,7 +229,7 @@ class ProfileController extends AbstractController
         UserTransformer $userTransformer,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
@@ -268,9 +239,7 @@ class ProfileController extends AbstractController
 
         $userData = array_merge($userData, $privateRoomData);
 
-        $form = $this->createForm(RoomProfileContactType::class, $userData, array(
-            'itemId' => $itemId,
-        ));
+        $form = $this->createForm(RoomProfileContactType::class, $userData, ['itemId' => $itemId]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -287,7 +256,7 @@ class ProfileController extends AbstractController
                     if ($contextItem && !$contextItem->isPortal() && !$contextItem->isPrivateRoom()) {
                         $tempUserItem->setEmail($formData['emailRoom']);
                     }
-                    $usePortalEmail = ($formData['emailChoice'] === 'account') ? 1 : 0;
+                    $usePortalEmail = ('account' === $formData['emailChoice']) ? 1 : 0;
                     $tempUserItem->setUsePortalEmail($usePortalEmail);
                 }
                 if ($formData['hideEmailInAllContexts']) {
@@ -316,39 +285,28 @@ class ProfileController extends AbstractController
                 $tempUserItem = $userList->getNext();
             }
 
-            return $this->redirectToRoute('app_profile_contact', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_profile_contact', ['roomId' => $roomId, 'itemId' => $itemId]);
         }
 
-        return array(
-            'form' => $form->createView(),
-        );
+        return $this->render('profile/contact.html.twig', ['form' => $form->createView()]);
     }
 
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/notifications")
-     * @Template
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")
-     * @param Request $request
-     * @param UserService $userService
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/user/{itemId}/notifications')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")]
     public function notifications(
         Request $request,
         UserService $userService,
         int $itemId
-    ) {
+    ): Response {
         /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
         $userData = [];
 
-        $userData['mail_account'] = $userItem->getAccountWantMail() === 'yes' ? true : false;
-        $userData['mail_room'] = $userItem->getOpenRoomWantMail() === 'yes' ? true : false;
+        $userData['mail_account'] = 'yes' === $userItem->getAccountWantMail() ? true : false;
+        $userData['mail_room'] = 'yes' === $userItem->getOpenRoomWantMail() ? true : false;
         $userData['mail_item_deleted'] = $userItem->getDeleteEntryWantMail();
 
-        $form = $this->createForm(RoomProfileNotificationsType::class, $userData, array(
-            'itemId' => $itemId,
-        ));
+        $form = $this->createForm(RoomProfileNotificationsType::class, $userData, ['itemId' => $itemId]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -361,57 +319,33 @@ class ProfileController extends AbstractController
             $userItem->save();
         }
 
-        return [
+        return $this->render('profile/notifications.html.twig', [
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/user/profileImage")
-     * @Template
-     * @param UserService $userService
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/user/profileImage')]
     public function image(
         UserService $userService
-    ) {
-        return array('user' => $userService->getCurrentUserItem());
+    ): Response {
+        return $this->render('profile/image.html.twig', ['user' => $userService->getCurrentUserItem()]);
     }
 
-    /**
-     * @Route("/room/{roomId}/user/dropdownmenu")
-     * @Template
-     * @param UserService $userService
-     * @param int $roomId
-     * @param bool $uikit3
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/user/dropdownmenu')]
     public function menu(
         UserService $userService,
         int $roomId,
         bool $uikit3 = false
-    ): array {
-        return [
+    ): Response {
+        return $this->render('profile/menu.html.twig', [
             'portalUser' => $userService->getCurrentUserItem()->getRelatedPortalUserItem(),
             'roomId' => $roomId,
             'uikit3' => $uikit3,
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/deleteroomprofile")
-     * @Template
-     * @Security("is_granted('ITEM_ENTER', roomId)")
-     * @param Request $request
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param UserService $userService
-     * @param ParameterBagInterface $parameterBag
-     * @param TranslatorInterface $translator
-     * @param MembershipManager $membershipManager
-     * @param GroupService $groupService
-     * @param int $roomId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/user/{itemId}/deleteroomprofile')]
+    #[Security("is_granted('ITEM_ENTER', roomId)")]
     public function deleteRoomProfile(
         Request $request,
         LegacyEnvironment $legacyEnvironment,
@@ -420,20 +354,21 @@ class ProfileController extends AbstractController
         TranslatorInterface $translator,
         MembershipManager $membershipManager,
         GroupService $groupService,
+        FormFactoryInterface $formFactory,
         int $roomId
-    ) {
+    ): Response {
         /** @var Account $account */
         $account = $this->getUser();
         if (!$account) {
             throw $this->createAccessDeniedException();
         }
 
-        $deleteParameter = $parameterBag->get('commsy.security.privacy_disable_overwriting');
-        $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, [
+        $deleteParameter = $this->getParameter('commsy.security.privacy_disable_overwriting');
+        $lockForm = $formFactory->createNamedBuilder('lock_form', DeleteType::class, [
             'confirm_string' => $translator->trans('lock', [], 'profile'),
         ], [])->getForm();
-        $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, [
-            'confirm_string' => $translator->trans('delete', [], 'profile')
+        $deleteForm = $formFactory->createNamedBuilder('delete_form', DeleteType::class, [
+            'confirm_string' => $translator->trans('delete', [], 'profile'),
         ], [])->getForm();
 
         $currentUser = $userService->getCurrentUserItem();
@@ -455,6 +390,7 @@ class ProfileController extends AbstractController
                 $currentUser->reject();
                 $currentUser->save();
                 $userService->propagateStatusToGrouproomUsersForUser($currentUser);
+
                 return $this->redirect($portalUrl);
             }
         } // Delete room profile
@@ -466,7 +402,7 @@ class ProfileController extends AbstractController
 
                 return $this->redirect($portalUrl);
             }
-            if($request->query->has('groupId')){
+            if ($request->query->has('groupId')) {
                 $groupId = $request->query->get('groupId');
                 $roomEndId = $request->query->get('roomEndId');
                 $group = $groupService->getGroup($groupId);
@@ -475,17 +411,17 @@ class ProfileController extends AbstractController
                 $group = $groupService->getGroup($groupId);
                 $roomItem->delete();
                 $group->delete();
-                return $this->redirectToRoute('app_group_list', [
-                    'roomId' => $roomEndId
-                ]);
 
+                return $this->redirectToRoute('app_group_list', [
+                    'roomId' => $roomEndId,
+                ]);
             }
         }
 
-        return [
+        return $this->render('profile/deleteRoomProfile.html.twig', [
             'override' => $deleteParameter,
             'form_lock' => $lockForm->createView(),
             'form_delete' => $deleteForm->createView(),
-        ];
+        ]);
     }
 }
