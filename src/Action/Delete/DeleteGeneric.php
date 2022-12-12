@@ -1,40 +1,35 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 03.07.18
- * Time: 22:17
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Action\Delete;
 
-
-use App\Services\MarkedService;
 use App\Services\LegacyEnvironment;
+use App\Services\MarkedService;
 use cs_environment;
+use cs_item;
 
 class DeleteGeneric implements DeleteInterface
 {
-    /**
-     * @var cs_environment
-     */
     protected cs_environment $legacyEnvironment;
-
-    /** @var MarkedService $markedService */
-    protected MarkedService $markedService;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        MarkedService $markedService
+        protected MarkedService $markedService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->markedService = $markedService;
     }
 
-    /**
-     * @param \cs_item $item
-     */
-    public function delete(\cs_item $item): void
+    public function delete(cs_item $item): void
     {
         $item->delete();
 
@@ -42,10 +37,9 @@ class DeleteGeneric implements DeleteInterface
     }
 
     /**
-     * @param \cs_item $item
      * @return string
      */
-    public function getRedirectRoute(\cs_item $item)
+    public function getRedirectRoute(cs_item $item)
     {
         return null;
     }

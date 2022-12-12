@@ -1,7 +1,17 @@
 <?php
-namespace App\Utils;
 
-use Symfony\Component\Form\Form;
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
+namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
 
@@ -10,7 +20,6 @@ class AssessmentService
     private $legacyEnvironment;
 
     private $assessmentManager;
-    
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -24,30 +33,31 @@ class AssessmentService
     {
         return $this->assessmentManager->getAssessmentForItemAverageByIDArray($itemIds);
     }
-    
+
     public function getRatingDetail($item)
     {
         return $this->assessmentManager->getAssessmentForItemDetail($item);
     }
-    
+
     public function getAverageRatingDetail($item)
     {
         return $this->assessmentManager->getAssessmentForItemAverage($item);
     }
-    
+
     public function getOwnRatingDetail($item)
     {
         return $this->assessmentManager->getAssessmentForItemOwn($item);
     }
-    
+
     public function rateItem($item, $vote)
     {
         return $this->assessmentManager->addAssessmentForItem($item, $vote);
     }
-    
+
     public function removeRating($item)
     {
         $item_id = $this->assessmentManager->getItemIDForOwn($item->getItemId());
-		return $this->assessmentManager->delete($item_id);
-    }   
+
+        return $this->assessmentManager->delete($item_id);
+    }
 }

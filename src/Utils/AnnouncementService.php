@@ -1,11 +1,23 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Utils;
 
-use App\Filter\AnnouncementFilterType;
-use Symfony\Component\Form\Form;
-
 use App\Services\LegacyEnvironment;
-use Symfony\Component\HttpFoundation\Request;
+use cs_announcement_item;
+use cs_label_item;
+use cs_manager;
+use Symfony\Component\Form\Form;
 
 class AnnouncementService
 {
@@ -23,6 +35,7 @@ class AnnouncementService
 
     public function getCountArray($roomId)
     {
+        $countAnnouncementArray = [];
         $this->announcementManager->setContextLimit($roomId);
         $this->announcementManager->select();
         $countAnnouncementArray['count'] = sizeof($this->announcementManager->get()->to_array());
@@ -34,16 +47,17 @@ class AnnouncementService
     }
 
     /**
-     * @param integer $roomId
-     * @param integer $max
-     * @param integer $start
+     * @param int    $roomId
+     * @param int    $max
+     * @param int    $start
      * @param string $sort
-     * @return \cs_announcement_item[]
+     *
+     * @return cs_announcement_item[]
      */
-    public function getListAnnouncements($roomId, $max = NULL, $start = NULL,  $sort = NULL)
+    public function getListAnnouncements($roomId, $max = null, $start = null, $sort = null)
     {
         $this->announcementManager->setContextLimit($roomId);
-        if ($max !== NULL && $start !== NULL) {
+        if (null !== $max && null !== $start) {
             $this->announcementManager->setIntervalLimit($start, $max);
         }
         if ($sort) {
@@ -57,11 +71,13 @@ class AnnouncementService
     }
 
     /**
-     * @param integer $roomId
-     * @param integer[] $idArray
-     * @return \cs_announcement_item[]
+     * @param int   $roomId
+     * @param int[] $idArray
+     *
+     * @return cs_announcement_item[]
      */
-    public function getAnnouncementsById($roomId, $idArray) {
+    public function getAnnouncementsById($roomId, $idArray)
+    {
         $this->announcementManager->setContextLimit($roomId);
         $this->announcementManager->setIDArrayLimit($idArray);
 
@@ -71,7 +87,8 @@ class AnnouncementService
         return $announcementList->to_array();
     }
 
-    public function setDateLimit(){
+    public function setDateLimit()
+    {
         $this->announcementManager->setDateLimit(getCurrentDateTimeInMySQL());
     }
 
@@ -81,15 +98,15 @@ class AnnouncementService
 
         // activated
         if ($formData['hide-deactivated-entries']) {
-            if ($formData['hide-deactivated-entries'] === 'only_activated') {
-                $this->announcementManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
-            } else if ($formData['hide-deactivated-entries'] === 'only_deactivated') {
-                $this->announcementManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
-            } else if ($formData['hide-deactivated-entries'] === 'all') {
-                $this->announcementManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+            if ('only_activated' === $formData['hide-deactivated-entries']) {
+                $this->announcementManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+            } elseif ('only_deactivated' === $formData['hide-deactivated-entries']) {
+                $this->announcementManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+            } elseif ('all' === $formData['hide-deactivated-entries']) {
+                $this->announcementManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
             }
         }
-        
+
         // active
         if ($formData['hide-invalid-entries']) {
             $this->hideInvalidEntries();
@@ -99,14 +116,14 @@ class AnnouncementService
         if ($formData['rubrics']) {
             // group
             if (isset($formData['rubrics']['group'])) {
-                /** @var \cs_label_item $relatedLabel */
+                /** @var cs_label_item $relatedLabel */
                 $relatedLabel = $formData['rubrics']['group'];
                 $this->announcementManager->setGroupLimit($relatedLabel->getItemID());
             }
-            
+
             // topic
             if (isset($formData['rubrics']['topic'])) {
-                /** @var \cs_label_item $relatedLabel */
+                /** @var cs_label_item $relatedLabel */
                 $relatedLabel = $formData['rubrics']['topic'];
                 $this->announcementManager->setTopicLimit($relatedLabel->getItemID());
             }
@@ -114,7 +131,7 @@ class AnnouncementService
         // hashtag
         if (isset($formData['hashtag'])) {
             if (isset($formData['hashtag']['hashtag'])) {
-                /** @var \cs_label_item $hashtag */
+                /** @var cs_label_item $hashtag */
                 $hashtag = $formData['hashtag']['hashtag'];
                 $itemId = $hashtag->getItemID();
                 $this->announcementManager->setBuzzwordLimit($itemId);
@@ -132,7 +149,7 @@ class AnnouncementService
             }
         }
     }
-    
+
     public function getAnnouncement($itemId)
     {
         return $this->announcementManager->getItem($itemId);
@@ -142,10 +159,10 @@ class AnnouncementService
     {
         return $this->announcementManager->getNewItem();
     }
-    
+
     public function hideDeactivatedEntries()
     {
-        $this->announcementManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $this->announcementManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
     public function hideInvalidEntries()

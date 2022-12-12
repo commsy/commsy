@@ -1,21 +1,36 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\DataTransformer;
 
+use cs_label_item;
+use DateTime;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
-class InstitutionTransformer  extends AbstractTransformer
+class InstitutionTransformer extends AbstractTransformer
 {
     protected $entity = 'institution';
 
     /**
-     * Transforms a cs_group_item object to an array
+     * Transforms a cs_group_item object to an array.
      *
-     * @param \cs_label_item $labelItem
+     * @param cs_label_item $labelItem
+     *
      * @return array
      */
     public function transform($labelItem)
     {
-        $labelData = array();
+        $labelData = [];
 
         if ($labelItem) {
             $labelData['title'] = html_entity_decode($labelItem->getTitle());
@@ -26,8 +41,8 @@ class InstitutionTransformer  extends AbstractTransformer
                 $labelData['hidden'] = true;
 
                 $activating_date = $labelItem->getActivatingDate();
-                if (!stristr($activating_date,'9999')){
-                    $datetime = new \DateTime($activating_date);
+                if (!stristr($activating_date, '9999')) {
+                    $datetime = new DateTime($activating_date);
                     $labelData['hiddendate']['date'] = $datetime;
                     $labelData['hiddendate']['time'] = $datetime;
                 }
@@ -38,12 +53,14 @@ class InstitutionTransformer  extends AbstractTransformer
     }
 
     /**
-     * Applies an array of data to an existing object
+     * Applies an array of data to an existing object.
      *
-     * @param \cs_label_item $labelObject
-     * @param array $labelData
-     * @return \cs_label_item|null
-     * @throws TransformationFailedException if room item is not found.
+     * @param cs_label_item $labelObject
+     * @param array          $labelData
+     *
+     * @return cs_label_item|null
+     *
+     * @throws TransformationFailedException if room item is not found
      */
     public function applyTransformation($labelObject, $labelData)
     {
@@ -62,7 +79,7 @@ class InstitutionTransformer  extends AbstractTransformer
                     // add validdate to validdate
                     $datetime = $labelData['hiddendate']['date'];
                     if ($labelData['hiddendate']['time']) {
-                        $time = explode(":", $labelData['hiddendate']['time']->format('H:i'));
+                        $time = explode(':', $labelData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
                     $labelObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
@@ -70,14 +87,14 @@ class InstitutionTransformer  extends AbstractTransformer
                     $labelObject->setModificationDate('9999-00-00 00:00:00');
                 }
             } else {
-                if($labelObject->isNotActivated()){
+                if ($labelObject->isNotActivated()) {
                     $labelObject->setModificationDate(getCurrentDateTimeInMySQL());
                 }
             }
         } else {
-            if($labelObject->isNotActivated()){
-	            $labelObject->setModificationDate(getCurrentDateTimeInMySQL());
-	        }
+            if ($labelObject->isNotActivated()) {
+                $labelObject->setModificationDate(getCurrentDateTimeInMySQL());
+            }
         }
 
         return $labelObject;

@@ -1,9 +1,22 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
 use App\Entity\Materials;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 class MaterialsRepository extends ServiceEntityRepository
@@ -13,7 +26,7 @@ class MaterialsRepository extends ServiceEntityRepository
         parent::__construct($registry, Materials::class);
     }
 
-    public function findLatestVersionByItemId($itemId):? Materials
+    public function findLatestVersionByItemId($itemId): ?Materials
     {
         return $this->createQueryBuilder('m')
             ->leftJoin(
@@ -32,7 +45,7 @@ class MaterialsRepository extends ServiceEntityRepository
      * Used by Elastic when populating the index. The join will ensure only the latest version of a material
      * is index. Check the answer at StackOverflow for details on the greatest-n-per-group query.
      *
-     * @return \Doctrine\ORM\QueryBuilder
+     * @return QueryBuilder
      */
     public function createSearchQueryBuilder()
     {
@@ -50,8 +63,7 @@ class MaterialsRepository extends ServiceEntityRepository
      * Used by Elastica to transform results to model. We use the join to ensure only the latest version of a material
      * is in the result set.
      *
-     * @param string $entityAlias
-     * @return \Doctrine\ORM\QueryBuilder
+     * @return QueryBuilder
      */
     public function createSearchHydrationQueryBuilder(string $entityAlias)
     {
@@ -60,7 +72,7 @@ class MaterialsRepository extends ServiceEntityRepository
                 Materials::class,
                 'b',
                 Expr\Join::WITH,
-                $entityAlias . '.itemId = b.itemId AND ' . $entityAlias . '.versionId < b.versionId')
+                $entityAlias.'.itemId = b.itemId AND '.$entityAlias.'.versionId < b.versionId')
             ->where('b.itemId IS NULL');
     }
 }

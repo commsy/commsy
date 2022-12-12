@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\User;
 
 use App\Entity\Account;
@@ -11,32 +22,17 @@ use LogicException;
 
 class UserListBuilder
 {
-    /**
-     * @var Account|null
-     */
     private ?Account $account = null;
 
-    /**
-     * @var UserService
-     */
-    private UserService $userService;
-
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
 
-    /**
-     * @var array
-     */
     private array $contextIds;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        UserService $userService
+        private UserService $userService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->userService = $userService;
 
         $this->reset();
     }
@@ -44,22 +40,24 @@ class UserListBuilder
     public function reset(): self
     {
         $this->contextIds = [];
+
         return $this;
     }
 
     public function fromAccount(Account $account): self
     {
         $this->account = $account;
+
         return $this;
     }
 
     public function withPortalUser(): self
     {
         if (!$this->account) {
-            throw new LogicException("You must provide an account object.");
+            throw new LogicException('You must provide an account object.');
         }
 
-        if ($this->account->getContextId() !== 99) {
+        if (99 !== $this->account->getContextId()) {
             $this->contextIds[] = $this->account->getContextId();
         }
 
@@ -72,7 +70,7 @@ class UserListBuilder
     public function withProjectRoomUser(): self
     {
         if (!$this->account) {
-            throw new LogicException("You must provide an account object.");
+            throw new LogicException('You must provide an account object.');
         }
 
         $portalUser = $this->userService->getPortalUser($this->account);
@@ -92,7 +90,7 @@ class UserListBuilder
     public function withCommunityRoomUser(): self
     {
         if (!$this->account) {
-            throw new LogicException("You must provide an account object.");
+            throw new LogicException('You must provide an account object.');
         }
 
         $portalUser = $this->userService->getPortalUser($this->account);
@@ -109,7 +107,7 @@ class UserListBuilder
     public function withUserRoomUser(): self
     {
         if (!$this->account) {
-            throw new LogicException("You must provide an account object.");
+            throw new LogicException('You must provide an account object.');
         }
 
         $portalUser = $this->userService->getPortalUser($this->account);
@@ -125,7 +123,7 @@ class UserListBuilder
     public function withPrivateRoomUser(): self
     {
         if (!$this->account) {
-            throw new LogicException("You must provide an account object.");
+            throw new LogicException('You must provide an account object.');
         }
 
         $portalUser = $this->userService->getPortalUser($this->account);
@@ -143,7 +141,7 @@ class UserListBuilder
     public function getList(): cs_list
     {
         if (!$this->account) {
-            throw new LogicException("You must provide an account object.");
+            throw new LogicException('You must provide an account object.');
         }
 
         $this->contextIds = array_unique($this->contextIds);

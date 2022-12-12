@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Room\Copy;
 
 use App\Event\ItemReindexEvent;
@@ -11,49 +22,23 @@ use cs_user_item;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * Class LegacyCopy
- * @package App\Room\Copy
- *
- * TODO: Refactor this to a real strategy pattern for the different room types
- * This is basically a copy of the old legacy include file
+ * Class LegacyCopy.
  */
 class LegacyCopy implements CopyStrategy
 {
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
 
     /**
-     * @var ItemService
-     */
-    private ItemService $itemService;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private EventDispatcherInterface $eventDispatcher;
-
-    /**
      * LegacyCopy constructor.
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param ItemService $itemService
-     * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        ItemService $itemService,
-        EventDispatcherInterface $eventDispatcher
+        private ItemService $itemService,
+        private EventDispatcherInterface $eventDispatcher
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->itemService = $itemService;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * @param cs_room_item $source
-     * @param cs_room_item $target
-     */
     public function copySettings(cs_room_item $source, cs_room_item $target): void
     {
         $copy_array = [];
@@ -65,16 +50,11 @@ class LegacyCopy implements CopyStrategy
         $copy_array['color'] = true;
         $copy_array['todostatus'] = true;
         $copy_array['usageinfo'] = true;
-        $copy_array['topicpath'] = true;
         $copy_array['tag'] = true;
         $copy_array['discussionstatus'] = true;
-        $copy_array['detailboxconf'] = true;
-        $copy_array['listboxconf'] = true;
-        $copy_array['homerightconf'] = true;
         $copy_array['datespresentationstatus'] = true;
         $copy_array['htmltextareastatus'] = true;
         $copy_array['buzzword'] = true;
-        $copy_array['netnavigation'] = true;
         $copy_array['emailtext'] = true;
         $copy_array['title'] = true;
         $copy_array['logo'] = true;
@@ -84,11 +64,9 @@ class LegacyCopy implements CopyStrategy
         $copy_array['grouproomfct'] = false;
         $copy_array['rss'] = true;
         $copy_array['language'] = true;
-        $copy_array['visibilitydefaults'] = true;
         $copy_array['checknewmembers'] = true;
         $copy_array['checknewmembers_code'] = true;
         $copy_array['roomassociation'] = true;
-
 
         // now adaption for special rooms
         if ($source->isProjectRoom()) {
@@ -107,10 +85,6 @@ class LegacyCopy implements CopyStrategy
             $copy_array['plugins'] = false;
             $copy_array['color'] = false;
             $copy_array['usageinfo'] = false;
-            $copy_array['chat'] = false;
-            $copy_array['detailboxconf'] = false;
-            $copy_array['listboxconf'] = false;
-            $copy_array['homerightconf'] = false;
             $copy_array['datespresentationstatus'] = false;
             $copy_array['htmltextareastatus'] = false;
             $copy_array['emailtext'] = false;
@@ -157,7 +131,7 @@ class LegacyCopy implements CopyStrategy
             $target->generateLayoutImages();
         }
 
-        //ToDos
+        // ToDos
         if ($copy_array['todostatus']) {
             $target->setExtraToDoStatusArray($source->getExtraToDoStatusArray());
         }
@@ -170,15 +144,6 @@ class LegacyCopy implements CopyStrategy
             $target->setUsageInfoFormArray($source->getUsageInfoFormArray());
             $target->setUsageInfoFormHeaderArray($source->getUsageInfoFormHeaderArray());
             $target->setUsageInfoFormTextArray($source->getUsageInfoFormTextArray());
-        }
-
-        // config of path
-        if ($copy_array['topicpath']) {
-            if ($source->withPath()) {
-                $target->setWithPath();
-            } else {
-                $target->setWithoutPath();
-            }
         }
 
         // config of tags
@@ -207,15 +172,6 @@ class LegacyCopy implements CopyStrategy
 
         if ($copy_array['discussionstatus']) {
             $target->setDiscussionStatus($source->getDiscussionStatus());
-        }
-        if ($copy_array['detailboxconf']) {
-            $target->setDetailBoxConf($source->getDetailBoxConf());
-        }
-        if ($copy_array['listboxconf']) {
-            $target->setListBoxConf($source->getListBoxConf());
-        }
-        if ($copy_array['homerightconf']) {
-            $target->setHomeRightConf($source->getHomeRightConf());
         }
         if ($copy_array['datespresentationstatus']) {
             $target->setDatesPresentationStatus($source->getDatesPresentationStatus());
@@ -249,20 +205,6 @@ class LegacyCopy implements CopyStrategy
                 $target->setBuzzwordShowExpanded();
             } else {
                 $target->unsetBuzzwordShowExpanded();
-            }
-        }
-
-        // config of netnavigation
-        if ($copy_array['netnavigation']) {
-            if ($source->isNetnavigationShowExpanded()) {
-                $target->setNetnavigationShowExpanded();
-            } else {
-                $target->unsetNetnavigationShowExpanded();
-            }
-            if ($source->withNetnavigation()) {
-                $target->setWithNetnavigation();
-            } else {
-                $target->setWithoutNetnavigation();
             }
         }
 
@@ -329,11 +271,6 @@ class LegacyCopy implements CopyStrategy
 
         // grouproom functions
         if ($copy_array['grouproomfct']) {
-            if ($source->withGrouproomFunctions()) {
-                $target->setWithGrouproomFunctions();
-            } else {
-                $target->setWithGrouproomFunctions();
-            }
             if ($source->isGrouproomActive()) {
                 $target->setGrouproomActive();
             } else {
@@ -354,39 +291,8 @@ class LegacyCopy implements CopyStrategy
         if ($copy_array['language']) {
             $target->setLanguage($source->getLanguage());
         }
-
-        // config of dates presentation status
-        if ($copy_array['visibilitydefaults']) {
-            if ($source->isActionBarVisibleAsDefault()) {
-                $target->setActionBarVisibilityDefault('1');
-            } else {
-                $target->setActionBarVisibilityDefault('-1');
-            }
-
-            if ($source->isReferenceBarVisibleAsDefault()) {
-                $target->setReferenceBarVisibilityDefault('1');
-            } else {
-                $target->setReferenceBarVisibilityDefault('-1');
-            }
-
-            if ($source->isDetailsBarVisibleAsDefault()) {
-                $target->setDetailsBarVisibilityDefault('1');
-            } else {
-                $target->setDetailsBarVisibilityDefault('-1');
-            }
-
-            if ($source->isAnnotationsBarVisibleAsDefault()) {
-                $target->setAnnotationsBarVisibilityDefault('1');
-            } else {
-                $target->setAnnotationsBarVisibilityDefault('-1');
-            }
-        }
     }
 
-    /**
-     * @param cs_room_item $source
-     * @param cs_room_item $target
-     */
     public function copyData(cs_room_item $source, cs_room_item $target, cs_user_item $creator): void
     {
         $copy_array = [];
@@ -465,7 +371,6 @@ class LegacyCopy implements CopyStrategy
         }
         unset($data_type_array);
 
-
         if ($copy_array['informationbox']) {
             if ($source->withInformationBox()) {
                 $target->setwithInformationBox('yes');
@@ -519,7 +424,7 @@ class LegacyCopy implements CopyStrategy
                         $last_char = mb_substr($id, mb_strlen($id));
                         $id = mb_substr($id, 0, mb_strlen($id) - 1);
                         if (isset($new_id_array[$id])) {
-                            $value = str_replace('[' . $id . $last_char, '[' . $new_id_array[$id] . $last_char, $value);
+                            $value = str_replace('['.$id.$last_char, '['.$new_id_array[$id].$last_char, $value);
                             $replace = true;
                         }
                     }
@@ -532,13 +437,13 @@ class LegacyCopy implements CopyStrategy
                     foreach ($matches[1] as $match) {
                         $id = $match;
                         if (isset($new_id_array[$id])) {
-                            $value = str_replace('(:item ' . $id, '(:item ' . $new_id_array[$id], $value);
+                            $value = str_replace('(:item '.$id, '(:item '.$new_id_array[$id], $value);
                             $replace = true;
                         }
                     }
                     $new_array[$key] = $value;
                 }
-                #cid=([0-9]*)
+                // cid=([0-9]*)
                 preg_match_all('~iid=([0-9]*) ~u', $value, $matches);
                 if (isset($matches[0])
                     and !empty($matches[0])
@@ -546,7 +451,7 @@ class LegacyCopy implements CopyStrategy
                     foreach ($matches[1] as $match) {
                         $id = $match;
                         if (isset($new_id_array[$id])) {
-                            $value = str_replace('iid=' . $id, 'iid=' . $new_id_array[$id], $value);
+                            $value = str_replace('iid='.$id, 'iid='.$new_id_array[$id], $value);
                             $replace = true;
                         }
                     }
@@ -560,7 +465,7 @@ class LegacyCopy implements CopyStrategy
                     foreach ($matches[1] as $match) {
                         $id = $match;
                         if (isset($new_id_array[$id])) {
-                            $value = str_replace('cid=' . $id, 'cid=' . $target->getItemID(), $value);
+                            $value = str_replace('cid='.$id, 'cid='.$target->getItemID(), $value);
                             $replace = true;
                         }
                     }
@@ -572,7 +477,7 @@ class LegacyCopy implements CopyStrategy
                     and $replace
                 ) {
                     if (strstr($new_array[$key], '<!-- KFC TEXT')) {
-                        include_once('functions/security_functions.php');
+                        include_once 'functions/security_functions.php';
                         $new_array[$key] = renewSecurityHash($new_array[$key]);
                     }
                 }
@@ -591,7 +496,7 @@ class LegacyCopy implements CopyStrategy
                         $last_char = mb_substr($id, mb_strlen($id));
                         $id = mb_substr($id, 0, mb_strlen($id) - 1);
                         if (isset($new_id_array[$id])) {
-                            $value = str_replace('[' . $id . $last_char, '[' . $new_id_array[$id] . $last_char, $value);
+                            $value = str_replace('['.$id.$last_char, '['.$new_id_array[$id].$last_char, $value);
                             $replace = true;
                         }
                     }
@@ -604,7 +509,7 @@ class LegacyCopy implements CopyStrategy
                     foreach ($matches[1] as $match) {
                         $id = $match;
                         if (isset($new_id_array[$id])) {
-                            $value = str_replace('(:item ' . $id, '(:item ' . $new_id_array[$id], $value);
+                            $value = str_replace('(:item '.$id, '(:item '.$new_id_array[$id], $value);
                             $replace = true;
                         }
                     }
@@ -618,7 +523,7 @@ class LegacyCopy implements CopyStrategy
                     foreach ($matches[1] as $match) {
                         $id = $match;
                         if (isset($new_id_array[$id])) {
-                            $value = str_replace('iid=' . $id, 'iid=' . $new_id_array[$id], $value);
+                            $value = str_replace('iid='.$id, 'iid='.$new_id_array[$id], $value);
                             $replace = true;
                         }
                     }
@@ -632,7 +537,7 @@ class LegacyCopy implements CopyStrategy
                     foreach ($matches[1] as $match) {
                         $id = $match;
                         if (isset($new_id_array[$id])) {
-                            $value = str_replace('cid=' . $id, 'cid=' . $target->getItemID(), $value);
+                            $value = str_replace('cid='.$id, 'cid='.$target->getItemID(), $value);
                             $replace = true;
                         }
                     }
@@ -644,7 +549,7 @@ class LegacyCopy implements CopyStrategy
                     and $replace
                 ) {
                     if (strstr($new_array[$key], '<!-- KFC TEXT')) {
-                        include_once('functions/security_functions.php');
+                        include_once 'functions/security_functions.php';
                         $new_array[$key] = renewSecurityHash($new_array[$key]);
                     }
                 }
@@ -678,9 +583,9 @@ class LegacyCopy implements CopyStrategy
             }
         }
 
-        ############################################
-        # FLAG: group rooms
-        ############################################
+        // ###########################################
+        // FLAG: group rooms
+        // ###########################################
         if ($copy_array['informationbox']) {
             if ($source->showGroupRoomFunctions()) {
                 // group rooms will not copied

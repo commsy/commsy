@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\EventSubscriber;
 
 use App\Services\LegacyEnvironment;
@@ -10,9 +21,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class UserActivitySubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
@@ -40,11 +48,11 @@ class UserActivitySubscriber implements EventSubscriberInterface
         $logRequest = false;
         if (preg_match('~\/room\/(\d)+$~', $request->getUri())) {
             $logRequest = true;
-        } else if (preg_match('~\/room\/(\d)+\/([a-z])+$~', $request->getUri())) {
+        } elseif (preg_match('~\/room\/(\d)+\/([a-z])+$~', $request->getUri())) {
             $logRequest = true;
-        } else if (preg_match('~\/room\/(\d)+\/([a-z])+\/(\d)+$~', $request->getUri())) {
+        } elseif (preg_match('~\/room\/(\d)+\/([a-z])+\/(\d)+$~', $request->getUri())) {
             $logRequest = true;
-        } else if (preg_match('~\/dashboard\/(\d)+$~', $request->getUri())) {
+        } elseif (preg_match('~\/dashboard\/(\d)+$~', $request->getUri())) {
             $logRequest = true;
         }
 

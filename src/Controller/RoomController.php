@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Entity\User;
@@ -25,58 +36,36 @@ use App\Utils\RoomService;
 use App\Utils\UserService;
 use cs_environment;
 use cs_user_item;
-use DateTimeImmutable;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Exception;
 use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sylius\Bundle\ThemeBundle\Repository\ThemeRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class RoomController
- * @package App\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
+ * Class RoomController.
  */
+#[Security("is_granted('ITEM_ENTER', roomId)")]
 class RoomController extends AbstractController
 {
     private SessionInterface $session;
 
-    /**
-     * @required
-     * @param SessionInterface $session
-     */
+    #[Required]
     public function setSession(SessionInterface $session): void
     {
         $this->session = $session;
     }
 
-    /**
-     * @Route("/room/{roomId}", requirements={
-     *     "roomId": "\d+"
-     * })
-     * @Template()
-     * @param Request $request
-     * @param ItemService $itemService
-     * @param RoomService $roomService
-     * @param RoomFeedGenerator $roomFeedGenerator
-     * @param LegacyMarkup $legacyMarkup
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param ThemeRepositoryInterface $themeRepository
-     * @param int $roomId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}', requirements: ['roomId' => '\d+'])]
     public function homeAction(
         Request $request,
         ItemService $itemService,
@@ -86,7 +75,7 @@ class RoomController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         ThemeRepositoryInterface $themeRepository,
         int $roomId
-    ) {
+    ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         // get room item
@@ -94,8 +83,8 @@ class RoomController extends AbstractController
 
         // fall back on default theme if rooms theme is not supported anymore
         if ($roomItem) {
-            $themeName = 'commsy/' . $roomItem->getColorArray()['schema'];
-            if ($themeName !== 'commsy/default' && !$themeRepository->findOneByName($themeName)) {
+            $themeName = 'commsy/'.$roomItem->getColorArray()['schema'];
+            if ('commsy/default' !== $themeName && !$themeRepository->findOneByName($themeName)) {
                 $roomItem->setColorArray(['schema' => 'default']);
                 $roomItem->save();
             }
@@ -106,22 +95,16 @@ class RoomController extends AbstractController
         }
 
         // setup filter form
-        $filterForm = $this->createForm(HomeFilterType::class, null, array(
-            'action' => $this->generateUrl('app_room_home', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => $roomItem->withBuzzwords(),
-            'hasCategories' => $roomItem->withTags(),
-        ));
+        $filterForm = $this->createForm(HomeFilterType::class, null, ['action' => $this->generateUrl('app_room_home', ['roomId' => $roomId]), 'hasHashtags' => $roomItem->withBuzzwords(), 'hasCategories' => $roomItem->withTags()]);
 
-        $header = "latest entries";
+        $header = 'latest entries';
 
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in feed generator
             $roomFeedGenerator->setFilterConditions($filterForm);
-            $header = "search results";
+            $header = 'search results';
         }
 
         // ...and prepare some data
@@ -132,7 +115,7 @@ class RoomController extends AbstractController
         $numActiveMember = $roomItem->getActiveMembers($timeSpread);
         $numTotalMember = $roomItem->getAllUsers();
 
-        $moderators = array();
+        $moderators = [];
         $moderatorList = $roomItem->getModeratorList();
         $moderatorUserItem = $moderatorList->getFirst();
         while ($moderatorUserItem) {
@@ -146,14 +129,15 @@ class RoomController extends AbstractController
         $countAnnouncements = $announcementManager->getCountAll();
 
         $backgroundImage = null;
-        if($roomItem->getBGImageFilename())
-            $backgroundImage = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'custom'));
-        else
-            $backgroundImage = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'theme'));
+        if ($roomItem->getBGImageFilename()) {
+            $backgroundImage = $this->generateUrl('getBackground', ['roomId' => $roomId, 'imageType' => 'custom']);
+        } else {
+            $backgroundImage = $this->generateUrl('getBackground', ['roomId' => $roomId, 'imageType' => 'theme']);
+        }
 
         $logoImage = null;
-        if($roomItem->getLogoFilename()) {
-            $logoImage = $this->generateUrl("getLogo", array('roomId' => $roomId));
+        if ($roomItem->getLogoFilename()) {
+            $logoImage = $this->generateUrl('getLogo', ['roomId' => $roomId]);
         }
 
         // TODO: calculate parallax-scrolling range for home.html.twig depending on image dimensions!
@@ -212,7 +196,7 @@ class RoomController extends AbstractController
 
         $userTasks = $this->getDoctrine()->getRepository(User::class)->getConfirmableUserByContextId($roomId)->getQuery()->getResult();
 
-        return [
+        return $this->render('room/home.html.twig', [
             'homeInformationEntry' => $homeInformationEntry,
             'form' => $filterForm->createView(),
             'roomItem' => $roomItem,
@@ -233,23 +217,10 @@ class RoomController extends AbstractController
             'userTasks' => $userTasks,
             'deletesRoomIfUnused' => $portalItem->isActivatedDeletingUnusedRooms(),
             'daysUnusedBeforeRoomDeletion' => $portalItem->getDaysUnusedBeforeDeletingRooms(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/feed/{start}/{sort}", requirements={
-     *     "roomId": "\d+"
-     * })
-     * @Template("room/list.html.twig")
-     * @param Request $request
-     * @param ReaderService $readerService
-     * @param RoomFeedGenerator $roomFeedGenerator
-     * @param LegacyEnvironment $environment
-     * @param RoomService $roomService
-     * @param int $roomId
-     * @param int $max
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/feed/{start}/{sort}', requirements: ['roomId' => '\d+'])]
     public function feedAction(
         Request $request,
         ReaderService $readerService,
@@ -258,7 +229,7 @@ class RoomController extends AbstractController
         RoomService $roomService,
         int $roomId,
         int $max = 10
-    ) {
+    ): Response {
         $legacyEnvironment = $environment->getEnvironment();
 
         // get room item for information panel
@@ -269,13 +240,7 @@ class RoomController extends AbstractController
         }
 
         // setup filter form
-        $filterForm = $this->createForm(HomeFilterType::class, null, array(
-            'action' => $this->generateUrl('app_room_home', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => $roomItem->withBuzzwords(),
-            'hasCategories' => $roomItem->withTags(),
-        ));
+        $filterForm = $this->createForm(HomeFilterType::class, null, ['action' => $this->generateUrl('app_room_home', ['roomId' => $roomId]), 'hasHashtags' => $roomItem->withBuzzwords(), 'hasCategories' => $roomItem->withTags()]);
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -293,43 +258,24 @@ class RoomController extends AbstractController
         $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
-        $readerList = array();
+        $readerList = [];
         foreach ($feedList as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
         }
 
-        return array(
-            'feedList' => $feedList,
-            'readerList' => $readerList,
-            'showRating' => $current_context->isAssessmentActive()
-        );
+        return $this->render('room/list.html.twig', ['feedList' => $feedList, 'readerList' => $readerList, 'showRating' => $current_context->isAssessmentActive()]);
     }
 
-    /**
-     * @Route("/room/{roomId}/moderationsupport", requirements={
-     *     "roomId": "\d+"
-     * })
-     * @Template()
-     * @param Request $request
-     * @param TranslatorInterface $translator
-     * @param LegacyEnvironment $environment
-     * @param Mailer $mailer
-     * @param int $roomId
-     * @return array|JsonResponse
-     */
+    #[Route(path: '/room/{roomId}/moderationsupport', requirements: ['roomId' => '\d+'])]
     public function moderationsupportAction(
         Request $request,
         TranslatorInterface $translator,
         LegacyEnvironment $environment,
         Mailer $mailer,
         int $roomId
-    ) {
-        $moderationsupportData = array();
-        $form = $this->createForm(ModerationSupportType::class, $moderationsupportData, array(
-            'action' => $this->generateUrl('app_room_moderationsupport', array(
-                'roomId' => $roomId,
-            ))
-        ));
+    ): Response {
+        $moderationsupportData = [];
+        $form = $this->createForm(ModerationSupportType::class, $moderationsupportData, ['action' => $this->generateUrl('app_room_moderationsupport', ['roomId' => $roomId])]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -350,36 +296,19 @@ class RoomController extends AbstractController
                 [$currentUser->getEmail()]
             );
 
-            return new JsonResponse([
-                'message' => $translator->trans('message was send'),
-                'timeout' => '5550',
-                'layout' => 'cs-notify-message',
-                'data' => array(),
-            ]);
+            return $this->render('room/moderationsupport.html.twig');
         }
 
-        return array(
-            'form' => $form->createView(),
-        );
+        return $this->render('room/moderationsupport.html.twig', ['form' => $form->createView()]);
     }
 
     /**
-     * @Route("/room/{roomId}/all", requirements={
-     *     "roomId": "\d+"
-     * })
-     * @Template()
-     *
      * @param Request $request [description]
-     * @param RoomService $roomService
-     * @param FilterBuilderUpdater $filterBuilderUpdater
-     * @param LegacyEnvironment $environment
-     * @param PortalRepository $portalRepository
-     * @param RoomRepository $roomRepository
-     * @param int $roomId
-     * @return array
+     *
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
+    #[Route(path: '/room/{roomId}/all', requirements: ['roomId' => '\d+'])]
     public function listAllAction(
         Request $request,
         RoomService $roomService,
@@ -388,22 +317,16 @@ class RoomController extends AbstractController
         PortalRepository $portalRepository,
         RoomRepository $roomRepository,
         int $roomId
-    ): array {
+    ): Response {
         $legacyEnvironment = $environment->getEnvironment();
         $portal = $portalRepository->find($legacyEnvironment->getCurrentPortalID());
 
         $showRooms = $portal->getShowRoomsOnHome();
-        switch ($showRooms) {
-            case 'onlyprojectrooms':
-                $roomTypes = [CS_PROJECT_TYPE];
-                break;
-            case 'onlycommunityrooms':
-                $roomTypes = [CS_COMMUNITY_TYPE];
-                break;
-            default:
-                $roomTypes = [CS_PROJECT_TYPE, CS_COMMUNITY_TYPE];
-                break;
-        }
+        $roomTypes = match ($showRooms) {
+            'onlyprojectrooms' => [CS_PROJECT_TYPE],
+            'onlycommunityrooms' => [CS_COMMUNITY_TYPE],
+            default => [CS_PROJECT_TYPE, CS_COMMUNITY_TYPE],
+        };
 
         $sort = $this->session->get('sortRooms', $portal->getSortRoomsBy() ?? 'activity');
 
@@ -437,7 +360,7 @@ class RoomController extends AbstractController
             if ($portalUser) {
                 if ($portalUser->isModerator()) {
                     $userMayCreateContext = true;
-                } else if ($portal->getCommunityRoomCreationStatus() == 'all' || $portal->getProjectRoomCreationStatus() == 'portal') {
+                } elseif ('all' == $portal->getCommunityRoomCreationStatus() || 'portal' == $portal->getProjectRoomCreationStatus()) {
                     $userMayCreateContext = $currentUser->isAllowedToCreateContext();
                 }
             }
@@ -445,7 +368,7 @@ class RoomController extends AbstractController
             $userMayCreateContext = true;
         }
 
-        return [
+        return $this->render('room/list_all.html.twig', [
             'roomId' => $roomId,
             'portal' => $portal,
             'form' => $filterForm->createView(),
@@ -455,25 +378,10 @@ class RoomController extends AbstractController
             ],
             'userMayCreateContext' => $userMayCreateContext,
             'sort' => $sort,
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/all/feed/{start}/{sort}")
-     * @Template()
-     * @param Request $request
-     * @param RoomService $roomService
-     * @param FilterBuilderUpdater $filterBuilderUpdater
-     * @param LegacyEnvironment $environment
-     * @param UserRepository $userRepository
-     * @param PortalRepository $portalRepository
-     * @param RoomRepository $roomRepository
-     * @param int $roomId
-     * @param string $sort
-     * @param int $max
-     * @param int $start
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/all/feed/{start}/{sort}')]
     public function feedAllAction(
         Request $request,
         RoomService $roomService,
@@ -486,22 +394,16 @@ class RoomController extends AbstractController
         string $sort = '',
         int $max = 10,
         int $start = 0
-    ): array {
+    ): Response {
         $legacyEnvironment = $environment->getEnvironment();
         $portal = $portalRepository->find($legacyEnvironment->getCurrentPortalID());
 
         $showRooms = $portal->getShowRoomsOnHome();
-        switch ($showRooms) {
-            case 'onlyprojectrooms':
-                $roomTypes = [CS_PROJECT_TYPE];
-                break;
-            case 'onlycommunityrooms':
-                $roomTypes = [CS_COMMUNITY_TYPE];
-                break;
-            default:
-                $roomTypes = [CS_PROJECT_TYPE, CS_COMMUNITY_TYPE];
-                break;
-        }
+        $roomTypes = match ($showRooms) {
+            'onlyprojectrooms' => [CS_PROJECT_TYPE],
+            'onlycommunityrooms' => [CS_COMMUNITY_TYPE],
+            default => [CS_PROJECT_TYPE, CS_COMMUNITY_TYPE],
+        };
 
         if (empty($sort)) {
             $sort = $this->session->get('sortRooms', $portal->getSortRoomsBy() ?? 'activity');
@@ -549,329 +451,32 @@ class RoomController extends AbstractController
                     $contactUsers = array_unique(array_merge($contactUsers, $moderators), SORT_REGULAR);
                 }
 
-                $contactsString = implode(', ', array_map(static function(User $user) {
-                    return $user->getFullName();
-                }, $contactUsers));
+                $contactsString = implode(', ', array_map(static fn (User $user) => $user->getFullName(), $contactUsers));
 
-                $iDsString = implode(',', array_map(static function(User $user) {
-                    return $user->getItemID();
-                }, $contactUsers));
+                $iDsString = implode(',', array_map(static fn (User $user) => $user->getItemID(), $contactUsers));
 
                 if (strlen($iDsString) > 1 && strlen($contactsString) > 1) {
-                    $room->setContactPersons($contactsString . ";" . $iDsString);
+                    $room->setContactPersons($contactsString.';'.$iDsString);
                 }
-            } catch (Exception $e) {
+            } catch (Exception) {
                 // do nothing
             }
         }
 
-        return [
+        return $this->render('room/feed_all.html.twig', [
             'roomId' => $roomId,
             'portal' => $portal,
             'rooms' => $rooms,
             'projectsMemberStatus' => $projectsMemberStatus,
-        ];
+        ]);
     }
 
     /**
-     * @Route("/room/{roomId}/all/{itemId}/request", requirements={
-     *     "itemId": "\d+"
-     * }))
-     * @IsGranted("IS_AUTHENTICATED_REMEMBERED")
-     * @Template()
-     * @param Request $request
-     * @param LegacyEnvironment $environment
-     * @param UserService $userService
-     * @param Mailer $mailer
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|string|RedirectResponse
-     */
-    public function requestAction(
-        Request $request,
-        LegacyEnvironment $environment,
-        UserService $userService,
-        Mailer $mailer,
-        int $roomId,
-        int $itemId
-    ) {
-        $legacyEnvironment = $environment->getEnvironment();
-
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($itemId);
-
-        // determine form options
-        $formOptions = [
-            'checkNewMembersWithCode' => false,
-            'withAGB' => false,
-        ];
-
-        if ($roomItem->checkNewMembersWithCode()) {
-            $formOptions['checkNewMembersWithCode'] = $roomItem->getCheckNewMemberCode();
-        }
-
-        $agbText = '';
-        if ($roomItem->getAGBStatus() != 2) {
-            $formOptions['withAGB'] = true;
-
-            // get agb text in users language
-            $agbText = $roomItem->getAGBTextArray()[strtoupper($legacyEnvironment->getUserLanguage())];
-        }
-
-        $form = $this->createForm(ContextRequestType::class, null, $formOptions);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            if ($form->get('request')->isClicked()) {
-                $formData = $form->getData();
-
-                // At this point we can assume that the user has accepted agb and
-                // provided the correct code if necessary (or provided no code at all).
-                // We can now build a new user item and set the appropriate status
-
-                // TODO: try to make use of UserService->cloneUser() instead
-
-                $currentUserItem = $legacyEnvironment->getCurrentUserItem();
-                $privateRoomUserItem = $currentUserItem->getRelatedPrivateRoomUserItem();
-
-                $sourceUser = $privateRoomUserItem ?? $currentUserItem;
-                $newUser = $sourceUser->cloneData();
-
-                $newUser->setContextID($roomItem->getItemID());
-
-                $userService->cloneUserPicture($sourceUser, $newUser);
-
-                if ($formData['description']) {
-                    $newUser->setUserComment($formData['description']);
-                }
-
-                if ($roomItem->checkNewMembersAlways() ||
-                    ($roomItem->checkNewMembersWithCode() && !isset($formData['code']))) {
-                    // The user either needs to ask for access or provided no code
-                    $newUser->request();
-                    $isRequest = true;
-                } else {
-                    // no authorization is needed at all or the code was correct
-                    $newUser->makeUser();
-                    $isRequest = false;
-
-                    // link user with group "all"
-                    $userService->addUserToSystemGroupAll($newUser, $roomItem);
-                }
-
-                if ($roomItem->getAGBStatus()) {
-                    $newUser->setAGBAcceptanceDate(new DateTimeImmutable());
-                }
-
-                // check if user id already exists
-                $userTestItem = $roomItem->getUserByUserID($newUser->getUserID(), $newUser->getAuthSource());
-                if (!$userTestItem && !$newUser->isReallyGuest() && !$newUser->isRoot()) {
-                    $newUser->save();
-                    $newUser->setCreatorID2ItemID();
-
-                    // save task
-                    if ($isRequest) {
-                        $taskManager = $legacyEnvironment->getTaskManager();
-                        $taskItem = $taskManager->getNewItem();
-
-                        $taskItem->setCreatorItem($currentUserItem);
-                        $taskItem->setContextID($roomItem->getItemID());
-                        $taskItem->setTitle('TASK_USER_REQUEST');
-                        $taskItem->setStatus('REQUEST');
-                        $taskItem->setItem($newUser);
-                        $taskItem->save();
-                    }
-
-                    // mail to moderators
-                    $moderatorRecipients = RecipientFactory::createModerationRecipients(
-                        $roomItem, function ($moderator) {
-                        /** @var cs_user_item $moderator */
-                        return $moderator->getAccountWantMail() == 'yes';
-                    });
-
-                    // language
-                    $language = $roomItem->getLanguage();
-                    if ($language == 'user') {
-                        $language = $newUser->getLanguage();
-                        if ($language == 'browser') {
-                            $language = $legacyEnvironment->getSelectedLanguage();
-                        }
-                    }
-
-                    $translator = $legacyEnvironment->getTranslationObject();
-
-                    if (!empty($moderatorRecipients)) {
-                        $savedLanguage = $translator->getSelectedLanguage();
-                        $translator->setSelectedLanguage($language);
-
-                        $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(date("Y-m-d H:i:s")), $translator->getTimeInLang(date("Y-m-d H:i:s")));
-                        $body .= "\n\n";
-
-                        if ($legacyEnvironment->getCurrentPortalItem()->getHideAccountname()) {
-                            $userId = 'XXX ' . $translator->getMessage('COMMON_DATASECURITY');
-                        } else {
-                            $userId = $newUser->getUserID();
-                        }
-                        if (!$roomItem->isGroupRoom()) {
-                            $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
-                        } else {
-                            $body .= $translator->getMessage('GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
-                        }
-                        $body .= "\n\n";
-
-                        if ($isRequest) {
-                            $body .= $translator->getMessage('USER_GET_MAIL_STATUS_YES');
-                        } else {
-                            $body .= $translator->getMessage('USER_GET_MAIL_STATUS_NO');
-                        }
-                        $body .= "\n\n";
-
-                        if ($formData['description']) {
-                            $body .= $translator->getMessage('MAIL_COMMENT_BY', $newUser->getFullname(), $formData['description']);
-                            $body .= "\n\n";
-                        }
-
-                        $moderators = '';
-                        foreach ($moderatorRecipients as $recipient) {
-                            $moderators .= $recipient->getFirstname() . ' ' . $recipient->getLastname() .  "\n";
-                        }
-
-                        $body .= $translator->getMessage('MAIL_SEND_TO', $moderators);
-                        $body .= "\n";
-
-                        if ($isRequest) {
-                            $body .= $translator->getMessage('MAIL_USER_FREE_LINK') . "\n";
-                            $body .= $this->generateUrl('app_user_list', [
-                                'roomId' => $roomItem->getItemID(),
-                                'user_filter' => [
-                                    'user_status' => 1,
-                                ],
-                            ], UrlGeneratorInterface::ABSOLUTE_URL);
-                        } else {
-                            $body .= $this->generateUrl('app_room_home', [
-                                'roomId' => $roomItem->getItemID(),
-                            ], UrlGeneratorInterface::ABSOLUTE_URL);
-                        }
-
-                        $subject = $translator->getMessage(
-                            'USER_JOIN_CONTEXT_MAIL_SUBJECT',
-                            $newUser->getFullname(),
-                            $roomItem->getTitle()
-                        );
-                        $mailer->sendMultipleRaw(
-                            $subject,
-                            $body,
-                            $moderatorRecipients,
-                            $roomItem->getContextItem()->getTitle(),
-                            [$newUser->getEmail()]
-                        );
-
-                        $translator->setSelectedLanguage($savedLanguage);
-                    }
-                }
-
-                // inform user if request required no authorization
-                if ($newUser->isUser()) {
-                    $moderatorList = $roomItem->getModeratorList();
-                    $contactModerator = $moderatorList->getFirst();
-
-                    $translator = $legacyEnvironment->getTranslationObject();
-                    $translator->setEmailTextArray($roomItem->getEmailTextArray());
-                    $translator->setContext('project');
-
-                    $savedLanguage = $translator->getSelectedLanguage();
-
-                    $language = $roomItem->getLanguage();
-                    if ($language == 'user') {
-                        $language = $newUser->getLanguage();
-                        if ($language == 'browser') {
-                            $language = $legacyEnvironment->getSelectedLanguage();
-                        }
-                    }
-
-                    if ($legacyEnvironment->getCurrentPortalItem()->getHideAccountname()) {
-                        $userId = 'XXX ' . $translator->getMessage('COMMON_DATASECURITY');
-                    } else {
-                        $userId = $newUser->getUserID();
-                    }
-
-                    $translator->setSelectedLanguage($language);
-
-                    $subject = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER', $roomItem->getTitle());
-
-                    $body  = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(date("Y-m-d H:i:s")), $translator->getTimeInLang(date("Y-m-d H:i:s")));
-                    $body .= "\n\n";
-                    $body .= $translator->getEmailMessage('MAIL_BODY_HELLO', $newUser->getFullname());
-                    $body .= "\n\n";
-                    if ($roomItem->isCommunityRoom()) {
-                        $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_GR', $userId, $roomItem->getTitle());
-                    } else if ($roomItem->isProjectRoom()) {
-                        $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_PR', $userId, $roomItem->getTitle());
-                    } else if ($roomItem->isGroupRoom()) {
-                        $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_GP', $userId, $roomItem->getTitle());
-                    }
-                    $body .= "\n\n";
-                    $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $contactModerator->getFullname(), $roomItem->getTitle());
-                    $body .= "\n\n";
-                    $body .= $this->generateUrl('app_room_home', [
-                        'roomId' => $roomItem->getItemID(),
-                    ], UrlGeneratorInterface::ABSOLUTE_URL);
-
-                    $mailer->sendRaw(
-                        $subject,
-                        $body,
-                        RecipientFactory::createRecipient($newUser),
-                        $roomItem->getContextItem()->getTitle(),
-                        [$contactModerator->getEmail()]
-                    );
-
-                    $translator->setSelectedLanguage($savedLanguage);
-                }
-            }
-
-            // redirect to detail page
-            $route = "";
-            if ($roomItem->isGroupRoom()) {
-                $route = $this->redirectToRoute('app_group_detail', [
-                    'roomId' => $roomId,
-                    'itemId' => $roomItem->getLinkedGroupItemID(),
-                ]);
-            }
-            else {
-                $route = $this->redirectToRoute('app_project_detail', [
-                    'roomId' => $roomId,
-                    'itemId' => $itemId,
-                ]);
-            }
-            return $route;
-        }
-
-        return [
-            'form' => $form->createView(),
-            'agbText' => $agbText,
-            'title' => $roomItem->getTitle(),
-        ];
-    }
-
-    /**
-     * @Route("/room/{roomId}/all/create", requirements={
-     *     "itemId": "\d+"
-     * }))
-     * @Template()
-     * @param Request $request
-     * @param RoomService $roomService
-     * @param UserService $userService
-     * @param RoomCategoriesService $roomCategoriesService
-     * @param LegacyEnvironment $environment
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param CalendarsService $calendarsService
-     * @param LegacyCopy $legacyCopy
-     * @param int $roomId
-     * @return array|RedirectResponse
      * @throws Exception
+     *
      * @Security("is_granted('ITEM_EDIT', 'NEW')")
      */
+    #[Route(path: '/room/{roomId}/all/create', requirements: ['itemId' => '\d+'])]
     public function createAction(
         Request $request,
         RoomService $roomService,
@@ -882,7 +487,7 @@ class RoomController extends AbstractController
         CalendarsService $calendarsService,
         LegacyCopy $legacyCopy,
         int $roomId
-    ) {
+    ): Response {
         $legacyEnvironment = $environment->getEnvironment();
         $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
 
@@ -896,13 +501,12 @@ class RoomController extends AbstractController
 
         // NOTE: `getDefault...TemplateID()` may also return '-1' (if no default template is defined)
         $defaultId = '-1';
-        if ($type === 'project') {
+        if ('project' === $type) {
             $defaultId = $currentPortalItem->getDefaultProjectTemplateID();
-        }
-        elseif ($type === 'community') {
+        } elseif ('community' === $type) {
             $defaultId = $currentPortalItem->getDefaultCommunityTemplateID();
         }
-        $defaultTemplateIDs = ($defaultId === '-1') ? [] : [ $defaultId ];
+        $defaultTemplateIDs = ('-1' === $defaultId) ? [] : [$defaultId];
 
         $timesDisplay = ucfirst($currentPortalItem->getCurrentTimeName());
         $times = $roomService->getTimePulses(true);
@@ -915,19 +519,19 @@ class RoomController extends AbstractController
         } else {
             $roomItem = $roomService->getRoomItem($roomId);
 
-            if ($currentPortalItem->getProjectRoomCreationStatus() == 'portal') {
+            if ('portal' == $currentPortalItem->getProjectRoomCreationStatus()) {
                 $types['project'] = 'project';
-            } else if ($roomItem->getType() == CS_COMMUNITY_TYPE) {
+            } elseif (CS_COMMUNITY_TYPE == $roomItem->getType()) {
                 $types['project'] = 'project';
             }
 
-            if ($currentPortalItem->getCommunityRoomCreationStatus() == 'all') {
+            if ('all' == $currentPortalItem->getCommunityRoomCreationStatus()) {
                 $types['community'] = 'community';
             }
         }
 
         $linkCommunitiesMandantory = true;
-        if ($currentPortalItem->getProjectRoomLinkStatus() == 'optional') {
+        if ('optional' == $currentPortalItem->getProjectRoomLinkStatus()) {
             $linkCommunitiesMandantory = false;
         }
 
@@ -938,8 +542,8 @@ class RoomController extends AbstractController
 
         $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
 
-        if(!isset($type)){
-            $type = 'project'; //TODO: what is supposed to happen here? Initial, type is null - with this, the next method errors
+        if (!isset($type)) {
+            $type = 'project'; // TODO: what is supposed to happen here? Initial, type is null - with this, the next method errors
         }
 
         $translator = $legacyEnvironment->getTranslationObject();
@@ -951,19 +555,14 @@ class RoomController extends AbstractController
         $templates['*'.$msg] = '-1';
 
         // re-sort array by elements
-        foreach($templates as $index => $entry){
-            if(!($index == 'No template')){
+        foreach ($templates as $index => $entry) {
+            if (!('No template' == $index)) {
                 unset($templates[$index]);
                 $templates[$index] = $entry;
             }
         }
 
-        uasort($templates,  function($a, $b) {
-            if ($a == $b) {
-                return 0;
-            }
-            return ($a < $b) ? -1 : 1;
-        });
+        uasort($templates, fn ($a, $b) => $a <=> $b);
 
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
@@ -982,14 +581,12 @@ class RoomController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
             if ($form->get('save')->isClicked() && isset($formData['type_select'])) {
-                if ($formData['type_select'] == 'project') {
+                if ('project' == $formData['type_select']) {
                     $roomManager = $legacyEnvironment->getProjectManager();
-                }
-                elseif ($formData['type_select'] == 'community') {
+                } elseif ('community' == $formData['type_select']) {
                     $roomManager = $legacyEnvironment->getCommunityManager();
-                }
-                else {
-                    throw new UnexpectedValueException("Error Processing Request: Unrecognized room type", 1);
+                } else {
+                    throw new UnexpectedValueException('Error Processing Request: Unrecognized room type', 1);
                 }
 
                 $legacyRoom = $roomManager->getNewItem();
@@ -1001,7 +598,7 @@ class RoomController extends AbstractController
                 $legacyRoom->setContextID($legacyEnvironment->getCurrentPortalID());
                 $legacyRoom->open();
 
-                if ($formData['type_select'] == 'project' && isset($context['type_sub']['community_rooms'])) {
+                if ('project' == $formData['type_select'] && isset($context['type_sub']['community_rooms'])) {
                     $legacyRoom->setCommunityListByID($context['type_sub']['community_rooms']);
                 }
 
@@ -1020,7 +617,7 @@ class RoomController extends AbstractController
                     }
                 }
 
-                $timeIntervals = (isset($context['type_sub']['time_interval'])) ? $context['type_sub']['time_interval'] : [];
+                $timeIntervals = $context['type_sub']['time_interval'] ?? [];
                 if (empty($timeIntervals) || in_array('cont', $timeIntervals)) {
                     $legacyRoom->setContinuous();
                     $legacyRoom->setTimeListByID([]);
@@ -1073,9 +670,9 @@ class RoomController extends AbstractController
             }
         }
 
-        return [
+        return $this->render('room/create.html.twig', [
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
     private function memberStatus(
@@ -1088,7 +685,7 @@ class RoomController extends AbstractController
 
         if ($item) {
             $relatedUserArray = $currentUser->getRelatedUserList()->to_array();
-            $filteredUserArray = array_filter($relatedUserArray, fn(cs_user_item $user) => $user->getContextId() == $item->getItemId());
+            $filteredUserArray = array_filter($relatedUserArray, fn (cs_user_item $user) => $user->getContextId() == $item->getItemId());
             $roomUser = array_values($filteredUserArray)[0] ?? null;
 
             if ($item->getArchived()) {
@@ -1129,6 +726,7 @@ class RoomController extends AbstractController
                 }
             }
         }
+
         return 'closed';
     }
 
@@ -1137,7 +735,6 @@ class RoomController extends AbstractController
         $old_room = $masterRoom;
         $new_room = $targetRoom;
 
-        /**/
         $user_manager = $legacyEnvironment->getUserManager();
         $creator_item = $user_manager->getItem($new_room->getCreatorID());
         if ($creator_item->getContextID() != $new_room->getItemID()) {
@@ -1148,7 +745,7 @@ class RoomController extends AbstractController
             $user_manager->setModeratorLimit();
             $user_manager->select();
             $user_list = $user_manager->get();
-            if ($user_list->isNotEmpty() and $user_list->getCount() == 1) {
+            if ($user_list->isNotEmpty() and 1 == $user_list->getCount()) {
                 $creator_item = $user_list->getFirst();
             } else {
                 throw new Exception('can not get creator of new room');
@@ -1167,8 +764,6 @@ class RoomController extends AbstractController
 
         // copy data
         $legacyCopy->copyData($old_room, $new_room, $creator_item);
-
-        /**/
 
         return $new_room;
     }

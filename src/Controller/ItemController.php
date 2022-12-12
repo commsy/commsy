@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Event\CommsyEditEvent;
@@ -24,70 +35,46 @@ use App\Utils\MaterialService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
 use cs_dates_item;
+use cs_file_item;
 use cs_item;
 use cs_manager;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
-
+use UnexpectedValueException;
 
 /**
- * Class ItemController
- * @package App\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
+ * Class ItemController.
  */
+#[Security("is_granted('ITEM_ENTER', roomId)")]
 class ItemController extends AbstractController
 {
-    /**
-     * @var LabelService
-     */
-    private LabelService $labelService;
-
-    /**
-     * @var TransformerManager
-     */
     private TransformerManager $transformerManager;
 
     /**
-     * @required
      * @param mixed $transformerManager
      */
+    #[Required]
     public function setTransformerManager(TransformerManager $transformerManager): void
     {
         $this->transformerManager = $transformerManager;
     }
 
-    /**
-     * @param LabelService $labelService
-     */
-    public function __construct(LabelService $labelService)
+    public function __construct(private LabelService $labelService)
     {
-        $this->labelService = $labelService;
     }
 
-    /**
-     * @Route("/room/{roomId}/item/{itemId}/editdescription/{draft}")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param DateService $dateService
-     * @param ItemService $itemService
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param LegacyEnvironment $environment
-     * @param Request $request
-     * @param int $roomId
-     * @param int $itemId
-     * @param bool $draft
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/item/{itemId}/editdescription/{draft}')]
+    #[Security("is_granted('ITEM_EDIT', itemId)")]
     public function editDescriptionAction(
         DateService $dateService,
         ItemService $itemService,
@@ -97,7 +84,7 @@ class ItemController extends AbstractController
         int $roomId,
         int $itemId,
         bool $draft = false
-    ) {
+    ): Response {
         /** @var cs_item $item */
         $item = $itemService->getTypedItem($itemId);
 
@@ -108,29 +95,18 @@ class ItemController extends AbstractController
         // NOTE: we disable the CommSy-related & MathJax toolbar items for users & groups, so their CKEEditor controls
         // won't allow any media upload; this is done since user & group detail views currently have no means to manage
         // (e.g. delete again) any attached files
-        $configName = ($itemType === 'user' || $itemType === 'group') ? 'cs_item_nomedia_config' : 'cs_item_config' ;
+        $configName = ('user' === $itemType || 'group' === $itemType) ? 'cs_item_nomedia_config' : 'cs_item_config';
 
-        $url = $this->generateUrl('app_upload_ckupload', array(
-            'roomId' => $roomId,
-            'itemId' => $itemId
-        ));
+        $url = $this->generateUrl('app_upload_ckupload', ['roomId' => $roomId, 'itemId' => $itemId]);
         $url .= '?CKEditorFuncNum=42&command=QuickUpload&type=Images';
 
         $formData = $transformer->transform($item);
-        $formOptions = array(
-            'itemId' => $itemId,
-            'configName' => $configName,
-            'uploadUrl' => $url,
-            'filelistUrl' => $this->generateUrl('app_item_filelist', array(
-                'roomId' => $roomId,
-                'itemId' => $itemId
-            )),
-        );
-        
+        $formOptions = ['itemId' => $itemId, 'configName' => $configName, 'uploadUrl' => $url, 'filelistUrl' => $this->generateUrl('app_item_filelist', ['roomId' => $roomId, 'itemId' => $itemId])];
+
         $withRecurrence = false;
-        if ($itemType == 'date') {
+        if ('date' == $itemType) {
             /** @var cs_dates_item $item */
-            if ($item->getRecurrencePattern() != '' && !$draft) {
+            if ('' != $item->getRecurrencePattern() && !$draft) {
                 $formOptions['attr']['unsetRecurrence'] = true;
                 $withRecurrence = true;
             }
@@ -147,16 +123,16 @@ class ItemController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
             $legacyEnvironment = $environment->getEnvironment();
-            if ($saveType == 'save' || $saveType == 'saveThisDate') {
+            if ('save' == $saveType || 'saveThisDate' == $saveType) {
                 $item = $transformer->applyTransformation($item, $form->getData());
                 $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $item->save();
-                if (($item->getItemType() == CS_SECTION_TYPE) || ($item->getItemType() == CS_STEP_TYPE)) {
+                if ((CS_SECTION_TYPE == $item->getItemType()) || (CS_STEP_TYPE == $item->getItemType())) {
                     $linkedItem = $itemService->getTypedItem($item->getlinkedItemID());
                     $linkedItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                     $linkedItem->save();
                 }
-            } else if ($saveType == 'saveAllDates') {
+            } elseif ('saveAllDates' == $saveType) {
                 $datesArray = $dateService->getRecurringDates($item->getContextId(), $item->getRecurrenceId());
                 $formData = $form->getData();
                 $item = $transformer->applyTransformation($item, $formData);
@@ -167,47 +143,33 @@ class ItemController extends AbstractController
                     $tempDate->save();
                 }
             } else {
-                throw new \UnexpectedValueException("Value must be one of 'save', 'saveThisDate' and 'saveAllDates'.");
+                throw new UnexpectedValueException("Value must be one of 'save', 'saveThisDate' and 'saveAllDates'.");
             }
 
-            return $this->redirectToRoute('app_item_savedescription', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_item_savedescription', ['roomId' => $roomId, 'itemId' => $itemId]);
         }
 
         // etherpad
         $isMaterial = false;
-        if ($itemType == "material") {
+        if ('material' == $itemType) {
             $isMaterial = true;
         }
 
-        return array(
-            'isMaterial' => $isMaterial,
-            'itemId' => $itemId,
-            'roomId' => $roomId,
-            'form' => $form->createView(),
-            'withRecurrence' => $withRecurrence,
-        );
+        return $this->render('item/edit_description.html.twig', ['isMaterial' => $isMaterial, 'itemId' => $itemId, 'roomId' => $roomId, 'form' => $form->createView(), 'withRecurrence' => $withRecurrence]);
     }
 
-    /**
-     * @Route("/room/{roomId}/item/{itemId}/savedescription")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param ItemService $itemService
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/item/{itemId}/savedescription')]
+    #[Security("is_granted('ITEM_EDIT', itemId)")]
     public function saveDescriptionAction(
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $item = $itemService->getTypedItem($itemId);
-        $itemArray = array($item);
-    
-        $modifierList = array();
+        $itemArray = [$item];
+
+        $modifierList = [];
         foreach ($itemArray as $tempItem) {
             $modifierList[$tempItem->getItemId()] = $itemService->getAdditionalEditorsForItem($tempItem);
         }
@@ -218,30 +180,18 @@ class ItemController extends AbstractController
             $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
         }
 
-        return array(
+        return $this->render('item/save_description.html.twig', [
             // etherpad subscriber (material save)
             // important: save and item->id parameter are needed
             'save' => true,
             'roomId' => $roomId,
             'item' => $item,
-            'modifierList' => $modifierList
-        );
+            'modifierList' => $modifierList,
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/item/{itemId}/editworkflow")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param RoomService $roomService
-     * @param ItemService $itemService
-     * @param MaterialService $materialService
-     * @param ItemTransformer $transformer
-     * @param LegacyEnvironment $environment
-     * @param Request $request
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/item/{itemId}/editworkflow')]
+    #[Security("is_granted('ITEM_EDIT', itemId)")]
     public function editWorkflowAction(
         RoomService $roomService,
         ItemService $itemService,
@@ -251,23 +201,24 @@ class ItemController extends AbstractController
         Request $request,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
+        $workflowData = [];
         $room = $roomService->getRoomItem($roomId);
         $item = $itemService->getItem($itemId);
 
-        $formData = array();
-        $tempItem = NULL;
-        
-        if ($item->getItemType() == 'material') {
+        $formData = [];
+        $tempItem = null;
+
+        if ('material' == $item->getItemType()) {
             // get material from MaterialService
             $tempItem = $materialService->getMaterial($itemId);
             if (!$tempItem) {
-                throw $this->createNotFoundException('No material found for id ' . $roomId);
+                throw $this->createNotFoundException('No material found for id '.$roomId);
             }
             $formData = $transformer->transform($tempItem);
         }
-        
-        $form = $this->createForm(ItemWorkflowType::class, $formData, array());
+
+        $form = $this->createForm(ItemWorkflowType::class, $formData, []);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
@@ -276,8 +227,8 @@ class ItemController extends AbstractController
                 $tempItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $tempItem->save();
             }
-            
-            return $this->redirectToRoute('app_material_saveworkflow', array('roomId' => $roomId, 'itemId' => $itemId));
+
+            return $this->redirectToRoute('app_material_saveworkflow', ['roomId' => $roomId, 'itemId' => $itemId]);
         }
 
         $workflowData['textGreen'] = $room->getWorkflowTrafficLightTextGreen();
@@ -287,30 +238,11 @@ class ItemController extends AbstractController
         $workflowData['withResubmission'] = $room->withWorkflowResubmission();
         $workflowData['workflowValidity'] = $room->withWorkflowValidity();
 
-
-        return array(
-            'item' => $tempItem,
-            'form' => $form->createView(),
-            'workflow' => $workflowData
-        );
+        return $this->render('item/edit_workflow.html.twig', ['item' => $tempItem, 'form' => $form->createView(), 'workflow' => $workflowData]);
     }
 
-    /**
-     * @Route("/room/{roomId}/item/{itemId}/editlinks/{feedAmount}", defaults={"feedAmount" = 20})
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param LabelService $labelService
-     * @param RoomService $roomService
-     * @param ItemService $itemService
-     * @param TranslatorInterface $translator
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param LegacyEnvironment $environment
-     * @param Request $request
-     * @param int $roomId
-     * @param int $itemId
-     * @param int $feedAmount
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/item/{itemId}/editlinks/{feedAmount}', defaults: ['feedAmount' => 20])]
+    #[Security("is_granted('ITEM_EDIT', itemId)")]
     public function editLinksAction(
         LabelService $labelService,
         RoomService $roomService,
@@ -322,7 +254,7 @@ class ItemController extends AbstractController
         int $roomId,
         int $itemId,
         int $feedAmount
-    ) {
+    ): Response {
         $legacyEnvironment = $environment->getEnvironment();
 
         $item = $itemService->getTypedItem($itemId);
@@ -330,10 +262,10 @@ class ItemController extends AbstractController
 
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
-        $formData = array();
-        $optionsData = array();
-        $items = array();
-        
+        $formData = [];
+        $optionsData = [];
+        $items = [];
+
         // get all items that are linked or can be linked
         $rubricInformation = $roomService->getRubricInformation($roomId);
         if (in_array('group', $rubricInformation)) {
@@ -358,7 +290,7 @@ class ItemController extends AbstractController
         $tempLinkedItem = $itemLinkedList->getFirst();
         while ($tempLinkedItem) {
             $tempTypedLinkedItem = $itemService->getTypedItem($tempLinkedItem->getItemId());
-            if ($tempTypedLinkedItem->getItemType() != 'user') {
+            if ('user' != $tempTypedLinkedItem->getItemType()) {
                 $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getTitle();
                 $items[$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem;
             } else {
@@ -376,7 +308,7 @@ class ItemController extends AbstractController
         $itemManager->setIntervalLimit($feedAmount + $countLinked);
         $itemManager->select();
         $itemList = $itemManager->get();
-        
+
         // get all items except linked items
         $optionsData['items'] = [];
         $tempItem = $itemList->getFirst();
@@ -388,7 +320,6 @@ class ItemController extends AbstractController
                 $items[$tempTypedItem->getItemId()] = $tempTypedItem;
             }
             $tempItem = $itemList->getNext();
-            
         }
 
         $linkedItemIds = $item->getAllLinkedItemIDArray();
@@ -408,14 +339,14 @@ class ItemController extends AbstractController
             $tempTypedItem = $itemService->getTypedItem($latestItem->getItemId());
             if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
                 if (
-                    $tempTypedItem->getType() != "discarticle" &&
-                    $tempTypedItem->getType() != "task" &&
-                    $tempTypedItem->getType() != 'link_item' &&
-                    $tempTypedItem->getType() != 'tag' &&
-                    $tempTypedItem->getType() != 'step'
+                    'discarticle' != $tempTypedItem->getType() &&
+                    'task' != $tempTypedItem->getType() &&
+                    'link_item' != $tempTypedItem->getType() &&
+                    'tag' != $tempTypedItem->getType() &&
+                    'step' != $tempTypedItem->getType()
                 ) {
                     $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
-                    $i++;
+                    ++$i;
                 }
             }
             $latestItem = $latestItemList->getNext();
@@ -427,12 +358,12 @@ class ItemController extends AbstractController
         // get all categories -> tree
         $optionsData['categories'] = $labelService->getCategories($roomId);
         $formData['categories'] = $labelService->getLinkedCategoryIds($item);
-        $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(array('min' => 1))] : array();
+        $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(['min' => 1])] : [];
 
         // get all hashtags -> list
         $optionsData['hashtags'] = $labelService->getHashtags($roomId);
         $formData['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
-        $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(array('min' => 1))] : [];
+        $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(['min' => 1])] : [];
 
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
 
@@ -443,16 +374,16 @@ class ItemController extends AbstractController
             'itemsLinked' => array_flip($optionsData['itemsLinked']),
             'itemsLatest' => array_flip($optionsData['itemsLatest']),
             'categories' => $optionsData['categories'],
-            'categoryConstraints' => array(),
+            'categoryConstraints' => [],
             'hashtags' => $optionsData['hashtags'],
-            'hashtagConstraints' => array(),
+            'hashtagConstraints' => [],
             'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
             'placeholderText' => $translator->trans('Hashtag', [], 'hashtag'),
         ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-             if ($form->get('save')->isClicked()) {
+            if ($form->get('save')->isClicked()) {
                 $data = $form->getData();
 
                 $itemData = array_merge(array_keys($data['itemsLinked']), $data['itemsLatest']);
@@ -465,7 +396,7 @@ class ItemController extends AbstractController
                 $item->setTagListByID($data['categories']);
                 $item->setBuzzwordListByID($data['hashtags']);
 
-                if ($item->getItemType() == CS_TOPIC_TYPE) {
+                if (CS_TOPIC_TYPE == $item->getItemType()) {
                     if (empty($itemData)) {
                         $item->deactivatePath();
                     }
@@ -481,7 +412,7 @@ class ItemController extends AbstractController
             ]);
         }
 
-        return [
+        return $this->render('item/edit_links.html.twig', [
             'itemId' => $itemId,
             'roomId' => $roomId,
             'form' => $form->createView(),
@@ -489,27 +420,11 @@ class ItemController extends AbstractController
             'showHashtags' => $roomItem->withBuzzwords(),
             'items' => $items,
             'itemsLatest' => $optionsData['itemsLatest'],
-        ];
+        ]);
     }
 
-
-    /**
-     * @Route("/room/{roomId}/item/{itemId}/editCatsBuzz/{feedAmount}", defaults={"feedAmount" = 20})
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param CategoryService $categoryService
-     * @param LabelService $labelService
-     * @param RoomService $roomService
-     * @param ItemService $itemService
-     * @param TranslatorInterface $translator
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param LegacyEnvironment $environment
-     * @param Request $request
-     * @param int $roomId
-     * @param int $itemId
-     * @param int $feedAmount
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/item/{itemId}/editCatsBuzz/{feedAmount}', defaults: ['feedAmount' => 20])]
+    #[Security("is_granted('ITEM_EDIT', itemId)")]
     public function editCatsBuzzAction(
         CategoryService $categoryService,
         LabelService $labelService,
@@ -522,7 +437,7 @@ class ItemController extends AbstractController
         int $roomId,
         int $itemId,
         int $feedAmount
-    ) {
+    ): Response {
         $legacyEnvironment = $environment->getEnvironment();
 
         $item = $itemService->getTypedItem($itemId);
@@ -530,9 +445,9 @@ class ItemController extends AbstractController
 
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
-        $formData = array();
-        $optionsData = array();
-        $items = array();
+        $formData = [];
+        $optionsData = [];
+        $items = [];
 
         // get all items that are linked or can be linked
         $rubricInformation = $roomService->getRubricInformation($roomId);
@@ -558,7 +473,7 @@ class ItemController extends AbstractController
         $tempLinkedItem = $itemLinkedList->getFirst();
         while ($tempLinkedItem) {
             $tempTypedLinkedItem = $itemService->getTypedItem($tempLinkedItem->getItemId());
-            if ($tempTypedLinkedItem->getItemType() != 'user') {
+            if ('user' != $tempTypedLinkedItem->getItemType()) {
                 $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getTitle();
                 $items[$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem;
             } else {
@@ -588,7 +503,6 @@ class ItemController extends AbstractController
                 $items[$tempTypedItem->getItemId()] = $tempTypedItem;
             }
             $tempItem = $itemList->getNext();
-
         }
 
         $linkedItemIds = $item->getAllLinkedItemIDArray();
@@ -607,9 +521,9 @@ class ItemController extends AbstractController
         while ($latestItem && $i < 5) {
             $tempTypedItem = $itemService->getTypedItem($latestItem->getItemId());
             if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
-                if ($tempTypedItem->getType() != "discarticle" && $tempTypedItem->getType() != "task" && $tempTypedItem->getType() != 'link_item' && $tempTypedItem->getType() != 'tag') {
+                if ('discarticle' != $tempTypedItem->getType() && 'task' != $tempTypedItem->getType() && 'link_item' != $tempTypedItem->getType() && 'tag' != $tempTypedItem->getType()) {
                     $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
-                    $i++;
+                    ++$i;
                 }
             }
             $latestItem = $latestItemList->getNext();
@@ -621,12 +535,12 @@ class ItemController extends AbstractController
         // get all categories -> tree
         $optionsData['categories'] = $labelService->getCategories($roomId);
         $formData['categories'] = $labelService->getLinkedCategoryIds($item);
-        $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(array('min' => 1))] : array();
+        $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(['min' => 1])] : [];
 
         // get all hashtags -> list
         $optionsData['hashtags'] = $labelService->getHashtags($roomId);
         $formData['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
-        $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(array('min' => 1))] : [];
+        $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(['min' => 1])] : [];
 
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
 
@@ -651,19 +565,19 @@ class ItemController extends AbstractController
                 $data = $form->getData();
 
                 // $itemData = array_merge(array_keys($data['itemsLinked']), $data['itemsLatest']);
-                if($data['newCategory']){
-                    $data['categories'][] = $categoryService->addTag($data['newCategory'],$roomId)->getItemID();
+                if ($data['newCategory']) {
+                    $data['categories'][] = $categoryService->addTag($data['newCategory'], $roomId)->getItemID();
                 }
 
                 // update modifier
                 $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
                 // save links
-                //$item->setLinkedItemsByIDArray($itemData);
+                // $item->setLinkedItemsByIDArray($itemData);
                 $item->setTagListByID($data['categories']);
                 $item->setBuzzwordListByID($data['hashtags']);
 
-                if ($item->getItemType() == CS_TOPIC_TYPE) {
+                if (CS_TOPIC_TYPE == $item->getItemType()) {
                     if (empty($itemData)) {
                         $item->deactivatePath();
                     }
@@ -679,7 +593,7 @@ class ItemController extends AbstractController
             ]);
         }
 
-        return [
+        return $this->render('item/edit_cats_buzz.html.twig', [
             'itemId' => $itemId,
             'roomId' => $roomId,
             'form' => $form->createView(),
@@ -687,60 +601,34 @@ class ItemController extends AbstractController
             'showHashtags' => $roomItem->withBuzzwords(),
             'items' => $items,
             'itemsLatest' => $optionsData['itemsLatest'],
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/item/{itemId}/savelinks")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param RoomService $roomService
-     * @param ItemService $itemService
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/item/{itemId}/savelinks')]
+    #[Security("is_granted('ITEM_EDIT', itemId)")]
     public function saveLinksAction(
         RoomService $roomService,
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $roomItem = $roomService->getRoomItem($roomId);
         $tempItem = $itemService->getTypedItem($itemId);
 
-        $itemArray = array($tempItem);
-    
-        $modifierList = array();
+        $itemArray = [$tempItem];
+
+        $modifierList = [];
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
 
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
 
-        return array(
-            'roomId' => $roomId,
-            'item' => $tempItem,
-            'showHashTags' => $roomItem->withBuzzwords(),
-            'showCategories' => $roomItem->withTags(),
-            'modifierList' => $modifierList
-        );
+        return $this->render('item/save_links.html.twig', ['roomId' => $roomId, 'item' => $tempItem, 'showHashTags' => $roomItem->withBuzzwords(), 'showCategories' => $roomItem->withTags(), 'modifierList' => $modifierList]);
     }
 
-    /**
-     * @Route("/room/{roomId}/{itemId}/send")
-     * @Template()
-     * @param Request $request
-     * @param ItemService $itemService
-     * @param MailAssistant $mailAssistant
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param Mailer $mailer
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/{itemId}/send')]
     public function sendAction(
         Request $request,
         ItemService $itemService,
@@ -749,12 +637,12 @@ class ItemController extends AbstractController
         Mailer $mailer,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         // get item
         $item = $itemService->getTypedItem($itemId);
 
         if (!$item) {
-            throw $this->createNotFoundException('no item found for id ' . $itemId);
+            throw $this->createNotFoundException('no item found for id '.$itemId);
         }
 
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -763,7 +651,7 @@ class ItemController extends AbstractController
         // prepare form
         $groupChoices = $mailAssistant->getGroupChoices($item);
         $defaultGroupId = null;
-        if (count($groupChoices) > 0) {
+        if ((is_countable($groupChoices) ? count($groupChoices) : 0) > 0) {
             $defaultGroupId = array_values($groupChoices)[0];
         }
 
@@ -772,16 +660,15 @@ class ItemController extends AbstractController
         $formData = new Send();
         $formData->setAdditionalRecipients(['']);
         $formData->setSendToGroups([$defaultGroupId]);
-        if($isShowGroupAllRecipients){
+        if ($isShowGroupAllRecipients) {
             $formData->setSendToGroupAll(false);
-        }else{
+        } else {
             $formData->setSendToGroupAll(null);
         }
         $formData->setSendToAll(false);
         $formData->setMessage($mailAssistant->prepareMessage($item));
         $formData->setSendToCreator(false);
         $formData->setCopyToSender(false);
-
 
         $form = $this->createForm(SendType::class, $formData, [
             'item' => $item,
@@ -794,13 +681,12 @@ class ItemController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // if cancel was clicked, redirect back to detail page
             if ($form->get('cancel')->isClicked()) {
-
                 $itemType = $item->getType();
-                if ($item->getType() === 'label') {
+                if ('label' === $item->getType()) {
                     $itemType = $item->getLabelType();
                 }
 
-                return $this->redirectToRoute('app_' . $itemType . '_detail', [
+                return $this->redirectToRoute('app_'.$itemType.'_detail', [
                     'roomId' => $roomId,
                     'itemId' => $itemId,
                 ]);
@@ -820,66 +706,54 @@ class ItemController extends AbstractController
             ]);
         }
 
-        return [
+        return $this->render('item/send.html.twig', [
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/{itemId}/send/success")
-     * @Template()
-     * @param ItemService $itemService
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/{itemId}/send/success')]
     public function sendSuccessAction(
         ItemService $itemService,
         int $roomId, int $itemId
-    ) {
+    ): Response {
         // get item
         $item = $itemService->getTypedItem($itemId);
 
         if (!$item) {
-            throw $this->createNotFoundException('no item found for id ' . $itemId);
+            throw $this->createNotFoundException('no item found for id '.$itemId);
         }
 
         $itemType = $item->getType();
-        if ($item->getType() == 'label') {
+        if ('label' == $item->getType()) {
             $itemType = $item->getLabelType();
         }
 
-        return [
-            'link' => $this->generateUrl('app_' . $itemType . '_detail', [
+        return $this->render('item/send_success.html.twig', [
+            'link' => $this->generateUrl('app_'.$itemType.'_detail', [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             ]),
             'title' => $item->getTitle(),
-        ];
+        ]);
     }
 
     /**
-     * @Route("/room/{roomId}/item/{itemId}/autocomplete/{feedAmount}", defaults={"feedAmount" = 20})
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     * @param RoomService $roomService
-     * @param ItemService $itemService
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param int $roomId
-     * @param $feedAmount
      * @return JsonResponse
      */
+    #[Route(path: '/room/{roomId}/item/{itemId}/autocomplete/{feedAmount}', defaults: ['feedAmount' => 20])]
+    #[Security("is_granted('ITEM_EDIT', itemId)")]
     public function autocompleteAction(
         RoomService $roomService,
         ItemService $itemService,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
         $feedAmount
-    ) {
+    ): Response {
         $environment = $legacyEnvironment->getEnvironment();
 
-        $optionsData = array();
-        $items = array();
-        
+        $optionsData = [];
+        $items = [];
+
         // get all items that are linked or can be linked
         $rubricInformation = $roomService->getRubricInformation($roomId);
         $optionsData['filterRubric']['all'] = 'all';
@@ -895,11 +769,10 @@ class ItemController extends AbstractController
         $itemManager->setContextLimit($roomId);
         $itemManager->setTypeArrayLimit($rubricInformation);
 
-
         $itemManager->setIntervalLimit($feedAmount);
         $itemManager->select();
         $itemList = $itemManager->get();
-        
+
         // get all items except linked items
         $tempItem = $itemList->getFirst();
         while ($tempItem) {
@@ -910,7 +783,6 @@ class ItemController extends AbstractController
                 $items[$tempTypedItem->getItemId()] = $tempTypedItem;
             }
             $tempItem = $itemList->getNext();
-            
         }
 
         // get latest edited items from current user
@@ -924,36 +796,23 @@ class ItemController extends AbstractController
         while ($latestItem) {
             $tempTypedItem = $itemService->getTypedItem($latestItem->getItemId());
             if ($tempTypedItem) {
-                $optionsData['itemsLatest'][] = array(
-                    'title' => $tempTypedItem->getTitle(), 
-                    'text' => $tempTypedItem->getType(), 
-                    'url' => '', 
-                    'id' => $tempTypedItem->getItemId()
-                );
+                $optionsData['itemsLatest'][] = ['title' => $tempTypedItem->getTitle(), 'text' => $tempTypedItem->getType(), 'url' => '', 'id' => $tempTypedItem->getItemId()];
             }
             $latestItem = $latestItemList->getNext();
         }
         if (empty($optionsData['itemsLatest'])) {
-            $optionsData['itemsLatest'] = array();
+            $optionsData['itemsLatest'] = [];
         }
 
         return new JsonResponse([
-            $optionsData['itemsLatest']
+            $optionsData['itemsLatest'],
         ]);
     }
 
     /**
-     * @Route("/room/{roomId}/item/sendlist", condition="request.isXmlHttpRequest()")
-     * @Template()
-     * @param Request $request
-     * @param RoomService $roomService
-     * @param UserService $userService
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param Mailer $mailer
-     * @param int $roomId
-     * @return array|JsonResponse
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/item/sendlist', condition: 'request.isXmlHttpRequest()')]
     public function sendlistAction(
         Request $request,
         RoomService $roomService,
@@ -961,7 +820,7 @@ class ItemController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         Mailer $mailer,
         int $roomId
-    ) {
+    ): Response {
         // extract item id from request data
         $requestContent = $request->getContent();
         if (empty($requestContent)) {
@@ -974,18 +833,17 @@ class ItemController extends AbstractController
         $currentUser = $environment->getCurrentUser();
 
         // prepare form
-        $formMessage = $this->renderView('email/item_list_template.txt.twig', array('user' => $currentUser, 'room' => $room));
+        $formMessage = $this->renderView('email/item_list_template.txt.twig', ['user' => $currentUser, 'room' => $room]);
 
         $formData = [
             'message' => $formMessage,
         ];
 
         $form = $this->createForm(SendListType::class, $formData, []);
-        
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            
             $data = $form->getData();
 
             $userIds = explode(',', $data['entries']);
@@ -1006,66 +864,40 @@ class ItemController extends AbstractController
                 $data['copy_to_sender'] ? [$currentUser->getEmail()] : []
             );
 
-            return new JsonResponse([
-                'message' => 'send ...',
-                'timeout' => '5550',
-                'layout' => 'cs-notify-message',
-                'data' => NULL,
-            ]);
+            return $this->render('item/send_list.html.twig');
         }
 
-        return [
-            'form' => $form->createView()
-        ];
+        return $this->render('item/send_list.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
-     * @Route("/room/{roomId}/item/{itemId}/filelist")
-     * @Template()
-     * @param $roomId
-     * @param $itemId
-     * @param Request $request
-     * @param ItemService $itemService
      * @return JsonResponse
      */
-    public function filelistAction($roomId, $itemId, Request $request, ItemService $itemService)
+    #[Route(path: '/room/{roomId}/item/{itemId}/filelist')]
+    public function filelistAction($roomId, $itemId, ItemService $itemService): Response
     {
         /** @var cs_item $item */
         $item = $itemService->getItem($itemId);
 
-        /** @var \cs_file_item[] $files */
+        /** @var cs_file_item[] $files */
         $files = $item->getFileList()->to_array();
-        $fileArray = array();
+        $fileArray = [];
 
         foreach ($files as $key => $file) {
-            $fileArray[] = array (
-                'name' => $file->getFileName(),
-                'path' => $this->generateUrl('app_file_getfile', [
-                    'fileId' => $file->getFileID(),
-                ], UrlGeneratorInterface::ABSOLUTE_PATH),
-                'id' => $file->getFileID(),
-                'ext' => $file->getExtension(),
-            );
+            $fileArray[] = ['name' => $file->getFileName(), 'path' => $this->generateUrl('app_file_getfile', [
+                'fileId' => $file->getFileID(),
+            ], UrlGeneratorInterface::ABSOLUTE_PATH), 'id' => $file->getFileID(), 'ext' => $file->getExtension()];
         }
 
         return new JsonResponse([
             'files' => $fileArray,
         ]);
-
     }
 
-
-    /**
-     * @Route("/room/{roomId}/item/{itemId}/stepper")
-     * @Template()
-     * @param $roomId
-     * @param $itemId
-     * @param Request $request
-     * @param ItemService $itemService
-     * @param LegacyEnvironment $legacyEnvironment
-     * @return array
-     */
-    public function stepperAction($roomId, $itemId, Request $request, ItemService $itemService, LegacyEnvironment $legacyEnvironment)
+    #[Route(path: '/room/{roomId}/item/{itemId}/stepper')]
+    public function stepperAction($roomId, $itemId, ItemService $itemService, LegacyEnvironment $legacyEnvironment): Response
     {
         $environment = $legacyEnvironment->getEnvironment();
 
@@ -1078,23 +910,23 @@ class ItemController extends AbstractController
         /** @var cs_item $item */
         $item = $rubricManager->getItem($itemId);
 
-        if ($baseItem->getItemType() == 'project') {
+        if ('project' == $baseItem->getItemType()) {
             $rubricManager->setCommunityroomLimit($roomId);
             $rubricManager->setContextLimit($environment->getCurrentPortalID());
         } else {
             $rubricManager->setContextLimit($roomId);
         }
-        
-        if ($item->getItemType() == 'date') {
+
+        if ('date' == $item->getItemType()) {
             $rubricManager->setWithoutDateModeLimit();
         }
-        if(!$environment->getCurrentUserItem()->isModerator() ){
+        if (!$environment->getCurrentUserItem()->isModerator()) {
             $rubricManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
         }
         $rubricManager->select();
         $itemList = $rubricManager->get();
         $items = $itemList->to_array();
-        $itemList = array();
+        $itemList = [];
         $counterBefore = 0;
         $counterAfter = 0;
         $counterPosition = 0;
@@ -1108,7 +940,7 @@ class ItemController extends AbstractController
                 if ($counterBefore > 5) {
                     array_shift($itemList);
                 } else {
-                    $counterBefore++;
+                    ++$counterBefore;
                 }
                 $itemList[] = $tempItem;
                 if ($tempItem->getItemID() == $item->getItemID()) {
@@ -1117,11 +949,11 @@ class ItemController extends AbstractController
                 if (!$foundItem) {
                     $prevItemId = $tempItem->getItemId();
                 }
-                $counterPosition++;
+                ++$counterPosition;
             } else {
                 if ($counterAfter < 5) {
                     $itemList[] = $tempItem;
-                    $counterAfter++;
+                    ++$counterAfter;
                     if (!$nextItemId) {
                         $nextItemId = $tempItem->getItemId();
                     }
@@ -1135,72 +967,45 @@ class ItemController extends AbstractController
                 $firstItemId = $items[0]->getItemId();
             }
             if ($nextItemId) {
-                $lastItemId = $items[sizeof($items)-1]->getItemId();
+                $lastItemId = $items[sizeof($items) - 1]->getItemId();
             }
         }
-        
-        return array(
-            'rubric' => $item->getItemType(),
-            'roomId' => $roomId,
-            'itemList' => $itemList,
-            'item' => $item,
-            'counterPosition' => $counterPosition,
-            'count' => sizeof($items),
-            'firstItemId' => $firstItemId,
-            'prevItemId' => $prevItemId,
-            'nextItemId' => $nextItemId,
-            'lastItemId' => $lastItemId,
-        );
+
+        return $this->render('item/stepper.html.twig', ['rubric' => $item->getItemType(), 'roomId' => $roomId, 'itemList' => $itemList, 'item' => $item, 'counterPosition' => $counterPosition, 'count' => sizeof($items), 'firstItemId' => $firstItemId, 'prevItemId' => $prevItemId, 'nextItemId' => $nextItemId, 'lastItemId' => $lastItemId]);
     }
 
-    /**
-     * @Route("/room/{roomId}/item/{itemId}/get", condition="request.isXmlHttpRequest()")
-     * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
-     * @param ItemService $itemService
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/item/{itemId}/get', condition: 'request.isXmlHttpRequest()')]
+    #[Security("is_granted('ITEM_SEE', itemId)")]
     public function singleArticleAction(
         ItemService $itemService,
         int $itemId
-    ) {
+    ): Response {
         $item = $itemService->getTypedItem($itemId);
 
         if (!$item) {
-            throw $this->createNotFoundException('no item found for id ' . $itemId);
+            throw $this->createNotFoundException('no item found for id '.$itemId);
         }
 
-        return [
+        return $this->render('item/single_article.html.twig', [
             'item' => $item,
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/item/{itemId}/links")
-     * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
-     * @param RoomService $roomService
-     * @param ItemService $itemService
-     * @param CategoryService $categoryService
-     * @param LegacyEnvironment $environment
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/item/{itemId}/links')]
+    #[Security("is_granted('ITEM_SEE', itemId)")]
     public function linksAction(
         RoomService $roomService,
         ItemService $itemService,
         CategoryService $categoryService,
         LegacyEnvironment $environment,
         int $roomId, int $itemId
-    ) {
+    ): Response {
         $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
         $item = $itemService->getItem($itemId);
 
-        $categories = array();
+        $categories = [];
         if ($current_context->withTags()) {
             $roomCategories = $categoryService->getTags($roomId);
             $itemCategories = $item->getTagsArray();
@@ -1209,41 +1014,29 @@ class ItemController extends AbstractController
 
         $roomItem = $roomService->getRoomItem($roomId);
 
-        return [
+        return $this->render('item/links.html.twig', [
             'item' => $item,
             'showHashtags' => $roomItem->withBuzzwords(),
             'showCategories' => $roomItem->withTags(),
             'roomCategories' => $categories,
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/item/{itemId}/canceledit")
-     * @Template()
-     * @param ItemService $itemService
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/item/{itemId}/canceledit')]
     public function cancelEditAction(
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $item = $itemService->getTypedItem($itemId);
-        
-        if ($item->getItemType() === CS_SECTION_TYPE ||$item->getItemType() === CS_STEP_TYPE) {
+
+        if (CS_SECTION_TYPE === $item->getItemType() || CS_STEP_TYPE === $item->getItemType()) {
             $eventDispatcher->dispatch(new CommsyEditEvent($item->getLinkedItem()), CommsyEditEvent::CANCEL);
         } else {
             $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::CANCEL);
         }
 
-        return array(
-            'canceledEdit' => true,
-            'roomId' => $roomId,
-            'item' => $item,
-        );
+        return $this->render('item/cancel_edit.html.twig', ['canceledEdit' => true, 'roomId' => $roomId, 'item' => $item]);
     }
 }

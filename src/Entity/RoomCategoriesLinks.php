@@ -1,47 +1,52 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Jsvrcek\ICS\Model\Calendar;
-use Nette\Utils\Strings;
 
 /**
- * Invitations
- *
- * @ORM\Table(name="room_categories_links", indexes={@ORM\Index(name="id", columns={"id"})})
- * @ORM\Entity
+ * Invitations.
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'room_categories_links')]
+#[ORM\Index(name: 'id', columns: ['id'])]
 class RoomCategoriesLinks
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @var int
      */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id = '0';
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=false)
+     * @var int
      */
+    #[ORM\Column(name: 'context_id', type: 'integer', nullable: false)]
     private $context_id;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="category_id", type="integer", nullable=false)
+     * @var mixed|null
      */
+    #[ORM\Column(name: 'category_id', type: 'integer', nullable: false)]
     private $category_id;
 
-
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -49,9 +54,9 @@ class RoomCategoriesLinks
     }
 
     /**
-     * Set contextId
+     * Set contextId.
      *
-     * @param integer $contextId
+     * @param int $contextId
      *
      * @return RoomCategoriesLinks
      */
@@ -63,9 +68,9 @@ class RoomCategoriesLinks
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
-     * @return integer
+     * @return int
      */
     public function getContextId()
     {
@@ -73,9 +78,9 @@ class RoomCategoriesLinks
     }
 
     /**
-     * Set categoryId
+     * Set categoryId.
      *
-     * @param integer $ccategoryId
+     * @param int $ccategoryId
      *
      * @return RoomcategoriesLinks
      */
@@ -87,9 +92,9 @@ class RoomCategoriesLinks
     }
 
     /**
-     * Get categoryId
+     * Get categoryId.
      *
-     * @return integer
+     * @return int
      */
     public function getCategoryId()
     {

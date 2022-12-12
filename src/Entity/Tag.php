@@ -1,89 +1,87 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Tag
- *
- * @ORM\Table(name="tag", indexes={@ORM\Index(name="context_id", columns={"context_id"})})
- * @ORM\Entity
+ * Tag.
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'tag')]
+#[ORM\Index(name: 'context_id', columns: ['context_id'])]
 class Tag
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="item_id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @var int
      */
+    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $itemId = '0';
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
     private $contextId;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="creator_id", type="integer", nullable=false)
+     * @var int
      */
+    #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
     private $creatorId = '0';
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="modifier_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: true)]
     private $modifierId;
 
-     /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="deleter_id", referencedColumnName="item_id")
-     */
-    private $deleter;
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id')]
+    private ?User $deleter = null;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="creation_date", type="datetime", nullable=false)
+     * @var DateTime
      */
+    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private $creationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modification_date", type="datetime", nullable=false)
+     * @var DateTime
      */
+    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
     private $modificationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
+     * @var DateTime
      */
+    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private $title;
 
-
-
     /**
-     * Get itemId
+     * Get itemId.
      *
-     * @return integer
+     * @return int
      */
     public function getItemId()
     {
@@ -91,9 +89,9 @@ class Tag
     }
 
     /**
-     * Set contextId
+     * Set contextId.
      *
-     * @param integer $contextId
+     * @param int $contextId
      *
      * @return Tag
      */
@@ -105,9 +103,9 @@ class Tag
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
-     * @return integer
+     * @return int
      */
     public function getContextId()
     {
@@ -115,9 +113,9 @@ class Tag
     }
 
     /**
-     * Set creatorId
+     * Set creatorId.
      *
-     * @param integer $creatorId
+     * @param int $creatorId
      *
      * @return Tag
      */
@@ -129,9 +127,9 @@ class Tag
     }
 
     /**
-     * Get creatorId
+     * Get creatorId.
      *
-     * @return integer
+     * @return int
      */
     public function getCreatorId()
     {
@@ -139,9 +137,9 @@ class Tag
     }
 
     /**
-     * Set modifierId
+     * Set modifierId.
      *
-     * @param integer $modifierId
+     * @param int $modifierId
      *
      * @return Tag
      */
@@ -153,9 +151,9 @@ class Tag
     }
 
     /**
-     * Get modifierId
+     * Get modifierId.
      *
-     * @return integer
+     * @return int
      */
     public function getModifierId()
     {
@@ -163,13 +161,11 @@ class Tag
     }
 
     /**
-     * Set deleter
-     *
-     * @param \App\Entity\User $deleter
+     * Set deleter.
      *
      * @return Labels
      */
-    public function setDeleter(\App\Entity\User $deleter = null)
+    public function setDeleter(User $deleter = null)
     {
         $this->deleter = $deleter;
 
@@ -177,9 +173,9 @@ class Tag
     }
 
     /**
-     * Get deleter
+     * Get deleter.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getDeleter()
     {
@@ -187,9 +183,9 @@ class Tag
     }
 
     /**
-     * Set creationDate
+     * Set creationDate.
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Tag
      */
@@ -201,9 +197,9 @@ class Tag
     }
 
     /**
-     * Get creationDate
+     * Get creationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -211,9 +207,9 @@ class Tag
     }
 
     /**
-     * Set modificationDate
+     * Set modificationDate.
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Tag
      */
@@ -225,9 +221,9 @@ class Tag
     }
 
     /**
-     * Get modificationDate
+     * Get modificationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -235,9 +231,9 @@ class Tag
     }
 
     /**
-     * Set deletionDate
+     * Set deletionDate.
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Tag
      */
@@ -249,9 +245,9 @@ class Tag
     }
 
     /**
-     * Get deletionDate
+     * Get deletionDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {
@@ -259,7 +255,7 @@ class Tag
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -273,7 +269,7 @@ class Tag
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */

@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Entity\Calendars;
@@ -14,40 +25,32 @@ use App\Utils\ItemService;
 use App\Utils\ReaderService;
 use Doctrine\ORM\NonUniqueResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class DashboardController
- * @package App\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
+ * Class DashboardController.
  */
+#[Security("is_granted('ITEM_ENTER', roomId)")]
 class DashboardController extends AbstractController
 {
     /**
-     * @Route("/dashboard/{roomId}")
-     * @Template()
-     * @param ItemService $itemService
-     * @param LegacyEnvironment $environment
-     * @param PortalRepository $portalRepository
-     * @param ServerRepository $serverRepository
-     * @param int $roomId
-     * @return array
      * @throws NonUniqueResultException
      */
-     public function overviewAction(
+    #[Route(path: '/dashboard/{roomId}')]
+    public function overviewAction(
          ItemService $itemService,
          LegacyEnvironment $environment,
          PortalRepository $portalRepository,
          ServerRepository $serverRepository,
          int $roomId
-     ) {
+     ): Response {
         $legacyEnvironment = $environment->getEnvironment();
 
         // get room item for information panel
@@ -99,14 +102,14 @@ class DashboardController extends AbstractController
 
         $user = $legacyEnvironment->getCurrentUserItem();
         $userList = $user->getRelatedUserList()->to_array();
-        $contextIds = array();
+        $contextIds = [];
         foreach ($userList as $user) {
             $contextIds[] = $user->getContextId();
         }
 
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository(Calendars::class);
-        $calendars = $repository->findBy(['context_id' => $contextIds, 'external_url' => ['', NULL]]);
+        $calendars = $repository->findBy(['context_id' => $contextIds, 'external_url' => ['', null]]);
 
         $contextArray = [];
         foreach ($calendars as $calendar) {
@@ -125,7 +128,7 @@ class DashboardController extends AbstractController
             if ($portalUser) {
                 if ($portalUser->isModerator()) {
                     $userMayCreateContext = true;
-                } else if ($portal->getCommunityRoomCreationStatus() == 'all' || $portal->getProjectRoomCreationStatus() == 'portal') {
+                } elseif ('all' == $portal->getCommunityRoomCreationStatus() || 'portal' == $portal->getProjectRoomCreationStatus()) {
                     $userMayCreateContext = $currentUser->isAllowedToCreateContext();
                 }
             }
@@ -133,7 +136,7 @@ class DashboardController extends AbstractController
             $userMayCreateContext = true;
         }
 
-        return [
+        return $this->render('dashboard/overview.html.twig', [
             'roomItem' => $roomItem,
             'dashboardLayout' => $roomItem->getDashboardLayout(),
             'iCal' => $iCal,
@@ -142,26 +145,17 @@ class DashboardController extends AbstractController
             'portal' => $portal,
             'server' => $server,
             'userMayCreateContext' => $userMayCreateContext,
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/dashboard/{roomId}/feed/{start}/{sort}")
-     * @Template()
-     * @param Request $request
-     * @param ReaderService $readerService
-     * @param RoomFeedGenerator $roomFeedGenerator
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param int $max
-     * @return array
-     */
+    #[Route(path: '/dashboard/{roomId}/feed/{start}/{sort}')]
     public function feedAction(
         Request $request,
         ReaderService $readerService,
         RoomFeedGenerator $roomFeedGenerator,
         LegacyEnvironment $legacyEnvironment,
         int $max = 10
-    ) {
+    ): Response {
         $lastId = null;
         if ($request->query->has('lastId')) {
             $lastId = $request->query->get('lastId');
@@ -171,75 +165,57 @@ class DashboardController extends AbstractController
 
         $user = $legacyEnvironment->getEnvironment()->getPortalUserItem();
 
-        $readerList = array();
+        $readerList = [];
         $feedItems = [];
         foreach ($feedList as $item) {
-            if ($item != null) {
+            if (null != $item) {
                 $feedItems[] = $item;
                 $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
                 $readerList[$item->getItemId()] = $readerService->getChangeStatusForUserByID($item->getItemId(), $relatedUser->getItemId());
             }
         }
 
-        return [
+        return $this->render('dashboard/feed.html.twig', [
             'feedList' => $feedItems,
-            'readerList' => $readerList
-        ];
+            'readerList' => $readerList,
+        ]);
     }
 
     /**
-     * @Route("/dashboard/{roomId}/edit")
-     * @param Request $request
-     * @param TranslatorInterface $translator
-     * @param LegacyEnvironment $environment
-     * @param int $roomId
      * @return JsonResponse
      */
+    #[Route(path: '/dashboard/{roomId}/edit')]
     public function editAction(
         Request $request,
         TranslatorInterface $translator,
         LegacyEnvironment $environment,
         int $roomId
-    ) {
-        $requestContent = json_decode($request->getContent());
-        
+    ): Response {
+        $requestContent = json_decode($request->getContent(), null, 512, JSON_THROW_ON_ERROR);
+
         $legacyEnvironment = $environment->getEnvironment();
 
         // get room item for information panel
         $roomManager = $legacyEnvironment->getPrivateRoomManager();
         $roomItem = $roomManager->getItem($roomId);
-        
+
         $roomItem->setDashboardLayout($requestContent->data);
         $roomItem->save();
-        
+
         $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->trans('dashboard changed', [], 'messages');
-        
-        return new JsonResponse(array('message' => $message,
-                                      'timeout' => '5550',
-                                      'layout' => 'cs-notify-message',
-                                      'data' => array(),
-                                    ));
+
+        return new JsonResponse(['message' => $message, 'timeout' => '5550', 'layout' => 'cs-notify-message', 'data' => []]);
     }
 
-    /**
-     * @Route("/dashboard/{roomId}/rss")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     * @return array
-     */
+    #[Route(path: '/dashboard/{roomId}/rss')]
     public function rssAction(
-        Request $request,
         int $roomId
-    ) {
-        return array(
-        );
+    ): Response {
+        return $this->render('dashboard/rss.html.twig');
     }
-/**
-     * @Route("/dashboard/{roomId}/myviews")
-     * @Template()
-     */
-    public function myViewsAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment)
+
+#[Route(path: '/dashboard/{roomId}/myviews')]
+    public function myViewsAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment): Response
     {
         $searchData = new SearchData();
 
@@ -255,21 +231,20 @@ class DashboardController extends AbstractController
         $myViewsForm = $this->createForm(MyViewsType::class, $searchData, [
             'action' => $this->generateUrl('app_dashboard_myviews', [
                 'roomId' => $roomId,
-            ])
+            ]),
         ]);
         $myViewsForm->handleRequest($request);
 
         if ($myViewsForm->isSubmitted() && $myViewsForm->isValid()) {
-
             $savedSearch = $searchData->getSelectedSavedSearch();
 
             if ($savedSearch) {
                 $savedSearchURL = $savedSearch->getSearchUrl();
                 if ($savedSearchURL) {
                     // redirect to the search_url stored for the chosen saved search
-                    $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $savedSearchURL);
+                    $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost().$savedSearchURL);
 
-                    return $redirectResponse;
+                    return $this->render('dashboard/my_views.html.twig');
                 }
             } else {
                 return $this->redirectToRoute('app_search_results', [
@@ -278,30 +253,24 @@ class DashboardController extends AbstractController
             }
         }
 
-        return [
+        return $this->render('dashboard/my_views.html.twig', [
             'myViewsForm' => $myViewsForm->createView(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/dashboard/{roomId}/externalaccess")
-     * @Template()
-     * @param LegacyEnvironment $environment
-     * @param int $roomId
-     * @return array
-     */
+    #[Route(path: '/dashboard/{roomId}/externalaccess')]
     public function externalaccessAction(
         LegacyEnvironment $environment,
         int $roomId
-    ) {
+    ): Response {
         $legacyEnvironment = $environment->getEnvironment();
         $user = $legacyEnvironment->getCurrentUser()->getRelatedPortalUserItem();
 
         $itemManager = $legacyEnvironment->getItemManager();
         $releasedIds = $itemManager->getExternalViewerEntriesForRoom($roomId);
         $viewableIds = $itemManager->getExternalViewerEntriesForUser($user->getUserID());
-        
-        $releasedItems = array();
+
+        $releasedItems = [];
         foreach ($releasedIds as $releasedId) {
             $tempItem = $itemManager->getItem($releasedId);
             if ($tempItem) {
@@ -309,8 +278,8 @@ class DashboardController extends AbstractController
                 $releasedItems[] = $tempManager->getItem($releasedId);
             }
         }
-        
-        $viewableItems = array();
+
+        $viewableItems = [];
         foreach ($viewableIds as $viewableId) {
             $tempItem = $itemManager->getItem($viewableId);
             if ($tempItem) {
@@ -318,10 +287,7 @@ class DashboardController extends AbstractController
                 $viewableItems[] = $tempManager->getItem($viewableId);
             }
         }
-        
-        return array(
-            'releaseItems' => $releasedItems,
-            'viewableItems' => $viewableItems
-        );
+
+        return $this->render('dashboard/externalaccess.html.twig', ['releaseItems' => $releasedItems, 'viewableItems' => $viewableItems]);
     }
 }

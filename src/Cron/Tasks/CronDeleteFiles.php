@@ -1,40 +1,35 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Cron\Tasks;
 
 use App\Helper\PortalHelper;
 use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
-use App\Utils\RoomService;
 use cs_environment;
 use cs_room_item;
 use DateTimeImmutable;
 
 class CronDeleteFiles implements CronTaskInterface
 {
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
-
-    /**
-     * @var PortalRepository
-     */
-    private PortalRepository $portalRepository;
-
-    /**
-     * @var PortalHelper
-     */
-    private PortalHelper $portalHelper;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        PortalRepository $portalRepository,
-        PortalHelper $portalHelper
+        private PortalRepository $portalRepository,
+        private PortalHelper $portalHelper
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->portalRepository = $portalRepository;
-        $this->portalHelper = $portalHelper;
     }
 
     public function run(?DateTimeImmutable $lastRun): void
@@ -52,7 +47,7 @@ class CronDeleteFiles implements CronTaskInterface
             // rooms
             $activeRooms = $this->portalHelper->getActiveRoomsInPortal($portal);
             foreach ($activeRooms as $activeRoom) {
-                /** @var cs_room_item $activeRoom */
+                /* @var cs_room_item $activeRoom */
                 $fileManager->deleteUnneededFiles($activeRoom->getItemID(), $portal->getId());
             }
         }

@@ -1,10 +1,20 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Event;
 
-
 use App\Utils\ReaderService;
+use InvalidArgumentException;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -12,46 +22,28 @@ use Symfony\Contracts\EventDispatcher\Event;
  * For available read status values, see the constants defined in `ReaderService`.
  *
  * Class ReadStatusPreChangeEvent
- * @package App\Event
  */
 class ReadStatusPreChangeEvent extends Event
 {
-    /**
-     * @var int $userId
-     */
-    private $userId;
+    private string $newReadStatus;
 
-    /**
-     * @var int $itemId
-     */
-    private $itemId;
-
-    /**
-     * @var string $newReadStatus
-     */
-    private $newReadStatus;
-
-    public function __construct(int $userId, int $itemId, string $newReadStatus)
+    public function __construct(private int $userId, private int $itemId, string $newReadStatus)
     {
         if (
-            $newReadStatus !== ReaderService::READ_STATUS_NEW &&
-            $newReadStatus !== ReaderService::READ_STATUS_CHANGED &&
-            $newReadStatus !== ReaderService::READ_STATUS_NEW_ANNOTATION &&
-            $newReadStatus !== ReaderService::READ_STATUS_CHANGED_ANNOTATION &&
-            $newReadStatus !== ReaderService::READ_STATUS_SEEN &&
+            ReaderService::READ_STATUS_NEW !== $newReadStatus &&
+            ReaderService::READ_STATUS_CHANGED !== $newReadStatus &&
+            ReaderService::READ_STATUS_NEW_ANNOTATION !== $newReadStatus &&
+            ReaderService::READ_STATUS_CHANGED_ANNOTATION !== $newReadStatus &&
+            ReaderService::READ_STATUS_SEEN !== $newReadStatus &&
             !empty($newReadStatus) // most CommSy code currently uses an empty string ('') instead of READ_STATUS_SEEN
         ) {
-            throw new \InvalidArgumentException('unknown read status given');
+            throw new InvalidArgumentException('unknown read status given');
         }
-
-        $this->userId = $userId;
-        $this->itemId = $itemId;
         $this->newReadStatus = $newReadStatus;
     }
 
     /**
      * The ID of the user for which the item's read status will be changed.
-     * @return int
      */
     public function getUserId(): int
     {
@@ -61,7 +53,6 @@ class ReadStatusPreChangeEvent extends Event
     /**
      * The ID of the item whose read status will be changed.
      * Note that the returned item may still have the old read status assigned.
-     * @return int
      */
     public function getItemId(): int
     {
@@ -70,7 +61,6 @@ class ReadStatusPreChangeEvent extends Event
 
     /**
      * The new read status that will be assigned to the item.
-     * @return string
      */
     public function getNewReadStatus(): string
     {

@@ -1,161 +1,110 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Entity;
 
 use DateTimeImmutable;
 
 /**
- * Class PortalUserChangeStatus
- * @package App\Entity
+ * Class PortalUserChangeStatus.
  */
 class PortalUserChangeStatus
 {
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string
-     */
-    private $userID;
+    private ?string $userID = null;
 
-    /**
-     * @var string
-     */
-    private $lastLogin;
+    private ?string $lastLogin = null;
 
-    /**
-     * @var string
-     */
-    private $currentStatus;
+    private ?string $currentStatus = null;
 
-    /**
-     * @var string
-     */
-    private $newStatus;
+    private ?string $newStatus = null;
 
-    /**
-     * @var bool
-     */
-    private $contact;
+    private ?bool $contact = null;
 
-    /**
-     * @var bool
-     */
-    private $loginIsDeactivated;
+    private ?bool $loginIsDeactivated = null;
 
-    /**
-     * @var DateTimeImmutable|null
-     */
-    private $impersonateExpiryDate;
+    private ?DateTimeImmutable $impersonateExpiryDate = null;
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return PortalUserChangeStatus
-     */
     public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getUserID(): string
     {
         return $this->userID;
     }
 
-    /**
-     * @param string $userID
-     * @return PortalUserChangeStatus
-     */
     public function setUserID(string $userID): self
     {
         $this->userID = $userID;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getLastLogin(): string
     {
         return $this->lastLogin;
     }
 
-    /**
-     * @param string $lastLogin
-     * @return PortalUserChangeStatus
-     */
     public function setLastLogin(string $lastLogin): self
     {
         $this->lastLogin = $lastLogin;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getCurrentStatus(): string
     {
         return $this->currentStatus;
     }
 
-    /**
-     * @param string $currentStatus
-     * @return PortalUserChangeStatus
-     */
     public function setCurrentStatus(string $currentStatus): self
     {
         $this->currentStatus = $currentStatus;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getNewStatus(): string
     {
         return $this->newStatus;
     }
 
-    /**
-     * @param string $newStatus
-     * @return PortalUserChangeStatus
-     */
     public function setNewStatus(string $newStatus): self
     {
         $this->newStatus = $newStatus;
+
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isContact(): bool
     {
         return $this->contact;
     }
 
-    /**
-     * @param bool $contact
-     * @return PortalUserChangeStatus
-     */
     public function setContact(bool $contact): self
     {
         $this->contact = $contact;
+
         return $this;
     }
 
@@ -167,31 +116,22 @@ class PortalUserChangeStatus
         return $this->loginIsDeactivated;
     }
 
-    /**
-     * @param bool $loginIsDeactivated
-     * @return PortalUserChangeStatus
-     */
     public function setLoginIsDeactivated(bool $loginIsDeactivated): self
     {
         $this->loginIsDeactivated = $loginIsDeactivated;
+
         return $this;
     }
 
-    /**
-     * @return DateTimeImmutable|null
-     */
     public function getImpersonateExpiryDate(): ?DateTimeImmutable
     {
         return $this->impersonateExpiryDate;
     }
 
-    /**
-     * @param DateTimeImmutable|null $expiry
-     * @return PortalUserChangeStatus
-     */
     public function setImpersonateExpiryDate(?DateTimeImmutable $expiry): self
     {
         $this->impersonateExpiryDate = $expiry;
+
         return $this;
     }
 }

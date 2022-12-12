@@ -1,13 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 28.07.18
- * Time: 11:29
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Form\Type;
-
 
 use App\Entity\AuthSource;
 use App\Entity\Portal;
@@ -23,20 +27,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CsvImportType extends AbstractType
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private TranslatorInterface $translator;
-
-    /**
-     * @var FileToUserImportTransformer
-     */
-    private FileToUserImportTransformer $transformer;
-
-    public function __construct(TranslatorInterface $translator, FileToUserImportTransformer $transformer)
+    public function __construct(private TranslatorInterface $translator, private FileToUserImportTransformer $transformer)
     {
-        $this->translator = $translator;
-        $this->transformer = $transformer;
     }
 
     /**
@@ -44,14 +36,13 @@ class CsvImportType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $builder
             ->add('csv', FileType::class, [
                 'attr' => [
                     'accept' => 'text/csv',
                 ],
                 'required' => true,
-                'label' => 'Files'
+                'label' => 'Files',
             ])
             ->add('auth_sources', EntityType::class, [
                 'class' => AuthSource::class,
@@ -65,10 +56,10 @@ class CsvImportType extends AbstractType
                         ->orderBy('a.title')
                         ->setParameter('portal', $portal);
                 },
-                'choice_label' => function (AuthSource $authSource) use ($options) {
+                'choice_label' => function (AuthSource $authSource) {
                     if ($authSource->isDefault()) {
-                        return $authSource->getTitle() . ' (' . $this->translator->trans('Default Source', [],
-                                'portal') . ')';
+                        return $authSource->getTitle().' ('.$this->translator->trans('Default Source', [],
+                            'portal').')';
                     }
 
                     return $authSource->getTitle();
@@ -94,16 +85,7 @@ class CsvImportType extends AbstractType
         $resolver
             ->setRequired(['portal'])
             ->setDefaults([
-                'translation_domain' => 'portal'
+                'translation_domain' => 'portal',
             ]);
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
-    {
-        return 'csv_import';
-    }
-
 }

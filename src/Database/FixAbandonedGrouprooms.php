@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Database;
 
 use App\Entity\Room;
@@ -11,20 +22,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class FixAbandonedGrouprooms implements DatabaseCheck
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    private ItemService $itemService;
-
-    public function __construct(
-        EntityManagerInterface $entityManager,
-        ItemService $itemService,
-        LegacyEnvironment $legacyEnvironment
-    ) {
-        $this->entityManager = $entityManager;
-        $this->itemService = $itemService;
+    public function __construct(private EntityManagerInterface $entityManager, private ItemService $itemService, LegacyEnvironment $legacyEnvironment)
+    {
     }
 
     public function getPriority()
@@ -53,7 +52,7 @@ class FixAbandonedGrouprooms implements DatabaseCheck
 
         foreach ($groupRooms as $groupRoom) {
             if ($io->isVerbose()) {
-                $io->text('Processing room ' . $groupRoom->getTitle() . '(' . $groupRoom->getItemId() . ')');
+                $io->text('Processing room '.$groupRoom->getTitle().'('.$groupRoom->getItemId().')');
             }
 
             $extras = $groupRoom->getExtras();
@@ -62,13 +61,13 @@ class FixAbandonedGrouprooms implements DatabaseCheck
                 $projectRoomId = $extras['PROJECT_ROOM_ITEM_ID'];
 
                 $projectRoom = $this->itemService->getTypedItem($projectRoomId);
-                if ($projectRoom !== null) {
+                if (null !== $projectRoom) {
                     $found = true;
                 }
             }
 
-            if ($found === false) {
-                $io->warning('"PROJECT_ROOM_ITEM_ID" not set or no related room found for grouproom with id ' . $groupRoom->getItemId());
+            if (false === $found) {
+                $io->warning('"PROJECT_ROOM_ITEM_ID" not set or no related room found for grouproom with id '.$groupRoom->getItemId());
 
                 $this->entityManager->createQueryBuilder()
                     ->delete(Room::class, 'r')

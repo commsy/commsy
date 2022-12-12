@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type;
 
 use App\Entity\Account;
@@ -26,7 +37,8 @@ class SignUpFormType extends AbstractType
         private TranslatorInterface $translator,
         private TranslationRepository $translationRepository,
         private RequestStack $requestStack
-    ) {}
+    ) {
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -63,14 +75,14 @@ class SignUpFormType extends AbstractType
                     'label' => 'registration.email',
                     'attr' => [
                         'placeholder' => $this->translator->trans('registration.email', [], 'registration'),
-                    ]
+                    ],
                 ],
                 'second_options' => [
                     'label' => false,
                     'attr' => [
                         'placeholder' => $this->translator->trans('registration.email_confirm', [], 'registration'),
-                    ]
-                ]
+                    ],
+                ],
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
@@ -92,7 +104,7 @@ class SignUpFormType extends AbstractType
                 'label' => 'registration.submit',
                 'attr' => [
                     'class' => 'uk-button-primary uk-width-medium',
-                ]
+                ],
             ])
             ->add('cancel', SubmitType::class, [
                 'label' => 'registration.cancel',

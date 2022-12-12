@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Security;
 
 use App\Entity\Account;
@@ -12,9 +23,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
@@ -29,33 +40,14 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
 {
     use TargetPathTrait;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
-     * @var CsrfTokenManagerInterface
-     */
-    private $csrfTokenManager;
-
-    /**
-     * @var UserPasswordEncoderInterface
-     */
-    private $passwordEncoder;
-
     public function __construct(
-        EntityManagerInterface $entityManager,
+        private EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
-        CsrfTokenManagerInterface $csrfTokenManager,
-        UserPasswordEncoderInterface $passwordEncoder,
+        private CsrfTokenManagerInterface $csrfTokenManager,
+        private UserPasswordHasherInterface $passwordEncoder,
         RequestContext $requestContext
     ) {
         parent::__construct($urlGenerator, $requestContext);
-
-        $this->entityManager = $entityManager;
-        $this->csrfTokenManager = $csrfTokenManager;
-        $this->passwordEncoder = $passwordEncoder;
     }
 
     protected function getPostParameterName(): string
@@ -70,7 +62,7 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
 
             // If context is "server" this will be a root login as system administrator. The form authenticator
             // is the only one that handles these requests
-            if ($context === 'server') {
+            if ('server' === $context) {
                 return true;
             }
 
@@ -98,10 +90,8 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
      * null, then a UsernameNotFoundException is thrown for you.
      *
      * @param mixed $credentials
-     * @param UserProviderInterface $userProvider
      *
      * @return UserInterface|null
-     *
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
@@ -112,7 +102,7 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
 
         $user = null;
         try {
-            if ($credentials['context'] === 'server') {
+            if ('server' === $credentials['context']) {
                 $user = $this->entityManager->getRepository(Account::class)
                     ->findOneBy([
                         'username' => $credentials['email'],
@@ -121,14 +111,12 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
             } else {
                 /** @var Collection $authSources */
                 $authSources = $this->entityManager->getRepository(Portal::class)->find($credentials['context'])->getAuthSources();
-                $localAuthSource = $authSources->filter(function (AuthSource $authSource) {
-                    return $authSource instanceof AuthSourceLocal;
-                })->first();
+                $localAuthSource = $authSources->filter(fn (AuthSource $authSource) => $authSource instanceof AuthSourceLocal)->first();
 
                 $user = $this->entityManager->getRepository(Account::class)
                     ->findOneByCredentials($credentials['email'], $credentials['context'], $localAuthSource);
             }
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             throw new CustomUserMessageAuthenticationException('A problem with your account occurred.');
         }
 
@@ -145,7 +133,7 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
         /** @var Account $user */
         $user = $token->getUser();
 
-        $context = ($request->request->get('context') === 'server') ? 99 : $request->request->get('context');
+        $context = ('server' === $request->request->get('context')) ? 99 : $request->request->get('context');
 
         // Store the current context and the auth source id in the user session so we can
         // refer to it later in the user provider to get the correct user.

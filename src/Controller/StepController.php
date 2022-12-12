@@ -1,104 +1,108 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 03.07.18
- * Time: 21:58
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Controller;
 
 use App\Action\Delete\DeleteAction;
 use App\Action\Delete\DeleteStep;
+use App\Action\TodoStatus\TodoStatusAction;
+use App\Utils\TodoService;
 use cs_room_item;
 use cs_step_item;
 use Exception;
-use Symfony\Component\HttpFoundation\Response;
-
-use App\Action\TodoStatus\TodoStatusAction;
-use App\Utils\TodoService;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class StepController extends BaseController
 {
     private TodoService $todoService;
 
-    /**
-     * @required
-     * @param TodoService $todoService
-     */
+    public function __construct(private TodoStatusAction $todoStatusAction)
+    {
+    }
+
+    #[Required]
     public function setTodoService(TodoService $todoService): void
     {
         $this->todoService = $todoService;
     }
 
-
-
-    ###################################################################################################
-    ## XHR Action requests
-    ###################################################################################################
-
+    // ##################################################################################################
+    // # XHR Action requests
+    // ##################################################################################################
     /**
-     * @Route("/room/{roomId}/step/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @return Response
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/step/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
         Request $request,
         DeleteAction $action,
         DeleteStep $deleteStep,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
         // TODO: find a way to load this service via new Symfony Dependency Injection!
         $action->setDeleteStrategy($deleteStep);
+
         return $action->execute($room, $items);
     }
 
     /**
-     * @Route("/room/{roomId}/step/xhr/changesatatus/{itemId}", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @throws Exception
      */
-    public function xhrChangeStatusAction($roomId, $itemId, Request $request, TodoService $todoService)
+    #[Route(path: '/room/{roomId}/step/xhr/changesatatus/{itemId}', condition: 'request.isXmlHttpRequest()')]
+    public function xhrChangeStatusAction($roomId, $itemId, Request $request, TodoService $todoService): Response
     {
+        $items = null;
         $room = $this->getRoom($roomId);
         $roomToDoItems = $todoService->getTodosById($roomId, []);
 
-        foreach($roomToDoItems as $roomToDoItem){
-           $steps = $roomToDoItem->getStepItemList()->_data;
-           foreach($steps as $step){
-               if(strcmp($step->getItemID(), $itemId) == 0){
-                   $items = [$roomToDoItem];
-                   $room = $roomToDoItem->getContextItem();
-               }
-           }
+        foreach ($roomToDoItems as $roomToDoItem) {
+            $steps = $roomToDoItem->getStepItemList()->_data;
+            foreach ($steps as $step) {
+                if (0 == strcmp($step->getItemID(), $itemId)) {
+                    $items = [$roomToDoItem];
+                    $room = $roomToDoItem->getContextItem();
+                }
+            }
         }
 
         $payload = $request->request->get('payload');
         if (!isset($payload['status'])) {
-            throw new \Exception('new status string not provided');
+            throw new Exception('new status string not provided');
         }
         $newStatus = $payload['status'];
 
-        $action = $this->get(TodoStatusAction::class);
+        $action = $this->todoStatusAction;
         $action->setNewStatus($newStatus);
+
         return $action->execute($room, $items);
     }
+
     /**
-     * @param Request $request
      * @param cs_room_item $roomItem
-     * @param boolean $selectAll
-     * @param integer[] $itemIds
+     * @param bool          $selectAll
+     * @param int[]         $itemIds
+     *
      * @return cs_step_item[]
      */
     protected function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
     {
-        if (count($itemIds) == 1) {
+        if (1 == count($itemIds)) {
             return [$this->todoService->getStep($itemIds[0])];
         }
 

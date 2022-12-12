@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type\Account;
 
 use Symfony\Component\Form\AbstractType;
@@ -16,7 +27,7 @@ class NewsletterType extends AbstractType
      * Type extensions can further modify the form.
      *
      * @param FormBuilderInterface $builder The form builder
-     * @param array $options The options
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -28,7 +39,7 @@ class NewsletterType extends AbstractType
                 'choices' => [
                     'none' => '1',
                     'weekly' => '2',
-                    'daily' => '3'
+                    'daily' => '3',
                 ],
                 'label' => 'newsletterStatus',
                 'required' => false,
@@ -38,7 +49,7 @@ class NewsletterType extends AbstractType
                 'translation_domain' => 'form',
                 'attr' => [
                     'class' => 'uk-button-primary',
-                ]
+                ],
             ]);
     }
 
@@ -64,5 +75,4 @@ class NewsletterType extends AbstractType
     {
         return 'room_profile';
     }
-
 }

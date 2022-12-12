@@ -1,113 +1,34 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Utils;
 
 use App\Room\Copy\LegacyCopy;
-use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
-use cs_environment;
 use cs_community_item;
+use cs_environment;
 use cs_room_item;
 use cs_user_item;
 
 class RoomService
 {
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
-
-    /**
-     * @var CalendarsService
-     */
-    private CalendarsService $calendarsService;
-
-    /**
-     * @var LegacyCopy
-     */
-    private LegacyCopy $legacyCopy;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        CalendarsService $calendarsService,
-        LegacyCopy $legacyCopy
+        private LegacyCopy $legacyCopy
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->calendarsService = $calendarsService;
-        $this->legacyCopy = $legacyCopy;
-    }
-
-    /**
-     * Returns a new room with the given properties, created by the given room manager
-     * @param \cs_room2_manager $roomManager the room manager to be used to create the room (which also defines its type)
-     * @param int $contextID the ID of the room which hosts the created room
-     * @param string $title the title of the created room
-     * @param string $description (optional) the description of the created room
-     * @param cs_room_item|null (optional) $roomTemplate the room to be used as a template when creating the new room
-     * @param cs_user_item|null (optional) $creator the user who will be specified as the room's creator; if left out,
-     * the current user will be used
-     * @param cs_user_item|null (optional) $modifier the user who will be specified as the room's modifier; if left out,
-     * the current user will be used
-     * @return cs_room_item|null the newly created room, or null if an error occurred
-     */
-    public function createRoom(
-        \cs_room2_manager $roomManager,
-        int $contextID,
-        string $title,
-        string $description = "",
-        cs_room_item $roomTemplate = null,
-        cs_user_item $creator = null,
-        cs_user_item $modifier = null
-    ): ?cs_room_item
-    {
-        // TODO: use a facade/factory to create a new room
-
-        if (!isset($roomManager) || empty($contextID) || empty($title)) {
-            return null;
-        }
-
-        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-        $creator = $creator ?? $currentUser;
-        $modifier = $modifier ?? $currentUser;
-
-        $newRoom = $roomManager->getNewItem();
-        if (!$newRoom) {
-            return null;
-        }
-
-        $newRoom->setCreatorItem($creator);
-        $newRoom->setModificatorItem($modifier);
-        $newRoom->setCreationDate(date('Y-m-d H:i:s'));
-
-        $newRoom->setContextID($contextID);
-        $newRoom->open();
-
-        $newRoom->setTitle($title);
-        $newRoom->setDescription($description);
-
-        // TODO: in case of a project room, assign the community rooms to which this room belongs (from a method parameter)
-        // TODO: set the room's time intervals (from a method parameter)
-
-        // persist room (which will also call $roomManager->saveItem())
-        $newRoom->save();
-
-        $this->calendarsService->createCalendar($newRoom, null, null, true);
-
-        // TODO: setRoomContext?
-
-        if ($roomTemplate) {
-            $newRoom = $this->copySettings($roomTemplate, $newRoom);
-        }
-
-        // TODO: set the room's system language (from a method parameter)
-
-        // mark the room as edited
-        $linkModifierItemManager = $this->legacyEnvironment->getLinkModifierItemManager();
-        $linkModifierItemManager->markEdited($newRoom->getItemID(), $modifier->getItemID());
-
-        // TODO: set any room categories (from a method parameter)
-
-        return $newRoom;
     }
 
     public function updateRoomTemplate($roomId, $roomTemplateID)
@@ -118,28 +39,32 @@ class RoomService
             $roomItem = $this->copySettings($roomTemplate, $roomItem);
         }
         $roomItem->save();
+
         return $roomItem;
     }
 
     /**
-     * returns the rubrics for the room with the $roomId
-     * @param Integer $roomId room id
-     * @param Boolean $includeModifier include or remove "_show" and "_hide" modifier
-     * @return array            Array with rubric strings
+     * returns the rubrics for the room with the $roomId.
+     *
+     * @param int  $roomId          room id
+     * @param bool $includeModifier include or remove "_show" and "_hide" modifier
+     *
+     * @return array Array with rubric strings
      */
     public function getRubricInformation($roomId, $includeModifier = false)
     {
+        $rubricConfigurations = null;
         // get the rooms rubric configuration
         $roomItem = $this->getRoomItem($roomId);
         if ($roomItem) {
             $homeConfiguration = $roomItem->getHomeConf();
 
-            $rubrics = array();
+            $rubrics = [];
             if (!empty($homeConfiguration)) {
                 $rubricConfigurations = explode(',', $homeConfiguration);
 
                 foreach ($rubricConfigurations as $rubricConfiguration) {
-                    list($rubricName) = explode('_', $rubricConfiguration);
+                    [$rubricName] = explode('_', $rubricConfiguration);
                     $rubrics[] = $rubricName;
                 }
             }
@@ -153,14 +78,13 @@ class RoomService
 
     private function copySettings($masterRoom, $targetRoom)
     {
-// TODO: check if the commented code is still necessary
-// (when creating a project room with user rooms, the commented code would hit the exception since the user room creator is not a room member)
+        // TODO: check if the commented code is still necessary
+        // (when creating a project room with user rooms, the commented code would hit the exception since the user room creator is not a room member)
 
-        /**/
         $user_manager = $this->legacyEnvironment->getUserManager();
         $creator_item = $user_manager->getItem($targetRoom->getCreatorID());
 //        if ($creator_item->getContextID() == $new_room->getItemID()) {
-            $creator_id = $creator_item->getItemID();
+        $creator_id = $creator_item->getItemID();
 //        } else {
 //            $user_manager->resetLimits();
 //            $user_manager->setContextLimit($new_room->getItemID());
@@ -189,14 +113,15 @@ class RoomService
 
         // copy data
         $this->legacyCopy->copyData($masterRoom, $targetRoom, $creator_item);
-        /**/
 
         return $targetRoom;
     }
 
     /**
-     * Returns a user list for the room with the $roomId
-     * @param Integer $roomId room id
+     * Returns a user list for the room with the $roomId.
+     *
+     * @param int $roomId room id
+     *
      * @return array Array with legacy user items
      */
     public function getUserList($roomId)
@@ -214,6 +139,7 @@ class RoomService
      * the room moderators will be returned.
      *
      * @param int $roomId The ID of the containing context
+     *
      * @return cs_user_item[] An array of users who are contact persons or moderators of the room with the given room ID
      */
     public function getContactModeratorItems($roomId)
@@ -232,8 +158,7 @@ class RoomService
     }
 
     /**
-     * @param integer $roomId
-     * @return cs_room_item|null
+     * @param int $roomId
      */
     public function getRoomItem($roomId): ?cs_room_item
     {
@@ -260,7 +185,9 @@ class RoomService
 
     /**
      * Returns all community rooms that host the given (project) room.
+     *
      * @param cs_room_item $room The room whose related community rooms shall be returned
+     *
      * @return cs_community_item[] Array of community rooms that host the given (project) room
      */
     public function getCommunityRoomsForRoom(cs_room_item $room): array
@@ -292,6 +219,7 @@ class RoomService
      * Returns the IDs of all given rooms.
      *
      * @param cs_room_item[] $rooms The array of rooms whose IDs shall be returned
+     *
      * @return int[]
      */
     public function getIdsForRooms(array $rooms): array
@@ -300,9 +228,7 @@ class RoomService
             return [];
         }
 
-        $roomIds = array_map(function (cs_room_item $room) {
-            return $room->getItemID();
-        }, $rooms);
+        $roomIds = array_map(fn (cs_room_item $room) => $room->getItemID(), $rooms);
 
         return $roomIds;
     }
@@ -313,9 +239,7 @@ class RoomService
         $activeRubrics = $this->getRubricInformation($roomId);
 
         // filter rubrics, only group, topic and institution type is filterable
-        $filterableRubrics = array_filter($activeRubrics, function ($rubric) {
-            return in_array($rubric, array('group', 'topic', 'institution'));
-        });
+        $filterableRubrics = array_filter($activeRubrics, fn ($rubric) => in_array($rubric, ['group', 'topic', 'institution']));
 
         return $filterableRubrics;
     }
@@ -330,8 +254,9 @@ class RoomService
 
     public function getRoomFileDirectory($roomId)
     {
-        $roomDir = implode("/", array_filter(explode("\r\n", chunk_split(strval($roomId), "4")), 'strlen'));
-        return $this->legacyEnvironment->getCurrentPortalID() . "/" . $roomDir . "_";
+        $roomDir = implode('/', array_filter(explode("\r\n", chunk_split(strval($roomId), '4')), 'strlen'));
+
+        return $this->legacyEnvironment->getCurrentPortalID().'/'.$roomDir.'_';
     }
 
     public function getRoomsInTimePulse($timeId)
@@ -343,13 +268,14 @@ class RoomService
         $projectManager->select();
 
         return $projectManager->getIDArray();
-
     }
 
     /**
-     * Returns the array of time pulses specified for the current portal
+     * Returns the array of time pulses specified for the current portal.
+     *
      * @param bool $reverseOrder whether the list of time pulses shall be returned in reverse
-     * order (true) or not (false); defaults to false
+     *                           order (true) or not (false); defaults to false
+     *
      * @return array list of time pulses
      */
     public function getTimePulses($reverseOrder = false)
@@ -408,7 +334,7 @@ class RoomService
             $serviceEmail = $this->getServiceEmail();
 
             if (!empty($serviceEmail)) {
-                return 'mailto:' . $serviceEmail;
+                return 'mailto:'.$serviceEmail;
             }
         }
 
@@ -416,7 +342,8 @@ class RoomService
     }
 
     /**
-     * Returns the service email address specified for the current portal or server
+     * Returns the service email address specified for the current portal or server.
+     *
      * @return string service email address
      */
     public function getServiceEmail()
@@ -437,8 +364,10 @@ class RoomService
     }
 
     /**
-     * Returns all room templates available for the given room type
+     * Returns all room templates available for the given room type.
+     *
      * @param string $type the type of the room
+     *
      * @return array array of room template IDs keyed by room title & ID
      */
     public function getAvailableTemplates(string $roomType): array
@@ -457,24 +386,24 @@ class RoomService
             $template = $templateList->getFirst();
             while ($template) {
                 $availability = $template->getTemplateAvailability(); // $roomType === 'project'
-                if ($roomType === 'community') {
+                if ('community' === $roomType) {
                     $availability = $template->getCommunityTemplateAvailability();
                 }
 
                 $add = false;
 
                 // free for all?
-                if (!$add && $availability == '0') {
+                if (!$add && '0' == $availability) {
                     $add = true;
                 }
 
                 // only in community rooms
-                if (!$add && $this->legacyEnvironment->inCommunityRoom() && $availability == '3') {
+                if (!$add && $this->legacyEnvironment->inCommunityRoom() && '3' == $availability) {
                     $add = true;
                 }
 
                 // same as above, but from portal context
-                if (!$add && $this->legacyEnvironment->inPortal() && $availability == '3') {
+                if (!$add && $this->legacyEnvironment->inPortal() && '3' == $availability) {
                     // check if user is member in one of the templates community rooms
                     $communityList = $template->getCommunityList();
                     if ($communityList->isNotEmpty()) {
@@ -499,12 +428,12 @@ class RoomService
                 }
 
                 // only for members
-                if (!$add && $availability == '1' && $template->mayEnter($currentUserItem)) {
+                if (!$add && '1' == $availability && $template->mayEnter($currentUserItem)) {
                     $add = true;
                 }
 
                 // only mods
-                if (!$add && $availability == '2' && $template->mayEnter($currentUserItem)) {
+                if (!$add && '2' == $availability && $template->mayEnter($currentUserItem)) {
                     if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
                         $add = true;
                     }
@@ -515,7 +444,7 @@ class RoomService
                 }
 
                 if ($add) {
-                    $label = $template->getTitle() . ' (ID: ' . $template->getItemID() . ')';
+                    $label = $template->getTitle().' (ID: '.$template->getItemID().')';
                     $templates[$label] = $template->getItemID();
                 }
 

@@ -1,17 +1,27 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
+use cs_dates_item;
 use cs_environment;
 use DateTime;
 
-class DateTransformer  extends AbstractTransformer
+class DateTransformer extends AbstractTransformer
 {
     protected $entity = 'date';
 
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
@@ -20,25 +30,26 @@ class DateTransformer  extends AbstractTransformer
     }
 
     /**
-     * Transforms a cs_date_item object to an array
+     * Transforms a cs_date_item object to an array.
      *
-     * @param \cs_dates_item $dateItem
+     * @param cs_dates_item $dateItem
+     *
      * @return array
      */
     public function transform($dateItem)
     {
-        $dateData = array();
+        $dateData = [];
 
         if ($dateItem) {
             $dateData['title'] = html_entity_decode($dateItem->getTitle());
             $dateData['description'] = $dateItem->getDescription();
-            $dateData['permission'] = !($dateItem->isPublic());
+            $dateData['permission'] = !$dateItem->isPublic();
             $dateData['place'] = $dateItem->getPlace();
-            
+
             $datetimeStart = new DateTime($dateItem->getDateTime_start());
             $dateData['start']['date'] = $datetimeStart;
             $dateData['start']['time'] = $datetimeStart;
-            
+
             $datetimeEnd = new DateTime($dateItem->getDateTime_end());
             $dateData['end']['date'] = $datetimeEnd;
             $dateData['end']['time'] = $datetimeEnd;
@@ -47,16 +58,16 @@ class DateTransformer  extends AbstractTransformer
 
             $dateData['calendar'] = $dateItem->getCalendarId();
 
-            if ($dateItem->getRecurrencePattern() != '') {
+            if ('' != $dateItem->getRecurrencePattern()) {
                 $dateData = array_merge($dateData, $dateItem->getRecurrencePattern());
                 $dateData['recurring_sub']['untilDate'] = new DateTime($dateData['recurringEndDate']);
             }
-            
+
             if ($dateItem->isNotActivated()) {
                 $dateData['hidden'] = true;
-                
+
                 $activating_date = $dateItem->getActivatingDate();
-                if (!stristr($activating_date,'9999')){
+                if (!stristr($activating_date, '9999')) {
                     $datetime = new DateTime($activating_date);
                     $dateData['hiddendate']['date'] = $datetime;
                     $dateData['hiddendate']['time'] = $datetime;
@@ -76,11 +87,12 @@ class DateTransformer  extends AbstractTransformer
     }
 
     /**
-     * Applies an array of data to an existing object
+     * Applies an array of data to an existing object.
      *
-     * @param \cs_dates_item $dateObject
-     * @param array $dateData
-     * @return \cs_dates_item
+     * @param cs_dates_item $dateObject
+     * @param array          $dateData
+     *
+     * @return cs_dates_item
      */
     public function applyTransformation($dateObject, $dateData)
     {
@@ -97,25 +109,24 @@ class DateTransformer  extends AbstractTransformer
 
         $dateObject->setWholeDay($dateData['whole_day']);
         if ($dateObject->isWholeDay()) {
-            if(!empty($dateData['start']['date'])){
+            if (!empty($dateData['start']['date'])) {
                 $dateObject->setStartingDay($dateData['start']['date']->format('Y-m-d'));
                 $dateObject->setStartingTime($dateData['start']['time']->format('00:00'));
-                $dateObject->setDatetime_start($dateData['start']['date']->format('Y-m-d') . ' ' . $dateData['start']['time']->format('00:00:00'));
+                $dateObject->setDatetime_start($dateData['start']['date']->format('Y-m-d').' '.$dateData['start']['time']->format('00:00:00'));
 
                 $dateObject->setEndingDay($dateData['end']['date']->format('Y-m-d'));
                 $dateObject->setEndingTime($dateData['end']['time']->format('23:59'));
-                $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d') . ' ' . $dateData['end']['time']->format('23:59:59'));
+                $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d').' '.$dateData['end']['time']->format('23:59:59'));
             }
         } else {
-            if(!empty($dateData['start']['date'])){
-
+            if (!empty($dateData['start']['date'])) {
                 $dateObject->setStartingDay($dateData['start']['date']->format('Y-m-d'));
                 $dateObject->setStartingTime($dateData['start']['time']->format('H:i'));
-                $dateObject->setDatetime_start($dateData['start']['date']->format('Y-m-d') . ' ' . $dateData['start']['time']->format('H:i:s'));
+                $dateObject->setDatetime_start($dateData['start']['date']->format('Y-m-d').' '.$dateData['start']['time']->format('H:i:s'));
 
                 $dateObject->setEndingDay($dateData['end']['date']->format('Y-m-d'));
                 $dateObject->setEndingTime($dateData['end']['time']->format('H:i'));
-                $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d') . ' ' . $dateData['end']['time']->format('H:i:s'));
+                $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d').' '.$dateData['end']['time']->format('H:i:s'));
             }
         }
 
@@ -127,7 +138,7 @@ class DateTransformer  extends AbstractTransformer
                     // add validdate to validdate
                     $datetime = $dateData['hiddendate']['date'];
                     if ($dateData['hiddendate']['time']) {
-                        $time = explode(":", $dateData['hiddendate']['time']->format('H:i'));
+                        $time = explode(':', $dateData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
                     $dateObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
@@ -137,18 +148,18 @@ class DateTransformer  extends AbstractTransformer
             } else {
                 if ($dateObject->isNotActivated()) {
                     $dateObject->setActivationDate(null);
-    	        }
+                }
             }
         } else {
             if ($dateObject->isNotActivated()) {
                 $dateObject->setActivationDate(null);
-	        }
+            }
         }
 
         // external viewer
         if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
             if (!empty(trim($dateData['external_viewer']))) {
-                $userIds = explode(" ", $dateData['external_viewer']);
+                $userIds = explode(' ', $dateData['external_viewer']);
                 $dateObject->setExternalViewerAccounts($userIds);
             } else {
                 $dateObject->unsetExternalViewerAccounts();

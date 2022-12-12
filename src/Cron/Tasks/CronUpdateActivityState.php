@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Cron\Tasks;
 
 use App\Entity\Account;
@@ -15,30 +26,8 @@ class CronUpdateActivityState implements CronTaskInterface
 {
     private const BATCH_SIZE = 100;
 
-    /**
-     * @var AccountsRepository
-     */
-    private AccountsRepository $accountRepository;
-
-    /**
-     * @var RoomRepository
-     */
-    private RoomRepository $roomRepository;
-
-    /**
-     * @var MessageBusInterface
-     */
-    private MessageBusInterface $messageBus;
-
-    public function __construct(
-        AccountsRepository $accountsRepository,
-        RoomRepository $roomRepository,
-        MessageBusInterface $messageBus
-    ) {
-        $this->accountRepository = $accountsRepository;
-        $this->roomRepository = $roomRepository;
-
-        $this->messageBus = $messageBus;
+    public function __construct(private AccountsRepository $accountRepository, private RoomRepository $roomRepository, private MessageBusInterface $messageBus)
+    {
     }
 
     public function run(?DateTimeImmutable $lastRun): void
@@ -47,7 +36,7 @@ class CronUpdateActivityState implements CronTaskInterface
         $accountActivityObjects = $this->accountRepository->findAllExceptRoot();
         $ids = [];
         foreach ($accountActivityObjects as $accountActivityObject) {
-            /** @var Account $accountActivityObject */
+            /* @var Account $accountActivityObject */
             $ids[] = $accountActivityObject->getId();
 
             if ((count($ids) % self::BATCH_SIZE) === 0) {
@@ -61,7 +50,7 @@ class CronUpdateActivityState implements CronTaskInterface
         $roomActivityObjects = $this->roomRepository->findAll();
         $ids = [];
         foreach ($roomActivityObjects as $roomActivityObject) {
-            /** @var Room $roomActivityObject */
+            /* @var Room $roomActivityObject */
             $ids[] = $roomActivityObject->getItemId();
 
             if ((count($ids) % self::BATCH_SIZE) === 0) {

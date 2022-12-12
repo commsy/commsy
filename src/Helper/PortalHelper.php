@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Helper;
 
 use App\Entity\Portal;
@@ -10,9 +21,6 @@ use cs_time_item;
 
 class PortalHelper
 {
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
@@ -34,48 +42,48 @@ class PortalHelper
                 if (isset($clock_pulse['BEGIN'][3])
                     and isset($clock_pulse['BEGIN'][4])
                 ) {
-                    $begin_month = $clock_pulse['BEGIN'][3] . $clock_pulse['BEGIN'][4];
+                    $begin_month = $clock_pulse['BEGIN'][3].$clock_pulse['BEGIN'][4];
                 } else {
                     $begin_month = '';
                 }
                 if (isset($clock_pulse['BEGIN'][0])
                     and isset($clock_pulse['BEGIN'][1])
                 ) {
-                    $begin_day = $clock_pulse['BEGIN'][0] . $clock_pulse['BEGIN'][1];
+                    $begin_day = $clock_pulse['BEGIN'][0].$clock_pulse['BEGIN'][1];
                 } else {
                     $begin_day = '';
                 }
                 if (isset($clock_pulse['END'][3])
                     and isset($clock_pulse['END'][4])
                 ) {
-                    $end_month = $clock_pulse['END'][3] . $clock_pulse['END'][4];
+                    $end_month = $clock_pulse['END'][3].$clock_pulse['END'][4];
                 } else {
                     $end_month = '';
                 }
                 if (isset($clock_pulse['END'][0])
                     and isset($clock_pulse['END'][1])
                 ) {
-                    $end_day = $clock_pulse['END'][0] . $clock_pulse['END'][1];
+                    $end_day = $clock_pulse['END'][0].$clock_pulse['END'][1];
                 } else {
                     $end_day = '';
                 }
-                $begin = $begin_month . $begin_day;
-                $end = $end_month . $end_day;
+                $begin = $begin_month.$begin_day;
+                $end = $end_month.$end_day;
                 if ($begin > $end) {
-                    $begin = $year . $begin;
-                    $end = ($year + 1) . $end;
+                    $begin = $year.$begin;
+                    $end = ($year + 1).$end;
                 } else {
-                    $begin = $year . $begin;
-                    $end = $year . $end;
+                    $begin = $year.$begin;
+                    $end = $year.$end;
                 }
                 if ($begin <= $current_date
                     and $current_date <= $end
                 ) {
                     $found = true;
-                    $retour = $year . '_' . $key;
+                    $retour = $year.'_'.$key;
                 }
             }
-            $year++;
+            ++$year;
         }
 
         return $retour;
@@ -98,6 +106,7 @@ class PortalHelper
                 $roomManager->resetLimits();
                 $roomManager->setIDArrayLimit($id_array3);
                 $roomManager->select();
+
                 return $roomManager->get();
             }
         }
@@ -105,10 +114,6 @@ class PortalHelper
         return new cs_list();
     }
 
-    /**
-     * @param Portal $portal
-     * @return cs_list
-     */
     public function getRoomList(Portal $portal): cs_list
     {
         $roomList = new cs_list();

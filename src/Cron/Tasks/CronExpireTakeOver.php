@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Cron\Tasks;
 
 use App\Services\LegacyEnvironment;
@@ -14,29 +25,14 @@ use Symfony\Component\Routing\RouterInterface;
 
 class CronExpireTakeOver implements CronTaskInterface
 {
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
-
-    /**
-     * @var ParameterBagInterface
-     */
-    private ParameterBagInterface $parameterBag;
-
-    /**
-     * @var RouterInterface
-     */
-    private RouterInterface $router;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        ParameterBagInterface $parameterBag,
-        RouterInterface $router
+        private ParameterBagInterface $parameterBag,
+        private RouterInterface $router
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->parameterBag = $parameterBag;
-        $this->router = $router;
     }
 
     public function run(?DateTimeImmutable $lastRun): void
@@ -62,7 +58,7 @@ class CronExpireTakeOver implements CronTaskInterface
                 $to = $expiredUser->getEmail();
                 $to_name = $expiredUser->getFullname();
                 if (!empty($to_name)) {
-                    $to = $to_name . " <" . $to . ">";
+                    $to = $to_name.' <'.$to.'>';
                 }
 
                 $mail = new cs_mail();

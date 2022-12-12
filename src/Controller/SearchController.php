@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Action\Delete\DeleteAction;
@@ -30,40 +41,33 @@ use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use cs_item;
 use cs_room_item;
+use cs_user_item;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
-use phpDocumentor\Reflection\Types\False_;
+use ReflectionClass;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class SearchController
- * @package App\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
+ * Class SearchController.
  */
+#[Security("is_granted('ITEM_ENTER', roomId)")]
 class SearchController extends BaseController
 {
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $router;
-
     /**
      * SearchController constructor.
-     * @param UrlGeneratorInterface $router
      */
-    public function __construct(UrlGeneratorInterface $router)
+    public function __construct(private UrlGeneratorInterface $router)
     {
-        $this->router = $router;
     }
 
     /**
@@ -71,17 +75,12 @@ class SearchController extends BaseController
      * a template.
      * Request data needs to be passed directly, since we can not handle data
      * from the main request here.
-     *
-     * @Template
-     * @param int $roomId
-     * @param $requestData
-     * @return array
      */
     public function searchFormAction(
         int $roomId,
         $requestData,
         RoomService $roomService
-    ) {
+    ): Response {
         $searchData = new SearchData();
         $searchData->setPhrase($requestData['phrase'] ?? null);
 
@@ -98,53 +97,47 @@ class SearchController extends BaseController
 
         $form = $this->createForm(SearchType::class, $searchData, [
             'action' => $this->generateUrl('app_search_results', [
-                'roomId' => $roomId
-            ])
+                'roomId' => $roomId,
+            ]),
         ]);
 
-        return [
+        return $this->render('search/search_form.html.twig', [
             'form' => $form->createView(),
             'roomId' => $roomId,
             'originalRoomId' => $originalRoomId,
             'originalRoomTitle' => $originalRoomItem ? $originalRoomItem->getTitle() : '',
-        ];
+        ]);
     }
 
     /**
      * @param $roomId int The id of the containing context
-     * @Template
      */
     public function itemSearchFormAction(
         int $roomId
-    ) {
+    ): Response {
         $form = $this->createForm(SearchItemType::class, [], [
             'action' => $this->generateUrl('app_search_results', [
-                'roomId' => $roomId
-            ])
+                'roomId' => $roomId,
+            ]),
         ]);
 
-        return [
+        return $this->render('search/item_search_form.html.twig', [
             'form' => $form->createView(),
             'roomId' => $roomId,
-        ];
+        ]);
     }
 
     /**
-     * @Route("/room/{roomId}/search/itemresults")
-     * @param Request $request
-     * @param SearchManager $searchManager
-     * @param ReaderService $readerService
-     * @param CalendarsService $calendarsService
-     * @param int $roomId
      * @return JsonResponse
      */
+    #[Route(path: '/room/{roomId}/search/itemresults')]
     public function itemSearchResultsAction(
         Request $request,
         SearchManager $searchManager,
         ReaderService $readerService,
         CalendarsService $calendarsService,
         int $roomId
-    ) {
+    ): Response {
         $query = $request->get('search', '');
 
         // query conditions
@@ -170,15 +163,11 @@ class SearchController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/search/instantresults")
-     * @param Request $request
-     * @param SearchManager $searchManager
-     * @param MultipleContextFilterCondition $multipleContextFilterCondition
-     * @param ReaderService $readerService
-     * @param CalendarsService $calendarsService
      * @param $roomId int The context id
+     *
      * @return JsonResponse
      */
+    #[Route(path: '/room/{roomId}/search/instantresults')]
     public function instantResultsAction(
         Request $request,
         SearchManager $searchManager,
@@ -186,7 +175,7 @@ class SearchController extends BaseController
         ReaderService $readerService,
         CalendarsService $calendarsService,
         int $roomId
-    ) {
+    ): Response {
         $query = $request->get('search', '');
 
         // query conditions
@@ -213,22 +202,9 @@ class SearchController extends BaseController
     }
 
     /**
-     * Displays search results
-     *
-     * @Route("/room/{roomId}/search/results")
-     * @Template
-     * @param Request $request
-     * @param RoomService $roomService
-     * @param SearchManager $searchManager
-     * @param MultipleContextFilterCondition $multipleContextFilterCondition
-     * @param ReadStatusFilterCondition $readStatusFilterCondition
-     * @param EntityManagerInterface $entityManager
-     * @param TranslatorInterface $translator
-     * @param ReaderService $readerService
-     * @param CalendarsService $calendarsService
-     * @param int $roomId
-     * @return array
+     * Displays search results.
      */
+    #[Route(path: '/room/{roomId}/search/results')]
     public function resultsAction(
         Request $request,
         RoomService $roomService,
@@ -240,8 +216,7 @@ class SearchController extends BaseController
         ReaderService $readerService,
         CalendarsService $calendarsService,
         int $roomId
-    )
-    {
+    ): Response {
         // NOTE: for a guest user, $roomItem may be null (e.g. when initiating a search from "all rooms")
         $roomItem = $roomService->getRoomItem($roomId);
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
@@ -262,7 +237,7 @@ class SearchController extends BaseController
         $topForm = $this->createForm(SearchType::class, $searchData, [
             'action' => $this->generateUrl('app_search_results', [
                 'roomId' => $roomId,
-            ])
+            ]),
         ]);
         $topForm->handleRequest($request);
 
@@ -271,7 +246,7 @@ class SearchController extends BaseController
         $sortOrder = $searchData->getSortOrder();
         $sortArguments = !empty($sortBy) && !empty($sortOrder) ? [$sortBy => $sortOrder] : [];
 
-        /**
+        /*
          * Before we build the SearchFilterType form we need to get the current aggregations from ElasticSearch
          * according to the current query parameters.
          */
@@ -304,12 +279,12 @@ class SearchController extends BaseController
         // we keep displaying it in the respective search filter form field; this also avoids a form validation error
         // ("this value is not valid")
         $selectedRubric = $searchData->getSelectedRubric();
-        if (!empty($selectedRubric) && $selectedRubric !== 'all' && !array_key_exists($selectedRubric, $countsByRubric)) {
+        if (!empty($selectedRubric) && 'all' !== $selectedRubric && !array_key_exists($selectedRubric, $countsByRubric)) {
             $searchData->addRubrics([$selectedRubric => 0]);
         }
 
         $selectedCreator = $searchData->getSelectedCreator();
-        if (!empty($selectedCreator) && $selectedCreator !== 'all' && !array_key_exists($selectedCreator, $countsByCreator)) {
+        if (!empty($selectedCreator) && 'all' !== $selectedCreator && !array_key_exists($selectedCreator, $countsByCreator)) {
             $searchData->addCreators([$selectedCreator => 0]);
         }
 
@@ -332,12 +307,12 @@ class SearchController extends BaseController
         }
 
         $selectedContext = $searchData->getSelectedContext();
-        if (!empty($selectedContext) && $selectedContext !== 'all' && !array_key_exists($selectedContext, $countsByContext)) {
+        if (!empty($selectedContext) && 'all' !== $selectedContext && !array_key_exists($selectedContext, $countsByContext)) {
             $searchData->addContexts([$selectedContext => 0]);
         }
 
         $selectedTodoStatus = $searchData->getSelectedTodoStatus();
-        if (!empty($selectedTodoStatus) && $selectedTodoStatus !== 0 && !array_key_exists($selectedTodoStatus, $countsByTodoStatus)) {
+        if (!empty($selectedTodoStatus) && 0 !== $selectedTodoStatus && !array_key_exists($selectedTodoStatus, $countsByTodoStatus)) {
             $searchData->addTodoStatuses([$selectedTodoStatus => 0]);
         }
 
@@ -349,7 +324,6 @@ class SearchController extends BaseController
         $filterForm->handleRequest($request);
 
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
-
             $clickedButton = $filterForm->getClickedButton();
             $buttonName = $clickedButton ? $clickedButton->getName() : '';
 
@@ -360,17 +334,16 @@ class SearchController extends BaseController
                 // NOTE: if a saved search was selected from the "Manage my views" dropdown, this performs a click (via an
                 // `onchange` attribute) on the form's hidden "load" button; opposed to this, `$buttonName` will be empty
                 // if the search params get changed for an existing saved search via the "Filter results" form part
-                if ($buttonName === 'load' && $savedSearch) {
+                if ('load' === $buttonName && $savedSearch) {
                     $savedSearchURL = $savedSearch->getSearchUrl();
 
                     if ($savedSearchURL) {
                         // redirect to the search_url stored for the chosen saved search
-                        $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $savedSearchURL);
+                        $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost().$savedSearchURL);
 
-                        return $redirectResponse;
+                        return $this->render('search/results.html.twig');
                     }
-
-                } elseif ($buttonName === 'delete' && $savedSearch) {
+                } elseif ('delete' === $buttonName && $savedSearch) {
                     $repository = $entityManager->getRepository(SavedSearch::class);
                     $repository->removeSavedSearch($savedSearch);
 
@@ -380,11 +353,10 @@ class SearchController extends BaseController
                     $request = $this->setSubParamForRequestQueryParam('selectedSavedSearchTitle', null, 'search_filter', $request);
                     $searchURL = $this->getUpdatedRequestUriForRequest($request);
 
-                    $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $searchURL);
+                    $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost().$searchURL);
 
-                    return $redirectResponse;
-
-                } elseif ($buttonName === 'save') {
+                    return $this->render('search/results.html.twig');
+                } elseif ('save' === $buttonName) {
                     // this handles cases where the "Save" button (in the "Manage my views" form part) was clicked
                     // with either "New view" or an existing saved search (aka "view") selected in the view dropdown
 
@@ -428,9 +400,9 @@ class SearchController extends BaseController
                     $entityManager->persist($savedSearch);
                     $entityManager->flush();
 
-                    $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost() . $savedSearchURL);
+                    $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost().$savedSearchURL);
 
-                    return $redirectResponse;
+                    return $this->render('search/results.html.twig');
                 }
             }
         }
@@ -438,7 +410,7 @@ class SearchController extends BaseController
         $totalHits = $searchResults->getTotalHits();
         $results = $this->prepareResults($searchResults, $readerService, $calendarsService, $roomId);
 
-        return [
+        return $this->render('search/results.html.twig', [
             'filterForm' => $filterForm->createView(),
             'roomId' => $roomId,
             'totalHits' => $totalHits,
@@ -446,25 +418,13 @@ class SearchController extends BaseController
             'searchData' => $searchData,
             'isArchived' => $roomItem ? $roomItem->getArchived() : false,
             'user' => $currentUser,
-        ];
+        ]);
     }
 
     /**
-     * Returns more search results
-     *
-     * @Route("/room/{roomId}/searchmore/{start}/{sort}")
-     * @Template
-     * @param Request $request
-     * @param SearchManager $searchManager
-     * @param MultipleContextFilterCondition $multipleContextFilterCondition
-     * @param ReadStatusFilterCondition $readStatusFilterCondition
-     * @param ReaderService $readerService
-     * @param CalendarsService $calendarsService
-     * @param int $roomId
-     * @param int $start
-     * @param string $sort
-     * @return array
+     * Returns more search results.
      */
+    #[Route(path: '/room/{roomId}/searchmore/{start}/{sort}')]
     public function moreResultsAction(
         Request $request,
         SearchManager $searchManager,
@@ -475,8 +435,7 @@ class SearchController extends BaseController
         int $roomId,
         int $start = 0,
         string $sort = ''
-    )
-    {
+    ): Response {
         // NOTE: to have the "load more" functionality work with any applied filters, we also need to add all
         //       SearchFilterType form fields to the "load more" query dictionary in results.html.twig
 
@@ -485,7 +444,7 @@ class SearchController extends BaseController
         $searchData = new SearchData();
         $searchData = $this->populateSearchData($searchData, $request, $currentUser);
 
-        /**
+        /*
          * Before we build the SearchFilterType form we need to get the current aggregations from ElasticSearch
          * according to the current query parameters.
          */
@@ -495,7 +454,7 @@ class SearchController extends BaseController
         // or 'creationDate__desc')
         if (!empty($sort)) {
             $sortArgs = explode('__', $sort);
-            if (count($sortArgs) === 2) {
+            if (2 === count($sortArgs)) {
                 $sortBy = $sortArgs[0];
                 if (!empty($sortBy)) {
                     $searchData->setSortBy($sortBy);
@@ -544,27 +503,21 @@ class SearchController extends BaseController
 
         $results = $this->prepareResults($searchResults, $readerService, $calendarsService, $roomId, $start);
 
-        return [
+        return $this->render('search/more_results.html.twig', [
             'roomId' => $roomId,
             'results' => $results,
             'user' => $currentUser,
-        ];
+        ]);
     }
 
     /**
      * Populates the given SearchData object with relevant data from the request, and returns it.
-     *
-     * @param SearchData $searchData
-     * @param Request $request
-     * @param \cs_user_item $currentUser
-     * @return SearchData
      */
     private function populateSearchData(
         SearchData $searchData,
         Request $request,
-        \cs_user_item $currentUser
-    ): SearchData
-    {
+        cs_user_item $currentUser
+    ): SearchData {
         // TODO: should we better move this method to SearchData.php?
 
         if (!$request || !$currentUser) {
@@ -610,7 +563,7 @@ class SearchController extends BaseController
         }
 
         // contexts parameter
-        $searchData->setSelectedContext($searchParams['selectedContext'] ?? "all");
+        $searchData->setSelectedContext($searchParams['selectedContext'] ?? 'all');
 
         // appearing in parameter (based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\ChoiceFilterType)
         $searchData->setAppearsIn($searchParams['appears_in'] ?? []);
@@ -622,7 +575,7 @@ class SearchController extends BaseController
         $searchData->setSelectedRubric($searchParams['selectedRubric'] ?? 'all');
 
         // creator parameter
-        $searchData->setSelectedCreator($searchParams['selectedCreator'] ?? "all");
+        $searchData->setSelectedCreator($searchParams['selectedCreator'] ?? 'all');
 
         // hashtags parameter
         $searchData->setSelectedHashtags($searchParams['selectedHashtags'] ?? []);
@@ -638,14 +591,14 @@ class SearchController extends BaseController
         if (!empty($searchParams['creation_date_range'])) {
             $creationDateRange = [];
             if (!empty($searchParams['creation_date_range']['left_date'])) {
-                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['creation_date_range']['left_date']);
+                $date = DateTime::createFromFormat('d.m.Y', $searchParams['creation_date_range']['left_date']);
                 if ($date) {
                     $date = $date->setTime(0, 0, 0);
                     $creationDateRange[0] = $date;
                 }
             }
             if (!empty($searchParams['creation_date_range']['right_date'])) {
-                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['creation_date_range']['right_date']);
+                $date = DateTime::createFromFormat('d.m.Y', $searchParams['creation_date_range']['right_date']);
                 if ($date) {
                     $date = $date->setTime(23, 59, 59);
                     $creationDateRange[1] = $date;
@@ -658,14 +611,14 @@ class SearchController extends BaseController
         if (!empty($searchParams['modification_date_range'])) {
             $modificationDateRange = [];
             if (!empty($searchParams['modification_date_range']['left_date'])) {
-                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['modification_date_range']['left_date']);
+                $date = DateTime::createFromFormat('d.m.Y', $searchParams['modification_date_range']['left_date']);
                 if ($date) {
                     $date = $date->setTime(0, 0, 0);
                     $modificationDateRange[0] = $date;
                 }
             }
             if (!empty($searchParams['modification_date_range']['right_date'])) {
-                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['modification_date_range']['right_date']);
+                $date = DateTime::createFromFormat('d.m.Y', $searchParams['modification_date_range']['right_date']);
                 if ($date) {
                     $date = $date->setTime(23, 59, 59);
                     $modificationDateRange[1] = $date;
@@ -683,9 +636,6 @@ class SearchController extends BaseController
 
     /**
      * Uses the given search manager to add search query conditions for relevant SearchData parameters.
-     *
-     * @param SearchManager $searchManager
-     * @param SearchData $searchData
      */
     public function setupSearchQueryConditions(SearchManager $searchManager,
                                                SearchData $searchData)
@@ -723,12 +673,6 @@ class SearchController extends BaseController
 
     /**
      * Uses the given search manager to add search filter conditions for relevant SearchData parameters.
-     *
-     * @param SearchManager $searchManager
-     * @param SearchData $searchData
-     * @param integer $roomId
-     * @param MultipleContextFilterCondition $multipleContextFilterCondition
-     * @param ReadStatusFilterCondition $readStatusFilterCondition
      */
     public function setupSearchFilterConditions(SearchManager $searchManager,
                                                 SearchData $searchData,
@@ -746,7 +690,7 @@ class SearchController extends BaseController
         // WARNING: this acts as a PRE-filtering mechanism which can slow things down substantially and ideally
         // wouldn't be necessary
         $selectedReadStatus = $searchData->getSelectedReadStatus();
-        if (empty($selectedReadStatus) || $selectedReadStatus === 'all') {
+        if (empty($selectedReadStatus) || 'all' === $selectedReadStatus) {
             $searchManager->addFilterCondition($multipleContextFilterCondition);
         } else {
             $readStatusFilterCondition->setReadStatus($selectedReadStatus);
@@ -805,7 +749,7 @@ class SearchController extends BaseController
         }
 
         // todo status parameter
-        if ($searchData->getSelectedRubric() === 'todo' && $searchData->getSelectedTodoStatus()) {
+        if ('todo' === $searchData->getSelectedRubric() && $searchData->getSelectedTodoStatus()) {
             $todoStatusFilterCondition = new TodoStatusFilterCondition();
             $todoStatusFilterCondition->setTodoStatus($searchData->getSelectedTodoStatus());
             $searchManager->addFilterCondition($todoStatusFilterCondition);
@@ -813,21 +757,17 @@ class SearchController extends BaseController
     }
 
     /**
-     * Generates JSON results for the room navigation search-as-you-type form
+     * Generates JSON results for the room navigation search-as-you-type form.
      *
-     * @Route("/room/{roomId}/search/rooms")
-     *
-     * @param Request $request
-     * @param SearchManager $searchManager
      * @return JsonResponse The JSON result
      */
+    #[Route(path: '/room/{roomId}/search/rooms')]
     public function roomNavigationAction(
         Request $request,
         SearchManager $searchManager,
         RouterInterface $router,
         TranslatorInterface $translator
-    )
-    {
+    ): Response {
         $results = [];
 
         $query = $request->get('search', '');
@@ -850,7 +790,7 @@ class SearchController extends BaseController
             $rooms[$room->getType()][] = $room;
         }
 
-        $rooms = array_merge($rooms['community'], $rooms['project'], $rooms['grouproom'], $rooms['userroom']);
+        $rooms = [...$rooms['community'], ...$rooms['project'], ...$rooms['grouproom'], ...$rooms['userroom']];
 
         $lastType = null;
         foreach ($rooms as $room) {
@@ -858,7 +798,7 @@ class SearchController extends BaseController
 
             if (!$lastType || $lastType != $room->getType()) {
                 if (in_array($room->getType(), ['project', 'community', 'userroom'])) {
-                    $title = $translator->trans(ucfirst($room->getType()) . ' Rooms', [], 'room');
+                    $title = $translator->trans(ucfirst($room->getType()).' Rooms', [], 'room');
                 } else {
                     $title = $translator->trans('Group Rooms', [], 'room');
                 }
@@ -897,23 +837,18 @@ class SearchController extends BaseController
         return $response;
     }
 
-    ###################################################################################################
-    ## XHR Action requests
-    ###################################################################################################
-
+    // ##################################################################################################
+    // # XHR Action requests
+    // ##################################################################################################
     /**
-     * @Route("/room/{roomId}/search/xhr/mark", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @return
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/search/xhr/mark', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkAction(
         Request $request,
         MarkAction $markAction,
         int $roomId
-    )
-    {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -921,18 +856,14 @@ class SearchController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/search/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @return
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/search/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
         Request $request,
         DeleteAction $deleteAction,
         int $roomId
-    )
-    {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -940,19 +871,18 @@ class SearchController extends BaseController
     }
 
     /**
-     * @param Request $request
      * @param cs_room_item $roomItem
-     * @param boolean $selectAll
-     * @param integer[] $itemIds
+     * @param bool          $selectAll
+     * @param int[]         $itemIds
+     *
      * @return cs_item[]
      */
     public function getItemsByFilterConditions(
-        Request $request,
+        $request,
         $roomItem,
         $selectAll,
         $itemIds = []
-    )
-    {
+    ) {
         if ($selectAll) {
             // TODO: This is currently a limitation
             return [];
@@ -962,6 +892,7 @@ class SearchController extends BaseController
             foreach ($itemIds as $itemId) {
                 $items[] = $this->itemService->getTypedItem($itemId);
             }
+
             return $items;
         }
     }
@@ -974,16 +905,13 @@ class SearchController extends BaseController
         int $offset = 0,
         bool $json = false,
         $searchPhrase = null
-    )
-    {
-
+    ) {
         $results = [];
         foreach ($searchResults->getResults($offset, 10)->toArray() as $searchResult) {
-
-            $reflection = new \ReflectionClass($searchResult);
+            $reflection = new ReflectionClass($searchResult);
             $type = strtolower(rtrim($reflection->getShortName(), 's'));
 
-            if ($type === 'label') {
+            if ('label' === $type) {
                 $type = strtolower(rtrim($searchResult->getType(), 's'));
             }
 
@@ -992,7 +920,7 @@ class SearchController extends BaseController
                 $url = '#';
 
                 $roomTitle = '';
-                if ($type == 'room') {
+                if ('room' == $type) {
                     $roomId = $currentRoomId;
                     $type = 'project';
                 } else {
@@ -1003,10 +931,10 @@ class SearchController extends BaseController
                     }
                 }
 
-                if ($type === 'room') {
+                if ('room' === $type) {
                     $routeName = 'app_roomall_detail';
                 } else {
-                    $routeName = 'app_' . $type . '_detail';
+                    $routeName = 'app_'.$type.'_detail';
                 }
 
                 $portalId = $this->legacyEnvironment->getCurrentPortalID();
@@ -1023,10 +951,10 @@ class SearchController extends BaseController
 
                 if (method_exists($searchResult, 'getTitle')) {
                     $title = $searchResult->getTitle();
-                } else if (method_exists($searchResult, 'getName')) {
+                } elseif (method_exists($searchResult, 'getName')) {
                     $title = $searchResult->getName();
-                } else if (method_exists($searchResult, 'getFirstname')) {
-                    $title = $searchResult->getFirstname() . ' ' . $searchResult->getLastname();
+                } elseif (method_exists($searchResult, 'getFirstname')) {
+                    $title = $searchResult->getFirstname().' '.$searchResult->getLastname();
                 }
 
                 $results[] = [
@@ -1040,7 +968,7 @@ class SearchController extends BaseController
             } else {
                 $allowedActions = ['mark'];
                 if (method_exists($searchResult, 'getItemId')) {
-                    if ($this->isGranted('ITEM_EDIT', $searchResult->getItemId()) && ($type !== 'user')) {
+                    if ($this->isGranted('ITEM_EDIT', $searchResult->getItemId()) && ('user' !== $type)) {
                         $allowedActions[] = 'delete';
                     }
                 }
@@ -1065,10 +993,10 @@ class SearchController extends BaseController
                     $readStatus = $readerService->cachedReadStatusForItem($item);
                 }
 
-                if ($type === 'room') {
+                if ('room' === $type) {
                     $routeName = 'app_roomall_detail';
                 } else {
-                    $routeName = 'app_' . $type . '_detail';
+                    $routeName = 'app_'.$type.'_detail';
                 }
 
                 $portalId = $this->legacyEnvironment->getCurrentPortalID();
@@ -1095,10 +1023,11 @@ class SearchController extends BaseController
      * Modifies & returns again the given Request object by setting (or removing) the sub-parameter with the given key
      * from the given query parameter key.
      *
-     * @param string $subParamKey the key of the sub-parameter to be set or removed
+     * @param string      $subParamKey the key of the sub-parameter to be set or removed
      * @param string|null $subParamVal the value of the sub-parameter to be set; may be null in which case it will be removed
-     * @param string $paramKey the query parameter key having the parameter with `$subParamKey` be set or reomoved
-     * @param Request $request the Request object whose query params shall be modified
+     * @param string      $paramKey    the query parameter key having the parameter with `$subParamKey` be set or reomoved
+     * @param Request     $request     the Request object whose query params shall be modified
+     *
      * @return Request the modified Request object
      */
     private function setSubParamForRequestQueryParam(string $subParamKey, ?string $subParamVal, string $paramKey, Request $request): Request
@@ -1148,7 +1077,7 @@ class SearchController extends BaseController
         $request->overrideGlobals();
         $queryString = $request->getQueryString();
 
-        $requesthUri = $pathInfo . '?' . $queryString;
+        $requesthUri = $pathInfo.'?'.$queryString;
 
         return $requesthUri;
     }

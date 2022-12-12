@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Utils;
 
 use App\Entity\Portal;
@@ -7,26 +18,22 @@ use App\Model\TimePulseTemplate;
 use App\Services\LegacyEnvironment;
 
 /**
- * Implements services for time pulses and time pulse templates
+ * Implements services for time pulses and time pulse templates.
  *
  * A time pulse template describes a division of a year (like a semester or trimester)
  */
 class TimePulsesService
 {
-    /**
-     * @var LegacyEnvironment $legacyEnvironment
-     */
-    private $legacyEnvironment;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment)
+    public function __construct(private LegacyEnvironment $legacyEnvironment)
     {
-        $this->legacyEnvironment = $legacyEnvironment;
     }
 
     /**
      * Returns all time pulse templates defined for the given portal as an array of TimePulseTemplate
-     * data objects
+     * data objects.
+     *
      * @param Portal $portal the portal for which time pulse templates shall be returned
+     *
      * @return TimePulseTemplate[] array of TimePulseTemplate data objects
      */
     public function getTimePulseTemplates(Portal $portal): array
@@ -43,17 +50,19 @@ class TimePulsesService
         }
 
         // sort all time pulse templates first by start month & day, then by end month & day
-        uasort($timePulseTemplates, array("App\Model\TimePulseTemplate", "compare"));
+        uasort($timePulseTemplates, [TimePulseTemplate::class, 'compare']);
 
         return $timePulseTemplates;
     }
 
     /**
-     * For the given portal, returns a data object representing the time pulse template with the given ID
-     * @param Portal $portal the portal which contains the time pulse template
-     * @param int $templateId the ID of the time pulse template that shall be returned
+     * For the given portal, returns a data object representing the time pulse template with the given ID.
+     *
+     * @param Portal $portal     the portal which contains the time pulse template
+     * @param int    $templateId the ID of the time pulse template that shall be returned
+     *
      * @return TimePulseTemplate|null a data object representing the time pulse template, or null if no
-     * time pulse template with the given ID could be found, or if an error occurred
+     *                                time pulse template with the given ID could be found, or if an error occurred
      */
     public function getTimePulseTemplate(Portal $portal, int $templateId): ?TimePulseTemplate
     {
@@ -77,9 +86,9 @@ class TimePulsesService
         $timePulseTemplate->setTitleEnglish($rawTimePulseTemplate['EN']);
 
         // expected format for the raw BEGIN/END values: <DAYNUMBER>.<MONTHNUMBER> (like "01.01" or "31.12")
-        $startParts = explode(".", $rawTimePulseTemplate['BEGIN']);
-        $endParts = explode(".", $rawTimePulseTemplate['END']);
-        if (count($startParts) !== 2 || count($endParts) !== 2) {
+        $startParts = explode('.', $rawTimePulseTemplate['BEGIN']);
+        $endParts = explode('.', $rawTimePulseTemplate['END']);
+        if (2 !== count($startParts) || 2 !== count($endParts)) {
             return null;
         }
 
@@ -100,8 +109,9 @@ class TimePulsesService
     }
 
     /**
-     * Updates existing raw data for the given time pulse template in the given portal, or else adds it
-     * @param Portal $portal the portal hosting the given time pulse template
+     * Updates existing raw data for the given time pulse template in the given portal, or else adds it.
+     *
+     * @param Portal            $portal            the portal hosting the given time pulse template
      * @param TimePulseTemplate $timePulseTemplate the time pulse template that shall be updated
      */
     public function updateTimePulseTemplate(Portal $portal, TimePulseTemplate $timePulseTemplate): void
@@ -125,9 +135,10 @@ class TimePulsesService
     }
 
     /**
-     * Removes the raw data for the time pulse template with the given ID in the given portal
-     * @param Portal $portal the portal which contains the time pulse template
-     * @param int $templateId the ID of the time pulse template that shall be removed
+     * Removes the raw data for the time pulse template with the given ID in the given portal.
+     *
+     * @param Portal $portal     the portal which contains the time pulse template
+     * @param int    $templateId the ID of the time pulse template that shall be removed
      */
     public function removeTimePulseTemplate(Portal $portal, int $templateId): void
     {
@@ -144,11 +155,13 @@ class TimePulsesService
 
     /**
      * Takes the given portal's time pulse settings & templates, and inserts/removes corresponding cs_label_item
-     * objects in the database that represent the concrete time pulses for these time pulse settings & templates
+     * objects in the database that represent the concrete time pulses for these time pulse settings & templates.
+     *
      * @param Portal $portal the portal hosting the time pulses to be updated
      */
     public function updateTimePulseLabels(Portal $portal): void
     {
+        $count = null;
         $timePulseTemplates = $this->getTimePulseTemplates($portal);
 
         $current_pos = 0;
@@ -156,7 +169,7 @@ class TimePulsesService
         // TODO: the below legacy code (originally extracted from `configuration_time.php`) should get rewritten!
 
         // change (insert) time labels
-        $clock_pulse_array = array();
+        $clock_pulse_array = [];
         if (!empty($timePulseTemplates)) {
             $current_year = date('Y');
             $current_date = getCurrentDate();
@@ -166,18 +179,18 @@ class TimePulsesService
                 $begin = sprintf('%02d%02d', strval($timePulseTemplate->getStartMonth()), strval($timePulseTemplate->getStartDay()));
                 $end = sprintf('%02d%02d', strval($timePulseTemplate->getEndMonth()), strval($timePulseTemplate->getEndDay()));
 
-                $begin2 = ($current_year+$ad_year).$begin;
+                $begin2 = ($current_year + $ad_year).$begin;
                 if ($end < $begin) {
-                    $ad_year++;
+                    ++$ad_year;
                 }
-                $end2 = ($current_year+$ad_year).$end;
+                $end2 = ($current_year + $ad_year).$end;
 
                 if ($first) {
                     $first = false;
                     $begin_first = $begin2;
                 }
 
-                if ( $begin2 <= $current_date
+                if ($begin2 <= $current_date
                     and $current_date <= $end2) {
                     $current_pos = $key;
                 }
@@ -186,18 +199,18 @@ class TimePulsesService
             $year = $current_year;
 
             if ($current_date < $begin_first) {
-                $year--;
+                --$year;
                 $current_pos = count($timePulseTemplates);
             }
 
             $count = count($timePulseTemplates);
             $position = 1;
-            for ($i=0; $i < $portal->getNumberOfFutureTimePulses() + $current_pos; $i++) {
+            for ($i = 0; $i < $portal->getNumberOfFutureTimePulses() + $current_pos; ++$i) {
                 $clock_pulse_array[] = $year.'_'.$position;
-                $position++;
+                ++$position;
                 if ($position > $count) {
                     $position = 1;
-                    $year++;
+                    ++$year;
                 }
             }
         }
@@ -206,7 +219,7 @@ class TimePulsesService
         $time_manager = $this->legacyEnvironment->getEnvironment()->getTimeManager();
 
         if (!empty($clock_pulse_array)) {
-            $done_array = array();
+            $done_array = [];
             $time_manager->reset();
             $time_manager->setContextLimit($portal->getId());
             $time_manager->setDeleteLimit(false);
@@ -215,12 +228,12 @@ class TimePulsesService
             if ($time_list->isNotEmpty()) {
                 $time_label = $time_list->getFirst();
                 while ($time_label) {
-                    if (!in_array($time_label->getTitle(),$clock_pulse_array)) {
+                    if (!in_array($time_label->getTitle(), $clock_pulse_array)) {
                         $first_new_clock_pulse = $clock_pulse_array[0];
                         $last_new_clock_pulse = array_pop($clock_pulse_array);
                         $clock_pulse_array[] = $last_new_clock_pulse;
                         if ($time_label->getTitle() < $first_new_clock_pulse) {
-                            $temp_clock_pulse_array = explode('_',$time_label->getTitle());
+                            $temp_clock_pulse_array = explode('_', $time_label->getTitle());
                             $clock_pulse_pos = $temp_clock_pulse_array[1];
                             if ($clock_pulse_pos > $count) {
                                 if (!$time_label->isDeleted()) {
@@ -256,7 +269,7 @@ class TimePulsesService
             }
 
             foreach ($clock_pulse_array as $clock_pulse) {
-                if (!in_array($clock_pulse,$done_array)) {
+                if (!in_array($clock_pulse, $done_array)) {
                     $time_label = $time_manager->getNewItem();
                     $time_label->setContextID($portal->getId());
                     $user = $currentUserItem;
