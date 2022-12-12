@@ -38,6 +38,6 @@ class DBCheckCommand extends Command
     {
         $this->databaseChecks->runChecks($input, $output);
 
-        return \Symfony\Component\Console\Command\Command::SUCCESS;
+        return Command::SUCCESS;
     }
 }

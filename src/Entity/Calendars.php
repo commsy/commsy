@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,7 +27,7 @@ class Calendars
     /**
      * @var int
      */
-    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private ?int $id = 0;
@@ -34,43 +35,43 @@ class Calendars
     /**
      * @var int
      */
-    #[ORM\Column(name: 'context_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
     private ?int $context_id = null;
 
     /**
      * @var string
      */
-    #[ORM\Column(name: 'title', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 255)]
     private ?string $title = null;
 
     /**
      * @var string
      */
-    #[ORM\Column(name: 'color', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(name: 'color', type: Types::STRING, length: 255)]
     private ?string $color = null;
 
     /**
      * @var string
      */
-    #[ORM\Column(name: 'external_url', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: true)]
+    #[ORM\Column(name: 'external_url', type: Types::STRING, length: 255, nullable: true)]
     private ?string $external_url = null;
 
     /**
      * @var bool
      */
-    #[ORM\Column(name: 'default_calendar', type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[ORM\Column(name: 'default_calendar', type: Types::BOOLEAN)]
     private ?bool $default_calendar = false;
 
     /**
      * @var int
      */
-    #[ORM\Column(name: 'creator_id', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: true)]
     private ?int $creator_id = null;
 
     /**
      * @var int
      */
-    #[ORM\Column(name: 'synctoken', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[ORM\Column(name: 'synctoken', type: Types::INTEGER, nullable: true)]
     private ?int $synctoken = null;
 
     /**

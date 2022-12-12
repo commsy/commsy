@@ -19,7 +19,9 @@ use App\Controller\Api\GetAccountsWorkspaces;
 use App\Dto\LocalLoginInput;
 use App\Repository\AccountsRepository;
 use App\Validator\Constraints\EmailRegex;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use InvalidArgumentException;
 use Serializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherAwareInterface;
@@ -92,14 +94,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         "groups"={"api"}
  *     }
  * )
- *
- * @EmailRegex
  */
 #[ORM\Entity(repositoryClass: AccountsRepository::class)]
 #[UniqueEntity(fields: ['contextId', 'username', 'authSource'], errorPath: 'username', repositoryMethod: 'findOneByCredentialsArray')]
 #[ORM\Table(name: 'accounts')]
 #[ORM\UniqueConstraint(name: 'accounts_idx', columns: ['context_id', 'username', 'auth_source_id'])]
-class Account implements UserInterface, PasswordHasherAwareInterface, \Serializable
+#[EmailRegex]
+class Account implements UserInterface, PasswordHasherAwareInterface, Serializable
 {
     public const ACTIVITY_ACTIVE = 'active';
     public const ACTIVITY_ACTIVE_NOTIFIED = 'active_notified';
@@ -165,7 +166,7 @@ class Account implements UserInterface, PasswordHasherAwareInterface, \Serializa
     #[ORM\Column(name: 'language', type: 'string', length: 10)]
     private string $language;
 
-    #[ORM\ManyToOne(targetEntity: \App\Entity\AuthSource::class)]
+    #[ORM\ManyToOne(targetEntity: AuthSource::class)]
     #[ORM\JoinColumn]
     private AuthSource $authSource;
 
@@ -174,13 +175,13 @@ class Account implements UserInterface, PasswordHasherAwareInterface, \Serializa
     private bool $locked = false;
 
     #[ORM\Column(name: 'last_login', type: 'datetime', nullable: true)]
-    private ?\DateTime $lastLogin;
+    private ?DateTime $lastLogin;
 
     #[ORM\Column(name: 'activity_state', type: 'string', length: 15, options: ['default' => 'active'])]
     private string $activityState;
 
     #[ORM\Column(name: 'activity_state_updated', type: 'datetime', nullable: true)]
-    private ?\DateTime $activityStateUpdated = null;
+    private ?DateTime $activityStateUpdated = null;
 
     public function __construct()
     {
@@ -420,12 +421,12 @@ class Account implements UserInterface, PasswordHasherAwareInterface, \Serializa
         return $this;
     }
 
-    public function getLastLogin(): ?\DateTime
+    public function getLastLogin(): ?DateTime
     {
         return $this->lastLogin;
     }
 
-    public function setLastLogin(?\DateTime $lastLogin): Account
+    public function setLastLogin(?DateTime $lastLogin): Account
     {
         $this->lastLogin = $lastLogin;
 
@@ -446,7 +447,7 @@ class Account implements UserInterface, PasswordHasherAwareInterface, \Serializa
             self::ACTIVITY_IDLE_NOTIFIED,
             self::ACTIVITY_ABANDONED,
         ])) {
-            throw new \InvalidArgumentException('Invalid activity');
+            throw new InvalidArgumentException('Invalid activity');
         }
 
         $this->activityState = $activityState;
@@ -454,7 +455,7 @@ class Account implements UserInterface, PasswordHasherAwareInterface, \Serializa
         return $this;
     }
 
-    public function getActivityStateUpdated(): ?\DateTime
+    public function getActivityStateUpdated(): ?DateTime
     {
         return $this->activityStateUpdated;
     }
@@ -462,7 +463,7 @@ class Account implements UserInterface, PasswordHasherAwareInterface, \Serializa
     /**
      * @return Room
      */
-    public function setActivityStateUpdated(?\DateTime $activityStateUpdated): Account
+    public function setActivityStateUpdated(?DateTime $activityStateUpdated): Account
     {
         $this->activityStateUpdated = $activityStateUpdated;
 

@@ -16,7 +16,11 @@ namespace App\Controller;
 use App\Action\Delete\DeleteAction;
 use App\Action\Delete\DeleteSection;
 use App\Utils\MaterialService;
+use cs_room_item;
+use cs_step_item;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class SectionController extends BaseController
@@ -30,13 +34,13 @@ class SectionController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/section/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
         Request $request,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -45,11 +49,11 @@ class SectionController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param bool          $selectAll
      * @param int[]         $itemIds
      *
-     * @return \cs_step_item[]
+     * @return cs_step_item[]
      */
     protected function getItemsByFilterConditions(
         Request $request,

@@ -14,11 +14,14 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_group_item;
+use cs_group_manager;
+use cs_manager;
 use Symfony\Component\Form\Form;
 
 class GroupService
 {
-    private \cs_group_manager $groupManager;
+    private cs_group_manager $groupManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -39,7 +42,7 @@ class GroupService
         return $countGroupArray;
     }
 
-    public function getGroup($itemId): ?\cs_group_item
+    public function getGroup($itemId): ?cs_group_item
     {
         /* @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->groupManager->getItem($itemId);
@@ -51,7 +54,7 @@ class GroupService
      * @param int    $start
      * @param string $sort
      *
-     * @return \cs_group_item[]
+     * @return cs_group_item[]
      */
     public function getListGroups($roomId, $max = null, $start = null, $sort = null)
     {
@@ -74,7 +77,7 @@ class GroupService
      * @param int   $roomId
      * @param int[] $ids
      *
-     * @return \cs_group_item[]
+     * @return cs_group_item[]
      */
     public function getGroupsById($roomId, $ids)
     {
@@ -94,11 +97,11 @@ class GroupService
         // activated
         if ($formData['hide-deactivated-entries']) {
             if ('only_activated' === $formData['hide-deactivated-entries']) {
-                $this->groupManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+                $this->groupManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
             } elseif ('only_deactivated' === $formData['hide-deactivated-entries']) {
-                $this->groupManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+                $this->groupManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
             } elseif ('all' === $formData['hide-deactivated-entries']) {
-                $this->groupManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+                $this->groupManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
             }
         }
     }
@@ -110,6 +113,6 @@ class GroupService
 
     public function hideDeactivatedEntries()
     {
-        $this->groupManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $this->groupManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 }

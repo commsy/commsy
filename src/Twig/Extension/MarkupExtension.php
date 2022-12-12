@@ -14,6 +14,8 @@
 namespace App\Twig\Extension;
 
 use App\Services\LegacyMarkup;
+use cs_item;
+use DOMNode;
 use Masterminds\HTML5;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
@@ -30,7 +32,7 @@ class MarkupExtension extends AbstractExtension
         return [new TwigFilter('commsyMarkup', [$this, 'commsyMarkup'])];
     }
 
-    public function commsyMarkup($text, \cs_item $item = null)
+    public function commsyMarkup($text, cs_item $item = null)
     {
         $text = $this->commsyMarkupEscapes($text);
         $text = $this->commsyMarkupHeadings($text);
@@ -275,14 +277,14 @@ class MarkupExtension extends AbstractExtension
      *
      * @return string Replaced HTML string
      */
-    private function formatLightbox($text, \cs_item $item): string
+    private function formatLightbox($text, cs_item $item): string
     {
         $html5 = new HTML5();
         $dom = $html5->loadHTML($text);
         $imageTags = $dom->getElementsByTagName('img');
 
         foreach ($imageTags as $imageTag) {
-            /** @var \DOMNode $imageTag */
+            /** @var DOMNode $imageTag */
             $aTag = $dom->createElement('a');
             $aTag->setAttribute('data-uk-lightbox', '{group:'.$item->getItemID().'}');
             $aTag->setAttribute('data-lightbox-type', 'image');

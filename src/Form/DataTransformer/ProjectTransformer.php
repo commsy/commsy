@@ -13,6 +13,8 @@
 
 namespace App\Form\DataTransformer;
 
+use cs_project_item;
+
 class ProjectTransformer extends AbstractTransformer
 {
     protected $entity = 'project';
@@ -20,7 +22,7 @@ class ProjectTransformer extends AbstractTransformer
     /**
      * Transforms a cs_project_item object to an array.
      *
-     * @param \cs_project_item $projectItem
+     * @param cs_project_item $projectItem
      *
      * @return array
      */
@@ -42,7 +44,7 @@ class ProjectTransformer extends AbstractTransformer
      * @param object $projectObject
      * @param array  $projectData
      *
-     * @return \cs_project_item|null
+     * @return cs_project_item|null
      *
      * @throws TransformationFailedException if room item is not found
      */

@@ -16,11 +16,14 @@ namespace App\Account;
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
+use cs_environment;
+use cs_room_item;
+use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AccountMerger
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     /**
      * AccountMerger constructor.
@@ -75,7 +78,7 @@ class AccountMerger
     /**
      * @return array[]
      */
-    private function prepareRoomLists(\cs_user_item $fromPortalUser, \cs_user_item $intoPortalUser): array
+    private function prepareRoomLists(cs_user_item $fromPortalUser, cs_user_item $intoPortalUser): array
     {
         $duplicatedRooms = [];
         $nonDuplicatedRooms = [];
@@ -100,7 +103,7 @@ class AccountMerger
         ];
     }
 
-    private function getUserInContext(Account $account, int $contextId): ?\cs_user_item
+    private function getUserInContext(Account $account, int $contextId): ?cs_user_item
     {
         $userManager = $this->legacyEnvironment->getUserManager();
         $userManager->setContextLimit($contextId);
@@ -109,7 +112,7 @@ class AccountMerger
         $userManager->select();
         $users = $userManager->get();
         if (1 === $users->getCount()) {
-            /** @var \cs_user_item $user */
+            /** @var cs_user_item $user */
             $user = $users->getFirst();
 
             return $user;
@@ -118,7 +121,7 @@ class AccountMerger
         return null;
     }
 
-    private function rewriteRoomUser(Account $from, Account $into, \cs_room_item $room, \cs_user_item $nameSource = null)
+    private function rewriteRoomUser(Account $from, Account $into, cs_room_item $room, cs_user_item $nameSource = null)
     {
         $roomUser = $this->getUserInContext($from, $room->getItemID());
         $roomUser->setUserID($into->getUsername());

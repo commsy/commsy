@@ -16,6 +16,9 @@ namespace App\Action\Mark;
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
 use App\Utils\LabelService;
+use cs_item;
+use cs_room_item;
+use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -35,17 +38,17 @@ class CategorizeAction implements ActionInterface
         $this->categoryIds = $categoryIds;
     }
 
-    public function execute(\cs_room_item $roomItem, array $items): Response
+    public function execute(cs_room_item $roomItem, array $items): Response
     {
         if (empty($this->categoryIds)) {
-            throw new \Exception('no category IDs given');
+            throw new Exception('no category IDs given');
         }
 
         if (empty($items)) {
-            throw new \Exception('no items given');
+            throw new Exception('no items given');
         }
 
-        $itemIds = array_map(fn (\cs_item $item) => $item->getItemID(), $items);
+        $itemIds = array_map(fn (cs_item $item) => $item->getItemID(), $items);
 
         $this->labelService->addCategoriesById($this->categoryIds, $itemIds, $roomItem->getItemID());
 

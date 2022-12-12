@@ -14,6 +14,7 @@
 namespace App\Database;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -22,7 +23,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class FixFileLinks implements DatabaseCheck
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         private EntityManagerInterface $entityManager,

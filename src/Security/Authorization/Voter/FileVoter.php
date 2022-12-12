@@ -17,6 +17,10 @@ use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use App\Utils\FileService;
 use App\Utils\ItemService;
+use cs_environment;
+use cs_file_item;
+use cs_user_item;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -24,7 +28,7 @@ class FileVoter extends Voter
 {
     public const DOWNLOAD = 'FILE_DOWNLOAD';
 
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -57,12 +61,12 @@ class FileVoter extends Voter
             return $this->canDownload($fileItem, $currentUser, $user);
         }
 
-        throw new \LogicException('This code should not be reached!');
+        throw new LogicException('This code should not be reached!');
     }
 
     private function canDownload(
-        \cs_file_item $fileItem,
-        \cs_user_item $currentUser,
+        cs_file_item $fileItem,
+        cs_user_item $currentUser,
         ?Account $user)
     {
         if ($fileItem->maySee($currentUser)) {

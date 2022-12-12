@@ -16,6 +16,7 @@ namespace App\Form\Type;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
+use cs_environment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -28,7 +29,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ItemLinksType extends AbstractType
 {
-    private \cs_environment $environment;
+    private cs_environment $environment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, private RoomService $roomService, private ItemService $itemService)
     {

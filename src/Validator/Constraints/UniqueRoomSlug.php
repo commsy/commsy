@@ -13,15 +13,13 @@
 
 namespace App\Validator\Constraints;
 
+use cs_room_item;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\MissingOptionsException;
 
-/**
- * @Annotation
- */
 class UniqueRoomSlug extends Constraint
 {
-    public \cs_room_item $roomItem;
+    public cs_room_item $roomItem;
 
     public $message = 'A workspace with the same workspace identifier already exists.';
 

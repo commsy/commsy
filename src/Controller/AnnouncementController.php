@@ -34,6 +34,12 @@ use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
 use App\Utils\LabelService;
 use App\Utils\TopicService;
+use cs_announcement_item;
+use cs_item;
+use cs_room_item;
+use cs_user_item;
+use DateInterval;
+use DateTime;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
@@ -108,7 +114,7 @@ class AnnouncementController extends BaseController
             $announcementFilter = $request->query->get('announcement_filter');
         }
 
-        /** @var \cs_room_item $roomItem */
+        /** @var cs_room_item $roomItem */
         $roomItem = $this->roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
@@ -134,7 +140,7 @@ class AnnouncementController extends BaseController
         $this->session->set('sortAnnouncements', $sort);
 
         // get announcement list from manager service
-        /** @var \cs_announcement_item[] $announcements */
+        /** @var cs_announcement_item[] $announcements */
         $announcements = $this->announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
@@ -194,7 +200,7 @@ class AnnouncementController extends BaseController
         $this->announcementService->hideDeactivatedEntries();
 
         // get announcement list from manager service
-        /** @var \cs_announcement_item[] $announcements */
+        /** @var cs_announcement_item[] $announcements */
         $announcements = $this->announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
@@ -287,7 +293,7 @@ class AnnouncementController extends BaseController
         if ('none' === $sort || empty($sort)) {
             $sort = $this->session->get('sortAnnouncements', 'date');
         }
-        /** @var \cs_announcement_item[] $announcements */
+        /** @var cs_announcement_item[] $announcements */
         $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
@@ -435,7 +441,7 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/announcement/create')]
     #[Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'announcement')")]
@@ -444,11 +450,11 @@ class AnnouncementController extends BaseController
     ): RedirectResponse {
         // create new announcement item
         $announcementItem = $this->announcementService->getNewAnnouncement();
-        $dateTime = new \DateTime('now');
+        $dateTime = new DateTime('now');
         $announcementItem->setFirstDateTime($dateTime->format('Y-m-d H:i:s'));
 
         try {
-            $dateTime->add(new \DateInterval('P2W'));
+            $dateTime->add(new DateInterval('P2W'));
         } catch (Exception) {
         }
 
@@ -472,7 +478,7 @@ class AnnouncementController extends BaseController
         int $itemId
     ): Response {
         $form = null;
-        /** @var \cs_item $item */
+        /** @var cs_item $item */
         $item = $this->itemService->getItem($itemId);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
@@ -483,7 +489,7 @@ class AnnouncementController extends BaseController
 
         if ('announcement' == $item->getItemType()) {
             // get announcement from announcementService
-            /** @var \cs_announcement_item $announcementItem */
+            /** @var cs_announcement_item $announcementItem */
             $announcementItem = $this->announcementService->getannouncement($itemId);
             $announcementItem->setDraftStatus($item->isDraft());
             if (!$announcementItem) {
@@ -598,7 +604,7 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/announcement/download')]
     public function downloadAction(
@@ -616,7 +622,7 @@ class AnnouncementController extends BaseController
     // # XHR Action requests
     // ##################################################################################################
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/announcement/xhr/markread', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkReadAction(
@@ -631,7 +637,7 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/announcement/xhr/mark', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkAction(
@@ -648,7 +654,7 @@ class AnnouncementController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/announcement/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
     public function xhrCategorizeAction(
@@ -662,7 +668,7 @@ class AnnouncementController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/announcement/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
     public function xhrHashtagAction(
@@ -674,7 +680,7 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/announcement/xhr/activate', condition: 'request.isXmlHttpRequest()')]
     public function xhrActivateAction(
@@ -689,7 +695,7 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/announcement/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeactivateAction(
@@ -704,7 +710,7 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/announcement/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
@@ -719,10 +725,10 @@ class AnnouncementController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param int[]         $itemIds
      *
-     * @return \cs_announcement_item[]
+     * @return cs_announcement_item[]
      */
     public function getItemsByFilterConditions(
         Request $request,
@@ -755,7 +761,7 @@ class AnnouncementController extends BaseController
      * @return FormInterface
      */
     private function createFilterForm(
-        \cs_room_item $room
+        cs_room_item $room
     ) {
         // setup filter form default values
         $defaultFilterValues = [
@@ -806,7 +812,7 @@ class AnnouncementController extends BaseController
         $read_count = 0;
         $read_since_modification_count = 0;
 
-        /** @var \cs_user_item $current_user */
+        /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         $id_array = [];
         while ($current_user) {
@@ -840,7 +846,7 @@ class AnnouncementController extends BaseController
 
         $modifierList[$announcement->getItemId()] = $this->itemService->getAdditionalEditorsForItem($announcement);
 
-        /** @var \cs_announcement_item[] $announcements */
+        /** @var cs_announcement_item[] $announcements */
         $announcements = $this->announcementService->getListAnnouncements($roomId);
         $announcementList = [];
         $counterBefore = 0;
@@ -900,7 +906,7 @@ class AnnouncementController extends BaseController
             $ratingOwnDetail = $this->assessmentService->getOwnRatingDetail($announcement);
         }
 
-        /** @var \cs_item $item */
+        /** @var cs_item $item */
         $item = $this->itemService->getItem($itemId);
 
         $infoArray['announcement'] = $announcement;

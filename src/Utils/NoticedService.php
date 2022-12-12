@@ -14,10 +14,11 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_noticed_manager;
 
 class NoticedService
 {
-    private \cs_noticed_manager $noticedManager;
+    private cs_noticed_manager $noticedManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

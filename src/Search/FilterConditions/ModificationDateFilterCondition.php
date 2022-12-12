@@ -13,32 +13,34 @@
 
 namespace App\Search\FilterConditions;
 
+use DateTime;
+use DateTimeInterface;
 use Elastica\Query\Range;
 
 class ModificationDateFilterCondition implements FilterConditionInterface
 {
-    private ?\DateTime $startDate = null;
+    private ?DateTime $startDate = null;
 
-    private ?\DateTime $endDate = null;
+    private ?DateTime $endDate = null;
 
-    public function getStartDate(): ?\DateTime
+    public function getStartDate(): ?DateTime
     {
         return $this->startDate;
     }
 
-    public function setStartDate(?\DateTime $startDate): ModificationDateFilterCondition
+    public function setStartDate(?DateTime $startDate): ModificationDateFilterCondition
     {
         $this->startDate = $startDate;
 
         return $this;
     }
 
-    public function getEndDate(): ?\DateTime
+    public function getEndDate(): ?DateTime
     {
         return $this->endDate;
     }
 
-    public function setEndDate(?\DateTime $endDate): ModificationDateFilterCondition
+    public function setEndDate(?DateTime $endDate): ModificationDateFilterCondition
     {
         $this->endDate = $endDate;
 
@@ -56,10 +58,10 @@ class ModificationDateFilterCondition implements FilterConditionInterface
 
         $rangeParams = [];
         if (null !== $this->startDate) {
-            $rangeParams['gte'] = $this->startDate->format(\DateTimeInterface::RFC3339);
+            $rangeParams['gte'] = $this->startDate->format(DateTimeInterface::RFC3339);
         }
         if (null !== $this->endDate) {
-            $rangeParams['lte'] = $this->endDate->format(\DateTimeInterface::RFC3339);
+            $rangeParams['lte'] = $this->endDate->format(DateTimeInterface::RFC3339);
         }
 
         $modificationDateRange = new Range();

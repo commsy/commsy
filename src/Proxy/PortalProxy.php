@@ -16,16 +16,17 @@ namespace App\Proxy;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceGuest;
 use App\Entity\Portal;
+use cs_environment;
 use cs_list;
 
 class PortalProxy
 {
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
     private $legacyEnvironment;
 
-    public function __construct(private Portal $portal, \cs_environment $legacyEnvironment)
+    public function __construct(private Portal $portal, cs_environment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment;
     }
@@ -305,7 +306,7 @@ class PortalProxy
         $this->portal->getExtras()['HIDE_MAIL_BY_DEFAULT'] = (true === $enabled) ? 1 : 0;
     }
 
-    public function getModeratorList(): \cs_list
+    public function getModeratorList(): cs_list
     {
         $userManager = $this->legacyEnvironment->getUserManager();
         $userManager->resetLimits();
@@ -317,14 +318,14 @@ class PortalProxy
         return $userManager->get();
     }
 
-    public function getCommunityList(): \cs_list
+    public function getCommunityList(): cs_list
     {
         $communityManager = $this->legacyEnvironment->getCommunityManager();
         $communityManager->resetLimits();
         $communityManager->setContextLimit($this->getItemId());
         $communityManager->select();
 
-        /** @var \cs_list $communityList */
+        /** @var cs_list $communityList */
         $communityList = $communityManager->get();
 
         return $communityList;

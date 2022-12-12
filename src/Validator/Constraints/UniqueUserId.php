@@ -16,9 +16,6 @@ namespace App\Validator\Constraints;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\MissingOptionsException;
 
-/**
- * @Annotation
- */
 class UniqueUserId extends Constraint
 {
     public $portalId;

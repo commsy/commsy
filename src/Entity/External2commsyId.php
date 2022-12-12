@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,7 +26,7 @@ class External2commsyId
     /**
      * @var string
      */
-    #[ORM\Column(name: 'external_id', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(name: 'external_id', type: Types::STRING, length: 255)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?string $externalId = null;
@@ -33,7 +34,7 @@ class External2commsyId
     /**
      * @var string
      */
-    #[ORM\Column(name: 'source_system', type: \Doctrine\DBAL\Types\Types::STRING, length: 60)]
+    #[ORM\Column(name: 'source_system', type: Types::STRING, length: 60)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?string $sourceSystem = null;
@@ -41,6 +42,6 @@ class External2commsyId
     /**
      * @var int
      */
-    #[ORM\Column(name: 'commsy_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'commsy_id', type: Types::INTEGER)]
     private ?int $commsyId = null;
 }

@@ -17,12 +17,13 @@ use Prometheus\CollectorRegistry;
 use Prometheus\RegistryInterface;
 use Prometheus\Storage\APC;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractMetric
 {
     private string $cacheKey;
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setCacheKey(ParameterBagInterface $params)
     {
         $this->cacheKey = $params->get('commsy.metrics.cache_namespace');

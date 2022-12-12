@@ -40,7 +40,12 @@ use App\Utils\DateService;
 use App\Utils\LabelService;
 use App\Utils\TopicService;
 use cs_dates_item;
+use cs_room_item;
+use cs_user_item;
+use DateInterval;
+use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -401,7 +406,7 @@ class DateController extends BaseController
         $read_count = 0;
         $read_since_modification_count = 0;
 
-        /** @var \cs_user_item $current_user */
+        /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         $id_array = [];
         while ($current_user) {
@@ -496,7 +501,7 @@ class DateController extends BaseController
     /**
      * @return JsonResponse
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/events')]
     public function eventsAction(
@@ -525,11 +530,11 @@ class DateController extends BaseController
             $this->dateService->setFilterConditions($filterForm);
 
             if (isset($dateFilter['date-from']['date']) && !empty($dateFilter['date-from']['date'])) {
-                $startDate = \DateTime::createFromFormat('d.m.Y',
+                $startDate = DateTime::createFromFormat('d.m.Y',
                     $dateFilter['date-from']['date'])->format('Y-m-d 00:00:00');
             }
             if (isset($dateFilter['date-until']['date']) && !empty($dateFilter['date-until']['date'])) {
-                $endDate = \DateTime::createFromFormat('d.m.Y',
+                $endDate = DateTime::createFromFormat('d.m.Y',
                     $dateFilter['date-until']['date'])->format('Y-m-d 23:59:59');
             }
         } else {
@@ -554,7 +559,7 @@ class DateController extends BaseController
                 }
             } else {
                 $start = $date->getStartingDay().' 00:00:00';
-                $endDateTime = new \DateTime($date->getEndingDay().' 00:00:00');
+                $endDateTime = new DateTime($date->getEndingDay().' 00:00:00');
                 $endDateTime->modify('+1 day');
                 $end = $endDateTime->format('Y-m-d H:i:s');
             }
@@ -588,7 +593,7 @@ class DateController extends BaseController
                 $recurrencePattern = $date->getRecurrencePattern();
 
                 if (isset($recurrencePattern['recurringEndDate'])) {
-                    $endDate = new \DateTime($recurrencePattern['recurringEndDate']);
+                    $endDate = new DateTime($recurrencePattern['recurringEndDate']);
                 }
 
                 if ('RecurringDailyType' == $recurrencePattern['recurring_select']) {
@@ -652,7 +657,7 @@ class DateController extends BaseController
     /**
      * @return JsonResponse
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/eventsdashboard')]
     public function eventsdashboardAction(): Response
@@ -662,7 +667,7 @@ class DateController extends BaseController
 
         $listDates = [];
         foreach ($userList as $tempUser) {
-            /** @var \cs_user_item $tempUser */
+            /** @var cs_user_item $tempUser */
             if ($tempUser->getStatus() >= 2) {
                 $listDates = array_merge($listDates,
                     $this->dateService->getCalendarEvents($tempUser->getContextId(), $_GET['start'], $_GET['end']));
@@ -671,7 +676,7 @@ class DateController extends BaseController
 
         $events = [];
         foreach ($listDates as $date) {
-            /** @var \cs_dates_item $date */
+            /** @var cs_dates_item $date */
             if (!$date->isWholeDay()) {
                 $start = $date->getStartingDay();
                 if ('' != $date->getStartingTime()) {
@@ -686,7 +691,7 @@ class DateController extends BaseController
                 }
             } else {
                 $start = $date->getStartingDay().' 00:00:00';
-                $endDateTime = new \DateTime($date->getEndingDay().' 00:00:00');
+                $endDateTime = new DateTime($date->getEndingDay().' 00:00:00');
                 $endDateTime->modify('+1 day');
                 $end = $endDateTime->format('Y-m-d H:i:s');
             }
@@ -720,7 +725,7 @@ class DateController extends BaseController
                 $recurrencePattern = $date->getRecurrencePattern();
 
                 if (isset($recurrencePattern['recurringEndDate'])) {
-                    $endDate = new \DateTime($recurrencePattern['recurringEndDate']);
+                    $endDate = new DateTime($recurrencePattern['recurringEndDate']);
                 }
 
                 if ('RecurringDailyType' == $recurrencePattern['recurring_select']) {
@@ -830,7 +835,7 @@ class DateController extends BaseController
     /**
      * @return JsonResponse
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/{itemId}/calendaredit')]
     public function calendareditAction(
@@ -871,7 +876,7 @@ class DateController extends BaseController
                 $date->setDateTime_end(str_ireplace('T', ' ', $requestContent->end));
             }
         } else {
-            $endDateTime = new \DateTime($requestContent->end);
+            $endDateTime = new DateTime($requestContent->end);
             $endDateTime->modify('-1 day');
 
             $date->setEndingDay($endDateTime->format('Y-m-d'));
@@ -1178,7 +1183,7 @@ class DateController extends BaseController
             $current_user = $user_list->getNext();
         }
         $readerManager->getLatestReaderByUserIDArray($id_array, $date->getItemID());
-        /** @var \cs_user_item $current_user */
+        /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         while ($current_user) {
             $current_reader = $readerManager->getLatestReaderForUserByID($date->getItemID(),
@@ -1220,14 +1225,14 @@ class DateController extends BaseController
             $recurringDateArray = [];
             $recurringPatternArray = [];
 
-            $startDate = new \DateTime($dateItem->getStartingDay());
+            $startDate = new DateTime($dateItem->getStartingDay());
             $endDate = $formData['recurring_sub']['untilDate'];
 
             $recurringPatternArray['recurring_select'] = $formData['recurring_select'];
 
             // daily recurring
             if ('RecurringDailyType' == $formData['recurring_select']) {
-                $dateInterval = new \DateInterval('P'.$formData['recurring_sub']['recurrenceDay'].'D');
+                $dateInterval = new DateInterval('P'.$formData['recurring_sub']['recurrenceDay'].'D');
 
                 $day = clone $startDate;
                 $day->add($dateInterval);
@@ -1246,9 +1251,9 @@ class DateController extends BaseController
                     // go back to last monday(if day is not monday)
                     $monday = clone $startDate;
                     if (0 == $startDate->format('w')) {
-                        $monday->sub(new \DateInterval('P6D'));
+                        $monday->sub(new DateInterval('P6D'));
                     } else {
-                        $monday->sub(new \DateInterval('P'.($startDate->format('w') - 1).'D'));
+                        $monday->sub(new DateInterval('P'.($startDate->format('w') - 1).'D'));
                     }
 
                     while ($monday <= $endDate) {
@@ -1270,7 +1275,7 @@ class DateController extends BaseController
                             }
 
                             $temp = clone $monday;
-                            $temp->add(new \DateInterval('P'.$addonDays.'D'));
+                            $temp->add(new DateInterval('P'.$addonDays.'D'));
 
                             if ($temp > $startDate && $temp <= $endDate) {
                                 $recurringDateArray[] = $temp;
@@ -1279,7 +1284,7 @@ class DateController extends BaseController
                             unset($temp);
                         }
 
-                        $monday->add(new \DateInterval('P'.$formData['recurring_sub']['recurrenceWeek'].'W'));
+                        $monday->add(new DateInterval('P'.$formData['recurring_sub']['recurrenceWeek'].'W'));
                     }
                     $recurringPatternArray['recurring_sub']['recurrenceDaysOfWeek'] = $formData['recurring_sub']['recurrenceDaysOfWeek'];
                     $recurringPatternArray['recurring_sub']['recurrenceWeek'] = $formData['recurring_sub']['recurrenceWeek'];
@@ -1293,7 +1298,7 @@ class DateController extends BaseController
                         $yearCount = $startDate->format('Y');
                         $monthToAdd = $formData['recurring_sub']['recurrenceMonth'] % 12;
                         $yearsToAdd = ($formData['recurring_sub']['recurrenceMonth'] - $monthToAdd) / 12;
-                        $month = new \DateTime($yearCount.'-'.$monthCount.'-01');
+                        $month = new DateTime($yearCount.'-'.$monthCount.'-01');
 
                         while ($month <= $endDate) {
                             $datesOccurenceArray = [];
@@ -1301,7 +1306,7 @@ class DateController extends BaseController
                             // loop through every day of this month
                             for ($index = 0; $index < $month->format('t'); ++$index) {
                                 $temp = clone $month;
-                                $temp->add(new \DateInterval('P'.$index.'D'));
+                                $temp->add(new DateInterval('P'.$index.'D'));
 
                                 // if the actual day is a correct week day, add it to possible dates
                                 $weekDay = $temp->format('l'); // 'l' returns the full textual representation of the date's day of week (e.g. "Tuesday")
@@ -1338,7 +1343,7 @@ class DateController extends BaseController
                             }
 
                             unset($month);
-                            $month = new \DateTime($yearCount.'-'.$monthCount.'-01');
+                            $month = new DateTime($yearCount.'-'.$monthCount.'-01');
                         }
 
                         $recurringPatternArray['recurring_sub']['recurrenceMonth'] = $formData['recurring_sub']['recurrenceMonth'];
@@ -1351,9 +1356,9 @@ class DateController extends BaseController
                     } else {
                         if ('RecurringYearlyType' == $formData['recurring_select']) {
                             $yearCount = $startDate->format('Y');
-                            $year = new \DateTime($yearCount.'-01-01');
+                            $year = new DateTime($yearCount.'-01-01');
                             while ($year <= $endDate) {
-                                $date = new \DateTime($formData['recurring_sub']['recurrenceDayOfMonth'].'-'.$formData['recurring_sub']['recurrenceMonthOfYear'].'-'.$yearCount);
+                                $date = new DateTime($formData['recurring_sub']['recurrenceDayOfMonth'].'-'.$formData['recurring_sub']['recurrenceMonthOfYear'].'-'.$yearCount);
                                 if ($date > $startDate && $date <= $endDate) {
                                     $recurringDateArray[] = $date;
                                 }
@@ -1361,7 +1366,7 @@ class DateController extends BaseController
 
                                 unset($year);
                                 ++$yearCount;
-                                $year = new \DateTime($yearCount.'-01-01');
+                                $year = new DateTime($yearCount.'-01-01');
                             }
 
                             $recurringPatternArray['recurring_sub']['recurrenceDayOfMonth'] = $formData['recurring_sub']['recurrenceDayOfMonth'];
@@ -1395,8 +1400,8 @@ class DateController extends BaseController
                 }
 
                 if ('' != $dateItem->getEndingDay()) {
-                    $tempStartingDay = new \DateTime($dateItem->getStartingDay());
-                    $tempEndingDay = new \DateTime($dateItem->getEndingDay());
+                    $tempStartingDay = new DateTime($dateItem->getStartingDay());
+                    $tempEndingDay = new DateTime($dateItem->getEndingDay());
 
                     $tempDate->setEndingDay(date('Y-m-d',
                         $date->getTimestamp() + ($tempEndingDay->getTimestamp() - $tempStartingDay->getTimestamp())));
@@ -1442,7 +1447,7 @@ class DateController extends BaseController
 
             $datesList = $datesManager->get();
 
-            /** @var \cs_dates_item $tempDate */
+            /** @var cs_dates_item $tempDate */
             $tempDate = $datesList->getFirst();
             while ($tempDate) {
                 if (in_array('startingTime', $valuesToChange)) {
@@ -1728,7 +1733,7 @@ class DateController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/download')]
     public function downloadAction(
@@ -1746,7 +1751,7 @@ class DateController extends BaseController
     // # XHR Action requests
     // ##################################################################################################
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/xhr/markread', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkReadAction(
@@ -1761,7 +1766,7 @@ class DateController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/xhr/mark', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkAction(
@@ -1778,7 +1783,7 @@ class DateController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
     public function xhrCategorizeAction(
@@ -1792,7 +1797,7 @@ class DateController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
     public function xhrHashtagAction(
@@ -1804,7 +1809,7 @@ class DateController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/xhr/activate', condition: 'request.isXmlHttpRequest()')]
     public function xhrActivateAction(
@@ -1819,7 +1824,7 @@ class DateController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeactivateAction(
@@ -1834,7 +1839,7 @@ class DateController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
@@ -1862,7 +1867,7 @@ class DateController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $room
+     * @param cs_room_item $room
      * @param bool          $hidePastDates  Default state for hide past dates filter
      * @param bool          $viewAsCalendar Wheter the form's action should point to the calendar view (true),
      *                                      or else to list view(false): defaults to else
@@ -1887,11 +1892,11 @@ class DateController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param bool          $selectAll
      * @param int[]         $itemIds
      *
-     * @return \cs_dates_item[]
+     * @return cs_dates_item[]
      */
     protected function getItemsByFilterConditions(
         Request $request,

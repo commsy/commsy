@@ -15,8 +15,11 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\Api\GetAuthSourceDirectLoginUrl;
+use App\Repository\AuthSourceRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
+use InvalidArgumentException;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -63,7 +66,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     }
  * )
  */
-#[ORM\Entity(repositoryClass: \App\Repository\AuthSourceRepository::class)]
+#[ORM\Entity(repositoryClass: AuthSourceRepository::class)]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
 #[ORM\DiscriminatorMap(['local' => 'AuthSourceLocal', 'oidc' => 'AuthSourceOIDC', 'ldap' => 'AuthSourceLdap', 'shib' => 'AuthSourceShibboleth', 'guest' => 'AuthSourceGuest'])]
@@ -78,7 +81,7 @@ abstract class AuthSource
     /**
      * @OA\Property(description="The unique identifier.")
      */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[Groups(['api'])]
@@ -89,7 +92,7 @@ abstract class AuthSource
      *
      * @OA\Property(type="string", maxLength=255)
      */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     #[Groups(['api'])]
     private ?string $title = null;
 
@@ -98,11 +101,11 @@ abstract class AuthSource
      *
      * @OA\Property(type="string", maxLength=255)
      */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Groups(['api'])]
     private ?string $description = null;
 
-    #[ORM\ManyToOne(targetEntity: \App\Entity\Portal::class, inversedBy: 'authSources')]
+    #[ORM\ManyToOne(targetEntity: Portal::class, inversedBy: 'authSources')]
     #[ORM\JoinColumn(name: 'portal_id')]
     private ?Portal $portal = null;
 
@@ -111,32 +114,32 @@ abstract class AuthSource
      *
      * @OA\Property(type="boolean")
      */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['api'])]
     private ?bool $enabled = null;
 
     /**
      * @var bool
      */
-    #[ORM\Column(name: '`default`', type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[ORM\Column(name: '`default`', type: Types::BOOLEAN)]
     private ?bool $default = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 10, columnDefinition: "ENUM('yes', 'no', 'invitation')")]
+    #[ORM\Column(type: Types::STRING, length: 10, columnDefinition: "ENUM('yes', 'no', 'invitation')")]
     protected string $addAccount;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $changeUsername;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $deleteAccount;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $changeUserdata;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $changePassword;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $createRoom = true;
 
     /**
@@ -249,7 +252,7 @@ abstract class AuthSource
     public function setAddAccount(string $addAccount): self
     {
         if (!in_array($addAccount, [self::ADD_ACCOUNT_YES, self::ADD_ACCOUNT_NO, self::ADD_ACCOUNT_INVITE])) {
-            throw new \InvalidArgumentException('invalid value for add_account');
+            throw new InvalidArgumentException('invalid value for add_account');
         }
 
         $this->addAccount = $addAccount;

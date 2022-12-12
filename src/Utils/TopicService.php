@@ -14,11 +14,14 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_manager;
+use cs_topic_item;
+use cs_topic_manager;
 use Symfony\Component\Form\FormInterface;
 
 class TopicService
 {
-    private \cs_topic_manager $topicManager;
+    private cs_topic_manager $topicManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -42,9 +45,9 @@ class TopicService
     /**
      * @param int $itemId
      */
-    public function getTopic($itemId): \cs_topic_item
+    public function getTopic($itemId): cs_topic_item
     {
-        /** @var \cs_topic_item $topic */
+        /** @var cs_topic_item $topic */
         $topic = $this->topicManager->getItem($itemId);
 
         return $topic;
@@ -55,7 +58,7 @@ class TopicService
      * @param int $max
      * @param int $start
      *
-     * @return \cs_topic_item[]
+     * @return cs_topic_item[]
      */
     public function getListTopics($roomId, $max = null, $start = null)
     {
@@ -74,7 +77,7 @@ class TopicService
      * @param int   $roomId
      * @param int[] $ids
      *
-     * @return \cs_topic_item[]
+     * @return cs_topic_item[]
      */
     public function getTopicsById($roomId, $ids)
     {
@@ -94,11 +97,11 @@ class TopicService
         // activated
         if ($formData['hide-deactivated-entries']) {
             if ('only_activated' === $formData['hide-deactivated-entries']) {
-                $this->topicManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+                $this->topicManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
             } elseif ('only_deactivated' === $formData['hide-deactivated-entries']) {
-                $this->topicManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+                $this->topicManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
             } elseif ('all' === $formData['hide-deactivated-entries']) {
-                $this->topicManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+                $this->topicManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
             }
         }
     }
@@ -110,6 +113,6 @@ class TopicService
 
     public function hideDeactivatedEntries()
     {
-        $this->topicManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $this->topicManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 }

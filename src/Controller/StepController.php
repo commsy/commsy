@@ -17,6 +17,9 @@ use App\Action\Delete\DeleteAction;
 use App\Action\Delete\DeleteStep;
 use App\Action\TodoStatus\TodoStatusAction;
 use App\Utils\TodoService;
+use cs_room_item;
+use cs_step_item;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -40,7 +43,7 @@ class StepController extends BaseController
     // # XHR Action requests
     // ##################################################################################################
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/step/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
@@ -59,7 +62,7 @@ class StepController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/step/xhr/changesatatus/{itemId}', condition: 'request.isXmlHttpRequest()')]
     public function xhrChangeStatusAction($roomId, $itemId, Request $request, TodoService $todoService): Response
@@ -80,7 +83,7 @@ class StepController extends BaseController
 
         $payload = $request->request->get('payload');
         if (!isset($payload['status'])) {
-            throw new \Exception('new status string not provided');
+            throw new Exception('new status string not provided');
         }
         $newStatus = $payload['status'];
 
@@ -91,11 +94,11 @@ class StepController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param bool          $selectAll
      * @param int[]         $itemIds
      *
-     * @return \cs_step_item[]
+     * @return cs_step_item[]
      */
     protected function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
     {

@@ -29,6 +29,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -49,7 +50,7 @@ class DashboardController extends AbstractController
          PortalRepository $portalRepository,
          ServerRepository $serverRepository,
          int $roomId
-     ): \Symfony\Component\HttpFoundation\Response {
+     ): Response {
         $legacyEnvironment = $environment->getEnvironment();
 
         // get room item for information panel
@@ -154,7 +155,7 @@ class DashboardController extends AbstractController
         RoomFeedGenerator $roomFeedGenerator,
         LegacyEnvironment $legacyEnvironment,
         int $max = 10
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $lastId = null;
         if ($request->query->has('lastId')) {
             $lastId = $request->query->get('lastId');
@@ -189,7 +190,7 @@ class DashboardController extends AbstractController
         TranslatorInterface $translator,
         LegacyEnvironment $environment,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $requestContent = json_decode($request->getContent(), null, 512, JSON_THROW_ON_ERROR);
 
         $legacyEnvironment = $environment->getEnvironment();
@@ -209,12 +210,12 @@ class DashboardController extends AbstractController
     #[Route(path: '/dashboard/{roomId}/rss')]
     public function rssAction(
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         return $this->render('dashboard/rss.html.twig');
     }
 
 #[Route(path: '/dashboard/{roomId}/myviews')]
-    public function myViewsAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment): \Symfony\Component\HttpFoundation\Response
+    public function myViewsAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment): Response
     {
         $searchData = new SearchData();
 
@@ -261,7 +262,7 @@ class DashboardController extends AbstractController
     public function externalaccessAction(
         LegacyEnvironment $environment,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $legacyEnvironment = $environment->getEnvironment();
         $user = $legacyEnvironment->getCurrentUser()->getRelatedPortalUserItem();
 

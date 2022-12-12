@@ -13,6 +13,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,7 +27,7 @@ class ItemLinkFile
     /**
      * @var int
      */
-    #[ORM\Column(name: 'item_iid', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'item_iid', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $itemIid = 0;
@@ -33,7 +35,7 @@ class ItemLinkFile
     /**
      * @var int
      */
-    #[ORM\Column(name: 'item_vid', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'item_vid', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $itemVid = 0;
@@ -41,7 +43,7 @@ class ItemLinkFile
     /**
      * @var int
      */
-    #[ORM\Column(name: 'file_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'file_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $fileId = 0;
@@ -49,12 +51,12 @@ class ItemLinkFile
     /**
      * @var int
      */
-    #[ORM\Column(name: 'deleter_id', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private ?int $deleterId = null;
 
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
-    #[ORM\Column(name: 'deletion_date', type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $deletionDate = null;
+    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $deletionDate = null;
 }

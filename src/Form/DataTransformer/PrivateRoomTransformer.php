@@ -14,12 +14,14 @@
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_privateroom_item;
 
 class PrivateRoomTransformer extends AbstractTransformer
 {
     protected $entity = 'privateroom';
 
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -29,7 +31,7 @@ class PrivateRoomTransformer extends AbstractTransformer
     /**
      * Transforms a cs_room_item object to an array.
      *
-     * @param \cs_privateroom_item $roomItem
+     * @param cs_privateroom_item $roomItem
      *
      * @return array
      */
@@ -84,7 +86,7 @@ class PrivateRoomTransformer extends AbstractTransformer
     /**
      * Applies an array of data to an existing object.
      *
-     * @param \cs_privateroom_item $roomObject
+     * @param cs_privateroom_item $roomObject
      * @param array                $roomData
      *
      * @return cs_room_item|null

@@ -14,6 +14,7 @@
 namespace App\Security\Authorization\Voter;
 
 use App\Services\LegacyEnvironment;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -39,7 +40,7 @@ class DateVoter extends Voter
 
         return match ($attribute) {
             self::EDIT => $this->canEdit($date),
-            default => throw new \LogicException('The code no show.'),
+            default => throw new LogicException('The code no show.'),
         };
     }
 

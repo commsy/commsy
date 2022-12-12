@@ -22,7 +22,7 @@ class AppearanceSettingsTransformer extends AbstractTransformer
     /**
      * Transforms a cs_room_item object to an array.
      *
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      *
      * @return array
      */
@@ -51,7 +51,7 @@ class AppearanceSettingsTransformer extends AbstractTransformer
      * @param object $roomObject
      * @param array  $roomData
      *
-     * @return \cs_room_item|null
+     * @return cs_room_item|null
      *
      * @throws TransformationFailedException if room item is not found
      */

@@ -28,10 +28,10 @@ use App\Utils\ProjectService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use cs_environment;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -54,7 +54,8 @@ class ProjectController extends AbstractController
         int $max = 10,
         int $start = 0,
         string $sort = 'date_rev'
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response
+    {
         $legacyEnvironment = $environment->getEnvironment();
 
         // setup filter form
@@ -96,7 +97,8 @@ class ProjectController extends AbstractController
         ProjectService $projectService,
         LegacyEnvironment $environment,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response
+    {
         // setup filter form
         $defaultFilterValues = ['activated' => true];
         $filterForm = $this->createForm(ProjectFilterType::class, $defaultFilterValues, ['action' => $this->generateUrl('app_project_list', ['roomId' => $roomId])]);
@@ -135,7 +137,8 @@ class ProjectController extends AbstractController
         LegacyEnvironment $environment,
         int $roomId,
         int $itemId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response
+    {
         $legacyEnvironment = $environment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -162,7 +165,7 @@ class ProjectController extends AbstractController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/project/create', requirements: ['itemId' => '\d+'])]
     public function createAction(
@@ -394,7 +397,7 @@ class ProjectController extends AbstractController
         return $info;
     }
 
-    private function copySettings($masterRoom, $targetRoom, LegacyCopy $legacyCopy, \cs_environment $legacyEnvironment)
+    private function copySettings($masterRoom, $targetRoom, LegacyCopy $legacyCopy, cs_environment $legacyEnvironment)
     {
         $user_manager = $legacyEnvironment->getUserManager();
         $creator_item = $user_manager->getItem($targetRoom->getCreatorID());
@@ -409,7 +412,7 @@ class ProjectController extends AbstractController
             if ($user_list->isNotEmpty() and 1 == $user_list->getCount()) {
                 $creator_item = $user_list->getFirst();
             } else {
-                throw new \Exception('can not get creator of new room');
+                throw new Exception('can not get creator of new room');
             }
         }
         $creator_item->setAccountWantMail('yes');
@@ -434,7 +437,7 @@ class ProjectController extends AbstractController
      *
      * @return array
      */
-    private function getAvailableTemplates(\cs_environment $legacyEnvironment, $type = 'project')
+    private function getAvailableTemplates(cs_environment $legacyEnvironment, $type = 'project')
     {
         $templates = [];
 
@@ -523,7 +526,7 @@ class ProjectController extends AbstractController
         return $templates;
     }
 
-    private function memberStatus($item, \cs_environment $legacyEnvironment)
+    private function memberStatus($item, cs_environment $legacyEnvironment)
     {
         $status = 'closed';
         $currentUser = $legacyEnvironment->getCurrentUserItem();

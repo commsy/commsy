@@ -17,9 +17,12 @@ use App\Event\ItemDeletedEvent;
 use App\Event\ItemReindexEvent;
 use App\Mail\Mailer;
 use App\Mail\Messages\ItemDeletedMessage;
+use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
+use cs_item;
+use cs_user_item;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ItemSubscriber implements EventSubscriberInterface
@@ -62,7 +65,7 @@ class ItemSubscriber implements EventSubscriberInterface
         }
 
         // Grab all moderators who want to get informed about item deletions
-        $moderatorRecipients = \App\Mail\RecipientFactory::createModerationRecipients($context, fn (\cs_user_item $moderator) => $moderator->getDeleteEntryWantMail());
+        $moderatorRecipients = RecipientFactory::createModerationRecipients($context, fn (cs_user_item $moderator) => $moderator->getDeleteEntryWantMail());
 
         $message = new ItemDeletedMessage($typedItem, $this->legacyEnvironment->getCurrentUserItem());
         $this->mailer->sendMultiple($message, $moderatorRecipients);
@@ -80,9 +83,9 @@ class ItemSubscriber implements EventSubscriberInterface
     /**
      * Updates the Elastic search index for the given item, and invalidates its cached read status.
      *
-     * @param \cs_item $item the item whose search index entry shall be updated
+     * @param cs_item $item the item whose search index entry shall be updated
      */
-    private function updateSearchIndex(\cs_item $item)
+    private function updateSearchIndex(cs_item $item)
     {
         if (method_exists($item, 'updateElastic')) {
             $item->updateElastic();

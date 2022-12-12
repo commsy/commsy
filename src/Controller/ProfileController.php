@@ -27,11 +27,14 @@ use App\Utils\DiscService;
 use App\Utils\GroupService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use cs_environment;
+use cs_user_item;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -51,12 +54,12 @@ class ProfileController extends AbstractController
         LegacyEnvironment $environment,
         int $roomId,
         int $itemId
-    ): \Symfony\Component\HttpFoundation\Response {
-        /** @var \cs_environment $legacyEnvironment */
+    ): Response {
+        /** @var cs_environment $legacyEnvironment */
         $legacyEnvironment = $environment->getEnvironment();
         $discManager = $legacyEnvironment->getDiscManager();
 
-        /** @var \cs_user_item $userItem */
+        /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
 
         if (!$userItem) {
@@ -116,7 +119,7 @@ class ProfileController extends AbstractController
 
             if ($formData['imageChangeInAllContexts']) {
                 $userList = $userItem->getRelatedUserList(true);
-                /** @var \cs_user_item $tempUserItem */
+                /** @var cs_user_item $tempUserItem */
                 $tempUserItem = $userList->getFirst();
                 while ($tempUserItem) {
                     if ($tempUserItem->getItemId() == $userItem->getItemId()) {
@@ -165,8 +168,8 @@ class ProfileController extends AbstractController
         UserTransformer $userTransformer,
         int $roomId,
         int $itemId
-    ): \Symfony\Component\HttpFoundation\Response {
-        /** @var \cs_user_item $userItem */
+    ): Response {
+        /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
 
@@ -226,8 +229,8 @@ class ProfileController extends AbstractController
         UserTransformer $userTransformer,
         int $roomId,
         int $itemId
-    ): \Symfony\Component\HttpFoundation\Response {
-        /** @var \cs_user_item $userItem */
+    ): Response {
+        /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
 
@@ -294,8 +297,8 @@ class ProfileController extends AbstractController
         Request $request,
         UserService $userService,
         int $itemId
-    ): \Symfony\Component\HttpFoundation\Response {
-        /** @var \cs_user_item $userItem */
+    ): Response {
+        /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
         $userData = [];
 
@@ -324,7 +327,7 @@ class ProfileController extends AbstractController
     #[Route(path: '/room/{roomId}/user/profileImage')]
     public function image(
         UserService $userService
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         return $this->render('profile/image.html.twig', ['user' => $userService->getCurrentUserItem()]);
     }
 
@@ -333,7 +336,7 @@ class ProfileController extends AbstractController
         UserService $userService,
         int $roomId,
         bool $uikit3 = false
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         return $this->render('profile/menu.html.twig', [
             'portalUser' => $userService->getCurrentUserItem()->getRelatedPortalUserItem(),
             'roomId' => $roomId,
@@ -353,7 +356,7 @@ class ProfileController extends AbstractController
         GroupService $groupService,
         FormFactoryInterface $formFactory,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         /** @var Account $account */
         $account = $this->getUser();
         if (!$account) {

@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -47,7 +48,7 @@ class Noticed
     private $userId = '0';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'read_date', type: 'datetime')]
     #[ORM\Id]

@@ -15,6 +15,8 @@ namespace App\Action\Activate;
 
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
+use cs_item;
+use cs_room_item;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -25,9 +27,9 @@ class ActivateAction implements ActionInterface
     }
 
     /**
-     * @param \cs_item[] $items
+     * @param cs_item[] $items
      */
-    public function execute(\cs_room_item $roomItem, array $items): Response
+    public function execute(cs_room_item $roomItem, array $items): Response
     {
         foreach ($items as $item) {
             $item->setActivationDate(null);

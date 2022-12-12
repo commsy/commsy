@@ -19,6 +19,7 @@ use App\Security\Authorization\Voter\RootVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use LogicException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -38,7 +39,7 @@ class HelperController extends AbstractController
         /** @var Account $account */
         $account = $this->getUser();
         if (null === $account) {
-            throw new \LogicException('There must be a valid user at this point');
+            throw new LogicException('There must be a valid user at this point');
         }
 
         // Root (who does not own a private room) will be redirected to "all rooms"

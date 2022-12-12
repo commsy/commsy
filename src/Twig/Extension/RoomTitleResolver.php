@@ -15,6 +15,7 @@ namespace App\Twig\Extension;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
+use cs_environment;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -22,7 +23,7 @@ use Twig\TwigFilter;
 class RoomTitleResolver extends AbstractExtension
 {
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
     private $legacyEnvironment;
 

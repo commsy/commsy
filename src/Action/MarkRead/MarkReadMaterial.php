@@ -14,6 +14,7 @@
 namespace App\Action\MarkRead;
 
 use App\Utils\MaterialService;
+use cs_item;
 
 class MarkReadMaterial implements MarkReadInterface
 {
@@ -21,7 +22,7 @@ class MarkReadMaterial implements MarkReadInterface
     {
     }
 
-    public function markRead(\cs_item $item): void
+    public function markRead(cs_item $item): void
     {
         $this->materialService->markMaterialReadAndNoticed($item->getItemId());
     }

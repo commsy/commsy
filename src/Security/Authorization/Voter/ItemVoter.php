@@ -20,7 +20,11 @@ use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use cs_environment;
+use cs_room_item;
+use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
+use LogicException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -37,7 +41,7 @@ class ItemVoter extends Voter
     public const USERROOM = 'ITEM_USERROOM';
     public const DELETE = 'ITEM_DELETE';
 
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -119,7 +123,7 @@ class ItemVoter extends Voter
             }
         }
 
-        throw new \LogicException('This code should not be reached!');
+        throw new LogicException('This code should not be reached!');
     }
 
     private function canView($item, $currentUser)
@@ -135,12 +139,12 @@ class ItemVoter extends Voter
         return false;
     }
 
-    private function canEdit($item, \cs_user_item $currentUser): bool
+    private function canEdit($item, cs_user_item $currentUser): bool
     {
         $contextItem = $item->getContextItem();
         if (null !== $contextItem && method_exists($contextItem, 'getArchived') && $contextItem->getArchived()) {
             // users may still edit their own account settings & room profile (which also allows them to leave the room)
-            if ($item instanceof \cs_user_item && $item->getItemID() === $currentUser->getItemID()) {
+            if ($item instanceof cs_user_item && $item->getItemID() === $currentUser->getItemID()) {
                 return true;
             }
 
@@ -288,7 +292,7 @@ class ItemVoter extends Voter
     /**
      * Checks whether the given user is a parent moderator for the given room.
      */
-    private function isParentModeratorForRoom(\cs_user_item $user, ?\cs_room_item $room): bool
+    private function isParentModeratorForRoom(cs_user_item $user, ?cs_room_item $room): bool
     {
         if (!$room) {
             return false;

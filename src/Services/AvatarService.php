@@ -14,6 +14,7 @@
 namespace App\Services;
 
 use App\Utils\UserService;
+use cs_user_item;
 use OzdemirBurak\Iris\Color\Hex;
 use OzdemirBurak\Iris\Exceptions\InvalidColorException;
 
@@ -23,7 +24,7 @@ class AvatarService
 
     private int $colorScheme;
 
-    private ?\cs_user_item $user = null;
+    private ?cs_user_item $user = null;
 
     private int $imageWidth = 100;
 

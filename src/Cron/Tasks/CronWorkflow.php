@@ -16,12 +16,14 @@ namespace App\Cron\Tasks;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use DateTimeImmutable;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 class CronWorkflow implements CronTaskInterface
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -31,7 +33,7 @@ class CronWorkflow implements CronTaskInterface
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function run(?\DateTimeImmutable $lastRun): void
+    public function run(?DateTimeImmutable $lastRun): void
     {
         $materialManager = $this->legacyEnvironment->getMaterialManager();
 

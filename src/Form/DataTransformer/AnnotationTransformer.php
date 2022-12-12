@@ -13,6 +13,8 @@
 
 namespace App\Form\DataTransformer;
 
+use cs_item;
+
 class AnnotationTransformer extends AbstractTransformer
 {
     protected $entity = 'annotation';
@@ -20,7 +22,7 @@ class AnnotationTransformer extends AbstractTransformer
     /**
      * Transforms a \cs_item object to an array.
      *
-     * @param \cs_item $annotationItem
+     * @param cs_item $annotationItem
      *
      * @return array
      */
@@ -41,7 +43,7 @@ class AnnotationTransformer extends AbstractTransformer
      * @param object $materialObject
      * @param array  $annotationData
      *
-     * @return \cs_item|null
+     * @return cs_item|null
      */
     public function applyTransformation($annotationObject, $annotationData)
     {

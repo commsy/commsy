@@ -13,6 +13,8 @@
 
 namespace App\Privacy;
 
+use DateTime;
+
 /**
  * Class RoomProfileData.
  *
@@ -28,7 +30,7 @@ class RoomProfileData
 
     private ?int $itemID = null;
 
-    private ?\DateTime $creationDate = null;
+    private ?DateTime $creationDate = null;
 
     private ?int $status = null;
 
@@ -110,12 +112,12 @@ class RoomProfileData
         return $this;
     }
 
-    public function getCreationDate(): \DateTime
+    public function getCreationDate(): DateTime
     {
         return $this->creationDate;
     }
 
-    public function setCreationDate(\DateTime $creationDate): RoomProfileData
+    public function setCreationDate(DateTime $creationDate): RoomProfileData
     {
         $this->creationDate = $creationDate;
 

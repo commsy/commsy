@@ -13,9 +13,10 @@
 
 namespace App\Action;
 
+use cs_room_item;
 use Symfony\Component\HttpFoundation\Response;
 
 interface ActionInterface
 {
-    public function execute(\cs_room_item $roomItem, array $items): Response;
+    public function execute(cs_room_item $roomItem, array $items): Response;
 }

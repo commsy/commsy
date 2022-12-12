@@ -21,12 +21,15 @@ use App\Utils\DiscService;
 use App\Utils\FileService;
 use App\Utils\ItemService;
 use App\Utils\UserService;
+use cs_link_item;
+use cs_list;
+use DateTime;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -170,7 +173,7 @@ class UploadController extends AbstractController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/upload/{itemId}/form/{versionId}', requirements: ['itemId' => '\d+', 'versionId' => '\d+'], defaults: ['versionId' => -1])]
     public function uploadFormAction(
@@ -206,7 +209,7 @@ class UploadController extends AbstractController
             $formFile = new File();
             $formFile->setFileId($currentFile->getFileID());
             $formFile->setFilename($currentFile->getFileName());
-            $formFile->setCreationDate(new \DateTime($currentFile->getCreationDate()));
+            $formFile->setCreationDate(new DateTime($currentFile->getCreationDate()));
             $formFile->setChecked(true);
 
             $assignedFiles['files'][] = $formFile;
@@ -265,12 +268,12 @@ class UploadController extends AbstractController
                     $linkItemManager->setFileIDLimit($tempFile->getFileID());
                     $linkItemManager->select();
 
-                    /** @var \cs_list $linkItemList */
+                    /** @var cs_list $linkItemList */
                     $linkItemList = $linkItemManager->get();
 
                     $delete = true;
                     if ($linkItemList->isNotEmpty()) {
-                        /** @var \cs_link_item $linkItem */
+                        /** @var cs_link_item $linkItem */
                         $linkItem = $linkItemList->getFirst();
                         while ($linkItem) {
                             if (!$linkItem->isDeleted()) {

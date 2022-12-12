@@ -14,12 +14,15 @@
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
+use cs_dates_item;
+use cs_environment;
+use DateTime;
 
 class DateTransformer extends AbstractTransformer
 {
     protected $entity = 'date';
 
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -29,7 +32,7 @@ class DateTransformer extends AbstractTransformer
     /**
      * Transforms a cs_date_item object to an array.
      *
-     * @param \cs_dates_item $dateItem
+     * @param cs_dates_item $dateItem
      *
      * @return array
      */
@@ -43,11 +46,11 @@ class DateTransformer extends AbstractTransformer
             $dateData['permission'] = !$dateItem->isPublic();
             $dateData['place'] = $dateItem->getPlace();
 
-            $datetimeStart = new \DateTime($dateItem->getDateTime_start());
+            $datetimeStart = new DateTime($dateItem->getDateTime_start());
             $dateData['start']['date'] = $datetimeStart;
             $dateData['start']['time'] = $datetimeStart;
 
-            $datetimeEnd = new \DateTime($dateItem->getDateTime_end());
+            $datetimeEnd = new DateTime($dateItem->getDateTime_end());
             $dateData['end']['date'] = $datetimeEnd;
             $dateData['end']['time'] = $datetimeEnd;
 
@@ -57,7 +60,7 @@ class DateTransformer extends AbstractTransformer
 
             if ('' != $dateItem->getRecurrencePattern()) {
                 $dateData = array_merge($dateData, $dateItem->getRecurrencePattern());
-                $dateData['recurring_sub']['untilDate'] = new \DateTime($dateData['recurringEndDate']);
+                $dateData['recurring_sub']['untilDate'] = new DateTime($dateData['recurringEndDate']);
             }
 
             if ($dateItem->isNotActivated()) {
@@ -65,7 +68,7 @@ class DateTransformer extends AbstractTransformer
 
                 $activating_date = $dateItem->getActivatingDate();
                 if (!stristr($activating_date, '9999')) {
-                    $datetime = new \DateTime($activating_date);
+                    $datetime = new DateTime($activating_date);
                     $dateData['hiddendate']['date'] = $datetime;
                     $dateData['hiddendate']['time'] = $datetime;
                 }
@@ -86,10 +89,10 @@ class DateTransformer extends AbstractTransformer
     /**
      * Applies an array of data to an existing object.
      *
-     * @param \cs_dates_item $dateObject
+     * @param cs_dates_item $dateObject
      * @param array          $dateData
      *
-     * @return \cs_dates_item
+     * @return cs_dates_item
      */
     public function applyTransformation($dateObject, $dateData)
     {

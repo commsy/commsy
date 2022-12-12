@@ -13,6 +13,7 @@
 
 namespace App\Cron\Tasks;
 
+use DateTimeImmutable;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -23,7 +24,7 @@ class CronCleanTemporary implements CronTaskInterface
     {
     }
 
-    public function run(?\DateTimeImmutable $lastRun): void
+    public function run(?DateTimeImmutable $lastRun): void
     {
         $temporaryFolders = [
             'var/temp',

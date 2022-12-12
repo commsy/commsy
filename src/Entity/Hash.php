@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -27,7 +28,7 @@ class Hash
     /**
      * @var int
      */
-    #[ORM\Column(name: 'user_item_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'user_item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $userItemId = null;
@@ -35,13 +36,13 @@ class Hash
     /**
      * @var string
      */
-    #[ORM\Column(name: 'rss', type: \Doctrine\DBAL\Types\Types::STRING, length: 32, nullable: true)]
+    #[ORM\Column(name: 'rss', type: Types::STRING, length: 32, nullable: true)]
     private ?string $rss = null;
 
     /**
      * @var string
      */
-    #[ORM\Column(name: 'ical', type: \Doctrine\DBAL\Types\Types::STRING, length: 32, nullable: true)]
+    #[ORM\Column(name: 'ical', type: Types::STRING, length: 32, nullable: true)]
     private ?string $ical = null;
 
     /**

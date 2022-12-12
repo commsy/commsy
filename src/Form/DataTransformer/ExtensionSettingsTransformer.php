@@ -15,11 +15,12 @@ namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
+use cs_environment;
 use cs_room_item;
 
 class ExtensionSettingsTransformer extends AbstractTransformer
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService)
     {
@@ -29,7 +30,7 @@ class ExtensionSettingsTransformer extends AbstractTransformer
     /**
      * Transforms a cs_room_item object to an array.
      *
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      *
      * @return array
      */
@@ -83,7 +84,7 @@ class ExtensionSettingsTransformer extends AbstractTransformer
      * @param object $roomObject
      * @param array  $roomData
      *
-     * @return \cs_room_item|null
+     * @return cs_room_item|null
      *
      * @throws TransformationFailedException if room item is not found
      */

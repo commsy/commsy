@@ -20,6 +20,7 @@ use App\Utils\LabelService;
 use App\Utils\RoomService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -37,7 +38,7 @@ class LinkController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $itemId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $item = $itemService->getItem($itemId);
 
         $linkedItems = [];
@@ -93,7 +94,7 @@ class LinkController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $itemId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $item = $itemService->getItem($itemId);
 
         $linkedItems = [];
@@ -149,7 +150,7 @@ class LinkController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $itemId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $item = $itemService->getItem($itemId);
 
         $linkedItems = [];
@@ -205,7 +206,7 @@ class LinkController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $itemId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $item = $itemService->getItem($itemId);
 
         $linkedItems = [];
@@ -252,7 +253,7 @@ class LinkController extends AbstractController
         RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
-        int $itemId): \Symfony\Component\HttpFoundation\Response
+        int $itemId): Response
     {
         $item = $itemService->getItem($itemId);
 
@@ -301,7 +302,7 @@ class LinkController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $itemId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $item = $itemService->getItem($itemId);
 
         $linkedItems = [];

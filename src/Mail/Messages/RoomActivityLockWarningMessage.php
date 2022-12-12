@@ -16,10 +16,12 @@ namespace App\Mail\Messages;
 use App\Entity\Portal;
 use App\Mail\Message;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use DateTimeImmutable;
 
 class RoomActivityLockWarningMessage extends Message
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -43,7 +45,7 @@ class RoomActivityLockWarningMessage extends Message
     {
         $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
 
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
         $numDaysInactive = $now->diff($this->room->getLastLogin(), true)->format('%a');
 
         return [

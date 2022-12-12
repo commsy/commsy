@@ -13,6 +13,8 @@
 
 namespace App\Form\DataTransformer;
 
+use cs_label_item;
+use DateTime;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class InstitutionTransformer extends AbstractTransformer
@@ -22,7 +24,7 @@ class InstitutionTransformer extends AbstractTransformer
     /**
      * Transforms a cs_group_item object to an array.
      *
-     * @param \cs_label_item $labelItem
+     * @param cs_label_item $labelItem
      *
      * @return array
      */
@@ -40,7 +42,7 @@ class InstitutionTransformer extends AbstractTransformer
 
                 $activating_date = $labelItem->getActivatingDate();
                 if (!stristr($activating_date, '9999')) {
-                    $datetime = new \DateTime($activating_date);
+                    $datetime = new DateTime($activating_date);
                     $labelData['hiddendate']['date'] = $datetime;
                     $labelData['hiddendate']['time'] = $datetime;
                 }
@@ -53,10 +55,10 @@ class InstitutionTransformer extends AbstractTransformer
     /**
      * Applies an array of data to an existing object.
      *
-     * @param \cs_label_item $labelObject
+     * @param cs_label_item $labelObject
      * @param array          $labelData
      *
-     * @return \cs_label_item|null
+     * @return cs_label_item|null
      *
      * @throws TransformationFailedException if room item is not found
      */

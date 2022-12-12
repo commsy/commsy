@@ -15,6 +15,9 @@ namespace App\Privacy;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
+use cs_privateroom_item;
+use cs_user_item;
+use DateTime;
 
 /**
  * Class PersonalDataCollector.
@@ -56,7 +59,7 @@ class PersonalDataCollector
     /**
      * Populates the given PersonalData object with the account data for the given user.
      */
-    private function populateAccountData(PersonalData $personalData, \cs_user_item $user)
+    private function populateAccountData(PersonalData $personalData, cs_user_item $user)
     {
         $accountData = $this->getAccountDataForUser($user);
 
@@ -68,7 +71,7 @@ class PersonalDataCollector
     /**
      * Populates the given PersonalData object with all room profile data for the given user.
      */
-    private function populateRoomProfileData(PersonalData $personalData, \cs_user_item $user)
+    private function populateRoomProfileData(PersonalData $personalData, cs_user_item $user)
     {
         /**
          * @var RoomProfileData[]
@@ -88,7 +91,7 @@ class PersonalDataCollector
         // TODO: to get all related users, should we better start from the portalUser (`$portalUser->getRelatedPortalUserItem()`) instead?
         //       see comment in `ProfileController->calendarsAction()` which likely also applies here
         /**
-         * @var \cs_user_item[] $relatedUsers
+         * @var cs_user_item[] $relatedUsers
          */
         $relatedUsers = $user->getRelatedUserList()->to_array();
 
@@ -123,7 +126,7 @@ class PersonalDataCollector
     /**
      * Returns the account data for the given user.
      */
-    private function getAccountDataForUser(\cs_user_item $user): ?AccountData
+    private function getAccountDataForUser(cs_user_item $user): ?AccountData
     {
         $portal = $this->legacyEnvironment->getCurrentPortalItem();
         $portalUser = $user->getRelatedPortalUserItem();
@@ -138,11 +141,11 @@ class PersonalDataCollector
 
         $accountData->setItemID($portalUser->getItemID());
         $accountData->setUserID($portalUser->getUserID());
-        $accountData->setCreationDate(new \DateTime($portalUser->getCreationDate()));
+        $accountData->setCreationDate(new DateTime($portalUser->getCreationDate()));
 
         $lastLogin = $portalUser->getLastLogin();
         if (isset($lastLogin) && !empty($lastLogin)) {
-            $accountData->setLastLoginDate(new \DateTime($lastLogin));
+            $accountData->setLastLoginDate(new DateTime($lastLogin));
         }
 
         $accountData->setEmail($portalUser->getEmail());
@@ -154,11 +157,11 @@ class PersonalDataCollector
 
         $birthdate = $portalUser->getBirthday();
         if (isset($birthdate) && !empty($birthdate)) {
-            $accountData->setBirthdate(new \DateTime($birthdate));
+            $accountData->setBirthdate(new DateTime($birthdate));
         }
 
         /**
-         * @var \cs_privateroom_item $privateRoom
+         * @var cs_privateroom_item $privateRoom
          */
         $privateRoom = $portalUser->getOwnRoom($portal->getItemID());
         $accountData->setNewsletterStatus($privateRoom->getPrivateRoomNewsletterActivity());
@@ -169,7 +172,7 @@ class PersonalDataCollector
     /**
      * Returns the room profile data for the given user.
      */
-    private function getRoomProfileDataForUser(\cs_user_item $user): RoomProfileData
+    private function getRoomProfileDataForUser(cs_user_item $user): RoomProfileData
     {
         $roomProfileData = new RoomProfileData();
         $roomItem = $user->getContextItem();
@@ -179,7 +182,7 @@ class PersonalDataCollector
         $roomProfileData->setRoomName($roomItem->getTitle());
 
         $roomProfileData->setItemID($user->getItemID());
-        $roomProfileData->setCreationDate(new \DateTime($user->getCreationDate()));
+        $roomProfileData->setCreationDate(new DateTime($user->getCreationDate()));
 
         $roomProfileData->setStatus($user->getStatus());
         $roomProfileData->setIsContact($user->isContact());

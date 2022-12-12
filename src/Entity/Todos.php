@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -42,11 +43,11 @@ class Todos
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
-    private ?\App\Entity\User $creator = null;
+    private ?User $creator = null;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
-    private ?\App\Entity\User $modifier = null;
+    private ?User $modifier = null;
 
     /**
      * @var int
@@ -55,22 +56,22 @@ class Todos
     private $deleterId;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private $creationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
     private $modificationDate;
 
     #[ORM\Column(name: 'activation_date', type: 'datetime')]
-    private ?\DateTime $activationDate = null;
+    private ?DateTime $activationDate = null;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
@@ -82,7 +83,7 @@ class Todos
     private $title;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'date', type: 'datetime', nullable: true)]
     private $date;
@@ -124,7 +125,7 @@ class Todos
     private $extras;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'locking_date', type: 'datetime', nullable: true)]
     private $lockingDate;
@@ -166,7 +167,7 @@ class Todos
     /**
      * Get stepss.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getSteps()
     {
@@ -239,7 +240,7 @@ class Todos
     /**
      * Set creationDate.
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Todos
      */
@@ -253,7 +254,7 @@ class Todos
     /**
      * Get creationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -263,7 +264,7 @@ class Todos
     /**
      * Set modificationDate.
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Todos
      */
@@ -277,7 +278,7 @@ class Todos
     /**
      * Get modificationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -287,7 +288,7 @@ class Todos
     /**
      * Set activationDate.
      */
-    public function setActivationDate(\DateTime $activationDate): self
+    public function setActivationDate(DateTime $activationDate): self
     {
         $this->activationDate = $activationDate;
 
@@ -297,7 +298,7 @@ class Todos
     /**
      * Get activationDate.
      */
-    public function getActivationDate(): ?\DateTime
+    public function getActivationDate(): ?DateTime
     {
         return $this->activationDate;
     }
@@ -305,7 +306,7 @@ class Todos
     /**
      * Set deletionDate.
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Todos
      */
@@ -319,7 +320,7 @@ class Todos
     /**
      * Get deletionDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {
@@ -353,7 +354,7 @@ class Todos
     /**
      * Set date.
      *
-     * @param \DateTime $date
+     * @param DateTime $date
      *
      * @return Todos
      */
@@ -367,7 +368,7 @@ class Todos
     /**
      * Get date.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDate()
     {
@@ -515,7 +516,7 @@ class Todos
     /**
      * Set lockingDate.
      *
-     * @param \DateTime $lockingDate
+     * @param DateTime $lockingDate
      *
      * @return Todos
      */
@@ -529,7 +530,7 @@ class Todos
     /**
      * Get lockingDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLockingDate()
     {
@@ -575,7 +576,7 @@ class Todos
     /**
      * Get creator.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getCreator()
     {
@@ -597,7 +598,7 @@ class Todos
     /**
      * Get modifier.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getModifier()
     {

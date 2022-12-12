@@ -14,6 +14,7 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_portfolio_item;
 
 class PortfolioService
 {
@@ -186,7 +187,7 @@ class PortfolioService
         return $templates;
     }
 
-    public function prepareFromTemplate(int $templateId, \cs_portfolio_item $portfolioItem)
+    public function prepareFromTemplate(int $templateId, cs_portfolio_item $portfolioItem)
     {
         $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
 

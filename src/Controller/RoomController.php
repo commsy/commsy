@@ -17,7 +17,6 @@ use App\Entity\User;
 use App\Event\UserJoinedRoomEvent;
 use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
-use App\Form\Type\ContextRequestType;
 use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
 use App\Mail\Mailer;
@@ -35,22 +34,21 @@ use App\Utils\ItemService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use cs_environment;
 use cs_user_item;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Exception;
 use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sylius\Bundle\ThemeBundle\Repository\ThemeRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -61,7 +59,7 @@ class RoomController extends AbstractController
 {
     private SessionInterface $session;
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setSession(SessionInterface $session): void
     {
         $this->session = $session;
@@ -474,7 +472,7 @@ class RoomController extends AbstractController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      *
      * @Security("is_granted('ITEM_EDIT', 'NEW')")
      */
@@ -679,7 +677,7 @@ class RoomController extends AbstractController
 
     private function memberStatus(
         $roomItem,
-        \cs_environment $legacyEnvironment,
+        cs_environment $legacyEnvironment,
         RoomService $roomService
     ) {
         $currentUser = $legacyEnvironment->getCurrentUserItem();
@@ -687,7 +685,7 @@ class RoomController extends AbstractController
 
         if ($item) {
             $relatedUserArray = $currentUser->getRelatedUserList()->to_array();
-            $filteredUserArray = array_filter($relatedUserArray, fn (\cs_user_item $user) => $user->getContextId() == $item->getItemId());
+            $filteredUserArray = array_filter($relatedUserArray, fn (cs_user_item $user) => $user->getContextId() == $item->getItemId());
             $roomUser = array_values($filteredUserArray)[0] ?? null;
 
             if ($item->getArchived()) {
@@ -732,7 +730,7 @@ class RoomController extends AbstractController
         return 'closed';
     }
 
-    private function copySettings($masterRoom, $targetRoom, \cs_environment $legacyEnvironment, LegacyCopy $legacyCopy)
+    private function copySettings($masterRoom, $targetRoom, cs_environment $legacyEnvironment, LegacyCopy $legacyCopy)
     {
         $old_room = $masterRoom;
         $new_room = $targetRoom;
@@ -750,7 +748,7 @@ class RoomController extends AbstractController
             if ($user_list->isNotEmpty() and 1 == $user_list->getCount()) {
                 $creator_item = $user_list->getFirst();
             } else {
-                throw new \Exception('can not get creator of new room');
+                throw new Exception('can not get creator of new room');
             }
         }
         $creator_item->setAccountWantMail('yes');

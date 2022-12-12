@@ -13,6 +13,8 @@
 
 namespace App\Action\Delete;
 
+use cs_discussionarticle_item;
+use cs_item;
 use Symfony\Component\Routing\RouterInterface;
 
 class DeleteDiscussionArticle implements DeleteInterface
@@ -21,7 +23,7 @@ class DeleteDiscussionArticle implements DeleteInterface
     {
     }
 
-    public function delete(\cs_item $item): void
+    public function delete(cs_item $item): void
     {
         $item->delete();
     }
@@ -29,9 +31,9 @@ class DeleteDiscussionArticle implements DeleteInterface
     /**
      * @return string|null
      */
-    public function getRedirectRoute(\cs_item $item)
+    public function getRedirectRoute(cs_item $item)
     {
-        /** @var \cs_discussionarticle_item $discussionArticle */
+        /** @var cs_discussionarticle_item $discussionArticle */
         $discussionArticle = $item;
 
         return $this->router->generate('app_discussion_detail', [

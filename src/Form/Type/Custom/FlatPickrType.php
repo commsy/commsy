@@ -13,6 +13,7 @@
 
 namespace App\Form\Type\Custom;
 
+use DateTime;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,7 +31,7 @@ class FlatPickrType extends AbstractType
         $builder->addViewTransformer(new DateTimeToStringTransformer(
             null,
             null,
-            \DateTime::ATOM
+            DateTime::ATOM
         ));
     }
 

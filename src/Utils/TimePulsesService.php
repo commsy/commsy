@@ -50,7 +50,7 @@ class TimePulsesService
         }
 
         // sort all time pulse templates first by start month & day, then by end month & day
-        uasort($timePulseTemplates, [\App\Model\TimePulseTemplate::class, 'compare']);
+        uasort($timePulseTemplates, [TimePulseTemplate::class, 'compare']);
 
         return $timePulseTemplates;
     }

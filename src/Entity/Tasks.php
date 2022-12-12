@@ -13,12 +13,14 @@
 
 namespace App\Entity;
 
+use App\Repository\TasksRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Tasks.
  */
-#[ORM\Entity(repositoryClass: \App\Repository\TasksRepository::class)]
+#[ORM\Entity(repositoryClass: TasksRepository::class)]
 #[ORM\Table(name: 'tasks')]
 #[ORM\Index(name: 'context_id', columns: ['context_id'])]
 #[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
@@ -51,19 +53,19 @@ class Tasks
     private $deleterId;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private $creationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
     private $modificationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;

@@ -17,6 +17,7 @@ use App\Entity\Account;
 use App\Entity\Portal;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
+use cs_environment;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -28,7 +29,7 @@ use Symfony\Component\Security\Core\Security;
 
 class TermsOfUseSubscriber implements EventSubscriberInterface
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,

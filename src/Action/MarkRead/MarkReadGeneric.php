@@ -14,6 +14,7 @@
 namespace App\Action\MarkRead;
 
 use App\Utils\ItemService;
+use cs_item;
 
 class MarkReadGeneric implements MarkReadInterface
 {
@@ -21,7 +22,7 @@ class MarkReadGeneric implements MarkReadInterface
     {
     }
 
-    public function markRead(\cs_item $item): void
+    public function markRead(cs_item $item): void
     {
         $this->itemService->markRead([$item]);
     }

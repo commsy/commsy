@@ -16,16 +16,22 @@ namespace App\Cron;
 use App\Cron\Tasks\CronTaskInterface;
 use App\Entity\CronTask;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use DateInterval;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
+use ReflectionClass;
+use ReflectionException;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 class CronManager
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     /**
-     * @param \App\Cron\Tasks\CronTaskInterface[] $cronTasks
+     * @param CronTaskInterface[] $cronTasks
      */
     public function __construct(
         private EntityManagerInterface $entityManager,
@@ -53,21 +59,21 @@ class CronManager
         usort($cronTasks, [$this, 'sortByPriority']);
         foreach ($cronTasks as $cronTask) {
             try {
-                $cronTaskRef = new \ReflectionClass($cronTask);
+                $cronTaskRef = new ReflectionClass($cronTask);
                 if (in_array($cronTaskRef->getShortName(), $exclude)) {
                     $output->note($cronTask->getSummary().' - skipped by exclusion');
                     continue;
                 }
-            } catch (\ReflectionException $e) {
+            } catch (ReflectionException $e) {
             }
 
             /* @var CronTaskInterface $cronTask */
             $stopwatch->start($cronTask->getSummary());
 
             $cronRun = array_filter($lastCronRuns, fn (CronTask $task) => $task->getName() === $cronTask::class);
-            $lastRun = !empty($cronRun) ? \DateTimeImmutable::createFromMutable(current($cronRun)->getLastRun()) : null;
+            $lastRun = !empty($cronRun) ? DateTimeImmutable::createFromMutable(current($cronRun)->getLastRun()) : null;
 
-            $cmp = (new \DateTimeImmutable())->sub(new \DateInterval('PT23H'));
+            $cmp = (new DateTimeImmutable())->sub(new DateInterval('PT23H'));
             if (!$force && $lastRun && $lastRun >= $cmp) {
                 $output->note($cronTask->getSummary().' - skipped');
             } else {
@@ -85,10 +91,10 @@ class CronManager
                         $taskEntity = new CronTask();
                         $taskEntity->setName($cronTask::class);
                     }
-                    $taskEntity->setLastRun(new \DateTimeImmutable());
+                    $taskEntity->setLastRun(new DateTimeImmutable());
                     $this->entityManager->persist($taskEntity);
                     $this->entityManager->flush();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $output->error($cronTask->getSummary().' - '.$e->getMessage());
                 }
             }

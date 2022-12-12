@@ -14,13 +14,14 @@
 namespace App\EventSubscriber;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\TerminateEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class UserActivitySubscriber implements EventSubscriberInterface
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

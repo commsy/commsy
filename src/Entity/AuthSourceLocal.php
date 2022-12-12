@@ -13,13 +13,14 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 class AuthSourceLocal extends AuthSource
 {
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 100)]
+    #[ORM\Column(type: Types::STRING, length: 100)]
     #[Assert\Length(max: 100)]
     private ?string $mailRegex = null;
 

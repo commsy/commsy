@@ -15,10 +15,14 @@ namespace App\Utils;
 
 use App\Room\Copy\LegacyCopy;
 use App\Services\LegacyEnvironment;
+use cs_community_item;
+use cs_environment;
+use cs_room_item;
+use cs_user_item;
 
 class RoomService
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -136,7 +140,7 @@ class RoomService
      *
      * @param int $roomId The ID of the containing context
      *
-     * @return \cs_user_item[] An array of users who are contact persons or moderators of the room with the given room ID
+     * @return cs_user_item[] An array of users who are contact persons or moderators of the room with the given room ID
      */
     public function getContactModeratorItems($roomId)
     {
@@ -156,7 +160,7 @@ class RoomService
     /**
      * @param int $roomId
      */
-    public function getRoomItem($roomId): ?\cs_room_item
+    public function getRoomItem($roomId): ?cs_room_item
     {
         /**
          * NOTE: returning archived rooms here as a fallback if no room or private room item was found
@@ -168,7 +172,7 @@ class RoomService
 
         // get room item
         $roomManager = $this->legacyEnvironment->getRoomManager();
-        /** @var \cs_room_item $roomItem */
+        /** @var cs_room_item $roomItem */
         $roomItem = $roomManager->getItem($roomId);
 
         if (!$roomItem) {
@@ -182,11 +186,11 @@ class RoomService
     /**
      * Returns all community rooms that host the given (project) room.
      *
-     * @param \cs_room_item $room The room whose related community rooms shall be returned
+     * @param cs_room_item $room The room whose related community rooms shall be returned
      *
-     * @return \cs_community_item[] Array of community rooms that host the given (project) room
+     * @return cs_community_item[] Array of community rooms that host the given (project) room
      */
-    public function getCommunityRoomsForRoom(\cs_room_item $room): array
+    public function getCommunityRoomsForRoom(cs_room_item $room): array
     {
         // NOTE: we don't use $room->getCommunityList() here since that method may incorrectly set the room limit
         //       to the current context (instead of the room's context); this e.g. happens if this method gets
@@ -214,7 +218,7 @@ class RoomService
     /**
      * Returns the IDs of all given rooms.
      *
-     * @param \cs_room_item[] $rooms The array of rooms whose IDs shall be returned
+     * @param cs_room_item[] $rooms The array of rooms whose IDs shall be returned
      *
      * @return int[]
      */
@@ -224,7 +228,7 @@ class RoomService
             return [];
         }
 
-        $roomIds = array_map(fn (\cs_room_item $room) => $room->getItemID(), $rooms);
+        $roomIds = array_map(fn (cs_room_item $room) => $room->getItemID(), $rooms);
 
         return $roomIds;
     }

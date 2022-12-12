@@ -16,6 +16,7 @@ namespace App\Repository;
 use App\Entity\Materials;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 class MaterialsRepository extends ServiceEntityRepository
@@ -44,7 +45,7 @@ class MaterialsRepository extends ServiceEntityRepository
      * Used by Elastic when populating the index. The join will ensure only the latest version of a material
      * is index. Check the answer at StackOverflow for details on the greatest-n-per-group query.
      *
-     * @return \Doctrine\ORM\QueryBuilder
+     * @return QueryBuilder
      */
     public function createSearchQueryBuilder()
     {
@@ -62,7 +63,7 @@ class MaterialsRepository extends ServiceEntityRepository
      * Used by Elastica to transform results to model. We use the join to ensure only the latest version of a material
      * is in the result set.
      *
-     * @return \Doctrine\ORM\QueryBuilder
+     * @return QueryBuilder
      */
     public function createSearchHydrationQueryBuilder(string $entityAlias)
     {

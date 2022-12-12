@@ -15,6 +15,11 @@ namespace App\Form\Type\Context;
 
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Services\LegacyEnvironment;
+use cs_community_item;
+use cs_environment;
+use cs_list;
+use cs_user_item;
+use Generator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -24,7 +29,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProjectType extends AbstractType
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -74,10 +79,10 @@ class ProjectType extends AbstractType
                 $communityManager->select();
                 $communityList = $communityManager->get();
 
-                function getChoices(\cs_list $communityList, \cs_user_item $currentUser): \Generator
+                function getChoices(cs_list $communityList, cs_user_item $currentUser): Generator
                 {
                     foreach ($communityList as $communityRoom) {
-                        /** @var \cs_community_item $communityRoom */
+                        /** @var cs_community_item $communityRoom */
                         if (false === $communityRoom->isAssignmentOnlyOpenForRoomMembers() ||
                             $communityRoom->isUser($currentUser)) {
                             yield html_entity_decode($communityRoom->getTitle()) => $communityRoom->getItemID();

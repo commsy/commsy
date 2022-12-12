@@ -18,12 +18,16 @@ use App\Http\JsonErrorResponse;
 use App\Services\LegacyEnvironment;
 use App\Services\MarkedService;
 use App\Utils\ItemService;
+use cs_environment;
+use cs_item;
+use cs_room_item;
+use cs_user_item;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class InsertAction
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         private TranslatorInterface $translator,
@@ -34,7 +38,7 @@ class InsertAction
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function execute(\cs_room_item $roomItem, array $items): Response
+    public function execute(cs_room_item $roomItem, array $items): Response
     {
         if (method_exists($roomItem, 'getArchived') && $roomItem->getArchived()) {
             return new JsonErrorResponse('<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i>'.$this->translator->trans('copy items in archived workspaces is not allowed'));
@@ -52,11 +56,11 @@ class InsertAction
             $imports = $this->markService->getListEntries(0);
 
             foreach ($items as $user) {
-                /* @var \cs_user_item $user */
+                /* @var cs_user_item $user */
                 // $userRoom = $user->getLinkedUserroomItem();
 
                 foreach ($imports as $import) {
-                    /** @var \cs_item $import */
+                    /** @var cs_item $import */
                     $import = $this->itemService->getTypedItem($import->getItemId());
 
                     $oldContextId = $this->legacyEnvironment->getCurrentContextID();

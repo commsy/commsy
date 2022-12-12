@@ -16,10 +16,13 @@ namespace App\Cron\Tasks;
 use App\Helper\PortalHelper;
 use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_room_item;
+use DateTimeImmutable;
 
 class CronPageImpressionAndUserActivity implements CronTaskInterface
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -29,7 +32,7 @@ class CronPageImpressionAndUserActivity implements CronTaskInterface
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function run(?\DateTimeImmutable $lastRun): void
+    public function run(?DateTimeImmutable $lastRun): void
     {
         $logManager = $this->legacyEnvironment->getLogManager();
 
@@ -37,7 +40,7 @@ class CronPageImpressionAndUserActivity implements CronTaskInterface
         foreach ($portals as $portal) {
             $roomList = $this->portalHelper->getRoomList($portal);
             foreach ($roomList as $room) {
-                /** @var \cs_room_item $room */
+                /** @var cs_room_item $room */
 
                 // get latest timestamp of page impressions and user actitivty
                 // from extra field PIUA_LAST

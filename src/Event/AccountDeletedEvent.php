@@ -13,6 +13,7 @@
 
 namespace App\Event;
 
+use cs_user_item;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -23,16 +24,16 @@ use Symfony\Contracts\EventDispatcher\Event;
 class AccountDeletedEvent extends Event
 {
     /**
-     * @var \cs_user_item The portal user item to be deleted
+     * @var cs_user_item The portal user item to be deleted
      */
     private $portalUser;
 
-    public function __construct(\cs_user_item $portalUser)
+    public function __construct(cs_user_item $portalUser)
     {
         $this->portalUser = $portalUser;
     }
 
-    public function getPortalUser(): \cs_user_item
+    public function getPortalUser(): cs_user_item
     {
         return $this->portalUser;
     }

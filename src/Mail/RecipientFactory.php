@@ -14,11 +14,12 @@
 namespace App\Mail;
 
 use App\Entity\Account;
+use cs_room_item;
 use cs_user_item;
 
 class RecipientFactory
 {
-    public static function createModerationRecipients(\cs_room_item $room, callable $callback = null): array
+    public static function createModerationRecipients(cs_room_item $room, callable $callback = null): array
     {
         $recipients = [];
 
@@ -37,7 +38,7 @@ class RecipientFactory
         return $recipients;
     }
 
-    public static function createRecipient(\cs_user_item $user): Recipient
+    public static function createRecipient(cs_user_item $user): Recipient
     {
         $recipient = new Recipient();
         $recipient->setFirstname($user->getFirstname());

@@ -14,12 +14,14 @@
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use DateTime;
 
 class DiscussionTransformer extends AbstractTransformer
 {
     protected $entity = 'discussion';
 
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -48,7 +50,7 @@ class DiscussionTransformer extends AbstractTransformer
 
                 $activating_date = $discussionItem->getActivatingDate();
                 if (!stristr($activating_date, '9999')) {
-                    $datetime = new \DateTime($activating_date);
+                    $datetime = new DateTime($activating_date);
                     $discussionData['hiddendate']['date'] = $datetime;
                     $discussionData['hiddendate']['time'] = $datetime;
                 }

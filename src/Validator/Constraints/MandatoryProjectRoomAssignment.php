@@ -13,16 +13,14 @@
 
 namespace App\Validator\Constraints;
 
+use cs_room_item;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\MissingOptionsException;
 
-/**
- * @Annotation
- */
 class MandatoryProjectRoomAssignment extends Constraint
 {
     /**
-     * @var \cs_room_item
+     * @var cs_room_item
      */
     public $room;
 

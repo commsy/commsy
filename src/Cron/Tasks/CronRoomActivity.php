@@ -15,20 +15,22 @@ namespace App\Cron\Tasks;
 
 use App\Entity\Portal;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CronRoomActivity implements CronTaskInterface
 {
     private const QUOTIENT = 4;
 
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, private EntityManagerInterface $entityManager)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function run(?\DateTimeImmutable $lastRun): void
+    public function run(?DateTimeImmutable $lastRun): void
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $portalManager = $this->legacyEnvironment->getPortalManager();

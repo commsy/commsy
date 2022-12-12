@@ -15,13 +15,15 @@ namespace App\Database;
 
 use App\Entity\Room;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_group_item;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class FixGroupAll implements DatabaseCheck
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         private EntityManagerInterface $entityManager,
@@ -69,7 +71,7 @@ class FixGroupAll implements DatabaseCheck
             if (!$groupAll) {
                 $io->warning('Missing group found');
 
-                /** @var \cs_group_item $group */
+                /** @var cs_group_item $group */
                 $group = $groupManager->getNewItem('group');
                 $group->setName('ALL');
                 $group->setDescription('GROUP_ALL_DESC');

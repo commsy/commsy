@@ -14,8 +14,11 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Repository\RoomRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
+use InvalidArgumentException;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -37,7 +40,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     }
  * )
  */
-#[ORM\Entity(repositoryClass: \App\Repository\RoomRepository::class)]
+#[ORM\Entity(repositoryClass: RoomRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: 'room')]
 #[ORM\Index(name: 'activity', columns: ['activity'])]
@@ -84,14 +87,14 @@ class Room
 
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     #[Groups(['api'])]
-    private \DateTime $creationDate;
+    private DateTime $creationDate;
 
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
     #[Groups(['api'])]
-    private \DateTime $modificationDate;
+    private DateTime $modificationDate;
 
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private ?\DateTime $deletionDate = null;
+    private ?DateTime $deletionDate = null;
 
     /**
      * @OA\Property(type="string", maxLength=255)
@@ -142,7 +145,7 @@ class Room
     private ?string $roomDescription = null;
 
     #[ORM\Column(name: 'lastlogin', type: 'datetime', nullable: true)]
-    private ?\DateTime $lastlogin = null;
+    private ?DateTime $lastlogin = null;
 
     #[ORM\Column(name: 'activity_state', type: 'string', length: 15, options: ['default' => 'active'])]
     private string $activityState;
@@ -151,13 +154,13 @@ class Room
     private ?string $slug = null;
 
     #[ORM\Column(name: 'activity_state_updated', type: 'datetime', nullable: true)]
-    private ?\DateTime $activityStateUpdated = null;
+    private ?DateTime $activityStateUpdated = null;
 
     public function __construct()
     {
         $this->activityState = self::ACTIVITY_ACTIVE;
-        $this->creationDate = new \DateTime();
-        $this->modificationDate = new \DateTime();
+        $this->creationDate = new DateTime();
+        $this->modificationDate = new DateTime();
     }
 
     public function isIndexable(): bool
@@ -309,14 +312,14 @@ class Room
     #[ORM\PrePersist]
     public function setInitialDateValues()
     {
-        $this->creationDate = new \DateTime('now');
-        $this->modificationDate = new \DateTime('now');
+        $this->creationDate = new DateTime('now');
+        $this->modificationDate = new DateTime('now');
     }
 
     /**
      * Set creationDate.
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      */
     public function setCreationDate($creationDate): Room
     {
@@ -328,7 +331,7 @@ class Room
     /**
      * Get creationDate.
      */
-    public function getCreationDate(): \DateTime
+    public function getCreationDate(): DateTime
     {
         return $this->creationDate;
     }
@@ -336,7 +339,7 @@ class Room
     /**
      * Set modificationDate.
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      */
     public function setModificationDate($modificationDate): Room
     {
@@ -348,7 +351,7 @@ class Room
     /**
      * Get modificationDate.
      */
-    public function getModificationDate(): \DateTime
+    public function getModificationDate(): DateTime
     {
         return $this->modificationDate;
     }
@@ -356,7 +359,7 @@ class Room
     /**
      * Set deletionDate.
      */
-    public function setDeletionDate(\DateTime $deletionDate): Room
+    public function setDeletionDate(DateTime $deletionDate): Room
     {
         $this->deletionDate = $deletionDate;
 
@@ -366,9 +369,9 @@ class Room
     /**
      * Get deletionDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getDeletionDate(): ?\DateTime
+    public function getDeletionDate(): ?DateTime
     {
         return $this->deletionDate;
     }
@@ -606,7 +609,7 @@ class Room
     /**
      * Set lastlogin.
      *
-     * @param \DateTime $lastlogin
+     * @param DateTime $lastlogin
      */
     public function setLastlogin($lastlogin): Room
     {
@@ -618,9 +621,9 @@ class Room
     /**
      * Get lastlogin.
      *
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getLastlogin(): ?\DateTime
+    public function getLastlogin(): ?DateTime
     {
         return $this->lastlogin;
     }
@@ -715,7 +718,7 @@ class Room
             self::ACTIVITY_IDLE_NOTIFIED,
             self::ACTIVITY_ABANDONED,
         ], true)) {
-            throw new \InvalidArgumentException('Invalid activity');
+            throw new InvalidArgumentException('Invalid activity');
         }
 
         $this->activityState = $activityState;
@@ -723,12 +726,12 @@ class Room
         return $this;
     }
 
-    public function getActivityStateUpdated(): ?\DateTime
+    public function getActivityStateUpdated(): ?DateTime
     {
         return $this->activityStateUpdated;
     }
 
-    public function setActivityStateUpdated(?\DateTime $activityStateUpdated): Room
+    public function setActivityStateUpdated(?DateTime $activityStateUpdated): Room
     {
         $this->activityStateUpdated = $activityStateUpdated;
 

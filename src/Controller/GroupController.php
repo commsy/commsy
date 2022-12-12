@@ -40,8 +40,12 @@ use App\Utils\LabelService;
 use App\Utils\MailAssistant;
 use App\Utils\TopicService;
 use App\Utils\UserService;
+use cs_grouproom_item;
+use cs_room_item;
+use cs_user_item;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -51,6 +55,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * Class GroupController.
@@ -66,25 +71,25 @@ class GroupController extends BaseController
 
     private Mailer $mailer;
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setGroupService(GroupService $groupService): void
     {
         $this->groupService = $groupService;
     }
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setSession(SessionInterface $session): void
     {
         $this->session = $session;
     }
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setMailer(Mailer $mailer)
     {
         $this->mailer = $mailer;
     }
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setUserService(UserService $userService): void
     {
         $this->userService = $userService;
@@ -776,7 +781,7 @@ class GroupController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/group/{itemId}/join')]
     public function join(
@@ -817,10 +822,10 @@ class GroupController extends BaseController
                     'itemId' => $groupRoom->getItemId(),
                 ]);
             } else {
-                throw new \Exception("ERROR: User '".$currentUser->getUserID()."' cannot join group room '".$groupRoom->getTitle()."' since (s)he has room member status '".$memberStatus."' (requires status 'join' to become a room member)!");
+                throw new Exception("ERROR: User '".$currentUser->getUserID()."' cannot join group room '".$groupRoom->getTitle()."' since (s)he has room member status '".$memberStatus."' (requires status 'join' to become a room member)!");
             }
         } else {
-            throw new \Exception("ERROR: User '".$currentUser->getUserID()."' cannot join the group room of group '".$group->getName()."' since it does not exist!");
+            throw new Exception("ERROR: User '".$currentUser->getUserID()."' cannot join the group room of group '".$group->getName()."' since it does not exist!");
         }
     }
 
@@ -890,7 +895,7 @@ class GroupController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/group/sendMultiple')]
     public function sendMultipleAction(
@@ -1182,7 +1187,7 @@ class GroupController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/group/download')]
     public function downloadAction(
@@ -1202,7 +1207,7 @@ class GroupController extends BaseController
     {
         $group = $groupService->getGroup($itemId);
         if ($group) {
-            /** @var \cs_grouproom_item $grouproomItem */
+            /** @var cs_grouproom_item $grouproomItem */
             $groupRoom = $group->getGroupRoomItem();
             if ($groupRoom) {
                 $groupRoom->unlock();
@@ -1220,7 +1225,7 @@ class GroupController extends BaseController
     // # XHR Action requests
     // ##################################################################################################
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/group/xhr/markread', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkReadAction(
@@ -1237,7 +1242,7 @@ class GroupController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/group/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
     public function xhrCategorizeAction(
@@ -1251,7 +1256,7 @@ class GroupController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/group/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
     public function xhrHashtagAction(
@@ -1263,7 +1268,7 @@ class GroupController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/group/xhr/activate', condition: 'request.isXmlHttpRequest()')]
     public function xhrActivateAction(
@@ -1278,7 +1283,7 @@ class GroupController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/group/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeactivateAction(
@@ -1293,7 +1298,7 @@ class GroupController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/group/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
@@ -1310,7 +1315,7 @@ class GroupController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function copySettings($masterRoom, $targetRoom, LegacyCopy $legacyCopy)
     {
@@ -1327,7 +1332,7 @@ class GroupController extends BaseController
             if ($user_list->isNotEmpty() and 1 == $user_list->getCount()) {
                 $creator_item = $user_list->getFirst();
             } else {
-                throw new \Exception('can not get creator of new room');
+                throw new Exception('can not get creator of new room');
             }
         }
         $creator_item->setAccountWantMail('yes');
@@ -1397,7 +1402,7 @@ class GroupController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $room
+     * @param cs_room_item $room
      *
      * @return FormInterface
      */
@@ -1418,11 +1423,11 @@ class GroupController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param bool          $selectAll
      * @param int[]         $itemIds
      *
-     * @return \cs_user_item[]
+     * @return cs_user_item[]
      */
     public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
     {

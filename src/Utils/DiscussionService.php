@@ -14,6 +14,9 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_discussion_item;
+use cs_discussionarticle_item;
+use cs_manager;
 use Symfony\Component\Form\FormInterface;
 
 class DiscussionService
@@ -41,7 +44,7 @@ class DiscussionService
      * @param int    $start
      * @param string $sort
      *
-     * @return \cs_discussion_item[]
+     * @return cs_discussion_item[]
      */
     public function getListDiscussions($roomId, $max = null, $start = null, $sort = null)
     {
@@ -64,7 +67,7 @@ class DiscussionService
      * @param int   $roomId
      * @param int[] $ids
      *
-     * @return \cs_discussion_item[]
+     * @return cs_discussion_item[]
      */
     public function getDiscussionsById($roomId, $ids)
     {
@@ -98,11 +101,11 @@ class DiscussionService
         // activated
         if ($formData['hide-deactivated-entries']) {
             if ('only_activated' === $formData['hide-deactivated-entries']) {
-                $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+                $this->discussionManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
             } elseif ('only_deactivated' === $formData['hide-deactivated-entries']) {
-                $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+                $this->discussionManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
             } elseif ('all' === $formData['hide-deactivated-entries']) {
-                $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+                $this->discussionManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
             }
         }
 
@@ -142,7 +145,7 @@ class DiscussionService
         }
     }
 
-    public function getDiscussion($itemId): ?\cs_discussion_item
+    public function getDiscussion($itemId): ?cs_discussion_item
     {
         return $this->discussionManager->getItem($itemId);
     }
@@ -167,7 +170,7 @@ class DiscussionService
 
     public function hideDeactivatedEntries()
     {
-        $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $this->discussionManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
     public function buildArticleTree($articleList, $root = null): array
@@ -175,7 +178,7 @@ class DiscussionService
         $tree = [];
 
         foreach ($articleList as $article) {
-            /** @var \cs_discussionarticle_item $article */
+            /** @var cs_discussionarticle_item $article */
             $base = &$tree;
             $expLevel = explode('.', $article->getPosition());
             foreach ($expLevel as $level) {

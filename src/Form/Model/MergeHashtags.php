@@ -18,10 +18,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class MergeHashtags
 {
-    private ?\App\Entity\Labels $first = null;
+    private ?Labels $first = null;
 
     #[Assert\NotIdenticalTo(propertyPath: 'first', message: 'Your selection must differ.')]
-    private ?\App\Entity\Labels $second = null;
+    private ?Labels $second = null;
 
     /**
      * @return Labels

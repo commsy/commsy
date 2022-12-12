@@ -13,6 +13,9 @@
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -20,7 +23,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * User.
  */
-#[ORM\Entity(repositoryClass: \App\Repository\UserRepository::class)]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'user')]
 #[ORM\Index(name: 'creator_idx', columns: ['creator_id'])]
 #[ORM\Index(name: 'deleted_idx', columns: ['deletion_date', 'deleter_id'])]
@@ -45,10 +48,10 @@ class User
     private $contextId;
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
-    private ?\App\Entity\User $creator = null;
+    private ?User $creator = null;
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
-    private ?\App\Entity\User $modifier = null;
+    private ?User $modifier = null;
     /**
      * @var int
      */
@@ -56,15 +59,15 @@ class User
     private $deleterId;
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     #[Groups(['api_read'])]
-    private \DateTime $creationDate;
+    private DateTime $creationDate;
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
     #[Groups(['api_read'])]
     private $modificationDate;
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
@@ -110,7 +113,7 @@ class User
     #[ORM\Column(name: 'city', type: 'string', length: 100, nullable: false)]
     private $city;
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
     #[ORM\Column(name: 'lastlogin', type: 'datetime', nullable: true)]
     private $lastlogin;
@@ -135,7 +138,7 @@ class User
     #[ORM\Column(name: 'description', type: 'text', length: 65535, nullable: true)]
     private $description;
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
     #[ORM\Column(name: 'expire_date', type: 'datetime', nullable: true)]
     private $expireDate;
@@ -144,7 +147,7 @@ class User
 
     public function __construct()
     {
-        $this->creationDate = new \DateTime('0000-00-00 00:00:00');
+        $this->creationDate = new DateTime('0000-00-00 00:00:00');
     }
 
     /**
@@ -174,7 +177,7 @@ class User
     /**
      * Set creator.
      *
-     * @param \App\Entity\User $modifier
+     * @param User $modifier
      *
      * @return User
      */
@@ -188,7 +191,7 @@ class User
     /**
      * Get creator.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getCreator()
     {
@@ -210,7 +213,7 @@ class User
     /**
      * Get modifier.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getModifier()
     {
@@ -252,7 +255,7 @@ class User
     /**
      * Set creationDate.
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return User
      */
@@ -266,7 +269,7 @@ class User
     /**
      * Get creationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -276,7 +279,7 @@ class User
     /**
      * Set modificationDate.
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return User
      */
@@ -290,7 +293,7 @@ class User
     /**
      * Get modificationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -300,7 +303,7 @@ class User
     /**
      * Set deletionDate.
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return User
      */
@@ -314,7 +317,7 @@ class User
     /**
      * Get deletionDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {
@@ -486,7 +489,7 @@ class User
     /**
      * Set lastlogin.
      *
-     * @param \DateTime $lastlogin
+     * @param DateTime $lastlogin
      *
      * @return User
      */
@@ -500,7 +503,7 @@ class User
     /**
      * Get lastlogin.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLastlogin()
     {
@@ -606,7 +609,7 @@ class User
     /**
      * Set expireDate.
      *
-     * @param \DateTime $expireDate
+     * @param DateTime $expireDate
      *
      * @return User
      */
@@ -620,7 +623,7 @@ class User
     /**
      * Get expireDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getExpireDate()
     {

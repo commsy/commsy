@@ -15,9 +15,6 @@ namespace App\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
- */
 class HomeNoticeConstraint extends Constraint
 {
     public $message = 'A item of this type ({{ type }}) cannot be used as home notice.';

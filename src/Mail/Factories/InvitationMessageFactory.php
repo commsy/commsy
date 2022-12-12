@@ -17,6 +17,7 @@ use App\Entity\Portal;
 use App\Mail\MessageInterface;
 use App\Mail\Messages\InvitationMessage;
 use App\Services\LegacyEnvironment;
+use cs_room_item;
 
 class InvitationMessageFactory
 {
@@ -24,7 +25,7 @@ class InvitationMessageFactory
     {
     }
 
-    public function createInvitationMessage(Portal $portal, \cs_room_item $room, string $token): MessageInterface
+    public function createInvitationMessage(Portal $portal, cs_room_item $room, string $token): MessageInterface
     {
         return new InvitationMessage($this->legacyEnvironment, $portal, $room, $token);
     }

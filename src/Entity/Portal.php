@@ -19,6 +19,11 @@ use App\Controller\Api\GetPortalAnnouncement;
 use App\Controller\Api\GetPortalTou;
 use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_list;
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -102,7 +107,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[ORM\Entity(repositoryClass: PortalRepository::class)]
 #[ORM\Table(name: 'portal')]
 #[ORM\HasLifecycleCallbacks]
-class Portal implements \Serializable
+class Portal implements Serializable
 {
     /**
      * @OA\Property(description="The unique identifier.")
@@ -115,18 +120,18 @@ class Portal implements \Serializable
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id', nullable: true)]
-    private ?\App\Entity\User $deleter = null;
+    private ?User $deleter = null;
 
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     #[Groups(['api'])]
-    private ?\DateTime $creationDate = null;
+    private ?DateTime $creationDate = null;
 
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
     #[Groups(['api'])]
-    private \DateTime|\DateTimeImmutable|null $modificationDate = null;
+    private DateTime|DateTimeImmutable|null $modificationDate = null;
 
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
@@ -295,14 +300,14 @@ class Portal implements \Serializable
     #[ORM\PrePersist]
     public function setInitialDateValues()
     {
-        $this->creationDate = new \DateTime('now');
-        $this->modificationDate = new \DateTime('now');
+        $this->creationDate = new DateTime('now');
+        $this->modificationDate = new DateTime('now');
     }
 
     /**
      * Set creationDate.
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Portal
      */
@@ -316,7 +321,7 @@ class Portal implements \Serializable
     /**
      * Get creationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -326,13 +331,13 @@ class Portal implements \Serializable
     #[ORM\PreUpdate]
     public function setModificationDateValue()
     {
-        $this->modificationDate = new \DateTime('now');
+        $this->modificationDate = new DateTime('now');
     }
 
     /**
      * Set modificationDate.
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Portal
      */
@@ -346,7 +351,7 @@ class Portal implements \Serializable
     /**
      * Get modificationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -356,7 +361,7 @@ class Portal implements \Serializable
     /**
      * Set deletionDate.
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Portal
      */
@@ -370,7 +375,7 @@ class Portal implements \Serializable
     /**
      * Get deletionDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {
@@ -508,7 +513,7 @@ class Portal implements \Serializable
         if (null !== $logoFile) {
             // VichUploaderBundle NOTE: it is required that at least one field changes if you are
             // using Doctrine otherwise the event listeners won't be called and the file is lost
-            $this->modificationDate = new \DateTimeImmutable();
+            $this->modificationDate = new DateTimeImmutable();
         }
 
         return $this;
@@ -658,16 +663,16 @@ class Portal implements \Serializable
         return $this;
     }
 
-    public function getAGBChangeDate(): ?\DateTimeImmutable
+    public function getAGBChangeDate(): ?DateTimeImmutable
     {
         $agbChangeDateString = $this->extras['AGB_CHANGE_DATE'] ?? '';
 
         return !empty($agbChangeDateString) ?
-            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $agbChangeDateString) :
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $agbChangeDateString) :
             null;
     }
 
-    public function setAGBChangeDate(?\DateTimeImmutable $agbChangeDate): Portal
+    public function setAGBChangeDate(?DateTimeImmutable $agbChangeDate): Portal
     {
         $agbChangeDateString = $agbChangeDate ? $agbChangeDate->format('Y-m-d H:i:s') : '';
         $this->extras['AGB_CHANGE_DATE'] = $agbChangeDateString;
@@ -1143,9 +1148,9 @@ class Portal implements \Serializable
     }
 
     /**
-     * @param \cs_environment $environment
+     * @param cs_environment $environment
      *
-     * @return \cs_list
+     * @return cs_list
      */
     public function getContactModeratorList($environment)
     {
@@ -1163,9 +1168,9 @@ class Portal implements \Serializable
     }
 
     /**
-     * @param \cs_environment $environment
+     * @param cs_environment $environment
      *
-     * @return \cs_list
+     * @return cs_list
      */
     public function getModeratorList($environment)
     {

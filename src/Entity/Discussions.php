@@ -13,6 +13,8 @@
 
 namespace App\Entity;
 
+use DateTime;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -40,11 +42,11 @@ class Discussions
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
-    private ?\App\Entity\User $creator = null;
+    private ?User $creator = null;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
-    private ?\App\Entity\User $modifier = null;
+    private ?User $modifier = null;
 
     /**
      * @var int
@@ -53,22 +55,22 @@ class Discussions
     private $deleterId;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private $creationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
     private $modificationDate;
 
     #[ORM\Column(name: 'activation_date', type: 'datetime')]
-    private ?\DateTime $activationDate = null;
+    private ?DateTime $activationDate = null;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
@@ -89,7 +91,7 @@ class Discussions
     private $latestArticleItemId;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'latest_article_modification_date', type: 'datetime', nullable: true)]
     private $latestArticleModificationDate;
@@ -119,7 +121,7 @@ class Discussions
     private $extras;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'locking_date', type: 'datetime', nullable: true)]
     private $lockingDate;
@@ -131,7 +133,7 @@ class Discussions
     private $lockingUserId;
 
     /**
-     * @var \App\Entity\Discussionarticles[]|null
+     * @var Discussionarticles[]|null
      */
     #[ORM\OneToMany(targetEntity: 'Discussionarticles', mappedBy: 'discussion')]
     private ?array $discussionarticles = null;
@@ -202,7 +204,7 @@ class Discussions
     /**
      * Set creationDate.
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Discussions
      */
@@ -216,7 +218,7 @@ class Discussions
     /**
      * Get creationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -226,7 +228,7 @@ class Discussions
     /**
      * Set modificationDate.
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Discussions
      */
@@ -240,7 +242,7 @@ class Discussions
     /**
      * Set activationDate.
      */
-    public function setActivationDate(\DateTime $activationDate): self
+    public function setActivationDate(DateTime $activationDate): self
     {
         $this->activationDate = $activationDate;
 
@@ -250,7 +252,7 @@ class Discussions
     /**
      * Get activationDate.
      */
-    public function getActivationDate(): ?\DateTime
+    public function getActivationDate(): ?DateTime
     {
         return $this->activationDate;
     }
@@ -258,7 +260,7 @@ class Discussions
     /**
      * Get modificationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -268,7 +270,7 @@ class Discussions
     /**
      * Set deletionDate.
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Discussions
      */
@@ -282,7 +284,7 @@ class Discussions
     /**
      * Get deletionDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {
@@ -352,7 +354,7 @@ class Discussions
     /**
      * Set latestArticleModificationDate.
      *
-     * @param \DateTime $latestArticleModificationDate
+     * @param DateTime $latestArticleModificationDate
      *
      * @return Discussions
      */
@@ -366,7 +368,7 @@ class Discussions
     /**
      * Get latestArticleModificationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLatestArticleModificationDate()
     {
@@ -472,7 +474,7 @@ class Discussions
     /**
      * Set lockingDate.
      *
-     * @param \DateTime $lockingDate
+     * @param DateTime $lockingDate
      *
      * @return Discussions
      */
@@ -486,7 +488,7 @@ class Discussions
     /**
      * Get lockingDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLockingDate()
     {
@@ -532,7 +534,7 @@ class Discussions
     /**
      * Get creator.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getCreator()
     {
@@ -554,7 +556,7 @@ class Discussions
     /**
      * Get modifier.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getModifier()
     {
@@ -584,7 +586,7 @@ class Discussions
     /**
      * Get discussionarticles.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getDiscussionarticles()
     {

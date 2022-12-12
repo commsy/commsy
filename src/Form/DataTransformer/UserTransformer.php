@@ -16,6 +16,9 @@ namespace App\Form\DataTransformer;
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_user_item;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -23,7 +26,7 @@ class UserTransformer extends AbstractTransformer
 {
     protected $entity = 'user';
 
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -37,7 +40,7 @@ class UserTransformer extends AbstractTransformer
     /**
      * Transforms a cs_room_item object to an array.
      *
-     * @param \cs_user_item $userItem
+     * @param cs_user_item $userItem
      *
      * @return array
      */
@@ -63,7 +66,7 @@ class UserTransformer extends AbstractTransformer
             }
             $userData['title'] = $userItem->getTitle();
             if ($userItem->getBirthday()) {
-                $userData['dateOfBirth'] = new \DateTime($userItem->getBirthday());
+                $userData['dateOfBirth'] = new DateTime($userItem->getBirthday());
             }
             $userData['emailRoom'] = $userItem->getRoomEmail();
             $userData['emailAccount'] = $portalUser->getEmail();
@@ -96,11 +99,11 @@ class UserTransformer extends AbstractTransformer
      * @param object $userObject
      * @param array  $userData
      *
-     * @return \cs_user_item|null
+     * @return cs_user_item|null
      */
     public function applyTransformation($userObject, $userData)
     {
-        /** @var \cs_user_item $userObject */
+        /** @var cs_user_item $userObject */
         if ($userObject) {
             $userObject->setUserId($userData['userId']);
 

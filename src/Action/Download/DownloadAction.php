@@ -15,6 +15,7 @@ namespace App\Action\Download;
 
 use App\Action\ActionInterface;
 use App\Utils\DownloadService;
+use cs_room_item;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -25,7 +26,7 @@ class DownloadAction implements ActionInterface
     {
     }
 
-    public function execute(\cs_room_item $roomItem, array $items): Response
+    public function execute(cs_room_item $roomItem, array $items): Response
     {
         $ids = [];
         foreach ($items as $item) {

@@ -16,13 +16,16 @@ namespace App\Form\Type;
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
+use cs_environment;
+use cs_tag2tag_manager;
+use cs_tag_item;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class XhrCategorizeActionOptionsType extends AbstractType
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, private CategoryService $categoryService)
     {
@@ -39,7 +42,7 @@ class XhrCategorizeActionOptionsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /** @var \cs_tag2tag_manager $tag2TagManager */
+        /** @var cs_tag2tag_manager $tag2TagManager */
         $tag2TagManager = $this->legacyEnvironment->getTag2TagManager();
 
         $builder
@@ -56,7 +59,7 @@ class XhrCategorizeActionOptionsType extends AbstractType
                     if (!empty($parentCategoryIds)) {
                         // create array of category names from category IDs
                         $parentCategoryNames = array_map(function (int $categoryId) {
-                            /** @var \cs_tag_item $categoryItem */
+                            /** @var cs_tag_item $categoryItem */
                             $categoryItem = $this->categoryService->getTag($categoryId);
 
                             return $categoryItem->getTitle();

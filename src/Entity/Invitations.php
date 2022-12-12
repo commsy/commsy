@@ -13,6 +13,8 @@
 
 namespace App\Entity;
 
+use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,39 +27,39 @@ class Invitations
     /**
      * @var int
      */
-    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
     /**
      * @var string
      */
-    #[ORM\Column(name: 'hash', type: \Doctrine\DBAL\Types\Types::STRING)]
+    #[ORM\Column(name: 'hash', type: Types::STRING)]
     private ?string $hash = null;
     /**
      * @var string
      */
-    #[ORM\Column(name: 'email', type: \Doctrine\DBAL\Types\Types::STRING)]
+    #[ORM\Column(name: 'email', type: Types::STRING)]
     private ?string $email = null;
     /**
      * @var int
      */
-    #[ORM\Column(name: 'authsource_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'authsource_id', type: Types::INTEGER)]
     private ?int $authSourceId = null;
     /**
      * @var int
      */
-    #[ORM\Column(name: 'context_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
     private ?int $contextId = null;
-    #[ORM\Column(name: 'creation_date', type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
-    private \DateTime $creationDate;
-    #[ORM\Column(name: 'expiration_date', type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
-    private \DateTime $expirationDate;
+    #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
+    private DateTime $creationDate;
+    #[ORM\Column(name: 'expiration_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private DateTime $expirationDate;
 
     public function __construct()
     {
-        $this->creationDate = new \DateTime('0000-00-00 00:00:00');
-        $this->expirationDate = new \DateTime('0000-00-00 00:00:00');
+        $this->creationDate = new DateTime('0000-00-00 00:00:00');
+        $this->expirationDate = new DateTime('0000-00-00 00:00:00');
     }
 
     /**
@@ -169,7 +171,7 @@ class Invitations
     /**
      * Set creationDate.
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Invitations
      */
@@ -183,7 +185,7 @@ class Invitations
     /**
      * Get creationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -193,7 +195,7 @@ class Invitations
     /**
      * Set expirationDate.
      *
-     * @param \DateTime $expirationDate
+     * @param DateTime $expirationDate
      *
      * @return Invitations
      */
@@ -207,7 +209,7 @@ class Invitations
     /**
      * Get expirationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getExpirationDate()
     {

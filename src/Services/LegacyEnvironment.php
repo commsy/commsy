@@ -13,12 +13,14 @@
 
 namespace App\Services;
 
+use cs_environment;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class LegacyEnvironment
 {
     /**
-     * @var \cs_environment|null
+     * @var cs_environment|null
      */
     private $environment;
 
@@ -31,11 +33,11 @@ class LegacyEnvironment
          * Symfony service container.
          */
         private Container $serviceContainer,
-        private \Symfony\Component\HttpFoundation\RequestStack $requestStack
+        private RequestStack $requestStack
     ) {
     }
 
-    public function getEnvironment(): \cs_environment
+    public function getEnvironment(): cs_environment
     {
         if (null === $this->environment) {
             $legacyDir = $this->projectDir.'/legacy';
@@ -51,7 +53,7 @@ class LegacyEnvironment
 
             include_once 'classes/cs_environment.php';
             global $environment;
-            $environment = new \cs_environment();
+            $environment = new cs_environment();
             $this->environment = $environment;
 
             // try to find the current room id from the request and set context in legacy environment

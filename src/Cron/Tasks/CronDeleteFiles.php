@@ -16,11 +16,13 @@ namespace App\Cron\Tasks;
 use App\Helper\PortalHelper;
 use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use cs_room_item;
+use DateTimeImmutable;
 
 class CronDeleteFiles implements CronTaskInterface
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -30,7 +32,7 @@ class CronDeleteFiles implements CronTaskInterface
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function run(?\DateTimeImmutable $lastRun): void
+    public function run(?DateTimeImmutable $lastRun): void
     {
         $fileManager = $this->legacyEnvironment->getFileManager();
 

@@ -41,12 +41,15 @@ use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
 use App\Utils\RoomService;
 use App\Utils\UserroomService;
+use cs_project_item;
+use cs_room_item;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sylius\Bundle\ThemeBundle\Repository\ThemeRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -76,11 +79,11 @@ class SettingsController extends AbstractController
         LegacyEnvironment $environment,
         EventDispatcherInterface $eventDispatcher,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $legacyEnvironment = $environment->getEnvironment();
 
         // get room from RoomService
-        /** @var \cs_room_item $roomItem */
+        /** @var cs_room_item $roomItem */
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id '.$roomId);
@@ -138,8 +141,8 @@ class SettingsController extends AbstractController
         ModerationSettingsTransformer $transformer,
         EventDispatcherInterface $eventDispatcher,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
-        /** @var \cs_room_item $roomItem */
+    ): Response {
+        /** @var cs_room_item $roomItem */
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id '.$roomId);
@@ -176,11 +179,11 @@ class SettingsController extends AbstractController
         EventDispatcherInterface $eventDispatcher,
         LegacyEnvironment $legacyEnvironment,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $portalItem = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
         $portalId = $portalItem->getItemId();
 
-        /** @var \cs_room_item $roomItem */
+        /** @var cs_room_item $roomItem */
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id '.$roomId);
@@ -236,7 +239,7 @@ class SettingsController extends AbstractController
         EventDispatcherInterface $eventDispatcher,
         ThemeRepositoryInterface $themeRepository,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
@@ -371,7 +374,7 @@ class SettingsController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         EventDispatcherInterface $eventDispatcher,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $templates = [];
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
@@ -438,7 +441,7 @@ class SettingsController extends AbstractController
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
         UserroomService $userroomService
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id '.$roomId);
@@ -468,7 +471,7 @@ class SettingsController extends AbstractController
         RoomService $roomService,
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $portalItem = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
         $portalId = $portalItem->getItemId();
 
@@ -478,7 +481,7 @@ class SettingsController extends AbstractController
         }
 
         $relatedGroupRooms = [];
-        if ($roomItem instanceof \cs_project_item) {
+        if ($roomItem instanceof cs_project_item) {
             $relatedGroupRooms = $roomItem->getGroupRoomList()->to_array();
         }
 
@@ -537,7 +540,7 @@ class SettingsController extends AbstractController
         InvitationMessageFactory $invitationMessageFactory,
         Mailer $mailer,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         // get room from RoomService
         $roomItem = $roomService->getRoomItem($roomId);
         if (!$roomItem) {

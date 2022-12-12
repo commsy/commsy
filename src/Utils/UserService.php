@@ -16,20 +16,31 @@ namespace App\Utils;
 use _PHPStan_582a9cb8b\Symfony\Component\Console\Exception\LogicException;
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
+use cs_context_item;
+use cs_environment;
+use cs_group_item;
+use cs_grouproom_item;
+use cs_label_item;
+use cs_list;
+use cs_manager;
+use cs_room_item;
 use cs_room_manager;
+use cs_user_item;
 use cs_user_manager;
+use cs_userroom_item;
+use DateTimeImmutable;
 use Symfony\Component\Form\FormInterface;
 
 class UserService
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
-    private \cs_user_manager $userManager;
+    private cs_user_manager $userManager;
 
     /**
-     * @var cs_room_manager|\cs_manager|
+     * @var cs_room_manager|cs_manager|
      */
-    private \cs_room_manager $roomManager;
+    private cs_room_manager $roomManager;
 
     /**
      * UserService constructor.
@@ -75,20 +86,20 @@ class UserService
      * Creates a new user in the given room context based on the given source user
      * NOTE: if the room context already contains a user with identical ID, that existing user is returned.
      *
-     * @param \cs_user_item $sourceUser the user whose attributes shall be cloned to the new user
+     * @param cs_user_item $sourceUser the user whose attributes shall be cloned to the new user
      * @param int           $contextID  the ID of the room which contains the created user
      * @param int           $userStatus (optional) the user status of the created user; defaults to a regular user
-     * @param \cs_user_item|null (optional) $creator the user who will be specified as the new user's creator; if left
+     * @param cs_user_item|null (optional) $creator the user who will be specified as the new user's creator; if left
      * out, the new user will be also set as his/her own creator
      *
-     * @return \cs_user_item|null the newly created user, or null if an error occurred
+     * @return cs_user_item|null the newly created user, or null if an error occurred
      */
     public function cloneUser(
-        \cs_user_item $sourceUser,
+        cs_user_item $sourceUser,
         int $contextID,
         int $userStatus = 2,
-        \cs_user_item $creator = null
-    ): ?\cs_user_item {
+        cs_user_item $creator = null
+    ): ?cs_user_item {
         // TODO: use a facade/factory to create a new room (also compare with UserCreatorFacade->addUserToRoomsWithIds())
 
         if (!isset($sourceUser) || empty($contextID)) {
@@ -109,7 +120,7 @@ class UserService
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($contextID);
         if ($roomItem->getAGBStatus()) {
-            $newUser->setAGBAcceptanceDate(new \DateTimeImmutable());
+            $newUser->setAGBAcceptanceDate(new DateTimeImmutable());
         }
 
         if ($this->legacyEnvironment->getCurrentPortalItem()->getConfigurationHideMailByDefault()) {
@@ -143,12 +154,12 @@ class UserService
     /**
      * Copies the source user's picture to the given target user, and returns the target user.
      *
-     * @param \cs_user_item $sourceUser the user whose picture shall be copied to the target user
-     * @param \cs_user_item $targetUser the user whose picture will be set to the picture of the source user
+     * @param cs_user_item $sourceUser the user whose picture shall be copied to the target user
+     * @param cs_user_item $targetUser the user whose picture will be set to the picture of the source user
      *
-     * @return \cs_user_item|null the target user whose picture has been set, or null if the source user had no picture
+     * @return cs_user_item|null the target user whose picture has been set, or null if the source user had no picture
      */
-    public function cloneUserPicture(\cs_user_item $sourceUser, \cs_user_item $targetUser): ?\cs_user_item
+    public function cloneUserPicture(cs_user_item $sourceUser, cs_user_item $targetUser): ?cs_user_item
     {
         $userPicture = $sourceUser->getPicture(); // example userPicture value: "cid123_jdoe_Jon-Doe-01.jpg"
         if (empty($userPicture)) {
@@ -170,12 +181,12 @@ class UserService
     /**
      * Links the given user with the given room's system group "All" and returns that group.
      *
-     * @param \cs_user_item $user the user who shall be linked to the system group "All"
-     * @param \cs_room_item $room the room whose system group "All" shall be used
+     * @param cs_user_item $user the user who shall be linked to the system group "All"
+     * @param cs_room_item $room the room whose system group "All" shall be used
      *
-     * @return \cs_label_item|null the system group "All" to which the given user was added, or null if an error occurred
+     * @return cs_label_item|null the system group "All" to which the given user was added, or null if an error occurred
      */
-    public function addUserToSystemGroupAll(\cs_user_item $user, \cs_room_item $room): ?\cs_label_item
+    public function addUserToSystemGroupAll(cs_user_item $user, cs_room_item $room): ?cs_label_item
     {
         $groupManager = $this->legacyEnvironment->getLabelManager();
         $groupManager->setExactNameLimit('ALL');
@@ -183,7 +194,7 @@ class UserService
         $groupManager->select();
         $groupList = $groupManager->get();
 
-        /** @var \cs_group_item $group */
+        /** @var cs_group_item $group */
         $systemGroupAll = $groupList->getFirst();
 
         if ($systemGroupAll) {
@@ -202,7 +213,7 @@ class UserService
      * @param int    $start
      * @param string $sort
      *
-     * @return \cs_user_item[]
+     * @return cs_user_item[]
      */
     public function getListUsers(
         $roomId,
@@ -242,7 +253,7 @@ class UserService
      * @param int   $roomId
      * @param int[] $ids
      *
-     * @return \cs_user_item[]
+     * @return cs_user_item[]
      */
     public function getUsersById($roomId, $ids)
     {
@@ -256,7 +267,7 @@ class UserService
         return $userList->to_array();
     }
 
-    public function getPortalUser(Account $account): \cs_user_item
+    public function getPortalUser(Account $account): cs_user_item
     {
         $this->userManager->resetLimits();
         $this->userManager->setContextLimit($account->getContextId());
@@ -269,7 +280,7 @@ class UserService
             throw new LogicException();
         }
 
-        /** @var \cs_user_item $user */
+        /** @var cs_user_item $user */
         $user = $userList->getFirst();
 
         return $user;
@@ -328,7 +339,7 @@ class UserService
         }
     }
 
-    public function getUser($userId): ?\cs_user_item
+    public function getUser($userId): ?cs_user_item
     {
         $user = $this->userManager->getItem($userId);
         // hotfix for birthday strings not containing valid date strings
@@ -339,7 +350,7 @@ class UserService
         return $user;
     }
 
-    public function getUserInContext(Account $account, int $contextId): ?\cs_user_item
+    public function getUserInContext(Account $account, int $contextId): ?cs_user_item
     {
         $this->userManager->resetLimits();
         $this->userManager->setContextLimit($contextId);
@@ -395,7 +406,7 @@ class UserService
     /**
      * Get the current user item.
      *
-     * @return \cs_user_item The current user object
+     * @return cs_user_item The current user object
      */
     public function getCurrentUserItem()
     {
@@ -407,7 +418,7 @@ class UserService
      *
      * @return array of searchable room items, may be empty
      */
-    public function getSearchableRooms(\cs_user_item $userItem)
+    public function getSearchableRooms(cs_user_item $userItem)
     {
         // project rooms
         $projectRoomList = $userItem->getUserRelatedProjectList();
@@ -421,7 +432,7 @@ class UserService
         // user rooms
         $userRoomList = $userItem->getRelatedUserroomsList();
         foreach ($userRoomList as $userRoom) {
-            /** @var \cs_userroom_item $userRoom */
+            /** @var cs_userroom_item $userRoom */
             // we only want to add a user room, if the option is enabled in the project room
             $parentProjectRoom = $userRoom->getLinkedProjectItem();
             if (null !== $parentProjectRoom &&
@@ -454,7 +465,7 @@ class UserService
      * @param int[] $ignoredUserIds (optional) IDs of user items that (if present) shall be omitted
      *                              from the returned array of moderators
      *
-     * @return \cs_user_item[]
+     * @return cs_user_item[]
      */
     public function getModeratorsForContext(int $contextId, array $ignoredUserIds = []): array
     {
@@ -466,7 +477,7 @@ class UserService
 
         $moderators = $moderatorList->to_array();
         if (!empty($ignoredUserIds)) {
-            $moderators = array_filter($moderators, fn (\cs_user_item $user) => !in_array($user->getItemID(), $ignoredUserIds));
+            $moderators = array_filter($moderators, fn (cs_user_item $user) => !in_array($user->getItemID(), $ignoredUserIds));
         }
 
         return $moderators;
@@ -492,12 +503,12 @@ class UserService
      * Returns all group rooms of the given project room which have no other moderators than the ones identified by
      * the IDs given in $userIds.
      *
-     * @param \cs_room_item   $room  The room whose group rooms shall be checked
-     * @param \cs_user_item[] $users (optional) User items that shall be ignored when checking rooms for additional moderators
+     * @param cs_room_item   $room  The room whose group rooms shall be checked
+     * @param cs_user_item[] $users (optional) User items that shall be ignored when checking rooms for additional moderators
      *
-     * @return \cs_grouproom_item[]
+     * @return cs_grouproom_item[]
      */
-    public function grouproomsWithoutOtherModeratorsInRoom(\cs_room_item $room, array $users = []): array
+    public function grouproomsWithoutOtherModeratorsInRoom(cs_room_item $room, array $users = []): array
     {
         if (!$room->isProjectRoom()) {
             return [];
@@ -528,13 +539,13 @@ class UserService
     /**
      * Checks whether the given (or otherwise the current) user is the given room's last moderator.
      *
-     * @param \cs_room_item|null $room The room for which this method will check whether the given user is its last moderator
-     * @param \cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is the given
+     * @param cs_room_item|null $room The room for which this method will check whether the given user is its last moderator
+     * @param cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is the given
      *                                 room's last moderator (defaults to the current user if not given)
      *
      * @return bool Whether the given (or current) user is the last moderator in the given room (true), or not (false)
      */
-    public function userIsLastModeratorForRoom(?\cs_room_item $room, ?\cs_user_item $user = null): bool
+    public function userIsLastModeratorForRoom(?cs_room_item $room, ?cs_user_item $user = null): bool
     {
         if (!$room) {
             return false;
@@ -560,12 +571,12 @@ class UserService
      * Checks whether the given (or otherwise the current) user is among the moderators of the given room.
      *
      * @param int                $room The room for which this method will check whether the given user is among its moderators
-     * @param \cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is among the
+     * @param cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is among the
      *                                 specified room's moderators (defaults to the current user if not given)
      *
      * @return bool Whether the given (or current) user is among the moderators of the specified room (true), or not (false)
      */
-    public function userIsModeratorForRoom(\cs_room_item $room, ?\cs_user_item $user = null): bool
+    public function userIsModeratorForRoom(cs_room_item $room, ?cs_user_item $user = null): bool
     {
         $user ??= $this->legacyEnvironment->getCurrentUserItem();
         if (!$user) {
@@ -592,13 +603,13 @@ class UserService
      * - any moderator of a project room whose group is linked to the given (group) room.
      * - any group creator whose group is linked to the given (group) room.
      *
-     * @param \cs_room_item      $room The room for which this method will check whether the given user is among its parent moderators
-     * @param \cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is among the parent
+     * @param cs_room_item      $room The room for which this method will check whether the given user is among its parent moderators
+     * @param cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is among the parent
      *                                 moderators of the specified room (defaults to the current user if not given)
      *
      * @return bool Whether the given (or current) user is among the parent moderators of the specified room (true), or not (false)
      */
-    public function userIsParentModeratorForRoom(\cs_room_item $room, ?\cs_user_item $user = null): bool
+    public function userIsParentModeratorForRoom(cs_room_item $room, ?cs_user_item $user = null): bool
     {
         $user ??= $this->legacyEnvironment->getCurrentUserItem();
         if (!$user) {
@@ -649,7 +660,7 @@ class UserService
     /**
      * Returns the IDs of all given users.
      *
-     * @param \cs_user_item[] $users The array of users whose IDs shall be returned
+     * @param cs_user_item[] $users The array of users whose IDs shall be returned
      *
      * @return int[]
      */
@@ -659,14 +670,14 @@ class UserService
             return [];
         }
 
-        $userIds = array_map(fn (\cs_user_item $user) => $user->getItemID(), $users);
+        $userIds = array_map(fn (cs_user_item $user) => $user->getItemID(), $users);
 
         return $userIds;
     }
 
     public function hideDeactivatedEntries()
     {
-        $this->userManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $this->userManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
     public function showUserStatus($status)
@@ -675,8 +686,8 @@ class UserService
     }
 
     /**
-     * @param \cs_context_item $room
-     * @param \cs_user_item    $currentUser
+     * @param cs_context_item $room
+     * @param cs_user_item    $currentUser
      *
      * @return string
      */
@@ -731,7 +742,7 @@ class UserService
      * @param mixed $groupIds                          The ID (or array of IDs) for the group(s) whose users shall be returned
      * @param bool  $excludeRejectedAndRegisteredUsers Whether to exclude any rejected and/or registered users
      *
-     * @return \cs_user_item[] An array of users belonging to the group(s) with the given group ID(s)
+     * @return cs_user_item[] An array of users belonging to the group(s) with the given group ID(s)
      */
     public function getUsersByGroupIds($roomId, mixed $groupIds, $excludeRejectedAndRegisteredUsers = false)
     {
@@ -761,7 +772,7 @@ class UserService
     }
 
     /**
-     * @param \cs_user_item $user
+     * @param cs_user_item $user
      * @param int           $roomId
      */
     public function updateAllGroupStatus($user, $roomId)
@@ -802,10 +813,10 @@ class UserService
      * Takes all group room users corresponding to the given project room user and sets their status according
      * to the project room user's current status.
      *
-     * @param \cs_user_item $user The project room user whose status shall be applied to corresponding group room
+     * @param cs_user_item $user The project room user whose status shall be applied to corresponding group room
      *                            users within the user's project room
      */
-    public function propagateStatusToGrouproomUsersForUser(\cs_user_item $user): void
+    public function propagateStatusToGrouproomUsersForUser(cs_user_item $user): void
     {
         $roomItem = $user->getContextItem();
         if (!$roomItem->isProjectRoom()) {
@@ -855,9 +866,9 @@ class UserService
     /**
      * @param Account $account
      *
-     * @return \cs_user_item|null
+     * @return cs_user_item|null
      */
-    public function getUserModeratorsInContext(int $contextId): ?\cs_list
+    public function getUserModeratorsInContext(int $contextId): ?cs_list
     {
         $this->userManager->resetLimits();
         $this->userManager->setContextLimit($contextId);

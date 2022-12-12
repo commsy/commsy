@@ -15,6 +15,7 @@ namespace App\Form\Type\Account;
 
 use App\Entity\Account;
 use App\Validator\Constraints\UniqueUserId;
+use cs_user_item;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -49,7 +50,7 @@ class PersonalInformationType extends AbstractType
         $changeUserdata = null !== $user ? $user->getAuthSource()->isChangeUserdata() : false;
 
         $emailConstraints = [];
-        /** @var \cs_user_item $portalUser */
+        /** @var cs_user_item $portalUser */
         $portalUser = $options['portalUser'];
 
         if ($portalUser->hasToChangeEmail()) {

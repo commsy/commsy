@@ -14,6 +14,7 @@
 namespace App\Security\Authorization\Voter;
 
 use App\Services\LegacyEnvironment;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -41,7 +42,7 @@ class RubricVoter extends Voter
 
         return match ($attribute) {
             self::RUBRIC_SEE => $this->canView($roomItem, $currentUser, $rubricName),
-            default => throw new \LogicException('This code should not be reached!'),
+            default => throw new LogicException('This code should not be reached!'),
         };
     }
 

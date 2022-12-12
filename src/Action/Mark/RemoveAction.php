@@ -16,6 +16,7 @@ namespace App\Action\Mark;
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
 use App\Services\MarkedService;
+use cs_room_item;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -25,7 +26,7 @@ class RemoveAction implements ActionInterface
     {
     }
 
-    public function execute(\cs_room_item $roomItem, array $items): Response
+    public function execute(cs_room_item $roomItem, array $items): Response
     {
         $ids = [];
         foreach ($items as $item) {

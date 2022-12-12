@@ -33,7 +33,7 @@ class Base64CsvFile
      * @var CsvUserDataset[]
      */
     #[Assert\Valid]
-    private \Doctrine\Common\Collections\ArrayCollection|\Doctrine\Common\Collections\Collection $csvUserDatasets;
+    private ArrayCollection|Collection $csvUserDatasets;
 
     public function __construct()
     {

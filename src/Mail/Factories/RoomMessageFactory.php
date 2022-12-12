@@ -19,6 +19,7 @@ use App\Mail\Messages\RoomActivityDeleteWarningMessage;
 use App\Mail\Messages\RoomActivityLockWarningMessage;
 use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
+use LogicException;
 
 class RoomMessageFactory
 {
@@ -30,7 +31,7 @@ class RoomMessageFactory
     {
         /** @var Room $room */
         if (!$room instanceof Room) {
-            throw new \LogicException('$room must be of type Room');
+            throw new LogicException('$room must be of type Room');
         }
 
         $portal = $this->portalRepository->find($room->getContextId());
@@ -45,7 +46,7 @@ class RoomMessageFactory
     {
         /** @var Room $room */
         if (!$room instanceof Room) {
-            throw new \LogicException('$room must be of type Room');
+            throw new LogicException('$room must be of type Room');
         }
 
         $portal = $this->portalRepository->find($room->getContextId());

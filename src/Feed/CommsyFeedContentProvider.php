@@ -14,6 +14,9 @@
 namespace App\Feed;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_manager;
+use DateTime;
 use Debril\RssAtomBundle\Exception\FeedException\FeedNotFoundException;
 use Debril\RssAtomBundle\Provider\FeedProviderInterface;
 use FeedIo\Feed;
@@ -23,7 +26,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CommsyFeedContentProvider implements FeedProviderInterface
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -97,7 +100,7 @@ class CommsyFeedContentProvider implements FeedProviderInterface
         return false;
     }
 
-    private function getLastModified(): \DateTime
+    private function getLastModified(): DateTime
     {
         $itemManager = $this->legacyEnvironment->getItemManager();
 
@@ -107,7 +110,7 @@ class CommsyFeedContentProvider implements FeedProviderInterface
         $result = $itemManager->_performQuery();
         $modificationDate = $result[0]['modification_date'];
 
-        return new \DateTime($modificationDate);
+        return new DateTime($modificationDate);
     }
 
     private function getTitle($currentContextItem): string
@@ -185,7 +188,7 @@ class CommsyFeedContentProvider implements FeedProviderInterface
         // Using the activated entries filter here seems not sufficient, since future modification dates
         // are only stored in their corresponding type tables.
         // This will require later filtering for now.
-        $itemManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $itemManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 
         if ($contextItem->isPrivateRoom()) {
             $ownerUserItem = $contextItem->getOwnerUserItem();

@@ -14,13 +14,15 @@
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use cs_material_item;
+use DateTime;
 
 class MaterialTransformer extends AbstractTransformer
 {
     protected $entity = 'material';
 
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -30,7 +32,7 @@ class MaterialTransformer extends AbstractTransformer
     /**
      * Transforms a cs_material_item object to an array.
      *
-     * @param \cs_material_item $materialItem
+     * @param cs_material_item $materialItem
      *
      * @return array
      */
@@ -44,7 +46,7 @@ class MaterialTransformer extends AbstractTransformer
             $materialData['description'] = $materialItem->getDescription();
             $materialData['permission'] = $materialItem->isPrivateEditing();
 
-            if ($materialItem instanceof \cs_material_item) {
+            if ($materialItem instanceof cs_material_item) {
                 $materialData['editor_switch'] = $materialItem->getEtherpadEditor() > 0;
 
                 if ('none' != $materialItem->getBibKind()) {
@@ -106,7 +108,7 @@ class MaterialTransformer extends AbstractTransformer
 
                 $activating_date = $materialItem->getActivatingDate();
                 if (!stristr($activating_date, '9999')) {
-                    $datetime = new \DateTime($activating_date);
+                    $datetime = new DateTime($activating_date);
                     $materialData['hiddendate']['date'] = $datetime;
                     $materialData['hiddendate']['time'] = $datetime;
                 }
@@ -122,7 +124,7 @@ class MaterialTransformer extends AbstractTransformer
      * @param object $materialObject
      * @param array  $materialData
      *
-     * @return \cs_material_item|null
+     * @return cs_material_item|null
      *
      * @throws TransformationFailedException if room item is not found
      */

@@ -16,12 +16,14 @@ namespace App\Feed;
 use App\Feed\Creators\Creator;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
+use cs_environment;
+use RuntimeException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FeedCreatorFactory
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     private array $creators = [];
     private $isGuestAccess = false;
@@ -84,6 +86,6 @@ class FeedCreatorFactory
             }
         }
 
-        throw new \RuntimeException('No creator found that supports the rubric "'.$rubric.'"');
+        throw new RuntimeException('No creator found that supports the rubric "'.$rubric.'"');
     }
 }

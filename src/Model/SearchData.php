@@ -14,6 +14,7 @@
 namespace App\Model;
 
 use App\Entity\SavedSearch;
+use DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class SearchData
@@ -21,7 +22,7 @@ class SearchData
     /**
      * @var SavedSearch|null the currently selected saved search (aka "view")
      */
-    private ?\App\Entity\SavedSearch $selectedSavedSearch = null;
+    private ?SavedSearch $selectedSavedSearch = null;
 
     #[Assert\NotBlank(normalizer: 'trim', groups: ['save'])]
     private ?string $selectedSavedSearchTitle = null;
@@ -87,13 +88,13 @@ class SearchData
      */
     private ?array $selectedCategories = null;
 
-    private ?\DateTime $creationDateFrom = null;
+    private ?DateTime $creationDateFrom = null;
 
-    private ?\DateTime $creationDateUntil = null;
+    private ?DateTime $creationDateUntil = null;
 
-    private ?\DateTime $modificationDateFrom = null;
+    private ?DateTime $modificationDateFrom = null;
 
-    private ?\DateTime $modificationDateUntil = null;
+    private ?DateTime $modificationDateUntil = null;
 
     public function getSelectedSavedSearch(): ?SavedSearch
     {
@@ -453,11 +454,11 @@ class SearchData
     public function setCreationDateRange(?array $creationDateRange): self
     {
         // start date
-        if (isset($creationDateRange[0]) && $creationDateRange[0] instanceof \DateTime) {
+        if (isset($creationDateRange[0]) && $creationDateRange[0] instanceof DateTime) {
             $this->setCreationDateFrom($creationDateRange[0]);
         }
         // end date
-        if (isset($creationDateRange[1]) && $creationDateRange[1] instanceof \DateTime) {
+        if (isset($creationDateRange[1]) && $creationDateRange[1] instanceof DateTime) {
             $this->setCreationDateUntil($creationDateRange[1]);
         }
 
@@ -480,58 +481,58 @@ class SearchData
      */
     public function setModificationDateRange(?array $modificationDateRange): self
     {
-        if (isset($modificationDateRange[0]) && $modificationDateRange[0] instanceof \DateTime) {
+        if (isset($modificationDateRange[0]) && $modificationDateRange[0] instanceof DateTime) {
             $this->setModificationDateFrom($modificationDateRange[0]);
         }
-        if (isset($modificationDateRange[1]) && $modificationDateRange[1] instanceof \DateTime) {
+        if (isset($modificationDateRange[1]) && $modificationDateRange[1] instanceof DateTime) {
             $this->setModificationDateUntil($modificationDateRange[1]);
         }
 
         return $this;
     }
 
-    public function getCreationDateFrom(): ?\DateTime
+    public function getCreationDateFrom(): ?DateTime
     {
         return $this->creationDateFrom;
     }
 
-    public function setCreationDateFrom(?\DateTime $creationDateFrom): self
+    public function setCreationDateFrom(?DateTime $creationDateFrom): self
     {
         $this->creationDateFrom = $creationDateFrom;
 
         return $this;
     }
 
-    public function getCreationDateUntil(): ?\DateTime
+    public function getCreationDateUntil(): ?DateTime
     {
         return $this->creationDateUntil;
     }
 
-    public function setCreationDateUntil(?\DateTime $creationDateUntil): self
+    public function setCreationDateUntil(?DateTime $creationDateUntil): self
     {
         $this->creationDateUntil = $creationDateUntil;
 
         return $this;
     }
 
-    public function getModificationDateFrom(): ?\DateTime
+    public function getModificationDateFrom(): ?DateTime
     {
         return $this->modificationDateFrom;
     }
 
-    public function setModificationDateFrom(?\DateTime $modificationDateFrom): self
+    public function setModificationDateFrom(?DateTime $modificationDateFrom): self
     {
         $this->modificationDateFrom = $modificationDateFrom;
 
         return $this;
     }
 
-    public function getModificationDateUntil(): ?\DateTime
+    public function getModificationDateUntil(): ?DateTime
     {
         return $this->modificationDateUntil;
     }
 
-    public function setModificationDateUntil(?\DateTime $modificationDateUntil): self
+    public function setModificationDateUntil(?DateTime $modificationDateUntil): self
     {
         $this->modificationDateUntil = $modificationDateUntil;
 

@@ -16,6 +16,7 @@ namespace App\Command;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use PhpImap\Mailbox;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,7 +27,7 @@ class EmailUploadCommand extends Command
     protected static $defaultName = 'commsy:cron:emailupload';
     protected static $defaultDescription = 'commsy email upload cron';
 
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     /**
      * @param string $projectDir
@@ -65,7 +66,7 @@ class EmailUploadCommand extends Command
         if (!$this->uploadEnabled) {
             $output->writeln('<info>Upload is disabled</info>');
 
-            return \Symfony\Component\Console\Command\Command::SUCCESS;
+            return Command::SUCCESS;
         }
 
         $output->writeln('<info>Connecting to mailbox</info>');
@@ -90,7 +91,7 @@ class EmailUploadCommand extends Command
 
         $mailbox->expungeDeletedMails();
 
-        return \Symfony\Component\Console\Command\Command::SUCCESS;
+        return Command::SUCCESS;
     }
 
     private function emailToCommsy($mail)

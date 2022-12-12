@@ -33,12 +33,17 @@ use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
 use App\Utils\LabelService;
 use App\Utils\TopicService;
+use cs_room_item;
+use cs_topic_item;
+use cs_user_item;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * Class TopicController.
@@ -46,14 +51,14 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'topic')")]
 class TopicController extends BaseController
 {
-    private \App\Utils\TopicService $topicService;
+    private TopicService $topicService;
 
-    private \App\Utils\AnnotationService $annotationService;
+    private AnnotationService $annotationService;
 
     /**
      * @param mixed $topicService
      */
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setTopicService(TopicService $topicService): void
     {
         $this->topicService = $topicService;
@@ -62,7 +67,7 @@ class TopicController extends BaseController
     /**
      * @param mixed $annotationService
      */
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setAnnotationService(AnnotationService $annotationService): void
     {
         $this->annotationService = $annotationService;
@@ -253,7 +258,7 @@ class TopicController extends BaseController
         $read_count = 0;
         $read_since_modification_count = 0;
 
-        /** @var \cs_user_item $current_user */
+        /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         $id_array = [];
         while ($current_user) {
@@ -632,7 +637,7 @@ class TopicController extends BaseController
         int $roomId,
         int $itemId
     ): Response {
-        /** @var \cs_topic_item $item */
+        /** @var cs_topic_item $item */
         $item = $this->itemService->getTypedItem($itemId);
 
         $formData = [];
@@ -748,7 +753,7 @@ class TopicController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/topic/download')]
     public function downloadAction(
@@ -766,7 +771,7 @@ class TopicController extends BaseController
     // # XHR Action requests
     // ##################################################################################################
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/topic/xhr/markread', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkReadAction(
@@ -783,7 +788,7 @@ class TopicController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/topic/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
     public function xhrCategorizeAction(
@@ -797,7 +802,7 @@ class TopicController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/topic/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
     public function xhrHashtagAction(
@@ -809,7 +814,7 @@ class TopicController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/topic/xhr/activate', condition: 'request.isXmlHttpRequest()')]
     public function xhrActivateAction(
@@ -824,7 +829,7 @@ class TopicController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/topic/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeactivateAction(
@@ -839,7 +844,7 @@ class TopicController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/topic/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
@@ -854,11 +859,11 @@ class TopicController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param bool          $selectAll
      * @param int[]         $itemIds
      *
-     * @return \cs_topic_item[]
+     * @return cs_topic_item[]
      */
     public function getItemsByFilterConditions(
         Request $request,
@@ -887,7 +892,7 @@ class TopicController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $room
+     * @param cs_room_item $room
      *
      * @return FormInterface
      */

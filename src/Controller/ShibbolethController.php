@@ -16,6 +16,7 @@ namespace App\Controller;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceShibboleth;
 use App\Entity\Portal;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,12 +65,12 @@ class ShibbolethController extends AbstractController
     /**
      * IMPORTANT: DO NOT REMOVE OR RENAME {context} or keep in sync with ShibbolethAuthenticator.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/login/{context}/auth/shib/check')]
     public function authShibbolethCheck()
     {
         // controller can be blank: it will never be executed!
-        throw new \Exception('Handled by guard authenticator');
+        throw new Exception('Handled by guard authenticator');
     }
 }

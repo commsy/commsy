@@ -13,6 +13,7 @@
 
 namespace App\Feed\Creators;
 
+use DateTime;
 use FeedIo\Feed\Item;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -33,7 +34,7 @@ abstract class Creator
         $feedItem = new Item();
 
         $feedItem->setTitle($this->getTitle($item));
-        $feedItem->setLastModified(new \DateTime($item->getModificationDate()));
+        $feedItem->setLastModified(new DateTime($item->getModificationDate()));
 
         if ($this->generateAuthor($item)) {
             $feedItem->set('author', $this->getAuthor($item));

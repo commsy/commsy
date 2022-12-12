@@ -43,6 +43,7 @@ use App\Services\LegacyEnvironment;
 use App\Services\PrintService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -58,6 +59,7 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\Security as CoreSecurity;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use UnexpectedValueException;
 
 class AccountController extends AbstractController
 {
@@ -126,7 +128,7 @@ class AccountController extends AbstractController
             // if the portal has terms of usage, we'll accept them here
             // form validation already checked if they have been accepted
             if ($portal->hasAGBEnabled()) {
-                $portalUser->setAGBAcceptanceDate(new \DateTimeImmutable());
+                $portalUser->setAGBAcceptanceDate(new DateTimeImmutable());
                 $portalUser->save();
             }
 
@@ -277,7 +279,7 @@ class AccountController extends AbstractController
                     );
 
                     if (null === $accountToMerge) {
-                        throw new \UnexpectedValueException();
+                        throw new UnexpectedValueException();
                     }
 
                     $authSourceGuardAuthenticatorMap = [
@@ -306,7 +308,7 @@ class AccountController extends AbstractController
                             'portalId' => $portal->getId(),
                         ]);
                     }
-                } catch (NonUniqueResultException|\UnexpectedValueException) {
+                } catch (NonUniqueResultException|UnexpectedValueException) {
                     $form->get('combineUserId')->addError(new FormError('User not found'));
                 }
             }

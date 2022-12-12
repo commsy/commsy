@@ -16,6 +16,9 @@ namespace App\Security\Authorization\Voter;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use cs_room_item;
+use cs_user_item;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -42,21 +45,21 @@ class UserVoter extends Voter
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $roomId = $object;
-        /** @var \cs_room_item $room */
+        /** @var cs_room_item $room */
         $room = $this->roomService->getRoomItem($roomId);
 
         return match ($attribute) {
             self::MODERATOR => $this->isModerator($currentUser),
             self::ROOM_MODERATOR => $this->isModeratorForRoom($currentUser, $room),
             self::PARENT_ROOM_MODERATOR => $this->isParentModeratorForRoom($currentUser, $room),
-            default => throw new \LogicException('This code should not be reached!'),
+            default => throw new LogicException('This code should not be reached!'),
         };
     }
 
     /**
      * Checks whether the given user is a moderator in the user's context.
      */
-    private function isModerator(\cs_user_item $user): bool
+    private function isModerator(cs_user_item $user): bool
     {
         return $user->isModerator();
     }
@@ -64,7 +67,7 @@ class UserVoter extends Voter
     /**
      * Checks whether the given user is a moderator in the given room.
      */
-    private function isModeratorForRoom(\cs_user_item $user, ?\cs_room_item $room): bool
+    private function isModeratorForRoom(cs_user_item $user, ?cs_room_item $room): bool
     {
         if (!$room) {
             return false;
@@ -81,7 +84,7 @@ class UserVoter extends Voter
     /**
      * Checks whether the given user is a parent moderator for the given room.
      */
-    private function isParentModeratorForRoom(\cs_user_item $user, ?\cs_room_item $room): bool
+    private function isParentModeratorForRoom(cs_user_item $user, ?cs_room_item $room): bool
     {
         if (!$room) {
             return false;

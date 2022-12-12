@@ -15,6 +15,8 @@ namespace App\EventSubscriber;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
+use cs_room_item;
+use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -55,7 +57,7 @@ class KernelSubscriber implements EventSubscriberInterface
     /**
      * Catches all legacy requests and hands them over to legacy kernel.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function onKernelRequest(RequestEvent $event)
     {
@@ -76,7 +78,7 @@ class KernelSubscriber implements EventSubscriberInterface
             } else {
                 $cid = $currentRequest->query->get('cid');
                 $contextItem = $this->itemService->getTypedItem($cid);
-                if ($contextItem instanceof \cs_room_item) {
+                if ($contextItem instanceof cs_room_item) {
                     $event->setResponse(new RedirectResponse($this->urlGenerator->generate('app_room_home', [
                         'roomId' => $cid,
                     ])));

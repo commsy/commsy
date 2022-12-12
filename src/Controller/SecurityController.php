@@ -28,8 +28,11 @@ use App\Model\Password;
 use App\Model\ResetPasswordToken;
 use App\Security\AbstractCommsyGuardAuthenticator;
 use App\Services\LegacyEnvironment;
+use DateInterval;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -114,13 +117,13 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/logout', name: 'app_logout', methods: ['GET'])]
     public function logout()
     {
         // controller can be blank: it will never be executed!
-        throw new \Exception('Don\'t forget to activate logout in security.yaml');
+        throw new Exception('Don\'t forget to activate logout in security.yaml');
     }
 
     #[Route(path: '/login/{portalId}/request_accounts')]
@@ -234,8 +237,8 @@ class SecurityController extends AbstractController
                         $localSource
                     );
 
-                $expiresAt = new \DateTime();
-                $expiresAt->add(new \DateInterval('PT15M'));
+                $expiresAt = new DateTime();
+                $expiresAt->add(new DateInterval('PT15M'));
 
                 $session = $request->getSession();
                 if ($session->has('ResetPasswordToken')) {
@@ -321,7 +324,7 @@ class SecurityController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $now = new \DateTime();
+        $now = new DateTime();
         if ($now > $resetPasswordToken->getExpiresAt()) {
             // TODO: Form validation would be a better option
             $session->remove('ResetPasswordToken');

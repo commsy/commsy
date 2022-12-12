@@ -13,6 +13,7 @@
 
 namespace App\Validator\Constraints;
 
+use App\Utils\ItemService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -20,7 +21,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class HomeNoticeConstraintValidator extends ConstraintValidator
 {
-    public function __construct(private ContainerInterface $container, private TranslatorInterface $translator, private \App\Utils\ItemService $itemService)
+    public function __construct(private ContainerInterface $container, private TranslatorInterface $translator, private ItemService $itemService)
     {
     }
 

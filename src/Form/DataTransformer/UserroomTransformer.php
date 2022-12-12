@@ -13,6 +13,8 @@
 
 namespace App\Form\DataTransformer;
 
+use cs_userroom_item;
+
 class UserroomTransformer extends AbstractTransformer
 {
     protected $entity = 'userroom';
@@ -20,7 +22,7 @@ class UserroomTransformer extends AbstractTransformer
     /**
      * Transforms a cs_userroom_item object to an array.
      *
-     * @param \cs_userroom_item $userroom
+     * @param cs_userroom_item $userroom
      *
      * @return array
      */
@@ -42,7 +44,7 @@ class UserroomTransformer extends AbstractTransformer
      * @param object $userroomObject
      * @param array  $userroomData
      *
-     * @return \cs_userroom_item|null
+     * @return cs_userroom_item|null
      *
      * @throws TransformationFailedException if room item is not found
      */

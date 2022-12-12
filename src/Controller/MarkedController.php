@@ -19,10 +19,15 @@ use App\Action\Mark\InsertAction;
 use App\Action\Mark\RemoveAction;
 use App\Filter\MarkedFilterType;
 use App\Services\MarkedService;
+use cs_item;
+use cs_room_item;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * Class MarkedController.
@@ -32,7 +37,7 @@ class MarkedController extends BaseController
 {
     private MarkedService $markedService;
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setMarkedService(MarkedService $markedService): void
     {
         $this->markedService = $markedService;
@@ -45,7 +50,7 @@ class MarkedController extends BaseController
         int $max = 10,
         int $start = 0,
         string $sort = 'date'
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         // extract current filter from parameter bag (embedded controller call)
         // or from query parameters (AJAX)
         $markedFilter = $request->get('markFilter');
@@ -113,7 +118,7 @@ class MarkedController extends BaseController
     public function listAction(
         Request $request,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $roomItem = $this->loadRoom($roomId);
         $filterForm = $this->createFilterForm($roomItem);
 
@@ -143,14 +148,14 @@ class MarkedController extends BaseController
     // # XHR Action requests
     // ##################################################################################################
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/mark/xhr/insert', condition: 'request.isXmlHttpRequest()')]
     public function xhrInsertAction(
         Request $request,
         InsertAction $action,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -160,13 +165,13 @@ class MarkedController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/mark/xhr/remove', condition: 'request.isXmlHttpRequest()')]
     public function xhrRemoveAction(
         Request $request,
         RemoveAction $action,
-        int $roomId): \Symfony\Component\HttpFoundation\Response
+        int $roomId): Response
     {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
@@ -177,28 +182,28 @@ class MarkedController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/mark/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
     public function xhrCategorizeAction(
         Request $request,
         CategorizeAction $action,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         return parent::handleCategoryActionOptions($request, $action, $roomId);
     }
 
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/mark/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
     public function xhrHashtagAction(
         Request $request,
         HashtagAction $action,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         return parent::handleHashtagActionOptions($request, $action, $roomId);
     }
 
@@ -206,7 +211,7 @@ class MarkedController extends BaseController
      * @param bool  $selectAll
      * @param int[] $itemIds
      *
-     * @return \cs_item[]
+     * @return cs_item[]
      */
     public function getItemsByFilterConditions(
         Request $request,
@@ -236,7 +241,7 @@ class MarkedController extends BaseController
      * @return FormInterface
      */
     private function createFilterForm(
-        \cs_room_item $room
+        cs_room_item $room
     ) {
         if ($room->isPrivateRoom()) {
             $rubrics = [

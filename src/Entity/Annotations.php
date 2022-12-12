@@ -13,6 +13,8 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -49,22 +51,22 @@ class Annotations
     #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
     private ?int $modifierId = null;
     #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
-    private \DateTime $creationDate;
+    private DateTime $creationDate;
     /**
      * @var int
      */
     #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private ?int $deleterId = null;
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
     #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $deletionDate = null;
+    private ?DateTimeInterface $deletionDate = null;
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
     #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $modificationDate = null;
+    private ?DateTimeInterface $modificationDate = null;
     /**
      * @var string
      */
@@ -93,6 +95,6 @@ class Annotations
 
     public function __construct()
     {
-        $this->creationDate = new \DateTime('0000-00-00 00:00:00');
+        $this->creationDate = new DateTime('0000-00-00 00:00:00');
     }
 }

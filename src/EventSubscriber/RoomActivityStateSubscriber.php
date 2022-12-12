@@ -21,6 +21,10 @@ use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
 use App\Room\RoomManager;
 use App\Utils\ItemService;
+use cs_room_item;
+use DateInterval;
+use DateTime;
+use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\EnteredEvent;
 use Symfony\Component\Workflow\Event\GuardEvent;
@@ -79,7 +83,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     /**
      * Decides if a room can make the transition to the active_notified state.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function guardNotifyLock(GuardEvent $event)
     {
@@ -99,7 +103,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     /**
      * Decides if a room can make the transition to the idle state.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function guardLock(GuardEvent $event)
     {
@@ -118,7 +122,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     /**
      * Decides if a room can make the transition to the idle_notified state.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function guardNotifyForsake(GuardEvent $event)
     {
@@ -138,7 +142,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     /**
      * Decides if a room can make the transition to the abandoned state.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function guardForsake(GuardEvent $event)
     {
@@ -176,7 +180,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
         $message = $this->roomMessageFactory->createRoomActivityLockWarningMessage($room);
         if ($message) {
-            /** @var \cs_room_item $legacyRoom */
+            /** @var cs_room_item $legacyRoom */
             $legacyRoom = $this->itemService->getTypedItem($room->getItemId());
             if ($legacyRoom) {
                 $this->mailer->sendMultiple($message, RecipientFactory::createModerationRecipients($legacyRoom));
@@ -209,7 +213,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
         $message = $this->roomMessageFactory->createRoomActivityDeleteWarningMessage($room);
         if ($message) {
-            /** @var \cs_room_item $legacyRoom */
+            /** @var cs_room_item $legacyRoom */
             $legacyRoom = $this->itemService->getTypedItem($room->getItemId());
             if ($legacyRoom) {
                 $this->mailer->sendMultiple($message, RecipientFactory::createModerationRecipients($legacyRoom));
@@ -234,12 +238,12 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     /**
      * @return void
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    private function datePassedDays(\DateTime $compare, int $numDays): bool
+    private function datePassedDays(DateTime $compare, int $numDays): bool
     {
-        $threshold = new \DateTime();
-        $threshold->sub(new \DateInterval('P'.$numDays.'D'));
+        $threshold = new DateTime();
+        $threshold->sub(new DateInterval('P'.$numDays.'D'));
 
         return $compare < $threshold;
     }

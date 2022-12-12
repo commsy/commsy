@@ -15,41 +15,42 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 class AuthSourceShibboleth extends AuthSource
 {
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\Length(max: 255)]
     private ?string $loginUrl = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\Length(max: 255)]
     private ?string $logoutUrl = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\Length(max: 255)]
     private ?string $passwordResetUrl = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 50)]
+    #[ORM\Column(type: Types::STRING, length: 50)]
     #[Assert\Length(max: 50)]
     private ?string $mappingUsername = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 50)]
+    #[ORM\Column(type: Types::STRING, length: 50)]
     #[Assert\Length(max: 50)]
     private ?string $mappingFirstname = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 50)]
+    #[ORM\Column(type: Types::STRING, length: 50)]
     #[Assert\Length(max: 50)]
     private ?string $mappingLastname = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 50)]
+    #[ORM\Column(type: Types::STRING, length: 50)]
     #[Assert\Length(max: 50)]
     private ?string $mappingEmail = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::ARRAY, name: 'identity_provider')]
+    #[ORM\Column(type: Types::ARRAY, name: 'identity_provider')]
     private ?Collection $identityProviders;
 
     protected string $type = 'shib';

@@ -23,6 +23,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -43,7 +44,7 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
         private EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
         private CsrfTokenManagerInterface $csrfTokenManager,
-        private \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $passwordEncoder,
+        private UserPasswordHasherInterface $passwordEncoder,
         RequestContext $requestContext
     ) {
         parent::__construct($urlGenerator, $requestContext);

@@ -15,6 +15,9 @@ namespace App\Controller;
 
 use App\Action\Delete\DeleteAction;
 use App\Utils\DiscussionService;
+use cs_discussionarticle_item;
+use cs_room_item;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,7 +37,7 @@ class DiscussionArticleController extends BaseController
     // # XHR Action requests
     // ##################################################################################################
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion_article/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
@@ -49,11 +52,11 @@ class DiscussionArticleController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param bool          $selectAll
      * @param int[]         $itemIds
      *
-     * @return \cs_discussionarticle_item[]
+     * @return cs_discussionarticle_item[]
      */
     protected function getItemsByFilterConditions(
         Request $request,

@@ -13,12 +13,10 @@
 
 namespace App\Form\Model;
 
-use App\Validator\Constraints\LocalAccount as LocalAccountAssert;
+use App\Validator\Constraints\LocalAccount as LocalAccountConstraint;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @LocalAccountAssert()
- */
+#[LocalAccountConstraint]
 class LocalAccount
 {
     #[Assert\NotBlank]

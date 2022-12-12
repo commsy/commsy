@@ -13,11 +13,10 @@
 
 namespace App\Validator\Constraints;
 
+use Attribute;
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
- */
+#[Attribute]
 class LocalAccount extends Constraint
 {
     public $message = 'login unknown';

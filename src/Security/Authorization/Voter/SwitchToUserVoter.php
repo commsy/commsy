@@ -15,6 +15,8 @@ namespace App\Security\Authorization\Voter;
 
 use App\Entity\Account;
 use App\Utils\UserService;
+use cs_user_item;
+use DateTimeImmutable;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
@@ -50,13 +52,13 @@ class SwitchToUserVoter extends Voter
             return false;
         }
 
-        /** @var \cs_user_item $portalUser */
+        /** @var cs_user_item $portalUser */
         $portalUser = $this->userService->getPortalUser($account);
 
         // check if the user is allowed to impersonate by flag
         if ($portalUser->getCanImpersonateAnotherUser()) {
             // check if the impersonate grant is expired
-            $now = new \DateTimeImmutable();
+            $now = new DateTimeImmutable();
             $expiryDate = $portalUser->getImpersonateExpiryDate();
             if (null === $expiryDate || $expiryDate >= $now) {
                 return true;

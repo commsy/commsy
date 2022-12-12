@@ -23,6 +23,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CategoryController extends AbstractController
@@ -30,7 +31,7 @@ class CategoryController extends AbstractController
     public function show(
         CategoryService $categoryService,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         // get categories from CategoryManager
         $roomTags = $categoryService->getTags($roomId);
 
@@ -43,7 +44,7 @@ class CategoryController extends AbstractController
     public function showDetail(
         CategoryService $categoryService,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         // get categories
         $roomTags = $categoryService->getTags($roomId);
 
@@ -60,7 +61,7 @@ class CategoryController extends AbstractController
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         CategoryService $categoryService
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -126,7 +127,7 @@ class CategoryController extends AbstractController
         ManagerRegistry $doctrine,
         int $roomId,
         int $categoryId = null
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem->withTags()) {
@@ -234,7 +235,7 @@ class CategoryController extends AbstractController
             ]);
         }
 
-        return $this->render('Category/edit.html.twig', [
+        return $this->render('category/edit.html.twig', [
             'newForm' => $createNewForm->createView(),
             'editForm' => $editForm->createView(),
             'roomId' => $roomId,

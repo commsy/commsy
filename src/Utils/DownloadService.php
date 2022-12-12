@@ -16,16 +16,19 @@ namespace App\Utils;
 use App\Form\Type\AnnotationType;
 use App\Services\LegacyEnvironment;
 use App\Services\PrintService;
+use cs_environment;
+use cs_item;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\FormFactoryInterface;
 use Twig\Environment;
+use ZipArchive;
 
 class DownloadService
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -94,10 +97,10 @@ class DownloadService
         }
 
         include_once 'functions/misc_functions.php';
-        $zip = new \ZipArchive();
+        $zip = new ZipArchive();
         $filename = $zipFile;
 
-        if (true !== $zip->open($filename, \ZipArchive::CREATE)) {
+        if (true !== $zip->open($filename, ZipArchive::CREATE)) {
             include_once 'functions/error_functions.php';
             trigger_error('can not open zip-file '.$filename, E_USER_WARNING);
         }
@@ -115,7 +118,7 @@ class DownloadService
     /**
      * Copies item files into a target folder for zip generation. Takes also duplicate file names into account.
      *
-     * @param \cs_item $item         The CommSy item
+     * @param cs_item $item         The CommSy item
      * @param string   $targetFolder Path to the target folder
      */
     private function copyItemFilesToFolder($item, $targetFolder)

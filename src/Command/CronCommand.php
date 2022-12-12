@@ -51,7 +51,7 @@ class CronCommand extends Command
         if (!$this->lock()) {
             $output->writeln('The command is already running in another process.');
 
-            return \Symfony\Component\Console\Command\Command::SUCCESS;
+            return Command::SUCCESS;
         }
 
         $excludeOption = $input->getOption('exclude');
@@ -65,6 +65,6 @@ class CronCommand extends Command
 
         $this->release();
 
-        return \Symfony\Component\Console\Command\Command::SUCCESS;
+        return Command::SUCCESS;
     }
 }

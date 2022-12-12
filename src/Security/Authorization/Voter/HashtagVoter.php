@@ -14,6 +14,7 @@
 namespace App\Security\Authorization\Voter;
 
 use App\Services\LegacyEnvironment;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -48,7 +49,7 @@ class HashtagVoter extends Voter
 
         return match ($attribute) {
             self::EDIT => $this->canEdit($currentRoom, $currentUser),
-            default => throw new \LogicException('This code should not be reached!'),
+            default => throw new LogicException('This code should not be reached!'),
         };
     }
 

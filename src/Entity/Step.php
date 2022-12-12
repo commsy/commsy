@@ -13,6 +13,8 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -48,19 +50,19 @@ class Step
     #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: true)]
     private $modifierId;
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: true)]
-    private \DateTime $creationDate;
+    private DateTime $creationDate;
     /**
      * @var int
      */
     #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private $deleterId;
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
     private $modificationDate;
@@ -101,11 +103,11 @@ class Step
     private $public = '0';
     #[ORM\ManyToOne(targetEntity: 'Todos', inversedBy: 'steps')]
     #[ORM\JoinColumn(name: 'todo_item_id', referencedColumnName: 'item_id')]
-    private ?\App\Entity\Todos $todo = null;
+    private ?Todos $todo = null;
 
     public function __construct()
     {
-        $this->creationDate = new \DateTime('0000-00-00 00:00:00');
+        $this->creationDate = new DateTime('0000-00-00 00:00:00');
     }
 
     /**
@@ -193,7 +195,7 @@ class Step
     /**
      * Set creationDate.
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Step
      */
@@ -207,7 +209,7 @@ class Step
     /**
      * Get creationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -241,7 +243,7 @@ class Step
     /**
      * Set deletionDate.
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Step
      */
@@ -255,7 +257,7 @@ class Step
     /**
      * Get deletionDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {
@@ -265,7 +267,7 @@ class Step
     /**
      * Set modificationDate.
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Step
      */
@@ -279,7 +281,7 @@ class Step
     /**
      * Get modificationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -469,7 +471,7 @@ class Step
     /**
      * Get todo.
      *
-     * @return \App\Entity\Todos
+     * @return Todos
      */
     public function getTodo()
     {
