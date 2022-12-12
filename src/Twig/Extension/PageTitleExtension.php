@@ -15,13 +15,14 @@ namespace App\Twig\Extension;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
+use cs_environment;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class PageTitleExtension extends AbstractExtension
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,

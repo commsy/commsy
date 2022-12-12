@@ -13,6 +13,8 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
+
 /**
  * Class PortalUserChangeStatus.
  */
@@ -32,7 +34,7 @@ class PortalUserChangeStatus
 
     private ?bool $loginIsDeactivated = null;
 
-    private ?\DateTimeImmutable $impersonateExpiryDate = null;
+    private ?DateTimeImmutable $impersonateExpiryDate = null;
 
     public function getName(): string
     {
@@ -121,12 +123,12 @@ class PortalUserChangeStatus
         return $this;
     }
 
-    public function getImpersonateExpiryDate(): ?\DateTimeImmutable
+    public function getImpersonateExpiryDate(): ?DateTimeImmutable
     {
         return $this->impersonateExpiryDate;
     }
 
-    public function setImpersonateExpiryDate(?\DateTimeImmutable $expiry): self
+    public function setImpersonateExpiryDate(?DateTimeImmutable $expiry): self
     {
         $this->impersonateExpiryDate = $expiry;
 

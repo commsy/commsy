@@ -19,24 +19,28 @@ use App\Entity\Room;
 use App\Form\Model\Csv\CsvUserDataset;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
+use cs_environment;
+use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserCreatorFacade
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private AccountCreatorFacade $accountFacade,
         private UserService $userService,
         private EntityManagerInterface $entityManager,
-        private \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $passwordEncoder
+        private UserPasswordHasherInterface $passwordEncoder
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function createFromCsvDataset(
         AuthSource $authSource,
@@ -86,7 +90,7 @@ class UserCreatorFacade
     /**
      * @return bool|string The password or false on error
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function generatePassword(): string
     {
@@ -104,7 +108,7 @@ class UserCreatorFacade
         string $lastname,
         string $email,
         AuthSource $authSource
-    ): \cs_user_item {
+    ): cs_user_item {
         $account = new Account();
         $account->setUsername($identifier);
         $account->setFirstname($firstname);
@@ -151,10 +155,10 @@ class UserCreatorFacade
     /**
      * Adds users representing the given user to the rooms with the given IDs.
      *
-     * @param \cs_user_item $user    the user for whom room users shall be created
+     * @param cs_user_item $user    the user for whom room users shall be created
      * @param array         $roomIds list of room IDs
      */
-    private function addUserToRoomsWithIds(\cs_user_item $user, array $roomIds): void
+    private function addUserToRoomsWithIds(cs_user_item $user, array $roomIds): void
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $privateRoomUser = $user->getRelatedPrivateRoomUserItem();

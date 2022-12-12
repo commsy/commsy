@@ -13,6 +13,7 @@
 
 namespace App\Event;
 
+use cs_user_item;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -23,16 +24,16 @@ use Symfony\Contracts\EventDispatcher\Event;
 class UserStatusChangedEvent extends Event
 {
     /**
-     * @var \cs_user_item The new user object
+     * @var cs_user_item The new user object
      */
     private $user;
 
-    public function __construct(\cs_user_item $user)
+    public function __construct(cs_user_item $user)
     {
         $this->user = $user;
     }
 
-    public function getUser(): \cs_user_item
+    public function getUser(): cs_user_item
     {
         return $this->user;
     }

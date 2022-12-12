@@ -19,6 +19,7 @@ use App\Repository\PortalRepository;
 use App\Services\InvitationsService;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
+use cs_environment;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -29,7 +30,7 @@ use Symfony\Component\Security\Core\Security;
 
 class MenuBuilder
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         private FactoryInterface $factory,

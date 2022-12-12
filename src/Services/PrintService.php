@@ -13,6 +13,7 @@
 
 namespace App\Services;
 
+use cs_environment;
 use Knp\Snappy\Pdf;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -22,7 +23,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class PrintService
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -67,7 +68,7 @@ class PrintService
         // NOTE: with >=PHP7.3, we could also use `filter_var($fileName, FILTER_SANITIZE_ADD_SLASHES)`;
         $fileName = addslashes($fileName);
 
-        return new Response($this->getPdfContent($html), \Symfony\Component\HttpFoundation\Response::HTTP_OK, [
+        return new Response($this->getPdfContent($html), Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="'.$fileName.'"',
         ]);

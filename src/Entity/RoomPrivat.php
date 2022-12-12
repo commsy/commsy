@@ -13,12 +13,14 @@
 
 namespace App\Entity;
 
+use App\Repository\RoomPrivateRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * RoomPrivat.
  */
-#[ORM\Entity(repositoryClass: \App\Repository\RoomPrivateRepository::class)]
+#[ORM\Entity(repositoryClass: RoomPrivateRepository::class)]
 #[ORM\Table(name: 'room_privat')]
 #[ORM\Index(name: 'context_id', columns: ['context_id'])]
 #[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
@@ -45,11 +47,11 @@ class RoomPrivat
     #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private ?int $deleterId = null;
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
-    private \DateTime $creationDate;
+    private DateTime $creationDate;
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
-    private \DateTime $modificationDate;
+    private DateTime $modificationDate;
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private ?\DateTime $deletionDate = null;
+    private ?DateTime $deletionDate = null;
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private ?string $title = null;
     #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
@@ -88,15 +90,15 @@ class RoomPrivat
     #[ORM\Column(name: 'description', type: 'text', length: 65535, nullable: true)]
     private ?string $description = null;
     #[ORM\Column(name: 'lastlogin', type: 'datetime', nullable: true)]
-    private ?\DateTime $lastlogin = null;
+    private ?DateTime $lastlogin = null;
 
     #[ORM\Column(name: 'slug', type: 'string', length: 255, nullable: true)]
     private ?string $slug = null;
 
     public function __construct()
     {
-        $this->creationDate = new \DateTime('0000-00-00 00:00:00');
-        $this->modificationDate = new \DateTime('0000-00-00 00:00:00');
+        $this->creationDate = new DateTime('0000-00-00 00:00:00');
+        $this->modificationDate = new DateTime('0000-00-00 00:00:00');
     }
 
     public function getItemId(): int
@@ -159,36 +161,36 @@ class RoomPrivat
         return $this;
     }
 
-    public function getCreationDate(): \DateTime
+    public function getCreationDate(): DateTime
     {
         return $this->creationDate;
     }
 
-    public function setCreationDate(\DateTime $creationDate): RoomPrivat
+    public function setCreationDate(DateTime $creationDate): RoomPrivat
     {
         $this->creationDate = $creationDate;
 
         return $this;
     }
 
-    public function getModificationDate(): \DateTime
+    public function getModificationDate(): DateTime
     {
         return $this->modificationDate;
     }
 
-    public function setModificationDate(\DateTime $modificationDate): RoomPrivat
+    public function setModificationDate(DateTime $modificationDate): RoomPrivat
     {
         $this->modificationDate = $modificationDate;
 
         return $this;
     }
 
-    public function getDeletionDate(): \DateTime
+    public function getDeletionDate(): DateTime
     {
         return $this->deletionDate;
     }
 
-    public function setDeletionDate(\DateTime $deletionDate): RoomPrivat
+    public function setDeletionDate(DateTime $deletionDate): RoomPrivat
     {
         $this->deletionDate = $deletionDate;
 
@@ -327,12 +329,12 @@ class RoomPrivat
         return $this;
     }
 
-    public function getLastlogin(): \DateTime
+    public function getLastlogin(): DateTime
     {
         return $this->lastlogin;
     }
 
-    public function setLastlogin(\DateTime $lastlogin): RoomPrivat
+    public function setLastlogin(DateTime $lastlogin): RoomPrivat
     {
         $this->lastlogin = $lastlogin;
 

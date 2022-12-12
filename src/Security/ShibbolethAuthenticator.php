@@ -32,6 +32,7 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use UnexpectedValueException;
 
 class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
 {
@@ -104,7 +105,7 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
      *
      * @return mixed Any non-null value
      *
-     * @throws \UnexpectedValueException If null is returned
+     * @throws UnexpectedValueException If null is returned
      */
     public function getCredentials(Request $request)
     {

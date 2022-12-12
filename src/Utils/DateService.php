@@ -14,13 +14,17 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_dates_item;
+use cs_dates_manager;
+use cs_environment;
+use cs_manager;
 use Symfony\Component\Form\FormInterface;
 
 class DateService
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
-    private \cs_dates_manager $datesManager;
+    private cs_dates_manager $datesManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -36,7 +40,7 @@ class DateService
      * @param int    $start
      * @param string $sort
      *
-     * @return \cs_dates_item[]
+     * @return cs_dates_item[]
      */
     public function getListDates($roomId, $max = null, $start = null, $sort = null): array
     {
@@ -61,7 +65,7 @@ class DateService
      * @param int   $roomId
      * @param int[] $idArray
      *
-     * @return \cs_dates_item[]
+     * @return cs_dates_item[]
      */
     public function getDatesById($roomId, $idArray): array
     {
@@ -81,13 +85,13 @@ class DateService
         // activated
         if ($formData['hide-deactivated-entries']) {
             if ('only_activated' === $formData['hide-deactivated-entries']) {
-                $this->datesManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+                $this->datesManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
             } else {
                 if ('only_deactivated' === $formData['hide-deactivated-entries']) {
-                    $this->datesManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+                    $this->datesManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
                 } else {
                     if ('all' === $formData['hide-deactivated-entries']) {
-                        $this->datesManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+                        $this->datesManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
                     }
                 }
             }
@@ -180,7 +184,7 @@ class DateService
         }
     }
 
-    public function getDate($itemId): ?\cs_dates_item
+    public function getDate($itemId): ?cs_dates_item
     {
         return $this->datesManager->getItem($itemId);
     }
@@ -190,7 +194,7 @@ class DateService
      * @param int $start
      * @param int $end
      *
-     * @return \cs_dates_item[]
+     * @return cs_dates_item[]
      */
     public function getCalendarEvents($roomId, $start, $end): array
     {
@@ -227,7 +231,7 @@ class DateService
      * @param int $roomId
      * @param int $recurringId
      *
-     * @return \cs_dates_item[]
+     * @return cs_dates_item[]
      */
     public function getRecurringDates($roomId, $recurringId): array
     {
@@ -243,7 +247,7 @@ class DateService
 
     public function hideDeactivatedEntries()
     {
-        $this->datesManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $this->datesManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
     /** Retrieves the first date item matching the given VCALENDAR UID from a calendar & room with the given IDs.
@@ -251,7 +255,7 @@ class DateService
      * @param int    $calendarId
      * @param int    $roomId
      *
-     * @return \cs_dates_item|bool
+     * @return cs_dates_item|bool
      */
     public function getDateByUid($uid, $calendarId, $roomId)
     {
@@ -269,7 +273,7 @@ class DateService
     }
 
     /**
-     * @return \cs_dates_item[]
+     * @return cs_dates_item[]
      */
     public function getDatesByCalendarId($calendarId): array
     {

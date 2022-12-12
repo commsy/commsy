@@ -14,6 +14,13 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_manager;
+use cs_noticed_manager;
+use cs_reader_manager;
+use cs_step_item;
+use cs_step_manager;
+use cs_todo_item;
+use cs_todos_manager;
 use Symfony\Component\Form\FormInterface;
 
 class TodoService
@@ -21,22 +28,22 @@ class TodoService
     private $legacyEnvironment;
 
     /**
-     * @var \cs_todos_manager
+     * @var cs_todos_manager
      */
     private $todoManager;
 
     /**
-     * @var \cs_step_manager
+     * @var cs_step_manager
      */
     private $stepManager;
 
     /**
-     * @var \cs_noticed_manager
+     * @var cs_noticed_manager
      */
     private $noticedManager;
 
     /**
-     * @var \cs_reader_manager
+     * @var cs_reader_manager
      */
     private $readerManager;
 
@@ -60,7 +67,7 @@ class TodoService
      * @param int    $start
      * @param string $sort
      *
-     * @return \cs_todo_item[]
+     * @return cs_todo_item[]
      */
     public function getListTodos($roomId, $max = null, $start = null, $sort = null)
     {
@@ -83,7 +90,7 @@ class TodoService
      * @param int   $roomId
      * @param int[] $idArray
      *
-     * @return \cs_todo_item[]
+     * @return cs_todo_item[]
      */
     public function getTodosById($roomId, $idArray)
     {
@@ -116,11 +123,11 @@ class TodoService
         // activated
         if ($formData['hide-deactivated-entries']) {
             if ('only_activated' === $formData['hide-deactivated-entries']) {
-                $this->todoManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+                $this->todoManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
             } elseif ('only_deactivated' === $formData['hide-deactivated-entries']) {
-                $this->todoManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+                $this->todoManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
             } elseif ('all' === $formData['hide-deactivated-entries']) {
-                $this->todoManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+                $this->todoManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
             }
         }
 
@@ -168,7 +175,7 @@ class TodoService
     /**
      * @param int $itemId
      *
-     * @return \cs_todo_item
+     * @return cs_todo_item
      */
     public function getTodo($itemId)
     {
@@ -181,7 +188,7 @@ class TodoService
     }
 
     /**
-     * @return \cs_todo_item
+     * @return cs_todo_item
      */
     public function getNewTodo()
     {
@@ -189,7 +196,7 @@ class TodoService
     }
 
     /**
-     * @return \cs_step_item
+     * @return cs_step_item
      */
     public function getNewStep()
     {
@@ -198,7 +205,7 @@ class TodoService
 
     public function hideDeactivatedEntries()
     {
-        $this->todoManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $this->todoManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
     public function hideCompletedEntries()

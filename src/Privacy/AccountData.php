@@ -13,6 +13,8 @@
 
 namespace App\Privacy;
 
+use DateTime;
+
 /**
  * Class AccountData.
  *
@@ -28,9 +30,9 @@ class AccountData
 
     private ?string $userID = null;
 
-    private ?\DateTime $creationDate = null;
+    private ?DateTime $creationDate = null;
 
-    private ?\DateTime $lastLoginDate = null;
+    private ?DateTime $lastLoginDate = null;
 
     private ?string $email = null;
 
@@ -38,7 +40,7 @@ class AccountData
 
     private ?string $lastName = null;
 
-    private ?\DateTime $birthdate = null;
+    private ?DateTime $birthdate = null;
 
     private ?string $language = null;
 
@@ -95,24 +97,24 @@ class AccountData
         return $this;
     }
 
-    public function getCreationDate(): \DateTime
+    public function getCreationDate(): DateTime
     {
         return $this->creationDate;
     }
 
-    public function setCreationDate(\DateTime $creationDate): AccountData
+    public function setCreationDate(DateTime $creationDate): AccountData
     {
         $this->creationDate = $creationDate;
 
         return $this;
     }
 
-    public function getLastLoginDate(): ?\DateTime
+    public function getLastLoginDate(): ?DateTime
     {
         return $this->lastLoginDate;
     }
 
-    public function setLastLoginDate(?\DateTime $lastLoginDate): AccountData
+    public function setLastLoginDate(?DateTime $lastLoginDate): AccountData
     {
         $this->lastLoginDate = $lastLoginDate;
 
@@ -155,12 +157,12 @@ class AccountData
         return $this;
     }
 
-    public function getBirthdate(): ?\DateTime
+    public function getBirthdate(): ?DateTime
     {
         return $this->birthdate;
     }
 
-    public function setBirthdate(?\DateTime $birthdate): AccountData
+    public function setBirthdate(?DateTime $birthdate): AccountData
     {
         $this->birthdate = $birthdate;
 

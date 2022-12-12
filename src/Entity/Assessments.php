@@ -13,6 +13,9 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -29,45 +32,45 @@ class Assessments
     /**
      * @var int
      */
-    #[ORM\Column(name: 'item_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $itemId = null;
     /**
      * @var int
      */
-    #[ORM\Column(name: 'context_id', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
     /**
      * @var int
      */
-    #[ORM\Column(name: 'creator_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'creator_id', type: Types::INTEGER)]
     private ?int $creatorId = null;
     /**
      * @var int
      */
-    #[ORM\Column(name: 'deleter_id', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private ?int $deleterId = null;
-    #[ORM\Column(name: 'creation_date', type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
-    private \DateTime $creationDate;
+    #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
+    private DateTime $creationDate;
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
-    #[ORM\Column(name: 'deletion_date', type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $deletionDate = null;
+    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $deletionDate = null;
     /**
      * @var int
      */
-    #[ORM\Column(name: 'item_link_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'item_link_id', type: Types::INTEGER)]
     private ?int $itemLinkId = null;
     /**
      * @var int
      */
-    #[ORM\Column(name: 'assessment', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'assessment', type: Types::INTEGER)]
     private ?int $assessment = null;
 
     public function __construct()
     {
-        $this->creationDate = new \DateTime('0000-00-00 00:00:00');
+        $this->creationDate = new DateTime('0000-00-00 00:00:00');
     }
 }

@@ -18,16 +18,22 @@ use App\Entity\Calendars;
 use App\Repository\CalendarsRepository;
 use App\Utils\DateService;
 use App\Utils\RoomService;
+use cs_environment;
+use DateInterval;
+use DateTime;
+use DateTimeZone;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
+use Exception;
 use Sabre\VObject;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CalendarsService
 {
     private ObjectManager $objectManager;
 
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         private CalendarsRepository $calendarsRepository,
@@ -114,7 +120,7 @@ class CalendarsService
     /**
      * Deletes all date entries from the given calendar.
      *
-     * @return \Symfony\Component\HttpFoundation\Response|void
+     * @return Response|void
      *
      * @var Calendars
      */
@@ -193,7 +199,7 @@ class CalendarsService
                     // is the event an all-day event? (potentially spanning multiple days)
                     $wholeDay = $this->isAllDayEvent($event);
 
-                    $currentTimeZone = new \DateTimeZone(date_default_timezone_get());
+                    $currentTimeZone = new DateTimeZone(date_default_timezone_get());
 
                     $startDatetime = '';
                     if ($event->DTSTART) {
@@ -219,7 +225,7 @@ class CalendarsService
                         if ($wholeDay) {
                             // NOTE: for all-day events, we substract 1 day from the end day; this is since
                             // DTEND is exclusive, not inclusive, so the given end day isn't part of the event
-                            $endDatetime = $endDatetime->sub(new \DateInterval('P1D'));
+                            $endDatetime = $endDatetime->sub(new DateInterval('P1D'));
 
                             $endDatetime = $endDatetime->setTime(0, 0); // 23:59 might be more appropriate?
                         }
@@ -274,7 +280,7 @@ class CalendarsService
                     $creationDatetime = null;
                     if ($external) {
                         // NOTE: when inserting a new _external_ date item, cs_dates_manager requires a set creation date
-                        $creationDatetime = new \DateTime();
+                        $creationDatetime = new DateTime();
                         if ($event->CREATED) {
                             $creationDatetime = $event->CREATED->getDateTime();
                         } elseif ($event->DTSTAMP) {
@@ -297,7 +303,7 @@ class CalendarsService
                     // set (or update) date item properties
                     if (!empty($creationDatetime)) {
                         $dbCreationDatetime = $creationDatetime->format('Y-m-d H:i:s');
-                        if ($hasChanges || $hasChanges = (new \DateTime($date->getCreationDate()) != $creationDatetime)) {
+                        if ($hasChanges || $hasChanges = (new DateTime($date->getCreationDate()) != $creationDatetime)) {
                             $date->setCreationDate($dbCreationDatetime);
                         }
                     }
@@ -312,7 +318,7 @@ class CalendarsService
 
                     $dbStartDatetime = $startDatetime->format('Ymd').'T'.$startDatetime->format('His');
                     // compare DateTime objects to account for differing formats
-                    if ($hasChanges || $hasChanges = (new \DateTime($date->getDateTime_start()) != $startDatetime)) {
+                    if ($hasChanges || $hasChanges = (new DateTime($date->getDateTime_start()) != $startDatetime)) {
                         $date->setDateTime_start($dbStartDatetime);
                     }
 
@@ -327,7 +333,7 @@ class CalendarsService
                     }
 
                     $dbEndDatetime = $endDatetime->format('Ymd').'T'.$endDatetime->format('His');
-                    if ($hasChanges || $hasChanges = (new \DateTime($date->getDateTime_end()) != $endDatetime)) {
+                    if ($hasChanges || $hasChanges = (new DateTime($date->getDateTime_end()) != $endDatetime)) {
                         $date->setDateTime_end($dbEndDatetime);
                     }
 
@@ -383,8 +389,8 @@ class CalendarsService
                     } else {
                         // for date items that lie in the past, assign their start date as modification date
                         // (for upcoming date items which have changes, the current date will be used on save)
-                        $eventDateTime = new \DateTime($dbStartDatetime);
-                        $nowDateTime = new \DateTime();
+                        $eventDateTime = new DateTime($dbStartDatetime);
+                        $nowDateTime = new DateTime();
                         if ($eventDateTime < $nowDateTime) {
                             $date->setModificationDate($dbStartDatetime);
                             $date->setChangeModificationOnSave(false);
@@ -402,7 +408,7 @@ class CalendarsService
                     }
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
         }
 
@@ -450,7 +456,7 @@ class CalendarsService
             return false;
         }
 
-        $dateInterval = new \DateInterval('P1D'); // ICALENDAR default
+        $dateInterval = new DateInterval('P1D'); // ICALENDAR default
         $endDateTime = null;
         $formattedEndTime = '';
         if ($event->DTEND) {

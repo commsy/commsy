@@ -37,6 +37,12 @@ use App\Utils\CategoryService;
 use App\Utils\LabelService;
 use App\Utils\TodoService;
 use App\Utils\TopicService;
+use cs_item;
+use cs_room_item;
+use cs_step_item;
+use cs_todo_item;
+use cs_user_item;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -44,6 +50,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * Class TodoController.
@@ -54,13 +61,13 @@ class TodoController extends BaseController
     private TodoService $todoService;
     private SessionInterface $session;
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setTodoService(TodoService $todoService): void
     {
         $this->todoService = $todoService;
     }
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setSession(SessionInterface $session): void
     {
         $this->session = $session;
@@ -159,7 +166,7 @@ class TodoController extends BaseController
         $this->session->set('sortTodos', $sort);
 
         // get todo list from manager service
-        /** @var \cs_todo_item[] $todos */
+        /** @var cs_todo_item[] $todos */
         $todos = $this->todoService->getListTodos($roomId, $max, $start, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
@@ -210,7 +217,7 @@ class TodoController extends BaseController
         int $itemId
     ): Response {
         $todo = $this->todoService->getTodo($itemId);
-        /** @var \cs_step_item[] $steps */
+        /** @var cs_step_item[] $steps */
         $steps = $todo->getStepItemList()->to_array();
 
         $reader_manager = $this->legacyEnvironment->getReaderManager();
@@ -257,7 +264,7 @@ class TodoController extends BaseController
         $read_count = 0;
         $read_since_modification_count = 0;
 
-        /** @var \cs_user_item $current_user */
+        /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         $id_array = [];
         while ($current_user) {
@@ -478,7 +485,7 @@ class TodoController extends BaseController
         int $roomId,
         int $itemId
     ): Response {
-        /** @var \cs_item $item */
+        /** @var cs_item $item */
         $item = $this->itemService->getItem($itemId);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
@@ -605,7 +612,7 @@ class TodoController extends BaseController
         $read_count = 0;
         $read_since_modification_count = 0;
 
-        /** @var \cs_user_item $current_user */
+        /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         $id_array = [];
         while ($current_user) {
@@ -733,7 +740,7 @@ class TodoController extends BaseController
         if ('none' === $sort || empty($sort)) {
             $sort = $this->session->get('sortTodos', 'duedate_rev');
         }
-        /** @var \cs_todo_item[] $todos */
+        /** @var cs_todo_item[] $todos */
         $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0, $sort);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
@@ -795,7 +802,7 @@ class TodoController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/download')]
     public function downloadAction(
@@ -813,7 +820,7 @@ class TodoController extends BaseController
     // # XHR Action requests
     // ##################################################################################################
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/markread', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkReadAction(
@@ -830,7 +837,7 @@ class TodoController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/mark', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkAction(
@@ -847,7 +854,7 @@ class TodoController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
     public function xhrCategorizeAction(
@@ -861,7 +868,7 @@ class TodoController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
     public function xhrHashtagAction(
@@ -873,7 +880,7 @@ class TodoController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/activate', condition: 'request.isXmlHttpRequest()')]
     public function xhrActivateAction(
@@ -888,7 +895,7 @@ class TodoController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeactivateAction(
@@ -903,7 +910,7 @@ class TodoController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
@@ -918,7 +925,7 @@ class TodoController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/status', condition: 'request.isXmlHttpRequest()')]
     public function xhrStatusAction(
@@ -930,12 +937,12 @@ class TodoController extends BaseController
         $items = $this->getItemsForActionRequest($room, $request);
 
         if (!$request->request->has('payload')) {
-            throw new \Exception('payload information not provided');
+            throw new Exception('payload information not provided');
         }
 
         $payload = $request->request->get('payload');
         if (!isset($payload['status'])) {
-            throw new \Exception('new status string not provided');
+            throw new Exception('new status string not provided');
         }
 
         $newStatus = $payload['status'];
@@ -946,7 +953,7 @@ class TodoController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/changesatatus/{itemId}', condition: 'request.isXmlHttpRequest()')]
     public function xhrStatusFromDetailAction($roomId, $itemId, Request $request, TodoStatusAction $action): Response
@@ -955,7 +962,7 @@ class TodoController extends BaseController
         $items = [$this->todoService->getTodo($itemId)];
         $payload = $request->request->get('payload');
         if (!isset($payload['status'])) {
-            throw new \Exception('new status string not provided');
+            throw new Exception('new status string not provided');
         }
         $newStatus = $payload['status'];
 
@@ -965,11 +972,11 @@ class TodoController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param bool          $selectAll
      * @param int[]         $itemIds
      *
-     * @return \cs_todo_item[]
+     * @return cs_todo_item[]
      */
     protected function getItemsByFilterConditions(
         Request $request,
@@ -999,7 +1006,7 @@ class TodoController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $room
+     * @param cs_room_item $room
      *
      * @return FormInterface
      */
@@ -1094,7 +1101,7 @@ class TodoController extends BaseController
         $read_count = 0;
         $read_since_modification_count = 0;
 
-        /** @var \cs_user_item $current_user */
+        /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         $id_array = [];
         while ($current_user) {
@@ -1146,7 +1153,7 @@ class TodoController extends BaseController
             $ratingOwnDetail = $assessmentService->getOwnRatingDetail($todo);
         }
 
-        /** @var \cs_todo_item[] $todos */
+        /** @var cs_todo_item[] $todos */
         $todos = $this->todoService->getListTodos($roomId);
         $todoList = [];
         $counterBefore = 0;

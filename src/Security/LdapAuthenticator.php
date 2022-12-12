@@ -19,6 +19,7 @@ use App\Entity\AuthSourceLdap;
 use App\Facade\AccountCreatorFacade;
 use App\Utils\RequestContext;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -215,7 +216,7 @@ class LdapAuthenticator extends AbstractCommsyGuardAuthenticator
             $ldap->bind($dn, $credentials['password']);
 
             return true;
-        } catch (\Exception) {
+        } catch (Exception) {
         }
 
         return false;

@@ -54,6 +54,6 @@ class ExternalCalendarsCommand extends Command
             $output->writeln('');
         }
 
-        return \Symfony\Component\Console\Command\Command::SUCCESS;
+        return Command::SUCCESS;
     }
 }

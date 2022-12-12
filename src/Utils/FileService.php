@@ -14,6 +14,7 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_file_item;
 
 class FileService
 {
@@ -21,7 +22,7 @@ class FileService
     {
     }
 
-    public function getFile($fileId): ?\cs_file_item
+    public function getFile($fileId): ?cs_file_item
     {
         $fileManager = $this->legacyEnvironment->getEnvironment()->getFileManager();
 

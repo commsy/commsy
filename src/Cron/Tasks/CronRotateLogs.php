@@ -14,10 +14,13 @@
 namespace App\Cron\Tasks;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use DateTimeImmutable;
+use Exception;
 
 class CronRotateLogs implements CronTaskInterface
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -25,9 +28,9 @@ class CronRotateLogs implements CronTaskInterface
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function run(?\DateTimeImmutable $lastRun): void
+    public function run(?DateTimeImmutable $lastRun): void
     {
         $logManager = $this->legacyEnvironment->getLogManager();
         $logArchiveManager = $this->legacyEnvironment->getLogArchiveManager();

@@ -16,7 +16,7 @@ namespace App\Metrics;
 class PrometheusCollector
 {
     /**
-     * @param \App\Metrics\MetricInterface[] $metrics
+     * @param MetricInterface[] $metrics
      */
     public function __construct(private iterable $metrics)
     {

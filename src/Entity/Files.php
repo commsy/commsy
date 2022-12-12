@@ -13,12 +13,16 @@
 
 namespace App\Entity;
 
+use App\Repository\FilesRepository;
+use DateTime;
+use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Files.
  */
-#[ORM\Entity(repositoryClass: \App\Repository\FilesRepository::class)]
+#[ORM\Entity(repositoryClass: FilesRepository::class)]
 #[ORM\Table(name: 'files')]
 #[ORM\Index(name: 'context_id', columns: ['context_id'])]
 #[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
@@ -27,76 +31,76 @@ class Files
     /**
      * @var int
      */
-    #[ORM\Column(name: 'files_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'files_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $filesId = null;
     /**
      * @var int
      */
-    #[ORM\Column(name: 'context_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
     private ?int $contextId = null;
     /**
      * @var int
      */
-    #[ORM\Column(name: 'creator_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'creator_id', type: Types::INTEGER)]
     private ?int $creatorId = 0;
     /**
      * @var int
      */
-    #[ORM\Column(name: 'deleter_id', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private ?int $deleterId = null;
-    #[ORM\Column(name: 'creation_date', type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
-    private \DateTime $creationDate;
+    #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
+    private DateTime $creationDate;
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
-    #[ORM\Column(name: 'modification_date', type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $modificationDate = null;
+    #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $modificationDate = null;
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
-    #[ORM\Column(name: 'deletion_date', type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $deletionDate = null;
+    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $deletionDate = null;
     /**
      * @var string
      */
-    #[ORM\Column(name: 'filename', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(name: 'filename', type: Types::STRING, length: 255)]
     private ?string $filename = null;
     /**
      * @var string
      */
-    #[ORM\Column(name: 'filepath', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(name: 'filepath', type: Types::STRING, length: 255)]
     private ?string $filepath = null;
     /**
      * @var int
      */
-    #[ORM\Column(name: 'size', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[ORM\Column(name: 'size', type: Types::INTEGER, nullable: true)]
     private ?int $size = null;
     /**
      * @var string
      */
-    #[ORM\Column(name: 'has_html', type: \Doctrine\DBAL\Types\Types::STRING)]
+    #[ORM\Column(name: 'has_html', type: Types::STRING)]
     private ?string $hasHtml = '0';
     /**
      * @var bool
      */
-    #[ORM\Column(name: 'scan', type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[ORM\Column(name: 'scan', type: Types::BOOLEAN)]
     private ?bool $scan = false;
     /**
      * @var string
      */
-    #[ORM\Column(name: 'extras', type: \Doctrine\DBAL\Types\Types::TEXT, length: 16_777_215, nullable: true)]
+    #[ORM\Column(name: 'extras', type: Types::TEXT, length: 16_777_215, nullable: true)]
     private ?string $extras = null;
     /**
      * @var string
      */
-    #[ORM\Column(name: 'temp_upload_session_id', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: true)]
+    #[ORM\Column(name: 'temp_upload_session_id', type: Types::STRING, length: 255, nullable: true)]
     private ?string $tempUploadSessionId = null;
 
     public function __construct()
     {
-        $this->creationDate = new \DateTime('0000-00-00 00:00:00');
+        $this->creationDate = new DateTime('0000-00-00 00:00:00');
     }
 
     /**
@@ -203,7 +207,7 @@ class Files
     /**
      * Set creationDate.
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Files
      */
@@ -217,7 +221,7 @@ class Files
     /**
      * Get creationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -227,7 +231,7 @@ class Files
     /**
      * Set modificationDate.
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Files
      */
@@ -241,7 +245,7 @@ class Files
     /**
      * Get modificationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -251,7 +255,7 @@ class Files
     /**
      * Set deletionDate.
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Files
      */
@@ -265,7 +269,7 @@ class Files
     /**
      * Get deletionDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {

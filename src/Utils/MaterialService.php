@@ -14,6 +14,12 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_list;
+use cs_manager;
+use cs_material_item;
+use cs_noticed_manager;
+use cs_reader_manager;
+use cs_section_item;
 use Symfony\Component\Form\FormInterface;
 
 class MaterialService
@@ -25,12 +31,12 @@ class MaterialService
     private $sectionManager;
 
     /**
-     * @var \cs_noticed_manager
+     * @var cs_noticed_manager
      */
     private $noticedManager;
 
     /**
-     * @var \cs_reader_manager
+     * @var cs_reader_manager
      */
     private $readerManager;
 
@@ -69,7 +75,7 @@ class MaterialService
      * @param int   $roomId
      * @param int[] $ids
      *
-     * @return \cs_material_item[]
+     * @return cs_material_item[]
      */
     public function getMaterialsById($roomId, $ids)
     {
@@ -102,11 +108,11 @@ class MaterialService
         // activated
         if ($formData['hide-deactivated-entries']) {
             if ('only_activated' === $formData['hide-deactivated-entries']) {
-                $this->materialManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+                $this->materialManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
             } elseif ('only_deactivated' === $formData['hide-deactivated-entries']) {
-                $this->materialManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+                $this->materialManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
             } elseif ('all' === $formData['hide-deactivated-entries']) {
-                $this->materialManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+                $this->materialManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
             }
         }
 
@@ -146,12 +152,12 @@ class MaterialService
         }
     }
 
-    public function getMaterial($itemId): ?\cs_material_item
+    public function getMaterial($itemId): ?cs_material_item
     {
         return $this->materialManager->getItem($itemId);
     }
 
-    public function getMaterialByVersion($itemId, $versionId): \cs_material_item
+    public function getMaterialByVersion($itemId, $versionId): cs_material_item
     {
         return $this->materialManager->getItemByVersion($itemId, $versionId);
     }
@@ -166,12 +172,12 @@ class MaterialService
         return $this->materialManager->getNewItem();
     }
 
-    public function getNewSection(): \cs_section_item
+    public function getNewSection(): cs_section_item
     {
         return $this->sectionManager->getNewItem();
     }
 
-    public function getVersionList($itemId): \cs_list
+    public function getVersionList($itemId): cs_list
     {
         return $this->materialManager->getVersionList($itemId);
     }
@@ -224,6 +230,6 @@ class MaterialService
 
     public function hideDeactivatedEntries()
     {
-        $this->materialManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $this->materialManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 }

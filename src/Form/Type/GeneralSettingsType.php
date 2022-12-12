@@ -16,6 +16,7 @@ namespace App\Form\Type;
 use App\Form\Type\Custom\Select2ChoiceType;
 use App\Services\LegacyEnvironment;
 use App\Validator\Constraints\UniqueRoomSlug;
+use cs_environment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -34,7 +35,7 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 class GeneralSettingsType extends AbstractType
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

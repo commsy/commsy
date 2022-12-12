@@ -14,6 +14,14 @@
 namespace App\Controller;
 
 use App\Services\LegacyEnvironment;
+use cs_dates_item;
+use cs_environment;
+use cs_item;
+use cs_list;
+use DateInterval;
+use DateTime;
+use DateTimeImmutable;
+use DateTimeZone;
 use Eluceo\iCal\Domain\Entity\Attendee;
 use Eluceo\iCal\Domain\Entity\Calendar;
 use Eluceo\iCal\Domain\Entity\Event;
@@ -29,6 +37,8 @@ use Eluceo\iCal\Domain\ValueObject\TimeSpan;
 use Eluceo\iCal\Domain\ValueObject\UniqueIdentifier;
 use Eluceo\iCal\Domain\ValueObject\Uri;
 use Eluceo\iCal\Presentation\Factory\CalendarFactory;
+use Exception;
+use Generator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,15 +46,16 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ICalController extends AbstractController
 {
-    protected \cs_environment $legacyEnvironment;
+    protected cs_environment $legacyEnvironment;
 
     protected TranslatorInterface $translator;
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setLegacyEnvironment(LegacyEnvironment $legacyEnvironment): void
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -56,7 +67,7 @@ class ICalController extends AbstractController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/ical/{contextId}')]
     public function getContentAction(
@@ -124,7 +135,7 @@ class ICalController extends AbstractController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     private function createCalendar(
         $currentContextItem,
@@ -136,11 +147,11 @@ class ICalController extends AbstractController
         $calendar->setProductIdentifier('www.commsy.net');
 
         // time zone
-        $dtz = new \DateTimeZone($this->getParameter('commsy.dates.timezone'));
+        $dtz = new DateTimeZone($this->getParameter('commsy.dates.timezone'));
         $timeZone = TimeZone::createFromPhpDateTimeZone(
             $dtz,
-            (new \DateTimeImmutable())->sub(new \DateInterval('P5Y')),
-            (new \DateTimeImmutable())->add(new \DateInterval('P5Y')),
+            (new DateTimeImmutable())->sub(new DateInterval('P5Y')),
+            (new DateTimeImmutable())->add(new DateInterval('P5Y')),
         );
         $calendar->addTimeZone($timeZone);
 
@@ -148,9 +159,9 @@ class ICalController extends AbstractController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    private function generateEvents(\cs_item $currentContextItem, bool $export, int $calendarId): \Generator
+    private function generateEvents(cs_item $currentContextItem, bool $export, int $calendarId): Generator
     {
         $dateList = $this->getDateList($currentContextItem, $export, $calendarId);
 
@@ -199,7 +210,7 @@ class ICalController extends AbstractController
         $userList = $userManager->get();
 
         foreach ($dateList as $item) {
-            /** @var \cs_dates_item $item */
+            /** @var cs_dates_item $item */
 
             // create new calendar event
             $event = new Event(new UniqueIdentifier($item->getItemID()));
@@ -247,16 +258,16 @@ class ICalController extends AbstractController
             $event->setUrl(new Uri($url));
 
             // start / end
-            $dtz = new \DateTimeZone($this->getParameter('commsy.dates.timezone'));
-            $startTime = new \DateTime($item->getDateTime_start());
-            $endTime = new \DateTime($item->getDateTime_end());
+            $dtz = new DateTimeZone($this->getParameter('commsy.dates.timezone'));
+            $startTime = new DateTime($item->getDateTime_start());
+            $endTime = new DateTime($item->getDateTime_end());
             $startTime->setTimezone($dtz);
             $endTime->setTimezone($dtz);
 
             // Ending dates ending not at the starting day, with starting time and without an exact ending time are considered to
             // span the whole day
             if ($startTime != $endTime && !empty($item->getStartingTime()) && empty($item->getEndingTime())) {
-                $endTime->add(new \DateInterval('P1D'));
+                $endTime->add(new DateInterval('P1D'));
             }
 
             if ($item->isWholeDay()) {
@@ -285,7 +296,7 @@ class ICalController extends AbstractController
         $currentContextItem,
         $export,
         $calendarId
-    ): ?\cs_list {
+    ): ?cs_list {
         $datesManager = $this->legacyEnvironment->getDatesManager();
 
         $datesManager->setWithoutDateModeLimit();
@@ -349,7 +360,7 @@ class ICalController extends AbstractController
             $myEntries = $currentContextItem->getMyCalendarDisplayConfig();
 
             if (in_array('mycalendar_dates_assigned_to_me', $myEntries)) {
-                $tempList = new \cs_list();
+                $tempList = new cs_list();
 
                 $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
                 $currentUserList = $currentUserItem->getRelatedUserList();

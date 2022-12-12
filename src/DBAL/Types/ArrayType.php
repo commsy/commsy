@@ -15,7 +15,6 @@ namespace App\DBAL\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ArrayType as BaseType;
-use Doctrine\DBAL\Types\ConversionException;
 
 class ArrayType extends BaseType
 {

@@ -13,12 +13,15 @@
 
 namespace App\Entity;
 
+use App\Repository\SavedSearchRepository;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * SavedSearch.
  */
-#[ORM\Entity(repositoryClass: \App\Repository\SavedSearchRepository::class)]
+#[ORM\Entity(repositoryClass: SavedSearchRepository::class)]
 #[ORM\Table(name: 'saved_searches')]
 #[ORM\Index(name: 'account_id', columns: ['account_id'])]
 class SavedSearch
@@ -38,10 +41,10 @@ class SavedSearch
     private ?int $deleterId = null;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      */
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private ?\DateTimeInterface $deletionDate = null;
+    private ?DateTimeInterface $deletionDate = null;
 
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private ?string $title = null;
@@ -78,12 +81,12 @@ class SavedSearch
         return $this;
     }
 
-    public function getDeletionDate(): ?\DateTimeInterface
+    public function getDeletionDate(): ?DateTimeInterface
     {
         return $this->deletionDate;
     }
 
-    public function setDeletionDate(?\DateTimeInterface $deletionDate): self
+    public function setDeletionDate(?DateTimeInterface $deletionDate): self
     {
         $this->deletionDate = $deletionDate;
 

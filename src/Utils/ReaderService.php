@@ -14,6 +14,8 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_item;
+use cs_user_item;
 use Symfony\Component\Cache\Adapter\FilesystemTagAwareAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -63,7 +65,7 @@ class ReaderService
      */
     public const READ_STATUS_CHANGED_ANNOTATION = 'changed_annotation';
 
-    private \Symfony\Component\Cache\Adapter\FilesystemTagAwareAdapter $readStatusCache;
+    private FilesystemTagAwareAdapter $readStatusCache;
     private $readerManager;
 
     public function __construct(private LegacyEnvironment $legacyEnvironment, private ItemService $itemService)
@@ -104,7 +106,7 @@ class ReaderService
         $reader = $readerManager->getLatestReaderForUserByID($itemId, $userID);
         if (empty($reader)) {
             $currentUser = $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
-            $itemIsCurrentUser = ($item instanceof \cs_user_item && $item->getUserID() === $currentUser->getUserID());
+            $itemIsCurrentUser = ($item instanceof cs_user_item && $item->getUserID() === $currentUser->getUserID());
             if (!$itemIsCurrentUser) {
                 $return = self::READ_STATUS_NEW;
             }
@@ -208,13 +210,13 @@ class ReaderService
      * Note that this method will also return IDs for items with new/changed annotations if "changed" has been
      * specified as read status.
      *
-     * @param \cs_item[]    $items      array of items from which IDs for all items matching `$readStatus` shall be returned
+     * @param cs_item[]    $items      array of items from which IDs for all items matching `$readStatus` shall be returned
      * @param string        $readStatus the read status for which IDs of matching items shall be returned
-     * @param \cs_user_item $user       the user whose read status shall be used
+     * @param cs_user_item $user       the user whose read status shall be used
      *
      * @return int[]
      */
-    public function itemIdsForReadStatus(array $items, string $readStatus, \cs_user_item $user): array
+    public function itemIdsForReadStatus(array $items, string $readStatus, cs_user_item $user): array
     {
         if (empty($items) || !$readStatus || !$user) {
             return [];
@@ -255,10 +257,10 @@ class ReaderService
      * - when the item gets marked as read  (the `ReadStatusPreChangeEvent` will trigger `invalidateCachedReadStatusForItem()`)
      * - or, otherwise, after 12 hours.
      *
-     * @param \cs_item      $item the item whose cached read status shall be returned
-     * @param \cs_user_item $user the user whose read status shall be used (defaults to the current user if not given)
+     * @param cs_item      $item the item whose cached read status shall be returned
+     * @param cs_user_item $user the user whose read status shall be used (defaults to the current user if not given)
      */
-    public function cachedReadStatusForItem(\cs_item $item, \cs_user_item $user = null): string
+    public function cachedReadStatusForItem(cs_item $item, cs_user_item $user = null): string
     {
         if (!$item) {
             return '';
@@ -300,9 +302,9 @@ class ReaderService
     /**
      * Invalidates the cached read status for the given item.
      *
-     * @param \cs_item $item the item whose cached read status shall be invalidated
+     * @param cs_item $item the item whose cached read status shall be invalidated
      */
-    public function invalidateCachedReadStatusForItem(\cs_item $item): void
+    public function invalidateCachedReadStatusForItem(cs_item $item): void
     {
         if (!$item) {
             return;

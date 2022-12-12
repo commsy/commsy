@@ -13,30 +13,32 @@
 
 namespace App\Entity;
 
+use App\Repository\LicenseRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * License.
  */
-#[ORM\Entity(repositoryClass: \App\Repository\LicenseRepository::class)]
+#[ORM\Entity(repositoryClass: LicenseRepository::class)]
 #[ORM\Table(name: 'licenses')]
 class License
 {
-    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
-    #[ORM\Column(name: 'context_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
     private ?int $contextId = null;
 
-    #[ORM\Column(name: 'title', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(name: 'content', type: \Doctrine\DBAL\Types\Types::TEXT)]
+    #[ORM\Column(name: 'content', type: Types::TEXT)]
     private ?string $content = null;
 
-    #[ORM\Column(name: 'position', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'position', type: Types::INTEGER)]
     private ?int $position = null;
 
     /**

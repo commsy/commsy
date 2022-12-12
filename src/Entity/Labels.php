@@ -13,19 +13,17 @@
 
 namespace App\Entity;
 
+use App\Repository\LabelRepository;
 use App\Validator\Constraints as CommsyAssert;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Labels.
- *
- * @CommsyAssert\UniqueLabelName
- */
-#[ORM\Entity(repositoryClass: \App\Repository\LabelRepository::class)]
+#[ORM\Entity(repositoryClass: LabelRepository::class)]
 #[ORM\Table(name: 'labels')]
 #[ORM\Index(name: 'context_id', columns: ['context_id'])]
 #[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 #[ORM\Index(name: 'type', columns: ['type'])]
+#[CommsyAssert\UniqueLabelName]
 class Labels
 {
     /**
@@ -44,33 +42,33 @@ class Labels
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
-    private ?\App\Entity\User $creator = null;
+    private ?User $creator = null;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
-    private ?\App\Entity\User $modifier = null;
+    private ?User $modifier = null;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id')]
-    private ?\App\Entity\User $deleter = null;
+    private ?User $deleter = null;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private $creationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
     private $modificationDate = '0000-00-00 00:00:00';
 
     #[ORM\Column(name: 'activation_date', type: 'datetime')]
-    private ?\DateTime $activationDate = null;
+    private ?DateTime $activationDate = null;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
@@ -106,7 +104,7 @@ class Labels
     private $public = '0';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'locking_date', type: 'datetime', nullable: true)]
     private $lockingDate;
@@ -165,7 +163,7 @@ class Labels
     /**
      * Set creationDate.
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Labels
      */
@@ -179,7 +177,7 @@ class Labels
     /**
      * Get creationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -189,7 +187,7 @@ class Labels
     /**
      * Set modificationDate.
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Labels
      */
@@ -203,7 +201,7 @@ class Labels
     /**
      * Get modificationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -213,7 +211,7 @@ class Labels
     /**
      * Set activationDate.
      */
-    public function setActivationDate(\DateTime $activationDate): self
+    public function setActivationDate(DateTime $activationDate): self
     {
         $this->activationDate = $activationDate;
 
@@ -223,7 +221,7 @@ class Labels
     /**
      * Get activationDate.
      */
-    public function getActivationDate(): ?\DateTime
+    public function getActivationDate(): ?DateTime
     {
         return $this->activationDate;
     }
@@ -231,7 +229,7 @@ class Labels
     /**
      * Set deletionDate.
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Labels
      */
@@ -245,7 +243,7 @@ class Labels
     /**
      * Get deletionDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {
@@ -375,7 +373,7 @@ class Labels
     /**
      * Set lockingDate.
      *
-     * @param \DateTime $lockingDate
+     * @param DateTime $lockingDate
      *
      * @return Labels
      */
@@ -389,7 +387,7 @@ class Labels
     /**
      * Get lockingDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLockingDate()
     {
@@ -435,7 +433,7 @@ class Labels
     /**
      * Get creator.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getCreator()
     {
@@ -457,7 +455,7 @@ class Labels
     /**
      * Get modifier.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getModifier()
     {
@@ -479,7 +477,7 @@ class Labels
     /**
      * Get deleter.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getDeleter()
     {

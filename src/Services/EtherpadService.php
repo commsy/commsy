@@ -15,12 +15,13 @@ namespace App\Services;
 
 use EtherpadLite\Client;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use UnitEnum;
 
 class EtherpadService
 {
-    private bool|string|int|float|\UnitEnum|array|null $baseUrl = null;
+    private bool|string|int|float|UnitEnum|array|null $baseUrl = null;
 
-    private ?\EtherpadLite\Client $client = null;
+    private ?Client $client = null;
 
     public function __construct(ParameterBagInterface $params)
     {

@@ -23,6 +23,10 @@ use App\Utils\ItemService;
 use App\Utils\LabelService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
+use cs_environment;
+use cs_item;
+use cs_room_item;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +41,7 @@ abstract class BaseController extends AbstractController
     protected $itemService;
 
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
     protected $legacyEnvironment;
 
@@ -112,7 +116,7 @@ abstract class BaseController extends AbstractController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function handleCategoryActionOptions(
         Request $request,
@@ -155,7 +159,7 @@ abstract class BaseController extends AbstractController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function handleHashtagActionOptions(
         Request $request,
@@ -196,15 +200,15 @@ abstract class BaseController extends AbstractController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getItemsForActionRequest(
-        \cs_room_item $room,
+        cs_room_item $room,
         Request $request): array
     {
         // input processing
         if (!$request->request->has('action')) {
-            throw new \Exception('no action provided');
+            throw new Exception('no action provided');
         }
         $action = $request->request->get('action');
 
@@ -217,7 +221,7 @@ abstract class BaseController extends AbstractController
         $negativeItemIds = [];
         if (!$selectAll) {
             if (!$request->request->has('positiveItemIds')) {
-                throw new \Exception('select all is not set, but no "positiveItemIds" were provided');
+                throw new Exception('select all is not set, but no "positiveItemIds" were provided');
             }
 
             $positiveItemIds = $request->request->get('positiveItemIds');
@@ -239,18 +243,18 @@ abstract class BaseController extends AbstractController
         }
 
         // determine items to proceed on
-        /** @var \cs_item[] $items */
+        /** @var cs_item[] $items */
         $items = $this->getItemsByFilterConditions($request, $room, $selectAll, $positiveItemIds);
         if ($selectAll) {
-            $items = array_filter($items, fn (\cs_item $item) => !in_array($item->getItemId(), $negativeItemIds));
+            $items = array_filter($items, fn (cs_item $item) => !in_array($item->getItemId(), $negativeItemIds));
         }
 
         return $items;
     }
 
-    protected function getRoom(int $roomId): \cs_room_item
+    protected function getRoom(int $roomId): cs_room_item
     {
-        /** @var \cs_room_item $roomItem */
+        /** @var cs_room_item $roomItem */
         $roomItem = $this->roomService->getRoomItem($roomId);
 
         if (!$roomItem) {

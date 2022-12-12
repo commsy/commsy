@@ -13,11 +13,10 @@
 
 namespace App\Validator\Constraints;
 
+use Attribute;
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
- */
+#[Attribute]
 class UniqueLabelName extends Constraint
 {
     public $message = 'A label with the same name already exists.';

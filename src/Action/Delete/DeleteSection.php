@@ -13,6 +13,8 @@
 
 namespace App\Action\Delete;
 
+use cs_item;
+use cs_section_item;
 use Symfony\Component\Routing\RouterInterface;
 
 class DeleteSection implements DeleteInterface
@@ -21,9 +23,9 @@ class DeleteSection implements DeleteInterface
     {
     }
 
-    public function delete(\cs_item $item): void
+    public function delete(cs_item $item): void
     {
-        /** @var \cs_section_item $section */
+        /** @var cs_section_item $section */
         $section = $item;
 
         $material = $section->getLinkedItem();
@@ -33,9 +35,9 @@ class DeleteSection implements DeleteInterface
     /**
      * @return string|null
      */
-    public function getRedirectRoute(\cs_item $item)
+    public function getRedirectRoute(cs_item $item)
     {
-        /** @var \cs_section_item $section */
+        /** @var cs_section_item $section */
         $section = $item;
 
         return $this->router->generate('app_material_detail', [

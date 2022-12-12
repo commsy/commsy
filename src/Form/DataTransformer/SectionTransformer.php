@@ -13,6 +13,8 @@
 
 namespace App\Form\DataTransformer;
 
+use cs_section_item;
+
 class SectionTransformer extends AbstractTransformer
 {
     protected $entity = 'section';
@@ -20,7 +22,7 @@ class SectionTransformer extends AbstractTransformer
     /**
      * Transforms a cs_material_item object to an array.
      *
-     * @param \cs_section_item $sectionItem
+     * @param cs_section_item $sectionItem
      *
      * @return array
      */
@@ -43,7 +45,7 @@ class SectionTransformer extends AbstractTransformer
      * @param object $sectionObject
      * @param array  $sectionData
      *
-     * @return \cs_section_item|null
+     * @return cs_section_item|null
      *
      * @throws TransformationFailedException if room item is not found
      */

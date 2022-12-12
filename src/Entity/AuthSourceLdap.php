@@ -13,37 +13,38 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 class AuthSourceLdap extends AuthSource
 {
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\Length(max: 255)]
     private ?string $serverUrl = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 50)]
+    #[ORM\Column(type: Types::STRING, length: 50)]
     #[Assert\Length(max: 50)]
     private ?string $uidKey = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 50)]
+    #[ORM\Column(type: Types::STRING, length: 50)]
     #[Assert\Length(max: 50)]
     private ?string $baseDn = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 50)]
+    #[ORM\Column(type: Types::STRING, length: 50)]
     #[Assert\Length(max: 50)]
     private ?string $searchDn = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 50)]
+    #[ORM\Column(type: Types::STRING, length: 50)]
     #[Assert\Length(max: 50)]
     private ?string $searchPassword = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 50)]
+    #[ORM\Column(type: Types::STRING, length: 50)]
     #[Assert\Length(max: 50)]
     private ?string $authDn = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 50)]
+    #[ORM\Column(type: Types::STRING, length: 50)]
     #[Assert\Length(max: 50)]
     private ?string $authQuery = null;
 

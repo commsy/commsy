@@ -13,7 +13,6 @@
 
 namespace App\Model\API;
 
-use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 

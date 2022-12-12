@@ -14,13 +14,15 @@
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
+use cs_portfolio_item;
+use cs_portfolio_manager;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class PortfolioTransformer extends AbstractTransformer
 {
     protected $entity = 'portfolio';
 
-    private \cs_portfolio_manager $portfolioManager;
+    private cs_portfolio_manager $portfolioManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -30,7 +32,7 @@ class PortfolioTransformer extends AbstractTransformer
     /**
      * Transforms a cs_portfolio_item object to an array.
      *
-     * @param \cs_portfolio_item $groupItem
+     * @param cs_portfolio_item $groupItem
      *
      * @return array
      */
@@ -59,7 +61,7 @@ class PortfolioTransformer extends AbstractTransformer
      * @param object $portfolioObject
      * @param array  $portfolioData
      *
-     * @return \cs_portfolio_item|null
+     * @return cs_portfolio_item|null
      *
      * @throws TransformationFailedException if room item is not found
      */

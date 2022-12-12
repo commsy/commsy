@@ -13,7 +13,9 @@
 
 namespace App\Action\MarkRead;
 
+use cs_item;
+
 interface MarkReadInterface
 {
-    public function markRead(\cs_item $item): void;
+    public function markRead(cs_item $item): void;
 }

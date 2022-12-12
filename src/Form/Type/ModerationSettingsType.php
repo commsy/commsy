@@ -15,6 +15,7 @@ namespace App\Form\Type;
 
 use App\Services\LegacyEnvironment;
 use App\Validator\Constraints\HomeNoticeConstraint;
+use cs_environment;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -29,7 +30,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ModerationSettingsType extends AbstractType
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, private TranslatorInterface $translator)
     {

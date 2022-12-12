@@ -14,6 +14,7 @@
 namespace App\Filter;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use Doctrine\ORM\QueryBuilder;
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 use Lexik\Bundle\FormFilterBundle\Filter\Query\QueryInterface;
@@ -24,7 +25,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RoomFilterType extends AbstractType
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

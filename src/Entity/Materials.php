@@ -13,6 +13,8 @@
 
 namespace App\Entity;
 
+use App\Repository\MaterialsRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,7 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Materials.
  */
-#[ORM\Entity(repositoryClass: \App\Repository\MaterialsRepository::class)]
+#[ORM\Entity(repositoryClass: MaterialsRepository::class)]
 #[ORM\Table(name: 'materials')]
 #[ORM\Index(name: 'context_id', columns: ['context_id'])]
 #[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
@@ -35,33 +37,33 @@ class Materials
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
-    private ?\App\Entity\User $creator = null;
+    private ?User $creator = null;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id')]
-    private ?\App\Entity\User $deleter = null;
+    private ?User $deleter = null;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private $creationDate = '0000-00-00 00:00:00';
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
-    private ?\App\Entity\User $modifier = null;
+    private ?User $modifier = null;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
     private $modificationDate;
 
     #[ORM\Column(name: 'activation_date', type: 'datetime')]
-    private ?\DateTime $activationDate = null;
+    private ?DateTime $activationDate = null;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
@@ -127,19 +129,19 @@ class Materials
     private $workflowStatus = '3_none';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'workflow_resubmission_date', type: 'datetime', nullable: true)]
     private $workflowResubmissionDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'workflow_validity_date', type: 'datetime', nullable: true)]
     private $workflowValidityDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'locking_date', type: 'datetime', nullable: true)]
     private $lockingDate;
@@ -192,7 +194,7 @@ class Materials
     /**
      * Get sections.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getSections()
     {
@@ -274,7 +276,7 @@ class Materials
     /**
      * Set creationDate.
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Materials
      */
@@ -288,7 +290,7 @@ class Materials
     /**
      * Get creationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -298,7 +300,7 @@ class Materials
     /**
      * Set modificationDate.
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Materials
      */
@@ -312,7 +314,7 @@ class Materials
     /**
      * Get modificationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -322,7 +324,7 @@ class Materials
     /**
      * Set activationDate.
      */
-    public function setActivationDate(\DateTime $activationDate): self
+    public function setActivationDate(DateTime $activationDate): self
     {
         $this->activationDate = $activationDate;
 
@@ -332,7 +334,7 @@ class Materials
     /**
      * Get activationDate.
      */
-    public function getActivationDate(): ?\DateTime
+    public function getActivationDate(): ?DateTime
     {
         return $this->activationDate;
     }
@@ -340,7 +342,7 @@ class Materials
     /**
      * Set deletionDate.
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Materials
      */
@@ -354,7 +356,7 @@ class Materials
     /**
      * Get deletionDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {
@@ -604,7 +606,7 @@ class Materials
     /**
      * Set workflowResubmissionDate.
      *
-     * @param \DateTime $workflowResubmissionDate
+     * @param DateTime $workflowResubmissionDate
      *
      * @return Materials
      */
@@ -618,7 +620,7 @@ class Materials
     /**
      * Get workflowResubmissionDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getWorkflowResubmissionDate()
     {
@@ -628,7 +630,7 @@ class Materials
     /**
      * Set workflowValidityDate.
      *
-     * @param \DateTime $workflowValidityDate
+     * @param DateTime $workflowValidityDate
      *
      * @return Materials
      */
@@ -642,7 +644,7 @@ class Materials
     /**
      * Get workflowValidityDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getWorkflowValidityDate()
     {
@@ -652,7 +654,7 @@ class Materials
     /**
      * Set lockingDate.
      *
-     * @param \DateTime $lockingDate
+     * @param DateTime $lockingDate
      *
      * @return Materials
      */
@@ -666,7 +668,7 @@ class Materials
     /**
      * Get lockingDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLockingDate()
     {
@@ -717,7 +719,7 @@ class Materials
     /**
      * Get creator.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getCreator()
     {
@@ -739,7 +741,7 @@ class Materials
     /**
      * Get deleter.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getDeleter()
     {
@@ -761,7 +763,7 @@ class Materials
     /**
      * Get modifier.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getModifier()
     {

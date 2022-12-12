@@ -17,6 +17,9 @@ use App\Entity\Account;
 use App\Security\Authorization\Voter\RootVoter;
 use App\Services\LegacyEnvironment;
 use App\Utils\FileService;
+use cs_environment;
+use cs_list;
+use cs_user_item;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +30,7 @@ use Symfony\Component\Security\Core\Security;
 
 class LegacySubscriber implements EventSubscriberInterface
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -48,7 +51,7 @@ class LegacySubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function onKernelController(ControllerEvent $event)
     {
@@ -106,7 +109,7 @@ class LegacySubscriber implements EventSubscriberInterface
 
         if (null === $account) {
             // guest
-            $legacyGuest = new \cs_user_item($this->legacyEnvironment);
+            $legacyGuest = new cs_user_item($this->legacyEnvironment);
             $legacyGuest->setStatus(0);
             $legacyGuest->setUserID('guest');
             $this->legacyEnvironment->setCurrentUser($legacyGuest);
@@ -120,7 +123,7 @@ class LegacySubscriber implements EventSubscriberInterface
         $userManager->setAuthSourceLimit($account->getAuthSource()->getId());
         $userManager->select();
 
-        /** @var \cs_list $contextUserList */
+        /** @var cs_list $contextUserList */
         $contextUserList = $userManager->get();
 
         if (1 != $contextUserList->getCount()) {

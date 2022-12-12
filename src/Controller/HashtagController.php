@@ -25,6 +25,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -33,7 +34,7 @@ class HashtagController extends AbstractController
     public function showAction(
         int $roomId,
         LabelRepository $labelRepository
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         return $this->render('hashtag/show.html.twig', [
             'hashtags' => $labelRepository->findRoomHashtags($roomId),
         ]);
@@ -42,7 +43,7 @@ class HashtagController extends AbstractController
     public function showDetailAction(
         int $roomId,
         LabelRepository $labelRepository
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         return $this->render('hashtag/showDetail.html.twig', [
             'hashtags' => $labelRepository->findRoomHashtags($roomId),
         ]);
@@ -51,7 +52,7 @@ class HashtagController extends AbstractController
     public function showDetailShortAction(
         int $roomId,
         LabelRepository $labelRepository
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         return $this->render('hashtag/showDetailShort.html.twig', [
             'hashtags' => $labelRepository->findRoomHashtags($roomId),
         ]);
@@ -67,7 +68,7 @@ class HashtagController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         LabelService $labelService,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -101,7 +102,7 @@ class HashtagController extends AbstractController
         LabelRepository $labelRepository,
         int $roomId,
         int $labelId = null
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();

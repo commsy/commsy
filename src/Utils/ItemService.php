@@ -14,13 +14,18 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_annotation_item;
+use cs_environment;
 use cs_item;
+use cs_item_manager;
+use cs_list;
+use cs_userroom_item;
 
 class ItemService
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
-    private \cs_item_manager $itemManager;
+    private cs_item_manager $itemManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -31,7 +36,7 @@ class ItemService
     /**
      * @param int $itemId
      *
-     * @return \cs_item
+     * @return cs_item
      */
     public function getItem($itemId)
     {
@@ -42,7 +47,7 @@ class ItemService
      * @param int $itemId
      * @param int (optional) $versionId
      */
-    public function getTypedItem($itemId, $versionId = null): ?\cs_item
+    public function getTypedItem($itemId, $versionId = null): ?cs_item
     {
         $item = $this->getItem($itemId);
 
@@ -157,7 +162,7 @@ class ItemService
      *
      * @param int[] $contextIds array of room IDs for rooms whose items shall be returned
      *
-     * @return \cs_item[]
+     * @return cs_item[]
      */
     public function getSearchableItemsForContextIds(array $contextIds): array
     {
@@ -174,7 +179,7 @@ class ItemService
             CS_MATERIAL_TYPE,
             CS_TODO_TYPE,
             CS_USER_TYPE,
-            \cs_userroom_item::ROOM_TYPE_USER,
+            cs_userroom_item::ROOM_TYPE_USER,
         ];
 
         $itemManager->resetLimits();
@@ -184,14 +189,14 @@ class ItemService
 
         $itemManager->select();
 
-        /** @var \cs_list $itemList */
+        /** @var cs_list $itemList */
         $itemList = $itemManager->get();
 
         return $itemList->to_array();
     }
 
     /**
-     * @param \cs_item[] cs_item array
+     * @param cs_item[] cs_item array
      * @param bool $withAnnotations Should related annotations also marked read?
      */
     public function markRead($items, $withAnnotations = true)
@@ -207,7 +212,7 @@ class ItemService
             if ($withAnnotations) {
                 $annotations = $item->getAnnotationList();
                 if (!empty($annotations)) {
-                    /** @var \cs_annotation_item $annotationItem */
+                    /** @var cs_annotation_item $annotationItem */
                     $annotationItem = $annotations->getFirst();
 
                     while ($annotationItem) {

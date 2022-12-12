@@ -14,6 +14,7 @@
 namespace App\Twig\Extension;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -23,7 +24,7 @@ use Twig\TwigFunction;
 class SelectedLanguageExtension extends AbstractExtension
 {
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
     private $legacyEnvironment;
 

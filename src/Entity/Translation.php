@@ -13,12 +13,13 @@
 
 namespace App\Entity;
 
+use App\Repository\TranslationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Translation.
  */
-#[ORM\Entity(repositoryClass: \App\Repository\TranslationRepository::class)]
+#[ORM\Entity(repositoryClass: TranslationRepository::class)]
 #[ORM\Table(name: 'translation')]
 class Translation
 {

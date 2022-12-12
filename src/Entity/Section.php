@@ -13,6 +13,8 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -55,19 +57,19 @@ class Section
     #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: true)]
     private $modifierId;
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: true)]
-    private \DateTime $creationDate;
+    private DateTime $creationDate;
     /**
      * @var int
      */
     #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private $deleterId;
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
     private $modificationDate;
@@ -89,7 +91,7 @@ class Section
     #[ORM\ManyToOne(targetEntity: 'Materials', inversedBy: 'sections')]
     #[ORM\JoinColumn(name: 'material_item_id', referencedColumnName: 'item_id')]
     #[ORM\JoinColumn(name: 'version_id', referencedColumnName: 'version_id')]
-    private ?\App\Entity\Materials $material = null;
+    private ?Materials $material = null;
     /**
      * @var string
      */
@@ -103,7 +105,7 @@ class Section
 
     public function __construct()
     {
-        $this->creationDate = new \DateTime('0000-00-00 00:00:00');
+        $this->creationDate = new DateTime('0000-00-00 00:00:00');
     }
 
     /**
@@ -229,7 +231,7 @@ class Section
     /**
      * Set creationDate.
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Section
      */
@@ -243,7 +245,7 @@ class Section
     /**
      * Get creationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -277,7 +279,7 @@ class Section
     /**
      * Set deletionDate.
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Section
      */
@@ -291,7 +293,7 @@ class Section
     /**
      * Get deletionDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {
@@ -301,7 +303,7 @@ class Section
     /**
      * Set modificationDate.
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Section
      */
@@ -315,7 +317,7 @@ class Section
     /**
      * Get modificationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -457,7 +459,7 @@ class Section
     /**
      * Get material.
      *
-     * @return \App\Entity\Materials
+     * @return Materials
      */
     public function getMaterial()
     {

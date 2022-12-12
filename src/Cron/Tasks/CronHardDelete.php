@@ -14,18 +14,20 @@
 namespace App\Cron\Tasks;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use DateTimeImmutable;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class CronHardDelete implements CronTaskInterface
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, private ParameterBagInterface $parameterBag)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function run(?\DateTimeImmutable $lastRun): void
+    public function run(?DateTimeImmutable $lastRun): void
     {
         $itemTypes = [];
         $itemTypes[] = CS_ANNOTATION_TYPE;

@@ -13,12 +13,14 @@
 
 namespace App\Action\Delete;
 
+use cs_item;
+
 interface DeleteInterface
 {
-    public function delete(\cs_item $item): void;
+    public function delete(cs_item $item): void;
 
     /**
      * @return string|null
      */
-    public function getRedirectRoute(\cs_item $item);
+    public function getRedirectRoute(cs_item $item);
 }

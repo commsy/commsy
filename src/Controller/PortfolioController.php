@@ -24,11 +24,13 @@ use App\Utils\ItemService;
 use App\Utils\PortfolioService;
 use App\Utils\ReaderService;
 use App\Utils\UserService;
+use cs_environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security as CoreSecurity;
@@ -40,7 +42,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Security("is_granted('ITEM_ENTER', roomId)")]
 class PortfolioController extends AbstractController
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     /**
      * PortfolioController constructor.
@@ -61,7 +63,7 @@ class PortfolioController extends AbstractController
     public function indexAction(
         Request $request,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $portfolioId = 'none';
         if ($request->query->has('portfolioId')) {
             $portfolioId = $request->query->get('portfolioId');
@@ -153,7 +155,7 @@ class PortfolioController extends AbstractController
     public function tabsAction(
         int $roomId,
         string $source = null
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $portfolioList = $this->portfolioService->getPortfolioList();
 
         $portfolios = [];
@@ -174,7 +176,7 @@ class PortfolioController extends AbstractController
         int $portfolioId,
         int $firstTagId,
         int $secondTagId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $portfolio = $this->portfolioService->getPortfolio($portfolioId);
 
         $items = [];
@@ -230,7 +232,7 @@ class PortfolioController extends AbstractController
         Request $request,
         int $roomId,
         string $portfolioId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         // when creating a new item, return a redirect to the edit form (portfolio draft)
         if (-1 == $portfolioId) { // -1 represents 'new'
             $portfolioItem = $this->portfolioService->getNewItem();
@@ -306,7 +308,7 @@ class PortfolioController extends AbstractController
         PortfolioService $portfolioService,
         TranslatorInterface $translator,
         CategoryService $categoryService
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
         $formData = [

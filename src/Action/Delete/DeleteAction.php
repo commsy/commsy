@@ -18,12 +18,15 @@ use App\Http\JsonDataResponse;
 use App\Http\JsonRedirectResponse;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
+use cs_environment;
+use cs_item;
+use cs_room_item;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DeleteAction implements ActionInterface
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function setDeleteStrategy(DeleteInterface $deleteStrategy): void
     {
@@ -39,7 +42,7 @@ class DeleteAction implements ActionInterface
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function execute(\cs_room_item $roomItem, array $items): Response
+    public function execute(cs_room_item $roomItem, array $items): Response
     {
         $numDeletedItems = 0;
 
@@ -74,7 +77,7 @@ class DeleteAction implements ActionInterface
         return $this->deleteStrategy;
     }
 
-    private function isDeletionAllowed(\cs_room_item $room, \cs_item $item): bool
+    private function isDeletionAllowed(cs_room_item $room, cs_item $item): bool
     {
         $currentUser = $this->legacyEnvironment->getCurrentUser();
         if (!$item->mayEdit($currentUser)) {

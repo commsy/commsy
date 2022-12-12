@@ -14,13 +14,15 @@
 namespace App\Mail\Messages;
 
 use App\Mail\Message;
+use cs_item;
+use cs_user_item;
 
 class ItemDeletedMessage extends Message
 {
     private $item;
     private $deleter;
 
-    public function __construct(\cs_item $item, \cs_user_item $deleter)
+    public function __construct(cs_item $item, cs_user_item $deleter)
     {
         $this->item = $item;
         $this->deleter = $deleter;

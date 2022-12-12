@@ -13,6 +13,7 @@
 
 namespace App\Cron\Tasks;
 
+use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -22,7 +23,7 @@ class CronCleanLinkItems implements CronTaskInterface
     {
     }
 
-    public function run(?\DateTimeImmutable $lastRun): void
+    public function run(?DateTimeImmutable $lastRun): void
     {
         // Collect all links having non-existing items
         $conn = $this->entityManager->getConnection();

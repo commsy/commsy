@@ -18,6 +18,7 @@ use App\Entity\Portal;
 use App\Form\Type\TouAcceptType;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
+use DateTimeImmutable;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,7 +61,7 @@ class TouController extends AbstractController
                     }
 
                     if ($form->get('accept')->isClicked()) {
-                        $portalUser->setAGBAcceptanceDate(new \DateTimeImmutable());
+                        $portalUser->setAGBAcceptanceDate(new DateTimeImmutable());
                         $portalUser->save();
 
                         return $this->redirect($request->get('redirect'));
@@ -104,7 +105,7 @@ class TouController extends AbstractController
             }
 
             if ($form->get('accept')->isClicked()) {
-                $currentUser->setAGBAcceptanceDate(new \DateTimeImmutable());
+                $currentUser->setAGBAcceptanceDate(new DateTimeImmutable());
                 $currentUser->save();
 
                 return $this->redirect($request->get('redirect'));

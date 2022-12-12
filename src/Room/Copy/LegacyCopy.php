@@ -16,6 +16,9 @@ namespace App\Room\Copy;
 use App\Event\ItemReindexEvent;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
+use cs_environment;
+use cs_room_item;
+use cs_user_item;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -23,7 +26,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class LegacyCopy implements CopyStrategy
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     /**
      * LegacyCopy constructor.
@@ -36,7 +39,7 @@ class LegacyCopy implements CopyStrategy
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function copySettings(\cs_room_item $source, \cs_room_item $target): void
+    public function copySettings(cs_room_item $source, cs_room_item $target): void
     {
         $copy_array = [];
         $copy_array['context'] = true;
@@ -290,7 +293,7 @@ class LegacyCopy implements CopyStrategy
         }
     }
 
-    public function copyData(\cs_room_item $source, \cs_room_item $target, \cs_user_item $creator): void
+    public function copyData(cs_room_item $source, cs_room_item $target, cs_user_item $creator): void
     {
         $copy_array = [];
         $copy_array['informationbox'] = true;

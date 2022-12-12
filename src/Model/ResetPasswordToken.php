@@ -14,10 +14,11 @@
 namespace App\Model;
 
 use App\Entity\Account;
+use DateTimeInterface;
 
 final class ResetPasswordToken
 {
-    public function __construct(private string $token, private \DateTimeInterface $expiresAt, private Account $account, private string $ip)
+    public function __construct(private string $token, private DateTimeInterface $expiresAt, private Account $account, private string $ip)
     {
     }
 
@@ -33,12 +34,12 @@ final class ResetPasswordToken
         return $this;
     }
 
-    public function getExpiresAt(): \DateTimeInterface
+    public function getExpiresAt(): DateTimeInterface
     {
         return $this->expiresAt;
     }
 
-    public function setExpiresAt(\DateTimeInterface $expiresAt): self
+    public function setExpiresAt(DateTimeInterface $expiresAt): self
     {
         $this->expiresAt = $expiresAt;
 

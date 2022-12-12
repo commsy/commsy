@@ -15,15 +15,15 @@ namespace App\Controller;
 
 use App\Event\UserJoinedRoomEvent;
 use App\Facade\MembershipManager;
-use App\Filter\ProjectFilterType;
 use App\Form\Type\ContextRequestType;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
 use App\Utils\GroupService;
-use App\Utils\ProjectService;
 use App\Utils\UserService;
+use cs_list;
 use cs_user_item;
+use DateTimeImmutable;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,6 +33,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * Class ContextController.
@@ -42,7 +43,7 @@ class ContextController extends AbstractController
 {
     private Mailer $mailer;
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setMailer(Mailer $mailer)
     {
         $this->mailer = $mailer;
@@ -140,7 +141,7 @@ class ContextController extends AbstractController
                 }
 
                 if ($roomItem->getAGBStatus()) {
-                    $newUser->setAGBAcceptanceDate(new \DateTimeImmutable());
+                    $newUser->setAGBAcceptanceDate(new DateTimeImmutable());
                 }
 
                 if ($legacyEnvironment->getCurrentPortalItem()->getConfigurationHideMailByDefault()) {
@@ -262,7 +263,7 @@ class ContextController extends AbstractController
 
                 // inform user if request required no authorization
                 if ($newUser->isUser()) {
-                    /** @var \cs_list $moderatorList */
+                    /** @var cs_list $moderatorList */
                     $moderatorList = $roomItem->getModeratorList();
 
                     $contactModerator = $moderatorList->getFirst();

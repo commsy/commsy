@@ -16,6 +16,8 @@ namespace App\EventSubscriber;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
+use cs_environment;
+use cs_room_item;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -25,7 +27,7 @@ use WhiteOctober\BreadcrumbsBundle\Model\Breadcrumbs;
 
 class BreadcrumbSubscriber implements EventSubscriberInterface
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -213,7 +215,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
         }
     }
 
-    private function addRoomCrumb(\cs_room_item $roomItem, $asZelda)
+    private function addRoomCrumb(cs_room_item $roomItem, $asZelda)
     {
         // NOTE: the "Archived room: " room title prefix may be replaced by the template with a matching icon
         $title = $roomItem->getTitle();

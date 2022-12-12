@@ -18,6 +18,7 @@ use App\Form\Type\Custom\DateTimeSelectType;
 use App\Form\Type\Custom\HashtagMappingType;
 use App\Form\Type\Event\AddBibliographicFieldListener;
 use App\Form\Type\Event\AddEtherpadFormListener;
+use cs_context_item;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -57,7 +58,7 @@ class MaterialType extends AbstractType
                 }
 
                 if ($material['draft']) {
-                    /** @var \cs_context_item $room */
+                    /** @var cs_context_item $room */
                     $room = $formOptions['room'];
 
                     if ($room->withBuzzwords()) {

@@ -14,6 +14,7 @@
 namespace App\Services;
 
 use App\Utils\ItemService;
+use cs_item;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -49,7 +50,7 @@ class MarkedService
      * @param null $start
      * @param null $sort
      *
-     * @return \cs_item[]
+     * @return cs_item[]
      */
     public function getListEntries($max = null, $start = null, $sort = null)
     {
@@ -84,7 +85,7 @@ class MarkedService
     /**
      * @param int[] $ids
      *
-     * @return \cs_item[]
+     * @return cs_item[]
      */
     public function getMarkedItemsById($ids)
     {

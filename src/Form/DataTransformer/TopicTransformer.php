@@ -13,6 +13,8 @@
 
 namespace App\Form\DataTransformer;
 
+use cs_topic_item;
+use DateTime;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class TopicTransformer extends AbstractTransformer
@@ -40,7 +42,7 @@ class TopicTransformer extends AbstractTransformer
 
                 $activating_date = $topicItem->getActivatingDate();
                 if (!stristr($activating_date, '9999')) {
-                    $datetime = new \DateTime($activating_date);
+                    $datetime = new DateTime($activating_date);
                     $topicData['hiddendate']['date'] = $datetime;
                     $topicData['hiddendate']['time'] = $datetime;
                 }
@@ -56,7 +58,7 @@ class TopicTransformer extends AbstractTransformer
      * @param object $topicObject
      * @param array  $topicData
      *
-     * @return \cs_topic_item|null
+     * @return cs_topic_item|null
      *
      * @throws TransformationFailedException if room item is not found
      */

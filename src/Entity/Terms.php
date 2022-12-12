@@ -13,12 +13,13 @@
 
 namespace App\Entity;
 
+use App\Repository\TermsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Term.
  */
-#[ORM\Entity(repositoryClass: \App\Repository\TermsRepository::class)]
+#[ORM\Entity(repositoryClass: TermsRepository::class)]
 #[ORM\Table(name: 'terms')]
 class Terms
 {

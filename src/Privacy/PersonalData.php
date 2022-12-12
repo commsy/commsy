@@ -23,7 +23,7 @@ class PersonalData
     /**
      * @var AccountData|null holds the user's account data
      */
-    private ?\App\Privacy\AccountData $accountData = null;
+    private ?AccountData $accountData = null;
 
     /**
      * @var RoomProfileData[]|null array of RoomProfileData objects holding the user's profile data for each community room

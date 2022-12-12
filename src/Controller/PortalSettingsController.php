@@ -93,9 +93,11 @@ use App\Utils\MailAssistant;
 use App\Utils\RoomService;
 use App\Utils\TimePulsesService;
 use App\Utils\UserService;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -103,7 +105,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Security;
@@ -123,7 +127,7 @@ class PortalSettingsController extends AbstractController
     #[Route(path: '/portal/{portalId}/settings/general')]
     #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function general(Portal $portal, Request $request, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
+    public function general(Portal $portal, Request $request, EntityManagerInterface $entityManager): Response
     {
         $portalForm = $this->createForm(PortalGeneralType::class, $portal);
         $portalForm->handleRequest($request);
@@ -164,7 +168,7 @@ class PortalSettingsController extends AbstractController
     #[Route(path: '/portal/{portalId}/settings/appearance')]
     #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function appearance(Portal $portal, Request $request, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
+    public function appearance(Portal $portal, Request $request, EntityManagerInterface $entityManager): Response
     {
         $portalForm = $this->createForm(PortalAppearanceType::class, $portal);
         $portalForm->handleRequest($request);
@@ -207,7 +211,7 @@ class PortalSettingsController extends AbstractController
     #[Route(path: '/portal/{portalId}/settings/support')]
     #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function support(Portal $portal, Request $request, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
+    public function support(Portal $portal, Request $request, EntityManagerInterface $entityManager): Response
     {
         // support page form
         $supportPageForm = $this->createForm(SupportType::class, $portal);
@@ -239,9 +243,9 @@ class PortalSettingsController extends AbstractController
 
     #[Route(path: '/portal/{portalId}/settings/portalhome')]
     #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
-    #[ParamConverter('environment', class: \App\Services\LegacyEnvironment::class)]
+    #[ParamConverter('environment', class: LegacyEnvironment::class)]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function portalhome(Portal $portal, Request $request, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
+    public function portalhome(Portal $portal, Request $request, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(PortalhomeType::class, $portal);
 
@@ -266,7 +270,7 @@ class PortalSettingsController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         RoomService $roomService
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         // community rooms creation form
         $templateChoices = array_merge(['No template' => '-1'], $roomService->getAvailableTemplates(CS_COMMUNITY_TYPE));
 
@@ -316,7 +320,7 @@ class PortalSettingsController extends AbstractController
         RoomCategoriesService $roomCategoriesService,
         EventDispatcherInterface $dispatcher,
         EntityManagerInterface $entityManager
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $editForm = null;
         $portalId = $portal->getId();
         $repository = $entityManager->getRepository(RoomCategories::class);
@@ -389,7 +393,7 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         EntityManagerInterface $entityManager
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         /*
          * Try to find an existing shibboleth auth source or create an empty one. We assume
          * that there is only one auth source per type.
@@ -443,7 +447,7 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         EntityManagerInterface $entityManager
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         /*
          * Try to find an existing local auth source or create an empty one. We assume
          * that there is only one auth source per type.
@@ -499,7 +503,7 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         ManagerRegistry $doctrine,
         Request $request
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $form = $this->createForm(AuthWorkspaceMembershipType::class, $portal);
 
         $form->handleRequest($request);
@@ -523,7 +527,7 @@ class PortalSettingsController extends AbstractController
         Request $request,
         UserCreatorFacade $userCreator,
         Portal $portal
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $importForm = $this->createForm(CsvImportType::class, [], [
             'portal' => $portal,
         ]);
@@ -556,7 +560,7 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         EntityManagerInterface $entityManager
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         /*
          * Try to find an existing shibboleth auth source or create an empty one. We assume
          * that there is only one auth source per type.
@@ -610,7 +614,7 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         EntityManagerInterface $entityManager
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         /*
          * Try to find an existing shibboleth auth source or create an empty one. We assume
          * that there is only one auth source per type.
@@ -672,7 +676,7 @@ class PortalSettingsController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         LegacyEnvironment $environment
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $defaultData = [
             'userIndexFilterChoice' => -1,
             'contentGerman' => '',
@@ -765,7 +769,7 @@ class PortalSettingsController extends AbstractController
         Request $request,
         EventDispatcherInterface $dispatcher,
         LegacyEnvironment $environment
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $portalId = $portal->getId();
 
         $em = $this->getDoctrine()->getManager();
@@ -861,7 +865,7 @@ class PortalSettingsController extends AbstractController
     #[Route(path: '/portal/{portalId}/settings/privacy')]
     #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function privacy(Portal $portal, Request $request, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
+    public function privacy(Portal $portal, Request $request, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(PrivacyType::class, $portal);
 
@@ -887,7 +891,7 @@ class PortalSettingsController extends AbstractController
         EntityManagerInterface $entityManager,
         AccountManager $accountManager,
         RoomManager $roomManager
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $accountInactiveForm = $this->createForm(AccountInactiveType::class, $portal);
         $accountInactiveForm->handleRequest($request);
         if ($accountInactiveForm->isSubmitted() && $accountInactiveForm->isValid()) {
@@ -940,7 +944,7 @@ class PortalSettingsController extends AbstractController
         Request $request,
         TimePulsesService $timePulsesService,
         EntityManagerInterface $entityManager
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         // time pulses options form
         $optionsForm = $this->createForm(TimePulsesType::class, $portal);
 
@@ -962,7 +966,7 @@ class PortalSettingsController extends AbstractController
         if (isset($timePulseTemplateId)) {
             $timePulseTemplate = $timePulsesService->getTimePulseTemplate($portal, $timePulseTemplateId);
             if (!$timePulseTemplate) {
-                throw new \Exception('could not find time pulse template with ID '.$timePulseTemplateId);
+                throw new Exception('could not find time pulse template with ID '.$timePulseTemplateId);
             }
         } else {
             $timePulseTemplate = new TimePulseTemplate();
@@ -1013,7 +1017,7 @@ class PortalSettingsController extends AbstractController
     #[Route(path: '/portal/{portalId}/settings/announcements')]
     #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function announcements(Portal $portal, Request $request, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
+    public function announcements(Portal $portal, Request $request, EntityManagerInterface $entityManager): Response
     {
         $portalForm = $this->createForm(PortalAnnouncementsType::class, $portal);
         $portalForm->handleRequest($request);
@@ -1052,13 +1056,13 @@ class PortalSettingsController extends AbstractController
     #[Route(path: '/portal/{portalId}/settings/contents')]
     #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function contents(Portal $portal, Request $request, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
+    public function contents(Portal $portal, Request $request, EntityManagerInterface $entityManager): Response
     {
         $termsForm = $this->createForm(TermsType::class, $portal);
         $termsForm->handleRequest($request);
         if ($termsForm->isSubmitted() && $termsForm->isValid()) {
             if ('save' === $termsForm->getClickedButton()->getName()) {
-                $portal->setAGBChangeDate(new \DateTimeImmutable());
+                $portal->setAGBChangeDate(new DateTimeImmutable());
                 $entityManager->persist($portal);
                 $entityManager->flush();
 
@@ -1136,7 +1140,7 @@ class PortalSettingsController extends AbstractController
         EventDispatcherInterface $dispatcher,
         LegacyEnvironment $environment,
         int $termId = null
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $legacyEnvironment = $environment->getEnvironment();
 
         $em = $this->getDoctrine()->getManager();
@@ -1193,7 +1197,7 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         UserService $userService,
         Request $request
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $IdsMailRecipients = [];
         $user = $userService->getUser($userId);
 
@@ -1248,7 +1252,7 @@ class PortalSettingsController extends AbstractController
         UserService $userService,
         Request $request,
         AccountManager $accountManager
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $users = [];
         $userNames = [];
 
@@ -1419,7 +1423,7 @@ class PortalSettingsController extends AbstractController
         LegacyEnvironment $environment,
         PaginatorInterface $paginator,
         AuthSourceRepository $authSourceRepository
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         // moderation is true to avoid limit of status=2 being set, which would exclude e.g. locked users
         $portalUsers = $userService->getListUsers($portal->getId(), null, null, true);
         $authSources = $authSourceRepository->findByPortal($portalId);
@@ -1814,7 +1818,7 @@ class PortalSettingsController extends AbstractController
         Mailer $mailer,
         Portal $portal,
         RouterInterface $router
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $user = $userService->getCurrentUserItem();
         $recipientArray = [];
         $recipients = explode(', ', $recipients);
@@ -1899,7 +1903,7 @@ class PortalSettingsController extends AbstractController
         ItemService $itemService,
         Mailer $mailer,
         RouterInterface $router
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $recipientArray = [];
         $recipients = explode(', ', $recipients);
         foreach ($recipients as $recipient) {
@@ -1969,7 +1973,7 @@ class PortalSettingsController extends AbstractController
         Security $security,
         UserListBuilder $userListBuilder,
         AccountManager $accountManager
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         /** @var Account $account */
         $account = $security->getUser();
 
@@ -2111,7 +2115,7 @@ class PortalSettingsController extends AbstractController
         Request $request,
         UserService $userService,
         LegacyEnvironment $legacyEnvironment
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $environment = $legacyEnvironment->getEnvironment();
 
         $user = $userService->getUser($request->get('userId'));
@@ -2241,7 +2245,7 @@ class PortalSettingsController extends AbstractController
         UserService $userService,
         TranslatorInterface $translator,
         AccountManager $accountManager
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $user = $userService->getUser($request->get('userId'));
         $userChangeStatus = new PortalUserChangeStatus();
         $userChangeStatus->setName($user->getFullName());
@@ -2412,7 +2416,7 @@ class PortalSettingsController extends AbstractController
         UserService $userService,
         LegacyEnvironment $legacyEnvironment,
         AccountManager $accountManager
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $user = $userService->getUser($request->get('userId'));
         $userAssignWorkspace = new PortalUserAssignWorkspace();
         $userAssignWorkspace->setUserID($user->getUserID());
@@ -2523,9 +2527,9 @@ class PortalSettingsController extends AbstractController
         Request $request,
         UserService $userService,
         LegacyEnvironment $legacyEnvironment,
-        \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $passwordEncoder,
+        UserPasswordHasherInterface $passwordEncoder,
         EntityManagerInterface $entityManager
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $user = $userService->getUser($request->get('userId'));
         $form_data = ['userName' => $user->getFullName(), 'userId' => $user->getUserID()];
         $form = $this->createForm(AccountIndexDetailChangePasswordType::class, $form_data);
@@ -2553,7 +2557,7 @@ class PortalSettingsController extends AbstractController
         ?int $translationId,
         Request $request,
         EntityManagerInterface $entityManager
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $editForm = null;
 
         $repository = $entityManager->getRepository(Translation::class);

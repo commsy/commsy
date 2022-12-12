@@ -16,6 +16,11 @@ namespace App\Utils;
 use App\Form\Model\File;
 use App\Form\Model\Send;
 use App\Services\LegacyEnvironment;
+use cs_dates_item;
+use cs_environment;
+use cs_item;
+use cs_todo_item;
+use cs_user_item;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
@@ -23,7 +28,7 @@ use Twig\Environment;
 
 class MailAssistant
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -327,7 +332,7 @@ class MailAssistant
         return $message;
     }
 
-    public function getItemSendMessage(FormInterface $form, \cs_item $item): Email
+    public function getItemSendMessage(FormInterface $form, cs_item $item): Email
     {
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         $formData = $form->getData();
@@ -365,7 +370,7 @@ class MailAssistant
         $isSendToCreator = (Send::class == $formData::class ? (is_null($formData->getSendToCreator()) ? false : $formData->getSendToCreator()) : $form->has('send_to_creator') && $formData['send_to_creator']);
 
         if ($isSendToCreator) {
-            /** @var \cs_user_item $itemCreator */
+            /** @var cs_user_item $itemCreator */
             $itemCreator = $item->getCreatorItem();
             if ($itemCreator->isEmailVisible()) {
                 $to[$itemCreator->getEmail()] = $itemCreator->getFullName();
@@ -429,7 +434,7 @@ class MailAssistant
 
         // form option: send_to_attendees
         if ($isSendToAttendees) {
-            if ($item instanceof \cs_dates_item) {
+            if ($item instanceof cs_dates_item) {
                 $attendees = $item->getParticipantsItemList();
                 $this->addRecipients($recipients, $attendees);
             }
@@ -439,7 +444,7 @@ class MailAssistant
         $isSendToAssigned = (Send::class == $formData::class ? (is_null($formData->getSendToAttendees()) ? false : $formData->getSendToAttendees()) : $form->has('send_to_assigned') && $formData['send_to_assigned']);
 
         if ($isSendToAssigned) {
-            if ($item instanceof \cs_todo_item) {
+            if ($item instanceof cs_todo_item) {
                 $processors = $item->getProcessorItemList();
                 $this->addRecipients($recipients, $processors);
             }

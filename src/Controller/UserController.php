@@ -36,13 +36,16 @@ use App\Utils\AccountMail;
 use App\Utils\MailAssistant;
 use App\Utils\TopicService;
 use App\Utils\UserService;
+use cs_room_item;
+use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
+use Exception;
 use Liip\ImagineBundle\Imagine\Data\DataManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
+use Nette\Utils\Strings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,6 +56,7 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -63,13 +67,13 @@ class UserController extends BaseController
     private UserService $userService;
     private SessionInterface $session;
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setSession(SessionInterface $session): void
     {
         $this->session = $session;
     }
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setUserService(UserService $userService): void
     {
         $this->userService = $userService;
@@ -349,7 +353,7 @@ class UserController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/user/changeStatus')]
     #[Security("is_granted('MODERATOR')")]
@@ -1007,7 +1011,7 @@ class UserController extends BaseController
         $response = new Response($avatarService->getUnknownUserImage(), Response::HTTP_OK,
             ['content-type' => 'image']);
         $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,
-            \Nette\Utils\Strings::webalize('user_unknown.gif'));
+            Strings::webalize('user_unknown.gif'));
         $response->headers->set('Content-Disposition', $contentDisposition);
 
         return $response;
@@ -1021,7 +1025,7 @@ class UserController extends BaseController
         $response = new Response($avatarService->getAvatar($itemId), Response::HTTP_OK,
             ['content-type' => 'image']);
         $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,
-            \Nette\Utils\Strings::webalize('user_unknown.gif'));
+            Strings::webalize('user_unknown.gif'));
         $response->headers->set('Content-Disposition', $contentDisposition);
 
         return $response;
@@ -1086,7 +1090,7 @@ class UserController extends BaseController
         }
         $response = new Response($content, Response::HTTP_OK, ['content-type' => 'image']);
         $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,
-            \Nette\Utils\Strings::webalize($file));
+            Strings::webalize($file));
         $response->headers->set('Content-Disposition', $contentDisposition);
 
         return $response;
@@ -1340,7 +1344,7 @@ class UserController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/user/sendMultiple')]
     public function sendMultipleAction(
@@ -1514,7 +1518,7 @@ class UserController extends BaseController
     // # XHR Action requests
     // ##################################################################################################
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/user/xhr/markread', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkReadAction(
@@ -1529,7 +1533,7 @@ class UserController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $room
+     * @param cs_room_item $room
      * @param string        $view
      *
      * @return FormInterface
@@ -1559,11 +1563,11 @@ class UserController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param bool          $selectAll
      * @param int[]         $itemIds
      *
-     * @return \cs_user_item[]
+     * @return cs_user_item[]
      */
     public function getItemsByFilterConditions(
         Request $request,

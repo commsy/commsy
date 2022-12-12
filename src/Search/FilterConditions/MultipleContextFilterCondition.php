@@ -14,6 +14,7 @@
 namespace App\Search\FilterConditions;
 
 use App\Utils\UserService;
+use cs_room_item;
 use Elastica\Query\Terms;
 
 class MultipleContextFilterCondition implements FilterConditionInterface
@@ -30,7 +31,7 @@ class MultipleContextFilterCondition implements FilterConditionInterface
         $currentUser = $this->userService->getCurrentUserItem();
         $searchableRooms = $this->userService->getSearchableRooms($currentUser);
 
-        $contextIds = array_map(fn (\cs_room_item $room) => $room->getItemID(), $searchableRooms);
+        $contextIds = array_map(fn (cs_room_item $room) => $room->getItemID(), $searchableRooms);
 
         $contextFilter = new Terms('contextId');
         $contextFilter->setTerms($contextIds);

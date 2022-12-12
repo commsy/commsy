@@ -14,15 +14,16 @@
 namespace App\Mail\Messages;
 
 use App\Mail\Message;
+use cs_room_item;
 
 class RoomArchivedMessage extends Message
 {
     /**
-     * @var \cs_room_item
+     * @var cs_room_item
      */
     private $room;
 
-    public function __construct(\cs_room_item $roomItem, private int $numDays)
+    public function __construct(cs_room_item $roomItem, private int $numDays)
     {
         $this->room = $roomItem;
     }
@@ -52,12 +53,12 @@ class RoomArchivedMessage extends Message
         ];
     }
 
-    public function getRoom(): \cs_room_item
+    public function getRoom(): cs_room_item
     {
         return $this->room;
     }
 
-    public function setRoom(\cs_room_item $room): RoomArchivedMessage
+    public function setRoom(cs_room_item $room): RoomArchivedMessage
     {
         $this->room = $room;
 

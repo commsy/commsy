@@ -15,6 +15,7 @@ namespace App\Validator\Constraints;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
+use cs_room_item;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -49,7 +50,7 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
         }
 
         $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
-        /** @var \cs_room_item $roomItem */
+        /** @var cs_room_item $roomItem */
         $roomItem = $legacyEnvironment->getCurrentContextItem();
         $roomId = $roomItem->getItemID();
 

@@ -16,6 +16,7 @@ namespace App\EventSubscriber;
 use App\Event\ReadStatusPreChangeEvent;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
+use cs_annotation_item;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ReadStatusSubscriber implements EventSubscriberInterface
@@ -42,7 +43,7 @@ class ReadStatusSubscriber implements EventSubscriberInterface
 
         // for annotations, invalidate the read status cache of their linked (hosting) item
         if (CS_ANNOTATION_TYPE === $item->getItemType()) {
-            /** @var \cs_annotation_item $annotation */
+            /** @var cs_annotation_item $annotation */
             $annotation = $this->itemService->getTypedItem($itemId);
             $linkedItem = $annotation->getLinkedItem();
             if ($linkedItem) {

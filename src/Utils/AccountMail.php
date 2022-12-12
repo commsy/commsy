@@ -14,6 +14,8 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_user_item;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -23,7 +25,7 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class AccountMail
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment, private RouterInterface $router)
     {
@@ -56,7 +58,7 @@ class AccountMail
     /**
      * @param bool $multipleRecipients
      */
-    public function generateBody(\cs_user_item $user, string $action, $multipleRecipients = false): string
+    public function generateBody(cs_user_item $user, string $action, $multipleRecipients = false): string
     {
         $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
         $room = $this->legacyEnvironment->getCurrentContextItem();

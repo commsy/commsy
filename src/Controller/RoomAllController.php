@@ -19,6 +19,7 @@ use App\Services\LegacyMarkup;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use cs_environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -75,7 +76,7 @@ class RoomAllController extends AbstractController
     private function getDetailInfo(
         $room,
         ItemService $itemService,
-        \cs_environment $legacyEnvironment
+        cs_environment $legacyEnvironment
     ) {
         $readerManager = $legacyEnvironment->getReaderManager();
 

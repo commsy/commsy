@@ -19,6 +19,7 @@ use App\Message\AccountActivityStateTransitions;
 use App\Message\WorkspaceActivityStateTransitions;
 use App\Repository\AccountsRepository;
 use App\Repository\RoomRepository;
+use DateTimeImmutable;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class CronUpdateActivityState implements CronTaskInterface
@@ -29,7 +30,7 @@ class CronUpdateActivityState implements CronTaskInterface
     {
     }
 
-    public function run(?\DateTimeImmutable $lastRun): void
+    public function run(?DateTimeImmutable $lastRun): void
     {
         // Accounts
         $accountActivityObjects = $this->accountRepository->findAllExceptRoot();

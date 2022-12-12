@@ -14,6 +14,7 @@
 namespace App\Form\Type;
 
 use App\Utils\PortfolioService;
+use cs_item;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -94,7 +95,7 @@ class PortfolioType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
 
-            /** @var \cs_item $item */
+            /** @var cs_item $item */
             $item = $options['item'];
 
             if (!$item->isDraft()) {

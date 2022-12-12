@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -40,33 +41,33 @@ class Announcement
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
-    private ?\App\Entity\User $creator = null;
+    private ?User $creator = null;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
-    private ?\App\Entity\User $modifier = null;
+    private ?User $modifier = null;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id')]
-    private ?\App\Entity\User $deleter = null;
+    private ?User $deleter = null;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private $creationDate = '0000-00-00 00:00:00';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
     private $modificationDate;
 
     #[ORM\Column(name: 'activation_date', type: 'datetime')]
-    private ?\DateTime $activationDate = null;
+    private ?DateTime $activationDate = null;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
@@ -84,7 +85,7 @@ class Announcement
     private $description;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'enddate', type: 'datetime', nullable: false)]
     private $enddate = '0000-00-00 00:00:00';
@@ -102,7 +103,7 @@ class Announcement
     private $extras;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'locking_date', type: 'datetime', nullable: true)]
     private $lockingDate;
@@ -150,7 +151,7 @@ class Announcement
     /**
      * Get creationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -160,7 +161,7 @@ class Announcement
     /**
      * Set deletionDate.
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Announcement
      */
@@ -179,7 +180,7 @@ class Announcement
     /**
      * Set modificationDate.
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Materials
      */
@@ -193,7 +194,7 @@ class Announcement
     /**
      * Get modificationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -203,7 +204,7 @@ class Announcement
     /**
      * Set activationDate.
      */
-    public function setActivationDate(\DateTime $activationDate): self
+    public function setActivationDate(DateTime $activationDate): self
     {
         $this->activationDate = $activationDate;
 
@@ -213,7 +214,7 @@ class Announcement
     /**
      * Get activationDate.
      */
-    public function getActivationDate(): ?\DateTime
+    public function getActivationDate(): ?DateTime
     {
         return $this->activationDate;
     }
@@ -221,7 +222,7 @@ class Announcement
     /**
      * Get deletionDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {
@@ -279,7 +280,7 @@ class Announcement
     /**
      * Set enddate.
      *
-     * @param \DateTime $enddate
+     * @param DateTime $enddate
      *
      * @return Announcement
      */
@@ -293,7 +294,7 @@ class Announcement
     /**
      * Get enddate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getEnddate()
     {
@@ -351,7 +352,7 @@ class Announcement
     /**
      * Set lockingDate.
      *
-     * @param \DateTime $lockingDate
+     * @param DateTime $lockingDate
      *
      * @return Announcement
      */
@@ -365,7 +366,7 @@ class Announcement
     /**
      * Get lockingDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLockingDate()
     {
@@ -411,7 +412,7 @@ class Announcement
     /**
      * Get creator.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getCreator()
     {
@@ -433,7 +434,7 @@ class Announcement
     /**
      * Get modifier.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getModifier()
     {
@@ -455,7 +456,7 @@ class Announcement
     /**
      * Get deleter.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getDeleter()
     {

@@ -13,6 +13,8 @@
 
 namespace App\Form\Model;
 
+use DateTime;
+
 class File
 {
     /**
@@ -30,7 +32,7 @@ class File
      */
     private $filePath;
 
-    private ?\DateTime $creationDate = null;
+    private ?DateTime $creationDate = null;
 
     /**
      * @var mixed|null
@@ -73,7 +75,7 @@ class File
         return $this->filePath;
     }
 
-    public function setCreationDate(\DateTime $creationDate)
+    public function setCreationDate(DateTime $creationDate)
     {
         $this->creationDate = $creationDate;
 

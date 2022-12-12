@@ -105,7 +105,7 @@ class MostFieldsQueryCondition implements QueryConditionInterface
          * In order to search in datetime fields we must ensure to send only search strings that are already in
          * a valid format.
          */
-        $queryAsDate = (\DateTime::createFromFormat('d.m.Y', $this->query)) ?: \DateTime::createFromFormat('Y-m-d', $this->query);
+        $queryAsDate = (DateTime::createFromFormat('d.m.Y', $this->query)) ?: DateTime::createFromFormat('Y-m-d', $this->query);
         if ($queryAsDate) {
             $fields[] = 'modificationDate';
             $multiMatch->setQuery($queryAsDate->format('Y-m-d'));

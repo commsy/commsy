@@ -14,6 +14,9 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_announcement_item;
+use cs_label_item;
+use cs_manager;
 use Symfony\Component\Form\Form;
 
 class AnnouncementService
@@ -49,7 +52,7 @@ class AnnouncementService
      * @param int    $start
      * @param string $sort
      *
-     * @return \cs_announcement_item[]
+     * @return cs_announcement_item[]
      */
     public function getListAnnouncements($roomId, $max = null, $start = null, $sort = null)
     {
@@ -71,7 +74,7 @@ class AnnouncementService
      * @param int   $roomId
      * @param int[] $idArray
      *
-     * @return \cs_announcement_item[]
+     * @return cs_announcement_item[]
      */
     public function getAnnouncementsById($roomId, $idArray)
     {
@@ -96,11 +99,11 @@ class AnnouncementService
         // activated
         if ($formData['hide-deactivated-entries']) {
             if ('only_activated' === $formData['hide-deactivated-entries']) {
-                $this->announcementManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+                $this->announcementManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
             } elseif ('only_deactivated' === $formData['hide-deactivated-entries']) {
-                $this->announcementManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+                $this->announcementManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
             } elseif ('all' === $formData['hide-deactivated-entries']) {
-                $this->announcementManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+                $this->announcementManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
             }
         }
 
@@ -113,14 +116,14 @@ class AnnouncementService
         if ($formData['rubrics']) {
             // group
             if (isset($formData['rubrics']['group'])) {
-                /** @var \cs_label_item $relatedLabel */
+                /** @var cs_label_item $relatedLabel */
                 $relatedLabel = $formData['rubrics']['group'];
                 $this->announcementManager->setGroupLimit($relatedLabel->getItemID());
             }
 
             // topic
             if (isset($formData['rubrics']['topic'])) {
-                /** @var \cs_label_item $relatedLabel */
+                /** @var cs_label_item $relatedLabel */
                 $relatedLabel = $formData['rubrics']['topic'];
                 $this->announcementManager->setTopicLimit($relatedLabel->getItemID());
             }
@@ -128,7 +131,7 @@ class AnnouncementService
         // hashtag
         if (isset($formData['hashtag'])) {
             if (isset($formData['hashtag']['hashtag'])) {
-                /** @var \cs_label_item $hashtag */
+                /** @var cs_label_item $hashtag */
                 $hashtag = $formData['hashtag']['hashtag'];
                 $itemId = $hashtag->getItemID();
                 $this->announcementManager->setBuzzwordLimit($itemId);
@@ -159,7 +162,7 @@ class AnnouncementService
 
     public function hideDeactivatedEntries()
     {
-        $this->announcementManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $this->announcementManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
     public function hideInvalidEntries()

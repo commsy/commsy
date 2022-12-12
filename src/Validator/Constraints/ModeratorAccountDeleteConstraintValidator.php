@@ -13,16 +13,20 @@
 
 namespace App\Validator\Constraints;
 
-use App\Entity\Room;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
+use cs_community_item;
+use cs_environment;
+use cs_project_item;
+use cs_room_item;
+use cs_user_item;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 class ModeratorAccountDeleteConstraintValidator extends ConstraintValidator
 {
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
     private $legacyEnvironment;
 
@@ -41,27 +45,27 @@ class ModeratorAccountDeleteConstraintValidator extends ConstraintValidator
                 ->addViolation();
 
             // community rooms
-            $communityRooms = array_filter($rooms, fn (\cs_room_item $room) => $room->isCommunityRoom());
+            $communityRooms = array_filter($rooms, fn (cs_room_item $room) => $room->isCommunityRoom());
 
             foreach ($communityRooms as $communityRoom) {
-                /* @var \cs_community_item $communityRoom */
+                /* @var cs_community_item $communityRoom */
                 $this->context->buildViolation($constraint->itemMessage)
                     ->setParameter('{{ criteria }}', $communityRoom->getItemID())
                     ->addViolation();
             }
 
             // project rooms
-            $projectRooms = array_filter($rooms, fn (\cs_room_item $room) => $room->isProjectRoom());
+            $projectRooms = array_filter($rooms, fn (cs_room_item $room) => $room->isProjectRoom());
 
             foreach ($projectRooms as $projectRoom) {
-                /* @var \cs_project_item $projectRoom */
+                /* @var cs_project_item $projectRoom */
                 $this->context->buildViolation($constraint->itemMessage)
                     ->setParameter('{{ criteria }}', $projectRoom->getItemID())
                     ->addViolation();
             }
 
             // group rooms
-            $groupRooms = array_filter($rooms, fn (\cs_room_item $room) => $room->isGroupRoom());
+            $groupRooms = array_filter($rooms, fn (cs_room_item $room) => $room->isGroupRoom());
 
             foreach ($groupRooms as $groupRoom) {
                 $this->context->buildViolation($constraint->itemMessage)
@@ -74,13 +78,13 @@ class ModeratorAccountDeleteConstraintValidator extends ConstraintValidator
         }
     }
 
-    private function getRoomsOnlyModeratedByUser(\cs_user_item $currentUser): array
+    private function getRoomsOnlyModeratedByUser(cs_user_item $currentUser): array
     {
         $roomsOnlyModeratedByUser = [];
         $userRooms = $this->legacyEnvironment->getRoomManager()->getAllRelatedRoomListForUser($currentUser);
 
         foreach ($userRooms as $userRoom) {
-            /** @var \cs_room_item $userRoom */
+            /** @var cs_room_item $userRoom */
             if (!$currentUser->getRelatedUserItemInContext($userRoom->getItemID())->isModerator()) {
                 continue;
             }

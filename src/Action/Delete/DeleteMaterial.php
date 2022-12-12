@@ -14,6 +14,7 @@
 namespace App\Action\Delete;
 
 use App\Services\MarkedService;
+use cs_item;
 
 class DeleteMaterial implements DeleteInterface
 {
@@ -21,7 +22,7 @@ class DeleteMaterial implements DeleteInterface
     {
     }
 
-    public function delete(\cs_item $item): void
+    public function delete(cs_item $item): void
     {
         /** \cs_material_item $material */
         $material = $item;
@@ -34,7 +35,7 @@ class DeleteMaterial implements DeleteInterface
     /**
      * @return string
      */
-    public function getRedirectRoute(\cs_item $item)
+    public function getRedirectRoute(cs_item $item)
     {
         return null;
     }

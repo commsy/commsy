@@ -14,13 +14,15 @@
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use cs_room_item;
+use DateTimeImmutable;
 
 class AdditionalSettingsTransformer extends AbstractTransformer
 {
     protected $entity = 'additional_settings';
 
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -30,7 +32,7 @@ class AdditionalSettingsTransformer extends AbstractTransformer
     /**
      * Transforms a cs_room_item object into an array.
      *
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      *
      * @return array
      */
@@ -102,7 +104,7 @@ class AdditionalSettingsTransformer extends AbstractTransformer
      * @param object $roomObject
      * @param array  $roomData
      *
-     * @return \cs_room_item|null
+     * @return cs_room_item|null
      *
      * @throws TransformationFailedException if room item is not found
      */
@@ -237,7 +239,7 @@ class AdditionalSettingsTransformer extends AbstractTransformer
         }
 
         if (($agbtext_array != $roomObject->getAGBTextArray()) or ($roomData['terms']['status'] != $roomObject->getAGBStatus())) {
-            $now = new \DateTimeImmutable();
+            $now = new DateTimeImmutable();
             $roomObject->setAGBStatus($roomData['terms']['status']);
             $roomObject->setAGBTextArray($agbtext_array);
             $roomObject->setAGBChangeDate($now);

@@ -14,6 +14,7 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_manager;
 use Symfony\Component\Form\Form;
 
 class ProjectService
@@ -57,7 +58,7 @@ class ProjectService
 
         // activated
         if ($formData['activated']) {
-            $this->projectManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+            $this->projectManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
         }
 
         // rubrics

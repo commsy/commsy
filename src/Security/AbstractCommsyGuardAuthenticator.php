@@ -21,6 +21,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
+use UnexpectedValueException;
 
 abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticator
 {
@@ -81,7 +82,7 @@ abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticat
      *
      * @return mixed Any non-null value
      *
-     * @throws \UnexpectedValueException If null is returned
+     * @throws UnexpectedValueException If null is returned
      */
     public function getCredentials(Request $request)
     {

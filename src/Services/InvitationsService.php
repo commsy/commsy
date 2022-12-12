@@ -17,6 +17,7 @@ use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Invitations;
 use App\Entity\Portal;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 
 class InvitationsService
@@ -67,7 +68,7 @@ class InvitationsService
         return $repository->createQueryBuilder('invitations')
             ->delete()
             ->where('invitations.expirationDate < :expirationDate')
-            ->setParameter('expirationDate', new \DateTime())
+            ->setParameter('expirationDate', new DateTime())
             ->getQuery()
             ->execute();
     }
@@ -81,8 +82,8 @@ class InvitationsService
         $invitation->setAuthSourceId($authSourceLocal->getId());
         $invitation->setContextId($contextId);
         $invitation->setHash($invitationCode);
-        $invitation->setCreationDate(new \DateTime());
-        $invitation->setExpirationDate(new \DateTime('14 day'));
+        $invitation->setCreationDate(new DateTime());
+        $invitation->setExpirationDate(new DateTime('14 day'));
 
         $this->entityManager->persist($invitation);
         $this->entityManager->flush();
@@ -122,7 +123,7 @@ class InvitationsService
             ->andWhere('invitations.expirationDate >= :expirationDate')
             ->setParameter('authSourceId', $authSourceLocal->getId())
             ->setParameter('invitationCode', $invitationCode)
-            ->setParameter('expirationDate', new \DateTime())
+            ->setParameter('expirationDate', new DateTime())
             ->getQuery();
 
         return $query->getResult();

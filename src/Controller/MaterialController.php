@@ -40,6 +40,10 @@ use App\Utils\CategoryService;
 use App\Utils\LabelService;
 use App\Utils\MaterialService;
 use App\Utils\TopicService;
+use cs_material_item;
+use cs_room_item;
+use DateTime;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -378,7 +382,7 @@ class MaterialController extends BaseController
     /**
      * @return JsonRedirectResponse
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/{itemId}/workflow', condition: 'request.isXmlHttpRequest()')]
     public function workflowAction(
@@ -403,7 +407,7 @@ class MaterialController extends BaseController
                         $itemManager->markItemAsWorkflowNotRead($itemId, $currentUserItem->getItemID());
                     }
                 } else {
-                    throw new \Exception('workflow is not enabled');
+                    throw new Exception('workflow is not enabled');
                 }
             }
         }
@@ -440,7 +444,7 @@ class MaterialController extends BaseController
     ) {
         $infoArray = [];
 
-        /** @var \cs_material_item $material */
+        /** @var cs_material_item $material */
         $material = null;
         if (null === $versionId) {
             $material = $this->materialService->getMaterial($itemId);
@@ -690,7 +694,7 @@ class MaterialController extends BaseController
             $first = true;
             foreach ($versionList as $versionItem) {
                 $tempParsedDate = date_parse($versionItem->getModificationDate());
-                $tempDateTime = new \DateTime();
+                $tempDateTime = new DateTime();
                 $tempDateTime->setDate($tempParsedDate['year'], $tempParsedDate['month'], $tempParsedDate['day']);
                 $tempDateTime->setTime($tempParsedDate['hour'], $tempParsedDate['minute'], $tempParsedDate['second']);
                 $tempTimeStamp = $tempDateTime->getTimeStamp();
@@ -1298,7 +1302,7 @@ class MaterialController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/download')]
     public function downloadAction(
@@ -1316,7 +1320,7 @@ class MaterialController extends BaseController
     // # XHR Action requests
     // ##################################################################################################
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/xhr/markread', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkReadAction(
@@ -1333,7 +1337,7 @@ class MaterialController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/xhr/mark', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkAction(
@@ -1350,7 +1354,7 @@ class MaterialController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
     public function xhrCategorizeAction(
@@ -1364,7 +1368,7 @@ class MaterialController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
     public function xhrHashtagAction(
@@ -1376,7 +1380,7 @@ class MaterialController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/xhr/activate', condition: 'request.isXmlHttpRequest()')]
     public function xhrActivateAction(
@@ -1391,7 +1395,7 @@ class MaterialController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeactivateAction(
@@ -1406,7 +1410,7 @@ class MaterialController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
@@ -1427,7 +1431,7 @@ class MaterialController extends BaseController
      * @return FormInterface
      */
     private function createFilterForm(
-        \cs_room_item $room
+        cs_room_item $room
     ) {
         // setup filter form default values
         $defaultFilterValues = [
@@ -1444,11 +1448,11 @@ class MaterialController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param bool          $selectAll
      * @param int[]         $itemIds
      *
-     * @return \cs_material_item[]
+     * @return cs_material_item[]
      */
     public function getItemsByFilterConditions(
         Request $request,

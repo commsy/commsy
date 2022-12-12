@@ -13,6 +13,9 @@
 
 namespace App\Form\DataTransformer;
 
+use cs_announcement_item;
+use DateTime;
+
 class AnnouncementTransformer extends AbstractTransformer
 {
     protected $entity = 'announcement';
@@ -20,7 +23,7 @@ class AnnouncementTransformer extends AbstractTransformer
     /**
      * Transforms a cs_material_item object to an array.
      *
-     * @param \cs_announcement_item $announcementItem
+     * @param cs_announcement_item $announcementItem
      *
      * @return array
      */
@@ -35,7 +38,7 @@ class AnnouncementTransformer extends AbstractTransformer
 
             $announcementData['permission'] = $announcementItem->isPrivateEditing();
 
-            $datetime = new \DateTime($announcementItem->getSecondDateTime());
+            $datetime = new DateTime($announcementItem->getSecondDateTime());
             $announcementData['validdate']['date'] = $datetime;
             $announcementData['validdate']['time'] = $datetime;
 
@@ -44,7 +47,7 @@ class AnnouncementTransformer extends AbstractTransformer
 
                 $activating_date = $announcementItem->getActivatingDate();
                 if (!stristr($activating_date, '9999')) {
-                    $datetime = new \DateTime($activating_date);
+                    $datetime = new DateTime($activating_date);
                     $announcementData['hiddendate']['date'] = $datetime;
                     $announcementData['hiddendate']['time'] = $datetime;
                 }
@@ -57,10 +60,10 @@ class AnnouncementTransformer extends AbstractTransformer
     /**
      * Applies an array of data to an existing object.
      *
-     * @param \cs_announcement_item $announcementObject
+     * @param cs_announcement_item $announcementObject
      * @param array                 $announcementData
      *
-     * @return \cs_announcement_item|null
+     * @return cs_announcement_item|null
      */
     public function applyTransformation($announcementObject, $announcementData)
     {

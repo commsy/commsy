@@ -13,6 +13,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,7 +33,7 @@ class Links
     /**
      * @var int
      */
-    #[ORM\Column(name: 'from_item_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'from_item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $fromItemId = 0;
@@ -39,7 +41,7 @@ class Links
     /**
      * @var int
      */
-    #[ORM\Column(name: 'from_version_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'from_version_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $fromVersionId = 0;
@@ -47,7 +49,7 @@ class Links
     /**
      * @var int
      */
-    #[ORM\Column(name: 'to_item_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'to_item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $toItemId = 0;
@@ -55,7 +57,7 @@ class Links
     /**
      * @var int
      */
-    #[ORM\Column(name: 'to_version_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'to_version_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $toVersionId = 0;
@@ -63,7 +65,7 @@ class Links
     /**
      * @var string
      */
-    #[ORM\Column(name: 'link_type', type: \Doctrine\DBAL\Types\Types::STRING, length: 30)]
+    #[ORM\Column(name: 'link_type', type: Types::STRING, length: 30)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?string $linkType = null;
@@ -71,30 +73,30 @@ class Links
     /**
      * @var int
      */
-    #[ORM\Column(name: 'context_id', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
 
     /**
      * @var int
      */
-    #[ORM\Column(name: 'deleter_id', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private ?int $deleterId = null;
 
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
-    #[ORM\Column(name: 'deletion_date', type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $deletionDate = null;
+    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $deletionDate = null;
 
     /**
      * @var int
      */
-    #[ORM\Column(name: 'x', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[ORM\Column(name: 'x', type: Types::INTEGER, nullable: true)]
     private ?int $x = null;
 
     /**
      * @var int
      */
-    #[ORM\Column(name: 'y', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[ORM\Column(name: 'y', type: Types::INTEGER, nullable: true)]
     private ?int $y = null;
 }

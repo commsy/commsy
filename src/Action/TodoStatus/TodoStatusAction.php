@@ -16,6 +16,9 @@ namespace App\Action\TodoStatus;
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
 use App\Utils\TodoService;
+use cs_room_item;
+use cs_todo_item;
+use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -33,14 +36,14 @@ class TodoStatusAction implements ActionInterface
     }
 
     /**
-     * @param \cs_todo_item[] $items
+     * @param cs_todo_item[] $items
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function execute(\cs_room_item $roomItem, array $items): Response
+    public function execute(cs_room_item $roomItem, array $items): Response
     {
         if (!$this->newStatus) {
-            throw new \Exception('no status set for update');
+            throw new Exception('no status set for update');
         }
 
         // map status string to int
@@ -57,7 +60,7 @@ class TodoStatusAction implements ActionInterface
         }
 
         if (!$newStatus) {
-            throw new \Exception('status not found');
+            throw new Exception('status not found');
         }
 
         foreach ($items as $item) {

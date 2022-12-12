@@ -13,12 +13,14 @@
 
 namespace App\Entity;
 
+use App\Repository\ItemRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Items.
  */
-#[ORM\Entity(repositoryClass: \App\Repository\ItemRepository::class)]
+#[ORM\Entity(repositoryClass: ItemRepository::class)]
 #[ORM\InheritanceType('JOINED')]
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
 #[ORM\DiscriminatorMap(['annotation' => 'Annotations', 'announcement' => 'Announcement', 'assessments' => 'Assessments', 'auth_source' => 'AuthSource', 'community' => 'Room', 'date' => 'Dates', 'discarticle' => 'Discussionarticles', 'discussion' => 'Discussions', 'grouproom' => 'Room', 'label' => 'Labels', 'link_item' => 'LinkItems', 'material' => 'Materials', 'portal' => 'Portal', 'portfolio' => 'Portfolio', 'privateroom' => 'RoomPrivat', 'project' => 'Room', 'section' => 'Section', 'server' => 'Server', 'step' => 'Step', 'tag' => 'Tag', 'task' => 'Tasks', 'todo' => 'Todos', 'user' => 'User'])]
@@ -48,17 +50,17 @@ abstract class Items
     private $deleterId;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
     private $modificationDate;
 
     #[ORM\Column(name: 'activation_date', type: 'datetime')]
-    private ?\DateTime $activationDate = null;
+    private ?DateTime $activationDate = null;
 }

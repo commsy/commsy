@@ -17,13 +17,20 @@ use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
+use cs_community_item;
+use cs_environment;
+use cs_item;
+use cs_project_item;
+use cs_user_item;
+use cs_userroom_item;
+use DateTime;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\Security;
 
 class RoomFeedGenerator
 {
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
     private $legacyEnvironment;
 
@@ -102,9 +109,9 @@ class RoomFeedGenerator
         if ($lastId) {
             $lastFeedItem = $this->itemService->getTypedItem($lastId);
             if ($lastFeedItem) {
-                $lastModificationDate = ($lastFeedItem instanceof \cs_user_item) ?
-                    \DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getCreationDate()) :
-                    \DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getModificationDate());
+                $lastModificationDate = ($lastFeedItem instanceof cs_user_item) ?
+                    DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getCreationDate()) :
+                    DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getModificationDate());
 
                 $previousFeedEntries = [];
                 foreach ($contextIdsByRubric as $rubric => $contextIds) {
@@ -214,12 +221,12 @@ class RoomFeedGenerator
     /**
      * Comparison Callback for sorting two items by modification date.
      *
-     * @param \cs_item $a first item
-     * @param \cs_item $b second item
+     * @param cs_item $a first item
+     * @param cs_item $b second item
      *
      * @return int compare result
      */
-    private function sortByModificationDate(\cs_item $a, \cs_item $b)
+    private function sortByModificationDate(cs_item $a, cs_item $b)
     {
         $isUserA = CS_USER_TYPE === $a->getItemType();
         $isUserB = CS_USER_TYPE === $a->getItemType();
@@ -233,29 +240,29 @@ class RoomFeedGenerator
     /**
      * Returns all context ids we are interested in when building the feed list for the dashboard.
      *
-     * @param \cs_user_item $currentUser The current user
+     * @param cs_user_item $currentUser The current user
      *
      * @return int[] Context ids
      */
-    private function getAllUserRelatedContexts(\cs_user_item $currentUser)
+    private function getAllUserRelatedContexts(cs_user_item $currentUser)
     {
         $roomIds = [];
 
         $projectRooms = $currentUser->getUserRelatedProjectList(false);
         foreach ($projectRooms as $projectRoom) {
-            /* @var \cs_project_item $projectRoom */
+            /* @var cs_project_item $projectRoom */
             $roomIds[] = $projectRoom->getItemID();
         }
 
         $userRooms = $currentUser->getRelatedUserroomsList(false);
         foreach ($userRooms as $userRoom) {
-            /* @var \cs_userroom_item $userRoom */
+            /* @var cs_userroom_item $userRoom */
             $roomIds[] = $userRoom->getItemID();
         }
 
         $communityRooms = $currentUser->getUserRelatedCommunityList(false);
         foreach ($communityRooms as $communityRoom) {
-            /* @var \cs_community_item $communityRoom */
+            /* @var cs_community_item $communityRoom */
             $roomIds[] = $communityRoom->getItemID();
         }
 

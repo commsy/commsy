@@ -16,13 +16,17 @@ namespace App\Database;
 use App\Entity\Portal;
 use App\Entity\Room;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_group_item;
+use cs_link_item;
+use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class FixGroupAllUserRelation implements DatabaseCheck
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         private EntityManagerInterface $entityManager,
@@ -80,7 +84,7 @@ class FixGroupAllUserRelation implements DatabaseCheck
                 $groupManager->reset();
                 $groupManager->setContextLimit($projectRoom->getItemId());
 
-                /** @var \cs_group_item $groupAll */
+                /** @var cs_group_item $groupAll */
                 $groupAll = $groupManager->getItemByName('ALL');
                 $groupAllMembers = $groupAll->getMemberItemList();
 
@@ -93,7 +97,7 @@ class FixGroupAllUserRelation implements DatabaseCheck
 
                 if ($userList && $userList->isNotEmpty()) {
                     // iterate users
-                    /** @var \cs_user_item $userItem */
+                    /** @var cs_user_item $userItem */
                     $userItem = $userList->getFirst();
                     while ($userItem) {
                         if (!$userItem->isRoot()) {
@@ -102,7 +106,7 @@ class FixGroupAllUserRelation implements DatabaseCheck
 
                                 $linkManager = $this->legacyEnvironment->getLinkItemManager();
 
-                                /** @var \cs_link_item $linkItem */
+                                /** @var cs_link_item $linkItem */
                                 $linkItem = $linkManager->getNewItem();
 
                                 $linkItem->setCreatorItem($userItem);

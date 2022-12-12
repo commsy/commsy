@@ -14,6 +14,8 @@
 namespace App\Form\Type;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_room_item;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -27,7 +29,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ExtensionSettingsType extends AbstractType
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -68,7 +70,7 @@ class ExtensionSettingsType extends AbstractType
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
                 $form = $event->getForm();
 
-                /** @var \cs_room_item $roomItem */
+                /** @var cs_room_item $roomItem */
                 $roomItem = $options['room'];
 
                 if ($roomItem->isProjectRoom()) {

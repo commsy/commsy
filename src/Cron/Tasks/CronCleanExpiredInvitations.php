@@ -14,6 +14,7 @@
 namespace App\Cron\Tasks;
 
 use App\Services\InvitationsService;
+use DateTimeImmutable;
 
 class CronCleanExpiredInvitations implements CronTaskInterface
 {
@@ -21,7 +22,7 @@ class CronCleanExpiredInvitations implements CronTaskInterface
     {
     }
 
-    public function run(?\DateTimeImmutable $lastRun): void
+    public function run(?DateTimeImmutable $lastRun): void
     {
         $this->invitationsService->deleteExpiredInvitations();
     }

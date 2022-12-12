@@ -18,12 +18,20 @@ use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
+use cs_annotations_manager;
+use cs_dates_manager;
+use cs_environment;
+use cs_list;
+use cs_manager;
+use cs_privateroom_item;
+use cs_user_manager;
+use DateTimeImmutable;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 class CronNewsletter implements CronTaskInterface
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -35,7 +43,7 @@ class CronNewsletter implements CronTaskInterface
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function run(?\DateTimeImmutable $lastRun): void
+    public function run(?DateTimeImmutable $lastRun): void
     {
         $portals = $this->portalRepository->findAll();
         foreach ($portals as $portal) {
@@ -49,7 +57,7 @@ class CronNewsletter implements CronTaskInterface
             $privateRooms = $privateRoomManager->get();
 
             foreach ($privateRooms as $privateRoom) {
-                /** @var \cs_privateroom_item $privateRoom */
+                /** @var cs_privateroom_item $privateRoom */
                 if (!$privateRoom->isOpen() || !$privateRoom->isPrivateRoomNewsletterActive()) {
                     continue;
                 }
@@ -88,7 +96,7 @@ class CronNewsletter implements CronTaskInterface
     /**
      * Prepare and send the newsletters. It describes the activity in the last seven days.
      */
-    private function sendNewsletter(\cs_privateroom_item $privateRoom)
+    private function sendNewsletter(cs_privateroom_item $privateRoom)
     {
         // get user in room
         $user = $privateRoom->getOwnerUserItem();
@@ -109,7 +117,7 @@ class CronNewsletter implements CronTaskInterface
                     $user->getAuthSource(), $portal->getItemID(), true, true);
             }
 
-            $roomList = new \cs_list();
+            $roomList = new cs_list();
             if (!$customizedRoomList->isEmpty()) {
                 $customizedRoomItem = $customizedRoomList->getFirst();
                 while ($customizedRoomItem) {
@@ -164,7 +172,7 @@ class CronNewsletter implements CronTaskInterface
                 $body_title .= $active.'):'.BRLF;
                 $body2 = '';
 
-                /** @var \cs_annotations_manager $annotation_manager */
+                /** @var cs_annotations_manager $annotation_manager */
                 $annotation_manager = $this->legacyEnvironment->getManager('annotation');
                 $annotation_manager->setContextLimit($roomItem->getItemID());
                 if ('daily' == $mail_sequence) {
@@ -172,7 +180,7 @@ class CronNewsletter implements CronTaskInterface
                 } else {
                     $annotation_manager->setAgeLimit(7);
                 }
-                $annotation_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+                $annotation_manager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
                 $annotation_manager->select();
                 $annotation_list = $annotation_manager->get();
                 $annotationsInNewsletter = [];
@@ -186,27 +194,27 @@ class CronNewsletter implements CronTaskInterface
 
                         // NOTE: we only include newly created users (i.e., when they have requested room membership)
                         if ('daily' == $mail_sequence) {
-                            if ($rubric_manager instanceof \cs_user_manager) {
+                            if ($rubric_manager instanceof cs_user_manager) {
                                 $rubric_manager->setExistenceLimit(1);
                             } else {
                                 $rubric_manager->setAgeLimit(1);
                             }
                         } else {
-                            if ($rubric_manager instanceof \cs_user_manager) {
+                            if ($rubric_manager instanceof cs_user_manager) {
                                 $rubric_manager->setExistenceLimit(7);
                             } else {
                                 $rubric_manager->setAgeLimit(7);
                             }
                         }
 
-                        if ($rubric_manager instanceof \cs_dates_manager) {
+                        if ($rubric_manager instanceof cs_dates_manager) {
                             $rubric_manager->setDateModeLimit(2);
                         }
-                        if ($rubric_manager instanceof \cs_user_manager) {
+                        if ($rubric_manager instanceof cs_user_manager) {
                             $rubric_manager->setUserLimit();
                         }
 
-                        $rubric_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+                        $rubric_manager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
                         $rubric_manager->select();
                         $rubric_list = $rubric_manager->get();
                         $rubric_item = $rubric_list->getFirst();

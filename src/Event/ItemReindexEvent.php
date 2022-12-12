@@ -13,6 +13,7 @@
 
 namespace App\Event;
 
+use cs_item;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -24,12 +25,12 @@ class ItemReindexEvent extends Event
 {
     private $item;
 
-    public function __construct(\cs_item $item)
+    public function __construct(cs_item $item)
     {
         $this->item = $item;
     }
 
-    public function getItem(): \cs_item
+    public function getItem(): cs_item
     {
         return $this->item;
     }

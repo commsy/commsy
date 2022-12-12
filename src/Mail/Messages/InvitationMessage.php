@@ -16,17 +16,19 @@ namespace App\Mail\Messages;
 use App\Entity\Portal;
 use App\Mail\Message;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_room_item;
 
 class InvitationMessage extends Message
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
-    private \cs_room_item $room;
+    private cs_room_item $room;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private Portal $portal,
-        \cs_room_item $room,
+        cs_room_item $room,
         private string $token
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();

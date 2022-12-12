@@ -19,7 +19,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
@@ -36,7 +36,7 @@ class UserProvider implements UserProviderInterface
      * If you're not using these features, you do not need to implement
      * this method.
      *
-     * @throws \Symfony\Component\Security\Core\Exception\UserNotFoundException if the user is not found
+     * @throws UserNotFoundException if the user is not found
      */
     public function loadUserByUsername($username): Account
     {
@@ -58,7 +58,7 @@ class UserProvider implements UserProviderInterface
         }
 
         if (null === $account) {
-            throw new \Symfony\Component\Security\Core\Exception\UserNotFoundException();
+            throw new UserNotFoundException();
         }
 
         return $account;
@@ -75,7 +75,7 @@ class UserProvider implements UserProviderInterface
      * If your firewall is "stateless: true" (for a pure API), this
      * method is not called.
      *
-     * @throws \Symfony\Component\Security\Core\Exception\UserNotFoundException if the user is not found
+     * @throws UserNotFoundException if the user is not found
      */
     public function refreshUser(UserInterface $user): Account
     {
@@ -99,7 +99,7 @@ class UserProvider implements UserProviderInterface
         }
 
         if (null === $account) {
-            throw new \Symfony\Component\Security\Core\Exception\UserNotFoundException();
+            throw new UserNotFoundException();
         }
 
         return $account;
@@ -141,7 +141,7 @@ class UserProvider implements UserProviderInterface
             }
         }
 
-        throw new \Symfony\Component\Security\Core\Exception\UserNotFoundException();
+        throw new UserNotFoundException();
     }
 
     /**
@@ -159,6 +159,6 @@ class UserProvider implements UserProviderInterface
             }
         }
 
-        throw new \Symfony\Component\Security\Core\Exception\UserNotFoundException();
+        throw new UserNotFoundException();
     }
 }

@@ -16,6 +16,11 @@ namespace App\Action\Delete;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Services\MarkedService;
+use cs_dates_item;
+use cs_environment;
+use cs_item;
+use cs_list;
+use DateTime;
 use Symfony\Component\Routing\RouterInterface;
 
 class DeleteDate implements DeleteInterface
@@ -24,7 +29,7 @@ class DeleteDate implements DeleteInterface
 
     private string $dateMode = 'normal';
 
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         private RouterInterface $router,
@@ -45,13 +50,13 @@ class DeleteDate implements DeleteInterface
         $this->dateMode = $dateMode;
     }
 
-    public function delete(\cs_item $item): void
+    public function delete(cs_item $item): void
     {
         $item->delete();
 
         $this->markedService->removeItemFromClipboard($item->getItemId());
 
-        /** @var \cs_dates_item $date */
+        /** @var cs_dates_item $date */
         $date = $item;
 
         $this->calendarsService->updateSynctoken($date->getCalendarId());
@@ -62,7 +67,7 @@ class DeleteDate implements DeleteInterface
         $datesManager->setWithoutDateModeLimit();
         $datesManager->select();
 
-        /** @var \cs_list $recurringDates */
+        /** @var cs_list $recurringDates */
         $recurringDates = $datesManager->get();
 
         if ($this->recurring && '' != $date->getRecurrenceId()) {
@@ -75,7 +80,7 @@ class DeleteDate implements DeleteInterface
             $recurringDate = $recurringDates->getFirst();
             while ($recurringDate) {
                 $recurrencePattern = $recurringDate->getRecurrencePattern();
-                $recurrencePatternExcludeDate = new \DateTime($date->getDateTime_start());
+                $recurrencePatternExcludeDate = new DateTime($date->getDateTime_start());
                 if (!isset($recurrencePattern['recurringExclude'])) {
                     $recurrencePattern['recurringExclude'] = [$recurrencePatternExcludeDate->format('Ymd\THis')];
                 } else {
@@ -92,9 +97,9 @@ class DeleteDate implements DeleteInterface
     /**
      * @return string|null
      */
-    public function getRedirectRoute(\cs_item $item)
+    public function getRedirectRoute(cs_item $item)
     {
-        /** @var \cs_dates_item $date */
+        /** @var cs_dates_item $date */
         $date = $item;
 
         if ('normal' == $this->dateMode) {

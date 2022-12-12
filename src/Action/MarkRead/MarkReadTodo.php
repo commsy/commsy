@@ -14,6 +14,7 @@
 namespace App\Action\MarkRead;
 
 use App\Utils\TodoService;
+use cs_item;
 
 class MarkReadTodo implements MarkReadInterface
 {
@@ -21,7 +22,7 @@ class MarkReadTodo implements MarkReadInterface
     {
     }
 
-    public function markRead(\cs_item $item): void
+    public function markRead(cs_item $item): void
     {
         $this->todoService->markTodoReadAndNoticed($item->getItemId());
     }

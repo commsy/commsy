@@ -39,13 +39,19 @@ use App\Search\SearchManager;
 use App\Services\CalendarsService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
+use cs_item;
+use cs_room_item;
+use cs_user_item;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
+use ReflectionClass;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -74,7 +80,7 @@ class SearchController extends BaseController
         int $roomId,
         $requestData,
         RoomService $roomService
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $searchData = new SearchData();
         $searchData->setPhrase($requestData['phrase'] ?? null);
 
@@ -108,7 +114,7 @@ class SearchController extends BaseController
      */
     public function itemSearchFormAction(
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $form = $this->createForm(SearchItemType::class, [], [
             'action' => $this->generateUrl('app_search_results', [
                 'roomId' => $roomId,
@@ -131,7 +137,7 @@ class SearchController extends BaseController
         ReaderService $readerService,
         CalendarsService $calendarsService,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $query = $request->get('search', '');
 
         // query conditions
@@ -169,7 +175,7 @@ class SearchController extends BaseController
         ReaderService $readerService,
         CalendarsService $calendarsService,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $query = $request->get('search', '');
 
         // query conditions
@@ -210,7 +216,7 @@ class SearchController extends BaseController
         ReaderService $readerService,
         CalendarsService $calendarsService,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         // NOTE: for a guest user, $roomItem may be null (e.g. when initiating a search from "all rooms")
         $roomItem = $roomService->getRoomItem($roomId);
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
@@ -429,7 +435,7 @@ class SearchController extends BaseController
         int $roomId,
         int $start = 0,
         string $sort = ''
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         // NOTE: to have the "load more" functionality work with any applied filters, we also need to add all
         //       SearchFilterType form fields to the "load more" query dictionary in results.html.twig
 
@@ -510,7 +516,7 @@ class SearchController extends BaseController
     private function populateSearchData(
         SearchData $searchData,
         Request $request,
-        \cs_user_item $currentUser
+        cs_user_item $currentUser
     ): SearchData {
         // TODO: should we better move this method to SearchData.php?
 
@@ -585,14 +591,14 @@ class SearchController extends BaseController
         if (!empty($searchParams['creation_date_range'])) {
             $creationDateRange = [];
             if (!empty($searchParams['creation_date_range']['left_date'])) {
-                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['creation_date_range']['left_date']);
+                $date = DateTime::createFromFormat('d.m.Y', $searchParams['creation_date_range']['left_date']);
                 if ($date) {
                     $date = $date->setTime(0, 0, 0);
                     $creationDateRange[0] = $date;
                 }
             }
             if (!empty($searchParams['creation_date_range']['right_date'])) {
-                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['creation_date_range']['right_date']);
+                $date = DateTime::createFromFormat('d.m.Y', $searchParams['creation_date_range']['right_date']);
                 if ($date) {
                     $date = $date->setTime(23, 59, 59);
                     $creationDateRange[1] = $date;
@@ -605,14 +611,14 @@ class SearchController extends BaseController
         if (!empty($searchParams['modification_date_range'])) {
             $modificationDateRange = [];
             if (!empty($searchParams['modification_date_range']['left_date'])) {
-                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['modification_date_range']['left_date']);
+                $date = DateTime::createFromFormat('d.m.Y', $searchParams['modification_date_range']['left_date']);
                 if ($date) {
                     $date = $date->setTime(0, 0, 0);
                     $modificationDateRange[0] = $date;
                 }
             }
             if (!empty($searchParams['modification_date_range']['right_date'])) {
-                $date = \DateTime::createFromFormat('d.m.Y', $searchParams['modification_date_range']['right_date']);
+                $date = DateTime::createFromFormat('d.m.Y', $searchParams['modification_date_range']['right_date']);
                 if ($date) {
                     $date = $date->setTime(23, 59, 59);
                     $modificationDateRange[1] = $date;
@@ -761,7 +767,7 @@ class SearchController extends BaseController
         SearchManager $searchManager,
         RouterInterface $router,
         TranslatorInterface $translator
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $results = [];
 
         $query = $request->get('search', '');
@@ -835,14 +841,14 @@ class SearchController extends BaseController
     // # XHR Action requests
     // ##################################################################################################
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/search/xhr/mark', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkAction(
         Request $request,
         MarkAction $markAction,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -850,14 +856,14 @@ class SearchController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/search/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
         Request $request,
         DeleteAction $deleteAction,
         int $roomId
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -865,11 +871,11 @@ class SearchController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param bool          $selectAll
      * @param int[]         $itemIds
      *
-     * @return \cs_item[]
+     * @return cs_item[]
      */
     public function getItemsByFilterConditions(
         $request,
@@ -902,7 +908,7 @@ class SearchController extends BaseController
     ) {
         $results = [];
         foreach ($searchResults->getResults($offset, 10)->toArray() as $searchResult) {
-            $reflection = new \ReflectionClass($searchResult);
+            $reflection = new ReflectionClass($searchResult);
             $type = strtolower(rtrim($reflection->getShortName(), 's'));
 
             if ('label' === $type) {

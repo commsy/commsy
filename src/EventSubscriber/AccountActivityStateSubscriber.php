@@ -20,6 +20,9 @@ use App\Mail\Factories\AccountMessageFactory;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
+use DateInterval;
+use DateTime;
+use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\EnteredEvent;
 use Symfony\Component\Workflow\Event\GuardEvent;
@@ -65,7 +68,7 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
     /**
      * Decides if an account can make the transition to the active_notified state.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function guardNotifyLock(GuardEvent $event)
     {
@@ -84,7 +87,7 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
     /**
      * Decides if an account can make the transition to the idle state.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function guardLock(GuardEvent $event)
     {
@@ -103,7 +106,7 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
     /**
      * Decides if an account can make the transition to the idle_notified state.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function guardNotifyForsake(GuardEvent $event)
     {
@@ -123,7 +126,7 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
     /**
      * Decides if an account can make the transition to the abandoned state.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function guardForsake(GuardEvent $event)
     {
@@ -214,12 +217,12 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
     /**
      * @return void
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    private function datePassedDays(\DateTime $compare, int $numDays): bool
+    private function datePassedDays(DateTime $compare, int $numDays): bool
     {
-        $threshold = new \DateTime();
-        $threshold->sub(new \DateInterval('P'.$numDays.'D'));
+        $threshold = new DateTime();
+        $threshold->sub(new DateInterval('P'.$numDays.'D'));
 
         return $compare < $threshold;
     }

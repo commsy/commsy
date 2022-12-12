@@ -19,6 +19,7 @@ use App\Services\LegacyEnvironment;
 use App\Utils\FileService;
 use App\Utils\RoomService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sylius\Bundle\ThemeBundle\Context\SettableThemeContext;
@@ -29,6 +30,7 @@ use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Vich\UploaderBundle\Handler\DownloadHandler;
 
@@ -181,9 +183,9 @@ class FileController extends AbstractController
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     * @return StreamedResponse
      *
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     #[Route(path: '/logo/server')]
     public function serverLogo(EntityManagerInterface $entityManager, DownloadHandler $downloadHandler): Response
@@ -197,12 +199,12 @@ class FileController extends AbstractController
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     * @return StreamedResponse
      *
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     #[Route(path: '/logo/portal/{portalId}')]
-    #[ParamConverter('portal', class: \App\Entity\Portal::class, options: ['id' => 'portalId'])]
+    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     public function portalLogo(Portal $portal, EntityManagerInterface $entityManager, DownloadHandler $downloadHandler): Response
     {
         if (!$portal->getLogoFile()) {

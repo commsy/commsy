@@ -14,6 +14,7 @@
 namespace App\Security\Authorization\Voter;
 
 use App\Services\LegacyEnvironment;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -47,7 +48,7 @@ class CalendarsVoter extends Voter
 
         return match ($attribute) {
             self::EDIT => $this->canEdit($currentRoom),
-            default => throw new \LogicException('This code should not be reached!'),
+            default => throw new LogicException('This code should not be reached!'),
         };
     }
 

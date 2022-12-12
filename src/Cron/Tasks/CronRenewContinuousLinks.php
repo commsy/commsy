@@ -16,11 +16,14 @@ namespace App\Cron\Tasks;
 use App\Helper\PortalHelper;
 use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use cs_room_item;
+use cs_time_item;
+use DateTimeImmutable;
 
 class CronRenewContinuousLinks implements CronTaskInterface
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -30,7 +33,7 @@ class CronRenewContinuousLinks implements CronTaskInterface
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function run(?\DateTimeImmutable $lastRun): void
+    public function run(?DateTimeImmutable $lastRun): void
     {
         $timeManager = $this->legacyEnvironment->getTimeManager();
         $timeManager->setTypeLimit('time');
@@ -43,7 +46,7 @@ class CronRenewContinuousLinks implements CronTaskInterface
 
             $timeManager->setContextLimit($portal->getId());
 
-            /** @var \cs_time_item $currentTime */
+            /** @var cs_time_item $currentTime */
             $currentTime = $timeManager->getItemByName($this->portalHelper->getTitleOfCurrentTime($portal));
 
             if ($currentTime) {

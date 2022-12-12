@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -59,7 +60,7 @@ class Tag2tag
     private $creatorId = '0';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private $creationDate = '0000-00-00 00:00:00';
@@ -71,7 +72,7 @@ class Tag2tag
     private $modifierId = '0';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
     private $modificationDate = '0000-00-00 00:00:00';
@@ -83,7 +84,7 @@ class Tag2tag
     private $deleterId;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;

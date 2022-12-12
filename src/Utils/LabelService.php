@@ -14,12 +14,19 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_buzzword_item;
+use cs_buzzword_manager;
+use cs_environment;
+use cs_item;
+use cs_label_item;
+use cs_labels_manager;
+use cs_tag_item;
 
 class LabelService
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
-    private \cs_labels_manager $labelManager;
+    private cs_labels_manager $labelManager;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -40,7 +47,7 @@ class LabelService
     /**
      * Creates and returns a new hashtag with the given name and context.
      */
-    public function getNewHashtag(string $hashtagName, int $contextId): \cs_label_item
+    public function getNewHashtag(string $hashtagName, int $contextId): cs_label_item
     {
         $hashtag = $this->labelManager->getNewItem();
 
@@ -121,12 +128,12 @@ class LabelService
      *
      * @return int[]
      */
-    public function getLinkedCategoryIds(\cs_item $item): array
+    public function getLinkedCategoryIds(cs_item $item): array
     {
         $linkedCategories = [];
         $categoriesList = $item->getTagList();
 
-        /** @var \cs_tag_item $categoryItem */
+        /** @var cs_tag_item $categoryItem */
         $categoryItem = $categoriesList->getFirst();
         while ($categoryItem) {
             $linkedCategories[] = $categoryItem->getItemId();
@@ -143,7 +150,7 @@ class LabelService
     {
         $hashtags = [];
 
-        /** @var \cs_buzzword_manager $buzzwordManager */
+        /** @var cs_buzzword_manager $buzzwordManager */
         $buzzwordManager = $this->legacyEnvironment->getBuzzwordManager();
         $buzzwordManager->setContextLimit($roomId);
         $buzzwordManager->setTypeLimit('buzzword');
@@ -168,14 +175,14 @@ class LabelService
     {
         $linkedHashtags = [];
 
-        /** @var \cs_buzzword_manager $buzzwordManager */
+        /** @var cs_buzzword_manager $buzzwordManager */
         $buzzwordManager = $this->legacyEnvironment->getBuzzwordManager();
         $buzzwordManager->setContextLimit($roomId);
         $buzzwordManager->setTypeLimit('buzzword');
         $buzzwordManager->select();
         $buzzwordList = $buzzwordManager->get();
 
-        /** @var \cs_buzzword_item $buzzwordItem */
+        /** @var cs_buzzword_item $buzzwordItem */
         $buzzwordItem = $buzzwordList->getFirst();
         while ($buzzwordItem) {
             $selected_ids = $buzzwordItem->getAllLinkedItemIDArrayLabelVersion();

@@ -15,6 +15,7 @@ namespace App\Repository;
 
 use App\Entity\Server;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 class ServerRepository extends ServiceEntityRepository
@@ -25,7 +26,7 @@ class ServerRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function getServer(): Server
     {

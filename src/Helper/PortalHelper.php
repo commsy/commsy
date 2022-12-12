@@ -15,10 +15,13 @@ namespace App\Helper;
 
 use App\Entity\Portal;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_list;
+use cs_time_item;
 
 class PortalHelper
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -86,7 +89,7 @@ class PortalHelper
         return $retour;
     }
 
-    public function getContinuousRoomListNotLinkedToTime(Portal $portal, \cs_time_item $time): \cs_list
+    public function getContinuousRoomListNotLinkedToTime(Portal $portal, cs_time_item $time): cs_list
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomManager->setContextLimit($portal->getId());
@@ -108,12 +111,12 @@ class PortalHelper
             }
         }
 
-        return new \cs_list();
+        return new cs_list();
     }
 
-    public function getRoomList(Portal $portal): \cs_list
+    public function getRoomList(Portal $portal): cs_list
     {
-        $roomList = new \cs_list();
+        $roomList = new cs_list();
 
         $communityManager = $this->legacyEnvironment->getCommunityManager();
         $communityManager->setContextLimit($portal->getId());
@@ -128,9 +131,9 @@ class PortalHelper
         return $roomList;
     }
 
-    public function getActiveRoomsInPortal(Portal $portal): \cs_list
+    public function getActiveRoomsInPortal(Portal $portal): cs_list
     {
-        $rooms = new \cs_list();
+        $rooms = new cs_list();
 
         $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
         $privateRoomManager->reset();

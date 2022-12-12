@@ -15,6 +15,10 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\Api\GetServerAnnouncement;
+use App\Repository\ServerRepository;
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\File\File;
@@ -75,7 +79,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  *     }
  * )
  */
-#[ORM\Entity(repositoryClass: \App\Repository\ServerRepository::class)]
+#[ORM\Entity(repositoryClass: ServerRepository::class)]
 #[ORM\Table(name: 'server')]
 #[ORM\Index(name: 'context_id', columns: ['context_id'])]
 #[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
@@ -104,11 +108,11 @@ class Server
     #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private int $deleterId;
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
-    private \DateTime $creationDate;
+    private DateTime $creationDate;
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
-    private ?\DateTime $modificationDate = null;
+    private ?DateTime $modificationDate = null;
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
@@ -140,7 +144,7 @@ class Server
     /**
      * @Vich\UploadableField(mapping="server_logo", fileNameProperty="logoImageName")
      */
-    private ?\Symfony\Component\HttpFoundation\File\File $logoImageFile = null;
+    private ?File $logoImageFile = null;
 
     #[ORM\Column(name: 'logo_image_name', type: 'string', length: 255, nullable: true)]
     private ?string $logoImageName = null;
@@ -150,7 +154,7 @@ class Server
 
     public function __construct()
     {
-        $this->creationDate = new \DateTime('0000-00-00 00:00:00');
+        $this->creationDate = new DateTime('0000-00-00 00:00:00');
     }
 
     /**
@@ -182,7 +186,7 @@ class Server
         if (null !== $logoImageFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
-            $this->modificationDate = new \DateTimeImmutable();
+            $this->modificationDate = new DateTimeImmutable();
         }
 
         return $this;

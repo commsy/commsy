@@ -16,6 +16,7 @@ namespace App\EventSubscriber;
 use App\Event\ItemDeletedEvent;
 use App\Services\EtherpadService;
 use App\Utils\MaterialService;
+use cs_material_item;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
@@ -46,7 +47,7 @@ class EtherpadEditSubscriber implements EventSubscriberInterface
             $result = $event->getControllerResult();
             if ($result && array_key_exists('isMaterial', $result)) {
                 if ($result['isMaterial'] && array_key_exists('itemId', $result)) {
-                    /** @var \cs_material_item $materialItem */
+                    /** @var cs_material_item $materialItem */
                     $materialItem = $this->materialService->getMaterial($result['itemId']);
                     if ($materialItem && $materialItem->getEtherpadEditor()) {
                         $result['useEtherpad'] = true;
@@ -65,9 +66,9 @@ class EtherpadEditSubscriber implements EventSubscriberInterface
             $result = $event->getControllerResult();
             if ($result) {
                 if (array_key_exists('item', $result) && $result['item']->getItemID()) {
-                    /** @var \cs_material_item $materialItem */
+                    /** @var cs_material_item $materialItem */
                     $materialItem = $this->materialService->getMaterial($result['item']->getItemID());
-                    if ($materialItem instanceof \cs_material_item) {
+                    if ($materialItem instanceof cs_material_item) {
                         if ($materialItem->getEtherpadEditor() && $materialItem->getEtherpadEditorID()) {
                             // get description text from etherpad
                             $client = $this->etherpadService->getClient();
@@ -91,8 +92,8 @@ class EtherpadEditSubscriber implements EventSubscriberInterface
 
         if ($enabled) {
             $item = $event->getItem();
-            if ($item instanceof \cs_material_item) {
-                /** @var \cs_material_item $material */
+            if ($item instanceof cs_material_item) {
+                /** @var cs_material_item $material */
                 $material = $item;
 
                 if ($material->getEtherpadEditor() && $material->getEtherpadEditorID()) {

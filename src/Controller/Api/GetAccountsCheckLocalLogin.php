@@ -19,12 +19,15 @@ use App\Entity\AuthSourceLocal;
 use App\Repository\AccountsRepository;
 use App\Repository\PortalRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class GetAccountsCheckLocalLogin
 {
-    public function __construct(private PortalRepository $portalRepository, private AccountsRepository $accountsRepository, private \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $passwordEncoder)
-    {
-    }
+    public function __construct(
+        private PortalRepository $portalRepository,
+        private AccountsRepository $accountsRepository,
+        private UserPasswordHasherInterface $passwordEncoder
+    ) {}
 
     public function __invoke(Account $data): Account
     {

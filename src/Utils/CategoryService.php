@@ -14,6 +14,7 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_tag_item;
 
 class CategoryService
 {
@@ -49,7 +50,7 @@ class CategoryService
      *
      * @param null $parentTagId
      */
-    public function addTag($title, $roomId, $parentTagId = null): \cs_tag_item
+    public function addTag($title, $roomId, $parentTagId = null): cs_tag_item
     {
         $environment = $this->legacyEnvironment->getEnvironment();
         $environment->setCurrentContextID($roomId);

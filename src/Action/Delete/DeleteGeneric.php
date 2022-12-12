@@ -15,10 +15,12 @@ namespace App\Action\Delete;
 
 use App\Services\LegacyEnvironment;
 use App\Services\MarkedService;
+use cs_environment;
+use cs_item;
 
 class DeleteGeneric implements DeleteInterface
 {
-    protected \cs_environment $legacyEnvironment;
+    protected cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -27,7 +29,7 @@ class DeleteGeneric implements DeleteInterface
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function delete(\cs_item $item): void
+    public function delete(cs_item $item): void
     {
         $item->delete();
 
@@ -37,7 +39,7 @@ class DeleteGeneric implements DeleteInterface
     /**
      * @return string
      */
-    public function getRedirectRoute(\cs_item $item)
+    public function getRedirectRoute(cs_item $item)
     {
         return null;
     }

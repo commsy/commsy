@@ -34,6 +34,11 @@ use App\Utils\MailAssistant;
 use App\Utils\MaterialService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use cs_dates_item;
+use cs_file_item;
+use cs_item;
+use cs_manager;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -43,7 +48,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use UnexpectedValueException;
 
 /**
  * Class ItemController.
@@ -56,7 +63,7 @@ class ItemController extends AbstractController
     /**
      * @param mixed $transformerManager
      */
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setTransformerManager(TransformerManager $transformerManager): void
     {
         $this->transformerManager = $transformerManager;
@@ -78,7 +85,7 @@ class ItemController extends AbstractController
         int $itemId,
         bool $draft = false
     ): Response {
-        /** @var \cs_item $item */
+        /** @var cs_item $item */
         $item = $itemService->getTypedItem($itemId);
 
         $transformer = $this->transformerManager->getConverter($item->getItemType());
@@ -98,7 +105,7 @@ class ItemController extends AbstractController
 
         $withRecurrence = false;
         if ('date' == $itemType) {
-            /** @var \cs_dates_item $item */
+            /** @var cs_dates_item $item */
             if ('' != $item->getRecurrencePattern() && !$draft) {
                 $formOptions['attr']['unsetRecurrence'] = true;
                 $withRecurrence = true;
@@ -136,7 +143,7 @@ class ItemController extends AbstractController
                     $tempDate->save();
                 }
             } else {
-                throw new \UnexpectedValueException("Value must be one of 'save', 'saveThisDate' and 'saveAllDates'.");
+                throw new UnexpectedValueException("Value must be one of 'save', 'saveThisDate' and 'saveAllDates'.");
             }
 
             return $this->redirectToRoute('app_item_savedescription', ['roomId' => $roomId, 'itemId' => $itemId]);
@@ -803,7 +810,7 @@ class ItemController extends AbstractController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/item/sendlist', condition: 'request.isXmlHttpRequest()')]
     public function sendlistAction(
@@ -817,7 +824,7 @@ class ItemController extends AbstractController
         // extract item id from request data
         $requestContent = $request->getContent();
         if (empty($requestContent)) {
-            throw new \Exception('no request content given');
+            throw new Exception('no request content given');
         }
 
         $room = $roomService->getRoomItem($roomId);
@@ -871,10 +878,10 @@ class ItemController extends AbstractController
     #[Route(path: '/room/{roomId}/item/{itemId}/filelist')]
     public function filelistAction($roomId, $itemId, ItemService $itemService): Response
     {
-        /** @var \cs_item $item */
+        /** @var cs_item $item */
         $item = $itemService->getItem($itemId);
 
-        /** @var \cs_file_item[] $files */
+        /** @var cs_file_item[] $files */
         $files = $item->getFileList()->to_array();
         $fileArray = [];
 
@@ -894,13 +901,13 @@ class ItemController extends AbstractController
     {
         $environment = $legacyEnvironment->getEnvironment();
 
-        /** @var \cs_item $baseItem */
+        /** @var cs_item $baseItem */
         $baseItem = $itemService->getItem($itemId);
 
-        /** @var \cs_manager $rubricManager */
+        /** @var cs_manager $rubricManager */
         $rubricManager = $environment->getManager($baseItem->getItemType());
 
-        /** @var \cs_item $item */
+        /** @var cs_item $item */
         $item = $rubricManager->getItem($itemId);
 
         if ('project' == $baseItem->getItemType()) {
@@ -914,7 +921,7 @@ class ItemController extends AbstractController
             $rubricManager->setWithoutDateModeLimit();
         }
         if (!$environment->getCurrentUserItem()->isModerator()) {
-            $rubricManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+            $rubricManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
         }
         $rubricManager->select();
         $itemList = $rubricManager->get();

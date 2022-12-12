@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,7 +27,7 @@ class AnnotationPortfolio
     /**
      * @var int
      */
-    #[ORM\Column(name: 'p_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'p_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $pId = 0;
@@ -34,7 +35,7 @@ class AnnotationPortfolio
     /**
      * @var int
      */
-    #[ORM\Column(name: 'a_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'a_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $aId = 0;
@@ -42,12 +43,12 @@ class AnnotationPortfolio
     /**
      * @var int
      */
-    #[ORM\Column(name: 'row', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'row', type: Types::INTEGER)]
     private ?int $row = 0;
 
     /**
      * @var int
      */
-    #[ORM\Column(name: 'column', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'column', type: Types::INTEGER)]
     private ?int $column = 0;
 }

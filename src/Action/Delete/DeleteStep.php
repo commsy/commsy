@@ -13,6 +13,8 @@
 
 namespace App\Action\Delete;
 
+use cs_item;
+use cs_step_item;
 use Symfony\Component\Routing\RouterInterface;
 
 class DeleteStep implements DeleteInterface
@@ -21,7 +23,7 @@ class DeleteStep implements DeleteInterface
     {
     }
 
-    public function delete(\cs_item $item): void
+    public function delete(cs_item $item): void
     {
         $item->delete();
     }
@@ -29,9 +31,9 @@ class DeleteStep implements DeleteInterface
     /**
      * @return string|null
      */
-    public function getRedirectRoute(\cs_item $item)
+    public function getRedirectRoute(cs_item $item)
     {
-        /** @var \cs_step_item $step */
+        /** @var cs_step_item $step */
         $step = $item;
 
         return $this->router->generate('app_todo_detail', [

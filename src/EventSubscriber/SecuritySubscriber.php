@@ -16,6 +16,7 @@ namespace App\EventSubscriber;
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use App\Utils\RequestContext;
+use cs_environment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -28,9 +29,9 @@ use Symfony\Component\Security\Http\SecurityEvents;
 class SecuritySubscriber implements EventSubscriberInterface
 {
     /**
-     * @var \cs_environment|LegacyEnvironment
+     * @var cs_environment|LegacyEnvironment
      */
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,

@@ -13,6 +13,8 @@
 
 namespace App\Database;
 
+use Exception;
+use ReflectionClass;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -20,7 +22,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class DatabaseChecks
 {
     /**
-     * @param \App\Database\DatabaseCheck[] $checks
+     * @param DatabaseCheck[] $checks
      */
     public function __construct(private iterable $checks)
     {
@@ -36,7 +38,7 @@ class DatabaseChecks
         $limit = $input->getOption('limit');
         if ($limit) {
             $checks = array_filter($checks, function ($check) use ($limit) {
-                $className = (new \ReflectionClass($check))->getShortName();
+                $className = (new ReflectionClass($check))->getShortName();
 
                 return $className === $limit;
             });
@@ -47,7 +49,7 @@ class DatabaseChecks
 
         foreach ($checks as $check) {
             try {
-                $class = new \ReflectionClass($check);
+                $class = new ReflectionClass($check);
                 $io->section('Running check: '.$class->getShortName());
 
                 if ($check->resolve($io)) {
@@ -56,7 +58,7 @@ class DatabaseChecks
                     $io->warning('Check failed resolving problems, aborting...');
                     break;
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $io->error($e->getMessage());
             }
         }

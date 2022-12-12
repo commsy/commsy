@@ -18,13 +18,17 @@ use App\Http\JsonDataResponse;
 use App\Http\JsonErrorResponse;
 use App\Services\LegacyEnvironment;
 use App\Services\MarkedService;
+use cs_environment;
+use cs_item;
+use cs_room_item;
+use cs_user_item;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class InsertUserroomAction
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         private TranslatorInterface $translator,
@@ -35,7 +39,7 @@ class InsertUserroomAction
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function execute(\cs_room_item $roomItem, array $users): Response
+    public function execute(cs_room_item $roomItem, array $users): Response
     {
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
@@ -61,7 +65,7 @@ class InsertUserroomAction
 
         // for each given (project room) user, copy each import item into his/her user room
         foreach ($users as $user) {
-            /** @var \cs_user_item $user */
+            /** @var cs_user_item $user */
             $userRoom = $user->getLinkedUserroomItem();
             if (!$userRoom) {
                 continue;
@@ -71,7 +75,7 @@ class InsertUserroomAction
             $userRoomIds[] = $userRoomId;
 
             foreach ($imports as $import) {
-                /** @var \cs_item $import */
+                /** @var cs_item $import */
 
                 // copy item
                 $oldContextId = $this->legacyEnvironment->getCurrentContextID();
@@ -98,12 +102,12 @@ class InsertUserroomAction
             $userManager = $this->legacyEnvironment->getUserManager();
 
             // for the current user, get his/her related users from the user rooms identified by the IDs in $userRoomIds
-            /** @var \cs_user_item[] $relatedUsers */
+            /** @var cs_user_item[] $relatedUsers */
             $relatedUsers = $userManager->getAllUsersByUserAndRoomIDLimit($currentUser->getUserId(), $userRoomIds, $authSource->getId());
 
             // for all found related users, mark the copied items as read & noticed
             if (!empty($relatedUsers)) {
-                $relatedUserIds = array_map(fn (\cs_user_item $user) => $user->getItemID(), $relatedUsers);
+                $relatedUserIds = array_map(fn (cs_user_item $user) => $user->getItemID(), $relatedUsers);
 
                 foreach ($versionIdsByCopyIds as $copyId => $versionId) {
                     // TODO: allowing markItemsAsRead() & markItemsAsNoticed() to accept a matching array of version IDs would avoid this foreach loop

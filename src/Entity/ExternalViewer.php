@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,7 +27,7 @@ class ExternalViewer
     /**
      * @var int
      */
-    #[ORM\Column(name: 'item_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $itemId = null;
@@ -34,7 +35,7 @@ class ExternalViewer
     /**
      * @var string
      */
-    #[ORM\Column(name: 'user_id', type: \Doctrine\DBAL\Types\Types::STRING, length: 32)]
+    #[ORM\Column(name: 'user_id', type: Types::STRING, length: 32)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?string $userId = null;

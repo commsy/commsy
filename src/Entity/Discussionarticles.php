@@ -13,6 +13,8 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -62,17 +64,17 @@ class Discussionarticles
     #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private ?int $deleterId = null;
     #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
-    private \DateTime $creationDate;
+    private DateTime $creationDate;
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
     #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $modificationDate = null;
+    private ?DateTimeInterface $modificationDate = null;
     /**
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
     #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $deletionDate = null;
+    private ?DateTimeInterface $deletionDate = null;
     /**
      * @var string
      */
@@ -101,7 +103,7 @@ class Discussionarticles
 
     public function __construct()
     {
-        $this->creationDate = new \DateTime('0000-00-00 00:00:00');
+        $this->creationDate = new DateTime('0000-00-00 00:00:00');
     }
 
     /**
@@ -259,7 +261,7 @@ class Discussionarticles
     /**
      * Set creationDate.
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Discussionarticles
      */
@@ -273,7 +275,7 @@ class Discussionarticles
     /**
      * Get creationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -283,7 +285,7 @@ class Discussionarticles
     /**
      * Set modificationDate.
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Discussionarticles
      */
@@ -297,7 +299,7 @@ class Discussionarticles
     /**
      * Get modificationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -307,7 +309,7 @@ class Discussionarticles
     /**
      * Set deletionDate.
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Discussionarticles
      */
@@ -321,7 +323,7 @@ class Discussionarticles
     /**
      * Get deletionDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {

@@ -14,12 +14,15 @@
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_todo_item;
+use DateTime;
 
 class TodoTransformer extends AbstractTransformer
 {
     protected $entity = 'todo';
 
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -29,7 +32,7 @@ class TodoTransformer extends AbstractTransformer
     /**
      * Transforms a cs_todo_item object to an array.
      *
-     * @param \cs_todo_item $dateItem
+     * @param cs_todo_item $dateItem
      *
      * @return array
      */
@@ -47,7 +50,7 @@ class TodoTransformer extends AbstractTransformer
 
                 $activating_date = $todoItem->getActivatingDate();
                 if (!stristr($activating_date, '9999')) {
-                    $datetime = new \DateTime($activating_date);
+                    $datetime = new DateTime($activating_date);
                     $todoData['hiddendate']['date'] = $datetime;
                     $todoData['hiddendate']['time'] = $datetime;
                 }
@@ -55,9 +58,9 @@ class TodoTransformer extends AbstractTransformer
 
             if ('cs_step_item' != $todoItem::class) {
                 if ($todoItem->getDate() && '9999-00-00 00:00:00' != $todoItem->getDate()) {
-                    $datetimeDueDate = new \DateTime($todoItem->getDate());
+                    $datetimeDueDate = new DateTime($todoItem->getDate());
                 } else {
-                    $datetimeDueDate = new \DateTime();
+                    $datetimeDueDate = new DateTime();
                 }
                 $todoData['due_date']['date'] = $datetimeDueDate;
                 $todoData['due_date']['time'] = $datetimeDueDate;
@@ -96,10 +99,10 @@ class TodoTransformer extends AbstractTransformer
     /**
      * Applies an array of data to an existing object.
      *
-     * @param \cs_todo_item $todoObject
+     * @param cs_todo_item $todoObject
      * @param array         $todoData
      *
-     * @return \cs_todo_item
+     * @return cs_todo_item
      */
     public function applyTransformation($todoObject, $todoData)
     {

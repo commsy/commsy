@@ -19,6 +19,7 @@ use App\Event\UserJoinedRoomEvent;
 use App\Event\UserLeftRoomEvent;
 use App\Event\UserStatusChangedEvent;
 use App\Utils\UserroomService;
+use cs_user_item;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UserRoomSubscriber implements EventSubscriberInterface
@@ -102,7 +103,7 @@ class UserRoomSubscriber implements EventSubscriberInterface
         }
 
         /**
-         * @var \cs_user_item[] $relatedUsers
+         * @var cs_user_item[] $relatedUsers
          */
         $relatedUsers = $portalUser->getRelatedUserList(true)->to_array();
 

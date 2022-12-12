@@ -34,6 +34,10 @@ use App\Utils\CategoryService;
 use App\Utils\DiscussionService;
 use App\Utils\LabelService;
 use App\Utils\TopicService;
+use cs_discussion_item;
+use cs_discussionarticle_item;
+use cs_room_item;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
@@ -42,6 +46,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -53,13 +58,13 @@ class DiscussionController extends BaseController
     private DiscussionService $discussionService;
     private SessionInterface $session;
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setDiscussionService(DiscussionService $discussionService): void
     {
         $this->discussionService = $discussionService;
     }
 
-    #[\Symfony\Contracts\Service\Attribute\Required]
+    #[Required]
     public function setSession(SessionInterface $session): void
     {
         $this->session = $session;
@@ -324,7 +329,7 @@ class DiscussionController extends BaseController
 
         // mark discussion articles as read / noticed
         foreach ($articleList as $article) {
-            /** @var \cs_discussionarticle_item $article */
+            /** @var cs_discussionarticle_item $article */
             $latestReader = $readerManager->getLatestReader($article->getItemID());
             if (empty($latestReader) || $latestReader['read_date'] < $article->getModificationDate()) {
                 $readerManager->markRead($article->getItemID(), 0);
@@ -723,7 +728,7 @@ class DiscussionController extends BaseController
 
         if ('discussion' == $item->getItemType()) {
             // get discussion from DiscussionService
-            /** @var \cs_discussion_item $discussionItem */
+            /** @var cs_discussion_item $discussionItem */
             $discussionItem = $this->discussionService->getDiscussion($itemId);
             $discussionItem->setDraftStatus($isDraft);
             if (!$discussionItem) {
@@ -975,7 +980,7 @@ class DiscussionController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion/download')]
     public function downloadAction(
@@ -993,7 +998,7 @@ class DiscussionController extends BaseController
     // # XHR Action requests
     // ##################################################################################################
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion/xhr/markread', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkReadAction(
@@ -1008,7 +1013,7 @@ class DiscussionController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion/xhr/mark', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkAction(
@@ -1025,7 +1030,7 @@ class DiscussionController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
     public function xhrCategorizeAction(
@@ -1039,7 +1044,7 @@ class DiscussionController extends BaseController
     /**
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
     public function xhrHashtagAction(
@@ -1051,7 +1056,7 @@ class DiscussionController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion/xhr/activate', condition: 'request.isXmlHttpRequest()')]
     public function xhrActivateAction(
@@ -1066,7 +1071,7 @@ class DiscussionController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeactivateAction(
@@ -1081,7 +1086,7 @@ class DiscussionController extends BaseController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
@@ -1099,7 +1104,7 @@ class DiscussionController extends BaseController
      * @return FormInterface
      */
     private function createFilterForm(
-        \cs_room_item $room
+        cs_room_item $room
     ) {
         // setup filter form default values
         $defaultFilterValues = [
@@ -1116,11 +1121,11 @@ class DiscussionController extends BaseController
     }
 
     /**
-     * @param \cs_room_item $roomItem
+     * @param cs_room_item $roomItem
      * @param bool          $selectAll
      * @param int[]         $itemIds
      *
-     * @return \cs_discussion_item[]
+     * @return cs_discussion_item[]
      */
     public function getItemsByFilterConditions(
         Request $request,

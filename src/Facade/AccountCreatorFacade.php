@@ -15,6 +15,7 @@ namespace App\Facade;
 
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
+use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AccountCreatorFacade
@@ -26,7 +27,7 @@ class AccountCreatorFacade
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function persistNewAccount(Account $account): \cs_user_item
+    public function persistNewAccount(Account $account): cs_user_item
     {
         $this->entityManager->persist($account);
         $this->entityManager->flush();

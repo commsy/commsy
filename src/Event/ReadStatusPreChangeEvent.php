@@ -14,6 +14,7 @@
 namespace App\Event;
 
 use App\Utils\ReaderService;
+use InvalidArgumentException;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -36,7 +37,7 @@ class ReadStatusPreChangeEvent extends Event
             ReaderService::READ_STATUS_SEEN !== $newReadStatus &&
             !empty($newReadStatus) // most CommSy code currently uses an empty string ('') instead of READ_STATUS_SEEN
         ) {
-            throw new \InvalidArgumentException('unknown read status given');
+            throw new InvalidArgumentException('unknown read status given');
         }
         $this->newReadStatus = $newReadStatus;
     }

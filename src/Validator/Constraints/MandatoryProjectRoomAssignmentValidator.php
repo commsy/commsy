@@ -14,12 +14,15 @@
 namespace App\Validator\Constraints;
 
 use App\Services\LegacyEnvironment;
+use cs_community_item;
+use cs_environment;
+use cs_room_item;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 class MandatoryProjectRoomAssignmentValidator extends ConstraintValidator
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment
@@ -37,9 +40,9 @@ class MandatoryProjectRoomAssignmentValidator extends ConstraintValidator
             return;
         }
 
-        /** @var \cs_room_item $room */
+        /** @var cs_room_item $room */
         $room = $constraint->room;
-        if (!$room instanceof \cs_community_item) {
+        if (!$room instanceof cs_community_item) {
             return;
         }
 

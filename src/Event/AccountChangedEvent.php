@@ -13,6 +13,7 @@
 
 namespace App\Event;
 
+use cs_user_item;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -23,27 +24,27 @@ use Symfony\Contracts\EventDispatcher\Event;
 class AccountChangedEvent extends Event
 {
     /**
-     * @var \cs_user_item The unchanged item
+     * @var cs_user_item The unchanged item
      */
     private $oldAccount;
 
     /**
-     * @var \cs_user_item The updated item
+     * @var cs_user_item The updated item
      */
     private $newAccount;
 
-    public function __construct(\cs_user_item $oldAccount, \cs_user_item $newAccount)
+    public function __construct(cs_user_item $oldAccount, cs_user_item $newAccount)
     {
         $this->oldAccount = $oldAccount;
         $this->newAccount = $newAccount;
     }
 
-    public function getOldAccount(): \cs_user_item
+    public function getOldAccount(): cs_user_item
     {
         return $this->oldAccount;
     }
 
-    public function getNewAccount(): \cs_user_item
+    public function getNewAccount(): cs_user_item
     {
         return $this->newAccount;
     }

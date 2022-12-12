@@ -16,10 +16,12 @@ namespace App\Cron\Tasks;
 use App\Helper\PortalHelper;
 use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
+use cs_environment;
+use DateTimeImmutable;
 
 class CronCheckTimeLabels implements CronTaskInterface
 {
-    private \cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
@@ -29,7 +31,7 @@ class CronCheckTimeLabels implements CronTaskInterface
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function run(?\DateTimeImmutable $lastRun): void
+    public function run(?DateTimeImmutable $lastRun): void
     {
         $timeManager = $this->legacyEnvironment->getTimeManager();
         $timeManager->setSortOrder('title');

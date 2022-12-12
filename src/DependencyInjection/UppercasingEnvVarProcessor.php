@@ -13,11 +13,12 @@
 
 namespace App\DependencyInjection;
 
+use Closure;
 use Symfony\Component\DependencyInjection\EnvVarProcessorInterface;
 
 class UppercasingEnvVarProcessor implements EnvVarProcessorInterface
 {
-    public function getEnv($prefix, $name, \Closure $getEnv)
+    public function getEnv($prefix, $name, Closure $getEnv)
     {
         $env = $getEnv($name);
 

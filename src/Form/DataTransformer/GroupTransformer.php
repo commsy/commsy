@@ -13,6 +13,8 @@
 
 namespace App\Form\DataTransformer;
 
+use cs_group_item;
+use DateTime;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class GroupTransformer extends AbstractTransformer
@@ -22,7 +24,7 @@ class GroupTransformer extends AbstractTransformer
     /**
      * Transforms a cs_group_item object to an array.
      *
-     * @param \cs_group_item $groupItem
+     * @param cs_group_item $groupItem
      *
      * @return array
      */
@@ -40,7 +42,7 @@ class GroupTransformer extends AbstractTransformer
 
                 $activating_date = $groupItem->getActivatingDate();
                 if (!stristr($activating_date, '9999')) {
-                    $datetime = new \DateTime($activating_date);
+                    $datetime = new DateTime($activating_date);
                     $groupData['hiddendate']['date'] = $datetime;
                     $groupData['hiddendate']['time'] = $datetime;
                 }
@@ -56,7 +58,7 @@ class GroupTransformer extends AbstractTransformer
      * @param object $groupObject
      * @param array  $groupData
      *
-     * @return \cs_group_item|null
+     * @return cs_group_item|null
      *
      * @throws TransformationFailedException if room item is not found
      */

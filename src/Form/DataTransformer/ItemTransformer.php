@@ -13,6 +13,9 @@
 
 namespace App\Form\DataTransformer;
 
+use cs_item;
+use DateTime;
+
 class ItemTransformer extends AbstractTransformer
 {
     protected $entity = 'item';
@@ -36,7 +39,7 @@ class ItemTransformer extends AbstractTransformer
                 $itemData['workflowResubmission'] = false;
             }
             if ('0000-00-00 00:00:00' != $item->getWorkflowResubmissionDate()) {
-                $itemData['workflowResubmissionDate'] = new \DateTime($item->getWorkflowResubmissionDate());
+                $itemData['workflowResubmissionDate'] = new DateTime($item->getWorkflowResubmissionDate());
             }
 
             $itemData['workflowResubmissionWho'] = $item->getWorkflowResubmissionWho();
@@ -48,7 +51,7 @@ class ItemTransformer extends AbstractTransformer
                 $itemData['workflowValidity'] = false;
             }
             if ('0000-00-00 00:00:00' != $item->getWorkflowValidityDate()) {
-                $itemData['workflowValidityDate'] = new \DateTime($item->getWorkflowValidityDate());
+                $itemData['workflowValidityDate'] = new DateTime($item->getWorkflowValidityDate());
             }
             $itemData['workflowValidityWho'] = $item->getWorkflowValidityWho();
             $itemData['workflowValidityWhoAdditional'] = $item->getWorkflowValidityWhoAdditional();
@@ -64,7 +67,7 @@ class ItemTransformer extends AbstractTransformer
      * @param object $materialObject
      * @param array  $materialData
      *
-     * @return \cs_item
+     * @return cs_item
      */
     public function applyTransformation($item, $itemData)
     {

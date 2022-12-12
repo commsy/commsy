@@ -15,6 +15,7 @@ namespace App\Security\Authorization\Voter;
 
 use App\Entity\Portal;
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -24,7 +25,7 @@ class PortalModeratorVoter extends Voter
     public const PORTAL_MODERATOR = 'PORTAL_MODERATOR';
 
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
     private $legacyEnvironment;
 
