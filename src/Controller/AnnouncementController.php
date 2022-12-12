@@ -360,7 +360,7 @@ class AnnouncementController extends BaseController
         $amountAnnotations = $annotationService->getListAnnotations($roomId, $infoArray['announcement']->getItemId(),
             null, null);
 
-        return $this->render('announcement_detail.html.twig', [
+        return $this->render('announcement/detail.html.twig', [
             'roomId' => $roomId,
             'announcement' => $infoArray['announcement'],
             'amountAnnotations' => sizeof($amountAnnotations),
