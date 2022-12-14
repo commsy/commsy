@@ -468,7 +468,7 @@ class AccountController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/account/delete')]
-    #[IsGranted(['IS_AUTHENTICATED_FULLY'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function deleteAccount(
         Request $request,
         TranslatorInterface $translator,

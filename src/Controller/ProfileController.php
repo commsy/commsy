@@ -418,7 +418,7 @@ class ProfileController extends AbstractController
             }
         }
 
-        return $this->render('profile/deleteRoomProfile.html.twig', [
+        return $this->render('profile/delete_room_profile.html.twig', [
             'override' => $deleteParameter,
             'form_lock' => $lockForm->createView(),
             'form_delete' => $deleteForm->createView(),
