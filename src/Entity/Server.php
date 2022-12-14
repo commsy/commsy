@@ -110,7 +110,7 @@ class Server
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private DateTime $creationDate;
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
-    private ?DateTime $modificationDate = null;
+    private ?DateTimeInterface $modificationDate = null;
     /**
      * @var DateTimeInterface
      */

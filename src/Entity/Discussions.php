@@ -14,6 +14,7 @@
 namespace App\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -136,7 +137,12 @@ class Discussions
      * @var Discussionarticles[]|null
      */
     #[ORM\OneToMany(targetEntity: 'Discussionarticles', mappedBy: 'discussion')]
-    private ?array $discussionarticles = null;
+    private Collection $discussionarticles;
+
+    public function __construct()
+    {
+        $this->discussionarticles = new ArrayCollection();
+    }
 
     public function isIndexable()
     {
