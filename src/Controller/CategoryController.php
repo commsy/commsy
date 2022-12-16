@@ -51,7 +51,7 @@ class CategoryController extends AbstractController
         $defaultData = ['roomId' => $roomId];
         $form = $this->createForm(Types\TagType::class, $defaultData, ['action' => $this->generateUrl('app_category_new', ['roomId' => $roomId])]);
 
-        return $this->render('category/showDetail.html.twig', ['tags' => $roomTags, 'form' => $form->createView()]);
+        return $this->render('category/show_detail.html.twig', ['tags' => $roomTags, 'form' => $form->createView()]);
     }
 
     #[Route(path: '/room/{roomId}/category/add')]

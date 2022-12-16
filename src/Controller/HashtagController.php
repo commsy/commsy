@@ -44,7 +44,7 @@ class HashtagController extends AbstractController
         int $roomId,
         LabelRepository $labelRepository
     ): Response {
-        return $this->render('hashtag/showDetail.html.twig', [
+        return $this->render('hashtag/show_detail.html.twig', [
             'hashtags' => $labelRepository->findRoomHashtags($roomId),
         ]);
     }
@@ -53,7 +53,7 @@ class HashtagController extends AbstractController
         int $roomId,
         LabelRepository $labelRepository
     ): Response {
-        return $this->render('hashtag/showDetailShort.html.twig', [
+        return $this->render('hashtag/show_detail_short.html.twig', [
             'hashtags' => $labelRepository->findRoomHashtags($roomId),
         ]);
     }
