@@ -183,7 +183,7 @@ class UserController extends BaseController
             ]);
         }
 
-        return $this->render('user/sendMailViaContactForm.html.twig', [
+        return $this->render('user/send_mail_via_contact_form.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -291,7 +291,7 @@ class UserController extends BaseController
             'users' => $userItems,
         ]);
 
-        return $this->render('user/sendMail.html.twig', [
+        return $this->render('user/send_mail.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -529,7 +529,7 @@ class UserController extends BaseController
             }
         }
 
-        return $this->render('user/changeStatus.html.twig', [
+        return $this->render('user/change_status.html.twig', [
             'users' => $users,
             'form' => $form->createView(),
             'status' => $formData['status'],
@@ -975,7 +975,7 @@ class UserController extends BaseController
             throw $this->createNotFoundException('no item found for id '.$itemId);
         }
 
-        return $this->render('user/sendSuccess.html.twig', [
+        return $this->render('user/send_success.html.twig', [
             'link' => $this->generateUrl('app_user_detail', [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
@@ -994,7 +994,7 @@ class UserController extends BaseController
             throw $this->createNotFoundException('no item found for id '.$itemId);
         }
 
-        return $this->render('user/sendSuccessContact.html.twig', [
+        return $this->render('user/send_success_contact.html.twig', [
             'link' => $this->generateUrl($originPath, [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
@@ -1498,7 +1498,7 @@ class UserController extends BaseController
             }
         }
 
-        return $this->render('user/sendMultiple.html.twig', [
+        return $this->render('user/send_multiple.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -1507,7 +1507,7 @@ class UserController extends BaseController
     public function sendMultipleSuccessAction(
         int $roomId
     ): Response {
-        return $this->render('user/sendMultipleSuccess.html.twig', [
+        return $this->render('user/send_multiple_success.html.twig', [
             'link' => $this->generateUrl('app_user_list', [
                 'roomId' => $roomId,
             ]),

@@ -161,9 +161,11 @@ class DashboardController extends AbstractController
             $lastId = $request->query->get('lastId');
         }
 
-        $feedList = $roomFeedGenerator->getDashboardFeedList($max, $lastId);
+        $environment = $legacyEnvironment->getEnvironment();
 
-        $user = $legacyEnvironment->getEnvironment()->getPortalUserItem();
+        $feedList = $roomFeedGenerator->getDashboardFeedList($max, $lastId);
+        $user = $environment->getPortalUserItem();
+        $currentContextId = $environment->getCurrentContextID();
 
         $readerList = [];
         $feedItems = [];
@@ -178,6 +180,7 @@ class DashboardController extends AbstractController
         return $this->render('dashboard/feed.html.twig', [
             'feedList' => $feedItems,
             'readerList' => $readerList,
+            'currentContextId' => $currentContextId,
         ]);
     }
 

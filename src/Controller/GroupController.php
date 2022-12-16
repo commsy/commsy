@@ -1045,7 +1045,7 @@ class GroupController extends BaseController
             }
         }
 
-        return $this->render('group/sendMultiple.html.twig', [
+        return $this->render('group/send_multiple.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -1054,7 +1054,7 @@ class GroupController extends BaseController
     public function sendMultipleSuccessAction(
         int $roomId
     ): Response {
-        return $this->render('group/sendMultipleSuccess.html.twig', [
+        return $this->render('group/send_multiple_success.html.twig', [
             'link' => $this->generateUrl('app_group_list', [
                 'roomId' => $roomId,
             ]),
