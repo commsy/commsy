@@ -116,18 +116,22 @@ COPY docker/php/supervisord.conf /etc/supervisord.conf
 COPY docker/php/supervisor.d /etc/supervisor/conf.d/
 
 ENTRYPOINT ["docker-entrypoint"]
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]
 
 ##############################################################################
 
 # Dockerfile
 FROM commsy_php AS commsy_php_dev
 
-ENV APP_ENV=dev PHP_IDE_CONFIG="serverName=commsy"
+ENV APP_ENV=dev
 
-ARG XDEBUG_VERSION=^3.1
+ARG XDEBUG_VERSION=^3.2
 RUN set -eux; \
 	install-php-extensions xdebug-$XDEBUG_VERSION
+
+RUN rm $PHP_INI_DIR/conf.d/commsy.prod.ini; \
+	mv "$PHP_INI_DIR/php.ini" "$PHP_INI_DIR/php.ini-production"; \
+	mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 COPY docker/php/conf.d/commsy.dev.ini $PHP_INI_DIR/conf.d/
 
