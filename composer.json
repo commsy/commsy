@@ -6,6 +6,7 @@
     "require": {
         "php": "^8.0.2",
         "ext-ctype": "*",
+        "ext-fileinfo": "*",
         "ext-gd": "*",
         "ext-iconv": "*",
         "ext-intl": "*",

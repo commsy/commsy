@@ -129,11 +129,9 @@ class DownloadService
             $fileSystem = new Filesystem();
             $fileSystem->mkdir($targetFolder, 0777);
 
-            $rootDirectory = $this->parameterBag->get('kernel.project_dir');
-
             $filesCounter = [];
             foreach ($files as $file) {
-                $sourceFilePath = $rootDirectory.'/'.$file->getDiskFileName();
+                $sourceFilePath = $file->getDiskFileName();
                 if ($fileSystem->exists($sourceFilePath)) {
                     $targetFilePath = $targetFolder.'/'.$file->getFilename();
 

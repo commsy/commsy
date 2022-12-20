@@ -231,6 +231,7 @@ class cs_file_manager extends cs_manager
 
     public function saveItem($file_item)
     {
+        /** @var cs_file_item $file_item */
         $saved = false;
         $current_user = $this->_environment->getCurrentUser();
         $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET'.
@@ -246,7 +247,6 @@ class cs_file_manager extends cs_manager
         }
         $temp_upload_session_id = $file_item->getTempUploadFromEditorSessionID();
         if (!empty($temp_upload_session_id)) {
-            // $query .= ' temp_upload="'.encode(AS_DB,$is_temp_upload).'", ';
             $query .= ' temp_upload_session_id="'.encode(AS_DB, $file_item->getTempUploadFromEditorSessionID()).'", ';
         }
         $query .= ' extras="'.encode(AS_DB, serialize($file_item->getExtraInformation())).'"';
@@ -257,18 +257,17 @@ class cs_file_manager extends cs_manager
             $saved = $this->_saveOnDisk($file_item);
             if ($saved) {
                 $discManager = $this->_environment->getDiscManager();
-                $filePath = $discManager->getFilePath($this->_environment->getCurrentPortalID(), $file_item->getContextID());
-                $filePath .= $file_item->getFileID();
-                $fileExtension = substr(strrchr($file_item->getFileName(), '.'), 1);
-                $filePath .= '.'.$fileExtension;
-
-                $filePath = ltrim($filePath, '\.\./');
+                $filePath = $discManager->getRelativeFilePath(
+                    $this->_environment->getCurrentPortalID(),
+                    $file_item->getContextID(),
+                    $file_item->getDiskFileName()
+                );
 
                 $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
                          ' size="'.encode(AS_DB, filesize($file_item->getDiskFileName())).'",'.
                          ' filepath="'.encode(AS_DB, $filePath).'"'.
                          ' WHERE files_id="'.encode(AS_DB, $file_item->getFileID()).'"';
-                $result = $this->_db_connector->performQuery($query);
+                $this->_db_connector->performQuery($query);
             }
         } else {
             include_once 'functions/error_functions.php';
@@ -293,7 +292,7 @@ class cs_file_manager extends cs_manager
     public function _saveOnDisk($file_item)
     {
         $success = false;
-        $tempname = $file_item->_getTempName();
+        $tempname = $file_item->getTempName();
         if (!empty($tempname)) {
             $disc_manager = $this->_environment->getDiscManager();
             $disc_manager->setContextID($file_item->getContextID());
@@ -304,9 +303,7 @@ class cs_file_manager extends cs_manager
             // Currently, the file manager does not unlink a file here, because it is also used for copying files when copying material between rooms.
             $success = $disc_manager->copyFile($tempname, $file_item->getDiskFileNameWithoutFolder(), false);
             if (!$success) {
-                // Fehlerbehandlung jetzt in RUBRIK_clipboard_index.php
-                // include_once('functions/error_functions.php');
-                // trigger_error('Filemanager: Could not save (temporary) file: "'.$file_item->_getTempName().'" to disk as: "'.$file_item->getDiskFileName().'"', E_USER_ERROR);
+                throw new Exception();
             } else {
                 if (function_exists('gd_info')) {
                     $size_info = @getimagesize($file_item->getDiskFileName());
@@ -321,8 +318,6 @@ class cs_file_manager extends cs_manager
             }
             $disc_manager->setContextID($this->_environment->getCurrentContextID());
         }
-        unset($file_item);
-        unset($disc_manager);
 
         return $success;
     }

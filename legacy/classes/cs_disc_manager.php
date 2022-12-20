@@ -11,13 +11,14 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 
 class cs_disc_manager
 {
     public const RELATIVE_FILES_PATH = 'files/';
-    public const TEMP_FOLDER_NAME = 'temp';
 
     private $firstId = null;
     private $secondId = null;
@@ -49,37 +50,48 @@ class cs_disc_manager
         $this->secondId = $value;
     }
 
-    public function getFilePath($first_id = '', $second_id = ''): string
+    public function getFilePath($firstId = '', $secondId = ''): string
     {
-        $retour = '';
-        $retour .= $this->getFilePathBasic();
-        if (!empty($first_id)) {
-            $retour .= $first_id.'/';
-        } elseif (!empty($this->firstId)) {
-            $retour .= $this->firstId.'/';
-        } else {
-            include_once 'functions/error_functions.php';
-            trigger_error('first_id is not set', E_USER_WARNING);
+        $path = $this->getFilePathBasic();
+
+        if (empty($firstId) && empty($this->firstId)) {
+            throw new LogicException('first id is not set');
+        }
+        $path .= (!empty($firstId) ? $firstId : $this->firstId) .'/';
+
+        if (empty($secondId) && empty($this->secondId)) {
+            throw new LogicException('second id is not set');
         }
 
-        if (!empty($second_id)) {
-            $retour_old = $retour.$second_id.'/';
-            $retour .= $this->_getSecondFolder($second_id).'/';
-            if (!is_dir($retour) and is_dir($retour_old)) {
-                $retour = $retour_old;
+        if (!empty($secondId)) {
+            $pathAlt = $path.$secondId.'/';
+            $path .= $this->_getSecondFolder($secondId).'/';
+            if (!is_dir($path) && is_dir($pathAlt)) {
+                return $pathAlt;
             }
-        } elseif (!empty($this->secondId)) {
-            $retour_old = $retour.$this->secondId.'/';
-            $retour .= $this->_getSecondFolder($this->secondId).'/';
-            if (!is_dir($retour) and is_dir($retour_old)) {
-                $retour = $retour_old;
-            }
-        } else {
-            include_once 'functions/error_functions.php';
-            trigger_error('second_id is not set', E_USER_WARNING);
+            return $path;
         }
 
-        return $retour;
+        $pathAlt = $path.$this->secondId.'/';
+        $path .= $this->_getSecondFolder($this->secondId).'/';
+        if (!is_dir($path) && is_dir($pathAlt)) {
+            return $pathAlt;
+        }
+        return $path;
+    }
+
+    public function getAbsoluteFilePath(int $portalId, int $contextId, string $fileName): string
+    {
+        return $this->getFilePath($portalId, $contextId).$fileName;
+    }
+
+    public function getRelativeFilePath(int $portalId, int $contextId, string $fileName): string
+    {
+        /** @var ContainerInterface $symfonyContainer */
+        global $symfonyContainer;
+        $projectDir = $symfonyContainer->getParameter('kernel.project_dir');
+
+        return Path::makeRelative($this->getAbsoluteFilePath($portalId, $contextId, $fileName), $projectDir);
     }
 
     public function existsFile($filename): bool
@@ -95,12 +107,11 @@ class cs_disc_manager
 
     public function unlinkFile($filename): bool
     {
-        $retour = false;
         if (!empty($filename) && $this->existsFile($filename)) {
-            $retour = unlink($this->getFilePath().$filename);
+            return unlink($this->getFilePath().$filename);
         }
 
-        return $retour;
+        return false;
     }
 
     public function copyFile($source_file, $dest_filename, $delete_source): bool
@@ -119,7 +130,6 @@ class cs_disc_manager
 
     public function copyFileFromRoomToRoom($old_room_id, $old_file_id, $filename, $new_room_id, $new_file_id): bool
     {
-        $retour = false;
         if (empty($old_room_id)) {
             include_once 'functions/error_functions.php';
             trigger_error('old_room_id is not set', E_USER_ERROR);
@@ -132,17 +142,14 @@ class cs_disc_manager
 
         // copy
         if (file_exists($source_file)) {
-            $retour = copy($source_file, $target_file);
+            return copy($source_file, $target_file);
         } else {
-            $retour = true;
+            return true;
         }
-
-        return $retour;
     }
 
     public function copyImageFromRoomToRoom($picture_name, $new_room_id): bool
     {
-        $retour = false;
         if (!empty($picture_name) && !empty($new_room_id)) {
             $this->makeFolder($this->firstId, $new_room_id);
 
@@ -164,17 +171,18 @@ class cs_disc_manager
                     if ($retour) {
                         $this->lastSavedFilename = $new_picture_name;
                     }
+                    return $retour;
                 } else {
-                    $retour = true;
+                    return true;
                 }
             } else {
-                $retour = true;
+                return true;
             }
         } else {
-            $retour = true;
+            return true;
         }
 
-        return $retour;
+        return false;
     }
 
     /**
@@ -217,18 +225,7 @@ class cs_disc_manager
 
     public function getFileAsBase64($file): string
     {
-        $retour = '';
-        if (file_exists($file)) {
-            $retour .= file_get_contents($file);
-        }
-        $retour = base64_encode($retour);
-
-        return $retour;
-    }
-
-    public function getTempFolder(): string
-    {
-        return $this->getFilePathBasic().self::TEMP_FOLDER_NAME;
+        return base64_encode(file_exists($file) ? file_get_contents($file) : '');
     }
 
     public function getLastSavedFileName(): string
@@ -244,21 +241,26 @@ class cs_disc_manager
         return $file_id.'.'.$file_ext;
     }
 
-    public function getFilePathBasic(): string
-    {
-        global $symfonyContainer;
-        $projectDir = $symfonyContainer->get('kernel')->getProjectDir();
-
-        return $projectDir.'/'.self::RELATIVE_FILES_PATH;
-    }
-
     /**
      * @return void
      */
     public function removeRoomDir($first_id, $second_id)
     {
         $dir = $this->getFilePath($first_id, $second_id);
-        $this->_full_rmdir($dir);
+        $fs = new Filesystem();
+
+        if ($fs->exists($dir)) {
+            $fs->remove($dir);
+        }
+    }
+
+    private function getFilePathBasic(): string
+    {
+        /** @var ContainerInterface $symfonyContainer */
+        global $symfonyContainer;
+        $projectDir = $symfonyContainer->getParameter('kernel.project_dir');
+
+        return $projectDir.'/'.self::RELATIVE_FILES_PATH;
     }
 
     private function _getSecondFolder($second_folder): string
@@ -279,44 +281,5 @@ class cs_disc_manager
         }
 
         return $retour;
-    }
-
-    private function _full_rmdir($dirname): bool
-    {
-        if (is_dir($dirname)) {
-            if ($dirHandle = opendir($dirname)) {
-                $old_cwd = getcwd();
-                chdir($dirname);
-
-                while ($file = readdir($dirHandle)) {
-                    if ('.' == $file || '..' == $file) {
-                        continue;
-                    }
-                    if (is_dir($file)) {
-                        if (!$this->_full_rmdir($file)) {
-                            chdir($old_cwd);
-
-                            return false;
-                        }
-                    } else {
-                        if (!@unlink($file)) {
-                            chdir($old_cwd);
-
-                            return false;
-                        }
-                    }
-                }
-
-                closedir($dirHandle);
-                chdir($old_cwd);
-                if (!rmdir($dirname)) {
-                    return false;
-                }
-
-                return true;
-            }
-        }
-
-        return false;
     }
 }
