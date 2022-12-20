@@ -50,9 +50,7 @@ class cs_discussionarticle_item extends cs_item
      {
          // NOTE: `public = -2` gets used for articles with answers which were "deleted" but should
          // instead have their content overwritten to keep the discussion hierarchy intact
-         $hasOverwrittenContent = '-2' == $this->getPublic();
-
-         return $hasOverwrittenContent;
+         return '-2' == $this->getPublic();
      }
 
      /**
@@ -91,11 +89,11 @@ class cs_discussionarticle_item extends cs_item
     /** set subject of a discussionarticle
      * this method sets the subject of the discussionarticle.
      *
-     * @param string value subject of the discussionarticle
+     * @param string $value subject of the discussionarticle
      *
      * @author CommSy Development Group
      */
-    public function setSubject($value)
+    public function setSubject(string $value)
     {
         // sanitize subject
         $converter = $this->_environment->getTextConverter();
@@ -133,11 +131,11 @@ class cs_discussionarticle_item extends cs_item
     /** set description of a discussionarticle
      * this method sets the description of the discussionarticle.
      *
-     * @param string value description of the discussionarticle
+     * @param string $value description of the discussionarticle
      *
      * @author CommSy Development Group
      */
-    public function setDescription($value)
+    public function setDescription(string $value)
     {
         // sanitize description
         $converter = $this->_environment->getTextConverter();
@@ -157,19 +155,15 @@ class cs_discussionarticle_item extends cs_item
         return $this->_getValue('discussion_id');
     }
 
-     /**
-      * @return \cs_discussion_item|null
-      */
-     public function getLinkedItem()
+     public function getLinkedItem(): ?cs_discussion_item
      {
-         $retour = null;
          $item_id = $this->getDiscussionID();
          if (!empty($item_id)) {
              $type_manager = $this->_environment->getManager(CS_DISCUSSION_TYPE);
-             $retour = $type_manager->getItem($item_id);
+             return $type_manager->getItem($item_id);
          }
 
-         return $retour;
+         return null;
      }
 
     /** set discussion id
@@ -215,9 +209,7 @@ class cs_discussionarticle_item extends cs_item
      */
     public function getMaterialList()
     {
-        global $environment;
-
-        return $this->_getLinkedItems($environment->getMaterialManager(), CS_MATERIAL_TYPE);
+        return $this->_getLinkedItems($this->_environment->getMaterialManager(), CS_MATERIAL_TYPE);
     }
 
     /** save discussion article
@@ -254,12 +246,6 @@ class cs_discussionarticle_item extends cs_item
         $reader_manager->markRead($this->getItemID(), 0);
         $noticed_manager = $this->_environment->getNoticedManager();
         $noticed_manager->markNoticed($this->getItemID(), 0);
-
-        // unset objects
-        unset($discussion_manager);
-        unset($discussion_item);
-        unset($reader_manager);
-        unset($noticed_manager);
     }
 
      /**
@@ -292,9 +278,9 @@ class cs_discussionarticle_item extends cs_item
 
     public function cloneCopy()
     {
-        $clone_item = clone $this; // "clone" needed for php5
+        // "clone" needed for php5
 
-        return $clone_item;
+        return clone $this;
     }
 
     public function saveWithoutChangingModificationInformation()
@@ -319,8 +305,6 @@ class cs_discussionarticle_item extends cs_item
              return false;
          }
 
-         $mayEditItem = parent::mayEdit($userItem);
-
-         return $mayEditItem;
+         return parent::mayEdit($userItem);
      }
 }
