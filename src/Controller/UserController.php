@@ -36,17 +36,20 @@ use App\Utils\AccountMail;
 use App\Utils\MailAssistant;
 use App\Utils\TopicService;
 use App\Utils\UserService;
+use cs_disc_manager;
 use cs_room_item;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
+use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Liip\ImagineBundle\Imagine\Data\DataManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
 use Nette\Utils\Strings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -1034,7 +1037,6 @@ class UserController extends BaseController
     #[Route(path: '/room/{roomId}/user/{itemId}/image')]
     public function imageAction(
         AvatarService $avatarService,
-        ParameterBagInterface $params,
         DataManager $dataManager,
         FilterManager $filterManager,
         int $roomId,
@@ -1042,47 +1044,26 @@ class UserController extends BaseController
     ): Response {
         $content = null;
         $user = $this->userService->getUser($itemId);
-        $file = $user->getPicture();
-        $foundUserImage = true;
+        $picture = $user->getPicture();
 
-        if ('' != $file) {
-            $rootDir = $params->get('kernel.project_dir').'/';
-
+        $foundUserImage = false;
+        $file = 'user_unknown.gif';
+        if ('' != $picture) {
             $disc_manager = $this->legacyEnvironment->getDiscManager();
-            $disc_manager->setContextID($roomId);
-            $portal_id = $this->legacyEnvironment->getCurrentPortalID();
-            if (isset($portal_id) and !empty($portal_id)) {
-                $disc_manager->setPortalID($portal_id);
-            } else {
-                $context_item = $this->legacyEnvironment->getCurrentContextItem();
-                if (isset($context_item)) {
-                    $portal_item = $context_item->getContextItem();
-                    if (isset($portal_item)) {
-                        $disc_manager->setPortalID($portal_item->getItemID());
-                        unset($portal_item);
-                    }
-                    unset($context_item);
-                }
-            }
-            $filePath = $disc_manager->getFilePath().$file;
+            $portalId = $this->legacyEnvironment->getCurrentPortalID();
+            $filePath = $disc_manager->getAbsoluteFilePath($portalId, $roomId, $picture);
+            $relativePath = Path::makeRelative($filePath, getcwd());
 
-            if (file_exists($rootDir.$filePath)) {
-                $processedImage = $dataManager->find('commsy_user_image',
-                    str_ireplace('files/', './', $filePath));
+            if (file_exists($relativePath)) {
+                $processedImage = $dataManager->find('commsy_user_image', $relativePath);
                 $content = $filterManager->applyFilter($processedImage,
                     'commsy_user_image')->getContent();
 
-                if (!$content) {
-                    $foundUserImage = false;
-                    $file = 'user_unknown.gif';
+                if ($content) {
+                    $foundUserImage = true;
+                    $file = $picture;
                 }
-            } else {
-                $foundUserImage = false;
-                $file = 'user_unknown.gif';
             }
-        } else {
-            $foundUserImage = false;
-            $file = 'user_unknown.gif';
         }
 
         if (!$foundUserImage) {

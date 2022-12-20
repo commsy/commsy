@@ -119,13 +119,12 @@ class ProfileController extends AbstractController
 
             if ($formData['imageChangeInAllContexts']) {
                 $userList = $userItem->getRelatedUserList(true);
-                /** @var cs_user_item $tempUserItem */
-                $tempUserItem = $userList->getFirst();
-                while ($tempUserItem) {
+                foreach ($userList as $tempUserItem) {
+                    /** @var cs_user_item $tempUserItem */
                     if ($tempUserItem->getItemId() == $userItem->getItemId()) {
-                        $tempUserItem = $userList->getNext();
                         continue;
                     }
+
                     if ($formData['useProfileImage']) {
                         $tempFilename = $discService->copyImageFromRoomToRoom($userItem->getPicture(),
                             $tempUserItem->getContextId());
@@ -139,7 +138,6 @@ class ProfileController extends AbstractController
                         $tempUserItem->setPicture('');
                     }
                     $tempUserItem->save();
-                    $tempUserItem = $userList->getNext();
                 }
             }
 

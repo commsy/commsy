@@ -24,7 +24,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sylius\Bundle\ThemeBundle\Context\SettableThemeContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,24 +37,21 @@ class FileController extends AbstractController
 {
     #[Route(path: '/file/{fileId}/{disposition}')]
     #[Security("is_granted('FILE_DOWNLOAD', fileId)")]
-    public function getFileAction(
+    public function getFile(
         Request $request,
         FileService $fileService,
-        RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
-        ParameterBagInterface $params,
         int $fileId,
         string $disposition = 'attachment'
     ): Response {
         $file = $fileService->getFile($fileId);
-        $rootDir = $params->get('kernel.project_dir').'/';
 
-        if (!file_exists($rootDir.$file->getDiskFileName())) {
+        if (!file_exists($file->getDiskFileName())) {
             // fix for userrooms
             if ('userroom' == $legacyEnvironment->getEnvironment()->getCurrentContextItem()->getType()) {
                 $file->setPortalID($legacyEnvironment->getEnvironment()->getCurrentPortalID());
             }
-            if (!file_exists($rootDir.$file->getDiskFileName())) {
+            if (!file_exists($file->getDiskFileName())) {
                 throw $this->createNotFoundException('The requested file does not exist');
             }
         }
@@ -85,7 +81,7 @@ class FileController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/logo', name: 'getLogo')]
-    public function getLogoAction(
+    public function getLogo(
         RoomService $roomService,
         int $roomId
     ): Response {
@@ -115,7 +111,7 @@ class FileController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/{imageType}/background/', name: 'getBackground', defaults: ['imageType' => 'theme'], requirements: ['imageType' => 'custom|theme'])]
-    public function getBackgroundImageAction(
+    public function getBackgroundImage(
         RoomService $roomService,
         int $roomId,
         $imageType,
@@ -160,7 +156,7 @@ class FileController extends AbstractController
     }
 
     #[Route(path: '/theme/{theme}/background', name: 'getThemeBackground')]
-    public function getThemeBackgroundAction(
+    public function getThemeBackground(
         $theme
     ): Response {
         $themesDir = $this->getParameter('themes_directory');
@@ -201,11 +197,10 @@ class FileController extends AbstractController
     /**
      * @return StreamedResponse
      *
-     * @throws NonUniqueResultException
      */
     #[Route(path: '/logo/portal/{portalId}')]
     #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
-    public function portalLogo(Portal $portal, EntityManagerInterface $entityManager, DownloadHandler $downloadHandler): Response
+    public function portalLogo(Portal $portal, DownloadHandler $downloadHandler): Response
     {
         if (!$portal->getLogoFile()) {
             throw $this->createNotFoundException('logo not found');
