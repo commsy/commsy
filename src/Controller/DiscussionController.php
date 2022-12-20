@@ -71,7 +71,7 @@ class DiscussionController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/discussion/feed/{start}/{sort}')]
-    public function feedAction(
+    public function feed(
         Request $request,
         AssessmentService $assessmentService,
         int $roomId,
@@ -138,7 +138,7 @@ class DiscussionController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/discussion')]
-    public function listAction(
+    public function list(
         Request $request,
         int $roomId
     ): Response {
@@ -175,7 +175,7 @@ class DiscussionController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/discussion/print/{sort}', defaults: ['sort' => 'none'])]
-    public function printlistAction(
+    public function printlist(
         Request $request,
         AssessmentService $assessmentService,
         PrintService $printService,
@@ -247,7 +247,7 @@ class DiscussionController extends BaseController
      * @return array
      */
     #[Route(path: '/room/{roomId}/discussion/{itemId}', requirements: ['itemId' => '\d+'])]
-    public function detailAction(
+    public function detail(
         Request $request,
         TopicService $topicService,
         LegacyMarkup $legacyMarkup,
@@ -533,7 +533,7 @@ class DiscussionController extends BaseController
 
     #[Route(path: '/room/{roomId}/discussion/create')]
     #[Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'discussion')")]
-    public function createAction(
+    public function create(
         int $roomId
     ): RedirectResponse {
         // create a new discussion
@@ -549,7 +549,7 @@ class DiscussionController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/print')]
-    public function printAction(
+    public function print(
         PrintService $printService,
         LegacyMarkup $legacyMarkup,
         int $roomId,
@@ -592,13 +592,11 @@ class DiscussionController extends BaseController
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/createarticle')]
     #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")]
-    public function createArticleAction(
+    public function createArticle(
         Request $request,
         DiscussionTransformer $transformer,
         int $roomId,
-        int $itemId,
-        TranslatorInterface $translator,
-        DiscussionTransformer $discussionTransformer
+        int $itemId
     ): Response {
         $discussion = $this->discussionService->getDiscussion($itemId);
         $articleList = $discussion->getAllArticles();
@@ -633,7 +631,6 @@ class DiscussionController extends BaseController
                     // compare against our latest stored position
                     if (sprintf('%1$04d', $newRelativeNumericPosition) <= $position) {
                         $newRelativeNumericPosition = $position + 1;
-//                        $newRelativeNumericPosition++;
                     }
                 }
             } else {
@@ -694,7 +691,7 @@ class DiscussionController extends BaseController
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/edit')]
     #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")]
-    public function editAction(
+    public function edit(
         Request $request,
         CategoryService $categoryService,
         LabelService $labelService,
@@ -831,7 +828,7 @@ class DiscussionController extends BaseController
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/save')]
     #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")]
-    public function saveAction(
+    public function save(
         int $roomId,
         int $itemId
     ): Response {
@@ -909,7 +906,7 @@ class DiscussionController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/rating/{vote}')]
-    public function ratingAction(
+    public function rating(
         AssessmentService $assessmentService,
         int $roomId,
         int $itemId,
@@ -930,12 +927,11 @@ class DiscussionController extends BaseController
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/savearticle')]
     #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")]
-    public function saveArticleAction(
+    public function saveArticle(
         Request $request,
         DiscussionTransformer $transformer,
         int $roomId,
-        int $itemId,
-        TranslatorInterface $translator
+        int $itemId
     ): RedirectResponse {
         $item = $this->itemService->getItem($itemId);
         $article = $this->discussionService->getArticle($itemId);
@@ -949,12 +945,7 @@ class DiscussionController extends BaseController
             if ($form->get('save')->isClicked()) {
                 // update title
                 $article->setTitle($form->getData()['title']);
-
-                if ($form->getData()['permission']) {
-                    $article->setPrivateEditing('0'); // editable only by creator
-                } else {
-                    $article->setPrivateEditing('1'); // editable by everyone
-                }
+                $article->setPrivateEditing('0'); // editable only by creator
 
                 if ($item->isDraft()) {
                     $item->setDraftStatus(0);
@@ -983,7 +974,7 @@ class DiscussionController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion/download')]
-    public function downloadAction(
+    public function download(
         Request $request,
         DownloadAction $action,
         int $roomId
@@ -1001,7 +992,7 @@ class DiscussionController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion/xhr/markread', condition: 'request.isXmlHttpRequest()')]
-    public function xhrMarkReadAction(
+    public function xhrMarkRead(
         Request $request,
         MarkReadAction $markReadAction,
         int $roomId
@@ -1016,7 +1007,7 @@ class DiscussionController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion/xhr/mark', condition: 'request.isXmlHttpRequest()')]
-    public function xhrMarkAction(
+    public function xhrMark(
         Request $request,
         MarkAction $action,
         int $roomId
@@ -1033,7 +1024,7 @@ class DiscussionController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
-    public function xhrCategorizeAction(
+    public function xhrCategorize(
         Request $request,
         CategorizeAction $action,
         int $roomId
@@ -1047,7 +1038,7 @@ class DiscussionController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
-    public function xhrHashtagAction(
+    public function xhrHashtag(
         Request $request,
         HashtagAction $action,
         int $roomId
@@ -1059,7 +1050,7 @@ class DiscussionController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion/xhr/activate', condition: 'request.isXmlHttpRequest()')]
-    public function xhrActivateAction(
+    public function xhrActivate(
         Request $request,
         ActivateAction $action,
         $roomId
@@ -1074,7 +1065,7 @@ class DiscussionController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeactivateAction(
+    public function xhrDeactivate(
         Request $request,
         DeactivateAction $action,
         $roomId
@@ -1089,7 +1080,7 @@ class DiscussionController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion/xhr/delete', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeleteAction(
+    public function xhrDelete(
         Request $request,
         DeleteAction $action,
         int $roomId

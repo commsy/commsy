@@ -14,19 +14,6 @@
                 </div>
             </div>
 
-            {% if article.creator.itemId == currentUser.itemId or currentUser.isModerator %}
-            <div class="uk-flex uk-margin-bottom uk-margin-small-top">
-                <div>
-                    <label class="">
-                        {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
-                    </label>
-                </div>
-                <div class="uk-margin-left">
-                    {{ form_widget(form.permission) }}
-                </div>
-            </div>
-            {% endif %}
-
             <div class="uk-flex uk-margin-small-top">
                 <div class="uk-margin-small-left">
                     {{ form_row(form.save) }}
@@ -38,9 +25,8 @@
 
             {{ form_row(form._token) }}
             {{ form_end(form, {'render_rest': false}) }}
-            {#{ macrosDiscussion.title(section, modifierList, userCount, readCount, readSinceModificationCount) }#}
         </div>
-        
+
         {# description #}
         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': article.contextId, 'itemId': article.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}) }}' }">
             {{ macrosItem.itemDescription('description', article, true, article.description, article.draft) }}
