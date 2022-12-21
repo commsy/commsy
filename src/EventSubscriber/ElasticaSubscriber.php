@@ -349,7 +349,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
 //                        $filesBase64 = $this->getBase64ContentofAllFiles($files);
 
                         $articleContents[] = [
-                            'subject' => $article->getSubject(),
                             'description' => $article->getDescription(),
                         ];
                     }

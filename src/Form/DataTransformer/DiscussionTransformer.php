@@ -14,14 +14,12 @@
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
-use cs_environment;
-use DateTime;
 
 class DiscussionTransformer extends AbstractTransformer
 {
     protected $entity = 'discussion';
 
-    private cs_environment $legacyEnvironment;
+    private \cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -31,7 +29,7 @@ class DiscussionTransformer extends AbstractTransformer
     /**
      * Transforms a cs_discussion_item object to an array.
      *
-     * @param cs_discussion_item $discussionItem
+     * @param \cs_discussion_item $discussionItem
      *
      * @return array
      */
@@ -50,7 +48,7 @@ class DiscussionTransformer extends AbstractTransformer
 
                 $activating_date = $discussionItem->getActivatingDate();
                 if (!stristr($activating_date, '9999')) {
-                    $datetime = new DateTime($activating_date);
+                    $datetime = new \DateTime($activating_date);
                     $discussionData['hiddendate']['date'] = $datetime;
                     $discussionData['hiddendate']['time'] = $datetime;
                 }
@@ -74,7 +72,7 @@ class DiscussionTransformer extends AbstractTransformer
      * @param object $discussionObject
      * @param array  $discussionData
      *
-     * @return cs_discussion_item|null
+     * @return \cs_discussion_item|null
      *
      * @throws TransformationFailedException if room item is not found
      */

@@ -184,7 +184,7 @@ class cs_discussionarticles_manager extends cs_manager
         if ($this->_sort_position) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('discussionarticles').'.position ASC';
         } else {
-            $query .= ' ORDER BY '.$this->addDatabasePrefix('discussionarticles').'.creation_date ASC, '.$this->addDatabasePrefix('discussionarticles').'.item_id ASC, '.$this->addDatabasePrefix('discussionarticles').'.subject DESC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('discussionarticles').'.creation_date ASC, '.$this->addDatabasePrefix('discussionarticles').'.item_id ASC';
         }
         if ('select' == $mode) {
             if (isset($this->_interval_limit) and isset($this->_from_limit)) {
@@ -202,25 +202,24 @@ class cs_discussionarticles_manager extends cs_manager
         }
     }
 
-    /** get a discussionartcile in newest version.
-     *
+    /**
      * @param int item_id id of the item
      *
-     * @return object cs_item a discussionarticle
+     * @return cs_discussionarticle_item|null cs_item a discussionarticle
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function getItem($item_id)
+    public function getItem($item_id): ?cs_discussionarticle_item
     {
-        $discussionarticles = null;
         $query = 'SELECT * FROM '.$this->addDatabasePrefix('discussionarticles').' WHERE '.$this->addDatabasePrefix('discussionarticles').".item_id = '".encode(AS_DB, $item_id)."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or empty($result[0])) {
             include_once 'functions/error_functions.php';
             trigger_error('Problems selecting one discussionarticles item.', E_USER_WARNING);
         } else {
-            $discussionarticles = $this->_buildItem($result[0]);
+            return $this->_buildItem($result[0]);
         }
 
-        return $discussionarticles;
+        return null;
     }
 
     /** get a list of items (newest version)
@@ -372,12 +371,10 @@ class cs_discussionarticles_manager extends cs_manager
 
         $queryBuilder
             ->update($this->addDatabasePrefix('discussionarticles'))
-            ->set('subject', ':subject')
             ->set('position', ':position')
             ->set('description', ':description')
             ->set('public', ':public')
             ->where('item_id = :itemId')
-            ->setParameter('subject', $discussionarticle_item->getSubject())
             ->setParameter('position', $discussionarticle_item->getPosition())
             ->setParameter('description', $discussionarticle_item->getDescription())
             ->setParameter('public', 0)
@@ -455,7 +452,6 @@ class cs_discussionarticles_manager extends cs_manager
             ->setValue('creation_date', ':creationDate')
             ->setValue('modifier_id', ':modifierId')
             ->setValue('modification_date', ':modificationDate')
-            ->setValue('subject', ':subject')
             ->setValue('position', ':position')
             ->setValue('description', ':description')
             ->setValue('public', ':public')
@@ -466,7 +462,6 @@ class cs_discussionarticles_manager extends cs_manager
             ->setParameter('creationDate', $currentDateTime)
             ->setParameter('modifierId', $modificator->getItemID())
             ->setParameter('modificationDate', $currentDateTime)
-            ->setParameter('subject', $discussionarticle_item->getSubject())
             ->setParameter('position', $discussionarticle_item->getPosition())
             ->setParameter('description', $discussionarticle_item->getDescription())
             ->setParameter('public', 0);
@@ -547,7 +542,6 @@ class cs_discussionarticles_manager extends cs_manager
 
                     /* disabled */
                     if ('FALSE' === $disableOverwrite) {
-                        $updateQuery .= ' subject = "'.encode(AS_DB, $this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
                         $updateQuery .= ' description = "'.encode(AS_DB, $this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
                         $updateQuery .= ' modification_date = "'.$currentDatetime.'"';
                     }

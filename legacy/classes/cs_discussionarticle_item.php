@@ -53,29 +53,6 @@ class cs_discussionarticle_item extends cs_item
          return '-2' == $this->getPublic();
      }
 
-     /**
-      * Returns the subject of the discussion article.
-      *
-      * @return string subject of the discussion article
-      */
-     public function getSubject(): string
-     {
-         $public = $this->getPublic();
-         if ('-1' == $public || '-2' == $public) {
-             $translator = $this->_environment->getTranslationObject();
-             $message = ('-1' == $public) ? 'COMMON_AUTOMATIC_DELETE_TITLE' : 'COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_TITLE';
-
-             return $translator->getMessage($message);
-         }
-
-         return $this->_getValue('subject');
-     }
-
-    public function getTitle()
-    {
-        return $this->getSubject();
-    }
-
     public function getPosition()
     {
         return $this->_getValue('position');
@@ -86,47 +63,23 @@ class cs_discussionarticle_item extends cs_item
         $this->_setValue('position', $value);
     }
 
-    /** set subject of a discussionarticle
-     * this method sets the subject of the discussionarticle.
+    /**
+     * Returns the description of this discussion article.
      *
-     * @param string $value subject of the discussionarticle
-     *
-     * @author CommSy Development Group
+     * @return string|null description of the discussion article
      */
-    public function setSubject(string $value)
+    public function getDescription(): ?string
     {
-        // sanitize subject
-        $converter = $this->_environment->getTextConverter();
-        $value = $converter->sanitizeHTML($value);
-        $this->_setValue('subject', $value);
+        $public = $this->getPublic();
+        if ('-1' == $public || '-2' == $public) {
+            $translator = $this->_environment->getTranslationObject();
+            $message = ('-1' == $public) ? 'COMMON_AUTOMATIC_DELETE_DESCRIPTION' : 'COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_DESC';
+
+            return $translator->getMessage($message);
+        }
+
+        return $this->_getValue('description');
     }
-
-    public function setTitle($value)
-    {
-        // sanitize title
-        $converter = $this->_environment->getTextConverter();
-        $value = htmlentities($value);
-        $value = $converter->sanitizeHTML($value);
-        $this->setSubject($value);
-    }
-
-     /**
-      * Returns the description of this discussion article.
-      *
-      * @return string|null description of the discussion article
-      */
-     public function getDescription(): ?string
-     {
-         $public = $this->getPublic();
-         if ('-1' == $public || '-2' == $public) {
-             $translator = $this->_environment->getTranslationObject();
-             $message = ('-1' == $public) ? 'COMMON_AUTOMATIC_DELETE_DESCRIPTION' : 'COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_DESC';
-
-             return $translator->getMessage($message);
-         }
-
-         return $this->_getValue('description');
-     }
 
     /** set description of a discussionarticle
      * this method sets the description of the discussionarticle.

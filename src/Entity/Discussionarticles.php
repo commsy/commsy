@@ -13,14 +13,9 @@
 
 namespace App\Entity;
 
-use DateTime;
-use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Discussionarticles.
- */
 #[ORM\Entity]
 #[ORM\Table(name: 'discussionarticles')]
 #[ORM\Index(name: 'context_id', columns: ['context_id'])]
@@ -28,82 +23,54 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 class Discussionarticles
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $itemId = 0;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'discussion_id', type: Types::INTEGER)]
     private ?int $discussionId = 0;
+
     #[ORM\ManyToOne(targetEntity: 'Discussions', inversedBy: 'discussionarticles')]
     #[ORM\JoinColumn(name: 'discussion_id', referencedColumnName: 'item_id')]
     private ?Discussions $discussion = null;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'creator_id', type: Types::INTEGER)]
     private ?int $creatorId = 0;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
     private ?int $modifierId = null;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private ?int $deleterId = null;
+
     #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
-    private DateTime $creationDate;
-    /**
-     * @var DateTimeInterface
-     */
+    private \DateTime $creationDate;
+
     #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $modificationDate = null;
-    /**
-     * @var DateTimeInterface
-     */
+    private ?\DateTimeInterface $modificationDate = null;
+
     #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $deletionDate = null;
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'subject', type: Types::STRING, length: 255)]
-    private ?string $subject = null;
-    /**
-     * @var string
-     */
+    private ?\DateTimeInterface $deletionDate = null;
+
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
     private ?string $description = null;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'position', type: Types::STRING, length: 255)]
     private ?string $position = '1';
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'extras', type: Types::TEXT, length: 65535, nullable: true)]
     private ?string $extras = null;
-    /**
-     * @var bool
-     */
+
     #[ORM\Column(name: 'public', type: Types::BOOLEAN)]
     private ?bool $public = false;
 
     public function __construct()
     {
-        $this->creationDate = new DateTime('0000-00-00 00:00:00');
+        $this->creationDate = new \DateTime('0000-00-00 00:00:00');
     }
 
     /**
@@ -261,7 +228,7 @@ class Discussionarticles
     /**
      * Set creationDate.
      *
-     * @param DateTime $creationDate
+     * @param \DateTime $creationDate
      *
      * @return Discussionarticles
      */
@@ -275,7 +242,7 @@ class Discussionarticles
     /**
      * Get creationDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getCreationDate()
     {
@@ -285,7 +252,7 @@ class Discussionarticles
     /**
      * Set modificationDate.
      *
-     * @param DateTime $modificationDate
+     * @param \DateTime $modificationDate
      *
      * @return Discussionarticles
      */
@@ -299,7 +266,7 @@ class Discussionarticles
     /**
      * Get modificationDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getModificationDate()
     {
@@ -309,7 +276,7 @@ class Discussionarticles
     /**
      * Set deletionDate.
      *
-     * @param DateTime $deletionDate
+     * @param \DateTime $deletionDate
      *
      * @return Discussionarticles
      */
@@ -323,35 +290,11 @@ class Discussionarticles
     /**
      * Get deletionDate.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDeletionDate()
     {
         return $this->deletionDate;
-    }
-
-    /**
-     * Set subject.
-     *
-     * @param string $subject
-     *
-     * @return Discussionarticles
-     */
-    public function setSubject($subject)
-    {
-        $this->subject = $subject;
-
-        return $this;
-    }
-
-    /**
-     * Get subject.
-     *
-     * @return string
-     */
-    public function getSubject()
-    {
-        return $this->subject;
     }
 
     /**
