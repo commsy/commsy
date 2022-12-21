@@ -20,7 +20,7 @@ class DiscussionarticleTransformer extends AbstractTransformer
     /**
      * Transforms a cs_discussion_item object to an array.
      *
-     * @param cs_discarticle_item $discussionarticleItem
+     * @param \cs_discussionarticle_item $discussionarticleItem
      *
      * @return array
      */
@@ -29,8 +29,6 @@ class DiscussionarticleTransformer extends AbstractTransformer
         $discussionarticleData = [];
 
         if ($discussionarticleItem) {
-            $discussionarticleData['title'] = html_entity_decode($discussionarticleItem->getTitle());
-            $discussionarticleData['permission'] = $discussionarticleItem->isPrivateEditing();
             $discussionarticleData['description'] = $discussionarticleItem->getDescription();
         }
 
@@ -40,25 +38,18 @@ class DiscussionarticleTransformer extends AbstractTransformer
     /**
      * Applies an array of data to an existing object.
      *
-     * @param object $discussionObject
-     * @param array  $discussionData
+     * @param \cs_discussionarticle_item $discussionArticle
+     * @param array                      $data
      *
-     * @return cs_discussion_item|null
-     *
-     * @throws TransformationFailedException if room item is not found
+     * @return \cs_discussionarticle_item
      */
-    public function applyTransformation($discussionarticleObject, $discussionarticleData)
+    public function applyTransformation($discussionArticle, $data)
     {
-        $discussionarticleObject->setTitle($discussionarticleData['title']);
+        $discussionArticle->setDescription($data['description']);
 
-        if ($discussionarticleData['permission']) {
-            $discussionarticleObject->setPrivateEditing('0');
-        } else {
-            $discussionarticleObject->setPrivateEditing('1');
-        }
+        // editable only by creator
+        $discussionArticle->setPrivateEditing('0');
 
-        $discussionarticleObject->setDescription($discussionarticleData['description']);
-
-        return $discussionarticleObject;
+        return $discussionArticle;
     }
 }

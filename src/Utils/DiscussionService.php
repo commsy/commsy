@@ -14,18 +14,15 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
-use cs_discussion_item;
-use cs_discussionarticle_item;
-use cs_manager;
 use Symfony\Component\Form\FormInterface;
 
 class DiscussionService
 {
-    private $legacyEnvironment;
+    private \cs_environment $legacyEnvironment;
 
-    private $discussionManager;
+    private \cs_discussion_manager $discussionManager;
 
-    private $discussionArticleManager;
+    private \cs_discussionarticles_manager $discussionArticleManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -44,7 +41,7 @@ class DiscussionService
      * @param int    $start
      * @param string $sort
      *
-     * @return cs_discussion_item[]
+     * @return \cs_discussion_item[]
      */
     public function getListDiscussions($roomId, $max = null, $start = null, $sort = null)
     {
@@ -67,7 +64,7 @@ class DiscussionService
      * @param int   $roomId
      * @param int[] $ids
      *
-     * @return cs_discussion_item[]
+     * @return \cs_discussion_item[]
      */
     public function getDiscussionsById($roomId, $ids)
     {
@@ -85,7 +82,6 @@ class DiscussionService
         $countDiscussionArray = [];
         $this->discussionManager->setContextLimit($roomId);
         $this->discussionManager->select();
-        $countDiscussion = [];
         $countDiscussionArray['count'] = sizeof($this->discussionManager->get()->to_array());
         $this->discussionManager->resetLimits();
         $this->discussionManager->select();
@@ -101,11 +97,11 @@ class DiscussionService
         // activated
         if ($formData['hide-deactivated-entries']) {
             if ('only_activated' === $formData['hide-deactivated-entries']) {
-                $this->discussionManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+                $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
             } elseif ('only_deactivated' === $formData['hide-deactivated-entries']) {
-                $this->discussionManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+                $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
             } elseif ('all' === $formData['hide-deactivated-entries']) {
-                $this->discussionManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+                $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
             }
         }
 
@@ -145,12 +141,12 @@ class DiscussionService
         }
     }
 
-    public function getDiscussion($itemId): ?cs_discussion_item
+    public function getDiscussion($itemId): ?\cs_discussion_item
     {
         return $this->discussionManager->getItem($itemId);
     }
 
-    public function getArticle($itemId)
+    public function getArticle($itemId): ?\cs_discussionarticle_item
     {
         return $this->discussionArticleManager->getItem($itemId);
     }
@@ -170,7 +166,7 @@ class DiscussionService
 
     public function hideDeactivatedEntries()
     {
-        $this->discussionManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $this->discussionManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
     public function buildArticleTree($articleList, $root = null): array
@@ -178,7 +174,7 @@ class DiscussionService
         $tree = [];
 
         foreach ($articleList as $article) {
-            /** @var cs_discussionarticle_item $article */
+            /** @var \cs_discussionarticle_item $article */
             $base = &$tree;
             $expLevel = explode('.', $article->getPosition());
             foreach ($expLevel as $level) {
@@ -189,5 +185,53 @@ class DiscussionService
         }
 
         return $tree;
+    }
+
+    public function calculateNewPosition(\cs_discussion_item $discussion, int $parentId): string
+    {
+        $parentPosition = 0;
+        if (0 !== $parentId) {
+            $parent = $this->discussionArticleManager->getItem($parentId);
+            $parentPosition = $parent->getPosition();
+        }
+
+        /**
+         * TODO: Instead of iteration all articles to find the latest in the parents branch
+         * it would be much better to ask only for all childs of an article or directly
+         * for the latest position.
+         */
+        $numParentDots = substr_count($parentPosition, '.');
+        $newRelativeNumericPosition = 1;
+        foreach ($discussion->getAllArticles() as $article) {
+            $position = $article->getPosition();
+
+            $numDots = substr_count($position, '.');
+
+            if (0 == $parentPosition) {
+                if (0 == $numDots) {
+                    // compare against our latest stored position
+                    if (sprintf('%1$04d', $newRelativeNumericPosition) <= $position) {
+                        $newRelativeNumericPosition = $position + 1;
+                    }
+                }
+            } else {
+                // if the parent position is one level above the child ones and
+                // the position string is start of the child position
+                if ($numDots == $numParentDots + 1 && str_starts_with($position, $parentPosition)) {
+                    // extract the last position part
+                    $positionExp = explode('.', $position);
+                    $lastPositionPart = $positionExp[sizeof($positionExp) - 1];
+
+                    // compare against our latest stored position
+                    if (sprintf('%1$04d', $newRelativeNumericPosition) <= $lastPositionPart) {
+                        $newRelativeNumericPosition = $lastPositionPart + 1;
+                    }
+                }
+            }
+        }
+
+        // new position is relative to the parent position
+        return ((0 != $parentPosition) ? $parentPosition . '.' : '') .
+            sprintf('%1$04d', $newRelativeNumericPosition);
     }
 }

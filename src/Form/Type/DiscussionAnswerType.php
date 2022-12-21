@@ -13,22 +13,48 @@
 
 namespace App\Form\Type;
 
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
 
-class DiscussionArticleType extends AbstractType
+class DiscussionAnswerType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, ['constraints' => [new NotBlank()], 'label' => 'title', 'attr' => ['placeholder' => $options['placeholderText'], 'class' => 'uk-form-width-medium cs-form-title'], 'translation_domain' => 'material'])
-            ->add('save', SubmitType::class, ['attr' => ['class' => 'uk-button-primary'], 'label' => 'save'])
-            ->add('cancel', SubmitType::class, ['attr' => ['formnovalidate' => ''], 'label' => 'cancel', 'validation_groups' => false])
-        ;
+            ->add('description', CKEditorType::class, [
+                'config_name' => 'cs_annotation_config',
+                'label' => false,
+                'required' => true,
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ],
+                'attr' => [
+                    'placeholder' => 'annotation',
+                    'class' => 'uk-form-width-large',
+                ],
+                'label_attr' => [
+                    'style' => 'font-weight: bold;',
+                ],
+                'translation_domain' => 'item',
+                'input_sync' => true,
+            ])
+            ->add('save', SubmitType::class, [
+                'attr' => [
+                    'class' => 'uk-button-primary',
+                ],
+                'label' => 'Answer',
+            ])
+            ->add('cancel', SubmitType::class, [
+                'attr' => [
+                    'formnovalidate' => '',
+                ],
+                'label' => 'cancel',
+                'validation_groups' => false,
+            ]);
     }
 
     /**
@@ -40,8 +66,7 @@ class DiscussionArticleType extends AbstractType
     {
         $resolver
             ->setDefined(['placeholderText', 'categories', 'hashTagPlaceholderText', 'hashtagEditUrl', 'hashtags'])
-            ->setDefaults(['translation_domain' => 'form'])
-        ;
+            ->setDefaults(['translation_domain' => 'form']);
     }
 
     /**
