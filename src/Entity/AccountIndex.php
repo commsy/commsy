@@ -4,6 +4,8 @@
 namespace App\Entity;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 class AccountIndex
 {
 
@@ -15,7 +17,13 @@ class AccountIndex
 
     private $accountIndexUsers;
 
-    private $ids;
+    private array $identifier;
+
+    private array $accounts;
+
+    public function __construct()
+    {
+    }
 
     /**
      * @return mixed
@@ -81,20 +89,23 @@ class AccountIndex
         $this->accountIndexUsers = $accountIndexUsers;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getIds()
+    public function getIdentifier(): array
     {
-        return $this->ids;
+        return $this->identifier;
     }
 
-    /**
-     * @param mixed $ids
-     */
-    public function setIds($ids): void
+    public function addIdentifier(string $identifier)
     {
-        $this->ids = $ids;
+        $this->identifier[$identifier] = false;
     }
 
+    public function getAccounts(): array
+    {
+        return $this->accounts;
+    }
+
+    public function addAccount(Account $account)
+    {
+        $this->accounts[] = $account;
+    }
 }

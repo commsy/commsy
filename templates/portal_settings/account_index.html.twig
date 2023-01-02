@@ -1,6 +1,7 @@
 {% extends 'layout.html.twig' %}
 
 {% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme filterForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
 
 {% block sidebar_left %}
     {% include 'components/context_navigation.html.twig' with {'menu_name': 'portal_settings'} only %}
@@ -17,41 +18,61 @@
                     {{ 'Performed action'|trans({},'portal') }}.
                 </div>
             {% endif %}
-            {{ form_start(form) }}
-            {{ form_row(form.accountIndexSearchString) }}
-            {{ form_row(form.userIndexFilterChoice) }}
-            {{ form_row(form.search) }}
 
-            {% if not userList is empty %}
-                <table>
-                    <tr>
-                        <th></th>
-                        <th>{{ knp_pagination_sortable(pagination, 'Name (user id)'|trans({},"portal"), 'userid') }}</th>
-                        <th{% if pagination.isSorted('lastlogin') %} class="sorted"{% endif %}>
-                            {{ knp_pagination_sortable(pagination, 'Last login'|trans({},"portal"), 'lastlogin') }}
-                        </th>
-                        <th{% if pagination.isSorted('email') %} class="sorted"{% endif %}>
-                            {{ knp_pagination_sortable(pagination, 'Mail'|trans({},"portal"), 'email') }}
-                        </th>
-                        <th>{{'authSource'|trans({}, 'portal') }}</th>
-                    </tr>
-                    {% for user in pagination %}
-                        <tr>
-                            <td>{{ form_widget(form.ids[user.itemId]) }}</td>
-                            <td><a href="{{ path('app_portalsettings_accountindexdetail', {'portalId': portal.id, 'userId': user.itemId}) }}">{{ user.firstname }} {{ user.lastname }}</a> ({{ user.userid }})</td>
-                            <td>{{ user.lastlogin|craue_date }}</td>
-                            <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': portal.id, 'itemId': user.itemId, 'originPath': 'app_portalsettings_accountindex'}) }}">{{ user.email }}</a></td>
-                            <td>{{ authSources|filter(source => source.id == user.authSource)|first.title }}</td>
-                        </tr>
-                    {% endfor %}
-                </table>
+            {{ form_start(filterForm) }}
+                {{ form_row(filterForm.search) }}
+                {{ form_row(filterForm.status) }}
+                {{ form_row(filterForm.submit) }}
+            {{ form_end(filterForm) }}
+
+            {{ form_start(form) }}
+
+            {% for account in form.accounts %}
+            {% endfor %}
+
+
+            {% if not pagination is empty %}
+                <div class="uk-overflow-auto">
+                    <table class="uk-table uk-table-striped uk-table-hover uk-table-small">
+                        <thead>
+                            <tr>
+                                <th class="uk-table-shrink"></th>
+                                <th>{{ knp_pagination_sortable(pagination, 'Name (user id)'|trans({},"portal"), 'userid') }}</th>
+                                <th{% if pagination.isSorted('email') %} class="sorted"{% endif %}>
+                                    {{ knp_pagination_sortable(pagination, 'Mail'|trans({},"portal"), 'email') }}
+                                </th>
+                                <th class="uk-table-shrink uk-text-nowrap{% if pagination.isSorted('lastlogin') %} sorted{% endif %}">
+                                    {{ knp_pagination_sortable(pagination, 'Last login'|trans({},"portal"), 'lastlogin') }}
+                                </th>
+                                <th class="uk-table-shrink">{{'authSource'|trans({}, 'portal') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for account in pagination %}
+                            <tr>
+
+                                <td></td>
+{#                                <td>{{ form_widget(form.ids[user.itemId]) }}</td>#}
+                                <td>{{ account.username }}</td>
+{#                                <td><a href="{{ path('app_portalsettings_accountindexdetail', {'portalId': portal.id, 'userId': user.itemId}) }}">{{ user.firstname }} {{ user.lastname }}</a> ({{ user.userid }})</td>#}
+                                <td>{{ account.email }}</td>
+{#                                <td><a href="{{ path('app_user_sendmailviacontactform', {'roomId': portal.id, 'itemId': user.itemId, 'originPath': 'app_portalsettings_accountindex'}) }}">{{ user.email }}</a></td>#}
+                                <td class="uk-text-nowrap">{{ account.lastLogin|craue_datetime|default('Never'|trans({}, 'portal')) }}</td>
+                                <td>{{ account.authSource.title }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
                 {{ 'Found users'|trans({},"portal") }}: {{ pagination.getTotalItemCount }}<br />
                 {{ knp_pagination_render(pagination) }}
             {% endif %}
 
-            {{ form_row(form.indexViewAction) }}
-            {{ form_row(form.execute) }}
-            {% do form.ids.setRendered %}
+{#            {{ form_row(form.indexViewAction) }}#}
+{#            {{ form_row(form.execute) }}#}
+{#            {% do form.ids.setRendered %}#}
+
             {{ form_end(form) }}
         {% endblock %}
     {% endembed %}

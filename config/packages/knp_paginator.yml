@@ -9,6 +9,6 @@ knp_paginator:
     filter_field_name: filterField # filter field query parameter name
     filter_value_name: filterValue # filter value query paameter name
   template:
-    pagination: '@KnpPaginator/Pagination/sliding.html.twig' # sliding pagination controls template
-    sortable: '@KnpPaginator/Pagination/sortable_link.html.twig' # sort link template
+    pagination: '@KnpPaginator/Pagination/uikit_v3_pagination.html.twig' # sliding pagination controls template
+    sortable: '@KnpPaginator/Pagination/uikit_v3_sortable.html.twig' # sort link template
     filtration: '@KnpPaginator/Pagination/filtration.html.twig' # filters template

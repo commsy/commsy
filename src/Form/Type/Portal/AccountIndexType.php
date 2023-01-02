@@ -4,6 +4,7 @@ namespace App\Form\Type\Portal;
 use App\Entity\AccountIndex;
 use App\Entity\AccountIndexUser;
 use App\Entity\Portal;
+use App\Form\DataTransformer\AccountsToPortalUserIdsTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -13,6 +14,16 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 class AccountIndexType extends AbstractType
 {
     /**
+     * @var AccountsToPortalUserIdsTransformer
+     */
+    private AccountsToPortalUserIdsTransformer $transformer;
+
+    public function __construct(AccountsToPortalUserIdsTransformer $transformer)
+    {
+        $this->transformer = $transformer;
+    }
+
+    /**
      * Builds the form.
      *
      * @param  FormBuilderInterface $builder The form builder
@@ -21,41 +32,7 @@ class AccountIndexType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('accountIndexSearchString', Types\TextType::class, [
-                'label' => 'Search for user IDs',
-                'required' => false,
-                'translation_domain' => 'portal',
-                'help' => 'Account index search string help',
-            ])
-            ->add('userIndexFilterChoice', Types\ChoiceType::class, [
-                'choices'  => [
-                    'All' => 0,
-                    'Members' => 1,
-                    '-----------------' => 14,
-                    'Locked' => 2,
-                    'In activation' => 3,
-                    'User' => 4,
-                    'Moderator' => 5,
-                    'Contact' => 6,
-                    '------------------' => 15,
-                    'Community moderators' => 7,
-                    'Community contacts' => 8,
-                    'Project moderators' => 9,
-                    'Project contacts' => 10,
-                    'Moderators of workspaces' => 11,
-                    'Contacts of workspaces' => 12,
-                    '-------------------' => 16,
-                    'No workspaces participation' => 13,
-                ],
-                'required' => true,
-                'label' => 'Status',
-                'translation_domain' => 'portal',
-            ])
-            ->add('search', Types\SubmitType::class, [
-                'label' => 'Search',
-                'translation_domain' => 'portal',
-            ])
-            ->add('ids', Types\CollectionType::class, [
+            ->add('accounts', Types\CollectionType::class, [
                 // each entry in the array will be an "Checkbox" field
                 'entry_type' => Types\CheckboxType::class,
                 'required' => false,
@@ -93,6 +70,8 @@ class AccountIndexType extends AbstractType
                 'translation_domain' => 'portal',
             ])
         ;
+
+        $builder->get('accounts')->addModelTransformer($this->transformer);
     }
 
     /**
