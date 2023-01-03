@@ -13,15 +13,17 @@
 
 namespace App\Form\Model;
 
+use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class NewPassword
 {
     /**
-     * @SecurityAssert\UserPassword(message="Wrong value for your current password.")
-     *
      * @var mixed|null
      */
+    #[SecurityAssert\UserPassword(
+        message: "Wrong value for your current password.",
+    )]
     private $currentPassword;
 
     /**
