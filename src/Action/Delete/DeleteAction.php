@@ -28,18 +28,21 @@ class DeleteAction implements ActionInterface
 {
     private cs_environment $legacyEnvironment;
 
+    private DeleteInterface $deleteStrategy;
+
     public function setDeleteStrategy(DeleteInterface $deleteStrategy): void
     {
         $this->deleteStrategy = $deleteStrategy;
     }
 
     public function __construct(
-        private DeleteGeneric $deleteStrategy,
+        private DeleteGeneric $deleteGeneric,
         private TranslatorInterface $translator,
         private UserService $userService,
         LegacyEnvironment $legacyEnvironment
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->deleteStrategy = $this->deleteGeneric;
     }
 
     public function execute(cs_room_item $roomItem, array $items): Response
