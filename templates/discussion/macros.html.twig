@@ -326,6 +326,22 @@
         </div>
 {% endmacro %}
 
+{% macro anchorLinks(loop, count) %}
+    {% if loop.last and loop.length > 1 %}
+            <a href="#answer_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
+            <i class="uk-icon-small uk-icon-angle-down uk-text-muted"></i>
+    {% elseif loop.first and loop.length > 1 %}
+            <i class="uk-icon-small uk-icon-angle-up uk-text-muted"></i>
+            <a href="#answer_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
+    {% elseif loop.length == 1 %}
+            <i class="uk-icon-small uk-icon-angle-up uk-text-muted"></i>
+            <i class="uk-icon-small uk-icon-angle-down uk-text-muted"></i>
+    {% else %}
+            <a href="#answer_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
+            <a href="#answer_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
+    {% endif %}
+{% endmacro %}
+
 
 {% macro answersTree(articles, level) %}
     {% import _self as discussionMacros %}
@@ -334,7 +350,7 @@
 
     {% for child in articles %}
         <li id="article_{{ child.item.itemId }}" data-jstree='{"opened": {{ opened }}}'>
-            <a href="#discarticle{{ child.item.itemId }}">
+            <a href="#answer_id_{{ child.item.itemId }}">
                 {{- child.item.description|decodeHtmlEntity|striptags|u.truncate(80, '...', false) -}}
             </a>
 
@@ -387,9 +403,9 @@
     {% import _self as discussionMacros %}
 
     {% if list is not empty %}
-        <ul class="uk-comment-list">
+        <ul class="{% if count == 0 %}uk-comment-list{% endif %}">
             {% for child in list %}
-                <li data-id="{{ child.item.itemId }}">
+                <li id="answer_id_{{ child.item.itemId }}" data-id="{{ child.item.itemId }}">
                     {{ include('discussion/answer.html.twig', {
                         article: child.item
                     }) }}

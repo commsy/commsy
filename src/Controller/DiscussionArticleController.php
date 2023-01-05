@@ -43,7 +43,8 @@ class DiscussionArticleController extends BaseController
     public function xhrDeleteAction(
         Request $request,
         DeleteAction $action,
-        int $roomId): Response
+        int $roomId
+    ): Response
     {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);

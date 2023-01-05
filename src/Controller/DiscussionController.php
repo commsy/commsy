@@ -262,7 +262,14 @@ class DiscussionController extends BaseController
     }
 
     /**
-     * @return array
+     * @param Request $request
+     * @param TopicService $topicService
+     * @param LegacyMarkup $legacyMarkup
+     * @param int $roomId
+     * @param int $itemId
+     * @param AssessmentService $assessmentService
+     * @param CategoryService $categoryService
+     * @return Response
      */
     #[Route(path: '/room/{roomId}/discussion/{itemId}', requirements: ['itemId' => '\d+'])]
     public function detail(
@@ -621,8 +628,6 @@ class DiscussionController extends BaseController
             throw $this->createNotFoundException();
         }
 
-        $articleList = $discussion->getAllArticles();
-
         $parentId = $request->query->get('answerTo', 0);
         $newPosition = $this->discussionService->calculateNewPosition($discussion, $parentId);
 
@@ -639,13 +644,10 @@ class DiscussionController extends BaseController
                 'roomId' => $roomId,
                 'itemId' => $article->getItemID(),
             ]),
-            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
         ]);
 
         return $this->render('discussion/create_answer.html.twig', [
             'form' => $form->createView(),
-            'articleList' => $articleList,
-            'discussion' => $discussion,
             'article' => $article,
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'parentId' => $parentId,
@@ -669,7 +671,6 @@ class DiscussionController extends BaseController
                 'roomId' => $roomId,
                 'itemId' => $article->getItemID(),
             ]),
-            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
         ]);
 
         $form->handleRequest($request);
@@ -741,16 +742,6 @@ class DiscussionController extends BaseController
                 'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
             ], 'room' => $current_context]);
-        } else {
-            if ('discarticle' == $item->getItemType()) {
-                // get section from DiscussionService
-                $discussionArticleItem = $this->discussionService->getArticle($itemId);
-                if (!$discussionArticleItem) {
-                    throw $this->createNotFoundException('No discussion article found for id ' . $itemId);
-                }
-                $formData = $discussionarticleTransformer->transform($discussionArticleItem);
-                $form = $this->createForm(DiscussionAnswerType::class, $formData, ['placeholderText' => '[' . $this->translator->trans('insert title') . ']', 'categories' => $labelService->getCategories($roomId), 'hashtags' => $labelService->getHashtags($roomId), 'hashTagPlaceholderText' => $this->translator->trans('Hashtag', [], 'hashtag'), 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])]);
-            }
         }
 
         $form->handleRequest($request);

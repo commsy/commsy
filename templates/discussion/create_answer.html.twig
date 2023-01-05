@@ -19,6 +19,7 @@
                 {{ form_start(form) }}
                 {{ form_errors(form) }}
 
+{#                {{ form_row(form['description_' ~ article.itemId]) }}#}
                 {{ form_row(form.description) }}
 
                 <div class="uk-flex uk-margin-small-top">
@@ -43,13 +44,13 @@
 
             <div class="toggle-files uk-hidden" aria-hidden="false">
                 <div class="cs-edit-section" data-uk-observe data-cs-edit="{
-                editUrl: '{{ path('app_upload_uploadform', {
-                    'roomId': article.contextId, 'itemId': article.itemId
-                }) }}',
-                cancelEditUrl: '{{ path('app_item_canceledit', {
-                    'roomId': article.contextId, 'itemId': article.itemId
-                }) }}'
-            }">
+                    editUrl: '{{ path('app_upload_uploadform', {
+                        'roomId': article.contextId, 'itemId': article.itemId
+                    }) }}',
+                    cancelEditUrl: '{{ path('app_item_canceledit', {
+                        'roomId': article.contextId, 'itemId': article.itemId
+                    }) }}'
+                }">
                     {{ macrosItem.files(article, article.draft) }}
                 </div>
             </div>

@@ -239,32 +239,36 @@
     {% endif %}
 {% endmacro %}
 
-{% macro userIcon(user, size, showTooltip) %}
-    {% set showTooltip = showTooltip ?? true %}
+{% macro userIcon(user, size, showTooltip = true, classList = []) %}
     {% set styleAttribute = '' %}
-    {% set additionalClasses = '' %}
 
     {% if size is same as('small') %}
         {% set styleAttribute = ' style="height:30px; width:30px;"' %}
     {% elseif size matches '/^\\d+$/' %}
         {% set styleAttribute = ' style="height:' ~ size ~ 'px; width:' ~ size ~ 'px;"' %}
     {% else %}
-        {% set additionalClasses = ' cs-comment-thumbnail' %}
+        {% set additionalClasses = ['cs-comment-thumbnail'] %}
+    {% endif %}
+
+    {% if not classList %}
+        {% set classes = ['uk-thumbnail', 'uk-border-circle']|merge(additionalClasses|default([])) %}
+    {% else %}
+        {% set classes = classList %}
     {% endif %}
 
     {% if user.isDeleted %}
-        <img class="uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('app_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "deleted person"|trans({}, 'user')}}">
+        <img class="{{ classes|join(' ') }}"{{ styleAttribute | raw }} src="{{ path('app_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "deleted person"|trans({}, 'user')}}">
     {% elseif user.itemId != "" %}
-        <img class="uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
+        <img class="{{ classes|join(' ') }}"{{ styleAttribute | raw }} src="{{ path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
     {% else %}
-        <img class="uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('app_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "guest"|trans({}, 'messages')}}">
+        <img class="{{ classes|join(' ') }}"{{ styleAttribute | raw }} src="{{ path('app_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "guest"|trans({}, 'messages')}}">
     {% endif %}
 {% endmacro %}
 
-{% macro userIconLink(user, size) %}
+{% macro userIconLink(user, size, showTooltip = true, classList = []) %}
     {% import _self as macros %}
     <a href="{{ path('app_user_detail', {'roomId': user.contextId, 'itemId': user.itemId}) }}">
-        {{ macros.userIcon(user, size) }}
+        {{ macros.userIcon(user, size, showTooltip, classList) }}
     </a>
 {% endmacro %}
 
@@ -290,7 +294,7 @@
                 <div class="uk-display-inline cs-edit {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
                     <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                 </div>
-            {% endif %}        
+            {% endif %}
         {% endif %}
         <div class="uk-display-inline cs-toggle-icon uk-margin-left
         {% if (title == 'links') and (item.AllLinkeditemIDArray|length < 1) %} uk-invisible {% endif %} {% if (title == 'categoriesAndBuzzwords') and (item.buzzwordArray|length < 1) %} uk-invisible {% endif %}">
@@ -340,7 +344,7 @@
             </div>
         {% else %}
             <div class="uk-width-9-10 uk-margin-top-remove">
-                
+
                 {% if not content is empty %}
                     <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-content">
                         {{ content|raw }}
@@ -389,7 +393,7 @@
         {% if ratingArray.ratingOwnDetail %}
             {% set hasVoted = true %}
         {% endif %}
-    
+
         <div id="cs-rating-wrapper" data-cs-rating-wrapper='{"hasVoted": "{{ hasVoted }}"}'>
             {% for i in 1..5 %}
                 {% if rating >= i %}
@@ -471,7 +475,7 @@
 
 {% macro workflowTrafficLight(item, workflowTitles) %}
     {% import _self as macros %}
-    
+
     {{ macros.workflowStatus(item.workflowTrafficLight, workflowTitles) }}
 {% endmacro %}
 
