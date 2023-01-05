@@ -260,7 +260,7 @@ class cs_file_manager extends cs_manager
                 $filePath = $discManager->getRelativeFilePath(
                     $this->_environment->getCurrentPortalID(),
                     $file_item->getContextID(),
-                    $file_item->getDiskFileName()
+                    $file_item->getFileName()
                 );
 
                 $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
