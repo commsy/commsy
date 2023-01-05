@@ -390,29 +390,6 @@ services:
     commsy.search.indexable_checker:
         alias: App\Search\IndexableChecker
 
-    # Validator
-    commsy.validator.unique_label_name:
-        class: App\Validator\Constraints\UniqueLabelNameValidator
-        arguments: [ '@doctrine.orm.entity_manager' ]
-        tags:
-            - { name: validator.constraint_validator, alias: alias_name }
-
-    commsy.validator.send_recipients_constraint:
-        class: App\Validator\Constraints\SendRecipientsConstraintValidator
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: validator.constraint_validator, alias: alias_name }
-
-    commsy.validator.home_notice_constraint:
-        class: App\Validator\Constraints\HomeNoticeConstraintValidator
-        arguments: ['@service_container', '@translator']
-        tags:
-            - { name: validator.constraint_validator, alias: alias_name }
-
-    App\Validator\Constraints\UniquePortfolioCategoryValidator:
-        autowire: true
-        autoconfigure: true
-
     # Form types
     App\Form\Type\ExtensionSettingsType:
         tags:
