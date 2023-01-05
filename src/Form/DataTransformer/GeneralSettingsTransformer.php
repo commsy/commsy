@@ -130,7 +130,7 @@ class GeneralSettingsTransformer extends AbstractTransformer
             $rubricArray[] = $rubricName.'_'.$rubricValue;
         }
 
-        $roomObject->setHomeConf(implode($rubricArray, ','));
+        $roomObject->setHomeConf(implode(',', $rubricArray));
 
         $roomObject->setTitle($roomData['title']);
 
