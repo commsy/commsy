@@ -19,8 +19,8 @@
         </div>
     </header>
     <div class="uk-comment-body">
-        <div class="uk-grid">
-            <div id="description{{ article.itemId }}" class="cs-edit-section cs-toggle uk-width-8-10" data-uk-observe data-cs-edit="{{ {
+        <div class="uk-flex">
+            <div id="description{{ article.itemId }}" class="cs-edit-section cs-toggle uk-flex-item-1" data-uk-observe data-cs-edit="{{ {
                 'editUrl': path('app_item_editdescription', {'roomId': article.contextId, 'itemId': article.itemId}),
                 'cancelEditUrl': path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}),
                 'toggleSelect': '#edit_toggle_' ~ article.itemId
@@ -29,7 +29,7 @@
             </div>
 
             {# right actions #}
-            <div class="uk-width-2-10 uk-flex uk-flex-right cs-edit">
+            <div class="content-actions uk-flex uk-margin-left cs-edit">
 
                 {# section actions #}
                 {# NOTE: `getHasOverwrittenContent()` returns true for articles with answers which were "deleted" but should instead have their content overwritten to keep the discussion hierarchy intact. #}
