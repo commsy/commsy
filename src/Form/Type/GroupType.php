@@ -39,7 +39,7 @@ class GroupType extends AbstractType
                 'placeholder' => 'Choose a template',
                 'required' => false,
                 'mapped' => false,
-                'label' => 'Template',
+                'label' => 'template for group workspace',
                 'translation_domain' => 'group',
             ])
             ->add('hidden', CheckboxType::class, ['label' => 'hidden', 'required' => false])
