@@ -197,17 +197,12 @@
                 </div>
 
                 {% if is_granted('ITEM_EDIT', 'NEW') %}
-{#                    {{ render(controller(#}
-{#                        'App\\Controller\\DiscussionController::createAnswer', {#}
-{#                            'roomId': roomId,#}
-{#                            'itemId': discussion.itemId,#}
-{#                            'triggerEdit': false#}
-{#                        }#}
-{#                    )) }}#}
-
-                    <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createanswer', {'roomId': roomId, 'itemId': discussion.itemId}) }}">
-                        <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({}, 'discussion') }}
-                    </a>
+                    {{ render(controller(
+                        'App\\Controller\\DiscussionController::answerRoot', {
+                            'roomId': roomId,
+                            'itemId': discussion.itemId
+                        }
+                    )) }}
                 {% endif %}
 
                 {% if articleTree.children is defined %}

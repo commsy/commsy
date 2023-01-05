@@ -615,6 +615,51 @@ class DiscussionController extends BaseController
         return $printService->buildPdfResponse($html);
     }
 
+    #[Route(path: '/room/{roomId}/discussion/{itemId}/answerform')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")]
+    public function answerRoot(
+        int $roomId,
+        int $itemId,
+        Request $request
+    ): Response
+    {
+        $discussion = $this->discussionService->getDiscussion($itemId);
+        if (!$discussion) {
+            throw $this->createNotFoundException();
+        }
+
+        $answer = $this->discussionService->getNewArticle();
+        $form = $this->createForm(DiscussionAnswerType::class, $answer, [
+            'action' => $this->generateUrl('app_discussion_answerroot', [
+                'roomId' => $roomId,
+                'itemId' => $discussion->getItemID(),
+            ]),
+        ]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $newPosition = $this->discussionService->calculateNewPosition($discussion, 0);
+
+                $answer->setDiscussionID($itemId);
+                $answer->setPosition($newPosition);
+                $answer->setPrivateEditing(false);
+                $answer->save();
+            }
+
+            return $this->redirectToRoute('app_discussion_detail', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
+        }
+
+        return $this->render('discussion/create_answer.html.twig', [
+            'form' => $form->createView(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'parentId' => 0,
+            'withUpload' => false,
+        ]);
+    }
+
     #[Route(path: '/room/{roomId}/discussion/{itemId}/createanswer')]
     #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")]
     public function createAnswer(

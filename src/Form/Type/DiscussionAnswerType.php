@@ -29,6 +29,7 @@ class DiscussionAnswerType extends AbstractType
                 'config_name' => 'cs_annotation_config',
                 'label' => false,
                 'required' => true,
+                'empty_data' => '',
                 'constraints' => [
                     new Assert\NotBlank(),
                 ],
