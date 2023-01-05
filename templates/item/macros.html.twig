@@ -135,8 +135,8 @@
 {% macro files_simple(item, draft = false) %}
     {% import 'utils/macros.html.twig' as macrosUtils %}
 
-    <div class="uk-grid">
-        <div class="uk-width-8-10">
+    <div class="uk-flex">
+        <div class="uk-flex-item-1">
             <ul class="uk-thumbnav">
                 {% for file in item.fileList %}
                     <li>
@@ -152,7 +152,7 @@
             </ul>
         </div>
 
-        <div class="uk-width-2-10 uk-flex uk-flex-right">
+        <div class="content-actions uk-flex uk-margin-left">
             {# edit action #}
             {% if is_granted('ITEM_EDIT', item.itemId) %}
                 <div id="{{ item.type }}-files-edit" class="uk-display-inline cs-edit {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
