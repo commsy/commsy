@@ -138,14 +138,17 @@
 
     {% set buzzExpanded = false %}
     {% set catzExpanded = false %}
-    
+
     {% set countEntries = item.buzzwordArray|length + item.tagsArray|length %}
 
     {% set preview %}
     <div class="uk-grid">
         {% if withCategories %}
             <div class="uk-width-1-3">
-                <strong>{{ 'categories'|trans({}, "room") }}:</strong> <br/>
+                {% if (item.tagsArray|length) > 0 %}
+                    <strong>{{ 'categories'|trans({}, "room") }}:</strong> <br/>
+                {% endif %}
+
                 {% set count = 1 %}
                 {% if (item.tagsArray|length) < 4 %}
                     {% if (item.tagsArray|length) == 0 %}
@@ -204,7 +207,7 @@
         {% if withTags %}
             <div class="uk-width-1-3">
 
-            {% set tagArray = item.buzzwordList.to_array() %} 
+            {% set tagArray = item.buzzwordList.to_array() %}
             {% if (tagArray|length) > 0 %}
                 <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
                 {% for tag in tagArray %}
@@ -215,7 +218,7 @@
         {% endif %}
     </div>
     {% endset %}
-    
+
     {{ macros.editContent('categoriesAndBuzzwords', item, true, content, preview, true, true, countEntries, draft) }}
 {% endmacro %}
 
@@ -290,7 +293,7 @@
         {% endif %}
     </div>
 
-        
+
     {% endset %}
 
     {% set content %}
@@ -307,7 +310,7 @@
         {% if workflowResubmissionDate != '0000-00-00 00:00:00' and withResubmission %}
             <div class="uk-width-1-3">
                 <div class="uk-margin-bottom">
-                    <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/> 
+                    <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/>
                     {{ workflowResubmissionDate|craue_date }}
                 </div>
             </div>
@@ -316,7 +319,7 @@
             <div class="uk-width-1-3">
                 <div class="uk-margin-bottom">
                     <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
-                    {{ workflowValidityDate|craue_date }}       
+                    {{ workflowValidityDate|craue_date }}
                 </div>
             </div>
         {% endif %}
@@ -330,9 +333,9 @@
                     {% set counter = counter + 1 %}
                 {% endfor %}
             </div>
-        {% endif %}       
+        {% endif %}
         {% if not workflowUserArray is empty %}
-            <div class="uk-width-1-2">            
+            <div class="uk-width-1-2">
                <strong>{{ 'workflow marked as read by users'|trans({}, "material") }}:</strong><br/>
                {% set counter = 1 %}
                {% for workflowUser in workflowUserArray %}
@@ -341,10 +344,10 @@
                     {% set counter = counter + 1 %}
                {% endfor %}
            </div>
-       {% endif %}       
+       {% endif %}
      </div>
    {% endset %}
-    
+
     {{ macros.editContent('workflow', item, true, content, preview, true, false, 0) }}
 {% endmacro %}
 
@@ -398,7 +401,7 @@
     {% set opened = true %}
     <ul class="uk-list">
     {% for child in roomTags %}
-    
+
         {% set childTitle %}
             <div><span class="uk-text-muted">{{ child.title|decodeHtmlEntity }}</span></div>
         {% endset %}
@@ -409,7 +412,7 @@
                 {% endset %}
             {% endif %}
         {% endfor %}
-    
+
         {% if child.children is defined and not child.children is empty %}
             <li id="tag_{{ child.title|decodeHtmlEntity }}_{{ child.item_id }}" data-jstree='{"opened": {{ opened }}}'>
                 {{ childTitle }}
