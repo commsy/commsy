@@ -734,7 +734,7 @@ class UserController extends BaseController
         $groups = [];
         $context_item = $this->legacyEnvironment->getCurrentContextItem();
         $conf = $context_item->getHomeConf();
-        if (true == strpos($conf, 'group_show')) {
+        if (strpos($conf, 'group_show')) {
             $groups = $this->userService->getUser($itemId)->getGroupList()->to_array();
         }
 
