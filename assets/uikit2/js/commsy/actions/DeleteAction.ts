@@ -8,6 +8,7 @@ import {XHRAction} from "./AbstractAction";
 declare var UIkit: any;
 
 export class DeleteAction extends XHRAction {
+    private itemId: number;
     private itemType: string;
     private title: string;
     private confirmQuestion: string;
@@ -21,6 +22,7 @@ export class DeleteAction extends XHRAction {
 
         let deleteData: any = actionData;
 
+        this.itemId = deleteData.itemId;
         this.itemType = deleteData.itemType;
         this.title = deleteData.title;
         this.confirmQuestion = deleteData.confirmQuestion;
@@ -57,19 +59,15 @@ export class DeleteAction extends XHRAction {
                         $('.material-section').hide();
                         break;
                     case 'discarticle':
-                        $('.discussion-article').hide();
+                        // remove from main content
+                        $('li#answer_id_' + this.itemId).remove();
 
-                        let urlPathParts = this.actionData.url.split("/");
-                        let listElement = $("#" + this.itemType + "-list a[href='#" + this.itemType + urlPathParts[urlPathParts.length-2]+"']").closest("li");
-                        listElement.nextAll("li").each(function(){
-                            let lineParts = $(this).find("a").text().trim().split(" ");
-                            lineParts[0] = (parseInt(lineParts[0]) - 1).toString() + ".";
-                            $(this).find("a").text(lineParts.join(" "));
-                        });
-                        listElement.remove();
-                        let listHeader = $("#" + this.itemType + "-list").closest("article").find("h4").first();
-                        listHeader.text( listHeader.text().replace(/\d+/g, $("#" + this.itemType + "-list li").length.toString()));
+                        // remove from sidebar
+                        const $sidebarLink = $('div.cs-nav-quick a[href="#article' + this.itemId + '"]');
+                        $sidebarLink.closest('li').remove();
 
+                        // remove from tree
+                        $('li#article_' + this.itemId).remove();
                         break;
 
                     default:

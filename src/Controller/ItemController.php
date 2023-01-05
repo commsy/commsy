@@ -95,13 +95,30 @@ class ItemController extends AbstractController
         // NOTE: we disable the CommSy-related & MathJax toolbar items for users & groups, so their CKEEditor controls
         // won't allow any media upload; this is done since user & group detail views currently have no means to manage
         // (e.g. delete again) any attached files
-        $configName = ('user' === $itemType || 'group' === $itemType) ? 'cs_item_nomedia_config' : 'cs_item_config';
+        $configName = match ($itemType) {
+            'user', 'group' => 'cs_item_nomedia_config',
+            'discarticle' => 'cs_annotation_config',
+            default => 'cs_item_config',
+        };
 
-        $url = $this->generateUrl('app_upload_ckupload', ['roomId' => $roomId, 'itemId' => $itemId]);
-        $url .= '?CKEditorFuncNum=42&command=QuickUpload&type=Images';
+        $url = $this->generateUrl('app_upload_ckupload', [
+            'roomId' => $roomId,
+            'itemId' => $itemId,
+            'CKEditorFuncNum' => 42,
+            'command' => 'QuickUpload',
+            'type' => 'Images',
+        ]);
 
         $formData = $transformer->transform($item);
-        $formOptions = ['itemId' => $itemId, 'configName' => $configName, 'uploadUrl' => $url, 'filelistUrl' => $this->generateUrl('app_item_filelist', ['roomId' => $roomId, 'itemId' => $itemId])];
+        $formOptions = [
+            'itemId' => $itemId,
+            'configName' => $configName,
+            'uploadUrl' => $url,
+            'filelistUrl' => $this->generateUrl('app_item_filelist', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]),
+        ];
 
         $withRecurrence = false;
         if ('date' == $itemType) {
@@ -146,16 +163,19 @@ class ItemController extends AbstractController
                 throw new UnexpectedValueException("Value must be one of 'save', 'saveThisDate' and 'saveAllDates'.");
             }
 
-            return $this->redirectToRoute('app_item_savedescription', ['roomId' => $roomId, 'itemId' => $itemId]);
+            return $this->redirectToRoute('app_item_savedescription', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
         }
 
-        // etherpad
-        $isMaterial = false;
-        if ('material' == $itemType) {
-            $isMaterial = true;
-        }
-
-        return $this->render('item/edit_description.html.twig', ['isMaterial' => $isMaterial, 'itemId' => $itemId, 'roomId' => $roomId, 'form' => $form->createView(), 'withRecurrence' => $withRecurrence]);
+        return $this->render('item/edit_description.html.twig', [
+            'isMaterial' => $itemType == 'material',
+            'itemId' => $itemId,
+            'roomId' => $roomId,
+            'form' => $form->createView(),
+            'withRecurrence' => $withRecurrence,
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/savedescription')]

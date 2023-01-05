@@ -132,6 +132,37 @@
     </article>
 {% endmacro %}
 
+{% macro files_simple(item, draft = false) %}
+    {% import 'utils/macros.html.twig' as macrosUtils %}
+
+    <div class="uk-grid">
+        <div class="uk-width-8-10">
+            <ul class="uk-thumbnav">
+                {% for file in item.fileList %}
+                    <li>
+                        {% set disposition = 'attachment' %}
+                        {% if file.extension|lower == 'pdf' %}
+                            {% set disposition = 'inline' %}
+                        {% endif %}
+                        <a href="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': disposition }) }}" target="_blank" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename }}">
+                            <i class="uk-icon-small {{ macrosUtils.iconClassForFileType(file.extension) }}" ></i>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="uk-width-2-10 uk-flex uk-flex-right">
+            {# edit action #}
+            {% if is_granted('ITEM_EDIT', item.itemId) %}
+                <div id="{{ item.type }}-files-edit" class="uk-display-inline cs-edit {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
+                    <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
 {% macro links(item,withTags,withCategories,roomCategories, draft, buzzExpanded, catzExpanded) %}
     {% import 'utils/macros.html.twig' as macros %}
     {% import _self as itemMacros %}

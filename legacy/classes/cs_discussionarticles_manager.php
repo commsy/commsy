@@ -182,7 +182,7 @@ class cs_discussionarticles_manager extends cs_manager
         }
 
         if ($this->_sort_position) {
-            $query .= ' ORDER BY '.$this->addDatabasePrefix('discussionarticles').'.position ASC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('discussionarticles').'.position DESC';
         } else {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('discussionarticles').'.creation_date ASC, '.$this->addDatabasePrefix('discussionarticles').'.item_id ASC';
         }
@@ -206,17 +206,26 @@ class cs_discussionarticles_manager extends cs_manager
      * @param int item_id id of the item
      *
      * @return cs_discussionarticle_item|null cs_item a discussionarticle
-     * @throws \Doctrine\DBAL\Exception
      */
-    public function getItem($item_id): ?cs_discussionarticle_item
+    public function getItem($itemId): ?cs_discussionarticle_item
     {
-        $query = 'SELECT * FROM '.$this->addDatabasePrefix('discussionarticles').' WHERE '.$this->addDatabasePrefix('discussionarticles').".item_id = '".encode(AS_DB, $item_id)."'";
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or empty($result[0])) {
-            include_once 'functions/error_functions.php';
-            trigger_error('Problems selecting one discussionarticles item.', E_USER_WARNING);
-        } else {
-            return $this->_buildItem($result[0]);
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $queryBuilder
+            ->select('d.*')
+            ->from($this->_db_table, 'd')
+            ->where('d.item_id = :itemId')
+            ->setParameter('itemId', $itemId);
+
+        try {
+            $result = $this->_db_connector->performQuery($queryBuilder->getSQL(),
+                $queryBuilder->getParameters());
+
+            if ($result) {
+                /** @noinspection PhpIncompatibleReturnTypeInspection */
+                return $this->_buildItem($result[0]);
+            }
+        } catch (Exception) {
         }
 
         return null;
@@ -343,7 +352,7 @@ class cs_discussionarticles_manager extends cs_manager
                     $childrenList->add($this->_buildItem($rs));
                 }
             }
-        } catch (ExceptionAlias) {
+        } catch (Exception) {
         }
 
         return $childrenList;

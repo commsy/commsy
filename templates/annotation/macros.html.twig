@@ -46,7 +46,7 @@
 
                 {# delete action #}
                 {% if is_granted('ITEM_EDIT', item.itemId) %}
-                    <div class="uk-display-inline cs-delete uk-margin-small-left" data-delete-title="{{ "delete"|trans({}, 'annotation') }}" data-delete-confirm="{{ 'delete annotation'|trans({}, 'annotation') }}" data-delete-url="{{ path('app_annotation_delete', {'roomId': item.contextId, 'itemId': item.itemId}) }}" data-confirm-delete-cancel="{{ 'cancel'|trans({}, 'form') }}" data-confirm-delete-confirm="{{ 'confirm'|trans({}, 'annotation') }}">
+                    <div class="uk-display-inline uk-margin-small-left" data-delete data-delete-title="{{ "delete"|trans({}, 'annotation') }}" data-delete-confirm="{{ 'delete annotation'|trans({}, 'annotation') }}" data-delete-url="{{ path('app_annotation_delete', {'roomId': item.contextId, 'itemId': item.itemId}) }}" data-confirm-delete-cancel="{{ 'cancel'|trans({}, 'form') }}" data-confirm-delete-confirm="{{ 'confirm'|trans({}, 'annotation') }}">
                         <a href="#" class="uk-icon-hover uk-icon-small uk-icon-trash" data-uk-tooltip title="{{ 'delete'|trans({}, 'annotation') }}"></a>
                     </div>
                 {% endif %}
@@ -61,5 +61,5 @@
             </div>
 
        </div>
-    </div>    
+    </div>
 {% endmacro %}

@@ -33,11 +33,7 @@ class DiscussionAnswerType extends AbstractType
                     new Assert\NotBlank(),
                 ],
                 'attr' => [
-                    'placeholder' => 'annotation',
                     'class' => 'uk-form-width-large',
-                ],
-                'label_attr' => [
-                    'style' => 'font-weight: bold;',
                 ],
                 'translation_domain' => 'item',
                 'input_sync' => true,
@@ -65,19 +61,6 @@ class DiscussionAnswerType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefined(['placeholderText', 'categories', 'hashTagPlaceholderText', 'hashtagEditUrl', 'hashtags'])
             ->setDefaults(['translation_domain' => 'form']);
-    }
-
-    /**
-     * Returns the prefix of the template block name for this type.
-     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
-     * (e.g. "UserProfileType" => "user_profile").
-     *
-     * @return string The prefix of the template block name
-     */
-    public function getBlockPrefix()
-    {
-        return 'discussionarticle';
     }
 }

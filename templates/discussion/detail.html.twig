@@ -127,23 +127,6 @@
                                                 </span>
                                             {% endif %}
                                         </li>
-
-                                        {# separator #}
-                                        <li>&nbsp;</li>
-
-                                        {# new article #}
-                                        <li>
-                                            {% if is_granted('ITEM_EDIT', 'NEW') %}
-                                                <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId}) }}">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({}, 'discussion') }}
-                                                </a>
-                                            {% else %}
-                                                <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({}, 'discussion') }}
-                                                </span>
-                                            {% endif %}
-                                        </li>
-
                                     </ul>
                                 </div>
                             </div>
@@ -180,11 +163,13 @@
                         <div id="links{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }">
                             {{ macrosItem.linksAssociations(discussion,showHashtags,showCategories,roomCategories, draft, showAssociations) }}
                         </div>
+
                         {% if (showCategories or showHashtags) %}
                             <div id="categoriesAndBuzzwords{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }">
                                 {{ macrosItem.links(discussion,showHashtags,showCategories,roomCategories, draft, buzzExpanded, catzExpanded) }}
                             </div>
                         {% endif %}
+
                         {# articles #}
                         <div id="articles{{ discussion.itemId }}" class="cs-edit-section cs-toggle">
                             {{ macrosDiscussion.answersSection(discussion, articleList, articleTree) }}
@@ -203,8 +188,28 @@
                     {% endif %}
                 </article>
             </div>
-            
-            <div data-uk-observe id="article-content">
+
+            <div data-uk-observe id="article-content" class="uk-panel uk-panel-box">
+
+                {# panel teaser #}
+                <div class="uk-panel-teaser cs-panel-teaser-primary uk-text-large">
+                    {{ 'articles'|trans({}, 'discussion') }}
+                </div>
+
+                {% if is_granted('ITEM_EDIT', 'NEW') %}
+{#                    {{ render(controller(#}
+{#                        'App\\Controller\\DiscussionController::createAnswer', {#}
+{#                            'roomId': roomId,#}
+{#                            'itemId': discussion.itemId,#}
+{#                            'triggerEdit': false#}
+{#                        }#}
+{#                    )) }}#}
+
+                    <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createanswer', {'roomId': roomId, 'itemId': discussion.itemId}) }}">
+                        <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({}, 'discussion') }}
+                    </a>
+                {% endif %}
+
                 {% if articleTree.children is defined %}
                     {{ macrosDiscussion.answers(articleTree.children, discussion, roomId, modifierList, userCount, readCount, readSinceModificationCount) }}
                 {% endif %}
@@ -229,10 +234,10 @@
                         {% if not articleList is empty %}
                             <li class="uk-parent">
                                 <a href="#articles{{ discussion.itemId }}">{{ 'articles'|trans({},'discussion')|capitalize }}</a>
-                                <ul class="uk-nav-sub">                      
+                                <ul class="uk-nav-sub">
                                     {% for article in articleList %}
                                         <li>
-                                            <a href="#article{{ article.itemId }}">{{ loop.index }}. {{ article.title|decodeHtmlEntity|u.truncate(20) }}</a>
+                                            <a href="#article{{ article.itemId }}">{{ loop.index }}. {{ article.description|decodeHtmlEntity|striptags|u.truncate(20) }}</a>
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -243,8 +248,6 @@
             </div>
 
         </div>
-      
+
     </div>
 {% endblock %}
-
-{# end #}
