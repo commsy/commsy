@@ -16,6 +16,7 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@Symfony' => true,
         'header_comment' => ['header' => $fileHeaderComment],
+        'concat_space' => ['spacing' => 'one'],
     ])
     ->setFinder(
         PhpCsFixer\Finder::create()
