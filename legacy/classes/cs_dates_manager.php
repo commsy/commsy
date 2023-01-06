@@ -11,15 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_list.php';
-
-/** cs_dates_item is needed to create dates items.
- */
-include_once 'functions/text_functions.php';
-include_once 'functions/date_functions.php';
-
 /** class for database connection to the database table "dates"
  * this class implements a database manager for the table "dates".
  */
@@ -138,7 +129,6 @@ class cs_dates_manager extends cs_manager
        if (!empty($month)
             and is_numeric($month)
        ) {
-           include_once 'functions/date_functions.php';
            $this->_not_older_than_limit = getCurrentDateTimeMinusMonthsInMySQL($month);
        }
    }
@@ -666,7 +656,6 @@ class cs_dates_manager extends cs_manager
        // perform query
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result)) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems selecting dates.', E_USER_WARNING);
        } else {
            return $result;
@@ -689,12 +678,10 @@ class cs_dates_manager extends cs_manager
                $query = 'SELECT * FROM '.$this->addDatabasePrefix('dates').' WHERE '.$this->addDatabasePrefix('dates').".item_id = '".encode(AS_DB, $item_id)."'";
                $result = $this->_db_connector->performQuery($query);
                if (!isset($result)) {
-                   include_once 'functions/error_functions.php';
                    trigger_error('Problems selecting one dates item.', E_USER_WARNING);
                } elseif (!empty($result[0])) {
                    $dates = $this->_buildItem($result[0]);
                } else {
-                   include_once 'functions/error_functions.php';
                    trigger_error('Dates item ['.$item_id.'] does not exists.', E_USER_WARNING);
                }
            }
@@ -713,7 +700,6 @@ class cs_dates_manager extends cs_manager
     */
    public function _buildItem($db_array)
    {
-       include_once 'functions/text_functions.php';
        $db_array['recurrence_pattern'] = mb_unserialize($db_array['recurrence_pattern']);
 
        return parent::_buildItem($db_array);
@@ -728,7 +714,6 @@ class cs_dates_manager extends cs_manager
        }
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result)) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems selecting one dates item.', E_USER_WARNING);
        } else {
            foreach ($result as $rs) {
@@ -763,8 +748,6 @@ class cs_dates_manager extends cs_manager
     */
    public function getNewItem()
    {
-       include_once 'classes/cs_dates_item.php';
-
        return new cs_dates_item($this->_environment);
    }
 
@@ -860,7 +843,6 @@ class cs_dates_manager extends cs_manager
         try {
             $queryBuilder->executeStatement();
         } catch (\Doctrine\DBAL\Exception $e) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updating dates.', E_USER_WARNING);
         }
     }
@@ -896,7 +878,6 @@ class cs_dates_manager extends cs_manager
             $item->setItemID($this->getCreateID());
             $this->_newDate($item);
         } catch (\Doctrine\DBAL\Exception $e) {
-            include_once 'functions/error_functions.php';
             trigger_error($e->getMessage(), E_USER_WARNING);
             $this->_create_id = null;
         }
@@ -1001,7 +982,6 @@ class cs_dates_manager extends cs_manager
         try {
             $queryBuilder->executeStatement();
         } catch (\Doctrine\DBAL\Exception $e) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating dates.', E_USER_WARNING);
         }
     }
@@ -1023,7 +1003,6 @@ class cs_dates_manager extends cs_manager
                 ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result) or !$result) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems deleting dates.', E_USER_WARNING);
        } else {
            $link_manager = $this->_environment->getLinkManager();
@@ -1070,7 +1049,6 @@ class cs_dates_manager extends cs_manager
                     $updateQuery .= ' WHERE item_id = "'.encode(AS_DB, $rs['item_id']).'"';
                     $result2 = $this->_db_connector->performQuery($updateQuery);
                     if (!$result2) {
-                        include_once 'functions/error_functions.php';
                         trigger_error('Problems automatic deleting dates.', E_USER_WARNING);
                     }
                 }

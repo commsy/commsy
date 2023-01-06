@@ -32,10 +32,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-/** upper class of the link item.
- */
-include_once 'classes/cs_item.php';
-
 /** class for a CommSy item: link
  * this class implements a link item.
  */

@@ -90,7 +90,6 @@ class cs_reader_manager
                    ' GROUP BY user_id';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting reader from query: "'.$query.'"');
             } else {
                 foreach ($result as $rs) {
@@ -120,7 +119,6 @@ class cs_reader_manager
                    ' GROUP BY item_id';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting reader from query: "'.$query.'"');
             } else {
                 foreach ($result as $rs) {
@@ -162,7 +160,6 @@ class cs_reader_manager
                      ' ORDER BY read_date DESC';
                  $result = $this->_db_connector->performQuery($query);
                  if (!isset($result)) {
-                     include_once 'functions/error_functions.php';
                      trigger_error('Problems selecting reader from query: "'.$query.'"');
                  } else {
                      if (!empty($result[0])) {
@@ -251,7 +248,6 @@ class cs_reader_manager
         $result = $this->_db_connector->performQuery($query);
 
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems marking item(s) as read from query: "'.$query.'"');
         }
     }
@@ -262,7 +258,6 @@ class cs_reader_manager
 
         $result = $this->_db_connector->performQuery($select);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating reader from query: "'.$select.'"', E_USER_WARNING);
         }
 
@@ -273,7 +268,6 @@ class cs_reader_manager
 
             $result2 = $this->_db_connector->performQuery($select2);
             if (!isset($result2)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems creating reader from query: "'.$select2.'"', E_USER_WARNING);
             } elseif (!empty($result[0])) {
                 $row2 = $result[0];
@@ -290,7 +284,6 @@ class cs_reader_manager
 
                 $result3 = $this->_db_connector->performQuery($update);
                 if (!isset($result3) or !$result3) {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problems creating reader from query: "'.$update.'"', E_USER_WARNING);
                 }
             } else {
@@ -301,7 +294,6 @@ class cs_reader_manager
 
                 $result3 = $this->_db_connector->performQuery($update);
                 if (!isset($result3) or !$result3) {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problems creating reader from query: "'.$update.'"', E_USER_WARNING);
                 }
             }

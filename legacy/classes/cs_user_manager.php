@@ -11,22 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** date functions are needed for method _newVersion().
- */
-include_once 'functions/date_functions.php';
-
-/** date functions are needed for method _newVersion() and _create() and _update.
- */
-include_once 'functions/text_functions.php';
-
-/** date functions are needed for lastlogin_limit.
- */
-include_once 'functions/date_functions.php';
-
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_list.php';
-
 /** class for database connection to the database table "user"
  * this class implements a database manager for the table "user".
  */
@@ -503,7 +487,6 @@ class cs_user_manager extends cs_manager
              try {
                  $result = $this->_db_connector->performQuery($qb->getSQL(), $qb->getParameters());
              } catch (\Doctrine\DBAL\Exception $e) {
-                 include_once 'functions/error_functions.php';
                  trigger_error('Problems selecting user.', E_USER_WARNING);
              }
 
@@ -820,7 +803,6 @@ class cs_user_manager extends cs_manager
         } else {
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting user.', E_USER_WARNING);
             } else {
                 if ($this->_cache_on) {
@@ -844,8 +826,6 @@ class cs_user_manager extends cs_manager
      */
     public function getNewItem(): cs_user_item
     {
-        include_once 'classes/cs_user_item.php';
-
         return new cs_user_item($this->_environment);
     }
 
@@ -864,7 +844,6 @@ class cs_user_manager extends cs_manager
             $query = 'SELECT * FROM '.$this->addDatabasePrefix('user').' WHERE '.$this->addDatabasePrefix('user').".item_id = '".encode(AS_DB, $item_id)."'";
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting one user item.', E_USER_WARNING);
             } elseif (!empty($result[0])) {
                 $user = $this->_buildItem($result[0]);
@@ -899,7 +878,6 @@ class cs_user_manager extends cs_manager
             } elseif ($list->isNotEmpty()
                        and $list->getCount() > 1
             ) {
-                include_once 'functions/error_functions.php';
                 trigger_error('bug in database: multiple user for user_id: '.$uid.', auth_source_id: '.$asid.', portal: '.$this->_environment->getCurrentContextID().' - '.__FILE__.' - '.__LINE__, E_USER_ERROR);
             }
         }
@@ -921,7 +899,6 @@ class cs_user_manager extends cs_manager
             $query .= ' GROUP BY '.$this->addDatabasePrefix('user').'.item_id';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting list of '.$this->_type.' items.', E_USER_WARNING);
             } else {
                 foreach ($result as $rs) {
@@ -940,7 +917,6 @@ class cs_user_manager extends cs_manager
             $query .= ' GROUP BY '.$this->addDatabasePrefix('user').'.item_id';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting list of '.$this->_type.' items.', E_USER_WARNING);
             } else {
                 foreach ($result as $rs) {
@@ -1023,7 +999,6 @@ class cs_user_manager extends cs_manager
             $query .= ' GROUP BY '.$this->addDatabasePrefix('user').'.item_id';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting list of '.$this->_type.' items.', E_USER_WARNING);
             } else {
                 foreach ($result as $rs) {
@@ -1068,13 +1043,11 @@ class cs_user_manager extends cs_manager
             $this->setWithDatabasePrefix();
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting one user item.', E_USER_WARNING);
             } elseif (!empty($result[0])) {
                 $this->_root_user = $this->_buildItem($result[0]);
                 unset($result);
             } else {
-                include_once 'functions/error_functions.php';
                 trigger_error('can not get root user object - '.__LINE__.' - '.__FILE__, E_USER_WARNING);
             }
         }
@@ -1090,7 +1063,6 @@ class cs_user_manager extends cs_manager
      */
     public function _buildItem($db_array)
     {
-        include_once 'functions/text_functions.php';
         $db_array['extras'] = mb_unserialize($db_array['extras']);
 
         return parent::_buildItem($db_array);
@@ -1159,7 +1131,6 @@ class cs_user_manager extends cs_manager
 
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result) or !$result) {
-          include_once 'functions/error_functions.php';
           trigger_error('Problems upating user item.', E_USER_ERROR);
       } else {
           unset($result);
@@ -1181,7 +1152,6 @@ class cs_user_manager extends cs_manager
         $query .= 'WHERE item_id="'.encode(AS_DB, $user_item->getItemID()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updating users last login.', E_USER_ERROR);
         } else {
             unset($result);
@@ -1204,7 +1174,6 @@ class cs_user_manager extends cs_manager
                   'type="user"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating user.', E_USER_WARNING);
             $this->_create_id = null;
         } else {
@@ -1248,7 +1217,6 @@ class cs_user_manager extends cs_manager
 
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
-          include_once 'functions/error_functions.php';
           trigger_error('Problems insert new user item.', E_USER_ERROR);
       } else {
           unset($result);
@@ -1267,7 +1235,6 @@ class cs_user_manager extends cs_manager
                  ' WHERE item_id="'.encode(AS_DB, $item->getItemID()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems set creator id to item id.', E_USER_WARNING);
         } else {
             unset($result);
@@ -1398,7 +1365,6 @@ class cs_user_manager extends cs_manager
                  ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting user.', E_USER_WARNING);
         } else {
             unset($result);
@@ -1545,7 +1511,6 @@ class cs_user_manager extends cs_manager
             $updateQuery .= " AND context_id = '".encode(AS_DB, $roomMover->getOldRoomId())."'";
             $result2 = $this->_db_connector->performQuery($updateQuery);
             if (!isset($result2) or !$result2) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems user: move room.', E_USER_WARNING);
             } else {
                 unset($result2);
@@ -1596,7 +1561,6 @@ class cs_user_manager extends cs_manager
                  $userItem->getAuthSource())."'";
          $result = $this->_db_connector->performQuery($update);
          if (!isset($result) or !$result) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems changing user id.', E_USER_WARNING);
              $success = false;
          } else {
@@ -1613,7 +1577,6 @@ class cs_user_manager extends cs_manager
         $query = 'SELECT count(DISTINCT '.$this->addDatabasePrefix('user').'.auth_source) as number FROM '.$this->addDatabasePrefix('user').' WHERE '.$this->addDatabasePrefix('user').'.context_id = "'.encode(AS_DB, $context_id).'" and '.$this->addDatabasePrefix('user').'.deletion_date IS NULL and '.$this->addDatabasePrefix('user').'.auth_source > 0';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems counting users.', E_USER_WARNING);
         } else {
             foreach ($result as $rs) {
@@ -1660,7 +1623,6 @@ class cs_user_manager extends cs_manager
         $query .= " and lastlogin > '".encode(AS_DB, $start)."' and creation_date < '".encode(AS_DB, $end)."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems counting used accounts.', E_USER_WARNING);
         } else {
             foreach ($result as $rs) {
@@ -1687,7 +1649,6 @@ class cs_user_manager extends cs_manager
         $query .= " and status >= 2 and (deletion_date IS NULL or deletion_date > '".encode(AS_DB, $end)."') and creation_date < '".encode(AS_DB, $end)."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems counting open accounts.', E_USER_WARNING);
         } else {
             foreach ($result as $rs) {
@@ -1714,7 +1675,6 @@ class cs_user_manager extends cs_manager
         $query .= ' and '.$this->addDatabasePrefix('user').".creation_date < '".encode(AS_DB, $end)."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems counting all accounts.', E_USER_WARNING);
         } else {
             foreach ($result as $rs) {
@@ -1741,11 +1701,9 @@ class cs_user_manager extends cs_manager
         $query .= ' and '.$this->addDatabasePrefix($this->_db_table).".extras LIKE '%LASTLOGIN_".mb_strtoupper($plugin)."%' and user.creation_date < '".encode(AS_DB, $end)."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems counting all accounts.', E_USER_WARNING);
         } else {
             $retour_array = [];
-            include_once 'functions/text_functions.php';
             foreach ($result as $rs) {
                 $extra_array = [];
                 if (!empty($rs['extras'])) {
@@ -1784,7 +1742,6 @@ class cs_user_manager extends cs_manager
              $query = 'SELECT lastlogin FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id = '.$room_id.' AND lastlogin IS NOT NULL ORDER BY lastlogin DESC LIMIT 0,1';
              $result = $this->_db_connector->performQuery($query);
              if (!isset($result)) {
-                 include_once 'functions/error_functions.php';
                  trigger_error('Problems getting last used date of this room: '.$room_id, E_USER_WARNING);
              } elseif (!empty($result[0]['lastlogin'])) {
                  $retour = $result[0]['lastlogin'];
@@ -1802,7 +1759,6 @@ class cs_user_manager extends cs_manager
          $query = 'SELECT * FROM '.$this->addDatabasePrefix('user').' WHERE '.$this->addDatabasePrefix('user').'.expire_date IS NOT NULL AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL AND '.$this->addDatabasePrefix('user').".context_id = '".encode(AS_DB, $cid)."' AND ".$this->addDatabasePrefix('user').".expire_date  <= '".encode(AS_DB, $current_date)."'";
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems selecting list of '.$this->_type.' items.', E_USER_WARNING);
          } else {
              foreach ($result as $rs) {
@@ -1823,7 +1779,6 @@ class cs_user_manager extends cs_manager
          $query .= ' and deletion_date IS NULL';
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems counting open accounts.', E_USER_WARNING);
          } else {
              foreach ($result as $rs) {
@@ -1848,7 +1803,6 @@ class cs_user_manager extends cs_manager
          $query = 'SELECT count(DISTINCT '.$this->addDatabasePrefix('user').'.item_id) as number FROM '.$this->addDatabasePrefix('user').' WHERE '.$this->addDatabasePrefix('user').'.expire_date IS NOT NULL AND deletion_date IS NULL AND '.$this->addDatabasePrefix('user').".context_id = '".encode(AS_DB, $cid)."' AND ".$this->addDatabasePrefix('user').".expire_date BETWEEN '".encode(AS_DB, $now)."' AND '".encode(AS_DB, $date)."'";
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems counting open accounts.', E_USER_WARNING);
          } else {
              foreach ($result as $rs) {
@@ -1875,7 +1829,6 @@ class cs_user_manager extends cs_manager
          $query = 'SELECT * FROM '.$this->addDatabasePrefix('user').' WHERE '.$this->addDatabasePrefix('user').'.expire_date IS NOT NULL AND '.$this->addDatabasePrefix('user').".context_id = '".encode(AS_DB, $cid)."' AND ".$this->addDatabasePrefix('user').'.deletion_date IS NULL AND '.$this->addDatabasePrefix('user').".expire_date BETWEEN '".encode(AS_DB, $now)."' AND '".encode(AS_DB, $date)."'";
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems selecting list of '.$this->_type.' items.', E_USER_WARNING);
          } else {
              foreach ($result as $rs) {
@@ -1895,7 +1848,6 @@ class cs_user_manager extends cs_manager
          $query = 'SELECT * FROM '.$this->addDatabasePrefix('user').' WHERE '.$this->addDatabasePrefix('user').".status = '3' AND ".$this->addDatabasePrefix('user').'.deletion_date IS NULL AND '.$this->addDatabasePrefix('user').".extras LIKE '%LOGIN_AS_TMSP%'";
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems selecting list of '.$this->_type.' items.', E_USER_WARNING);
          } else {
              foreach ($result as $rs) {
@@ -1915,7 +1867,6 @@ class cs_user_manager extends cs_manager
          $query = 'SELECT * FROM '.$this->addDatabasePrefix('user').' WHERE '.$this->addDatabasePrefix('user').".lastlogin <= '".encode(AS_DB, $date)."' AND ".$this->addDatabasePrefix('user').'.deletion_date IS NULL AND '.$this->addDatabasePrefix('user').'.status >= '.encode(AS_DB, $status).' AND '.$this->addDatabasePrefix('user').".context_id = '".encode(AS_DB, $cid)."'";
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems selecting list of '.$this->_type.' items.', E_USER_WARNING);
          } else {
              foreach ($result as $rs) {
@@ -1935,7 +1886,6 @@ class cs_user_manager extends cs_manager
          $query = 'SELECT * FROM '.$this->addDatabasePrefix('user').' WHERE '.$this->addDatabasePrefix('user').".user_id = '".encode(AS_DB, $uid)."' AND ".$this->addDatabasePrefix('user').'.deletion_date IS NULL';
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems selecting list of '.$this->_type.' items.', E_USER_WARNING);
          } else {
              foreach ($result as $rs) {

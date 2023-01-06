@@ -11,14 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the label manager.
- */
-include_once 'classes/cs_labels_manager.php';
-
-/** upper class of the time item.
- */
-include_once 'classes/cs_time_item.php';
-
 /** class for database connection to the database table "labels"
  * this class implements a database manager for the table "labels". Labels are groups, topics, labels, ...
  */

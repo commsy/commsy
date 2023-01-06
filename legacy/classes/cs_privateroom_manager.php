@@ -11,14 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the room manager.
- */
-include_once 'classes/cs_room2_manager.php';
-
-/** misc functions are needed for extras field in database table.
- */
-include_once 'functions/misc_functions.php';
-
 /** class for database connection to the database table "community"
  * this class implements a database manager for the table "community".
  */
@@ -220,7 +212,6 @@ class cs_privateroom_manager extends cs_room2_manager
         }
 
         if ($this->_active_limit) {
-            include_once 'functions/date_functions.php';
             $query .= ' AND user2.context_id = '.encode(AS_DB, $this->_room_limit);
             $query .= ' and user2.lastlogin >= "'.getCurrentDateTimeMinusDaysInMySQL(100).'"';
         }
@@ -263,7 +254,6 @@ class cs_privateroom_manager extends cs_room2_manager
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',
                 E_USER_ERROR);
         } else {
@@ -303,7 +293,6 @@ class cs_privateroom_manager extends cs_room2_manager
             'status="'.encode(AS_DB, $item->getStatus()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating new '.$this->_room_type.' item from query: "'.$query.'"',
                 E_USER_ERROR);
         }
@@ -374,7 +363,6 @@ class cs_privateroom_manager extends cs_room2_manager
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updating '.$this->_db_table.' item from query: "'.$query.'"',
                 E_USER_WARNING);
         }
@@ -424,7 +412,6 @@ class cs_privateroom_manager extends cs_room2_manager
                         }
                     }
                 } catch (\Doctrine\DBAL\Exception $e) {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problems selecting '.$this->_db_table.' items.', E_USER_WARNING);
                 }
             }

@@ -11,16 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_list.php';
-
-/** cs_dates_item is needed to create dates items.
- */
-include_once 'classes/cs_dates_item.php';
-include_once 'functions/text_functions.php';
-include_once 'functions/date_functions.php';
-
 /** class for database connection to the database table "dates"
  * this class implements a database manager for the table "dates".
  */
@@ -123,7 +113,6 @@ class cs_external_id_manager extends cs_manager
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting from '.$this->_db_table.'.', E_USER_WARNING);
         } else {
             return $result;
@@ -135,7 +124,6 @@ class cs_external_id_manager extends cs_manager
         $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' VALUES ("'.encode(AS_DB, $external_id).'","'.encode(AS_DB, $source).'","'.encode(AS_DB, $commsy_id).'")';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting from '.$this->_db_table.'.', E_USER_WARNING);
         }
     }
@@ -146,7 +134,6 @@ class cs_external_id_manager extends cs_manager
         $this->_last_query = $query;
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting from '.$this->_db_table.'.', E_USER_WARNING);
         } elseif (!empty($result[0]['commsy_id'])) {
             return $result[0]['commsy_id'];
@@ -161,7 +148,6 @@ class cs_external_id_manager extends cs_manager
         $this->_last_query = $query;
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting from '.$this->_db_table.'.', E_USER_WARNING);
         } elseif (!empty($result[0]['external_id'])) {
             return $result[0]['external_id'];
@@ -175,7 +161,6 @@ class cs_external_id_manager extends cs_manager
         $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.external_id = "'.encode(AS_DB, $external_id).'" AND '.$this->addDatabasePrefix($this->_db_table).'.source_system = "'.encode(AS_DB, $source_system).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting from '.$this->_db_table.'.', E_USER_WARNING);
         }
     }
@@ -185,7 +170,6 @@ class cs_external_id_manager extends cs_manager
         $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.commsy_id = "'.encode(AS_DB, $iid).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting from '.$this->_db_table.'.', E_USER_WARNING);
         }
     }

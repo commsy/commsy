@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the log manager.
- */
-include_once 'classes/cs_manager.php';
-
 /** class for database connection to the database table "reader"
  * this class implements a database manager for the table "reader". Read items.
  */
@@ -33,7 +29,6 @@ class cs_log_archive_manager extends cs_manager
     public function save($data)
     {
         if (!is_array($data)) {
-            include_once 'functions/error_functions.php';
             trigger_error('need array', E_USER_ERROR);
             $success = false;
         } else {
@@ -79,7 +74,6 @@ class cs_log_archive_manager extends cs_manager
                     // perform query
                     $result = $this->_db_connector->performQuery($query);
                     if (!isset($result)) {
-                        include_once 'functions/error_functions.php';
                         trigger_error('Problems log_archive from query:<br />"'.$query.'"', E_USER_WARNING);
                         $success = false;
                     }
@@ -113,7 +107,6 @@ class cs_log_archive_manager extends cs_manager
                 // perform query
                 $result = $this->_db_connector->performQuery($query);
                 if (!isset($result)) {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problems log_archive from query:<br />"'.$query.'"', E_USER_WARNING);
                     $success = false;
                 } else {
@@ -136,15 +129,12 @@ class cs_log_archive_manager extends cs_manager
             $query .= ' AND cid NOT IN ('.encode(AS_DB, $id_string).')';
         }
 
-        include_once 'functions/date_functions.php';
-
         $datetime = getCurrentDateTimeMinusDaysInMySQL(50);
         $query .= ' AND timestamp < "'.$datetime.'"';
 
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems at logs from query:<br />"'.$query.'"', E_USER_WARNING);
         } else {
             $retour = $result;

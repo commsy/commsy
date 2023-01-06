@@ -11,12 +11,6 @@
  * file that was distributed with this source code.
  */
 
-include_once 'classes/cs_list.php';
-include_once 'classes/cs_discussionarticle_item.php';
-include_once 'classes/cs_manager.php';
-include_once 'functions/date_functions.php';
-include_once 'functions/text_functions.php';
-
 /** class for database connection to the database table "discussionarticles"
  * this class implements a database manager for the table "discussionarticles".
  */
@@ -195,7 +189,6 @@ class cs_discussionarticles_manager extends cs_manager
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting discarticles.', E_USER_WARNING);
         } else {
             return $result;
@@ -310,7 +303,6 @@ class cs_discussionarticles_manager extends cs_manager
 
         $result = $this->_db_connector->performQuery($query);
         if (!$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting parent of discarticle with ID '.$item->getItemID().'.', E_USER_WARNING);
         } else {
             $parentArticle = $this->_buildItem($result[0]);
@@ -400,7 +392,6 @@ class cs_discussionarticles_manager extends cs_manager
         try {
             $queryBuilder->executeStatement();
         } catch (\Doctrine\DBAL\Exception $e) {
-            include_once 'functions/error_functions.php';
             trigger_error($e->getMessage(), E_USER_WARNING);
         }
     }
@@ -432,7 +423,6 @@ class cs_discussionarticles_manager extends cs_manager
             $discussionarticle_item->setItemID($this->getCreateID());
             $this->_newDiscussionArticle($discussionarticle_item);
         } catch (\Doctrine\DBAL\Exception $e) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating discussionarticle item.', E_USER_WARNING);
             $this->_create_id = null;
         }
@@ -478,7 +468,6 @@ class cs_discussionarticles_manager extends cs_manager
         try {
             $queryBuilder->executeStatement();
         } catch (\Doctrine\DBAL\Exception $e) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating discarticle.', E_USER_WARNING);
         }
     }
@@ -494,7 +483,6 @@ class cs_discussionarticles_manager extends cs_manager
             ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting discarticle.', E_USER_WARNING);
         } else {
             $link_manager = $this->_environment->getLinkManager();
@@ -524,7 +512,6 @@ class cs_discussionarticles_manager extends cs_manager
 
         $result = $this->_db_connector->performQuery($updateQuery);
         if (!$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems flagging discarticle for content overwrite.', E_USER_WARNING);
         }
     }
@@ -558,7 +545,6 @@ class cs_discussionarticles_manager extends cs_manager
                     $updateQuery .= ' WHERE item_id = "'.encode(AS_DB, $rs['item_id']).'"';
                     $result2 = $this->_db_connector->performQuery($updateQuery);
                     if (!$result2) {
-                        include_once 'functions/error_functions.php';
                         trigger_error('Problems automatic deleting discussionarticles.', E_USER_WARNING);
                     }
                 }

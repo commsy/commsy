@@ -75,7 +75,6 @@ function commSyErrorHandler($errno, $errstr, $errfile, $errline)
             $err .= "\t".'<TR><TD>Module: </TD><TD>'.$module.'</TD></TR>'."\n";
             $err .= "\t".'<TR><TD>Function: </TD><TD>'.$function.'</TD></TR>'."\n";
             $err .= "\t".'<TR><TD>User: </TD><TD>'.$user.'</TD></TR>'."\n";
-            include_once 'functions/date_functions.php';
             $err .= "\t".'<TR><TD>Time: </TD><TD>'.getCurrentDateTimeInMySQL().'</TD></TR>'."\n";
             $err .= '</TABLE></CENTER><br />'."\n";
             echo $err;

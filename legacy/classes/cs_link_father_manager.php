@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the material manager.
- */
-include_once 'classes/cs_manager.php';
-
 /** class for database connection to the database table "link_material_file"
  * this class implements a database manager for the table "link_material_file",
  * in which we store the links between materials and files.
@@ -118,7 +114,6 @@ class cs_link_father_manager extends cs_manager
 
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result) or !$result) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problem backuping item from query: "'.$query.'"', E_USER_ERROR);
        } else {
            $success = true;

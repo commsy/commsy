@@ -14,10 +14,6 @@
 use App\Entity\Room;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-/** upper class of the community item.
- */
-include_once 'classes/cs_room_item.php';
-
 /** class for a community
  * this class implements a community item.
  */
@@ -869,7 +865,6 @@ class cs_community_item extends cs_room_item
        } elseif ('community' == $room_moderation) {
            $this->_sendMailToModeration2($this, $room_change);
        } else {
-           include_once 'functions/error_functions.php';
            trigger_error('lost room moderation', E_USER_WARNING);
        }
    }
@@ -1007,7 +1002,6 @@ class cs_community_item extends cs_room_item
            }
 
            // send email
-           include_once 'classes/cs_mail.php';
            $mail = new cs_mail();
            $mail->set_to(implode(',', $value));
            $mail->set_from_email($default_sender_address);

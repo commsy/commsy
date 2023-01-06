@@ -19,8 +19,6 @@
 
 use Doctrine\DBAL\Schema\Column;
 
-include_once 'functions/date_functions.php';
-
 class cs_manager
 {
     /**
@@ -500,7 +498,6 @@ class cs_manager
    {
        /** cs_list is needed for storage the commsy items.
         */
-       include_once 'classes/cs_list.php';
        if (empty($id_array)) {
            return new cs_list();
        } else {
@@ -512,7 +509,6 @@ class cs_manager
            $query = 'SELECT * FROM '.encode(AS_DB, $this->addDatabasePrefix($type)).' WHERE '.encode(AS_DB, $this->addDatabasePrefix($type)).".item_id IN ('".implode("', '", encode(AS_DB, $id_array))."')";
            $result = $this->_db_connector->performQuery($query);
            if (!isset($result)) {
-               include_once 'functions/error_functions.php';
                trigger_error('Problems selecting list of '.$type.' items.', E_USER_WARNING);
            } else {
                $list = new cs_list();
@@ -615,7 +611,6 @@ class cs_manager
         try {
             $queryBuilder->executeStatement();
         } catch (\Doctrine\DBAL\Exception $e) {
-            include_once 'functions/error_functions.php';
             trigger_error($e->getMessage(), E_USER_WARNING);
         }
 
@@ -643,7 +638,6 @@ class cs_manager
             ' WHERE item_id="'.$itemId.'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) || !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting item in table items.', E_USER_WARNING);
         }
     }
@@ -661,7 +655,6 @@ class cs_manager
                ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result) or !$result) {
-          include_once 'functions/error_functions.php';
           trigger_error('Problems undeleting '.$this->_db_table.'.', E_USER_WARNING);
       } else {
           unset($result);
@@ -680,7 +673,6 @@ class cs_manager
                 ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result) or !$result) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems undeleting item in table items.', E_USER_WARNING);
        } else {
            unset($result);
@@ -810,7 +802,6 @@ class cs_manager
     */
    public function _performQuery($mode = 'select')
    {
-       include_once 'functions/error_functions.php';
        trigger_error('must be overwritten!', E_USER_ERROR);
    }
 
@@ -822,7 +813,6 @@ class cs_manager
                 $new_id).'" WHERE creator_id = "'.encode(AS_DB, $old_id).'";';
             $result = $this->_db_connector->performQuery($query1);
             if (!isset($result) or !$result) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems merging accounts "'.$this->_db_table.'".', E_USER_WARNING);
             }
         }
@@ -833,7 +823,6 @@ class cs_manager
                 $new_id).'" WHERE modifier_id = "'.encode(AS_DB, $old_id).'";';
             $result = $this->_db_connector->performQuery($query2);
             if (!isset($result) or !$result) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems merging accounts "'.$this->_db_table.'".', E_USER_WARNING);
             }
         }
@@ -843,7 +832,6 @@ class cs_manager
             $new_id).'" WHERE deleter_id = "'.encode(AS_DB, $old_id).'";';
         $result = $this->_db_connector->performQuery($query3);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems merging accounts "'.$this->_db_table.'": "'.$this->_dberror.'" from query: "'.$query3.'"',
                 E_USER_WARNING);
         }
@@ -875,7 +863,6 @@ class cs_manager
 
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result)) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems getting data "'.$this->_db_table.'".', E_USER_WARNING);
        } else {
            $current_data_array = [];
@@ -897,7 +884,6 @@ class cs_manager
                $sql = 'SELECT item_id,'.$title_field.$type_sql_statement.' FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.encode(AS_DB, $new_id).'" AND deleter_id IS NULL AND deletion_date IS NULL;';
                $sql_result = $this->_db_connector->performQuery($sql);
                if (!isset($sql_result)) {
-                   include_once 'functions/error_functions.php';
                    trigger_error('Problems getting data "'.$this->_db_table.'".', E_USER_WARNING);
                } else {
                    foreach ($sql_result as $sql_row) {
@@ -914,7 +900,6 @@ class cs_manager
                $sql = 'SELECT to_item_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.encode(AS_DB, $new_id).'" AND deleter_id IS NULL AND deletion_date IS NULL;';
                $sql_result = $this->_db_connector->performQuery($sql);
                if (!isset($sql_result)) {
-                   include_once 'functions/error_functions.php';
                    trigger_error('Problems getting data "'.$this->_db_table.'".', E_USER_WARNING);
                } else {
                    foreach ($sql_result as $sql_row) {
@@ -938,11 +923,9 @@ class cs_manager
                $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
                $sql_result = $this->_db_connector->performQuery($sql);
                if (!isset($sql_result)) {
-                   include_once 'functions/error_functions.php';
                    trigger_error('Problems getting data "'.$this->_db_table.'".', E_USER_WARNING);
                } else {
                    foreach ($sql_result as $sql_row) {
-                       include_once 'functions/text_functions.php';
                        $extra_array = mb_unserialize($sql_row['extras']);
                        $current_data_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$item_id];
                    }
@@ -952,7 +935,6 @@ class cs_manager
                $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
                $sql_result = $this->_db_connector->performQuery($sql);
                if (!isset($sql_result)) {
-                   include_once 'functions/error_functions.php';
                    trigger_error('Problems getting data "'.$this->_db_table.'".', E_USER_WARNING);
                } else {
                    foreach ($sql_result as $sql_row) {
@@ -964,7 +946,6 @@ class cs_manager
                $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
                $sql_result = $this->_db_connector->performQuery($sql);
                if (!isset($sql_result)) {
-                   include_once 'functions/error_functions.php';
                    trigger_error('Problems getting data "'.$this->_db_table.'".', E_USER_WARNING);
                } else {
                    foreach ($sql_result as $sql_row) {
@@ -1159,7 +1140,6 @@ class cs_manager
                        elseif ('extras' == $key
                                 and !empty($old_item_id)
                        ) {
-                           include_once 'functions/text_functions.php';
                            $extra_array = mb_unserialize($value);
                            $extra_array['COPY']['ITEM_ID'] = $old_item_id;
                            $extra_array['COPY']['COPYING_DATE'] = $current_date;
@@ -1179,7 +1159,6 @@ class cs_manager
                    $insert_query = str_replace('SET,', 'SET ', $insert_query);
                    $result_insert = $this->_db_connector->performQuery($insert_query);
                    if (!isset($result_insert)) {
-                       include_once 'functions/error_functions.php';
                        trigger_error('Problem creating item.', E_USER_ERROR);
                    } else {
                        if (!empty($old_item_id)) {
@@ -1223,7 +1202,6 @@ class cs_manager
 
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result)) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems getting data "'.$this->_db_table.'".', E_USER_WARNING);
        } else {
            foreach ($result as $query_result) {
@@ -1263,13 +1241,11 @@ class cs_manager
                if (strstr($desc, '<!-- KFC TEXT')
                     and $replace
                ) {
-                   include_once 'functions/security_functions.php';
                    $desc = renewSecurityHash($desc);
                }
                $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET description="'.encode(AS_DB, $desc).'" WHERE item_id='.encode(AS_DB, $item_id);
                $result_update = $this->_db_connector->performQuery($query);
                if (!isset($result_update) or !$result_update) {
-                   include_once 'functions/error_functions.php';
                    trigger_error('Problems refresh links in description "'.$this->_db_table.'".', E_USER_WARNING);
                } else {
                    unset($result_update);
@@ -1288,7 +1264,6 @@ class cs_manager
               'type="'.$type.'"';
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result)) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problem creating item.', E_USER_ERROR);
        } else {
            $retour = $result;
@@ -1305,7 +1280,6 @@ class cs_manager
        $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'"';
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result) or !$result) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problem deleting items.', E_USER_ERROR);
        } else {
            unset($result);
@@ -1329,7 +1303,6 @@ class cs_manager
            $query = 'SHOW COLUMNS FROM '.$this->addDatabasePrefix($this->_db_table);
            $result = $this->_db_connector->performQuery($query);
            if (!isset($result)) {
-               include_once 'functions/error_functions.php';
                trigger_error('Problem get colums from table '.$this->_db_table.'.', E_USER_ERROR);
            } else {
                $this->_key_array = [];
@@ -1385,7 +1358,6 @@ class cs_manager
 
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result) or !$result) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problem backuping item.', E_USER_ERROR);
        } else {
            $success = true;
@@ -1403,7 +1375,6 @@ class cs_manager
            $query .= ' WHERE item_id = "'.encode(AS_DB, $item_id).'"';
            $result = $this->_db_connector->performQuery($query);
            if (!isset($result)) {
-               include_once 'functions/error_functions.php';
                trigger_error('Problems selecting one label.', E_USER_WARNING);
            } elseif (!empty($result[0])) {
                $retour = true;

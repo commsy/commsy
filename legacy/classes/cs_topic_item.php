@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the label item.
- */
-include_once 'classes/cs_label_item.php';
-
 /** class for a label
  * this class implements a commsy label. A label can be a group, a topic, a label, ...
  *
@@ -67,7 +63,6 @@ class cs_topic_item extends cs_label_item
         $link_manager->select();
         $link_item_list = $link_manager->get();
 
-        include_once 'classes/cs_list.php';
         $retour = new cs_list();
 
         if (!$link_item_list->isEmpty()) {

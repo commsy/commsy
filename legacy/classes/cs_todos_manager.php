@@ -32,16 +32,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_list.php';
-
-/** upper class of the totos manager.
- */
-include_once 'classes/cs_manager.php';
-
-include_once 'functions/text_functions.php';
-
 /** class for database connection to the database table "todo"
  * this class implements a database manager for the table "todo".
  */
@@ -351,7 +341,6 @@ class cs_todos_manager extends cs_manager
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting todos from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $i = 0;
@@ -374,8 +363,6 @@ class cs_todos_manager extends cs_manager
      */
     public function getNewItem()
     {
-        include_once 'classes/cs_todo_item.php';
-
         return new cs_todo_item($this->_environment);
     }
 
@@ -398,7 +385,6 @@ class cs_todos_manager extends cs_manager
             $query = 'SELECT * FROM '.$this->addDatabasePrefix('todos').' WHERE '.$this->addDatabasePrefix('todos').".item_id = '".encode(AS_DB, $item_id)."'";
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result) or empty($result[0])) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting one todos item from query: "'.$query.'"', E_USER_WARNING);
             } else {
                 if (isset($result[0]['date'])) {
@@ -470,7 +456,6 @@ class cs_todos_manager extends cs_manager
          try {
              $this->_db_connector->performQuery($queryBuilder->getSQL(), $queryBuilder->getParameters());
          } catch (\Doctrine\DBAL\Exception $e) {
-             include_once 'functions/error_functions.php';
              trigger_error($e->getMessage(), E_USER_WARNING);
          }
      }
@@ -504,7 +489,6 @@ class cs_todos_manager extends cs_manager
           $item->setItemID($this->getCreateID());
           $this->_newNews($item);
       } catch (\Doctrine\DBAL\Exception $e) {
-          include_once 'functions/error_functions.php';
           trigger_error($e->getMessage(), E_USER_WARNING);
           $this->_create_id = null;
       }
@@ -560,7 +544,6 @@ class cs_todos_manager extends cs_manager
          try {
              $queryBuilder->executeStatement();
          } catch (\Doctrine\DBAL\Exception $e) {
-             include_once 'functions/error_functions.php';
              trigger_error($e->getMessage(), E_USER_WARNING);
          }
      }
@@ -580,7 +563,6 @@ class cs_todos_manager extends cs_manager
                 ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting todos from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $link_manager = $this->_environment->getLinkManager();
@@ -622,8 +604,6 @@ class cs_todos_manager extends cs_manager
                      $updateQuery .= ' WHERE item_id = "'.encode(AS_DB, $rs['item_id']).'"';
                      $result2 = $this->_db_connector->performQuery($updateQuery);
                      if (!$result2) {
-                         include_once 'functions/error_functions.php';
-                         include_once 'functions/error_functions.php';
                          trigger_error('Problems automatic deleting todos from query: "'.$updateQuery.'"', E_USER_WARNING);
                      }
                  }

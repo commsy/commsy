@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the project manager.
- */
-include_once 'classes/cs_context_manager.php';
-
 /** class for database connection to the database table "project"
  * this class implements a database manager for the table "project".
  */

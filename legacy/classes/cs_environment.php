@@ -20,11 +20,6 @@ use App\Proxy\PortalProxy;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-include_once 'classes/cs_manager.php';
-include_once 'functions/text_functions.php';
-include_once 'classes/cs_list.php';
-include_once 'classes/cs_userroom_item.php';
-
 /** This class returns an instance of a cs_mananger subclass on request.
  *It also contains often needed environment variables.
  */
@@ -222,7 +217,6 @@ class cs_environment
                  $type = $item->getItemType();
                  $manager = $this->getManager($type);
              } else {
-                 include_once 'functions/error_functions.php';
                  trigger_error('can not initiate room ['.$this->current_context_id.'] -> bug in item table',
                      E_USER_ERROR);
              }
@@ -531,7 +525,6 @@ class cs_environment
                 ) {
                     require_once $path.'/'.$file;
                 } else {
-                    include_once 'functions/error_functions.php';
                     trigger_error('can\'t find '.$file.' - current path: '.$current_path.' - config path: '.$path, E_USER_ERROR);
                 }
             }
@@ -949,7 +942,6 @@ class cs_environment
                 ) {
                     require_once $path.'/'.$file;
                 } else {
-                    include_once 'functions/error_functions.php';
                     trigger_error('can\'t find '.$file.' - current path: '.$current_path.' - config path: '.$path, E_USER_ERROR);
                 }
             }
@@ -1068,7 +1060,6 @@ class cs_environment
              } elseif (CS_ENTRY_TYPE == $type) {
                  return $this->getEntryManager();
              } elseif (!$this->isPlugin($type)) {
-                 include_once 'functions/error_functions.php';
                  trigger_error('do not know this type ['.$type.']', E_USER_ERROR);
              }
          }
@@ -1177,7 +1168,6 @@ class cs_environment
         global $dont_resolve_messagetags;
 
         if (!isset($this->instance['translation_object'])) {
-            include_once 'classes/cs_translator.php';
             $this->instance['translation_object'] = new cs_translator();
             if ($dont_resolve_messagetags) {
                 $this->instance['translation_object']->dontResolveMessageTags();
@@ -1529,7 +1519,6 @@ class cs_environment
                 $portal_item = $portal_manager->getItem($cid);
             }
             global $c_plugin_array;
-            include_once 'classes/cs_list.php';
             $this->_rubric_plugin_class_list[$key] = new cs_list();
             if (isset($c_plugin_array)
                  and !empty($c_plugin_array)
@@ -1575,7 +1564,6 @@ class cs_environment
      public function getDBConnector(): db_mysql_connector
      {
          if (empty($this->_db_mysql_connector)) {
-             include_once 'classes/db_mysql_connector.php';
              $this->_db_mysql_connector = new db_mysql_connector();
              $this->_db_mysql_connector->setLogQueries();
          }
@@ -1591,7 +1579,6 @@ class cs_environment
     public function getClassFactory()
     {
         if (!isset($this->_class_factory)) {
-            include_once 'classes/cs_class_factory.php';
             $this->_class_factory = new cs_class_factory();
         }
 

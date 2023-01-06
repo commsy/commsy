@@ -11,14 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_list.php';
-
-/** upper class of the room manager.
- */
-include_once 'classes/cs_context_manager.php';
-
 /** class for database connection to the database table "community"
  * this class implements a database manager for the table "community".
  */
@@ -362,7 +354,6 @@ class cs_room_manager extends cs_context_manager
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"', E_USER_ERROR);
         } else {
             if (!empty($this->_id_array_limit)
@@ -438,7 +429,6 @@ class cs_room_manager extends cs_context_manager
         $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.title';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems counting used rooms '.$this->_db_table.' from query: "'.$query.'"', E_USER_WARNING);
         } else {
             foreach ($result as $rs) {
@@ -468,7 +458,6 @@ class cs_room_manager extends cs_context_manager
         $query = 'SELECT MAX(activity) AS max FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deleter_id IS NULL AND deletion_date is NULL and (type = "project" or type = "community");';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting '.$this->_db_table.' max activity from query: "'.$query.'"', E_USER_WARNING);
         } else {
             if (!empty($result[0]['max'])) {
@@ -489,7 +478,6 @@ class cs_room_manager extends cs_context_manager
         $query .= ';';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting '.$this->_db_table.' max activity from query: "'.$query.'"', E_USER_WARNING);
         } else {
             if (!empty($result[0]['max'])) {
@@ -519,7 +507,6 @@ class cs_room_manager extends cs_context_manager
         }
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems counting all rooms '.$this->_db_table.' from query: "'.$query.'"', E_USER_WARNING);
         } else {
             foreach ($result as $rs) {
@@ -586,7 +573,6 @@ class cs_room_manager extends cs_context_manager
         }
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems counting used rooms '.$this->_db_table.' from query: "'.$query.'"', E_USER_WARNING);
         } else {
             foreach ($result as $rs) {
@@ -799,7 +785,6 @@ class cs_room_manager extends cs_context_manager
                 $insert_query .= ' WHERE item_id = "'.$rs['item_id'].'"';
                 $result2 = $this->_db_connector->performQuery($insert_query);
                 if (!isset($result2) or !$result2) {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problems automatic deleting materials from query: "'.$insert_query.'"', E_USER_WARNING);
                 }
             }
@@ -809,7 +794,6 @@ class cs_room_manager extends cs_context_manager
             $user_query .= ' WHERE user_id = "'.$rs['user_id'].'"';
             $result3 = $this->_db_connector->performQuery($user_query);
             if (!isset($result3) or !$result3) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems automatic deleting materials from query: "'.$user_query.'"', E_USER_WARNING);
             }
         }

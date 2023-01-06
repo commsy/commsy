@@ -59,7 +59,6 @@ class cs_tag2tag_manager extends cs_manager
         $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).".from_item_id = '".encode(AS_DB, $father_id)."' AND ".$this->addDatabasePrefix($this->_db_table).".to_item_id = '".encode(AS_DB, $child_id)."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or empty($result[0])) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting one tag link item from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $retour = $this->_buildItem($result[0]);
@@ -80,7 +79,6 @@ class cs_tag2tag_manager extends cs_manager
         $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).".to_item_id = '".encode(AS_DB, $to_id)."' AND deletion_date is NULL and deleter_id IS NULL;";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or empty($result[0])) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting one tag link item: "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $retour = $this->_buildItem($result[0]);
@@ -96,8 +94,6 @@ class cs_tag2tag_manager extends cs_manager
       */
      public function getNewItem()
      {
-         include_once 'classes/cs_tag2tag_item.php';
-
          return new cs_tag2tag_item($this->_environment);
      }
 
@@ -108,7 +104,6 @@ class cs_tag2tag_manager extends cs_manager
      */
     public function _update($item)
     {
-        include_once 'functions/date_functions.php';
         $current_datetime = getCurrentDateTimeInMySQL();
 
         if ($item->getSortingPlace()) {
@@ -126,7 +121,6 @@ class cs_tag2tag_manager extends cs_manager
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updating tag link from query: "'.$query.'"', E_USER_WARNING);
         }
         unset($item);
@@ -150,7 +144,6 @@ class cs_tag2tag_manager extends cs_manager
      */
     private function _newTag2TagLink($item)
     {
-        include_once 'functions/date_functions.php';
         $current_datetime = getCurrentDateTimeInMySQL();
 
         if ($item->getSortingPlace()) {
@@ -171,7 +164,6 @@ class cs_tag2tag_manager extends cs_manager
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating tag2tag link from query: "'.$query.'"', E_USER_WARNING);
         }
         unset($item);
@@ -208,7 +200,6 @@ class cs_tag2tag_manager extends cs_manager
 
     public function delete($father_id, $child_id = null)
     {
-        include_once 'functions/date_functions.php';
         $current_datetime = getCurrentDateTimeInMySQL();
         $user_id = $this->_current_user->getItemID() ?: 0;
         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
@@ -217,7 +208,6 @@ class cs_tag2tag_manager extends cs_manager
                  ' WHERE from_item_id="'.encode(AS_DB, $father_id).'" AND to_item_id="'.encode(AS_DB, $child_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting tag2tag link from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $this->_cleanSortingPlaces($father_id);
@@ -229,7 +219,6 @@ class cs_tag2tag_manager extends cs_manager
         $link_item = $this->_getItemTo($link_id);
         $father_id = $link_item->getFatherItemID();
 
-        include_once 'functions/date_functions.php';
         $current_datetime = getCurrentDateTimeInMySQL();
         $user_id = $this->_current_user->getItemID() ?: 0;
         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
@@ -238,7 +227,6 @@ class cs_tag2tag_manager extends cs_manager
                  ' WHERE from_item_id="'.encode(AS_DB, $link_id).'" OR to_item_id="'.encode(AS_DB, $link_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting tag2tag link from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $this->_cleanSortingPlaces($father_id);
@@ -250,7 +238,6 @@ class cs_tag2tag_manager extends cs_manager
      {
          $father_id = $this->getFatherItemID($item_id);
 
-         include_once 'functions/date_functions.php';
          $current_datetime = getCurrentDateTimeInMySQL();
          $user_id = $this->_current_user->getItemID() ?: 0;
          $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
@@ -259,7 +246,6 @@ class cs_tag2tag_manager extends cs_manager
                   ' WHERE from_item_id="'.encode(AS_DB, $father_id).'" AND to_item_id="'.encode(AS_DB, $item_id).'"';
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or !$result) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems deleting tag2tag link from query: "'.$query.'"', E_USER_WARNING);
          } else {
              $this->_cleanSortingPlaces($father_id);
@@ -271,7 +257,6 @@ class cs_tag2tag_manager extends cs_manager
          $father_id = $this->getFatherItemID($item_id);
          $children_array = $this->getChildrenItemIDArray($item_id);
 
-         include_once 'functions/date_functions.php';
          $current_datetime = getCurrentDateTimeInMySQL();
          $user_id = $this->_current_user->getItemID() ?: 0;
          $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
@@ -280,7 +265,6 @@ class cs_tag2tag_manager extends cs_manager
                   ' WHERE from_item_id="'.encode(AS_DB, $item_id).'" OR to_item_id="'.encode(AS_DB, $item_id).'"';
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or !$result) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems deleting tag2tag link from query: "'.$query.'"', E_USER_WARNING);
          } else {
              $this->_cleanSortingPlaces($father_id);
@@ -450,7 +434,6 @@ class cs_tag2tag_manager extends cs_manager
              $result = $this->_db_connector->performQuery($query);
              $link_id_array = [];
              if (!isset($result)) {
-                 include_once 'functions/error_functions.php';
                  trigger_error('Problems cleaning sorting place for father item id (GET) '.encode(AS_DB, $item_id).' from query: "'.$query.'"', E_USER_WARNING);
              } else {
                  foreach ($result as $result_array) {
@@ -462,7 +445,6 @@ class cs_tag2tag_manager extends cs_manager
                  $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.encode(AS_DB, $counter).' WHERE link_id='.encode(AS_DB, $link_id);
                  $result = $this->_db_connector->performQuery($query);
                  if (!isset($result) or !$result) {
-                     include_once 'functions/error_functions.php';
                      trigger_error('Problems cleaning sorting place for father item id (UPDATE) '.encode(AS_DB, $item_id).' from query: "'.$query.'"', E_USER_WARNING);
                  }
                  ++$counter;
@@ -477,7 +459,6 @@ class cs_tag2tag_manager extends cs_manager
          unset($current_user);
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or !$result) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems deleting items from query: "'.$query.'"', E_USER_WARNING);
          }
      }
@@ -500,7 +481,6 @@ class cs_tag2tag_manager extends cs_manager
          $result = $this->_db_connector->performQuery($query);
 
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems with links from query: "'.$query.'"', E_USER_WARNING);
          } else {
              return $result;
@@ -526,7 +506,6 @@ class cs_tag2tag_manager extends cs_manager
          $result = $this->_db_connector->performQuery($query);
          $link_id_array = [];
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems cleaning sorting place for father item id (GET) '.encode(AS_DB, $item_id).' from query: "'.$query.'"', E_USER_WARNING);
          } else {
              $old_place = '';
@@ -665,7 +644,6 @@ class cs_tag2tag_manager extends cs_manager
 
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problem deleting items from query: "'.$query.'"', E_USER_ERROR);
          } else {
              // now the backup
@@ -709,7 +687,6 @@ class cs_tag2tag_manager extends cs_manager
 
              $result = $this->_db_connector->performQuery($query);
              if (!isset($result) or !$result) {
-                 include_once 'functions/error_functions.php';
                  trigger_error('Problem backuping item from query: "'.$query.'"', E_USER_ERROR);
              } else {
                  $success = true;

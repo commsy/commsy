@@ -11,18 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** cs_list is needed for storage of the task items.
- */
-include_once 'classes/cs_list.php';
-
-/** upper class of the task manager.
- */
-include_once 'classes/cs_manager.php';
-
-/** date functions are needed for method _newVersion().
- */
-include_once 'functions/date_functions.php';
-
 /** class for database connection to the database table "tasks"
  * this class implements a database manager for the table "tasks".
  */
@@ -187,7 +175,6 @@ class cs_tasks_manager extends cs_manager
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting task items from query: "'.$query.'"', E_USER_WARNING);
         } else {
             return $result;
@@ -206,7 +193,6 @@ class cs_tasks_manager extends cs_manager
         $query = 'SELECT * FROM '.$this->addDatabasePrefix('tasks').' WHERE '.$this->addDatabasePrefix('tasks').".item_id = '".encode(AS_DB, $item_id)."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or empty($result[0])) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting one task from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $task = $this->_buildItem($result[0]);
@@ -222,8 +208,6 @@ class cs_tasks_manager extends cs_manager
       */
      public function getNewItem()
      {
-         include_once 'classes/cs_task_item.php';
-
          return new cs_task_item($this->_environment);
      }
 
@@ -282,7 +266,6 @@ class cs_tasks_manager extends cs_manager
         // extras (TBD)
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updateing task items from query: "'.$query.'"', E_USER_WARNING);
         }
         unset($item);
@@ -301,7 +284,6 @@ class cs_tasks_manager extends cs_manager
                  'type="task"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating task item in items table from query: "'.$query.'"', E_USER_WARNING);
             $this->_create_id = null;
         } else {
@@ -332,7 +314,6 @@ class cs_tasks_manager extends cs_manager
                  'status="'.encode(AS_DB, $item->getStatus()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating task item from query: "'.$query.'"', E_USER_WARNING);
         }
         unset($item);
@@ -377,7 +358,6 @@ class cs_tasks_manager extends cs_manager
                  ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting tasks from query: "'.$query.'"', E_USER_WARNING);
         } else {
             parent::delete($item_id);

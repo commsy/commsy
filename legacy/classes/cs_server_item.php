@@ -16,8 +16,6 @@
 
 use App\Entity\Portal;
 
-include_once 'classes/cs_guide_item.php';
-
 /** class for a context
  * this class implements a context item.
  */
@@ -757,7 +755,6 @@ class cs_server_item extends cs_guide_item
             $key .= rand(0, 9);
             $key .= $key;
             $key .= rand(0, 9);
-            include_once 'functions/date_functions.php';
             $key .= getCurrentDateTimeInMySQL();
             $key = md5($key);
             $temp_array['id'] = $key;
@@ -791,7 +788,6 @@ class cs_server_item extends cs_guide_item
                 $key .= rand(0, 9);
                 $key .= $key;
                 $key .= rand(0, 9);
-                include_once 'functions/date_functions.php';
                 $key .= getCurrentDateTimeInMySQL();
                 $key = md5($key);
                 $temp_array['id'] = $key;

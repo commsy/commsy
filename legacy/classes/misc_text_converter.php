@@ -27,7 +27,6 @@ class misc_text_converter
             $this->_environment = $params['environment'];
             $this->_constructHTMLPurifier();
         } else {
-            include_once 'functions/error_functions.php';
             trigger_error('no environment defined '.__FILE__.' '.__LINE__, E_USER_ERROR);
         }
     }
@@ -489,14 +488,12 @@ class misc_text_converter
                     if ('discussion' == $this->_environment->getCurrentModule()) {
                         $params = [];
                         $params['iid'] = $this->_environment->getValueOfParameter('iid');
-                        include_once 'functions/curl_functions.php';
                         $result = preg_replace('~'.$word.'\['.$reference.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, $word, $word, '', 'anchor'.$reference), $result);
                         unset($params);
                     }
                 } else {
                     $params = [];
                     $params['iid'] = $reference;
-                    include_once 'functions/curl_functions.php';
                     $result = preg_replace('~'.$word.'\['.$reference.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', '', ''), $result);
                     unset($params);
                 }
@@ -562,7 +559,6 @@ class misc_text_converter
                     $search = '['.$http.'|'.$word.']';
                     $params = [];
                     $params['iid'] = $http;
-                    include_once 'functions/curl_functions.php';
                     $replace = ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word);
                     $result = str_replace($search, $replace, $result);
                 }
@@ -580,14 +576,12 @@ class misc_text_converter
                     if ('discussion' == $this->_environment->getCurrentModule()) {
                         $params = [];
                         $params['iid'] = $this->_environment->getValueOfParameter('iid');
-                        include_once 'functions/curl_functions.php';
                         $result = preg_replace('~\['.$item.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, '['.$item.']', '['.$item.']', '', 'anchor'.$item), $result);
                         unset($params);
                     }
                 } else {
                     $params = [];
                     $params['iid'] = $item;
-                    include_once 'functions/curl_functions.php';
                     $result = preg_replace('~\['.$item.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, '['.$item.']', '', '', ''), $result);
                     unset($params);
                 }
@@ -1374,7 +1368,7 @@ class misc_text_converter
                     if ('0' == $file->getHasHTML()
                          or '' == $file->getHasHTML()
                     ) {
-                        include_once 'pages/html_upload.php';
+                        //include_once 'pages/html_upload.php';
                     }
 
                     if ('2' == $file->getHasHTML()) {
@@ -2454,7 +2448,6 @@ class misc_text_converter
             if (empty($word)) {
                 $word = $array[1];
             }
-            include_once 'functions/curl_functions.php';
             // determ between type of item id
             $item_manager = $this->_environment->getItemManager();
             $item_manager->resetLimits();
@@ -2998,7 +2991,6 @@ class misc_text_converter
             case FROM_GET:
                 return $this->_text_get2php($text); // ja
         }
-        include_once 'functions/error_functions.php';
         trigger_error('You need to specify a mode for text translation.', E_USER_WARNING);
     }
 

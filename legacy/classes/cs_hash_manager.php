@@ -45,7 +45,6 @@ class cs_hash_manager extends cs_manager
     {
         $retour = '';
         if (!empty($user_item_id)) {
-            include_once 'functions/date_functions.php';
             $retour = md5($user_item_id * random_int(1, 99).getCurrentDateTimeInMySQL());
         }
 
@@ -167,7 +166,6 @@ class cs_hash_manager extends cs_manager
     {
         $retour = '';
         if (!empty($user_item_id)) {
-            include_once 'functions/date_functions.php';
             $retour = md5($user_item_id * random_int(1, 99).getCurrentDateTimeInMySQL().time() * random_int(100, 200));
         }
 

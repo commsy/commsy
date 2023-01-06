@@ -16,8 +16,6 @@
 
 use App\Entity\Labels;
 
-include_once 'classes/cs_item.php';
-
 /** class for a label
  * this class implements a commsy label. A label can be a group, a topic, a label, ...
  */
@@ -110,7 +108,6 @@ class cs_label_item extends cs_item
 
             return $item_array;
         } else {
-            include_once 'functions/error_functions.php';
             trigger_error('cs_label_item: getItemData(): Invalid Data');
         }
     }
@@ -379,11 +376,9 @@ class cs_label_item extends cs_item
                     $item = $manager->getItem($rs['item_id']);
                     $manager->setDeleteLimit(true);
                     if (empty($item)) {
-                        include_once 'functions/error_functions.php';
                         trigger_error('cs_label_item: getLastChangedItem(): last changed item is empty for group: "'.$this->getName().'"', E_USER_WARNING);
                     }
                 } else {
-                    include_once 'functions/error_functions.php';
                     trigger_error('cs_label_item: getLastChangedItem(): Failed finding last changed item of type '.$rs['type'].' for group "'.$this->getName().'"', E_USER_WARNING);
                 }
                 // $deletionDate = $item->getDeletionDate();

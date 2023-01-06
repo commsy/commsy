@@ -11,14 +11,6 @@
  * file that was distributed with this source code.
  */
 
-//
-// Release $Name$
-//
-
-/** upper class of the announcement item.
- */
-include_once 'classes/cs_item.php';
-
 /** class for a portfolio
  * this class implements a portfolio item.
  */

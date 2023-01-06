@@ -11,23 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_list.php';
-
-/** upper class of the label manager.
- */
-include_once 'classes/cs_manager.php';
-
-/** date functions are needed for method _newVersion().
- */
-include_once 'functions/date_functions.php';
-
-/** language functions are needed to translate labels: e.g. GROUP_ALL.
- */
-include_once 'functions/language_functions.php';
-include_once 'functions/text_functions.php';
-
 /** class for database connection to the database table "labels"
  * this class implements a database manager for the table "labels". Labels are groups, topics, labels, ...
  */
@@ -172,7 +155,6 @@ class cs_labels_manager extends cs_manager
       } elseif ('none' == $limit or 'project' == $limit) {
           $this->_commsy_context = 'project';
       } else {
-          include_once 'functions/error_functions.php';
           trigger_error('Problems setting CommSy context: use "school", "uni" or "project"', E_USER_WARNING);
       }
   }
@@ -570,13 +552,10 @@ class cs_labels_manager extends cs_manager
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
           if ('count' == $mode) {
-              include_once 'functions/error_functions.php';
               trigger_error('Problems counting labels.', E_USER_WARNING);
           } elseif ('id_array' == $mode) {
-              include_once 'functions/error_functions.php';
               trigger_error('Problems selecting labels ids.', E_USER_WARNING);
           } else {
-              include_once 'functions/error_functions.php';
               trigger_error('Problems selecting labels.', E_USER_WARNING);
           }
       } else {
@@ -603,7 +582,6 @@ class cs_labels_manager extends cs_manager
             $query .= ' AND '.$this->addDatabasePrefix('labels').'.context_id = "'.encode(AS_DB, $current_context).'"';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting all labels.', E_USER_WARNING);
             } else {
                 foreach ($result as $query_result) {
@@ -628,7 +606,6 @@ class cs_labels_manager extends cs_manager
           $query .= ' WHERE '.$this->addDatabasePrefix('labels').'.item_id = "'.encode(AS_DB, $label_id).'"';
           $result = $this->_db_connector->performQuery($query);
           if (!isset($result)) {
-              include_once 'functions/error_functions.php';
               trigger_error('Problems selecting one label.', E_USER_WARNING);
           } elseif (!empty($result[0])) {
               $label = $this->_buildItem($result[0]);
@@ -644,8 +621,6 @@ class cs_labels_manager extends cs_manager
      */
     public function getNewItem($label_type = '')
     {
-        include_once 'classes/cs_label_item.php';
-
         return new cs_label_item($this->_environment, $label_type);
     }
 
@@ -746,7 +721,6 @@ class cs_labels_manager extends cs_manager
               $db_array['description'] = $translator->getMessage('GROUP_ALL_DESC');
           }
       }
-      include_once 'functions/text_functions.php';
       $db_array['extras'] = mb_unserialize($db_array['extras']);
       $item = parent::_buildItem($db_array);
 
@@ -793,7 +767,6 @@ class cs_labels_manager extends cs_manager
          try {
              $queryBuilder->executeStatement();
          } catch (\Doctrine\DBAL\Exception $e) {
-             include_once 'functions/error_functions.php';
              trigger_error($e->getMessage(), E_USER_WARNING);
          }
      }
@@ -826,7 +799,6 @@ class cs_labels_manager extends cs_manager
              $item->setItemID($this->getCreateID());
              $this->_newLabel($item);
          } catch (\Doctrine\DBAL\Exception $e) {
-             include_once 'functions/error_functions.php';
              trigger_error($e->getMessage(), E_USER_WARNING);
              $this->_create_id = null;
          }
@@ -875,7 +847,6 @@ class cs_labels_manager extends cs_manager
       try {
           $queryBuilder->executeStatement();
       } catch (\Doctrine\DBAL\Exception $e) {
-          include_once 'functions/error_functions.php';
           trigger_error('Problems creating announcement.', E_USER_WARNING);
       }
   }
@@ -939,7 +910,6 @@ class cs_labels_manager extends cs_manager
                   ' WHERE item_id="'.encode(AS_DB, $item->getItemID()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updating label.', E_USER_WARNING);
         }
         unset($item);
@@ -956,7 +926,6 @@ class cs_labels_manager extends cs_manager
                ' WHERE item_id="'.encode(AS_DB, $label_id).'"';
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result) or !$result) {
-          include_once 'functions/error_functions.php';
           trigger_error('Problems deleting label.', E_USER_WARNING);
       } else {
           $link_manager = $this->_environment->getLinkManager();
@@ -1006,7 +975,6 @@ class cs_labels_manager extends cs_manager
              $new_id).'" AND deleter_id IS NULL AND deletion_date IS NULL';
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems getting data "'.$this->_db_table.'".', E_USER_WARNING);
          } else {
              foreach ($result as $query_result) {
@@ -1023,7 +991,6 @@ class cs_labels_manager extends cs_manager
                              serialize($extra_array)).'" WHERE item_id="'.$query_result['item_id'].'"';
                          $update_result = $this->_db_connector->performQuery($update_query);
                          if (!isset($update_result) or !$update_result) {
-                             include_once 'functions/error_functions.php';
                              trigger_error('Problems updating data "'.$this->_db_table.'".', E_USER_WARNING);
                          }
                      }
@@ -1067,7 +1034,6 @@ class cs_labels_manager extends cs_manager
                          $updateQuery .= ' WHERE item_id = "'.encode(AS_DB, $rs['item_id']).'"';
                          $result2 = $this->_db_connector->performQuery($updateQuery);
                          if (!$result2) {
-                             include_once 'functions/error_functions.php';
                              trigger_error('Problems automatic deleting labels:.', E_USER_WARNING);
                          }
                      }

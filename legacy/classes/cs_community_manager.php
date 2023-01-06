@@ -11,26 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_list.php';
-
-/** upper class of the room manager.
- */
-include_once 'classes/cs_room2_manager.php';
-
-/** date functions are needed for method _newVersion().
- */
-include_once 'functions/date_functions.php';
-
-/** text functions are needed for ???
- */
-include_once 'functions/text_functions.php';
-
-/** misc functions are needed for extras field in database table.
- */
-include_once 'functions/misc_functions.php';
-
 /** class for database connection to the database table "community"
  * this class implements a database manager for the table "community".
  */
@@ -233,7 +213,6 @@ class cs_community_manager extends cs_room2_manager
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting '.$this->_db_table.' items.', E_USER_ERROR);
         } else {
             return $result;
@@ -249,7 +228,6 @@ class cs_community_manager extends cs_room2_manager
              $query .= ' ORDER BY '.$sortBy;
              $result = $this->_db_connector->performQuery($query);
              if (!isset($result)) {
-                 include_once 'functions/error_functions.php';
                  trigger_error('Problems selecting list of '.$this->_room_type.' items.', E_USER_WARNING);
              } else {
                  $list = new cs_list();

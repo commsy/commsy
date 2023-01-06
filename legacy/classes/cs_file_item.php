@@ -14,9 +14,6 @@
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Mime\MimeTypes;
 
-include_once 'functions/text_functions.php';
-include_once 'classes/cs_item.php';
-
 class cs_file_item extends cs_item
 {
     private ?int $_portal_id = null;
@@ -115,7 +112,6 @@ class cs_file_item extends cs_item
     public function getDisplayName()
     {
         $temp_display_name = rawurldecode($this->_getValue('filename'));
-        include_once 'functions/text_functions.php';
 
         return cs_utf8_encode($temp_display_name);
     }

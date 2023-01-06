@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_list.php';
-
 /** class for database connection to the database table "links"
  * this class implements a database manager for the table "links". Links between commsy items.
  */
@@ -205,8 +201,6 @@ class cs_link_manager extends cs_manager
       */
      public function getNewItem()
      {
-         include_once 'classes/cs_link_item.php';
-
          return new cs_link_item($this->_environment);
      }
 
@@ -342,7 +336,6 @@ class cs_link_manager extends cs_manager
              // perform query
              $r = $this->_db_connector->performQuery($query);
              if (!isset($r)) {
-                 include_once 'functions/error_functions.php';
                  trigger_error('Problems with links: "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_WARNING);
              } else {
                  $result = $r;
@@ -490,7 +483,6 @@ class cs_link_manager extends cs_manager
              // perform query
              $r = $this->_db_connector->performQuery($query);
              if (!isset($r)) {
-                 include_once 'functions/error_functions.php';
                  trigger_error('Problems with links: "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_WARNING);
              } else {
                  $result = $r;
@@ -658,7 +650,6 @@ class cs_link_manager extends cs_manager
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updating link item from query: "'.$query.'"', E_USER_WARNING);
         }
     }
@@ -681,7 +672,6 @@ class cs_link_manager extends cs_manager
                  'type="link_item"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating link item from query: "'.$query.'"', E_USER_WARNING);
             $this->_create_id = null;
         } else {
@@ -729,7 +719,6 @@ class cs_link_manager extends cs_manager
             $query .= 'extras="'.encode(AS_DB, serialize($link_item->getExtraInformation())).'"';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems creating link item from query: "'.$query.'"', E_USER_WARNING);
                 $query = 'DELETE FROM '.$this->addDatabasePrefix('items').' WHERE item_id="'.$this->getCreateID().'"';
                 $result = $this->_db_connector->performQuery($query);
@@ -756,7 +745,6 @@ class cs_link_manager extends cs_manager
               ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
           $result = $this->_db_connector->performQuery($query);
           if (!isset($result) or !$result) {
-              include_once 'functions/error_functions.php';
               trigger_error('Problems deleting link_items from query: "'.$query.'"', E_USER_WARNING);
           } else {
               // delete item from table 'items'
@@ -780,7 +768,6 @@ class cs_link_manager extends cs_manager
           $query .= ' AND context_id ="'.encode(AS_DB, $context_id).'"';
           $result = $this->_db_connector->performQuery($query);
           if (!isset($result) or !$result) {
-              include_once 'functions/error_functions.php';
               trigger_error('Problems deleting (updating) links of an item from query: "'.$query.'"', E_USER_WARNING);
           }
 
@@ -806,7 +793,6 @@ class cs_link_manager extends cs_manager
          // perform query
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or empty($result[0]['count'])) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems selecting items from query: "'.$query.'"', E_USER_WARNING);
          } else {
              return $result[0]['count'];
@@ -830,7 +816,6 @@ class cs_link_manager extends cs_manager
           $query .= ')';
           $result = $this->_db_connector->performQuery($query);
           if (!isset($result) or !$result) {
-              include_once 'functions/error_functions.php';
               trigger_error('Problems deleting (updating) links of an item from query: "'.$query.'"', E_USER_WARNING);
           }
 
@@ -846,7 +831,6 @@ class cs_link_manager extends cs_manager
         ';
           $result = $this->_db_connector->performQuery($query);
           if (!isset($result) || !$result) {
-              include_once 'functions/error_functions.php';
               trigger_error('Problems deleting(updating) an item from query: "'.$query.'"', E_USER_WARNING);
           }
 
@@ -865,7 +849,6 @@ class cs_link_manager extends cs_manager
               ' OR second_item_id="'.encode(AS_DB, $item->getItemID()).'")';
           $result = $this->_db_connector->performQuery($query);
           if (!isset($result) or !$result) {
-              include_once 'functions/error_functions.php';
               trigger_error('Problems deleting (updating) links of an item from query: "'.$query.'"', E_USER_WARNING);
           }
 
@@ -930,7 +913,6 @@ class cs_link_manager extends cs_manager
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating links from query: "'.$query.'"', E_USER_WARNING);
         }
     }
@@ -949,7 +931,6 @@ class cs_link_manager extends cs_manager
 
                  $result2 = $this->_db_connector->performQuery($update);
                  if (!isset($result2) or !$result2) {
-                     include_once 'functions/error_functions.php';
                      trigger_error('Problems creating link_items: "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_WARNING);
                  }
              }
@@ -965,7 +946,6 @@ class cs_link_manager extends cs_manager
 
                  $result2 = $this->_db_connector->performQuery($update);
                  if (!isset($result2) or !$result2) {
-                     include_once 'functions/error_functions.php';
                      trigger_error('Problems creating link_items from query: "'.$query.'"', E_USER_WARNING);
                  }
              }
@@ -978,7 +958,6 @@ class cs_link_manager extends cs_manager
          $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place=NULL WHERE first_item_id="'.encode(AS_DB, $item_id).'" OR second_item_id="'.encode(AS_DB, $item_id).'";';
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or !$result) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems cleaning sorting place at table '.$this->_db_table.' from query: "'.$query.'"', E_USER_WARNING);
          }
      }
@@ -1006,7 +985,6 @@ class cs_link_manager extends cs_manager
                  // $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place="'.encode(AS_DB,$place).'" WHERE item_id="'.encode(AS_DB,$item_id).'";';
                  $result = $this->_db_connector->performQuery($query);
                  if (!isset($result) or !$result) {
-                     include_once 'functions/error_functions.php';
                      trigger_error('Problems saveing sorting place at table '.$this->_db_table.' from query: "'.$query.'"', E_USER_WARNING);
                  }
              }
@@ -1170,7 +1148,6 @@ class cs_link_manager extends cs_manager
              $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.encode(AS_DB, $item_id).'";';
              $result = $this->_db_connector->performQuery($query);
              if (!isset($result) or empty($result[0])) {
-                 include_once 'functions/error_functions.php';
                  trigger_error('Problems selecting one '.$this->_db_table.' item ('.$item_id.').', E_USER_WARNING);
              } else {
                  $item = $this->_buildItem($result[0]);
@@ -1192,7 +1169,6 @@ class cs_link_manager extends cs_manager
      public function _buildItem($db_array)
      {
          if (!empty($db_array['extras'])) {
-             include_once 'functions/text_functions.php';
              $db_array['extras'] = mb_unserialize($db_array['extras']);
          }
 
@@ -1217,7 +1193,6 @@ class cs_link_manager extends cs_manager
               $query .= ';';
               $result = $this->_db_connector->performQuery($query);
               if (!isset($result)) {
-                  include_once 'functions/error_functions.php';
                   trigger_error('Problems selecting one '.$this->_db_table.' item ('.$first_id.','.$second_id.').', E_USER_WARNING);
               } elseif (!empty($result[0])) {
                   $item = $this->_buildItem($result[0]);
@@ -1254,7 +1229,6 @@ class cs_link_manager extends cs_manager
 		';
              $result = $this->_db_connector->performQuery($query);
              if (!isset($result)) {
-                 include_once 'functions/error_functions.php';
                  trigger_error('Problems selecting items', E_USER_WARNING);
              } else {
                  return $result;

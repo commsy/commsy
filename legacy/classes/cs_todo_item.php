@@ -32,12 +32,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-/* upper class of the todo item
- */
-
 use App\Entity\Todos;
-
-include_once 'classes/cs_item.php';
 
 /** class for a todo
  * this class implements a todo item.

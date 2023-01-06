@@ -11,12 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_item.php';
-include_once 'classes/cs_manager.php';
-include_once 'functions/date_functions.php';
-
 /** class for database connection to the database table "material"
  * this class implements a database manager for the table "material".
  */
@@ -297,7 +291,6 @@ class cs_item_manager extends cs_manager
          // perform query
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems selecting items from query: "'.$query.'"', E_USER_WARNING);
          } else {
              return $result;
@@ -315,7 +308,6 @@ class cs_item_manager extends cs_manager
         /** cs_list is needed for storage the commsy items.
          */
         $type = 'items';
-        include_once 'classes/cs_list.php';
         if (empty($id_array)) {
             return new cs_list();
         } else {
@@ -328,7 +320,6 @@ class cs_item_manager extends cs_manager
             $query .= ' ORDER BY '.$this->addDatabasePrefix('items').'.modification_date DESC';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting list of '.$type.' items.', E_USER_WARNING);
             } else {
                 $list = new cs_list();
@@ -356,7 +347,6 @@ class cs_item_manager extends cs_manager
         /** cs_list is needed for storage the commsy items.
          */
         $type = 'items';
-        include_once 'classes/cs_list.php';
         if (empty($id_array)) {
             return new cs_list();
         } else {
@@ -373,7 +363,6 @@ class cs_item_manager extends cs_manager
             $query .= ' ORDER BY '.$this->addDatabasePrefix('items').'.modification_date DESC';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting list of '.$type.' items.', E_USER_WARNING);
             } else {
                 $list = new cs_list();
@@ -415,7 +404,6 @@ class cs_item_manager extends cs_manager
          // perform query
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems selecting items from query: "'.$query.'"', E_USER_WARNING);
          } else {
              $rs = $result;
@@ -442,7 +430,6 @@ class cs_item_manager extends cs_manager
          // perform query
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems selecting items from query: "'.$query.'"', E_USER_WARNING);
          } else {
              foreach ($result as $query_result) {
@@ -478,7 +465,6 @@ class cs_item_manager extends cs_manager
          // perform query
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems selecting items from query: "'.$query.'"', E_USER_WARNING);
          } else {
              foreach ($result as $query_result) {
@@ -527,7 +513,6 @@ class cs_item_manager extends cs_manager
          // perform query
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or empty($result[0])) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems selecting items from query: "'.$query.'"', E_USER_WARNING);
          } else {
              return $result[0]['count'];
@@ -548,7 +533,6 @@ class cs_item_manager extends cs_manager
         $query .= ' WHERE item_id = "'.encode(AS_DB, $iid).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting an item from query: "'.$query.'"', E_USER_WARNING);
             $success = false;
         } else {
@@ -664,7 +648,6 @@ class cs_item_manager extends cs_manager
                     'user_id="'.encode(AS_DB, $user_id).'"';
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems creating external_view entry from query: "'.$query.'"', E_USER_WARNING);
          }
      }
@@ -736,7 +719,6 @@ class cs_item_manager extends cs_manager
          $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET deleter_id='.encode(AS_DB, $current_user->getItemID()).', deletion_date=NOW() WHERE context_id='.encode(AS_DB, $context_id).' AND type="'.encode(AS_DB, $type).'"';
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or !$result) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems deleting items from query: "'.$query.'"', E_USER_WARNING);
          }
      }
@@ -748,7 +730,6 @@ class cs_item_manager extends cs_manager
          $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'" AND type != "'.CS_DISCARTICLE_TYPE.'" AND type != "'.CS_USER_TYPE.'";'; // user und discarticle werden noch gebraucht
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or !$result) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problem deleting items.', E_USER_ERROR);
          } else {
              unset($result);
@@ -769,7 +750,6 @@ class cs_item_manager extends cs_manager
          $query = 'SELECT count('.$this->addDatabasePrefix($this->_db_table).'.item_id) as number FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB, $this->_room_limit)."' and ".$this->addDatabasePrefix($this->_db_table).".modification_date > '".encode(AS_DB, $start)."' and ".$this->addDatabasePrefix($this->_db_table).".modification_date < '".encode(AS_DB, $end)."';";
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems counting items with query: '.$query, E_USER_WARNING);
          } else {
              foreach ($result as $rs) {
@@ -792,7 +772,6 @@ class cs_item_manager extends cs_manager
          $result1 = [];
          $result1 = $this->_db_connector->performQuery($query1);
          if (!isset($result1)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems selecting items from query: "'.$query1.'"', E_USER_WARNING);
          }
          $query2 = 'SELECT '.$this->addDatabasePrefix('items').'.item_id,'.$this->addDatabasePrefix('noticed').'.read_date,'.$this->addDatabasePrefix('noticed').'.user_id FROM '.$this->addDatabasePrefix('items');
@@ -804,7 +783,6 @@ class cs_item_manager extends cs_manager
          // perform query
          $r2 = $this->_db_connector->performQuery($query2);
          if (!isset($r2)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems selecting items from query: "'.$query2.'"', E_USER_WARNING);
          }
          $result2 = [];

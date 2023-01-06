@@ -11,26 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_list.php';
-
-/** upper class of the project manager.
- */
-include_once 'classes/cs_room2_manager.php';
-
-/** date functions are needed for method _newVersion().
- */
-include_once 'functions/date_functions.php';
-
-/** text functions are needed for ???
- */
-include_once 'functions/text_functions.php';
-
-/** misc functions are needed for extras field in database table.
- */
-include_once 'functions/misc_functions.php';
-
 /** class for database connection to the database table "project"
  * this class implements a database manager for the table "project".
  */
@@ -395,7 +375,6 @@ class cs_project_manager extends cs_room2_manager
       // perform query
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
-          include_once 'functions/error_functions.php';
           trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"', E_USER_WARNING);
       } else {
           return $result;
@@ -412,7 +391,6 @@ class cs_project_manager extends cs_room2_manager
           $query .= ' ORDER BY '.encode(AS_DB, $sortBy);
           $result = $this->_db_connector->performQuery($query);
           if (!isset($result)) {
-              include_once 'functions/error_functions.php';
               trigger_error('Problems selecting list of '.$this->_room_type.' items from query: "'.$query.'"', E_USER_WARNING);
           } else {
               $list = new cs_list();
@@ -490,7 +468,6 @@ class cs_project_manager extends cs_room2_manager
                'type="'.encode(AS_DB, $this->_room_type).'"';
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
-          include_once 'functions/error_functions.php';
           trigger_error('Problems creating '.$this->_db_table.' item from query: "'.$query.'"', E_USER_WARNING);
           $this->_create_id = null;
       } else {
@@ -538,7 +515,6 @@ class cs_project_manager extends cs_room2_manager
 
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result)) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems counting all '.$this->_room_type.' from query: "'.$query.'"', E_USER_WARNING);
        } else {
            foreach ($result as $rs) {
@@ -583,7 +559,6 @@ class cs_project_manager extends cs_room2_manager
 //    		$query .= " ORDER BY ".encode(AS_DB,$sortBy);
            $result = $this->_db_connector->performQuery($query);
            if (!isset($result)) {
-               include_once 'functions/error_functions.php';
                trigger_error('Problems selecting list of '.$this->_room_type.' items from query: "'.$query.'"', E_USER_WARNING);
            } else {
                $list = new cs_list();

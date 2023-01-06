@@ -11,20 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_section_list.php';
-
-/** upper class of the sectionq manager.
- */
-include_once 'classes/cs_manager.php';
-
-/** cs_section_item is needed to create section items.
- */
-include_once 'classes/cs_section_item.php';
-
-include_once 'functions/text_functions.php';
-
 /** class for database connection to the database table "section"
  * this class implements a database manager for the table "section".
  *
@@ -227,7 +213,6 @@ class cs_section_manager extends cs_manager
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting section from query: "'.$query.'"', E_USER_WARNING);
         } else {
             return $result;
@@ -257,7 +242,6 @@ class cs_section_manager extends cs_manager
           $query .= ' ORDER BY '.$this->addDatabasePrefix('section').'.version_id DESC';
           $result = $this->_db_connector->performQuery($query);
           if (!isset($result)) {
-              include_once 'functions/error_functions.php';
               trigger_error('Problems selecting one section item from query: "'.$query.'"', E_USER_WARNING);
           } elseif (!empty($result[0])) {
               $section = $this->_buildItem($result[0]);
@@ -274,7 +258,6 @@ class cs_section_manager extends cs_manager
         $query .= ' AND '.$this->addDatabasePrefix('section').".version_id = '".$version_id."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or empty($result[0])) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting one materials item from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $section = $this->_buildItem($result[0]);
@@ -308,7 +291,6 @@ class cs_section_manager extends cs_manager
             $query .= ' ORDER BY '.$this->addDatabasePrefix('section').'.number';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting list of section items from query: "'.$query.'"', E_USER_WARNING);
             } else {
                 $section_list = new cs_section_list();
@@ -340,7 +322,6 @@ class cs_section_manager extends cs_manager
             $query .= ' AND '.$this->addDatabasePrefix('section').'.deletion_date IS NULL';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting list of section items from query: "'.$query.'"', E_USER_WARNING);
             } else {
                 $section_list = new cs_section_list();
@@ -419,7 +400,6 @@ class cs_section_manager extends cs_manager
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updating section from query: "'.$query.'"', E_USER_WARNING);
         }
         $this->_save_section_without_date = false; // restore default
@@ -441,7 +421,6 @@ class cs_section_manager extends cs_manager
                'draft="'.encode(AS_DB, $item->isDraft()).'"';
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
-          include_once 'functions/error_functions.php';
           trigger_error('Problems creating section from query: "'.$query.'"', E_USER_WARNING);
           $this->_create_id = null;
       } else {
@@ -473,7 +452,6 @@ class cs_section_manager extends cs_manager
                'material_item_id="'.encode(AS_DB, $item->getLinkedItemID()).'"';
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
-          include_once 'functions/error_functions.php';
           trigger_error('Problems creating section from query: "'.$query.'"', E_USER_WARNING);
       }
       unset($item);
@@ -498,7 +476,6 @@ class cs_section_manager extends cs_manager
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting section from query: "'.$query.'"', E_USER_WARNING);
         } else {
             if (is_null($version_id)) {
@@ -586,7 +563,6 @@ class cs_section_manager extends cs_manager
                      $updateQuery .= ' WHERE item_id = "'.encode(AS_DB, $rs['item_id']).'"';
                      $result2 = $this->_db_connector->performQuery($updateQuery);
                      if (!$result2) {
-                         include_once 'functions/error_functions.php';
                          trigger_error('Problems automatic deleting sections from query: "'.$updateQuery.'"', E_USER_WARNING);
                      }
                  }

@@ -11,9 +11,6 @@
  * file that was distributed with this source code.
  */
 
-include_once 'functions/language_functions.php';
-include_once 'functions/text_functions.php';
-
 function getCurrentDate()
 {
     return date('Ymd');

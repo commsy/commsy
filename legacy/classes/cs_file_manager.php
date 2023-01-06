@@ -11,30 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the material manager.
- */
-include_once 'classes/cs_manager.php';
-
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_list.php';
-
-/** cs_file_item is needed to create file items.
- */
-include_once 'classes/cs_file_item.php';
-
-/** date functions are needed for ???
- */
-include_once 'functions/date_functions.php';
-
-/** text functions are needed for ???
- */
-include_once 'functions/text_functions.php';
-
-/** file functions are needed for ???
- */
-include_once 'functions/file_functions.php';
-
 /** class for database connection to the database table "material"
  * this class implements a database manager for the table "material".
  */
@@ -161,7 +137,6 @@ class cs_file_manager extends cs_manager
         $query .= ' AND '.$this->addDatabasePrefix('files').'.files_id="'.encode(AS_DB, $file_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems get file entry ['.$file_id.'].', E_USER_WARNING);
             $file = [];
         } elseif (!empty($result[0])) {
@@ -181,7 +156,6 @@ class cs_file_manager extends cs_manager
                     ' WHERE files_id = "'.encode(AS_DB, $file_item->getFileID()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Filemanager: Problem creating file entry: '.$query, E_USER_ERROR);
         } else {
             $saved = true;
@@ -200,7 +174,6 @@ class cs_file_manager extends cs_manager
                      ' WHERE files_id = "'.encode(AS_DB, $file_item->getFileID()).'"';
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Filemanager: Problem creating file entry: '.$query, E_USER_ERROR);
          } else {
              $saved = true;
@@ -219,7 +192,6 @@ class cs_file_manager extends cs_manager
                   ' WHERE files_id = "'.encode(AS_DB, $file_item->getFileID()).'"';
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Filemanager: Problem creating file entry: '.$query, E_USER_ERROR);
          } else {
              $saved = true;
@@ -270,7 +242,6 @@ class cs_file_manager extends cs_manager
                 $this->_db_connector->performQuery($query);
             }
         } else {
-            include_once 'functions/error_functions.php';
             trigger_error('Filemanager: Problem creating file entry: '.$query, E_USER_ERROR);
         }
 
@@ -284,7 +255,6 @@ class cs_file_manager extends cs_manager
                   ' WHERE files_id="'.encode(AS_DB, $file_item->getFileID()).'"';
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or !$result) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems updating file from query: "'.$query.'"', E_USER_WARNING);
          }
      }
@@ -408,7 +378,6 @@ class cs_file_manager extends cs_manager
             // perform query
             $r = $this->_db_connector->performQuery($query);
             if (!isset($r)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems with links: "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_WARNING);
             } else {
                 if ($this->_cache_on) {
@@ -441,7 +410,6 @@ class cs_file_manager extends cs_manager
                 ' WHERE files_id="'.encode(AS_DB, $item_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting files from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $link_manager = $this->_environment->getLinkItemFileManager();
@@ -456,7 +424,6 @@ class cs_file_manager extends cs_manager
                 ' WHERE files_id="'.encode(AS_DB, $file_item->getFileID()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting files from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $disc_manager = $this->_environment->getDiscManager();
@@ -476,7 +443,6 @@ class cs_file_manager extends cs_manager
                  ' WHERE files_id="'.encode(AS_DB, $file_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting links of a file item from query: "'.$query.'"', E_USER_WARNING);
         }
     }
@@ -554,7 +520,6 @@ class cs_file_manager extends cs_manager
         $query .= 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.encode(AS_DB, $old_id).'" AND deleter_id IS NULL AND deletion_date IS NULL';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems getting data "'.$this->_db_table.'" from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $item_id = 'files_id';
@@ -564,11 +529,9 @@ class cs_file_manager extends cs_manager
             $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
             $sql_result = $this->_db_connector->performQuery($sql);
             if (!isset($sql_result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems getting data "'.$this->_db_table.'".', E_USER_WARNING);
             } else {
                 foreach ($sql_result as $sql_row) {
-                    include_once 'functions/text_functions.php';
                     $extra_array = mb_unserialize($sql_row['extras']);
                     $current_data_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$item_id];
                     // $current_copy_date_array[$extra_array['COPY']['ITEM_ID']] = $extra_array['COPY']['DATETIME'];
@@ -619,7 +582,6 @@ class cs_file_manager extends cs_manager
                         elseif ('extras' == $key
                                  and !empty($old_item_id)
                         ) {
-                            include_once 'functions/text_functions.php';
                             $extra_array = mb_unserialize($value);
                             $extra_array['COPY']['ITEM_ID'] = $old_item_id;
                             $extra_array['COPY']['COPYING_DATE'] = $current_date;
@@ -642,7 +604,6 @@ class cs_file_manager extends cs_manager
                     }
                     $result_insert = $this->_db_connector->performQuery($insert_query);
                     if (!isset($result_insert)) {
-                        include_once 'functions/error_functions.php';
                         trigger_error('Problem creating item from query: "'.$insert_query.'"', E_USER_ERROR);
                     } else {
                         $new_item_id = $result_insert;
@@ -660,13 +621,11 @@ class cs_file_manager extends cs_manager
                                     // trigger_error('can not copy file on disc',E_USER_ERROR);
                                 }
                             } else {
-                                include_once 'functions/error_functions.php';
                                 trigger_error('can not get old file item', E_USER_ERROR);
                             }
                             unset($file_item);
                             unset($disc_manager);
                         } else {
-                            include_once 'functions/error_functions.php';
                             trigger_error('lost old item id at copying data', E_USER_ERROR);
                         }
                     }
@@ -707,7 +666,6 @@ class cs_file_manager extends cs_manager
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problem selecting items from query: "'.$query.'"', E_USER_ERROR);
             $retour = false;
         } else {
@@ -716,7 +674,6 @@ class cs_file_manager extends cs_manager
                 $query2 = 'SELECT context_id as portal_id FROM '.$this->addDatabasePrefix('room').' WHERE item_id="'.$query_result['context_id'].'"';
                 $result2 = $this->_db_connector->performQuery($query2);
                 if (!isset($result2)) {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problem selecting items from query: "'.$query.'"', E_USER_ERROR);
                     $retour = false;
                 } elseif (!empty($result2[0])) {
@@ -739,7 +696,6 @@ class cs_file_manager extends cs_manager
     public function deleteUnneededFiles($context_id, $portal_id = '')
     {
         if (!isset($context_id) or empty($context_id)) {
-            include_once 'functions/error_functions.php';
             trigger_error('deleteUnneededFiles: no context_id given', E_USER_ERROR);
             $retour = false;
         } else {
@@ -749,7 +705,6 @@ class cs_file_manager extends cs_manager
             $sql = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.files_id, '.$this->addDatabasePrefix($this->_db_table).'.context_id, '.$this->addDatabasePrefix($this->_db_table).'.filename FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.$context_id.'";';
             $result = $this->_db_connector->performQuery($sql);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problem selecting items from query: "'.$sql.'"', E_USER_ERROR);
                 $retour = false;
             } else {
@@ -765,7 +720,6 @@ class cs_file_manager extends cs_manager
                     $sql2 = 'SELECT file_id FROM '.$this->addDatabasePrefix('item_link_file').' WHERE file_id IN ('.implode(',', $file_id_array).');';
                     $result2 = $this->_db_connector->performQuery($sql2);
                     if (!isset($result2)) {
-                        include_once 'functions/error_functions.php';
                         trigger_error('Problem selecting items from query: "'.$sql2.'"', E_USER_ERROR);
                         $retour = false;
                     } else {
@@ -800,7 +754,6 @@ class cs_file_manager extends cs_manager
                             $query2 = 'SELECT context_id as portal_id FROM '.$this->addDatabasePrefix('room').' WHERE item_id="'.$query_result['context_id'].'"';
                             $result2 = $this->_db_connector->performQuery($query2);
                             if (!isset($result2)) {
-                                include_once 'functions/error_functions.php';
                                 trigger_error('Problem selecting items from query: "'.$query2.'"', E_USER_ERROR);
                                 $retour = false;
                             } elseif (!empty($result2[0])) {
@@ -844,7 +797,6 @@ class cs_file_manager extends cs_manager
      */
     public function _buildItem($db_array)
     {
-        include_once 'functions/text_functions.php';
         $db_array['extras'] = mb_unserialize($db_array['extras']);
 
         return parent::_buildItem($db_array);
@@ -856,7 +808,6 @@ class cs_file_manager extends cs_manager
         $sql = 'SELECT files_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.$this->_room_limit.'" AND extras LIKE "%'.$temp_key.'%";';
         $result = $this->_db_connector->performQuery($sql);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Filemanager: Problem creating file entry: '.$sql, E_USER_ERROR);
         } elseif ((is_countable($result) ? count($result) : 0) == 1
                    and !empty($result[0]['files_id'])
@@ -875,7 +826,6 @@ class cs_file_manager extends cs_manager
         $query .= ' AND '.$this->addDatabasePrefix('files').'.temp_upload_session_id="'.encode(AS_DB, $session_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems getting temp files with session id ['.$session_id.'].', E_USER_WARNING);
             $file = [];
         } elseif (!empty($result[0])) {

@@ -16,8 +16,6 @@ use App\Entity\Account;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
-include_once 'classes/cs_item.php';
-
 /** class for a user
  * this class implements a user item.
  */
@@ -2303,8 +2301,6 @@ class cs_user_item extends cs_item
 
     public function isActiveDuringLast99Days()
     {
-        include_once 'functions/date_functions.php';
-
         return $this->getLastLogin() > getCurrentDateTimeMinusDaysInMySQL(99);
     }
 
@@ -2462,7 +2458,6 @@ class cs_user_item extends cs_item
     {
         $retour = false;
         if ($this->_issetExtra('TEMPORARY_LOCK')) {
-            include_once 'functions/date_functions.php';
             $date = $this->_getExtra('TEMPORARY_LOCK');
             if (getCurrentDateTimeInMySQL() > $date) {
                 $retour = false;
@@ -2476,13 +2471,11 @@ class cs_user_item extends cs_item
 
     public function setLock($days)
     {
-        include_once 'functions/date_functions.php';
         $this->_addExtra('LOCK', getCurrentDateTimePlusDaysInMySQL($days));
     }
 
     public function setTemporaryLock()
     {
-        include_once 'functions/date_functions.php';
         $lock_time = $this->_environment->getCurrentContextItem()->getLockTime();
         $this->_addExtra('TEMPORARY_LOCK', getCurrentDateTimePlusMinutesInMySQL($lock_time));
     }
@@ -2674,7 +2667,6 @@ class cs_user_item extends cs_item
         $key .= random_int(0, 9);
         $key .= $this->getEmail();
         $key .= random_int(0, 9);
-        include_once 'functions/date_functions.php';
         $key .= getCurrentDateTimeInMySQL();
         $this->_setOwnConnectionKey(md5($key));
         $this->save();

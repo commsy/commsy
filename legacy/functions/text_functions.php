@@ -20,7 +20,6 @@ function encode($mode, $value)
         $retour = $text_converter->encode($mode, $value);
         unset($text_converter);
     } else {
-        include_once 'functions/error_functions.php';
         trigger_error('can not encode data', E_USER_WARNING);
     }
 

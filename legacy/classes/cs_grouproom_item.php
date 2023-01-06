@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the group room item.
- */
-include_once 'classes/cs_room_item.php';
-
 use App\Entity\Room;
 use App\Mail\Mailer;
 use Symfony\Component\Mime\Address;
@@ -997,7 +993,6 @@ class cs_grouproom_item extends cs_room_item
         } elseif ('portal' == $room_moderation) {
             $this->_sendMailToModeration2($this->getContextItem(), $room_change);
         } else {
-            include_once 'functions/error_functions.php';
             trigger_error('lost room moderation', E_USER_WARNING);
         }
     }

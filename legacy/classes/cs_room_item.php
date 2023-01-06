@@ -16,9 +16,6 @@
 
 use App\Entity\Room;
 
-include_once 'classes/cs_context_item.php';
-include_once 'functions/text_functions.php';
-
 /** father class for a rooms (project or community)
  * this class implements an abstract room item.
  */
@@ -275,7 +272,6 @@ class cs_room_item extends cs_context_item
      */
     public function close()
     {
-        include_once 'functions/date_functions.php';
         $this->setClosureDate(getCurrentDateTimeInMySQL());
         parent::close();
     }
@@ -1116,8 +1112,6 @@ class cs_room_item extends cs_context_item
 
      public function isActiveDuringLast99Days()
      {
-         include_once 'functions/date_functions.php';
-
          return $this->getLastLogin() >= getCurrentDateTimeMinusDaysInMySQL(99);
      }
 }

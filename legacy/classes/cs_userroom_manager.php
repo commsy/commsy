@@ -11,24 +11,6 @@
  * file that was distributed with this source code.
  */
 
-include_once 'classes/cs_list.php';
-
-/** upper class of the user room manager.
- */
-include_once 'classes/cs_room2_manager.php';
-
-/** date functions are needed for method _newVersion().
- */
-include_once 'functions/date_functions.php';
-
-/** text functions are needed for ???
- */
-include_once 'functions/text_functions.php';
-
-/** misc functions are needed for extras field in database table.
- */
-include_once 'functions/misc_functions.php';
-
 /**
  * implements a database manager for items in table "room" with type "userroom".
  *
@@ -314,7 +296,6 @@ class cs_userroom_manager extends cs_room2_manager
         $result = $this->_db_connector->performQuery($query);
 
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"', E_USER_WARNING);
         } else {
             return $result;
@@ -331,7 +312,6 @@ class cs_userroom_manager extends cs_room2_manager
             $query .= ' ORDER BY '.$sortBy;
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting list of '.$this->_room_type.' items from query: "'.$query.'"', E_USER_WARNING);
             } else {
                 $list = new cs_list();
@@ -377,7 +357,6 @@ class cs_userroom_manager extends cs_room2_manager
             'type="'.encode(AS_DB, $this->_room_type).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating '.$this->_db_table.' item from query: "'.$query.'"', E_USER_WARNING);
             $this->_create_id = null;
         } else {

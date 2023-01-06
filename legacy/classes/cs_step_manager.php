@@ -11,20 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_step_list.php';
-
-/** upper class of the stepq manager.
- */
-include_once 'classes/cs_manager.php';
-
-/** cs_step_item is needed to create step items.
- */
-include_once 'classes/cs_step_item.php';
-
-include_once 'functions/text_functions.php';
-
 /** class for database connection to the database table "step"
  * this class implements a database manager for the table "step".
  *
@@ -212,7 +198,6 @@ class cs_step_manager extends cs_manager
         } else {
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting step from query: "'.$query.'"', E_USER_WARNING);
             } else {
                 // sql caching
@@ -244,7 +229,6 @@ class cs_step_manager extends cs_manager
              $query = 'SELECT * FROM '.$this->addDatabasePrefix('step').' WHERE '.$this->addDatabasePrefix('step').".item_id = '".encode(AS_DB, $item_id)."'";
              $result = $this->_db_connector->performQuery($query);
              if (!isset($result) or empty($result[0])) {
-                 include_once 'functions/error_functions.php';
                  trigger_error('Problems selecting one step item from query: "'.$query.'"', E_USER_WARNING);
              } else {
                  $step = $this->_buildItem($result[0]);
@@ -272,7 +256,6 @@ class cs_step_manager extends cs_manager
             $query .= ' ORDER BY '.$this->addDatabasePrefix('step').'.item_id';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting list of step items from query: "'.$query.'"', E_USER_WARNING);
             } else {
                 $step_list = new cs_step_list();
@@ -304,7 +287,6 @@ class cs_step_manager extends cs_manager
             $query .= ' AND '.$this->addDatabasePrefix('step').'.deletion_date IS NULL';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting list of step items from query: "'.$query.'"', E_USER_WARNING);
             } else {
                 $step_list = new cs_step_list();
@@ -353,7 +335,6 @@ class cs_step_manager extends cs_manager
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updating step from query: "'.$query.'"', E_USER_WARNING);
         }
         $this->_save_step_without_date = false; // restore default
@@ -375,7 +356,6 @@ class cs_step_manager extends cs_manager
                'draft="'.encode(AS_DB, $item->isDraft()).'"';
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
-          include_once 'functions/error_functions.php';
           trigger_error('Problems creating step from query: "'.$query.'"', E_USER_WARNING);
           $this->_create_id = null;
       } else {
@@ -428,7 +408,6 @@ class cs_step_manager extends cs_manager
          try {
              $queryBuilder->executeStatement();
          } catch (\Doctrine\DBAL\Exception $e) {
-             include_once 'functions/error_functions.php';
              trigger_error($e->getMessage(), E_USER_WARNING);
          }
      }
@@ -449,7 +428,6 @@ class cs_step_manager extends cs_manager
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting step from query: "'.$query.'"', E_USER_WARNING);
         } else {
             parent::delete($item_id);
@@ -535,7 +513,6 @@ class cs_step_manager extends cs_manager
                      $updateQuery .= ' WHERE item_id = "'.encode(AS_DB, $rs['item_id']).'"';
                      $result2 = $this->_db_connector->performQuery($updateQuery);
                      if (!$result2) {
-                         include_once 'functions/error_functions.php';
                          trigger_error('Problems automatic deleting steps from query: "'.$updateQuery.'"', E_USER_WARNING);
                      }
                  }
