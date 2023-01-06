@@ -19,6 +19,7 @@ use cs_community_item;
 use cs_environment;
 use cs_room_item;
 use cs_user_item;
+use Symfony\Component\HttpFoundation\Request;
 
 class RoomService
 {
@@ -233,15 +234,18 @@ class RoomService
         return $roomIds;
     }
 
-    public function getFilterableRubrics($roomId)
+    public function getFilterableRubrics(int $roomId, Request $request): array
     {
         // get active rubrics
-        $activeRubrics = $this->getRubricInformation($roomId);
+        $rubrics = $this->getRubricInformation($roomId);
+
+        // do not add the group filter on app_group_list
+        if ($request->attributes->get('_route') === 'app_group_list') {
+            $rubrics = array_filter($rubrics, fn ($rubric) => $rubric !== 'group');
+        }
 
         // filter rubrics, only group, topic and institution type is filterable
-        $filterableRubrics = array_filter($activeRubrics, fn ($rubric) => in_array($rubric, ['group', 'topic', 'institution']));
-
-        return $filterableRubrics;
+        return array_filter($rubrics, fn ($rubric) => in_array($rubric, ['group', 'topic', 'institution']));
     }
 
     public function getRoomTitle($roomId)

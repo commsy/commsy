@@ -379,6 +379,12 @@ class cs_labels_manager extends cs_manager
           }
       }
 
+      // This would be much better to have in cs_group_manager, but requires a lot of legacy code duplication
+      if ($this instanceof cs_group_manager && isset($this->_user_limit)) {
+          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l51 ON ( l51.deletion_date IS NULL AND ((l51.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l51.second_item_type="user"))) ';
+          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l52 ON ( l52.deletion_date IS NULL AND ((l52.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l52.first_item_type="user"))) ';
+      }
+
       if (isset($this->_topic_limit)) {
           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
@@ -454,6 +460,12 @@ class cs_labels_manager extends cs_manager
       }
       if (isset($this->_existence_limit)) {
           $query .= ' AND '.$this->addDatabasePrefix('labels').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_existence_limit).' day)';
+      }
+
+      // This would be much better to have in cs_group_manager, but requires a lot of legacy code duplication
+      if ($this instanceof cs_group_manager && isset($this->_user_limit)) {
+          $query .= ' AND ((l51.first_item_id = "'.encode(AS_DB, $this->_user_limit).'" OR l51.second_item_id = "'.encode(AS_DB, $this->_user_limit).'")';
+          $query .= ' OR (l52.first_item_id = "'.encode(AS_DB, $this->_user_limit).'" OR l52.second_item_id = "'.encode(AS_DB, $this->_user_limit).'"))';
       }
 
       if (isset($this->_topic_limit)) {
