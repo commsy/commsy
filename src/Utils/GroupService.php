@@ -99,17 +99,6 @@ class GroupService
     {
         $formData = $filterForm->getData();
 
-        // activated
-        if ($formData['hide-deactivated-entries']) {
-            if ('only_activated' === $formData['hide-deactivated-entries']) {
-                $this->groupManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
-            } elseif ('only_deactivated' === $formData['hide-deactivated-entries']) {
-                $this->groupManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
-            } elseif ('all' === $formData['hide-deactivated-entries']) {
-                $this->groupManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
-            }
-        }
-
         // membership
         if ($formData['membership']) {
             $this->groupManager->setUserLimit($this->legacyEnvironment->getCurrentUser()->getItemID());

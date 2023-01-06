@@ -14,7 +14,6 @@
 namespace App\Form\Type;
 
 use App\Form\Type\Custom\CategoryMappingType;
-use App\Form\Type\Custom\DateTimeSelectType;
 use App\Form\Type\Custom\HashtagMappingType;
 use cs_context_item;
 use Symfony\Component\Form\AbstractType;
@@ -33,7 +32,17 @@ class GroupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, ['constraints' => [new NotBlank()], 'label' => 'title', 'attr' => ['placeholder' => $options['placeholderText'], 'class' => 'uk-form-width-medium cs-form-title'], 'translation_domain' => 'material'])
+            ->add('title', TextType::class, [
+                'constraints' => [
+                    new NotBlank(),
+                ],
+                'label' => 'title',
+                'attr' => [
+                    'placeholder' => $options['placeholderText'],
+                    'class' => 'uk-form-width-medium cs-form-title',
+                ],
+                'translation_domain' => 'material',
+            ])
             ->add('master_template', ChoiceType::class, [
                 'choices' => $options['templates'],
                 'placeholder' => 'Choose a template',
@@ -42,8 +51,6 @@ class GroupType extends AbstractType
                 'label' => 'template for group workspace',
                 'translation_domain' => 'group',
             ])
-            ->add('hidden', CheckboxType::class, ['label' => 'hidden', 'required' => false])
-            ->add('hiddendate', DateTimeSelectType::class, ['label' => 'hidden until'])
             ->add('permission', CheckboxType::class, ['label' => 'permission', 'required' => false])
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $group = $event->getData();

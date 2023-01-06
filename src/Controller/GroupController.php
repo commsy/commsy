@@ -634,8 +634,6 @@ class GroupController extends BaseController
         $item = $this->itemService->getItem($itemId);
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $groupItem = null;
-
         $isDraft = $item->isDraft();
 
         // get date from DateService
@@ -647,15 +645,24 @@ class GroupController extends BaseController
         $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
         $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
         $formData['draft'] = $isDraft;
-        $form = $this->createForm(GroupType::class, $formData, ['action' => $this->generateUrl('app_group_edit', ['roomId' => $roomId, 'itemId' => $itemId]), 'placeholderText' => '['.$this->translator->trans('insert title').']', 'categoryMappingOptions' => [
-            'categories' => $labelService->getCategories($roomId),
-            'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
-            'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId]),
-        ], 'hashtagMappingOptions' => [
-            'hashtags' => $labelService->getHashtags($roomId),
-            'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
-            'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-        ], 'room' => $current_context, 'templates' => $this->getAvailableTemplates()]);
+        $form = $this->createForm(GroupType::class, $formData, [
+            'action' => $this->generateUrl('app_group_edit', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]),
+            'placeholderText' => '['.$this->translator->trans('insert title').']',
+            'categoryMappingOptions' => [
+                'categories' => $labelService->getCategories($roomId),
+                'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
+                'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId]),
+            ], 'hashtagMappingOptions' => [
+                'hashtags' => $labelService->getHashtags($roomId),
+                'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
+                'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
+            ],
+            'room' => $current_context,
+            'templates' => $this->getAvailableTemplates(),
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -710,7 +717,12 @@ class GroupController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($groupItem), CommsyEditEvent::EDIT);
 
-        return $this->render('group/edit.html.twig', ['form' => $form->createView(), 'group' => $groupItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('group/edit.html.twig', [
+            'form' => $form->createView(),
+            'group' => $groupItem,
+            'isDraft' => $isDraft,
+            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/group/{itemId}/save')]
