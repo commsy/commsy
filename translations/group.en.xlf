@@ -82,6 +82,10 @@
                <source>template for group workspace</source>
                <target>Template for group workspace</target>
             </trans-unit>
+            <trans-unit id="group.hide_without_membership">
+                <source>group.hide_without_membership</source>
+                <target>Hide groups without membership</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -44,7 +44,7 @@ class RubricFilterType extends AbstractType
             if ($attributes->has('roomId')) {
                 $roomId = $attributes->getInt('roomId');
 
-                $filterableRubrics = $this->roomService->getFilterableRubrics($roomId);
+                $filterableRubrics = $this->roomService->getFilterableRubrics($roomId, $currentRequest);
 
                 // group
                 if (in_array('group', $filterableRubrics)) {

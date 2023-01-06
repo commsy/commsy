@@ -48,8 +48,7 @@ class InstitutionFilterType extends AbstractType
                 ],
                 'translation_domain' => 'form',
                 'placeholder' => false,
-            ])
-            ->add('field0', HiddenType::class, []);
+            ]);
 
         if ($options['hasCategories']) {
             $builder->add('category', CategoryFilterType::class, [

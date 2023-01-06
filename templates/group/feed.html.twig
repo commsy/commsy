@@ -1,7 +1,6 @@
 {% import 'utils/macros.html.twig' as macros %}
 
 {% for group in groups %}
-
         <div class="uk-width-medium-1-2">
 
             {% set entryAllowedActions = '' %}
@@ -9,10 +8,10 @@
                 {% set entryAllowedActions = allowedActions[group.itemId] %}
             {% endif %}
             <article class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
- 
+
                 <div class="uk-panel-teaser cs-panel-teaser-user">
                     {{ macros.statusColor(readerList, group.itemId, 'grid') }}
- 
+
                     <div class="items-checkbox uk-float-left uk-margin-right uk-hidden">
                         <form class="uk-form">
                             <input type="checkbox" value="{{ group.itemId }}">
@@ -46,20 +45,15 @@
                 </div>
                 <div class="uk-flex-space-between uk-margin-small-top">
                     <div>
-                        {{'members'|trans({}) }}: {{group.getCountMemberItemList}}                   
+                        {{'members'|trans({}) }}: {{group.getCountMemberItemList}}
                     </div>
                     <div>
-                        {{'links'|trans({}) }}: {{group.getCountAllLinkItemList(false)}}              
+                        {{'links'|trans({}) }}: {{group.getCountAllLinkItemList(false)}}
                     </div>
                 </div>
             </article>
         </div>
-
-
-
-
-    
 {% else %}
-    {{ 'No more results found'|trans}}
+    <div>{{ 'No more results found'|trans}}</div>
 {% endfor %}
 

@@ -14,6 +14,7 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use cs_group_item;
 use cs_group_manager;
 use cs_manager;
@@ -23,9 +24,13 @@ class GroupService
 {
     private cs_group_manager $groupManager;
 
+    private cs_environment $legacyEnvironment;
+
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
-        $this->groupManager = $legacyEnvironment->getEnvironment()->getGroupManager();
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+
+        $this->groupManager = $this->legacyEnvironment->getGroupManager();
         $this->groupManager->reset();
     }
 
@@ -102,6 +107,40 @@ class GroupService
                 $this->groupManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
             } elseif ('all' === $formData['hide-deactivated-entries']) {
                 $this->groupManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+            }
+        }
+
+        // membership
+        if ($formData['membership']) {
+            $this->groupManager->setUserLimit($this->legacyEnvironment->getCurrentUser()->getItemID());
+        }
+
+        // rubrics
+        if (isset($formData['rubrics'])) {
+            // topic
+            if (isset($formData['rubrics']['topic'])) {
+                $relatedLabel = $formData['rubrics']['topic'];
+                $this->groupManager->setTopicLimit($relatedLabel->getItemId());
+            }
+        }
+
+        // hashtag
+        if (isset($formData['hashtag'])) {
+            if (isset($formData['hashtag']['hashtag'])) {
+                $hashtag = $formData['hashtag']['hashtag'];
+                $itemId = $hashtag->getItemId();
+                $this->groupManager->setBuzzwordLimit($itemId);
+            }
+        }
+
+        // category
+        if (isset($formData['category'])) {
+            if (isset($formData['category']['category'])) {
+                $categories = $formData['category']['category'];
+
+                if (!empty($categories)) {
+                    $this->groupManager->setTagArrayLimit($categories);
+                }
             }
         }
     }

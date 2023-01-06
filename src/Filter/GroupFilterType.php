@@ -49,7 +49,16 @@ class GroupFilterType extends AbstractType
                 'translation_domain' => 'form',
                 'placeholder' => false,
             ])
-            ->add('field0', HiddenType::class, []);
+            ->add('membership', Filters\CheckboxFilterType::class, [
+                'label' => 'group.hide_without_membership',
+                'translation_domain' => 'group',
+                'label_attr' => [
+                    'class' => 'uk-form-label',
+                ],
+            ])
+            ->add('rubrics', RubricFilterType::class, [
+                'label' => false,
+            ]);
 
         if ($options['hasCategories']) {
             $builder->add('category', CategoryFilterType::class, [

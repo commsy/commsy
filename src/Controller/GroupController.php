@@ -1402,12 +1402,11 @@ class GroupController extends BaseController
     }
 
     /**
-     * @param cs_room_item $room
-     *
      * @return FormInterface
      */
-    private function createFilterForm($room)
-    {
+    private function createFilterForm(
+        cs_room_item $room
+    ) {
         // setup filter form default values
         $defaultFilterValues = [
             'hide-deactivated-entries' => 'only_activated',
@@ -1417,8 +1416,8 @@ class GroupController extends BaseController
             'action' => $this->generateUrl('app_group_list', [
                 'roomId' => $room->getItemID(),
             ]),
-            'hasHashtags' => false,
-            'hasCategories' => false,
+            'hasHashtags' => $room->withBuzzwords(),
+            'hasCategories' => $room->withTags(),
         ]);
     }
 
@@ -1427,7 +1426,7 @@ class GroupController extends BaseController
      * @param bool          $selectAll
      * @param int[]         $itemIds
      *
-     * @return cs_user_item[]
+     * @return cs_group_item[]
      */
     public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
     {
