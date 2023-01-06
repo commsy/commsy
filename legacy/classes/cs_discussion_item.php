@@ -16,8 +16,6 @@
 
 use App\Entity\Discussions;
 
-include_once 'classes/cs_item.php';
-
 /** class for a discussion
  * this class implements a discussion item.
  */

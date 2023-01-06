@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the log manager.
- */
-include_once 'classes/cs_manager.php';
-
 /** class for database connection to the database table "reader"
  * this class implements a database manager for the table "reader". Read items.
  */
@@ -130,7 +126,6 @@ class cs_log_manager extends cs_manager
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems at logs from query:<br />"'.$query.'"', E_USER_WARNING);
         } else {
             return $result;
@@ -148,7 +143,6 @@ class cs_log_manager extends cs_manager
         } elseif ('count_user_distinction' == $mode) {
             $query = 'SELECT COUNT(DISTINCT uid) AS count FROM '.$this->addDatabasePrefix('log');
         } else {
-            include_once 'functions/error_functions.php';
             trigger_error('lost perform mode', E_USER_ERROR);
         }
 
@@ -188,7 +182,6 @@ class cs_log_manager extends cs_manager
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems log from query: "'.$query.'"', E_USER_WARNING);
         } else {
             return $result;
@@ -208,7 +201,6 @@ class cs_log_manager extends cs_manager
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems log from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $return_array = [];
@@ -226,7 +218,6 @@ class cs_log_manager extends cs_manager
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems log from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $return_array = [];
@@ -238,7 +229,6 @@ class cs_log_manager extends cs_manager
 
                 $result2 = $this->_db_connector->performQuery($query2);
                 if (!isset($result2)) {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problems log from query: "'.$query2.'"', E_USER_WARNING);
                 } else {
                 }
@@ -293,7 +283,6 @@ class cs_log_manager extends cs_manager
         if (isset($result)) {
             $retour = true;
         } else {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems save log with query: "'.$query.'"', E_USER_WARNING);
         }
 

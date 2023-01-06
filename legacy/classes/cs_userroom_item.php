@@ -13,8 +13,6 @@
 
 use App\Entity\Room;
 
-include_once 'classes/cs_room_item.php';
-
 /**
  * implements a user room item.
  *

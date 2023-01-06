@@ -11,15 +11,6 @@
  * file that was distributed with this source code.
  */
 
-include_once 'functions/text_functions.php';
-
-/** date functions are needed for method _newVersion().
- */
-// TBD ARE THESE NEEDED??
-include_once 'functions/date_functions.php';
-
-include_once 'functions/text_functions.php';
-
 /** class for database connection to the database table "announcement"
  * this class implements a database manager for the table "announcement".
  */
@@ -342,7 +333,6 @@ class cs_announcement_manager extends cs_manager
          }
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems selecting announcement.', E_USER_WARNING);
          } else {
              return $result;
@@ -369,7 +359,6 @@ class cs_announcement_manager extends cs_manager
                  $query = 'SELECT * FROM '.$this->addDatabasePrefix('announcement').' WHERE '.$this->addDatabasePrefix('announcement').".item_id = '".encode(AS_DB, $item_id)."'";
                  $result = $this->_db_connector->performQuery($query);
                  if (!isset($result)) {
-                     include_once 'functions/error_functions.php';
                      trigger_error('Problems selecting one announcement item.', E_USER_WARNING);
                  } elseif (!empty($result[0])) {
                      if ($this->_cache_on) {
@@ -378,7 +367,6 @@ class cs_announcement_manager extends cs_manager
                      $announcement = $this->_buildItem($result[0]);
                      unset($result);
                  } else {
-                     include_once 'functions/error_functions.php';
                      trigger_error('Problems selecting announcement item ['.$item_id.'].', E_USER_WARNING);
                  }
              }
@@ -401,8 +389,6 @@ class cs_announcement_manager extends cs_manager
       */
      public function getNewItem()
      {
-         include_once 'classes/cs_announcement_item.php';
-
          return new cs_announcement_item($this->_environment);
      }
 
@@ -442,7 +428,6 @@ class cs_announcement_manager extends cs_manager
           try {
               $queryBuilder->executeStatement();
           } catch (\Doctrine\DBAL\Exception $e) {
-              include_once 'functions/error_functions.php';
               trigger_error($e->getMessage(), E_USER_WARNING);
           }
       }
@@ -477,7 +462,6 @@ class cs_announcement_manager extends cs_manager
               $announcement_item->setItemID($this->getCreateID());
               $this->_newAnnouncement($announcement_item);
           } catch (\Doctrine\DBAL\Exception $e) {
-              include_once 'functions/error_functions.php';
               trigger_error($e->getMessage(), E_USER_WARNING);
               $this->_create_id = null;
           }
@@ -522,7 +506,6 @@ class cs_announcement_manager extends cs_manager
         try {
             $queryBuilder->executeStatement();
         } catch (\Doctrine\DBAL\Exception $e) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating announcement.', E_USER_WARNING);
         }
     }
@@ -538,7 +521,6 @@ class cs_announcement_manager extends cs_manager
                  ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting announcement.', E_USER_WARNING);
         } else {
             unset($result);
@@ -583,7 +565,6 @@ class cs_announcement_manager extends cs_manager
                       $updateQuery .= ' WHERE item_id = "'.encode(AS_DB, $rs['item_id']).'"';
                       $result2 = $this->_db_connector->performQuery($updateQuery);
                       if (!$result2) {
-                          include_once 'functions/error_functions.php';
                           trigger_error('Problems automatic deleting '.$this->_db_table.'.', E_USER_WARNING);
                       }
                   }

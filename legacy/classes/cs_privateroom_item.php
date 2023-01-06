@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the community item.
- */
-include_once 'classes/cs_room_item.php';
-
 /** class for a community
  * this class implements a community item.
  */

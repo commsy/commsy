@@ -11,8 +11,6 @@
  * file that was distributed with this source code.
  */
 
-include_once 'functions/misc_functions.php';
-
 /** class for authentication items
  * this class implements authentication items.
  */
@@ -391,7 +389,6 @@ class cs_translator
         if (!empty($this->_selected_language)) {
             $retour = $this->getMessageInLang($this->_selected_language, $MsgID, $param1, $param2, $param3, $param4, $param5);
         } else {
-            include_once 'functions/error_functions.php';
             trigger_error('no selected language is set', E_USER_WARNING);
             $retour = $MsgID;
         }
@@ -460,7 +457,6 @@ class cs_translator
         if (!empty($this->_selected_language)) {
             $retour = $this->getEmailMessageInLang($this->_selected_language, $MsgID, $param1, $param2, $param3, $param4, $param5);
         } else {
-            include_once 'functions/error_functions.php';
             trigger_error('no selected language is set', E_USER_WARNING);
             $retour = $MsgID;
         }
@@ -559,7 +555,6 @@ class cs_translator
         if (!empty($this->_selected_language)) {
             $retour = $this->getTimeMessageInLang($this->_selected_language, $MsgID);
         } else {
-            include_once 'functions/error_functions.php';
             trigger_error('no selected language is set', E_USER_WARNING);
             $retour = $MsgID;
         }
@@ -916,10 +911,8 @@ class cs_translator
                 $adjective_tranlsation = $adjective_array[mb_strtoupper($adjective)][mb_strtoupper($language)][mb_strtoupper($genus)];
                 if (!empty($adjective_tranlsation)) {
                     if ('BIG' == $upper_case) {
-                        include_once 'functions/text_functions.php';
                         $adjective_tranlsation = cs_ucfirst($adjective_tranlsation);
                     } elseif ('LOW' == $upper_case) {
-                        include_once 'functions/text_functions.php';
                         $adjective_tranlsation = cs_ucfirst($adjective_tranlsation);
                     }
                     $retour = $adjective_tranlsation.' ';
@@ -1017,7 +1010,6 @@ class cs_translator
             $text = 'rubric';
         }
         if ('BIG' == $upper_case) {
-            include_once 'functions/text_functions.php';
             $text = cs_ucfirst($text);
         }
 
@@ -1094,7 +1086,6 @@ class cs_translator
             $text = $cs_article[$language][$mode][$rubric_array[$language]['GENUS']][cs_strtoupper($position)];
         }
         if ('BIG' == $upper_case) {
-            include_once 'functions/text_functions.php';
             $text = cs_ucfirst($text);
         }
 

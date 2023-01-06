@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the tag manager.
- */
-include_once 'classes/cs_manager.php';
-
 /** class for database connection to the database table "tag"
  * this class implements a database manager for the table "tag".
  */
@@ -314,13 +310,10 @@ class cs_tag_manager extends cs_manager
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
                 if ('count' == $mode) {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problems counting '.$this->_db_table.'.', E_USER_WARNING);
                 } elseif ('id_array' == $mode) {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problems selecting '.$this->_db_table.' ids.', E_USER_WARNING);
                 } else {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problems selecting '.$this->_db_table.'.', E_USER_WARNING);
                 }
             } else {
@@ -349,7 +342,6 @@ class cs_tag_manager extends cs_manager
          $this->setContextLimit($current_context);
          $result = $this->_performQuery();
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems selecting all '.$this->_db_table.'.', E_USER_WARNING);
          } else {
              foreach ($result as $query_result) {
@@ -373,7 +365,6 @@ class cs_tag_manager extends cs_manager
             $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.encode(AS_DB, $item_id).'"';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting one '.$this->_db_table.'.', E_USER_WARNING);
             } elseif (!empty($result[0])) {
                 $item = $this->_buildItem($result[0]);
@@ -393,8 +384,6 @@ class cs_tag_manager extends cs_manager
       */
      public function getNewItem()
      {
-         include_once 'classes/cs_tag_item.php';
-
          return new cs_tag_item($this->_environment);
      }
 
@@ -452,7 +441,6 @@ class cs_tag_manager extends cs_manager
         if ($list->isNotEmpty() and 1 == $list->getCount()) {
             $retour = $list->getFirst();
         } elseif ($list->isNotEmpty() and $list->getCount() > 1) {
-            include_once 'functions/error_functions.php';
             trigger_error('ERROR: there are more than one root tag item in database table '.$this->_db_table.' for context id '.$context_id, E_USER_ERROR);
         }
 
@@ -520,7 +508,6 @@ class cs_tag_manager extends cs_manager
                  ' WHERE item_id="'.encode(AS_DB, $item->getItemID()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updating '.$this->_db_table.': "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_WARNING);
         }
     }
@@ -539,7 +526,6 @@ class cs_tag_manager extends cs_manager
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating '.$this->_db_table.'.', E_USER_ERROR);
             $this->_create_id = null;
         } else {
@@ -578,7 +564,6 @@ class cs_tag_manager extends cs_manager
                   'title="'.encode(AS_DB, $item->getTitle()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating '.$this->_db_table.'.', E_USER_WARNING);
         }
     }
@@ -627,7 +612,6 @@ class cs_tag_manager extends cs_manager
                   ' WHERE item_id="'.encode(AS_DB, $item->getItemID()).'"';
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or !$result) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems updating '.$this->_db_table.'.', E_USER_WARNING);
          }
      }
@@ -643,7 +627,6 @@ class cs_tag_manager extends cs_manager
                  ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting '.$this->_db_table.'.', E_USER_WARNING);
         } else {
             $link_manager = $this->_environment->getLinkItemManager();
@@ -706,7 +689,6 @@ class cs_tag_manager extends cs_manager
                       $updateQuery .= ' WHERE item_id = "'.encode(AS_DB, $rs['item_id']).'"';
                       $result2 = $this->_db_connector->performQuery($updateQuery);
                       if (!isset($result2) or !$result2) {
-                          include_once 'functions/error_functions.php';
                           trigger_error('Problems automatic deleting '.$this->_db_table.'.', E_USER_WARNING);
                       }
                       unset($result2);

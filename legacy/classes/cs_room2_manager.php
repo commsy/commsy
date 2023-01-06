@@ -11,14 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_list.php';
-
-/** upper class of the room manager.
- */
-include_once 'classes/cs_context_manager.php';
-
 /** class for database connection to the database table "community"
  * this class implements a database manager for the table "community".
  */
@@ -77,7 +69,6 @@ class cs_room2_manager extends cs_context_manager
 
    public function setActiveLimit()
    {
-       include_once 'functions/date_functions.php';
        $this->setLastLoginNewerLimit(getCurrentDateTimeMinusDaysInMySQL(100));
    }
 
@@ -88,7 +79,6 @@ class cs_room2_manager extends cs_context_manager
             ' WHERE item_id="'.encode(AS_DB, $item->getItemID()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems saving lastlogin to room ('.$item->getItemID().') - '.$this->_db_table.'.',
                 E_USER_WARNING);
         } else {
@@ -173,7 +163,6 @@ class cs_room2_manager extends cs_context_manager
 
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result) or !$result) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems updating '.$this->_db_table.' item from query: "'.$query.'"', E_USER_WARNING);
        }
    }
@@ -229,7 +218,6 @@ class cs_room2_manager extends cs_context_manager
 
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result)) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems creating new '.$this->_room_type.' item from query: "'.$query.'"', E_USER_ERROR);
        }
    }

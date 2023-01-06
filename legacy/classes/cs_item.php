@@ -17,9 +17,6 @@ use App\Repository\MaterialsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 
-include_once 'functions/misc_functions.php';
-include_once 'functions/text_functions.php';
-
 class cs_item
 {
     protected cs_environment $_environment;
@@ -1560,10 +1557,8 @@ class cs_item
 
             return $this->mayEdit($user_in_room);
         } elseif ($user_list->getCount() > 1) {
-            include_once 'functions/error_functions.php';
             trigger_error('ambiguous user data in database table "user" for user-id "'.$user_id.'"', E_USER_WARNING);
         } else {
-            include_once 'functions/error_functions.php';
             trigger_error('can not find user data in database table "user" for user-id "'.$user_id.'", auth_source "'.$auth_source.'", context_id "'.$this->getContextID().'"', E_USER_WARNING);
         }
     }

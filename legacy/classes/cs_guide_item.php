@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the context item.
- */
-include_once 'classes/cs_context_item.php';
-
 /** class for a context
  * this class implements a context item.
  */

@@ -11,22 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_list.php';
-
-/** upper class of the material manager.
- */
-include_once 'classes/cs_manager.php';
-
-/** date functions are needed for method _newVersion().
- */
-include_once 'functions/date_functions.php';
-
-/** text functions are needed for ???
- */
-include_once 'functions/text_functions.php';
-
 /** class for database connection to the database table "material"
  * this class implements a database manager for the table "material".
  */
@@ -319,7 +303,6 @@ class cs_material_manager extends cs_manager
             $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.version_id DESC';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting one material item from query: "'.$query.'"', E_USER_WARNING);
             } elseif (!empty($result[0])) {
                 $material = $this->_buildItem($result[0]);
@@ -349,7 +332,6 @@ class cs_material_manager extends cs_manager
             $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.item_id, '.$this->addDatabasePrefix('materials').'.version_id DESC';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting list of '.$this->_type.' items from query: "'.$query.'"', E_USER_WARNING);
             } else {
                 $list = new cs_list();
@@ -377,7 +359,6 @@ class cs_material_manager extends cs_manager
         $query .= ' AND '.$this->addDatabasePrefix('materials').".version_id = '".encode(AS_DB, $version_id)."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or empty($result[0])) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting one materials item from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $material = $this->_buildItem($result[0]);
@@ -404,7 +385,6 @@ class cs_material_manager extends cs_manager
         $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.version_id DESC';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting versions of a material from query: "'.$query.'"', E_USER_WARNING);
         } else {
             foreach ($result as $query_result) {
@@ -432,7 +412,6 @@ class cs_material_manager extends cs_manager
     public function _performQuery2($mode = 'select')
     {
         $this->_data = new cs_list();
-        include_once 'functions/date_functions.php';
         $current_time = getCurrentDateTimeInMySQL();
         $randum_number = random_int(0, 999999);
         $uid = 'cron_job';
@@ -722,10 +701,8 @@ class cs_material_manager extends cs_manager
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
                 if ('count' == $mode) {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problems counting material from query: "'.$query.'"', E_USER_WARNING);
                 } else {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problems selecting material from query: "'.$query.'"', E_USER_WARNING);
                 }
             }
@@ -748,7 +725,6 @@ class cs_material_manager extends cs_manager
         $query = 'SELECT MAX('.$this->addDatabasePrefix('materials').'.version_id) AS version_id FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').".item_id = '".encode(AS_DB, $item_id)."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or empty($result[0])) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting one material item from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $rs = $result[0];
@@ -766,7 +742,6 @@ class cs_material_manager extends cs_manager
      */
     public function _buildItem($db_array)
     {
-        include_once 'functions/text_functions.php';
         $db_array['extras'] = mb_unserialize($db_array['extras']);
 
         return parent::_buildItem($db_array);
@@ -779,8 +754,6 @@ class cs_material_manager extends cs_manager
      */
     public function getNewItem()
     {
-        include_once 'classes/cs_material_item.php';
-
         return new cs_material_item($this->_environment);
     }
 
@@ -796,7 +769,6 @@ class cs_material_manager extends cs_manager
          $modificator = $material_item->getModificatorItem();
 
          if (!isset($modificator)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems creating new material: Modificator is not set', E_USER_ERROR);
          } else {
              $public = $material_item->isPublic() ? '1' : '0';
@@ -864,7 +836,6 @@ class cs_material_manager extends cs_manager
              try {
                  $queryBuilder->executeStatement();
              } catch (\Doctrine\DBAL\Exception $e) {
-                 include_once 'functions/error_functions.php';
                  trigger_error($e->getMessage(), E_USER_WARNING);
              }
          }
@@ -899,7 +870,6 @@ class cs_material_manager extends cs_manager
              $material_item->setItemID($this->getCreateID());
              $this->_newmaterial($material_item);
          } catch (\Doctrine\DBAL\Exception $e) {
-             include_once 'functions/error_functions.php';
              trigger_error($e->getMessage(), E_USER_WARNING);
              $this->_create_id = null;
          }
@@ -919,13 +889,10 @@ class cs_material_manager extends cs_manager
          $modificator = $material_item->getModificatorItem();
          $context_id = $material_item->getContextID();
          if (!isset($user)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems creating new material: Creator is not set', E_USER_ERROR);
          } elseif (!isset($modificator)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems creating new material: Modificator is not set', E_USER_ERROR);
          } elseif (!isset($context_id)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems creating new material: ContextID is not set', E_USER_ERROR);
          } else {
              $current_datetime = getCurrentDateTimeInMySQL();
@@ -999,7 +966,6 @@ class cs_material_manager extends cs_manager
              try {
                  $queryBuilder->executeStatement();
              } catch (\Doctrine\DBAL\Exception $e) {
-                 include_once 'functions/error_functions.php';
                  trigger_error($e->getMessage(), E_USER_WARNING);
              }
          }
@@ -1042,7 +1008,6 @@ class cs_material_manager extends cs_manager
   {
       $context_id = $material_item->getContextID();
       if (isset($context_id) and ($context_id != $this->_environment->getCurrentContextID())) {
-          include_once 'functions/error_functions.php';
           trigger_error('Context ID is not equal: ', E_USER_WARNING);
       }
       $this->_newmaterial($material_item);
@@ -1058,7 +1023,6 @@ class cs_material_manager extends cs_manager
       $current_user = $this->_environment->getCurrentUserItem();
       $user_id = $current_user->getItemID() ?: 0;
       if (!isset($current_user)) {
-          include_once 'functions/error_functions.php';
           trigger_error('Problems deleting material: Deleter is not set', E_USER_ERROR);
       } else {
           $query = 'UPDATE '.$this->addDatabasePrefix('materials').' SET '.
@@ -1070,7 +1034,6 @@ class cs_material_manager extends cs_manager
           }
           $result = $this->_db_connector->performQuery($query);
           if (!isset($result) or !$result) {
-              include_once 'functions/error_functions.php';
               trigger_error('Problems deleting material: "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_WARNING);
           } else {
               if (is_null($version_id)) {
@@ -1090,7 +1053,6 @@ class cs_material_manager extends cs_manager
     public function _isAvailable()
     {
         // check if materials are available in the context
-        include_once 'functions/error_functions.php';
         trigger_error('n i y', E_USER_ERROR);
         if ($this->_environment->inProjectRoom()) {
             if (!empty($this->_room_limit)) {
@@ -1113,7 +1075,6 @@ class cs_material_manager extends cs_manager
         $query = 'UPDATE '.$this->addDatabasePrefix('material_link_file').' SET deleter_id = "'.encode(AS_DB, $new_id).'" WHERE deleter_id = "'.encode(AS_DB, $old_id).'";';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating material_link_file from query: "'.$query.'"', E_USER_WARNING);
         }
     }
@@ -1156,7 +1117,6 @@ class cs_material_manager extends cs_manager
                      $updateQuery .= ' WHERE item_id = "'.encode(AS_DB, $rs['item_id']).'"';
                      $result2 = $this->_db_connector->performQuery($updateQuery);
                      if (!$result2) {
-                         include_once 'functions/error_functions.php';
                          trigger_error('Problems automatic deleting materials from query: "'.$updateQuery.'"', E_USER_WARNING);
                      }
                  }

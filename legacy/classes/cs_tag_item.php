@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the label item.
- */
-include_once 'classes/cs_item.php';
-
 /** class for a tag
  * this class implements a commsy tag.
  */
@@ -67,7 +63,6 @@ class cs_tag_item extends cs_item
 
             return $item_array;
         } else {
-            include_once 'functions/error_functions.php';
             trigger_error('cs_tag_item: getItemData(): Invalid Data');
         }
     }
@@ -199,7 +194,6 @@ class cs_tag_item extends cs_item
                 $tag_manager->select();
                 $this->_children_list = $tag_manager->get();
             } else {
-                include_once 'classes/cs_list.php';
                 $this->_children_list = new cs_list();
             }
         }

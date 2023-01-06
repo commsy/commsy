@@ -11,12 +11,6 @@
  * file that was distributed with this source code.
  */
 
-//
-// Release $Name$
-//
-
-include_once 'functions/text_functions.php';
-
 class cs_portfolio_manager extends cs_manager
 {
     public $_user_limit = null;
@@ -102,7 +96,6 @@ class cs_portfolio_manager extends cs_manager
          }
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems selecting portfolio.', E_USER_WARNING);
          } else {
              return $result;
@@ -121,7 +114,6 @@ class cs_portfolio_manager extends cs_manager
                  $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).".item_id = '".encode(AS_DB, $item_id)."'";
                  $result = $this->_db_connector->performQuery($query);
                  if (!isset($result)) {
-                     include_once 'functions/error_functions.php';
                      trigger_error('Problems selecting one portfolio item.', E_USER_WARNING);
                  } elseif (!empty($result[0])) {
                      if ($this->_cache_on) {
@@ -130,7 +122,6 @@ class cs_portfolio_manager extends cs_manager
                      $portfolio_item = $this->_buildItem($result[0]);
                      unset($result);
                  } else {
-                     include_once 'functions/error_functions.php';
                      trigger_error('Problems selecting announcement item ['.$item_id.'].', E_USER_WARNING);
                  }
              }
@@ -146,8 +137,6 @@ class cs_portfolio_manager extends cs_manager
 
       public function getNewItem()
       {
-          include_once 'classes/cs_portfolio_item.php';
-
           return new cs_portfolio_item($this->_environment);
       }
 
@@ -171,7 +160,6 @@ class cs_portfolio_manager extends cs_manager
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updating portfolio.', E_USER_WARNING);
         } else {
             unset($result);
@@ -193,7 +181,6 @@ class cs_portfolio_manager extends cs_manager
   	";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updating portfolio.', E_USER_WARNING);
         }
 
@@ -214,7 +201,6 @@ class cs_portfolio_manager extends cs_manager
 	  		";
                     $result = $this->_db_connector->performQuery($query);
                     if (!isset($result)) {
-                        include_once 'functions/error_functions.php';
                         trigger_error('Problems updating portfolio.', E_USER_WARNING);
                     }
                 }
@@ -232,7 +218,6 @@ class cs_portfolio_manager extends cs_manager
   	";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updating portfolio.', E_USER_WARNING);
         }
 
@@ -253,7 +238,6 @@ class cs_portfolio_manager extends cs_manager
 	  		";
                     $result = $this->_db_connector->performQuery($query);
                     if (!isset($result)) {
-                        include_once 'functions/error_functions.php';
                         trigger_error('Problems updating portfolio.', E_USER_WARNING);
                     }
                 }
@@ -273,7 +257,6 @@ class cs_portfolio_manager extends cs_manager
                  'draft="'.encode(AS_DB, 1).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating portfolio.', E_USER_WARNING);
             $this->_create_id = null;
         } else {
@@ -309,7 +292,6 @@ class cs_portfolio_manager extends cs_manager
                  'description="'.encode(AS_DB, $portfolio_item->getDescription()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating portfolio.', E_USER_WARNING);
         } else {
             $this->_updateExternalViewer($portfolio_item);
@@ -327,7 +309,6 @@ class cs_portfolio_manager extends cs_manager
                  ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting portfolio.', E_USER_WARNING);
         } else {
             parent::delete($item_id);
@@ -358,7 +339,6 @@ class cs_portfolio_manager extends cs_manager
         $result = $this->_db_connector->performQuery($query);
 
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems getting portfolio ids.', E_USER_WARNING);
         }
 
@@ -393,7 +373,6 @@ public function getPortfolioTags($portfolioId)
     $result = $this->_db_connector->performQuery($query);
 
     if (!isset($result)) {
-        include_once 'functions/error_functions.php';
         trigger_error('Problems getting portfolio tags.', E_USER_WARNING);
     }
 
@@ -417,7 +396,6 @@ public function getPortfolioTags($portfolioId)
         $result = $this->_db_connector->performQuery($query);
 
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems getting portfolio tags.', E_USER_WARNING);
         }
 
@@ -458,7 +436,6 @@ public function getPortfolioTags($portfolioId)
   	";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems storing tag for portfolio.', E_USER_WARNING);
         }
     }
@@ -477,7 +454,6 @@ public function getPortfolioTags($portfolioId)
   	";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems replacing tag for portfolio.', E_USER_WARNING);
         }
     }
@@ -493,7 +469,6 @@ public function getPortfolioTags($portfolioId)
   	";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting tag for portfolio.', E_USER_WARNING);
         }
     }
@@ -508,7 +483,6 @@ public function deletePortfolioTags($portfolioId)
   	";
     $result = $this->_db_connector->performQuery($query);
     if (!isset($result)) {
-        include_once 'functions/error_functions.php';
         trigger_error('Problems deleting tags for portfolio.', E_USER_WARNING);
     }
 }
@@ -523,7 +497,6 @@ public function deletePortfolioTags($portfolioId)
   	";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting annotations for portfolio.', E_USER_WARNING);
         }
     }
@@ -538,7 +511,6 @@ public function deletePortfolioTags($portfolioId)
   	";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting users for portfolio.', E_USER_WARNING);
         }
     }
@@ -553,7 +525,6 @@ public function deletePortfolioTags($portfolioId)
   	";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting users for portfolio.', E_USER_WARNING);
         }
     }
@@ -572,7 +543,6 @@ public function deletePortfolioTags($portfolioId)
   	";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updating tag position for portfolio.', E_USER_WARNING);
         }
     }
@@ -589,7 +559,6 @@ public function deletePortfolioTags($portfolioId)
   	";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems getting user ids.', E_USER_WARNING);
         }
 
@@ -613,7 +582,6 @@ public function deletePortfolioTags($portfolioId)
   	";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems getting user ids.', E_USER_WARNING);
         }
 
@@ -637,7 +605,6 @@ public function deletePortfolioTags($portfolioId)
 
           $result = $this->_db_connector->performQuery($query);
           if (!isset($result)) {
-              include_once 'functions/error_functions.php';
               trigger_error('Problems getting user ids.', E_USER_WARNING);
           }
       }
@@ -659,7 +626,6 @@ public function deletePortfolioTags($portfolioId)
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems getting user ids.', E_USER_WARNING);
         }
 
@@ -688,7 +654,6 @@ public function deletePortfolioTags($portfolioId)
         $result = $this->_db_connector->performQuery($query);
 
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems getting portfolio annotation count.', E_USER_WARNING);
         }
 
@@ -713,7 +678,6 @@ public function deletePortfolioTags($portfolioId)
         $result = $this->_db_connector->performQuery($query);
 
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems getting portfolio annotation ids.', E_USER_WARNING);
         }
 
@@ -735,7 +699,6 @@ public function deletePortfolioTags($portfolioId)
         $result = $this->_db_connector->performQuery($query);
 
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems getting portfolio annotation ids.', E_USER_WARNING);
         }
 
@@ -767,7 +730,6 @@ public function deletePortfolioTags($portfolioId)
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems storing annotation - portfolio reference.', E_USER_WARNING);
         }
     }
@@ -784,7 +746,6 @@ public function deletePortfolioTags($portfolioId)
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting annotation for portfolio reference.', E_USER_WARNING);
         }
     }
@@ -802,7 +763,6 @@ public function deletePortfolioTags($portfolioId)
   	";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems getting user ids.', E_USER_WARNING);
         }
 
@@ -826,7 +786,6 @@ public function deletePortfolioTags($portfolioId)
   	";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems getting user ids.', E_USER_WARNING);
         }
 
@@ -852,7 +811,6 @@ public function deletePortfolioTags($portfolioId)
   	';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems getting user ids.', E_USER_WARNING);
         }
 

@@ -131,7 +131,6 @@ class cs_disc_manager
     public function copyFileFromRoomToRoom($old_room_id, $old_file_id, $filename, $new_room_id, $new_file_id): bool
     {
         if (empty($old_room_id)) {
-            include_once 'functions/error_functions.php';
             trigger_error('old_room_id is not set', E_USER_ERROR);
         }
         $this->makeFolder($this->firstId, $new_room_id);
@@ -193,7 +192,6 @@ class cs_disc_manager
         if (!empty($first_id) and !empty($second_id)) {
             $this->makeDirectory($this->getFilePath($first_id, $second_id));
         } else {
-            include_once 'functions/error_functions.php';
             trigger_error('first and second folder can not be empty - abort executing', E_USER_ERROR);
         }
     }
@@ -276,7 +274,6 @@ class cs_disc_manager
             }
             $retour .= '_';
         } else {
-            include_once 'functions/date_functions.php';
             $retour = md5(getCurrentDateTimeInMySQL());
         }
 

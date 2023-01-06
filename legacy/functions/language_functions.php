@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** gets the array which contains the messages.
- */
-include_once 'functions/text_functions.php';
-
 /** get a text of a message in a particular language
  * this method returns the translated MessageID.
  *

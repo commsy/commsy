@@ -11,11 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the label item.
- */
-include_once 'classes/cs_label_item.php';
-include_once 'functions/text_functions.php';
-
 /** class for a label
  * this class implements a commsy label. A label can be a group, a topic, a label, ...
  *

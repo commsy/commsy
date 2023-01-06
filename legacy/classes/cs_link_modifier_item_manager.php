@@ -11,8 +11,6 @@
  * file that was distributed with this source code.
  */
 
-include_once 'classes/cs_link_father_manager.php';
-
 /** class for database connection to the database table "link_modifier_item"
  * this class implements a database manager for the table "link_modifier_item",
  * in which we store who had edited an item.
@@ -45,7 +43,6 @@ class cs_link_modifier_item_manager extends cs_link_father_manager
                   'ORDER BY lastname ASC';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting modifiers: "'.$this->_dberror.'" from query: "'.$query.'"');
         } else {
             $link_modifiers = [];
@@ -82,7 +79,6 @@ class cs_link_modifier_item_manager extends cs_link_father_manager
 
              $errno = $this->_db_connector->getErrno();
              if (!empty($errno)) {
-                 include_once 'functions/error_functions.php';
                  trigger_error('Problems marking item as modified from query: "'.$query.'"');
              }
          }
@@ -104,7 +100,6 @@ class cs_link_modifier_item_manager extends cs_link_father_manager
 
                     $result = $this->_db_connector->performQuery($query);
                     if (!isset($result) or !$result) {
-                        include_once 'functions/error_functions.php';
                         trigger_error('Problems creating link_modifier_item from query: "'.$query.'"', E_USER_WARNING);
                     }
                 } else {
@@ -114,7 +109,6 @@ class cs_link_modifier_item_manager extends cs_link_father_manager
 
                     $result = $this->_db_connector->performQuery($query);
                     if (!isset($result) or !$result) {
-                        include_once 'functions/error_functions.php';
                         trigger_error('Problems creating link_modifier_item from query: "'.$query.'"', E_USER_WARNING);
                     }
                 }

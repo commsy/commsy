@@ -92,7 +92,6 @@ class cs_noticed_manager
                   ' ORDER BY read_date DESC';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting noticed from query: "'.$query.'"');
         } else {
             $noticed = [];
@@ -125,7 +124,6 @@ class cs_noticed_manager
                    ' GROUP BY item_id';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting noticed from query: "'.$query.'"');
             } else {
                 $noticed = [];
@@ -156,7 +154,6 @@ class cs_noticed_manager
                    ' GROUP BY item_id';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting noticed from query: "'.$query.'"');
             } else {
                 $noticed = [];
@@ -241,7 +238,6 @@ class cs_noticed_manager
         $result = $this->_db_connector->performQuery($query);
 
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems marking item(s) as noticed from query: "'.$query.'"');
         }
     }
@@ -252,7 +248,6 @@ class cs_noticed_manager
 
         $result = $this->_db_connector->performQuery($select);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating notice from query: "'.$select.'"', E_USER_WARNING);
         }
 
@@ -263,7 +258,6 @@ class cs_noticed_manager
 
             $result2 = $this->_db_connector->performQuery($select2);
             if (!isset($result2)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems creating notice from query: "'.$select2.'"', E_USER_WARNING);
             } elseif (empty($result2[0])) {
                 $row2 = '';
@@ -280,7 +274,6 @@ class cs_noticed_manager
 
                 $result3 = $this->_db_connector->performQuery($update);
                 if (!isset($result3) or !$result3) {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problems creating notice from query: "'.$update.'"', E_USER_WARNING);
                 }
             } else {
@@ -291,7 +284,6 @@ class cs_noticed_manager
 
                 $result3 = $this->_db_connector->performQuery($update);
                 if (!isset($result3) or !$result3) {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problems creating notice from query: "'.$update.'"', E_USER_WARNING);
                 }
             }

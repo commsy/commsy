@@ -16,8 +16,6 @@
 
 use App\Entity\Announcement;
 
-include_once 'classes/cs_item.php';
-
 /** class for a announcement
  * this class implements a announcement item.
  */

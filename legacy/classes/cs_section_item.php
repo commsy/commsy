@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the section item.
- */
-include_once 'classes/cs_item.php';
-
 /** class for a section
  * this class implements a section item.
  */

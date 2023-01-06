@@ -16,8 +16,6 @@
 
 use App\Entity\Dates;
 
-include_once 'classes/cs_item.php';
-
 /** class for a dates
  * this class implements a dates item.
  */

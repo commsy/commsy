@@ -14,10 +14,6 @@
 use App\Entity\Room;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-/** upper class of the project item.
- */
-include_once 'classes/cs_room_item.php';
-
 /** father class for a rooms (project or community)
  * this class implements an abstract room item.
  */
@@ -953,7 +949,6 @@ class cs_project_item extends cs_room_item
                 }
             }
         } else {
-            include_once 'functions/error_functions.php';
             trigger_error('lost room moderation', E_USER_WARNING);
         }
     }
@@ -1139,7 +1134,6 @@ class cs_project_item extends cs_room_item
              }
 
              // send email
-             include_once 'classes/cs_mail.php';
              $mail = new cs_mail();
              $mail->set_to(implode(',', $value));
              $mail->set_from_email($default_sender_address);

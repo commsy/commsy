@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the log manager.
- */
-include_once 'classes/cs_manager.php';
-
 /** class for database connection to the database table "log_error"
  * this class implements a database manager for the table "log_error".
  */
@@ -85,7 +81,6 @@ class cs_log_error_manager extends cs_manager
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems at logs from query:<br />"'.$query.'"', E_USER_WARNING);
         } else {
             return $result;
@@ -101,7 +96,6 @@ class cs_log_error_manager extends cs_manager
         } elseif ('count' == $mode) {
             $query = 'SELECT count(id) AS count FROM '.$this->addDatabasePrefix($this->_db_table);
         } else {
-            include_once 'functions/error_functions.php';
             trigger_error('lost perform mode', E_USER_ERROR);
         }
 
@@ -120,7 +114,6 @@ class cs_log_error_manager extends cs_manager
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems log from query: "'.$query.'"', E_USER_WARNING);
         } else {
             return $result;
@@ -181,7 +174,6 @@ class cs_log_error_manager extends cs_manager
         if (isset($result)) {
             $retour = true;
         } else {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems save '.$this->_db_table.' with query: "'.$query.'"', E_USER_WARNING);
         }
 

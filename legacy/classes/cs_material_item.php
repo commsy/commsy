@@ -16,13 +16,6 @@
 
 use App\Entity\Materials;
 
-include_once 'classes/cs_item.php';
-
-/** class for object lists.
- */
-include_once 'classes/cs_list.php';
-include_once 'classes/cs_section_list.php';
-
 /** class for a material
  * this class implements a material item.
  */
@@ -1397,7 +1390,6 @@ public function cloneCopy($new_version = false)
 {
     $clone_item = clone $this; // "clone" needed for php5
     if (!empty($this->_changed) and !$new_version) {
-        include_once 'functions/error_functions.php';
         trigger_error('attempt to clone unsaved / changed material; clone will match the persistent state of this item', E_USER_WARNING);
     }
     $label_item = $this->getLabelItem();

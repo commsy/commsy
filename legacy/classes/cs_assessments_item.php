@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the assessments item.
- */
-include_once 'classes/cs_item.php';
-
 /** class for assessments
  * this class implements an assessments object.
  */

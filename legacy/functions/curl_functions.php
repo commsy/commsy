@@ -201,7 +201,6 @@ function _curl($amp_flag, $context_id, $module, $function, $parameter, $fragment
     } elseif (is_array($parameter)) {
         $parameter = '';
     } elseif (!empty($parameter)) {
-        include_once 'functions/error_functions.php';
         trigger_error('parameter must be given in an array NOT in a string', E_USER_WARNING);
     }
 

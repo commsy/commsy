@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** class of the task item.
- */
-include_once 'classes/cs_item.php';
-
 /** class for a task
  * this class implements a task item.
  */

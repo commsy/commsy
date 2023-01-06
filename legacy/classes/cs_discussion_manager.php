@@ -11,16 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_list.php';
-
-/** upper class of the discussion manager.
- */
-include_once 'classes/cs_manager.php';
-
-include_once 'functions/text_functions.php';
-
 /** class for database connection to the database table "discussion"
  * this class implements a database manager for the table "discussion".
  */
@@ -142,7 +132,6 @@ class cs_discussion_manager extends cs_manager
 
     public function _buildItem($db_array)
     {
-        include_once 'functions/text_functions.php';
         $db_array['extras'] = mb_unserialize($db_array['extras']);
 
         return parent::_buildItem($db_array);
@@ -330,7 +319,6 @@ class cs_discussion_manager extends cs_manager
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting discussion.     ', E_USER_WARNING);
         } else {
             return $result;
@@ -346,8 +334,6 @@ class cs_discussion_manager extends cs_manager
      */
     public function getNewItem()
     {
-        include_once 'classes/cs_discussion_item.php';
-
         return new cs_discussion_item($this->_environment);
     }
 
@@ -373,7 +359,6 @@ class cs_discussion_manager extends cs_manager
                  $item_id)."'";
              $result = $this->_db_connector->performQuery($query);
              if (!isset($result)) {
-                 include_once 'functions/error_functions.php';
                  trigger_error('Problems selecting one discussions item ('.$item_id.').', E_USER_WARNING);
              } elseif (!empty($result[0])) {
                  $discussion = $this->_buildItem($result[0]);
@@ -443,7 +428,6 @@ class cs_discussion_manager extends cs_manager
          try {
              $queryBuilder->executeStatement();
          } catch (\Doctrine\DBAL\Exception $e) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems updating discussion.', E_USER_WARNING);
          }
      }
@@ -479,7 +463,6 @@ class cs_discussion_manager extends cs_manager
              $item->setItemID($this->getCreateID());
              $this->_newDiscussion($item);
          } catch (\Doctrine\DBAL\Exception $e) {
-             include_once 'functions/error_functions.php';
              trigger_error($e->getMessage(), E_USER_WARNING);
              $this->_create_id = null;
          }
@@ -536,7 +519,6 @@ class cs_discussion_manager extends cs_manager
       try {
           $queryBuilder->executeStatement();
       } catch (\Doctrine\DBAL\Exception $e) {
-          include_once 'functions/error_functions.php';
           trigger_error('Problems creating dates.', E_USER_WARNING);
       }
   }
@@ -556,7 +538,6 @@ class cs_discussion_manager extends cs_manager
                  ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting discussion.', E_USER_WARNING);
         } else {
             $link_manager = $this->_environment->getLinkManager();
@@ -600,7 +581,6 @@ class cs_discussion_manager extends cs_manager
                      $updateQuery .= ' WHERE item_id = "'.encode(AS_DB, $rs['item_id']).'"';
                      $result2 = $this->_db_connector->performQuery($updateQuery);
                      if (!$result2) {
-                         include_once 'functions/error_functions.php';
                          trigger_error('Problems automatic deleting discussions.', E_USER_WARNING);
                      }
                  }

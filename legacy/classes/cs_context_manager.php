@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the context manager.
- */
-include_once 'classes/cs_manager.php';
-
 /** upper class for database connection to the database table "community", "project" and "portal"
  * this upper class implements a database manager for the table "community", "project" and "portal".
  */
@@ -169,11 +165,9 @@ class cs_context_manager extends cs_manager
            return null;
        }
        if (isset($db_array['extras'])) {
-           include_once 'functions/text_functions.php';
            $db_array['extras'] = mb_unserialize($db_array['extras']);
        }
        if (isset($db_array['description'])) {
-           include_once 'functions/text_functions.php';
            $db_array['description'] = mb_unserialize($db_array['description']);
        }
        $item = $this->_getNewRoomItem($db_array['type']);
@@ -196,31 +190,23 @@ class cs_context_manager extends cs_manager
    public function _getNewRoomItem($type)
    {
        $retour = null;
-       include_once 'classes/cs_userroom_item.php';
        if (empty($type)) {
            $retour = null;
        } elseif (CS_PROJECT_TYPE == $type) {
-           include_once 'classes/cs_project_item.php';
            $retour = new cs_project_item($this->_environment);
        } elseif (CS_SERVER_TYPE == $type) {
-           include_once 'classes/cs_server_item.php';
            $retour = new cs_server_item($this->_environment);
        } elseif (CS_COMMUNITY_TYPE == $type) {
-           include_once 'classes/cs_community_item.php';
            $retour = new cs_community_item($this->_environment);
        } elseif (CS_PRIVATEROOM_TYPE == $type) {
-           include_once 'classes/cs_privateroom_item.php';
            $retour = new cs_privateroom_item($this->_environment);
        } elseif (CS_GROUPROOM_TYPE == $type) {
-           include_once 'classes/cs_grouproom_item.php';
            $retour = new cs_grouproom_item($this->_environment);
        } elseif (cs_userroom_item::ROOM_TYPE_USER == $type) {
            $retour = new cs_userroom_item($this->_environment);
        } elseif (CS_PORTAL_TYPE == $type) {
-           include_once 'classes/cs_portal_item.php';
            $retour = new cs_portal_item($this->_environment);
        } else {
-           include_once 'functions/error_functions.php';
            trigger_error('do not know this type: '.$type, E_USER_WARNING);
        }
        $retour->setRoomType($type);
@@ -356,7 +342,6 @@ class cs_context_manager extends cs_manager
                     $this->listCache[$user_id.'_'.$auth_source.'_'.$context_id] = $list;
                 }
             } catch (\Doctrine\DBAL\Exception $e) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems selecting '.$this->_db_table.' items.', E_USER_WARNING);
             }
         } else {
@@ -424,7 +409,6 @@ class cs_context_manager extends cs_manager
        // perform query
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result)) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems selecting '.$this->_db_table.' items.', E_USER_WARNING);
        } else {
            $label_item_id = '';
@@ -472,7 +456,6 @@ class cs_context_manager extends cs_manager
                $result = $this->_db_connector->performQuery($query);
                unset($query);
                if (!isset($result)) {
-                   include_once 'functions/error_functions.php';
                    trigger_error('Problems selecting '.$this->_db_table.' item.', E_USER_WARNING);
                } elseif (!empty($result[0])) {
                    $data_array = $result[0];
@@ -517,12 +500,10 @@ class cs_context_manager extends cs_manager
                $result = $this->_db_connector->performQuery($query);
                unset($query);
                if (!isset($result)) {
-                   include_once 'functions/error_functions.php';
                    trigger_error('Problems selecting '.$this->_db_table.' item.', E_USER_WARNING);
                } elseif (!empty($result[0])) {
                    $data_array = $result[0];
                    if (!empty($data_array['extras'])) {
-                       include_once 'functions/text_functions.php';
                        $retour = mb_unserialize($data_array['extras']);
                    }
                    unset($data_array);
@@ -542,7 +523,6 @@ class cs_context_manager extends cs_manager
        $result = $this->_db_connector->performQuery($query);
        unset($query);
        if (!isset($result)) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems selecting '.$this->_db_table.' item.', E_USER_WARNING);
        } else {
            foreach ($result as $r) {
@@ -566,7 +546,6 @@ class cs_context_manager extends cs_manager
                'type="'.encode(AS_DB, $this->_room_type).'"';
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
-          include_once 'functions/error_functions.php';
           trigger_error('Problems creating '.$this->_db_table.' item.', E_USER_WARNING);
           $this->_create_id = null;
       } else {
@@ -627,7 +606,6 @@ class cs_context_manager extends cs_manager
 
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result) or !$result) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems updating '.$this->_db_table.' item.', E_USER_WARNING);
        }
        unset($item);
@@ -669,7 +647,6 @@ class cs_context_manager extends cs_manager
 
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result)) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems creating new '.$this->_room_type.' item: "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_ERROR);
        } else {
            $item->setCreationDate($current_datetime);
@@ -683,7 +660,6 @@ class cs_context_manager extends cs_manager
        $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET activity=ROUND(activity/'.encode(AS_DB, $quotient).') WHERE activity > 0;';
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result) or !$result) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems minimizing activity points.', E_USER_WARNING);
        } else {
            $retour = true;
@@ -708,7 +684,6 @@ class cs_context_manager extends cs_manager
             ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting '.$this->_db_table.'.', E_USER_WARNING);
         } else {
             parent::delete($itemId);
@@ -728,7 +703,6 @@ class cs_context_manager extends cs_manager
                 ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result) or !$result) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems undeleting '.$this->_db_table.'.', E_USER_WARNING);
        } else {
            parent::undelete($item_id);
@@ -741,7 +715,6 @@ class cs_context_manager extends cs_manager
        $query = 'SELECT MAX(activity) AS max FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id = '.encode(AS_DB, $this->_room_limit).';';
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result) or empty($result[0])) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems selecting '.$this->_db_table.' max activity.', E_USER_WARNING);
        } else {
            $data_array = $result[0];
@@ -764,7 +737,6 @@ class cs_context_manager extends cs_manager
        $query .= ' OR ( l32.context_id="'.encode(AS_DB, $this->_room_limit).'" AND (l32.first_item_id = "'.encode(AS_DB, $community_room_limit).'" OR l32.second_item_id = "'.encode(AS_DB, $community_room_limit).'")));';
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result) or empty($result[0])) {
-           include_once 'functions/error_functions.php';
            trigger_error('Problems selecting '.$this->_db_table.' max activity: "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_WARNING);
        } else {
            $data_array = $result[0];
@@ -786,7 +758,6 @@ class cs_context_manager extends cs_manager
            $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.encode(AS_DB, implode(',', $community_room_array_limit)).');';
            $result = $this->_db_connector->performQuery($query);
            if (!isset($result) or empty($result[0])) {
-               include_once 'functions/error_functions.php';
                trigger_error('Problems selecting '.$this->_db_table.' max activity: "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_WARNING);
            } else {
                $data_array = $result[0];
@@ -806,7 +777,6 @@ class cs_context_manager extends cs_manager
             ' WHERE item_id="'.encode(AS_DB, $item->getItemID()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updating activity points '.$this->_db_table.'.', E_USER_WARNING);
         }
     }

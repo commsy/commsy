@@ -11,8 +11,6 @@
  * file that was distributed with this source code.
  */
 
-include_once 'classes/cs_link_father_manager.php';
-
 /** class for database connection to the database table "link_material_file"
  * this class implements a database manager for the table "link_material_file",
  * in which we store the links between materials and files.
@@ -67,7 +65,6 @@ class cs_link_item_file_manager extends cs_link_father_manager
             $query .= ' AND file_id IN ('.implode(',', encode(AS_DB, $file_id_array)).')';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems getting data "'.$this->_db_table.'" from query: "'.$query.'"', E_USER_WARNING);
             } else {
                 $current_data_array = [];
@@ -77,7 +74,6 @@ class cs_link_item_file_manager extends cs_link_father_manager
                 $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
                 $sql_result = $this->_db_connector->performQuery($sql);
                 if (!isset($sql_result)) {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problems getting data "'.$this->_db_table.'".', E_USER_WARNING);
                 } else {
                     foreach ($sql_result as $sql_row) {
@@ -137,7 +133,6 @@ class cs_link_item_file_manager extends cs_link_father_manager
                     } else {
                         $result_insert = $this->_db_connector->performQuery($insert_query);
                         if (!isset($result_insert)) {
-                            include_once 'functions/error_functions.php';
                             trigger_error('Problem creating item from query: "'.$insert_query.'"', E_USER_ERROR);
                         }
                     }
@@ -170,7 +165,6 @@ class cs_link_item_file_manager extends cs_link_father_manager
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting '.$this->_db_table.' from query: "'.$query.'"', E_USER_WARNING);
         } else {
             return $result;
@@ -195,7 +189,6 @@ class cs_link_item_file_manager extends cs_link_father_manager
          }
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or !$result) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems deleting (updating) links of an item from query: "'.$query.'"', E_USER_WARNING);
          }
      }
@@ -213,7 +206,6 @@ class cs_link_item_file_manager extends cs_link_father_manager
                ' WHERE file_id="'.encode(AS_DB, $file_id).'";';
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result) or !$result) {
-          include_once 'functions/error_functions.php';
           trigger_error('Problems deleting (updating) links of an item from query: "'.$query.'". - '.__FILE__.' - '.__LINE__, E_USER_WARNING);
       }
   }
@@ -224,7 +216,6 @@ class cs_link_item_file_manager extends cs_link_father_manager
                  ' WHERE file_id="'.encode(AS_DB, $file_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting links of a file item from query: "'.$query.'"', E_USER_WARNING);
         }
     }
@@ -258,8 +249,6 @@ class cs_link_item_file_manager extends cs_link_father_manager
      */
     public function getNewItem()
     {
-        include_once 'classes/cs_link_item_file.php';
-
         return new cs_link_item_file($this->_environment);
     }
 
@@ -290,7 +279,6 @@ class cs_link_item_file_manager extends cs_link_father_manager
         $query = 'INSERT INTO '.$this->_db_table.' (item_iid, item_vid, file_id) VALUES ('.$item_id.', '.$version_id.', '.$file_id.')';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems while inserting directly: '.$query, E_USER_WARNING);
         }
     }

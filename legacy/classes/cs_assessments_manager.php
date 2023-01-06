@@ -11,12 +11,6 @@
  * file that was distributed with this source code.
  */
 
-include_once 'functions/text_functions.php';
-
-/** date functions are needed for method _newVersion().
- */
-include_once 'functions/date_functions.php';
-
 /** class for database connection to the database table "assessments"
  * this class implements a database manager for the table "assessments".
  */
@@ -57,7 +51,6 @@ class cs_assessments_manager extends cs_manager
         $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).".item_id = '".encode(AS_DB, $item_id)."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or empty($result[0])) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting one assessment item from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $retour = $this->_buildItem($result[0]);
@@ -73,8 +66,6 @@ class cs_assessments_manager extends cs_manager
       */
      public function getNewItem()
      {
-         include_once 'classes/cs_assessments_item.php';
-
          return new cs_assessments_item($this->_environment);
      }
 
@@ -98,7 +89,6 @@ class cs_assessments_manager extends cs_manager
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updating assessment from query: "'.$query.'"', E_USER_WARNING);
         }
     }
@@ -147,7 +137,6 @@ class cs_assessments_manager extends cs_manager
              $query = 'SELECT AVG(assessment) AS average_assessment, COUNT(item_id) AS count_assessment, item_link_id FROM assessments WHERE item_link_id IN ('.implode(',', encode(AS_DB, $id_array)).') AND deletion_date IS NULL GROUP BY item_link_id';
              $result = $this->_db_connector->performQuery($query);
              if (!isset($result)) {
-                 include_once 'functions/error_functions.php';
                  trigger_error('Problems selecting noticed from query: "'.$query.'"');
              } else {
                  $noticed = [];
@@ -242,7 +231,6 @@ class cs_assessments_manager extends cs_manager
     {
         $context_id = $assessments_item->getContextID();
         if (!isset($context_id)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating new assessment: ContextID is not set', E_USER_ERROR);
         } else {
             $query = '
@@ -255,7 +243,6 @@ class cs_assessments_manager extends cs_manager
 	 	';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                include_once 'functions/error_functions.php';
                 trigger_error('Problems creating assessment from query: "'.$query.'"', E_USER_WARNING);
                 $this->_create_id = null;
             } else {
@@ -288,7 +275,6 @@ class cs_assessments_manager extends cs_manager
 	 ';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating assessment from query: "'.$query.'"', E_USER_WARNING);
         }
         unset($assessments_item);
@@ -325,7 +311,6 @@ class cs_assessments_manager extends cs_manager
                  ' WHERE item_id = "'.encode(AS_DB, $item_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting assessment from query: "'.$query.'"', E_USER_WARNING);
         } else {
             parent::delete($item_id);
@@ -371,7 +356,6 @@ class cs_assessments_manager extends cs_manager
          // perform query
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-             include_once 'functions/error_functions.php';
              trigger_error('Problems with links from query: "'.$query.'"', E_USER_WARNING);
          } else {
              return $result;

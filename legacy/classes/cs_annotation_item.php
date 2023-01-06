@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the annotation item.
- */
-include_once 'classes/cs_item.php';
-
 /** class for an annotation
  * this class implements a annotation item.
  */

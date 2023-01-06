@@ -11,8 +11,6 @@
  * file that was distributed with this source code.
  */
 
-@include_once 'etc/cs_constants.php';
-
 /**
  * Generates a xml string out of an array.
  * This function is used at the management of the extras field in the mysql-database.

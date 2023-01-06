@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** upper class of the label manager.
- */
-include_once 'classes/cs_labels_manager.php';
-
 /** class for database connection to the database table "labels"
  * this class implements a database manager for the table "labels". Labels are groups, topics, labels, ...
  */
@@ -37,7 +33,6 @@ class cs_buzzword_manager extends cs_labels_manager
       */
      public function getNewItem($label_type = '')
      {
-         include_once 'classes/cs_buzzword_item.php';
          $item = new cs_buzzword_item($this->_environment);
 
          return $item;

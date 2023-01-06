@@ -11,18 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** cs_list is needed for storage of the commsy items.
- */
-include_once 'classes/cs_list.php';
-
-/** cs_annotation_item is needed to create annotation items.
- */
-include_once 'classes/cs_annotation_item.php';
-
-/** upper class of the annotation manager.
- */
-include_once 'classes/cs_manager.php';
-
 /** class for database connection to the database table "annotations"
  * this class implements a database manager for the table "annotations".
  */
@@ -159,7 +147,6 @@ class cs_annotations_manager extends cs_manager
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems selecting annotations.', E_USER_WARNING);
         } else {
             return $result;
@@ -194,12 +181,10 @@ class cs_annotations_manager extends cs_manager
                 $query = 'SELECT * FROM '.$this->addDatabasePrefix('annotations').' WHERE '.$this->addDatabasePrefix('annotations').".item_id = '".encode(AS_DB, $item_id)."'";
                 $result = $this->_db_connector->performQuery($query);
                 if (!isset($result)) {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problems selecting one annotation item.', E_USER_WARNING);
                 } elseif (!empty($result[0])) {
                     $annotation = $this->_buildItem($result[0]);
                 } else {
-                    include_once 'functions/error_functions.php';
                     trigger_error('Problems selecting annotation item ['.$item_id.'].', E_USER_WARNING);
                 }
             }
@@ -294,7 +279,6 @@ class cs_annotations_manager extends cs_manager
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems updating annotation item.', E_USER_ERROR);
         }
     }
@@ -314,7 +298,6 @@ class cs_annotations_manager extends cs_manager
                  'type="annotation"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating annotation item.', E_USER_ERROR);
             $this->_create_id = null;
         } else {
@@ -351,7 +334,6 @@ class cs_annotations_manager extends cs_manager
                  'linked_version_id="'.encode(AS_DB, $version_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems creating annotation.', E_USER_WARNING);
         }
     }
@@ -394,7 +376,6 @@ class cs_annotations_manager extends cs_manager
                  ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
-            include_once 'functions/error_functions.php';
             trigger_error('Problems deleting annotation.', E_USER_WARNING);
         } else {
             parent::delete($item_id);
@@ -430,7 +411,6 @@ class cs_annotations_manager extends cs_manager
                       $updateQuery .= ' WHERE item_id = "'.encode(AS_DB, $rs['item_id']).'"';
                       $result2 = $this->_db_connector->performQuery($updateQuery);
                       if (!$result2) {
-                          include_once 'functions/error_functions.php';
                           trigger_error('Problems automatic deleting annotations.', E_USER_WARNING);
                       }
                   }

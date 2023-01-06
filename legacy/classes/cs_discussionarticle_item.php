@@ -11,10 +11,6 @@
  * file that was distributed with this source code.
  */
 
-/** class of the discussionarticle item.
- */
-include_once 'classes/cs_item.php';
-
 /** class for an discussionarticle
  * this class implements a discussionarticle item.
  */
