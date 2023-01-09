@@ -17,11 +17,6 @@
 class cs_annotations_manager extends cs_manager
 {
     /**
-     * object manager - containing object to the select links for annotations.
-     */
-    public $_link_manager = null;
-
-    /**
      * int - containing the id of an annotated item as a limit for the selected annotation.
      */
     public $_linked_item_id = 0;
@@ -52,7 +47,7 @@ class cs_annotations_manager extends cs_manager
         $this->_translator = $environment->getTranslationObject();
     }
 
-    /** reset limits
+    /**
      * reset limits of this class: refid limit, order limit and all limits from upper class.
      *
      * @author CommSy Development Group
@@ -65,9 +60,9 @@ class cs_annotations_manager extends cs_manager
     }
 
     /** set linked_item_id limit
-     * this method sets an refid limit for the select statement.
+     * this method sets a refid limit for the select statement.
      *
-     * @param string limit order limit for selected annotated item
+     * @param string $limit order limit for selected annotated item
      *
      * @author CommSy Development Group
      */
@@ -79,7 +74,7 @@ class cs_annotations_manager extends cs_manager
     /** set order limit
      * this method sets an order limit for the select statement.
      *
-     * @param string limit order limit for selected annotation
+     * @param string $limit order limit for selected annotation
      *
      * @author CommSy Development Group
      */
@@ -263,11 +258,7 @@ class cs_annotations_manager extends cs_manager
     {
         parent::_update($annotation_item);
 
-        if ($annotation_item->getLinkedVersionID()) {
-            $version_id = $annotation_item->getLinkedVersionID();
-        } else {
-            $version_id = '0';
-        }
+        $version_id = $annotation_item->getLinkedVersionID() ? $annotation_item->getLinkedVersionID() : '0';
 
         $query = 'UPDATE '.$this->addDatabasePrefix('annotations').' SET '.
                  'modification_date="'.getCurrentDateTimeInMySQL().'",'.
@@ -317,11 +308,7 @@ class cs_annotations_manager extends cs_manager
     public function _newAnnotation($annotation_item)
     {
         $current_datetime = getCurrentDateTimeInMySQL();
-        if ($annotation_item->getLinkedVersionID()) {
-            $version_id = $annotation_item->getLinkedVersionID();
-        } else {
-            $version_id = '0';
-        }
+        $version_id = $annotation_item->getLinkedVersionID() ? $annotation_item->getLinkedVersionID() : '0';
 
         $query = 'INSERT INTO '.$this->addDatabasePrefix('annotations').' SET '.
                  'item_id="'.encode(AS_DB, $annotation_item->getItemID()).'",'.
