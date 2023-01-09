@@ -2023,13 +2023,9 @@ class cs_item
 
         // get all annotations linked with the item
         $annotation_list = $annotation_manager->getAnnotatedItemList($this->getItemID());
-
-        // delete them
-        $item = $annotation_list->getFirst();
-        while ($item) {
-            $item->delete();
-
-            $item = $annotation_list->getNext();
+        foreach ($annotation_list as $annotation) {
+            /** @var cs_annotation_item $annotation */
+            $annotation->delete();
         }
     }
 

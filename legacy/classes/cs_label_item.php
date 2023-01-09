@@ -51,16 +51,6 @@ class cs_label_item extends cs_item
      */
     public $_is_system_label = false;
 
-    /**
-     * cs_item - last changed item refering to this topic.
-     */
-    public $_last_changed_item = null;
-
-    /**
-     * boolean - TRUE if already attempted to load last changed item from DB, FALSE otherwise.
-     */
-    public $_loaded_last_changed_item = false;
-
     public $_count_links = 0;
 
     /** constructor
@@ -321,74 +311,6 @@ class cs_label_item extends cs_item
         $converter = $this->_environment->getTextConverter();
         $value = $converter->sanitizeFullHTML($value);
         $this->_setValue('description', $value);
-    }
-
-    /** get the last change item
-     * this method returns the last change item linked to this label
-     * this is only relevant for groups (which are cs_label_items).
-     *
-     * @return cs_item last change item
-     */
-    public function getLastChangedItem()
-    {
-        if (!$this->_loaded_last_changed_item) {
-            $this->_loaded_last_changed_item = true;
-            $query = 'SELECT items.item_id, items.type, items.modification_date'.
-                     ' FROM items'.
-                     ' LEFT JOIN links'.
-                     ' ON links.from_item_id = items.item_id'.
-                     " WHERE links.to_item_id = '".$this->getItemID()."'".
-                     ' ORDER BY items.modification_date DESC'.
-                     ' LIMIT 1';
-            $db_connector = $this->_environment->getDBConntector();
-            $result = $db_connector->performQuery($query);
-            if (!empty($result[0])) {
-                $rs = $result[0];
-            } else {
-                $rs = '';
-            }
-            $retour = null;
-            $manager = null;
-            if (!empty($rs) and !empty($rs['modification_date'])) {
-                switch ($rs['type']) {
-                    case CS_DATE_TYPE:
-                        $manager = $this->_environment->getDatesManager();
-                        break;
-                    case 'discussions':
-                    case 'discussion':
-                        $manager = $this->_environment->getDiscussionManager();
-                        break;
-                    case 'label':
-                        $manager = $this->_environment->getLabelManager();
-                        break;
-                    case 'materials':
-                        $manager = $this->_environment->getMaterialManager();
-                        break;
-                    case 'user':
-                        $manager = $this->_environment->getUserManager();
-                        break;
-                    case 'annotation':
-                        $manager = $this->_environment->getAnnotationManager();
-                        break;
-                }
-                if (!is_null($manager)) {
-                    $manager->setDeleteLimit(false);
-                    $item = $manager->getItem($rs['item_id']);
-                    $manager->setDeleteLimit(true);
-                    if (empty($item)) {
-                        trigger_error('cs_label_item: getLastChangedItem(): last changed item is empty for group: "'.$this->getName().'"', E_USER_WARNING);
-                    }
-                } else {
-                    trigger_error('cs_label_item: getLastChangedItem(): Failed finding last changed item of type '.$rs['type'].' for group "'.$this->getName().'"', E_USER_WARNING);
-                }
-                // $deletionDate = $item->getDeletionDate();
-                // if(empty($deletionDate)) {
-                $this->_last_changed_item = $item;
-                // }
-            }
-        }
-
-        return $this->_last_changed_item;
     }
 
     /** get type of label
