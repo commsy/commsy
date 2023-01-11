@@ -120,8 +120,6 @@ class cs_manager
     public $_cache_on = true;
     public $_cached_sql = [];
 
-    public $_class_factory;
-
     protected $_id_array_limit;
 
     public $_link_modifier = true;
@@ -144,7 +142,6 @@ class cs_manager
      */
     protected cs_environment $_environment)
     {
-        $this->_class_factory = $this->_environment->getClassFactory();
         $this->reset();
         $this->_room_limit = $this->_environment->getCurrentContextID();
         $this->_attribute_limit = null;

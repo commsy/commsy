@@ -805,7 +805,7 @@ class cs_item_manager extends cs_manager
 
          $tmp_result = [];
          $annotation_manager = $this->_environment->getAnnotationManager();
-         $discarticle_manager = $this->_environment->getDiscussionArticleManager();
+         $discarticle_manager = $this->_environment->getDiscussionArticlesManager();
          $section_manager = $this->_environment->getSectionManager();
          $step_manager = $this->_environment->getStepManager();
          // #####################################################

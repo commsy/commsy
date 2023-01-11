@@ -366,7 +366,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
      */
     public function addSteps($event)
     {
-        $todoManager = $this->legacyEnvironment->getTodoManager();
+        $todoManager = $this->legacyEnvironment->getTodosManager();
         $todo = $todoManager->getItem($event->getObject()->getItemId());
 
         if ($todo) {

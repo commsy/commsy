@@ -654,7 +654,7 @@ class cs_room_manager extends cs_context_manager
             $discussion_manager = $this->_environment->getDiscussionManager();
             $discussion_manager->deleteFromDb($iid);
 
-            $discussionarticles_manager = $this->_environment->getDiscussionarticleManager();
+            $discussionarticles_manager = $this->_environment->getDiscussionarticlesManager();
             $discussionarticles_manager->deleteFromDb($iid);
 
             $file_manager = $this->_environment->getFileManager();
@@ -690,7 +690,7 @@ class cs_room_manager extends cs_context_manager
             $task_manager = $this->_environment->getTaskManager();
             $task_manager->deleteFromDb($iid);
 
-            $todo_manager = $this->_environment->getTodoManager();
+            $todo_manager = $this->_environment->getTodosManager();
             $todo_manager->deleteFromDb($iid);
 
             $user_manager = $this->_environment->getUserManager();

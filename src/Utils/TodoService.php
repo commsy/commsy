@@ -51,7 +51,7 @@ class TodoService
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
-        $this->todoManager = $this->legacyEnvironment->getTodoManager();
+        $this->todoManager = $this->legacyEnvironment->getTodosManager();
         $this->todoManager->reset();
 
         $this->stepManager = $this->legacyEnvironment->getStepManager();

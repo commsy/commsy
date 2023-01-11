@@ -2026,13 +2026,13 @@ class cs_user_item extends cs_item
             $announcement_manager = $this->_environment->getAnnouncementManager();
             $dates_manager = $this->_environment->getDatesManager();
             $discussion_manager = $this->_environment->getDiscussionManager();
-            $discarticle_manager = $this->_environment->getDiscussionarticleManager();
+            $discarticle_manager = $this->_environment->getDiscussionarticlesManager();
             $material_manager = $this->_environment->getMaterialManager();
             $section_manager = $this->_environment->getSectionManager();
             $annotation_manager = $this->_environment->getAnnotationManager();
             $label_manager = $this->_environment->getLabelManager();
             $tag_manager = $this->_environment->getTagManager();
-            $todo_manager = $this->_environment->getToDoManager();
+            $todo_manager = $this->_environment->getTodosManager();
             $step_manager = $this->_environment->getStepManager();
 
             // replace users entries with the standard message for deleted entries
