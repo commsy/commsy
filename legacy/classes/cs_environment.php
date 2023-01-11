@@ -892,22 +892,9 @@ class cs_environment
         return $this->_getInstance('cs_hash_manager');
     }
 
-    public function getExternalIdManager()
-    {
-        return $this->_getInstance('cs_external_id_manager');
-    }
-
     public function getEntryManager()
     {
         return $this->_getInstance('cs_entry_manager');
-    }
-
-    /**
-     * @deprecated
-     */
-    public function getSessionManager()
-    {
-        throw new LogicException('Calling cs_environment::getSessionManager is no longer supported');
     }
 
     /**

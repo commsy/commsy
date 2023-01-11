@@ -1509,12 +1509,6 @@ class cs_user_item extends cs_item
         $this->oldStatus = $this->getStatus();
         $this->oldContact = $this->getContactStatus();
 
-        if ($this->_environment->getCurrentPortalID() == $this->getContextID()) {
-            $id_manager = $this->_environment->getExternalIdManager();
-            $id_manager->deleteByCommSyID($this->getItemID());
-            unset($id_manager);
-        }
-
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_user');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
