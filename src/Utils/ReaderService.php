@@ -161,7 +161,7 @@ class ReaderService
                 $itemList = $discussion->getAllArticles();
             }
             if ('todo' == $itemType) {
-                $todoManager = $this->legacyEnvironment->getEnvironment()->getToDoManager();
+                $todoManager = $this->legacyEnvironment->getEnvironment()->getTodosManager();
                 $todo = $todoManager->getItem($item->getItemID());
                 $itemList = $todo->getStepItemList();
             }
