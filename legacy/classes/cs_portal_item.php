@@ -1807,22 +1807,6 @@ class cs_portal_item extends cs_guide_item
         return $this->_community_list_count;
     }
 
-    /** get count group rooms from manager.
-     *
-     * @return int count group rooms
-     */
-    private function _getCountGroupRoomsManager()
-    {
-        if (!isset($this->_grouproom_list_count)) {
-            $manager = $this->_environment->getGrouproomManager();
-            $manager->setContextLimit($this->getItemID());
-            $this->_grouproom_list_count = $manager->getCountAll();
-            unset($manager);
-        }
-
-        return $this->_grouproom_list_count;
-    }
-
     /** get count private rooms from manager.
      *
      * @return int count private rooms
@@ -1837,48 +1821,6 @@ class cs_portal_item extends cs_guide_item
         }
 
         return $this->_private_list_count;
-    }
-
-     public function getCountProjectRooms()
-     {
-         return $this->_getCountProjectRoomsManager();
-     }
-
-     public function getCountCommunityRooms()
-     {
-         return $this->_getCountCommunityRoomsManager();
-     }
-
-     public function getCountGroupRooms()
-     {
-         return $this->_getCountGroupRoomsManager();
-     }
-
-     public function getCountPrivateRooms()
-     {
-         return $this->_getCountPrivateRoomsManager();
-     }
-
-    public function getCountRooms($type_array = '')
-    {
-        $retour = 0;
-        if (empty($type_array)) {
-            $retour = $this->getCountCommunityRooms() + $this->getCountProjectRooms() + $this->getCountGroupRooms();
-        } else {
-            foreach ($type_array as $type_room) {
-                if (CS_PROJECT_TYPE == $type_room) {
-                    $retour += $this->getCountProjectRooms();
-                } elseif (CS_COMMUNITY_TYPE == $type_room) {
-                    $retour += $this->getCountCommunityRooms();
-                } elseif (CS_GROUPROOM_TYPE == $type_room) {
-                    $retour += $this->getCountGroupRooms();
-                } elseif (CS_PRIVATEROOM_TYPE == $type_room) {
-                    $retour += $this->getCountPrivateRooms();
-                }
-            }
-        }
-
-        return $retour;
     }
 
     private function _getCountRoomRedundancy()

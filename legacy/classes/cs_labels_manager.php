@@ -874,8 +874,6 @@ class cs_labels_manager extends cs_manager
       // Add modifier to all users who ever edited this item
       $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
       $link_modifier_item_manager->markEdited($label_item->getItemID());
-      unset($link_modifier_item_manager);
-      unset($label_item);
   }
 
     /** update a label, with new informations, e.g. creator and modificator

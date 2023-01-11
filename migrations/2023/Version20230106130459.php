@@ -14,7 +14,7 @@ final class Version20230106130459 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Update groups / grouprooms to always be activated';
     }
 
     public function up(Schema $schema): void
