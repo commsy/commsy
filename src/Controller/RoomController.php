@@ -473,10 +473,9 @@ class RoomController extends AbstractController
 
     /**
      * @throws Exception
-     *
-     * @Security("is_granted('ITEM_EDIT', 'NEW')")
      */
     #[Route(path: '/room/{roomId}/all/create', requirements: ['itemId' => '\d+'])]
+    #[Security("is_granted('ITEM_EDIT', 'NEW')")]
     public function createAction(
         Request $request,
         RoomService $roomService,
