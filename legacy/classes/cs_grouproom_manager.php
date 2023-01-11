@@ -35,16 +35,16 @@ class cs_grouproom_manager extends cs_room2_manager
     /** constructor
      * the only available constructor, initial values for internal variables.
      *
-     * @param object cs_environment the environment
+     * @param cs_environment $environment the environment
      */
     public function __construct($environment)
     {
         $this->_db_table = 'room';
         $this->_room_type = CS_GROUPROOM_TYPE;
-        cs_context_manager::__construct($environment);
+        parent::__construct($environment);
     }
 
-    /** reset limits
+    /**
      * reset limits of this class: local limits and all limits from upper class.
      */
     public function resetLimits()
@@ -92,9 +92,9 @@ class cs_grouproom_manager extends cs_room2_manager
     }
 
     /** set time limit
-     * this method sets an clock pulses limit for rooms.
+     * this method sets a clock pulses limit for rooms.
      *
-     * @param int limit time limit for rooms (item id of clock pulses)
+     * @param int $limit time limit for rooms (item id of clock pulses)
      */
     public function setTimeLimit($limit)
     {
@@ -281,48 +281,17 @@ class cs_grouproom_manager extends cs_room2_manager
          }
      }
 
-     public function getSortedItemList($id_array, $sortBy)
-     {
-         $list = null;
-         if (empty($id_array)) {
-             return new cs_list();
-         } else {
-             $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ("'.implode('", "', encode(AS_DB, $id_array)).'") AND '.$this->addDatabasePrefix($this->_db_table).'.type LIKE "grouproom"';
-             $query .= ' ORDER BY '.$sortBy;
-             $result = $this->_db_connector->performQuery($query);
-             if (!isset($result)) {
-                 trigger_error('Problems selecting list of '.$this->_room_type.' items from query: "'.$query.'"', E_USER_WARNING);
-             } else {
-                 $list = new cs_list();
-                 foreach ($result as $rs) {
-                     $list->add($this->_buildItem($rs));
-                 }
-             }
-
-             return $list;
-         }
-     }
-
-     public function getRelatedGroupRoomListForUser($user_item)
-     {
-         return $this->getRelatedContextListForUserInt($user_item->getUserID(), $user_item->getAuthSource(), $this->_environment->getCurrentPortalID());
-     }
-
-     public function getRelatedGroupRoomListForUserSortByTime($user_item)
-     {
-         return $this->_getRelatedContextListForUserSortByTime($user_item->getUserID(), $user_item->getAuthSource(), $this->_environment->getCurrentPortalID());
-     }
-
      public function getItemList($id_array)
      {
          return $this->_getItemList(CS_ROOM_TYPE, $id_array);
      }
 
-     /** create a project - internal, do not use -> use method save
-      * this method creates a project.
-      *
-      * @param object cs_item project_item the project
-      */
+    /** create a project - internal, do not use -> use method save
+     * this method creates a project.
+     *
+     * @param cs_item $item
+     * @throws \Doctrine\DBAL\Exception
+     */
      public function _create($item)
      {
          $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
@@ -339,63 +308,6 @@ class cs_grouproom_manager extends cs_room2_manager
              $this->_new($item);
          }
          unset($item);
-     }
-
-     // #######################################################
-     // statistic functions
-     // #######################################################
-
-     public function getCountGroupRooms($start, $end)
-     {
-         $retour = 0;
-
-         $query = 'SELECT count('.$this->addDatabasePrefix($this->_db_table).'.item_id) as number FROM '.$this->addDatabasePrefix($this->_db_table);
-         $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB, $this->_room_type).'" AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB, $this->_room_limit).'" AND (('.$this->addDatabasePrefix($this->_db_table).'.creation_date > "'.encode(AS_DB, $start).'" AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date < "'.encode(AS_DB, $end).'") OR ('.$this->addDatabasePrefix($this->_db_table).'.modification_date > "'.encode(AS_DB, $start).'" AND '.$this->addDatabasePrefix($this->_db_table).'.modification_date < "'.encode(AS_DB, $end).'"))';
-
-         $result = $this->_db_connector->performQuery($query);
-         if (!isset($result)) {
-             trigger_error('Problems counting all '.$this->_room_type.' from query: "'.$query.'"', E_USER_WARNING);
-         } else {
-             foreach ($result as $rs) {
-                 $retour = $rs['number'];
-             }
-         }
-
-         return $retour;
-     }
-
-     public function getCountNewGroupRooms($start, $end)
-     {
-         $retour = 0;
-
-         $query = 'SELECT count('.$this->addDatabasePrefix($this->_db_table).'.item_id) as number FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).".type = '".encode(AS_DB, $this->_room_type)."' AND ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB, $this->_room_limit)."' and ".$this->addDatabasePrefix($this->_db_table).".creation_date > '".encode(AS_DB, $start)."' and ".$this->addDatabasePrefix($this->_db_table).".creation_date < '".encode(AS_DB, $end)."'";
-         $result = $this->_db_connector->performQuery($query);
-         if (!isset($result)) {
-             trigger_error('Problems counting '.$this->_room_type.' from query: "'.$query.'"', E_USER_WARNING);
-         } else {
-             foreach ($result as $rs) {
-                 $retour = $rs['number'];
-             }
-         }
-
-         return $retour;
-     }
-
-     public function getCountModGroupRooms($start, $end)
-     {
-         $retour = 0;
-
-         $query = "SELECT count('.$this->addDatabasePrefix('labels').'.item_id) as number FROM ".$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).".type = '".encode(AS_DB, $this->_room_type)."' AND ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB, $this->_room_limit)."' and ".$this->addDatabasePrefix($this->_db_table).".modification_date > '".encode(AS_DB, $start)."' and ".$this->addDatabasePrefix($this->_db_table).".modification_date < '".encode(AS_DB, $end)."' and ".$this->addDatabasePrefix($this->_db_table).'.modification_date != '.$this->addDatabasePrefix($this->_db_table).'.creation_date';
-         $result = $this->_db_connector->performQuery($query);
-         if (!isset($result)) {
-             trigger_error('Problems counting '.$this->_room_type.' from query: "'.$query.'"', E_USER_WARNING);
-         } else {
-             foreach ($result as $rs) {
-                 $retour = $rs['number'];
-             }
-         }
-
-         return $retour;
      }
 
      public function getRelatedGroupListForUser($user_item)

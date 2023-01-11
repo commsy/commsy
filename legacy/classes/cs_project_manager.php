@@ -153,9 +153,6 @@ class cs_project_manager extends cs_room2_manager
       }
 
       $query = 'SELECT DISTINCT';
-//     if ( isset($this->_search_limit) ) {
-//        $query .= ' DISTINCT';
-//     }
       if ('count' == $mode) {
           $query .= ' count( DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.item_id) AS count';
       } elseif ('id_array' == $mode) {
@@ -197,32 +194,7 @@ class cs_project_manager extends cs_room2_manager
 
       $query .= ' WHERE 1';
       if (isset($this->_room_type)) {
-          // ###########################################
-          // FLAG: group room
-          // sinnfrei? 15.12.2009 ij
-          // ##################BEGIN####################
-          // $current_portal = $this->_environment->getCurrentPortalItem();
-          // if ( !isset($current_portal) and isset($this->_room_limit) ) {
-          //   $portal_manager = $this->_environment->getPortalManager();
-          //   $current_portal = $portal_manager->getItem($this->_room_limit);
-          // }
-          // if ( $this->_room_type == CS_PROJECT_TYPE
-         //     and isset($current_portal)
-         //     and $current_portal->withGroupRoomFunctions()
-          //   ) {
-          //   $query .= ' AND ('.$this->_db_table.'.type = "'.encode(AS_DB,$this->_room_type).'" or '.$this->_db_table.'.type = "'.CS_GROUPROOM_TYPE.'")';
-          // } else {
-          // ###################END#####################
-          // FLAG: group room
-          // ###########################################
           $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB, $this->_room_type).'"';
-          // ###########################################
-          // FLAG: group room
-          // #################BEGIN####################
-          // }
-          // ##################END######################
-          // FLAG: group room
-          // ###########################################
       }
       if (isset($this->_community_room_limit) and isset($this->_room_limit)) {
           if (-1 == $this->_community_room_limit) {
@@ -378,31 +350,6 @@ class cs_project_manager extends cs_room2_manager
           trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"', E_USER_WARNING);
       } else {
           return $result;
-      }
-  }
-
-  public function getSortedItemList($id_array, $sortBy)
-  {
-      $list = null;
-      if (empty($id_array)) {
-          return new cs_list();
-      } else {
-          $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ("'.implode('", "', encode(AS_DB, $id_array)).'") AND '.$this->addDatabasePrefix($this->_db_table).'.type LIKE "project"';
-          $query .= ' ORDER BY '.encode(AS_DB, $sortBy);
-          $result = $this->_db_connector->performQuery($query);
-          if (!isset($result)) {
-              trigger_error('Problems selecting list of '.$this->_room_type.' items from query: "'.$query.'"', E_USER_WARNING);
-          } else {
-              $list = new cs_list();
-              // filter items with highest version_id, doing this in MySQL would be too expensive
-              if (!empty($result)) {
-                  foreach ($result as $rs) {
-                      $list->add($this->_buildItem($rs));
-                  }
-              }
-          }
-
-          return $list;
       }
   }
 

@@ -420,7 +420,6 @@ class cs_item
     public function isValid()
     {
         $creator = $this->getCreatorID();
-      // $creation_date = $this->getCreationDate();
         return !empty($creator); // and !empty($creation_date);
     }
 
@@ -974,7 +973,6 @@ class cs_item
             $link_manager = $environment->getLinkManager();
             // preliminary version: there should be something like 'getIDArray() in the link_manager'
 
-            $id_array = [];
             $link_array = $link_manager->getLinks($link_type, $this, $this->getVersionID(), 'eq');
             $id_array = [];
             foreach ($link_array as $link) {
@@ -1076,31 +1074,8 @@ class cs_item
          }
      }
 
-    /** set data value
-     * this method sets values for the specified key and marks it as changed.
-     *
-     * @param mixed value to be changed
-     *
-     * @author CommSy Development Group
-     */
-    /*function _setValue($key, $value, $internal=TRUE) {
-       $this->_data[$key] = $value;
-       if ($internal) {
-          $this->_changed['general'] = TRUE;
-       } else {
-          $this->_changed[$key] = TRUE;
-       }
-   }*/
-
     public function _setValue($key, $value, $internal = true)
     {
-        /*
-        if(is_string($value)){
-           if(strpos($value,'<!-- KFC TEXT -->')!==false){
-              $value = correctFCKTags($value);
-           }
-        }
-        */
         $this->_data[$key] = $value;
         if ($internal) {
             $this->_changed['general'] = true;

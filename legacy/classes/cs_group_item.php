@@ -19,7 +19,7 @@ class cs_group_item extends cs_label_item
     /** constructor
      * the only available constructor, initial values for internal variables.
      *
-     * @param string label_type type of the label
+     * @param cs_environment $environment
      */
     public function __construct($environment)
     {
@@ -266,14 +266,13 @@ class cs_group_item extends cs_label_item
             $this->setGroupRoomItemID($grouproom_item->getItemID());
             $this->_save($label_manager);
         }
+
         // add current user to the group as a member
         if (isset($add_member) and $add_member) {
             $this->addMember($current_user_item);
         }
 
         $this->updateElastic();
-
-        unset($current_user_item);
     }
 
     /** save news item
