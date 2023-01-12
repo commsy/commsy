@@ -191,11 +191,9 @@ class cs_grouproom_item extends cs_room_item
         parent::delete();
 
         // delete associated tasks
-        $task_list = $this->_getTaskList();
-        $current_task = $task_list->getFirst();
-        while ($current_task) {
-            $current_task->delete();
-            $current_task = $task_list->getNext();
+        foreach ($this->_getTaskList() as $task) {
+            /** @var cs_task_item $task */
+            $task->delete();
         }
 
         // send mail to moderation
@@ -204,11 +202,9 @@ class cs_grouproom_item extends cs_room_item
         $manager = $this->_environment->getProjectManager();
         $this->_delete($manager);
 
-        // detach grouproom from group
+        // delete linked group
         $group = $this->getLinkedGroupItem();
-        $group->unsetGroupRoomActive();
-        $group->unsetGroupRoomItemID();
-        $group->saveOnlyItem();
+        $group->delete();
 
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
@@ -505,7 +501,7 @@ class cs_grouproom_item extends cs_room_item
         $this->_setExtra('PROJECT_ROOM_ITEM_ID', (int) $value);
     }
 
-    public function getLinkedGroupItem()
+    public function getLinkedGroupItem(): ?cs_group_item
     {
         $retour = null;
         if (!isset($this->_group_item)) {

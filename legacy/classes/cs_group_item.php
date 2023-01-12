@@ -26,35 +26,9 @@ class cs_group_item extends cs_label_item
         parent::__construct($environment, CS_GROUP_TYPE);
     }
 
-    public function isGroupRoomActivated()
+    public function isGroupRoomActivated(): bool
     {
-        $retour = false;
-        $value = $this->_getGroupRoomActive();
-        if ('1' == $value) {
-            $retour = true;
-        }
-
-        return $retour;
-    }
-
-    private function _getGroupRoomActive()
-    {
-        $retour = '';
-        if ($this->_issetExtra('GROUP_ROOM_ACTIVE')) {
-            $retour = $this->_getExtra('GROUP_ROOM_ACTIVE');
-        }
-
-        return $retour;
-    }
-
-    public function setGroupRoomActive()
-    {
-        $this->_setExtra('GROUP_ROOM_ACTIVE', '1');
-    }
-
-    public function unsetGroupRoomActive()
-    {
-        $this->_setExtra('GROUP_ROOM_ACTIVE', '-1');
+        return true;
     }
 
     public function setGroupRoomItemID($value)
@@ -71,59 +45,25 @@ class cs_group_item extends cs_label_item
 
     public function getGroupRoomItemID()
     {
-        $retour = '';
-        if ($this->_issetExtra('GROUP_ROOM_ID')) {
-            $retour = $this->_getExtra('GROUP_ROOM_ID');
-        }
-
-        return $retour;
+        return $this->_issetExtra('GROUP_ROOM_ID') ? $this->_getExtra('GROUP_ROOM_ID') : '';
     }
 
-    public function setDiscussionNotificationArray($value)
+    public function getGroupRoomItem(): ?cs_grouproom_item
     {
-        if (!empty($value)) {
-            $value = implode('§§', $value);
-            $this->_setExtra('DISCUSSION_NOTIFICATION_ARRAY', (string) $value);
-        } else {
-            $this->_unsetExtra('DISCUSSION_NOTIFICATION_ARRAY');
-        }
-    }
-
-    public function getDiscussionNotificationArray()
-    {
-        $retour = [];
-        if ($this->_issetExtra('DISCUSSION_NOTIFICATION_ARRAY')) {
-            $retour = $this->_getExtra('DISCUSSION_NOTIFICATION_ARRAY');
-            $retour = explode('§§', $retour);
-        }
-
-        return $retour;
-    }
-
-    public function getGroupRoomItem()
-    {
-        $retour = null;
         if ($this->_issetGroupRoomItemID()) {
-            $item_id = $this->getGroupRoomItemID();
             $grouproom_manager = $this->_environment->getGroupRoomManager();
-            $group_room = $grouproom_manager->getItem($item_id);
+            $group_room = $grouproom_manager->getItem($this->getGroupRoomItemID());
             if (isset($group_room) and !empty($group_room) and !$group_room->isDeleted()) {
-                $retour = $group_room;
+                return $group_room;
             }
         }
 
-        return $retour;
+        return null;
     }
 
-    private function _issetGroupRoomItemID()
+    private function _issetGroupRoomItemID(): bool
     {
-        $retour = false;
-        $item_id = $this->getGroupRoomItemID();
-        if (!empty($item_id)) {
-            $retour = true;
-        }
-
-        return $retour;
+        return !empty($this->getGroupRoomItemID());
     }
 
     /** save news item
@@ -132,60 +72,62 @@ class cs_group_item extends cs_label_item
     public function save($save_other = true)
     {
         $current_user_item = null;
-        if (!$this->_issetGroupRoomItemID() and $this->isGroupRoomActivated() and $save_other) {
-            $new_group_room = true;
-            // initiate group room
-            $grouproom_manager = $this->_environment->getGroupRoomManager();
-            $grouproom_item = $grouproom_manager->getNewItem();
-            $grouproom_item->setTitle(html_entity_decode($this->getTitle()));
-            $grouproom_item->setContextID($this->_environment->getCurrentPortalID());
-            $grouproom_item->setLinkedProjectRoomItemID($this->getContextID());
-            $grouproom_item->setCheckNewMemberNever();
-            $current_context = $this->_environment->getCurrentContextItem();
-            $language = $current_context->getLanguage();
-            $grouproom_item->setLanguage($language);
-            if ('user' == $language) {
-                $language = 'de';
-            }
-            $grouproom_item->setDescriptionByLanguage($this->getDescription(), $language);
-            $grouproom_item->open();
-            $grouproom_item->setHtmlTextAreaStatus($current_context->getHtmlTextAreaStatus());
+        $save_time = false;
 
-            // disable RRS-Feed for new project and community rooms
-            $grouproom_item->turnRSSOff();
+        /** @var cs_room_item $parentRoom */
+        $parentRoom = $this->getContextItem();
+        $portal = $parentRoom->getContextItem();
 
-            $item_id = $this->getItemID();
-            if (!empty($item_id)) {
-                $grouproom_item->setLinkedGroupItemID($item_id);
-            } else {
-                $save2 = true;
-            }
+        if ($save_other) {
+            if (!$this->_issetGroupRoomItemID() && $this->isGroupRoomActivated()) {
+                $new_group_room = true;
 
-            // picture / logo
-            $logo = $this->getPicture();
+                // initiate group room
+                $grouproom_manager = $this->_environment->getGroupRoomManager();
+                $grouproom_item = $grouproom_manager->getNewItem();
+                $grouproom_item->setTitle(html_entity_decode($this->getTitle()));
+                $grouproom_item->setContextID($portal->getId());
+                $grouproom_item->setLinkedProjectRoomItemID($parentRoom->getItemID());
+                $grouproom_item->setCheckNewMemberNever();
+                $language = $parentRoom->getLanguage();
+                $grouproom_item->setLanguage($language);
+                if ('user' == $language) {
+                    $language = 'de';
+                }
+                $grouproom_item->setDescriptionByLanguage($this->getDescription(), $language);
+                $grouproom_item->open();
+                $grouproom_item->setHtmlTextAreaStatus($parentRoom->getHtmlTextAreaStatus());
 
-            // Zeitpunkte
-            $portal_item = $this->_environment->getCurrentPortalItem();
-            if ($portal_item->showTime()) {
-                $save_time = true;
-            }
+                // disable RRS-Feed for new project and community rooms
+                $grouproom_item->turnRSSOff();
 
-            $grouproom_item->saveOnlyItem();
+                $item_id = $this->getItemID();
+                if (!empty($item_id)) {
+                    $grouproom_item->setLinkedGroupItemID($item_id);
+                } else {
+                    $save2 = true;
+                }
 
-            // add member of group to the group room
-            $current_user_item = $this->_environment->getCurrentUserItem();
-            $member_list = $this->getMemberItemList();
+                // picture / logo
+                $logo = $this->getPicture();
 
-            if ($member_list->isNotEmpty()) {
-                $member_item = $member_list->getFirst();
-                while ($member_item) {
+                // Zeitpunkte
+                $save_time = $portal->showTime();
+
+                $grouproom_item->saveOnlyItem();
+
+                // add member of group to the group room
+                $current_user_item = $this->_environment->getCurrentUserItem();
+                $member_list = $this->getMemberItemList();
+
+                foreach ($member_list as $member_item) {
                     if ($member_item->getItemID() != $current_user_item->getItemID()) {
                         $private_room_user_item = $member_item->getRelatedPrivateRoomUserItem();
                         $new_member_item = $private_room_user_item->cloneData();
                         $new_member_item->setContextID($grouproom_item->getItemID());
                         $new_member_item->makeUser();
 
-                        if ($portal_item->getConfigurationHideMailByDefault()) {
+                        if ($portal->getConfigurationHideMailByDefault()) {
                             $new_member_item->setEmailNotVisible();
                         }
 
@@ -202,51 +144,42 @@ class cs_group_item extends cs_label_item
                         $new_member_item->save();
                         $new_member_item->setCreatorID2ItemID();
                     }
-                    $member_item = $member_list->getNext();
                 }
-            }
-            // add current user to the group as a member
-            if (!$this->isMember($current_user_item)) {
-                $add_member = true;
-            }
-        } elseif ($this->_issetGroupRoomItemID()
-                   and $save_other
-        ) {
-            $grouproom_item = $this->getGroupRoomItem();
-            if (isset($grouproom_item) and !empty($grouproom_item)) {
-                $grouproom_item->setTitle(html_entity_decode($this->getTitle()));
 
-                // desctiption
-                $current_context = $this->_environment->getCurrentContextItem();
-                $language = $current_context->getLanguage();
-                $grouproom_item->setLanguage($language);
-                if ('user' == $language) {
-                    $language = 'de';
+                // add current user to the group as a member
+                $add_member = !$this->isMember($current_user_item);
+            } elseif ($this->_issetGroupRoomItemID()) {
+                $grouproom_item = $this->getGroupRoomItem();
+                if (isset($grouproom_item) and !empty($grouproom_item)) {
+                    $grouproom_item->setTitle(html_entity_decode($this->getTitle()));
+
+                    // description
+                    $language = $parentRoom->getLanguage();
+                    $grouproom_item->setLanguage($language);
+                    if ('user' == $language) {
+                        $language = 'de';
+                    }
+                    $grouproom_item->setDescriptionByLanguage($this->getDescription(), $language);
+
+                    // picture / logo
+                    $logo = $this->getPicture();
+                    if (empty($logo)) {
+                        $grouproom_item->setLogoFilename('');
+                    }
+                    $save2 = true;
                 }
-                $grouproom_item->setDescriptionByLanguage($this->getDescription(), $language);
-                // picture / logo
-                $logo = $this->getPicture();
-                if (empty($logo)) {
-                    $grouproom_item->setLogoFilename('');
-                }
-                $save2 = true;
             }
         }
 
         $label_manager = $this->_environment->getLabelManager();
         $this->_save($label_manager);
 
-        // NOTE: media upload in a group item's description field is currently disabled
-        // $this->_saveFiles();     // this must be done before saveFileLinks
-        // $this->_saveFileLinks(); // this must be done after saving so we can be sure to have an item id
-
-        if (isset($save_time) and $save_time) {
-            $context_item = $this->_environment->getCurrentContextItem();
-            if ($context_item->isContinuous()) {
+        if ($save_time) {
+            if ($parentRoom->isContinuous()) {
                 $grouproom_item->setContinuous();
                 $save2 = true;
             }
-            $time_list = $context_item->getTimeList();
+            $time_list = $parentRoom->getTimeList();
             if ($time_list->isNotEmpty()) {
                 $grouproom_item->setTimeList($time_list);
                 $save2 = true;

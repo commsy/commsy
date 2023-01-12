@@ -864,8 +864,7 @@ class UserService
     }
 
     /**
-     * @param Account $account
-     *
+     * @param int $contextId
      * @return cs_user_item|null
      */
     public function getUserModeratorsInContext(int $contextId): ?cs_list
@@ -875,8 +874,6 @@ class UserService
         $this->userManager->setStatusLimit(3);
         $this->userManager->select();
 
-        $userList = $this->userManager->get();
-
-        return $userList;
+        return $this->userManager->get();
     }
 }

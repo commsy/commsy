@@ -51,7 +51,6 @@ class GroupTransformer extends AbstractTransformer
     public function applyTransformation($groupObject, $groupData)
     {
         $groupObject->setTitle($groupData['title']);
-        $groupObject->setGroupRoomActive();
 
         return $groupObject;
     }
