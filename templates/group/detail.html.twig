@@ -157,48 +157,47 @@
                                         </li>
 
                                         {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                            {# delete #}
-                                            <li>
-                                                <a href="#" data-cs-action="{{ {
-                                                    'url': path('app_group_xhrdelete', {'roomId': roomId, 'itemId': group.itemId}),
-                                                    'action': 'delete',
-                                                    'itemId': group.itemId,
-                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                    'mode': 'click',
-                                                    'itemType': group.itemType,
-                                                    'title': 'list choice'|trans({},'rubric')|capitalize,
-                                                    'confirmQuestion': 'confirm delete'|trans({},'rubric'),
-                                                    'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
-                                                    'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
-                                                    'returnUrl': path('app_group_list', {'roomId': roomId})
-                                                }|json_encode|e('html_attr') }}">
-                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
-                                                </a>
-                                            </li>
+                                            {% if group.groupRoomItem is null %}
+                                                {# group delete only (if there is no group room #}
+                                                <li>
+                                                    <a href="#" data-cs-action="{{ {
+                                                        'url': path('app_group_xhrdelete', {'roomId': roomId, 'itemId': group.itemId}),
+                                                        'action': 'delete',
+                                                        'itemId': group.itemId,
+                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                        'mode': 'click',
+                                                        'itemType': group.itemType,
+                                                        'title': 'list choice'|trans({},'rubric')|capitalize,
+                                                        'confirmQuestion': 'confirm delete'|trans({},'rubric'),
+                                                        'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
+                                                        'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
+                                                        'returnUrl': path('app_group_list', {'roomId': roomId})
+                                                    }|json_encode|e('html_attr') }}">
+                                                        <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                    </a>
+                                                </li>
+                                            {% else %}
+                                                {# delete group  and group room #}
+                                                <li>
+                                                    <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': group.groupRoomItem.itemId}) }}">
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({}, 'rubric') }}
+                                                    </a>
+                                                </li>
 
-                                            {% set groupRoomItem = group.groupRoomItem %}
-                                            {% if group.isGroupRoomActivated and groupRoomItem is not null %}
                                                 {# separator #}
                                                 <li>&nbsp;</li>
 
                                                 {# lock group room #}
                                                 <li>
-                                                    {% if groupRoomItem.isLocked %}
+                                                    {% if group.groupRoomItem.isLocked %}
                                                         <a href="{{ path('app_group_unlockgrouproom', {'roomId': roomId, 'itemId': group.itemId}) }}">
                                                             <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify uk-visible-large"></i> {{ 'Unlock group workspace'|trans({}, 'group') }}
                                                         </a>
                                                     {% else %}
-                                                        <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': groupRoomItem.itemId}) }}">
+                                                        <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': group.groupRoomItem.itemId}) }}">
                                                             <i class="uk-icon-justify uk-icon-small uk-icon-lock uk-visible-large"></i> {{ 'Lock group workspace'|trans({}, 'group') }}
                                                         </a>
                                                     {% endif %}
-                                                </li>
-
-                                                {# delete group room #}
-                                                <li>
-                                                    <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': groupRoomItem.itemId}) }}">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'Delete group workspace'|trans({}, 'group') }}
-                                                    </a>
                                                 </li>
                                             {% endif %}
 

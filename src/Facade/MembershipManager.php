@@ -61,7 +61,9 @@ class MembershipManager
     /**
      * Return Boolean if the last moderator.
      *
-     * @param Account $account
+     * @param cs_room_item $room
+     * @param $currentUser
+     * @return bool
      */
     public function isLastModerator(cs_room_item $room, $currentUser): bool
     {
