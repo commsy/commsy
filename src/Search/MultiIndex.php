@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Search;
 
 use Elastica\Collapse;
@@ -15,21 +26,13 @@ class MultiIndex extends Index
 {
     /**
      * Array of indices.
-     *
-     * @var array
      */
     protected array $indices = [];
-    /**
-     * @var array
-     */
+
     protected array $types = [];
 
     /**
      * Add array of indices at once.
-     *
-     * @param array $indices
-     *
-     * @return $this
      */
     public function addIndices(array $indices = []): MultiIndex
     {
@@ -45,11 +48,9 @@ class MultiIndex extends Index
      *
      * @param Index|string $index Index object or string
      *
-     * @return $this
      * @throws InvalidException
-     *
      */
-    public function addIndex($index): MultiIndex
+    public function addIndex(Index|string $index): MultiIndex
     {
         if ($index instanceof Index) {
             $index = $index->getName();
@@ -59,21 +60,17 @@ class MultiIndex extends Index
             throw new InvalidException('Invalid param type');
         }
 
-        $this->indices[] = (string)$index;
+        $this->indices[] = (string) $index;
 
         return $this;
     }
 
     /**
      * @param AbstractQuery|array|Collapse|Query|string|Suggest $query
-     * @param null $options
-     * @param BuilderInterface|null $builder
-     *
-     * @return Search
+     * @param null                                              $options
      */
     public function createSearch($query = '', $options = null, ?BuilderInterface $builder = null): Search
     {
-
         $search = new Search($this->getClient(), $builder);
         $search->addIndices($this->getIndices());
         $search->setOptionsAndQuery($options, $query);
@@ -91,17 +88,11 @@ class MultiIndex extends Index
         return $this->indices;
     }
 
-    /**
-     * @return array
-     */
     public function getTypes(): array
     {
         return $this->types;
     }
 
-    /**
-     * @param array $types
-     */
     public function addTypes(array $types): void
     {
         $this->types = $types;

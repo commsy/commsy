@@ -1,27 +1,28 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Services\EtherpadService;
 use App\Services\LegacyEnvironment;
 use App\Utils\MaterialService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class EtherpadController extends AbstractController
 {
-    /**
-     * @Template()
-     * @param Request $request
-     * @param MaterialService $materialService
-     * @param EtherpadService $etherpadService
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param int $materialId
-     * @param int $roomId
-     * @return array
-     */
     public function indexAction(
         int $materialId,
         int $roomId,
@@ -29,12 +30,12 @@ class EtherpadController extends AbstractController
         MaterialService $materialService,
         EtherpadService $etherpadService,
         LegacyEnvironment $legacyEnvironment
-    ) {
+    ): Response {
         $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
 
         $material = $materialService->getMaterial($materialId);
 
-        # Init etherpad
+        // Init etherpad
         $client = $etherpadService->getClient();
         $author = $client->createAuthorIfNotExistsFor($currentUser->getItemId(), $currentUser->getFullname());
 
@@ -43,8 +44,8 @@ class EtherpadController extends AbstractController
         // id lookup
         $pads = $client->listPads($group->groupID);
 
-        # If a pad for the current material does not exist, create one
-        if ($material !== null) {
+        // If a pad for the current material does not exist, create one
+        if (null !== $material) {
             if (!$material->getEtherpadEditorID() || !in_array($material->getEtherpadEditorID(), $pads->padIDs)) {
                 // plain material id vs. material id + random string?
                 $pad = $client->createGroupPad($group->groupID, $materialId, '');
@@ -54,22 +55,22 @@ class EtherpadController extends AbstractController
             }
         }
 
-        # create etherpad session with author and group
+        // create etherpad session with author and group
         $timestamp = time() + (60 * 60 * 24);
         $session = $client->createSession($group->groupID, $author->authorID, $timestamp);
-        setcookie('sessionID', $session->sessionID, $timestamp, '/', '.' . $request->getHost());
+        setcookie('sessionID', $session->sessionID, ['expires' => $timestamp, 'path' => '/', 'domain' => '.'.$request->getHost()]);
 
         $fs = new Filesystem();
         $baseUrl = $etherpadService->getBaseUrl();
 
         if (!$fs->isAbsolutePath($baseUrl)) {
-            $baseUrl = $request->getBaseUrl() . '/' . $baseUrl;
+            $baseUrl = $request->getBaseUrl().'/'.$baseUrl;
         }
 
-        return [
+        return $this->render('etherpad/index.html.twig', [
             'materialId' => $materialId,
             'etherpadId' => $material->getEtherpadEditorID(),
             'baseUrl' => $baseUrl,
-        ];
+        ]);
     }
 }

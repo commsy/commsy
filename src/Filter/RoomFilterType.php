@@ -1,4 +1,16 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Filter;
 
 use App\Services\LegacyEnvironment;
@@ -13,14 +25,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RoomFilterType extends AbstractType
 {
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
 
-    /**
-     * @param LegacyEnvironment $legacyEnvironment
-     */
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -30,9 +36,9 @@ class RoomFilterType extends AbstractType
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
      * Type extensions can further modify the form.
-     * 
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -68,7 +74,7 @@ class RoomFilterType extends AbstractType
                     foreach ($tokens as $num => $token) {
                         $fieldOr = $expr->orX();
                         foreach (['title', 'contactPersons', 'roomDescription'] as $field) {
-                            $fieldOr->add($expr->like('r.' . $field, ':token' . $num));
+                            $fieldOr->add($expr->like('r.'.$field, ':token'.$num));
                         }
 
                         $qb->andWhere($fieldOr);
@@ -96,7 +102,7 @@ class RoomFilterType extends AbstractType
                         return null;
                     }
 
-                    if ($values['value'] === false) {
+                    if (false === $values['value']) {
                         return null;
                     }
 
@@ -115,7 +121,23 @@ class RoomFilterType extends AbstractType
             ])
             ->add('archived', Filters\CheckboxFilterType::class, [
                 'label' => 'hide-archived-rooms',
-                'apply_filter' => false, // disable filter
+                'apply_filter' => function (QueryInterface $filterQuery, $field, $values) {
+                    if (empty($values['value'])) {
+                        return null;
+                    }
+
+                    if (false === $values['value']) {
+                        return null;
+                    }
+
+                    /** @var QueryBuilder $qb */
+                    $qb = $filterQuery->getQueryBuilder();
+                    $qb
+                        ->andWhere('r.archived = :archived')
+                        ->setParameter('archived', false);
+
+                    return $qb;
+                },
                 'translation_domain' => 'room',
                 'label_attr' => [
                     'class' => 'uk-form-label',
@@ -124,7 +146,7 @@ class RoomFilterType extends AbstractType
 
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         $showRooms = $portalItem->getShowRoomsOnHome();
-        if ($showRooms !== 'onlyprojectrooms' && $showRooms !== 'onlycommunityrooms') {
+        if ('onlyprojectrooms' !== $showRooms && 'onlycommunityrooms' !== $showRooms) {
             $builder
                 ->add('type', Filters\ChoiceFilterType::class, [
                     'choices' => [
@@ -148,30 +170,18 @@ class RoomFilterType extends AbstractType
     }
 
     /**
-     * Returns the prefix of the template block name for this type.
-     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
-     * (e.g. "UserProfileType" => "user_profile").
-     * 
-     * @return string The prefix of the template block name
-     */
-    public function getBlockPrefix()
-    {
-        return 'room_filter';
-    }
-
-    /**
      * Configures the options for this type.
-     * 
-     * @param  OptionsResolver $resolver The resolver for the options
+     *
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setRequired(['showTime', 'timePulses', 'timePulsesDisplayName'])
             ->setDefaults([
-                'csrf_protection'   => false,
+                'csrf_protection' => false,
                 'validation_groups' => ['filtering'], // avoid NotBlank() constraint-related message
-                'method'            => 'get',
+                'method' => 'get',
             ])
         ;
     }

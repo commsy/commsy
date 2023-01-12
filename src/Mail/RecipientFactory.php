@@ -1,13 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 2019-03-18
- * Time: 17:26
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Mail;
-
 
 use App\Entity\Account;
 use cs_room_item;
@@ -15,18 +19,13 @@ use cs_user_item;
 
 class RecipientFactory
 {
-    /**
-     * @param cs_room_item $room
-     * @param callable|null $callback
-     * @return array
-     */
     public static function createModerationRecipients(cs_room_item $room, callable $callback = null): array
     {
         $recipients = [];
 
         $moderators = $room->getModeratorList();
         foreach ($moderators as $moderator) {
-            /** @var cs_user_item $moderator */
+            /* @var cs_user_item $moderator */
             if ($callback) {
                 if ($callback($moderator)) {
                     $recipients[] = self::createRecipient($moderator);
@@ -39,10 +38,6 @@ class RecipientFactory
         return $recipients;
     }
 
-    /**
-     * @param cs_user_item $user
-     * @return Recipient
-     */
     public static function createRecipient(cs_user_item $user): Recipient
     {
         $recipient = new Recipient();
@@ -53,9 +48,9 @@ class RecipientFactory
         $room = $user->getContextItem();
 
         $language = $room->getLanguage();
-        if ($language === 'user') {
+        if ('user' === $language) {
             $language = $user->getLanguage();
-            if ($language === 'browser') {
+            if ('browser' === $language) {
                 // TODO: Get default language from parameters
                 $language = 'de';
             }
@@ -66,13 +61,6 @@ class RecipientFactory
         return $recipient;
     }
 
-    /**
-     * @param string $email
-     * @param string $firstname
-     * @param string $lastname
-     * @param string $language
-     * @return Recipient
-     */
     public static function createFromRaw(
         string $email,
         string $firstname = '',
@@ -88,10 +76,6 @@ class RecipientFactory
         return $recipient;
     }
 
-    /**
-     * @param Account $account
-     * @return Recipient
-     */
     public static function createFromAccount(
         Account $account
     ): Recipient {

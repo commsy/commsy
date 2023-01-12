@@ -1,15 +1,26 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Security\Authorization\Voter;
 
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-
 use App\Services\LegacyEnvironment;
+use LogicException;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class CalendarsVoter extends Voter
 {
-    const EDIT = 'CALENDARS_EDIT';
+    public const EDIT = 'CALENDARS_EDIT';
 
     private $legacyEnvironment;
 
@@ -20,9 +31,7 @@ class CalendarsVoter extends Voter
 
     protected function supports($attribute, $object)
     {
-        return in_array($attribute, array(
-            self::EDIT,
-        ));
+        return in_array($attribute, [self::EDIT]);
     }
 
     protected function voteOnAttribute($attribute, $object, TokenInterface $token)
@@ -36,30 +45,17 @@ class CalendarsVoter extends Voter
         // }
 
         $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
-        
-        switch ($attribute) {
-            case self::EDIT:
-                return $this->canEdit($currentRoom);
 
-                // TODO:
-                // // my stack check
-                // if (isset($this->_data["roomId"])) {
-                //     $roomId = $this->_data["roomId"];
-                //     $ownRoomItem = $currentUser->getOwnRoom();
-                    
-                //     if ($roomId === $ownRoomItem->getItemID()) {
-                //         return true;
-                //     }
-                // }
-        }
-
-        throw new \LogicException('This code should not be reached!');
+        return match ($attribute) {
+            self::EDIT => $this->canEdit($currentRoom),
+            default => throw new LogicException('This code should not be reached!'),
+        };
     }
 
     private function canEdit($currentRoom)
     {
         // categories are not editable in archived rooms
-        if ($currentRoom->isArchived()) {
+        if (method_exists($currentRoom, 'getArchived') && $currentRoom->getArchived()) {
             return false;
         }
 

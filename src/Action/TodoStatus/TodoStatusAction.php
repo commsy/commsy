@@ -1,41 +1,33 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 03.07.18
- * Time: 18:11
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Action\TodoStatus;
 
-
-use App\Utils\TodoService;
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
+use App\Utils\TodoService;
+use cs_room_item;
+use cs_todo_item;
+use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TodoStatusAction implements ActionInterface
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private TranslatorInterface $translator;
+    private ?string $newStatus = null;
 
-    /**
-     * @var TodoService
-     */
-    private TodoService $todoService;
-
-    /**
-     * @var string
-     */
-    private $newStatus;
-
-    public function __construct(TranslatorInterface $translator, TodoService $todoService)
+    public function __construct(private TranslatorInterface $translator, private TodoService $todoService)
     {
-        $this->translator = $translator;
-        $this->todoService = $todoService;
     }
 
     public function setNewStatus(string $newStatus): void
@@ -44,15 +36,14 @@ class TodoStatusAction implements ActionInterface
     }
 
     /**
-     * @param \cs_room_item $roomItem
-     * @param \cs_todo_item[] $items
-     * @return Response
-     * @throws \Exception
+     * @param cs_todo_item[] $items
+     *
+     * @throws Exception
      */
-    public function execute(\cs_room_item $roomItem, array $items): Response
+    public function execute(cs_room_item $roomItem, array $items): Response
     {
         if (!$this->newStatus) {
-            throw new \Exception('no status set for update');
+            throw new Exception('no status set for update');
         }
 
         // map status string to int
@@ -69,7 +60,7 @@ class TodoStatusAction implements ActionInterface
         }
 
         if (!$newStatus) {
-            throw new \Exception('status not found');
+            throw new Exception('status not found');
         }
 
         foreach ($items as $item) {
@@ -80,11 +71,11 @@ class TodoStatusAction implements ActionInterface
         }
 
         if (isset($statusMap[$this->newStatus])) {
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->trans('Set status of %count% entries to ' . $this->newStatus, [
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$this->translator->trans('Set status of %count% entries to '.$this->newStatus, [
                     '%count%' => count($items),
                 ]);
         } else {
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $this->translator->trans('Set status of %count% entries to %status%', [
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$this->translator->trans('Set status of %count% entries to %status%', [
                     '%count%' => count($items),
                     '%status%' => $this->newStatus,
                 ]);

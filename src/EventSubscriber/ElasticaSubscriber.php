@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\EventSubscriber;
 
 use App\Services\LegacyEnvironment;
@@ -26,43 +37,18 @@ use Symfony\Component\Mime\MimeTypes;
 
 class ElasticaSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
 
     /**
-     * @var ItemService
-     */
-    private ItemService $itemService;
-
-    /**
-     * @var IndexManager
-     */
-    private IndexManager $indexManager;
-
-    /**
-     * @var ParameterBagInterface
-     */
-    private ParameterBagInterface $parameterBag;
-
-    /**
      * ElasticCustomPropertyListener constructor.
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param ItemService $itemService
-     * @param IndexManager $indexManager
-     * @param ParameterBagInterface $parameterBag
      */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        ItemService $itemService,
-        IndexManager $indexManager,
-        ParameterBagInterface $parameterBag
+        private ItemService $itemService,
+        private IndexManager $indexManager,
+        private ParameterBagInterface $parameterBag
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->itemService = $itemService;
-        $this->indexManager = $indexManager;
-        $this->parameterBag = $parameterBag;
     }
 
     public static function getSubscribedEvents(): array
@@ -81,7 +67,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
         $attachmentPipelineId = 'attachment';
 
         $response = $pipeline->getPipeline($attachmentPipelineId);
-        if ($response->getStatus() === 404) {
+        if (404 === $response->getStatus()) {
             $pipeline->setId($attachmentPipelineId);
             $pipeline->setDescription('Pipeline for attachments');
 
@@ -106,7 +92,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
                 'processors' => [
                     $foreachAttachmentProcessor->toArray(),
                     $foreachRemoveProcessor->toArray(),
-                ]
+                ],
             ];
             $index->getClient()->request(
                 "_ingest/pipeline/$attachmentPipelineId",
@@ -119,7 +105,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param PostTransformEvent $event
      * @throws InvalidArgumentException
      */
     public function addCustomProperty(PostTransformEvent $event)
@@ -188,7 +173,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param PostTransformEvent $event
      * @throws InvalidArgumentException
      */
     private function addHashtags(PostTransformEvent $event)
@@ -214,7 +198,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param PostTransformEvent $event
      * @throws InvalidArgumentException
      */
     private function addTags(PostTransformEvent $event)
@@ -244,7 +227,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param PostTransformEvent $event
      * @throws InvalidArgumentException
      */
     private function addContext(PostTransformEvent $event)
@@ -262,7 +244,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param PostTransformEvent $event
      * @throws InvalidArgumentException
      */
     private function addAnnotations(PostTransformEvent $event)
@@ -287,9 +268,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param PostTransformEvent $event
-     */
     private function addAttachments(PostTransformEvent $event)
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
@@ -304,10 +282,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param cs_list $files
-     * @return array
-     */
     private function getBase64ContentofAllFiles(cs_list $files): array
     {
         $filesBase64 = [];
@@ -315,11 +289,11 @@ class ElasticaSubscriber implements EventSubscriberInterface
         foreach ($files as $legacyFile) {
             /** @var cs_file_item $legacyFile */
             if (!$legacyFile->isDeleted()) {
-                $fileInfo = pathinfo($this->parameterBag->get('kernel.project_dir') . '/' . $legacyFile->getFilepath());
+                $fileInfo = pathinfo($this->parameterBag->get('kernel.project_dir').'/'.$legacyFile->getFilepath());
                 $dirname = $fileInfo['dirname'];
                 $basename = $fileInfo['basename'];
 
-                if (!file_exists($dirname . '/' . $basename)) {
+                if (!file_exists($dirname.'/'.$basename)) {
                     continue;
                 }
 
@@ -359,9 +333,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
         return $filesBase64;
     }
 
-    /**
-     * @param $event
-     */
     public function addDiscussionArticles($event)
     {
         $discussionManager = $this->legacyEnvironment->getDiscussionManager();
@@ -378,7 +349,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
 //                        $filesBase64 = $this->getBase64ContentofAllFiles($files);
 
                         $articleContents[] = [
-                            'subject' => $article->getSubject(),
                             'description' => $article->getDescription(),
                         ];
                     }
@@ -392,12 +362,11 @@ class ElasticaSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param $event
      * @throws InvalidArgumentException
      */
     public function addSteps($event)
     {
-        $todoManager = $this->legacyEnvironment->getTodoManager();
+        $todoManager = $this->legacyEnvironment->getTodosManager();
         $todo = $todoManager->getItem($event->getObject()->getItemId());
 
         if ($todo) {
@@ -428,9 +397,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param $event
-     */
     public function addSections($event)
     {
         $materialManager = $this->legacyEnvironment->getMaterialManager();
@@ -460,9 +426,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param $event
-     */
     public function addParentRoomIds($event)
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
@@ -485,15 +448,12 @@ class ElasticaSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param $event
-     */
     public function addCreator($event)
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
         if ($item) {
-            if ($item->getItemType() !== CS_USER_TYPE) {
+            if (CS_USER_TYPE !== $item->getItemType()) {
                 return;
             }
 
@@ -516,15 +476,12 @@ class ElasticaSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param $event
-     */
     public function addModifier($event)
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
         if ($item) {
-            if ($item->getItemType() !== CS_USER_TYPE) {
+            if (CS_USER_TYPE !== $item->getItemType()) {
                 return;
             }
 
@@ -547,10 +504,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param $contextId
-     * @return bool
-     */
     private function setLegacyContext($contextId): bool
     {
         $contextItem = $this->itemService->getTypedItem($contextId);

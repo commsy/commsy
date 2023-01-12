@@ -1,14 +1,25 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Action\Activate\ActivateAction;
 use App\Action\Activate\DeactivateAction;
+use App\Action\Delete\DeleteAction;
+use App\Action\Download\DownloadAction;
 use App\Action\Mark\CategorizeAction;
 use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
-use App\Action\Delete\DeleteAction;
-use App\Action\Download\DownloadAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Action\MarkRead\MarkReadTodo;
 use App\Action\TodoStatus\TodoStatusAction;
@@ -33,60 +44,40 @@ use cs_todo_item;
 use cs_user_item;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
- * Class TodoController
- * @package App\Controller
- * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'todo')")
+ * Class TodoController.
  */
+#[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'todo')")]
 class TodoController extends BaseController
 {
-
-    /**
-     * @var TodoService
-     */
     private TodoService $todoService;
     private SessionInterface $session;
 
-    /**
-     * @required
-     * @param TodoService $todoService
-     */
+    #[Required]
     public function setTodoService(TodoService $todoService): void
     {
         $this->todoService = $todoService;
     }
 
-
-    /**
-     * @required
-     * @param SessionInterface $session
-     */
+    #[Required]
     public function setSession(SessionInterface $session): void
     {
         $this->session = $session;
     }
 
-
-
-    /**
-     * @Route("/room/{roomId}/todo")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/todo')]
     public function listAction(
         Request $request,
         int $roomId
-    ) {
+    ): Response {
         $roomItem = $this->roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
@@ -111,38 +102,19 @@ class TodoController extends BaseController
         $itemsCountArray = $this->todoService->getCountArray($roomId);
 
         $usageInfo = false;
-        if ($roomItem->getUsageInfoTextForRubricInForm('todo') != '') {
+        if ('' != $roomItem->getUsageInfoTextForRubricInForm('todo')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('todo');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('todo');
         }
 
-        return array(
-            'roomId' => $roomId,
-            'form' => $filterForm->createView(),
-            'module' => 'todo',
-            'itemsCountArray' => $itemsCountArray,
-            'showHashTags' => $roomItem->withBuzzwords(),
-            'showAssociations' => $roomItem->withAssociations(),
-            'showCategories' => $roomItem->withTags(),
-            'statusList' => $roomItem->getExtraToDoStatusArray(),
-            'usageInfo' => $usageInfo,
-            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
-            'catzExpanded' => $roomItem->isTagsShowExpanded(),
-            'isArchived' => $roomItem->isArchived(),
-            'user' => $this->legacyEnvironment->getCurrentUserItem(),
-            'sort' => $sort,
-        );
+        return $this->render('todo/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm->createView(), 'module' => 'todo', 'itemsCountArray' => $itemsCountArray, 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => $roomItem->withAssociations(), 'showCategories' => $roomItem->withTags(), 'statusList' => $roomItem->getExtraToDoStatusArray(), 'usageInfo' => $usageInfo, 'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(), 'catzExpanded' => $roomItem->isTagsShowExpanded(), 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'sort' => $sort]);
     }
 
-    /**
-     * @Route("/room/{roomId}/todo/create")
-     * @param int $roomId
-     * @return RedirectResponse
-     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'todo')")
-     */
+    #[Route(path: '/room/{roomId}/todo/create')]
+    #[Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'todo')")]
     public function createAction(
         int $roomId
-    ) {
+    ): RedirectResponse {
         // create new todo item
         $todoItem = $this->todoService->getNewTodo();
         $todoItem->setDraftStatus(1);
@@ -150,20 +122,10 @@ class TodoController extends BaseController
         $todoItem->save();
 
         return $this->redirectToRoute('app_todo_detail',
-            array('roomId' => $roomId, 'itemId' => $todoItem->getItemId()));
+            ['roomId' => $roomId, 'itemId' => $todoItem->getItemId()]);
     }
 
-    /**
-     * @Route("/room/{roomId}/todo/feed/{start}/{sort}")
-     * @Template()
-     * @param Request $request
-     * @param AssessmentService $assessmentService
-     * @param int $roomId
-     * @param int $max
-     * @param int $start
-     * @param string $sort
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/todo/feed/{start}/{sort}')]
     public function feedAction(
         Request $request,
         AssessmentService $assessmentService,
@@ -171,7 +133,7 @@ class TodoController extends BaseController
         int $max = 10,
         int $start = 0,
         string $sort = ''
-    ) {
+    ): Response {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $todoFilter = $request->get('todoFilter');
@@ -209,73 +171,41 @@ class TodoController extends BaseController
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = array();
-        $allowedActions = array();
+        $readerList = [];
+        $allowedActions = [];
         foreach ($todos as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
 
             if ($this->isGranted('ITEM_EDIT', $item->getItemID()) or
-                ($this->isGranted('ITEM_ENTER', $roomId)) and $roomItem->getType() == 'userroom'
-                or ($roomItem->getType() == 'project' and $this->isGranted('ITEM_PARTICIPATE', $roomId))) {
-                $allowedActions[$item->getItemID()] = array(
-                    'markread',
-                    'mark',
-                    'categorize',
-                    'hashtag',
-                    'activate',
-                    'deactivate',
-                    'save',
-                    'delete',
-                    'markpending',
-                    'markinprogress',
-                    'markdone'
-                );
+                $this->isGranted('ITEM_ENTER', $roomId) and 'userroom' == $roomItem->getType()
+                or ('project' == $roomItem->getType() and $this->isGranted('ITEM_PARTICIPATE', $roomId))) {
+                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'categorize', 'hashtag', 'activate', 'deactivate', 'save', 'delete', 'markpending', 'markinprogress', 'markdone'];
 
                 $statusArray = $roomItem->getExtraToDoStatusArray();
                 foreach ($statusArray as $tempStatus) {
-                    $allowedActions[$item->getItemID()][] = 'mark' . $tempStatus;
+                    $allowedActions[$item->getItemID()][] = 'mark'.$tempStatus;
                 }
             } else {
-                $allowedActions[$item->getItemID()] = array('markread', 'mark', 'save');
+                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'save'];
             }
         }
 
-        $ratingList = array();
+        $ratingList = [];
         if ($current_context->isAssessmentActive()) {
-            $itemIds = array();
+            $itemIds = [];
             foreach ($todos as $todo) {
                 $itemIds[] = $todo->getItemId();
             }
             $ratingList = $assessmentService->getListAverageRatings($itemIds);
         }
 
-        return array(
-            'roomId' => $roomId,
-            'todos' => $todos,
-            'readerList' => $readerList,
-            'showRating' => $current_context->isAssessmentActive(),
-            'showWorkflow' => $current_context->withWorkflow(),
-            'ratingList' => $ratingList,
-            'allowedActions' => $allowedActions,
-        );
+        return $this->render('todo/feed.html.twig', ['roomId' => $roomId, 'todos' => $todos, 'readerList' => $readerList, 'showRating' => $current_context->isAssessmentActive(), 'showWorkflow' => $current_context->withWorkflow(), 'ratingList' => $ratingList, 'allowedActions' => $allowedActions]);
     }
 
     /**
-     * @Route("/room/{roomId}/todo/{itemId}", requirements={
-     *     "itemId": "\d+"
-     * }))
-     * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'todo')")
-     * @param Request $request
-     * @param AnnotationService $annotationService
-     * @param AssessmentService $assessmentService
-     * @param CategoryService $categoryService
-     * @param TopicService $topicService
-     * @param LegacyMarkup $legacyMarkup
-     * @param int $roomId
-     * @param int $itemId
      * @return array
      */
+    #[Route(path: '/room/{roomId}/todo/{itemId}', requirements: ['itemId' => '\d+'])]
     public function detailAction(
         Request $request,
         AnnotationService $annotationService,
@@ -285,7 +215,7 @@ class TodoController extends BaseController
         LegacyMarkup $legacyMarkup,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $todo = $this->todoService->getTodo($itemId);
         /** @var cs_step_item[] $steps */
         $steps = $todo->getStepItemList()->to_array();
@@ -319,7 +249,7 @@ class TodoController extends BaseController
             $stepItem = $stepList->getNext();
         }
 
-        $itemArray = array($todo);
+        $itemArray = [$todo];
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -336,7 +266,7 @@ class TodoController extends BaseController
 
         /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
-        $id_array = array();
+        $id_array = [];
         while ($current_user) {
             $id_array[] = $current_user->getItemID();
             $current_user = $user_list->getNext();
@@ -348,16 +278,16 @@ class TodoController extends BaseController
                 $current_user->getItemID());
             if (!empty($current_reader)) {
                 if ($current_reader['read_date'] >= $todo->getModificationDate()) {
-                    $read_count++;
-                    $read_since_modification_count++;
+                    ++$read_count;
+                    ++$read_since_modification_count;
                 } else {
-                    $read_count++;
+                    ++$read_count;
                 }
             }
             $current_user = $user_list->getNext();
         }
-        $readerList = array();
-        $modifierList = array();
+        $readerList = [];
+        $modifierList = [];
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
             if (empty($reader)) {
@@ -372,14 +302,14 @@ class TodoController extends BaseController
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $categories = array();
+        $categories = [];
         if ($current_context->withTags()) {
             $roomCategories = $categoryService->getTags($roomId);
             $todoCategories = $todo->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $todoCategories);
         }
 
-        $ratingDetail = array();
+        $ratingDetail = [];
         if ($current_context->isAssessmentActive()) {
             $ratingDetail = $assessmentService->getRatingDetail($todo);
             $ratingAverageDetail = $assessmentService->getAverageRatingDetail($todo);
@@ -394,7 +324,7 @@ class TodoController extends BaseController
         $alert = null;
         if ($this->todoService->getTodo($itemId)->isLocked()) {
             $alert['type'] = 'warning';
-            $alert['content'] = $this->translator->trans('item is locked', array(), 'item');
+            $alert['content'] = $this->translator->trans('item is locked', [], 'item');
         }
 
         $pathTopicItem = null;
@@ -406,7 +336,7 @@ class TodoController extends BaseController
         $amountAnnotations = $annotationService->getListAnnotations($roomId,
             $this->todoService->getTodo($itemId)->getItemId(), null, null);
 
-        return array(
+        return $this->render('todo/detail.html.twig', [
             'roomId' => $roomId,
             'todo' => $this->todoService->getTodo($itemId),
             'amountAnnotations' => sizeof($amountAnnotations),
@@ -435,62 +365,43 @@ class TodoController extends BaseController
             'isParticipating' => $todo->isProcessor($this->legacyEnvironment->getCurrentUserItem()),
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
-            'isArchived' => $current_context->isArchived(),
-        );
+            'isArchived' => $current_context->isArchived()
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/todo/{itemId}/createstep")
-     * @Template("todo/edit_step.html.twig")
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo') or is_granted('ITEM_USERROOM', itemId) or is_granted('ITEM_PARTICIPATE', itemId)")
-     * @param TodoTransformer $transformer
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/todo/{itemId}/createstep')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo') or is_granted('ITEM_USERROOM', itemId) or is_granted('ITEM_PARTICIPATE', itemId)")]
     public function createStepAction(
         TodoTransformer $transformer,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $step = $this->todoService->getNewStep();
         $step->setDraftStatus(1);
         $step->setTodoID($itemId);
         $step->save();
 
         $formData = $transformer->transform($step);
-        $form = $this->createForm(StepType::class, $formData, array(
-            'action' => $this->generateUrl('app_todo_editstep', [
-                'roomId' => $roomId,
-                'itemId' => $step->getItemID()
-            ]),
-            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
-        ));
+        $form = $this->createForm(StepType::class, $formData, ['action' => $this->generateUrl('app_todo_editstep', [
+            'roomId' => $roomId,
+            'itemId' => $step->getItemID(),
+        ]), 'placeholderText' => '['.$this->translator->trans('insert title').']']);
 
-        return [
+        return $this->render('todo/edit_step.html.twig', [
             'form' => $form->createView(),
             'step' => $step,
             'new' => true,
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/todo/{itemId}/editstep")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
-     * @param Request $request
-     * @param TodoTransformer $transformer
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/todo/{itemId}/editstep')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")]
     public function editStepAction(
         Request $request,
         TodoTransformer $transformer,
         int $roomId,
         int $itemId
-    ) {
-
+    ): Response {
         $item = $this->itemService->getItem($itemId);
 
         // get step
@@ -501,9 +412,9 @@ class TodoController extends BaseController
         $form = $this->createForm(StepType::class, $formData, [
             'action' => $this->generateUrl('app_todo_editstep', [
                 'roomId' => $roomId,
-                'itemId' => $step->getItemID()
+                'itemId' => $step->getItemID(),
             ]),
-            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
+            'placeholderText' => '['.$this->translator->trans('insert title').']',
         ]);
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()), CommsyEditEvent::EDIT);
@@ -512,7 +423,6 @@ class TodoController extends BaseController
         if ($form->isSubmitted()) {
             if ($form->get('save')->isClicked()) {
                 if ($form->isSubmitted() && $form->isValid()) {
-
                     $formData = $form->getData();
 
                     // update title
@@ -542,7 +452,7 @@ class TodoController extends BaseController
                     return $this->redirectToRoute('app_todo_detail', [
                         'roomId' => $roomId,
                         'itemId' => $step->getTodoID(),
-                        '_fragment' => 'step' . $itemId,
+                        '_fragment' => 'step'.$itemId,
                     ]);
                 }
             } else {
@@ -559,24 +469,14 @@ class TodoController extends BaseController
             }
         }
 
-        return [
+        return $this->render('todo/edit_step.html.twig', [
             'form' => $form->createView(),
             'step' => $step,
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/todo/{itemId}/edit")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
-     * @param Request $request
-     * @param CategoryService $categoryService
-     * @param LabelService $labelService
-     * @param TodoTransformer $transformer
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/todo/{itemId}/edit')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")]
     public function editAction(
         Request $request,
         CategoryService $categoryService,
@@ -584,7 +484,7 @@ class TodoController extends BaseController
         TodoTransformer $transformer,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         /** @var cs_item $item */
         $item = $this->itemService->getItem($itemId);
 
@@ -595,41 +495,26 @@ class TodoController extends BaseController
 
         $isDraft = $item->isDraft();
 
-        $statusChoices = array(
-            $this->translator->trans('pending', [], 'todo') => '1',
-            $this->translator->trans('in progress', [], 'todo') => '2',
-            $this->translator->trans('done', [], 'todo') => '3',
-        );
+        $statusChoices = [$this->translator->trans('pending', [], 'todo') => '1', $this->translator->trans('in progress', [], 'todo') => '2', $this->translator->trans('done', [], 'todo') => '3'];
 
         foreach ($roomItem->getExtraToDoStatusArray() as $key => $value) {
             $statusChoices[$value] = $key;
         }
 
-        $formOptions = array(
-            'action' => $this->generateUrl('app_todo_edit', array(
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            )),
-            'statusChoices' => $statusChoices,
-            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
-            'categoryMappingOptions' => [
-                'categories' => $labelService->getCategories($roomId),
-                'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
-                'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId])
-            ],
-            'hashtagMappingOptions' => [
-                'hashtags' => $labelService->getHashtags($roomId),
-                'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
-                'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
-            ],
-            'room' => $current_context,
-        );
+        $formOptions = ['action' => $this->generateUrl('app_todo_edit', ['roomId' => $roomId, 'itemId' => $itemId]), 'statusChoices' => $statusChoices, 'placeholderText' => '['.$this->translator->trans('insert title').']', 'categoryMappingOptions' => [
+            'categories' => $labelService->getCategories($roomId),
+            'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
+            'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId]),
+        ], 'hashtagMappingOptions' => [
+            'hashtags' => $labelService->getHashtags($roomId),
+            'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
+            'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
+        ], 'room' => $current_context];
 
         $todoItem = $this->todoService->getTodo($itemId);
         if (!$todoItem) {
-            throw $this->createNotFoundException('No todo found for id ' . $itemId);
+            throw $this->createNotFoundException('No todo found for id '.$itemId);
         }
-
 
         $formData = $transformer->transform($todoItem);
         $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
@@ -683,45 +568,35 @@ class TodoController extends BaseController
                 }
             }
 
-            return $this->redirectToRoute('app_todo_save', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('app_todo_save', ['roomId' => $roomId, 'itemId' => $itemId]);
         }
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($todoItem), CommsyEditEvent::EDIT);
 
-        return array(
-            'form' => $form->createView(),
-            'todo' => $todoItem,
-            'isDraft' => $isDraft,
-            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
-        );
+        return $this->render('todo/edit.html.twig', ['form' => $form->createView(), 'todo' => $todoItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
     }
 
-    /**
-     * @Route("/room/{roomId}/todo/{itemId}/save")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/todo/{itemId}/save')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")]
     public function saveAction(
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
+        $typedItem = null;
         $item = $this->itemService->getItem($itemId);
-        if ($item->getItemType() == 'todo') {
+        if ('todo' == $item->getItemType()) {
             $typedItem = $this->todoService->getTodo($itemId);
             $this->eventDispatcher->dispatch(new CommsyEditEvent($typedItem), CommsyEditEvent::SAVE);
         } else {
-            if ($item->getItemType() == 'step') {
+            if ('step' == $item->getItemType()) {
                 $typedItem = $this->todoService->getStep($itemId);
                 $this->eventDispatcher->dispatch(new CommsyEditEvent($typedItem->getLinkedItem()),
                     CommsyEditEvent::SAVE);
             }
         }
 
-        $itemArray = array($typedItem);
-        $modifierList = array();
+        $itemArray = [$typedItem];
+        $modifierList = [];
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
@@ -739,7 +614,7 @@ class TodoController extends BaseController
 
         /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
-        $id_array = array();
+        $id_array = [];
         while ($current_user) {
             $id_array[] = $current_user->getItemID();
             $current_user = $user_list->getNext();
@@ -752,17 +627,17 @@ class TodoController extends BaseController
                 $current_user->getItemID());
             if (!empty($current_reader)) {
                 if ($current_reader['read_date'] >= $typedItem->getModificationDate()) {
-                    $read_count++;
-                    $read_since_modification_count++;
+                    ++$read_count;
+                    ++$read_since_modification_count;
                 } else {
-                    $read_count++;
+                    ++$read_count;
                 }
             }
             $current_user = $user_list->getNext();
         }
 
-        $readerList = array();
-        $modifierList = array();
+        $readerList = [];
+        $modifierList = [];
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
             if (empty($reader)) {
@@ -774,33 +649,18 @@ class TodoController extends BaseController
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
-        return array(
-            'roomId' => $roomId,
-            'item' => $typedItem,
-            'modifierList' => $modifierList,
-            'userCount' => $all_user_count,
-            'readCount' => $read_count,
-            'readSinceModificationCount' => $read_since_modification_count,
-        );
+        return $this->render('todo/save.html.twig', ['roomId' => $roomId, 'item' => $typedItem, 'modifierList' => $modifierList, 'userCount' => $all_user_count, 'readCount' => $read_count, 'readSinceModificationCount' => $read_since_modification_count]);
     }
 
-    /**
-     * @Route("/room/{roomId}/todo/{itemId}/rating/{vote}")
-     * @Template()
-     * @param AssessmentService $assessmentService
-     * @param int $roomId
-     * @param int $itemId
-     * @param $vote
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/todo/{itemId}/rating/{vote}')]
     public function ratingAction(
         AssessmentService $assessmentService,
         int $roomId,
         int $itemId,
         $vote
-    ) {
+    ): Response {
         $todo = $this->todoService->getTodo($itemId);
-        if ($vote != 'remove') {
+        if ('remove' != $vote) {
             $assessmentService->rateItem($todo, $vote);
         } else {
             $assessmentService->removeRating($todo);
@@ -809,33 +669,17 @@ class TodoController extends BaseController
         $ratingAverageDetail = $assessmentService->getAverageRatingDetail($todo);
         $ratingOwnDetail = $assessmentService->getOwnRatingDetail($todo);
 
-        return array(
-            'roomId' => $roomId,
-            'todo' => $todo,
-            'ratingArray' => array(
-                'ratingDetail' => $ratingDetail,
-                'ratingAverageDetail' => $ratingAverageDetail,
-                'ratingOwnDetail' => $ratingOwnDetail,
-            ),
-        );
+        return $this->render('todo/rating.html.twig', ['roomId' => $roomId, 'todo' => $todo, 'ratingArray' => ['ratingDetail' => $ratingDetail, 'ratingAverageDetail' => $ratingAverageDetail, 'ratingOwnDetail' => $ratingOwnDetail]]);
     }
 
-    /**
-     * @Route("/room/{roomId}/todo/{itemId}/print")
-     * @param AssessmentService $assessmentService
-     * @param CategoryService $categoryService
-     * @param PrintService $printService
-     * @param int $roomId
-     * @param int $itemId
-     * @return Response
-     */
+    #[Route(path: '/room/{roomId}/todo/{itemId}/print')]
     public function printAction(
         AssessmentService $assessmentService,
         CategoryService $categoryService,
         PrintService $printService,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $infoArray = $this->getDetailInfo($assessmentService, $categoryService, $roomId, $itemId);
         // annotation form
         $form = $this->createForm(AnnotationType::class);
@@ -866,25 +710,18 @@ class TodoController extends BaseController
             'ratingArray' => $infoArray['ratingArray'],
             'roomCategories' => 'roomCategories',
         ]);
+
         return $printService->buildPdfResponse($html);
     }
 
-    /**
-     * @Route("/room/{roomId}/todo/print/{sort}", defaults={"sort" = "none"})
-     * @param Request $request
-     * @param AssessmentService $assessmentService
-     * @param PrintService $printService
-     * @param int $roomId
-     * @param string $sort
-     * @return Response
-     */
+    #[Route(path: '/room/{roomId}/todo/print/{sort}', defaults: ['sort' => 'none'])]
     public function printlistAction(
         Request $request,
         AssessmentService $assessmentService,
         PrintService $printService,
         int $roomId,
         string $sort
-    ) {
+    ): Response {
         $roomItem = $this->roomService->getRoomItem($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -900,7 +737,7 @@ class TodoController extends BaseController
         }
 
         // get todo list from manager service
-        if ($sort === "none" || empty($sort)) {
+        if ('none' === $sort || empty($sort)) {
             $sort = $this->session->get('sortTodos', 'duedate_rev');
         }
         /** @var cs_todo_item[] $todos */
@@ -908,21 +745,21 @@ class TodoController extends BaseController
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = array();
+        $readerList = [];
         foreach ($todos as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
         }
 
-        $ratingList = array();
+        $ratingList = [];
         if ($current_context->isAssessmentActive()) {
-            $itemIds = array();
+            $itemIds = [];
             foreach ($todos as $todo) {
                 $itemIds[] = $todo->getItemId();
             }
             $ratingList = $assessmentService->getListAverageRatings($itemIds);
         }
 
-        // get announcement list from manager service 
+        // get announcement list from manager service
         $itemsCountArray = $this->todoService->getCountArray($roomId);
 
         $html = $this->renderView('todo/list_print.html.twig', [
@@ -944,17 +781,12 @@ class TodoController extends BaseController
         return $printService->buildPdfResponse($html);
     }
 
-    /**
-     * @Route("/room/{roomId}/todo/{itemId}/participate")
-     * @param int $roomId
-     * @param int $itemId
-     * @return RedirectResponse
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo') or is_granted('ITEM_PARTICIPATE', itemId)")
-     */
+    #[Route(path: '/room/{roomId}/todo/{itemId}/participate')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo') or is_granted('ITEM_PARTICIPATE', itemId)")]
     public function participateAction(
         int $roomId,
         int $itemId
-    ) {
+    ): RedirectResponse {
         $todo = $this->todoService->getTodo($itemId);
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         if (!$todo->isProcessor($this->legacyEnvironment->getCurrentUserItem())) {
@@ -962,6 +794,7 @@ class TodoController extends BaseController
         } else {
             $todo->removeProcessor($currentUser);
         }
+
         return $this->redirectToRoute('app_todo_detail', [
             'roomId' => $roomId,
             'itemId' => $itemId,
@@ -969,59 +802,49 @@ class TodoController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/todo/download")
-     * @param Request $request
-     * @param int $roomId
-     * @return Response
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/todo/download')]
     public function downloadAction(
         Request $request,
         DownloadAction $action,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $action->execute($room, $items);
     }
 
-    ###################################################################################################
-    ## XHR Action requests
-    ###################################################################################################
-
+    // ##################################################################################################
+    // # XHR Action requests
+    // ##################################################################################################
     /**
-     * @Route("/room/{roomId}/todo/xhr/markread", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @return Response
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/todo/xhr/markread', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkReadAction(
         Request $request,
         MarkReadAction $markReadAction,
         MarkReadTodo $markReadTodo,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
         $markReadAction->setMarkReadStrategy($markReadTodo);
-        return $markReadAction->execute($room, $items);
 
+        return $markReadAction->execute($room, $items);
     }
 
     /**
-     * @Route("/room/{roomId}/todo/xhr/mark", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param $roomId
-     * @return Response
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/todo/xhr/mark', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkAction(
         Request $request,
         MarkAction $action,
         $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -1029,49 +852,42 @@ class TodoController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/todo/xhr/categorize", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param CategorizeAction $action
-     * @param int $roomId
      * @return mixed
+     *
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/todo/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
     public function xhrCategorizeAction(
         Request $request,
         CategorizeAction $action,
         int $roomId
-    ) {
+    ): Response {
         return parent::handleCategoryActionOptions($request, $action, $roomId);
     }
 
     /**
-     * @Route("/room/{roomId}/todo/xhr/hashtag", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param HashtagAction $action
-     * @param int $roomId
      * @return mixed
+     *
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/todo/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
     public function xhrHashtagAction(
         Request $request,
         HashtagAction $action,
         int $roomId
-    ) {
+    ): Response {
         return parent::handleHashtagActionOptions($request, $action, $roomId);
     }
 
     /**
-     * @Route("/room/{roomId}/todo/xhr/activate", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param $roomId
-     * @return
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/todo/xhr/activate', condition: 'request.isXmlHttpRequest()')]
     public function xhrActivateAction(
         Request $request,
         ActivateAction $action,
         $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -1079,17 +895,14 @@ class TodoController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/todo/xhr/deactivate", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param $roomId
-     * @return
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/todo/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeactivateAction(
         Request $request,
         DeactivateAction $action,
         $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -1097,17 +910,14 @@ class TodoController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/todo/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @return Response
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/todo/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
         Request $request,
         DeleteAction $action,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -1115,17 +925,14 @@ class TodoController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/todo/xhr/status", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param $roomId
-     * @return Response
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/todo/xhr/status', condition: 'request.isXmlHttpRequest()')]
     public function xhrStatusAction(
         Request $request,
         TodoStatusAction $action,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -1141,32 +948,34 @@ class TodoController extends BaseController
         $newStatus = $payload['status'];
 
         $action->setNewStatus($newStatus);
+
         return $action->execute($room, $items);
     }
 
     /**
-     * @Route("/room/{roomId}/todo/xhr/changesatatus/{itemId}", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
+     * @throws Exception
      */
-    public function xhrStatusFromDetailAction($roomId, $itemId, Request $request, TodoStatusAction $action)
+    #[Route(path: '/room/{roomId}/todo/xhr/changesatatus/{itemId}', condition: 'request.isXmlHttpRequest()')]
+    public function xhrStatusFromDetailAction($roomId, $itemId, Request $request, TodoStatusAction $action): Response
     {
         $room = $this->roomService->getRoomItem($roomId);
         $items = [$this->todoService->getTodo($itemId)];
         $payload = $request->request->get('payload');
         if (!isset($payload['status'])) {
-            throw new \Exception('new status string not provided');
+            throw new Exception('new status string not provided');
         }
         $newStatus = $payload['status'];
 
         $action->setNewStatus($newStatus);
+
         return $action->execute($room, $items);
     }
 
     /**
-     * @param Request $request
      * @param cs_room_item $roomItem
-     * @param boolean $selectAll
-     * @param integer[] $itemIds
+     * @param bool          $selectAll
+     * @param int[]         $itemIds
+     *
      * @return cs_todo_item[]
      */
     protected function getItemsByFilterConditions(
@@ -1175,7 +984,6 @@ class TodoController extends BaseController
         $selectAll,
         $itemIds = []
     ) {
-
         if ($selectAll) {
             if ($request->query->has('todo_filter')) {
                 $currentFilter = $request->query->get('todo_filter');
@@ -1199,6 +1007,7 @@ class TodoController extends BaseController
 
     /**
      * @param cs_room_item $room
+     *
      * @return FormInterface
      */
     private function createFilterForm($room)
@@ -1220,8 +1029,8 @@ class TodoController extends BaseController
 
     private function getTagDetailArray($baseCategories, $itemCategories)
     {
-        $result = array();
-        $tempResult = array();
+        $result = [];
+        $tempResult = [];
         $addCategory = false;
         foreach ($baseCategories as $baseCategory) {
             if (!empty($baseCategory['children'])) {
@@ -1235,29 +1044,22 @@ class TodoController extends BaseController
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {
                     if ($addCategory) {
-                        $result[] = array(
-                            'title' => $baseCategory['title'],
-                            'item_id' => $baseCategory['item_id'],
-                            'children' => $tempResult
-                        );
+                        $result[] = ['title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult];
                     } else {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                        $result[] = ['title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']];
                     }
                     $foundCategory = true;
                 }
             }
             if (!$foundCategory) {
                 if ($addCategory) {
-                    $result[] = array(
-                        'title' => $baseCategory['title'],
-                        'item_id' => $baseCategory['item_id'],
-                        'children' => $tempResult
-                    );
+                    $result[] = ['title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult];
                 }
             }
-            $tempResult = array();
+            $tempResult = [];
             $addCategory = false;
         }
+
         return $result;
     }
 
@@ -1284,7 +1086,7 @@ class TodoController extends BaseController
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
-        $itemArray = array($todo);
+        $itemArray = [$todo];
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -1301,7 +1103,7 @@ class TodoController extends BaseController
 
         /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
-        $id_array = array();
+        $id_array = [];
         while ($current_user) {
             $id_array[] = $current_user->getItemID();
             $current_user = $user_list->getNext();
@@ -1313,16 +1115,16 @@ class TodoController extends BaseController
                 $current_user->getItemID());
             if (!empty($current_reader)) {
                 if ($current_reader['read_date'] >= $todo->getModificationDate()) {
-                    $read_count++;
-                    $read_since_modification_count++;
+                    ++$read_count;
+                    ++$read_since_modification_count;
                 } else {
-                    $read_count++;
+                    ++$read_count;
                 }
             }
             $current_user = $user_list->getNext();
         }
-        $readerList = array();
-        $modifierList = array();
+        $readerList = [];
+        $modifierList = [];
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
             if (empty($reader)) {
@@ -1337,14 +1139,14 @@ class TodoController extends BaseController
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $categories = array();
+        $categories = [];
         if ($current_context->withTags()) {
             $roomCategories = $categoryService->getTags($roomId);
             $todoCategories = $todo->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $todoCategories);
         }
 
-        $ratingDetail = array();
+        $ratingDetail = [];
         if ($current_context->isAssessmentActive()) {
             $ratingDetail = $assessmentService->getRatingDetail($todo);
             $ratingAverageDetail = $assessmentService->getAverageRatingDetail($todo);
@@ -1353,7 +1155,7 @@ class TodoController extends BaseController
 
         /** @var cs_todo_item[] $todos */
         $todos = $this->todoService->getListTodos($roomId);
-        $todoList = array();
+        $todoList = [];
         $counterBefore = 0;
         $counterAfter = 0;
         $counterPosition = 0;
@@ -1367,7 +1169,7 @@ class TodoController extends BaseController
                 if ($counterBefore > 5) {
                     array_shift($todoList);
                 } else {
-                    $counterBefore++;
+                    ++$counterBefore;
                 }
                 $todoList[] = $tempTodo;
                 if ($tempTodo->getItemID() == $todo->getItemID()) {
@@ -1376,11 +1178,11 @@ class TodoController extends BaseController
                 if (!$foundTodo) {
                     $prevItemId = $tempTodo->getItemId();
                 }
-                $counterPosition++;
+                ++$counterPosition;
             } else {
                 if ($counterAfter < 5) {
                     $todoList[] = $tempTodo;
-                    $counterAfter++;
+                    ++$counterAfter;
                     if (!$nextItemId) {
                         $nextItemId = $tempTodo->getItemId();
                     }

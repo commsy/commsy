@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Filter;
 
 use App\Entity\SavedSearch;
@@ -20,14 +31,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SearchFilterType extends AbstractType
 {
-    /**
-     * @var TranslatorInterface $translator
-     */
-    private TranslatorInterface $translator;
-
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(private TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     /**
@@ -36,14 +41,14 @@ class SearchFilterType extends AbstractType
      * Type extensions can further modify the form.
      *
      * @param FormBuilderInterface $builder The form builder
-     * @param array $options The options
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var SearchData $searchData */
         $searchData = $builder->getData();
 
-        if ($options['userIsReallyGuest'] === false) {
+        if (false === $options['userIsReallyGuest']) {
             $builder
                 ->add('selectedSavedSearch', EntityType::class, [
                     'attr' => [
@@ -112,7 +117,7 @@ class SearchFilterType extends AbstractType
                 'translation_domain' => 'form',
                 'validation_groups' => 'false',
             ])
-            /**
+            /*
              * Since this form uses the same data class as the global search form, it is important to keep the field
              * name of the search query phrase identical
              */
@@ -132,16 +137,18 @@ class SearchFilterType extends AbstractType
                 'placeholder' => false,
             ])
             ->add('selectedCreator', Select2ChoiceType::class, [
-                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
+                'choice_loader' => new CallbackChoiceLoader(function () use ($searchData) {
                     $translatedTitleAny = $this->translator->trans('any', [], 'form');
+
                     return array_merge([$translatedTitleAny => 'all'], $this->buildTermChoices($searchData->getCreators()));
                 }),
                 'label' => 'Creator',
                 'required' => false,
             ])
             ->add('selectedContext', Select2ChoiceType::class, [
-                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
+                'choice_loader' => new CallbackChoiceLoader(function () use ($searchData) {
                     $translatedTitleAny = $this->translator->trans('All my rooms', [], 'search');
+
                     return array_merge([$translatedTitleAny => 'all'], $this->buildTermChoices($searchData->getContexts()));
                 }),
                 'label' => 'Contexts',
@@ -194,8 +201,9 @@ class SearchFilterType extends AbstractType
                 ],
             ])
             ->add('selectedRubric', Types\ChoiceType::class, [
-                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
+                'choice_loader' => new CallbackChoiceLoader(function () use ($searchData) {
                     $translatedTitleAny = $this->translator->trans('any', [], 'form');
+
                     return array_merge([$translatedTitleAny => 'all'], $this->buildRubricsChoices($searchData->getRubrics()));
                 }),
                 'label' => 'Rubric',
@@ -203,54 +211,38 @@ class SearchFilterType extends AbstractType
                 'placeholder' => false,
             ]);
 
-            if ($options['userIsReallyGuest'] === false) {
-                $builder
-                    ->add('selectedReadStatus', Types\ChoiceType::class, [
-                        'choices' => [
-                            $this->translator->trans('any', [], 'form') => 'all',
-                            'New' => ReaderService::READ_STATUS_NEW,
-                            'Modified' => ReaderService::READ_STATUS_CHANGED,
-                            'Unread' => ReaderService::READ_STATUS_UNREAD,
-                            'Read' => ReaderService::READ_STATUS_SEEN,
-                        ],
-                        'label' => 'Read status',
-                        'required' => false,
-                        'placeholder' => false,
-                    ]);
-            }
+        if (false === $options['userIsReallyGuest']) {
+            $builder
+                ->add('selectedReadStatus', Types\ChoiceType::class, [
+                    'choices' => [
+                        $this->translator->trans('any', [], 'form') => 'all',
+                        'New' => ReaderService::READ_STATUS_NEW,
+                        'Modified' => ReaderService::READ_STATUS_CHANGED,
+                        'Unread' => ReaderService::READ_STATUS_UNREAD,
+                        'Read' => ReaderService::READ_STATUS_SEEN,
+                    ],
+                    'label' => 'Read status',
+                    'required' => false,
+                    'placeholder' => false,
+                ]);
+        }
 
         $builder
             ->addEventSubscriber(new ChosenRubricSubscriber($this->translator))
             ->add('selectedHashtags', Select2ChoiceType::class, [
-                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
-                    return $this->buildTermChoices($searchData->getHashtags());
-                }),
+                'choice_loader' => new CallbackChoiceLoader(fn () => $this->buildTermChoices($searchData->getHashtags())),
                 'label' => 'Hashtags',
                 'expanded' => false,
                 'multiple' => true,
                 'required' => false,
             ])
             ->add('selectedCategories', Select2ChoiceType::class, [
-                'choice_loader' => new CallbackChoiceLoader(function() use ($searchData) {
-                    return $this->buildTermChoices($searchData->getCategories());
-                }),
+                'choice_loader' => new CallbackChoiceLoader(fn () => $this->buildTermChoices($searchData->getCategories())),
                 'label' => 'Categories',
                 'expanded' => false,
                 'multiple' => true,
                 'required' => false,
             ]);
-    }
-
-    /**
-     * Returns the prefix of the template block name for this type.
-     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
-     * (e.g. "UserProfileType" => "user_profile").
-     *
-     * @return string The prefix of the template block name
-     */
-    public function getBlockPrefix()
-    {
-        return 'search_filter';
     }
 
     /**
@@ -263,9 +255,9 @@ class SearchFilterType extends AbstractType
         $resolver
             ->setRequired(['contextId', 'userIsReallyGuest'])
             ->setDefaults([
-                'csrf_protection'    => false,
-                'validation_groups'  => ['filtering', 'save'], // avoid NotBlank() constraint-related message
-                'method'             => 'get',
+                'csrf_protection' => false,
+                'validation_groups' => ['filtering', 'save'], // avoid NotBlank() constraint-related message
+                'method' => 'get',
                 'translation_domain' => 'search',
             ]);
     }
@@ -284,10 +276,10 @@ class SearchFilterType extends AbstractType
         $choices = [];
         foreach ($rubrics as $name => $count) {
             $translatedTitle = $this->translator->trans(ucfirst($name), ['%count%' => 1], 'rubric');
-            if ($name === "label") {
-                $translatedTitle = $this->translator->trans("Groups, Topics and Institutions", [], 'search');
+            if ('label' === $name) {
+                $translatedTitle = $this->translator->trans('Groups, Topics and Institutions', [], 'search');
             }
-            $rubric = $translatedTitle . " (" . $count . ")";
+            $rubric = $translatedTitle.' ('.$count.')';
             $choices[$rubric] = $name;
         }
 
@@ -307,7 +299,7 @@ class SearchFilterType extends AbstractType
 
         $choices = [];
         foreach ($terms as $name => $count) {
-            $term = $name . " (" . $count . ")";
+            $term = $name.' ('.$count.')';
             $choices[$term] = $name;
         }
 

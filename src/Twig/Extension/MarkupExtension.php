@@ -1,8 +1,21 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Twig\Extension;
 
 use App\Services\LegacyMarkup;
+use cs_item;
+use DOMNode;
 use Masterminds\HTML5;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
@@ -10,32 +23,16 @@ use Twig\TwigFilter;
 
 class MarkupExtension extends AbstractExtension
 {
-    /**
-     * @var LegacyMarkup
-     */
-    private LegacyMarkup $legacyMarkup;
-
-    /**
-     * @var RequestStack $requestStack
-     */
-    private RequestStack $requestStack;
-
-    public function __construct(
-        RequestStack $requestStack,
-        LegacyMarkup $legacyMarkup
-    ) {
-        $this->legacyMarkup = $legacyMarkup;
-        $this->requestStack = $requestStack;
+    public function __construct(private RequestStack $requestStack, private LegacyMarkup $legacyMarkup)
+    {
     }
 
     public function getFilters(): array
     {
-        return array(
-            new TwigFilter('commsyMarkup', array($this, 'commsyMarkup')),
-        );
+        return [new TwigFilter('commsyMarkup', [$this, 'commsyMarkup'])];
     }
 
-    public function commsyMarkup($text, \cs_item $item = null)
+    public function commsyMarkup($text, cs_item $item = null)
     {
         $text = $this->commsyMarkupEscapes($text);
         $text = $this->commsyMarkupHeadings($text);
@@ -45,13 +42,13 @@ class MarkupExtension extends AbstractExtension
         $text = preg_replace('/\*([^*^\n]+?)\*/', '<b>$1</b>', $text);
 
         // italic
-        preg_match('~<!-- DNC -->.*<!-- DNC -->~us',$text,$values);
+        preg_match('~<!-- DNC -->.*<!-- DNC -->~us', $text, $values);
         foreach ($values as $key => $value) {
-            $text = str_replace($value,'COMMSY_DNC'.$key.' ',$text);
+            $text = str_replace($value, 'COMMSY_DNC'.$key.' ', $text);
         }
         $text = preg_replace('~(^|\n|\t|\s|[ >\/[{(])_([^_]+)_($|\n|\t|:|[ <\/.)\]},!?;])~uU', '$1<i>$2</i>$3', $text);
         foreach ($values as $key => $value) {
-            $text = str_replace('COMMSY_DNC'.$key.' ',$value,$text);
+            $text = str_replace('COMMSY_DNC'.$key.' ', $value, $text);
         }
 
         $text = $this->legacyMarkup->convertToHTML($text);
@@ -65,12 +62,12 @@ class MarkupExtension extends AbstractExtension
         $text = $this->interpreteLinks($text);
 
         // The etherpad ignores the first row, if it is not surrounded by a paragraph tag
-        if (!strpos($text, "<p>") !== 0 && substr($text, -4) != "</p>") {
-            $text = "<p>" . $text . "</p>";
+        if (0 !== !strpos($text, '<p>') && '</p>' != substr($text, -4)) {
+            $text = '<p>'.$text.'</p>';
         }
 
         // image post-processing to add lightbox preview
-        if ($item !== null) {
+        if (null !== $item) {
             $text = $this->formatLightbox($text, $item);
         }
 
@@ -91,27 +88,27 @@ class MarkupExtension extends AbstractExtension
 
         preg_match('~<!-- KFC TEXT [a-z0-9]* -->~u', $text, $values);
         foreach ($values as $key => $value) {
-            $text = str_replace($value,'COMMSY_FCKEDITOR'.$key.' ',$text);
+            $text = str_replace($value, 'COMMSY_FCKEDITOR'.$key.' ', $text);
         }
-        $text = ' ' . $text;
+        $text = ' '.$text;
 
-        $url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
-        $url_string .= "([" . $RFC1738_CHARS . "]+?))"; //All characters allowed for FTP an HTTP URL's by RFC 1738 (non-greedy because of potential trailing punctuation marks)
+        $url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; // everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
+        $url_string .= '(['.$RFC1738_CHARS.']+?))'; // All characters allowed for FTP an HTTP URL's by RFC 1738 (non-greedy because of potential trailing punctuation marks)
 
         // separating Links from COMMSY_FCKEDITOR tag
-        $url_string .= '(?=([\.\?:\),;!]*($|\s|<|&quot;|&nbsp;|COMMSY_FCKEDITOR)))'; //behind the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
+        $url_string .= '(?=([\.\?:\),;!]*($|\s|<|&quot;|&nbsp;|COMMSY_FCKEDITOR)))'; // behind the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
         $url_string .= '(?![\s\w\d]*</a>)^u'; // if there's a </a>-tag behind the link, it is assumed that there's already a complete <a href="">link</a> contruct comming from the editor. These links are omitted.
 
         $text = preg_replace($url_string, '<a href="$2" target="_blank" title="$2">$2</a>', $text);
         $text = preg_replace_callback('~">(.[^"]+)</a>~u', 'spezial_chunkURL', $text);
-        $text = preg_replace('~<a href="www~u', '<a href="http://www', $text); //add "http://" to links that were activated with www in front only
+        $text = preg_replace('~<a href="www~u', '<a href="http://www', $text); // add "http://" to links that were activated with www in front only
 
         // mailto. A space or a linebreak has to be in front of everymail link. No links in bigger words (especially in urls) will be activated
-        $text = preg_replace('^( |\^|>|\n)(mailto:)?(([' . $RFC2822_CHARS . ']+(\.[' . $RFC2822_CHARS . ']+)*)@([' . $RFC2822_CHARS . ']+(\.[' . $RFC2822_CHARS . ']+)*\.([A-z]{2,})))^u', '$1<a href="mailto:$3">$3</a>', $text);
+        $text = preg_replace('^( |\^|>|\n)(mailto:)?((['.$RFC2822_CHARS.']+(\.['.$RFC2822_CHARS.']+)*)@(['.$RFC2822_CHARS.']+(\.['.$RFC2822_CHARS.']+)*\.([A-z]{2,})))^u', '$1<a href="mailto:$3">$3</a>', $text);
         $text = substr($text, 1, strlen($text));
 
         foreach ($values as $key => $value) {
-            $text = str_replace('COMMSY_FCKEDITOR'.$key.' ',$value,$text);
+            $text = str_replace('COMMSY_FCKEDITOR'.$key.' ', $value, $text);
         }
 
         return $text;
@@ -121,6 +118,7 @@ class MarkupExtension extends AbstractExtension
      * Prepends the current CommSy base URL to any root-relative URLs used in `src` or `href` attributes.
      *
      * @param $text string to process
+     *
      * @return string the processed string
      */
     private function handleRelativeURLs(string $text): string
@@ -130,20 +128,21 @@ class MarkupExtension extends AbstractExtension
             return $text;
         }
 
-        $text = preg_replace('~((?:src|href)=["\'])(?=/)~', '$1' . $currentRequest->getSchemeAndHttpHost(), $text);
+        $text = preg_replace('~((?:src|href)=["\'])(?=/)~', '$1'.$currentRequest->getSchemeAndHttpHost(), $text);
 
         return $text;
     }
 
     /**
-     * Markup formatting for headings
+     * Markup formatting for headings.
      *
      * @param $text string to process
+     *
      * @return string the processed string
      */
     private function commsyMarkupHeadings($text)
     {
-        $matches = array();
+        $matches = [];
 
         while (preg_match('~(^|\n)(\s*)(!+)(\s*)(.*)~u', $text, $matches)) {
             $numBangs = mb_strlen($matches[3]);
@@ -159,9 +158,10 @@ class MarkupExtension extends AbstractExtension
     }
 
     /**
-     * Markup formatting for lists and horizontal lines (#, -, ---)
+     * Markup formatting for lists and horizontal lines (#, -, ---).
      *
      * @param $text string to process
+     *
      * @return string the processed string
      */
     private function commsyMarkupLists($text)
@@ -171,7 +171,7 @@ class MarkupExtension extends AbstractExtension
         $last_list_type = '';
         $list_open = false;
 
-        //split up paragraphs in lines
+        // split up paragraphs in lines
         $lines = preg_split('~\s*\n~uU', $text);
         foreach ($lines as $line) {
             $line_html = '';
@@ -201,7 +201,7 @@ class MarkupExtension extends AbstractExtension
                         $last_list_type = $list_type;
                     }
                 }
-                $line_html.= '<li>'.$matches[3].'</li>'.LF;
+                $line_html .= '<li>'.$matches[3].'</li>'.LF;
             }
 
             // All other lines without anything special
@@ -223,50 +223,49 @@ class MarkupExtension extends AbstractExtension
     }
 
     /**
-     * Interpretes escapes
+     * Interpretes escapes.
      *
-     * @param $text
      * @return string
      */
     private function commsyMarkupEscapes($text)
     {
-        $text = str_replace("\*","&ast;", $text);
-        $text = str_replace("\_","&lowbar;", $text);
-        $text = str_replace("\!","&excl;", $text);
-        $text = str_replace("\-","&macr;", $text);
-        $text = str_replace("\#","&num;", $text);
-        $text = str_replace("\\\\","&bsol;", $text);
+        $text = str_replace("\*", '&ast;', $text);
+        $text = str_replace("\_", '&lowbar;', $text);
+        $text = str_replace("\!", '&excl;', $text);
+        $text = str_replace("\-", '&macr;', $text);
+        $text = str_replace("\#", '&num;', $text);
+        $text = str_replace('\\\\', '&bsol;', $text);
 
         return $text;
     }
 
     /**
-    * returns the html-code for opening a list
-    */
+     * returns the html-code for opening a list.
+     */
     private function _open_list($list_type)
     {
         $html = '';
-        if ($list_type == '#') {
-            $html.= '<ol>'."\n";
+        if ('#' == $list_type) {
+            $html .= '<ol>'."\n";
+        } elseif ('-' == $list_type) {
+            $html .= '<ul>'."\n";
         }
-        elseif ($list_type == '-') {
-            $html.= '<ul>'."\n";
-        }
+
         return $html;
     }
 
     /**
-     * returns the html-code for closing a list
+     * returns the html-code for closing a list.
      */
     private function _close_list($list_type)
     {
         $html = '';
-        if ($list_type == '#') {
-            $html.= '</ol>'."\n";
+        if ('#' == $list_type) {
+            $html .= '</ol>'."\n";
+        } elseif ('-' == $list_type) {
+            $html .= '</ul>'."\n";
         }
-        elseif ($list_type == '-') {
-            $html.= '</ul>'."\n";
-        }
+
         return $html;
     }
 
@@ -275,19 +274,19 @@ class MarkupExtension extends AbstractExtension
      * that they will be shown in a lightbox with the given item's id as group.
      *
      * @param $text HTML string
-     * @param \cs_item $item
+     *
      * @return string Replaced HTML string
      */
-    private function formatLightbox($text, \cs_item $item): string
+    private function formatLightbox($text, cs_item $item): string
     {
         $html5 = new HTML5();
         $dom = $html5->loadHTML($text);
         $imageTags = $dom->getElementsByTagName('img');
 
         foreach ($imageTags as $imageTag) {
-            /** @var \DOMNode $imageTag */
+            /** @var DOMNode $imageTag */
             $aTag = $dom->createElement('a');
-            $aTag->setAttribute('data-uk-lightbox', '{group:' . $item->getItemID() . '}');
+            $aTag->setAttribute('data-uk-lightbox', '{group:'.$item->getItemID().'}');
             $aTag->setAttribute('data-lightbox-type', 'image');
             $aTag->setAttribute('href', $imageTag->getAttribute('src'));
 

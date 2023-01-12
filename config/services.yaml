@@ -2,7 +2,7 @@
 # Files in the packages/ subdirectory configure your dependencies.
 
 # Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     locale: '%env(LOCALE)%'
 
@@ -13,68 +13,15 @@ parameters:
     files_directory: '%kernel.project_dir%/files'
     themes_directory: '%kernel.project_dir%/public/css/themes'
 
-    router.request_context.host: "%env(HOST)%"
-    router.request_context.scheme: "%env(SCHEME)%"
-
     commsy.metrics.cache_namespace: "%env(API_METRICS_CACHE_NAMESPACE)%"
 
     # Autosaving
     commsy.autosave.mode: 0         # possible modes: 0 -> unvisible, 1 -> verbose / silent, 2 -> verbose / counter
     commsy.autosave.limit: 6        # limit in minutes
 
-    # Use virus scanning at uploading files
-    # ----------------------------------------------------
-    # OPTION 1: there are performance lacks
-    # scan file on upload
-    # 1. installation
-    #    on debian linux
-    #    # apt-get install php5-clamavlib
-    #    maybe you must edit /etc/php5/apache2/php.ini to active the clamavlib
-    #    # /etc/init.d/apache2 restart
-    # 2. enable virus scan at uploading files
-    #    virus_scan = true;
-    # 3. enable virus scan by php clamav library
-    #    virus_use_php = true;
-    #
-    # if you want to use another viren scanning tool
-    # you must set the following variables
-    # - only testet with clamav on linux
-    #    virus_scan = true;
-    #    virus_use_php = false;
-    #    virus_scan_path = '/usr/bin';
-    #    virus_scan_bin  = 'clamscan';
-    # ----------------------------------------------------
-    # OPTION 2: scan files with commsy cron
-    # scan files every 24 hours
-    # 1. installation
-    #    on debian linux
-    #    # apt-get install php5-clamavlib
-    #    maybe you must edit /etc/php5/apache2/php.ini to active the clamavlib
-    #    # /etc/init.d/apache2 restart
-    # 2. enable virus scan at uploading files
-    #    virus_scan_cron = true;
-    # 3. enable virus scan by php clamav library
-    #    virus_use_php = true;
-    #
-    # if you want to use another viren scanning tool
-    # you must set the following variables
-    # - only testet with clamav on linux
-    #    virus_scan_cron = true;
-    #    virus_use_php = false;
-    #    virus_scan_path = '/usr/bin';
-    #    virus_scan_bin  = 'clamscan';
-    commsy.clamscan.virus_scan: false
-    commsy.clamscan.virus_use_php: false
-    commsy.clamscan.virus_scan_cron: false
-    commsy.clamscan.virus_scan_path: '/usr/bin'
-    commsy.clamscan.virus_scan_bin: 'clamscan'
-
     # Cookie management
     commsy.cookie.domain: ~
     commsy.cookie.path: ~
-
-    # Database
-    commsy.db.backup_prefix: 'zzz'
 
     # E-Mail
     commsy.email.from: '%env(EMAIL_FROM)%'
@@ -108,12 +55,6 @@ parameters:
     commsy.settings.proxy_port: '%env(PROXY_PORT)%'      # Propxy Port
     commsy.settings.single_cat_selection: false     # Single selection for categories
     commsy.settings.item_locking: true     # Temporary protect items from beeing edited by different users simultaneously
-
-    # Wordpress
-    commsy.wordpress.enabled: false     # For activating wordpress please set the following variable on true
-
-    # Limesurvey
-    commsy.limesurvey.enabled: false        # et the following variable to activate limesurvey extension
 
     # Etherpad
     commsy.etherpad.enabled: '%env(bool:ETHERPAD_ENABLED)%'
@@ -169,7 +110,7 @@ services:
 
     _instanceof:
         App\Form\DataTransformer\DataTransformerInterface:
-            tags: [ 'app.data_transformer ']
+            tags: [ 'app.data_transformer' ]
         App\Cron\Tasks\CronTaskInterface:
             tags: [ 'app.cron_task' ]
         App\Database\DatabaseCheck:
@@ -198,27 +139,14 @@ services:
     commsy_legacy.category_service:
         alias: App\Utils\CategoryService
 
-    App\Utils\CategoryService:
-        autowire: true
-        arguments: ['@commsy_legacy.environment']
-
     commsy_legacy.room_service:
         alias: App\Utils\RoomService
-
-    App\Utils\RoomService:
-        autowire: true
 
     commsy_legacy.user_service:
         alias: App\Utils\UserService
 
-    App\Utils\UserService:
-        autowire: true
-
     commsy_legacy.item_service:
         alias: App\Utils\ItemService
-
-    App\Utils\ItemService:
-        autowire: true
 
     # Filter types
     commsy.filter.rubric:
@@ -339,31 +267,6 @@ services:
         autowire: true
         autoconfigure: true
 
-    # EventListener
-    commsy.listener.get_room_membership_filter:
-        class: App\EventListener\RoomMembershipFilterConditionListener
-        arguments: ['@commsy_legacy.user_service']
-        tags:
-            - { name: kernel.event_listener, event: lexik_form_filter.apply.orm.room_filter.membership , method: onGetFilterCondition }
-
-    commsy.listener.get_room_time_pulses_filter:
-        class: App\EventListener\RoomTimePulsesFilterConditionListener
-        arguments: ['@commsy_legacy.room_service']
-        tags:
-            - { name: kernel.event_listener, event: lexik_form_filter.apply.orm.room_filter.timePulses , method: onGetFilterCondition }
-
-    commsy.listener.command_error:
-        class: App\EventListener\ConsoleErrorListener
-        arguments: ['@logger']
-        tags:
-            - { name: kernel.event_listener, event: console.terminate }
-
-    commsy.listener.command_exception:
-        class: App\EventListener\ConsoleExceptionListener
-        arguments: ['@logger']
-        tags:
-            - { name: kernel.event_listener, event: console.exception }
-
     commsy.etherpad_form_listener:
         class: App\Form\Type\Event\AddEtherpadFormListener
         arguments: ["@service_container"]
@@ -382,9 +285,8 @@ services:
         alias: App\Search\SearchManager
 
     App\Form\DataTransformer\TransformerManager:
-        class: App\Form\DataTransformer\TransformerManager
         arguments:
-            - !tagged 'app.data_transformer'
+            - !tagged_iterator app.data_transformer
 
     App\Cron\CronManager:
         class: App\Cron\CronManager
@@ -485,29 +387,6 @@ services:
     commsy.search.indexable_checker:
         alias: App\Search\IndexableChecker
 
-    # Validator
-    commsy.validator.unique_label_name:
-        class: App\Validator\Constraints\UniqueLabelNameValidator
-        arguments: [ '@doctrine.orm.entity_manager' ]
-        tags:
-            - { name: validator.constraint_validator, alias: alias_name }
-
-    commsy.validator.send_recipients_constraint:
-        class: App\Validator\Constraints\SendRecipientsConstraintValidator
-        arguments: ['@commsy_legacy.environment']
-        tags:
-            - { name: validator.constraint_validator, alias: alias_name }
-
-    commsy.validator.home_notice_constraint:
-        class: App\Validator\Constraints\HomeNoticeConstraintValidator
-        arguments: ['@service_container', '@translator']
-        tags:
-            - { name: validator.constraint_validator, alias: alias_name }
-
-    App\Validator\Constraints\UniquePortfolioCategoryValidator:
-        autowire: true
-        autoconfigure: true
-
     # Form types
     App\Form\Type\ExtensionSettingsType:
         tags:
@@ -519,19 +398,10 @@ services:
         tags:
             - { name: form.type }
 
-    # Controller
-    commsy.item_controller:
-        class: App\Controller\ItemController
-
     # Mail
     App\Mail\MessageBuilder:
         arguments:
             $emailFrom: '%commsy.email.from%'
-
-    # Privacy
-    App\Privacy\PersonalDataCollector:
-        autowire: true
-        autoconfigure: true
 
     # Utils
     App\Utils\MailAssistant:
@@ -552,7 +422,7 @@ services:
     # Database checks
     App\Database\DatabaseChecks:
         arguments:
-            $databaseChecks: !tagged_iterator app.database.check
+            $checks: !tagged_iterator app.database.check
 
     # Feed
     debril.rss_atom.provider:
@@ -641,9 +511,6 @@ services:
     commsy.copy_service:
         alias: App\Services\MarkedService
 
-    App\Services\MarkedService:
-        autowire: true
-
     commsy.calendars_service:
         class: App\Services\CalendarsService
 
@@ -660,14 +527,6 @@ services:
             - '@commsy_legacy.item_service'
 
     # actions
-
-    App\Action\MarkRead\MarkReadGeneric:
-        autowire: true
-    App\Action\MarkRead\MarkReadMaterial:
-        autowire: true
-    App\Action\MarkRead\MarkReadTodo:
-        autowire: true
-
     commsy.action.mark_read.generic:
         class: App\Action\MarkRead\MarkReadAction
         autowire: true
@@ -676,75 +535,6 @@ services:
 
 
     App\Action\MarkRead\MarkReadAction: '@commsy.action.mark_read.generic'
-
-    App\Action\Mark\MarkAction:
-        autowire: true
-
-    App\Action\Mark\InsertAction:
-        autowire: true
-
-    App\Action\Mark\RemoveAction:
-        autowire: true
-
-    App\Action\Mark\CategorizeAction:
-        autowire: true
-
-    App\Action\Mark\HashtagAction:
-        autowire: true
-
-    App\Action\Activate\ActivateAction:
-        autowire: true
-
-    App\Action\Activate\DeactivateAction:
-        autowire: true
-
-    App\Action\Download\DownloadAction:
-        autowire: true
-
-    App\Action\TodoStatus\TodoStatusAction:
-        autowire: true
-
-    App\Action\UserStatus\UserStatusAction:
-        autowire: true
-
-    App\Action\Delete\DeleteGeneric:
-        autowire: true
-    App\Action\Delete\DeleteStep:
-        autowire: true
-    App\Action\Delete\DeleteSection:
-        autowire: true
-    App\Action\Delete\DeleteDiscussionArticle:
-        autowire: true
-    App\Action\Delete\DeleteDate:
-        autowire: true
-
-
-    commsy.action.delete.generic:
-        class: App\Action\Delete\DeleteAction
-        autowire: true
-
-
-    commsy.action.delete.step:
-        class: App\Action\Delete\DeleteAction
-        autowire: true
-
-    commsy.action.delete.section:
-        class: App\Action\Delete\DeleteAction
-        autowire: true
-
-    commsy.action.delete.discussion_article:
-        class: App\Action\Delete\DeleteAction
-        autowire: true
-
-    commsy.action.delete.date:
-        class: App\Action\Delete\DeleteAction
-        autowire: true
-
-    commsy.action.delete.material:
-        class: App\Action\Delete\DeleteAction
-        autowire: true
-
-    App\Action\Delete\DeleteAction: '@commsy.action.delete.generic'
 
     # Response
     App\Http\JsonDataResponse:

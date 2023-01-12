@@ -2,13 +2,7 @@
 
     "use strict";
 
-    let partMapping = {
-        'material': 'section',
-        'todo': 'step',
-        'discussion': 'discarticle'
-    };
-
-    var draftFormCount = 0;
+    let draftFormCount = 0;
 
     /**
      * Returns true if the element's child controls satisfy their validation constraints.
@@ -43,73 +37,81 @@
 
             let element = $this.element[0];
 
-            // look for div.cs-edit and show on mouseover
+            // Look for div.cs-delete and show on mouseover. This is to show the delete icon on bigger screens
+            // only if you hover the whole area.
             $(element)
                 .mouseover(function() {
-                    $(this).find('div.cs-delete').toggleClass('uk-invisible', false);
+                    $(this).find('div[data-delete]').toggleClass('uk-invisible', false);
                 })
                 .mouseout(function() {
-                    $(this).find('div.cs-delete').toggleClass('uk-invisible', true);
+                    $(this).find('div[data-delete]').toggleClass('uk-invisible', true);
                 });
 
             $this.registerArticleEvents(element);
 
+            // If the entry is a draft fake the edit click in order to bring the UI in edit mode.
             if ($this.options.draft == '1') {
-                $this.onClickEdit($(element).find('div.cs-edit'));
+                $this.onClickEdit($(element));
             }
         },
 
         registerArticleEvents: function(element) {
             let $this = this;
+            let $element = $(element);
 
-            $(element).find('div.cs-edit').find('a').attr('data-uk-tooltip', '');
-            $(element).find('div.cs-edit').find('a').attr('title', $(element).find('div.cs-edit').data('edit-title'));
+            // This allows for specifying the toggle element by options and will fall back to the default cs-edit selector
+            let editToggle = $this.options.toggleSelect ?
+              $($this.options.toggleSelect) :
+              $(element).find('div.cs-edit');
+
+            editToggle.find('a').attr('data-uk-tooltip', '');
+            editToggle.find('a').attr('title', editToggle.data('edit-title'));
 
             // show articles as selected, when mouseover the edit icon
-            $(element).find('div.cs-edit')
+            editToggle
                 .mouseenter(function() {
                     if (!$(this).closest('article').find('.cs-readmoreless:first').parent("a").hasClass('uk-invisible')) {
                         $(this).parents(".cs-edit-section").find(".fade-preview").toggleClass("uk-hidden", true);
                     }
-                    $(this).parents('.cs-edit-section').toggleClass('cs-selected', true);
+                    $(this).parents(".cs-edit-section").toggleClass('cs-selected', true);
                 })
                 .mouseleave(function() {
                     if (!$(this).closest('article').find('.cs-readmoreless:first').parent("a").hasClass('uk-invisible') &&
                         !$(this).closest('article').find('.cs-toggle-preview-small').hasClass('cs-toggle-full')) {
                         $(this).parents(".cs-edit-section").find(".fade-preview").toggleClass("uk-hidden", false);
                     }
-                    $(this).parents('.cs-edit-section').toggleClass('cs-selected', false);
+                    $(this).parents(".cs-edit-section").toggleClass('cs-selected', false);
                 });
 
             // send ajax requests on click to load the form
-            $(element).find('div.cs-edit').click(function(event) {
+            editToggle.click(function(event) {
                 event.preventDefault ? event.preventDefault() : (event.returnValue = false);
 
                 // reset article selection class and remove event handling
                 $(this).parents('.cs-edit-section').toggleClass('cs-selected', false);
                 $(this).off();
 
-                $this.onClickEdit(this);
+                $this.onClickEdit($element);
             });
 
             // active form if item is draft
-            $(element).find('div.cs-edit-draft').each(function() {
-                $this.onClickEdit(this);
+            $element.find('div.cs-edit-draft').each(function() {
+                $this.onClickEdit($element);
             });
         },
 
-        onClickEdit: function(el) {
+        onClickEdit: function($section) {
+          console.log("edit");
             draftFormCount++;
 
             let $this = this;
-            let article = $(el).parents('.cs-edit-section');
 
             // show the loading spinner
-            $(article).find('.cs-edit-spinner').toggleClass('uk-hidden', false);
+            $section.find('.cs-edit-spinner').toggleClass('uk-hidden', false);
 
             let editButtons = $('.cs-edit');
             editButtons.removeClass('cs-edit');
-            editButtons.each(function(){
+            editButtons.each(function() {
                 $(this).find('a').addClass('uk-hidden');
             });
 
@@ -123,10 +125,10 @@
             })
             .done(function(result) {
                 // replace article html
-                article.html($(result));
+                $section.html($(result));
                 registerDraftFormButtonEvents();
 
-                $this.handleFormSubmit(article);
+                $this.handleFormSubmit($section);
 
                 // Trigger an resize event. This is a workaround for the data-uk-grid component for example used
                 // by hashtags. There is some odd behaviour after replacing the content with ajax. Sometimes labels
@@ -147,22 +149,6 @@
                 // cancel is not handled via ajax
                 if (buttonNameAttr.indexOf('cancel') > -1) {
                     event.preventDefault ? event.preventDefault() : (event.returnValue = false);
-                    /*
-                    // cancel editing a NEW entry => return to list view
-                    if($("#breadcrumb-nav .current.last").text().trim() == "") {
-                        let pathParts = window.location.pathname.split("/");
-                        pathParts.pop();
-                        window.location.href = pathParts.join("/");
-                    }
-                    // cancel editing an EXISTING entry => return to detail view of the entry
-                    else {
-                        // trigger reload of the current URL
-                        // We are using the Location.reload() method, since
-                        // setting window.location.href might not result in a reload, if
-                        // there is an anchor currently set
-                        window.location.reload(true);
-                    }
-                    */
                     // request backend to remove edit lock
                     $.ajax({
                         url: $this.options.cancelEditUrl,
@@ -247,7 +233,7 @@
         }
     });
 
-    $('.cs-delete').on('click', function(e){
+    $('div[data-delete]').on('click', function(e) {
         e.preventDefault();
 
         let $delete = $(this);
@@ -283,7 +269,7 @@
          * Use of .on() (instead of .one()) is needed to also report invalid form states
          * if the user submits the (combined) form for a second time or more often.
          */
-        $('#draft-save-combine-link').on('click', function (event) {
+        $('#draft-save-combine-link').on('click', function (event) {console.log("combine save");
             event.preventDefault ? event.preventDefault() : (event.returnValue = false);
             $(this).parents('article').find('form').each(function () {
                 if (!$(this).reportValid()) {

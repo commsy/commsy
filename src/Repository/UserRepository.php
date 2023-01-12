@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
 use App\Entity\User;
@@ -30,9 +41,7 @@ class UserRepository extends ServiceEntityRepository
             ]);
     }
 
-
     /**
-     * @param int $roomId
      * @return mixed
      */
     public function getModeratorsByRoomId(int $roomId)
@@ -47,7 +56,6 @@ class UserRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $roomId
      * @return mixed
      */
     public function getContactsByRoomId(int $roomId)
@@ -62,7 +70,6 @@ class UserRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $contextId
      * @return mixed
      */
     public function findActiveUsers(int $contextId)
@@ -77,7 +84,6 @@ class UserRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $contextId
      * @return mixed
      */
     public function findActiveUsersAsQuery(int $contextId)

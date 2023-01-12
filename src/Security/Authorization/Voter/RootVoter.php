@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Security\Authorization\Voter;
-
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -14,7 +23,7 @@ class RootVoter extends Voter
 
     protected function supports($attribute, $subject)
     {
-        return $attribute === self::ROOT;
+        return self::ROOT === $attribute;
     }
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
@@ -26,6 +35,6 @@ class RootVoter extends Voter
             return false;
         }
 
-        return $user->getUsername() === 'root';
+        return 'root' === $user->getUsername();
     }
 }

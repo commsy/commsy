@@ -1,38 +1,23 @@
-<?PHP
-// $Id$
-//
-// Release $Name$
-//
-// Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
-// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
-//
-//    This file is part of CommSy.
-//
-//    CommSy is free software; you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation; either version 2 of the License, or
-//    (at your option) any later version.
-//
-//    CommSy is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
-//
-//    You have received a copy of the GNU General Public License
-//    along with CommSy.
+<?php
 
-/** upper class of the annotation item
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
-include_once('classes/cs_item.php');
 
 /** class for an annotation
- * this class implements a annotation item
+ * this class implements a annotation item.
  */
-class cs_annotation_item extends cs_item {
-
+class cs_annotation_item extends cs_item
+{
     /** constructor: cs_annotation_item
-     * the only available constructor, initial values for internal variables
+     * the only available constructor, initial values for internal variables.
      */
     public function __construct($environment)
     {
@@ -41,9 +26,6 @@ class cs_annotation_item extends cs_item {
         $this->_type = CS_ANNOTATION_TYPE;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         // annotations do not have a title anymore
@@ -51,7 +33,7 @@ class cs_annotation_item extends cs_item {
     }
 
     /** get description of an annotation
-     * this method returns the description of the annotation
+     * this method returns the description of the annotation.
      *
      * @return string description of an annotation
      *
@@ -59,8 +41,9 @@ class cs_annotation_item extends cs_item {
      */
     public function getDescription(): string
     {
-        if ($this->getPublic() == '-1') {
+        if ('-1' == $this->getPublic()) {
             $translator = $this->_environment->getTranslationObject();
+
             return $translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
         } else {
             return $this->_getValue('description');
@@ -68,7 +51,7 @@ class cs_annotation_item extends cs_item {
     }
 
     /** set description of an annotation
-     * this method sets the description of the annotation
+     * this method sets the description of the annotation.
      *
      * @param string value description of the annotation
      *
@@ -80,7 +63,7 @@ class cs_annotation_item extends cs_item {
     }
 
     /** get linked item id of an annotation
-     * this method gets the linked item id of the annotation
+     * this method gets the linked item id of the annotation.
      *
      * @return int value linked item id of the annotation
      *
@@ -102,11 +85,12 @@ class cs_annotation_item extends cs_item {
             $type_manager = $this->_environment->getManager($type);
             $retour = $type_manager->getItem($item_id);
         }
+
         return $retour;
     }
 
     /** set linked item id of an annotation
-     * this method sets the linked item id of the annotation
+     * this method sets the linked item id of the annotation.
      *
      * @param int value linked item id of the annotation
      *
@@ -118,7 +102,7 @@ class cs_annotation_item extends cs_item {
     }
 
     /** get linked version id of an annotation
-     * this method gets the linked version id of the annotation
+     * this method gets the linked version id of the annotation.
      *
      * @return int value linked version id of the annotation
      *
@@ -130,7 +114,7 @@ class cs_annotation_item extends cs_item {
     }
 
     /** set linked version id of an annotation
-     * this method sets the linked version id of the annotation
+     * this method sets the linked version id of the annotation.
      *
      * @param int value linked version id of the annotation
      *
@@ -142,7 +126,7 @@ class cs_annotation_item extends cs_item {
     }
 
     /** get materials of a announcement
-     * this method returns a list of materials which are linked to the announcement
+     * this method returns a list of materials which are linked to the announcement.
      *
      * @return object cs_list a list of materials (cs_material_item)
      *
@@ -154,7 +138,7 @@ class cs_annotation_item extends cs_item {
     }
 
     /** set materials of a announcement item by item id and version id
-     * this method sets a list of material item_ids and version_ids which are linked to the announcement
+     * this method sets a list of material item_ids and version_ids which are linked to the announcement.
      *
      * @param array of material ids, index of id must be 'iid', index of version must be 'vid'
      * Example:
@@ -168,7 +152,7 @@ class cs_annotation_item extends cs_item {
     }
 
     /** set materials of a announcement
-     * this method sets a list of materials which are linked to the news
+     * this method sets a list of materials which are linked to the news.
      *
      * @param string value title of the news
      *
@@ -179,18 +163,20 @@ class cs_annotation_item extends cs_item {
         $this->_setObject(CS_MATERIAL_TYPE, $value, false);
     }
 
-    /** set the version id of the annotated item
-     * @param integer version id of the annotated item
+    /** set the version id of the annotated item.
+     * @param int version id of the annotated item
+     *
      * @author CommSy Development Group
      */
     public function setAnnotatedVersionID($vid)
     {
-#      $this->_setValue('annotated_version', $vid);
+//      $this->_setValue('annotated_version', $vid);
         $this->_anno_version = $vid;
     }
 
-    /** get the version id of the annotated item
-     * @return integer version id of the annotated item
+    /** get the version id of the annotated item.
+     * @return int version id of the annotated item
+     *
      * @author CommSy Development Group
      */
     public function getAnnotatedVersionID()
@@ -199,7 +185,7 @@ class cs_annotation_item extends cs_item {
     }
 
     /**
-     * save
+     * save.
      */
     public function save()
     {
@@ -236,10 +222,11 @@ class cs_annotation_item extends cs_item {
             $access = $item_manager->getExternalViewerForItem($item->getItemID(),
                 $this->_environment->getCurrentUserID());
         }
+
         return $access;
     }
 
-    /** \brief    check via portfolio permission
+    /** \brief    check via portfolio permission.
      *
      * This Method checks for item <=> activated portfolio - relationships
      */

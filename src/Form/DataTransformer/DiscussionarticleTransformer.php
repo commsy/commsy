@@ -1,4 +1,16 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\DataTransformer;
 
 class DiscussionarticleTransformer extends AbstractTransformer
@@ -6,18 +18,17 @@ class DiscussionarticleTransformer extends AbstractTransformer
     protected $entity = 'discarticle';
 
     /**
-     * Transforms a cs_discussion_item object to an array
+     * Transforms a cs_discussion_item object to an array.
      *
-     * @param cs_discarticle_item $discussionarticleItem
+     * @param \cs_discussionarticle_item $discussionarticleItem
+     *
      * @return array
      */
     public function transform($discussionarticleItem)
     {
-        $discussionarticleData = array();
+        $discussionarticleData = [];
 
         if ($discussionarticleItem) {
-            $discussionarticleData['title'] = html_entity_decode($discussionarticleItem->getTitle());
-            $discussionarticleData['permission'] = $discussionarticleItem->isPrivateEditing();
             $discussionarticleData['description'] = $discussionarticleItem->getDescription();
         }
 
@@ -25,25 +36,20 @@ class DiscussionarticleTransformer extends AbstractTransformer
     }
 
     /**
-     * Applies an array of data to an existing object
+     * Applies an array of data to an existing object.
      *
-     * @param object $discussionObject
-     * @param array $discussionData
-     * @return cs_discussion_item|null
-     * @throws TransformationFailedException if room item is not found.
+     * @param \cs_discussionarticle_item $discussionArticle
+     * @param array                      $data
+     *
+     * @return \cs_discussionarticle_item
      */
-    public function applyTransformation($discussionarticleObject, $discussionarticleData)
+    public function applyTransformation($discussionArticle, $data)
     {
-        $discussionarticleObject->setTitle($discussionarticleData['title']);
-        
-        if ($discussionarticleData['permission']) {
-            $discussionarticleObject->setPrivateEditing('0');
-        } else {
-            $discussionarticleObject->setPrivateEditing('1');
-        }
+        $discussionArticle->setDescription($data['description']);
 
-        $discussionarticleObject->setDescription($discussionarticleData['description']);
+        // editable only by creator
+        $discussionArticle->setPrivateEditing('0');
 
-        return $discussionarticleObject;
+        return $discussionArticle;
     }
 }

@@ -1,15 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 27.01.18
- * Time: 11:40
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Controller;
 
-
-use App\Action\ActionFactory;
 use App\Action\Mark\CategorizeAction;
 use App\Action\Mark\HashtagAction;
 use App\Form\Type\XhrActionOptionsType;
@@ -27,12 +30,11 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
-
 
 abstract class BaseController extends AbstractController
 {
-
     /**
      * @var ItemService
      */
@@ -68,63 +70,43 @@ abstract class BaseController extends AbstractController
      */
     protected $eventDispatcher;
 
-    /**
-     * @required
-     * @param ItemService $itemService
-     */
+    #[Required]
     public function setItemService(ItemService $itemService): void
     {
         $this->itemService = $itemService;
     }
 
-    /**
-     * @required
-     * @param LegacyEnvironment $legacyEnvironment
-     */
+    #[Required]
     public function setLegacyEnvironment(LegacyEnvironment $legacyEnvironment): void
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    /**
-     * @required
-     * @param ReaderService $readerService
-     */
+    #[Required]
     public function setReaderService(ReaderService $readerService): void
     {
         $this->readerService = $readerService;
     }
 
-    /**
-     * @required
-     * @param LabelService $labelService
-     */
+    #[Required]
     public function setLabelService(LabelService $labelService): void
     {
         $this->labelService = $labelService;
     }
 
-    /**
-     * @required
-     * @param TranslatorInterface $translator
-     */
+    #[Required]
     public function setTranslator(TranslatorInterface $translator): void
     {
         $this->translator = $translator;
     }
 
-    /**
-     * @required
-     * @param EventDispatcherInterface $eventDispatcher
-     */
-    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher){
+    #[Required]
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    {
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * @required
-     * @param RoomService $service
-     */
+    #[Required]
     public function setRoomService(
         RoomService $service
     ) {
@@ -132,10 +114,8 @@ abstract class BaseController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @param CategorizeAction $action
-     * @param int $roomId
      * @return mixed
+     *
      * @throws Exception
      */
     public function handleCategoryActionOptions(
@@ -177,10 +157,8 @@ abstract class BaseController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @param HashtagAction $action
-     * @param int $roomId
      * @return mixed
+     *
      * @throws Exception
      */
     public function handleHashtagActionOptions(
@@ -188,7 +166,7 @@ abstract class BaseController extends AbstractController
         HashtagAction $action,
         int $roomId
     ) {
-        $hashtags = $this->labelService->getHashtags($roomId, $this->legacyEnvironment);
+        $hashtags = $this->labelService->getHashtags($roomId);
 
         // NOTE: HashtagAction.ts extracts the chosen choices and XHRAction->execute() stores them as request 'payload'
         $payload = $request->request->get('payload', []);
@@ -222,14 +200,11 @@ abstract class BaseController extends AbstractController
     }
 
     /**
-     * @param cs_room_item $room
-     * @param Request $request
-     * @return array
      * @throws Exception
      */
     protected function getItemsForActionRequest(
         cs_room_item $room,
-        Request $request) : array
+        Request $request): array
     {
         // input processing
         if (!$request->request->has('action')) {
@@ -239,7 +214,7 @@ abstract class BaseController extends AbstractController
 
         $selectAll = false;
         if ($request->request->has('selectAll')) {
-            $selectAll = $request->request->get('selectAll') === 'true';
+            $selectAll = 'true' === $request->request->get('selectAll');
         }
 
         $positiveItemIds = [];
@@ -271,18 +246,12 @@ abstract class BaseController extends AbstractController
         /** @var cs_item[] $items */
         $items = $this->getItemsByFilterConditions($request, $room, $selectAll, $positiveItemIds);
         if ($selectAll) {
-            $items = array_filter($items, function (cs_item $item) use ($negativeItemIds) {
-                return !in_array($item->getItemId(), $negativeItemIds);
-            });
+            $items = array_filter($items, fn (cs_item $item) => !in_array($item->getItemId(), $negativeItemIds));
         }
 
         return $items;
     }
 
-    /**
-     * @param int $roomId
-     * @return cs_room_item
-     */
     protected function getRoom(int $roomId): cs_room_item
     {
         /** @var cs_room_item $roomItem */

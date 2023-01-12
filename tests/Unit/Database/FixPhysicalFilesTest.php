@@ -8,9 +8,6 @@ use App\Repository\FilesRepository;
 use App\Repository\ItemRepository;
 use App\Repository\PortalRepository;
 use App\Repository\RoomRepository;
-use App\Repository\ZzzFilesRepository;
-use App\Repository\ZzzItemRepository;
-use App\Repository\ZzzRoomRepository;
 use Tests\Support\UnitTester;
 use Codeception\Test\Unit;
 use Psr\Log\LoggerInterface;
@@ -81,11 +78,8 @@ final class FixPhysicalFilesTest extends Unit
             $this->parameterBagStub,
             $portalRepository,
             $roomRepository,
-            $this->makeEmpty(ZzzRoomRepository::class),
             $this->makeEmpty(FilesRepository::class),
-            $this->makeEmpty(ZzzFilesRepository::class),
             $this->makeEmpty(ItemRepository::class),
-            $this->makeEmpty(ZzzItemRepository::class),
             $this->makeEmpty(LoggerInterface::class)
         );
         $this->assertTrue($fix->resolve($symfonyStyle));
@@ -128,11 +122,8 @@ final class FixPhysicalFilesTest extends Unit
             $this->parameterBagStub,
             $portalRepository,
             $this->makeEmpty(RoomRepository::class),
-            $this->makeEmpty(ZzzRoomRepository::class),
             $this->makeEmpty(FilesRepository::class),
-            $this->makeEmpty(ZzzFilesRepository::class),
             $this->makeEmpty(ItemRepository::class),
-            $this->makeEmpty(ZzzItemRepository::class),
             $this->makeEmpty(LoggerInterface::class)
         );
         $this->assertTrue($fix->resolve($symfonyStyle));
@@ -168,29 +159,23 @@ final class FixPhysicalFilesTest extends Unit
             ],
         ]);
         $roomRepository = $this->makeEmpty(RoomRepository::class);
-        $zzzRoomRepository = $this->makeEmpty(ZzzRoomRepository::class);
         $filesRepository = $this->makeEmpty(FilesRepository::class, [
             'getNumFiles' => function (int $fileId, int $contextId) {
                 return $contextId == 1234123 ? 1 : 0;
             },
         ]);
-        $zzzFilesRepository = $this->makeEmpty(ZzzFilesRepository::class);
         $itemRepository = $this->makeEmpty(ItemRepository::class, [
             'getNumItems' => function (int $itemId) {
                 return ($itemId == 1234123 || $itemId == 1234888) ? 1 : 0;
             },
         ]);
-        $zzzItemRepository = $this->makeEmpty(ZzzItemRepository::class);
 
         $fix = new FixPhysicalFiles(
             $this->parameterBagStub,
             $portalRepository,
             $roomRepository,
-            $zzzRoomRepository,
             $filesRepository,
-            $zzzFilesRepository,
             $itemRepository,
-            $zzzItemRepository,
             $this->makeEmpty(LoggerInterface::class)
         );
         $this->assertTrue($fix->resolve($symfonyStyle));
@@ -249,11 +234,8 @@ final class FixPhysicalFilesTest extends Unit
             $this->parameterBagStub,
             $portalRepository,
             $this->makeEmpty(RoomRepository::class),
-            $this->makeEmpty(ZzzRoomRepository::class),
             $filesRepository,
-            $this->makeEmpty(ZzzFilesRepository::class),
             $itemRepository,
-            $this->makeEmpty(ZzzItemRepository::class),
             $this->makeEmpty(LoggerInterface::class)
         );
         $this->assertTrue($fix->resolve($symfonyStyle));

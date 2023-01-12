@@ -1,45 +1,51 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_annotation_item;
 use cs_environment;
 use cs_item;
 use cs_item_manager;
+use cs_list;
+use cs_userroom_item;
 
 class ItemService
 {
-    /**
-     * @var cs_environment $legacyEnvironment
-     */
     private cs_environment $legacyEnvironment;
 
-    /**
-     * @var cs_item_manager $itemManager
-     */
     private cs_item_manager $itemManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->setItemManager();
+        $this->itemManager = $this->legacyEnvironment->getItemManager();
     }
 
     /**
-     * @param integer $itemId
+     * @param int $itemId
+     *
      * @return cs_item
      */
     public function getItem($itemId)
     {
-        $this->setItemManager();
-        $item = $this->itemManager->getItem($itemId);
-        return $item;
+        return $this->itemManager->getItem($itemId);
     }
 
     /**
      * @param int $itemId
      * @param int (optional) $versionId
-     * @return cs_item|null
      */
     public function getTypedItem($itemId, $versionId = null): ?cs_item
     {
@@ -48,28 +54,18 @@ class ItemService
         if ($item && is_object($item)) {
             $type = $item->getItemType();
 
-            $archiveModeSwitched = false;
-            if ($item->isArchived() && !$this->legacyEnvironment->isArchiveMode()) {
-                $this->legacyEnvironment->toggleArchiveMode();
-                $archiveModeSwitched = true;
-            }
-
-            if ($type == 'label') {
+            if ('label' == $type) {
                 $labelManager = $this->legacyEnvironment->getLabelManager();
                 $labelItem = $labelManager->getItem($item->getItemID());
                 $type = $labelItem->getLabelType();
             }
             $manager = $this->legacyEnvironment->getManager($type);
 
-            if ($archiveModeSwitched === true) {
-                $this->legacyEnvironment->toggleArchiveMode();
-            }
-
             if (!$manager) {
                 return null;
             }
 
-            if ($versionId === null) {
+            if (null === $versionId) {
                 return $manager->getItem($item->getItemID());
             } else {
                 if (method_exists($manager, 'getItemByVersion')) {
@@ -93,42 +89,46 @@ class ItemService
         }
 
         return $linkedItemIdArray;
+    }
 
-    }
-    
-    public function getEditorsForItem ($item) {
+    public function getEditorsForItem($item)
+    {
         $user = $this->legacyEnvironment->getCurrentUserItem();
-	    $link_modifier_item_manager = $this->legacyEnvironment->getLinkModifierItemManager();
-	    $user_manager = $this->legacyEnvironment->getUserManager();
-	    $modifiers = $link_modifier_item_manager->getModifiersOfItem($item->getItemID());
-	    $modifier_array = array();
-	    foreach($modifiers as $modifier_id) {
-	        $modificator = $user_manager->getItem($modifier_id);
+        $link_modifier_item_manager = $this->legacyEnvironment->getLinkModifierItemManager();
+        $user_manager = $this->legacyEnvironment->getUserManager();
+        $modifiers = $link_modifier_item_manager->getModifiersOfItem($item->getItemID());
+        $modifier_array = [];
+        foreach ($modifiers as $modifier_id) {
+            $modificator = $user_manager->getItem($modifier_id);
             $modifier_array[] = $modificator;
-	    }
-	    return $modifier_array;
+        }
+
+        return $modifier_array;
     }
-    
-    public function getAdditionalEditorsForItem ($item) {
+
+    public function getAdditionalEditorsForItem($item)
+    {
         $modifier_array = $this->getEditorsForItem($item);
-        $additional_modifier_array = array();
+        $additional_modifier_array = [];
         foreach ($modifier_array as $modifier) {
             if ($modifier->getItemId() != $item->getCreatorId()) {
                 $additional_modifier_array[] = $modifier;
             }
         }
+
         return $additional_modifier_array;
     }
 
-    public function getItemFileList($itemId) {
+    public function getItemFileList($itemId)
+    {
         $item = $this->getTypedItem($itemId);
 
         if (isset($item)) {
-            if ( $item->isA('material') ) {
+            if ($item->isA('material')) {
                 $file_list = $item->getFileListWithFilesFromSections();
-            } elseif ( $item->isA('discussion') ) {
+            } elseif ($item->isA('discussion')) {
                 $file_list = $item->getFileListWithFilesFromArticles();
-            } elseif ( $item->isA('todo') ) {
+            } elseif ($item->isA('todo')) {
                 $file_list = $item->getFileListWithFilesFromSteps();
             } else {
                 $file_list = $item->getFileList();
@@ -137,7 +137,7 @@ class ItemService
             if ($item->isA('section')) {
                 $material_item = $item->getLinkedItem();
                 $file_list2 = $material_item->getFileList();
-                if ( isset($file_list2) and !empty($file_list2) and $file_list2->getCount() > 0 ) {
+                if (isset($file_list2) and !empty($file_list2) and $file_list2->getCount() > 0) {
                     $file_list->addList($file_list2);
                 }
             }
@@ -145,7 +145,7 @@ class ItemService
             if (!empty($file_list)) {
                 $file_array = $file_list->to_Array();
 
-                $file_name_array = array();
+                $file_name_array = [];
                 foreach ($file_array as $file) {
                     $file_name_array[htmlentities($file->getDisplayName(), ENT_NOQUOTES, 'UTF-8')] = $file;
                 }
@@ -159,7 +159,9 @@ class ItemService
 
     /**
      * Returns all searchable items contained in rooms specified by the given room IDs.
-     * @param integer[] $contextIds array of room IDs for rooms whose items shall be returned
+     *
+     * @param int[] $contextIds array of room IDs for rooms whose items shall be returned
+     *
      * @return cs_item[]
      */
     public function getSearchableItemsForContextIds(array $contextIds): array
@@ -177,7 +179,7 @@ class ItemService
             CS_MATERIAL_TYPE,
             CS_TODO_TYPE,
             CS_USER_TYPE,
-            \cs_userroom_item::ROOM_TYPE_USER,
+            cs_userroom_item::ROOM_TYPE_USER,
         ];
 
         $itemManager->resetLimits();
@@ -187,7 +189,7 @@ class ItemService
 
         $itemManager->select();
 
-        /** @var \cs_list $itemList */
+        /** @var cs_list $itemList */
         $itemList = $itemManager->get();
 
         return $itemList->to_array();
@@ -210,7 +212,7 @@ class ItemService
             if ($withAnnotations) {
                 $annotations = $item->getAnnotationList();
                 if (!empty($annotations)) {
-                    /** @var \cs_annotation_item $annotationItem */
+                    /** @var cs_annotation_item $annotationItem */
                     $annotationItem = $annotations->getFirst();
 
                     while ($annotationItem) {
@@ -221,14 +223,6 @@ class ItemService
                     }
                 }
             }
-        }
-    }
-
-    private function setItemManager() {
-        if (!$this->legacyEnvironment->isArchiveMode()) {
-            $this->itemManager = $this->legacyEnvironment->getItemManager();
-        } else {
-            $this->itemManager = $this->legacyEnvironment->getZzzItemManager();
         }
     }
 }

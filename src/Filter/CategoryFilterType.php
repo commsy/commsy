@@ -1,43 +1,41 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Filter;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\FormView;
-use Symfony\Component\Form\FormInterface;
-
+use App\Form\Type\CategoryType;
 use App\Utils\CategoryService;
 use App\Utils\RoomService;
-
-use App\Form\Type\CategoryType;
-
-use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CategoryFilterType extends AbstractType
 {
-    private $requestStack;
-
-    private $categoryService;
-
-    private $roomService;
-
-    public function __construct(RequestStack $requestStack, CategoryService $categoryService, RoomService $roomService)
+    public function __construct(private RequestStack $requestStack, private CategoryService $categoryService, private RoomService $roomService)
     {
-        $this->requestStack = $requestStack;
-        $this->categoryService = $categoryService;
-        $this->roomService = $roomService;
     }
 
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
      * Type extensions can further modify the form.
-     * 
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -52,44 +50,24 @@ class CategoryFilterType extends AbstractType
                 $formCategories = $this->transformTagArray($categories);
 
                 $builder
-                    ->add('category', CategoryType::class, array(
-                        'choices' => $formCategories,
-                        'choice_label' => function ($choice, $key, $value) {
-                            // remove the trailing category (aka tag) ID from $key (which was used in transformTagArray() to uniquify the key)
-                            $label = implode('_', explode('_', $key, -1));
-                            return $label;
-                        },
-                        'multiple' => true,
-                        'expanded' => true,
-                        'label' => false,
-                        ));
+                    ->add('category', CategoryType::class, ['choices' => $formCategories, 'choice_label' => function ($choice, $key, $value) {
+                        // remove the trailing category (aka tag) ID from $key (which was used in transformTagArray() to uniquify the key)
+                        $label = implode('_', explode('_', $key, -1));
+
+                        return $label;
+                    }, 'multiple' => true, 'expanded' => true, 'label' => false]);
             }
         }
     }
 
     /**
-     * Returns the prefix of the template block name for this type.
-     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
-     * (e.g. "UserProfileType" => "user_profile").
-     * 
-     * @return string The prefix of the template block name
-     */
-    public function getBlockPrefix()
-    {
-        return 'category_filter';
-    }
-
-    /**
      * Configures the options for this type.
-     * 
-     * @param  OptionsResolver $resolver The resolver for the options
+     *
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'csrf_protection'   => false,
-            'validation_groups' => array('filtering') // avoid NotBlank() constraint-related message
-        ));
+        $resolver->setDefaults(['csrf_protection' => false, 'validation_groups' => ['filtering']]);
     }
 
     private function transformTagArray($tagArray)
@@ -99,10 +77,10 @@ class CategoryFilterType extends AbstractType
         foreach ($tagArray as $tag) {
             // NOTE: in order to form unique array keys, we append the category (aka tag) ID to the category title;
             // the category ID will be stripped again from the title via the `choice_label` field option
-            $array[$tag['title'] . '_' . $tag['item_id']] = $tag['item_id'];
+            $array[$tag['title'].'_'.$tag['item_id']] = $tag['item_id'];
 
             if (!empty($tag['children'])) {
-                $array[$tag['title'] . '_sub' . '_' . $tag['item_id']] = $this->transformTagArray($tag['children']);
+                $array[$tag['title'].'_sub_'.$tag['item_id']] = $this->transformTagArray($tag['children']);
             }
         }
 

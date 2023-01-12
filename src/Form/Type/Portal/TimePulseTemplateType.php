@@ -1,13 +1,25 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type\Portal;
 
 use App\Model\TimePulseTemplate;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class TimePulseTemplateType extends AbstractType
@@ -15,12 +27,12 @@ class TimePulseTemplateType extends AbstractType
     /**
      * Builds the form.
      *
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             /**
              * @var TimePulseTemplate $timePulseTemplate
              */
@@ -35,18 +47,14 @@ class TimePulseTemplateType extends AbstractType
                             new Assert\NotBlank(),
                         ],
                         'label' => 'New time pulse',
-                        'attr' => array(
-                            'placeholder' => 'de'
-                        ),
+                        'attr' => ['placeholder' => 'de'],
                     ])
                     ->add('titleEnglish', Types\TextType::class, [
                         'constraints' => [
                             new Assert\NotBlank(),
                         ],
                         'label' => false,
-                        'attr' => array(
-                            'placeholder' => 'en'
-                        ),
+                        'attr' => ['placeholder' => 'en'],
                         'help' => 'Time pulses help',
                         'help_html' => true,
                     ])
@@ -57,7 +65,7 @@ class TimePulseTemplateType extends AbstractType
                         'placeholder' => 'Time pulse select day',
                         'label' => 'Time pulse start',
                         'expanded' => false,
-                        'choices'  => [
+                        'choices' => [
                             '1' => 1,
                             '2' => 2,
                             '3' => 3,
@@ -97,7 +105,7 @@ class TimePulseTemplateType extends AbstractType
                         ],
                         'placeholder' => 'Time pulse select month',
                         'label' => false,
-                        'choices'  => [
+                        'choices' => [
                             '1' => 1,
                             '2' => 2,
                             '3' => 3,
@@ -118,7 +126,7 @@ class TimePulseTemplateType extends AbstractType
                         ],
                         'placeholder' => 'Time pulse select day',
                         'label' => 'Time pulse end',
-                        'choices'  => [
+                        'choices' => [
                             '1' => 1,
                             '2' => 2,
                             '3' => 3,
@@ -158,7 +166,7 @@ class TimePulseTemplateType extends AbstractType
                         ],
                         'placeholder' => 'Time pulse select month',
                         'label' => false,
-                        'choices'  => [
+                        'choices' => [
                             '1' => 1,
                             '2' => 2,
                             '3' => 3,
@@ -183,18 +191,14 @@ class TimePulseTemplateType extends AbstractType
                             new Assert\NotBlank(),
                         ],
                         'label' => 'Time pulse',
-                        'attr' => array(
-                            'placeholder' => 'de'
-                        ),
+                        'attr' => ['placeholder' => 'de'],
                     ])
                     ->add('titleEnglish', Types\TextType::class, [
                         'constraints' => [
                             new Assert\NotBlank(),
                         ],
                         'label' => false,
-                        'attr' => array(
-                            'placeholder' => 'en'
-                        ),
+                        'attr' => ['placeholder' => 'en'],
                         'help' => 'Time pulses help',
                         'help_html' => true,
                     ])
@@ -205,7 +209,7 @@ class TimePulseTemplateType extends AbstractType
                         'placeholder' => 'Time pulse select day',
                         'label' => 'Time pulse start',
                         'expanded' => false,
-                        'choices'  => [
+                        'choices' => [
                             '1' => 1,
                             '2' => 2,
                             '3' => 3,
@@ -245,7 +249,7 @@ class TimePulseTemplateType extends AbstractType
                         ],
                         'placeholder' => 'Time pulse select month',
                         'label' => false,
-                        'choices'  => [
+                        'choices' => [
                             '1' => 1,
                             '2' => 2,
                             '3' => 3,
@@ -266,7 +270,7 @@ class TimePulseTemplateType extends AbstractType
                         ],
                         'placeholder' => 'Time pulse select day',
                         'label' => 'Time pulse end',
-                        'choices'  => [
+                        'choices' => [
                             '1' => 1,
                             '2' => 2,
                             '3' => 3,
@@ -306,7 +310,7 @@ class TimePulseTemplateType extends AbstractType
                         ],
                         'placeholder' => 'Time pulse select month',
                         'label' => false,
-                        'choices'  => [
+                        'choices' => [
                             '1' => 1,
                             '2' => 2,
                             '3' => 3,
@@ -325,16 +329,12 @@ class TimePulseTemplateType extends AbstractType
                         'label' => 'Save time pulse',
                     ])
                     ->add('delete', Types\SubmitType::class, [
-                        'attr' => array(
-                            'class' => 'uk-button-danger uk-width-auto',
-                        ),
+                        'attr' => ['class' => 'uk-button-danger uk-width-auto'],
                         'label' => 'Delete time pulse',
                         'validation_groups' => false,   // disable validation
                     ])
                     ->add('cancel', Types\SubmitType::class, [
-                        'attr' => array(
-                            'class' => 'uk-button-secondary',
-                        ),
+                        'attr' => ['class' => 'uk-button-secondary'],
                         'label' => 'Cancel',
                     ]);
             }
@@ -344,7 +344,7 @@ class TimePulseTemplateType extends AbstractType
     /**
      * Configures the options for this type.
      *
-     * @param  OptionsResolver $resolver The resolver for the options
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {

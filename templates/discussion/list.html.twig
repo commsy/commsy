@@ -6,7 +6,7 @@
 {% block feed %}
     <ul id="discussions-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'App\\Controller\\DiscussionController::feedAction', {
+            'App\\Controller\\DiscussionController::feed', {
                 'roomId': roomId,
                 'discussionFilter': app.request.query.get('discussion_filter')
             }

@@ -1,25 +1,28 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Search\QueryConditions;
-
 
 use Elastica\Query\MatchQuery;
 
 class RoomQueryCondition implements QueryConditionInterface
 {
-    /**
-     * @var string|null $query
-     */
-    private ?string $query;
+    private ?string $query = null;
 
-    /**
-     * @param string $query
-     * @return RoomQueryCondition
-     */
     public function setQuery(string $query): RoomQueryCondition
     {
         $this->query = $query;
+
         return $this;
     }
 
@@ -28,7 +31,7 @@ class RoomQueryCondition implements QueryConditionInterface
      */
     public function getConditions(): array
     {
-        if ($this->query === '') {
+        if ('' === $this->query) {
             return [];
         }
 
@@ -47,9 +50,6 @@ class RoomQueryCondition implements QueryConditionInterface
         return [$titleMatch, $descriptionMatch, $contactPersonsMatch];
     }
 
-    /**
-     * @return string
-     */
     public function getOperator(): string
     {
         return QueryConditionInterface::BOOL_SHOULD;

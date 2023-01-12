@@ -1,29 +1,33 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Proxy;
-
 
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceGuest;
 use App\Entity\Portal;
-use App\Services\LegacyEnvironment;
+use cs_environment;
+use cs_list;
 
 class PortalProxy
 {
     /**
-     * @var Portal
-     */
-    private $portal;
-
-    /**
-     * @var \cs_environment
+     * @var cs_environment
      */
     private $legacyEnvironment;
 
-    public function __construct(Portal $portal, \cs_environment $legacyEnvironment)
+    public function __construct(private Portal $portal, cs_environment $legacyEnvironment)
     {
-        $this->portal = $portal;
         $this->legacyEnvironment = $legacyEnvironment;
     }
 
@@ -44,30 +48,32 @@ class PortalProxy
 
     public function showTime(): bool
     {
-        return (isset($this->portal->getExtras()['TIME_SHOW']) && $this->portal->getExtras()['TIME_SHOW'] == '1') ? true : false;
+        return (isset($this->portal->getExtras()['TIME_SHOW']) && '1' == $this->portal->getExtras()['TIME_SHOW']) ? true : false;
     }
 
     public function getTimeList()
     {
-        $retour = NULL;
+        $retour = null;
         $time_manager = $this->legacyEnvironment->getTimeManager();
         $time_manager->setContextLimit($this->getItemID());
         $time_manager->setSortOrder('title');
         $time_manager->select();
         $retour = $time_manager->get();
         unset($time_manager);
+
         return $retour;
     }
 
     public function getTimeListRev()
     {
-        $retour = NULL;
+        $retour = null;
         $time_manager = $this->legacyEnvironment->getTimeManager();
         $time_manager->setContextLimit($this->getItemID());
         $time_manager->setSortOrder('title_rev');
         $time_manager->select();
         $retour = $time_manager->get();
         unset($time_manager);
+
         return $retour;
     }
 
@@ -93,65 +99,68 @@ class PortalProxy
 
     public function getCommunityRoomCreationStatus(): string
     {
-        return ($this->portal->getExtras()['COMMUNITYROOMCREATIONSTATUS']) ?? 'all';
+        return $this->portal->getExtras()['COMMUNITYROOMCREATIONSTATUS'] ?? 'all';
     }
 
     public function getProjectRoomCreationStatus(): string
     {
-        return ($this->portal->getExtras()['PROJECTCREATIONSTATUS']) ?? 'portal';
+        return $this->portal->getExtras()['PROJECTCREATIONSTATUS'] ?? 'portal';
     }
 
     public function getTimeTextArray(): array
     {
-        return ($this->portal->getExtras()['TIME_TEXT_ARRAY']) ?? [];
+        return $this->portal->getExtras()['TIME_TEXT_ARRAY'] ?? [];
     }
 
     public function withAGB(): bool
     {
-        $agbStatus = ($this->portal->getExtras()['SERVER_NEWS']) ?? '2';
-        return $agbStatus == 1;
+        $agbStatus = $this->portal->getExtras()['SERVER_NEWS'] ?? '2';
+
+        return 1 == $agbStatus;
     }
 
     public function getMaxRoomActivityPoints(): int
     {
-        return (int)($this->portal->getExtras()['MAX_ROOM_ACTIVITY'] ?? 0);
+        return (int) ($this->portal->getExtras()['MAX_ROOM_ACTIVITY'] ?? 0);
     }
 
     public function isActivatedDeletingUnusedRooms(): bool
     {
-        $deletingRoomExtra = ($this->portal->getExtras()['DELETING_ROOMS_STATUS']) ?? -1;
-        return $deletingRoomExtra == 1;
+        $deletingRoomExtra = $this->portal->getExtras()['DELETING_ROOMS_STATUS'] ?? -1;
+
+        return 1 == $deletingRoomExtra;
     }
 
     public function getDaysUnusedBeforeDeletingRooms(): int
     {
-        return (int)(($this->portal->getExtras()['DELETING_ROOMS_STATUS']) ?? 365);
+        return (int) ($this->portal->getExtras()['DELETING_ROOMS_STATUS'] ?? 365);
     }
 
     public function getSupportPageLink(): string
     {
-        return ($this->portal->getExtras()['SUPPORTPAGELINK']) ?? '';
+        return $this->portal->getExtras()['SUPPORTPAGELINK'] ?? '';
     }
 
     public function getSupportPageLinkTooltip(): string
     {
-        return ($this->portal->getExtras()['SUPPORTPAGELINKTOOLTIP']) ?? '';
+        return $this->portal->getExtras()['SUPPORTPAGELINKTOOLTIP'] ?? '';
     }
 
     public function showServiceLink(): bool
     {
-        $serviceLinkExtra = ($this->portal->getExtras()['SERVICELINK']) ?? '';
-        return $serviceLinkExtra == 1;
+        $serviceLinkExtra = $this->portal->getExtras()['SERVICELINK'] ?? '';
+
+        return 1 == $serviceLinkExtra;
     }
 
     public function getServiceLinkExternal(): string
     {
-        return ($this->portal->getExtras()['SERVICELINKEXTERNAL']) ?? '';
+        return $this->portal->getExtras()['SERVICELINKEXTERNAL'] ?? '';
     }
 
     public function getServiceEmail(): string
     {
-        return ($this->portal->getExtras()['SERVICEEMAIL']) ?? '';
+        return $this->portal->getExtras()['SERVICEEMAIL'] ?? '';
     }
 
     public function getCurrentTimeName(): string
@@ -165,31 +174,32 @@ class PortalProxy
 
     public function getProjectRoomLinkStatus(): string
     {
-        return ($this->portal->getExtras()['PROJECTROOMLINKSTATUS']) ?? 'optional';
+        return $this->portal->getExtras()['PROJECTROOMLINKSTATUS'] ?? 'optional';
     }
 
     public function isTagMandatory(): bool
     {
-        $tagStatus = ($this->portal->getExtras()['TAGMANDATORY']) ?? -1;
-        return $tagStatus == 1;
+        $tagStatus = $this->portal->getExtras()['TAGMANDATORY'] ?? -1;
+
+        return 1 == $tagStatus;
     }
 
     public function getDefaultProjectTemplateID(): string
     {
-        return ($this->portal->getExtras()['DEFAULTPROJECTTEMPLATEID']) ?? '-1';
+        return $this->portal->getExtras()['DEFAULTPROJECTTEMPLATEID'] ?? '-1';
     }
 
     public function getDefaultCommunityTemplateID(): string
     {
-        return ($this->portal->getExtras()['DEFAULTCOMMUNITYTEMPLATEID']) ?? '-1';
+        return $this->portal->getExtras()['DEFAULTCOMMUNITYTEMPLATEID'] ?? '-1';
     }
 
-    function getShowRoomsOnHome(): ?string
+    public function getShowRoomsOnHome(): ?string
     {
-        return ($this->portal->getExtras()['SHOWROOMSONHOME']) ?? '';
+        return $this->portal->getExtras()['SHOWROOMSONHOME'] ?? '';
     }
 
-    function setShowRoomsOnHome(?string $text)
+    public function setShowRoomsOnHome(?string $text)
     {
         $this->portal->getExtras()['SHOWROOMSONHOME'] = $text;
     }
@@ -199,10 +209,12 @@ class PortalProxy
         return $this->portal->getExtras()['LANGUAGE'] ?? 'de';
     }
 
-    public function setLanguage($language): PortalProxy {
+    public function setLanguage($language): PortalProxy
+    {
         $extras = $this->portal->getExtras();
         $extras['LANGUAGE'] = $language;
         $this->portal->setExtras($extras);
+
         return $this;
     }
 
@@ -243,7 +255,7 @@ class PortalProxy
 
     public function getEmailTextArray(): array
     {
-        return ($this->portal->getExtras()['MAIL_TEXT_ARRAY']) ?? [];
+        return $this->portal->getExtras()['MAIL_TEXT_ARRAY'] ?? [];
     }
 
     public function setEmailTextArray($array)
@@ -269,33 +281,32 @@ class PortalProxy
 
     public function isLocked(): bool
     {
-        return $this->portal->getStatus() === 3;
+        return 3 === $this->portal->getStatus();
     }
 
     public function isClosed(): bool
     {
-        return $this->portal->getStatus() === 2;
+        return 2 === $this->portal->getStatus();
     }
 
     public function isOpenForGuests(): bool
     {
-        return $this->portal->getAuthSources()->filter(function (AuthSource $authSource) {
-            return $authSource instanceof AuthSourceGuest && $authSource->isEnabled();
-        })->count() > 0;
+        return $this->portal->getAuthSources()->filter(fn (AuthSource $authSource) => $authSource instanceof AuthSourceGuest && $authSource->isEnabled())->count() > 0;
     }
 
     public function getConfigurationHideMailByDefault(): bool
     {
-        $hideMailByDefault = ($this->portal->getExtras()['HIDE_MAIL_BY_DEFAULT']) ?? 0;
-        return $hideMailByDefault === 1;
+        $hideMailByDefault = $this->portal->getExtras()['HIDE_MAIL_BY_DEFAULT'] ?? 0;
+
+        return 1 === $hideMailByDefault;
     }
 
     public function setConfigurationHideMailByDefault(bool $enabled)
     {
-        $this->portal->getExtras()['HIDE_MAIL_BY_DEFAULT'] = ($enabled === true) ? 1 : 0;
+        $this->portal->getExtras()['HIDE_MAIL_BY_DEFAULT'] = (true === $enabled) ? 1 : 0;
     }
 
-    public function getModeratorList(): \cs_list
+    public function getModeratorList(): cs_list
     {
         $userManager = $this->legacyEnvironment->getUserManager();
         $userManager->resetLimits();
@@ -303,57 +314,43 @@ class PortalProxy
         $userManager->setModeratorLimit();
         $userManager->select();
 
-        /** @var \cs_list $moderators */
-        $moderators = $userManager->get();
-
-        if ($moderators->isEmpty()) {
-            if ($this->isClosed() && !$this->legacyEnvironment->isArchiveMode()) {
-                $userManager = $this->legacyEnvironment->getZzzUserManager();
-                $userManager->resetLimits();
-                $userManager->setContextLimit($this->getItemID());
-                $userManager->setModeratorLimit();
-                $userManager->select();
-                $moderators = $userManager->get();
-            }
-        }
-
-        return $moderators;
+        /* @var cs_list $moderators */
+        return $userManager->get();
     }
 
-    public function getCommunityList(): \cs_list
+    public function getCommunityList(): cs_list
     {
         $communityManager = $this->legacyEnvironment->getCommunityManager();
         $communityManager->resetLimits();
         $communityManager->setContextLimit($this->getItemId());
         $communityManager->select();
 
-        /** @var \cs_list $communityList */
+        /** @var cs_list $communityList */
         $communityList = $communityManager->get();
 
         return $communityList;
     }
 
     /**
-     * isDeleted
-     *
-     * @return boolean
+     * isDeleted.
      */
     public function isDeleted(): bool
     {
-        return ($this->portal->getDeleter() !== null && $this->portal->getDeletionDate() !== null);
+        return null !== $this->portal->getDeleter() && null !== $this->portal->getDeletionDate();
     }
 
     public function showNewsFromServer(): bool
     {
-        $showNewsFromServer = ($this->portal->getExtras()['SERVER_NEWS']['SHOW_NEWS_FROM_SERVER']) ?? 0;
-        return $showNewsFromServer === 1;
+        $showNewsFromServer = $this->portal->getExtras()['SERVER_NEWS']['SHOW_NEWS_FROM_SERVER'] ?? 0;
+
+        return 1 === $showNewsFromServer;
     }
 
     public function getHideAccountname(): bool
     {
-        $hideAccountName = ($this->portal->getExtras()['EXTRA_CONFIG']['HIDE_ACCOUNTNAME']) ?? 0;
-        return $hideAccountName === '1';
+        $hideAccountName = $this->portal->getExtras()['EXTRA_CONFIG']['HIDE_ACCOUNTNAME'] ?? 0;
 
+        return '1' === $hideAccountName;
     }
 
     public function getRoomType(): string

@@ -1,15 +1,28 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Privacy;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
+use cs_privateroom_item;
+use cs_user_item;
+use DateTime;
 
 /**
- * Class PersonalDataCollector
+ * Class PersonalDataCollector.
  *
  * Collects a user's personal master data, i.e. account data as well as profile data for all of the user's rooms.
- *
- * @package App\Privacy
  */
 class PersonalDataCollector
 {
@@ -19,25 +32,15 @@ class PersonalDataCollector
     private $legacyEnvironment;
 
     /**
-     * @var UserService
-     */
-    private $userService;
-
-    /**
      * PersonalDataCollector constructor.
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param UserService $userService
      */
-    public function __construct(LegacyEnvironment $legacyEnvironment, UserService $userService)
+    public function __construct(LegacyEnvironment $legacyEnvironment, private UserService $userService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->userService = $userService;
     }
 
     /**
-     * Returns the personal data of the user with the given user ID
-     * @param int $userID
-     * @return PersonalData|null
+     * Returns the personal data of the user with the given user ID.
      */
     public function getPersonalDataForUserID(int $userID): ?PersonalData
     {
@@ -54,11 +57,9 @@ class PersonalDataCollector
     }
 
     /**
-     * Populates the given PersonalData object with the account data for the given user
-     * @param PersonalData $personalData
-     * @param \cs_user_item $user
+     * Populates the given PersonalData object with the account data for the given user.
      */
-    private function populateAccountData(PersonalData $personalData, \cs_user_item $user)
+    private function populateAccountData(PersonalData $personalData, cs_user_item $user)
     {
         $accountData = $this->getAccountDataForUser($user);
 
@@ -68,11 +69,9 @@ class PersonalDataCollector
     }
 
     /**
-     * Populates the given PersonalData object with all room profile data for the given user
-     * @param PersonalData $personalData
-     * @param \cs_user_item $user
+     * Populates the given PersonalData object with all room profile data for the given user.
      */
-    private function populateRoomProfileData(PersonalData $personalData, \cs_user_item $user)
+    private function populateRoomProfileData(PersonalData $personalData, cs_user_item $user)
     {
         /**
          * @var RoomProfileData[]
@@ -92,7 +91,7 @@ class PersonalDataCollector
         // TODO: to get all related users, should we better start from the portalUser (`$portalUser->getRelatedPortalUserItem()`) instead?
         //       see comment in `ProfileController->calendarsAction()` which likely also applies here
         /**
-         * @var \cs_user_item[] $relatedUsers
+         * @var cs_user_item[] $relatedUsers
          */
         $relatedUsers = $user->getRelatedUserList()->to_array();
 
@@ -101,11 +100,11 @@ class PersonalDataCollector
             $roomID = $roomProfileData->getRoomID();
             $roomType = $roomProfileData->getRoomType();
 
-            if ($roomType === CS_COMMUNITY_TYPE) {
+            if (CS_COMMUNITY_TYPE === $roomType) {
                 $communityRoomProfileDataArray[$roomID] = $roomProfileData;
-            } else if ($roomType === CS_PROJECT_TYPE) {
+            } elseif (CS_PROJECT_TYPE === $roomType) {
                 $projectRoomProfileDataArray[$roomID] = $roomProfileData;
-            } else if ($roomType === CS_GROUPROOM_TYPE) {
+            } elseif (CS_GROUPROOM_TYPE === $roomType) {
                 $groupRoomProfileDataArray[$roomID] = $roomProfileData;
             } // NOTE: we ignore the user's private room since this doesn't have a user-facing room profile
         }
@@ -125,11 +124,9 @@ class PersonalDataCollector
     }
 
     /**
-     * Returns the account data for the given user
-     * @param \cs_user_item $user
-     * @return AccountData|null
+     * Returns the account data for the given user.
      */
-    private function getAccountDataForUser(\cs_user_item $user): ?AccountData
+    private function getAccountDataForUser(cs_user_item $user): ?AccountData
     {
         $portal = $this->legacyEnvironment->getCurrentPortalItem();
         $portalUser = $user->getRelatedPortalUserItem();
@@ -144,11 +141,11 @@ class PersonalDataCollector
 
         $accountData->setItemID($portalUser->getItemID());
         $accountData->setUserID($portalUser->getUserID());
-        $accountData->setCreationDate(new \DateTime($portalUser->getCreationDate()));
+        $accountData->setCreationDate(new DateTime($portalUser->getCreationDate()));
 
         $lastLogin = $portalUser->getLastLogin();
         if (isset($lastLogin) && !empty($lastLogin)) {
-            $accountData->setLastLoginDate(new \DateTime($lastLogin));
+            $accountData->setLastLoginDate(new DateTime($lastLogin));
         }
 
         $accountData->setEmail($portalUser->getEmail());
@@ -160,11 +157,11 @@ class PersonalDataCollector
 
         $birthdate = $portalUser->getBirthday();
         if (isset($birthdate) && !empty($birthdate)) {
-            $accountData->setBirthdate(new \DateTime($birthdate));
+            $accountData->setBirthdate(new DateTime($birthdate));
         }
 
         /**
-         * @var \cs_privateroom_item $privateRoom
+         * @var cs_privateroom_item $privateRoom
          */
         $privateRoom = $portalUser->getOwnRoom($portal->getItemID());
         $accountData->setNewsletterStatus($privateRoom->getPrivateRoomNewsletterActivity());
@@ -173,11 +170,9 @@ class PersonalDataCollector
     }
 
     /**
-     * Returns the room profile data for the given user
-     * @param \cs_user_item $user
-     * @return RoomProfileData
+     * Returns the room profile data for the given user.
      */
-    private function getRoomProfileDataForUser(\cs_user_item $user): RoomProfileData
+    private function getRoomProfileDataForUser(cs_user_item $user): RoomProfileData
     {
         $roomProfileData = new RoomProfileData();
         $roomItem = $user->getContextItem();
@@ -187,7 +182,7 @@ class PersonalDataCollector
         $roomProfileData->setRoomName($roomItem->getTitle());
 
         $roomProfileData->setItemID($user->getItemID());
-        $roomProfileData->setCreationDate(new \DateTime($user->getCreationDate()));
+        $roomProfileData->setCreationDate(new DateTime($user->getCreationDate()));
 
         $roomProfileData->setStatus($user->getStatus());
         $roomProfileData->setIsContact($user->isContact());

@@ -1,5 +1,15 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Repository;
 
@@ -23,7 +33,9 @@ class AccountsRepository extends ServiceEntityRepository
      * This is used by the UniqueEntity annotation in App\Entity\Account.
      *
      * @param array $fields associative array of account credentials with keys: `username`, `contextId`, `authSource`
+     *
      * @return Account|mixed
+     *
      * @throws NonUniqueResultException
      */
     public function findOneByCredentialsArray(array $fields)
@@ -32,10 +44,6 @@ class AccountsRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string $username
-     * @param int $context
-     * @param AuthSource $authSource
-     * @return Account|null
      * @throws NonUniqueResultException
      */
     public function findOneByCredentials(string $username, int $context, AuthSource $authSource): ?Account
@@ -76,8 +84,6 @@ class AccountsRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string $oldState
-     * @param string $newState
      * @return int|mixed|string
      */
     public function updateActivity(string $oldState, string $newState)

@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Utils;
-
 
 use App\Entity\Portal;
 use App\Entity\Room;
@@ -12,42 +21,18 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RequestContext
 {
-    /**
-     * @var PortalRepository
-     */
-    private PortalRepository $portalRepository;
-
-    /**
-     * @var RoomRepository
-     */
-    private RoomRepository $roomRepository;
-
-    /**
-     * @var ItemService
-     */
-    private ItemService $itemService;
-
-    public function __construct(
-        PortalRepository $portalRepository,
-        RoomRepository $roomRepository,
-        ItemService $itemService
-    ) {
-        $this->portalRepository = $portalRepository;
-        $this->roomRepository = $roomRepository;
-        $this->itemService = $itemService;
+    public function __construct(private PortalRepository $portalRepository, private RoomRepository $roomRepository, private ItemService $itemService)
+    {
     }
 
     /**
-     * Return the room context entity or null
-     *
-     * @param Request $request
-     * @return Room|null
+     * Return the room context entity or null.
      */
     public function fetchRoom(Request $request): ?Room
     {
         $contextId = $this->fetchContextId($request);
 
-        if ($contextId !== null) {
+        if (null !== $contextId) {
             $room = $this->roomRepository->find($contextId);
             if ($room) {
                 return $room;
@@ -58,23 +43,20 @@ class RequestContext
     }
 
     /**
-     * Return the portal context entity or null
-     *
-     * @param Request $request
-     * @return Portal|null
+     * Return the portal context entity or null.
      */
     public function fetchPortal(Request $request): ?Portal
     {
         $contextId = $this->fetchContextId($request);
 
-        if ($contextId !== null) {
+        if (null !== $contextId) {
             $portal = $this->portalRepository->find($contextId);
             if ($portal) {
                 return $portal;
             }
 
             $room = $this->roomRepository->find($contextId);
-            if ($room !== null) {
+            if (null !== $room) {
                 $portal = $this->portalRepository->find($room->getContextId());
                 if ($portal) {
                     return $portal;
@@ -82,7 +64,7 @@ class RequestContext
             }
 
             $item = $this->itemService->getItem($contextId);
-            if ($item !== null) {
+            if (null !== $item) {
                 $portal = $this->portalRepository->find($item->getContextID());
                 if ($portal) {
                     return $portal;
@@ -90,9 +72,9 @@ class RequestContext
             }
 
             $itemId = $request->attributes->get('itemId');
-            if ($itemId !== null) {
+            if (null !== $itemId) {
                 $item = $this->itemService->getItem($itemId);
-                if ($item !== null) {
+                if (null !== $item) {
                     return $this->portalRepository->find($item->getContextID());
                 }
             }
@@ -102,24 +84,22 @@ class RequestContext
     }
 
     /**
-     * Returns the contextId or null
-     * @param Request $request
-     * @return int|null
+     * Returns the contextId or null.
      */
     public function fetchContextId(Request $request): ?int
     {
         $contextId = $request->attributes->get('context');
-        if ($contextId !== null) {
+        if (null !== $contextId) {
             return (int) $contextId;
         }
 
         $roomId = $request->attributes->get('roomId');
-        if ($roomId !== null) {
+        if (null !== $roomId) {
             return (int) $roomId;
         }
 
         $portalId = $request->attributes->get('portalId');
-        if ($portalId !== null) {
+        if (null !== $portalId) {
             return $portalId;
         }
 

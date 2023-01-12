@@ -1,4 +1,16 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Filter;
 
 use App\Entity\Labels;
@@ -11,13 +23,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class RubricFilterType extends AbstractType
 {
-    private $roomService;
-    private $requestStack;
-
-    public function __construct(RoomService $roomService, RequestStack $requestStack)
+    public function __construct(private RoomService $roomService, private RequestStack $requestStack)
     {
-        $this->roomService = $roomService;
-        $this->requestStack = $requestStack;
     }
 
     /**
@@ -25,8 +32,8 @@ class RubricFilterType extends AbstractType
      * This method is called for each type in the hierarchy starting from the top most type.
      * Type extensions can further modify the form.
      *
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -37,85 +44,46 @@ class RubricFilterType extends AbstractType
             if ($attributes->has('roomId')) {
                 $roomId = $attributes->getInt('roomId');
 
-                $filterableRubrics = $this->roomService->getFilterableRubrics($roomId);
+                $filterableRubrics = $this->roomService->getFilterableRubrics($roomId, $currentRequest);
 
                 // group
                 if (in_array('group', $filterableRubrics)) {
                     $builder
-                        ->add('group', Filters\EntityFilterType::class, array(
-                            'label' => 'group',
-                            'class' => Labels::class,
-                            'query_builder' => function (LabelRepository $er) use ($roomId) {
-                                return $er->createQueryBuilder('l')
-                                    ->andWhere('l.contextId = :contextId')
-                                    ->andWhere('l.type = :type')
-                                    ->andWhere('l.deletionDate IS NULL')
-                                    ->andWhere('l.name != :all')
-                                    ->setParameter('contextId', $roomId)
-                                    ->setParameter('type', 'group')
-                                    ->setParameter('all', 'ALL');
-                            },
-                            'choice_label' => 'name',
-                            'translation_domain' => 'form',
-                            'placeholder' => 'no restrictions',
-                            'choice_translation_domain' => true,
-                        ))
+                        ->add('group', Filters\EntityFilterType::class, ['label' => 'group', 'class' => Labels::class, 'query_builder' => fn (LabelRepository $er) => $er->createQueryBuilder('l')
+                            ->andWhere('l.contextId = :contextId')
+                            ->andWhere('l.type = :type')
+                            ->andWhere('l.deletionDate IS NULL')
+                            ->andWhere('l.name != :all')
+                            ->setParameter('contextId', $roomId)
+                            ->setParameter('type', 'group')
+                            ->setParameter('all', 'ALL'), 'choice_label' => 'name', 'translation_domain' => 'form', 'placeholder' => 'no restrictions', 'choice_translation_domain' => true, ])
                     ;
                 }
 
                 // todo
                 if (in_array('topic', $filterableRubrics)) {
                     $builder
-                        ->add('topic', Filters\EntityFilterType::class, array(
-                            'label' => 'topic',
-                            'class' => Labels::class,
-                            'query_builder' => function (LabelRepository $er) use ($roomId) {
-                                return $er->createQueryBuilder('l')
-                                    ->andWhere('l.contextId = :contextId')
-                                    ->andWhere('l.type = :type')
-                                    ->andWhere('l.deletionDate IS NULL')
-                                    ->setParameter('contextId', $roomId)
-                                    ->setParameter('type', 'topic');
-                            },
-                            'choice_label' => 'name',
-                            'translation_domain' => 'form',
-                            'placeholder' => 'no restrictions',
-                        ))
+                        ->add('topic', Filters\EntityFilterType::class, ['label' => 'topic', 'class' => Labels::class, 'query_builder' => fn (LabelRepository $er) => $er->createQueryBuilder('l')
+                            ->andWhere('l.contextId = :contextId')
+                            ->andWhere('l.type = :type')
+                            ->andWhere('l.deletionDate IS NULL')
+                            ->setParameter('contextId', $roomId)
+                            ->setParameter('type', 'topic'), 'choice_label' => 'name', 'translation_domain' => 'form', 'placeholder' => 'no restrictions', ])
                     ;
                 }
 
                 // institution
                 if (in_array('institution', $filterableRubrics)) {
                     $builder
-                        ->add('institution', Filters\EntityFilterType::class, array(
-                            'class' => Labels::class,
-                            'query_builder' => function (LabelRepository $er) use ($roomId) {
-                                return $er->createQueryBuilder('l')
-                                    ->andWhere('l.contextId = :contextId')
-                                    ->andWhere('l.type = :type')
-                                    ->andWhere('l.deletionDate IS NULL')
-                                    ->setParameter('contextId', $roomId)
-                                    ->setParameter('type', 'institution');
-                            },
-                            'choice_label' => 'name',
-                            'translation_domain' => 'form',
-                            'placeholder' => 'no restrictions',
-                        ))
+                        ->add('institution', Filters\EntityFilterType::class, ['class' => Labels::class, 'query_builder' => fn (LabelRepository $er) => $er->createQueryBuilder('l')
+                            ->andWhere('l.contextId = :contextId')
+                            ->andWhere('l.type = :type')
+                            ->andWhere('l.deletionDate IS NULL')
+                            ->setParameter('contextId', $roomId)
+                            ->setParameter('type', 'institution'), 'choice_label' => 'name', 'translation_domain' => 'form', 'placeholder' => 'no restrictions', ])
                     ;
                 }
             }
         }
-    }
-
-    /**
-     * Returns the prefix of the template block name for this type.
-     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
-     * (e.g. "UserProfileType" => "user_profile").
-     *
-     * @return string The prefix of the template block name
-     */
-    public function getBlockPrefix()
-    {
-        return 'rubric_filter';
     }
 }

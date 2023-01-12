@@ -1,13 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 2019-01-15
- * Time: 16:36
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Validator\Constraints;
-
 
 use App\Utils\PortfolioService;
 use Symfony\Component\Validator\Constraint;
@@ -16,20 +20,14 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class UniquePortfolioCategoryValidator extends ConstraintValidator
 {
-    /**
-     * @var PortfolioService
-     */
-    private $portfolioService;
-
-    public function __construct(PortfolioService $portfolioService)
+    public function __construct(private PortfolioService $portfolioService)
     {
-        $this->portfolioService = $portfolioService;
     }
 
     /**
      * Checks if the passed value is valid.
      *
-     * @param mixed $value The value that should be validated
+     * @param mixed      $value      The value that should be validated
      * @param Constraint $constraint The constraint for the validation
      */
     public function validate($value, Constraint $constraint)
@@ -40,7 +38,7 @@ class UniquePortfolioCategoryValidator extends ConstraintValidator
 
         // custom constraints should ignore null and empty values to allow
         // other constraints (NotBlank, NotNull, etc.) take care of that
-        if ($value === null || $value === '') {
+        if (null === $value || '' === $value) {
             return;
         }
 

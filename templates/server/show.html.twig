@@ -9,7 +9,7 @@
     {% if server.logoImageName %}
         <div class="uk-section uk-section-small">
             <div class="uk-container uk-container-large">
-                <img data-src="{{ path('app_file_serverlogo') }}" width="300" height="120" alt="server logo" uk-img>
+                <img data-src="{{ path('app_file_serverlogo') }}" width="300" height="120" alt="server logo" loading="lazy">
             </div>
         </div>
     {% endif %}
@@ -26,7 +26,7 @@
                     <div class="uk-card uk-card-default uk-card-small">
                         {% if activePortal.logoFilename is not empty %}
                             <div class="uk-card-body uk-padding-remove">
-                                <img data-src="{{ path('app_file_portallogo', { 'portalId': activePortal.id }) }}" width="260" height="80" alt="portal logo" uk-img>
+                                <img data-src="{{ path('app_file_portallogo', { 'portalId': activePortal.id }) }}" width="260" height="80" alt="portal logo" loading="lazy">
                             </div>
                         {% endif %}
 

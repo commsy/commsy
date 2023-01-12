@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Action\Delete\DeleteAction;
 use Tests\Support\UnitTester;
 use App\Utils\GroupService;
 
@@ -67,7 +68,7 @@ class ActionsCest
         $userService = $I->grabService('commsy_legacy.user_service');
         $users = $userService->getUsersById($projectRoom->getItemID(), $itemIds);
 
-        $action = $I->grabService('commsy.action.delete.generic');
+        $action = $I->grabService(DeleteAction::class);
         $action->execute($projectRoom, $users);
 
         $deletionDateUser1 = $I->grabFromDatabase('commsy.user', 'deletion_date', [
@@ -122,7 +123,7 @@ class ActionsCest
 
         $groups = $groupService->getGroupsById($projectRoom->getItemID(), $itemIds);
 
-        $action = $I->grabService('commsy.action.delete.generic');
+        $action = $I->grabService(DeleteAction::class);
         $action->execute($projectRoom, $groups);
 
         $deletionDateGroup = $I->grabFromDatabase('commsy.labels', 'deletion_date', [
@@ -138,7 +139,7 @@ class ActionsCest
         $legacyEnvironment = $I->grabService('commsy_legacy.environment')->getEnvironment();
 
         /** @var \App\Action\Delete\DeleteAction $action */
-        $action = $I->grabService('commsy.action.delete.generic');
+        $action = $I->grabService(DeleteAction::class);
         $response = $action->execute(new \cs_room_item($legacyEnvironment), []);
 
         $I->assertInstanceOf(\Symfony\Component\HttpFoundation\Response::class, $response);

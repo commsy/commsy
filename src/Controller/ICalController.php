@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Services\LegacyEnvironment;
@@ -35,46 +46,30 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ICalController extends AbstractController
 {
-
-    /**
-     * @var cs_environment
-     */
     protected cs_environment $legacyEnvironment;
 
-    /**
-     * @var TranslatorInterface
-     */
     protected TranslatorInterface $translator;
 
-    /**
-     * @required
-     * @param LegacyEnvironment $legacyEnvironment
-     */
+    #[Required]
     public function setLegacyEnvironment(LegacyEnvironment $legacyEnvironment): void
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    /**
-     * @param TranslatorInterface $translator
-     */
     public function setTranslator(TranslatorInterface $translator): void
     {
         $this->translator = $translator;
     }
 
     /**
-     * @Route("/ical/{contextId}")
-     * @param Request $request
-     * @param LegacyEnvironment $environment
-     * @param int $contextId
-     * @return Response
      * @throws Exception
      */
+    #[Route(path: '/ical/{contextId}')]
     public function getContentAction(
         Request $request,
         LegacyEnvironment $environment,
@@ -132,7 +127,7 @@ class ICalController extends AbstractController
         $response->setCharset('utf-8');
         $disposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $contextId . '.ics'
+            $contextId.'.ics'
         );
         $response->headers->set('Content-Disposition', $disposition);
 
@@ -173,7 +168,7 @@ class ICalController extends AbstractController
         // get ids auf all items
         $itemIdArray = [];
         foreach ($dateList as $date) {
-            /** @var $date */
+            /* @var $date */
             $itemIdArray[] = $date->getItemID();
         }
 
@@ -246,7 +241,7 @@ class ICalController extends AbstractController
             // title
             $summary = html_entity_decode($item->getTitle());
             if ($item->issetPrivatDate()) {
-                $summary .= ' [' . $this->translator->trans('date.private', [], 'date') . ']';
+                $summary .= ' ['.$this->translator->trans('date.private', [], 'date').']';
             }
             $event->setSummary($summary);
 
@@ -287,7 +282,7 @@ class ICalController extends AbstractController
             } else {
                 $start = new EventDateTime($startTime, false);
                 $end = new EventDateTime($endTime, false);
-                $event->setOccurrence(new TimeSpan($start,$end));
+                $event->setOccurrence(new TimeSpan($start, $end));
             }
 
             // description
@@ -316,7 +311,7 @@ class ICalController extends AbstractController
             }
 
             $dateSelAssignment = $currentContextItem->getRubrikSelection('date', 'assignment');
-            if (!empty($dateSelAssignment) && $dateSelAssignment != '2') {
+            if (!empty($dateSelAssignment) && '2' != $dateSelAssignment) {
                 $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
                 $userList = $currentUserItem->getRelatedUserList();
 
@@ -336,8 +331,8 @@ class ICalController extends AbstractController
             foreach ($myEntries as $entry) {
                 $expEntry = explode('_', $entry);
 
-                if (sizeof($expEntry) == 2) {
-                    if ($expEntry[1] == 'dates' || $expEntry[1] == 'todo') {
+                if (2 == sizeof($expEntry)) {
+                    if ('dates' == $expEntry[1] || 'todo' == $expEntry[1]) {
                         $entry = str_replace('_dates', '', $entry);
                         $entry = str_replace('_todo', '', $entry);
 

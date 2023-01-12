@@ -36,7 +36,7 @@ services:
       - php
     restart: unless-stopped
     environment:
-      SERVER_NAME: ${SERVER_NAME:-localhost:80, caddy:80}
+      SERVER_NAME: ${SERVER_NAME:-localhost, caddy:80}
     volumes:
       - php_socket:/var/run/php
       - caddy_data:/data

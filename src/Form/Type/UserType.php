@@ -1,192 +1,67 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
-    {        
+    {
         $builder
-            ->add('title', TextType::class, array(
-                'label' => 'title',
-                'attr' => array(
-                    'placeholder' => 'title',
-                    'class' => '',
-                ),
-                'required' => false,
-            ))
-            ->add('dateOfBirth', DateType::class, array(
-                'label'    => 'dateOfBirth',
-                'required' => false,
-                'format' => 'dd.MM.yyyy',
-                'html5' => false,
-                'attr' => array(
-                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
-                ),
-                'widget' => 'single_text',
-            ))
-            ->add('emailRoom', EmailType::class, array(
-                'constraints' => array(
-                    new NotBlank(),
-                ),
-                'label' => 'email',
-                'attr' => array(
-                    'placeholder' => 'email',
-                    'class' => '',
-                ),
-                'required' => true,
-            )) 
-            ->add('hideEmailInThisRoom', CheckboxType::class, array(
-                'label' => 'hideEmailInThisRoom',
-                'required' => false,
-            ))
-            ->add('phone', TextType::class, array(
-                'label' => 'phone',
-                'attr' => array(
-                    'placeholder' => 'phone',
-                    'class' => '',
-                ),
-                'required' => false,
-            ))
-            ->add('mobile', TextType::class, array(
-                'label' => 'mobile',
-                'attr' => array(
-                    'placeholder' => 'mobile',
-                    'class' => '',
-                ),
-                'required' => false,
-            ))
-            ->add('street', TextType::class, array(
-                'label' => 'street',
-                'attr' => array(
-                    'placeholder' => 'street',
-                    'class' => '',
-                ),
-                'required' => false,
-            ))
-            ->add('zipCode', TextType::class, array(
-                'label' => 'zipCode',
-                'attr' => array(
-                    'placeholder' => 'zipCode',
-                    'class' => '',
-                ),
-                'required' => false,
-            ))
-            ->add('city', TextType::class, array(
-                'label' => 'city',
-                'attr' => array(
-                    'placeholder' => 'city',
-                    'class' => '',
-                ),
-                'required' => false,
-            ))
-            ->add('room', TextType::class, array(
-                'label' => 'room',
-                'attr' => array(
-                    'placeholder' => 'room',
-                    'class' => '',
-                ),
-                'required' => false,
-            ))
-            ->add('organisation', TextType::class, array(
-                'label' => 'organisation',
-                'attr' => array(
-                    'placeholder' => 'organisation',
-                    'class' => '',
-                ),
-                'required' => false,
-            ))
-            ->add('position', TextType::class, array(
-                'label' => 'position',
-                'attr' => array(
-                    'placeholder' => 'position',
-                    'class' => '',
-                ),
-                'required' => false,
-            ))
-            ->add('homepage', TextType::class, array(
-                'label' => 'homepage',
-                'attr' => array(
-                    'placeholder' => 'homepage',
-                    'class' => '',
-                ),
-                'required' => false,
-            ))
-            ->add('skype', TextType::class, array(
-                'label' => 'skype',
-                'attr' => array(
-                    'placeholder' => 'skype',
-                    'class' => '',
-                ),
-                'required' => false,
-            ))
-            ->add('language', ChoiceType::class, array(
-                'placeholder' => false,
-                'choices' => array(
-                    'browser' => 'browser',
-                    'german' => 'de',
-                    'english' => 'en',
-                ),
-                'label' => 'language',
-                'required' => false,
-                'expanded' => false,
-                'multiple' => false
-            ))
+            ->add('title', TextType::class, ['label' => 'title', 'attr' => ['placeholder' => 'title', 'class' => ''], 'required' => false])
+            ->add('dateOfBirth', DateType::class, ['label' => 'dateOfBirth', 'required' => false, 'format' => 'dd.MM.yyyy', 'html5' => false, 'attr' => ['data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'], 'widget' => 'single_text'])
+            ->add('emailRoom', EmailType::class, ['constraints' => [new NotBlank()], 'label' => 'email', 'attr' => ['placeholder' => 'email', 'class' => ''], 'required' => true])
+            ->add('hideEmailInThisRoom', CheckboxType::class, ['label' => 'hideEmailInThisRoom', 'required' => false])
+            ->add('phone', TextType::class, ['label' => 'phone', 'attr' => ['placeholder' => 'phone', 'class' => ''], 'required' => false])
+            ->add('mobile', TextType::class, ['label' => 'mobile', 'attr' => ['placeholder' => 'mobile', 'class' => ''], 'required' => false])
+            ->add('street', TextType::class, ['label' => 'street', 'attr' => ['placeholder' => 'street', 'class' => ''], 'required' => false])
+            ->add('zipCode', TextType::class, ['label' => 'zipCode', 'attr' => ['placeholder' => 'zipCode', 'class' => ''], 'required' => false])
+            ->add('city', TextType::class, ['label' => 'city', 'attr' => ['placeholder' => 'city', 'class' => ''], 'required' => false])
+            ->add('room', TextType::class, ['label' => 'room', 'attr' => ['placeholder' => 'room', 'class' => ''], 'required' => false])
+            ->add('organisation', TextType::class, ['label' => 'organisation', 'attr' => ['placeholder' => 'organisation', 'class' => ''], 'required' => false])
+            ->add('position', TextType::class, ['label' => 'position', 'attr' => ['placeholder' => 'position', 'class' => ''], 'required' => false])
+            ->add('homepage', TextType::class, ['label' => 'homepage', 'attr' => ['placeholder' => 'homepage', 'class' => ''], 'required' => false])
+            ->add('skype', TextType::class, ['label' => 'skype', 'attr' => ['placeholder' => 'skype', 'class' => ''], 'required' => false])
+            ->add('language', ChoiceType::class, ['placeholder' => false, 'choices' => ['browser' => 'browser', 'german' => 'de', 'english' => 'en'], 'label' => 'language', 'required' => false, 'expanded' => false, 'multiple' => false])
         ;
-        
+
         $builder
-            ->add('save', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                ),
-                'label' => 'save',
-                'translation_domain' => 'form',
-            ))
-            ->add('cancel', SubmitType::class, array(
-                'attr' => array(
-                    'formnovalidate' => '',
-                ),
-                'label' => 'cancel',
-                'translation_domain' => 'form',
-            ))
+            ->add('save', SubmitType::class, ['attr' => ['class' => 'uk-button-primary'], 'label' => 'save', 'translation_domain' => 'form'])
+            ->add('cancel', SubmitType::class, ['attr' => ['formnovalidate' => ''], 'label' => 'cancel', 'translation_domain' => 'form'])
         ;
-        
-        
     }
 
     /**
      * Configures the options for this type.
-     * 
-     * @param  OptionsResolver $resolver The resolver for the options
+     *
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setRequired(['uploadUrl'])
-            ->setDefaults(array('translation_domain' => 'user'))
+            ->setDefaults(['translation_domain' => 'user'])
         ;
-    }
-
-    /**
-     * Returns the prefix of the template block name for this type.
-     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
-     * (e.g. "UserProfileType" => "user_profile").
-     * 
-     * @return string The prefix of the template block name
-     */
-    public function getBlockPrefix()
-    {
-        return 'user';
     }
 }

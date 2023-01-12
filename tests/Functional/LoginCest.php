@@ -2,41 +2,31 @@
 
 namespace Tests\Functional;
 
-use Tests\Support\FunctionalTester;
-use Tests\Support\Page\Functional\Registration;
-use Tests\Support\Step\Functional\User;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Invitations;
-use App\Entity\Translation;
+use Tests\Support\FunctionalTester;
+use Tests\Support\Page\Functional\PortalAuthLocal;
+use Tests\Support\Page\Functional\Registration;
+use Tests\Support\Page\Functional\Room;
+use Tests\Support\Step\Functional\Root;
+use Tests\Support\Step\Functional\User;
 
 class LoginCest
 {
-    public function loginAsRoot(FunctionalTester $I)
+    public function loginAsRoot(Root $R)
     {
-        $I->amOnPage('/login/server');
-        $I->see('Login Systemadministration');
+        $R->loginAsRoot();
 
-        $I->fillField('#inputEmail', 'root');
-        $I->fillField('#inputPassword', 'pcxEmQj6QzE5');
-        $I->click('button[name=login_local]');
-
-        $I->seeCurrentRouteIs('app_server_show');
+        $R->seeCurrentRouteIs('app_server_show');
     }
 
-    public function loginAsUser(FunctionalTester $I)
+    public function loginAsUser(Root $R, User $U)
     {
-        $portal = $I->havePortal('Testportal');
-        $account = $I->haveAccount($portal, 'user');
+        $R->loginAndCreatePortalAsRoot();
+        $R->goToLogoutPath();
 
-        $I->amOnRoute('app_login', [
-            'context' => $portal->getId(),
-        ]);
-
-        $I->fillField('#inputEmail', $account->getUsername());
-        $I->fillField('#inputPassword', $account->getPlainPassword());
-        $I->click('button[name=login_local]');
-
-        $I->seeCurrentRouteIs('app_dashboard_overview');
+        $U->registerAndLoginAsUser(1);
+        $U->seeCurrentRouteIs('app_dashboard_overview');
 
         // Make sure ...
 
@@ -51,21 +41,23 @@ class LoginCest
          */
     }
 
-    public function register(FunctionalTester $I, Registration $registrationPage)
+    public function register(Root $R, FunctionalTester $I, Registration $registrationPage)
     {
-        $portal = $I->havePortal('Testportal');
+        $R->loginAndCreatePortalAsRoot();
+        $R->goToLogoutPath();
 
-        $registrationPage->register($portal, 'Firstname', 'Lastname', 'username',
+        $registrationPage->register(1, 'Firstname', 'Lastname', 'username',
             'some@mail.test', 'zfCbzLm9h4$h');
 
         $I->seeCurrentRouteIs('app_login');
     }
 
-    public function registerWithBadPassword(FunctionalTester $I, Registration $registrationPage)
+    public function registerWithBadPassword(Root $R, FunctionalTester $I, Registration $registrationPage)
     {
-        $portal = $I->havePortal('Testportal');
+        $R->loginAndCreatePortalAsRoot();
+        $R->goToLogoutPath();
 
-        $registrationPage->register($portal, 'Firstname', 'Lastname', 'username',
+        $registrationPage->register(1, 'Firstname', 'Lastname', 'username',
             'some@mail.test', 'badpassword');
 
         $I->see('Das eingegebene Passwort muss mindestens einen Großbuchstaben enthalten');
@@ -74,75 +66,83 @@ class LoginCest
         $I->see('Das Passwort muss mindestens 8 Zeichen lang sein und mindestens einen Klein- und Großbuchstaben, sowie ein Sonderzeichen und eine Zahl enthalten');
     }
 
-    public function registerWithUnallowedEmail(FunctionalTester $I, Registration $registrationPage)
-    {
-        $authSource = new AuthSourceLocal();
-        $authSource->setTitle('Lokal');
-        $authSource->setEnabled(true);
-        $authSource->setDefault(true);
-        $authSource->setMailRegex('~.*@domain.tld~');
-        $I->haveInRepository($authSource);
+    public function registerWithUnallowedEmail(
+        Root $R,
+        FunctionalTester $I,
+        PortalAuthLocal $portalAuthLocalPage,
+        Registration $registrationPage
+    ) {
+        $R->loginAndCreatePortalAsRoot();
 
-        $portal = $I->havePortal('Testportal', [], $authSource);
+        $portalAuthLocalPage->configure(1, true, 'Lokal', true, '~.*@domain.tld~');
 
-        $I->haveInRepository(Translation::class, [
-            'contextId' => $portal->getId(),
-            'translationKey' => 'EMAIL_REGEX_ERROR',
-            'translationDe' => 'error_de',
-            'translationEn' => 'error_en',
+        $R->amOnRoute('app_portalsettings_translations', [
+            'portalId' => 1,
         ]);
+        $R->click('Fehlermeldung E-Mail Validierung');
+        $R->fillField('#translation_translationDe', 'error_de');
+        $R->fillField('#translation_translationEn', 'error_en');
+        $R->click('#translation_update');
 
-        $registrationPage->register($portal, 'Firstname', 'Lastname', 'username',
+        $R->goToLogoutPath();
+
+        $registrationPage->register(1, 'Firstname', 'Lastname', 'username',
             'some@other.tld', 'zfCbzLm9h4$h');
 
         $I->see('error_de');
     }
 
-    public function registerWithInvitation(User $I, Registration $registrationPage)
-    {
-        $authSource = new AuthSourceLocal();
-        $authSource->setTitle('Lokal');
-        $authSource->setEnabled(true);
-        $authSource->setDefault(true);
-        $authSource->setAddAccount(AuthSourceLocal::ADD_ACCOUNT_INVITE);
-        $I->haveInRepository($authSource);
+    public function registerWithInvitation(
+        Root $R,
+        User $U,
+        PortalAuthLocal $portalAuthLocalPage,
+        Room $roomPage,
+        Registration $registrationPage
+    ) {
+        $R->loginAndCreatePortalAsRoot();
+        $R->goToLogoutPath();
 
-        $portal = $I->havePortal('Testportal', [], $authSource);
-        $room = $I->haveProjectRoom('Testraum', true, $portal);
+        $U->registerAndLoginAsUser(1);
+        $roomPage->create(1, 'Testraum');
+        $roomId = $U->grabFromCurrentUrl('~^/portal/\d+/room/(\d+)~');
 
         // Create an inviation in the room settings
-        $I->amOnRoute('app_settings_invitations', [
-            'roomId' => $room->getItemID(),
+        $U->amOnRoute('app_settings_invitations', [
+            'roomId' => $roomId,
         ]);
-        $I->fillField('#invitations_settings_email', 'asdf@some.mail');
-        $I->click('#invitations_settings_send');
-        $I->seeResponseCodeIsSuccessful();
-        $I->see('asdf@some.mail');
+        $U->fillField('#invitations_settings_email', 'asdf@some.mail');
+        $U->click('#invitations_settings_send');
+        $U->seeResponseCodeIsSuccessful();
+        $U->see('asdf@some.mail');
 
-        $I->logout();
+        $U->goToLogoutPath();
+
+        $R->loginAsRoot();
+        $portalAuthLocalPage->configure(1, true, 'Lokal', true, '', AuthSourceLocal::ADD_ACCOUNT_INVITE);
+        $R->goToLogoutPath();
 
         /** @var Invitations $invitation */
-        $invitation = $I->grabEntityFromRepository(Invitations::class, ['email' => 'asdf@some.mail']);
+        $invitation = $U->grabEntityFromRepository(Invitations::class, ['email' => 'asdf@some.mail']);
         $token = $invitation->getHash();
 
         // No token
-        $I->amOnRoute('app_account_signup', [
-            'id' => $portal->getId(),
+        $U->amOnRoute('app_account_signup', [
+            'id' => 1,
         ]);
-        $I->see('Der Einladungslink ist nicht (mehr) gültig.');
+        $U->see('Der Einladungslink ist nicht (mehr) gültig.');
 
         // Wrong token
-        $I->amOnRoute('app_account_signup', [
-            'id' => $portal->getId(),
+        $U->amOnRoute('app_account_signup', [
+            'id' => 1,
             'token' => 'invalid',
         ]);
-        $I->see('Der Einladungslink ist nicht (mehr) gültig.');
+        $U->see('Der Einladungslink ist nicht (mehr) gültig.');
 
         // Valid token
-        $I->amOnRoute('app_account_signup', [
-            'id' => $portal->getId(),
+        $U->amOnRoute('app_account_signup', [
+            'id' => 1,
             'token' => $token,
         ]);
-        $I->dontSee('Der Einladungslink ist nicht (mehr) gültig.');
+        $U->dontSee('Der Einladungslink ist nicht (mehr) gültig.');
     }
 }

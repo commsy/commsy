@@ -26,17 +26,18 @@ class Registration
     }
 
     public function register(
-        Portal $portal,
+        int $portalId,
         string $firstname,
         string $lastname,
         string $username,
         string $email,
         string $password
-    ) {
+    ): void
+    {
         $I = $this->functionalTester;
 
         $I->amOnRoute('app_account_signup', [
-            'id' => $portal->getId(),
+            'id' => $portalId,
         ]);
 
         $I->fillField($this->firstnameField, $firstname);

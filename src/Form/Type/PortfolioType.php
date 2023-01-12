@@ -1,7 +1,20 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type;
 
 use App\Utils\PortfolioService;
+use cs_item;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -18,30 +31,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class PortfolioType extends AbstractType
 {
     /**
-     * @var TranslatorInterface $translator
-     */
-    private TranslatorInterface $translator;
-
-    /**
-     * @var PortfolioService $portfolioService
-     */
-    private PortfolioService $portfolioService;
-
-    /**
      * PortfolioType constructor.
-     * @param TranslatorInterface $translator
-     * @param PortfolioService $portfolioService
      */
-    public function __construct(TranslatorInterface $translator, PortfolioService $portfolioService)
+    public function __construct(private TranslatorInterface $translator, private PortfolioService $portfolioService)
     {
-        $this->translator = $translator;
-        $this->portfolioService = $portfolioService;
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -55,7 +50,7 @@ class PortfolioType extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new Constraints\NotBlank(),
-                ]
+                ],
             ])
             ->add('description', TextareaType::class, [
                 'attr' => [
@@ -100,7 +95,7 @@ class PortfolioType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
 
-            /** @var \cs_item $item */
+            /** @var cs_item $item */
             $item = $options['item'];
 
             if (!$item->isDraft()) {
@@ -134,7 +129,7 @@ class PortfolioType extends AbstractType
     /**
      * Configures the options for this type.
      *
-     * @param  OptionsResolver $resolver The resolver for the options
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -142,17 +137,5 @@ class PortfolioType extends AbstractType
             ->setRequired(['item'])
             ->setDefaults(['translation_domain' => 'form'])
         ;
-    }
-
-    /**
-     * Returns the prefix of the template block name for this type.
-     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
-     * (e.g. "UserProfileType" => "user_profile").
-     *
-     * @return string The prefix of the template block name
-     */
-    public function getBlockPrefix()
-    {
-        return 'portfolio';
     }
 }

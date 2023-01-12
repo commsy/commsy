@@ -1,167 +1,158 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Discussions
- *
- * @ORM\Table(name="discussions", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"})})
- * @ORM\Entity
+ * Discussions.
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'discussions')]
+#[ORM\Index(name: 'context_id', columns: ['context_id'])]
+#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 class Discussions
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="item_id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @var int
      */
+    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $itemId = '0';
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
     private $contextId;
 
-    /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id")
-     */
-    private $creator;
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
+    private ?User $creator = null;
+
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
+    private ?User $modifier = null;
 
     /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id")
+     * @var int
      */
-    private $modifier;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="deleter_id", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private $deleterId;
 
     /**
      * @var DateTime
-     *
-     * @ORM\Column(name="creation_date", type="datetime", nullable=false)
      */
+    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private $creationDate = '0000-00-00 00:00:00';
 
     /**
      * @var DateTime
-     *
-     * @ORM\Column(name="modification_date", type="datetime", nullable=true)
      */
+    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
     private $modificationDate;
 
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="activation_date", type="datetime")
-     */
-    private ?DateTime $activationDate;
+    #[ORM\Column(name: 'activation_date', type: 'datetime')]
+    private ?DateTime $activationDate = null;
 
     /**
      * @var DateTime
-     *
-     * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
      */
+    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=200, nullable=false)
      */
+    #[ORM\Column(name: 'title', type: 'string', length: 200, nullable: false)]
     private $title;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private string $description;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="latest_article_item_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'latest_article_item_id', type: 'integer', nullable: true)]
     private $latestArticleItemId;
 
     /**
      * @var DateTime
-     *
-     * @ORM\Column(name="latest_article_modification_date", type="datetime", nullable=true)
      */
+    #[ORM\Column(name: 'latest_article_modification_date', type: 'datetime', nullable: true)]
     private $latestArticleModificationDate;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="status", type="integer", nullable=false)
+     * @var int
      */
+    #[ORM\Column(name: 'status', type: 'integer', nullable: false)]
     private $status = '1';
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="discussion_type", type="string", length=10, nullable=false)
      */
+    #[ORM\Column(name: 'discussion_type', type: 'string', length: 10, nullable: false)]
     private $discussionType = 'simple';
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="public", type="boolean", nullable=false)
+     * @var bool
      */
+    #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
     private $public = '0';
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="extras", type="text", length=65535, nullable=true)
      */
+    #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
     private $extras;
 
     /**
      * @var DateTime
-     *
-     * @ORM\Column(name="locking_date", type="datetime", nullable=true)
      */
+    #[ORM\Column(name: 'locking_date', type: 'datetime', nullable: true)]
     private $lockingDate;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="locking_user_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'locking_user_id', type: 'integer', nullable: true)]
     private $lockingUserId;
 
     /**
-     * @ORM\OneToMany(targetEntity="Discussionarticles", mappedBy="discussion")
+     * @var Discussionarticles[]|null
      */
-    private $discussionarticles;
+    #[ORM\OneToMany(targetEntity: 'Discussionarticles', mappedBy: 'discussion')]
+    private Collection $discussionarticles;
+
+    public function __construct()
+    {
+        $this->discussionarticles = new ArrayCollection();
+    }
 
     public function isIndexable()
     {
-        return ($this->deleterId == null && $this->deletionDate == null);
+        return null == $this->deleterId && null == $this->deletionDate;
     }
 
     /**
-     * Get itemId
+     * Get itemId.
      *
-     * @return integer
+     * @return int
      */
     public function getItemId()
     {
@@ -169,9 +160,9 @@ class Discussions
     }
 
     /**
-     * Set contextId
+     * Set contextId.
      *
-     * @param integer $contextId
+     * @param int $contextId
      *
      * @return Discussions
      */
@@ -183,9 +174,9 @@ class Discussions
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
-     * @return integer
+     * @return int
      */
     public function getContextId()
     {
@@ -193,9 +184,9 @@ class Discussions
     }
 
     /**
-     * Set deleterId
+     * Set deleterId.
      *
-     * @param integer $deleterId
+     * @param int $deleterId
      *
      * @return Discussions
      */
@@ -207,9 +198,9 @@ class Discussions
     }
 
     /**
-     * Get deleterId
+     * Get deleterId.
      *
-     * @return integer
+     * @return int
      */
     public function getDeleterId()
     {
@@ -217,7 +208,7 @@ class Discussions
     }
 
     /**
-     * Set creationDate
+     * Set creationDate.
      *
      * @param DateTime $creationDate
      *
@@ -231,7 +222,7 @@ class Discussions
     }
 
     /**
-     * Get creationDate
+     * Get creationDate.
      *
      * @return DateTime
      */
@@ -241,7 +232,7 @@ class Discussions
     }
 
     /**
-     * Set modificationDate
+     * Set modificationDate.
      *
      * @param DateTime $modificationDate
      *
@@ -255,11 +246,7 @@ class Discussions
     }
 
     /**
-     * Set activationDate
-     *
-     * @param DateTime $activationDate
-     *
-     * @return Discussions
+     * Set activationDate.
      */
     public function setActivationDate(DateTime $activationDate): self
     {
@@ -269,9 +256,7 @@ class Discussions
     }
 
     /**
-     * Get activationDate
-     *
-     * @return DateTime|null
+     * Get activationDate.
      */
     public function getActivationDate(): ?DateTime
     {
@@ -279,7 +264,7 @@ class Discussions
     }
 
     /**
-     * Get modificationDate
+     * Get modificationDate.
      *
      * @return DateTime
      */
@@ -289,7 +274,7 @@ class Discussions
     }
 
     /**
-     * Set deletionDate
+     * Set deletionDate.
      *
      * @param DateTime $deletionDate
      *
@@ -303,7 +288,7 @@ class Discussions
     }
 
     /**
-     * Get deletionDate
+     * Get deletionDate.
      *
      * @return DateTime
      */
@@ -313,7 +298,7 @@ class Discussions
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -327,7 +312,7 @@ class Discussions
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -344,13 +329,14 @@ class Discussions
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
         return $this;
     }
 
     /**
-     * Set latestArticleItemId
+     * Set latestArticleItemId.
      *
-     * @param integer $latestArticleItemId
+     * @param int $latestArticleItemId
      *
      * @return Discussions
      */
@@ -362,9 +348,9 @@ class Discussions
     }
 
     /**
-     * Get latestArticleItemId
+     * Get latestArticleItemId.
      *
-     * @return integer
+     * @return int
      */
     public function getLatestArticleItemId()
     {
@@ -372,7 +358,7 @@ class Discussions
     }
 
     /**
-     * Set latestArticleModificationDate
+     * Set latestArticleModificationDate.
      *
      * @param DateTime $latestArticleModificationDate
      *
@@ -386,7 +372,7 @@ class Discussions
     }
 
     /**
-     * Get latestArticleModificationDate
+     * Get latestArticleModificationDate.
      *
      * @return DateTime
      */
@@ -396,9 +382,9 @@ class Discussions
     }
 
     /**
-     * Set status
+     * Set status.
      *
-     * @param integer $status
+     * @param int $status
      *
      * @return Discussions
      */
@@ -410,9 +396,9 @@ class Discussions
     }
 
     /**
-     * Get status
+     * Get status.
      *
-     * @return integer
+     * @return int
      */
     public function getStatus()
     {
@@ -420,7 +406,7 @@ class Discussions
     }
 
     /**
-     * Set discussionType
+     * Set discussionType.
      *
      * @param string $discussionType
      *
@@ -434,7 +420,7 @@ class Discussions
     }
 
     /**
-     * Get discussionType
+     * Get discussionType.
      *
      * @return string
      */
@@ -444,9 +430,9 @@ class Discussions
     }
 
     /**
-     * Set public
+     * Set public.
      *
-     * @param boolean $public
+     * @param bool $public
      *
      * @return Discussions
      */
@@ -458,9 +444,9 @@ class Discussions
     }
 
     /**
-     * Get public
+     * Get public.
      *
-     * @return boolean
+     * @return bool
      */
     public function getPublic()
     {
@@ -468,7 +454,7 @@ class Discussions
     }
 
     /**
-     * Set extras
+     * Set extras.
      *
      * @param string $extras
      *
@@ -482,7 +468,7 @@ class Discussions
     }
 
     /**
-     * Get extras
+     * Get extras.
      *
      * @return string
      */
@@ -492,7 +478,7 @@ class Discussions
     }
 
     /**
-     * Set lockingDate
+     * Set lockingDate.
      *
      * @param DateTime $lockingDate
      *
@@ -506,7 +492,7 @@ class Discussions
     }
 
     /**
-     * Get lockingDate
+     * Get lockingDate.
      *
      * @return DateTime
      */
@@ -516,9 +502,9 @@ class Discussions
     }
 
     /**
-     * Set lockingUserId
+     * Set lockingUserId.
      *
-     * @param integer $lockingUserId
+     * @param int $lockingUserId
      *
      * @return Discussions
      */
@@ -530,9 +516,9 @@ class Discussions
     }
 
     /**
-     * Get lockingUserId
+     * Get lockingUserId.
      *
-     * @return integer
+     * @return int
      */
     public function getLockingUserId()
     {
@@ -540,13 +526,11 @@ class Discussions
     }
 
     /**
-     * Set creator
-     *
-     * @param \App\Entity\User $creator
+     * Set creator.
      *
      * @return Discussions
      */
-    public function setCreator(\App\Entity\User $creator = null)
+    public function setCreator(User $creator = null)
     {
         $this->creator = $creator;
 
@@ -554,9 +538,9 @@ class Discussions
     }
 
     /**
-     * Get creator
+     * Get creator.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getCreator()
     {
@@ -564,13 +548,11 @@ class Discussions
     }
 
     /**
-     * Set modifier
-     *
-     * @param \App\Entity\User $modifier
+     * Set modifier.
      *
      * @return Discussions
      */
-    public function setModifier(\App\Entity\User $modifier = null)
+    public function setModifier(User $modifier = null)
     {
         $this->modifier = $modifier;
 
@@ -578,9 +560,9 @@ class Discussions
     }
 
     /**
-     * Get modifier
+     * Get modifier.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getModifier()
     {
@@ -588,13 +570,11 @@ class Discussions
     }
 
     /**
-     * Add discussionarticle
-     *
-     * @param \App\Entity\Discussionarticles $discussionarticle
+     * Add discussionarticle.
      *
      * @return Materials
      */
-    public function addDiscussionarticle(\App\Entity\Discussionarticles $discussionarticle)
+    public function addDiscussionarticle(Discussionarticles $discussionarticle)
     {
         $this->discussionarticles[] = $discussionarticle;
 
@@ -602,19 +582,17 @@ class Discussions
     }
 
     /**
-     * Remove discussionarticle
-     *
-     * @param \App\Entity\Discussionarticles $discussionarticle
+     * Remove discussionarticle.
      */
-    public function removeDiscussionarticle(\App\Entity\Discussionarticles $discussionarticle)
+    public function removeDiscussionarticle(Discussionarticles $discussionarticle)
     {
         $this->discussionarticles->removeElement($discussionarticle);
     }
 
     /**
-     * Get discussionarticles
+     * Get discussionarticles.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getDiscussionarticles()
     {

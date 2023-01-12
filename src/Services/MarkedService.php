@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Services;
 
 use App\Utils\ItemService;
@@ -9,27 +20,18 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class MarkedService
 {
-    private ItemService $itemService;
-
-    private SessionInterface $session;
-
     private ?string $type = null;
 
     /**
      * MarkedService constructor.
-     * @param ItemService $itemService
-     * @param SessionInterface $session
      */
-    public function __construct(
-        ItemService $itemService,
-        SessionInterface $session
-    ) {
-        $this->itemService = $itemService;
-        $this->session = $session;
+    public function __construct(private ItemService $itemService, private SessionInterface $session)
+    {
     }
 
     public function getCountArray($roomId)
     {
+        $itemsCountArray = [];
         $currentClipboardIds = $this->session->get('clipboard_ids', []);
 
         if ($this->type) {
@@ -47,6 +49,7 @@ class MarkedService
      * @param null $max
      * @param null $start
      * @param null $sort
+     *
      * @return cs_item[]
      */
     public function getListEntries($max = null, $start = null, $sort = null)
@@ -60,7 +63,7 @@ class MarkedService
                 $start = 0;
             }
             if (!$max) {
-                $max = count($currentClipboardIds);
+                $max = is_countable($currentClipboardIds) ? count($currentClipboardIds) : 0;
             }
             if ($counter >= $start && $counter < $start + $max) {
                 $typedItem = $this->itemService->getTypedItem($currentClipboardId);
@@ -73,14 +76,15 @@ class MarkedService
                     $entries[] = $typedItem;
                 }
             }
-            $counter++;
+            ++$counter;
         }
 
         return $entries;
     }
 
     /**
-     * @param integer[] $ids
+     * @param int[] $ids
+     *
      * @return cs_item[]
      */
     public function getMarkedItemsById($ids)

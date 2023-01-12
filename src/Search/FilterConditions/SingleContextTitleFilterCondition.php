@@ -1,25 +1,28 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Search\FilterConditions;
-
 
 use Elastica\Query\Terms;
 
 class SingleContextTitleFilterCondition implements FilterConditionInterface
 {
-    /**
-     * @var string|null $contextTitle
-     */
-    private ?string $contextTitle;
+    private ?string $contextTitle = null;
 
-    /**
-     * @param string $contextTitle
-     * @return SingleContextTitleFilterCondition
-     */
     public function setContextTitle(string $contextTitle): SingleContextTitleFilterCondition
     {
         $this->contextTitle = $contextTitle;
+
         return $this;
     }
 
@@ -28,7 +31,7 @@ class SingleContextTitleFilterCondition implements FilterConditionInterface
      */
     public function getConditions(): array
     {
-        if ($this->contextTitle === 'all') {
+        if ('all' === $this->contextTitle) {
             return [];
         }
 
@@ -38,12 +41,8 @@ class SingleContextTitleFilterCondition implements FilterConditionInterface
         return [$contextTerm];
     }
 
-    /**
-     * @return string
-     */
     public function getOperator(): string
     {
         return FilterConditionInterface::BOOL_MUST;
     }
-
 }

@@ -57,6 +57,7 @@ class ApiTester extends Actor
             'modifier_id' => 99,
             'title' => $title,
             'status' => 1,
+            'archived' => false,
         ]);
 
         return $room;

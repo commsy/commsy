@@ -1,20 +1,43 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Entity;
 
-
 class AccountIndex
 {
-
+    /**
+     * @var mixed|null
+     */
     private $accountIndexSearchString;
 
+    /**
+     * @var mixed|null
+     */
     private $userIndexFilterChoice;
 
+    /**
+     * @var mixed|null
+     */
     private $indexViewAction;
 
+    /**
+     * @var mixed|null
+     */
     private $accountIndexUsers;
 
+    /**
+     * @var mixed|null
+     */
     private $ids;
 
     /**
@@ -25,10 +48,7 @@ class AccountIndex
         return $this->accountIndexSearchString;
     }
 
-    /**
-     * @param mixed $accountIndexSearchString
-     */
-    public function setAccountIndexSearchString($accountIndexSearchString): void
+    public function setAccountIndexSearchString(mixed $accountIndexSearchString): void
     {
         $this->accountIndexSearchString = $accountIndexSearchString;
     }
@@ -41,10 +61,7 @@ class AccountIndex
         return $this->userIndexFilterChoice;
     }
 
-    /**
-     * @param mixed $userIndexFilterChoice
-     */
-    public function setUserIndexFilterChoice($userIndexFilterChoice): void
+    public function setUserIndexFilterChoice(mixed $userIndexFilterChoice): void
     {
         $this->userIndexFilterChoice = $userIndexFilterChoice;
     }
@@ -57,10 +74,7 @@ class AccountIndex
         return $this->indexViewAction;
     }
 
-    /**
-     * @param mixed $indexViewAction
-     */
-    public function setIndexViewAction($indexViewAction): void
+    public function setIndexViewAction(mixed $indexViewAction): void
     {
         $this->indexViewAction = $indexViewAction;
     }
@@ -73,10 +87,7 @@ class AccountIndex
         return $this->accountIndexUsers;
     }
 
-    /**
-     * @param mixed $accountIndexUsers
-     */
-    public function setAccountIndexUsers($accountIndexUsers): void
+    public function setAccountIndexUsers(mixed $accountIndexUsers): void
     {
         $this->accountIndexUsers = $accountIndexUsers;
     }
@@ -89,12 +100,8 @@ class AccountIndex
         return $this->ids;
     }
 
-    /**
-     * @param mixed $ids
-     */
-    public function setIds($ids): void
+    public function setIds(mixed $ids): void
     {
         $this->ids = $ids;
     }
-
 }

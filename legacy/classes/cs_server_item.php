@@ -1,45 +1,28 @@
-<?PHP
-// $Id$
-//
-// Release $Name$
-//
-// Copyright (c)2002-2007 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
-// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
-//
-//    This file is part of CommSy.
-//
-//    CommSy is free software; you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation; either version 2 of the License, or
-//    (at your option) any later version.
-//
-//    CommSy is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
-//
-//    You have received a copy of the GNU General Public License
-//    along with CommSy.
+<?php
 
-/** upper class of the context item
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
-use App\Account\AccountManager;
-use App\Entity\Portal;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+/* upper class of the context item
+ */
 
-include_once 'classes/cs_guide_item.php';
+use App\Entity\Portal;
 
 /** class for a context
- * this class implements a context item
+ * this class implements a context item.
  */
 class cs_server_item extends cs_guide_item
 {
     /** constructor: cs_server_item
-     * the only available constructor, initial values for internal variables
+     * the only available constructor, initial values for internal variables.
      *
      * @param object environment the environment of the commsy
      */
@@ -54,7 +37,7 @@ class cs_server_item extends cs_guide_item
         return true;
     }
 
-    /** get default portal item id
+    /** get default portal item id.
      *
      * @return string portal item id
      */
@@ -68,7 +51,7 @@ class cs_server_item extends cs_guide_item
         return $retour;
     }
 
-    /** set default portal item id
+    /** set default portal item id.
      *
      * @param default portal item id
      */
@@ -77,7 +60,7 @@ class cs_server_item extends cs_guide_item
         $this->_addExtra('DEFAULT_PORTAL_ID', $value);
     }
 
-    /** get default email sender address
+    /** get default email sender address.
      *
      * @return string default email sender address
      */
@@ -91,7 +74,7 @@ class cs_server_item extends cs_guide_item
         return $retour;
     }
 
-    /** set default email sender address
+    /** set default email sender address.
      *
      * @param default email sender address
      */
@@ -102,7 +85,7 @@ class cs_server_item extends cs_guide_item
 
     public function getPortalIDArray()
     {
-        $retour = array();
+        $retour = [];
         $portal_manager = $this->_environment->getPortalManager();
         $portal_manager->setContextLimit($this->getItemID());
         $portal_manager->select();
@@ -117,7 +100,7 @@ class cs_server_item extends cs_guide_item
 
     /** get portal list
      * this function returns a list of all portals
-     * existing on this commsy server
+     * existing on this commsy server.
      *
      * @return list of portals
      */
@@ -133,11 +116,11 @@ class cs_server_item extends cs_guide_item
     }
 
     /** get contact moderator of a room
-     * this method returns a list of contact moderator which are linked to the room
+     * this method returns a list of contact moderator which are linked to the room.
      *
-     * @return object cs_list a list of contact moderator (cs_label_item)
+     * @return cs_list a list of contact moderator (cs_label_item)
      */
-    public function getContactModeratorList()
+    public function getContactModeratorList(): cs_list
     {
         $user_manager = $this->_environment->getUserManager();
         $mod_list = new cs_list();
@@ -147,7 +130,7 @@ class cs_server_item extends cs_guide_item
     }
 
     /** get UsageInfos
-     * this method returns the usage infos
+     * this method returns the usage infos.
      *
      * @return array
      */
@@ -157,19 +140,19 @@ class cs_server_item extends cs_guide_item
         if ($this->_issetExtra('USAGE_INFO')) {
             $retour = $this->_getExtra('USAGE_INFO');
             if (empty($retour)) {
-                $retour = array();
+                $retour = [];
             } elseif (!is_array($retour)) {
                 $retour = XML2Array($retour);
             }
         } else {
-            $retour = array();
+            $retour = [];
         }
 
         return $retour;
     }
 
     /** set UsageInfos
-     * this method sets the usage infos
+     * this method sets the usage infos.
      *
      * @param array
      */
@@ -181,7 +164,7 @@ class cs_server_item extends cs_guide_item
     }
 
     /** set UsageInfos
-     * this method sets the usage infos
+     * this method sets the usage infos.
      *
      * @param array
      */
@@ -193,7 +176,7 @@ class cs_server_item extends cs_guide_item
     }
 
     /** get UsageInfos
-     * this method returns the usage infos
+     * this method returns the usage infos.
      *
      * @return array
      */
@@ -203,12 +186,12 @@ class cs_server_item extends cs_guide_item
         if ($this->_issetExtra('USAGE_INFO_FORM')) {
             $retour = $this->_getExtra('USAGE_INFO_FORM');
             if (empty($retour)) {
-                $retour = array();
+                $retour = [];
             } elseif (!is_array($retour)) {
                 $retour = XML2Array($retour);
             }
         } else {
-            $retour = array();
+            $retour = [];
         }
 
         return $retour;
@@ -220,12 +203,12 @@ class cs_server_item extends cs_guide_item
         if ($this->_issetExtra('USAGE_INFO_HEADER')) {
             $retour = $this->_getExtra('USAGE_INFO_HEADER');
             if (empty($retour)) {
-                $retour = array();
+                $retour = [];
             } elseif (!is_array($retour)) {
                 $retour = XML2Array($retour);
             }
         } else {
-            $retour = array();
+            $retour = [];
         }
 
         return $retour;
@@ -244,12 +227,12 @@ class cs_server_item extends cs_guide_item
         if ($this->_issetExtra('USAGE_INFO_FORM_HEADER')) {
             $retour = $this->_getExtra('USAGE_INFO_FORM_HEADER');
             if (empty($retour)) {
-                $retour = array();
+                $retour = [];
             } elseif (!is_array($retour)) {
                 $retour = XML2Array($retour);
             }
         } else {
-            $retour = array();
+            $retour = [];
         }
 
         return $retour;
@@ -268,12 +251,12 @@ class cs_server_item extends cs_guide_item
         if ($this->_issetExtra('USAGE_INFO_TEXT')) {
             $retour = $this->_getExtra('USAGE_INFO_TEXT');
             if (empty($retour)) {
-                $retour = array();
+                $retour = [];
             } elseif (!is_array($retour)) {
                 $retour = XML2Array($retour);
             }
         } else {
-            $retour = array();
+            $retour = [];
         }
 
         return $retour;
@@ -292,12 +275,12 @@ class cs_server_item extends cs_guide_item
         if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
             $retour = $this->_getExtra('USAGE_INFO_FORM_TEXT');
             if (empty($retour)) {
-                $retour = array();
+                $retour = [];
             } elseif (!is_array($retour)) {
                 $retour = XML2Array($retour);
             }
         } else {
-            $retour = array();
+            $retour = [];
         }
 
         return $retour;
@@ -316,12 +299,12 @@ class cs_server_item extends cs_guide_item
         if ($this->_issetExtra('USAGE_INFO_HEADER')) {
             $retour = $this->_getExtra('USAGE_INFO_HEADER');
             if (empty($retour)) {
-                $retour = array();
+                $retour = [];
             } elseif (!is_array($retour)) {
                 $retour = XML2Array($retour);
             }
         } else {
-            $retour = array();
+            $retour = [];
         }
         if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
             $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
@@ -337,12 +320,12 @@ class cs_server_item extends cs_guide_item
         if ($this->_issetExtra('USAGE_INFO_HEADER')) {
             $value_array = $this->_getExtra('USAGE_INFO_HEADER');
             if (empty($value_array)) {
-                $value_array = array();
+                $value_array = [];
             } elseif (!is_array($value_array)) {
                 $value_array = XML2Array($value_array);
             }
         } else {
-            $value_array = array();
+            $value_array = [];
         }
         $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
         $this->_addExtra('USAGE_INFO_HEADER', $value_array);
@@ -354,12 +337,12 @@ class cs_server_item extends cs_guide_item
         if ($this->_issetExtra('USAGE_INFO_HEADER')) {
             $retour = $this->_getExtra('USAGE_INFO_HEADER');
             if (empty($retour)) {
-                $retour = array();
+                $retour = [];
             } elseif (!is_array($retour)) {
                 $retour = XML2Array($retour);
             }
         } else {
-            $retour = array();
+            $retour = [];
         }
         if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
             $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
@@ -375,12 +358,12 @@ class cs_server_item extends cs_guide_item
         if ($this->_issetExtra('USAGE_INFO_FORM_HEADER')) {
             $value_array = $this->_getExtra('USAGE_INFO_FORM_HEADER');
             if (empty($value_array)) {
-                $value_array = array();
+                $value_array = [];
             } elseif (!is_array($value_array)) {
                 $value_array = XML2Array($value_array);
             }
         } else {
-            $value_array = array();
+            $value_array = [];
         }
         $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
         $this->_addExtra('USAGE_INFO_FORM_HEADER', $value_array);
@@ -391,12 +374,12 @@ class cs_server_item extends cs_guide_item
         if ($this->_issetExtra('USAGE_INFO_TEXT')) {
             $value_array = $this->_getExtra('USAGE_INFO_TEXT');
             if (empty($value_array)) {
-                $value_array = array();
+                $value_array = [];
             } elseif (!is_array($value_array)) {
                 $value_array = XML2Array($value_array);
             }
         } else {
-            $value_array = array();
+            $value_array = [];
         }
         $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
         $this->_addExtra('USAGE_INFO_TEXT', $value_array);
@@ -407,12 +390,12 @@ class cs_server_item extends cs_guide_item
         if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
             $value_array = $this->_getExtra('USAGE_INFO_FORM_TEXT');
             if (empty($value_array)) {
-                $value_array = array();
+                $value_array = [];
             } elseif (!is_array($value_array)) {
                 $value_array = XML2Array($value_array);
             }
         } else {
-            $value_array = array();
+            $value_array = [];
         }
         $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
         $this->_addExtra('USAGE_INFO_FORM_TEXT', $value_array);
@@ -424,19 +407,19 @@ class cs_server_item extends cs_guide_item
         if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
             $retour = $this->_getExtra('USAGE_INFO_FORM_TEXT');
             if (empty($retour)) {
-                $retour = array();
+                $retour = [];
             } elseif (!is_array($retour)) {
                 $retour = XML2Array($retour);
             }
         } else {
-            $retour = array();
+            $retour = [];
         }
         if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
             $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
         } else {
             $translator = $this->_environment->getTranslationObject();
-            $temp = mb_strtoupper($rubric, 'UTF-8') . '_' . mb_strtoupper($funct, 'UTF-8');
-            $tempMessage = "";
+            $temp = mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8');
+            $tempMessage = '';
             switch ($temp) {
                 case 'CONFIGURATION_BACKUP':
                     $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_BACKUP_FORM');
@@ -499,13 +482,12 @@ class cs_server_item extends cs_guide_item
                     break;
 
                 default:
-                    $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR') . " cs_server_item (" . __LINE__ . ")";
+                    $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_server_item ('.__LINE__.')';
                     break;
-
             }
 
             $retour = $tempMessage;
-            if ($retour == 'USAGE_INFO_TEXT_SERVER_FOR_' . $temp . '_FORM' or $retour == 'tbd') {
+            if ($retour == 'USAGE_INFO_TEXT_SERVER_FOR_'.$temp.'_FORM' or 'tbd' == $retour) {
                 $retour = $translator->getMessage('USAGE_INFO_FORM_COMING_SOON');
             }
         }
@@ -513,9 +495,9 @@ class cs_server_item extends cs_guide_item
         return $retour;
     }
 
-    ################################################################
-    # Authentication
-    ################################################################
+    // ###############################################################
+    // Authentication
+    // ###############################################################
 
     public function setAuthDefault($value)
     {
@@ -572,24 +554,13 @@ class cs_server_item extends cs_guide_item
         return $retour;
     }
 
-    public function getCurrentCommSyVersion()
-    {
-        $retour = '';
-        $version = trim(file_get_contents('version'));
-        if (!empty($version)) {
-            $retour = $version;
-        }
-
-        return $retour;
-    }
-
-    /** get out of service text
+    /** get out of service text.
      *
      * @return array out of service text in different languages
      */
     public function getOutOfServiceArray()
     {
-        $retour = array();
+        $retour = [];
         if ($this->_issetExtra('OUTOFSERVICE')) {
             $retour = $this->_getExtra('OUTOFSERVICE');
         }
@@ -597,24 +568,24 @@ class cs_server_item extends cs_guide_item
         return $retour;
     }
 
-    /** set out of service array
+    /** set out of service array.
      *
      * @param array value out of service text in different languages
      */
     public function setOutOfServiceArray($value)
     {
-        $this->_addExtra('OUTOFSERVICE', (array)$value);
+        $this->_addExtra('OUTOFSERVICE', (array) $value);
     }
 
     /** get out of service of a context
-     * this method returns the out of service of the context
+     * this method returns the out of service of the context.
      *
      * @return string out of service of a context
      */
     public function getOutOfServiceByLanguage($language)
     {
         $retour = '';
-        if ($language == 'browser') {
+        if ('browser' == $language) {
             $language = $this->_environment->getSelectedLanguage();
         }
         $desc_array = $this->getOutOfServiceArray();
@@ -649,7 +620,7 @@ class cs_server_item extends cs_guide_item
     }
 
     /** set OutOfService of a context
-     * this method sets the OutOfService of the context
+     * this method sets the OutOfService of the context.
      *
      * @param string value OutOfService of the context
      * @param string value lanugage of the OutOfService
@@ -670,7 +641,7 @@ class cs_server_item extends cs_guide_item
     {
         $retour = false;
         $show_oos = $this->_getOutOfServiceShow();
-        if ($show_oos == 1) {
+        if (1 == $show_oos) {
             $retour = true;
         }
 
@@ -740,20 +711,13 @@ class cs_server_item extends cs_guide_item
     public function isPluginActive($plugin)
     {
         $retour = false;
-        #if ( $this->isPluginOn($plugin) ) {
-        #   $retour = true;
-        #}
+        // if ( $this->isPluginOn($plugin) ) {
+        //   $retour = true;
+        // }
         return $retour;
     }
 
-    public function getStatistics($date_start, $date_end)
-    {
-        $manager = $this->_environment->getServerManager();
-
-        return $manager->getStatistics($this, $date_start, $date_end);
-    }
-
-    ## commsy server connections: portal2portal
+    // # commsy server connections: portal2portal
     public function getOwnConnectionKey()
     {
         $retour = '';
@@ -778,7 +742,7 @@ class cs_server_item extends cs_guide_item
             and !empty($proxy)
         ) {
             $connection_array = $this->getServerConnectionArray();
-            $temp_array = array();
+            $temp_array = [];
             $temp_array['title'] = $title;
             $temp_array['url'] = $url;
             $temp_array['key'] = $key;
@@ -791,12 +755,11 @@ class cs_server_item extends cs_guide_item
             $key .= rand(0, 9);
             $key .= $key;
             $key .= rand(0, 9);
-            include_once 'functions/date_functions.php';
             $key .= getCurrentDateTimeInMySQL();
             $key = md5($key);
             $temp_array['id'] = $key;
 
-            $connection_array[(count($connection_array) + 1)] = $temp_array;
+            $connection_array[count($connection_array) + 1] = $temp_array;
             $this->setServerConnectionArray($connection_array);
         }
     }
@@ -810,7 +773,7 @@ class cs_server_item extends cs_guide_item
             and !empty($id)
         ) {
             $connection_array = $this->getServerConnectionArray();
-            $temp_array = array();
+            $temp_array = [];
             $temp_array['title'] = $title;
             $temp_array['url'] = $url;
             $temp_array['key'] = $key;
@@ -825,7 +788,6 @@ class cs_server_item extends cs_guide_item
                 $key .= rand(0, 9);
                 $key .= $key;
                 $key .= rand(0, 9);
-                include_once 'functions/date_functions.php';
                 $key .= getCurrentDateTimeInMySQL();
                 $key = md5($key);
                 $temp_array['id'] = $key;
@@ -837,7 +799,7 @@ class cs_server_item extends cs_guide_item
 
     public function getServerConnectionArray()
     {
-        $retour = array();
+        $retour = [];
         $value = $this->_getExtraConfig('CONNECTION_ARRAY');
         if (!empty($value)) {
             $retour = $value;
@@ -848,7 +810,7 @@ class cs_server_item extends cs_guide_item
 
     public function getServerConnectionInfo($id)
     {
-        $retour = array();
+        $retour = [];
         $connection_array = $this->getServerConnectionArray();
         if (!empty($connection_array)) {
             foreach ($connection_array as $connection_info) {
@@ -864,7 +826,7 @@ class cs_server_item extends cs_guide_item
 
     public function getServerConnectionInfoByKey($key)
     {
-        $retour = array();
+        $retour = [];
         $connection_array = $this->getServerConnectionArray();
         if (!empty($connection_array)) {
             foreach ($connection_array as $connection_info) {
@@ -886,7 +848,7 @@ class cs_server_item extends cs_guide_item
     public function deleteServerConnection($key)
     {
         if (!empty($key)
-            or $key == 0
+            or 0 == $key
         ) {
             $connection_array = $this->getServerConnectionArray();
             if (!empty($connection_array[$key])) {
@@ -923,10 +885,10 @@ class cs_server_item extends cs_guide_item
                 // reset keys
                 if (!empty($connection_array)) {
                     $key_array = array_keys($connection_array);
-                    $temp_array = array();
+                    $temp_array = [];
                     $i = 0;
                     foreach ($key_array as $key) {
-                        $i++;
+                        ++$i;
                         $temp_array[$i] = $connection_array[$key];
                     }
                     $connection_array = $temp_array;

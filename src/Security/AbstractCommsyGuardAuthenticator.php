@@ -1,8 +1,17 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Security;
-
 
 use App\Utils\RequestContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -12,41 +21,26 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
+use UnexpectedValueException;
 
 abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticator
 {
     public const LAST_SOURCE = '_security.last_source';
 
     /**
-     * @var UrlGeneratorInterface
-     */
-    protected UrlGeneratorInterface $urlGenerator;
-
-    /**
-     * @var RequestContext
-     */
-    protected RequestContext $requestContext;
-
-    /**
      * When app_login is submitted, this post parameter will be checked in order to decide
      * which authenticator should be used.
-     *
-     * @return string
      */
     abstract protected function getPostParameterName(): string;
 
     /**
      * This check must be implemented to ensure the current authentication method is supported by the
      * actual portal configuration.
-     *
-     * @return bool
      */
     abstract protected function isSupportedByPortalConfiguration(Request $request): bool;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator, RequestContext $requestContext)
+    public function __construct(protected UrlGeneratorInterface $urlGenerator, protected RequestContext $requestContext)
     {
-        $this->urlGenerator = $urlGenerator;
-        $this->requestContext = $requestContext;
     }
 
     public function getLoginUrl($context): string
@@ -86,11 +80,9 @@ abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticat
      *
      *      return ['api_key' => $request->headers->get('X-API-TOKEN')];
      *
-     * @param Request $request
-     *
      * @return mixed Any non-null value
      *
-     * @throws \UnexpectedValueException If null is returned
+     * @throws UnexpectedValueException If null is returned
      */
     public function getCredentials(Request $request)
     {
@@ -125,7 +117,7 @@ abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticat
      *
      *     return new Response('Auth header required', 401);
      *
-     * @param Request $request The request that resulted in an AuthenticationException
+     * @param Request                 $request       The request that resulted in an AuthenticationException
      * @param AuthenticationException $authException The exception that started the authentication process
      *
      * @return Response
@@ -133,9 +125,10 @@ abstract class AbstractCommsyGuardAuthenticator extends AbstractGuardAuthenticat
     public function start(Request $request, AuthenticationException $authException = null)
     {
         $portal = $this->requestContext->fetchPortal($request);
-        $contextId = $portal !== null ? $portal->getId() : $this->requestContext->fetchContextId($request);
+        $contextId = null !== $portal ? $portal->getId() : $this->requestContext->fetchContextId($request);
 
         $url = $this->getLoginUrl($contextId);
+
         return new RedirectResponse($url);
     }
 }

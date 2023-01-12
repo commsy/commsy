@@ -78,7 +78,7 @@
                             {% endif %}
                         {% endif %}
                     </div>
-                    
+
                     {# global actions #}
                     {% if requestContextId is not same as 99 %}
                         {{ render(controller(
@@ -103,7 +103,7 @@
                         </ul>
                     </div>
                 </div>
-                
+
                 {# Off-canvas toggle #}
                 <a href="#commsy_offnavigation" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
 
@@ -169,7 +169,7 @@
                         </li>
                     </ul>
                 {% endif %}
-                
+
             </nav>
 
             <!-- breadcrumb -->
@@ -185,7 +185,7 @@
                 {% block content %}{% endblock %}
             </div>
         </div>
-        
+
         {% block javascripts %}
             {{ encore_entry_script_tags('app_default') }}
 

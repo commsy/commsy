@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Services;
 
 use App\Entity\AuthSource;
@@ -12,40 +23,22 @@ use Doctrine\ORM\EntityManagerInterface;
 class InvitationsService
 {
     /**
-     * @var EntityManagerInterface $entityManager
-     */
-    private EntityManagerInterface $entityManager;
-
-    /**
      * InvitationsService constructor.
-     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(private EntityManagerInterface $entityManager)
     {
-        $this->entityManager = $entityManager;
     }
 
-    /**
-     * @param Portal $portal
-     * @return bool
-     */
     public function invitationsEnabled(Portal $portal): bool
     {
         $authSources = $portal->getAuthSources();
 
         /** @var AuthSourceLocal $localSource */
-        $localAuthSource = $authSources->filter(function (AuthSource $authSource) {
-            return $authSource instanceof AuthSourceLocal;
-        })->first();
+        $localAuthSource = $authSources->filter(fn (AuthSource $authSource) => $authSource instanceof AuthSourceLocal)->first();
 
-        return $localAuthSource->getAddAccount() === AuthSource::ADD_ACCOUNT_INVITE;
+        return AuthSource::ADD_ACCOUNT_INVITE === $localAuthSource->getAddAccount();
     }
 
-    /**
-     * @param AuthSourceLocal $authSourceLocal
-     * @param string $email
-     * @return bool
-     */
     public function existsInvitationForEmailAddress(AuthSourceLocal $authSourceLocal, string $email): bool
     {
         $repository = $this->entityManager->getRepository(Invitations::class);
@@ -58,7 +51,7 @@ class InvitationsService
             ->getQuery();
         $invitations = $query->getResult();
 
-        if (count($invitations) > 0) {
+        if ((is_countable($invitations) ? count($invitations) : 0) > 0) {
             return true;
         }
 
@@ -66,13 +59,12 @@ class InvitationsService
     }
 
     /**
-     * Deletes expired invitations
-     *
-     * @return int
+     * Deletes expired invitations.
      */
     public function deleteExpiredInvitations(): int
     {
         $repository = $this->entityManager->getRepository(Invitations::class);
+
         return $repository->createQueryBuilder('invitations')
             ->delete()
             ->where('invitations.expirationDate < :expirationDate')
@@ -81,15 +73,9 @@ class InvitationsService
             ->execute();
     }
 
-    /**
-     * @param AuthSourceLocal $authSourceLocal
-     * @param int $contextId
-     * @param string $email
-     * @return string
-     */
     public function generateInvitationCode(AuthSourceLocal $authSourceLocal, int $contextId, string $email): string
     {
-        $invitationCode = md5(rand() . time() . rand());
+        $invitationCode = md5(random_int(0, mt_getrandmax()).time().random_int(0, mt_getrandmax()));
 
         $invitation = new Invitations();
         $invitation->setEmail($email);
@@ -105,32 +91,24 @@ class InvitationsService
         return $invitationCode;
     }
 
-    /**
-     * @param AuthSourceLocal $authSourceLocal
-     * @param string $invitationCode
-     * @return bool
-     */
     public function confirmInvitationCode(AuthSourceLocal $authSourceLocal, string $invitationCode): bool
     {
         $invitations = $this->getInvitations($authSourceLocal, $invitationCode);
 
-        if (count($invitations) > 0) {
+        if ((is_countable($invitations) ? count($invitations) : 0) > 0) {
             return true;
         }
 
         return false;
     }
 
-    /**
-     * @param AuthSourceLocal $authSourceLocal
-     * @param string $invitationCode
-     */
     public function getContextIdByAuthAndCode(AuthSourceLocal $authSourceLocal, string $invitationCode)
     {
         $invitations = $this->getInvitations($authSourceLocal, $invitationCode);
 
-        if (count($invitations) > 0) {
+        if ((is_countable($invitations) ? count($invitations) : 0) > 0) {
             $invitation = array_pop($invitations);
+
             return $invitation->getContextId();
         }
     }
@@ -147,13 +125,10 @@ class InvitationsService
             ->setParameter('invitationCode', $invitationCode)
             ->setParameter('expirationDate', new DateTime())
             ->getQuery();
+
         return $query->getResult();
     }
 
-    /**
-     * @param AuthSourceLocal $authSourceLocal
-     * @param string $invitationCode
-     */
     public function redeemInvitation(AuthSourceLocal $authSourceLocal, string $invitationCode): void
     {
         $repository = $this->entityManager->getRepository(Invitations::class);
@@ -167,14 +142,9 @@ class InvitationsService
         $this->entityManager->flush();
     }
 
-    /**
-     * @param AuthSourceLocal $authSourceLocal
-     * @param $contextId
-     * @return array
-     */
     public function getInvitedEmailAdressesByContextId(AuthSourceLocal $authSourceLocal, $contextId): array
     {
-        $result = array();
+        $result = [];
 
         $repository = $this->entityManager->getRepository(Invitations::class);
         $query = $repository->createQueryBuilder('invitations')
@@ -194,10 +164,6 @@ class InvitationsService
         return $result;
     }
 
-    /**
-     * @param AuthSourceLocal $authSourceLocal
-     * @param $email
-     */
     public function removeInvitedEmailAdresses(AuthSourceLocal $authSourceLocal, $email): void
     {
         $repository = $this->entityManager->getRepository(Invitations::class);

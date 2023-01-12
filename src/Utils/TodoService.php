@@ -1,9 +1,26 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Utils;
 
-use Symfony\Component\Form\Form;
-
 use App\Services\LegacyEnvironment;
+use cs_manager;
+use cs_noticed_manager;
+use cs_reader_manager;
+use cs_step_item;
+use cs_step_manager;
+use cs_todo_item;
+use cs_todos_manager;
 use Symfony\Component\Form\FormInterface;
 
 class TodoService
@@ -11,22 +28,22 @@ class TodoService
     private $legacyEnvironment;
 
     /**
-     * @var \cs_todos_manager
+     * @var cs_todos_manager
      */
     private $todoManager;
 
     /**
-     * @var \cs_step_manager
+     * @var cs_step_manager
      */
     private $stepManager;
 
     /**
-     * @var \cs_noticed_manager
+     * @var cs_noticed_manager
      */
     private $noticedManager;
 
     /**
-     * @var \cs_reader_manager
+     * @var cs_reader_manager
      */
     private $readerManager;
 
@@ -34,9 +51,9 @@ class TodoService
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
-        $this->todoManager = $this->legacyEnvironment->getTodoManager();
+        $this->todoManager = $this->legacyEnvironment->getTodosManager();
         $this->todoManager->reset();
-        
+
         $this->stepManager = $this->legacyEnvironment->getStepManager();
         $this->stepManager->reset();
 
@@ -45,16 +62,17 @@ class TodoService
     }
 
     /**
-     * @param integer $roomId
-     * @param integer $max
-     * @param integer $start
+     * @param int    $roomId
+     * @param int    $max
+     * @param int    $start
      * @param string $sort
-     * @return \cs_todo_item[]
+     *
+     * @return cs_todo_item[]
      */
-    public function getListTodos($roomId, $max = NULL, $start = NULL, $sort = NULL)
+    public function getListTodos($roomId, $max = null, $start = null, $sort = null)
     {
         $this->todoManager->setContextLimit($roomId);
-        if ($max !== NULL && $start !== NULL) {
+        if (null !== $max && null !== $start) {
             $this->todoManager->setIntervalLimit($start, $max);
         }
 
@@ -69,11 +87,13 @@ class TodoService
     }
 
     /**
-     * @param integer $roomId
-     * @param integer[] $idArray
-     * @return \cs_todo_item[]
+     * @param int   $roomId
+     * @param int[] $idArray
+     *
+     * @return cs_todo_item[]
      */
-    public function getTodosById($roomId, $idArray) {
+    public function getTodosById($roomId, $idArray)
+    {
         $this->todoManager->setContextLimit($roomId);
         $this->todoManager->setIDArrayLimit($idArray);
 
@@ -87,7 +107,7 @@ class TodoService
     {
         $this->todoManager->setContextLimit($roomId);
         $this->todoManager->select();
-        $countTodoArray = array();
+        $countTodoArray = [];
         $countTodoArray['count'] = sizeof($this->todoManager->get()->to_array());
         $this->todoManager->resetLimits();
         $this->todoManager->select();
@@ -102,12 +122,12 @@ class TodoService
 
         // activated
         if ($formData['hide-deactivated-entries']) {
-            if ($formData['hide-deactivated-entries'] === 'only_activated') {
-                $this->todoManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
-            } else if ($formData['hide-deactivated-entries'] === 'only_deactivated') {
-                $this->todoManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
-            } else if ($formData['hide-deactivated-entries'] === 'all') {
-                $this->todoManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
+            if ('only_activated' === $formData['hide-deactivated-entries']) {
+                $this->todoManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+            } elseif ('only_deactivated' === $formData['hide-deactivated-entries']) {
+                $this->todoManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_DEACTIVATED);
+            } elseif ('all' === $formData['hide-deactivated-entries']) {
+                $this->todoManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ACTIVATED_DEACTIVATED);
             }
         }
 
@@ -123,7 +143,7 @@ class TodoService
                 $relatedLabel = $formData['rubrics']['group'];
                 $this->todoManager->setGroupLimit($relatedLabel->getItemId());
             }
-            
+
             // topic
             if (isset($formData['rubrics']['topic'])) {
                 $relatedLabel = $formData['rubrics']['topic'];
@@ -153,21 +173,22 @@ class TodoService
     }
 
     /**
-     * @param integer $itemId
-     * @return \cs_todo_item
+     * @param int $itemId
+     *
+     * @return cs_todo_item
      */
     public function getTodo($itemId)
     {
         return $this->todoManager->getItem($itemId);
     }
-    
+
     public function getStep($itemId)
     {
         return $this->stepManager->getItem($itemId);
     }
 
     /**
-     * @return \cs_todo_item
+     * @return cs_todo_item
      */
     public function getNewTodo()
     {
@@ -175,16 +196,16 @@ class TodoService
     }
 
     /**
-     * @return \cs_step_item
+     * @return cs_step_item
      */
     public function getNewStep()
     {
         return $this->stepManager->getNewItem();
     }
-    
+
     public function hideDeactivatedEntries()
     {
-        $this->todoManager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $this->todoManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
     public function hideCompletedEntries()
@@ -193,8 +214,8 @@ class TodoService
     }
 
     /** Marks the Todo item with the given ID as read and noticed.
-     * @param integer $itemId the identifier of the Todo item to be marked as read and noticed
-     * @param bool $markSteps whether the Todo item's Todo steps should be also marked as read and noticed
+     * @param int  $itemId          the identifier of the Todo item to be marked as read and noticed
+     * @param bool $markSteps       whether the Todo item's Todo steps should be also marked as read and noticed
      * @param bool $markAnnotations whether the Todo item's annotations should be also marked as read and noticed
      */
     public function markTodoReadAndNoticed($itemId, $markSteps = true, $markAnnotations = true)
@@ -210,7 +231,7 @@ class TodoService
         $this->readerManager->markRead($itemId, $versionId);
 
         // steps
-        if ($markSteps === true) {
+        if (true === $markSteps) {
             $stepList = $item->getStepItemList();
             if (!empty($stepList)) {
                 $stepItem = $stepList->getFirst();
@@ -224,7 +245,7 @@ class TodoService
         }
 
         // annotations
-        if ($markAnnotations === true) {
+        if (true === $markAnnotations) {
             $annotationList = $item->getAnnotationList();
             if (!empty($annotationList)) {
                 $annotationItem = $annotationList->getFirst();

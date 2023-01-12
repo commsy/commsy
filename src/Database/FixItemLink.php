@@ -1,11 +1,22 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Database;
 
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Deletes entries missing a link to or from the items table
+ * Deletes entries missing a link to or from the items table.
  */
 class FixItemLink extends GeneralCheck
 {
@@ -13,7 +24,7 @@ class FixItemLink extends GeneralCheck
     {
         $tablesWithItemLinks = ['annotations', 'announcement', 'dates', 'discussionarticles', 'discussions', 'labels',
             'link_items', 'materials', 'portfolio', 'room', 'room_privat', 'section', 'server', 'step', 'tag', 'tasks',
-            'todos', 'user'];
+            'todos', 'user', ];
 
         foreach ($tablesWithItemLinks as $tablesWithItemLink) {
             $sql = "
@@ -28,7 +39,7 @@ class FixItemLink extends GeneralCheck
         $this->executeSQL($sql, $io);
 
         // Collect all types in the item table
-        $sql = "SELECT type FROM items GROUP BY type";
+        $sql = 'SELECT type FROM items GROUP BY type';
         $stmt = $this->executeSQL($sql, $io);
         $types = array_column($stmt->fetchAllAssociative(), 'type');
 

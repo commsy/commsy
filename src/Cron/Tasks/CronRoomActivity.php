@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Cron\Tasks;
 
 use App\Entity\Portal;
@@ -12,20 +23,11 @@ class CronRoomActivity implements CronTaskInterface
 {
     private const QUOTIENT = 4;
 
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment, EntityManagerInterface $entityManager)
+    public function __construct(LegacyEnvironment $legacyEnvironment, private EntityManagerInterface $entityManager)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->entityManager = $entityManager;
     }
 
     public function run(?DateTimeImmutable $lastRun): void
@@ -39,7 +41,7 @@ class CronRoomActivity implements CronTaskInterface
         $portalRepository = $this->entityManager->getRepository(Portal::class);
         $portals = $portalRepository->findActivePortals();
         foreach ($portals as $portal) {
-            /** @var Portal $portal */
+            /* @var Portal $portal */
             $portal->setMaxRoomActivityPoints(round($portal->getMaxRoomActivityPoints() / self::QUOTIENT));
 
             // TODO ??? This will save the portal with an updated modification time due to ORM lifecycle callbacks

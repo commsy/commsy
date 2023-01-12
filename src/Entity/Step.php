@@ -1,138 +1,119 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Step
- *
- * @ORM\Table(name="step", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"}), @ORM\Index(name="todo_item_id", columns={"todo_item_id"})})
- * @ORM\Entity
+ * Step.
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'step')]
+#[ORM\Index(name: 'context_id', columns: ['context_id'])]
+#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
+#[ORM\Index(name: 'todo_item_id', columns: ['todo_item_id'])]
 class Step
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="item_id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @var int
      */
+    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $itemId = '0';
-
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
     private $contextId;
-
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="creator_id", type="integer", nullable=false)
+     * @var int
      */
+    #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
     private $creatorId = '0';
-
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="modifier_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: true)]
     private $modifierId;
-
+    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: true)]
+    private DateTime $creationDate;
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="creation_date", type="datetime", nullable=true)
+     * @var int
      */
-    private $creationDate = '0000-00-00 00:00:00';
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="deleter_id", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private $deleterId;
-
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
+     * @var DateTimeInterface
      */
+    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
-
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modification_date", type="datetime", nullable=true)
+     * @var DateTimeInterface
      */
+    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
     private $modificationDate;
-
     /**
      * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private $title;
-
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="text", length=16777215, nullable=true)
      */
+    #[ORM\Column(name: 'description', type: 'text', length: 16_777_215, nullable: true)]
     private $description;
-
     /**
      * @var float
-     *
-     * @ORM\Column(name="minutes", type="float", precision=10, scale=0, nullable=false)
      */
+    #[ORM\Column(name: 'minutes', type: 'float', precision: 10, scale: 0, nullable: false)]
     private $minutes = '0';
-
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="time_type", type="smallint", nullable=false)
+     * @var int
      */
+    #[ORM\Column(name: 'time_type', type: 'smallint', nullable: false)]
     private $timeType = '1';
-
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="todo_item_id", type="integer", nullable=false)
+     * @var int
      */
+    #[ORM\Column(name: 'todo_item_id', type: 'integer', nullable: false)]
     private $todoItemId;
-
     /**
      * @var string
-     *
-     * @ORM\Column(name="extras", type="text", length=65535, nullable=true)
      */
+    #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
     private $extras;
-
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="public", type="boolean", nullable=false)
+     * @var bool
      */
+    #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
     private $public = '0';
+    #[ORM\ManyToOne(targetEntity: 'Todos', inversedBy: 'steps')]
+    #[ORM\JoinColumn(name: 'todo_item_id', referencedColumnName: 'item_id')]
+    private ?Todos $todo = null;
+
+    public function __construct()
+    {
+        $this->creationDate = new DateTime('0000-00-00 00:00:00');
+    }
 
     /**
-     * @var integer
+     * Get itemId.
      *
-     * @ORM\ManyToOne(targetEntity="Todos", inversedBy="steps")
-     * @ORM\JoinColumns({
-     *     @ORM\JoinColumn(name="todo_item_id", referencedColumnName="item_id")
-     * })
-     */
-    private $todo;
-
-    /**
-     * Get itemId
-     *
-     * @return integer
+     * @return int
      */
     public function getItemId()
     {
@@ -140,9 +121,9 @@ class Step
     }
 
     /**
-     * Set contextId
+     * Set contextId.
      *
-     * @param integer $contextId
+     * @param int $contextId
      *
      * @return Step
      */
@@ -154,9 +135,9 @@ class Step
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
-     * @return integer
+     * @return int
      */
     public function getContextId()
     {
@@ -164,9 +145,9 @@ class Step
     }
 
     /**
-     * Set creatorId
+     * Set creatorId.
      *
-     * @param integer $creatorId
+     * @param int $creatorId
      *
      * @return Step
      */
@@ -178,9 +159,9 @@ class Step
     }
 
     /**
-     * Get creatorId
+     * Get creatorId.
      *
-     * @return integer
+     * @return int
      */
     public function getCreatorId()
     {
@@ -188,9 +169,9 @@ class Step
     }
 
     /**
-     * Set modifierId
+     * Set modifierId.
      *
-     * @param integer $modifierId
+     * @param int $modifierId
      *
      * @return Step
      */
@@ -202,9 +183,9 @@ class Step
     }
 
     /**
-     * Get modifierId
+     * Get modifierId.
      *
-     * @return integer
+     * @return int
      */
     public function getModifierId()
     {
@@ -212,9 +193,9 @@ class Step
     }
 
     /**
-     * Set creationDate
+     * Set creationDate.
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      *
      * @return Step
      */
@@ -226,9 +207,9 @@ class Step
     }
 
     /**
-     * Get creationDate
+     * Get creationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -236,9 +217,9 @@ class Step
     }
 
     /**
-     * Set deleterId
+     * Set deleterId.
      *
-     * @param integer $deleterId
+     * @param int $deleterId
      *
      * @return Step
      */
@@ -250,9 +231,9 @@ class Step
     }
 
     /**
-     * Get deleterId
+     * Get deleterId.
      *
-     * @return integer
+     * @return int
      */
     public function getDeleterId()
     {
@@ -260,9 +241,9 @@ class Step
     }
 
     /**
-     * Set deletionDate
+     * Set deletionDate.
      *
-     * @param \DateTime $deletionDate
+     * @param DateTime $deletionDate
      *
      * @return Step
      */
@@ -274,9 +255,9 @@ class Step
     }
 
     /**
-     * Get deletionDate
+     * Get deletionDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletionDate()
     {
@@ -284,9 +265,9 @@ class Step
     }
 
     /**
-     * Set modificationDate
+     * Set modificationDate.
      *
-     * @param \DateTime $modificationDate
+     * @param DateTime $modificationDate
      *
      * @return Step
      */
@@ -298,9 +279,9 @@ class Step
     }
 
     /**
-     * Get modificationDate
+     * Get modificationDate.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getModificationDate()
     {
@@ -308,7 +289,7 @@ class Step
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -322,7 +303,7 @@ class Step
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -332,7 +313,7 @@ class Step
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -346,7 +327,7 @@ class Step
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -356,7 +337,7 @@ class Step
     }
 
     /**
-     * Set minutes
+     * Set minutes.
      *
      * @param float $minutes
      *
@@ -370,7 +351,7 @@ class Step
     }
 
     /**
-     * Get minutes
+     * Get minutes.
      *
      * @return float
      */
@@ -380,9 +361,9 @@ class Step
     }
 
     /**
-     * Set timeType
+     * Set timeType.
      *
-     * @param integer $timeType
+     * @param int $timeType
      *
      * @return Step
      */
@@ -394,9 +375,9 @@ class Step
     }
 
     /**
-     * Get timeType
+     * Get timeType.
      *
-     * @return integer
+     * @return int
      */
     public function getTimeType()
     {
@@ -404,9 +385,9 @@ class Step
     }
 
     /**
-     * Set todoItemId
+     * Set todoItemId.
      *
-     * @param integer $todoItemId
+     * @param int $todoItemId
      *
      * @return Step
      */
@@ -418,9 +399,9 @@ class Step
     }
 
     /**
-     * Get todoItemId
+     * Get todoItemId.
      *
-     * @return integer
+     * @return int
      */
     public function getTodoItemId()
     {
@@ -428,7 +409,7 @@ class Step
     }
 
     /**
-     * Set extras
+     * Set extras.
      *
      * @param string $extras
      *
@@ -442,7 +423,7 @@ class Step
     }
 
     /**
-     * Get extras
+     * Get extras.
      *
      * @return string
      */
@@ -452,9 +433,9 @@ class Step
     }
 
     /**
-     * Set public
+     * Set public.
      *
-     * @param boolean $public
+     * @param bool $public
      *
      * @return Step
      */
@@ -466,9 +447,9 @@ class Step
     }
 
     /**
-     * Get public
+     * Get public.
      *
-     * @return boolean
+     * @return bool
      */
     public function getPublic()
     {
@@ -476,13 +457,11 @@ class Step
     }
 
     /**
-     * Set todo
-     *
-     * @param \App\Entity\Todos $todo
+     * Set todo.
      *
      * @return Section
      */
-    public function setTodo(\App\Entity\Todos $todo = null)
+    public function setTodo(Todos $todo = null)
     {
         $this->todo = $todo;
 
@@ -490,9 +469,9 @@ class Step
     }
 
     /**
-     * Get todo
+     * Get todo.
      *
-     * @return \App\Entity\Todos
+     * @return Todos
      */
     public function getTodo()
     {

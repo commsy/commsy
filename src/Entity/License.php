@@ -1,46 +1,48 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
+use App\Repository\LicenseRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * License
- *
- * @ORM\Table(name="licenses")
- * @ORM\Entity(repositoryClass="App\Repository\LicenseRepository")
+ * License.
  */
+#[ORM\Entity(repositoryClass: LicenseRepository::class)]
+#[ORM\Table(name: 'licenses')]
 class License
 {
-    /**
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
+
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
+    private ?int $contextId = null;
+
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 255)]
+    private ?string $title = null;
+
+    #[ORM\Column(name: 'content', type: Types::TEXT)]
+    private ?string $content = null;
+
+    #[ORM\Column(name: 'position', type: Types::INTEGER)]
+    private ?int $position = null;
 
     /**
-     * @ORM\Column(name="context_id", type="integer")
-     */
-    private $contextId;
-
-    /**
-     * @ORM\Column(name="title", type="string", length=255)
-     */
-    private $title;
-
-    /**
-     * @ORM\Column(name="content", type="text")
-     */
-    private $content;
-
-    /**
-     * @ORM\Column(name="position", type="integer")
-     */
-    private $position;
-
-    /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -50,7 +52,7 @@ class License
     }
 
     /**
-     * Set contextId
+     * Set contextId.
      *
      * @param string $contextId
      *
@@ -64,7 +66,7 @@ class License
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
      * @return string
      */
@@ -74,7 +76,7 @@ class License
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -88,7 +90,7 @@ class License
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -98,7 +100,7 @@ class License
     }
 
     /**
-     * Set content
+     * Set content.
      *
      * @param string $content
      *
@@ -112,7 +114,7 @@ class License
     }
 
     /**
-     * Get content
+     * Get content.
      *
      * @return string
      */
@@ -122,9 +124,10 @@ class License
     }
 
     /**
-     * Set position
+     * Set position.
      *
      * @param int $position
+     *
      * @return License
      */
     public function setPosition($position)
@@ -135,7 +138,7 @@ class License
     }
 
     /**
-     * Get position
+     * Get position.
      *
      * @return int
      */
@@ -144,4 +147,3 @@ class License
         return $this->position;
     }
 }
-

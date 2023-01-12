@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Cron\Tasks;
 
 use App\Helper\PortalHelper;
@@ -11,29 +22,14 @@ use DateTimeImmutable;
 
 class CronPageImpressionAndUserActivity implements CronTaskInterface
 {
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
-
-    /**
-     * @var PortalRepository
-     */
-    private PortalRepository $portalRepository;
-
-    /**
-     * @var PortalHelper
-     */
-    private PortalHelper $portalHelper;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        PortalRepository $portalRepository,
-        PortalHelper $portalHelper
+        private PortalRepository $portalRepository,
+        private PortalHelper $portalHelper
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->portalRepository = $portalRepository;
-        $this->portalHelper = $portalHelper;
     }
 
     public function run(?DateTimeImmutable $lastRun): void
@@ -55,8 +51,8 @@ class CronPageImpressionAndUserActivity implements CronTaskInterface
                 } else {
                     // if there is no entry take creationDate
                     $creationDate = $room->getCreationDate();
-                    $oldestDate = getYearFromDateTime($creationDate) .
-                        getMonthFromDateTime($creationDate) .
+                    $oldestDate = getYearFromDateTime($creationDate).
+                        getMonthFromDateTime($creationDate).
                         getDayFromDateTime($creationDate);
                 }
 
@@ -68,11 +64,11 @@ class CronPageImpressionAndUserActivity implements CronTaskInterface
                 $uaInput = [];
 
                 // for each day, get page impressions and user activity
-                for ($i = 1; $i < $dayDiff; $i++) {
+                for ($i = 1; $i < $dayDiff; ++$i) {
                     $logManager->resetLimits();
                     $logManager->setContextLimit($room->getItemID());
-                    $logManager->setRequestLimit("/room/");
-                    $older_limit_stamp = datetime2Timestamp(date("Y-m-d 00:00:00")) - ($i - 1) * 86400;
+                    $logManager->setRequestLimit('/room/');
+                    $older_limit_stamp = datetime2Timestamp(date('Y-m-d 00:00:00')) - ($i - 1) * 86400;
                     $older_limit = date('Y-m-d', $older_limit_stamp);
                     $logManager->setTimestampOlderLimit($older_limit);
                     $logManager->setTimestampNotOlderLimit($i);

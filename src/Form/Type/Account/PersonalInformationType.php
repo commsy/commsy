@@ -1,10 +1,21 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type\Account;
 
 use App\Entity\Account;
 use App\Validator\Constraints\UniqueUserId;
-use Doctrine\ORM\EntityManagerInterface;
+use cs_user_item;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -19,14 +30,8 @@ use Symfony\Component\Validator\Constraints\NotEqualTo;
 
 class PersonalInformationType extends AbstractType
 {
-    /**
-     * @var Security $security
-     */
-    private $security;
-
-    public function __construct(Security $security)
+    public function __construct(private Security $security)
     {
-        $this->security = $security;
     }
 
     /**
@@ -35,17 +40,17 @@ class PersonalInformationType extends AbstractType
      * Type extensions can further modify the form.
      *
      * @param FormBuilderInterface $builder The form builder
-     * @param array $options The options
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var Account $user */
         $user = $this->security->getUser();
-        $changeUsername = $user !== null ? $user->getAuthSource()->isChangeUsername() : false;
-        $changeUserdata = $user !== null ? $user->getAuthSource()->isChangeUserdata() : false;
+        $changeUsername = null !== $user ? $user->getAuthSource()->isChangeUsername() : false;
+        $changeUserdata = null !== $user ? $user->getAuthSource()->isChangeUserdata() : false;
 
         $emailConstraints = [];
-        /** @var \cs_user_item $portalUser */
+        /** @var cs_user_item $portalUser */
         $portalUser = $options['portalUser'];
 
         if ($portalUser->hasToChangeEmail()) {
@@ -98,7 +103,7 @@ class PersonalInformationType extends AbstractType
                 ],
                 'data' => true,
                 'attr' => [
-                    'style' => 'display: none'
+                    'style' => 'display: none',
                 ],
             ])
             ->add('save', SubmitType::class, [
@@ -106,7 +111,7 @@ class PersonalInformationType extends AbstractType
                 'translation_domain' => 'form',
                 'attr' => [
                     'class' => 'uk-button-primary',
-                ]
+                ],
             ]);
     }
 
@@ -121,17 +126,4 @@ class PersonalInformationType extends AbstractType
             ->setRequired(['portalUser'])
             ->setDefaults(['translation_domain' => 'profile']);
     }
-
-    /**
-     * Returns the prefix of the template block name for this type.
-     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
-     * (e.g. "UserProfileType" => "user_profile").
-     *
-     * @return string The prefix of the template block name
-     */
-    public function getBlockPrefix()
-    {
-        return 'personal_information';
-    }
-
 }

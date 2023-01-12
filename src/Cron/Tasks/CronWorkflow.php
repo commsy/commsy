@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Cron\Tasks;
 
 use App\Mail\Mailer;
@@ -12,29 +23,14 @@ use Symfony\Component\Routing\RouterInterface;
 
 class CronWorkflow implements CronTaskInterface
 {
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
-
-    /**
-     * @var RouterInterface
-     */
-    private RouterInterface $router;
-
-    /**
-     * @var Mailer
-     */
-    private Mailer $mailer;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        RouterInterface $router,
-        Mailer $mailer
+        private RouterInterface $router,
+        private Mailer $mailer
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->router = $router;
-        $this->mailer = $mailer;
     }
 
     public function run(?DateTimeImmutable $lastRun): void
@@ -53,7 +49,7 @@ class CronWorkflow implements CronTaskInterface
                 if ($material->getWorkflowResubmission() && $room->withWorkflowResubmission()) {
                     $emailReceivers = [];
 
-                    if ($material->getWorkflowResubmissionWho() == 'creator') {
+                    if ('creator' == $material->getWorkflowResubmissionWho()) {
                         $emailReceivers[] = $material->getCreator();
                     } else {
                         $modifierList = $material->getModifierList();
@@ -85,7 +81,7 @@ class CronWorkflow implements CronTaskInterface
                         'versionId' => $material->getVersionID(),
                     ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                    $link = '<a href="' . $path . '">' . $material->getTitle() . '</a>';
+                    $link = '<a href="'.$path.'">'.$material->getTitle().'</a>';
 
                     $body = $translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION', $room->getTitle(),
                         $material->getTitle(), $link);
@@ -121,7 +117,7 @@ class CronWorkflow implements CronTaskInterface
                 if ($material->getWorkflowValidity() && $material->withWorkflowValidity()) {
                     $emailReceivers = [];
 
-                    if ($material->getWorkflowValidityWho() == 'creator') {
+                    if ('creator' == $material->getWorkflowValidityWho()) {
                         $emailReceivers[] = $material->getCreator();
                     } else {
                         $modifierList = $material->getModifierList();
@@ -152,7 +148,7 @@ class CronWorkflow implements CronTaskInterface
                         'versionId' => $material->getVersionID(),
                     ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                    $link = '<a href="' . $path . '">' . $material->getTitle() . '</a>';
+                    $link = '<a href="'.$path.'">'.$material->getTitle().'</a>';
 
                     $body = $translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_VALIDITY', $room->getTitle(),
                         $material->getTitle(), $link);

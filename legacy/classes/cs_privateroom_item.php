@@ -1,47 +1,28 @@
-<?PHP
-// $Id$
-//
-// Release $Name$
-//
-// Copyright (c)2002-2010 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
-// Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
-// Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
-//
-//    This file is part of CommSy.
-//
-//    CommSy is free software; you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation; either version 2 of the License, or
-//    (at your option) any later version.
-//
-//    CommSy is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
-//
-//    You have received a copy of the GNU General Public License
-//    along with CommSy.
+<?php
 
-/** upper class of the community item
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
-include_once('classes/cs_room_item.php');
 
 /** class for a community
- * this class implements a community item
+ * this class implements a community item.
  */
 class cs_privateroom_item extends cs_room_item
 {
-    /**
-     * @var cs_user_item|null
-     */
     private ?cs_user_item $ownerUserItem = null;
 
-    var $_check_customized_room_id_array = false;
+    public $_check_customized_room_id_array = false;
     private $_home_conf_done = false;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct($environment)
     {
@@ -71,7 +52,7 @@ class cs_privateroom_item extends cs_room_item
                     if ($plugin->inPrivateRoom()
                         and $this->isPluginOn($plugin)
                     ) {
-                        $i++;
+                        ++$i;
                         $this->_plugin_rubrics_array[] = $plugin->getIdentifier();
                         $this->_default_rubrics_array[$i] = $plugin->getIdentifier();
                         $this->_default_home_conf_array[$plugin->getIdentifier()] = $plugin->getHomeStatusDefault();
@@ -83,11 +64,11 @@ class cs_privateroom_item extends cs_room_item
         }
     }
 
-    function getHomeConf()
+    public function getHomeConf()
     {
         $this->_addPluginInRubricArray();
         $rubrics = parent::getHomeConf();
-        $retour = array();
+        $retour = [];
         foreach (explode(',', $rubrics) as $rubric) {
             if (!mb_stristr($rubric, CS_USER_TYPE)) {
                 if (!mb_stristr($rubric, CS_MATERIAL_TYPE)
@@ -99,112 +80,115 @@ class cs_privateroom_item extends cs_room_item
             }
         }
         $retour = implode(',', $retour);
+
         return $retour;
     }
 
-    function isPrivateRoom()
+    public function isPrivateRoom()
     {
         return true;
     }
 
     /** get projects of a project
-     * this method returns a list of projects which are linked to the project
+     * this method returns a list of projects which are linked to the project.
      *
      * @return object cs_list a list of projects (cs_project_item)
      */
-    function getProjectList()
+    public function getProjectList()
     {
         return $this->getLinkedItemList(CS_MYROOM_TYPE);
     }
 
     /** get time spread for items on home
-     * this method returns the time spread for items on the home of the project project
+     * this method returns the time spread for items on the home of the project project.
      *
-     * @return integer the time spread
+     * @return int the time spread
      */
-    function getTimeSpread()
+    public function getTimeSpread()
     {
         $retour = '7';
         if ($this->_issetExtra('TIMESPREAD')) {
             $retour = $this->_getExtra('TIMESPREAD');
-            if ($retour != '1' and $retour != '7' and $retour != '30') {
+            if ('1' != $retour and '7' != $retour and '30' != $retour) {
                 $retour = '7';
             }
         }
+
         return $retour;
     }
 
     /** set time spread for items on home
-     * this method sets the time spread for items on the home of the project project
+     * this method sets the time spread for items on the home of the project project.
      *
-     * @param integer value the time spread
+     * @param int value the time spread
      *
      * @author CommSy Development Group
      */
-    function setTimeSpread($value)
+    public function setTimeSpread($value)
     {
-        $this->_addExtra('TIMESPREAD', (int)$value);
+        $this->_addExtra('TIMESPREAD', (int) $value);
     }
 
-
     /** get home status for home page
-     * this method returns the display status of the home page
+     * this method returns the display status of the home page.
      *
      * @return string the home status
      *
      * @author CommSy Development Group
      */
-    function getHomeStatus()
+    public function getHomeStatus()
     {
         $retour = 'normal';
         if ($this->_issetExtra('HOMESTATUS')) {
             $retour = $this->_getExtra('HOMESTATUS');
         }
+
         return $retour;
     }
 
     /** set home status for home page
-     * this method sets the the display status of the home page
+     * this method sets the the display status of the home page.
      *
      * @param string value the home status
      *
      * @author CommSy Development Group
      */
-    function setHomeStatus($value)
+    public function setHomeStatus($value)
     {
         $this->_addExtra('HOMESTATUS', $value);
     }
 
     /** get template ID for private room
-     * this method returns the TemplateID of the private room
+     * this method returns the TemplateID of the private room.
      *
      * @return string the home status
      */
-    function getTemplateID()
+    public function getTemplateID()
     {
         $retour = -1;
         if ($this->_issetExtra('TEMPLATE_ID')) {
             $retour = $this->_getExtra('TEMPLATE_ID');
         }
+
         return $retour;
     }
 
     /** set template ID for private room
-     * this method sets the template ID of the private room
+     * this method sets the template ID of the private room.
      *
      * @param string value the home status
      */
-    function setTemplateID($value)
+    public function setTemplateID($value)
     {
         $this->_addExtra('TEMPLATE_ID', $value);
     }
 
     /** get template title for private room
-     * this method returns the Templatetitle of the private room
+     * this method returns the Templatetitle of the private room.
      *
      * @return string the title of the template
      */
-    function getTemplateTitle()
+    public function getTemplateTitle()
     {
         $retour = '';
         if ($this->_issetExtra('TEMPLATE_TITLE')) {
@@ -214,24 +198,25 @@ class cs_privateroom_item extends cs_room_item
             $retour = $translator->getMessage('PRIVATE_ROOM_TITLE');
             unset($translator);
             $owner = $this->getOwnerUserItem();
-            $retour .= ' ' . $owner->getFullname();
+            $retour .= ' '.$owner->getFullname();
             unset($owner);
         }
+
         return $retour;
     }
 
     /** set template title for private room
-     * this method sets the template title of the private room
+     * this method sets the template title of the private room.
      *
      * @param string value title of template
      */
-    function setTemplateTitle($value)
+    public function setTemplateTitle($value)
     {
         $this->_addExtra('TEMPLATE_TITLE', $value);
     }
 
     /** set projects of a project item by item id and version id
-     * this method sets a list of project item_ids and version_ids which are linked to the project
+     * this method sets a list of project item_ids and version_ids which are linked to the project.
      *
      * @param array of project ids, index of id must be 'iid', index of version must be 'vid'
      * Example:
@@ -239,21 +224,21 @@ class cs_privateroom_item extends cs_room_item
      *
      * @author CommSy Development Group
      */
-    function setProjectListByID($value)
+    public function setProjectListByID($value)
     {
-        $project_array = array();
+        $project_array = [];
         foreach ($value as $iid) {
-            $tmp_data = array();
+            $tmp_data = [];
             $tmp_data['iid'] = $iid;
             $project_array[] = $tmp_data;
         }
-        $this->_setValue(CS_MYROOM_TYPE, $project_array, FALSE);
+        $this->_setValue(CS_MYROOM_TYPE, $project_array, false);
     }
 
     /** save private room
-     * this method save the private room
+     * this method save the private room.
      */
-    function save()
+    public function save()
     {
         $item_id = $this->getItemID();
         $manager = $this->_environment->getPrivateRoomManager();
@@ -292,150 +277,155 @@ class cs_privateroom_item extends cs_room_item
     }
 
     /** delete private room
-     * this method deletes the private room
+     * this method deletes the private room.
      */
-    function delete()
+    public function delete()
     {
         $manager = $this->_environment->getPrivateRoomManager();
         $this->_delete($manager);
     }
 
-    function undelete()
+    public function undelete()
     {
         $manager = $this->_environment->getPrivateRoomManager();
         $this->_undelete($manager);
     }
 
-    function setRoomContext($value)
+    public function setRoomContext($value)
     {
     }
 
     /** is newsletter active ?
-     * can be switched at room configuration
+     * can be switched at room configuration.
      *
      * true = newletter is active
      * false = newsletter is not active, default
      *
-     * @return boolean
+     * @return bool
      */
-    function isPrivateRoomNewsletterActive()
+    public function isPrivateRoomNewsletterActive()
     {
         $retour = false;
         if ($this->_issetExtra('PRIVATEROOMNEWSLETTER')) {
             $active = $this->_getExtra('PRIVATEROOMNEWSLETTER');
-            if ($active != 'none') {
+            if ('none' != $active) {
                 $retour = true;
             }
         }
+
         return $retour;
     }
 
-    /** set activity of the newsletter, INTERNAL
+    /** set activity of the newsletter, INTERNAL.
      *
      */
-    function setPrivateRoomNewsletterActivity($value)
+    public function setPrivateRoomNewsletterActivity($value)
     {
         $this->_addExtra('PRIVATEROOMNEWSLETTER', $value);
     }
 
-    /** set newsletter active
+    /** set newsletter active.
      */
-    function getPrivateRoomNewsletterActivity()
+    public function getPrivateRoomNewsletterActivity()
     {
         $retour = 'none';
         if ($this->_issetExtra('PRIVATEROOMNEWSLETTER')) {
             $retour = $this->_getExtra('PRIVATEROOMNEWSLETTER');
         }
+
         return $retour;
     }
 
-    ###################################################
-    # time methods
-    ###################################################
+    // ##################################################
+    // time methods
+    // ##################################################
 
-
-    function showTime()
+    public function showTime()
     {
         $retour = true;
         $value = $this->_getShowTime();
-        if ($value == -1) {
+        if (-1 == $value) {
             $retour = false;
         }
+
         return $retour;
     }
 
-    function _getShowTime()
+    public function _getShowTime()
     {
         $retour = '';
         if ($this->_issetExtra('TIME_SHOW')) {
             $retour = $this->_getExtra('TIME_SHOW');
         }
+
         return $retour;
     }
 
-    function setShowTime()
+    public function setShowTime()
     {
         $this->_addExtra('TIME_SHOW', 1);
     }
 
-    function setNotShowTime()
+    public function setNotShowTime()
     {
         $this->_addExtra('TIME_SHOW', -1);
     }
 
-    function getUsageInfoTextForRubric($rubric)
+    public function getUsageInfoTextForRubric($rubric)
     {
         $funct = $this->_environment->getCurrentFunction();
         if ($this->_issetExtra('USAGE_INFO_TEXT')) {
             $retour = $this->_getExtra('USAGE_INFO_TEXT');
             if (empty($retour)) {
-                $retour = array();
+                $retour = [];
             } elseif (!is_array($retour)) {
                 $retour = XML2Array($retour);
             }
         } else {
-            $retour = array();
+            $retour = [];
         }
         if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
             $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
         } else {
             $retour = '';
         }
+
         return $retour;
     }
 
-    function getUsageInfoTextForRubricInForm($rubric)
+    public function getUsageInfoTextForRubricInForm($rubric)
     {
         $funct = $this->_environment->getCurrentFunction();
         if ($this->_issetExtra('USAGE_INFO_TEXT')) {
             $retour = $this->_getExtra('USAGE_INFO_TEXT');
             if (empty($retour)) {
-                $retour = array();
+                $retour = [];
             } elseif (!is_array($retour)) {
                 $retour = XML2Array($retour);
             }
         } else {
-            $retour = array();
+            $retour = [];
         }
         if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
             $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
         } else {
             $retour = '';
         }
+
         return $retour;
     }
 
-    function setUsageInfoTextForRubric($rubric, $string)
+    public function setUsageInfoTextForRubric($rubric, $string)
     {
         if ($this->_issetExtra('USAGE_INFO_TEXT')) {
             $value_array = $this->_getExtra('USAGE_INFO_TEXT');
             if (empty($value_array)) {
-                $value_array = array();
+                $value_array = [];
             } elseif (!is_array($value_array)) {
                 $value_array = XML2Array($value_array);
             }
         } else {
-            $value_array = array();
+            $value_array = [];
         }
         if (!empty($string)) {
             $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
@@ -447,17 +437,17 @@ class cs_privateroom_item extends cs_room_item
         $this->_addExtra('USAGE_INFO_TEXT', $value_array);
     }
 
-    function setUsageInfoTextForRubricForm($rubric, $string)
+    public function setUsageInfoTextForRubricForm($rubric, $string)
     {
         if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
             $value_array = $this->_getExtra('USAGE_INFO_FORM_TEXT');
             if (empty($value_array)) {
-                $value_array = array();
+                $value_array = [];
             } elseif (!is_array($value_array)) {
                 $value_array = XML2Array($value_array);
             }
         } else {
-            $value_array = array();
+            $value_array = [];
         }
         if (!empty($string)) {
             $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
@@ -469,46 +459,47 @@ class cs_privateroom_item extends cs_room_item
         $this->_addExtra('USAGE_INFO_FORM_TEXT', $value_array);
     }
 
-
-    function getUsageInfoTextForRubricForm($rubric)
+    public function getUsageInfoTextForRubricForm($rubric)
     {
         $funct = $this->_environment->getCurrentFunction();
         if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
             $retour = $this->_getExtra('USAGE_INFO_FORM_TEXT');
             if (empty($retour)) {
-                $retour = array();
+                $retour = [];
             } elseif (!is_array($retour)) {
                 $retour = XML2Array($retour);
             }
         } else {
-            $retour = array();
+            $retour = [];
         }
         if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
             $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
         } else {
             $retour = '';
         }
+
         return $retour;
     }
 
-    function getUsageInfoTextForRubricFormInForm($rubric)
+    public function getUsageInfoTextForRubricFormInForm($rubric)
     {
         $funct = $this->_environment->getCurrentFunction();
         if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
             $retour = $this->_getExtra('USAGE_INFO_FORM_TEXT');
             if (empty($retour)) {
-                $retour = array();
+                $retour = [];
             } elseif (!is_array($retour)) {
                 $retour = XML2Array($retour);
             }
         } else {
-            $retour = array();
+            $retour = [];
         }
         if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
             $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
         } else {
             $retour = '';
         }
+
         return $retour;
     }
 
@@ -516,46 +507,48 @@ class cs_privateroom_item extends cs_room_item
     {
         if (!isset($this->ownerUserItem)) {
             $moderator_list = $this->getModeratorList();
-            if ($moderator_list->getCount() == 1) {
+            if (1 == $moderator_list->getCount()) {
                 /** @var cs_user_item $owner */
                 $owner = $moderator_list->getFirst();
                 $this->ownerUserItem = $owner;
             }
         }
+
         return $this->ownerUserItem;
     }
 
-    /** get shown option
+    /** get shown option.
      *
-     * @return boolean if room is shown on home
+     * @return bool if room is shown on home
      */
-    function isShownInPrivateRoomHome($user_id)
+    public function isShownInPrivateRoomHome($user_id)
     {
         return false;
     }
 
-    ###############################################
-    # customized room list
-    ###############################################
+    // ##############################################
+    // customized room list
+    // ##############################################
 
     public function getCustomizedRoomIDArray()
     {
-        $array = array();
+        $array = [];
         if ($this->_issetExtra('PRIVATEROOMSELECTEDROOMLIST')) {
             $string = $this->_getExtra('PRIVATEROOMSELECTEDROOMLIST');
             $array = explode('$SRID$', $string);
         }
         $array = $this->_cleanCustomizedRoomIDArray($array);
+
         return $array;
     }
 
     private function _cleanCustomizedRoomIDArray($array)
     {
-        $retour = array();
+        $retour = [];
         if ($this->_check_customized_room_id_array) {
             $retour = $array;
         } else {
-            $room_id_array = array();
+            $room_id_array = [];
             foreach ($array as $value) {
                 if (!empty($value) and $value > 0) {
                     $room_id_array[] = $value;
@@ -565,19 +558,6 @@ class cs_privateroom_item extends cs_room_item
             if (isset($owner)) {
                 $user_manager = $this->_environment->getUserManager();
                 $room_id_array2 = $user_manager->getMembershipContextIDArrayByUserAndRoomIDLimit($owner->getUserID(), $room_id_array, $owner->getAuthSource());
-
-                // archive
-                if (!$this->_environment->isArchiveMode()) {
-                    $this->_environment->activateArchiveMode();
-                    $user_manager2 = $this->_environment->getUserManager();
-                    $room_id_array3 = $user_manager2->getMembershipContextIDArrayByUserAndRoomIDLimit($owner->getUserID(), $room_id_array, $owner->getAuthSource());
-                    if (!empty($room_id_array3)) {
-                        $room_id_array2 = array_merge($room_id_array2, $room_id_array3);
-                    }
-                    unset($user_manager2);
-                    $this->_environment->deactivateArchiveMode();
-                }
-                // archive end
 
                 foreach ($array as $value) {
                     if ($value < 0 or in_array($value, $room_id_array2)) {
@@ -593,6 +573,7 @@ class cs_privateroom_item extends cs_room_item
                 $retour = $array;
             }
         }
+
         return $retour;
     }
 
@@ -608,7 +589,7 @@ class cs_privateroom_item extends cs_room_item
 
     public function getCustomizedRoomListCommSy8()
     {
-        $retour = NULL;
+        $retour = null;
         $room_id_array = $this->getCustomizedRoomIDArray();
 
         if (!empty($room_id_array)
@@ -625,12 +606,13 @@ class cs_privateroom_item extends cs_room_item
                 while ($grouproom_item) {
                     $project_room_id = $grouproom_item->getLinkedProjectItemID();
                     if (in_array($project_room_id, $room_id_array)) {
-                        $room_id_array_temp = array();
+                        $room_id_array_temp = [];
                         foreach ($room_id_array as $value) {
                             $room_id_array_temp[] = $value;
                             if ($value == $project_room_id) {
-                                if (!in_array($grouproom_item->getItemID(), $room_id_array))
+                                if (!in_array($grouproom_item->getItemID(), $room_id_array)) {
                                     $room_id_array_temp[] = $grouproom_item->getItemID();
+                                }
                             }
                         }
                         $room_id_array = $room_id_array_temp;
@@ -640,8 +622,8 @@ class cs_privateroom_item extends cs_room_item
             }
 
             // store negativ ids and titles and their position
-            $negative_ids = array();
-            $titles = array();
+            $negative_ids = [];
+            $titles = [];
             $position = 0;
             foreach ($room_id_array as $key => $id) {
                 if (mb_stristr($id, '-1$$')) {
@@ -651,7 +633,7 @@ class cs_privateroom_item extends cs_room_item
                     $negative_ids[$position] = $id;
                 }
 
-                $position++;
+                ++$position;
             }
 
             $end = $position - 1;
@@ -676,7 +658,7 @@ class cs_privateroom_item extends cs_room_item
             $room_id = 0;
 
             while ($room_item) {
-                if ($room_item->getItemID() == -1) {
+                if (-1 == $room_item->getItemID()) {
                     $retour2->add($room_item);
                 } else {
                     if (!$room_item->isGroupRoom()) {
@@ -698,8 +680,8 @@ class cs_privateroom_item extends cs_room_item
 
         // restore correct negative id and titles
         $item = $retour->getFirst();
-        $return = new cs_list;
-        for ($position = 0; $position <= $end; $position++) {
+        $return = new cs_list();
+        for ($position = 0; $position <= $end; ++$position) {
             if (isset($titles[$position])) {
                 $room_item = new cs_room_item($this->_environment);
                 $room_item->setItemID(-1);
@@ -722,7 +704,7 @@ class cs_privateroom_item extends cs_room_item
 
     public function getCustomizedRoomList()
     {
-        $retour = NULL;
+        $retour = null;
         $room_id_array = $this->getCustomizedRoomIDArray();
         if (!empty($room_id_array)
             and !empty($room_id_array[0])
@@ -738,7 +720,7 @@ class cs_privateroom_item extends cs_room_item
                 while ($grouproom_item) {
                     $project_room_id = $grouproom_item->getLinkedProjectItemID();
                     if (in_array($project_room_id, $room_id_array)) {
-                        $room_id_array_temp = array();
+                        $room_id_array_temp = [];
                         foreach ($room_id_array as $value) {
                             $room_id_array_temp[] = $value;
                             if ($value == $project_room_id) {
@@ -753,7 +735,9 @@ class cs_privateroom_item extends cs_room_item
 
             // filter
             foreach ($room_id_array as $key => $id) {
-                if (mb_stristr($id, '$$')) unset($room_id_array[$key]);
+                if (mb_stristr($id, '$$')) {
+                    unset($room_id_array[$key]);
+                }
             }
 
             // get room list
@@ -777,7 +761,7 @@ class cs_privateroom_item extends cs_room_item
 
             $sep = true;
             while ($room_item) {
-                if ($room_item->getItemID() == -1) {
+                if (-1 == $room_item->getItemID()) {
                     if (!$sep) {
                         $retour2->add($room_item);
                     }
@@ -792,8 +776,6 @@ class cs_privateroom_item extends cs_room_item
                     }
                 }
                 $room_item = $retour->getNext();
-
-
             }
             $retour = $retour2;
             unset($retour2);
@@ -806,8 +788,8 @@ class cs_privateroom_item extends cs_room_item
     {
         $retour = '';
         $title = parent::getTitle();
-        if ($title == 'PRIVATE_ROOM'
-            or $title == 'PRIVATEROOM'
+        if ('PRIVATE_ROOM' == $title
+            or 'PRIVATEROOM' == $title
         ) {
             $translator = $this->_environment->getTranslationObject();
             $retour = $translator->getMessage('COMMON_PRIVATEROOM');
@@ -825,6 +807,7 @@ class cs_privateroom_item extends cs_room_item
                 $retour = $translator->getMessage('COMMON_PRIVATEROOM');
             }
         }
+
         return $retour;
     }
 
@@ -833,205 +816,112 @@ class cs_privateroom_item extends cs_room_item
         return parent::getTitle();
     }
 
-    public function withActivatingContent()
-    {
-        //$result = false;
-        //$manager = $this->_environment->getMyRoomManager();
-        //$user = $this->_environment->getCurrentUserItem();
-        //$project_list = $manager->getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$this->_environment->getCurrentPortalID());
-        //$project = $project_list->getFirst();
-        //while($project){
-        //   if($project->withActivatingContent()){
-        //      $result = true;
-        //   }
-        //   $project = $project_list->getNext();
-        //}
-        //return $result;
-        return true;
-    }
-
-    ##################################
-    # save rubric selections - BEGIN
-    ##################################
-
-    private function _getRubrikSelectioArray()
-    {
-        $retour = array();
-        if ($this->_issetExtra('SELECTION')) {
-            $retour = $this->_getExtra('SELECTION');
-        }
-        return $retour;
-    }
-
-    private function _setRubrikSelection($array)
-    {
-        if (isset($array)) {
-            $this->_setExtra('SELECTION', $array);
-        }
-    }
-
-    public function getRubrikSelection($rubric, $selection)
-    {
-        $retour = '';
-        if ($this->_issetExtra('SELECTION')) {
-            $sel_array = $this->_getExtra('SELECTION');
-            if (!empty($sel_array[$rubric][$selection])) {
-                $retour = $sel_array[$rubric][$selection];
-            }
-        }
-        return $retour;
-    }
-
-    public function setRubrikSelection($rubric, $selection, $value)
-    {
-        if ($this->_issetExtra('SELECTION')) {
-            $sel_array = $this->_getExtra('SELECTION');
-        } else {
-            $sel_array = array();
-        }
-        $sel_array[$rubric][$selection] = $value;
-        $this->_setRubrikSelection($sel_array);
-    }
-
-    ##################################
-    # save rubric selections - END
-    ##################################
-
-    /* PORTLET FUNCTIONS
-     * *****************
-     */
-    function getPortletColumnCount()
-    {
-        $retour = 3;
-        if ($this->_issetExtra('PORTLET_COLUMN_COUNT')) {
-            $retour = $this->_getExtra('PORTLET_COLUMN_COUNT');
-        }
-        return $retour;
-    }
-
-    function setPortletColumnCount($count)
-    {
-        $this->_addExtra('PORTLET_COLUMN_COUNT', $count);
-    }
-
-
-    function getPortletShowNewEntryList()
-    {
-        $retour = true;
-        if ($this->_issetExtra('PORTLET_SHOW_ENTRY_LIST')) {
-            if ($this->_getExtra('PORTLET_SHOW_ENTRY_LIST') == '-1') {
-                $retour = false;
-            }
-        }
-        return $retour;
-    }
-
-    function setPortletShowNewEntryList()
+    public function setPortletShowNewEntryList()
     {
         $this->_addExtra('PORTLET_SHOW_ENTRY_LIST', '1');
     }
 
-    function unsetPortletShowNewEntryList()
+    public function unsetPortletShowNewEntryList()
     {
         $this->_addExtra('PORTLET_SHOW_ENTRY_LIST', '-1');
     }
 
-    function getPortletNewEntryListCount()
+    public function getPortletNewEntryListCount()
     {
         $retour = 15;
         if ($this->_issetExtra('PORTLET_ENTRY_LIST_COUNT')) {
             $retour = $this->_getExtra('PORTLET_ENTRY_LIST_COUNT');
         }
+
         return $retour;
     }
 
-    function setPortletNewEntryListCount($i)
+    public function setPortletNewEntryListCount($i)
     {
         $this->_addExtra('PORTLET_ENTRY_LIST_COUNT', $i);
     }
 
-    function getPortletNewEntryListShowUser()
+    public function getPortletNewEntryListShowUser()
     {
         $retour = '1';
         if ($this->_issetExtra('PORTLET_ENTRY_LIST_SHOW_USER')) {
             $retour = $this->_getExtra('PORTLET_ENTRY_LIST_SHOW_USER');
         }
+
         return $retour;
     }
 
-    function setPortletNewEntryListShowUser($i)
+    public function setPortletNewEntryListShowUser($i)
     {
         $this->_addExtra('PORTLET_ENTRY_LIST_SHOW_USER', $i);
     }
 
-
-    function getCSBarShowWidgets()
+    public function getCSBarShowWidgets()
     {
         $retour = '-1';
         if ($this->_issetExtra('CS_BAR_SHOW_WIDGETS')) {
             $retour = $this->_getExtra('CS_BAR_SHOW_WIDGETS');
         }
+
         return $retour;
     }
 
-    function setCSBarShowWidgets($i)
+    public function setCSBarShowWidgets($i)
     {
         $this->_addExtra('CS_BAR_SHOW_WIDGETS', $i);
     }
 
-    function getCSBarShowCalendar()
+    public function getCSBarShowCalendar()
     {
         $retour = '-1';
         if ($this->_issetExtra('CS_BAR_SHOW_CALENDAR')) {
             $retour = $this->_getExtra('CS_BAR_SHOW_CALENDAR');
         }
+
         return $retour;
     }
 
-    function setCSBarShowCalendar($i)
+    public function setCSBarShowCalendar($i)
     {
         $this->_addExtra('CS_BAR_SHOW_CALENDAR', $i);
     }
 
-    function getCSBarShowOldRoomSwitcher()
+    public function getCSBarShowOldRoomSwitcher()
     {
         $retour = '-1';
         if ($this->_issetExtra('CS_BAR_SHOW_OLD_ROOM_SWITCHER')) {
             $retour = $this->_getExtra('CS_BAR_SHOW_OLD_ROOM_SWITCHER');
         }
+
         return $retour;
     }
 
-    function setCSBarShowOldRoomSwitcher($i)
+    public function setCSBarShowOldRoomSwitcher($i)
     {
         $this->_addExtra('CS_BAR_SHOW_OLD_ROOM_SWITCHER', $i);
     }
 
-    function getCSBarShowStack()
+    public function getCSBarShowStack()
     {
         $retour = '1';
         if ($this->_issetExtra('CS_BAR_SHOW_STACK')) {
             $retour = $this->_getExtra('CS_BAR_SHOW_STACK');
         }
+
         return $retour;
     }
 
-    function setCSBarShowStack($i)
+    public function setCSBarShowStack($i)
     {
         $this->_addExtra('CS_BAR_SHOW_STACK', $i);
     }
 
-
-    /**
-     * @return bool
-     */
     public function isPortfolioEnabled(): bool
     {
         return $this->_issetExtra('CS_BAR_SHOW_PORTFOLIO');
     }
 
     /**
-     * @param bool $enabled
      * @return $this
      */
     public function setPortfolioEnabled(bool $enabled): self
@@ -1047,10 +937,10 @@ class cs_privateroom_item extends cs_room_item
 
     public function getCSBarShowPortfolio(): string
     {
-        return ($this->isPortfolioEnabled() ? '1' : '-1');
+        return $this->isPortfolioEnabled() ? '1' : '-1';
     }
 
-    function setCSBarShowPortfolio($i)
+    public function setCSBarShowPortfolio($i)
     {
         $this->_addExtra('CS_BAR_SHOW_PORTFOLIO', $i);
     }
@@ -1061,6 +951,7 @@ class cs_privateroom_item extends cs_room_item
         if ($this->_issetExtra('CS_BAR_SHOW_CONNECTION')) {
             $retour = $this->_getExtra('CS_BAR_SHOW_CONNECTION');
         }
+
         return $retour;
     }
 
@@ -1074,13 +965,14 @@ class cs_privateroom_item extends cs_room_item
         $retour = false;
         $setCSBarConnection = $this->getCSBarShowConnection();
         if (!empty($setCSBarConnection)
-            and $setCSBarConnection != '-1'
+            and '-1' != $setCSBarConnection
         ) {
             $server_item = $this->_environment->getServerItem();
             if ($server_item->isServerConnectionAvailable()) {
                 $retour = true;
             }
         }
+
         return $retour;
     }
 
@@ -1089,638 +981,510 @@ class cs_privateroom_item extends cs_room_item
         $this->setCSBarShowConnection('1');
     }
 
-    function getPortletShowActiveRoomList()
+    public function getPortletShowActiveRoomList()
     {
         $retour = true;
         if ($this->_issetExtra('PORTLET_ACTIVE_ROOM_LIST')) {
-            if ($this->_getExtra('PORTLET_ACTIVE_ROOM_LIST') == '-1') {
+            if ('-1' == $this->_getExtra('PORTLET_ACTIVE_ROOM_LIST')) {
                 $retour = false;
             }
         }
+
         return $retour;
     }
 
-    function setPortletShowActiveRoomList()
+    public function setPortletShowActiveRoomList()
     {
         $this->_addExtra('PORTLET_ACTIVE_ROOM_LIST', '1');
     }
 
-    function unsetPortletShowActiveRoomList()
+    public function unsetPortletShowActiveRoomList()
     {
         $this->_addExtra('PORTLET_ACTIVE_ROOM_LIST', '-1');
     }
 
-    function getPortletActiveRoomCount()
+    public function getPortletActiveRoomCount()
     {
         $retour = 4;
         if ($this->_issetExtra('PORTLET_ACTIVE_ROOM_COUNT')) {
             $retour = $this->_getExtra('PORTLET_ACTIVE_ROOM_COUNT');
         }
+
         return $retour;
     }
 
-    function setPortletActiveRoomCount($i)
+    public function setPortletActiveRoomCount($i)
     {
         $this->_addExtra('PORTLET_ACTIVE_ROOM_COUNT', $i);
     }
 
-
-    function setPortletShowSearchBox()
+    public function setPortletShowSearchBox()
     {
         $this->_addExtra('PORTLET_SHOW_SEARCH_BOX', '1');
     }
 
-    function unsetPortletShowSearchBox()
+    public function unsetPortletShowSearchBox()
     {
         $this->_addExtra('PORTLET_SHOW_SEARCH_BOX', '-1');
     }
 
-    function getPortletShowSearchBox()
+    public function getPortletShowSearchBox()
     {
         $retour = false;
         if ($this->_issetExtra('PORTLET_SHOW_SEARCH_BOX')) {
-            if ($this->_getExtra('PORTLET_SHOW_SEARCH_BOX') == '1') {
+            if ('1' == $this->_getExtra('PORTLET_SHOW_SEARCH_BOX')) {
                 $retour = true;
             }
         }
+
         return $retour;
     }
 
-    function setPortletShowRoomWideSearchBox()
+    public function setPortletShowRoomWideSearchBox()
     {
         $this->_addExtra('PORTLET_SHOW_ROOMWIDE_SEARCH_BOX', '1');
     }
 
-    function unsetPortletShowRoomWideSearchBox()
+    public function unsetPortletShowRoomWideSearchBox()
     {
         $this->_addExtra('PORTLET_SHOW_ROOMWIDE_SEARCH_BOX', '-1');
     }
 
-    function getPortletShowRoomWideSearchBox()
+    public function getPortletShowRoomWideSearchBox()
     {
         $retour = true;
         if ($this->_issetExtra('PORTLET_SHOW_ROOMWIDE_SEARCH_BOX')) {
-            if ($this->_getExtra('PORTLET_SHOW_ROOMWIDE_SEARCH_BOX') == '-1') {
+            if ('-1' == $this->_getExtra('PORTLET_SHOW_ROOMWIDE_SEARCH_BOX')) {
                 $retour = false;
             }
         }
+
         return $retour;
     }
 
-
-    function setPortletShowWeatherBox()
+    public function setPortletShowWeatherBox()
     {
         $this->_addExtra('PORTLET_SHOW_WEATHER_BOX', '1');
     }
 
-    function unsetPortletShowWeatherBox()
+    public function unsetPortletShowWeatherBox()
     {
         $this->_addExtra('PORTLET_SHOW_WEATHER_BOX', '-1');
     }
 
-    function getPortletShowWeatherBox()
+    public function getPortletShowWeatherBox()
     {
         $retour = false;
         if ($this->_issetExtra('PORTLET_SHOW_WEATHER_BOX')) {
-            if ($this->_getExtra('PORTLET_SHOW_WEATHER_BOX') == '1') {
+            if ('1' == $this->_getExtra('PORTLET_SHOW_WEATHER_BOX')) {
                 $retour = true;
             }
         }
+
         return $retour;
     }
 
-
-    function getPortletWeatherLocation()
+    public function getPortletWeatherLocation()
     {
         $retour = '';
         if ($this->_issetExtra('PORTLET_WEATHER_LOCATION')) {
             $retour = $this->_getExtra('PORTLET_WEATHER_LOCATION');
         }
+
         return $retour;
     }
 
-    function setPortletWeatherLocation($account)
+    public function setPortletWeatherLocation($account)
     {
         $this->_addExtra('PORTLET_WEATHER_LOCATION', $account);
     }
 
-
-    function setPortletShowDokuverserBox()
+    public function setPortletShowDokuverserBox()
     {
         $this->_addExtra('PORTLET_SHOW_DOKUVERSER_BOX', '1');
     }
 
-    function unsetPortletShowDokuverserBox()
+    public function unsetPortletShowDokuverserBox()
     {
         $this->_addExtra('PORTLET_SHOW_DOKUVERSER_BOX', '-1');
     }
 
-    function getPortletShowDokuverserBox()
+    public function getPortletShowDokuverserBox()
     {
         $retour = true;
         if ($this->_issetExtra('PORTLET_SHOW_DOKUVERSER_BOX')) {
-            if ($this->_getExtra('PORTLET_SHOW_DOKUVERSER_BOX') == '-1') {
+            if ('-1' == $this->_getExtra('PORTLET_SHOW_DOKUVERSER_BOX')) {
                 $retour = false;
             }
         }
+
         return $retour;
     }
 
-
-    function setPortletShowClockBox()
+    public function setPortletShowClockBox()
     {
         $this->_addExtra('PORTLET_SHOW_CLOCK_BOX', '1');
     }
 
-    function unsetPortletShowClockBox()
+    public function unsetPortletShowClockBox()
     {
         $this->_addExtra('PORTLET_SHOW_CLOCK_BOX', '-1');
     }
 
-    function getPortletShowClockBox()
+    public function getPortletShowClockBox()
     {
         $retour = false;
         if ($this->_issetExtra('PORTLET_SHOW_CLOCK_BOX')) {
-            if ($this->_getExtra('PORTLET_SHOW_CLOCK_BOX') == '1') {
+            if ('1' == $this->_getExtra('PORTLET_SHOW_CLOCK_BOX')) {
                 $retour = true;
             }
         }
+
         return $retour;
     }
 
-
-    function setPortletShowBuzzwordBox()
+    public function setPortletShowBuzzwordBox()
     {
         $this->_addExtra('PORTLET_SHOW_BUZZWORD_BOX', '1');
     }
 
-    function unsetPortletShowBuzzwordBox()
+    public function unsetPortletShowBuzzwordBox()
     {
         $this->_addExtra('PORTLET_SHOW_BUZZWORD_BOX', '-1');
     }
 
-    function getPortletShowBuzzwordBox()
+    public function getPortletShowBuzzwordBox()
     {
         $retour = true;
         if ($this->_issetExtra('PORTLET_SHOW_BUZZWORD_BOX')) {
-            if ($this->_getExtra('PORTLET_SHOW_BUZZWORD_BOX') == '-1') {
+            if ('-1' == $this->_getExtra('PORTLET_SHOW_BUZZWORD_BOX')) {
                 $retour = false;
             }
         }
+
         return $retour;
     }
 
-
-    function setPortletShowConfigurationBox()
+    public function setPortletShowConfigurationBox()
     {
         $this->_addExtra('PORTLET_SHOW_CONFIGURATION_BOX', '1');
     }
 
-    function unsetPortletShowConfigurationBox()
+    public function unsetPortletShowConfigurationBox()
     {
         $this->_addExtra('PORTLET_SHOW_CONFIGURATION_BOX', '-1');
     }
 
-    function getPortletShowConfigurationBox()
+    public function getPortletShowConfigurationBox()
     {
         $retour = true;
         if ($this->_issetExtra('PORTLET_SHOW_CONFIGURATION_BOX')) {
-            if ($this->_getExtra('PORTLET_SHOW_CONFIGURATION_BOX') == '-1') {
+            if ('-1' == $this->_getExtra('PORTLET_SHOW_CONFIGURATION_BOX')) {
                 $retour = false;
             }
         }
+
         return $retour;
     }
 
-
-    function setPortletShowTwitter()
+    public function setPortletShowTwitter()
     {
         $this->_addExtra('PORTLET_SHOW_TWITTER', '1');
     }
 
-    function unsetPortletShowTwitter()
+    public function unsetPortletShowTwitter()
     {
         $this->_addExtra('PORTLET_SHOW_TWITTER', '-1');
     }
 
-    function getPortletShowTwitter()
+    public function getPortletShowTwitter()
     {
         $retour = false;
         if ($this->_issetExtra('PORTLET_SHOW_TWITTER')) {
-            if ($this->_getExtra('PORTLET_SHOW_TWITTER') == '1') {
+            if ('1' == $this->_getExtra('PORTLET_SHOW_TWITTER')) {
                 $retour = true;
             }
         }
+
         return $retour;
     }
 
-    function getPortletTwitterAccount()
+    public function getPortletTwitterAccount()
     {
         $retour = '';
         if ($this->_issetExtra('PORTLET_TWITTER_ACCOUNT')) {
             $retour = $this->_getExtra('PORTLET_TWITTER_ACCOUNT');
         }
+
         return $retour;
     }
 
-    function setPortletTwitterAccount($account)
+    public function setPortletTwitterAccount($account)
     {
         $this->_addExtra('PORTLET_TWITTER_ACCOUNT', $account);
     }
 
-
-    function setPortletShowYouTube()
+    public function setPortletShowYouTube()
     {
         $this->_addExtra('PORTLET_SHOW_YOUTUBE', '1');
     }
 
-    function unsetPortletShowYouTube()
+    public function unsetPortletShowYouTube()
     {
         $this->_addExtra('PORTLET_SHOW_YOUTUBE', '-1');
     }
 
-    function getPortletShowYouTube()
+    public function getPortletShowYouTube()
     {
         $retour = false;
         if ($this->_issetExtra('PORTLET_SHOW_YOUTUBE')) {
-            if ($this->_getExtra('PORTLET_SHOW_YOUTUBE') == '1') {
+            if ('1' == $this->_getExtra('PORTLET_SHOW_YOUTUBE')) {
                 $retour = true;
             }
         }
+
         return $retour;
     }
 
-    function getPortletYouTubeAccount()
+    public function getPortletYouTubeAccount()
     {
         $retour = '';
         if ($this->_issetExtra('PORTLET_YOUTUBE_ACCOUNT')) {
             $retour = $this->_getExtra('PORTLET_YOUTUBE_ACCOUNT');
         }
+
         return $retour;
     }
 
-    function setPortletYouTubeAccount($account)
+    public function setPortletYouTubeAccount($account)
     {
         $this->_addExtra('PORTLET_YOUTUBE_ACCOUNT', $account);
     }
 
-
-    function setPortletShowFlickr()
+    public function setPortletShowFlickr()
     {
         $this->_addExtra('PORTLET_SHOW_FLICKR', '1');
     }
 
-    function unsetPortletShowFlickr()
+    public function unsetPortletShowFlickr()
     {
         $this->_addExtra('PORTLET_SHOW_FLICKR', '-1');
     }
 
-    function getPortletShowFlickr()
+    public function getPortletShowFlickr()
     {
         $retour = false;
         if ($this->_issetExtra('PORTLET_SHOW_FLICKR')) {
-            if ($this->_getExtra('PORTLET_SHOW_FLICKR') == '1') {
+            if ('1' == $this->_getExtra('PORTLET_SHOW_FLICKR')) {
                 $retour = true;
             }
         }
+
         return $retour;
     }
 
-    function getPortletFlickrID()
+    public function getPortletFlickrID()
     {
         $retour = '';
         if ($this->_issetExtra('PORTLET_FLICKR_ID')) {
             $retour = $this->_getExtra('PORTLET_FLICKR_ID');
         }
+
         return $retour;
     }
 
-    function setPortletFlickrID($id)
+    public function setPortletFlickrID($id)
     {
         $this->_addExtra('PORTLET_FLICKR_ID', $id);
     }
 
-
-    function setPortletShowRSS()
+    public function setPortletShowRSS()
     {
         $this->_addExtra('PORTLET_SHOW_RSS', '1');
     }
 
-    function unsetPortletShowRSS()
+    public function unsetPortletShowRSS()
     {
         $this->_addExtra('PORTLET_SHOW_RSS', '-1');
     }
 
-    function getPortletShowRSS()
+    public function getPortletShowRSS()
     {
         $retour = false;
         if ($this->_issetExtra('PORTLET_SHOW_RSS')) {
-            if ($this->_getExtra('PORTLET_SHOW_RSS') == '1') {
+            if ('1' == $this->_getExtra('PORTLET_SHOW_RSS')) {
                 $retour = true;
             }
         }
+
         return $retour;
     }
 
-    function setPortletRSSArray($array)
+    public function setPortletRSSArray($array)
     {
         $this->_addExtra('PORTLET_RSS_ARRAY', $array);
     }
 
-
-    function getPortletRSSArray()
+    public function getPortletRSSArray()
     {
-        $retour = array();
+        $retour = [];
         if ($this->_issetExtra('PORTLET_RSS_ARRAY')) {
             $retour = $this->_getExtra('PORTLET_RSS_ARRAY');
         }
+
         return $retour;
     }
 
-
-    function setPortletShowNewItemBox()
+    public function setPortletShowNewItemBox()
     {
         $this->_addExtra('PORTLET_SHOW_NEW_ITEM', '1');
     }
 
-    function unsetPortletShowNewItemBox()
+    public function unsetPortletShowNewItemBox()
     {
         $this->_addExtra('PORTLET_SHOW_NEW_ITEM', '-1');
     }
 
-    function getPortletShowNewItemBox()
+    public function getPortletShowNewItemBox()
     {
         $retour = true;
         if ($this->_issetExtra('PORTLET_SHOW_NEW_ITEM')) {
-            if ($this->_getExtra('PORTLET_SHOW_NEW_ITEM') == '-1') {
+            if ('-1' == $this->_getExtra('PORTLET_SHOW_NEW_ITEM')) {
                 $retour = false;
             }
         }
+
         return $retour;
     }
 
-    function setPortletShowNoteBox()
+    public function setPortletShowNoteBox()
     {
         $this->_addExtra('PORTLET_SHOW_NOTE', '1');
     }
 
-    function unsetPortletShowNoteBox()
+    public function unsetPortletShowNoteBox()
     {
         $this->_addExtra('PORTLET_SHOW_NOTE', '-1');
     }
 
-    function getPortletShowNoteBox()
+    public function getPortletShowNoteBox()
     {
         $retour = false;
         if ($this->_issetExtra('PORTLET_SHOW_NOTE')) {
-            if ($this->_getExtra('PORTLET_SHOW_NOTE') == '1') {
+            if ('1' == $this->_getExtra('PORTLET_SHOW_NOTE')) {
                 $retour = true;
             }
         }
+
         return $retour;
     }
 
-    function setPortletNoteContent($content)
+    public function setPortletNoteContent($content)
     {
         $this->_addExtra('PORTLET_NOTE_CONTENT', $content);
     }
 
-    function getPortletNoteContent()
+    public function getPortletNoteContent()
     {
         $retour = '';
         if ($this->_issetExtra('PORTLET_NOTE_CONTENT')) {
             $retour = $this->_getExtra('PORTLET_NOTE_CONTENT');
         }
+
         return $retour;
     }
 
-    function setPortletShowReleasedEntriesBox()
+    public function setPortletShowReleasedEntriesBox()
     {
         $this->_addExtra('PORTLET_SHOW_RELEASED_ENTRIES', '1');
     }
 
-    function unsetPortletShowReleasedEntriesBox()
+    public function unsetPortletShowReleasedEntriesBox()
     {
         $this->_addExtra('PORTLET_SHOW_RELEASED_ENTRIES', '-1');
     }
 
-    function getPortletShowReleasedEntriesBox()
+    public function getPortletShowReleasedEntriesBox()
     {
         $retour = false;
         if ($this->_issetExtra('PORTLET_SHOW_RELEASED_ENTRIES')) {
-            if ($this->_getExtra('PORTLET_SHOW_RELEASED_ENTRIES') == '1') {
+            if ('1' == $this->_getExtra('PORTLET_SHOW_RELEASED_ENTRIES')) {
                 $retour = true;
             }
         }
+
         return $retour;
     }
 
-    function setPortletShowTagBox()
+    public function setPortletShowTagBox()
     {
         $this->_addExtra('PORTLET_SHOW_TAG', '1');
     }
 
-    function unsetPortletShowTagBox()
+    public function unsetPortletShowTagBox()
     {
         $this->_addExtra('PORTLET_SHOW_TAG', '-1');
     }
 
-    function getPortletShowTagBox()
+    public function getPortletShowTagBox()
     {
         $retour = false;
         if ($this->_issetExtra('PORTLET_SHOW_TAG')) {
-            if ($this->_getExtra('PORTLET_SHOW_TAG') == '1') {
+            if ('1' == $this->_getExtra('PORTLET_SHOW_TAG')) {
                 $retour = true;
             }
         }
+
         return $retour;
     }
 
-    function setHomeConfig($column_array)
-    {
-        $this->_addExtra('HOME_CONFIG', $column_array);
-    }
-
-    function getHomeConfig()
-    {
-        $retour = array();
-        if ($this->_issetExtra('HOME_CONFIG')) {
-            $retour = $this->_getExtra('HOME_CONFIG');
-        }
-        return $retour;
-    }
-
-    function setMyroomConfig($column_array)
-    {
-        $this->_addExtra('MYROOM_CONFIG', $column_array);
-    }
-
-    function getMyroomConfig()
-    {
-        $retour = array();
-        if ($this->_issetExtra('MYROOM_CONFIG')) {
-            $retour = $this->_getExtra('MYROOM_CONFIG');
-        }
-        return $retour;
-    }
-
-    function updateHomeConfiguration($column_array)
-    {
-        $portlet_array = array();
-        foreach ($column_array as $column) {
-            foreach ($column as $column_entry) {
-                if (($column_entry != 'null') && ($column_entry != 'empty')) {
-                    $portlet_array[] = $column_entry;
-                }
-            }
-        }
-        if (in_array('cs_privateroom_home_buzzword_view', $portlet_array)) {
-            $this->setPortletShowBuzzwordBox();
-        } else {
-            $this->unsetPortletShowBuzzwordBox();
-        }
-
-        if (in_array('cs_privateroom_home_configuration_view', $portlet_array)) {
-            $this->setPortletShowConfigurationBox();
-        } else {
-            $this->unsetPortletShowConfigurationBox();
-        }
-
-        if (in_array('cs_privateroom_home_clock_view', $portlet_array)) {
-            $this->setPortletShowClockBox();
-        } else {
-            $this->unsetPortletShowClockBox();
-        }
-
-        if (in_array('cs_privateroom_home_rss_ticker_view', $portlet_array)) {
-            $this->setPortletShowRSS();
-        } else {
-            $this->unsetPortletShowRSS();
-        }
-
-        if (in_array('cs_privateroom_home_dokuverser_view', $portlet_array)) {
-            $this->setPortletShowDokuverserBox();
-        } else {
-            $this->unsetPortletShowDokuverserBox();
-        }
-
-        if (in_array('cs_privateroom_home_twitter_view', $portlet_array)) {
-            $this->setPortletShowTwitter();
-        } else {
-            $this->unsetPortletShowTwitter();
-        }
-
-        if (in_array('cs_privateroom_home_youtube_view', $portlet_array)) {
-            $this->setPortletShowYouTube();
-        } else {
-            $this->unsetPortletShowYouTube();
-        }
-
-        if (in_array('cs_privateroom_home_flickr_view', $portlet_array)) {
-            $this->setPortletShowFlickr();
-        } else {
-            $this->unsetPortletShowFlickr();
-        }
-
-        if (in_array('cs_privateroom_home_room_view', $portlet_array)) {
-            $this->setPortletShowActiveRoomList();
-        } else {
-            $this->unsetPortletShowActiveRoomList();
-        }
-
-        if (in_array('cs_privateroom_home_new_entries_view', $portlet_array)) {
-            $this->setPortletShowNewEntryList();
-        } else {
-            $this->unsetPortletShowNewEntryList();
-        }
-
-        if (in_array('cs_privateroom_home_weather_view', $portlet_array)) {
-            $this->setPortletShowWeatherBox();
-        } else {
-            $this->unsetPortletShowWeatherBox();
-        }
-
-        if (in_array('cs_privateroom_home_search_view', $portlet_array)) {
-            $this->setPortletShowSearchBox();
-        } else {
-            $this->unsetPortletShowSearchBox();
-        }
-
-        if (in_array('cs_privateroom_home_roomwide_search_view', $portlet_array)) {
-            $this->setPortletShowRoomWideSearchBox();
-        } else {
-            $this->unsetPortletShowRoomWideSearchBox();
-        }
-
-        if (in_array('cs_privateroom_home_new_item_view', $portlet_array)) {
-            $this->setPortletShowNewItemBox();
-        } else {
-            $this->unsetPortletShowNewItemBox();
-        }
-
-        if (in_array('cs_privateroom_home_note_view', $portlet_array)) {
-            $this->setPortletShowNoteBox();
-        } else {
-            $this->unsetPortletShowNoteBox();
-        }
-
-        if (in_array('cs_privateroom_home_released_entries_view', $portlet_array)) {
-            $this->setPortletShowReleasedEntriesBox();
-        } else {
-            $this->unsetPortletShowReleasedEntriesBox();
-        }
-
-        if (in_array('cs_privateroom_home_tag_view', $portlet_array)) {
-            $this->setPortletShowTagBox();
-        } else {
-            $this->unsetPortletShowTagBox();
-        }
-    }
-
-    function setMyroomDisplayConfig($myroom_array)
+    public function setMyroomDisplayConfig($myroom_array)
     {
         $this->_addExtra('MYROOM_DISPLAY_CONFIG', $myroom_array);
     }
 
-    function getMyroomDisplayConfig()
+    public function getMyroomDisplayConfig()
     {
-        $retour = array();
+        $retour = [];
         if ($this->_issetExtra('MYROOM_DISPLAY_CONFIG')) {
             $retour = $this->_getExtra('MYROOM_DISPLAY_CONFIG');
         }
+
         return $retour;
     }
 
-    function issetMyroomDisplayConfig()
+    public function issetMyroomDisplayConfig()
     {
         return $this->_issetExtra('MYROOM_DISPLAY_CONFIG');
     }
 
-    function setMyEntriesDisplayConfig($my_entries_array)
+    public function setMyEntriesDisplayConfig($my_entries_array)
     {
         $this->_addExtra('MY_ENTRIES_DISPLAY_CONFIG', $my_entries_array);
     }
 
-    function getMyEntriesDisplayConfig()
+    public function getMyEntriesDisplayConfig()
     {
-        $retour = array();
+        $retour = [];
         if ($this->_issetExtra('MY_ENTRIES_DISPLAY_CONFIG')) {
             $retour = $this->_getExtra('MY_ENTRIES_DISPLAY_CONFIG');
         }
+
         return $retour;
     }
 
-    function setMyCalendarDisplayConfig($my_calendar_array)
+    public function setMyCalendarDisplayConfig($my_calendar_array)
     {
         $this->_addExtra('MY_CALENDAR_DISPLAY_CONFIG', $my_calendar_array);
     }
 
-    function getMyCalendarDisplayConfig()
+    public function getMyCalendarDisplayConfig()
     {
-        $retour = array();
+        $retour = [];
         if ($this->_issetExtra('MY_CALENDAR_DISPLAY_CONFIG')) {
             $retour = $this->_getExtra('MY_CALENDAR_DISPLAY_CONFIG');
         }
+
         return $retour;
     }
 
@@ -1728,73 +1492,75 @@ class cs_privateroom_item extends cs_room_item
      * *****************
      */
 
-    function setEmailToCommSy()
+    public function setEmailToCommSy()
     {
         $this->_addExtra('EMAIL_TO_COMMSY', '1');
     }
 
-    function unsetEmailToCommSy()
+    public function unsetEmailToCommSy()
     {
         $this->_addExtra('EMAIL_TO_COMMSY', '-1');
     }
 
-    function getEmailToCommSy()
+    public function getEmailToCommSy()
     {
         $retour = false;
         if ($this->_issetExtra('EMAIL_TO_COMMSY')) {
-            if ($this->_getExtra('EMAIL_TO_COMMSY') == '1') {
+            if ('1' == $this->_getExtra('EMAIL_TO_COMMSY')) {
                 $retour = true;
             }
         }
+
         return $retour;
     }
 
-
-    function setEmailToCommSySecret($value)
+    public function setEmailToCommSySecret($value)
     {
         $this->_addExtra('EMAIL_TO_COMMSY_SECRET', $value);
     }
 
-    function getEmailToCommSySecret()
+    public function getEmailToCommSySecret()
     {
         $retour = false;
         if ($this->_issetExtra('EMAIL_TO_COMMSY_SECRET')) {
             $retour = $this->_getExtra('EMAIL_TO_COMMSY_SECRET');
         }
+
         return $retour;
     }
 
-
-    function setDashboardLayout($data)
+    public function setDashboardLayout($data)
     {
         $this->_addExtra('DASHBOARD_LAYOUT', $data);
     }
 
-    function getDashboardLayout()
+    public function getDashboardLayout()
     {
         $retour = false;
         if ($this->_issetExtra('DASHBOARD_LAYOUT')) {
             return $this->_getExtra('DASHBOARD_LAYOUT');
         }
+
         return $retour;
     }
 
-    function usersCanSetExternalCalendarsUrl()
+    public function usersCanSetExternalCalendarsUrl()
     {
         return true;
     }
 
-    function setCalendarSelection($data)
+    public function setCalendarSelection($data)
     {
         $this->_addExtra('CALENDAR_SELECTION', $data);
     }
 
-    function getCalendarSelection()
+    public function getCalendarSelection()
     {
         $retour = false;
         if ($this->_issetExtra('CALENDAR_SELECTION')) {
             return $this->_getExtra('CALENDAR_SELECTION');
         }
+
         return $retour;
     }
 }

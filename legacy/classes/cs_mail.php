@@ -1,26 +1,15 @@
-<?PHP
-// $Id$
-//
-// Release $Name$
-//
-// Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
-// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
-//
-//    This file is part of CommSy.
-//
-//    CommSy is free software; you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation; either version 2 of the License, or
-//    (at your option) any later version.
-//
-//    CommSy is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
-//
-//    You have received a copy of the GNU General Public License
-//    along with CommSy.
+<?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 use App\Mail\Mailer;
 use Egulias\EmailValidator\EmailValidator;
@@ -31,19 +20,31 @@ use Symfony\Component\Mime\Email;
 class cs_mail
 {
     private $errors = [];
-    private $asHTML = false;
+    private bool $asHTML = false;
 
+    /**
+     * @var mixed|null
+     */
     private $message;
+    /**
+     * @var mixed|null
+     */
     private $subject;
     private $fromEmail;
+    /**
+     * @var mixed|null
+     */
     private $fromName;
     private $replyToEmail;
+    /**
+     * @var mixed|null
+     */
     private $replyToName;
     private $recipients;
     private $ccRecipients;
     private $bccRecipients;
 
-    /** set_to information
+    /** set_to information.
      *
      * set the recipients. the email-adresses should be divided by ","
      *
@@ -54,7 +55,7 @@ class cs_mail
         $this->recipients = $recipients;
     }
 
-    /** set_cc_to information
+    /** set_cc_to information.
      *
      * set the recipients
      *
@@ -69,7 +70,7 @@ class cs_mail
         $this->ccRecipients = $recipients;
     }
 
-    /** set_bcc_to information
+    /** set_bcc_to information.
      *
      * set the recipients
      *
@@ -84,7 +85,7 @@ class cs_mail
         $this->bccRecipients = $recipients;
     }
 
-    /** set_from_email information
+    /** set_from_email information.
      *
      * set the from-email in the header of the mail
      *
@@ -95,7 +96,7 @@ class cs_mail
         $this->fromEmail = $fromEmail;
     }
 
-    /** set_from_name information
+    /** set_from_name information.
      *
      * set the from-name in the header of the mail
      *
@@ -109,7 +110,7 @@ class cs_mail
         $this->fromName = encode(AS_MAIL, $fromName);
     }
 
-    /** set_reply_to_name information
+    /** set_reply_to_name information.
      *
      * set the reply_to-name in the header of the mail
      *
@@ -122,7 +123,7 @@ class cs_mail
         $this->replyToName = encode(AS_MAIL, $replyToName);
     }
 
-    /** set_reply_to information
+    /** set_reply_to information.
      *
      * set the reply_to in the header of the mail
      *
@@ -133,7 +134,7 @@ class cs_mail
         $this->replyToEmail = $replyToEmail;
     }
 
-    /** set_subject information
+    /** set_subject information.
      *
      * set the subject for the mail
      *
@@ -144,7 +145,7 @@ class cs_mail
         $this->subject = encode(AS_MAIL, $subject);
     }
 
-    /** set_message information
+    /** set_message information.
      *
      * set the subject for the mail
      *
@@ -161,7 +162,7 @@ class cs_mail
     }
 
     /**
-     * Send the mail
+     * Send the mail.
      *
      * @param string $recipients
      * @param string $headers
@@ -212,6 +213,7 @@ class cs_mail
         $to = explode(',', $this->cleanRecipients($this->recipients));
         $to = array_filter($to, function ($email) {
             $validator = new EmailValidator();
+
             return $validator->isValid($email, new RFCValidation());
         });
         if (!$to) {
@@ -241,7 +243,7 @@ class cs_mail
         /** @var Mailer $mailer */
         $mailer = $symfonyContainer->get(Mailer::class);
 
-        return $mailer->sendEmailObject($message, ($this->fromName ?? 'CommSy'));
+        return $mailer->sendEmailObject($message, $this->fromName ?? 'CommSy');
     }
 
     public function getErrorArray()
@@ -275,11 +277,11 @@ class cs_mail
 
             foreach ($retour_array as $value) {
                 if (strstr($value, '@')) {
-                    $mail_address .= ' ' . $value;
+                    $mail_address .= ' '.$value;
                     $retour2_array[] = $mail_address;
                     $mail_address = '';
                 } else {
-                    $mail_address .= ' ' . $value;
+                    $mail_address .= ' '.$value;
                 }
             }
             $retour = implode(',', $retour2_array);
