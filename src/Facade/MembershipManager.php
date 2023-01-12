@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Facade;
 
 use App\Entity\Account;
@@ -11,29 +22,10 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class MembershipManager
 {
-    /**
-     * @var UserService
-     */
-    private UserService $userService;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(
-        UserService $userService,
-        EventDispatcherInterface $eventDispatcher
-    ) {
-        $this->userService = $userService;
-        $this->eventDispatcher = $eventDispatcher;
+    public function __construct(private UserService $userService, private EventDispatcherInterface $eventDispatcher)
+    {
     }
 
-    /**
-     * @param cs_group_item $group
-     * @param Account $account
-     * @return void
-     */
     public function joinGroup(cs_group_item $group, Account $account): void
     {
         $userInWorkspace = $this->userService->getUserInContext($account, $group->getContextID());
@@ -43,11 +35,6 @@ class MembershipManager
         }
     }
 
-    /**
-     * @param cs_group_item $group
-     * @param Account $account
-     * @return void
-     */
     public function leaveGroup(cs_group_item $group, Account $account): void
     {
         $userInWorkspace = $this->userService->getUserInContext($account, $group->getContextID());
@@ -57,11 +44,6 @@ class MembershipManager
         }
     }
 
-    /**
-     * @param cs_room_item $room
-     * @param Account $account
-     * @return void
-     */
     public function leaveWorkspace(cs_room_item $room, Account $account): void
     {
         $userInWorkspace = $this->userService->getUserInContext($account, $room->getItemID());
@@ -75,18 +57,19 @@ class MembershipManager
         $event = new UserLeftRoomEvent($userInWorkspace, $room);
         $this->eventDispatcher->dispatch($event);
     }
+
     /**
-     * Return Boolean if the last moderator
-     * @param cs_room_item $room
+     * Return Boolean if the last moderator.
+     *
      * @param Account $account
-     * @return bool
      */
     public function isLastModerator(cs_room_item $room, $currentUser): bool
     {
         $usersInWorkspace = $this->userService->getUserModeratorsInContext($room->getItemID());
-        if ($usersInWorkspace && ($usersInWorkspace->getCount() <= 1) && ($currentUser->getStatus() === '3' )) {
+        if ($usersInWorkspace && ($usersInWorkspace->getCount() <= 1) && ('3' === $currentUser->getStatus())) {
             return true;
         }
+
         return false;
     }
 }

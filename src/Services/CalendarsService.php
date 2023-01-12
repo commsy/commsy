@@ -1,69 +1,55 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Services;
 
+use App\Action\Delete\DeleteAction;
 use App\Entity\Calendars;
 use App\Repository\CalendarsRepository;
 use App\Utils\DateService;
 use App\Utils\RoomService;
 use cs_environment;
+use DateInterval;
+use DateTime;
+use DateTimeZone;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
+use Exception;
 use Sabre\VObject;
-use Symfony\Component\DependencyInjection\ContainerInterface as Container;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CalendarsService
 {
-    /**
-     * @var CalendarsRepository
-     */
-    private CalendarsRepository $calendarsRepository;
-
-    /**
-     * @var ObjectManager
-     */
     private ObjectManager $objectManager;
 
-    /**
-     * @var Container
-     */
-    private Container $serviceContainer;
-
-    /**
-     * @var DateService
-     */
-    private DateService $dateService;
-
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private TranslatorInterface $translator;
-
     public function __construct(
-        CalendarsRepository $calendarsRepository,
+        private CalendarsRepository $calendarsRepository,
         ManagerRegistry $doctrine,
-        Container $container,
-        DateService $dateService,
+        private DateService $dateService,
         LegacyEnvironment $legacyEnvironment,
-        TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private DeleteAction $deleteAction
     ) {
-        $this->calendarsRepository = $calendarsRepository;
         $this->objectManager = $doctrine->getManager();
-        $this->dateService = $dateService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->translator = $translator;
-        $this->serviceContainer = $container;
     }
 
     public function getListCalendars($contextId)
     {
-        $result = array();
+        $result = [];
 
         $query = $this->calendarsRepository->createQueryBuilder('calendars')
             ->select()
@@ -81,7 +67,7 @@ class CalendarsService
 
     public function getListExternalCalendars()
     {
-        $result = array();
+        $result = [];
 
         $query = $this->calendarsRepository->createQueryBuilder('calendars')
             ->select()
@@ -121,8 +107,7 @@ class CalendarsService
     /**
      * Deletes the given calendar and all of its contained date entries.
      *
-     * @param RoomService $roomService
-     * @var Calendars $calendar
+     * @var Calendars
      */
     public function removeCalendar(RoomService $roomService, $calendar)
     {
@@ -132,13 +117,12 @@ class CalendarsService
         $this->objectManager->flush();
     }
 
-
     /**
      * Deletes all date entries from the given calendar.
      *
-     * @param RoomService $roomService
-     * @return \Symfony\Component\HttpFoundation\Response|void
-     * @var Calendars $calendar
+     * @return Response|void
+     *
+     * @var Calendars
      */
     public function removeAllCalendarDates(RoomService $roomService, $calendar)
     {
@@ -152,11 +136,10 @@ class CalendarsService
 
         // NOTE: we execute the DeleteDate action (and not just \cs_item->delete()) since
         // this performs additional cleanup like removing any date items from the clipboard
-        $action = $this->serviceContainer->get('commsy.action.delete.date');
+        $action = $this->deleteAction;
 
         return $action->execute($roomItem, $dates);
     }
-
 
     public function updateSynctoken($calendarId)
     {
@@ -165,7 +148,7 @@ class CalendarsService
         if (isset($calendar[0])) {
             $query = $this->calendarsRepository->createQueryBuilder('calendars')
                 ->update()
-                ->set('calendars.synctoken', ($calendar[0]->getSynctoken() + 1))
+                ->set('calendars.synctoken', $calendar[0]->getSynctoken() + 1)
                 ->where('calendars.id = :calendarId')
                 ->setParameter('calendarId', $calendarId)
                 ->getQuery();
@@ -178,14 +161,16 @@ class CalendarsService
      * Note that if the given CommSy calendar already contains date items with the same UID, these date items will be
      * updated with the data from the imported iCalendar events. Any other date items in the given CommSy calendar (which
      * don't have a corresponding event with a matching UID in the given iCalendar data) will be deleted.
-     * @param mixed $icalData The iCalendar file (or array of iCalendar files) containing VEVENT objects that shall be imported.
-     * @param Calendars $calendar The CommSy calendar object that will contain the imported iCalendar events.
-     * @param bool $external True if the given iCalendar data are from an external calendar source, otherwise false;
-     * defaults to false.
-     * @return bool|string Returns true if the events from the given iCalendar file(s) could be imported successfully,
-     * otherwise returns the error message.
+     *
+     * @param mixed     $icalData the iCalendar file (or array of iCalendar files) containing VEVENT objects that shall be imported
+     * @param Calendars $calendar the CommSy calendar object that will contain the imported iCalendar events
+     * @param bool      $external true if the given iCalendar data are from an external calendar source, otherwise false;
+     *                            defaults to false
+     *
+     * @return bool|string returns true if the events from the given iCalendar file(s) could be imported successfully,
+     *                     otherwise returns the error message
      */
-    public function importEvents($icalData, $calendar, $external = false)
+    public function importEvents(mixed $icalData, $calendar, $external = false): bool|string
     {
         try {
             if (is_array($icalData)) {
@@ -197,8 +182,7 @@ class CalendarsService
                         $ical->add($event);
                     }
                 }
-            }
-            else {
+            } else {
                 $ical = VObject\Reader::read($icalData);
             }
 
@@ -215,7 +199,7 @@ class CalendarsService
                     // is the event an all-day event? (potentially spanning multiple days)
                     $wholeDay = $this->isAllDayEvent($event);
 
-                    $currentTimeZone = new \DateTimeZone(date_default_timezone_get());
+                    $currentTimeZone = new DateTimeZone(date_default_timezone_get());
 
                     $startDatetime = '';
                     if ($event->DTSTART) {
@@ -241,7 +225,7 @@ class CalendarsService
                         if ($wholeDay) {
                             // NOTE: for all-day events, we substract 1 day from the end day; this is since
                             // DTEND is exclusive, not inclusive, so the given end day isn't part of the event
-                            $endDatetime = $endDatetime->sub(new \DateInterval('P1D'));
+                            $endDatetime = $endDatetime->sub(new DateInterval('P1D'));
 
                             $endDatetime = $endDatetime->setTime(0, 0); // 23:59 might be more appropriate?
                         }
@@ -266,7 +250,7 @@ class CalendarsService
                     }
 
                     $attendee = '';
-                    $attendeeArray = array();
+                    $attendeeArray = [];
                     if ($event->ORGANIZER) {
                         $tempOrganizerString = '';
                         if (isset($event->ORGANIZER['CN'])) {
@@ -289,17 +273,17 @@ class CalendarsService
                         }
                     }
                     if (!empty($attendeeArray)) {
-                        $attendee = implode("<br/>", array_unique($attendeeArray));
+                        $attendee = implode('<br/>', array_unique($attendeeArray));
                     }
 
                     // for an external calendar item, honour its original creation date
-                    $creationDatetime = NULL;
+                    $creationDatetime = null;
                     if ($external) {
                         // NOTE: when inserting a new _external_ date item, cs_dates_manager requires a set creation date
-                        $creationDatetime = new \DateTime();
+                        $creationDatetime = new DateTime();
                         if ($event->CREATED) {
                             $creationDatetime = $event->CREATED->getDateTime();
-                        } else if ($event->DTSTAMP) {
+                        } elseif ($event->DTSTAMP) {
                             $creationDatetime = $event->DTSTAMP->getDateTime();
                         }
                         $creationDatetime = $creationDatetime->setTimezone($currentTimeZone);
@@ -319,7 +303,7 @@ class CalendarsService
                     // set (or update) date item properties
                     if (!empty($creationDatetime)) {
                         $dbCreationDatetime = $creationDatetime->format('Y-m-d H:i:s');
-                        if ($hasChanges || $hasChanges = (new \DateTime($date->getCreationDate()) != $creationDatetime)) {
+                        if ($hasChanges || $hasChanges = (new DateTime($date->getCreationDate()) != $creationDatetime)) {
                             $date->setCreationDate($dbCreationDatetime);
                         }
                     }
@@ -332,9 +316,9 @@ class CalendarsService
                         $date->setTitle($title);
                     }
 
-                    $dbStartDatetime = $startDatetime->format('Ymd') . 'T' . $startDatetime->format('His');
+                    $dbStartDatetime = $startDatetime->format('Ymd').'T'.$startDatetime->format('His');
                     // compare DateTime objects to account for differing formats
-                    if ($hasChanges || $hasChanges = (new \DateTime($date->getDateTime_start()) != $startDatetime)) {
+                    if ($hasChanges || $hasChanges = (new DateTime($date->getDateTime_start()) != $startDatetime)) {
                         $date->setDateTime_start($dbStartDatetime);
                     }
 
@@ -348,8 +332,8 @@ class CalendarsService
                         $date->setStartingTime($dbStartingTime);
                     }
 
-                    $dbEndDatetime = $endDatetime->format('Ymd') . 'T' . $endDatetime->format('His');
-                    if ($hasChanges || $hasChanges = (new \DateTime($date->getDateTime_end()) != $endDatetime)) {
+                    $dbEndDatetime = $endDatetime->format('Ymd').'T'.$endDatetime->format('His');
+                    if ($hasChanges || $hasChanges = (new DateTime($date->getDateTime_end()) != $endDatetime)) {
                         $date->setDateTime_end($dbEndDatetime);
                     }
 
@@ -368,7 +352,7 @@ class CalendarsService
                     }
 
                     $calendarId = $calendar->getId();
-                    if ($hasChanges || $hasChanges = ((int)$date->getCalendarId() !== $calendarId)) {
+                    if ($hasChanges || $hasChanges = ((int) $date->getCalendarId() !== $calendarId)) {
                         $date->setCalendarId($calendarId);
                     }
 
@@ -376,7 +360,7 @@ class CalendarsService
                         $date->setPlace($location);
                     }
 
-                    $dbDescription = $description . "<br /><br />" . $attendee;
+                    $dbDescription = $description.'<br /><br />'.$attendee;
                     if ($hasChanges || $hasChanges = ($date->getDescription() !== $dbDescription)) {
                         $date->setDescription($dbDescription);
                     }
@@ -390,12 +374,12 @@ class CalendarsService
                     $currentUserId = $this->legacyEnvironment->getCurrentUserID();
                     $calendarCreatorId = $calendar->getCreatorId();
                     $rootUserId = $this->legacyEnvironment->getRootUserItemID();
-                    $creatorId = $currentUserId ?: $calendarCreatorId ?: $rootUserId;
+                    $creatorId = ($currentUserId ?: $calendarCreatorId) ?: $rootUserId;
 
-                    if ($hasChanges || $hasChanges = ((int)$date->getCreatorID() !== $creatorId)) {
+                    if ($hasChanges || $hasChanges = ((int) $date->getCreatorID() !== $creatorId)) {
                         $date->setCreatorID($creatorId);
                     }
-                    if ($hasChanges || $hasChanges = ((int)$date->getModificatorID() !== $creatorId)) {
+                    if ($hasChanges || $hasChanges = ((int) $date->getModificatorID() !== $creatorId)) {
                         $date->setModifierID($creatorId);
                     }
 
@@ -405,8 +389,8 @@ class CalendarsService
                     } else {
                         // for date items that lie in the past, assign their start date as modification date
                         // (for upcoming date items which have changes, the current date will be used on save)
-                        $eventDateTime = new \DateTime($dbStartDatetime);
-                        $nowDateTime = new \DateTime();
+                        $eventDateTime = new DateTime($dbStartDatetime);
+                        $nowDateTime = new DateTime();
                         if ($eventDateTime < $nowDateTime) {
                             $date->setModificationDate($dbStartDatetime);
                             $date->setChangeModificationOnSave(false);
@@ -424,8 +408,7 @@ class CalendarsService
                     }
                 }
             }
-
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
         }
 
@@ -435,14 +418,16 @@ class CalendarsService
     /**
      * Returns true if the given ICALENDAR VEVENT is an all-day event (which may span multiple days),
      * otherwise returns false.
-     * @var Sabre\VObject\Component\VEvent $event
+     *
+     * @var Sabre\VObject\Component\VEvent
+     *
      * @return bool
      */
     public function isAllDayEvent($event)
     {
         // 1. proprietary value defined
         if ($event->{'X-MICROSOFT-CDO-ALLDAYEVENT'}) {
-            if ($event->{'X-MICROSOFT-CDO-ALLDAYEVENT'}->getValue() == 'TRUE') {
+            if ('TRUE' == $event->{'X-MICROSOFT-CDO-ALLDAYEVENT'}->getValue()) {
                 return true;
             }
         }
@@ -461,18 +446,18 @@ class CalendarsService
         // 4. just date-only DTSTART defined (in ICALENDAR, the default duration is one day)
         //   DTSTART;VALUE=DATE:20181203
 
-        $startDateTime = NULL;
+        $startDateTime = null;
         $formattedStartTime = '';
         if ($event->DTSTART) {
             $startDateTime = $event->DTSTART->getDateTime();
             $formattedStartTime = $startDateTime->format('H:i:s');
         }
-        if (empty($startDateTime) || $formattedStartTime !== "00:00:00") {
+        if (empty($startDateTime) || '00:00:00' !== $formattedStartTime) {
             return false;
         }
 
-        $dateInterval = new \DateInterval('P1D'); // ICALENDAR default
-        $endDateTime = NULL;
+        $dateInterval = new DateInterval('P1D'); // ICALENDAR default
+        $endDateTime = null;
         $formattedEndTime = '';
         if ($event->DTEND) {
             $endDateTime = $event->DTEND->getDateTime();
@@ -480,23 +465,22 @@ class CalendarsService
         }
 
         if (!empty($endDateTime)) {
-            if ($formattedEndTime !== "00:00:00") {
+            if ('00:00:00' !== $formattedEndTime) {
                 return false;
             }
 
             $dateInterval = $startDateTime->diff($endDateTime);
-
         } else {
             if ($event->DURATION) {
                 $dateInterval = $event->DURATION->getDateInterval();
             }
         }
 
-        return ($dateInterval->d >= 1 &&
-                $dateInterval->h === 0 &&
-                $dateInterval->i === 0 &&
-                $dateInterval->s === 0 &&
-                $dateInterval->f === 0.0);
+        return $dateInterval->d >= 1 &&
+                0 === $dateInterval->h &&
+                0 === $dateInterval->i &&
+                0 === $dateInterval->s &&
+                0.0 === $dateInterval->f;
     }
 
     public function createCalendar($roomItem, $title = null, $color = null, $default = null)
@@ -504,7 +488,7 @@ class CalendarsService
         $calendar = new Calendars();
 
         if (!$title) {
-            $title = $this->translator->trans('Standard', array(), 'date');
+            $title = $this->translator->trans('Standard', [], 'date');
         }
         $calendar->setTitle($title);
 

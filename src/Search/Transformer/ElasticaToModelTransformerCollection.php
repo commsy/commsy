@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Search\Transformer;
 
 use FOS\ElasticaBundle\HybridResult;
@@ -28,7 +39,7 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
     ) {
         $indexPrefix = $parameterBag->get('commsy.elastic.prefix');
         foreach ($transformers as $name => $transformer) {
-            $this->transformers[$indexPrefix . '_' . $name] = $transformer;
+            $this->transformers[$indexPrefix.'_'.$name] = $transformer;
         }
     }
 
@@ -37,9 +48,7 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
      */
     public function getObjectClass(): string
     {
-        return implode(',', array_map(function (ElasticaToModelTransformerInterface $transformer) {
-            return $transformer->getObjectClass();
-        }, $this->transformers));
+        return implode(',', array_map(fn (ElasticaToModelTransformerInterface $transformer) => $transformer->getObjectClass(), $this->transformers));
     }
 
     /**
@@ -47,9 +56,7 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
      */
     public function getIdentifierField(): string
     {
-        return array_map(function (ElasticaToModelTransformerInterface $transformer) {
-            return $transformer->getIdentifierField();
-        }, $this->transformers)[0];
+        return array_map(fn (ElasticaToModelTransformerInterface $transformer) => $transformer->getIdentifierField(), $this->transformers)[0];
     }
 
     /**
@@ -68,9 +75,7 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
             $identifierGetter = 'get'.ucfirst($this->transformers[$type]->getIdentifierField());
             $transformed[$type] = array_combine(
                 array_map(
-                    function ($o) use ($identifierGetter) {
-                        return $o->$identifierGetter();
-                    },
+                    fn ($o) => $o->$identifierGetter(),
                     $transformedObjects
                 ),
                 $transformedObjects

@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
 use App\Entity\Translation;
@@ -8,7 +19,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * TranslationRepository
+ * TranslationRepository.
  */
 class TranslationRepository extends ServiceEntityRepository
 {
@@ -18,15 +29,13 @@ class TranslationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Returns a single translation by context and translation key
-     *
-     * @param int $contextId
-     * @param string $key
+     * Returns a single translation by context and translation key.
      *
      * @return Translation
+     *
      * @throws NonUniqueResultException
      */
-    public function findOneByContextAndKey($contextId, $key)
+    public function findOneByContextAndKey(int $contextId, string $key)
     {
         return $this->createQueryBuilder('translation')
             ->select()

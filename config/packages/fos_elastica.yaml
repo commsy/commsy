@@ -259,10 +259,6 @@ fos_elastica:
                     property_path: false
                     type: object
                     properties:
-                        subject:
-                            type: text
-                            analyzer: commsy_ngram_analyzer
-                            search_analyzer: commsy_default_analyzer
                         description:
                             type: text
                             analyzer: commsy_default_analyzer

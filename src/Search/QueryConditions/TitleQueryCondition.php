@@ -1,25 +1,28 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Search\QueryConditions;
-
 
 use Elastica\Query\MultiMatch;
 
 class TitleQueryCondition implements QueryConditionInterface
 {
-    /**
-     * @var string|null $title
-     */
-    private ?string $title;
+    private ?string $title = null;
 
-    /**
-     * @param string $title
-     * @return TitleQueryCondition
-     */
     public function setTitle(string $title): TitleQueryCondition
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -28,7 +31,7 @@ class TitleQueryCondition implements QueryConditionInterface
      */
     public function getConditions(): array
     {
-        if ($this->title === '') {
+        if ('' === $this->title) {
             return [];
         }
 
@@ -54,9 +57,6 @@ class TitleQueryCondition implements QueryConditionInterface
         return [$titleMatch];
     }
 
-    /**
-     * @return string
-     */
     public function getOperator(): string
     {
         return QueryConditionInterface::BOOL_MUST;

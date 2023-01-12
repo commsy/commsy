@@ -1,39 +1,23 @@
-<?PHP
-// $Id$
-//
-// Release $Name$
-//
-// Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
-// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
-//
-//    This file is part of CommSy.
-//
-//    CommSy is free software; you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation; either version 2 of the License, or
-//    (at your option) any later version.
-//
-//    CommSy is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
-//
-//    You have received a copy of the GNU General Public License
-//    along with CommSy.
+<?php
 
-/** upper class of the context item
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
-include_once('classes/cs_context_item.php');
 
 /** class for a context
- * this class implements a context item
+ * this class implements a context item.
  */
 class cs_guide_item extends cs_context_item
 {
-
     /** constructor: cs_server_item
-     * the only available constructor, initial values for internal variables
+     * the only available constructor, initial values for internal variables.
      *
      * @param object environment the environment of the commsy
      */
@@ -59,7 +43,7 @@ class cs_guide_item extends cs_context_item
 
     public function getAvailableLanguageArray()
     {
-        $retour = array();
+        $retour = [];
         if ($this->_issetExtra('LANGUAGE_AVAILABLE')) {
             $retour = $this->_getExtra('LANGUAGE_AVAILABLE');
         } elseif ($this->isServer()) {
@@ -69,6 +53,7 @@ class cs_guide_item extends cs_context_item
             $server_item = $this->_environment->getServerItem();
             $retour = $server_item->getAvailableLanguageArray();
         }
+
         return $retour;
     }
 
@@ -85,7 +70,7 @@ class cs_guide_item extends cs_context_item
     }
 
     /** set url of a portal
-     * this method sets the url of the portal/server
+     * this method sets the url of the portal/server.
      *
      * @param string value url of the portal/server
      */

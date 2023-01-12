@@ -1,61 +1,56 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
+use App\Repository\SavedSearchRepository;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * SavedSearch
- *
- * @ORM\Table(name="saved_searches", indexes={@ORM\Index(name="account_id", columns={"account_id"})})
- * @ORM\Entity(repositoryClass="App\Repository\SavedSearchRepository")
+ * SavedSearch.
  */
+#[ORM\Entity(repositoryClass: SavedSearchRepository::class)]
+#[ORM\Table(name: 'saved_searches')]
+#[ORM\Index(name: 'account_id', columns: ['account_id'])]
 class SavedSearch
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
+    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $id;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="account_id", type="integer", nullable=false)
-     */
-    private $accountId;
+    #[ORM\Column(name: 'account_id', type: 'integer', nullable: false)]
+    private ?int $accountId = null;
+
+    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
+    private ?int $deleterId = null;
 
     /**
-     * @var int|null
-     *
-     * @ORM\Column(name="deleter_id", type="integer", nullable=true)
+     * @var DateTime|null
      */
-    private $deleterId;
+    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
+    private ?DateTimeInterface $deletionDate = null;
 
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
-     */
-    private $deletionDate;
+    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
+    private ?string $title = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
-     */
-    private $title;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="search_url", type="string", length=3000, nullable=false)
-     */
-    private $searchUrl;
-
+    #[ORM\Column(name: 'search_url', type: 'string', length: 3000, nullable: false)]
+    private ?string $searchUrl = null;
 
     public function getId(): ?int
     {
@@ -86,12 +81,12 @@ class SavedSearch
         return $this;
     }
 
-    public function getDeletionDate(): ?\DateTimeInterface
+    public function getDeletionDate(): ?DateTimeInterface
     {
         return $this->deletionDate;
     }
 
-    public function setDeletionDate(?\DateTimeInterface $deletionDate): self
+    public function setDeletionDate(?DateTimeInterface $deletionDate): self
     {
         $this->deletionDate = $deletionDate;
 
@@ -121,6 +116,4 @@ class SavedSearch
 
         return $this;
     }
-
-
 }

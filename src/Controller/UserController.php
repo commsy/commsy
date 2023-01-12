@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Action\Copy\InsertUserroomAction;
@@ -25,19 +36,21 @@ use App\Utils\AccountMail;
 use App\Utils\MailAssistant;
 use App\Utils\TopicService;
 use App\Utils\UserService;
+use cs_disc_manager;
 use cs_room_item;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
+use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Liip\ImagineBundle\Imagine\Data\DataManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
+use Nette\Utils\Strings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -45,83 +58,65 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class UserController
- * @package App\Controller
+ * Class UserController.
  */
 class UserController extends BaseController
 {
     private UserService $userService;
     private SessionInterface $session;
 
-    /**
-     * @required
-     * @param SessionInterface $session
-     */
+    #[Required]
     public function setSession(SessionInterface $session): void
     {
         $this->session = $session;
     }
 
-    /**
-     * @required
-     * @param UserService $userService
-     */
+    #[Required]
     public function setUserService(UserService $userService): void
     {
         $this->userService = $userService;
     }
 
     /**
-     * @Route("/room/{roomId}/user/feed/{start}/{sort}")
-     * @Template()
-     * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")
-     * @param Request $request
-     * @param int $roomId
-     * @param int $max
-     * @param int $start
-     * @param string $sort
      * @return array
      */
+    #[Route(path: '/room/{roomId}/user/feed/{start}/{sort}')]
+    #[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")]
     public function feedAction(
         Request $request,
         int $roomId,
         int $max = 10,
         int $start = 0,
         string $sort = ''
-    ) {
-        return $this->gatherUsers($roomId, 'feedView', $request, $max, $start, $sort);
+    ): Response {
+        return $this->render('user/feed.html.twig',
+            $this->gatherUsers($roomId, 'feedView', $request, $max, $start, $sort)
+        );
     }
 
     /**
-     * @Route("/room/{roomId}/user/grid/{start}/{sort}")
-     * @Template()
-     * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")
-     * @param Request $request
-     * @param int $roomId
-     * @param int $max
-     * @param int $start
-     * @param string $sort
      * @return array
      */
+    #[Route(path: '/room/{roomId}/user/grid/{start}/{sort}')]
+    #[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")]
     public function gridAction(
         Request $request,
         int $roomId,
         int $max = 10,
         int $start = 0,
         string $sort = ''
-    ) {
-        return $this->gatherUsers($roomId, 'gridView', $request, $max, $start, $sort);
+    ): Response {
+        return $this->render('user/grid.html.twig',
+            $this->gatherUsers($roomId, 'gridView', $request, $max, $start, $sort)
+        );
     }
 
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/contactForm/{originPath}/{moderatorIds}")
-     * @Template
-     */
+    #[Route(path: '/room/{roomId}/user/{itemId}/contactForm/{originPath}/{moderatorIds}')]
     public function sendMailViaContactForm(
         Request $request,
         MailAssistant $mailAssistant,
@@ -131,7 +126,7 @@ class UserController extends BaseController
         $itemId,
         $originPath,
         $moderatorIds = null
-    ) {
+    ): Response {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
         $item = $this->itemService->getTypedItem($itemId);
@@ -147,7 +142,7 @@ class UserController extends BaseController
                 '%room_name%' => $item->getLinkedUserroomItem()->getTitle(),
                 '%recipients%' => implode(', ', $recipients),
             ], 'mail');
-            $message = '<br><br>--<br>' . $message;
+            $message = '<br><br>--<br>'.$message;
             $search = ', ';
             $replace = ' & ';
             $message = strrev(implode(strrev($replace), explode(strrev($search), strrev($message), 2)));
@@ -191,27 +186,18 @@ class UserController extends BaseController
             ]);
         }
 
-        return [
+        return $this->render('user/send_mail_via_contact_form.html.twig', [
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/user/{view}", defaults={"view": "feedView"}, requirements={
-     *       "view": "feedView|gridView"
-     * })
-     * @Template()
-     * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")
-     * @param Request $request
-     * @param int $roomId
-     * @param $view
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/user/{view}', defaults: ['view' => 'feedView'], requirements: ['view' => 'feedView|gridView'])]
+    #[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")]
     public function listAction(
         Request $request,
         int $roomId,
         $view
-    ) {
+    ): Response {
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $roomManager = $this->legacyEnvironment->getRoomManager();
@@ -233,14 +219,12 @@ class UserController extends BaseController
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isSubmitted() && $filterForm->isValid()) {
-
             // set filter conditions in user manager
             $this->userService->setFilterConditions($filterForm);
 
             // get filtered and total number of results
             $itemsCountArray = $this->userService->getCountArray($roomId, $currentUser->isModerator());
         } else {
-
             $this->userService->hideDeactivatedEntries();
             $this->userService->showUserStatus($userStatus);
 
@@ -249,7 +233,7 @@ class UserController extends BaseController
         }
 
         $usageInfo = false;
-        if ($roomItem->getUsageInfoTextForRubricInForm('user') != '') {
+        if ('' != $roomItem->getUsageInfoTextForRubricInForm('user')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('user');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('user');
         }
@@ -257,7 +241,7 @@ class UserController extends BaseController
         // number of users which are waiting for confirmation
         $userTasks = $this->getDoctrine()->getRepository(User::class)->getConfirmableUserByContextId($roomId)->getQuery()->getResult();
 
-        return [
+        return $this->render('user/list.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
             'module' => 'user',
@@ -267,50 +251,33 @@ class UserController extends BaseController
             'showCategories' => false,
             'usageInfo' => $usageInfo,
             'view' => $view,
-            'isArchived' => $roomItem->isArchived(),
+            'isArchived' => $roomItem->getArchived(),
             'userTasks' => $userTasks,
             'isModerator' => $currentUser->isModerator(),
             'user' => $currentUser,
             'sort' => $sort,
             'shouldCreateUserRooms' => $roomItem->isProjectRoom() ? $roomItem->getShouldCreateUserRooms() : false,
-        ];
+        ]);
     }
 
-    /**
-     * @param String $userStatus
-     * @return string
-     */
     private function resolveUserStatus(string $userStatus): string
     {
-
-        switch ($userStatus) {
-            case 'is blocked':
-                return '0';
-            case 'is applying':
-                return '1';
-            case 'user':
-                return '8';
-            case 'moderator':
-                return '3';
-            case 'is contact':
-                return 'is contact';
-            case 'reading user':
-                return '4';
-        }
-
-        return '8';
+        return match ($userStatus) {
+            'is blocked' => '0',
+            'is applying' => '1',
+            'user' => '8',
+            'moderator' => '3',
+            'is contact' => 'is contact',
+            'reading user' => '4',
+            default => '8',
+        };
     }
 
-    /**
-     * @Route("/room/{roomId}/user/sendmail")
-     * @Template()
-     * @param Request $request
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/user/sendmail')]
     public function sendMailAction(
         Request $request
-    ) {
-        $userItems = array();
+    ): Response {
+        $userItems = [];
         $userIds = $request->query->get('userIds');
         foreach ($userIds as $userId) {
             $userItems[] = $this->userService->getUser($userId);
@@ -326,27 +293,20 @@ class UserController extends BaseController
         $form = $this->createForm(SendType::class, $formData, [
             'users' => $userItems,
         ]);
-        return [
+
+        return $this->render('user/send_mail.html.twig', [
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/user/print/{sort}", defaults={"sort" = "none"})
-     * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")
-     * @param Request $request
-     * @param PrintService $printService
-     * @param string $sort
-     * @param int $roomId
-     * @return Response
-     */
+    #[Route(path: '/room/{roomId}/user/print/{sort}', defaults: ['sort' => 'none'])]
+    #[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")]
     public function printlistAction(
         Request $request,
         PrintService $printService,
         int $roomId,
         string $sort
-    ) {
-
+    ): Response {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
@@ -368,19 +328,18 @@ class UserController extends BaseController
         $users = $this->userService->getListUsers($roomId);
 
         // get user list from manager service
-        if ($sort === "none" || empty($sort)) {
+        if ('none' === $sort || empty($sort)) {
             $sort = $this->session->get('sortUsers', 'name');
         }
         $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, $sort);
 
-        $readerList = array();
+        $readerList = [];
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
         }
 
-        // get user list from manager service 
+        // get user list from manager service
         $itemsCountArray = $this->userService->getCountArray($roomId);
-
 
         $html = $this->renderView('user/list_print.html.twig', [
             'roomId' => $roomId,
@@ -397,24 +356,17 @@ class UserController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/user/changeStatus")
-     * @Template()
-     * @Security("is_granted('MODERATOR')")
-     * @param Request $request
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param Mailer $mailer
-     * @param AccountMail $accountMail
-     * @param int $roomId
-     * @return array|RedirectResponse
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/user/changeStatus')]
+    #[Security("is_granted('MODERATOR')")]
     public function changeStatusAction(
         Request $request,
         EventDispatcherInterface $eventDispatcher,
         Mailer $mailer,
         AccountMail $accountMail,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
 
         $formData = [];
@@ -478,7 +430,7 @@ class UserController extends BaseController
                                 $previousStatus = $user->getStatus();
                                 $user->makeUser(); // status 2
                                 $user->save();
-                                if ($previousStatus == 0) {
+                                if (0 == $previousStatus) {
                                     $this->userService->propagateStatusToGrouproomUsersForUser($user);
                                 }
                             }
@@ -489,7 +441,7 @@ class UserController extends BaseController
                                 $previousStatus = $user->getStatus();
                                 $user->makeReadOnlyUser(); // status 4
                                 $user->save();
-                                if ($previousStatus == 0) {
+                                if (0 == $previousStatus) {
                                     $this->userService->propagateStatusToGrouproomUsersForUser($user);
                                 }
                             }
@@ -500,7 +452,7 @@ class UserController extends BaseController
                                 $previousStatus = $user->getStatus();
                                 $user->makeUser(); // status 2
                                 $user->save();
-                                if ($previousStatus == 0) {
+                                if (0 == $previousStatus) {
                                     $this->userService->propagateStatusToGrouproomUsersForUser($user);
                                 }
                             }
@@ -511,7 +463,7 @@ class UserController extends BaseController
                                 $previousStatus = $user->getStatus();
                                 $user->makeModerator(); // status 3
                                 $user->save();
-                                if ($previousStatus == 0) {
+                                if (0 == $previousStatus) {
                                     $this->userService->propagateStatusToGrouproomUsersForUser($user);
                                 }
                             }
@@ -555,7 +507,7 @@ class UserController extends BaseController
                     if ($formData['inform_user']) {
                         $this->sendUserInfoMail($mailer, $accountMail, $formData['userIds'], $formData['status']);
                     }
-                    if ($request->query->has('userDetail') && $formData['status'] !== 'user-delete') {
+                    if ($request->query->has('userDetail') && 'user-delete' !== $formData['status']) {
                         return $this->redirectToRoute('app_user_detail', [
                             'roomId' => $roomId,
                             'itemId' => array_values($request->query->get('userIds'))[0],
@@ -580,27 +532,17 @@ class UserController extends BaseController
             }
         }
 
-        return [
+        return $this->render('user/change_status.html.twig', [
             'users' => $users,
             'form' => $form->createView(),
             'status' => $formData['status'],
-        ];
+        ]);
     }
 
     /**
-     * @Route("/room/{roomId}/user/{itemId}", requirements={
-     *     "itemId": "\d+"
-     * }))
-     * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'user')")
-     * @param Request $request
-     * @param TopicService $topicService
-     * @param LegacyMarkup $legacyMarkup
-     * @param TranslatorInterface $translator
-     * @param int $roomId
-     * @param int $itemId
      * @return array
      */
+    #[Route(path: '/room/{roomId}/user/{itemId}', requirements: ['itemId' => '\d+'])]
     public function detailAction(
         Request $request,
         TopicService $topicService,
@@ -608,14 +550,13 @@ class UserController extends BaseController
         TranslatorInterface $translator,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         $alert = null;
         if ($infoArray['user']->isLocked()) {
-
             $alert['type'] = 'warning';
-            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+            $alert['content'] = $translator->trans('item is locked', [], 'item');
         }
 
         $pathTopicItem = null;
@@ -646,7 +587,7 @@ class UserController extends BaseController
             }
         }
 
-        return array(
+        return $this->render('user/detail.html.twig', [
             'roomId' => $roomId,
             'user' => $infoArray['user'],
             'readerList' => $infoArray['readerList'],
@@ -665,8 +606,8 @@ class UserController extends BaseController
             'draft' => $infoArray['draft'],
             'showRating' => false,
             'userRoomItem' => $userRoomItem,
-            'userRoomItemMemberCount' => $userRoomItem == null ? [] : $userRoomItem->getUserList()->getCount(),
-            'userRoomLinksCount' => count($userRoomItem == null ? [] : $userRoomItem->getAllLinkedItemIDArray()),
+            'userRoomItemMemberCount' => null == $userRoomItem ? [] : $userRoomItem->getUserList()->getCount(),
+            'userRoomLinksCount' => count(null == $userRoomItem ? [] : $userRoomItem->getAllLinkedItemIDArray()),
             'showHashtags' => $infoArray['showHashtags'],
             'showCategories' => $infoArray['showCategories'],
             'currentUser' => $infoArray['currentUser'],
@@ -676,16 +617,15 @@ class UserController extends BaseController
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
             'isSelf' => $isSelf,
-            'moderatorListLength' => $moderatorListLength,
-        );
+            'moderatorListLength' => $moderatorListLength
+        ]);
     }
-
 
     private function getDetailInfo(
         $roomId,
         $itemId
     ) {
-        $infoArray = array();
+        $infoArray = [];
         $user = $this->userService->getUser($itemId);
 
         $item = $user;
@@ -714,7 +654,7 @@ class UserController extends BaseController
         $read_since_modification_count = 0;
 
         $current_user = $user_list->getFirst();
-        $id_array = array();
+        $id_array = [];
         while ($current_user) {
             $id_array[] = $current_user->getItemID();
             $current_user = $user_list->getNext();
@@ -726,16 +666,16 @@ class UserController extends BaseController
                 $current_user->getItemID());
             if (!empty($current_reader)) {
                 if ($current_reader['read_date'] >= $user->getModificationDate()) {
-                    $read_count++;
-                    $read_since_modification_count++;
+                    ++$read_count;
+                    ++$read_since_modification_count;
                 } else {
-                    $read_count++;
+                    ++$read_count;
                 }
             }
             $current_user = $user_list->getNext();
         }
-        $readerList = array();
-        $modifierList = array();
+        $readerList = [];
+        $modifierList = [];
         $reader = $this->readerService->getLatestReader($user->getItemId());
         if (empty($reader)) {
             $readerList[$item->getItemId()] = 'new';
@@ -746,7 +686,7 @@ class UserController extends BaseController
         $modifierList[$user->getItemId()] = $this->itemService->getAdditionalEditorsForItem($user);
 
         $users = $this->userService->getListUsers($roomId);
-        $userList = array();
+        $userList = [];
         $counterBefore = 0;
         $counterAfter = 0;
         $counterPosition = 0;
@@ -760,7 +700,7 @@ class UserController extends BaseController
                 if ($counterBefore > 5) {
                     array_shift($userList);
                 } else {
-                    $counterBefore++;
+                    ++$counterBefore;
                 }
                 $userList[] = $tempUser;
                 if ($tempUser->getItemID() == $user->getItemID()) {
@@ -769,11 +709,11 @@ class UserController extends BaseController
                 if (!$foundUser) {
                     $prevItemId = $tempUser->getItemId();
                 }
-                $counterPosition++;
+                ++$counterPosition;
             } else {
                 if ($counterAfter < 5) {
                     $userList[] = $tempUser;
-                    $counterAfter++;
+                    ++$counterAfter;
                     if (!$nextItemId) {
                         $nextItemId = $tempUser->getItemId();
                     }
@@ -794,7 +734,7 @@ class UserController extends BaseController
         $groups = [];
         $context_item = $this->legacyEnvironment->getCurrentContextItem();
         $conf = $context_item->getHomeConf();
-        if(strpos($conf, "group_show") == true) {
+        if (strpos($conf, 'group_show')) {
             $groups = $this->userService->getUser($itemId)->getGroupList()->to_array();
         }
 
@@ -824,45 +764,29 @@ class UserController extends BaseController
         return $infoArray;
     }
 
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/edit")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'user')")
-     * @param Request $request
-     * @param UserTransformer $transformer
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/user/{itemId}/edit')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'user')")]
     public function editAction(
         Request $request,
         UserTransformer $transformer,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $item = $this->itemService->getItem($itemId);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
         $userItem = $this->userService->getuser($itemId);
         if (!$userItem) {
-            throw $this->createNotFoundException('No user found for id ' . $itemId);
+            throw $this->createNotFoundException('No user found for id '.$itemId);
         }
         $formData = $transformer->transform($userItem);
-        $formOptions = array(
-            'action' => $this->generateUrl('app_user_edit', array(
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            )),
-            'uploadUrl' => $this->generateUrl('app_upload_upload', array(
-                'roomId' => $roomId,
-            )),
-        );
+        $formOptions = ['action' => $this->generateUrl('app_user_edit', ['roomId' => $roomId, 'itemId' => $itemId]), 'uploadUrl' => $this->generateUrl('app_upload_upload', ['roomId' => $roomId])];
         $form = $this->createForm(UserType::class, $formData, $formOptions);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
-            if ($saveType == 'save') {
+            if ('save' == $saveType) {
                 $userItem = $transformer->applyTransformation($userItem, $form->getData());
 
                 // update modifier
@@ -875,33 +799,23 @@ class UserController extends BaseController
                     $item->saveAsItem();
                 }
             }
-            return $this->redirectToRoute('app_user_save', array('roomId' => $roomId, 'itemId' => $itemId));
+
+            return $this->redirectToRoute('app_user_save', ['roomId' => $roomId, 'itemId' => $itemId]);
         }
 
-        return array(
-            'form' => $form->createView(),
-            'showHashtags' => $current_context->withBuzzwords(),
-            'showCategories' => $current_context->withTags(),
-        );
+        return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'showHashtags' => $current_context->withBuzzwords(), 'showCategories' => $current_context->withTags()]);
     }
 
-
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/save")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'user')")
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/user/{itemId}/save')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'user')")]
     public function saveAction(
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $user = $this->userService->getUser($itemId);
 
-        $itemArray = array($user);
-        $modifierList = array();
+        $itemArray = [$user];
+        $modifierList = [];
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
@@ -918,7 +832,7 @@ class UserController extends BaseController
         $read_since_modification_count = 0;
 
         $current_user = $user_list->getFirst();
-        $id_array = array();
+        $id_array = [];
         while ($current_user) {
             $id_array[] = $current_user->getItemID();
             $current_user = $user_list->getNext();
@@ -930,16 +844,16 @@ class UserController extends BaseController
                 $current_user->getItemID());
             if (!empty($current_reader)) {
                 if ($current_reader['read_date'] >= $user->getModificationDate()) {
-                    $read_count++;
-                    $read_since_modification_count++;
+                    ++$read_count;
+                    ++$read_since_modification_count;
                 } else {
-                    $read_count++;
+                    ++$read_count;
                 }
             }
             $current_user = $user_list->getNext();
         }
-        $readerList = array();
-        $modifierList = array();
+        $readerList = [];
+        $modifierList = [];
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
             if (empty($reader)) {
@@ -951,28 +865,11 @@ class UserController extends BaseController
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
-        return array(
-            'roomId' => $roomId,
-            'item' => $user,
-            'modifierList' => $modifierList,
-            'userCount' => $all_user_count,
-            'readCount' => $read_count,
-            'readSinceModificationCount' => $read_since_modification_count,
-        );
+        return $this->render('user/save.html.twig', ['roomId' => $roomId, 'item' => $user, 'modifierList' => $modifierList, 'userCount' => $all_user_count, 'readCount' => $read_count, 'readSinceModificationCount' => $read_since_modification_count]);
     }
 
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/send")
-     * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'user')")
-     * @param Request $request
-     * @param TranslatorInterface $translator
-     * @param MailAssistant $mailAssistant
-     * @param Mailer $mailer
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/user/{itemId}/send')]
+    #[Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'user')")]
     public function sendAction(
         Request $request,
         TranslatorInterface $translator,
@@ -980,20 +877,20 @@ class UserController extends BaseController
         Mailer $mailer,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $item = $this->itemService->getTypedItem($itemId);
 
         if (!$item) {
-            throw $this->createNotFoundException('no item found for id ' . $itemId);
+            throw $this->createNotFoundException('no item found for id '.$itemId);
         }
 
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
-        $defaultBodyMessage = '<br/><br/><br/>' . '--' . '<br/>' . $translator->trans(
-                'This email has been sent by sender to recipient',
-                ['%sender_name%' => $currentUser->getFullName(), '%recipient_name%' => $item->getFullName()],
-                'mail'
-            );
+        $defaultBodyMessage = '<br/><br/><br/>--<br/>'.$translator->trans(
+            'This email has been sent by sender to recipient',
+            ['%sender_name%' => $currentUser->getFullName(), '%recipient_name%' => $item->getFullName()],
+            'mail'
+        );
 
         $formData = [
             'message' => $defaultBodyMessage,
@@ -1010,7 +907,7 @@ class UserController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
 
-            if ($saveType == 'save') {
+            if ('save' == $saveType) {
                 $formData = $form->getData();
 
                 $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
@@ -1065,161 +962,116 @@ class UserController extends BaseController
             }
         }
 
-        return [
-            'form' => $form->createView()
-        ];
+        return $this->render('user/send.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/send/success")
-     * @Template()
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/user/{itemId}/send/success')]
     public function sendSuccessAction(
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $item = $this->itemService->getTypedItem($itemId);
 
         if (!$item) {
-            throw $this->createNotFoundException('no item found for id ' . $itemId);
+            throw $this->createNotFoundException('no item found for id '.$itemId);
         }
 
-        return [
+        return $this->render('user/send_success.html.twig', [
             'link' => $this->generateUrl('app_user_detail', [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             ]),
             'title' => $item->getFullname(),
-        ];
+        ]);
     }
 
-
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/send/success/contact/{originPath}")
-     * @Template()
-     **/
-    public function sendSuccessContactAction($roomId, $itemId, $originPath)
+    #[Route(path: '/room/{roomId}/user/{itemId}/send/success/contact/{originPath}')]
+    public function sendSuccessContactAction($roomId, $itemId, $originPath): Response
     {
         // get item
         $item = $this->itemService->getTypedItem($itemId);
 
         if (!$item) {
-            throw $this->createNotFoundException('no item found for id ' . $itemId);
+            throw $this->createNotFoundException('no item found for id '.$itemId);
         }
 
-        return [
+        return $this->render('user/send_success_contact.html.twig', [
             'link' => $this->generateUrl($originPath, [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
                 'portalId' => $roomId,
             ]),
             'title' => $item->getFullname(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/user/guestimage")
-     * @param AvatarService $avatarService
-     * @return Response
-     */
+    #[Route(path: '/room/user/guestimage')]
     public function guestimageAction(
         AvatarService $avatarService
-    ) {
+    ): Response {
         $response = new Response($avatarService->getUnknownUserImage(), Response::HTTP_OK,
-            array('content-type' => 'image'));
+            ['content-type' => 'image']);
         $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,
-            \Nette\Utils\Strings::webalize('user_unknown.gif'));
+            Strings::webalize('user_unknown.gif'));
         $response->headers->set('Content-Disposition', $contentDisposition);
+
         return $response;
     }
 
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/initials")
-     * @param AvatarService $avatarService
-     * @param int $itemId
-     * @return Response
-     */
+    #[Route(path: '/room/{roomId}/user/{itemId}/initials')]
     public function initialsAction(
         AvatarService $avatarService,
         int $itemId
-    ) {
+    ): Response {
         $response = new Response($avatarService->getAvatar($itemId), Response::HTTP_OK,
-            array('content-type' => 'image'));
+            ['content-type' => 'image']);
         $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,
-            \Nette\Utils\Strings::webalize('user_unknown.gif'));
+            Strings::webalize('user_unknown.gif'));
         $response->headers->set('Content-Disposition', $contentDisposition);
+
         return $response;
     }
 
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/image")
-     * @param AvatarService $avatarService
-     * @param ParameterBagInterface $params
-     * @param int $roomId
-     * @param int $itemId
-     * @return Response
-     */
+    #[Route(path: '/room/{roomId}/user/{itemId}/image')]
     public function imageAction(
         AvatarService $avatarService,
-        ParameterBagInterface $params,
         DataManager $dataManager,
         FilterManager $filterManager,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
+        $content = null;
         $user = $this->userService->getUser($itemId);
-        $file = $user->getPicture();
-        $foundUserImage = true;
+        $picture = $user->getPicture();
 
-        if ($file != '') {
-            $rootDir = $params->get('kernel.project_dir') . '/';
-
+        $foundUserImage = false;
+        $file = 'user_unknown.gif';
+        if ('' != $picture) {
             $disc_manager = $this->legacyEnvironment->getDiscManager();
-            $disc_manager->setContextID($roomId);
-            $portal_id = $this->legacyEnvironment->getCurrentPortalID();
-            if (isset($portal_id) and !empty($portal_id)) {
-                $disc_manager->setPortalID($portal_id);
-            } else {
-                $context_item = $this->legacyEnvironment->getCurrentContextItem();
-                if (isset($context_item)) {
-                    $portal_item = $context_item->getContextItem();
-                    if (isset($portal_item)) {
-                        $disc_manager->setPortalID($portal_item->getItemID());
-                        unset($portal_item);
-                    }
-                    unset($context_item);
-                }
-            }
-            $filePath = $disc_manager->getFilePath() . $file;
+            $portalId = $this->legacyEnvironment->getCurrentPortalID();
+            $filePath = $disc_manager->getAbsoluteFilePath($portalId, $roomId, $picture);
+            $relativePath = Path::makeRelative($filePath, getcwd());
 
-            if (file_exists($rootDir . $filePath)) {
-                $processedImage = $dataManager->find('commsy_user_image',
-                    str_ireplace('files/', './', $filePath));
+            if (file_exists($relativePath)) {
+                $processedImage = $dataManager->find('commsy_user_image', $relativePath);
                 $content = $filterManager->applyFilter($processedImage,
                     'commsy_user_image')->getContent();
 
-                if (!$content) {
-                    $foundUserImage = false;
-                    $file = 'user_unknown.gif';
+                if ($content) {
+                    $foundUserImage = true;
+                    $file = $picture;
                 }
-            } else {
-                $foundUserImage = false;
-                $file = 'user_unknown.gif';
             }
-        } else {
-            $foundUserImage = false;
-            $file = 'user_unknown.gif';
         }
 
         if (!$foundUserImage) {
             $content = $avatarService->getAvatar($itemId);
         }
-        $response = new Response($content, Response::HTTP_OK, array('content-type' => 'image'));
+        $response = new Response($content, Response::HTTP_OK, ['content-type' => 'image']);
         $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,
-            \Nette\Utils\Strings::webalize($file));
+            Strings::webalize($file));
         $response->headers->set('Content-Disposition', $contentDisposition);
 
         return $response;
@@ -1228,21 +1080,13 @@ class UserController extends BaseController
     /**
      * Displays the global user actions in top navbar.
      * This is an embedded controller action.
-     *
-     * @Template()
-     *
-     * @param $contextId
-     * @param SessionInterface $session
-     * @param EntityManagerInterface $entityManager
-     * @param bool $uikit3
-     * @return array
      */
     public function globalNavbarAction(
         $contextId,
         SessionInterface $session,
         EntityManagerInterface $entityManager,
         bool $uikit3 = false
-    ) {
+    ): Response {
         $currentUserItem = $this->userService->getCurrentUserItem();
         $privateRoomItem = $currentUserItem->getOwnRoom();
 
@@ -1268,7 +1112,7 @@ class UserController extends BaseController
         $userManager = $this->legacyEnvironment->getUserManager();
         $userManager->resetLimits();
 
-        return [
+        return $this->render('user/global_navbar.html.twig', [
             'privateRoomItem' => $privateRoomItem,
             'count' => sizeof($currentClipboardIds),
             'roomId' => $this->legacyEnvironment->getCurrentContextId(),
@@ -1277,21 +1121,17 @@ class UserController extends BaseController
             'showPortalConfigurationLink' => $showPortalConfigurationLink,
             'portal' => $portalItem,
             'uikit3' => $uikit3,
-        ];
+        ]);
     }
 
     /**
      * Displays the all room link in top navbar.
      * This is an embedded controller action.
-     *
-     * @Template()
-     * @param LegacyEnvironment $legacyEnvironment
-     * @return array
      */
     public function allRoomsNavbarAction(
         LegacyEnvironment $legacyEnvironment,
         bool $uikit3 = false
-    ) {
+    ): Response {
         $currentUserItem = $this->userService->getCurrentUserItem();
 
         $privateRoomItem = $currentUserItem->getOwnRoom();
@@ -1302,25 +1142,18 @@ class UserController extends BaseController
             $itemId = $this->legacyEnvironment->getCurrentContextId();
         }
 
-        return [
+        return $this->render('user/all_rooms_navbar.html.twig', [
             'itemId' => $itemId,
             'uikit3' => $uikit3,
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/print")
-     * @param PrintService $printService
-     * @param int $roomId
-     * @param int $itemId
-     * @return Response
-     */
+    #[Route(path: '/room/{roomId}/user/{itemId}/print')]
     public function printAction(
         PrintService $printService,
         int $roomId,
         int $itemId
-    ) {
-
+    ): Response {
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         $html = $this->renderView('user/detail_print.html.twig', [
@@ -1456,7 +1289,7 @@ class UserController extends BaseController
                     'user-status-user',
                     'user-status-moderator',
                     'user-contact',
-                    'user-contact-remove'
+                    'user-contact-remove',
                 ];
             } else {
                 $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'insertuserroom'];
@@ -1479,15 +1312,12 @@ class UserController extends BaseController
         ];
     }
 
-    /**
-     * @Route("/room/{roomId}/user/insertUserroom")
-     * @Template()
-     */
+    #[Route(path: '/room/{roomId}/user/insertUserroom')]
     public function insertUserroomAction(
         $roomId,
         InsertUserroomAction $action,
         Request $request
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $users = $this->getItemsForActionRequest($room, $request);
 
@@ -1495,23 +1325,16 @@ class UserController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/user/sendMultiple")
-     * @Template()
-     * @param Request $request
-     * @param TranslatorInterface $translator
-     * @param MailAssistant $mailAssistant
-     * @param Mailer $mailer
-     * @param int $roomId
-     * @return array|RedirectResponse
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/user/sendMultiple')]
     public function sendMultipleAction(
         Request $request,
         TranslatorInterface $translator,
         MailAssistant $mailAssistant,
         Mailer $mailer,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
 
         $userIds = [];
@@ -1529,11 +1352,11 @@ class UserController extends BaseController
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         // include a footer message in the email body (which may be esp. useful if some emails are sent via BCC mail)
-        $userCount = count($userIds);
+        $userCount = is_countable($userIds) ? count($userIds) : 0;
         $defaultBodyMessage = '';
         if ($userCount) {
-            $defaultBodyMessage .= '<br/><br/><br/>' . '--' . '<br/>';
-            if ($userCount == 1) {
+            $defaultBodyMessage .= '<br/><br/><br/>--<br/>';
+            if (1 == $userCount) {
                 $user = $this->userService->getUser(reset($userIds));
                 if ($user) {
                     $defaultBodyMessage .= $translator->trans(
@@ -1547,8 +1370,8 @@ class UserController extends BaseController
                     'This email has been sent to multiple users of this room',
                     [
                         '%sender_name%' => $currentUser->getFullName(),
-                        '%user_count%' => count($userIds),
-                        '%room_name%' => $room->getTitle()
+                        '%user_count%' => is_countable($userIds) ? count($userIds) : 0,
+                        '%room_name%' => $room->getTitle(),
                     ],
                     'mail'
                 );
@@ -1582,7 +1405,7 @@ class UserController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
 
-            if ($saveType == 'save') {
+            if ('save' == $saveType) {
                 $formData = $form->getData();
 
                 $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
@@ -1656,66 +1479,44 @@ class UserController extends BaseController
             }
         }
 
-        return [
-            'form' => $form->createView()
-        ];
+        return $this->render('user/send_multiple.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/user/sendMultiple/success")
-     * @Template()
-     * @param int $roomId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/user/sendMultiple/success')]
     public function sendMultipleSuccessAction(
         int $roomId
-    ) {
-        return [
+    ): Response {
+        return $this->render('user/send_multiple_success.html.twig', [
             'link' => $this->generateUrl('app_user_list', [
                 'roomId' => $roomId,
             ]),
-        ];
+        ]);
     }
 
-    ###################################################################################################
-    ## XHR Action requests
-    ###################################################################################################
-
+    // ##################################################################################################
+    // # XHR Action requests
+    // ##################################################################################################
     /**
-     * @Route("/room/{roomId}/user/xhr/markread", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @return Response
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/user/xhr/markread', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkReadAction(
         Request $request,
         MarkReadAction $markReadAction,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $markReadAction->execute($room, $items);
     }
 
-    // NOTE: to allow for email notifications on delete, the 'user-delete' action is used instead of the 'delete' action
-//    /**
-//     * @Route("/room/{roomId}/user/xhr/delete", condition="request.isXmlHttpRequest()")
-//     * @throws \Exception
-//     */
-//    public function xhrDeleteAction($roomId, Request $request)
-//    {
-//        $room = $this->getRoom($roomId);
-//        $items = $this->getItemsForActionRequest($room, $request);
-//
-//        $action = $this->get('commsy.action.delete.generic');
-//        return $action->execute($room, $items);
-//    }
-
     /**
      * @param cs_room_item $room
-     * @param string $view
+     * @param string        $view
+     *
      * @return FormInterface
      */
     private function createFilterForm(
@@ -1743,10 +1544,10 @@ class UserController extends BaseController
     }
 
     /**
-     * @param Request $request
      * @param cs_room_item $roomItem
-     * @param boolean $selectAll
-     * @param integer[] $itemIds
+     * @param bool          $selectAll
+     * @param int[]         $itemIds
+     *
      * @return cs_user_item[]
      */
     public function getItemsByFilterConditions(

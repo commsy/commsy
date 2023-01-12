@@ -9,7 +9,6 @@ on:
 jobs:
     release-gh:
         name: Create GitHub Release
-        needs: test
         runs-on: ubuntu-latest
         env:
             APP_ENV: prod

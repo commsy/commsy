@@ -1,117 +1,84 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Entity\Account;
 use App\Form\DataTransformer\PortfolioTransformer;
+use App\Form\Type\AnnotationType;
+use App\Form\Type\PortfolioEditCategoryType;
+use App\Form\Type\PortfolioType;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
 use App\Utils\ItemService;
 use App\Utils\PortfolioService;
-use App\Form\Type\AnnotationType;
-use App\Form\Type\PortfolioEditCategoryType;
-use App\Form\Type\PortfolioType;
 use App\Utils\ReaderService;
 use App\Utils\UserService;
-use cs_user_item;
-use FeedIo\Rule\Title;
-use Symfony\Component\Security\Core\Security as CoreSecurity;
+use cs_environment;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security as CoreSecurity;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class CalendarController
- * @package App\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
+ * Class CalendarController.
  */
+#[Security("is_granted('ITEM_ENTER', roomId)")]
 class PortfolioController extends AbstractController
 {
-
-    private PortfolioService $portfolioService;
-
-    private PortfolioTransformer $transformer;
-
-    private ReaderService $readerService;
-
-    private ItemService $itemService;
-
-    private UserService $userService;
-
-    private CategoryService $categoryService;
-
-    private \cs_environment $legacyEnvironment;
-
-    private CoreSecurity $security;
+    private cs_environment $legacyEnvironment;
 
     /**
      * PortfolioController constructor.
-     * @param PortfolioService $portfolioService
-     * @param PortfolioTransformer $transformer
-     * @param ReaderService $readerService
-     * @param ItemService $itemService
-     * @param UserService $userService
-     * @param CategoryService $categoryService
-     * @param LegacyEnvironment $legacyEnvironment
      */
-    public function __construct(PortfolioService $portfolioService,
-                                PortfolioTransformer $transformer,
-                                ReaderService $readerService,
-                                ItemService $itemService,
-                                UserService $userService,
-                                CategoryService $categoryService,
+    public function __construct(private PortfolioService $portfolioService,
+                                private PortfolioTransformer $transformer,
+                                private ReaderService $readerService,
+                                private ItemService $itemService,
+                                private UserService $userService,
+                                private CategoryService $categoryService,
                                 LegacyEnvironment $legacyEnvironment,
-                                CoreSecurity $coreSecurity)
+                                private CoreSecurity $security)
     {
-        $this->portfolioService = $portfolioService;
-        $this->transformer = $transformer;
-        $this->readerService = $readerService;
-        $this->itemService = $itemService;
-        $this->userService = $userService;
-        $this->categoryService = $categoryService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->security = $coreSecurity;
     }
 
-
-    /**
-     * @Route("/room/{roomId}/portfolio/")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/portfolio/')]
     public function indexAction(
         Request $request,
         int $roomId
-    ) {
+    ): Response {
         $portfolioId = 'none';
         if ($request->query->has('portfolioId')) {
             $portfolioId = $request->query->get('portfolioId');
         }
 
-        return [
+        return $this->render('portfolio/index.html.twig', [
             'portfolioId' => $portfolioId,
             'roomId' => $roomId,
-        ];
+        ]);
     }
 
     /**
-     * @Route("/room/{roomId}/portfolio/{portfolioId}", requirements={
-     *     "portfolioId": "\d+"
-     * }))
-     * @Template()
-     * @param int $roomId
-     * @param CoreSecurity $security
-     * @param int|null $portfolioId
      * @return array
      */
+    #[Route(path: '/room/{roomId}/portfolio/{portfolioId}', requirements: ['portfolioId' => '\d+'])]
     public function portfolioAction(
         int $roomId,
         int $portfolioId = null,
@@ -174,60 +141,42 @@ class PortfolioController extends AbstractController
             $external = true;
         }
 
-        return array(
+        return $this->render('portfolio/portfolio.html.twig', [
             'roomId' => $roomId,
             'portfolioId' => $portfolioId,
             'portfolio' => $portfolio,
             'linkPositions' => $linkPositions,
             'creator_fullname' => $portfolio['creator'],
             'external' => $external
-        );
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/portfolio/portfoliosource/{source}")
-     * @Template()
-     * @param int $roomId
-     * @param string|null $source
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/portfolio/portfoliosource/{source}')]
     public function tabsAction(
         int $roomId,
         string $source = null
-    ) {
+    ): Response {
         $portfolioList = $this->portfolioService->getPortfolioList();
 
         $portfolios = [];
         $myPortfolios = true;
-        if ($source == 'my-portfolios') {
+        if ('my-portfolios' == $source) {
             $portfolios = $portfolioList['myPortfolios'];
-        } else if ($source == "activated-portfolios") {
+        } elseif ('activated-portfolios' == $source) {
             $portfolios = $portfolioList['activatedPortfolios'];
             $myPortfolios = false;
         }
 
-        return array(
-            'roomId' => $roomId,
-            'portfolios' => $portfolios,
-            'myPortfolios' => $myPortfolios,
-        );
+        return $this->render('portfolio/tabs.html.twig', ['roomId' => $roomId, 'portfolios' => $portfolios, 'myPortfolios' => $myPortfolios]);
     }
 
-    /**
-     * @Route("/room/{roomId}/portfolio/{portfolioId}/detail/{firstTagId}/{secondTagId}")
-     * @Template()
-     * @param int $roomId
-     * @param int $portfolioId
-     * @param int $firstTagId
-     * @param int $secondTagId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/portfolio/{portfolioId}/detail/{firstTagId}/{secondTagId}')]
     public function detailAction(
         int $roomId,
         int $portfolioId,
         int $firstTagId,
         int $secondTagId
-    ) {
+    ): Response {
         $portfolio = $this->portfolioService->getPortfolio($portfolioId);
 
         $items = [];
@@ -249,9 +198,9 @@ class PortfolioController extends AbstractController
         $account = $this->security->getUser();
         $user = $this->userService->getPortalUser($account);
 
-        $readerList = array();
+        $readerList = [];
         foreach ($items as $item) {
-            if ($item != null) {
+            if (null != $item) {
                 $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
                 if ($relatedUser) {
                     $readerList[$item->getItemId()] = $this->readerService->getChangeStatusForUserByID($item->getItemId(), $relatedUser->getItemId());
@@ -262,7 +211,7 @@ class PortfolioController extends AbstractController
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        return [
+        return $this->render('portfolio/detail.html.twig', [
             'roomId' => $roomId,
             'items' => $items,
             'feedList' => $items,
@@ -272,29 +221,23 @@ class PortfolioController extends AbstractController
             'annotationForm' => $form->createView(),
             'portfolio' => $portfolio,
             'portfolioId' => $portfolioId,
-        ];
+        ]);
     }
 
     /**
-     * Create new portfolios and edit existing ones
-     *
-     * @Route("/room/{roomId}/portfolio/{portfolioId}/edit")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     * @param string $portfolioId
-     * @return array|RedirectResponse
+     * Create new portfolios and edit existing ones.
      */
+    #[Route(path: '/room/{roomId}/portfolio/{portfolioId}/edit')]
     public function editAction(
         Request $request,
         int $roomId,
         string $portfolioId
-    ) {
-
+    ): Response {
         // when creating a new item, return a redirect to the edit form (portfolio draft)
-        if ($portfolioId == -1) { // -1 represents 'new'
+        if (-1 == $portfolioId) { // -1 represents 'new'
             $portfolioItem = $this->portfolioService->getNewItem();
             $portfolioItem->save();
+
             return $this->redirectToRoute('app_portfolio_edit', [
                 'roomId' => $roomId,
                 'portfolioId' => $portfolioItem->getItemId(),
@@ -325,7 +268,7 @@ class PortfolioController extends AbstractController
 
                     $formData = $form->getData();
                     if (isset($formData['from_template'])) {
-                        if ($formData['from_template'] != 'none') {
+                        if ('none' != $formData['from_template']) {
                             $this->portfolioService->prepareFromTemplate((int) $formData['from_template'], $portfolioItem);
                         }
                     }
@@ -335,35 +278,27 @@ class PortfolioController extends AbstractController
                     'roomId' => $roomId,
                     'portfolioId' => $portfolioId,
                 ]);
-            }  else if ($form->get('cancel')->isClicked()) {
+            } elseif ($form->get('cancel')->isClicked()) {
                 return $this->redirectToRoute('app_portfolio_index', [
                     'roomId' => $roomId,
                 ]);
-            } else if ($form->has('delete') && $form->get('delete')->isClicked()) {
+            } elseif ($form->has('delete') && $form->get('delete')->isClicked()) {
                 $portfolioManager->delete($portfolioId);
+
                 return $this->redirectToRoute('app_portfolio_index', [
                     'roomId' => $roomId,
                 ]);
             }
         }
 
-        return [
+        return $this->render('portfolio/edit.html.twig', [
             'form' => $form->createView(),
             'item' => $item,
             'portfolio' => $portfolioItem,
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/room/{roomId}/portfolio/{portfolioId}/editcategory/{position}/{categoryTerm}/")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     * @param int $portfolioId
-     * @param string $position
-     * @param string $categoryTerm
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/portfolio/{portfolioId}/editcategory/{position}/{categoryTerm}/')]
     public function editcategoryAction(
         Request $request,
         int $roomId,
@@ -373,7 +308,7 @@ class PortfolioController extends AbstractController
         PortfolioService $portfolioService,
         TranslatorInterface $translator,
         CategoryService $categoryService
-    ) {
+    ): Response {
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
         $formData = [
@@ -387,12 +322,7 @@ class PortfolioController extends AbstractController
         $roomTags = $this->categoryService->getTags($roomId);
 //        $disabledCategories = $this->getDisabledTags($roomTags, $categoryId, $portfolio);
 
-        $form = $this->createForm(PortfolioEditCategoryType::class, $formData, array(
-            'categories' => $roomTags,
-            'categoryId' => $categoryTerm,
-            'portfolioId' => $portfolioId,
-//            'disabledCategories' => $disabledCategories,
-        ));
+        $form = $this->createForm(PortfolioEditCategoryType::class, $formData, ['categories' => $roomTags, 'categoryId' => $categoryTerm, 'portfolioId' => $portfolioId]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -401,54 +331,47 @@ class PortfolioController extends AbstractController
             if ($form->get('addCategory')->isClicked()) {
                 $data = $form->getData();
 
-                if (empty($data['title'])){
+                if (empty($data['title'])) {
                     // the additional error has to be added here (instead of a formtype constraint) to prevent unnamed new categories.
-                    $form->addError(new FormError($translator->trans('Title may not be empty',[],'portfolio')));
-                    return [
+                    $form->addError(new FormError($translator->trans('Title may not be empty', [], 'portfolio')));
+
+                    return $this->render('portfolio/editcategory.html.twig', [
                         'form' => $form->createView(),
                         'categoryTerm' => $categoryTerm,
-                    ];
+                    ]);
                 }
 
                 // persist new category
                 $categoryService->addTag($data['title'], $roomId);
 
-                return $this->redirectToRoute('app_portfolio_editcategory', array(
-                    'roomId' => $roomId,
-                    'portfolioId' => $portfolioId,
-                    'position' => $position,
-                    'categoryTerm' => $categoryTerm
-                ));
+                return $this->redirectToRoute('app_portfolio_editcategory', ['roomId' => $roomId, 'portfolioId' => $portfolioId, 'position' => $position, 'categoryTerm' => $categoryTerm]);
             }
 
             if ($form->get('save')->isClicked()) {
-
                 $tagId = $formData['categories'][0];
 
-                if ($categoryTerm == 'add') {
+                if ('add' == $categoryTerm) {
                     // add new row or column
 
                     $index = 1;
                     foreach ($portfolio['tags'] as $tag) {
-                        if ($position == 'row') {
-                            if ($tag['column'] == 0) {
-                                $index++;
+                        if ('row' == $position) {
+                            if (0 == $tag['column']) {
+                                ++$index;
                             }
                         } else {
-                            if ($tag['row'] == 0) {
-                                $index++;
+                            if (0 == $tag['row']) {
+                                ++$index;
                             }
                         }
                     }
 
                     $portfolioService->addTagToPortfolio($portfolioId, $tagId, $position, $index, $formData['description']);
-
                 } else {
                     // edit row or column
                     $portfolioService->replaceTagForPortfolio($portfolioId, $tagId, $categoryTerm, $formData['description']);
                 }
-
-            } else if ($form->has('delete') && $form->get('delete')->isClicked()) {
+            } elseif ($form->has('delete') && $form->get('delete')->isClicked()) {
                 $tagId = $categoryTerm;
 
                 $portfolioTags = $portfolioService->getPortfolioTags($portfolioId);
@@ -456,7 +379,7 @@ class PortfolioController extends AbstractController
                 // get the tag we want to delete
                 $deleteTag = null;
                 foreach ($portfolioTags as $portfolioTag) {
-                    if ($portfolioTag["t_id"] == $tagId) {
+                    if ($portfolioTag['t_id'] == $tagId) {
                         $deleteTag = $portfolioTag;
                         break;
                     }
@@ -464,7 +387,9 @@ class PortfolioController extends AbstractController
 
                 // determe if this is a row or column tag
                 $isRow = false;
-                if ($deleteTag["row"] > 0) $isRow = true;
+                if ($deleteTag['row'] > 0) {
+                    $isRow = true;
+                }
 
                 // delete the tag
                 $portfolioService->deletePortfolioTag($portfolioId, $tagId);
@@ -472,32 +397,30 @@ class PortfolioController extends AbstractController
                 // if there are rows or column after this tag, we need to decrease their positions
                 foreach ($portfolioTags as $portfolioTag) {
                     if ($isRow) {
-                        if ($portfolioTag["row"] > $deleteTag["row"]) {
-                            $portfolioService->updatePortfolioTagPosition($portfolioId, $portfolioTag["t_id"], $portfolioTag["row"] - 1, 0);
+                        if ($portfolioTag['row'] > $deleteTag['row']) {
+                            $portfolioService->updatePortfolioTagPosition($portfolioId, $portfolioTag['t_id'], $portfolioTag['row'] - 1, 0);
                         }
                     } else {
-                        if ($portfolioTag["column"] > $deleteTag["column"]) {
-                            $portfolioService->updatePortfolioTagPosition($portfolioId, $portfolioTag["t_id"], 0, $portfolioTag["column"] - 1);
+                        if ($portfolioTag['column'] > $deleteTag['column']) {
+                            $portfolioService->updatePortfolioTagPosition($portfolioId, $portfolioTag['t_id'], 0, $portfolioTag['column'] - 1);
                         }
                     }
                 }
             }
 
-            return $this->redirectToRoute('app_portfolio_index', array('roomId' => $roomId, 'portfolioId' => $portfolioId));
+            return $this->redirectToRoute('app_portfolio_index', ['roomId' => $roomId, 'portfolioId' => $portfolioId]);
         }
 
-        return [
+        return $this->render('portfolio/editcategory.html.twig', [
             'form' => $form->createView(),
             'categoryTerm' => $categoryTerm,
-        ];
+        ]);
     }
 
     /**
-     * @Route("/room/{roomId}/portfolio/{portfolioId}/stopActivation")
-     * @param int $roomId
-     * @param int $portfolioId
      * @return RedirectResponse
      */
+    #[Route(path: '/room/{roomId}/portfolio/{portfolioId}/stopActivation')]
     public function stopActivation(
         int $roomId,
         int $portfolioId
@@ -516,7 +439,7 @@ class PortfolioController extends AbstractController
 
         return $this->redirectToRoute('app_portfolio_index', [
             'roomId' => $roomId,
-            'portfolioId' => $portfolioId
+            'portfolioId' => $portfolioId,
         ]);
     }
 
@@ -529,12 +452,12 @@ class PortfolioController extends AbstractController
         foreach ($roomTags as $roomTag) {
             $usedCategories = [];
             foreach ($portfolio['tags'] as $tag) {
-                if ($orientation == 'row') {
-                    if ($tag['row'] == 0) {
+                if ('row' == $orientation) {
+                    if (0 == $tag['row']) {
                         $usedCategories[] = $tag['t_id'];
                     }
                 } else {
-                    if ($tag['column'] == 0) {
+                    if (0 == $tag['column']) {
                         $usedCategories[] = $tag['t_id'];
                     }
                 }
@@ -548,6 +471,7 @@ class PortfolioController extends AbstractController
                 $result = $result + $this->getDisabledTags($roomTag['children'], $orientation, $portfolio);
             }
         }
+
         return $result;
     }
 }

@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Cron;
 
 use App\Cron\Tasks\CronTaskInterface;
@@ -11,52 +22,29 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use ReflectionClass;
+use ReflectionException;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 class CronManager
 {
-    /**
-     * @var CronTaskInterface[]
-     */
-    private iterable $cronTasks;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
-
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
 
     /**
-     * @var string
-     */
-    private string $projectDir;
-
-    /**
-     * @param EntityManagerInterface $entityManager
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param string $projectDir
-     * @param iterable $cronTasks
+     * @param CronTaskInterface[] $cronTasks
      */
     public function __construct(
-        EntityManagerInterface $entityManager,
+        private EntityManagerInterface $entityManager,
         LegacyEnvironment $legacyEnvironment,
-        string $projectDir,
-        iterable $cronTasks
+        private string $projectDir,
+        private iterable $cronTasks
     ) {
-        $this->cronTasks = $cronTasks;
-        $this->entityManager = $entityManager;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->projectDir = $projectDir;
     }
 
     public function run(SymfonyStyle $output, array $exclude, bool $force = false)
     {
-        chdir($this->projectDir . '/legacy/');
+        chdir($this->projectDir.'/legacy/');
         $this->legacyEnvironment->setCacheOff();
 
         $stopwatch = new Stopwatch();
@@ -73,43 +61,41 @@ class CronManager
             try {
                 $cronTaskRef = new ReflectionClass($cronTask);
                 if (in_array($cronTaskRef->getShortName(), $exclude)) {
-                    $output->note($cronTask->getSummary() . ' - skipped by exclusion');
+                    $output->note($cronTask->getSummary().' - skipped by exclusion');
                     continue;
                 }
-            } catch (\ReflectionException $e) {
+            } catch (ReflectionException $e) {
             }
 
-            /** @var CronTaskInterface $cronTask */
+            /* @var CronTaskInterface $cronTask */
             $stopwatch->start($cronTask->getSummary());
 
-            $cronRun = array_filter($lastCronRuns, function (CronTask $task) use ($cronTask) {
-                return $task->getName() === get_class($cronTask);
-            });
+            $cronRun = array_filter($lastCronRuns, fn (CronTask $task) => $task->getName() === $cronTask::class);
             $lastRun = !empty($cronRun) ? DateTimeImmutable::createFromMutable(current($cronRun)->getLastRun()) : null;
 
             $cmp = (new DateTimeImmutable())->sub(new DateInterval('PT23H'));
             if (!$force && $lastRun && $lastRun >= $cmp) {
-                $output->note($cronTask->getSummary() . ' - skipped');
+                $output->note($cronTask->getSummary().' - skipped');
             } else {
                 try {
-                    $output->note($cronTask->getSummary() . ' - running');
+                    $output->note($cronTask->getSummary().' - running');
                     $cronTask->run($lastRun);
 
                     $event = $stopwatch->stop($cronTask->getSummary());
-                    $output->success($cronTask->getSummary() . ' - ' . $event);
+                    $output->success($cronTask->getSummary().' - '.$event);
 
                     $taskEntity = null;
                     if (!empty($cronRun)) {
                         $taskEntity = current($cronRun);
                     } else {
                         $taskEntity = new CronTask();
-                        $taskEntity->setName(get_class($cronTask));
+                        $taskEntity->setName($cronTask::class);
                     }
                     $taskEntity->setLastRun(new DateTimeImmutable());
                     $this->entityManager->persist($taskEntity);
                     $this->entityManager->flush();
                 } catch (Exception $e) {
-                    $output->error($cronTask->getSummary() . ' - ' . $e->getMessage());
+                    $output->error($cronTask->getSummary().' - '.$e->getMessage());
                 }
             }
         }
@@ -119,10 +105,6 @@ class CronManager
 
     private function sortByPriority(CronTaskInterface $a, CronTaskInterface $b): int
     {
-        if ($a->getPriority() === $b->getPriority()) {
-            return 0;
-        }
-
-        return ($a->getPriority() > $b->getPriority()) ? -1 : 1;
+        return $b->getPriority() <=> $a->getPriority();
     }
 }

@@ -1,82 +1,74 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
-use App\Repository\LabelRepository;
-use App\Services\LegacyEnvironment;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use App\Entity\Labels;
+use App\Event\CommsyEditEvent;
 use App\Form\Model\MergeHashtags;
-use App\Utils\LabelService;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\Request;
-
 use App\Form\Type\HashtagEditType;
 use App\Form\Type\HashtagMergeType;
-use App\Entity\Labels;
-
-use App\Event\CommsyEditEvent;
+use App\Repository\LabelRepository;
+use App\Services\LegacyEnvironment;
+use App\Utils\LabelService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class HashtagController extends AbstractController
 {
-    /**
-     * @Template("hashtag/show.html.twig")
-     * @param int $roomId
-     * @param LabelRepository $labelRepository
-     * @return array
-     */
     public function showAction(
         int $roomId,
         LabelRepository $labelRepository
-    ) {
-        return [
+    ): Response {
+        return $this->render('hashtag/show.html.twig', [
             'hashtags' => $labelRepository->findRoomHashtags($roomId),
-        ];
+        ]);
     }
 
-    /**
-     * @Template("hashtag/showDetail.html.twig")
-     */
     public function showDetailAction(
         int $roomId,
         LabelRepository $labelRepository
-    ) {
-        return [
+    ): Response {
+        return $this->render('hashtag/show_detail.html.twig', [
             'hashtags' => $labelRepository->findRoomHashtags($roomId),
-        ];
+        ]);
     }
 
-    /**
-     * @Template("hashtag/showDetailShort.html.twig")
-     */
     public function showDetailShortAction(
         int $roomId,
         LabelRepository $labelRepository
-    ) {
-        return [
+    ): Response {
+        return $this->render('hashtag/show_detail_short.html.twig', [
             'hashtags' => $labelRepository->findRoomHashtags($roomId),
-        ];
+        ]);
     }
 
     /**
-     * @Route("/room/{roomId}/hashtag/add")
-     * @Security("is_granted('HASHTAG_EDIT')")
-     * @param Request $request
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param int $roomId
      * @return JsonResponse
      */
+    #[Route(path: '/room/{roomId}/hashtag/add')]
+    #[Security("is_granted('HASHTAG_EDIT')")]
     public function addAction(
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         LabelService $labelService,
         int $roomId
-    ) {
+    ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -100,16 +92,8 @@ class HashtagController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/room/{roomId}/hashtag/edit/{labelId}")
-     * @Template()
-     * @Security("is_granted('HASHTAG_EDIT')")
-     * @param Request $request
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param int $roomId
-     * @param int|null $labelId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/hashtag/edit/{labelId}')]
+    #[Security("is_granted('HASHTAG_EDIT')")]
     public function editAction(
         Request $request,
         LegacyEnvironment $legacyEnvironment,
@@ -118,13 +102,13 @@ class HashtagController extends AbstractController
         LabelRepository $labelRepository,
         int $roomId,
         int $labelId = null
-    ) {
+    ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
-        if ($roomItem !== null && !$roomItem->withBuzzwords()) {
+        if (null !== $roomItem && !$roomItem->withBuzzwords()) {
             throw $this->createAccessDeniedException('The requested room does not have hashtags enabled.');
         }
 
@@ -172,7 +156,7 @@ class HashtagController extends AbstractController
         $mergeData = new MergeHashtags();
 
         $mergeForm = $this->createForm(HashtagMergeType::class, $mergeData, [
-            'roomId' => $roomId
+            'roomId' => $roomId,
         ]);
 
         $mergeForm->handleRequest($request);
@@ -190,16 +174,16 @@ class HashtagController extends AbstractController
             $buzzwordOne = $buzzwordItemOne->getName();
             $buzzwordTwo = $buzzwordItemTwo->getName();
 
-            $newName = $buzzwordOne. "/" . $buzzwordTwo;
+            $newName = $buzzwordOne.'/'.$buzzwordTwo;
 
             $buzzwordItemOne->setName($newName);
             $buzzwordItemOne->setModificationDate(getCurrentDateTimeInMySQL());
             $buzzwordItemOne->save();
-            //Get links to create new hashtag links
+            // Get links to create new hashtag links
             $managerLink = $legacyEnvironment->getLinkManager();
             $links = $managerLink->getLinksTo2('buzzword_for', $secondId);
             foreach ($links as $link) {
-                $link_array = array();
+                $link_array = [];
                 $link_array['room_id'] = $roomId;
                 $link_array['from_item_id'] = $link['from_item_id'];
                 $link_array['to_item_id'] = $buzzwordItemOne->getItemID();
@@ -217,12 +201,12 @@ class HashtagController extends AbstractController
 
         $eventDispatcher->dispatch(new CommsyEditEvent(null), CommsyEditEvent::EDIT);
 
-        return [
+        return $this->render('hashtag/edit.html.twig', [
             'editForm' => $editForm->createView(),
             'roomId' => $roomId,
             'hashtags' => $hashtags,
             'labelId' => $labelId,
             'mergeForm' => $mergeForm->createView(),
-        ];
+        ]);
     }
 }

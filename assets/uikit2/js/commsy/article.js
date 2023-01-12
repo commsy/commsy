@@ -3,8 +3,15 @@
     "use strict";
 
     $(".newArticle").on('click', function() {
+        let editButtons = $('.cs-edit');
+        editButtons.removeClass('cs-edit');
+        editButtons.each(function(){
+          $(this).find('a').addClass('uk-hidden');
+        });
+
+
         // Create new section element in discussion view
-        
+
         var url = $(this).data('article-url');
         // send ajax request to get new section item
         $.ajax({

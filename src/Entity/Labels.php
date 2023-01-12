@@ -1,158 +1,135 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
+use App\Repository\LabelRepository;
+use App\Validator\Constraints as CommsyAssert;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
-use App\Validator\Constraints as CommsyAssert;
-
-/**
- * Labels
- *
- * @ORM\Table(name="labels", indexes={
- *     @ORM\Index(name="context_id", columns={"context_id"}),
- *     @ORM\Index(name="creator_id", columns={"creator_id"}),
- *     @ORM\Index(name="type", columns={"type"})
- * })
- * @ORM\Entity(repositoryClass="App\Repository\LabelRepository")
- * @CommsyAssert\UniqueLabelName
- */
+#[ORM\Entity(repositoryClass: LabelRepository::class)]
+#[ORM\Table(name: 'labels')]
+#[ORM\Index(name: 'context_id', columns: ['context_id'])]
+#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
+#[ORM\Index(name: 'type', columns: ['type'])]
+#[CommsyAssert\UniqueLabelName]
 class Labels
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="item_id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @var int
      */
+    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $itemId = '0';
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=false)
+     * @var int
      */
+    #[ORM\Column(name: 'context_id', type: 'integer', nullable: false)]
     private $contextId;
 
-    /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id")
-     */
-    private $creator;
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
+    private ?User $creator = null;
 
-    /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id")
-     */
-    private $modifier;
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
+    private ?User $modifier = null;
 
-    /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="deleter_id", referencedColumnName="item_id")
-     */
-    private $deleter;
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id')]
+    private ?User $deleter = null;
 
     /**
      * @var DateTime
-     *
-     * @ORM\Column(name="creation_date", type="datetime", nullable=false)
      */
+    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private $creationDate = '0000-00-00 00:00:00';
 
     /**
      * @var DateTime
-     *
-     * @ORM\Column(name="modification_date", type="datetime", nullable=false)
      */
+    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
     private $modificationDate = '0000-00-00 00:00:00';
 
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="activation_date", type="datetime")
-     */
-    private ?DateTime $activationDate;
+    #[ORM\Column(name: 'activation_date', type: 'datetime')]
+    private ?DateTime $activationDate = null;
 
     /**
      * @var DateTime
-     *
-     * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
      */
+    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'name', type: 'string', length: 255, nullable: false)]
     private $name;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="text", length=16777215, nullable=true)
      */
+    #[ORM\Column(name: 'description', type: 'text', length: 16777215, nullable: true)]
     private $description;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="type", type="string", length=15, nullable=false)
      */
+    #[ORM\Column(name: 'type', type: 'string', length: 15, nullable: false)]
     private $type;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="extras", type="mbarray", nullable=true)
      */
+    #[ORM\Column(name: 'extras', type: 'mbarray', nullable: true)]
     private $extras;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="public", type="boolean", nullable=false)
+     * @var bool
      */
+    #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
     private $public = '0';
 
     /**
      * @var DateTime
-     *
-     * @ORM\Column(name="locking_date", type="datetime", nullable=true)
      */
+    #[ORM\Column(name: 'locking_date', type: 'datetime', nullable: true)]
     private $lockingDate;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="locking_user_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'locking_user_id', type: 'integer', nullable: true)]
     private $lockingUserId;
-
 
     public function isIndexable()
     {
-        return ($this->deleter == null && $this->deletionDate == null &&
-                $this->name != 'ALL' && $this->description != 'GROUP_ALL_DESC' && in_array($this->type, [
+        return null == $this->deleter && null == $this->deletionDate &&
+                'ALL' != $this->name && 'GROUP_ALL_DESC' != $this->description && in_array($this->type, [
                     'group',
                     'topic',
-                    'institution'
+                    'institution',
                 ])
-        );
+        ;
     }
 
     /**
-     * Get itemId
+     * Get itemId.
      *
-     * @return integer
+     * @return int
      */
     public function getItemId()
     {
@@ -160,9 +137,9 @@ class Labels
     }
 
     /**
-     * Set contextId
+     * Set contextId.
      *
-     * @param integer $contextId
+     * @param int $contextId
      *
      * @return Labels
      */
@@ -174,9 +151,9 @@ class Labels
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
-     * @return integer
+     * @return int
      */
     public function getContextId()
     {
@@ -184,7 +161,7 @@ class Labels
     }
 
     /**
-     * Set creationDate
+     * Set creationDate.
      *
      * @param DateTime $creationDate
      *
@@ -198,7 +175,7 @@ class Labels
     }
 
     /**
-     * Get creationDate
+     * Get creationDate.
      *
      * @return DateTime
      */
@@ -208,7 +185,7 @@ class Labels
     }
 
     /**
-     * Set modificationDate
+     * Set modificationDate.
      *
      * @param DateTime $modificationDate
      *
@@ -222,7 +199,7 @@ class Labels
     }
 
     /**
-     * Get modificationDate
+     * Get modificationDate.
      *
      * @return DateTime
      */
@@ -232,11 +209,7 @@ class Labels
     }
 
     /**
-     * Set activationDate
-     *
-     * @param DateTime $activationDate
-     *
-     * @return Labels
+     * Set activationDate.
      */
     public function setActivationDate(DateTime $activationDate): self
     {
@@ -246,9 +219,7 @@ class Labels
     }
 
     /**
-     * Get activationDate
-     *
-     * @return DateTime|null
+     * Get activationDate.
      */
     public function getActivationDate(): ?DateTime
     {
@@ -256,7 +227,7 @@ class Labels
     }
 
     /**
-     * Set deletionDate
+     * Set deletionDate.
      *
      * @param DateTime $deletionDate
      *
@@ -270,7 +241,7 @@ class Labels
     }
 
     /**
-     * Get deletionDate
+     * Get deletionDate.
      *
      * @return DateTime
      */
@@ -280,7 +251,7 @@ class Labels
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -294,7 +265,7 @@ class Labels
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -304,7 +275,7 @@ class Labels
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -318,7 +289,7 @@ class Labels
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -328,7 +299,7 @@ class Labels
     }
 
     /**
-     * Set type
+     * Set type.
      *
      * @param string $type
      *
@@ -342,7 +313,7 @@ class Labels
     }
 
     /**
-     * Get type
+     * Get type.
      *
      * @return string
      */
@@ -352,7 +323,7 @@ class Labels
     }
 
     /**
-     * Set extras
+     * Set extras.
      *
      * @param mbarray $extras
      *
@@ -366,7 +337,7 @@ class Labels
     }
 
     /**
-     * Get extras
+     * Get extras.
      *
      * @return mbarray
      */
@@ -376,9 +347,9 @@ class Labels
     }
 
     /**
-     * Set public
+     * Set public.
      *
-     * @param boolean $public
+     * @param bool $public
      *
      * @return Labels
      */
@@ -390,9 +361,9 @@ class Labels
     }
 
     /**
-     * Get public
+     * Get public.
      *
-     * @return boolean
+     * @return bool
      */
     public function getPublic()
     {
@@ -400,7 +371,7 @@ class Labels
     }
 
     /**
-     * Set lockingDate
+     * Set lockingDate.
      *
      * @param DateTime $lockingDate
      *
@@ -414,7 +385,7 @@ class Labels
     }
 
     /**
-     * Get lockingDate
+     * Get lockingDate.
      *
      * @return DateTime
      */
@@ -424,9 +395,9 @@ class Labels
     }
 
     /**
-     * Set lockingUserId
+     * Set lockingUserId.
      *
-     * @param integer $lockingUserId
+     * @param int $lockingUserId
      *
      * @return Labels
      */
@@ -438,9 +409,9 @@ class Labels
     }
 
     /**
-     * Get lockingUserId
+     * Get lockingUserId.
      *
-     * @return integer
+     * @return int
      */
     public function getLockingUserId()
     {
@@ -448,13 +419,11 @@ class Labels
     }
 
     /**
-     * Set creator
-     *
-     * @param \App\Entity\User $creator
+     * Set creator.
      *
      * @return Labels
      */
-    public function setCreator(\App\Entity\User $creator = null)
+    public function setCreator(User $creator = null)
     {
         $this->creator = $creator;
 
@@ -462,9 +431,9 @@ class Labels
     }
 
     /**
-     * Get creator
+     * Get creator.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getCreator()
     {
@@ -472,13 +441,11 @@ class Labels
     }
 
     /**
-     * Set modifier
-     *
-     * @param \App\Entity\User $modifier
+     * Set modifier.
      *
      * @return Labels
      */
-    public function setModifier(\App\Entity\User $modifier = null)
+    public function setModifier(User $modifier = null)
     {
         $this->modifier = $modifier;
 
@@ -486,9 +453,9 @@ class Labels
     }
 
     /**
-     * Get modifier
+     * Get modifier.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getModifier()
     {
@@ -496,13 +463,11 @@ class Labels
     }
 
     /**
-     * Set deleter
-     *
-     * @param \App\Entity\User $deleter
+     * Set deleter.
      *
      * @return Labels
      */
-    public function setDeleter(\App\Entity\User $deleter = null)
+    public function setDeleter(User $deleter = null)
     {
         $this->deleter = $deleter;
 
@@ -510,9 +475,9 @@ class Labels
     }
 
     /**
-     * Get deleter
+     * Get deleter.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getDeleter()
     {
@@ -520,7 +485,7 @@ class Labels
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */

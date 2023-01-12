@@ -1,63 +1,55 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 08.03.18
- * Time: 15:23
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\RoomFeed;
-
 
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
-use Symfony\Component\Form\Form;
+use cs_community_item;
+use cs_environment;
+use cs_item;
+use cs_project_item;
+use cs_user_item;
+use cs_userroom_item;
+use DateTime;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\Security;
 
 class RoomFeedGenerator
 {
     /**
-     * @var \cs_environment
+     * @var cs_environment
      */
     private $legacyEnvironment;
 
     /**
-     * @var RoomService
-     */
-    private $roomService;
-
-    /**
-     * @var ItemService
-     */
-    private $itemService;
-
-    /**
      * @var array limits
      */
-    private $limits = [];
-
-    /**
-     * @var Security
-     */
-    private $security;
+    private array $limits = [];
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        RoomService $roomService,
-        ItemService $itemService,
-        Security $security
+        private RoomService $roomService,
+        private ItemService $itemService,
+        private Security $security
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->roomService = $roomService;
-        $this->itemService = $itemService;
-        $this->security = $security;
     }
 
     /**
-     * @param int $size Number of items to get
+     * @param int $size   Number of items to get
      * @param int $lastId The item id of the last received article item
      *
      * @return array List of items
@@ -72,7 +64,7 @@ class RoomFeedGenerator
 
     /**
      * @param int $roomId The room id
-     * @param int $size Number of items to get
+     * @param int $size   Number of items to get
      * @param int $lastId The item id of the last received article item
      *
      * @return array List of items
@@ -84,8 +76,8 @@ class RoomFeedGenerator
 
     /**
      * @param int[] $contextIds The context ids
-     * @param int $size Number of items to get
-     * @param int $lastId The item id of the last received article item
+     * @param int   $size       Number of items to get
+     * @param int   $lastId     The item id of the last received article item
      *
      * @return array List of items
      */
@@ -100,7 +92,7 @@ class RoomFeedGenerator
             $roomRubrics = $this->getRoomRubrics($contextId);
             foreach ($roomRubrics as $roomRubric) {
                 // exclude users as it clutters the feed with unimportant entries
-                if ($roomRubric === 'user') {
+                if ('user' === $roomRubric) {
                     continue;
                 }
 
@@ -117,9 +109,9 @@ class RoomFeedGenerator
         if ($lastId) {
             $lastFeedItem = $this->itemService->getTypedItem($lastId);
             if ($lastFeedItem) {
-                $lastModificationDate = ($lastFeedItem instanceof \cs_user_item) ?
-                    \DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getCreationDate()) :
-                    \DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getModificationDate());
+                $lastModificationDate = ($lastFeedItem instanceof cs_user_item) ?
+                    DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getCreationDate()) :
+                    DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getModificationDate());
 
                 $previousFeedEntries = [];
                 foreach ($contextIdsByRubric as $rubric => $contextIds) {
@@ -129,14 +121,14 @@ class RoomFeedGenerator
                     }
                 }
 
-                /**
+                /*
                  * $previousFeedEntries will now hold at least all entries we already displayed (up to the lastModificationDate)
                  * and is sorted the same way across all rubrics we do later on when getting the next items.
                  */
 
                 usort($previousFeedEntries, [$this, 'sortByModificationDate']);
 
-                /**
+                /*
                  * Iterate over all previous feed entries and break as soon as we found the last item id. Excluded ids
                  * will be stored grouped by rubric for better handling.
                  */
@@ -144,7 +136,7 @@ class RoomFeedGenerator
                     $type = $previousFeedEntry->getType();
 
                     // consider sub-label type
-                    if ($type == 'label') {
+                    if ('label' == $type) {
                         $type = $previousFeedEntry->getLabelType();
                     }
 
@@ -158,7 +150,7 @@ class RoomFeedGenerator
         }
 
         /**
-         * Query for the next $size items and take excluded ids into account
+         * Query for the next $size items and take excluded ids into account.
          */
         $feedList = [];
         foreach ($contextIdsByRubric as $rubric => $contextIds) {
@@ -180,9 +172,7 @@ class RoomFeedGenerator
     }
 
     /**
-     * Sets filter conditions to apply when fetching items
-     *
-     * @param FormInterface $filterForm
+     * Sets filter conditions to apply when fetching items.
      */
     public function setFilterConditions(FormInterface $filterForm)
     {
@@ -211,6 +201,7 @@ class RoomFeedGenerator
 
     /**
      * @param int $roomId The id of the room
+     *
      * @return string[] List of rubrics needed for querying
      */
     private function getRoomRubrics($roomId)
@@ -218,8 +209,8 @@ class RoomFeedGenerator
         $rubrics = [];
 
         foreach ($this->roomService->getRubricInformation($roomId, true) as $rubric) {
-            list($rubricName, $modifier) = explode('_', $rubric);
-            if (strcmp($modifier, 'hide') != 0) {
+            [$rubricName, $modifier] = explode('_', $rubric);
+            if (0 != strcmp($modifier, 'hide')) {
                 $rubrics[] = $rubricName;
             }
         }
@@ -230,51 +221,48 @@ class RoomFeedGenerator
     /**
      * Comparison Callback for sorting two items by modification date.
      *
-     * @param \cs_item $a first item
-     * @param \cs_item $b second item
+     * @param cs_item $a first item
+     * @param cs_item $b second item
+     *
      * @return int compare result
      */
-    private function sortByModificationDate(\cs_item $a, \cs_item $b)
+    private function sortByModificationDate(cs_item $a, cs_item $b)
     {
-        $isUserA = $a->getItemType() === CS_USER_TYPE;
-        $isUserB = $a->getItemType() === CS_USER_TYPE;
+        $isUserA = CS_USER_TYPE === $a->getItemType();
+        $isUserB = CS_USER_TYPE === $a->getItemType();
 
         $modDateA = ($isUserA) ? $a->getCreationDate() : $a->getModificationDate();
         $modDateB = ($isUserB) ? $b->getCreationDate() : $b->getModificationDate();
 
-        if ($modDateA == $modDateB) {
-            return 0;
-        }
-
-        return $modDateA < $modDateB ? 1 : -1;
+        return $modDateB <=> $modDateA;
     }
 
     /**
      * Returns all context ids we are interested in when building the feed list for the dashboard.
      *
-     * @param \cs_user_item $currentUser The current user
+     * @param cs_user_item $currentUser The current user
      *
      * @return int[] Context ids
      */
-    private function getAllUserRelatedContexts(\cs_user_item $currentUser)
+    private function getAllUserRelatedContexts(cs_user_item $currentUser)
     {
         $roomIds = [];
 
         $projectRooms = $currentUser->getUserRelatedProjectList(false);
         foreach ($projectRooms as $projectRoom) {
-            /** @var \cs_project_item $projectRoom */
+            /* @var cs_project_item $projectRoom */
             $roomIds[] = $projectRoom->getItemID();
         }
 
         $userRooms = $currentUser->getRelatedUserroomsList(false);
         foreach ($userRooms as $userRoom) {
-            /** @var \cs_userroom_item $userRoom */
+            /* @var cs_userroom_item $userRoom */
             $roomIds[] = $userRoom->getItemID();
         }
 
         $communityRooms = $currentUser->getUserRelatedCommunityList(false);
         foreach ($communityRooms as $communityRoom) {
-            /** @var \cs_community_item $communityRoom */
+            /* @var cs_community_item $communityRoom */
             $roomIds[] = $communityRoom->getItemID();
         }
 

@@ -1,13 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cschoenf
- * Date: 2019-02-07
- * Time: 16:02
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
  */
 
 namespace App\Controller;
-
 
 use App\Entity\Account;
 use App\Entity\RoomPrivat;
@@ -24,25 +28,22 @@ use Symfony\Component\Routing\Annotation\Route;
 class HelperController extends AbstractController
 {
     /**
-     * @Route("/portal/{context}/enter")
-     * @IsGranted("IS_AUTHENTICATED_REMEMBERED")
-     * @param EntityManagerInterface $entityManager
-     * @param string $context
-     * @return RedirectResponse
      * @throws NoResultException|NonUniqueResultException
      */
+    #[Route(path: '/portal/{context}/enter')]
+    #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
     public function portalEnter(
         EntityManagerInterface $entityManager,
         string $context = 'server'
-    ) {
+    ): RedirectResponse {
         /** @var Account $account */
         $account = $this->getUser();
-        if ($account === null) {
+        if (null === $account) {
             throw new LogicException('There must be a valid user at this point');
         }
 
         // Root (who does not own a private room) will be redirected to "all rooms"
-        if ($context !== 'server' && $this->isGranted(RootVoter::ROOT)) {
+        if ('server' !== $context && $this->isGranted(RootVoter::ROOT)) {
             return $this->redirectToRoute('app_room_listall', [
                 'roomId' => $context,
             ]);

@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Mail\Factories;
 
 use App\Account\AccountManager;
@@ -14,35 +25,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AccountMessageFactory
 {
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private UrlGeneratorInterface $urlGenerator;
-
-    /**
-     * @var LegacyEnvironment
-     */
-    private LegacyEnvironment $legacyEnvironment;
-
-    /**
-     * @var AccountManager
-     */
-    private AccountManager $accountManager;
-
-    public function __construct(
-        UrlGeneratorInterface $urlGenerator,
-        LegacyEnvironment $legacyEnvironment,
-        AccountManager $accountManager
-    ) {
-        $this->urlGenerator = $urlGenerator;
-        $this->legacyEnvironment = $legacyEnvironment;
-        $this->accountManager = $accountManager;
+    public function __construct(private UrlGeneratorInterface $urlGenerator, private LegacyEnvironment $legacyEnvironment, private AccountManager $accountManager)
+    {
     }
 
-    /**
-     * @param Account $account
-     * @return MessageInterface|null
-     */
     public function createAccountActivityLockWarningMessage(Account $account): ?MessageInterface
     {
         $portal = $this->accountManager->getPortal($account);
@@ -53,10 +39,6 @@ class AccountMessageFactory
         return null;
     }
 
-    /**
-     * @param Account $account
-     * @return MessageInterface|null
-     */
     public function createAccountActivityLockedMessage(Account $account): ?MessageInterface
     {
         $portal = $this->accountManager->getPortal($account);

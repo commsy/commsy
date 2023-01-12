@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\EventSubscriber;
 
 use App\Model\SearchData;
@@ -12,28 +23,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ChosenRubricSubscriber implements EventSubscriberInterface
 {
-    private TranslatorInterface $translator;
-
-    /**
-     * @param TranslatorInterface $translator
-     */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(private TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     public static function getSubscribedEvents()
     {
-        return array(
-            FormEvents::PRE_SET_DATA => 'onPreSetData',
-        );
+        return [FormEvents::PRE_SET_DATA => 'onPreSetData'];
     }
 
     /**
      * Injects rubric-specific fields into a form if a certain rubric gets chosen.
      * This callback method will get called if the user selects a value from
      * the `selectedRubric` dropdown (e.g. in the SearchFilterType form).
-     * @param FormEvent $event
      */
     public function onPreSetData(FormEvent $event)
     {
@@ -41,10 +43,11 @@ class ChosenRubricSubscriber implements EventSubscriberInterface
         $searchData = $event->getData();
         $form = $event->getForm();
 
-        if ($searchData->getSelectedRubric() === CS_TODO_TYPE) {
+        if (CS_TODO_TYPE === $searchData->getSelectedRubric()) {
             $form->add('selectedTodoStatus', Types\ChoiceType::class, [
                 'choice_loader' => new CallbackChoiceLoader(function () use ($searchData) {
                     $translatedTitleAny = $this->translator->trans('any', [], 'form');
+
                     return array_merge([$translatedTitleAny => 0], $this->buildTodoStatusChoices($searchData->getTodoStatuses()));
                 }),
                 'label' => 'todo status',
@@ -59,6 +62,7 @@ class ChosenRubricSubscriber implements EventSubscriberInterface
      * Builds the array of choices for the todo status filter field.
      *
      * @param array|null $statuses associative array of todo statuses (key: status int, value: count)
+     *
      * @return array array of integer-type status codes keyed by their translated todo status name and result count
      */
     private function buildTodoStatusChoices(?array $statuses): array
@@ -86,7 +90,7 @@ class ChosenRubricSubscriber implements EventSubscriberInterface
                     $translatedTitle = $code;
             }
 
-            $status = $translatedTitle . " (" . $count . ")";
+            $status = $translatedTitle.' ('.$count.')';
             $choices[$status] = $code;
         }
 

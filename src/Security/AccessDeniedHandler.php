@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Security;
 
 use ApiPlatform\Core\Api\UrlGeneratorInterface;
@@ -11,26 +22,12 @@ use Symfony\Component\Security\Http\Authorization\AccessDeniedHandlerInterface;
 
 class AccessDeniedHandler implements AccessDeniedHandlerInterface
 {
-    /**
-     * @var RequestContext
-     */
-    private RequestContext $requestContext;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private UrlGeneratorInterface $urlGenerator;
-
-    public function __construct(
-        RequestContext $requestContext,
-        UrlGeneratorInterface $urlGenerator
-    ) {
-        $this->requestContext = $requestContext;
-        $this->urlGenerator = $urlGenerator;
+    public function __construct(private RequestContext $requestContext, private UrlGeneratorInterface $urlGenerator)
+    {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function handle(Request $request, AccessDeniedException $accessDeniedException)
     {

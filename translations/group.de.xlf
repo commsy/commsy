@@ -78,6 +78,14 @@
                 <source>leave group and workspace</source>
                 <target>Austreten (inkl. Gruppenraum)</target>
             </trans-unit>
+            <trans-unit id="templateForGroupWorkspace">
+                <source>template for group workspace</source>
+                <target>Vorlage für den Gruppenraum</target>
+            </trans-unit>
+            <trans-unit id="group.hide_without_membership">
+                <source>group.hide_without_membership</source>
+                <target>Gruppen ohne Mitgliedschaft ausblenden</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

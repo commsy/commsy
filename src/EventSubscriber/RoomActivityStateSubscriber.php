@@ -1,10 +1,20 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\EventSubscriber;
 
 use App\Entity\Portal;
 use App\Entity\Room;
-use App\Entity\ZzzRoom;
 use App\Mail\Factories\RoomMessageFactory;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
@@ -21,53 +31,16 @@ use Symfony\Component\Workflow\Event\GuardEvent;
 
 class RoomActivityStateSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var PortalRepository
-     */
-    private PortalRepository $portalRepository;
-
-    /**
-     * @var RoomManager
-     */
-    private RoomManager $roomManager;
-
-    /**
-     * @var ItemService
-     */
-    private ItemService $itemService;
-
-    /**
-     * @var RoomMessageFactory
-     */
-    private RoomMessageFactory $roomMessageFactory;
-
-    /**
-     * @var Mailer
-     */
-    private Mailer $mailer;
-
-    public function __construct(
-        PortalRepository $portalRepository,
-        RoomManager $roomManager,
-        ItemService $itemService,
-        RoomMessageFactory $messageFactory,
-        Mailer $mailer
-    ) {
-        $this->portalRepository = $portalRepository;
-        $this->roomManager = $roomManager;
-        $this->itemService = $itemService;
-        $this->roomMessageFactory = $messageFactory;
-        $this->mailer = $mailer;
+    public function __construct(private PortalRepository $portalRepository, private RoomManager $roomManager, private ItemService $itemService, private RoomMessageFactory $roomMessageFactory, private Mailer $mailer)
+    {
     }
 
     /**
-     * Called on all transitions, perform general checks here
-     *
-     * @param GuardEvent $event
+     * Called on all transitions, perform general checks here.
      */
     public function guard(GuardEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         // Block all transitions if the portal configuration has disabled the account activity feature
@@ -75,17 +48,20 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
         $portal = $this->portalRepository->find($room->getContextId());
         if (!$portal) {
             $event->setBlocked(true);
+
             return;
         }
 
         if (!$portal->isClearInactiveRoomsFeatureEnabled()) {
             $event->setBlocked(true);
+
             return;
         }
 
         // Block if room is a template
         if ($room->getTemplate()) {
             $event->setBlocked(true);
+
             return;
         }
 
@@ -105,14 +81,13 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Decides if a room can make the transition to the active_notified state
+     * Decides if a room can make the transition to the active_notified state.
      *
-     * @param GuardEvent $event
      * @throws Exception
      */
     public function guardNotifyLock(GuardEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         /** @var Portal $portal */
@@ -126,14 +101,13 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Decides if a room can make the transition to the idle state
+     * Decides if a room can make the transition to the idle state.
      *
-     * @param GuardEvent $event
      * @throws Exception
      */
     public function guardLock(GuardEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         /** @var Portal $portal */
@@ -146,14 +120,13 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Decides if a room can make the transition to the idle_notified state
+     * Decides if a room can make the transition to the idle_notified state.
      *
-     * @param GuardEvent $event
      * @throws Exception
      */
     public function guardNotifyForsake(GuardEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         // Deny transition if the inactive period is not long enough
@@ -167,14 +140,13 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Decides if a room can make the transition to the abandoned state
+     * Decides if a room can make the transition to the abandoned state.
      *
-     * @param GuardEvent $event
      * @throws Exception
      */
     public function guardForsake(GuardEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         // Deny transition if the inactive period is not long enough
@@ -189,12 +161,10 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
     /**
      * The room has entered a new state and the marking is updated.
-     *
-     * @param EnteredEvent $event
      */
     public function entered(EnteredEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         $this->roomManager->renewActivityUpdated($room, false);
@@ -202,12 +172,10 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
     /**
      * The room has entered the active_notified state. The marking is updated.
-     *
-     * @param EnteredEvent $event
      */
     public function enteredActiveNotified(EnteredEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         $message = $this->roomMessageFactory->createRoomActivityLockWarningMessage($room);
@@ -222,12 +190,10 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
     /**
      * The room has entered the idle state. The marking is updated.
-     *
-     * @param EnteredEvent $event
      */
     public function enteredIdle(EnteredEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         $legacyRoom = $this->itemService->getTypedItem($room->getItemId());
@@ -239,12 +205,10 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
     /**
      * The room has entered the idle_notified state. The marking is updated.
-     *
-     * @param EnteredEvent $event
      */
     public function enteredIdleNotified(EnteredEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         $message = $this->roomMessageFactory->createRoomActivityDeleteWarningMessage($room);
@@ -259,12 +223,10 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
     /**
      * The room has entered the abandoned state. The marking is updated.
-     *
-     * @param EnteredEvent $event
      */
     public function enteredAbandoned(EnteredEvent $event)
     {
-        /** @var Room|ZzzRoom $room */
+        /** @var Room $room */
         $room = $event->getSubject();
 
         $legacyRoom = $this->itemService->getTypedItem($room->getItemId());
@@ -274,15 +236,15 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param DateTime $compare
-     * @param int $numDays
      * @return void
+     *
      * @throws Exception
      */
     private function datePassedDays(DateTime $compare, int $numDays): bool
     {
         $threshold = new DateTime();
-        $threshold->sub(new DateInterval('P' . $numDays . 'D'));
+        $threshold->sub(new DateInterval('P'.$numDays.'D'));
+
         return $compare < $threshold;
     }
 
@@ -295,9 +257,9 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
             'workflow.room_activity.guard.notify_forsake' => ['guardNotifyForsake'],
             'workflow.room_activity.guard.forsake' => ['guardForsake'],
             'workflow.room_activity.entered' => ['entered'],
-            'workflow.room_activity.entered.active_notified' =>  ['enteredActiveNotified'],
-            'workflow.room_activity.entered.idle' =>  ['enteredIdle'],
-            'workflow.room_activity.entered.idle_notified' =>  ['enteredIdleNotified'],
+            'workflow.room_activity.entered.active_notified' => ['enteredActiveNotified'],
+            'workflow.room_activity.entered.idle' => ['enteredIdle'],
+            'workflow.room_activity.entered.idle_notified' => ['enteredIdleNotified'],
             'workflow.room_activity.entered.abandoned' => ['enteredAbandoned'],
         ];
     }

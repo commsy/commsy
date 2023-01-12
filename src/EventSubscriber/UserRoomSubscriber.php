@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\EventSubscriber;
 
 use App\Event\AccountChangedEvent;
@@ -8,18 +19,13 @@ use App\Event\UserJoinedRoomEvent;
 use App\Event\UserLeftRoomEvent;
 use App\Event\UserStatusChangedEvent;
 use App\Utils\UserroomService;
+use cs_user_item;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UserRoomSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var UserroomService
-     */
-    private $userroomService;
-
-    public function __construct(UserroomService $userroomService)
+    public function __construct(private UserroomService $userroomService)
     {
-        $this->userroomService = $userroomService;
     }
 
     public static function getSubscribedEvents()
@@ -79,7 +85,7 @@ class UserRoomSubscriber implements EventSubscriberInterface
         // a user room contains a single regular user (who "owns" this user room), plus one or more moderators;
         // thus we ignore the status change unless the status was changed to a regular user (2) or moderator (3)
         $userStatus = $user->getStatus();
-        if ($userStatus !== 2 && $userStatus !== 3) {
+        if (2 !== $userStatus && 3 !== $userStatus) {
             return;
         }
 
@@ -97,7 +103,7 @@ class UserRoomSubscriber implements EventSubscriberInterface
         }
 
         /**
-         * @var \cs_user_item[] $relatedUsers
+         * @var cs_user_item[] $relatedUsers
          */
         $relatedUsers = $portalUser->getRelatedUserList(true)->to_array();
 
@@ -155,7 +161,7 @@ class UserRoomSubscriber implements EventSubscriberInterface
             $this->userroomService->renameUserroomsForRoom($newRoom);
         }
 
-        if ($oldRoom->getUserRoomTemplateID() !== $newRoom->getUserRoomTemplateID()){
+        if ($oldRoom->getUserRoomTemplateID() !== $newRoom->getUserRoomTemplateID()) {
             $this->userroomService->updateTemplateInUserroomsForRoom($newRoom);
         }
     }

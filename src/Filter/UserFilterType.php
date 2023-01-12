@@ -1,12 +1,24 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Filter;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class UserFilterType extends AbstractType
 {
@@ -14,26 +26,18 @@ class UserFilterType extends AbstractType
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
      * Type extensions can further modify the form.
-     * 
-     * @param  FormBuilderInterface $builder The form builder
-     * @param  array                $options The options
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('submit', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button uk-button-primary',
-                ),
-                'label' => 'Restrict',
-                'translation_domain' => 'form',
-            ))
+            ->add('submit', SubmitType::class, ['attr' => ['class' => 'uk-button uk-button-primary'], 'label' => 'Restrict', 'translation_domain' => 'form'])
             ->add('user_search', TextType::class, [
                 'label' => 'Name',
                 'translation_domain' => 'room',
-                'label_attr' => array(
-                    'class' => 'uk-form-label',
-                ),
+                'label_attr' => ['class' => 'uk-form-label'],
                 'attr' => [
                     'placeholder' => 'search-user-filter-placeholder',
                     'class' => 'cs-form-horizontal-full-width',
@@ -41,23 +45,17 @@ class UserFilterType extends AbstractType
                 'required' => false,
             ])
 
-            ->add('rubrics', RubricFilterType::class, array(
-                'label' => false,
-            ))
+            ->add('rubrics', RubricFilterType::class, ['label' => false])
         ;
 
         if ($options['hasHashtags']) {
-            $builder->add('hashtag', HashTagFilterType::class, array(
-                'label' => false,
-            ));
+            $builder->add('hashtag', HashTagFilterType::class, ['label' => false]);
         }
 
         if ($options['hasCategories']) {
-            $builder->add('category', CategoryFilterType::class, array(
-                'label' => false,
-            ));
+            $builder->add('category', CategoryFilterType::class, ['label' => false]);
         }
-        
+
         if ($options['isModerator']) {
             $statusChoices = [
                 'is blocked' => '0',
@@ -72,48 +70,24 @@ class UserFilterType extends AbstractType
                 'moderator' => '3',
             ];
         }
-        $builder->add('user_status', ChoiceType::class, array(
-            'placeholder' => false,
-            'choices' => $statusChoices,
-            'label' => 'status',
-            'translation_domain' => 'user',
-            'required' => false,
-            'expanded' => false,
-            'multiple' => false,
-            'placeholder' => 'no restrictions',
-        ));
-    }
-
-    /**
-     * Returns the prefix of the template block name for this type.
-     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
-     * (e.g. "UserProfileType" => "user_profile").
-     * 
-     * @return string The prefix of the template block name
-     */
-    public function getBlockPrefix()
-    {
-        return 'user_filter';
+        $builder->add('user_status', ChoiceType::class, ['placeholder' => false, 'choices' => $statusChoices, 'label' => 'status', 'translation_domain' => 'user', 'required' => false, 'expanded' => false, 'multiple' => false, 'placeholder' => 'no restrictions']);
     }
 
     /**
      * Configures the options for this type.
-     * 
-     * @param  OptionsResolver $resolver The resolver for the options
+     *
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(array(
-                'csrf_protection'   => false,
-                'validation_groups' => array('filtering'), // avoid NotBlank() constraint-related message
-                'method'            => 'get',
-            ))
-            ->setRequired(array(
-                'hasHashtags',
-                'hasCategories',
-                'isModerator'
-            ))
+            ->setDefaults([
+                'csrf_protection' => false,
+                'validation_groups' => ['filtering'],
+                // avoid NotBlank() constraint-related message
+                'method' => 'get',
+            ])
+            ->setRequired(['hasHashtags', 'hasCategories', 'isModerator'])
         ;
     }
 }

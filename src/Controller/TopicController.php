@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Action\Activate\ActivateAction;
@@ -27,61 +38,46 @@ use cs_topic_item;
 use cs_user_item;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
- * Class TopicController
- * @package App\Controller
- * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'topic')")
+ * Class TopicController.
  */
+#[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'topic')")]
 class TopicController extends BaseController
 {
-    /**
-     * @var TopicService
-     */
-    private $topicService;
+    private TopicService $topicService;
+
+    private AnnotationService $annotationService;
 
     /**
-     * @var AnnotationService
-     */
-    private $annotationService;
-
-
-    /**
-     * @required
      * @param mixed $topicService
      */
+    #[Required]
     public function setTopicService(TopicService $topicService): void
     {
         $this->topicService = $topicService;
     }
 
     /**
-     * @required
      * @param mixed $annotationService
      */
+    #[Required]
     public function setAnnotationService(AnnotationService $annotationService): void
     {
         $this->annotationService = $annotationService;
     }
 
-
-    /**
-     * @Route("/room/{roomId}/topic")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/topic')]
     public function listAction(
         Request $request,
         int $roomId
-    ) {
+    ): Response {
         $roomItem = $this->getRoom($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -96,50 +92,26 @@ class TopicController extends BaseController
             $this->topicService->hideDeactivatedEntries();
         }
 
-        // get topic list from manager service 
+        // get topic list from manager service
         $itemsCountArray = $this->topicService->getCountArray($roomId);
 
         $usageInfo = false;
-        if ($roomItem->getUsageInfoTextForRubricInForm('topic') != '') {
+        if ('' != $roomItem->getUsageInfoTextForRubricInForm('topic')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('topic');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('topic');
         }
 
-        return array(
-            'roomId' => $roomId,
-            'form' => $filterForm->createView(),
-            'module' => 'topic',
-            'itemsCountArray' => $itemsCountArray,
-            'showRating' => false,
-            'showHashTags' => $roomItem->withBuzzwords(),
-            'showAssociations' => false,
-            'showCategories' => $roomItem->withTags(),
-            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
-            'catzExpanded' => $roomItem->isTagsShowExpanded(),
-            'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
-            'usageInfo' => $usageInfo,
-            'isArchived' => $roomItem->isArchived(),
-            'user' => $this->legacyEnvironment->getCurrentUserItem(),
-        );
+        return $this->render('topic/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm->createView(), 'module' => 'topic', 'itemsCountArray' => $itemsCountArray, 'showRating' => false, 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => false, 'showCategories' => $roomItem->withTags(), 'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(), 'catzExpanded' => $roomItem->isTagsShowExpanded(), 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem()]);
     }
 
-    /**
-     * @Route("/room/{roomId}/topic/feed/{start}/{sort}")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     * @param int $max
-     * @param int $start
-     * @param string $sort
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/topic/feed/{start}/{sort}')]
     public function feedAction(
         Request $request,
         int $roomId,
         int $max = 10,
         int $start = 0,
         string $sort = 'date'
-    ) {
+    ): Response {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $topicFilter = $request->get('topicFilter');
@@ -162,49 +134,34 @@ class TopicController extends BaseController
             $this->topicService->hideDeactivatedEntries();
         }
 
-        // get topic list from manager service 
+        // get topic list from manager service
         $topics = $this->topicService->getListTopics($roomId, $max, $start);
 
-        $readerList = array();
-        $allowedActions = array();
+        $readerList = [];
+        $allowedActions = [];
         foreach ($topics as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'categorize', 'hashtag', 'activate', 'deactivate', 'save', 'delete');
+                $allowedActions[$item->getItemID()] = ['markread', 'categorize', 'hashtag', 'activate', 'deactivate', 'save', 'delete'];
             } else {
-                $allowedActions[$item->getItemID()] = array('markread', 'save');
+                $allowedActions[$item->getItemID()] = ['markread', 'save'];
             }
         }
 
-        return array(
-            'roomId' => $roomId,
-            'topics' => $topics,
-            'readerList' => $readerList,
-            'showRating' => false,
-            'allowedActions' => $allowedActions,
-        );
+        return $this->render('topic/feed.html.twig', ['roomId' => $roomId, 'topics' => $topics, 'readerList' => $readerList, 'showRating' => false, 'allowedActions' => $allowedActions]);
     }
 
     /**
-     * @Route("/room/{roomId}/topic/{itemId}", requirements={
-     *     "itemId": "\d+"
-     * }))
-     * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'topic')")
-     * @param Request $request
-     * @param CategoryService $categoryService
-     * @param LegacyMarkup $legacyMarkup
-     * @param int $roomId
-     * @param int $itemId
      * @return array
      */
+    #[Route(path: '/room/{roomId}/topic/{itemId}', requirements: ['itemId' => '\d+'])]
     public function detailAction(
         Request $request,
         CategoryService $categoryService,
         LegacyMarkup $legacyMarkup,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
         $topic = $this->topicService->getTopic($itemId);
         $infoArray = $this->getDetailInfo($roomId, $itemId);
@@ -212,7 +169,7 @@ class TopicController extends BaseController
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $categories = array();
+        $categories = [];
         if ($current_context->withTags()) {
             $roomCategories = $categoryService->getTags($roomId);
             $topicCategories = $topic->getTagsArray();
@@ -222,7 +179,7 @@ class TopicController extends BaseController
         $alert = null;
         if ($infoArray['topic']->isLocked()) {
             $alert['type'] = 'warning';
-            $alert['content'] = $this->translator->trans('item is locked', array(), 'item');
+            $alert['content'] = $this->translator->trans('item is locked', [], 'item');
         }
 
         $pathTopicItem = null;
@@ -237,7 +194,7 @@ class TopicController extends BaseController
 
         $legacyMarkup->addFiles($this->itemService->getItemFileList($itemId));
 
-        return array(
+        return $this->render('topic/detail.html.twig', [
             'roomId' => $roomId,
             'topic' => $infoArray['topic'],
             'readerList' => $infoArray['readerList'],
@@ -266,15 +223,15 @@ class TopicController extends BaseController
             'annotationForm' => $form->createView(),
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
-            'isLinkedToItems' => $isLinkedToItems,
-        );
+            'isLinkedToItems' => $isLinkedToItems
+        ]);
     }
 
     private function getDetailInfo(
         int $roomId,
         int $itemId
     ) {
-        $infoArray = array();
+        $infoArray = [];
         $topic = $this->topicService->getTopic($itemId);
 
         $item = $topic;
@@ -303,7 +260,7 @@ class TopicController extends BaseController
 
         /** @var cs_user_item $current_user */
         $current_user = $user_list->getFirst();
-        $id_array = array();
+        $id_array = [];
         while ($current_user) {
             $id_array[] = $current_user->getItemID();
             $current_user = $user_list->getNext();
@@ -315,16 +272,16 @@ class TopicController extends BaseController
                 $current_user->getItemID());
             if (!empty($current_reader)) {
                 if ($current_reader['read_date'] >= $topic->getModificationDate()) {
-                    $read_count++;
-                    $read_since_modification_count++;
+                    ++$read_count;
+                    ++$read_since_modification_count;
                 } else {
-                    $read_count++;
+                    ++$read_count;
                 }
             }
             $current_user = $user_list->getNext();
         }
-        $readerList = array();
-        $modifierList = array();
+        $readerList = [];
+        $modifierList = [];
         $reader = $this->readerService->getLatestReader($topic->getItemId());
         if (empty($reader)) {
             $readerList[$item->getItemId()] = 'new';
@@ -335,7 +292,7 @@ class TopicController extends BaseController
         $modifierList[$topic->getItemId()] = $this->itemService->getAdditionalEditorsForItem($topic);
 
         $topics = $this->topicService->getListTopics($roomId);
-        $topicList = array();
+        $topicList = [];
         $counterBefore = 0;
         $counterAfter = 0;
         $counterPosition = 0;
@@ -349,7 +306,7 @@ class TopicController extends BaseController
                 if ($counterBefore > 5) {
                     array_shift($topicList);
                 } else {
-                    $counterBefore++;
+                    ++$counterBefore;
                 }
                 $topicList[] = $tempTopic;
                 if ($tempTopic->getItemID() == $topic->getItemID()) {
@@ -358,11 +315,11 @@ class TopicController extends BaseController
                 if (!$foundTopic) {
                     $prevItemId = $tempTopic->getItemId();
                 }
-                $counterPosition++;
+                ++$counterPosition;
             } else {
                 if ($counterAfter < 5) {
                     $topicList[] = $tempTopic;
-                    $counterAfter++;
+                    ++$counterAfter;
                     if (!$nextItemId) {
                         $nextItemId = $tempTopic->getItemId();
                     }
@@ -404,56 +361,25 @@ class TopicController extends BaseController
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
         $infoArray['showAssociations'] = $current_context->isAssociationShowExpanded();
 
-
         return $infoArray;
     }
 
-
-    /**
-     * @Route("/room/{roomId}/topic/create")
-     * @param int $roomId
-     * @return RedirectResponse
-     * @Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'topic')")
-     */
+    #[Route(path: '/room/{roomId}/topic/create')]
+    #[Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'topic')")]
     public function createAction(
         int $roomId
-    ) {
+    ): RedirectResponse {
         // create new topic item
         $topicItem = $this->topicService->getNewtopic();
         $topicItem->setDraftStatus(1);
         $topicItem->save();
 
         return $this->redirectToRoute('app_topic_detail',
-            array('roomId' => $roomId, 'itemId' => $topicItem->getItemId()));
+            ['roomId' => $roomId, 'itemId' => $topicItem->getItemId()]);
     }
 
-
-    /**
-     * @Route("/room/{roomId}/topic/new")
-     * @Template()
-     * @param Request $request
-     * @param int $roomId
-     */
-    public function newAction(
-        Request $request,
-        int $roomId
-    ) {
-
-    }
-
-
-    /**
-     * @Route("/room/{roomId}/topic/{itemId}/edit")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
-     * @param Request $request
-     * @param CategoryService $categoryService
-     * @param LabelService $labelService
-     * @param TopicTransformer $transformer
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/topic/{itemId}/edit')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")]
     public function editAction(
         Request $request,
         CategoryService $categoryService,
@@ -461,7 +387,7 @@ class TopicController extends BaseController
         TopicTransformer $transformer,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $item = $this->itemService->getItem($itemId);
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -470,31 +396,22 @@ class TopicController extends BaseController
         // get date from DateService
         $topicItem = $this->topicService->getTopic($itemId);
         if (!$topicItem) {
-            throw $this->createNotFoundException('No topic found for id ' . $itemId);
+            throw $this->createNotFoundException('No topic found for id '.$itemId);
         }
         $formData = $transformer->transform($topicItem);
         $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
         $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
         $formData['language'] = $this->legacyEnvironment->getCurrentContextItem()->getLanguage();
         $formData['draft'] = $isDraft;
-        $form = $this->createForm(TopicType::class, $formData, array(
-            'action' => $this->generateUrl('app_date_edit', array(
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            )),
-            'placeholderText' => '[' . $this->translator->trans('insert title') . ']',
-            'categoryMappingOptions' => [
-                'categories' => $labelService->getCategories($roomId),
-                'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
-                'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId]),
-            ],
-            'hashtagMappingOptions' => [
-                'hashtags' => $labelService->getHashtags($roomId),
-                'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
-                'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId])
-            ],
-            'room' => $current_context,
-        ));
+        $form = $this->createForm(TopicType::class, $formData, ['action' => $this->generateUrl('app_date_edit', ['roomId' => $roomId, 'itemId' => $itemId]), 'placeholderText' => '['.$this->translator->trans('insert title').']', 'categoryMappingOptions' => [
+            'categories' => $labelService->getCategories($roomId),
+            'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
+            'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId]),
+        ], 'hashtagMappingOptions' => [
+            'hashtags' => $labelService->getHashtags($roomId),
+            'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
+            'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
+        ], 'room' => $current_context]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -544,36 +461,25 @@ class TopicController extends BaseController
                     // ToDo ...
                 }
             }
-            return $this->redirectToRoute('app_topic_save', array('roomId' => $roomId, 'itemId' => $itemId));
+
+            return $this->redirectToRoute('app_topic_save', ['roomId' => $roomId, 'itemId' => $itemId]);
         }
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($topicItem), CommsyEditEvent::EDIT);
 
-        return array(
-            'form' => $form->createView(),
-            'topic' => $topicItem,
-            'isDraft' => $isDraft,
-            'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
-            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
-        );
+        return $this->render('topic/edit.html.twig', ['form' => $form->createView(), 'topic' => $topicItem, 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
     }
 
-    /**
-     * @Route("/room/{roomId}/topic/{itemId}/save")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
-     * @param int $roomId
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/topic/{itemId}/save')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")]
     public function saveAction(
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $topic = $this->topicService->getTopic($itemId);
 
-        $itemArray = array($topic);
-        $modifierList = array();
+        $itemArray = [$topic];
+        $modifierList = [];
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
@@ -590,7 +496,7 @@ class TopicController extends BaseController
         $read_since_modification_count = 0;
 
         $current_user = $user_list->getFirst();
-        $id_array = array();
+        $id_array = [];
         while ($current_user) {
             $id_array[] = $current_user->getItemID();
             $current_user = $user_list->getNext();
@@ -602,16 +508,16 @@ class TopicController extends BaseController
                 $current_user->getItemID());
             if (!empty($current_reader)) {
                 if ($current_reader['read_date'] >= $topic->getModificationDate()) {
-                    $read_count++;
-                    $read_since_modification_count++;
+                    ++$read_count;
+                    ++$read_since_modification_count;
                 } else {
-                    $read_count++;
+                    ++$read_count;
                 }
             }
             $current_user = $user_list->getNext();
         }
-        $readerList = array();
-        $modifierList = array();
+        $readerList = [];
+        $modifierList = [];
         foreach ($itemArray as $item) {
             $reader = $this->readerService->getLatestReader($item->getItemId());
             if (empty($reader)) {
@@ -625,28 +531,15 @@ class TopicController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($topic), CommsyEditEvent::SAVE);
 
-        return array(
-            'roomId' => $roomId,
-            'item' => $topic,
-            'modifierList' => $modifierList,
-            'userCount' => $all_user_count,
-            'readCount' => $read_count,
-            'readSinceModificationCount' => $read_since_modification_count,
-        );
+        return $this->render('topic/save.html.twig', ['roomId' => $roomId, 'item' => $topic, 'modifierList' => $modifierList, 'userCount' => $all_user_count, 'readCount' => $read_count, 'readSinceModificationCount' => $read_since_modification_count]);
     }
 
-    /**
-     * @Route("/room/{roomId}/topic/{itemId}/print")
-     * @param PrintService $printService
-     * @param int $roomId
-     * @param int $itemId
-     * @return Response
-     */
+    #[Route(path: '/room/{roomId}/topic/{itemId}/print')]
     public function printAction(
         PrintService $printService,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         // annotation form
@@ -681,20 +574,13 @@ class TopicController extends BaseController
         return $printService->buildPdfResponse($html);
     }
 
-    /**
-     * @Route("/room/{roomId}/topic/print/{sort}", defaults={"sort" = "none"})
-     * @param Request $request
-     * @param AssessmentService $assessmentService
-     * @param PrintService $printService
-     * @param int $roomId
-     * @return Response
-     */
+    #[Route(path: '/room/{roomId}/topic/print/{sort}', defaults: ['sort' => 'none'])]
     public function printlistAction(
         Request $request,
         AssessmentService $assessmentService,
         PrintService $printService,
         int $roomId
-    ) {
+    ): Response {
         $roomItem = $this->getRoom($roomId);
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -706,25 +592,25 @@ class TopicController extends BaseController
             // set filter conditions in announcement manager
             $this->topicService->setFilterConditions($filterForm);
         }
-        // get announcement list from manager service 
+        // get announcement list from manager service
         $topics = $this->topicService->getListTopics($roomId);
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = array();
+        $readerList = [];
         foreach ($topics as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
         }
 
-        $ratingList = array();
+        $ratingList = [];
         if ($current_context->isAssessmentActive()) {
-            $itemIds = array();
+            $itemIds = [];
             foreach ($topics as $topic) {
                 $itemIds[] = $topic->getItemId();
             }
             $ratingList = $assessmentService->getListAverageRatings($itemIds);
         }
 
-        // get announcement list from manager service 
+        // get announcement list from manager service
         $itemsCountArray = $this->topicService->getCountArray($roomId);
 
         $html = $this->renderView('topic/list_print.html.twig', [
@@ -744,24 +630,17 @@ class TopicController extends BaseController
         return $printService->buildPdfResponse($html);
     }
 
-    /**
-     * @Route("/room/{roomId}/topic/{itemId}/editpath")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
-     * @param Request $request
-     * @param int $roomId
-     * @param int $itemId
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/room/{roomId}/topic/{itemId}/editpath')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")]
     public function editPathAction(
         Request $request,
         int $roomId,
         int $itemId
-    ) {
+    ): Response {
         /** @var cs_topic_item $item */
         $item = $this->itemService->getTypedItem($itemId);
 
-        $formData = array();
+        $formData = [];
 
         $pathElements = [];
         $pathElementsAttr = [];
@@ -794,18 +673,11 @@ class TopicController extends BaseController
             $pathElements[$typedLinkedItem->getTitle()] = $typedLinkedItem->getItemId();
             $pathElementsAttr[$typedLinkedItem->getTitle()] = [
                 'title' => $typedLinkedItem->getTitle(),
-                'type' => $typedLinkedItem->getItemType()
+                'type' => $typedLinkedItem->getItemType(),
             ];
         }
 
-        $form = $this->createForm(TopicPathType::class, $formData, array(
-            'action' => $this->generateUrl('app_topic_editpath', array(
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            )),
-            'pathElements' => $pathElements,
-            'pathElementsAttr' => $pathElementsAttr,
-        ));
+        $form = $this->createForm(TopicPathType::class, $formData, ['action' => $this->generateUrl('app_topic_editpath', ['roomId' => $roomId, 'itemId' => $itemId]), 'pathElements' => $pathElements, 'pathElementsAttr' => $pathElementsAttr]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -827,7 +699,7 @@ class TopicController extends BaseController
                                 if (in_array($orderItemId, $formDataPath)) {
                                     $linkItem->setSortingPlace($sortingPlace);
                                     $linkItem->save();
-                                    $sortingPlace++;
+                                    ++$sortingPlace;
                                 }
                             }
                         }
@@ -848,78 +720,65 @@ class TopicController extends BaseController
                         }
                     }
                 }
-
             } else {
                 if ($form->get('cancel')->isClicked()) {
                     // ToDo ...
                 }
             }
-            return $this->redirectToRoute('app_topic_savepath', array('roomId' => $roomId, 'itemId' => $itemId));
+
+            return $this->redirectToRoute('app_topic_savepath', ['roomId' => $roomId, 'itemId' => $itemId]);
         }
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
 
-        return array(
-            'form' => $form->createView(),
-        );
+        return $this->render('topic/edit_path.html.twig', ['form' => $form->createView()]);
     }
 
-    /**
-     * @Route("/room/{roomId}/topic/{itemId}/savepath")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
-     * @param int $itemId
-     * @return array
-     */
+    #[Route(path: '/room/{roomId}/topic/{itemId}/savepath')]
+    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")]
     public function savePathAction(
         int $itemId
-    ) {
+    ): Response {
         $item = $this->itemService->getItem($itemId);
         $this->eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
         $isLinkedToItems = false;
         if (!empty($item->getAllLinkedItemIDArray())) {
             $isLinkedToItems = true;
         }
-        return [
+
+        return $this->render('topic/save_path.html.twig', [
             'topic' => $this->itemService->getTypedItem($itemId),
             'isLinkedToItems' => $isLinkedToItems,
-        ];
+        ]);
     }
 
     /**
-     * @Route("/room/{roomId}/topic/download")
-     * @param Request $request
-     * @param int $roomId
-     * @return Response
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/topic/download')]
     public function downloadAction(
         Request $request,
         DownloadAction $action,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $action->execute($room, $items);
     }
 
-    ###################################################################################################
-    ## XHR Action requests
-    ###################################################################################################
-
+    // ##################################################################################################
+    // # XHR Action requests
+    // ##################################################################################################
     /**
-     * @Route("/room/{roomId}/topic/xhr/markread", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @return Response
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/topic/xhr/markread', condition: 'request.isXmlHttpRequest()')]
     public function xhrMarkReadAction(
         Request $request,
         MarkReadAction $markReadAction,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -927,49 +786,42 @@ class TopicController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/topic/xhr/categorize", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param CategorizeAction $action
-     * @param int $roomId
      * @return mixed
+     *
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/topic/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
     public function xhrCategorizeAction(
         Request $request,
         CategorizeAction $action,
         int $roomId
-    ) {
+    ): Response {
         return parent::handleCategoryActionOptions($request, $action, $roomId);
     }
 
     /**
-     * @Route("/room/{roomId}/topic/xhr/hashtag", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param HashtagAction $action
-     * @param int $roomId
      * @return mixed
+     *
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/topic/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
     public function xhrHashtagAction(
         Request $request,
         HashtagAction $action,
         int $roomId
-    ) {
+    ): Response {
         return parent::handleHashtagActionOptions($request, $action, $roomId);
     }
 
     /**
-     * @Route("/room/{roomId}/topic/xhr/activate", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param $roomId
-     * @return
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/topic/xhr/activate', condition: 'request.isXmlHttpRequest()')]
     public function xhrActivateAction(
         Request $request,
         ActivateAction $action,
         $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -977,17 +829,14 @@ class TopicController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/topic/xhr/deactivate", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param $roomId
-     * @return
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/topic/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeactivateAction(
         Request $request,
         DeactivateAction $action,
         $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -995,17 +844,14 @@ class TopicController extends BaseController
     }
 
     /**
-     * @Route("/room/{roomId}/topic/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @param Request $request
-     * @param int $roomId
-     * @return Response
      * @throws Exception
      */
+    #[Route(path: '/room/{roomId}/topic/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
         Request $request,
         DeleteAction $action,
         int $roomId
-    ) {
+    ): Response {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
 
@@ -1013,10 +859,10 @@ class TopicController extends BaseController
     }
 
     /**
-     * @param Request $request
      * @param cs_room_item $roomItem
-     * @param boolean $selectAll
-     * @param integer[] $itemIds
+     * @param bool          $selectAll
+     * @param int[]         $itemIds
+     *
      * @return cs_topic_item[]
      */
     public function getItemsByFilterConditions(
@@ -1025,7 +871,6 @@ class TopicController extends BaseController
         $selectAll,
         $itemIds = []
     ) {
-
         if ($selectAll) {
             if ($request->query->has('topic_filter')) {
                 $currentFilter = $request->query->get('topic_filter');
@@ -1048,6 +893,7 @@ class TopicController extends BaseController
 
     /**
      * @param cs_room_item $room
+     *
      * @return FormInterface
      */
     private function createFilterForm(
@@ -1071,8 +917,8 @@ class TopicController extends BaseController
         $baseCategories,
         $itemCategories
     ) {
-        $result = array();
-        $tempResult = array();
+        $result = [];
+        $tempResult = [];
         $addCategory = false;
         foreach ($baseCategories as $baseCategory) {
             if (!empty($baseCategory['children'])) {
@@ -1085,29 +931,22 @@ class TopicController extends BaseController
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {
                     if ($addCategory) {
-                        $result[] = array(
-                            'title' => $baseCategory['title'],
-                            'item_id' => $baseCategory['item_id'],
-                            'children' => $tempResult
-                        );
+                        $result[] = ['title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult];
                     } else {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                        $result[] = ['title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']];
                     }
                     $foundCategory = true;
                 }
             }
             if (!$foundCategory) {
                 if ($addCategory) {
-                    $result[] = array(
-                        'title' => $baseCategory['title'],
-                        'item_id' => $baseCategory['item_id'],
-                        'children' => $tempResult
-                    );
+                    $result[] = ['title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult];
                 }
             }
-            $tempResult = array();
+            $tempResult = [];
             $addCategory = false;
         }
+
         return $result;
     }
 }

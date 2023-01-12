@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Security\Authorization\Voter;
 
 use App\Entity\Account;
@@ -13,6 +24,7 @@ use cs_environment;
 use cs_room_item;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
+use LogicException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -20,73 +32,31 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class ItemVoter extends Voter
 {
-    const SEE = 'ITEM_SEE';
-    const EDIT = 'ITEM_EDIT';
-    const ANNOTATE = 'ITEM_ANNOTATE';
-    const PARTICIPATE = 'ITEM_PARTICIPATE';
-    const MODERATE = 'ITEM_MODERATE';
-    const ENTER = 'ITEM_ENTER';
-    const USERROOM = 'ITEM_USERROOM';
-    const DELETE = 'ITEM_DELETE';
+    public const SEE = 'ITEM_SEE';
+    public const EDIT = 'ITEM_EDIT';
+    public const ANNOTATE = 'ITEM_ANNOTATE';
+    public const PARTICIPATE = 'ITEM_PARTICIPATE';
+    public const MODERATE = 'ITEM_MODERATE';
+    public const ENTER = 'ITEM_ENTER';
+    public const USERROOM = 'ITEM_USERROOM';
+    public const DELETE = 'ITEM_DELETE';
 
-    /**
-     * @var cs_environment
-     */
     private cs_environment $legacyEnvironment;
-
-    /**
-     * @var ItemService
-     */
-    private ItemService $itemService;
-
-    /**
-     * @var RoomService
-     */
-    private RoomService $roomService;
-
-    /**
-     * @var UserService
-     */
-    private UserService $userService;
-
-    /**
-     * @var RequestStack
-     */
-    private RequestStack $requestStack;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        ItemService $itemService,
-        RoomService $roomService,
-        UserService $userService,
-        RequestStack $requestStack,
-        EntityManagerInterface $entityManager
+        private ItemService $itemService,
+        private RoomService $roomService,
+        private UserService $userService,
+        private RequestStack $requestStack,
+        private EntityManagerInterface $entityManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->itemService = $itemService;
-        $this->roomService = $roomService;
-        $this->userService = $userService;
-        $this->requestStack = $requestStack;
-        $this->entityManager = $entityManager;
     }
 
     protected function supports($attribute, $object)
     {
-        return in_array($attribute, array(
-            self::SEE,
-            self::EDIT,
-            self::ANNOTATE,
-            self::PARTICIPATE,
-            self::MODERATE,
-            self::ENTER,
-            self::USERROOM,
-            self::DELETE,
-        ));
+        return in_array($attribute, [self::SEE, self::EDIT, self::ANNOTATE, self::PARTICIPATE, self::MODERATE, self::ENTER, self::USERROOM, self::DELETE]);
     }
 
     protected function voteOnAttribute($attribute, $object, TokenInterface $token)
@@ -94,7 +64,7 @@ class ItemVoter extends Voter
         // get current logged in user
         $user = $token->getUser();
 
-        if ($user instanceof Account && $user->getUsername() === 'root') {
+        if ($user instanceof Account && 'root' === $user->getUsername()) {
             return true;
         }
 
@@ -138,22 +108,22 @@ class ItemVoter extends Voter
                     return $this->canDelete($item, $currentUser);
             }
         } else {
-            if ($itemId == 'NEW') {
-                if ($attribute == self::EDIT) {
+            if ('NEW' == $itemId) {
+                if (self::EDIT == $attribute) {
                     // NOTE: by using `isGuest()` (instead of `isReallyGuest()`) we'll also catch logged-in users who
                 //       are currently viewing a community room with guest access which they are no member of
-                if ($currentUser->isGuest() || $currentUser->isOnlyReadUser() || ($currentUser->isRequested())) {
+                    if ($currentUser->isGuest() || $currentUser->isOnlyReadUser() || $currentUser->isRequested()) {
                         return false;
                     }
 
                     $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
 
-                    return !$currentRoom->isArchived();
+                    return !(method_exists($currentRoom, 'getArchived') && $currentRoom->getArchived());
                 }
             }
         }
 
-        throw new \LogicException('This code should not be reached!');
+        throw new LogicException('This code should not be reached!');
     }
 
     private function canView($item, $currentUser)
@@ -169,19 +139,15 @@ class ItemVoter extends Voter
         return false;
     }
 
-    /**
-     * @param $item
-     * @param \cs_user_item $currentUser
-     * @return bool
-     */
-    private function canEdit($item, \cs_user_item $currentUser): bool
+    private function canEdit($item, cs_user_item $currentUser): bool
     {
         $contextItem = $item->getContextItem();
-        if ($contextItem !== null && $contextItem->isArchived()) {
+        if (null !== $contextItem && method_exists($contextItem, 'getArchived') && $contextItem->getArchived()) {
             // users may still edit their own account settings & room profile (which also allows them to leave the room)
-            if ($item instanceof \cs_user_item && $item->getItemID() === $currentUser->getItemID()) {
+            if ($item instanceof cs_user_item && $item->getItemID() === $currentUser->getItemID()) {
                 return true;
             }
+
             return false;
         }
 
@@ -191,15 +157,15 @@ class ItemVoter extends Voter
             }
         }
 
-        if ($item->getItemType() == CS_DATE_TYPE) {
+        if (CS_DATE_TYPE == $item->getItemType()) {
             if ($item->isExternal()) {
                 return false;
             }
         }
 
-        if ($item->getItemType() == CS_DISCUSSION_TYPE) {
+        if (CS_DISCUSSION_TYPE == $item->getItemType()) {
             $request = $this->requestStack->getCurrentRequest();
-            if ($request->get('_route') == 'app_discussion_createarticle') {
+            if ('app_discussion_createarticle' == $request->get('_route')) {
                 return true;
             }
         }
@@ -220,9 +186,10 @@ class ItemVoter extends Voter
     private function canAnnotate($item, $currentUser)
     {
         $userStatus = $currentUser->getStatus();
-        if ($userStatus == 2 || $userStatus == 3) { // user & moderator
+        if (2 == $userStatus || 3 == $userStatus) { // user & moderator
             $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
-            return !$currentRoom->isArchived();
+
+            return !(method_exists($currentRoom, 'getArchived') && $currentRoom->getArchived());
         }
 
         return false;
@@ -231,9 +198,10 @@ class ItemVoter extends Voter
     private function canParticipate($item, $currentUser)
     {
         $userStatus = $currentUser->getStatus();
-        if ($userStatus == 2 || $userStatus == 3 || $userStatus == 4) { // user, moderator & read-only user
+        if (2 == $userStatus || 3 == $userStatus || 4 == $userStatus) { // user, moderator & read-only user
             $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
-            return !$currentRoom->isArchived();
+
+            return !(method_exists($currentRoom, 'getArchived') && $currentRoom->getArchived());
         }
 
         return false;
@@ -241,7 +209,7 @@ class ItemVoter extends Voter
 
     private function canModerate($item, $currentUser)
     {
-        if ($currentUser->getStatus() == 3) {
+        if (3 == $currentUser->getStatus()) {
             return true;
         }
 
@@ -290,7 +258,7 @@ class ItemVoter extends Voter
             return false;
         }
 
-        if ($roomItem->getType() === 'userroom') {
+        if ('userroom' === $roomItem->getType()) {
             return false;
         }
 
@@ -311,21 +279,18 @@ class ItemVoter extends Voter
     private function hasUserroomItemPrivileges($item, $currentUser)
     {
         $contextItem = $item->getContextItem();
-        if ($contextItem !== null &&
-            $contextItem->getType() === 'userroom' &&
+        if (null !== $contextItem &&
+            'userroom' === $contextItem->getType() &&
             $this->canParticipate($item, $currentUser)
         ) {
             return true;
         }
+
         return false;
     }
 
     /**
      * Checks whether the given user is a parent moderator for the given room.
-     *
-     * @param cs_user_item $user
-     * @param cs_room_item|null $room
-     * @return bool
      */
     private function isParentModeratorForRoom(cs_user_item $user, ?cs_room_item $room): bool
     {

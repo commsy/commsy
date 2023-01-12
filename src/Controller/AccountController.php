@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Account\AccountManager;
@@ -37,56 +48,40 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormError;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\Security as CoreSecurity;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use UnexpectedValueException;
 
 class AccountController extends AbstractController
 {
-
-    /**
-     * @Route("/register/{id}")
-     * @Template()
-     * @ParamConverter("portal", class="App\Entity\Portal")
-     * @param Portal $portal
-     * @param Request $request
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param AccountCreatorFacade $accountFacade
-     * @param LegacyEnvironment $legacyEnvironment
-     * @param TranslatorInterface $translator
-     * @param InvitationsService $invitationsService
-     * @param UserService $userService
-     * @return array|Response
-     */
+    #[Route(path: '/register/{id}')]
+    #[ParamConverter('portal', class: Portal::class)]
     public function signUp(
         Portal $portal,
         Request $request,
-        UserPasswordEncoderInterface $passwordEncoder,
+        UserPasswordHasherInterface $passwordHasher,
         AccountCreatorFacade $accountFacade,
         LegacyEnvironment $legacyEnvironment,
         TranslatorInterface $translator,
         InvitationsService $invitationsService,
         UserService $userService
-    ) {
+    ): Response {
         $legacyEnvironment->getEnvironment()->setCurrentPortalID($portal->getId());
 
         /** @var AuthSourceLocal $localAuthSource */
-        $localAuthSource = $portal->getAuthSources()->filter(function (AuthSource $authSource) {
-            return $authSource->getType() === 'local';
-        })->first();
+        $localAuthSource = $portal->getAuthSources()->filter(fn (AuthSource $authSource) => 'local' === $authSource->getType())->first();
 
         // deny access if self registration is disabled
-        if ($localAuthSource->getAddAccount() === AuthSource::ADD_ACCOUNT_NO) {
+        if (AuthSource::ADD_ACCOUNT_NO === $localAuthSource->getAddAccount()) {
             throw $this->createAccessDeniedException('Self-Registration is disabled.');
         }
 
@@ -94,7 +89,7 @@ class AccountController extends AbstractController
         // provided token is invalid
         $isTokenInvalid = false;
         $token = $request->query->get('token', '');
-        if ($localAuthSource->getAddAccount() === AuthSource::ADD_ACCOUNT_INVITE) {
+        if (AuthSource::ADD_ACCOUNT_INVITE === $localAuthSource->getAddAccount()) {
             if (!$invitationsService->confirmInvitationCode($localAuthSource, $token)) {
                 $isTokenInvalid = true;
             }
@@ -123,7 +118,7 @@ class AccountController extends AbstractController
             }
             $account->setLanguage('de');
 
-            $password = $passwordEncoder->encodePassword($account, $account->getPlainPassword());
+            $password = $passwordHasher->hashPassword($account, $account->getPlainPassword());
             $account->setPassword($password);
 
             $accountFacade->persistNewAccount($account);
@@ -137,7 +132,7 @@ class AccountController extends AbstractController
                 $portalUser->save();
             }
 
-            if ($localAuthSource->getAddAccount() === AuthSource::ADD_ACCOUNT_INVITE) {
+            if (AuthSource::ADD_ACCOUNT_INVITE === $localAuthSource->getAddAccount()) {
                 $invitationsService->redeemInvitation($localAuthSource, $token);
 
                 $newUser = $userService->cloneUser($portalUser, $roomContextId);
@@ -154,24 +149,14 @@ class AccountController extends AbstractController
             ]);
         }
 
-        return [
+        return $this->render('account/sign_up.html.twig', [
             'portal' => $portal,
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/portal/{portalId}/account/personal")
-     * @Template
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @param Request $request
-     * @param UserService $userService
-     * @param PrivateRoomTransformer $privateRoomTransformer
-     * @param UserTransformer $userTransformer
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param CoreSecurity $security
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/portal/{portalId}/account/personal')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function personal(
         Request $request,
         UserService $userService,
@@ -179,7 +164,7 @@ class AccountController extends AbstractController
         UserTransformer $userTransformer,
         EventDispatcherInterface $eventDispatcher,
         CoreSecurity $security
-    ) {
+    ): Response {
         /** @var Account $account */
         $account = $security->getUser();
         $portalUser = $userService->getPortalUser($account);
@@ -210,28 +195,20 @@ class AccountController extends AbstractController
             ]);
         }
 
-        return [
+        return $this->render('account/personal.html.twig', [
             'form' => $form->createView(),
             'hasToChangeEmail' => $portalUser->hasToChangeEmail(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/account/changepassword")
-     * @Template
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @param Request $request
-     * @param CoreSecurity $security
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param EntityManagerInterface $entityManager
-     * @return array
-     */
+    #[Route(path: '/account/changepassword')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function changePassword(
         Request $request,
         CoreSecurity $security,
-        UserPasswordEncoderInterface $passwordEncoder,
+        UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager
-    ) {
+    ): Response {
         $form = $this->createForm(ChangePasswordType::class);
 
         $passwordChanged = false;
@@ -240,10 +217,10 @@ class AccountController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Account $user */
             $account = $security->getUser();
-            if ($account !== null) {
+            if (null !== $account) {
                 $formData = $form->getData();
 
-                $account->setPassword($passwordEncoder->encodePassword($account, $formData['new_password']));
+                $account->setPassword($passwordHasher->hashPassword($account, $formData['new_password']));
 
                 $entityManager->persist($account);
                 $entityManager->flush();
@@ -252,22 +229,15 @@ class AccountController extends AbstractController
             }
         }
 
-        return [
+        return $this->render('account/change_password.html.twig', [
             'form' => $form->createView(),
             'passwordChanged' => $passwordChanged,
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/portal/{portalId}/account/merge")
-     * @Template
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @param Request $request
-     * @param LegacyEnvironment $environment
-     * @param Portal $portal
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/portal/{portalId}/account/merge')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     public function mergeAccounts(
         Request $request,
         Portal $portal,
@@ -278,7 +248,7 @@ class AccountController extends AbstractController
         ShibbolethAuthenticator $shibbolethAuthenticator,
         LoginFormAuthenticator $loginFormAuthenticator,
         AccountMerger $accountMerger
-    ) {
+    ): Response {
         /** @var Account $account */
         $account = $security->getUser();
         $portalUser = $userService->getPortalUser($account);
@@ -308,8 +278,8 @@ class AccountController extends AbstractController
                         $selectedAuthSource
                     );
 
-                    if ($accountToMerge === null) {
-                        throw new \UnexpectedValueException();
+                    if (null === $accountToMerge) {
+                        throw new UnexpectedValueException();
                     }
 
                     $authSourceGuardAuthenticatorMap = [
@@ -319,7 +289,7 @@ class AccountController extends AbstractController
                     ];
 
                     /** @var AbstractCommsyGuardAuthenticator $guardAuthenticator */
-                    $guardAuthenticator = $authSourceGuardAuthenticatorMap[get_class($selectedAuthSource)];
+                    $guardAuthenticator = $authSourceGuardAuthenticatorMap[$selectedAuthSource::class];
 
                     $credentials = [
                         'email' => $accountToMerge->getUsername(),
@@ -338,39 +308,29 @@ class AccountController extends AbstractController
                             'portalId' => $portal->getId(),
                         ]);
                     }
-                } catch (NonUniqueResultException | \UnexpectedValueException $e) {
+                } catch (NonUniqueResultException|UnexpectedValueException) {
                     $form->get('combineUserId')->addError(new FormError('User not found'));
                 }
             }
         }
 
-        return [
+        return $this->render('account/merge_accounts.html.twig', [
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/portal/{portalId}/account/newsletter")
-     * @Template
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @param Request $request
-     * @param UserService $userService
-     * @param PrivateRoomTransformer $privateRoomTransformer
-     * @param UserTransformer $userTransformer
-     * @param CoreSecurity $security
-     * @return array
-     */
+    #[Route(path: '/portal/{portalId}/account/newsletter')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function newsletter(
         Request $request,
         UserService $userService,
         PrivateRoomTransformer $privateRoomTransformer,
         UserTransformer $userTransformer,
         CoreSecurity $security
-    ) {
+    ): Response {
         /** @var Account $account */
         $account = $security->getUser();
         $portalUser = $userService->getPortalUser($account);
-
 
         $userData = $userTransformer->transform($portalUser);
 
@@ -389,18 +349,15 @@ class AccountController extends AbstractController
             $privateRoomItem->save();
         }
 
-        return [
+        return $this->render('account/newsletter.html.twig', [
             'form' => $form->createView(),
             'portalEmail' => $portalUser->getRoomEmail(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/portal/{portalId}/account/privacy")
-     * @Template
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function privacy($portalId, Request $request)
+    #[Route(path: '/portal/{portalId}/account/privacy')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function privacy($portalId, Request $request): Response
     {
         $form = $this->createForm(PrivacyType::class);
 
@@ -412,23 +369,14 @@ class AccountController extends AbstractController
             ]);
         }
 
-        return [
+        return $this->render('account/privacy.html.twig', [
             'form' => $form->createView(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/portal/{portalId}/account/privacy/print")
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @ParamConverter("portal", class="App\Entity\Portal", options={"id" = "portalId"})
-     * @param Portal $portal
-     * @param PersonalDataCollector $dataCollector
-     * @param PrintService $printService
-     * @param RoomService $roomService
-     * @param CoreSecurity $security
-     * @param UserService $userService
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
+    #[Route(path: '/portal/{portalId}/account/privacy/print')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     public function privacyPrint(
         Portal $portal,
         PersonalDataCollector $dataCollector,
@@ -437,7 +385,7 @@ class AccountController extends AbstractController
         CoreSecurity $security,
         UserService $userService,
         TranslatorInterface $translator
-    ) {
+    ): Response {
         /** @var Account $account */
         $account = $security->getUser();
         $portalUser = $userService->getPortalUser($account);
@@ -461,29 +409,18 @@ class AccountController extends AbstractController
         ]);
 
         $fileName = $translator->trans('Self assessment', [], 'profile')
-            . ' (' . $portal->getTitle() . ').pdf';
+            .' ('.$portal->getTitle().').pdf';
 
-        if (str_contains($html,"localhost:81")) { // local fix for wkhtmltopdf
-            $html = preg_replace("/<img[^>]+\>/i", "(image) ", $html);
+        if (str_contains($html, 'localhost:81')) { // local fix for wkhtmltopdf
+            $html = preg_replace("/<img[^>]+\>/i", '(image) ', $html);
         }
-
 
         // return HTML Response containing a PDF generated from the HTML data
         return $printService->buildPdfResponse($html, false, $fileName);
     }
 
-    /**
-     * @Route("/portal/{portalId}/account/additional")
-     * @Template
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @param Request $request
-     * @param UserService $userService
-     * @param PrivateRoomTransformer $privateRoomTransformer
-     * @param UserTransformer $userTransformer
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param CoreSecurity $security
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/portal/{portalId}/account/additional')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function additional(
         Request $request,
         UserService $userService,
@@ -491,7 +428,7 @@ class AccountController extends AbstractController
         UserTransformer $userTransformer,
         EventDispatcherInterface $eventDispatcher,
         CoreSecurity $security
-    ) {
+    ): Response {
         /** @var Account $account */
         $account = $security->getUser();
         $portalUser = $userService->getPortalUser($account);
@@ -523,37 +460,28 @@ class AccountController extends AbstractController
             return $this->redirect($request->getUri());
         }
 
-        return [
+        return $this->render('account/additional.html.twig', [
             'form' => $form->createView(),
             'uploadEmail' => $this->getParameter('commsy.upload.account'),
             'portalEmail' => $portalUser->getRoomEmail(),
-        ];
+        ]);
     }
 
-    /**
-     * @Route("/portal/{portalId}/account/delete")
-     * @Template
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @param Request $request
-     * @param ParameterBagInterface $parameterBag
-     * @param TranslatorInterface $translator
-     * @param AccountManager $accountManager
-     * @param CoreSecurity $security
-     * @return array|RedirectResponse
-     */
+    #[Route(path: '/portal/{portalId}/account/delete')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function deleteAccount(
         Request $request,
-        ParameterBagInterface $parameterBag,
         TranslatorInterface $translator,
         AccountManager $accountManager,
-        Security $security
-    ) {
-        $deleteParameter = $parameterBag->get('commsy.security.privacy_disable_overwriting');
+        Security $security,
+        FormFactoryInterface $formFactory
+    ): Response {
+        $deleteParameter = $this->getParameter('commsy.security.privacy_disable_overwriting');
 
-        $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, [
+        $lockForm = $formFactory->createNamedBuilder('lock_form', DeleteType::class, [
             'confirm_string' => $translator->trans('lock', [], 'profile'),
         ], [])->getForm();
-        $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, [
+        $deleteForm = $formFactory->createNamedBuilder('delete_form', DeleteType::class, [
             'confirm_string' => $translator->trans('delete', [], 'profile'),
         ], [])->getForm();
 
@@ -583,10 +511,10 @@ class AccountController extends AbstractController
             }
         }
 
-        return [
+        return $this->render('account/delete_account.html.twig', [
             'override' => $deleteParameter,
             'form_lock' => $lockForm->createView(),
             'form_delete' => $deleteForm->createView(),
-        ];
+        ]);
     }
 }

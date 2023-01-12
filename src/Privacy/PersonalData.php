@@ -1,34 +1,44 @@
 <?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Privacy;
 
 /**
- * Class PersonalData
+ * Class PersonalData.
  *
  * Holds a user's personal master data, i.e. account data as well as profile data for all of the user's rooms.
- *
- * @package App\Privacy
  */
 class PersonalData
 {
     /**
      * @var AccountData|null holds the user's account data
      */
-    private $accountData;
+    private ?AccountData $accountData = null;
 
     /**
      * @var RoomProfileData[]|null array of RoomProfileData objects holding the user's profile data for each community room
      */
-    private $communityRoomProfileDataArray;
+    private ?array $communityRoomProfileDataArray = null;
 
     /**
      * @var RoomProfileData[]|null array of RoomProfileData objects holding the user's profile data for each project room
      */
-    private $projectRoomProfileDataArray;
+    private ?array $projectRoomProfileDataArray = null;
 
     /**
      * @var RoomProfileData[]|null array of RoomProfileData objects holding the user's profile data for each group room
      */
-    private $groupRoomProfileDataArray;
+    private ?array $groupRoomProfileDataArray = null;
 
     /**
      * @return AccountData|null the user's account data
@@ -38,13 +48,10 @@ class PersonalData
         return $this->accountData;
     }
 
-    /**
-     * @param AccountData|null $accountData
-     * @return PersonalData
-     */
     public function setAccountData(?AccountData $accountData): PersonalData
     {
         $this->accountData = $accountData;
+
         return $this;
     }
 
@@ -58,11 +65,11 @@ class PersonalData
 
     /**
      * @param RoomProfileData[]|null $communityRoomProfileDataArray
-     * @return PersonalData
      */
     public function setCommunityRoomProfileDataArray(?array $communityRoomProfileDataArray): PersonalData
     {
         $this->communityRoomProfileDataArray = $communityRoomProfileDataArray;
+
         return $this;
     }
 
@@ -76,11 +83,11 @@ class PersonalData
 
     /**
      * @param RoomProfileData[]|null $projectRoomProfileDataArray
-     * @return PersonalData
      */
     public function setProjectRoomProfileDataArray(?array $projectRoomProfileDataArray): PersonalData
     {
         $this->projectRoomProfileDataArray = $projectRoomProfileDataArray;
+
         return $this;
     }
 
@@ -94,11 +101,11 @@ class PersonalData
 
     /**
      * @param RoomProfileData[]|null $groupRoomProfileDataArray
-     * @return PersonalData
      */
     public function setGroupRoomProfileDataArray(?array $groupRoomProfileDataArray): PersonalData
     {
         $this->groupRoomProfileDataArray = $groupRoomProfileDataArray;
+
         return $this;
     }
 }

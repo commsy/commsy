@@ -1,25 +1,43 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Entity;
 
-
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class AccountIndexUser extends AbstractType
 {
-
+    /**
+     * @var mixed|null
+     */
     private $itemId;
 
+    /**
+     * @var mixed|null
+     */
     private $name;
 
+    /**
+     * @var mixed|null
+     */
     private $mail;
 
+    /**
+     * @var mixed|null
+     */
     private $userId;
 
-    /** @var bool */
-    private $checked;
+    private ?bool $checked = null;
 
     /**
      * @return mixed
@@ -29,10 +47,7 @@ class AccountIndexUser extends AbstractType
         return $this->itemId;
     }
 
-    /**
-     * @param mixed $itemId
-     */
-    public function setItemId($itemId): void
+    public function setItemId(mixed $itemId): void
     {
         $this->itemId = $itemId;
     }
@@ -40,15 +55,12 @@ class AccountIndexUser extends AbstractType
     /**
      * @return mixed
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return $this->name;
     }
 
-    /**
-     * @param mixed $name
-     */
-    public function setName($name): void
+    public function setName(mixed $name): void
     {
         $this->name = $name;
     }
@@ -61,10 +73,7 @@ class AccountIndexUser extends AbstractType
         return $this->mail;
     }
 
-    /**
-     * @param mixed $mail
-     */
-    public function setMail($mail): void
+    public function setMail(mixed $mail): void
     {
         $this->mail = $mail;
     }
@@ -77,29 +86,18 @@ class AccountIndexUser extends AbstractType
         return $this->userId;
     }
 
-    /**
-     * @param mixed $userId
-     */
-    public function setUserId($userId): void
+    public function setUserId(mixed $userId): void
     {
         $this->userId = $userId;
     }
 
-    /**
-     * @return bool
-     */
     public function isChecked(): bool
     {
         return $this->checked;
     }
 
-    /**
-     * @param bool $checked
-     */
     public function setChecked(bool $checked): void
     {
         $this->checked = $checked;
     }
-
-
 }

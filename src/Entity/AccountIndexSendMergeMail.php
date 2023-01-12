@@ -1,33 +1,70 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Entity;
 
-
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class AccountIndexSendMergeMail extends AbstractType
 {
-
+    /**
+     * @var mixed|null
+     */
     private $recipients;
 
+    /**
+     * @var mixed|null
+     */
     private $sender;
 
+    /**
+     * @var mixed|null
+     */
     private $subject;
 
+    /**
+     * @var mixed|null
+     */
     private $message;
 
+    /**
+     * @var mixed|null
+     */
     private $names;
 
+    /**
+     * @var mixed|null
+     */
     private $copyCCToModertor;
 
+    /**
+     * @var mixed|null
+     */
     private $copyBCCToModerator;
 
+    /**
+     * @var mixed|null
+     */
     private $copyCCToSender;
 
+    /**
+     * @var mixed|null
+     */
     private $copyBCCToSender;
 
+    /**
+     * @var mixed|null
+     */
     private $bcc;
 
     /**
@@ -38,10 +75,7 @@ class AccountIndexSendMergeMail extends AbstractType
         return $this->recipients;
     }
 
-    /**
-     * @param mixed $recipients
-     */
-    public function setRecipients($recipients): void
+    public function setRecipients(mixed $recipients): void
     {
         $this->recipients = $recipients;
     }
@@ -54,10 +88,7 @@ class AccountIndexSendMergeMail extends AbstractType
         return $this->sender;
     }
 
-    /**
-     * @param mixed $sender
-     */
-    public function setSender($sender): void
+    public function setSender(mixed $sender): void
     {
         $this->sender = $sender;
     }
@@ -70,10 +101,7 @@ class AccountIndexSendMergeMail extends AbstractType
         return $this->subject;
     }
 
-    /**
-     * @param mixed $subject
-     */
-    public function setSubject($subject): void
+    public function setSubject(mixed $subject): void
     {
         $this->subject = $subject;
     }
@@ -86,10 +114,7 @@ class AccountIndexSendMergeMail extends AbstractType
         return $this->message;
     }
 
-    /**
-     * @param mixed $message
-     */
-    public function setMessage($message): void
+    public function setMessage(mixed $message): void
     {
         $this->message = $message;
     }
@@ -102,10 +127,7 @@ class AccountIndexSendMergeMail extends AbstractType
         return $this->names;
     }
 
-    /**
-     * @param mixed $names
-     */
-    public function setNames($names): void
+    public function setNames(mixed $names): void
     {
         $this->names = $names;
     }
@@ -118,10 +140,7 @@ class AccountIndexSendMergeMail extends AbstractType
         return $this->copyCCToModertor;
     }
 
-    /**
-     * @param mixed $copyCCToModertor
-     */
-    public function setCopyCCToModertor($copyCCToModertor): void
+    public function setCopyCCToModertor(mixed $copyCCToModertor): void
     {
         $this->copyCCToModertor = $copyCCToModertor;
     }
@@ -134,10 +153,7 @@ class AccountIndexSendMergeMail extends AbstractType
         return $this->copyBCCToModerator;
     }
 
-    /**
-     * @param mixed $copyBCCToModerator
-     */
-    public function setCopyBCCToModerator($copyBCCToModerator): void
+    public function setCopyBCCToModerator(mixed $copyBCCToModerator): void
     {
         $this->copyBCCToModerator = $copyBCCToModerator;
     }
@@ -150,10 +166,7 @@ class AccountIndexSendMergeMail extends AbstractType
         return $this->copyCCToSender;
     }
 
-    /**
-     * @param mixed $copyCCToSender
-     */
-    public function setCopyCCToSender($copyCCToSender): void
+    public function setCopyCCToSender(mixed $copyCCToSender): void
     {
         $this->copyCCToSender = $copyCCToSender;
     }
@@ -166,10 +179,7 @@ class AccountIndexSendMergeMail extends AbstractType
         return $this->copyBCCToSender;
     }
 
-    /**
-     * @param mixed $copyBCCToSender
-     */
-    public function setCopyBCCToSender($copyBCCToSender): void
+    public function setCopyBCCToSender(mixed $copyBCCToSender): void
     {
         $this->copyBCCToSender = $copyBCCToSender;
     }
@@ -182,13 +192,8 @@ class AccountIndexSendMergeMail extends AbstractType
         return $this->bcc;
     }
 
-    /**
-     * @param mixed $bcc
-     */
-    public function setBcc($bcc): void
+    public function setBcc(mixed $bcc): void
     {
         $this->bcc = $bcc;
     }
-
-
 }

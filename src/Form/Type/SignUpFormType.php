@@ -1,9 +1,21 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Form\Type;
 
 use App\Entity\Account;
 use App\Entity\Portal;
+use App\Repository\TranslationRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -14,24 +26,29 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SignUpFormType extends AbstractType
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
+    public function __construct(
+        private TranslatorInterface $translator,
+        private TranslationRepository $translationRepository,
+        private RequestStack $requestStack
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var Portal $portal */
+        $portal = $options['portal'];
+
+        $usernameHelp = $this->translationRepository
+            ->findOneByContextAndKey($portal->getId(), 'REGISTRATION_USERNAME_HELP')
+            ->getTranslationForLocale($this->requestStack->getCurrentRequest()->getLocale());
+
         $builder
             ->add('firstname', TextType::class, [
                 'label' => 'registration.firstname',
@@ -50,6 +67,7 @@ class SignUpFormType extends AbstractType
                 'attr' => [
                     'placeholder' => $this->translator->trans('registration.username', [], 'registration'),
                 ],
+                'help' => $usernameHelp,
             ])
             ->add('email', RepeatedType::class, [
                 'type' => EmailType::class,
@@ -57,14 +75,14 @@ class SignUpFormType extends AbstractType
                     'label' => 'registration.email',
                     'attr' => [
                         'placeholder' => $this->translator->trans('registration.email', [], 'registration'),
-                    ]
+                    ],
                 ],
                 'second_options' => [
                     'label' => false,
                     'attr' => [
                         'placeholder' => $this->translator->trans('registration.email_confirm', [], 'registration'),
-                    ]
-                ]
+                    ],
+                ],
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
@@ -86,7 +104,7 @@ class SignUpFormType extends AbstractType
                 'label' => 'registration.submit',
                 'attr' => [
                     'class' => 'uk-button-primary uk-width-medium',
-                ]
+                ],
             ])
             ->add('cancel', SubmitType::class, [
                 'label' => 'registration.cancel',
@@ -97,7 +115,6 @@ class SignUpFormType extends AbstractType
                 'validation_groups' => false,
             ]);
 
-        $portal = $options['portal'];
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($portal) {
             /** @var Portal $portal */
             if (!$portal->hasAGBEnabled()) {

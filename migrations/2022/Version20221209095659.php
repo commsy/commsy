@@ -1,0 +1,65 @@
+<?php
+
+declare(strict_types=1);
+
+namespace DoctrineMigrations;
+
+use App\Utils\DbConverter;
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
+
+/**
+ * Auto-generated Migration: Please modify to your needs!
+ */
+final class Version20221209095659 extends AbstractMigration
+{
+    public function getDescription(): string
+    {
+        return 'Remove unused extras';
+    }
+
+    public function up(Schema $schema): void
+    {
+        $tables = [
+            'portal' => 'id',
+            'room' => 'item_id',
+            'room_privat' => 'item_id',
+            'server' => 'item_id',
+        ];
+
+        $extras = [
+            'LISTCONF', 'DETAILCONF', 'LISTLENGTH', 'WORDPRESSADMINPW', 'WORDPRESSSHOWLOGIN', 'WORDPRESSENABLEFCKEDITOR',
+            'WORDPRESSENABLESITEMAP', 'WORDPRESSENABLESTATISTIC', 'WORDPRESSENABLESEARCH', 'WORDPRESSENABLERSS',
+            'WORDPRESSENABLECALENDAR', 'WORDPRESSENABLEGALLERY', 'WORDPRESSENABLENOTICE', 'WORDPRESSENABLEPDF',
+            'WORDPRESSENABLERATER', 'WORDPRESSENABLELISTCATEGORIES', 'WORDPRESSNEWPAGETEMPLATE', 'WORDPRESSENABLESWF',
+            'WORDPRESSENABLEWMPLAYER', 'WORDPRESSENABLEQUICKTIME', 'WORDPRESSENABLEYOUTUBEGOOGLEVIMOEO', 'WORDPRESSEDITPW',
+            'WORDPRESSREADPW', 'WORDPRESS_SECTIONEDIT', 'WORDPRESS_SECTIONEDIT_HEADER', 'WORDPRESSENABLEDISCUSSION',
+            'WORDPRESSENABLEDISCUSSIONNOTIFICATION', 'WORDPRESSENABLEDISCUSSIONNOTIFICATIONGROUPS', 'WORDPRESSDISCUSSIONARRAY',
+            'WORDPRESSUSECOMMSYLOGIN', 'WORDPRESSCOMMUNITYREADACCESS', 'WORDPRESSCOMMUNITYWRITEACCESS',
+            'WORDPRESSPORTALREADACCESS', 'WORDPRESSROOMWRITEMODACCESS', 'LIMESURVEY', 'LIMESURVEYJSONRPCURL',
+            'LIMESURVEYSURVEYIDS', 'LIMESURVEYADMINUSER', 'LIMESURVEYADMINPASSWORD', 'NAVIGATIONSHOWEXPANDED',
+            'WITHNETNAVIGATION', 'MATERIALIMPORT', 'ACTIVATINGCONTENT', 'CHATLINK', 'SELECTION', 'PORTLET_COLUMN_COUNT',
+            'PORTLET_SHOW_ENTRY_LIST', 'MYROOM_CONFIG', 'HOME_CONFIG', 'HIDE_ANNOUNCEMENT_DATE', 'WIKI_ENABLED',
+            'SHOWANNOUNCEMENTSONHOME', 'MAX_UPLOAD_SIZE', 'ACTIONBARVISIBILITY', 'REFERENCEBARVISIBILITY',
+            'DETAILSBARVISIBILITY', 'ANNOTATIONSBARVISIBILITY', 'HOMERIGHTCONF', 'GROUPROOM', 'MODERATOR_MAIL_LINK',
+            'WORDPRESSID', 'WORDPRESS', 'WORDPRESSLINK', 'WORDPRESSUSECOMMENTS', 'WORDPRESSUSECOMMENTSMODERATION',
+            'WORDPRESSUSECALENDAR', 'WORDPRESSUSETAGCLOUD', 'WORDPRESSMEMBERROLE', 'WORDPRESSHOMELINK', 'WORDPRESSPORTALLINK',
+            'WORDPRESSEXISTS', 'WORDPRESSSKIN', 'WORDPRESSTITLE', 'WORDPRESSDESCRIPTION', 'PATH', 'BGIMAGEREPEAT',
+            'BGIMAGEFIXED'
+        ];
+
+        foreach ($tables as $name => $identifier) {
+            DbConverter::removeExtra(
+                $this->connection,
+                $name,
+                $identifier,
+                $extras
+            );
+        }
+    }
+
+    public function down(Schema $schema): void
+    {
+       $this->throwIrreversibleMigrationException();
+    }
+}

@@ -1,31 +1,20 @@
 <?php
-// $Id$
-//
-// Release $Name$
-//
-// Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
-// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
-//
-//    This file is part of CommSy.
-//
-//    CommSy is free software; you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation; either version 2 of the License, or
-//    (at your option) any later version.
-//
-//    CommSy is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
-//
-//    You have received a copy of the GNU General Public License
-//    along with CommSy.
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 class cs_section_list extends cs_list
 {
     /** constructor: cs_list
-     * the only available constructor, initial values for internal variables
+     * the only available constructor, initial values for internal variables.
      *
      * @author CommSy Development Group
      */
@@ -37,7 +26,7 @@ class cs_section_list extends cs_list
 
     public function append($section): void
     {
-        $count = count($this->data);
+        $count = is_countable($this->data) ? count($this->data) : 0;
         $pos = $count + 1;
         if ($section->getNumber() != $pos) {
             $section->setNumber($pos);
@@ -46,10 +35,11 @@ class cs_section_list extends cs_list
         ksort($this->data);
     }
 
-    function set( cs_section_item $section): void
+    public function set(cs_section_item $section): void
     {
+        $new_array = [];
         $counter = 1;
-        $tmp_array = array();
+        $tmp_array = [];
         // if the section already exists in the array, resort array without section
         $section_id = $section->getItemID();
         if (!empty($section_id)) {
@@ -57,7 +47,7 @@ class cs_section_list extends cs_list
                 if ($section_item->getItemID() != $section->getItemID()) {
                     $section_item->setNumber($counter);
                     $tmp_array[$section_item->getNumber()] = $section_item;
-                    $counter++;
+                    ++$counter;
                 }
             }
         } else {
@@ -70,7 +60,7 @@ class cs_section_list extends cs_list
             }
             $new_array[$section_item->getNumber()] = $section_item;
         }
-        //...and put the new one in place
+        // ...and put the new one in place
         $new_array[$section->getNumber()] = $section;
         $this->data = $new_array;
         ksort($this->data);
@@ -79,13 +69,13 @@ class cs_section_list extends cs_list
     public function remove(int $pos): void
     {
         $counter = 1;
-        $tmp_array = array();
+        $tmp_array = [];
         // resort array without section where number==$pos
         foreach ($this->data as $section_item) {
             if ($section_item->getNumber() != $pos) {
                 $section_item->setNumber($counter);
                 $tmp_array[$section_item->getNumber()] = $section_item;
-                $counter++;
+                ++$counter;
             }
         }
         $this->data = $tmp_array;

@@ -8,9 +8,10 @@ ARG CADDY_VERSION=2
 
 FROM php:${PHP_VERSION}-fpm-alpine AS commsy_php
 
+ENV APP_ENV=prod
+
 # php extensions installer: https://github.com/mlocati/docker-php-extension-installer
-ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
-RUN chmod +x /usr/local/bin/install-php-extensions
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
 # persistent / runtime deps
 RUN apk add --no-cache \
@@ -29,10 +30,6 @@ RUN apk add --no-cache \
 		ttf-freefont \
 		yarn \
 	;
-
-# install gnu-libiconv and set LD_PRELOAD env to make iconv work fully on Alpine image.
-# see https://github.com/docker-library/php/issues/240#issuecomment-763112749
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 
 RUN set -eux; \
     install-php-extensions \
@@ -57,7 +54,7 @@ COPY docker/php/php-fpm.d/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 RUN mkdir -p /var/run/php
 
 # wkhtmltopdf
-COPY --from=surnet/alpine-wkhtmltopdf:3.13.5-0.12.6-full /bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
+COPY --from=surnet/alpine-wkhtmltopdf:3.16.2-0.12.6-small /bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -119,18 +116,22 @@ COPY docker/php/supervisord.conf /etc/supervisord.conf
 COPY docker/php/supervisor.d /etc/supervisor/conf.d/
 
 ENTRYPOINT ["docker-entrypoint"]
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]
 
 ##############################################################################
 
 # Dockerfile
 FROM commsy_php AS commsy_php_dev
 
-ENV APP_ENV=dev PHP_IDE_CONFIG="serverName=commsy"
+ENV APP_ENV=dev
 
-ARG XDEBUG_VERSION=^3.1
+ARG XDEBUG_VERSION=^3.2
 RUN set -eux; \
 	install-php-extensions xdebug-$XDEBUG_VERSION
+
+RUN rm $PHP_INI_DIR/conf.d/commsy.prod.ini; \
+	mv "$PHP_INI_DIR/php.ini" "$PHP_INI_DIR/php.ini-production"; \
+	mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 COPY docker/php/conf.d/commsy.dev.ini $PHP_INI_DIR/conf.d/
 

@@ -3,7 +3,9 @@
 ######################
 .*
 !.gitignore
+!.gitattributes
 !.github
+!.dockerignore
 *~
 
 # Windows image file caches
@@ -67,14 +69,14 @@ files/templates/individual/*
 files/temp/*
 !files/temp/.gitkeep
 
-external_pages/[0-9]*
-
-!.bowerrc
-!.gitlab-ci.yml
-!.travis.yml
 !.babelrc
 !.env
 !.env.test
+!.editorconfig
+!.php-cs-fixer.dist.php
+
+/tools/php-cs-fixer/vendor/
+/.php-cs-fixer.cache
 
 ###> symfony/framework-bundle ###
 /.env.local
@@ -104,8 +106,3 @@ yarn-error.log
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
-
-###> squizlabs/php_codesniffer ###
-/.phpcs-cache
-/phpcs.xml
-###< squizlabs/php_codesniffer ###

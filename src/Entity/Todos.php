@@ -1,160 +1,143 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Todos
- *
- * @ORM\Table(name="todos", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"})})
- * @ORM\Entity
+ * Todos.
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'todos')]
+#[ORM\Index(name: 'context_id', columns: ['context_id'])]
+#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 class Todos
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="item_id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @var int
      */
+    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $itemId = '0';
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="context_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
     private $contextId;
 
-    /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id")
-     */
-    private $creator;
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
+    private ?User $creator = null;
+
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
+    private ?User $modifier = null;
 
     /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id")
+     * @var int
      */
-    private $modifier;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="deleter_id", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private $deleterId;
 
     /**
      * @var DateTime
-     *
-     * @ORM\Column(name="creation_date", type="datetime", nullable=false)
      */
+    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private $creationDate = '0000-00-00 00:00:00';
 
     /**
      * @var DateTime
-     *
-     * @ORM\Column(name="modification_date", type="datetime", nullable=true)
      */
+    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
     private $modificationDate;
 
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="activation_date", type="datetime")
-     */
-    private ?DateTime $activationDate;
+    #[ORM\Column(name: 'activation_date', type: 'datetime')]
+    private ?DateTime $activationDate = null;
 
     /**
      * @var DateTime
-     *
-     * @ORM\Column(name="deletion_date", type="datetime", nullable=true)
      */
+    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private $title;
 
     /**
      * @var DateTime
-     *
-     * @ORM\Column(name="date", type="datetime", nullable=true)
      */
+    #[ORM\Column(name: 'date', type: 'datetime', nullable: true)]
     private $date;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="status", type="integer", nullable=false)
      */
+    #[ORM\Column(name: 'status', type: 'integer', nullable: false)]
     private $status = '1';
 
     /**
      * @var float
-     *
-     * @ORM\Column(name="minutes", type="float", precision=10, scale=0, nullable=true)
      */
+    #[ORM\Column(name: 'minutes', type: 'float', precision: 10, scale: 0, nullable: true)]
     private $minutes;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="time_type", type="smallint", nullable=false)
+     * @var int
      */
+    #[ORM\Column(name: 'time_type', type: 'smallint', nullable: false)]
     private $timeType = '1';
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="text", length=16777215, nullable=true)
      */
+    #[ORM\Column(name: 'description', type: 'text', length: 16777215, nullable: true)]
     private $description;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="public", type="boolean", nullable=false)
+     * @var bool
      */
+    #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
     private $public = '0';
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="extras", type="text", length=65535, nullable=true)
      */
+    #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
     private $extras;
 
     /**
      * @var DateTime
-     *
-     * @ORM\Column(name="locking_date", type="datetime", nullable=true)
      */
+    #[ORM\Column(name: 'locking_date', type: 'datetime', nullable: true)]
     private $lockingDate;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="locking_user_id", type="integer", nullable=true)
+     * @var int
      */
+    #[ORM\Column(name: 'locking_user_id', type: 'integer', nullable: true)]
     private $lockingUserId;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Step", mappedBy="todo")
-     */
-    private $steps;
+    #[ORM\OneToMany(targetEntity: 'Step', mappedBy: 'todo')]
+    private Collection $steps;
 
     public function __construct()
     {
@@ -162,13 +145,11 @@ class Todos
     }
 
     /**
-     * Add steps
-     *
-     * @param \App\Entity\Step $step
+     * Add steps.
      *
      * @return Materials
      */
-    public function addSteps(\App\Entity\Step $step)
+    public function addSteps(Step $step)
     {
         $this->steps[] = $step;
 
@@ -176,35 +157,32 @@ class Todos
     }
 
     /**
-     * Remove steps
-     *
-     * @param \App\Entity\Step $step
+     * Remove steps.
      */
-    public function removeSteps(\App\Entity\Step $step)
+    public function removeSteps(Step $step)
     {
         $this->stepss->removeElement($step);
     }
 
     /**
-     * Get stepss
+     * Get stepss.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getSteps()
     {
         return $this->steps;
     }
 
-
     public function isIndexable()
     {
-        return ($this->deleterId == null && $this->deletionDate == null);
+        return null == $this->deleterId && null == $this->deletionDate;
     }
 
     /**
-     * Get itemId
+     * Get itemId.
      *
-     * @return integer
+     * @return int
      */
     public function getItemId()
     {
@@ -212,9 +190,9 @@ class Todos
     }
 
     /**
-     * Set contextId
+     * Set contextId.
      *
-     * @param integer $contextId
+     * @param int $contextId
      *
      * @return Todos
      */
@@ -226,9 +204,9 @@ class Todos
     }
 
     /**
-     * Get contextId
+     * Get contextId.
      *
-     * @return integer
+     * @return int
      */
     public function getContextId()
     {
@@ -236,9 +214,9 @@ class Todos
     }
 
     /**
-     * Set deleterId
+     * Set deleterId.
      *
-     * @param integer $deleterId
+     * @param int $deleterId
      *
      * @return Todos
      */
@@ -250,9 +228,9 @@ class Todos
     }
 
     /**
-     * Get deleterId
+     * Get deleterId.
      *
-     * @return integer
+     * @return int
      */
     public function getDeleterId()
     {
@@ -260,7 +238,7 @@ class Todos
     }
 
     /**
-     * Set creationDate
+     * Set creationDate.
      *
      * @param DateTime $creationDate
      *
@@ -274,7 +252,7 @@ class Todos
     }
 
     /**
-     * Get creationDate
+     * Get creationDate.
      *
      * @return DateTime
      */
@@ -284,7 +262,7 @@ class Todos
     }
 
     /**
-     * Set modificationDate
+     * Set modificationDate.
      *
      * @param DateTime $modificationDate
      *
@@ -298,7 +276,7 @@ class Todos
     }
 
     /**
-     * Get modificationDate
+     * Get modificationDate.
      *
      * @return DateTime
      */
@@ -308,11 +286,7 @@ class Todos
     }
 
     /**
-     * Set activationDate
-     *
-     * @param DateTime $activationDate
-     *
-     * @return Todos
+     * Set activationDate.
      */
     public function setActivationDate(DateTime $activationDate): self
     {
@@ -322,9 +296,7 @@ class Todos
     }
 
     /**
-     * Get activationDate
-     *
-     * @return DateTime|null
+     * Get activationDate.
      */
     public function getActivationDate(): ?DateTime
     {
@@ -332,7 +304,7 @@ class Todos
     }
 
     /**
-     * Set deletionDate
+     * Set deletionDate.
      *
      * @param DateTime $deletionDate
      *
@@ -346,7 +318,7 @@ class Todos
     }
 
     /**
-     * Get deletionDate
+     * Get deletionDate.
      *
      * @return DateTime
      */
@@ -356,7 +328,7 @@ class Todos
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -370,7 +342,7 @@ class Todos
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -380,7 +352,7 @@ class Todos
     }
 
     /**
-     * Set date
+     * Set date.
      *
      * @param DateTime $date
      *
@@ -394,7 +366,7 @@ class Todos
     }
 
     /**
-     * Get date
+     * Get date.
      *
      * @return DateTime
      */
@@ -404,11 +376,7 @@ class Todos
     }
 
     /**
-     * Set status
-     *
-     * @param int $status
-     *
-     * @return Todos
+     * Set status.
      */
     public function setStatus(int $status): self
     {
@@ -418,9 +386,7 @@ class Todos
     }
 
     /**
-     * Get status
-     *
-     * @return int
+     * Get status.
      */
     public function getStatus(): int
     {
@@ -428,7 +394,7 @@ class Todos
     }
 
     /**
-     * Set minutes
+     * Set minutes.
      *
      * @param float $minutes
      *
@@ -442,7 +408,7 @@ class Todos
     }
 
     /**
-     * Get minutes
+     * Get minutes.
      *
      * @return float
      */
@@ -452,9 +418,9 @@ class Todos
     }
 
     /**
-     * Set timeType
+     * Set timeType.
      *
-     * @param integer $timeType
+     * @param int $timeType
      *
      * @return Todos
      */
@@ -466,9 +432,9 @@ class Todos
     }
 
     /**
-     * Get timeType
+     * Get timeType.
      *
-     * @return integer
+     * @return int
      */
     public function getTimeType()
     {
@@ -476,7 +442,7 @@ class Todos
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -490,7 +456,7 @@ class Todos
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -500,9 +466,9 @@ class Todos
     }
 
     /**
-     * Set public
+     * Set public.
      *
-     * @param boolean $public
+     * @param bool $public
      *
      * @return Todos
      */
@@ -514,9 +480,9 @@ class Todos
     }
 
     /**
-     * Get public
+     * Get public.
      *
-     * @return boolean
+     * @return bool
      */
     public function getPublic()
     {
@@ -524,7 +490,7 @@ class Todos
     }
 
     /**
-     * Set extras
+     * Set extras.
      *
      * @param string $extras
      *
@@ -538,7 +504,7 @@ class Todos
     }
 
     /**
-     * Get extras
+     * Get extras.
      *
      * @return string
      */
@@ -548,7 +514,7 @@ class Todos
     }
 
     /**
-     * Set lockingDate
+     * Set lockingDate.
      *
      * @param DateTime $lockingDate
      *
@@ -562,7 +528,7 @@ class Todos
     }
 
     /**
-     * Get lockingDate
+     * Get lockingDate.
      *
      * @return DateTime
      */
@@ -572,9 +538,9 @@ class Todos
     }
 
     /**
-     * Set lockingUserId
+     * Set lockingUserId.
      *
-     * @param integer $lockingUserId
+     * @param int $lockingUserId
      *
      * @return Todos
      */
@@ -586,9 +552,9 @@ class Todos
     }
 
     /**
-     * Get lockingUserId
+     * Get lockingUserId.
      *
-     * @return integer
+     * @return int
      */
     public function getLockingUserId()
     {
@@ -596,13 +562,11 @@ class Todos
     }
 
     /**
-     * Set creator
-     *
-     * @param \App\Entity\User $creator
+     * Set creator.
      *
      * @return Todos
      */
-    public function setCreator(\App\Entity\User $creator = null)
+    public function setCreator(User $creator = null)
     {
         $this->creator = $creator;
 
@@ -610,9 +574,9 @@ class Todos
     }
 
     /**
-     * Get creator
+     * Get creator.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getCreator()
     {
@@ -620,13 +584,11 @@ class Todos
     }
 
     /**
-     * Set modifier
-     *
-     * @param \App\Entity\User $modifier
+     * Set modifier.
      *
      * @return Todos
      */
-    public function setModifier(\App\Entity\User $modifier = null)
+    public function setModifier(User $modifier = null)
     {
         $this->modifier = $modifier;
 
@@ -634,9 +596,9 @@ class Todos
     }
 
     /**
-     * Get modifier
+     * Get modifier.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getModifier()
     {

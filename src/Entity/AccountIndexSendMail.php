@@ -1,25 +1,50 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Entity;
 
-
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class AccountIndexSendMail extends AbstractType
 {
-
+    /**
+     * @var mixed|null
+     */
     private $recipients;
 
+    /**
+     * @var mixed|null
+     */
     private $sender;
 
+    /**
+     * @var mixed|null
+     */
     private $copyToSender;
 
+    /**
+     * @var mixed|null
+     */
     private $subject;
 
+    /**
+     * @var mixed|null
+     */
     private $message;
 
+    /**
+     * @var mixed|null
+     */
     private $names;
 
     /**
@@ -30,10 +55,7 @@ class AccountIndexSendMail extends AbstractType
         return $this->recipients;
     }
 
-    /**
-     * @param mixed $recipients
-     */
-    public function setRecipients($recipients): void
+    public function setRecipients(mixed $recipients): void
     {
         $this->recipients = $recipients;
     }
@@ -46,10 +68,7 @@ class AccountIndexSendMail extends AbstractType
         return $this->sender;
     }
 
-    /**
-     * @param mixed $sender
-     */
-    public function setSender($sender): void
+    public function setSender(mixed $sender): void
     {
         $this->sender = $sender;
     }
@@ -62,10 +81,7 @@ class AccountIndexSendMail extends AbstractType
         return $this->copyToSender;
     }
 
-    /**
-     * @param mixed $copyToSender
-     */
-    public function setCopyToSender($copyToSender): void
+    public function setCopyToSender(mixed $copyToSender): void
     {
         $this->copyToSender = $copyToSender;
     }
@@ -78,10 +94,7 @@ class AccountIndexSendMail extends AbstractType
         return $this->subject;
     }
 
-    /**
-     * @param mixed $subject
-     */
-    public function setSubject($subject): void
+    public function setSubject(mixed $subject): void
     {
         $this->subject = $subject;
     }
@@ -94,10 +107,7 @@ class AccountIndexSendMail extends AbstractType
         return $this->message;
     }
 
-    /**
-     * @param mixed $message
-     */
-    public function setMessage($message): void
+    public function setMessage(mixed $message): void
     {
         $this->message = $message;
     }
@@ -110,13 +120,8 @@ class AccountIndexSendMail extends AbstractType
         return $this->names;
     }
 
-    /**
-     * @param mixed $names
-     */
-    public function setNames($names): void
+    public function setNames(mixed $names): void
     {
         $this->names = $names;
     }
-
-
 }

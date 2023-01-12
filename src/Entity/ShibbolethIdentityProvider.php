@@ -1,5 +1,15 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
 
 namespace App\Entity;
 
@@ -8,51 +18,31 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ShibbolethIdentityProvider
 {
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", length=255, nullable=false)
-     * @Assert\Length(max=255)
-     * @Assert\NotBlank()
-     */
-    private ?string $name;
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[Assert\Length(max: 255)]
+    #[Assert\NotBlank]
+    private ?string $name = null;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", length=255, nullable=false)
-     * @Assert\Length(max=255)
-     * @Assert\Url()
-     */
-    private ?string $url;
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[Assert\Length(max: 255)]
+    #[Assert\Url]
+    private ?string $url = null;
 
-    /**
-     * @return string|null
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string|null $name
-     */
     public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string|null
-     */
     public function getUrl(): ?string
     {
         return $this->url;
     }
 
-    /**
-     * @param string|null $url
-     */
     public function setUrl(?string $url): void
     {
         $this->url = $url;
