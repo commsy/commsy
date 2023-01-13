@@ -5,7 +5,7 @@
 
     <article class="uk-comment" data-allowed-actions="{{ result.allowedActions|json_encode() }}">
 
-        <header class="uk-comment-header uk-flex">
+        <header class="uk-comment-header uk-margin-remove uk-flex">
 
             {# change status (aka read status) #}
             {% if result.readStatus is same as('new') %}

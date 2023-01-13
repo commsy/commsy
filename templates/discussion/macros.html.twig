@@ -403,7 +403,7 @@
     {% import _self as discussionMacros %}
 
     {% if list is not empty %}
-        <ul class="{% if count == 0 %}uk-comment-list{% endif %}">
+        <ul{% if count == 0 %} class="uk-comment-list"{% endif %}>
             {% for child in list %}
                 <li id="answer_id_{{ child.item.itemId }}" data-id="{{ child.item.itemId }}">
                     {{ include('discussion/answer.html.twig', {

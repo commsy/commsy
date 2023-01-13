@@ -12,7 +12,7 @@
                 <div id="remove-on-click" class="uk-width-9-10">
                     {{ form_widget(form.title) }}
                 </div>
-            </div>  
+            </div>
             <div class="uk-flex uk-margin-small-top">
                 <div class="uk-margin-small-left">
                     {{ form_row(form.save) }}
@@ -21,11 +21,11 @@
                     {{ form_row(form.cancel) }}
                 </div>
             </div>
-            
+
             {{ form_end(form) }}
             {#{ macrosMaterial.title(section, modifierList, userCount, readCount, readSinceModificationCount) }#}
         </div>
-        
+
         {# description #}
         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
             {{ macrosItem.itemDescription('description', section, true, section.description, section.draft) }}
@@ -37,10 +37,10 @@
         </div>
 
         <div id="draft-buttons-wrapper" data-item-type="section">
-            <a id="draft-save-combine-link" href="" class="uk-button uk-button-primary">
+            <a href="#" class="uk-button uk-button-primary" data-draft-save>
                 {{ 'create entry'|trans({}, "form") }}
             </a>
-            <a id="draft-cancel-link" href="" class="uk-button uk-button-secondary">
+            <a href="#" class="uk-button uk-button-secondary" data-draft-cancel>
                 {{ 'cancel'|trans({}, "form") }}
             </a>
         </div>

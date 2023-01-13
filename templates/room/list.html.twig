@@ -9,7 +9,7 @@
                     {{ macros.statusColor(readerList, feedItem.itemId) }}
                 {% endif %}
             {% endif %}
-            <header class="uk-comment-header uk-flex">
+            <header class="uk-comment-header uk-margin-remove uk-flex">
                 <div class="uk-margin-right uk-flex-item-none">
                     {% if feedItem.itemType is not same as('user') %}
                         {% if feedItem.type is not same as('date') %}
@@ -80,7 +80,7 @@
                                     {{ 'by'|trans({})|capitalize }}: {{feedItem.author|decodeHtmlEntity|raw}} ({{feedItem.publishingdate|decodeHtmlEntity|raw}})
                                 {% else %}
                                     {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }} ({{ feedItem.creationDate|craue_date }})
-                            {% endif %}                        
+                            {% endif %}
                         </div>
                     {% elseif feedItem.itemType is same as('discussion') %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }}</div>

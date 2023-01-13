@@ -65,7 +65,7 @@
 
                                                         {% set currentItem = items[entry.value] %}
                                                         <article class="uk-comment selectable" data-cs-linked-items>
-                                                            <header class="uk-comment-header uk-flex">
+                                                            <header class="uk-comment-header uk-margin-remove uk-flex">
                                                                 <div class="items-checkbox uk-margin-right uk-margin-top">
                                                                     {{ form_widget(form.itemsLatest[key]) }}
                                                                 </div>
@@ -122,7 +122,7 @@
 
                                             {% set currentItem = items[entry.vars.name] %}
                                             <article class="uk-comment selectable uk-comment-primary" data-cs-linked-items>
-                                                <header class="uk-comment-header uk-flex">
+                                                <header class="uk-comment-header uk-margin-remove uk-flex">
                                                     <div class="items-checkbox uk-margin-right uk-margin-top">
                                                         {{ form_widget(entry) }}
                                                     </div>
@@ -178,7 +178,7 @@
                 {% else %}
                     {% do form.categories.setRendered %}
                 {% endif %}
-                
+
                 {% if showHashtags %}
                 {% do form.hashtags.setRendered %}
                 <li>
@@ -207,7 +207,7 @@
                     {% do form.newHashtagAdd.setRendered %}
                 {% endif %}
             </ul>
-            
+
             <div class="uk-flex uk-margin-small-top">
                 <div>
                     {{ form_row(form.save) }}
@@ -216,8 +216,8 @@
                     {{ form_row(form.cancel) }}
                 </div>
             </div>
-            
-            {{ form_end(form) }} 
+
+            {{ form_end(form) }}
         </div>
     </div>
 </div>
@@ -230,7 +230,7 @@
     $('#itemLinks_filterRubric').change(function(){
         filterItems($(this));
     });
-    
+
     $('#itemLinks_filterPublic').change(function(){
         filterItems($(this));
     });
@@ -238,7 +238,7 @@
     $('#itemLinks_filterSearch').change(function(){
         filterItems($(this));
     });
-    
+
     function filterItems(element) {
         var article = element.parents('.cs-edit-section');
         $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
@@ -253,37 +253,37 @@
             data : $data,
             success: function(html) {
                 $(article).find('.cs-save-spinner').toggleClass('uk-hidden', true);
-                
+
                 $('#itemsList').replaceWith(
                     $(html).find('#itemsList')
                 );
             }
         });
     }
-    
+
     $('.form-load-more').bind('scroll', function() {
         if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
             if (!scrolledToEnd) {
                 scrolledToEnd = true;
-                
+
                 var article = $(this).parents('.cs-edit-section');
                 $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
-                
+
                 var $form = $(this).closest('form');
                 $.ajax({
                     url : '/commsy.php/room/{{ roomId }}/item/{{ itemId }}/editlinks/'+feedAmount,
                     type: $form.attr('method'),
                     success: function(html) {
                         $(article).find('.cs-save-spinner').toggleClass('uk-hidden', true);
-                        
+
                         /* $('#itemsLinkedList').replaceWith(
                             $(html).find('#itemsLinkedList')
                         ); */
-                        
+
                         $('#itemsList').replaceWith(
                             $(html).find('#itemsList')
                         );
-                        
+
                         scrolledToEnd = false;
                         feedAmount += 20;
                     }

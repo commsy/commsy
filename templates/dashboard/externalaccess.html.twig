@@ -17,7 +17,7 @@
                         <i class="{{ macros.iconClassForItemType(releaseItem.itemType) }} uk-icon-small"></i>
                     {% endif %}
                     {#{ macros.statusColor(readerList, releaseItem.itemId) }#}
-                    <header class="uk-comment-header uk-flex">
+                    <header class="uk-comment-header uk-margin-remove uk-flex">
                         <div class="uk-margin-right">
                             {% if releaseItem.itemType is not same as('user') %}
                                 {% if not releaseItem.creator.isDeleted and releaseItem.creator.isUser %}
@@ -63,7 +63,7 @@
                                             {{ 'by'|trans({})|capitalize }}: {{releaseItem.author}} ({{releaseItem.publishingdate}})
                                         {% else %}
                                             {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }} ({{ releaseItem.creationDate|craue_date }})
-                                    {% endif %}                        
+                                    {% endif %}
                                 </div>
                             {% elseif releaseItem.itemType is same as('discussion') %}
                                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }}</div>
@@ -95,7 +95,7 @@
                         <i class="{{ macros.iconClassForItemType(viewableItem.itemType) }} uk-icon-small"></i>
                     {% endif %}
                     {#{ macros.statusColor(readerList, viewableItem.itemId) }#}
-                    <header class="uk-comment-header uk-flex">
+                    <header class="uk-comment-header uk-margin-remove uk-flex">
                         <div class="uk-margin-right">
                             {% if viewableItem.itemType is not same as('user') %}
                                 {% if not viewableItem.creator.isDeleted and viewableItem.creator.isUser %}
@@ -141,7 +141,7 @@
                                             {{ 'by'|trans({})|capitalize }}: {{viewableItem.author}} ({{viewableItem.publishingdate}})
                                         {% else %}
                                             {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }} ({{ viewableItem.creationDate|craue_date }})
-                                    {% endif %}                        
+                                    {% endif %}
                                 </div>
                             {% elseif viewableItem.itemType is same as('discussion') %}
                                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }}</div>

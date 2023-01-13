@@ -101,7 +101,6 @@
         },
 
         onClickEdit: function($section) {
-          console.log("edit");
             draftFormCount++;
 
             let $this = this;
@@ -246,7 +245,7 @@
                     window.location.reload(true);
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.log('fail')
+                console.error('fail')
             });
         }, function () {
         }, {
@@ -258,18 +257,21 @@
     });
 
     let registerDraftFormButtonEvents = function() {
+        const $draftSave = $('[data-draft-save]');
+        const $draftCancel = $('[data-draft-cancel]');
+
         /**
          * This should not be mandatory in order to ensure the event listener is only fired once
          * due to the .one() call. However, it fixes the problem where the handler is called multiple
          * times, resulting in a lot of unwanted ajax requests when saving.
          */
-        $('#draft-save-combine-link').off('click');
+        $draftSave.off('click');
 
         /**
          * Use of .on() (instead of .one()) is needed to also report invalid form states
          * if the user submits the (combined) form for a second time or more often.
          */
-        $('#draft-save-combine-link').on('click', function (event) {console.log("combine save");
+        $draftSave.on('click', function (event) {
             event.preventDefault ? event.preventDefault() : (event.returnValue = false);
             $(this).parents('article').find('form').each(function () {
                 if (!$(this).reportValid()) {
@@ -282,7 +284,7 @@
             });
         });
 
-        $('#draft-cancel-link').one('click', function (event) {
+        $draftCancel.one('click', function (event) {
             event.preventDefault ? event.preventDefault() : (event.returnValue = false);
             let $itemType = $(this).parents('#draft-buttons-wrapper').data("item-type");
             if ($itemType == "section" || $itemType == "step" || $itemType == "article") {

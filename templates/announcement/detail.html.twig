@@ -150,12 +150,12 @@
                     <div class="cs-toggle" data-uk-observe>
                         {{ macrosAnnouncement.title(announcement, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray) }}
                     </div>
-            
+
                     {# description #}
                     <div id="description{{ announcement.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}' }">
                         {{ macrosItem.itemDescription('description', announcement, true, announcement.description, draft) }}
                     </div>
-            
+
                     {# files #}
                     <div id="files{{ announcement.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}' }">
                         {{ macrosItem.files(announcement, draft) }}
@@ -175,17 +175,17 @@
 
                     {% if draft %}
                         <div id="draft-buttons-wrapper">
-                            <a id="draft-save-combine-link" href="" class="uk-button uk-button-primary">
+                            <a href="#" class="uk-button uk-button-primary" data-draft-save>
                                 {{ 'create entry'|trans({}, "form") }}
                             </a>
-                            <a id="draft-cancel-link" href="" class="uk-button uk-button-secondary">
+                            <a href="#" class="uk-button uk-button-secondary" data-draft-cancel>
                                 {{ 'cancel'|trans({}, "form") }}
                             </a>
                         </div>
                     {% endif %}
                 </article>
             </div>
-            
+
             {# annotations #}
             {% if item.itemType != 'discussion' %}
                 <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
@@ -194,13 +194,13 @@
                             {{ 'annotations'|trans({})|capitalize }}
                         </div>
                     </div>
-                </div>              
-                
+                </div>
+
                 <div id="annotations{{ announcement.itemId }}" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
 
                     {% if is_granted('ITEM_ANNOTATE', announcement.itemId) %}
                         <article class="uk-comment">
-                            <header class="uk-comment-header uk-flex">
+                            <header class="uk-comment-header uk-margin-remove uk-flex">
                                 <div class="uk-margin-right uk-flex-item-none">
                                     {% if not user.isDeleted and user.isUser %}
                                         {{ macros.userIconLink(user) }}
@@ -251,7 +251,7 @@
             </div>
 
         </div>
-      
+
     </div>
 {% endblock %}
 

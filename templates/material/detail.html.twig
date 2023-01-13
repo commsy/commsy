@@ -223,7 +223,7 @@
                 {# content #}
                 <article class="uk-article uk-position-relative {% if draft %}cs-edit-draft{% endif %}" data-uk-observe>
                     {# versions #}
-                
+
                     {% if versions|length > 1 %}
                     <div class="">
                         <div style="padding:40px 20px 40px 20px;">
@@ -239,7 +239,7 @@
                                                 {{ version.date }}
                                             </div>
                                         {% endif %}
-                                        
+
                                         {% if loop.last %}
                                             {% set iconColor = '#4cb34d' %}
                                             <div style="position:absolute; top:-40px; right:0px;">
@@ -249,7 +249,7 @@
                                                 {{ version.date }}
                                             </div>
                                         {% endif %}
-                                    
+
                                         <div style="position:absolute; top:4px; left:{{ version.percent }}%;">
                                             {% if version.current %}
                                                 <a href="#" data-uk-tooltip title="{{ '%count% version'|trans({'%count%': loop.index}, 'material') }}<br/>{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file" style="color:{{ iconColor }};"></i></a>
@@ -263,17 +263,17 @@
                         </div>
                     </div>
                     {% endif %}
-                
+
                     {# title, etc. #}
                     <div class="cs-toggle" data-uk-observe>
                         {{ macrosMaterial.title(material, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray, workflowTitles) }}
                     </div>
-            
+
                     {# description #}
                     <div id="description{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                         {{ macrosItem.itemDescription('description', material, true, material.description, draft) }}
                     </div>
-            
+
                     {# files #}
                     <div id="files{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId, 'versionId': material.versionId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                         {{ macrosItem.files(material, draft) }}
@@ -309,17 +309,17 @@
 
                     {% if draft %}
                         <div id="draft-buttons-wrapper">
-                            <a id="draft-save-combine-link" href="" class="uk-button uk-button-primary">
+                            <a href="#" class="uk-button uk-button-primary" data-draft-save>
                                 {{ 'create entry'|trans({}, "form") }}
                             </a>
-                            <a id="draft-cancel-link" href="" class="uk-button uk-button-secondary">
+                            <a href="#" class="uk-button uk-button-secondary" data-draft-cancel>
                                 {{ 'cancel'|trans({}, "form") }}
                             </a>
                         </div>
                     {% endif %}
                 </article>
             </div>
-            
+
             <div data-uk-observe id="section-content">
                 {# material sections #}
                 {% for section in sectionList %}
@@ -411,7 +411,7 @@
                             <div class="cs-toggle" data-uk-observe>
                                 {{ macrosMaterial.title(section, modifierList, userCount, readCount, readSinceModificationCount) }}
                             </div>
-                            
+
                             {# description #}
                             <div id="description{{ section.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
                                 {{ macrosItem.itemDescription('description', section, true, section.description) }}
@@ -439,7 +439,7 @@
 
                 {% if is_granted('ITEM_ANNOTATE', material.itemId) %}
                     <article class="uk-comment">
-                        <header class="uk-comment-header uk-flex">
+                        <header class="uk-comment-header uk-margin-remove uk-flex">
                             <div class="uk-margin-right uk-flex-item-none">
                                 {% if not user.isDeleted and user.isUser %}
                                     {{ macros.userIconLink(user) }}
@@ -488,7 +488,7 @@
                         {% if not sectionList is empty %}
                             <li class="uk-parent">
                                 <a href="#sections{{ material.itemId }}">{{ 'sections'|trans({})|capitalize }}</a>
-                                <ul class="uk-nav-sub">                      
+                                <ul class="uk-nav-sub">
                                     {% for section in sectionList %}
                                         <li>
                                             <a href="#section{{ section.itemId }}">{{ loop.index }}. {{ section.title|decodeHtmlEntity|u.truncate(20) }}</a>
@@ -504,7 +504,7 @@
             </div>
 
         </div>
-      
+
     </div>
 {% endblock %}
 

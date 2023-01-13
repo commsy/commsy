@@ -202,7 +202,7 @@
                     <div class="cs-toggle" data-uk-observe>
                         {{ macrosDate.title(date, modifierList, userCount, readCount, readSinceModificationCount, draft) }}
                     </div>
-            
+
                     {# description #}
                     <div id="description{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': date.contextId, 'itemId': date.itemId, 'draft': draft}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
                         {{ macrosItem.itemDescription('description', date, true, date.description, draft) }}
@@ -229,10 +229,10 @@
 
                     {% if draft %}
                         <div id="draft-buttons-wrapper">
-                            <a id="draft-save-combine-link" href="" class="uk-button uk-button-primary">
+                            <a href="#" class="uk-button uk-button-primary" data-draft-save>
                                 {{ 'create entry'|trans({}, "form") }}
                             </a>
-                            <a id="draft-cancel-link" href="" class="uk-button uk-button-secondary">
+                            <a href="#" class="uk-button uk-button-secondary" data-draft-cancel>
                                 {{ 'cancel'|trans({}, "form") }}
                             </a>
                         </div>
@@ -255,7 +255,7 @@
 
                         {% if is_granted('ITEM_ANNOTATE', date.itemId) %}
                             <article class="uk-comment">
-                                <header class="uk-comment-header uk-flex">
+                                <header class="uk-comment-header uk-margin-remove uk-flex">
                                     <div class="uk-margin-right uk-flex-item-none">
                                         {% if not user.isDeleted and user.isUser %}
                                             {{ macros.userIconLink(user) }}
@@ -287,7 +287,7 @@
 
             {% endif %}
         </div>
-        
+
         <div class="uk-width-medium-1-5 cs-addon-navigation">
             {# quick navigation #}
             <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
@@ -309,7 +309,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
 {% endblock %}
 
