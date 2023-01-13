@@ -59,7 +59,7 @@ class AutoRoomMembershipSubscriber implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
-        $paramBag = $request->request;
+        $paramBag = $request->server;
         $membershipIdentifierString = $paramBag->get($membershipIdentifiersKey);
         if (empty($membershipIdentifierString)) {
             return;
