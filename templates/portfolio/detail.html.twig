@@ -29,7 +29,7 @@
                                     {{ macros.statusColor(readerList, feedItem.itemId) }}
                                 {% endif %}
                             {% endif %}
-                            <header class="uk-comment-header uk-flex">
+                            <header class="uk-comment-header uk-margin-remove uk-flex">
                                 <div class="uk-margin-right uk-flex-item-none">
                                     {% if feedItem.itemType is not same as('user') %}
                                         {% if feedItem.type is not same as('date') %}
@@ -138,7 +138,7 @@
                 <div id="annotations" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
 
                         <article class="uk-comment">
-                            <header class="uk-comment-header uk-flex">
+                            <header class="uk-comment-header uk-margin-remove uk-flex">
                                 <div class="uk-margin-right uk-flex-item-none">
                                     {#{  macros.userIconLink(user) }#}
                                 </div>

@@ -30,7 +30,6 @@
 //overwritten variables
 @comment-title-font-size: 14px;
 @comment-title-margin-top: 0px;
-@comment-header-margin-bottom: 0px;
 
 @comment-info-color-new: #fc4350;
 @comment-info-color-changed: yellow;
@@ -48,6 +47,11 @@
     background-color: rgba(45, 112, 145, 0.2) !important;
     margin-bottom: 1px;
     opacity: 1.0 !important;
+}
+
+.uk-comment-list .uk-comment + ul {
+    border-left: 2px solid @cs-accent-color;
+    margin-left: 10px;
 }
 
 .uk-comment:nth-of-type(even) {

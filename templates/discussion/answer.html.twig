@@ -3,6 +3,10 @@
 {% import 'discussion/macros.html.twig' as macrosDiscussion %}
 
 <article id="answer_{{ count }}" class="uk-comment">
+    {% if count > 0 %}
+        <hr>
+    {% endif %}
+
     <header class="uk-comment-header">
         {# avatar #}
         {% if not article.modificatorItem.isDeleted and article.modificatorItem.isUser %}
@@ -79,6 +83,4 @@
             </div>
         {%- endif %}
     </div>
-
-    <hr>
 </article>

@@ -184,7 +184,7 @@
                                                 </span>
                                             {% endif %}
                                         </li>
-                                        
+
                                         <li>
                                             {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
                                                 <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
@@ -240,12 +240,12 @@
                     <div class="cs-toggle" data-uk-observe>
                         {{ macrosTodo.title(todo, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray, timeSpendSum) }}
                     </div>
-            
+
                     {# description #}
                     <div id="description{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
                         {{ macrosItem.itemDescription('description', todo, true, todo.description, draft) }}
                     </div>
-            
+
                     {# files #}
                     <div id="files{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
                         {{ macrosItem.files(todo, draft) }}
@@ -270,10 +270,10 @@
 
                     {% if draft %}
                         <div id="draft-buttons-wrapper">
-                            <a id="draft-save-combine-link" href="" class="uk-button uk-button-primary">
+                            <a href="#" class="uk-button uk-button-primary" data-draft-save>
                                 {{ 'create entry'|trans({}, "form") }}
                             </a>
-                            <a id="draft-cancel-link" href="" class="uk-button uk-button-secondary">
+                            <a href="#" class="uk-button uk-button-secondary" data-draft-cancel>
                                 {{ 'cancel'|trans({}, "form") }}
                             </a>
                         </div>
@@ -425,7 +425,7 @@
                             <div class="cs-toggle" data-uk-observe>
                                 {{ macrosTodo.title(step, modifierList, userCount, readCount, readSinceModificationCount) }}
                             </div>
-                            
+
                             {# description #}
                             <div id="description{{ step.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': step.contextId, 'itemId': step.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': step.contextId, 'itemId': step.itemId}) }}' }">
                                 {{ macrosItem.itemDescription('description', step, true, step.description) }}
@@ -448,13 +448,13 @@
                             {{ 'annotations'|trans({})|capitalize }}
                         </div>
                     </div>
-                </div>              
-                
+                </div>
+
                 <div id="annotations{{ todo.itemId }}" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
 
                     {% if is_granted('ITEM_ANNOTATE', todo.itemId) %}
                         <article class="uk-comment">
-                            <header class="uk-comment-header uk-flex">
+                            <header class="uk-comment-header uk-margin-remove uk-flex">
                                 <div class="uk-margin-right uk-flex-item-none">
                                     {% if not user.isDeleted and user.isUser %}
                                         {{ macros.userIconLink(user) }}
@@ -483,7 +483,7 @@
 
             {% endif %}
         </div>
-        
+
         <div class="uk-width-medium-1-5 cs-addon-navigation">
             {# quick navigation #}
             <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
@@ -501,7 +501,7 @@
                         {% if not stepList is empty %}
                             <li class="uk-parent">
                                 <a href="#steps{{ todo.itemId }}">{{ 'steps'|trans({})|capitalize }}</a>
-                                <ul class="uk-nav-sub">                      
+                                <ul class="uk-nav-sub">
                                     {% for step in stepList %}
                                         <li>
                                             <a href="#step{{ step.itemId }}">{{ loop.index }}. {{ step.title|decodeHtmlEntity|u.truncate(20) }}</a>
@@ -515,7 +515,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
 {% endblock %}
 

@@ -2,9 +2,9 @@
 
 {% for project in projects %}
     <article class="uk-comment">
-           
+
         {{ macros.statusColor(readerList, project.itemId) }}
-        <header class="uk-comment-header uk-flex">
+        <header class="uk-comment-header uk-margin-remove uk-flex">
             <div class="items-checkbox uk-margin-right uk-margin-top uk-hidden">
                 <form class="uk-form">
                     <input type="checkbox" value="{{ project.itemId }}">
@@ -34,7 +34,7 @@
                 <h4 class="uk-comment-title">
                     <a href="{{ path('app_project_detail', {'roomId': roomId, 'itemId': project.itemId}) }}">{{ project.title|decodeHtmlEntity }}</a>
                 </h4>
-                
+
                 <div class="uk-comment-meta">
                     {% if project.contactPersonString is not empty %}
                         <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': project.creatorId, 'originPath': 'app_project_list'}) }}">{{ project.contactPersonString }}</a>
@@ -42,7 +42,7 @@
                         <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': project.creatorId, 'originPath': 'app_project_list'}) }}">{{ project.getContactModeratorListString }}</a>
                     {% endif %}
                 </div>
-                
+
                 <div class="uk-comment-meta">
                     {{ macros.contextLink(roomId, project, projectsMemberStatus[project.itemId]) }}
                 </div>

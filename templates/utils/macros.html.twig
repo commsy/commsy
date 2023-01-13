@@ -74,7 +74,7 @@
                 <a class="toggle-{{ item.itemId }}" data-uk-toggle="{target:'.toggle-{{ item.itemId }}', animation:'uk-animation-fade'}">{{ 'show more'|trans({}) }}</a>
             </div>
         </div>
-        <div class="uk-comment-header uk-flex uk-hidden toggle-{{ item.itemId }}">
+        <div class="uk-comment-header uk-margin-remove uk-flex uk-hidden toggle-{{ item.itemId }}">
             <div class="uk-margin-right">
                 {% if not item.modificatorItem.isDeleted and item.modificatorItem.isUser %}
                     {{ macros.userIconLink(item.modificatorItem) }}

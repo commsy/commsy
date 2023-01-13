@@ -696,6 +696,7 @@ class DiscussionController extends BaseController
             'article' => $article,
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'parentId' => $parentId,
+            'withUpload' => true,
         ]);
     }
 
@@ -742,6 +743,7 @@ class DiscussionController extends BaseController
         return $this->redirectToRoute('app_discussion_detail', [
             'roomId' => $roomId,
             'itemId' => $article->getDiscussionID(),
+            '_fragment' => "answer_id_{$article->getItemID()}"
         ]);
     }
 

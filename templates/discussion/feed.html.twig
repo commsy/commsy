@@ -6,17 +6,17 @@
         {% set entryAllowedActions = allowedActions[discussion.itemId] %}
     {% endif %}
     <article class="uk-comment" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
-           
+
         {# item change information #}
             {{ macros.statusColor(readerList, discussion.itemId) }}
-            
-        <header class="uk-comment-header uk-flex">
+
+        <header class="uk-comment-header uk-margin-remove uk-flex">
             <div class="items-checkbox uk-margin-right uk-margin-top uk-hidden">
                 <form class="uk-form">
                     <input type="checkbox" value="{{ discussion.itemId }}">
                 </form>
             </div>
-            
+
             {# user icon and modification time #}
             <div class="uk-margin-right uk-flex-item-none">
                 {% if not discussion.modificatorItem.isDeleted and discussion.modificatorItem.isUser %}
@@ -38,7 +38,7 @@
                     </span>
                 </div>
              </div>
-            
+
             {# title and meta #}
             <div class="uk-width-8-10">
                 <h4 class="uk-comment-title">
@@ -54,7 +54,7 @@
                 <div class="uk-comment-meta">
                     {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(discussion.modificatorItem) }} ({{ discussion.creationDate|craue_date }})
                 </div>
-               
+
                 <div class="uk-comment-meta">
                     {{ macros.fileListShort(discussion) }}
                 </div>
@@ -66,7 +66,7 @@
                 {% endif %}
             </div>
             {% endif %}
-            
+
         </header>
     </article>
 {% else %}

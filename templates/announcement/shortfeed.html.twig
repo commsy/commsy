@@ -1,8 +1,8 @@
 {% import 'utils/macros.html.twig' as macros %}
 
 {% for announcement in announcements %}
-   <article class="uk-comment">    
-        <header class="uk-comment-header uk-flex">
+   <article class="uk-comment">
+        <header class="uk-comment-header uk-margin-remove uk-flex">
             {# title and meta #}
             <div class="uk-width-1-1">
                 <h4 class="uk-comment-title">
@@ -13,14 +13,14 @@
                         {% if "now"|date("U") <= announcement.secondDateTime|date("U") %}
                             <span class="uk-text-bold">
                         {% endif %}
-                        
+
                         {{ 'valid until'|trans({})}}: {{ announcement.secondDateTime|craue_date }}
-                        
+
                         {% if "now"|date("U") <= announcement.secondDateTime|date("U") %}
                             </span>
                         {% endif %}
                     {% else %}
-                        {{ 'valid until'|trans({})}}: 
+                        {{ 'valid until'|trans({})}}:
                     {% endif %}
                 </div>
             </div>

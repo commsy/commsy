@@ -176,7 +176,7 @@
                     <div class="cs-toggle" data-uk-observe>
                         {{ macrosTopic.title(topic, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
                     </div>
-            
+
                     {# description #}
                     <div id="description{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
                         {{ macrosItem.itemDescription('description', topic, true, topic.description, draft) }}
@@ -188,7 +188,7 @@
                             {{ macrosTopic.path(topic, isLinkedToItems, isLinkedToItems) }}
                         </div>
                     {% endif %}
-            
+
                     {# files #}
                     <div id="files{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
                         {{ macrosItem.files(topic, draft) }}
@@ -208,10 +208,10 @@
 
                     {% if draft %}
                         <div id="draft-buttons-wrapper">
-                            <a id="draft-save-combine-link" href="" class="uk-button uk-button-primary">
+                            <a href="#" class="uk-button uk-button-primary" data-draft-save>
                                 {{ 'create entry'|trans({}, "form") }}
                             </a>
-                            <a id="draft-cancel-link" href="" class="uk-button uk-button-secondary">
+                            <a href="#" class="uk-button uk-button-secondary" data-draft-cancel>
                                 {{ 'cancel'|trans({}, "form") }}
                             </a>
                         </div>
@@ -240,7 +240,7 @@
             </div>
 
         </div>
-      
+
     </div>
 {% endblock %}
 
