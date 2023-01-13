@@ -47,8 +47,8 @@
 {% block editbox %}
     <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
         <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
-        <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
-            <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+        <div id="cs-entry-navigation" class="uk-dropdown uk-dropdown-small">
+            <ul class="uk-nav uk-nav-dropdown uk-list-striped">
                 <li>
                     <a href="{{ path('app_user_printlist', {'roomId': roomId,'user_filter':app.request.query.get('user_filter')}) }}" target="_blank" id="print">
                         <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
@@ -116,8 +116,8 @@
     {% if is_granted('MODERATOR') and not isArchived %}
         <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
             <button class="uk-button uk-button-mini">{{ 'Manage users'|trans({},'user') }} <i class="uk-icon-caret-down"></i></button>
-            <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
-                <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+            <div id="cs-entry-navigation" class="uk-dropdown uk-dropdown-small">
+                <ul class="uk-nav uk-nav-dropdown uk-list-striped">
                     {# delete #}
                     <li>
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
@@ -248,8 +248,8 @@
         {# sort dropdown #}
         <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
             <button class="uk-button uk-button-mini">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
-            <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
-                <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+            <div id="cs-entry-navigation" class="uk-dropdown uk-dropdown-small">
+                <ul class="uk-nav uk-nav-dropdown uk-list-striped">
                     {# sorting options #}
                     {%- set initialStateName = sort is same as('name') ? 'asc' : (sort is same as('name_rev') ? 'desc' : '') -%}
                     {%- set initialStateEmail = sort is same as('email') ? 'asc' : (sort is same as('email_rev') ? 'desc' : '') -%}

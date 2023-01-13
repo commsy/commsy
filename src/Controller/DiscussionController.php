@@ -649,6 +649,7 @@ class DiscussionController extends BaseController
             return $this->redirectToRoute('app_discussion_detail', [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
+                '_fragment' => "answer_id_{$answer->getItemID()}",
             ]);
         }
 
@@ -743,7 +744,7 @@ class DiscussionController extends BaseController
         return $this->redirectToRoute('app_discussion_detail', [
             'roomId' => $roomId,
             'itemId' => $article->getDiscussionID(),
-            '_fragment' => "answer_id_{$article->getItemID()}"
+            '_fragment' => "answer_id_{$article->getItemID()}",
         ]);
     }
 

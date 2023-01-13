@@ -1,0 +1,17 @@
+<div class="uk-button-dropdown" data-uk-dropdown>
+    {# element, toggling the dropdown #}
+    {% if toggleType == 'button' %}
+        <button class="uk-button{% if buttonSize %} uk-button-{{ buttonSize }}{% endif %}">
+            <i class="uk-icon-hover uk-icon-small uk-icon-justify uk-icon-{{ icon }}"></i>
+        </button>
+    {% elseif toggleType == 'link' %}
+        <a href="">
+            <i class="uk-icon-hover uk-icon-small uk-icon-justify uk-icon-{{ icon }}"></i>
+        </a>
+    {% endif %}
+
+    {# dropdown #}
+    <div{{ attributes.defaults({ class: 'uk-dropdown' }) }}>
+        {% block dropdown %}{% endblock %}
+    </div>
+</div>

@@ -16,7 +16,7 @@
 
                 {# panel teaser #}
                 <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow">
-                    <div class="uk-grid">
+                    <div class="uk-flex">
 
                         {# quick item navigation #}
                         {{ render(controller(
@@ -25,7 +25,7 @@
                         ))}}
 
                         {# actions #}
-                        <div class="uk-width-3-5 uk-text-right">
+                        <div class="uk-flex-item-none">
 
                             {# additional actions #}
                             <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
@@ -34,8 +34,8 @@
                                     <i class="uk-icon-caret-down"></i>
                                 </button>
 
-                                <div class="cs-additional-actions uk-dropdown uk-padding-remove">
-                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                                <div class="cs-additional-actions uk-dropdown">
+                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped">
 
                                         {# new entry #}
                                         <li>
@@ -326,8 +326,8 @@
                     {% set count = loop.index0 %}
                     <div id="section_{{count}}" class="uk-panel uk-panel-box uk-margin-top material-section">
                         <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow cs-remove-section cs-toggle">
-                            <div class="uk-grid">
-                                <div class="uk-flex-inline uk-width-2-5 ">
+                            <div class="uk-flex">
+                                <div class="uk-flex-inline uk-flex-item-1">
                                     {# section navigation #}
                                     {% if loop.last and loop.length > 1 %}
                                         <div class="uk-margin-right">
@@ -351,7 +351,7 @@
                                         </div>
                                     {% endif %}
                                 </div>
-                                <div class="uk-width-3-5 uk-text-right">
+                                <div class="uk-flex-item-none">
 
                                     {# section actions #}
                                     <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
@@ -361,7 +361,7 @@
                                         </button>
 
                                         <div class="cs-additional-actions uk-dropdown  uk-padding-remove">
-                                            <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                                            <ul class="uk-nav uk-nav-dropdown uk-list-striped">
 
                                                 {# new section #}
                                                 <li>
