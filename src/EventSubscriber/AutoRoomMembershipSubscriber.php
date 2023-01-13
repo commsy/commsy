@@ -12,6 +12,9 @@ use Symfony\Component\Security\Http\SecurityEvents;
 
 class AutoRoomMembershipSubscriber implements EventSubscriberInterface
 {
+    // separator which separates multiple room identifiers
+    private const SEPARATOR = ';';
+
     /**
      * @var UserCreatorFacade
      */
@@ -62,7 +65,7 @@ class AutoRoomMembershipSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $membershipIdentifiers = explode(',', trim($membershipIdentifierString));
+        $membershipIdentifiers = explode(self::SEPARATOR, trim($membershipIdentifierString));
         if (empty($membershipIdentifiers)) {
             return;
         }
