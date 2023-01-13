@@ -16,10 +16,10 @@
 
                 {# panel teaser #}
                 <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow">
-                    <div class="uk-grid">
+                    <div class="uk-flex">
 
                         {# quick item navigation #}
-                        <div class="uk-flex-inline uk-width-2-5 ">
+                        <div class="uk-flex-inline uk-flex-item-1">
 
                             {# back navigation #}
                             <div class="uk-margin-right">
@@ -41,8 +41,8 @@
                                     {{ 'Topic'|trans({'%count%':0}, "rubric")}} {{ counterPosition }} / {{ count }}
                                     <i class="uk-icon-caret-down"></i>
                                 </button>
-                                <div id="cs-entry-navigation" class="uk-dropdown uk-padding-remove">
-                                   <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                                <div id="cs-entry-navigation" class="uk-dropdown">
+                                   <ul class="uk-nav uk-nav-dropdown uk-list-striped">
                                        {% for tempTopic in topicList %}
                                             {% if tempTopic.itemId != topic.itemId %}
                                                 <li><a href="{{ path('app_topic_detail', {'roomId': roomId, 'itemId': tempTopic.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempTopic.title|decodeHtmlEntity }}">{{ tempTopic.title|decodeHtmlEntity|u.truncate(25) }}</a></li>
@@ -70,7 +70,7 @@
                         </div>
 
                         {# actions #}
-                        <div class="uk-width-3-5 uk-text-right">
+                        <div class="uk-flex-item-none">
 
 
                             {# additional actions #}
@@ -81,7 +81,7 @@
                                 </button>
 
                                 <div class="cs-additional-actions uk-dropdown  uk-padding-remove">
-                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped">
 
 
                                         {# new entry #}

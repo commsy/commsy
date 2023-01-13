@@ -877,6 +877,9 @@
             "templates/base.html.twig"
         ]
     },
+    "symfony/ux-twig-component": {
+        "version": "v2.6.1"
+    },
     "symfony/validator": {
         "version": "5.4",
         "recipe": {

@@ -7,77 +7,99 @@
         <hr>
     {% endif %}
 
-    <header class="uk-comment-header">
-        {# avatar #}
-        {% if not article.modificatorItem.isDeleted and article.modificatorItem.isUser %}
-            {{ macros.userIconLink(article.modificatorItem, 42, true, ['uk-border-circle', 'uk-comment-avatar']) }}
-        {% else %}
-            {{ macros.userIcon(article.modificatorItem, 42, true, ['uk-border-circle', 'uk-comment-avatar']) }}
-        {% endif %}
+    <header class="uk-comment-header uk-flex">
+        <div class="uk-flex-item-1">
+            {# avatar #}
+            {% if not article.modificatorItem.isDeleted and article.modificatorItem.isUser %}
+                {{ macros.userIconLink(article.modificatorItem, 42, true, ['uk-border-circle', 'uk-comment-avatar']) }}
+            {% else %}
+                {{ macros.userIcon(article.modificatorItem, 42, true, ['uk-border-circle', 'uk-comment-avatar']) }}
+            {% endif %}
 
-        <h4 class="uk-comment-title">
-            {{ macros.userFullname(article.modificatorItem) }}
-        </h4>
-        <div class="uk-comment-meta">
-            {{ article.modificationDate|craue_date }} {{ article.modificationDate|craue_time }} | {{ macrosDiscussion.anchorLinks(loop, count) }}
+            <h4 class="uk-comment-title">
+                {{ macros.userFullname(article.modificatorItem) }}
+            </h4>
+            <div class="uk-comment-meta">
+                {{ article.modificationDate|craue_date }} {{ article.modificationDate|craue_time }} | {{ macrosDiscussion.anchorLinks(loop, count) }}
+            </div>
+        </div>
+
+        {# right actions #}
+        <div class="content-actions uk-flex cs-edit">
+            {# section actions #}
+            {# NOTE: `getHasOverwrittenContent()` returns true for articles with answers which were "deleted" but should instead have their content overwritten to keep the discussion hierarchy intact. #}
+            {% if not article.hasOverwrittenContent -%}
+                {% if is_granted('ITEM_EDIT', 'NEW') %}
+                    {# answer #}
+                    <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createanswer', {'roomId': roomId, 'itemId': discussion.itemId, 'answerTo': article.itemId }) }}">
+                        <i class="uk-icon-hover uk-icon-small uk-icon-justify uk-icon-reply"></i>
+                    </a>
+
+                    {% component 'v2:dropdown' with { toggleType: 'link' } %}
+                        {% block dropdown %}
+                            <ul class="uk-nav uk-nav-dropdown">
+                                {% if is_granted('ITEM_EDIT', article.itemId) %}
+                                    {# edit #}
+                                    <li>
+                                        <a href="#" id="edit_toggle_{{ article.itemId }}">
+                                            <i class="uk-icon-hover uk-icon-small uk-icon-justify uk-icon-edit"></i>
+                                            {{ "edit"|trans({})|capitalize }}
+                                        </a>
+                                    </li>
+
+                                    {# files #}
+                                    <li>
+                                        <a href="#" id="edit_files_toggle_{{ article.itemId }}" class="cs-edit">
+                                            <i class="uk-icon-hover uk-icon-small uk-icon-justify uk-icon-file-o"></i>
+                                            {{ "files"|trans({})|capitalize }}
+                                        </a>
+                                    </li>
+
+                                {% endif %}
+
+                                {# delete #}
+                                {% if is_granted('ITEM_EDIT', article.itemId) %}
+                                    <li>
+                                        <a href="#" data-cs-action="{{ {
+                                            'url': path('app_discussionarticle_xhrdelete', {'roomId': roomId}),
+                                            'action': 'delete',
+                                            'itemId': article.itemId,
+                                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                            'mode': 'click',
+                                            'itemType': article.itemType,
+                                            'title': 'list choice'|trans({},'rubric')|capitalize,
+                                            'confirmQuestion': 'confirm delete'|trans({},'rubric'),
+                                            'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
+                                            'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
+                                            'returnUrl': path('app_discussion_detail', {'roomId': roomId, 'itemId': discussion.itemId})
+                                        }|json_encode|e('html_attr') }}">
+                                            <i class="uk-icon-hover uk-icon-small uk-icon-justify uk-icon-trash-o"></i>
+                                            {{ 'trash'|trans({})|capitalize }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        {% endblock %}
+                    {% endcomponent %}
+                {% endif %}
+            {% endif %}
         </div>
     </header>
     <div class="uk-comment-body">
-        <div class="uk-flex">
-            <div id="description{{ article.itemId }}" class="cs-edit-section cs-toggle uk-flex-item-1" data-uk-observe data-cs-edit="{{ {
-                'editUrl': path('app_item_editdescription', {'roomId': article.contextId, 'itemId': article.itemId}),
-                'cancelEditUrl': path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}),
-                'toggleSelect': '#edit_toggle_' ~ article.itemId
-            }|json_encode|e('html_attr') }}">
-                {{ article.description|decodeHtmlEntity|raw }}
-            </div>
-
-            {# right actions #}
-            <div class="content-actions uk-flex uk-margin-left cs-edit">
-
-                {# section actions #}
-                {# NOTE: `getHasOverwrittenContent()` returns true for articles with answers which were "deleted" but should instead have their content overwritten to keep the discussion hierarchy intact. #}
-                {% if not article.hasOverwrittenContent -%}
-                    {% if is_granted('ITEM_EDIT', 'NEW') %}
-                        {# edit #}
-                        {% if is_granted('ITEM_EDIT', article.itemId) %}
-                            <div id="edit_toggle_{{ article.itemId }}" class="uk-display-inline" data-edit-title="{{ "edit"|trans({}) }}">
-                                <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
-                            </div>
-                        {% endif %}
-
-                        {# answer #}
-                        <a class="newArticle uk-margin-left" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createanswer', {'roomId': roomId, 'itemId': discussion.itemId, 'answerTo': article.itemId }) }}">
-                            <i class="uk-icon-hover uk-icon-small uk-icon-reply"></i>
-                        </a>
-
-                        {# delete #}
-                        {% if is_granted('ITEM_EDIT', article.itemId) %}
-                            <a href="#" class="uk-margin-left cs-edit" data-cs-action="{{ {
-                                'url': path('app_discussionarticle_xhrdelete', {'roomId': roomId, 'itemId': article.itemId}),
-                                'action': 'delete',
-                                'itemId': article.itemId,
-                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                'mode': 'click',
-                                'itemType': article.itemType,
-                                'title': 'list choice'|trans({},'rubric')|capitalize,
-                                'confirmQuestion': 'confirm delete'|trans({},'rubric'),
-                                'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
-                                'confirmOk': 'confirm delete confirm'|trans({},'rubric')
-                            }|json_encode|e('html_attr') }}">
-                                <i class="uk-icon-hover uk-icon-small uk-icon-trash-o"></i>
-                            </a>
-                        {% endif %}
-                    {% endif %}
-                {% endif %}
-            </div>
+        <div id="description{{ article.itemId }}" class="cs-edit-section" data-uk-observe data-cs-edit="{{ {
+            'editUrl': path('app_item_editdescription', {'roomId': article.contextId, 'itemId': article.itemId}),
+            'cancelEditUrl': path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}),
+            'toggleSelect': '#edit_toggle_' ~ article.itemId
+        }|json_encode|e('html_attr') }}">
+            {{ article.description|decodeHtmlEntity|raw }}
         </div>
 
         {# files #}
         {% if not article.hasOverwrittenContent -%}
             <div class="uk-margin-top" data-cs-edit="{{ {
                 'editUrl': path('app_upload_uploadform', {'roomId': article.contextId, 'itemId': article.itemId}),
-                'cancelEditUrl': path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId})
+                'cancelEditUrl': path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}),
+                'toggleSelect': '#edit_files_toggle_' ~ article.itemId
             }|json_encode|e('html_attr') }}">
                 {{ macrosItem.files_simple(article) }}
             </div>

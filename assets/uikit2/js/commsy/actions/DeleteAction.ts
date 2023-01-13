@@ -58,17 +58,6 @@ export class DeleteAction extends XHRAction {
                     case 'section':
                         $('.material-section').hide();
                         break;
-                    case 'discarticle':
-                        // remove from main content
-                        $('li#answer_id_' + this.itemId).remove();
-
-                        // remove from sidebar
-                        const $sidebarLink = $('div.cs-nav-quick a[href="#article' + this.itemId + '"]');
-                        $sidebarLink.closest('li').remove();
-
-                        // remove from tree
-                        $('li#article_' + this.itemId).remove();
-                        break;
 
                     default:
                         window.location.href = this.returnUrl;
