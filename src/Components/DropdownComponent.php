@@ -9,9 +9,11 @@ use Symfony\UX\TwigComponent\Attribute\PreMount;
 #[AsTwigComponent('v2:dropdown')]
 final class DropdownComponent
 {
-    public string $buttonSize = '';
+    public string $buttonSize = 'mini';
 
     public string $icon = 'ellipsis-v';
+
+    public string $title = '';
 
     public string $toggleType = 'button';
 
@@ -22,8 +24,9 @@ final class DropdownComponent
 
         $resolver->setDefaults([
             'class' => 'uk-dropdown',
-            'buttonSize' => '',
+            'buttonSize' => 'mini',
             'icon' => 'ellipsis-v',
+            'title' => '',
             'toggleType' => 'button',
         ]);
 

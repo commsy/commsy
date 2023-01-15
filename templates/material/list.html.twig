@@ -1,7 +1,5 @@
 {% extends 'base/list.html.twig' %}
 
-{% import 'utils/macros.html.twig' as utilsMacros %}
-
 {% block feed %}
     <ul id="materials-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
@@ -19,39 +17,39 @@
 {% endblock %}
 
 {% block sortbox %}
-        {# sort dropdown #}
-        <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-            <button class="uk-button uk-button-mini">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
-            <div id="cs-entry-navigation" class="uk-dropdown uk-dropdown-small">
-                <ul class="uk-nav uk-nav-dropdown uk-list-striped">
-                    {# sorting options #}
-                    {%- set initialStateTitle = sort is same as('title') ? 'asc' : (sort is same as('title_rev') ? 'desc' : '') -%}
-                    {%- set initialStateCreator = sort is same as('creator') ? 'asc' : (sort is same as('creator_rev') ? 'desc' : '') -%}
-                    {%- set initialStateModificator = sort is same as('modificator') ? 'asc' : (sort is same as('modificator_rev') ? 'desc' : '') -%}
-                    {%- set initialStateDate = sort is same as('date_rev') ? 'asc' : (sort is same as('date') ? 'desc' : '') -%}
+    {# sort dropdown #}
+    {% component 'v2:dropdown' with { icon: 'caret-down', title: 'list sort'|trans({},'rubric')|capitalize } %}
+        {% import 'utils/macros.html.twig' as utilsMacros %}
 
-                    {{ utilsMacros.sortActor('title', 'title', 'rubric', 'title', 'title_rev', initialStateTitle) }}
-                    {{ utilsMacros.sortActor('creator', 'creator', 'messages', 'creator', 'creator_rev', initialStateCreator) }}
-                    {{ utilsMacros.sortActor('modificator', 'modifier', 'rubric', 'modificator', 'modificator_rev', initialStateModificator) }}
-                    {{ utilsMacros.sortActor('date', 'modification_date', 'rubric', 'date_rev', 'date', initialStateDate) }}
+        {% block dropdown %}
+            <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                {# sorting options #}
+                {%- set initialStateTitle = sort is same as('title') ? 'asc' : (sort is same as('title_rev') ? 'desc' : '') -%}
+                {%- set initialStateCreator = sort is same as('creator') ? 'asc' : (sort is same as('creator_rev') ? 'desc' : '') -%}
+                {%- set initialStateModificator = sort is same as('modificator') ? 'asc' : (sort is same as('modificator_rev') ? 'desc' : '') -%}
+                {%- set initialStateDate = sort is same as('date_rev') ? 'asc' : (sort is same as('date') ? 'desc' : '') -%}
 
-                    {% if showRating %}
-                        {%- set initialStateAssessment = sort is same as('assessment') ? 'asc' : (sort is same as('assessment_rev') ? 'desc' : '') %}
-                        {{ utilsMacros.sortActor('assessment', 'rating', 'rubric', 'assessment', 'assessment_rev', initialStateAssessment) }}
-                    {% endif %}
-                    {% if showWorkflow %}
-                        {%- set initialStateWorkflowStatus = sort is same as('workflow_status') ? 'asc' : (sort is same as('workflow_status_rev') ? 'desc' : '') %}
-                        {{ utilsMacros.sortActor('workflow_status', 'Workflow (status)', 'rubric', 'workflow_status', 'workflow_status_rev', initialStateWorkflowStatus) }}
-                    {% endif %}
-               </ul>
-            </div>
-        </div>
+                {{ utilsMacros.sortActor('title', 'title', 'rubric', 'title', 'title_rev', initialStateTitle) }}
+                {{ utilsMacros.sortActor('creator', 'creator', 'messages', 'creator', 'creator_rev', initialStateCreator) }}
+                {{ utilsMacros.sortActor('modificator', 'modifier', 'rubric', 'modificator', 'modificator_rev', initialStateModificator) }}
+                {{ utilsMacros.sortActor('date', 'modification_date', 'rubric', 'date_rev', 'date', initialStateDate) }}
+
+                {% if showRating %}
+                    {%- set initialStateAssessment = sort is same as('assessment') ? 'asc' : (sort is same as('assessment_rev') ? 'desc' : '') %}
+                    {{ utilsMacros.sortActor('assessment', 'rating', 'rubric', 'assessment', 'assessment_rev', initialStateAssessment) }}
+                {% endif %}
+                {% if showWorkflow %}
+                    {%- set initialStateWorkflowStatus = sort is same as('workflow_status') ? 'asc' : (sort is same as('workflow_status_rev') ? 'desc' : '') %}
+                    {{ utilsMacros.sortActor('workflow_status', 'Workflow (status)', 'rubric', 'workflow_status', 'workflow_status_rev', initialStateWorkflowStatus) }}
+                {% endif %}
+            </ul>
+        {% endblock %}
+    {% endcomponent %}
 {% endblock %}
 
 {% block editbox %}
-    <div id="material-list-action-dropdown" class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-        <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
-        <div id="cs-entry-navigation" class="uk-dropdown uk-dropdown-small">
+    {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+        {% block dropdown %}
             <ul class="uk-nav uk-nav-dropdown uk-list-striped">
 
                 {# new entry #}
@@ -62,8 +60,8 @@
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({}) }}
-                        </span>
+                        <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({}) }}
+                    </span>
                     {% endif %}
                 </li>
 
@@ -87,8 +85,8 @@
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-check uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
-                        </span>
+                        <i class="uk-icon-justify uk-icon-small uk-icon-check uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
+                    </span>
                     {% endif %}
                 </li>
 
@@ -105,8 +103,8 @@
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-bookmark-o uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
-                        </span>
+                        <i class="uk-icon-justify uk-icon-small uk-icon-bookmark-o uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
+                    </span>
                     {% endif %}
                 </li>
 
@@ -123,8 +121,8 @@
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-sitemap uk-visible-large"></i> {{ 'categorize'|trans({},'rubric') }}
-                        </span>
+                        <i class="uk-icon-justify uk-icon-small uk-icon-sitemap uk-visible-large"></i> {{ 'categorize'|trans({},'rubric') }}
+                    </span>
                     {% endif %}
                 </li>
 
@@ -141,8 +139,8 @@
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-hashtag uk-visible-large"></i> {{ 'hashtag'|trans({},'rubric') }}
-                        </span>
+                        <i class="uk-icon-justify uk-icon-small uk-icon-hashtag uk-visible-large"></i> {{ 'hashtag'|trans({},'rubric') }}
+                    </span>
                     {% endif %}
                 </li>
 
@@ -159,8 +157,8 @@
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-on uk-visible-large"></i> {{ 'Activate'|trans({},'rubric') }}
-                        </span>
+                        <i class="uk-icon-justify uk-icon-small uk-icon-toggle-on uk-visible-large"></i> {{ 'Activate'|trans({},'rubric') }}
+                    </span>
                     {% endif %}
                 </li>
 
@@ -177,8 +175,8 @@
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-off uk-visible-large"></i> {{ 'Deactivate'|trans({},'rubric') }}
-                        </span>
+                        <i class="uk-icon-justify uk-icon-small uk-icon-toggle-off uk-visible-large"></i> {{ 'Deactivate'|trans({},'rubric') }}
+                    </span>
                     {% endif %}
                 </li>
 
@@ -195,8 +193,8 @@
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({},'rubric')|capitalize }}
-                        </span>
+                        <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({},'rubric')|capitalize }}
+                    </span>
                     {% endif %}
                 </li>
 
@@ -217,11 +215,11 @@
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
-                        </span>
+                        <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                    </span>
                     {% endif %}
                 </li>
             </ul>
-        </div>
-    </div>
+        {% endblock %}
+    {% endcomponent %}
 {% endblock %}

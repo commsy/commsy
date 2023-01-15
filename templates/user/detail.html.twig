@@ -36,22 +36,20 @@
                             </div>
 
                             {# item dropdown #}
-                            <div class="uk-button-dropdown uk-margin-right" data-uk-dropdown>
-                                <button class="uk-button uk-button-mini">
-                                    {{ 'User'|trans({'%count%':0}, "rubric")}} {{ counterPosition }} / {{ count }}
-                                    <i class="uk-icon-caret-down"></i>
-                                </button>
-                                <div id="cs-entry-navigation" class="uk-dropdown">
-                                   <ul class="uk-nav uk-nav-dropdown uk-list-striped">
-                                       {% for tempUser in userList %}
-                                            {% if tempUser.itemId != user.itemId %}
-                                                <li><a href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': tempUser.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity }}">{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity|u.truncate(25) }}</a></li>
-                                            {% else %}
-                                                <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.title|decodeHtmlEntity }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity|u.truncate(20)  }}</a></li>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </ul>
-                                </div>
+                            <div class="uk-margin-right">
+                                {% component 'v2:dropdown' with { icon: 'caret-down', title: 'User'|trans({'%count%':0}, "rubric") ~ counterPosition ~ '/' ~ count } %}
+                                    {% block dropdown %}
+                                       <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                                           {% for tempUser in userList %}
+                                                {% if tempUser.itemId != user.itemId %}
+                                                    <li><a href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': tempUser.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity }}">{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity|u.truncate(25) }}</a></li>
+                                                {% else %}
+                                                    <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.title|decodeHtmlEntity }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity|u.truncate(20)  }}</a></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    {% endblock %}
+                                {% endcomponent %}
                             </div>
 
                             {# forward navigation #}
@@ -74,13 +72,8 @@
 
 
                             {# additional actions #}
-                            <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
-                                <button class="uk-button uk-button-mini">
-                                    {{ 'selected entries'|trans({}, 'rubric') }}
-                                    <i class="uk-icon-caret-down"></i>
-                                </button>
-
-                                <div class="cs-additional-actions uk-dropdown  uk-padding-remove">
+                            {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+                                {% block dropdown %}
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped">
                                         {# print #}
                                         <li>
@@ -94,16 +87,12 @@
                                             </a>
                                         </li>
                                     </ul>
-                                </div>
-                            </div>
+                                {% endblock %}
+                            {% endcomponent %}
 
                             {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
-                                <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-                                    <button class="uk-button uk-button-mini">
-                                        {{ 'Manage user'|trans({},'user') }}
-                                        <i class="uk-icon-caret-down"></i>
-                                    </button>
-                                    <div id="cs-entry-navigation" class="uk-dropdown uk-dropdown-small">
+                                {% component 'v2:dropdown' with { icon: 'caret-down', title: 'Manage user'|trans({},'user')|capitalize } %}
+                                    {% block dropdown %}
                                         <ul class="uk-nav uk-nav-dropdown uk-list-striped">
                                             {% if user.isRequested %}
                                                 {# confirm #}
@@ -200,8 +189,8 @@
                                                 </li>
                                             {% endif %}
                                         </ul>
-                                    </div>
-                                </div>
+                                    {% endblock %}
+                                {% endcomponent %}
                             {% endif %}
                         </div>
 

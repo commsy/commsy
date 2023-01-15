@@ -28,13 +28,8 @@
                         <div class="uk-flex-item-none">
 
                             {# additional actions #}
-                            <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
-                                <button class="uk-button uk-button-mini">
-                                    {{ 'selected entries'|trans({}, 'rubric') }}
-                                    <i class="uk-icon-caret-down"></i>
-                                </button>
-
-                                <div class="cs-additional-actions uk-dropdown">
+                            {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+                                {% block dropdown %}
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped">
 
                                         {# new entry #}
@@ -179,21 +174,21 @@
                                         <li>&nbsp;</li>
 
                                         {# new section #}
-                                         <li>
-                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                        <li>
+                                            {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                 <a class="newSection" href="#" id="newSection" data-section-url="{{ path('app_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
                                                     <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
                                                 </a>
-                                             {% else %}
-                                                 <span class="uk-text-muted">
+                                            {% else %}
+                                                <span class="uk-text-muted">
                                                     <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
                                                 </span>
-                                             {% endif %}
+                                            {% endif %}
                                         </li>
 
                                         {# new version #}
                                         {% if material.isCurrentVersion %}
-                                             <li>
+                                            <li>
                                                 {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                     <a class="newVersion" href="{{ path('app_material_createversion', {'roomId': roomId, 'itemId': material.itemId, 'versionId': material.versionId}) }}" id="newVersion">
                                                         <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new version'|trans({}) }}
@@ -206,8 +201,8 @@
                                             </li>
                                         {% endif %}
                                     </ul>
-                                </div>
-                            </div>
+                                {% endblock %}
+                            {% endcomponent %}
                         </div>
                     </div>
                 </div>
@@ -354,13 +349,8 @@
                                 <div class="uk-flex-item-none">
 
                                     {# section actions #}
-                                    <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
-                                        <button class="uk-button uk-button-mini">
-                                            {{ 'selected entries'|trans({}, 'rubric') }}
-                                            <i class="uk-icon-caret-down"></i>
-                                        </button>
-
-                                        <div class="cs-additional-actions uk-dropdown  uk-padding-remove">
+                                    {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+                                        {% block dropdown %}
                                             <ul class="uk-nav uk-nav-dropdown uk-list-striped">
 
                                                 {# new section #}
@@ -400,8 +390,8 @@
                                                     {% endif %}
                                                 </li>
                                             </ul>
-                                        </div>
-                                    </div>
+                                        {% endblock %}
+                                    {% endcomponent %}
                                 </div>
                             </div>
                         </div>

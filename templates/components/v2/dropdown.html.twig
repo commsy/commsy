@@ -2,10 +2,12 @@
     {# element, toggling the dropdown #}
     {% if toggleType == 'button' %}
         <button class="uk-button{% if buttonSize %} uk-button-{{ buttonSize }}{% endif %}">
-            <i class="uk-icon-hover uk-icon-small uk-icon-justify uk-icon-{{ icon }}"></i>
+            {% if title %}{{ title }}{% endif %}
+            <i class="uk-icon-{{ icon }}"></i>
         </button>
     {% elseif toggleType == 'link' %}
         <a href="">
+            {% if title %}{{ title }}{% endif %}
             <i class="uk-icon-hover uk-icon-small uk-icon-justify uk-icon-{{ icon }}"></i>
         </a>
     {% endif %}
