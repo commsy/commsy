@@ -1,8 +1,6 @@
 {% extends 'base/list.html.twig' %}
 {% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
-{% import 'utils/macros.html.twig' as utilsMacros %}
-
 {% block feed %}
     <ul id="dates-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
@@ -20,30 +18,33 @@
 {% endblock %}
 
 {% block sortbox %}
-        {# sort dropdown #}
-        <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-            <button class="uk-button uk-button-mini">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
-            <div id="cs-entry-navigation" class="uk-dropdown uk-dropdown-small">
-                <ul class="uk-nav uk-nav-dropdown uk-list-striped">
-                    {# sorting options #}
-                    {%- set initialStateTitle = sort is same as('title') ? 'asc' : (sort is same as('title_rev') ? 'desc' : '') -%}
-                    {%- set initialStateTime = sort is same as('time') ? 'asc' : (sort is same as('time_rev') ? 'desc' : '') -%}
-                    {%- set initialStatePlace = sort is same as('place') ? 'asc' : (sort is same as('place_rev') ? 'desc' : '') -%}
+    {# sort dropdown #}
+    {% component 'v2:dropdown' with { icon: 'caret-down', title: 'list sort'|trans({},'rubric')|capitalize } %}
+        {% import 'utils/macros.html.twig' as utilsMacros %}
 
-                    {{ utilsMacros.sortActor('title', 'title', 'rubric', 'title', 'title_rev', initialStateTitle) }}
-                    {{ utilsMacros.sortActor('sort', 'time', 'rubric', 'time', 'time_rev', initialStateTime) }}
-                    {{ utilsMacros.sortActor('place', 'place', 'rubric', 'place', 'place_rev', initialStatePlace) }}
-               </ul>
-            </div>
-        </div>
+        {% block dropdown %}
+            <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                {# sorting options #}
+                {%- set initialStateTitle = sort is same as('title') ? 'asc' : (sort is same as('title_rev') ? 'desc' : '') -%}
+                {%- set initialStateTime = sort is same as('time') ? 'asc' : (sort is same as('time_rev') ? 'desc' : '') -%}
+                {%- set initialStatePlace = sort is same as('place') ? 'asc' : (sort is same as('place_rev') ? 'desc' : '') -%}
+
+                {{ utilsMacros.sortActor('title', 'title', 'rubric', 'title', 'title_rev', initialStateTitle) }}
+                {{ utilsMacros.sortActor('sort', 'time', 'rubric', 'time', 'time_rev', initialStateTime) }}
+                {{ utilsMacros.sortActor('place', 'place', 'rubric', 'place', 'place_rev', initialStatePlace) }}
+           </ul>
+        {% endblock %}
+    {% endcomponent %}
 {% endblock %}
 
 {% block editbox %}
-    <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-        <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
-        <div id="cs-entry-navigation" class="uk-dropdown uk-dropdown-small">
+    {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+        {% block dropdown %}
+            {% import 'utils/macros.html.twig' as utilsMacros %}
+
             <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-nav-parent-icon" data-uk-nav>
 
+                {# new entry #}
                 <li>
                     {% if is_granted('ITEM_EDIT', 'NEW') %}
                         <a href="{{ path('app_date_create', {'roomId': roomId, 'dateDescription' : "now"}) }}">
@@ -264,8 +265,8 @@
                     </li>
                 {% endif %}
             </ul>
-        </div>
-    </div>
+        {% endblock %}
+    {% endcomponent %}
 {% endblock%}
 
 {% block listAddons %}

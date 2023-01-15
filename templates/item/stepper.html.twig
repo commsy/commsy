@@ -17,22 +17,20 @@
     </div>
 
     {# item dropdown #}
-    <div class="uk-button-dropdown uk-margin-right" data-uk-dropdown>
-        <button class="uk-button uk-button-mini">
-            {{ rubric|capitalize|trans({}, "rubric", null, 0)}} {{ counterPosition }} / {{ count }}
-            <i class="uk-icon-caret-down"></i>
-        </button>
-        <div id="cs-entry-navigation" class="uk-dropdown">
-           <ul class="uk-nav uk-nav-dropdown uk-list-striped">
-               {% for tempItem in itemList %}
-                    {% if tempItem.itemId != item.itemId %}
-                        <li><a href="{{ path(detailPath, {'roomId': roomId, 'itemId': tempItem.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempItem.title|decodeHtmlEntity }}">{{ tempItem.title|decodeHtmlEntity|u.truncate(25) }}</a></li>
-                    {% else %}
-                        <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempItem.title|decodeHtmlEntity }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempItem.title|decodeHtmlEntity|u.truncate(20)  }}</a></li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        </div>
+    <div class="uk-margin-right">
+        {% component 'v2:dropdown' with { icon: 'caret-down', title: rubric|capitalize|trans({}, "rubric", null, 0) ~ counterPosition ~ '/' ~ count } %}
+            {% block dropdown %}
+                <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                    {% for tempItem in itemList %}
+                        {% if tempItem.itemId != item.itemId %}
+                            <li><a href="{{ path(detailPath, {'roomId': roomId, 'itemId': tempItem.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempItem.title|decodeHtmlEntity }}">{{ tempItem.title|decodeHtmlEntity|u.truncate(25) }}</a></li>
+                        {% else %}
+                            <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempItem.title|decodeHtmlEntity }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempItem.title|decodeHtmlEntity|u.truncate(20)  }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% endblock %}
+        {% endcomponent %}
     </div>
 
     {# forward navigation #}

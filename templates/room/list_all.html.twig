@@ -1,5 +1,4 @@
 {% extends 'base/list.html.twig' %}
-{% import 'utils/macros.html.twig' as utilsMacros %}
 
 {% block listTitle %}
     {{ 'Rooms'|trans([], 'room') }}
@@ -25,9 +24,10 @@
 {% endblock %}
 
 {% block sortbox %}
-    <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-        <button class="uk-button uk-button-mini">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
-        <div id="cs-entry-navigation" class="uk-dropdown uk-dropdown-small">
+    {% component 'v2:dropdown' with { icon: 'caret-down', title: 'list sort'|trans({},'rubric')|capitalize } %}
+        {% import 'utils/macros.html.twig' as utilsMacros %}
+
+        {% block dropdown %}
             <ul class="uk-nav uk-nav-dropdown uk-list-striped">
                 {# sorting options #}
                 {%- set initialStateActivity = sort is same as('activity_rev') ? 'asc' : (sort is same as('activity') ? 'desc' : '') -%}
@@ -36,14 +36,13 @@
                 {{ utilsMacros.sortActor('activity', 'activity', 'rubric', 'activity_rev', 'activity',  initialStateActivity) }}
                 {{ utilsMacros.sortActor('title', 'title', 'rubric', 'title', 'title_rev', initialStateTitle) }}
             </ul>
-        </div>
-    </div>
+        {% endblock %}
+    {% endcomponent %}
 {% endblock %}
 {% block editbox %}
     {% if userMayCreateContext %}
-        <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-            <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
-            <div id="cs-entry-navigation" class="uk-dropdown uk-dropdown-small">
+        {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+            {% block dropdown %}
                 <ul class="uk-nav uk-nav-dropdown uk-list-striped">
 
                     {% if is_granted('ITEM_EDIT', 'NEW') %}
@@ -54,7 +53,7 @@
                         </li>
                     {% endif %}
                 </ul>
-            </div>
-        </div>
+            {% endblock %}
+        {% endcomponent %}
     {% endif %}
 {% endblock%}

@@ -1,7 +1,6 @@
 {% extends 'base/room.html.twig' %}
 
 {% form_theme filterForm 'form/uikit_horizontal_dynamic_layout.html.twig' %}
-{% import 'utils/macros.html.twig' as utilsMacros %}
 
 {% block content %}
     <div class="uk-grid" data-uk-grid-margin>
@@ -102,9 +101,10 @@
                             <div>
                                 {% block sortbox %}
                                     {# sort dropdown #}
-                                    <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-                                        <button class="uk-button uk-button-mini">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
-                                        <div id="cs-entry-navigation" class="uk-dropdown uk-dropdown-small">
+                                    {% component 'v2:dropdown' with { icon: 'caret-down', title: 'list sort'|trans({},'rubric')|capitalize } %}
+                                        {% import 'utils/macros.html.twig' as utilsMacros %}
+
+                                        {% block dropdown %}
                                             <ul class="uk-nav uk-nav-dropdown uk-list-striped">
                                                 {# sorting options #}
                                                 {{ utilsMacros.sortActor('title', 'Title', 'search', 'title.raw__asc', 'title.raw__desc', searchData.sortBy is same as('title.raw') ? searchData.sortOrder : '') }}
@@ -113,15 +113,14 @@
                                                 {{ utilsMacros.sortActor('creationDate', 'Creation date', 'search', 'creationDate__asc', 'creationDate__desc', searchData.sortBy is same as('creationDate') ? searchData.sortOrder : '') }}
                                                 {{ utilsMacros.sortActor('modificationDate', 'Modification date', 'search', 'modificationDate__asc', 'modificationDate__desc', searchData.sortBy is same as('modificationDate') ? searchData.sortOrder : '') }}
                                             </ul>
-                                        </div>
-                                    </div>
+                                        {% endblock %}
+                                    {% endcomponent %}
                                 {% endblock %}
 
                                 {% block editbox %}
                                     {% if not user.isReallyGuest -%}
-                                        <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-                                            <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
-                                            <div id="cs-entry-navigation" class="uk-dropdown uk-dropdown-small">
+                                        {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+                                            {% block dropdown %}
                                                 <ul class="uk-nav uk-nav-dropdown uk-list-striped">
 
                                                     <li>
@@ -198,8 +197,8 @@
                                                     </li>
 
                                                 </ul>
-                                            </div>
-                                        </div>
+                                            {% endblock %}
+                                        {% endcomponent %}
                                     {%- endif %}
                                 {% endblock%}
                             </div>

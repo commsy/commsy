@@ -37,7 +37,7 @@
 
                     {% component 'v2:dropdown' with { toggleType: 'link' } %}
                         {% block dropdown %}
-                            <ul class="uk-nav uk-nav-dropdown">
+                            <ul class="uk-nav uk-nav-dropdown uk-list-striped">
                                 {% if is_granted('ITEM_EDIT', article.itemId) %}
                                     {# edit #}
                                     <li>
