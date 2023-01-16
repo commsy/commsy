@@ -19,19 +19,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class LegacyEnvironment
 {
-    /**
-     * @var cs_environment|null
-     */
-    private $environment;
+    private ?cs_environment $environment = null;
 
-    /**
-     * @param string $projectDir
-     */
     public function __construct(
-        private $projectDir,
-        /**
-         * Symfony service container.
-         */
+        private string $projectDir,
         private Container $serviceContainer,
         private RequestStack $requestStack
     ) {
@@ -43,8 +34,6 @@ class LegacyEnvironment
             $legacyDir = $this->projectDir.'/legacy';
             set_include_path(get_include_path().PATH_SEPARATOR.$legacyDir);
 
-            global $cs_color;
-            global $db;
             include_once 'etc/cs_constants.php';
             include_once 'functions/misc_functions.php';
 
@@ -67,13 +56,10 @@ class LegacyEnvironment
     /**
      * This method tries to guess the current context id by analysing the client request.
      * If no context id could be found, we will fall back to 99 (the "server context").
-     *
-     * @return int context id
      */
-    private function guessContextId()
+    private function guessContextId(): int
     {
-        $requestStack = $this->requestStack;
-        $currentRequest = $requestStack->getCurrentRequest();
+        $currentRequest = $this->requestStack->getCurrentRequest();
 
         // current request could be empty
         if ($currentRequest) {
