@@ -31,12 +31,11 @@ class FixContext extends GeneralCheck
             $sql = "
                 DELETE t FROM $tableWithContext AS t
                 LEFT JOIN room AS c1 ON t.context_id = c1.item_id
-                LEFT JOIN zzz_room AS c2 ON t.context_id = c2.item_id
                 LEFT JOIN room_privat AS c3 ON t.context_id = c3.item_id
                 LEFT JOIN portal AS c4 ON t.context_id = c4.id
                 LEFT JOIN server AS c5 ON t.context_id = c5.item_id
                 WHERE t.context_id IS NOT NULL
-                AND c1.item_id IS NULL AND c2.item_id IS NULL AND c3.item_id IS NULL AND c4.id IS NULL AND c5.item_id IS NULL;
+                AND c1.item_id IS NULL AND c3.item_id IS NULL AND c4.id IS NULL AND c5.item_id IS NULL;
             ";
             $this->executeSQL($sql, $io);
         }
