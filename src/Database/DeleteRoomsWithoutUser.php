@@ -35,14 +35,6 @@ class DeleteRoomsWithoutUser extends GeneralCheck
         ';
         $this->executeSQL($sql, $io);
 
-        $sql = '
-            DELETE items, zzz_room FROM zzz_room
-            INNER JOIN items ON zzz_room.item_id = items.item_id
-            LEFT JOIN user ON zzz_room.item_id = user.context_id AND user.not_deleted = 1
-            WHERE user.item_id IS NULL
-        ';
-        $this->executeSQL($sql, $io);
-
         return true;
     }
 }
