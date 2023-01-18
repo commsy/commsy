@@ -141,7 +141,7 @@ CMD ["php-fpm"]
 
 FROM caddy:${CADDY_VERSION} AS commsy_caddy
 
-WORKDIR /srv/app
+WORKDIR /var/www/html
 
 COPY --from=commsy_php /var/www/html/public public/
 COPY docker/caddy/Caddyfile /etc/caddy/Caddyfile
