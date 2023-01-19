@@ -182,7 +182,7 @@ class UserCreatorFacade
 
         // create room users
         $portalUser = $this->userService->getPortalUser($account);
-        $this->addUserToRoomsWithIds($portalUser, $roomIds);
+        $this->addUserToRoomsWithIds($portalUser, $roomIds, 2);
     }
 
     /**
@@ -190,8 +190,9 @@ class UserCreatorFacade
      *
      * @param cs_user_item $user the user for whom room users shall be created
      * @param array $roomIds list of room IDs
+     * @param int|null $userStatus the room user's status (0: locked, 1: applying, 2: user, 3: moderator, 4: read-only)
      */
-    private function addUserToRoomsWithIds(cs_user_item $user, array $roomIds): void
+    private function addUserToRoomsWithIds(cs_user_item $user, array $roomIds, int $userStatus = null): void
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $privateRoomUser = $user->getRelatedPrivateRoomUserItem();
@@ -208,16 +209,22 @@ class UserCreatorFacade
                     $newUserItem = $sourceUser->cloneData();
                     $newUserItem->setContextID($roomId);
 
-                    if ($room->checkNewMembersNever()) {
-                        $newUserItem->setStatus(2);
-                    } else {
-                        $newUserItem->setStatus(1);
+                    $newUserItem->request(); // default user status: 1 (applying)
+                    if (null !== $userStatus) {
+                        $userStatus = filter_var($userStatus, FILTER_VALIDATE_INT, [
+                            'options' => ['min_range' => 0, 'max_range' => 4]
+                        ]);
+                        if (false !== $userStatus) {
+                            $newUserItem->setStatus($userStatus);
+                        }
+                    } else if ($room->checkNewMembersNever()) {
+                        $newUserItem->makeUser(); // user status: 2 (user)
                     }
 
                     $newUserItem->save();
 
                     // task
-                    if (!$newUserItem->isUser()) {
+                    if ($newUserItem->isRequested()) {
                         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
                         $taskManager = $this->legacyEnvironment->getTaskManager();
