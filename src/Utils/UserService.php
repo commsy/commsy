@@ -3,6 +3,8 @@
 namespace App\Utils;
 
 use App\Entity\Account;
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_grouproom_item;
@@ -11,7 +13,10 @@ use cs_room_manager;
 use cs_user_item;
 use cs_user_manager;
 use DateTimeImmutable;
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Mime\Address;
 
 
 class UserService
@@ -724,6 +729,54 @@ class UserService
         }
 
         return 'join';
+    }
+
+    /**
+     * Sends an email to the users with the given IDs informing them about a user status change.
+     *
+     * @param Mailer $mailer
+     * @param AccountMail $accountMail
+     * @param int[] $userIds IDs of user items whose users shall receive the email
+     * @param string $action indicates the kind of user status change, possible values:
+     *                       user-delete, user-block, user-confirm, user-status-user, user-status-moderator,
+     *                       user-status-reading-user, user-contact, user-contact-remove
+     */
+    public function sendUserInfoMail(
+        Mailer $mailer,
+        AccountMail $accountMail,
+        $userIds,
+        $action
+    ) {
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        $contextItem = $this->legacyEnvironment->getCurrentContextItem()->getContextItem();
+        $fromSender = $contextItem ? $contextItem->getTitle() : 'CommSy';
+
+        $validator = new EmailValidator();
+        $replyTo = [];
+        $currentUserEmail = $currentUser->getEmail();
+        if ($validator->isValid($currentUserEmail, new RFCValidation())) {
+            if ($currentUser->isEmailVisible()) {
+                $replyTo[] = new Address($currentUserEmail, $currentUser->getFullName());
+            }
+        }
+
+        foreach ($userIds as $userId) {
+            $user = $this->getUser($userId);
+
+            $userEmail = $user->getEmail();
+            if (!empty($userEmail) && $validator->isValid($userEmail, new RFCValidation())) {
+                $subject = $accountMail->generateSubject($action);
+                $body = $accountMail->generateBody($user, $action);
+
+                $success = $mailer->sendRaw(
+                    $subject,
+                    $body,
+                    RecipientFactory::createRecipient($user),
+                    $fromSender,
+                    $replyTo
+                );
+            }
+        }
     }
 
     /**

@@ -765,18 +765,29 @@ class cs_translator {
       return $retour;
    }
 
-   /** setContext
-    * this methode set the context (community or project)
+   /**
+    * Returns the context (community, project or grouproom).
     *
     * @param string context
     */
-   function setContext ($value) {
+   public function getContext(): string
+   {
+       return $this->_context;
+   }
+
+   /**
+    * Sets the context (community, project or grouproom).
+    *
+    * @param string context
+    */
+   public function setContext($value): void
+   {
       $this->_context = (string)$value;
    }
 
    function _inCommunityRoom () {
       $retour = false;
-      if ( isset($this->_context) and $this->_context == 'community' ) {
+      if (isset($this->_context) and $this->_context == CS_COMMUNITY_TYPE) {
          $retour = true;
       }
       return $retour;
@@ -784,7 +795,7 @@ class cs_translator {
 
    function _inProjectRoom () {
       $retour = false;
-      if ( isset($this->_context) and $this->_context == 'project' ) {
+      if (isset($this->_context) and $this->_context == CS_PROJECT_TYPE) {
          $retour = true;
       }
       return $retour;
@@ -792,7 +803,7 @@ class cs_translator {
 
    function _inGroupRoom () {
       $retour = false;
-      if ( isset($this->_context) and $this->_context == CS_GROUPROOM_TYPE ) {
+      if (isset($this->_context) and $this->_context == CS_GROUPROOM_TYPE) {
          $retour = true;
       }
       return $retour;
@@ -800,11 +811,11 @@ class cs_translator {
 
    function initFromContext ( $context_item ) {
       if ($context_item->isCommunityRoom()) {
-         $this->setContext('community');
+         $this->setContext(CS_COMMUNITY_TYPE);
          $portal_item = $context_item->getContextItem();
          $this->setTimeMessageArray($portal_item->getTimeTextArray());
       } elseif ($context_item->isProjectRoom()) {
-         $this->setContext('project');
+         $this->setContext(CS_PROJECT_TYPE);
          $portal_item = $context_item->getContextItem();
          $this->setTimeMessageArray($portal_item->getTimeTextArray());
       } elseif ($context_item->isGroupRoom()) {
@@ -816,10 +827,10 @@ class cs_translator {
          $portal_item = $context_item->getContextItem();
          $this->setTimeMessageArray($portal_item->getTimeTextArray());
       } elseif ($context_item->isPortal()) {
-         $this->setContext('portal');
+         $this->setContext(CS_PORTAL_TYPE);
          $this->setTimeMessageArray($context_item->getTimeTextArray());
       } else {
-         $this->setContext('server');
+         $this->setContext(CS_SERVER_TYPE);
       }
       $this->setRubricTranslationArray($context_item->getRubricTranslationArray());
       $this->setEmailTextArray($context_item->getEmailTextArray());
