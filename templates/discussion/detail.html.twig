@@ -184,26 +184,28 @@
                 </article>
             </div>
 
-            <div data-uk-observe id="article-content" class="uk-panel uk-panel-box">
+            {% if not draft %}
+                <div data-uk-observe id="article-content" class="uk-panel uk-panel-box">
 
-                {# panel teaser #}
-                <div class="uk-panel-teaser cs-panel-teaser-primary uk-text-large">
-                    {{ 'articles'|trans({}, 'discussion') }}
+                    {# panel teaser #}
+                    <div class="uk-panel-teaser cs-panel-teaser-primary uk-text-large">
+                        {{ 'articles'|trans({}, 'discussion') }}
+                    </div>
+
+                    {% if is_granted('ITEM_EDIT', 'NEW') %}
+                        {{ render(controller(
+                            'App\\Controller\\DiscussionController::answerRoot', {
+                                'roomId': roomId,
+                                'itemId': discussion.itemId
+                            }
+                        )) }}
+                    {% endif %}
+
+                    {% if articleTree.children is defined %}
+                        {{ macrosDiscussion.answers(articleTree.children, discussion, roomId, modifierList, userCount, readCount, readSinceModificationCount) }}
+                    {% endif %}
                 </div>
-
-                {% if is_granted('ITEM_EDIT', 'NEW') %}
-                    {{ render(controller(
-                        'App\\Controller\\DiscussionController::answerRoot', {
-                            'roomId': roomId,
-                            'itemId': discussion.itemId
-                        }
-                    )) }}
-                {% endif %}
-
-                {% if articleTree.children is defined %}
-                    {{ macrosDiscussion.answers(articleTree.children, discussion, roomId, modifierList, userCount, readCount, readSinceModificationCount) }}
-                {% endif %}
-            </div>
+            {% endif %}
         </div>
 
         <div class="uk-width-medium-1-5 cs-addon-navigation">
