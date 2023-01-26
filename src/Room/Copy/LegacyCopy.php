@@ -17,6 +17,7 @@ use App\Event\ItemReindexEvent;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use cs_environment;
+use cs_group_item;
 use cs_room_item;
 use cs_user_item;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -333,7 +334,6 @@ class LegacyCopy implements CopyStrategy
                 $creator->getItemID());
             $new_id_array = $new_id_array + $id_array;
         }
-        unset($data_type_array);
 
         // copy secondary data
         $data_type_array = [];
@@ -351,7 +351,6 @@ class LegacyCopy implements CopyStrategy
                 $new_id_array);
             $new_id_array = $new_id_array + $id_array;
         }
-        unset($data_type_array);
 
         // copy links
         $data_type_array = [];
@@ -569,7 +568,7 @@ class LegacyCopy implements CopyStrategy
 
         $target->save();
 
-        // update the the Elastic search index with all newly created items
+        // update the Elastic search index with all newly created items
         $itemManager = $this->legacyEnvironment->getItemManager();
         $itemList = $itemManager->getItemList($new_id_array);
 
@@ -588,20 +587,17 @@ class LegacyCopy implements CopyStrategy
         // ###########################################
         if ($copy_array['informationbox']) {
             if ($source->showGroupRoomFunctions()) {
-                // group rooms will not copied
+                // iterate all groups of the new room and unset all group room id's
+                // saving the group will create a new one
                 $group_manager = $this->legacyEnvironment->getGroupManager();
                 $group_manager->setContextLimit($target->getItemID());
                 $group_manager->select();
-                $group_list = $group_manager->get();
-                if ($group_list->isNotEmpty()) {
-                    $group_item = $group_list->getFirst();
-                    while ($group_item) {
-                        if ($group_item->isGroupRoomActivated()) {
-                            $group_item->unsetGroupRoomActive();
-                            $group_item->unsetGroupRoomItemID();
-                            $group_item->save();
-                        }
-                        $group_item = $group_list->getNext();
+                $groups = $group_manager->get();
+                foreach ($groups as $group) {
+                    /** @var cs_group_item $group */
+                    if ($group->isGroupRoomActivated() && !$group->isSystemLabel()) {
+                        $group->unsetGroupRoomItemID();
+                        $group->save();
                     }
                 }
             }
