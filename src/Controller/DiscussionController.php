@@ -624,7 +624,7 @@ class DiscussionController extends BaseController
     ): Response
     {
         $discussion = $this->discussionService->getDiscussion($itemId);
-        if (!$discussion) {
+        if (!$discussion || $discussion->isDraft()) {
             throw $this->createNotFoundException();
         }
 
