@@ -1282,36 +1282,6 @@ class GroupController extends BaseController
     /**
      * @throws Exception
      */
-    #[Route(path: '/room/{roomId}/group/xhr/activate', condition: 'request.isXmlHttpRequest()')]
-    public function xhrActivateAction(
-        Request $request,
-        ActivateAction $action,
-        $roomId
-    ): Response {
-        $room = $this->getRoom($roomId);
-        $items = $this->getItemsForActionRequest($room, $request);
-
-        return $action->execute($room, $items);
-    }
-
-    /**
-     * @throws Exception
-     */
-    #[Route(path: '/room/{roomId}/group/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeactivateAction(
-        Request $request,
-        DeactivateAction $action,
-        $roomId
-    ): Response {
-        $room = $this->getRoom($roomId);
-        $items = $this->getItemsForActionRequest($room, $request);
-
-        return $action->execute($room, $items);
-    }
-
-    /**
-     * @throws Exception
-     */
     #[Route(path: '/room/{roomId}/group/xhr/delete', condition: 'request.isXmlHttpRequest()')]
     public function xhrDeleteAction(
         Request $request,
