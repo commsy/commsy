@@ -33,22 +33,22 @@ class cs_file_item extends cs_item
         return $discManager->existsFile($this->getDiskFileNameWithoutFolder());
     }
 
-     /* There was a bug in CommSy so context ID of an item were not
-        saved correctly. This method is a workaround for file item db entries
-        with context_id of 0. */
-     public function getContextID(): int
-     {
-         $context_id = parent::getContextID();
-         if (0 == $context_id) {
-             $context_id = $this->_environment->getCurrentContextID();
-         }
+    /* There was a bug in CommSy so context ID of an item were not
+       saved correctly. This method is a workaround for file item db entries
+       with context_id of 0. */
+    public function getContextID(): int
+    {
+        $context_id = parent::getContextID();
+        if (0 == $context_id) {
+            $context_id = $this->_environment->getCurrentContextID();
+        }
 
-         return $context_id;
-     }
+        return $context_id;
+    }
 
     public function setPortalID($value)
     {
-        $this->_portal_id = (int) $value;
+        $this->_portal_id = (int)$value;
     }
 
     public function getPortalID()
@@ -67,7 +67,7 @@ class cs_file_item extends cs_item
     /** set file_id of the file
      * this method sets the file_id of the file.
      *
-     * @param int value file_id of the file
+     * @param int $value file_id of the file
      */
     public function setFileID($value)
     {
@@ -118,7 +118,7 @@ class cs_file_item extends cs_item
 
     public function setTempKey($value)
     {
-        $this->_setExtra('TEMP_KEY', (string) $value);
+        $this->_setExtra('TEMP_KEY', (string)$value);
     }
 
     public function setTempName($value)
@@ -156,48 +156,48 @@ class cs_file_item extends cs_item
         return curl($this->getContextID(), 'material', 'getfile', $params, '', $this->_data['filename'], $c_single_entry_point);
     }
 
-     public function getFileSize()
-     {
-         if (!$this->isOnDisk()) {
-             return 0;
-         }
+    public function getFileSize()
+    {
+        if (!$this->isOnDisk()) {
+            return 0;
+        }
 
-         if (0 == $this->_getValue('size')) {
-             $diskFileName = $this->getDiskFileName();
-             $filesize = filesize($diskFileName);
-             $this->_data['size'] = $filesize ?: 0;
-         }
+        if (0 == $this->_getValue('size')) {
+            $diskFileName = $this->getDiskFileName();
+            $filesize = filesize($diskFileName);
+            $this->_data['size'] = $filesize ?: 0;
+        }
 
-         return round(($this->_getValue('size') + 1023) / 1024, 0);
-     }
+        return round(($this->_getValue('size') + 1023) / 1024, 0);
+    }
 
     public function getDiskFileName(): string
     {
         $discManager = $this->_environment->getDiscManager();
-        return $discManager->getFilePath().$this->getDiskFileNameWithoutFolder();
+        return $discManager->getFilePath() . $this->getDiskFileNameWithoutFolder();
     }
 
-     public function getDiskFileNameWithoutFolder()
-     {
-         $disc_manager = $this->_environment->getDiscManager();
-         $disc_manager->setContextID($this->getContextID());
-         $portal_id = $this->getPortalID();
-         if (isset($portal_id) and !empty($portal_id)) {
-             $disc_manager->setPortalID($portal_id);
-         } else {
-             $context_item = $this->getContextItem();
-             if (isset($context_item)) {
-                 $portal_item = $context_item->getContextItem();
-                 if (isset($portal_item)) {
-                     $disc_manager->setPortalID($portal_item->getItemID());
-                 }
-             }
-         }
-         $retour = $disc_manager->getCurrentFileName($this->getContextID(), $this->getFileID(), $this->getFileName(), $this->getExtension());
-         $disc_manager->setContextID($this->_environment->getCurrentContextID());
+    public function getDiskFileNameWithoutFolder()
+    {
+        $disc_manager = $this->_environment->getDiscManager();
+        $disc_manager->setContextID($this->getContextID());
+        $portal_id = $this->getPortalID();
+        if (isset($portal_id) and !empty($portal_id)) {
+            $disc_manager->setPortalID($portal_id);
+        } else {
+            $context_item = $this->getContextItem();
+            if (isset($context_item)) {
+                $portal_item = $context_item->getContextItem();
+                if (isset($portal_item)) {
+                    $disc_manager->setPortalID($portal_item->getItemID());
+                }
+            }
+        }
+        $retour = $disc_manager->getCurrentFileName($this->getContextID(), $this->getFileID(), $this->getFileName(), $this->getExtension());
+        $disc_manager->setContextID($this->_environment->getCurrentContextID());
 
-         return $retour;
-     }
+        return $retour;
+    }
 
     public function save()
     {
@@ -208,7 +208,7 @@ class cs_file_item extends cs_item
     public function update()
     {
         $manager = $this->_environment->getFileManager();
-        return $manager->updateItem($this);
+        $manager->updateItem($this);
     }
 
     private function _getFileAsString()
@@ -221,29 +221,9 @@ class cs_file_item extends cs_item
         return $disc_manager->getFileAsString($this->getDiskFileName());
     }
 
-    private function _getFileAsBase64()
-    {
-        $disc_manager = $this->_environment->getDiscManager();
-        $portal_id = $this->getPortalID();
-        if (isset($portal_id) and !empty($portal_id)) {
-            $disc_manager->setPortalID($portal_id);
-        }
-        return $disc_manager->getFileAsBase64($this->getDiskFileName());
-    }
-
     public function getString()
     {
         return $this->_getFileAsString();
-    }
-
-    public function getHasHTML()
-    {
-        return $this->_getValue('has_html');
-    }
-
-    public function setHasHTML($value)
-    {
-        $this->_data['has_html'] = (int) $value;
     }
 
     /** Get the linked items of the file.
@@ -283,41 +263,6 @@ class cs_file_item extends cs_item
         $manager->deleteReally($this);
     }
 
-    // #################################################
-    // virus scanning
-    // #################################################
-
-    public function getScanValue()
-    {
-        $retour = -1;
-        $temp = $this->_getValue('scan');
-        if (!empty($temp)) {
-            $retour = $temp;
-        }
-
-        return $retour;
-    }
-
-    public function setScribdDocId($value)
-    {
-        $this->_setExtra('SCRIBD_DOC_ID', (string) $value);
-    }
-
-    public function getScribdDocId()
-    {
-        return (string) $this->_getExtra('SCRIBD_DOC_ID');
-    }
-
-    public function setScribdAccessKey($value)
-    {
-        $this->_setExtra('SCRIBD_ACCESS_KEY', (string) $value);
-    }
-
-    public function getScribdAccessKey()
-    {
-        return (string) $this->_getExtra('SCRIBD_ACCESS_KEY');
-    }
-
     /**
      * Returns true if the user represented by the given user item is allowed to edit the file,
      * otherwise returns false.
@@ -329,15 +274,15 @@ class cs_file_item extends cs_item
         $access = false;
         if (!$user_item->isOnlyReadUser()) {
             if ($user_item->isRoot() or
-                 ($user_item->getContextID() == $this->getContextID()
-                   and ($user_item->isModerator()
-                         or ($user_item->isUser()
-                              and ($user_item->getItemID() == $this->getCreatorID()
-                                    or $this->mayEditLinkedItem($user_item)
-                              )
-                         )
-                   )
-                 )
+                ($user_item->getContextID() == $this->getContextID()
+                    and ($user_item->isModerator()
+                        or ($user_item->isUser()
+                            and ($user_item->getItemID() == $this->getCreatorID()
+                                or $this->mayEditLinkedItem($user_item)
+                            )
+                        )
+                    )
+                )
             ) {
                 $access = true;
             }
@@ -366,17 +311,17 @@ class cs_file_item extends cs_item
         return false;
     }
 
-     /**
-      * Returns true if the user represented by the given user item is allowed to see the file,
-      * otherwise returns false.
-      *
-      * @return bool
-      */
-     public function maySee(cs_user_item $userItem)
-     {
-         // a user who's allowed to see any of this file's linked items may also see this file
-         return $this->maySeeLinkedItem($userItem);
-     }
+    /**
+     * Returns true if the user represented by the given user item is allowed to see the file,
+     * otherwise returns false.
+     *
+     * @return bool
+     */
+    public function maySee(cs_user_item $userItem)
+    {
+        // a user who's allowed to see any of this file's linked items may also see this file
+        return $this->maySeeLinkedItem($userItem);
+    }
 
     /**
      * Returns true if the user represented by the given user item is allowed to see any of
@@ -414,39 +359,19 @@ class cs_file_item extends cs_item
         return false;
     }
 
-    public function setTempUploadFromEditorSessionID($value)
+    /**
+     * May view files for external viewer.
+     *
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function mayExternalViewerSeeLinkedItem(string $username): bool
     {
-        $this->_setValue('temp_upload_session_id', $value);
+        $itemCollection = $this->getLinkedItems();
+        if (!isset($itemCollection) or $itemCollection->isEmpty()) {
+            return false;
+        }
+        $itemId = $itemCollection[0]->getItemID();
+
+        return $this->mayExternalSee($itemId, $username);
     }
-
-    public function getTempUploadFromEditorSessionID()
-    {
-        return $this->_getValue('temp_upload_session_id');
-    }
-
-    public function setWordpressPostId($value)
-    {
-        $this->_setExtra('WORDPRESS_POST_ID', (string) $value);
-    }
-
-    public function getWordpressPostId()
-    {
-        return (string) $this->_getExtra('WORDPRESS_POST_ID');
-    }
-
-     /**
-      * May view files for externar viewer.
-      *
-      * @throws \Doctrine\DBAL\Exception
-      */
-     public function mayExternalViewerSeeLinkedItem(string $username): bool
-     {
-         $itemCollection = $this->getLinkedItems();
-         if (!isset($itemCollection) or $itemCollection->isEmpty()) {
-             return false;
-         }
-         $itemId = $itemCollection[0]->getItemID();
-
-         return $this->mayExternalSee($itemId, $username);
-     }
 }
