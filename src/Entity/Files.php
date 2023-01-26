@@ -28,75 +28,40 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 class Files
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'files_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $filesId = null;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
     private ?int $contextId = null;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'creator_id', type: Types::INTEGER)]
     private ?int $creatorId = 0;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private ?int $deleterId = null;
+
     #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
     private DateTime $creationDate;
-    /**
-     * @var DateTimeInterface
-     */
+
     #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTimeInterface $modificationDate = null;
-    /**
-     * @var DateTimeInterface
-     */
+
     #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTimeInterface $deletionDate = null;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'filename', type: Types::STRING, length: 255)]
     private ?string $filename = null;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'filepath', type: Types::STRING, length: 255)]
     private ?string $filepath = null;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'size', type: Types::INTEGER, nullable: true)]
     private ?int $size = null;
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'has_html', type: Types::STRING)]
-    private ?string $hasHtml = '0';
-    /**
-     * @var bool
-     */
-    #[ORM\Column(name: 'scan', type: Types::BOOLEAN)]
-    private ?bool $scan = false;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'extras', type: Types::TEXT, length: 16_777_215, nullable: true)]
     private ?string $extras = null;
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'temp_upload_session_id', type: Types::STRING, length: 255, nullable: true)]
-    private ?string $tempUploadSessionId = null;
 
     public function __construct()
     {
@@ -349,54 +314,6 @@ class Files
     }
 
     /**
-     * Set hasHtml.
-     *
-     * @param string $hasHtml
-     *
-     * @return Files
-     */
-    public function setHasHtml($hasHtml)
-    {
-        $this->hasHtml = $hasHtml;
-
-        return $this;
-    }
-
-    /**
-     * Get hasHtml.
-     *
-     * @return string
-     */
-    public function getHasHtml()
-    {
-        return $this->hasHtml;
-    }
-
-    /**
-     * Set scan.
-     *
-     * @param bool $scan
-     *
-     * @return Files
-     */
-    public function setScan($scan)
-    {
-        $this->scan = $scan;
-
-        return $this;
-    }
-
-    /**
-     * Get scan.
-     *
-     * @return bool
-     */
-    public function getScan()
-    {
-        return $this->scan;
-    }
-
-    /**
      * Set extras.
      *
      * @param string $extras
@@ -418,29 +335,5 @@ class Files
     public function getExtras()
     {
         return $this->extras;
-    }
-
-    /**
-     * Set tempUploadSessionId.
-     *
-     * @param string $tempUploadSessionId
-     *
-     * @return Files
-     */
-    public function setTempUploadSessionId($tempUploadSessionId)
-    {
-        $this->tempUploadSessionId = $tempUploadSessionId;
-
-        return $this;
-    }
-
-    /**
-     * Get tempUploadSessionId.
-     *
-     * @return string
-     */
-    public function getTempUploadSessionId()
-    {
-        return $this->tempUploadSessionId;
     }
 }

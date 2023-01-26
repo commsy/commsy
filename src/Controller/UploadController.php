@@ -370,24 +370,22 @@ class UploadController extends AbstractController
         $fileIds = $item->getFileIDArray();
 
         if ($request->files) {
+            /** @var UploadedFile $file */
             $file = $request->files->get('upload');
 
-            if ($file && $file->isValid() && $file->getClientSize()) {
-                $movedFile = $file->move($file->getPathInfo()->getRealPath(), $file->getFilename().'commsy3');
-
-                require_once 'functions/date_functions.php';
+            if ($file && $file->isValid() && $file->getSize()) {
+                $movedFile = $file->move($file->getPathInfo()->getRealPath(), $file->getFilename() . 'commsy3');
 
                 $fileInfo = [
                     'name' => $file->getClientOriginalName(),
                     'tmp_name' => $movedFile->getRealPath(),
-                    'file_id' => $file->getClientOriginalName().'_'.getCurrentDateTimeInMySQL(),
+                    'file_id' => $file->getClientOriginalName() . '_' . getCurrentDateTimeInMySQL(),
                 ];
 
                 $fileManager = $legacyEnvironment->getFileManager();
                 $fileItem = $fileManager->getNewItem();
                 $fileItem->setTempKey($fileInfo['file_id']);
                 $fileItem->setPostFile($fileInfo);
-                $fileItem->setTempUploadFromEditorSessionID($legacyEnvironment->getSessionID());
                 $fileItem->save();
 
                 // save file ids to item
@@ -401,34 +399,34 @@ class UploadController extends AbstractController
                 ]);
 
                 if (null != $request->get('CKEditor')) {
-                    // Nach dem Speichern des Eintrags die Items-Tabelle anhand temp=true und der extras->SESSION_ID durchsuchen.
-                    // Text im Textfeld nach Dateinamen parsen und passende Dateien aus der files-Tabelle mit dem Item verlinken.
-                    // Extras temp und id zurücksetzen.
-                    // cron für das regelmäßige löschen von temp-files.
-                    $callback_function = '';
-                    $callback_function .= '<script type="text/javascript">'.LF;
-                    $callback_function .= '<!--'.LF;
-                    $callback_function .= 'var fileTypeFunction = function () {';
-                    $callback_function .= 'var dialog = this.getDialog();';
-                    $callback_function .= 'if(dialog.getName() == "CommSyVideoDialog"){';
-                    $callback_function .= 'var element = dialog.getContentElement( "videoTab", "videoType" );';
-                    $callback_function .= 'element.setValue("'.$fileItem->getMime().'")';
-                    $callback_function .= '}';
-                    $callback_function .= '};';
-                    $callback_function .= 'window.parent.CKEDITOR.tools.callFunction('.$_GET['CKEditorFuncNum'].', "'.$fileUrl.'", fileTypeFunction);'.LF;
-                    $callback_function .= '-->'.LF;
-                    $callback_function .= '</script>'.LF;
-                    echo $callback_function;
+                    // This is for uploading through dialog / File Browser Plugin???
+                    // @see https://ckeditor.com/docs/ckeditor4/latest/guide/dev_dialog_add_file_browser.html
+                    // @see https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_browser_api.html#example-4
+                    // This can also be used to show an error message, the third parameter was previously used
+                    // to inject a JS function call
+                    $callback_function = '<script type="text/javascript">';
+                    $callback_function .= 'window.parent.CKEDITOR.tools.callFunction('.$_GET['CKEditorFuncNum'].', "'.$fileUrl.'");';
+                    $callback_function .= '</script>';
+
+                    return new Response($callback_function);
                 } else {
-                    $return_array = ['uploaded' => 1, 'filename' => $file->getClientOriginalName(), 'url' => $fileUrl];
-                    echo json_encode($return_array, JSON_THROW_ON_ERROR);
+                    // This is for uploading pasted and draggted images introduced in CKE 4.5???
+                    // @see https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_upload.html#server-side-configuration
+                    return $this->json([
+                        'uploaded' => 1,
+                        'filename' => $file->getClientOriginalName(),
+                        'url' => $fileUrl,
+                    ]);
                 }
             }
         }
 
-        exit;
-
-        return $this->render('upload/ckupload.html.twig');
+        return $this->json([
+            'uploaded' => 0,
+            'error' => [
+                'message' => 'There was an error while uploading files.',
+            ],
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/upload/mailattachments/')]

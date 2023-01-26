@@ -37,8 +37,6 @@ class CronExpireTakeOver implements CronTaskInterface
 
     public function run(?DateTimeImmutable $lastRun): void
     {
-        require_once 'classes/cs_mail.php';
-
         $userManager = $this->legacyEnvironment->getUserManager();
         $translator = $this->legacyEnvironment->getTranslationObject();
         $now = new DateTimeImmutable();
