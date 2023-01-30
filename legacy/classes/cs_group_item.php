@@ -28,7 +28,7 @@ class cs_group_item extends cs_label_item
 
     public function isGroupRoomActivated(): bool
     {
-        return true;
+        return !$this->isSystemLabel();
     }
 
     public function setGroupRoomItemID($value)
