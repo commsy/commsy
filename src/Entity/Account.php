@@ -25,6 +25,7 @@ use InvalidArgumentException;
 use Serializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherAwareInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -100,7 +101,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: 'accounts')]
 #[ORM\UniqueConstraint(name: 'accounts_idx', columns: ['context_id', 'username', 'auth_source_id'])]
 #[EmailRegex]
-class Account implements UserInterface, PasswordHasherAwareInterface, Serializable
+class Account implements
+    UserInterface,
+    PasswordAuthenticatedUserInterface,
+    PasswordHasherAwareInterface,
+    Serializable
 {
     public const ACTIVITY_ACTIVE = 'active';
     public const ACTIVITY_ACTIVE_NOTIFIED = 'active_notified';

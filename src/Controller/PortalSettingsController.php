@@ -1992,8 +1992,9 @@ class PortalSettingsController extends AbstractController
         $privateRoomNameList = [];
         $privateRoomArchivedNameList = [];
 
+        $accountOfUser = $accountManager->getAccount($user, $portal->getId());
         $relatedUsers = $userListBuilder
-            ->fromAccount($accountManager->getAccount($user, $portal->getId()))
+            ->fromAccount($accountOfUser)
             ->withProjectRoomUser()
             ->withCommunityRoomUser()
             ->withUserRoomUser()
@@ -2089,6 +2090,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/account_index_detail.html.twig', [
+            'accountOfUser' => $accountOfUser,
             'user' => $user,
             'portalUser' => $portalUser,
             'authSource' => $authSourceRepository->findOneBy(['id' => $user->getAuthSource()]),
@@ -2519,32 +2521,41 @@ class PortalSettingsController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/portal/{portalId}/settings/accountIndex/detail/{userId}/changePassword')]
+    #[Route(path: '/portal/{portalId}/settings/accountIndex/detail/{accountId}/changePassword')]
     #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
+    #[ParamConverter('account', class: Account::class, options: ['id' => 'accountId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function accountIndexDetailChangePassword(
         Portal $portal,
+        Account $account,
         Request $request,
         UserService $userService,
-        LegacyEnvironment $legacyEnvironment,
-        UserPasswordHasherInterface $passwordEncoder,
-        EntityManagerInterface $entityManager
+        UserPasswordHasherInterface $passwordHasher,
+        ManagerRegistry $managerRegistry
     ): Response {
-        $user = $userService->getUser($request->get('userId'));
-        $form_data = ['userName' => $user->getFullName(), 'userId' => $user->getUserID()];
-        $form = $this->createForm(AccountIndexDetailChangePasswordType::class, $form_data);
-        $form->handleRequest($request);
+        $portalUser = $userService->getPortalUser($account);
 
-        $accountRepo = $entityManager->getRepository(Account::class);
+        $formData = [
+            'userName' => $account->getFirstname() . ' ' . $account->getLastname(),
+            'userId' => $account->getUsername(),
+            'password' => '',
+        ];
+        $form = $this->createForm(AccountIndexDetailChangePasswordType::class, $formData);
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $submittedPassword = $data['password'];
+
+            $account->setPassword($passwordHasher->hashPassword($account, $data['password']));
+
+            $em = $managerRegistry->getManager();
+            $em->persist($account);
+            $em->flush();
         }
 
         return $this->render('portal_settings/account_index_detail_change_password.html.twig', [
             'form' => $form->createView(),
-            'user' => $user,
+            'portalUser' => $portalUser,
             'portal' => $portal,
         ]);
     }

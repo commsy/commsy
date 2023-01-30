@@ -64,7 +64,7 @@
 
                     <li class="uk-nav-divider"></li>
 
-                    <li><a href="{{ path('app_portalsettings_accountindexdetailchangepassword', {'portalId': portal.id, 'userId': user.itemId}) }}">
+                    <li><a href="{{ path('app_portalsettings_accountindexdetailchangepassword', {'portalId': portal.id, 'accountId': accountOfUser.id}) }}">
                         {{ 'Change password' | trans({}, 'portal') }}
                     </a></li>
                     <li><a href="{{ path('app_portalsettings_accountindexdetailchangestatus', {'portalId': portal.id, 'userId': user.itemId}) }}">
