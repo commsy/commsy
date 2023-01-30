@@ -99,7 +99,11 @@ class CancellableLockAndDeleteController extends AbstractController
                 $roomItem->lock();
                 $roomItem->save();
 
-                return $this->render('cancellable_lock_and_delete/delete_or_lock.html.twig');
+                // redirect back to hosting context/room/group
+                return $this->redirectToRoute($listRoute, [
+                    'roomId' => $roomId,
+                    'itemId' => $itemId,
+                ]);
             }
         }
 
