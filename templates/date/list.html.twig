@@ -137,7 +137,7 @@
                 </li>
 
                 <li>
-                    {% if user.isUser %}
+                    {% if user.isUser and not user.isReadOnlyUser %}
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
                             'url': path('app_date_xhractivate', {'roomId': roomId}),
                             'action': 'activate',
@@ -155,7 +155,7 @@
                 </li>
 
                 <li>
-                    {% if user.isUser %}
+                    {% if user.isUser and not user.isReadOnlyUser %}
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
                             'url': path('app_date_xhrdeactivate', {'roomId': roomId}),
                             'action': 'activate',
