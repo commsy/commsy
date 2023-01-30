@@ -2182,25 +2182,24 @@ class cs_item
         }
     }
 
-    public function _copyFileList()
+    public function _copyFileList(): cs_list
     {
-        $file_list = $this->getFileList();
-        $file_new_list = new cs_list();
+        $files = $this->getFileList();
+        $copy = new cs_list();
 
-        if (!empty($file_list) and $file_list->getCount() > 0) {
-            $file_item = $file_list->getFirst();
-            while ($file_item) {
-                $user = $this->getCreatorItem();
-                $file_item->setItemID('');
-                $file_item->setTempName($file_item->getDiskFilename());
-                $file_item->setContextID($this->getContextID());
-                $file_item->setCreatorItem($user);
-                $file_new_list->add($file_item);
-                $file_item = $file_list->getNext();
-            }
+        $user = $this->getCreatorItem();
+
+        foreach ($files as $file) {
+            /** @var cs_file_item $file */
+            $file->setItemID('');
+            $file->setTempName($file->getDiskFilename());
+            $file->setContextID($this->getContextID());
+            $file->setCreatorItem($user);
+
+            $copy->add($file);
         }
 
-        return $file_new_list;
+        return $copy;
     }
 
     public function isPublished()

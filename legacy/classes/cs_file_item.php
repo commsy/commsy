@@ -174,7 +174,7 @@ class cs_file_item extends cs_item
     public function getDiskFileName(): string
     {
         $discManager = $this->_environment->getDiscManager();
-        return $discManager->getFilePath() . $this->getDiskFileNameWithoutFolder();
+        return $discManager->getFilePath('', $this->getContextID()) . $this->getDiskFileNameWithoutFolder();
     }
 
     public function getDiskFileNameWithoutFolder()
