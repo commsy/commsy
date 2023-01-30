@@ -692,7 +692,7 @@
             </trans-unit>
             <trans-unit id="repeat_password">
                 <source>Repeat password</source>
-                <target>Passwort widerholen</target>
+                <target>Passwort wiederholen</target>
             </trans-unit>
             <trans-unit id="passwords_must_match">
                 <source>The password fields must match</source>

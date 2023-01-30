@@ -34,10 +34,12 @@ class AccountIndexDetailChangePasswordType extends AbstractType
             ->add('userName', Types\TextType::class, [
                 'label' => 'Name',
                 'translation_domain' => 'portal',
+                'disabled' => true,
             ])
             ->add('userId', Types\TextType::class, [
                 'label' => 'User ID',
                 'translation_domain' => 'portal',
+                'disabled' => true,
             ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
