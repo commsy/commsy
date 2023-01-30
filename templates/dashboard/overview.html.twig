@@ -17,13 +17,15 @@
     </div>
 
     <div class="uk-grid uk-grid-match" data-uk-grid-margin>
-        {# server announcements #}
         {% set showServerNews = server.announcementEnabled|default(false) %}
         {% if showServerNews and not (portal.serverAnnouncementEnabled ?? true) %}
             {% set showServerNews = false %}
         {% endif %}
 
-        {% if portal.announcementEnabled|default(false) %}
+        {% set showPortalNews = portal.announcementEnabled|default(false) %}
+
+        {# portal announcements #}
+        {% if showPortalNews %}
             <div class="{% if showServerNews %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
                 <div class="uk-alert{% if portal.announcementSeverity != 'normal' %} uk-alert-{{ portal.announcementSeverity }}{% endif %}" style="border: 1px solid #DFE3E4" data-uk-alert>
                     <a class="uk-alert-close uk-close" href=""></a>
@@ -33,8 +35,9 @@
             </div>
         {% endif %}
 
+        {# server announcements #}
         {% if showServerNews %}
-            <div class="{% if portal.serverAnnouncementEnabled %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
+            <div class="{% if showPortalNews %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
                 <div class="uk-alert{% if server.announcementSeverity != 'normal' %} uk-alert-{{ server.announcementSeverity }}{% endif %}" style="border: 1px solid #DFE3E4" data-uk-alert>
                     <a class="uk-alert-close uk-close" href=""></a>
                     <h3>{{ server.announcementTitle }}</h3>

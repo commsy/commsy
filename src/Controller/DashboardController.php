@@ -13,10 +13,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Calendars;
 use App\Entity\SavedSearch;
 use App\Form\Type\MyViewsType;
 use App\Model\SearchData;
+use App\Repository\CalendarsRepository;
 use App\Repository\PortalRepository;
 use App\Repository\ServerRepository;
 use App\RoomFeed\RoomFeedGenerator;
@@ -49,6 +49,7 @@ class DashboardController extends AbstractController
          LegacyEnvironment $environment,
          PortalRepository $portalRepository,
          ServerRepository $serverRepository,
+         CalendarsRepository $calendarsRepository,
          int $roomId
      ): Response {
         $legacyEnvironment = $environment->getEnvironment();
@@ -107,9 +108,7 @@ class DashboardController extends AbstractController
             $contextIds[] = $user->getContextId();
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository(Calendars::class);
-        $calendars = $repository->findBy(['context_id' => $contextIds, 'external_url' => ['', null]]);
+        $calendars = $calendarsRepository->findBy(['context_id' => $contextIds, 'external_url' => ['', null]]);
 
         $contextArray = [];
         foreach ($calendars as $calendar) {
