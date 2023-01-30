@@ -119,9 +119,9 @@ class cs_disc_manager
         $retour = false;
         $this->makeFolder($this->firstId, $this->secondId);
         if (file_exists($source_file)) {
-            $retour = copy($source_file, $this->getFilePath().$dest_filename);
+            $retour = copy($source_file, $this->getFilePath() . $dest_filename);
         }
-        if ($retour and $delete_source) {
+        if ($retour && $delete_source) {
             unlink($source_file);
         }
 
