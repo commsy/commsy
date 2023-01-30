@@ -29,10 +29,7 @@ use Symfony\Component\Security\Core\Security;
 
 class RoomFeedGenerator
 {
-    /**
-     * @var cs_environment
-     */
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     /**
      * @var array limits
@@ -89,7 +86,7 @@ class RoomFeedGenerator
          */
         $contextIdsByRubric = [];
         foreach ($contextIds as $contextId) {
-            $roomRubrics = $this->getRoomRubrics($contextId);
+            $roomRubrics = $this->roomService->getVisibleRoomRubrics($contextId);
             foreach ($roomRubrics as $roomRubric) {
                 // exclude users as it clutters the feed with unimportant entries
                 if ('user' === $roomRubric) {
@@ -197,25 +194,6 @@ class RoomFeedGenerator
                 }
             }
         }
-    }
-
-    /**
-     * @param int $roomId The id of the room
-     *
-     * @return string[] List of rubrics needed for querying
-     */
-    private function getRoomRubrics($roomId)
-    {
-        $rubrics = [];
-
-        foreach ($this->roomService->getRubricInformation($roomId, true) as $rubric) {
-            [$rubricName, $modifier] = explode('_', $rubric);
-            if (0 != strcmp($modifier, 'hide')) {
-                $rubrics[] = $rubricName;
-            }
-        }
-
-        return $rubrics;
     }
 
     /**

@@ -52,7 +52,7 @@ class RoomService
      *
      * @return array Array with rubric strings
      */
-    public function getRubricInformation($roomId, $includeModifier = false)
+    public function getRubricInformation($roomId, $includeModifier = false): array
     {
         $rubricConfigurations = null;
         // get the rooms rubric configuration
@@ -75,6 +75,29 @@ class RoomService
                 return $rubrics;
             }
         }
+
+        return [];
+    }
+
+    /**
+     * @param int $roomId The id of the room
+     *
+     * @return string[] List of rubrics needed for querying
+     */
+    public function getVisibleRoomRubrics(int $roomId): array
+    {
+        $rubricConfiguration = $this->getRubricInformation($roomId, true);
+
+        $visibleRubrics = array_filter($rubricConfiguration, function ($rubric) {
+            [, $modifier] = explode('_', $rubric);
+
+            return $modifier === 'show';
+        });
+
+        return array_map(function ($rubric) {
+            [$name] = explode('_', $rubric);
+            return $name;
+        }, $visibleRubrics);
     }
 
     private function copySettings($masterRoom, $targetRoom)
