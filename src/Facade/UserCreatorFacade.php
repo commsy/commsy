@@ -12,6 +12,7 @@ namespace App\Facade;
 use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\Room;
+use App\Event\UserJoinedRoomEvent;
 use App\Form\Model\Csv\CsvUserDataset;
 use App\Mail\Mailer;
 use App\Services\LegacyEnvironment;
@@ -22,6 +23,7 @@ use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class UserCreatorFacade
 {
@@ -51,6 +53,11 @@ class UserCreatorFacade
     private UserPasswordEncoderInterface $passwordEncoder;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    private EventDispatcherInterface $eventDispatcher;
+
+    /**
      * @var Mailer
      */
     private Mailer $mailer;
@@ -66,6 +73,7 @@ class UserCreatorFacade
         UserService $userService,
         EntityManagerInterface $entityManager,
         UserPasswordEncoderInterface $passwordEncoder,
+        EventDispatcherInterface $eventDispatcher,
         Mailer $mailer,
         AccountMail $accountMail
     ) {
@@ -74,6 +82,7 @@ class UserCreatorFacade
         $this->userService = $userService;
         $this->entityManager = $entityManager;
         $this->passwordEncoder = $passwordEncoder;
+        $this->eventDispatcher = $eventDispatcher;
         $this->mailer = $mailer;
         $this->accountMail = $accountMail;
     }
@@ -225,6 +234,12 @@ class UserCreatorFacade
             $room = $roomManager->getItem($roomId);
 
             if ($room) {
+                // NOTE: userroom creation (plus the involved user cloning) & choosing appropriate email texts when
+                //       sending info emails requires the current context to be set, so we set the context explicitly
+                //       here (otherwise it may not have been set (yet), e.g. when auto-creating room users on login)
+                $oldContextId = $this->legacyEnvironment->getCurrentContextID();
+                $this->legacyEnvironment->setCurrentContextID($roomId);
+
                 $relatedUserInContext = $user->getRelatedUserItemInContext($roomId);
                 if (!$relatedUserInContext) {
                     // determine the source user to clone from
@@ -246,6 +261,10 @@ class UserCreatorFacade
                     $newUserItem->setStatus($userStatus);
 
                     $newUserItem->save();
+
+                    // if necessary, trigger creation of user rooms
+                    $event = new UserJoinedRoomEvent($newUserItem, $room);
+                    $this->eventDispatcher->dispatch($event);
 
                     // task
                     if ($newUserItem->isRequested()) {
@@ -272,12 +291,11 @@ class UserCreatorFacade
                         ];
 
                         // NOTE: email texts are provided by the legacy translator which depends on a correct context
-                        $oldContextId = $this->legacyEnvironment->getCurrentContextID();
-                        $this->legacyEnvironment->setCurrentContextID($roomId);
                         $this->userService->sendUserInfoMail($this->mailer, $this->accountMail, $userIds, $actions[$userStatus]);
-                        $this->legacyEnvironment->setCurrentContextID($oldContextId);
                     }
                 }
+
+                $this->legacyEnvironment->setCurrentContextID($oldContextId);
             }
         }
     }
