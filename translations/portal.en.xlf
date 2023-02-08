@@ -1486,7 +1486,7 @@
             </trans-unit>
             <trans-unit id="portal_auth_membership_identifier_help">
                 <source>portal.auth.membership_identifier_help</source>
-                <target>Identifier for comma-separated server environment information used when automatically creating workspace members</target>
+                <target>Identifier for semicolon-separated server environment information used when automatically creating workspace members</target>
             </trans-unit>
         </body>
     </file>
