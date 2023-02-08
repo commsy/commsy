@@ -50,10 +50,13 @@ class UserroomService
 
         $userroomTemplate = $room->getUserRoomTemplateItem();
 
+        $roomModerators = $this->userService->getModeratorsForContext($roomContext);
+        $firstRoomModerator = !empty($roomModerators) ? $roomModerators[0] : null;
+
         /**
          * @var $newRoom \cs_userroom_item
          */
-        $newRoom = $this->roomService->createRoom($roomManager, $roomContext, $roomTitle, "", $userroomTemplate);
+        $newRoom = $this->roomService->createRoom($roomManager, $roomContext, $roomTitle, "", $userroomTemplate, $firstRoomModerator, $firstRoomModerator);
         if (!$newRoom) {
             return null;
         }
@@ -73,7 +76,6 @@ class UserroomService
         // add room moderators
         $userContext = $newRoom->getItemID();
         $moderatorIsRoomOwner = false;
-        $roomModerators = $this->userService->getModeratorsForContext($roomContext);
         foreach ($roomModerators as $moderator) {
             $userroomModerator = $this->userService->cloneUser($moderator, $userContext, 3);
             $userroomModerator->setLinkedProjectUserItemID($moderator->getItemID());
