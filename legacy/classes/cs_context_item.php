@@ -3797,18 +3797,6 @@ class cs_context_item extends cs_item
     {
     }
 
-    public function generateLayoutImages()
-    {
-        $disc_manager = $this->_environment->getDiscManager();
-        if ($this->isPortal() or $this->isServer()) {
-            $disc_manager->setPortalID($this->getItemID());
-            $disc_manager->setContextID($this->getItemID());
-            $disc_manager->makeFolder($this->getItemID(), $this->getItemID());
-        }
-
-        $disc_manager->setContextID($this->_environment->getCurrentContextItem()->getItemID());
-    }
-
     public function getPageImpressionAndUserActivityLast()
     {
         $retour = $this->_getExtra('PIUA_LAST');

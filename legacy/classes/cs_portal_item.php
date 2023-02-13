@@ -699,10 +699,6 @@ class cs_portal_item extends cs_guide_item
         $item_id = $this->getItemID();
         parent::save();
         $this->_time_list = null;
-
-        if (empty($item_id)) {
-            $this->generateLayoutImages();
-        }
     }
 
     /** delete portal

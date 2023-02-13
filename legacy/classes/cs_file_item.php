@@ -27,12 +27,6 @@ class cs_file_item extends cs_item
         $this->_type = 'file';
     }
 
-    public function isOnDisk(): bool
-    {
-        $discManager = $this->_environment->getDiscManager();
-        return $discManager->existsFile($this->getDiskFileNameWithoutFolder());
-    }
-
     /* There was a bug in CommSy so context ID of an item were not
        saved correctly. This method is a workaround for file item db entries
        with context_id of 0. */
@@ -158,7 +152,8 @@ class cs_file_item extends cs_item
 
     public function getFileSize()
     {
-        if (!$this->isOnDisk()) {
+        $discManager = $this->_environment->getDiscManager();
+        if (!$discManager->existsFile($this->getDiskFileNameWithoutFolder())) {
             return 0;
         }
 
@@ -173,30 +168,23 @@ class cs_file_item extends cs_item
 
     public function getDiskFileName(): string
     {
+        // the files context id is the containing room
+        $roomId = $this->getContextID();
+
+        $roomManager = $this->_environment->getRoomManager();
+        $parentRoom = $roomManager->getItem($roomId);
+
+        // the room context is either the portal or (unfortunately) in case of a user room the parent project room
+        $contextId = $parentRoom->getContextID();
+
         $discManager = $this->_environment->getDiscManager();
-        return $discManager->getFilePath('', $this->getContextID()) . $this->getDiskFileNameWithoutFolder();
+        return $discManager->getAbsoluteFilePath($contextId, $roomId, $this->getDiskFileNameWithoutFolder());
     }
 
-    public function getDiskFileNameWithoutFolder()
+    public function getDiskFileNameWithoutFolder(): string
     {
-        $disc_manager = $this->_environment->getDiscManager();
-        $disc_manager->setContextID($this->getContextID());
-        $portal_id = $this->getPortalID();
-        if (isset($portal_id) and !empty($portal_id)) {
-            $disc_manager->setPortalID($portal_id);
-        } else {
-            $context_item = $this->getContextItem();
-            if (isset($context_item)) {
-                $portal_item = $context_item->getContextItem();
-                if (isset($portal_item)) {
-                    $disc_manager->setPortalID($portal_item->getItemID());
-                }
-            }
-        }
-        $retour = $disc_manager->getCurrentFileName($this->getContextID(), $this->getFileID(), $this->getFileName(), $this->getExtension());
-        $disc_manager->setContextID($this->_environment->getCurrentContextID());
-
-        return $retour;
+        $discManager = $this->_environment->getDiscManager();
+        return $discManager->getCurrentFileName($this->getFileID(), $this->getExtension());
     }
 
     public function save()

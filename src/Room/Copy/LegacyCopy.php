@@ -129,7 +129,6 @@ class LegacyCopy implements CopyStrategy
         // config of colors
         if ($copy_array['color']) {
             $target->setColorArray($source->getColorArray());
-            $target->generateLayoutImages();
         }
 
         // ToDos

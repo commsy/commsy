@@ -658,18 +658,6 @@ class cs_dates_item extends cs_item
          $converter = $this->_environment->getTextConverter();
          $translator = $this->_environment->getTranslationObject();
 
-         // description
-         /* $desc = $this->getDescription();
-         if(!empty($desc)) {
-
-             $converter->setFileArray($this->getItemFileList());
-               if ( $this->_with_old_text_formating ) {
-                   $desc = $converter->textFullHTMLFormatting($desc);
-               } else {
-                 $desc = $converter->textFullHTMLFormatting($desc);
-               }
-         } */
-
          // set up style of days and times
          // time
          $parse_time_start = convertTimeFromInput($this->getStartingTime());
@@ -818,18 +806,6 @@ class cs_dates_item extends cs_item
      {
          $converter = $this->_environment->getTextConverter();
          $translator = $this->_environment->getTranslationObject();
-
-         // description
-         /* $desc = $this->getDescription();
-         if(!empty($desc)) {
-
-             $converter->setFileArray($this->getItemFileList());
-               if ( $this->_with_old_text_formating ) {
-                   $desc = $converter->textFullHTMLFormatting($desc);
-               } else {
-                 $desc = $converter->textFullHTMLFormatting($desc);
-               }
-         } */
 
          // set up style of days and times
          // time

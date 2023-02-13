@@ -265,7 +265,6 @@ class cs_privateroom_item extends cs_room_item
             $new_room_user->setVisibleToLoggedIn();
             $new_room_user->save();
             $new_room_user->setCreatorID2ItemID();
-            $this->generateLayoutImages();
         }
 
         // why saving for the second time?

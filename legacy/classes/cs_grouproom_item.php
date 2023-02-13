@@ -142,7 +142,6 @@ class cs_grouproom_item extends cs_room_item
 
             // send mail to moderation
             $this->_sendMailRoomOpen();
-            $this->generateLayoutImages();
         } else {
             $new_status = $this->getStatus();
             if ($new_status != $this->_old_status) {

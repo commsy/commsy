@@ -85,7 +85,6 @@ class cs_environment
     public function getCurrentUserItem()
     {
         if (!isset($this->current_user)) {
-            require_once 'classes/cs_user_item.php';
             $this->current_user = new cs_user_item($this);
         }
 
