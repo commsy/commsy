@@ -460,27 +460,7 @@ class cs_file_manager extends cs_manager
                 }
             }
         }
-        /*
-        $disc_manager = $this->_environment->getDiscManager();
-        $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
 
-        // copy files
-        foreach ($retour as $old_file_id => $new_file_id) {
-           $real_old_file_id = str_replace(CS_FILE_TYPE,'',$old_file_id);
-           $file_item = $this->getItem($real_old_file_id);
-           if (!empty($file_item)) {
-              $result = $disc_manager->copyFileFromRoomToRoom($old_id,$real_old_file_id,$file_item->getFileName(),$new_id,$new_file_id);
-              if (!$result) {
-                 //include_once('functions/error_functions.php');
-                 //trigger_error('can not copy file on disc',E_USER_ERROR);
-              }
-           } else {
-              include_once('functions/error_functions.php');
-              trigger_error('can not get old file item',E_USER_ERROR);
-           }
-        }
-        unset($disc_manager);
-        */
         return $retour;
     }
 
@@ -603,7 +583,7 @@ class cs_file_manager extends cs_manager
                             if (!empty($file_info['extension'])) {
                                 $file_ext = $file_info['extension'];
                             }
-                            $filename = $disc_manager->getCurrentFileName($query_result['context_id'], $query_result['files_id'], $query_result['filename'], $file_ext);
+                            $filename = $disc_manager->getCurrentFileName($query_result['files_id'], $file_ext);
                             if (!empty($filename) and $disc_manager->existsFile($filename)) {
                                 $retour = $retour and $disc_manager->unlinkFile($filename);
                             }
@@ -628,21 +608,5 @@ class cs_file_manager extends cs_manager
         $db_array['extras'] = mb_unserialize($db_array['extras']);
 
         return parent::_buildItem($db_array);
-    }
-
-    public function getFileIDForTempKey($temp_key)
-    {
-        $retour = '';
-        $sql = 'SELECT files_id FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE context_id="' . $this->_room_limit . '" AND extras LIKE "%' . $temp_key . '%";';
-        $result = $this->_db_connector->performQuery($sql);
-        if (!isset($result)) {
-            trigger_error('Filemanager: Problem creating file entry: ' . $sql, E_USER_ERROR);
-        } elseif ((is_countable($result) ? count($result) : 0) == 1
-            and !empty($result[0]['files_id'])
-        ) {
-            $retour = $result[0]['files_id'];
-        }
-
-        return $retour;
     }
 }

@@ -13,12 +13,10 @@
 
 class misc_text_converter
 {
-    private $_environment = null;
-    private ?string $_div_number = null;
-    private $_file_array = [];
-    private $_with_old_text_formating = false;
-    private ?\HTMLPurifier $_HTMLPurifier = null;
-    private ?\HTMLPurifier $_FullHTMLPurifier = null;
+    private ?cs_environment $_environment = null;
+    private array $_file_array = [];
+    private ?HTMLPurifier $_HTMLPurifier = null;
+    private ?HTMLPurifier $_FullHTMLPurifier = null;
     private bool $_processMath = false;
 
     public function __construct($params)
@@ -31,27 +29,9 @@ class misc_text_converter
         }
     }
 
-    public function setFileArray($value)
-    {
-        $this->_file_array = $value;
-    }
-
     private function _getFileArray()
     {
         return $this->_file_array;
-    }
-
-    // private function _create_thumb_name_from_image_name($name) {
-    public function _create_thumb_name_from_image_name($name)
-    {
-        $thumb_name = $name.'_thumb';
-
-        return $thumb_name;
-    }
-
-    public function cleanBadCode($text)
-    {
-        return $this->_cleanBadCode($text);
     }
 
     private function _cleanBadCode($text)
@@ -83,31 +63,14 @@ class misc_text_converter
         return $text;
     }
 
-    public function cleanDataFromTextArea($text)
-    {
-        return $this->sanitizeFullHTML($text);
-    }
-
     public function _cs_htmlspecialchars($text)
     {
-        $text = $this->_cleanBadCode($text);
-
-        return $text;
+        return $this->_cleanBadCode($text);
     }
 
-    public function _cs_htmlspecialchars1($text)
-    {
-        $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
-
-        return $text;
-    }
-
-    // private function _cs_htmlspecialchars2 ($text) {
     public function _cs_htmlspecialchars2($text)
     {
-        $text = $this->_cleanBadCode($text);
-
-        return $text;
+        return $this->_cleanBadCode($text);
     }
 
     public function text_as_html_long($text, $htmlTextArea = true)
@@ -123,26 +86,6 @@ class misc_text_converter
             $text = str_replace('COMMSY_FCKEDITOR'.$key, $this->_text_as_html_long2($value), $text);
         }
 
-        return $text;
-    }
-
-    public function convertText($text)
-    {
-        // $text = $this->_cs_htmlspecialchars($text,$htmlTextArea);
-        // $text = nl2br($text);
-        // $text = $this->_decode_backslashes_1($text);
-        // $text = $this->_preserve_whitespaces($text);
-        // $text = $this->_newFormating($text);
-        // $text = $this->_emphasize_text($text);
-//      if($_GET['mod'] != 'ajax' && $_GET['fct'] != 'index'){
-//        $text = $this->_activate_urls($text);
-//      }
-        // $text = $this->_display_headers($text);
-        // $text = $this->_format_html_long($text);
-        // $text = $this->_parseText2ID($text);
-        // $text = $this->_decode_backslashes_2($text);
-        // $text = $this->_delete_unnecassary_br($text);
-        // $text = $this->_br_with_nl($text);
         return $text;
     }
 
@@ -181,52 +124,17 @@ class misc_text_converter
         return $text;
     }
 
-    private function _text_as_html_long_form($text)
-    {
-        $text = nl2br($text);
-        $text = $this->_preserve_whitespaces($text);
-        $text = $this->_emphasize_text($text);
-        $text = $this->_activate_urls($text);
-        $text = $this->_display_headers($text);
-        $text = $this->_format_html_long($text);
-        $text = $this->parseText2ID($text);
-        $text = $this->_decode_backslashes($text);
-        $text = $this->_delete_unnecassary_br($text);
-        $text = $this->_br_with_nl($text);
-        $text = $this->_cs_htmlspecialchars2($text);
-
-        return $text;
-    }
-
-    public function text_for_wiki_export($text)
-    {
-        $text = nl2br($text);
-        $text = $this->_emphasize_text($text);
-        $text = $this->_activate_urls($text);
-        $text = $this->_display_headers($text);
-        $text = $this->_format_html_long($text);
-        $text = $this->parseText2ID($text);
-        $text = $this->_decode_backslashes($text);
-        $text = $this->_br_with_nl($text);
-
-        return $text;
-    }
-
     public function text_as_html_short($text)
     {
         // $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
         $text = $this->_emphasize_text($text);
-        $text = $this->_decode_backslashes($text);
-
-        return $text;
+        return $this->_decode_backslashes($text);
     }
 
     public function text_as_form($text)
     {
         $text = $this->_cs_htmlspecialchars($text);
-        $text = str_replace('"', '&quot;', $text);
-
-        return $text;
+        return str_replace('"', '&quot;', $text);
     }
 
     // private function _decode_backslashes ($text) {
@@ -238,9 +146,7 @@ class misc_text_converter
         $retour = str_replace("\!", '&excl;', $retour);
         $retour = str_replace("\-", '&macr;', $retour);
         $retour = str_replace("\#", '&num;', $retour);
-        $retour = str_replace('\\\\', '&bsol;', $retour);
-
-        return $retour;
+        return str_replace('\\\\', '&bsol;', $retour);
     }
 
     // private function _emphasize_text ($text) {
@@ -382,17 +288,13 @@ class misc_text_converter
     private function _decode_backslashes_1_fck($text)
     {
         $retour = $text;
-        $retour = str_replace("\(:", "\WIKIBEGIN", $retour);
-
-        return $retour;
+        return str_replace("\(:", "\WIKIBEGIN", $retour);
     }
 
     private function _decode_backslashes_2_fck($text)
     {
         $retour = $text;
-        $retour = str_replace("\WIKIBEGIN", '(:', $retour);
-
-        return $retour;
+        return str_replace("\WIKIBEGIN", '(:', $retour);
     }
 
     /**
@@ -431,11 +333,6 @@ class misc_text_converter
         $text = str_replace('<br />', '<br />'.LF, $text);
 
         return $text;
-    }
-
-    public function parseText2Id($text)
-    {
-        return $this->_parseText2Id($text);
     }
 
     private function _parseText2Id($text)
@@ -573,13 +470,10 @@ class misc_text_converter
         return $retour;
     }
 
-    // private function _delete_unnecassary_br($text) {
     public function _delete_unnecassary_br($text)
     {
         $text = preg_replace('~<br( /)?>(</h\d>)~u', '$2', $text);
-        $text = preg_replace('~<br( /)?>(</li>)~u', '</li>', $text);
-
-        return $text;
+        return preg_replace('~<br( /)?>(</li>)~u', '</li>', $text);
     }
 
     /** Wenn im Text Gruppierungen von zwei oder mehr Leerzeichen
@@ -589,7 +483,6 @@ class misc_text_converter
      *  Wurde aufgrund folgenden Bugs erstellt:
      *  http://sourceforge.net/tracker/index.php?func=detail&aid=1062265&group_id=49014&atid=516467
      */
-    // private function _preserve_whitespaces($text) {
     public function _preserve_whitespaces($text)
     {
         preg_match_all('~ {2,}~u', $text, $matches);
@@ -614,20 +507,7 @@ class misc_text_converter
         $retour = str_replace("\!", "\AUSRUFEZEICHEN", $retour);
         $retour = str_replace("\-", "\MINUS", $retour);
         $retour = str_replace("\#", "\SCHWEINEGATTER", $retour);
-        $retour = str_replace("\(:", "\WIKIBEGIN", $retour);
-
-        return $retour;
-    }
-
-    private function _getDivNumber()
-    {
-        if (!isset($this->_div_number)) {
-            $this->_div_number = '1';
-        } else {
-            ++$this->_div_number;
-        }
-
-        return $this->_div_number;
+        return str_replace("\(:", "\WIKIBEGIN", $retour);
     }
 
     public function _getArgs($data, $reg_exp)
@@ -693,7 +573,6 @@ class misc_text_converter
         return $variable_array;
     }
 
-    // private function _parseArgs ($x) {
     public function _parseArgs($x)
     {
         $z = [];
@@ -914,9 +793,7 @@ class misc_text_converter
     {
         $text = str_replace('(', '&#040;', $text);
         $text = str_replace(')', '&#041;', $text);
-        $text = str_replace(':', '&#058;', $text);
-
-        return $text;
+        return str_replace(':', '&#058;', $text);
     }
 
     /**
@@ -942,47 +819,11 @@ class misc_text_converter
         return $text;
     }
 
-    /**
-     * Decodes file names.
-     *
-     * @param $text - text
-     *
-     * @return decoded text
-     */
-    private function _decode_file_names($text)
-    {
-        $reg_exp = '~\\(:.*? (.*?)\\.([a-zA-Z0-9]*)~eu';
-        $found = preg_match_all($reg_exp, $text, $matches);
-        if ($found > 0) {
-            for ($i = 0; $i < $found; ++$i) {
-                $new_file_name = html_entity_decode($matches[1][$i]);
-                $new_file_extension = html_entity_decode($matches[2][$i]);
-                $text = str_replace($matches[1][$i].'.'.$matches[2][$i], "$new_file_name.$new_file_extension", $text);
-            }
-        }
-
-        return $text;
-    }
-
      // private function _newFormating ( $text ) {
      public function _newFormating($text)
      {
          $reg_exp_image = [];
          $file_array = $this->_getFileArray();
-         // $temp = $this->_environment->getCurrentContextItem();
-         // pr($temp);
-         // ////////////////////////////////////////////////////////////
-         // this is for preventing parsing of (: and :)
-         // ////////////////////////////////////////////////////////////
-         // decode tags used in alt and text attributes
-         // $attr = array('alt', 'text');
-         // $text = $this->_encode_attr($attr, $text);
-
-         // decode file names
-         // $text = $this->_encode_file_names($text);
-         // ////////////////////////////////////////////////////////////
-         // ////////////////////////////////////////////////////////////
-         // ////////////////////////////////////////////////////////////
 
          $reg_exp_father_array = [];
          $reg_exp_father_array[] = '~\\(:(.*?):\\)~eu';
@@ -1095,16 +936,7 @@ class misc_text_converter
                                  $args_array = $this->_getArgs2($value_new, $reg_exp);
                              }
 
-                             // decode file names
-                             // $value_new = $this->_decode_file_names($value_new);
-
-                             /*if ( $key == '[' and mb_stristr($value_new,'[') ){#pr($args_array);
-                                $value_new = $this->_formatRef($value_new,$args_array); // Referenzen Testen
-                             } else*/
-                             if ('(:image' == $key and mb_stristr($value_new, '(:image')) {
-                                 $value_new = $this->_formatImage($value_new, $args_array, $file_array);
-                                 break;
-                             } elseif ('(:item' == $key and mb_stristr($value_new, '(:item')) {
+                             if ('(:item' == $key and mb_stristr($value_new, '(:item')) {
                                  $value_new = $this->_formatItem($value_new, $args_array);
                                  break;
                              } elseif ('(:link' == $key and mb_stristr($value_new, '(:link')) {
@@ -1134,50 +966,8 @@ class misc_text_converter
          return $text;
      }
 
-//    private function _formatRef ($text, $array) {
-//        $retour = '';
-//        // explode id and text
-//        if (!empty($array['0'])){
-//          $ref = explode('|', $array['0']);
-//          $ref['0'] = substr($ref['0'], 1);
-//          $ref['1'] = substr($ref['1'],0,-1);
-//        }
-
-//        if( !empty($ref['1'])){
-//          $params = array();
-//          $params['iid'] = $ref['0'];
-//          $word = $ref['1'];
-//        }
-
-//        include_once('functions/curls_functions.php');
-//        $item_manager = $this->_environment->getItemManager();
-//        $item_manager->resetLimits();
-//        $type = $item_manager->getItemType($params['iid']);
-//        unset($item_manager);
-
-//        if(   $type == CS_ROOM_TYPE ||
-//                $type == CS_COMMUNITY_TYPE ||
-//                $type == CS_PRIVATEROOM_TYPE ||
-//                $type == CS_GROUPROOM_TYPE ||
-//                $type == CS_MYROOM_TYPE ||
-//                $type == CS_PROJECT_TYPE ||
-//                $type == CS_PORTAL_TYPE/* ||
-//                $type == CS_SERVER_TYPE*/) {
-//                $link_text = ahref_curl($params['iid'], 'home', 'index', '', $word);
-//                } else {
-//                   $link_text = ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', '', '');
-//                }
-//             if ( !empty($link_text) ) {
-//                $text = str_replace($array[0],$link_text,$text);
-//             }
-
-//             $retour = $text;
-//             return $retour;
-//    }
-
     private function _formatFile($text, $array, $file_name_array)
     {
-        $retour = '';
         $image_text = '';
         if (!empty($array[1])
              and !empty($file_name_array)
@@ -1195,15 +985,8 @@ class misc_text_converter
                     $args = [];
                 }
 
-//            if ( empty($args['icon'])
-//                 or ( !empty($args['icon'])
-//                      and $args['icon'] == 'true'
-//                    )
-//               ) {
-//               $icon = $file->getFileIcon().' ';
-//            } else {
                 $icon = '';
-//            }
+
                 if (empty($args['size'])
                      or (!empty($args['size'])
                           and 'true' == $args['size']
@@ -1239,9 +1022,7 @@ class misc_text_converter
             $text = str_replace($array[0], $image_text, $text);
         }
 
-        $retour = $text;
-
-        return $retour;
+        return $text;
     }
 
     private function _formatImageLightboxCkEditor($text, $imgTag, $link, $fileID)
@@ -1249,156 +1030,12 @@ class misc_text_converter
         $image_text = null;
         $retour = '';
         $image_text .= '<a class="lightbox_'.$fileID.'" href="'.$link.'" target="blank">';
-        // $image_text .= '<a href="'.$source.'" rel="lightbox'.$gallery.'"'.$href_title.'>';
-        // $image_text .= '<img style="'.$height.$width.'" src="'.$source2.'" alt="'.$alt.'"/>';
         $image_text .= $imgTag;
         $image_text .= '</a>';
 
         if (!empty($image_text)) {
             $retour = $image_text;
-            // $retour = str_replace($imgTag, $image_text, $text);
-            // $retour = str_replace($array[0],$image_text,$text);
         }
-
-        return $retour;
-    }
-
-    private function _formatImage($text, $array, $file_name_array)
-    {
-        $source2 = null;
-        $alt = null;
-        $retour = '';
-        $image_text = '';
-        $source = '';
-        if (empty($array[1])) {
-            if (!empty($file_name_array)) {
-                // internal resource
-                $temp_file_name = htmlentities($array[2], ENT_NOQUOTES, 'UTF-8');
-                if (!empty($array[2]) and !empty($file_name_array[$temp_file_name])) {
-                    $file = $file_name_array[$temp_file_name];
-                } elseif (!empty($array[2]) and !empty($file_name_array[$array[2]])) {
-                    $file = $file_name_array[$array[2]];
-                }
-                if (isset($file)) {
-                    if (mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'), 'png')
-                         or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'), 'jpg')
-                         or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'), 'jpeg')
-                         or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'), 'gif')
-                    ) {
-                        $source = $file->getUrl();
-                        $thumb_name = $this->_create_thumb_name_from_image_name($file->getDiskFileNameWithoutFolder());
-                        // if there is a thumb file, use it instead
-                        $disc_manager = $this->_environment->getDiscManager();
-                        if ($disc_manager->existsFile($thumb_name)) {
-                            $params = [];
-                            $params['picture'] = $thumb_name;
-                            global $c_single_entry_point;
-                            $thumb_source = curl($this->_environment->getCurrentContextID(),
-                                'picture',
-                                'getfile',
-                                $params,
-                                '',
-                                $thumb_name, // ''. ???
-                                $c_single_entry_point);
-                            unset($params);
-                        } else {
-                            $width_auto = 200;
-                            if (function_exists('gd_info')
-                                 and file_exists($file->getDiskFileName())
-                            ) {
-                                $image_in_info = getimagesize($file->getDiskFileName());
-                                $x_orig = $image_in_info[0];
-                                if ($x_orig < $width_auto) {
-                                    $width_auto = '';
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            $source = $array[1].$array[2];
-        }
-
-        if (!empty($array[3])) {
-            $args = $this->_parseArgs($array[3]);
-        } else {
-            $args = [];
-        }
-
-        $href_title = '';
-        if (!empty($args['alt'])) {
-            $alt = $args['alt'];
-            $href_title = ' title="'.str_replace('"', '&quot;', $alt).'"';
-        } elseif (!empty($source)) {
-            $alt = 'image: '.$source;
-            $href_title = ' title="'.str_replace('"', '&quot;', $alt).'"';
-        }
-
-        if (!empty($args['gallery'])) {
-            // jQuery
-            // $gallery = '['.$args['gallery'].']';
-            $gallery = '-'.$args['gallery'];
-        // jQuery
-        } elseif (!empty($source)) {
-            $gallery = '';
-        }
-        if (!empty($args['float'])
-             and ('left' == $args['float']
-                   or 'right' == $args['float']
-             )
-        ) {
-            $float = 'float:'.$args['float'].';';
-        } elseif (!empty($args['lfloat'])) {
-            $float = 'float:left;';
-        } elseif (!empty($args['rfloat'])) {
-            $float = 'float:right;';
-        } else {
-            $float = '';
-        }
-        if (!empty($args['height'])
-             and is_numeric($args['height'])
-        ) {
-            $height = 'height:'.$args['height'].'px;';
-        } else {
-            $height = '';
-        }
-        if (!empty($args['width'])
-             and is_numeric($args['width'])
-        ) {
-            $width = 'width:'.$args['width'].'px;';
-        } elseif (!empty($width_auto)
-                   and empty($height)
-        ) {
-            $width = 'width:'.$width_auto.'px;';
-        } else {
-            $width = '';
-        }
-        if (!empty($thumb_source)
-               and empty($height)
-               and empty($width)
-        ) {
-            $source2 = $thumb_source;
-        } elseif (!empty($source)) {
-            $source2 = $source;
-        }
-
-        if (!empty($source) and !empty($file)) {
-            // $image_text .= '<div style="'.$float.$height.$width.' padding:5px;">';
-            $image_text .= '<a class="lightbox_'.$file->getFileID().'" href="'.$source2.'" target="blank">';
-            // $image_text .= '<a href="'.$source.'" rel="lightbox'.$gallery.'"'.$href_title.'>';
-            $image_text .= '<img style="'.$height.$width.$float.'" src="'.$source2.'" alt="'.$alt.'"/>';
-            $image_text .= '</a>';
-        // $image_text .= '</div>';
-        } elseif (!empty($source)) {
-            $image_text .= '<img style="'.$height.$width.$float.'" src="'.$source2.'" alt="'.$alt.'"/>';
-        }
-
-        if (!empty($image_text)) {
-            $text = str_replace($array[0], $image_text, $text);
-        }
-
-        $retour = $text;
 
         return $retour;
     }
@@ -1630,9 +1267,7 @@ class misc_text_converter
     private function _text_php2db($text)
     {
         $db_connection = $this->_environment->getDBConnector();
-        $text = $db_connection->text_php2db($text);
-
-        return $text;
+        return $db_connection->text_php2db($text);
     }
 
     private function _text_db2php($text)
@@ -1684,17 +1319,7 @@ class misc_text_converter
 
     private function _text_file2php($text)
     {
-        $text = str_replace('&quot;', '"', $text);
-        // ------------
-        // --->UTF8<---
-        // Umkodierung, sobald interne Verwendung und Kodierung der eingelesenen
-        // Dateien voneinander abweichen.
-      //
-        // $text = iconv("UTF-8", "ISO-8859-1", $text);
-      //
-        // --->UTF8<---
-        // ------------
-        return $text;
+        return str_replace('&quot;', '"', $text);
     }
 
     private function _help_as_html_long($text)
@@ -1740,15 +1365,6 @@ class misc_text_converter
         $text = str_replace('"', '&quot;', $text);
         $text = str_replace('&lt;', '<', $text);
         $text = str_replace('&gt;', '>', $text);
-        // ------------
-        // --->UTF8<---
-        // Umkodierung, sobald interne Verwendung und Kodierung der eingelesenen
-        // Dateien voneinander abweichen.
-      //
-        // $text = iconv("ISO-8859-1", "UTF-8", $text);
-      //
-        // --->UTF8<---
-        // ------------
 
         return $text;
     }
@@ -2016,16 +1632,8 @@ class misc_text_converter
      */
     public function sanitizeFullHTML($text)
     {
-        // pr($text);
-        $clean_html = $this->_FullHTMLPurifier->purify($text);
-
-        return $clean_html;
+        return $this->_FullHTMLPurifier->purify($text);
     }
-
-//    public function textFormating($text, $type){
-//       $text = $this->_textFormating($text,$type);
-//       return $text;
-//    }
 
     public function emphasizeFilename($text)
     {
@@ -2039,13 +1647,6 @@ class misc_text_converter
         // maybe with yellow or orange background ???
         $text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~uU', '<span style="font-style:italic;">$1</span>', $text);
         // $text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~u', '<span class="searched_text">$1</span>', $text);
-
-        return $text;
-    }
-
-    public function filenameFormatting($text)
-    {
-        $text = $this->emphasizeFilename($text);
 
         return $text;
     }

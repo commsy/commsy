@@ -221,22 +221,19 @@ class cs_disc_manager
         return $retour;
     }
 
-    public function getFileAsBase64($file): string
-    {
-        return base64_encode(file_exists($file) ? file_get_contents($file) : '');
-    }
-
     public function getLastSavedFileName(): string
     {
         return $this->lastSavedFilename;
     }
 
     /**
+     * @param int $fileId
+     * @param string $fileExt
      * @return string
      */
-    public function getCurrentFileName($context_id, $file_id, $file_name, $file_ext)
+    public function getCurrentFileName(int $fileId, string $fileExt): string
     {
-        return $file_id.'.'.$file_ext;
+        return "$fileId.$fileExt";
     }
 
     /**
@@ -261,21 +258,20 @@ class cs_disc_manager
         return $projectDir.'/'.self::RELATIVE_FILES_PATH;
     }
 
-    private function _getSecondFolder($second_folder): string
+    private function _getSecondFolder(string $second_folder): string
     {
-        $second_folder = (string) $second_folder;
-        if (!empty($second_folder)) {
-            $retour = '';
-            for ($i = 0; $i < strlen($second_folder); ++$i) {
-                if ($i > 0 and 0 == $i % 4) {
-                    $retour .= '/';
-                }
-                $retour .= $second_folder[$i];
-            }
-            $retour .= '_';
-        } else {
-            $retour = md5(getCurrentDateTimeInMySQL());
+        if (empty($second_folder)) {
+            return md5(getCurrentDateTimeInMySQL());
         }
+
+        $retour = '';
+        for ($i = 0; $i < strlen($second_folder); ++$i) {
+            if ($i > 0 && 0 == $i % 4) {
+                $retour .= '/';
+            }
+            $retour .= $second_folder[$i];
+        }
+        $retour .= '_';
 
         return $retour;
     }

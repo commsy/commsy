@@ -47,13 +47,7 @@ class FileController extends AbstractController
         $file = $fileService->getFile($fileId);
 
         if (!file_exists($file->getDiskFileName())) {
-            // fix for userrooms
-            if ('userroom' == $legacyEnvironment->getEnvironment()->getCurrentContextItem()->getType()) {
-                $file->setPortalID($legacyEnvironment->getEnvironment()->getCurrentPortalID());
-            }
-            if (!file_exists($file->getDiskFileName())) {
-                throw $this->createNotFoundException('The requested file does not exist');
-            }
+            throw $this->createNotFoundException('The requested file does not exist');
         }
 
         $response = new BinaryFileResponse($file->getDiskFileName());
