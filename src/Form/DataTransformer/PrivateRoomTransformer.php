@@ -13,25 +13,17 @@
 
 namespace App\Form\DataTransformer;
 
-use App\Services\LegacyEnvironment;
-use cs_environment;
 use cs_privateroom_item;
+use cs_room_item;
 
 class PrivateRoomTransformer extends AbstractTransformer
 {
     protected $entity = 'privateroom';
 
-    private cs_environment $legacyEnvironment;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-    }
-
     /**
      * Transforms a cs_room_item object to an array.
      *
-     * @param cs_privateroom_item $roomItem
+     * @param cs_privateroom_item $privateRoomItem
      *
      * @return array
      */
@@ -86,12 +78,10 @@ class PrivateRoomTransformer extends AbstractTransformer
     /**
      * Applies an array of data to an existing object.
      *
-     * @param cs_privateroom_item $roomObject
-     * @param array                $roomData
-     *
+     * @param cs_privateroom_item $privateRoomObject
+     * @param array $privateRoomData
      * @return cs_room_item|null
      *
-     * @throws TransformationFailedException if room item is not found
      */
     public function applyTransformation($privateRoomObject, $privateRoomData)
     {
@@ -123,13 +113,6 @@ class PrivateRoomTransformer extends AbstractTransformer
             // TODO: Set language in portal / portalProxy
             if (isset($privateRoomData['language'])) {
                 $privateRoomObject->setLanguage($privateRoomData['language']);
-                $privateRoomObject->_environment->current_context = $privateRoomObject;
-
-//                $this->legacyEnvironment->getCurrentContextItem()->setLanguage($privateRoomData['language']);
-//                $portalManager = $this->legacyEnvironment->getPortalManager();
-//                $portalManager->saveItem($this->legacyEnvironment->getCurrentContextItem());
-//                $this->legacyEnvironment->getCurrentContextItem()->save();
-//                $privateRoomObject->getContextItem()->setLanguage($privateRoomData['language']);
             }
 
             $set_to = 'none';
