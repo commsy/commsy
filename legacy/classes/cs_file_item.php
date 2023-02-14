@@ -173,6 +173,10 @@ class cs_file_item extends cs_item
 
         $roomManager = $this->_environment->getRoomManager();
         $parentRoom = $roomManager->getItem($roomId);
+        if (!$parentRoom) {
+            $privateRoomManager = $this->_environment->getPrivateRoomManager();
+            $parentRoom = $privateRoomManager->getItem($roomId);
+        }
 
         // the room context is either the portal or (unfortunately) in case of a user room the parent project room
         $contextId = $parentRoom->getContextID();
