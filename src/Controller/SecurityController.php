@@ -14,6 +14,7 @@
 namespace App\Controller;
 
 use App\Entity\Account;
+use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
 use App\Entity\Server;
@@ -63,12 +64,14 @@ class SecurityController extends AbstractController
         return $this->redirectToRoute('app_server_show');
     }
 
-    #[Route(path: '/login/{context}', name: 'app_login')]
+    #[Route(path: '/login/{context}/{authSourceId?}', name: 'app_login', priority: -1)]
+    #[ParamConverter('authSource', class: AuthSource::class, options: ['mapping' => ['authSourceId' => 'id']])]
     public function login(
         AuthenticationUtils $authenticationUtils,
         EntityManagerInterface $entityManager,
         Request $request,
-        string $context = 'server'
+        string $context = 'server',
+        ?AuthSource $authSource = null
     ): Response {
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -81,29 +84,20 @@ class SecurityController extends AbstractController
             if (!$portal) {
                 throw $this->createNotFoundException('Portal not found');
             }
+
+            if ($authSource && $authSource->getPortal() === $portal) {
+                $preSelectAuthSourceId = $authSource->getId();
+            }
         } else {
             $lastUsername = 'root';
         }
 
-        $lastSource = null;
         if ($request->hasSession() && ($session = $request->getSession())->has(AbstractCommsyGuardAuthenticator::LAST_SOURCE)) {
             $lastSource = $session->get(AbstractCommsyGuardAuthenticator::LAST_SOURCE);
+            $session->remove(AbstractCommsyGuardAuthenticator::LAST_SOURCE);
         }
 
         $server = $entityManager->getRepository(Server::class)->getServer();
-
-        $idps = [];
-//        $authSources = $portal->getAuthSources();
-//        foreach($authSources as $authSource) {
-//            if($authSource->getType() === 'shib') {
-//                $idpRepo = $entityManager->getRepository(Idp::Class);
-//                $idps = $idpRepo->findBy(array('authSourceShibboleth' => $authSource));
-//            }
-//        }
-        $choices = [];
-        foreach ($idps as $currentIpd) {
-            $choices[$currentIpd->getName()] = $currentIpd->getId();
-        }
 
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
@@ -111,8 +105,8 @@ class SecurityController extends AbstractController
             'context' => $context,
             'portal' => $portal ?? null,
             'server' => $server,
-            'lastSource' => $lastSource,
-            'idps' => $choices,
+            'lastSource' => $lastSource ?? null,
+            'preSelectAuthSourceId' => $preSelectAuthSourceId ?? null,
         ]);
     }
 
