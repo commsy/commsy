@@ -175,11 +175,8 @@ class cs_privateroom_manager extends cs_room2_manager
         }
 
         if ($this->_active_limit) {
-            $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id';
-            $query .= ' AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL';
-
+            $query .= ' INNER JOIN user ON user.context_id = room_privat.item_id AND user.deletion_date IS NULL';
             $query .= ' INNER JOIN accounts ON user.user_id = accounts.username AND user.auth_source = accounts.auth_source_id';
-            $query .= ' AND accounts.context_id = ' . encode(AS_DB, $this->_room_limit);
         }
 
         $query .= ' WHERE 1';
@@ -212,7 +209,8 @@ class cs_privateroom_manager extends cs_room2_manager
         }
 
         if ($this->_active_limit) {
-            $query .= ' and accounts.last_login >= "'.getCurrentDateTimeMinusDaysInMySQL(100).'"';
+            $query .= ' AND accounts.context_id = room_privat.context_id';
+            $query .= ' AND accounts.last_login >= "'.getCurrentDateTimeMinusDaysInMySQL(100).'"';
         }
 
         // archive
