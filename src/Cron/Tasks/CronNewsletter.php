@@ -62,12 +62,6 @@ class CronNewsletter implements CronTaskInterface
                     continue;
                 }
 
-                $privateRoomUser = $privateRoom->getOwnerUserItem();
-                $portalUser = $privateRoomUser->getRelatedPortalUserItem();
-                if (null === $portalUser || !$portalUser->isActiveDuringLast99Days()) {
-                    continue;
-                }
-
                 $frequency = $privateRoom->getPrivateRoomNewsletterActivity();
                 $send = 'daily' === $frequency;
 
