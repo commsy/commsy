@@ -13,7 +13,6 @@
 
 namespace App\Utils;
 
-use _PHPStan_582a9cb8b\Symfony\Component\Console\Exception\LogicException;
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use cs_context_item;
@@ -29,6 +28,7 @@ use cs_user_item;
 use cs_user_manager;
 use cs_userroom_item;
 use DateTimeImmutable;
+use LogicException;
 use Symfony\Component\Form\FormInterface;
 
 class UserService

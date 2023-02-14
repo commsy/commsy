@@ -52,7 +52,7 @@
                         {{ 'Edit' | trans({}, 'portal') }}
                     </a></li>
 
-                    {% if not portalUser.canImpersonateAnotherUser or (portalUser.impersonateExpiryDate is not null and portalUser.impersonateExpiryDate < date())%}
+                    {% if not canImpersonate %}
                         <li class="uk-text-muted">
                             {{'Login...'|trans({}, 'portal') }} {{ user.firstname }} {{ user.lastname }} {{'...As'|trans({}, 'portal') }}
                         </li>
