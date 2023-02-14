@@ -1974,13 +1974,9 @@ class PortalSettingsController extends AbstractController
         UserListBuilder $userListBuilder,
         AccountManager $accountManager
     ): Response {
-        /** @var Account $account */
-        $account = $security->getUser();
-
         $userList = $userService->getListUsers($portal->getId());
         $form = $this->createForm(AccountIndexDetailType::class, $portal);
         $form->handleRequest($request);
-        $portalUser = $userService->getPortalUser($account);
         $user = $userService->getUser($request->get('userId'));
 
         $communityArchivedListNames = [];
@@ -2089,10 +2085,20 @@ class PortalSettingsController extends AbstractController
             }
         }
 
+        $canImpersonate = $security->isGranted('ROLE_ROOT');
+        if (!$canImpersonate) {
+            /** @var Account $account */
+            $account = $security->getUser();
+            $portalUser = $userService->getPortalUser($account);
+
+            $canImpersonate = $portalUser->getCanImpersonateAnotherUser() ||
+                ($portalUser->getImpersonateExpiryDate() !== null && $portalUser->getImpersonateExpiryDate() < new DateTimeImmutable());
+        }
+
         return $this->render('portal_settings/account_index_detail.html.twig', [
             'accountOfUser' => $accountOfUser,
             'user' => $user,
-            'portalUser' => $portalUser,
+            'canImpersonate' => $canImpersonate,
             'authSource' => $authSourceRepository->findOneBy(['id' => $user->getAuthSource()]),
             'form' => $form->createView(),
             'portal' => $portal,
