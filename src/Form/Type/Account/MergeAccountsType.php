@@ -52,7 +52,9 @@ class MergeAccountsType extends AbstractType
                 'query_builder' => fn (AuthSourceRepository $er) => $er->createQueryBuilder('a')
                     ->where('a.portal = :portal')
                     ->andWhere('a.enabled = true')
-                    ->setParameter('portal', $portal),
+                    ->andWhere('a NOT INSTANCE OF :type')
+                    ->setParameter('portal', $portal)
+                    ->setParameter('type', 'guest'),
                 'choice_label' => fn (AuthSource $authSource) => $authSource->getTitle().'('.$authSource->getType().')',
                 'label' => 'authSource',
             ])
