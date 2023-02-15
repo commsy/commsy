@@ -83,13 +83,13 @@ class AccountMerger
         $duplicatedRooms = [];
         $nonDuplicatedRooms = [];
 
-        $intoUserRooms = $intoPortalUser->getRelatedCommunityListAllUserStatus();
+        $intoUserRooms = $intoPortalUser->getRelatedProjectListAllUserStatus();
         $intoUserRooms->addList($intoPortalUser->getRelatedCommunityListAllUserStatus());
 
-        $formUserRooms = $fromPortalUser->getRelatedProjectListAllUserStatus();
-        $formUserRooms->addList($fromPortalUser->getRelatedCommunityListAllUserStatus());
+        $fromUserRooms = $fromPortalUser->getRelatedProjectListAllUserStatus();
+        $fromUserRooms->addList($fromPortalUser->getRelatedCommunityListAllUserStatus());
 
-        foreach ($formUserRooms as $userFromRoom) {
+        foreach ($fromUserRooms as $userFromRoom) {
             if ($intoUserRooms->inList($userFromRoom)) {
                 $duplicatedRooms[] = $userFromRoom;
             } else {
