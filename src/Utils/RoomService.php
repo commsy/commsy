@@ -54,7 +54,8 @@ class RoomService
      */
     public function getRubricInformation($roomId, $includeModifier = false): array
     {
-        $rubricConfigurations = null;
+        $rubricConfigurations = [];
+
         // get the rooms rubric configuration
         $roomItem = $this->getRoomItem($roomId);
         if ($roomItem) {
@@ -81,17 +82,17 @@ class RoomService
 
     /**
      * @param int $roomId The id of the room
-     *
+     * @param array $exclude
      * @return string[] List of rubrics needed for querying
      */
-    public function getVisibleRoomRubrics(int $roomId): array
+    public function getVisibleRoomRubrics(int $roomId, array $exclude = ['hide', 'off']): array
     {
         $rubricConfiguration = $this->getRubricInformation($roomId, true);
 
-        $visibleRubrics = array_filter($rubricConfiguration, function ($rubric) {
+        $visibleRubrics = array_filter($rubricConfiguration, function ($rubric) use ($exclude) {
             [, $modifier] = explode('_', $rubric);
 
-            return $modifier === 'show';
+            return !in_array($modifier, $exclude);
         });
 
         return array_map(function ($rubric) {
