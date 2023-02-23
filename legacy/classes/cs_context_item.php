@@ -1647,7 +1647,7 @@ class cs_context_item extends cs_item
      * Method takes the configuration string from the database and removes
      * the rubrics that are not allowed on the server.
      */
-    public function clearUnallowedRubrics($rubricsString)
+    private function clearUnallowedRubrics($rubricsString)
     {
         foreach ($this->_configurable_rubrics as $rubric) {
             if (mb_stristr($rubricsString, $rubric)) {
@@ -1698,37 +1698,33 @@ class cs_context_item extends cs_item
         return $rubricsString;
     }
 
-    /** get configuration of the homepage
+    /**
+     * get configuration of the homepage
      * this method configuration of the homepage.
      *
-     * @return array configuration of the homepage
+     * @return string configuration of the homepage
      */
-    public function getDefaultHomeConf()
+    public function getDefaultHomeConf(): string
     {
-        $retour = '';
-        $first = true;
-        foreach ($this->_default_rubrics_array as $rubric) {
-            if ($first) {
-                $first = false;
-            } else {
-                $retour .= ',';
-            }
-            if (isset($this->_default_home_conf_array[$rubric])) {
-                $retour .= $rubric.'_'.$this->_default_home_conf_array[$rubric];
-            }
-        }
+        $rubrics = $this->_default_rubrics_array;
 
-        return $this->clearUnallowedRubrics($retour);
+        // only consider rubrics that are set in the default home conf array
+        // this should always be the case
+        $rubrics = array_filter($rubrics, fn ($rubric) => isset($this->_default_home_conf_array[$rubric]));
+
+        $rubricsAsString = implode(',', $rubrics);
+        return $this->clearUnallowedRubrics($rubricsAsString);
     }
 
-    /** set home conf
+    /**
+     * set home conf
      * this method sets the home conf.
      *
-     * @param string value home conf
+     * @param string $value home conf
      */
-    public function setHomeConf($value)
+    public function setHomeConf(string $value)
     {
-        $this->_addExtra('HOMECONF', (string) $value);
+        $this->_addExtra('HOMECONF', $value);
     }
 
     // #########################################
