@@ -189,7 +189,8 @@
                     </div>
                 </div>
                 <div id="list-filter" class="cs-toggleable uk-hidden-small uk-margin-top">
-                    {{ form_widget(form) }}
+                    {% if form.category is defined %}{{ form_widget(form.category) }}{% endif %}
+                    {% if form.hashtag is defined %}{{ form_widget(form.hashtag) }}{% endif %}
                     {{ form_end(form) }}
                 </div>
             </div>
