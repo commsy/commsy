@@ -56,7 +56,16 @@ class ItemVoter extends Voter
 
     protected function supports($attribute, $object)
     {
-        return in_array($attribute, [self::SEE, self::EDIT, self::ANNOTATE, self::PARTICIPATE, self::MODERATE, self::ENTER, self::USERROOM, self::DELETE]);
+        return in_array($attribute, [
+            self::SEE,
+            self::EDIT,
+            self::ANNOTATE,
+            self::PARTICIPATE,
+            self::MODERATE,
+            self::ENTER,
+            self::USERROOM,
+            self::DELETE,
+        ]);
     }
 
     protected function voteOnAttribute($attribute, $object, TokenInterface $token)

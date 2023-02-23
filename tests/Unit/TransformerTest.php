@@ -17,8 +17,6 @@ class TransformerTest
 
     public function transformSectionTest()
     {
-        require_once 'classes/cs_section_item.php';
-
         /** @var cs_section_item $section */
         $section = Stub::make(cs_section_item::class);
 
