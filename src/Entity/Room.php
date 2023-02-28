@@ -103,7 +103,7 @@ class Room
     #[Groups(['api'])]
     private string $title;
 
-    #[ORM\Column(name: 'extras', type: 'mbarray', nullable: true)]
+    #[ORM\Column(name: 'extras', type: 'array', nullable: true)]
     private ?array $extras = null;
 
     #[ORM\Column(name: 'status', type: 'string', length: 20)]

@@ -107,7 +107,7 @@ class Materials
     /**
      * @var string
      */
-    #[ORM\Column(name: 'extras', type: 'mbarray', nullable: true)]
+    #[ORM\Column(name: 'extras', type: 'array', nullable: true)]
     private $extras;
 
     /**
