@@ -1651,6 +1651,8 @@ class cs_context_item extends cs_item
         // this should always be the case
         $rubrics = array_filter($rubrics, fn ($rubric) => isset($this->defaultHomeConf[$rubric]));
 
+        $rubrics = array_map(fn ($rubric) => "${rubric}_show", $rubrics);
+
         return implode(',', $rubrics);
     }
 
