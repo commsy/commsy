@@ -33,15 +33,11 @@ class cs_context_item extends cs_item
     public $_default_rubrics_array = [];
     public $_plugin_rubrics_array = [];
 
-    public $_default_home_conf_array = [];
+    protected array $defaultHomeConf = [];
 
     public $_current_rubrics_array = [];
 
     public $_current_home_conf_array = [];
-    /**
-     * list of rubrics, that can be turned on or off on the server.
-     */
-    public $_configurable_rubrics = [];
 
     public $_rubric_support = [];
 
@@ -1578,12 +1574,10 @@ class cs_context_item extends cs_item
 
     public function getHomeConf()
     {
-        $retour = '';
-        if ($this->_issetExtra('HOMECONF')) {
-            $retour = $this->clearUnallowedRubrics($this->_getExtra('HOMECONF'));
-        }
+        $retour = $this->_issetExtra('HOMECONF') ? $this->_getExtra('HOMECONF') : '';
         $retour = $this->_changeContactInUser($retour);
         $retour = $this->_disablePlugins($retour);
+
         if (empty($retour)) {
             $retour = $this->getDefaultHomeConf();
             $this->setHomeConf($retour);
@@ -1644,61 +1638,6 @@ class cs_context_item extends cs_item
     }
 
     /**
-     * Method takes the configuration string from the database and removes
-     * the rubrics that are not allowed on the server.
-     */
-    private function clearUnallowedRubrics($rubricsString)
-    {
-        foreach ($this->_configurable_rubrics as $rubric) {
-            if (mb_stristr($rubricsString, $rubric)) {
-                if (!$this->showExtraRubric($rubric)) {
-                    if (mb_stristr($rubricsString, $rubric.'_tiny')) {
-                        $rubricsString = str_replace($rubric.'_tiny', '', $rubricsString);
-                    }
-                    if (mb_stristr($rubricsString, $rubric.'_short')) {
-                        $rubricsString = str_replace($rubric.'_short', '', $rubricsString);
-                    }
-                    if (mb_stristr($rubricsString, $rubric.'_none')) {
-                        $rubricsString = str_replace($rubric.'_none', '', $rubricsString);
-                    }
-
-                    // clear string from ","
-                    if (',' == $rubricsString[0]) {
-                        $rubricsString = mb_substr($rubricsString, 1);
-                    }
-                    if (',' == $rubricsString[mb_strlen($rubricsString) - 1]) {
-                        $rubricsString = mb_substr($rubricsString, 0, mb_strlen($rubricsString) - 1);
-                    }
-                    $rubricsString = str_replace(',,', ',', $rubricsString);
-                }
-            }
-        }
-
-        // if a plugin is deleted, or a rubric configuration is faulty, remove it from HomeConf
-        if (!empty($rubricsString)) {
-            $retour = [];
-            $rubric_array = explode(',', $rubricsString);
-            foreach ($rubric_array as $rubric) {
-                if (!str_contains($rubric, '_')) {
-                    continue;
-                }
-                [$rubricType, $rubricConf] = explode('_', $rubric);
-                if (!empty($rubricType) && !empty($rubricConf) &&
-                  in_array($rubricType, $this->_default_rubrics_array)) {
-                    $retour[] = $rubricType.'_'.$rubricConf;
-                }
-            }
-
-            $rubricsString = '';
-            if (!empty($retour)) {
-                $rubricsString = implode(',', $retour);
-            }
-        }
-
-        return $rubricsString;
-    }
-
-    /**
      * get configuration of the homepage
      * this method configuration of the homepage.
      *
@@ -1710,10 +1649,9 @@ class cs_context_item extends cs_item
 
         // only consider rubrics that are set in the default home conf array
         // this should always be the case
-        $rubrics = array_filter($rubrics, fn ($rubric) => isset($this->_default_home_conf_array[$rubric]));
+        $rubrics = array_filter($rubrics, fn ($rubric) => isset($this->defaultHomeConf[$rubric]));
 
-        $rubricsAsString = implode(',', $rubrics);
-        return $this->clearUnallowedRubrics($rubricsAsString);
+        return implode(',', $rubrics);
     }
 
     /**
@@ -2516,14 +2454,9 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function isExtraRubric($rubric)
+    public function isExtraRubric($rubric): bool
     {
-        $retour = false;
-        if (in_array($rubric, $this->_configurable_rubrics)) {
-            $retour = true;
-        }
-
-        return $retour;
+        return false;
     }
 
     public function showExtraRubric($rubric)
