@@ -20,6 +20,7 @@ use App\Filter\SearchFilterType;
 use App\Form\Type\SearchItemType;
 use App\Form\Type\SearchType;
 use App\Model\SearchData;
+use App\Repository\SavedSearchRepository;
 use App\Search\FilterConditions\CreationDateFilterCondition;
 use App\Search\FilterConditions\ModificationDateFilterCondition;
 use App\Search\FilterConditions\MultipleCategoryFilterCondition;
@@ -215,6 +216,7 @@ class SearchController extends BaseController
         TranslatorInterface $translator,
         ReaderService $readerService,
         CalendarsService $calendarsService,
+        SavedSearchRepository $savedSearchRepository,
         int $roomId
     ): Response {
         // NOTE: for a guest user, $roomItem may be null (e.g. when initiating a search from "all rooms")
@@ -222,7 +224,7 @@ class SearchController extends BaseController
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $searchData = new SearchData();
-        $searchData = $this->populateSearchData($searchData, $request, $currentUser);
+        $searchData = $this->populateSearchData($searchData, $request, $currentUser, $savedSearchRepository);
 
         // the `originalContext` query parameter exists if the user clicked the 'Search in this room' entry in the
         // instant results dropdown; the param contains the roomId of the original room that was active before the
@@ -339,9 +341,7 @@ class SearchController extends BaseController
 
                     if ($savedSearchURL) {
                         // redirect to the search_url stored for the chosen saved search
-                        $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost().$savedSearchURL);
-
-                        return $this->render('search/results.html.twig');
+                        return $this->redirect($request->getSchemeAndHttpHost() . $savedSearchURL);
                     }
                 } elseif ('delete' === $buttonName && $savedSearch) {
                     $repository = $entityManager->getRepository(SavedSearch::class);
@@ -353,9 +353,7 @@ class SearchController extends BaseController
                     $request = $this->setSubParamForRequestQueryParam('selectedSavedSearchTitle', null, 'search_filter', $request);
                     $searchURL = $this->getUpdatedRequestUriForRequest($request);
 
-                    $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost().$searchURL);
-
-                    return $this->render('search/results.html.twig');
+                    return $this->redirect($request->getSchemeAndHttpHost() . $searchURL);
                 } elseif ('save' === $buttonName) {
                     // this handles cases where the "Save" button (in the "Manage my views" form part) was clicked
                     // with either "New view" or an existing saved search (aka "view") selected in the view dropdown
@@ -400,9 +398,7 @@ class SearchController extends BaseController
                     $entityManager->persist($savedSearch);
                     $entityManager->flush();
 
-                    $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost().$savedSearchURL);
-
-                    return $this->render('search/results.html.twig');
+                    return $this->redirect($request->getSchemeAndHttpHost() . $savedSearchURL);
                 }
             }
         }
@@ -432,6 +428,7 @@ class SearchController extends BaseController
         ReadStatusFilterCondition $readStatusFilterCondition,
         ReaderService $readerService,
         CalendarsService $calendarsService,
+        SavedSearchRepository $savedSearchRepository,
         int $roomId,
         int $start = 0,
         string $sort = ''
@@ -442,7 +439,7 @@ class SearchController extends BaseController
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $searchData = new SearchData();
-        $searchData = $this->populateSearchData($searchData, $request, $currentUser);
+        $searchData = $this->populateSearchData($searchData, $request, $currentUser, $savedSearchRepository);
 
         /*
          * Before we build the SearchFilterType form we need to get the current aggregations from ElasticSearch
@@ -516,7 +513,8 @@ class SearchController extends BaseController
     private function populateSearchData(
         SearchData $searchData,
         Request $request,
-        cs_user_item $currentUser
+        cs_user_item $currentUser,
+        SavedSearchRepository $savedSearchRepository
     ): SearchData {
         // TODO: should we better move this method to SearchData.php?
 
@@ -530,12 +528,9 @@ class SearchController extends BaseController
         }
 
         // get all of the user's saved searches
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository(SavedSearch::class);
         $portalUser = $currentUser->getRelatedPortalUserItem();
-
         if ($portalUser) {
-            $savedSearches = $repository->findByAccountId($portalUser->getItemId());
+            $savedSearches = $savedSearchRepository->findByAccountId($portalUser->getItemId());
             $searchData->setSavedSearches($savedSearches);
         }
 
@@ -548,7 +543,7 @@ class SearchController extends BaseController
         // selected saved search parameters
         $savedSearchId = !empty($searchParams['selectedSavedSearch']) ? $searchParams['selectedSavedSearch'] : 0;
         if (!empty($savedSearchId)) {
-            $savedSearch = $repository->findOneById($savedSearchId);
+            $savedSearch = $savedSearchRepository->findOneById($savedSearchId);
             $searchData->setSelectedSavedSearch($savedSearch);
         }
 

@@ -27,7 +27,6 @@ use Doctrine\ORM\NonUniqueResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -244,9 +243,7 @@ class DashboardController extends AbstractController
                 $savedSearchURL = $savedSearch->getSearchUrl();
                 if ($savedSearchURL) {
                     // redirect to the search_url stored for the chosen saved search
-                    $redirectResponse = new RedirectResponse($request->getSchemeAndHttpHost().$savedSearchURL);
-
-                    return $this->render('dashboard/my_views.html.twig');
+                    return $this->redirect($request->getSchemeAndHttpHost() . $savedSearchURL);
                 }
             } else {
                 return $this->redirectToRoute('app_search_results', [
