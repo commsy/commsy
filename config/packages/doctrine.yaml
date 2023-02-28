@@ -8,8 +8,6 @@ doctrine:
 
         mapping_types:
             enum: string
-        types:
-            mbarray: App\DBAL\Types\ArrayType
 
     orm:
         auto_generate_proxy_classes: true

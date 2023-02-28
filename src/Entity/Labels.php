@@ -94,7 +94,7 @@ class Labels
     /**
      * @var string
      */
-    #[ORM\Column(name: 'extras', type: 'mbarray', nullable: true)]
+    #[ORM\Column(name: 'extras', type: 'array', nullable: true)]
     private $extras;
 
     /**
@@ -325,7 +325,7 @@ class Labels
     /**
      * Set extras.
      *
-     * @param mbarray $extras
+     * @param array $extras
      *
      * @return Labels
      */
@@ -339,7 +339,7 @@ class Labels
     /**
      * Get extras.
      *
-     * @return mbarray
+     * @return array
      */
     public function getExtras()
     {

@@ -22,8 +22,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class FixAbandonedGrouprooms implements DatabaseCheck
 {
-    public function __construct(private EntityManagerInterface $entityManager, private ItemService $itemService, LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private ItemService $itemService,
+        LegacyEnvironment $legacyEnvironment
+    ) {
     }
 
     public function getPriority()
