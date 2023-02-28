@@ -39,8 +39,8 @@ class cs_portal_item extends cs_guide_item
         $this->_type = CS_PORTAL_TYPE;
         $this->_default_rubrics_array[0] = CS_COMMUNITY_TYPE;
         $this->_default_rubrics_array[1] = CS_PROJECT_TYPE;
-        $this->_default_home_conf_array[CS_COMMUNITY_TYPE] = 'tiny';
-        $this->_default_home_conf_array[CS_PROJECT_TYPE] = 'tiny';
+        $this->defaultHomeConf[CS_COMMUNITY_TYPE] = 'show';
+        $this->defaultHomeConf[CS_PROJECT_TYPE] = 'show';
     }
 
     public function isPortal()

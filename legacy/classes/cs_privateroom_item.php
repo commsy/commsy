@@ -31,11 +31,11 @@ class cs_privateroom_item extends cs_room_item
 
         // new private room
         $this->_default_rubrics_array[0] = CS_MYROOM_TYPE;
-        $this->_default_home_conf_array[CS_MYROOM_TYPE] = 'tiny';
+        $this->defaultHomeConf[CS_MYROOM_TYPE] = 'show';
         $this->_default_rubrics_array[2] = CS_DATE_TYPE;
-        $this->_default_home_conf_array[CS_DATE_TYPE] = 'tiny';
+        $this->defaultHomeConf[CS_DATE_TYPE] = 'show';
         $this->_default_rubrics_array[7] = CS_ENTRY_TYPE;
-        $this->_default_home_conf_array[CS_ENTRY_TYPE] = 'tiny';
+        $this->defaultHomeConf[CS_ENTRY_TYPE] = 'show';
     }
 
     private function _addPluginInRubricArray()
@@ -55,7 +55,7 @@ class cs_privateroom_item extends cs_room_item
                         ++$i;
                         $this->_plugin_rubrics_array[] = $plugin->getIdentifier();
                         $this->_default_rubrics_array[$i] = $plugin->getIdentifier();
-                        $this->_default_home_conf_array[$plugin->getIdentifier()] = $plugin->getHomeStatusDefault();
+                        $this->defaultHomeConf[$plugin->getIdentifier()] = $plugin->getHomeStatusDefault();
                     }
                     $plugin = $plugin_list->getNext();
                 }
