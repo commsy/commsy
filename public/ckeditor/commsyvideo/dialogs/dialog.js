@@ -98,22 +98,20 @@
                                         {
                                             type: 'file',
                                             id: 'upload',
-                                            label: editor.lang.commsyvideo.uploadnew + '<br/>' + '<span style="color: #636363;">' + editor.lang.commsyvideo.uploadnewlegend.replace('<quantity_reeplace>', editor.config.maxUploadSize/(1024*1024)) + '</span>',
+                                            label: editor.lang.commsyvideo.uploadnew,
                                             onChange: function () {
                                                 const limit = editor.config.maxUploadSize;
-                                                var upload = this.getDialog().getContentElement('videoTab', 'upload');
-                                                var inputUpload = upload.getInputElement().$;
-                                                var sizeUpload = inputUpload.files[0]? inputUpload.files[0].size: 0;
-                                                if(sizeUpload === 0){
-                                                 return;
-                                                }                                                
-                                                if(sizeUpload >= limit){
-                                                	upload.setValue("");
-                                                	alert(editor.lang.commsyvideo.uploadnewfailed);                                                	
-                                                } 
-              
+                                                const upload = this.getDialog().getContentElement('videoTab', 'upload');
+                                                const inputUpload = upload.getInputElement().$;
+                                                const sizeUpload = inputUpload.files[0]? inputUpload.files[0].size: 0;
+                                                if (sizeUpload === 0) {
+                                                   return;
+                                                }
+                                                if (sizeUpload >= limit) {
+                                                	  upload.setValue("");
+                                                	  alert(editor.lang.commsyvideo.uploadnewfailed);
+                                                }
                                             }
-
                                         },
                                         {
                                             type: 'fileButton',
@@ -121,6 +119,10 @@
                                             filebrowser: 'videoTab:videoUrl',
                                             label: editor.lang.commsyvideo.upload,
                                             'for': ['videoTab', 'upload']
+                                        },
+                                        {
+                                            type: 'html',
+                                            html: '<span style="color: #636363;">' + editor.lang.commsyvideo.uploadnewlegend.replace('<quantity_reeplace>', editor.config.maxUploadSize/(1024*1024)) + '</span>'
                                         }
                                     ]
                                 },

@@ -68,20 +68,19 @@
                                         {
                                             type: 'file',
                                             id: 'upload',
-                                            label: editor.lang.commsyimage.uploadnew + '<br/>' + '<span style="color: #636363;">' + editor.lang.commsyimage.uploadnewlegend.replace('<quantity_reeplace>', editor.config.maxUploadSize/(1024*1024)) + '</span>',
+                                            label: editor.lang.commsyimage.uploadnew,
                                             onChange: function () {
                                                 const limit = editor.config.maxUploadSize;
-                                                var upload = this.getDialog().getContentElement('imageTab', 'upload');
-                                                var inputUpload = upload.getInputElement().$;
-                                                var sizeUpload = inputUpload.files[0]? inputUpload.files[0].size: 0;
-                                                if(sizeUpload === 0){
-                                                 return;
-                                                }                                                
-                                                if(sizeUpload >= limit){
-                                                	upload.setValue("");
-                                                	alert(editor.lang.commsyimage.uploadnewfailed);                                                	
-                                                } 
-              
+                                                const upload = this.getDialog().getContentElement('imageTab', 'upload');
+                                                const inputUpload = upload.getInputElement().$;
+                                                const sizeUpload = inputUpload.files[0] ? inputUpload.files[0].size : 0;
+                                                if (sizeUpload === 0) {
+                                                   return;
+                                                }
+                                                if (sizeUpload >= limit) {
+                                                	  upload.setValue("");
+                                                	  alert(editor.lang.commsyimage.uploadnewfailed);
+                                                }
                                             }
                                         },
                                         {
@@ -90,6 +89,10 @@
                                             filebrowser: 'imageTab:imageUrl',
                                             label: editor.lang.commsyimage.upload,
                                             'for': ['imageTab', 'upload']
+                                        },
+                                        {
+                                          type: 'html',
+                                          html: '<span style="color: #636363;">' + editor.lang.commsyimage.uploadnewlegend.replace('<quantity_reeplace>', editor.config.maxUploadSize/(1024*1024)) + '</span>'
                                         }
                                     ]
                                 },

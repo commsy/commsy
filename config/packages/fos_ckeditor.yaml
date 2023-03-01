@@ -85,7 +85,7 @@ fos_ck_editor:
             toolbar: "fullToolbar"
             extraPlugins: "sourcedialog,lineutils,widgetselection,maximize,autogrow,stickytoolbar,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument,commsyhelp,mathjax"
             language_list: ['de:German', 'en:English']
-            removePlugins: 'floatingspace,sharedspace,resize,elementspath'
+            removePlugins: 'floatingspace,sharedspace,resize,elementspath,exportpdf'
             autoGrow_onStartup: true
             mathJaxLib: "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_HTML"
 
@@ -93,17 +93,17 @@ fos_ck_editor:
             toolbar: "regularToolbar"
             extraPlugins: "sourcedialog,lineutils,widgetselection,maximize,autogrow,stickytoolbar,widget,menubutton,language,bidi,tabletools"
             language_list: ['de:German', 'en:English']
-            removePlugins: 'floatingspace,sharedspace,resize,elementspath'
+            removePlugins: 'floatingspace,sharedspace,resize,elementspath,exportpdf'
             autoGrow_onStartup: true
 
         html_reduced:
             toolbar: "reducedToolbar"
-            removePlugins: 'floatingspace,sharedspace,resize,elementspath'
+            removePlugins: 'floatingspace,sharedspace,resize,elementspath,exportpdf'
 
         cs_annotation_config:
             toolbar: "simpleToolbar"
-            removePlugins: 'floatingspace,sharedspace,resize,elementspath'
+            removePlugins: 'floatingspace,sharedspace,resize,elementspath,exportpdf'
 
         cs_mail_config:
             toolbar: "nonHtml"
-            removePlugins: 'floatingspace,sharedspace,resize,elementspath'
+            removePlugins: 'floatingspace,sharedspace,resize,elementspath,exportpdf'
