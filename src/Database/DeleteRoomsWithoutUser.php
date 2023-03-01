@@ -37,4 +37,9 @@ class DeleteRoomsWithoutUser extends GeneralCheck
 
         return true;
     }
+
+    public function getPriority()
+    {
+        return 100;
+    }
 }

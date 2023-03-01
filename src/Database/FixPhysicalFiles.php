@@ -27,8 +27,14 @@ use Symfony\Component\Finder\Finder;
 
 class FixPhysicalFiles implements DatabaseCheck
 {
-    public function __construct(private ParameterBagInterface $parameterBag, private PortalRepository $portalRepository, private RoomRepository $roomRepository, private FilesRepository $filesRespository, private ItemRepository $itemRepository, private LoggerInterface $cleanupLogger)
-    {
+    public function __construct(
+        private ParameterBagInterface $parameterBag,
+        private PortalRepository $portalRepository,
+        private RoomRepository $roomRepository,
+        private FilesRepository $filesRespository,
+        private ItemRepository $itemRepository,
+        private LoggerInterface $cleanupLogger
+    ) {
     }
 
     public function getPriority()

@@ -21,7 +21,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
-class FixFileLinks implements DatabaseCheck
+class FixPhysicalFileLinks implements DatabaseCheck
 {
     private cs_environment $legacyEnvironment;
 
