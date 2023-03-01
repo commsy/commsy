@@ -138,7 +138,7 @@
     "scripts": {
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
-            "ckeditor:install --clear=drop --tag=4.20.1": "symfony-cmd",
+            "ckeditor:install --clear=drop --tag=4.20.2": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd",
             "ckeditor:install": "symfony-cmd"
         },
