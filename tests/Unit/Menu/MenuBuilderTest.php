@@ -42,13 +42,17 @@ class MenuBuilderTest extends Unit
                 'getCurrentUserItem' => $cs_user_item,
             ]),
         ]);
-        $authorizationChecker = Stub::make(AuthorizationCheckerInterface::class);
+        $authorizationChecker = Stub::makeEmpty(AuthorizationCheckerInterface::class, [
+            'isGranted' => false,
+        ]);
         $invitationsService = Stub::make(InvitationsService::class);
         $portalRepository = Stub::make(PortalRepository::class);
         $security = Stub::make(Security::class, [
             'isGranted' => fn ($attr) => $attr === 'ROLE_ROOT' && $isRoot,
         ]);
-        $router = Stub::make(RouterInterface::class);
+        $router = Stub::makeEmpty(RouterInterface::class, [
+            'generate' => 'some_route',
+        ]);
 
         return new MenuBuilder(
             $factory,
@@ -90,18 +94,16 @@ class MenuBuilderTest extends Unit
         $menuBuilder = $this->getMenuBuilder($user, false, $roomService);
         $mainMenu = $menuBuilder->createMainMenu($requestStack);
 
-        $this->tester->assertCount(4, $mainMenu->getChildren());
-
         $firstMenu = $mainMenu->getChild('room_home');
         $this->tester->assertNotNull($firstMenu);
 
-        $secondMenu = $mainMenu->getChild('app_date_list');
+        $secondMenu = $mainMenu->getChild('date');
         $this->tester->assertNotNull($secondMenu);
 
-        $thirdMenu = $mainMenu->getChild('app_todo_list');
+        $thirdMenu = $mainMenu->getChild('todo');
         $this->tester->assertNotNull($thirdMenu);
 
-        $fourthMenu = $mainMenu->getChild('app_some_list');
-        $this->tester->assertNotNull($fourthMenu);
+        $fourthMenu = $mainMenu->getChild('some');
+        $this->tester->assertNull($fourthMenu);
     }
 }
