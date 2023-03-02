@@ -58,7 +58,8 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
         $contextHasModerators = $this->userService->contextHasModerators($roomId, $userIds);
         $orphanedGroupRooms = [];
         if (in_array($constraint->newUserStatus, ['user-delete', 'user-block'])) {
-            $orphanedGroupRooms = $this->userService->grouproomsWithoutOtherModeratorsInRoom($roomItem, $users);
+            // NOTE: we ignore preexisting orphaned grouprooms which (incorrectly) don't have any moderators at all
+            $orphanedGroupRooms = $this->userService->grouproomsWithoutOtherModeratorsInRoom($roomItem, $users, true);
         }
 
         if (!$contextHasModerators || !empty($orphanedGroupRooms)) {
