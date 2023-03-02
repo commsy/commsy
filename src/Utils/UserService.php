@@ -503,12 +503,18 @@ class UserService
      * Returns all group rooms of the given project room which have no other moderators than the ones identified by
      * the IDs given in $userIds.
      *
-     * @param cs_room_item   $room  The room whose group rooms shall be checked
-     * @param cs_user_item[] $users (optional) User items that shall be ignored when checking rooms for additional moderators
+     * @param cs_room_item   $room                  The room whose group rooms shall be checked
+     * @param cs_user_item[] $users                 (optional) User items that shall be ignored when checking rooms for additional moderators
+     * @param bool           $ignoreExistingOrphans (optional) Whether this method shall ignore (and thus not return)
+     *                                               grouprooms which (incorrectly) don't have any moderators at all; defaults to false
      *
      * @return cs_grouproom_item[]
      */
-    public function grouproomsWithoutOtherModeratorsInRoom(cs_room_item $room, array $users = []): array
+    public function grouproomsWithoutOtherModeratorsInRoom(
+        cs_room_item $room,
+        array $users = [],
+        bool $ignoreExistingOrphans = false
+    ): array
     {
         if (!$room->isProjectRoom()) {
             return [];
@@ -525,6 +531,10 @@ class UserService
                 if ($groupRoomUser) {
                     $userIds[] = $groupRoomUser->getItemID();
                 }
+            }
+
+            if ($ignoreExistingOrphans && !$this->contextHasModerators($groupRoom->getItemID())) {
+                continue;
             }
 
             // find group rooms which don't have any other moderators than those identified by IDs in $userIds
