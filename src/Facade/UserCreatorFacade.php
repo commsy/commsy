@@ -16,14 +16,18 @@ namespace App\Facade;
 use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\Room;
+use App\Event\UserJoinedRoomEvent;
 use App\Form\Model\Csv\CsvUserDataset;
+use App\Mail\Mailer;
 use App\Services\LegacyEnvironment;
+use App\Utils\AccountMail;
 use App\Utils\UserService;
 use cs_environment;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class UserCreatorFacade
 {
@@ -34,7 +38,10 @@ class UserCreatorFacade
         private AccountCreatorFacade $accountFacade,
         private UserService $userService,
         private EntityManagerInterface $entityManager,
-        private UserPasswordHasherInterface $passwordEncoder
+        private UserPasswordHasherInterface $passwordEncoder,
+        private EventDispatcherInterface $eventDispatcher,
+        private Mailer $mailer,
+        private AccountMail $accountMail
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -149,16 +156,25 @@ class UserCreatorFacade
 
         // create room users
         $portalUser = $this->userService->getPortalUser($account);
-        $this->addUserToRoomsWithIds($portalUser, $roomIds);
+        $this->addUserToRoomsWithIds($portalUser, $roomIds, 2, true);
     }
 
     /**
      * Adds users representing the given user to the rooms with the given IDs.
      *
-     * @param cs_user_item $user    the user for whom room users shall be created
-     * @param array         $roomIds list of room IDs
+     * @param cs_user_item $user the user for whom room users shall be created
+     * @param array $roomIds list of room IDs
+     * @param int|null $userStatus the room user's status (0: locked, 1: applying, 2: user, 3: moderator, 4: read-only);
+     * defaults to 1, or 2 if the room has disabled member access checks
+     * @param bool $informUser whether the user shall be informed via email about the newly added room user and its
+     * status (true) or not (false); defaults to false
      */
-    private function addUserToRoomsWithIds(cs_user_item $user, array $roomIds): void
+    private function addUserToRoomsWithIds(
+        cs_user_item $user,
+        array $roomIds,
+        int $userStatus = null,
+        bool $informUser = false
+    ): void
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $privateRoomUser = $user->getRelatedPrivateRoomUserItem();
@@ -167,6 +183,12 @@ class UserCreatorFacade
             $room = $roomManager->getItem($roomId);
 
             if ($room) {
+                // NOTE: userroom creation (plus the involved user cloning) & choosing appropriate email texts when
+                //       sending info emails requires the current context to be set, so we set the context explicitly
+                //       here (otherwise it may not have been set (yet), e.g. when auto-creating room users on login)
+                $oldContextId = $this->legacyEnvironment->getCurrentContextID();
+                $this->legacyEnvironment->setCurrentContextID($roomId);
+
                 $relatedUserInContext = $user->getRelatedUserItemInContext($roomId);
                 if (!$relatedUserInContext) {
                     // determine the source user to clone from
@@ -175,16 +197,26 @@ class UserCreatorFacade
                     $newUserItem = $sourceUser->cloneData();
                     $newUserItem->setContextID($roomId);
 
-                    if ($room->checkNewMembersNever()) {
-                        $newUserItem->setStatus(2);
-                    } else {
-                        $newUserItem->setStatus(1);
+                    // user status
+                    if (null !== $userStatus) {
+                        $userStatus = filter_var($userStatus, FILTER_VALIDATE_INT, [
+                            'options' => ['min_range' => 0, 'max_range' => 4]
+                        ]);
                     }
+                    if (false === $userStatus || null === $userStatus) {
+                        // default user status: 1 (applying), or 2 (user) if the room has disabled member access checks
+                        $userStatus = $room->checkNewMembersNever() ? 2 : 1;
+                    }
+                    $newUserItem->setStatus($userStatus);
 
                     $newUserItem->save();
 
+                    // if necessary, trigger creation of user rooms
+                    $event = new UserJoinedRoomEvent($newUserItem, $room);
+                    $this->eventDispatcher->dispatch($event);
+
                     // task
-                    if (!$newUserItem->isUser()) {
+                    if ($newUserItem->isRequested()) {
                         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
                         $taskManager = $this->legacyEnvironment->getTaskManager();
@@ -196,7 +228,23 @@ class UserCreatorFacade
                         $requestTask->setItem($newUserItem);
                         $requestTask->save();
                     }
+
+                    // send email about user status change
+                    if ($informUser && !$newUserItem->isRequested()) {
+                        $userIds = [$newUserItem->getItemID()];
+                        $actions = [
+                            0 => 'user-block',
+                            2 => 'user-status-user',
+                            3 => 'user-status-moderator',
+                            4 => 'user-status-reading-user'
+                        ];
+
+                        // NOTE: email texts are provided by the legacy translator which depends on a correct context
+                        $this->userService->sendUserInfoMail($this->mailer, $this->accountMail, $userIds, $actions[$userStatus]);
+                    }
                 }
+
+                $this->legacyEnvironment->setCurrentContextID($oldContextId);
             }
         }
     }

@@ -666,12 +666,20 @@ class cs_translator
         return $retour;
     }
 
+    /**
+     * Returns the context (community, project or grouproom).
+     */
+    public function getContext(): string
+    {
+        return $this->_context;
+    }
+
     /** setContext
      * this methode set the context (community or project).
      *
      * @param string context
      */
-    public function setContext($value)
+    public function setContext($value): void
     {
         $this->_context = (string) $value;
     }
@@ -709,11 +717,11 @@ class cs_translator
     public function initFromContext($context_item)
     {
         if ($context_item->isCommunityRoom()) {
-            $this->setContext('community');
+         $this->setContext(CS_COMMUNITY_TYPE);
             $portal_item = $context_item->getContextItem();
             $this->setTimeMessageArray($portal_item->getTimeTextArray());
         } elseif ($context_item->isProjectRoom()) {
-            $this->setContext('project');
+         $this->setContext(CS_PROJECT_TYPE);
             $portal_item = $context_item->getContextItem();
             $this->setTimeMessageArray($portal_item->getTimeTextArray());
         } elseif ($context_item->isGroupRoom()) {
@@ -725,10 +733,10 @@ class cs_translator
             $portal_item = $context_item->getContextItem();
             $this->setTimeMessageArray($portal_item->getTimeTextArray());
         } elseif ($context_item->isPortal()) {
-            $this->setContext('portal');
+         $this->setContext(CS_PORTAL_TYPE);
             $this->setTimeMessageArray($context_item->getTimeTextArray());
         } else {
-            $this->setContext('server');
+         $this->setContext(CS_SERVER_TYPE);
         }
         $this->setRubricTranslationArray($context_item->getRubricTranslationArray());
         $this->setEmailTextArray($context_item->getEmailTextArray());

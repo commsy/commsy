@@ -63,6 +63,9 @@ class AccountMail
         $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
         $room = $this->legacyEnvironment->getCurrentContextItem();
 
+        $oldContextType = $legacyTranslator->getContext();
+        $legacyTranslator->setContext($room->getType());
+
         $body = $legacyTranslator->getEmailMessage('MAIL_BODY_HELLO', $multipleRecipients ? ' ' : $user->getFullname());
         $body .= '<br/><br/>';
 
@@ -146,6 +149,8 @@ class AccountMail
             $room->getTitle());
         $message = str_replace("\n", '<br/>', $message);
         $body .= $message;
+
+        $legacyTranslator->setContext($oldContextType);
 
         return $body;
     }
