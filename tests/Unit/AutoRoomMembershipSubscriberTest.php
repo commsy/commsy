@@ -60,7 +60,7 @@ class AutoRoomMembershipSubscriberTest extends Unit
         $this->assertInstanceOf(TokenInterface::class, $authToken);
 
         $request = $this->makeEmpty(Request::class, [
-            'request' => $this->make(ParameterBag::class, [
+            'server' => $this->make(ParameterBag::class, [
                 'parameters' => [
                     'roomslugs' => join(';', $roomslugs)
                 ]
