@@ -16,70 +16,53 @@
  */
 class cs_translator
 {
-    /**
-     * array - containing the messages.
-     */
-    public $_message_array = [];
+    private array $messageArray = [];
+    private array $timeMessageArray = [];
 
     /**
-     * array - containing the messages for times.
+     * containing the path to the message.dats.
      */
-    public $_time_message_array = [];
+    private string $_file_path = 'etc/messages/';
 
     /**
-     * string - containing the path to the message.dats.
+     * flag wether to resolve messagetags or not, set in config.php.
      */
-    public $_file_path = 'etc/messages/';
+    private bool $_dont_resolve_messagetags = false;
 
     /**
-     * boolean - flag wether to resolve messagetags or not, set in config.php.
+     * containing the selected language.
      */
-    public $_dont_resolve_messagetags = false;
+    private string $_selected_language = '';
 
     /**
-     * reference - to the database, get from environment.
+     * containing the selected language.
      */
-    public $_db_conntector;
+    private string $_session_language = '';
 
     /**
-     * string - containing the selected language.
+     * containing the special rubric names, get from current room.
      */
-    public $_selected_language = '';
+    private array $_rubric_translation_array = [];
 
     /**
-     * string - containing the selected language.
+     * containing the special email texts, get from current room.
      */
-    public $_session_language = '';
+    private array $_email_array = [];
 
     /**
-     * array - containing the special rubric names, get from current room.
+     * containing the loaded message.dats to delete while saving.
      */
-    public $_rubric_translation_array = [];
+    private array $_loaded_message_dats = [];
 
     /**
-     * array - containing the special email texts, get from current room.
+     * containing the context: community or project or portal.
      */
-    public $_email_array = [];
+    private ?string $_context = null;
 
     /**
-     * array - containing the loaded message.dats to delete while saving.
+     * containing the default language / default = de (german).
      */
-    public $_loaded_message_dats = [];
-
-    /**
-     * string - containing the context: community or project or portal.
-     */
-    public $_context = null;
-
-    /**
-     * string - containing the default language / default = de (german).
-     */
-    public $_default_language = 'de';
-
-    /**
-     * integer - containing the current version of the commsy system.
-     */
-    public $_version;
+    private string $_default_language = 'de';
 
     private array $_dat_folder_array = [];
 
@@ -104,7 +87,7 @@ class cs_translator
                     $this->_loaded_message_dats[] = $entry;
                     if (!empty($message)) {
                         $message = encode(FROM_FILE, $message);
-                        $this->_message_array = multi_array_merge($this->_message_array, $message);
+                        $this->messageArray = multi_array_merge($this->messageArray, $message);
                         unset($message);
                     }
                 }
@@ -128,7 +111,7 @@ class cs_translator
                 $this->_loaded_message_dats[] = $entry;
                 if (!empty($message)) {
                     $message = encode(FROM_FILE, $message);
-                    $this->_message_array = multi_array_merge($this->_message_array, $message);
+                    $this->messageArray = multi_array_merge($this->messageArray, $message);
                     unset($message);
                 }
             } else {
@@ -138,7 +121,7 @@ class cs_translator
                         $this->_loaded_message_dats[] = $entry;
                         if (!empty($message)) {
                             $message = encode(FROM_FILE, $message);
-                            $this->_message_array = multi_array_merge($this->_message_array, $message);
+                            $this->messageArray = multi_array_merge($this->messageArray, $message);
                             unset($message);
                         }
                         break;
@@ -154,7 +137,7 @@ class cs_translator
                         $this->_loaded_message_dats[] = $entry;
                         if (!empty($message)) {
                             $message = encode(FROM_FILE, $message);
-                            $this->_message_array = multi_array_merge($this->_message_array, $message);
+                            $this->messageArray = multi_array_merge($this->messageArray, $message);
                             unset($message);
                         }
                     }
@@ -169,7 +152,7 @@ class cs_translator
     public function saveMessages()
     {
         $lang_array = [];
-        foreach ($this->_message_array as $key => $value) {
+        foreach ($this->messageArray as $key => $value) {
             $rubric = $this->_getRubricOutMessageTag($key);
             foreach ($value as $language => $translation) {
                 $lang_array[$language][$rubric][$key][$language] = $translation;
@@ -192,7 +175,7 @@ class cs_translator
     public function saveMessageBundles()
     {
         $lang_array = [];
-        foreach ($this->_message_array as $key => $value) {
+        foreach ($this->messageArray as $key => $value) {
             $rubric = $this->_getRubricOutMessageTag($key);
             foreach ($value as $language => $translation) {
                 $lang_array[$language][$rubric][$key][$language] = $translation;
@@ -423,12 +406,12 @@ class cs_translator
             }
 
             // load message.dat
-            if (!isset($this->_message_array[$MsgID][$language])) {
+            if (!isset($this->messageArray[$MsgID][$language])) {
                 $this->_loadMessages($this->_getRubricOutMessageTag($MsgID), $language);
             }
 
-            if (isset($this->_message_array[$MsgID][$language])) {
-                $text = $this->_message_array[$MsgID][$language];
+            if (isset($this->messageArray[$MsgID][$language])) {
+                $text = $this->messageArray[$MsgID][$language];
                 $text = $this->text_replace($text, $param1, $param2, $param3, $param4, $param5);
             } else {
                 $text = $MsgID;
@@ -588,8 +571,8 @@ class cs_translator
         if ($year_small_minus < 10) {
             $year_small_minus = '0'.$year_small_minus;
         }
-        if (isset($msg_array[1]) and !empty($this->_time_message_array[$msg_array[1]][mb_strtoupper($language, 'UTF-8')])) {
-            $retour = $this->text_replace($this->_time_message_array[$msg_array[1]][mb_strtoupper($language, 'UTF-8')], $msg_array[0], $msg_array[0] + 1, $msg_array[0] - 1, $year_small, $year_small_plus, $year_small_minus);
+        if (isset($msg_array[1]) and !empty($this->timeMessageArray[$msg_array[1]][mb_strtoupper($language, 'UTF-8')])) {
+            $retour = $this->text_replace($this->timeMessageArray[$msg_array[1]][mb_strtoupper($language, 'UTF-8')], $msg_array[0], $msg_array[0] + 1, $msg_array[0] - 1, $year_small, $year_small_plus, $year_small_minus);
         }
 
         return $retour;
@@ -669,7 +652,7 @@ class cs_translator
     /**
      * Returns the context (community, project or grouproom).
      */
-    public function getContext(): string
+    public function getContext(): ?string
     {
         return $this->_context;
     }
@@ -686,42 +669,27 @@ class cs_translator
 
     public function _inCommunityRoom()
     {
-        $retour = false;
-        if (isset($this->_context) and 'community' == $this->_context) {
-            $retour = true;
-        }
-
-        return $retour;
+        return isset($this->_context) && $this->_context == CS_COMMUNITY_TYPE;
     }
 
     public function _inProjectRoom()
     {
-        $retour = false;
-        if (isset($this->_context) and 'project' == $this->_context) {
-            $retour = true;
-        }
-
-        return $retour;
+        return isset($this->_context) && $this->_context == CS_PROJECT_TYPE;
     }
 
     public function _inGroupRoom()
     {
-        $retour = false;
-        if (isset($this->_context) and CS_GROUPROOM_TYPE == $this->_context) {
-            $retour = true;
-        }
-
-        return $retour;
+        return isset($this->_context) && $this->_context == CS_GROUPROOM_TYPE;
     }
 
     public function initFromContext($context_item)
     {
         if ($context_item->isCommunityRoom()) {
-         $this->setContext(CS_COMMUNITY_TYPE);
+            $this->setContext(CS_COMMUNITY_TYPE);
             $portal_item = $context_item->getContextItem();
             $this->setTimeMessageArray($portal_item->getTimeTextArray());
         } elseif ($context_item->isProjectRoom()) {
-         $this->setContext(CS_PROJECT_TYPE);
+            $this->setContext(CS_PROJECT_TYPE);
             $portal_item = $context_item->getContextItem();
             $this->setTimeMessageArray($portal_item->getTimeTextArray());
         } elseif ($context_item->isGroupRoom()) {
@@ -769,7 +737,7 @@ class cs_translator
      */
     public function setTimeMessageArray($value)
     {
-        $this->_time_message_array = (array) $value;
+        $this->timeMessageArray = (array) $value;
     }
 
     /** setMessageArray
@@ -779,7 +747,7 @@ class cs_translator
      */
     public function setMessageArray($value)
     {
-        $this->_message_array = (array) $value;
+        $this->messageArray = (array) $value;
     }
 
     /** replace %x in text
@@ -1407,10 +1375,10 @@ public function getShortMonthNameToInt($month)
      */
     public function getMessageArray()
     {
-        ksort($this->_message_array);
-        reset($this->_message_array);
+        ksort($this->messageArray);
+        reset($this->messageArray);
 
-        return $this->_message_array;
+        return $this->messageArray;
     }
 
     /** getCompleteMessageArray
@@ -1447,11 +1415,6 @@ public function getShortMonthNameToInt($month)
         };
 
         return $retour;
-    }
-
-    public function setCommSyVersion($value)
-    {
-        $this->_version = $value;
     }
 
     public function getUnusedTags()
