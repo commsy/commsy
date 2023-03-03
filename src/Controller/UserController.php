@@ -27,7 +27,6 @@ use App\Form\Type\UserSendType;
 use App\Form\Type\UserStatusChangeType;
 use App\Form\Type\UserType;
 use App\Mail\Mailer;
-use App\Mail\RecipientFactory;
 use App\Services\AvatarService;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
@@ -505,7 +504,7 @@ class UserController extends BaseController
                     }
 
                     if ($formData['inform_user']) {
-                        $this->sendUserInfoMail($mailer, $accountMail, $formData['userIds'], $formData['status']);
+                        $this->userService->sendUserInfoMail($mailer, $accountMail, $formData['userIds'], $formData['status']);
                     }
                     if ($request->query->has('userDetail') && 'user-delete' !== $formData['status']) {
                         return $this->redirectToRoute('app_user_detail', [
@@ -1180,43 +1179,6 @@ class UserController extends BaseController
         ]);
 
         return $printService->buildPdfResponse($html);
-    }
-
-    private function sendUserInfoMail(
-        Mailer $mailer,
-        AccountMail $accountMail,
-        $userIds,
-        $action
-    ) {
-        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-        $fromSender = $this->legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
-
-        $validator = new EmailValidator();
-        $replyTo = [];
-        $currentUserEmail = $currentUser->getEmail();
-        if ($validator->isValid($currentUserEmail, new RFCValidation())) {
-            if ($currentUser->isEmailVisible()) {
-                $replyTo[] = new Address($currentUserEmail, $currentUser->getFullName());
-            }
-        }
-
-        foreach ($userIds as $userId) {
-            $user = $this->userService->getUser($userId);
-
-            $userEmail = $user->getEmail();
-            if (!empty($userEmail) && $validator->isValid($userEmail, new RFCValidation())) {
-                $subject = $accountMail->generateSubject($action);
-                $body = $accountMail->generateBody($user, $action);
-
-                $success = $mailer->sendRaw(
-                    $subject,
-                    $body,
-                    RecipientFactory::createRecipient($user),
-                    $fromSender,
-                    $replyTo
-                );
-            }
-        }
     }
 
     private function gatherUsers(

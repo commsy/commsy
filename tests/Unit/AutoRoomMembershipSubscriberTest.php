@@ -62,7 +62,7 @@ class AutoRoomMembershipSubscriberTest extends Unit
         $request = $this->makeEmpty(Request::class, [
             'request' => $this->make(ParameterBag::class, [
                 'parameters' => [
-                    'roomslugs' => join(',', $roomslugs)
+                    'roomslugs' => join(';', $roomslugs)
                 ]
             ])
         ]);
