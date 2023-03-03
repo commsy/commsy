@@ -7,8 +7,8 @@
                 <target>Workspace</target>
             </trans-unit>
             <trans-unit id="1">
-                <source>One new entry in the last %days% days|%num% new entries in the last %days% days</source>
-                <target>One new entry in the last %days% days|%num% new entries in the last %days% days</target>
+                <source>%count% new entries in the last %days% days</source>
+                <target>{0} No new entries in the last %days% days|{1} One new entry in the last %days% days|]1,Inf[ %count% new entries in the last %days% days</target>
             </trans-unit>
             <trans-unit id="2">
                 <source>Page Impressions:</source>

@@ -7,8 +7,8 @@
                 <target>Raum</target>
             </trans-unit>
             <trans-unit id="1">
-                <source>One new entry in the last %days% days|%num% new entries in the last %days% days</source>
-                <target>Ein neuer Beitrag in den letzten %days% Tagen|%num% neue Beiträge in den letzten %days% Tagen</target>
+                <source>%count% new entries in the last %days% days</source>
+                <target>{0} Kein neuer Beitrag in den letzten %days% Tagen|{1} Ein neuer Beitrag in den letzten %days% Tagen|]1,Inf[ %count% neue Beiträge in den letzten %days% Tagen</target>
             </trans-unit>
             <trans-unit id="2">
                 <source>Page Impressions:</source>
