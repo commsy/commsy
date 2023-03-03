@@ -3635,7 +3635,7 @@ class cs_context_item extends cs_item
 //      $item_manager->setAgeLimit(7);
         $item_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
         $item_manager->setTypeArrayLimit($check_managers);
-        $item_manager->select();
+        $item_manager->resetData();
         $new_entries = $item_manager->getIDArray();
         $count_total = $new_entries ? count($new_entries) : 0;
         unset($item_manager);
