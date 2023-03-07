@@ -14,36 +14,40 @@
 namespace App\Feed;
 
 use App\Feed\Creators\Creator;
+use App\Feed\Creators\CreatorInterface;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use cs_environment;
 use RuntimeException;
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Traversable;
 
 class FeedCreatorFactory
 {
     private cs_environment $legacyEnvironment;
 
     private array $creators = [];
-    private $isGuestAccess = false;
+    private bool $isGuestAccess = false;
 
     public function __construct(
         private ItemService $itemService,
         LegacyEnvironment $legacyEnvironment,
         private TranslatorInterface $translator,
-        private RouterInterface $router
+        private RouterInterface $router,
+        #[TaggedIterator('app.feed.creator')] iterable $creators
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-    }
 
-    public function addCreator(Creator $creator)
-    {
-        $creator->setTextConverter($this->legacyEnvironment->getTextConverter());
-        $creator->setTranslator($this->translator);
-        $creator->setRouter($this->router);
+        $this->creators = $creators instanceof Traversable ? iterator_to_array($creators) : $creators;
 
-        $this->creators[] = $creator;
+        foreach ($this->creators as $creator) {
+            /** @var CreatorInterface $creator */
+            $creator->setTextConverter($this->legacyEnvironment->getTextConverter());
+            $creator->setTranslator($this->translator);
+            $creator->setRouter($this->router);
+        }
     }
 
     public function setGuestAccess($isGuestAccess)
@@ -73,12 +77,10 @@ class FeedCreatorFactory
         $creator = $this->findAccurateCreator($type);
         $creator->setGuestAccess($this->isGuestAccess);
 
-        $feedItem = $creator->createItem($commsyItem);
-
-        return $feedItem;
+        return $creator->createItem($commsyItem);
     }
 
-    private function findAccurateCreator($rubric)
+    private function findAccurateCreator($rubric): CreatorInterface
     {
         foreach ($this->creators as $creator) {
             if ($creator->canCreate($rubric)) {
