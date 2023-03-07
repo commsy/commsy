@@ -426,67 +426,6 @@ services:
     # Feed
     debril.rss_atom.provider:
         class: App\Feed\CommsyFeedContentProvider
-        arguments:
-            - '@commsy_legacy.environment'
-            - '@translator'
-            - '@commsy.feed.creator_factory'
-
-    commsy.feed.creator_factory:
-        class: App\Feed\FeedCreatorFactory
-        arguments: ['@commsy_legacy.item_service', '@commsy_legacy.environment', '@translator', '@router']
-        calls:
-            - [addCreator, ['@commsy.feed.creator.material']]
-            - [addCreator, ['@commsy.feed.creator.section']]
-            - [addCreator, ['@commsy.feed.creator.annotation']]
-            - [addCreator, ['@commsy.feed.creator.group']]
-            - [addCreator, ['@commsy.feed.creator.institution']]
-            - [addCreator, ['@commsy.feed.creator.topic']]
-            - [addCreator, ['@commsy.feed.creator.date']]
-            - [addCreator, ['@commsy.feed.creator.user']]
-            - [addCreator, ['@commsy.feed.creator.announcement']]
-            - [addCreator, ['@commsy.feed.creator.todo']]
-            - [addCreator, ['@commsy.feed.creator.step']]
-            - [addCreator, ['@commsy.feed.creator.discussion']]
-            - [addCreator, ['@commsy.feed.creator.discussion_article']]
-
-    commsy.feed.creator.material:
-        class: App\Feed\Creators\MaterialCreator
-
-    commsy.feed.creator.section:
-        class: App\Feed\Creators\SectionCreator
-
-    commsy.feed.creator.annotation:
-        class: App\Feed\Creators\AnnotationCreator
-
-    commsy.feed.creator.group:
-        class: App\Feed\Creators\GroupCreator
-
-    commsy.feed.creator.institution:
-        class: App\Feed\Creators\InstitutionCreator
-
-    commsy.feed.creator.topic:
-        class: App\Feed\Creators\TopicCreator
-
-    commsy.feed.creator.date:
-        class: App\Feed\Creators\DateCreator
-
-    commsy.feed.creator.user:
-        class: App\Feed\Creators\UserCreator
-
-    commsy.feed.creator.announcement:
-        class: App\Feed\Creators\AnnouncementCreator
-
-    commsy.feed.creator.todo:
-        class: App\Feed\Creators\TodoCreator
-
-    commsy.feed.creator.step:
-        class: App\Feed\Creators\StepCreator
-
-    commsy.feed.creator.discussion:
-        class: App\Feed\Creators\DiscussionCreator
-
-    commsy.feed.creator.discussion_article:
-        class: App\Feed\Creators\DiscussionArticleCreator
 
     # Monolog
     commsy.monolog.handler.doctrine_orm:

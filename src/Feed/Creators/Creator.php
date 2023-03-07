@@ -15,17 +15,18 @@ namespace App\Feed\Creators;
 
 use DateTime;
 use FeedIo\Feed\Item;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use misc_text_converter;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-abstract class Creator
+abstract class Creator implements CreatorInterface
 {
-    protected $isGuestAccess = false;
-    protected $textConverter;
-    protected $translator;
-    protected $router;
+    protected bool $isGuestAccess = false;
+    protected misc_text_converter $textConverter;
+    protected TranslatorInterface $translator;
+    protected RouterInterface $router;
 
-    public function createItem($item)
+    public function createItem($item): ?Item
     {
         if ($item->isDeleted() || $item->isNotActivated()) {
             return null;
@@ -40,7 +41,7 @@ abstract class Creator
             $feedItem->set('author', $this->getAuthor($item));
         }
 
-        $feedItem->setDescription($this->getDescription($item));
+        $feedItem->setContent($this->getDescription($item));
         $feedItem->setLink($this->getLink($item));
 
         return $feedItem;
@@ -51,7 +52,7 @@ abstract class Creator
         $this->isGuestAccess = $isGuestAccess;
     }
 
-    public function setTextConverter($textConverter)
+    public function setTextConverter(misc_text_converter $textConverter)
     {
         $this->textConverter = $textConverter;
     }
@@ -61,7 +62,7 @@ abstract class Creator
         $this->translator = $translator;
     }
 
-    public function setRouter(Router $router)
+    public function setRouter(RouterInterface $router)
     {
         $this->router = $router;
     }
