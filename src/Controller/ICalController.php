@@ -271,6 +271,10 @@ class ICalController extends AbstractController
             }
 
             if ($item->isWholeDay()) {
+                // reset the time part before comparing
+                $startTime->setTime(0, 0);
+                $endTime->setTime(0, 0);
+
                 if ($startTime == $endTime) {
                     $date = new EventDate($startTime);
                     $event->setOccurrence(new SingleDay($date));
