@@ -22,7 +22,7 @@
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "main",
             "version": "2.3",
-            "ref": "30798e46831f4fc641fca83c0423918518901cd7"
+            "ref": "89689e24507d8cb2c4a7937ece549db3836b608c"
         },
         "files": [
             "codeception.yml",
@@ -137,7 +137,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "2.4",
-            "ref": "d562b46dd8075ab2de3d58bf7895cf6b8365cb72"
+            "ref": "013b823e7fee65890b23e40f31e6667a1ac519ac"
         },
         "files": [
             "config/packages/doctrine.yaml",
@@ -706,7 +706,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "4.3",
-            "ref": "97a61eabb351d7f6cb7702039bcfe07fe9d7e03c"
+            "ref": "2bf89438209656b85b9a49238c4467bff1b1f939"
         },
         "files": [
             "config/packages/mailer.yaml"
@@ -727,7 +727,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "5.4",
-            "ref": "dfe610928a5c61619bdfc830cd7fa7f091368023"
+            "ref": "8bd5f27013fb1d7217191c548e340f0bdb11912c"
         },
         "files": [
             "config/packages/messenger.yaml"
@@ -920,7 +920,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "1.10",
-            "ref": "160f0a23c9c2bdd3f264bb4d841b51f900a3572e"
+            "ref": "f8fc53f1942f76679e9ee3c25fd44865355707b5"
         },
         "files": [
             "assets/app.js",
@@ -964,12 +964,12 @@
         "version": "v2.12.5"
     },
     "vich/uploader-bundle": {
-        "version": "1.5",
+        "version": "1.21",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
-            "branch": "master",
-            "version": "1.5",
-            "ref": "c4f5755b37fb65b9c6a3cbdae91205c15a137ed4"
+            "branch": "main",
+            "version": "1.13",
+            "ref": "1b3064c2f6b255c2bc2f56461aaeb76b11e07e36"
         },
         "files": [
             "config/packages/vich_uploader.yaml"
