@@ -1,5 +1,8 @@
 vich_uploader:
     db_driver: orm
+    
+    metadata:
+        type: attribute
 
     mappings:
         portal_logo:

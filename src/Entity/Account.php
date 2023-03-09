@@ -97,7 +97,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  */
 #[ORM\Entity(repositoryClass: AccountsRepository::class)]
-#[UniqueEntity(fields: ['contextId', 'username', 'authSource'], errorPath: 'username', repositoryMethod: 'findOneByCredentialsArray')]
+#[UniqueEntity(fields: ['contextId', 'username', 'authSource'], repositoryMethod: 'findOneByCredentialsArray', errorPath: 'username')]
 #[ORM\Table(name: 'accounts')]
 #[ORM\UniqueConstraint(name: 'accounts_idx', columns: ['context_id', 'username', 'auth_source_id'])]
 #[EmailRegex]
@@ -130,9 +130,6 @@ class Account implements
     #[Groups(['api', 'api_check_local_login'])]
     private string $username;
 
-    /**
-     * @var mixed|null
-     */
     #[Assert\NotBlank]
     #[Assert\NotCompromisedPassword]
     #[Assert\Length(max: 4096, min: 8, minMessage: 'Your password must be at least {{ limit }} characters long.')]
@@ -140,11 +137,8 @@ class Account implements
     #[Assert\Regex(pattern: '/(*UTF8)[\p{Lu}\p{Lt}]/', message: 'Your password must contain at least one uppercase character.')]
     #[Assert\Regex(pattern: '/[[:punct:]]/', message: 'Your password must contain at least one special character.')]
     #[Assert\Regex(pattern: '/\p{Nd}/', message: 'Your password must contain at least one numeric character.')]
-    private $plainPassword;
+    private ?string $plainPassword;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(type: 'string', length: 32, nullable: true)]
     private ?string $passwordMd5;
 
@@ -204,7 +198,6 @@ class Account implements
     public function setId(?int $id): Account
     {
         $this->id = $id;
-
         return $this;
     }
 
@@ -219,8 +212,6 @@ class Account implements
      * Alternatively, the roles might be stored on a ``roles`` property,
      * and populated in any number of different ways when the user object
      * is created.
-     *
-     * @return (Role|string)[] The user roles
      */
     public function getRoles(): array
     {
@@ -232,8 +223,6 @@ class Account implements
      *
      * This should be the encoded password. On authentication, a plain-text
      * password will be salted, encoded, and then compared to this value.
-     *
-     * @return string|null The password
      */
     public function getPassword(): ?string
     {
@@ -243,7 +232,6 @@ class Account implements
     public function setPassword(string $password): Account
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -251,17 +239,12 @@ class Account implements
      * Returns the salt that was originally used to encode the password.
      *
      * This can return null if the password was not encoded using a salt.
-     *
-     * @return string|null The salt
      */
     public function getSalt(): ?string
     {
         return null;
     }
 
-    /**
-     * @return int
-     */
     public function getContextId(): ?int
     {
         return $this->contextId;
@@ -270,14 +253,11 @@ class Account implements
     public function setContextId(int $contextId): Account
     {
         $this->contextId = $contextId;
-
         return $this;
     }
 
     /**
      * Returns the username used to authenticate the user.
-     *
-     * @return string The username
      */
     public function getUsername(): string
     {
@@ -287,25 +267,17 @@ class Account implements
     public function setUsername(string $username): Account
     {
         $this->username = $username;
-
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPlainPassword()
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
 
-    /**
-     * @return Account
-     */
-    public function setPlainPassword(mixed $plainPassword)
+    public function setPlainPassword(mixed $plainPassword): Account
     {
         $this->plainPassword = $plainPassword;
-
         return $this;
     }
 
@@ -317,13 +289,9 @@ class Account implements
     public function setPasswordMd5(?string $passwordMd5): Account
     {
         $this->passwordMd5 = $passwordMd5;
-
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getFirstname(): ?string
     {
         return $this->firstname;
@@ -332,13 +300,9 @@ class Account implements
     public function setFirstname(string $firstname): Account
     {
         $this->firstname = $firstname;
-
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getLastname(): ?string
     {
         return $this->lastname;
@@ -347,13 +311,9 @@ class Account implements
     public function setLastname(string $lastname): Account
     {
         $this->lastname = $lastname;
-
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getEmail(): ?string
     {
         return $this->email;
@@ -362,7 +322,6 @@ class Account implements
     public function setEmail(string $email): Account
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -374,7 +333,6 @@ class Account implements
     public function setLanguage(string $language): Account
     {
         $this->language = $language;
-
         return $this;
     }
 
@@ -398,7 +356,6 @@ class Account implements
         if ($this->hasLegacyPassword()) {
             return 'legacy_encoder';
         }
-
         return null;
     }
 
@@ -410,7 +367,6 @@ class Account implements
     public function setAuthSource(?AuthSource $authSource): Account
     {
         $this->authSource = $authSource;
-
         return $this;
     }
 
@@ -422,7 +378,6 @@ class Account implements
     public function setLocked(bool $locked): Account
     {
         $this->locked = $locked;
-
         return $this;
     }
 
@@ -434,7 +389,6 @@ class Account implements
     public function setLastLogin(?DateTime $lastLogin): Account
     {
         $this->lastLogin = $lastLogin;
-
         return $this;
     }
 
@@ -456,7 +410,6 @@ class Account implements
         }
 
         $this->activityState = $activityState;
-
         return $this;
     }
 
@@ -465,13 +418,9 @@ class Account implements
         return $this->activityStateUpdated;
     }
 
-    /**
-     * @return Room
-     */
     public function setActivityStateUpdated(?DateTime $activityStateUpdated): Account
     {
         $this->activityStateUpdated = $activityStateUpdated;
-
         return $this;
     }
 
@@ -482,16 +431,14 @@ class Account implements
 
         // exclude from serialization
         unset($serializableData['authSource']);
-
         return serialize($serializableData);
     }
 
     public function unserialize($serialized)
     {
         $unserializedData = unserialize($serialized);
-
         foreach ($unserializedData as $key => $value) {
-            $this->$key = $value;
+            $this->{$key} = $value;
         }
     }
 }

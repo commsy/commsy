@@ -20,7 +20,7 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -81,13 +81,12 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  */
 #[ORM\Entity(repositoryClass: ServerRepository::class)]
 #[ORM\Table(name: 'server')]
-#[ORM\Index(name: 'context_id', columns: ['context_id'])]
-#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
+#[ORM\Index(columns: ['context_id'], name: 'context_id')]
+#[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
+#[Vich\Uploadable]
 class Server
 {
-    /**
-     * @OA\Property(description="The unique identifier.")
-     */
+    #[OA\Property(description: 'The unique identifier.')]
     #[ORM\Id]
     #[ORM\Column(name: 'item_id', type: 'integer')]
     #[ORM\GeneratedValue]
@@ -96,26 +95,24 @@ class Server
 
     #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
     private int $contextId;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
-    private $creatorId = '0';
+    private ?int $creatorId = 0;
 
     #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: true)]
     private int $modifierId;
 
     #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private int $deleterId;
+
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private DateTime $creationDate;
+
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
     private ?DateTimeInterface $modificationDate = null;
-    /**
-     * @var DateTimeInterface
-     */
+
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private $deletionDate;
+    private ?DateTime $deletionDate;
 
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private string $title;
@@ -125,25 +122,21 @@ class Server
 
     #[ORM\Column(name: 'status', type: 'string', length: 20, nullable: false)]
     private string $status;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'activity', type: 'integer', nullable: false)]
-    private $activity = '0';
+    private int $activity = 0;
 
     #[ORM\Column(name: 'type', type: 'string', length: 10, nullable: false)]
     private string $type = 'server';
-    /**
-     * @var bool
-     */
+
     #[ORM\Column(name: 'is_open_for_guests', type: 'boolean', nullable: false)]
-    private $isOpenForGuests = '1';
+    private bool $isOpenForGuests = true;
 
     #[ORM\Column(name: 'url', type: 'string', length: 255, nullable: true)]
     private ?string $url = null;
-    /**
-     * @Vich\UploadableField(mapping="server_logo", fileNameProperty="logoImageName")
-     */
+
+    // NOTE: This is not a mapped field of entity metadata, just a simple property.
+    #[Vich\UploadableField(mapping: 'server_logo', fileNameProperty: 'logoImageName')]
     private ?File $logoImageFile = null;
 
     #[ORM\Column(name: 'logo_image_name', type: 'string', length: 255, nullable: true)]
@@ -157,12 +150,7 @@ class Server
         $this->creationDate = new DateTime('0000-00-00 00:00:00');
     }
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -182,13 +170,11 @@ class Server
     public function setLogoImageFile(?File $logoImageFile = null): self
     {
         $this->logoImageFile = $logoImageFile;
-
         if (null !== $logoImageFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
             $this->modificationDate = new DateTimeImmutable();
         }
-
         return $this;
     }
 
@@ -200,7 +186,6 @@ class Server
     public function setLogoImageName(?string $logoImageName): self
     {
         $this->logoImageName = $logoImageName;
-
         return $this;
     }
 
@@ -212,25 +197,15 @@ class Server
     public function setCommsyIconLink(?string $commsyIconLink): self
     {
         $this->commsyIconLink = $commsyIconLink;
-
         return $this;
     }
 
-    /**
-     * Set extras.
-     *
-     * @return Portal
-     */
-    public function setExtras(array $extras): self
+    public function setExtras(array $extras): Server
     {
         $this->extras = $extras;
-
         return $this;
     }
 
-    /**
-     * Get extras.
-     */
     public function getExtras(): ?array
     {
         return $this->extras;
@@ -244,7 +219,6 @@ class Server
     public function setAnnouncementText(?string $text): self
     {
         $this->extras['ANNOUNCEMENT_TEXT'] = $text;
-
         return $this;
     }
 
@@ -256,7 +230,6 @@ class Server
     public function setAnnouncementTitle(string $title): self
     {
         $this->extras['ANNOUNCEMENT_TITLE'] = $title;
-
         return $this;
     }
 
@@ -268,7 +241,6 @@ class Server
     public function setAnnouncementSeverity(string $severity): self
     {
         $this->extras['ANNOUNCEMENT_SEVERITY'] = $severity;
-
         return $this;
     }
 
@@ -280,7 +252,6 @@ class Server
     public function setAnnouncementEnabled(bool $enabled): self
     {
         $this->extras['ANNOUNCEMENT_ENABLED'] = $enabled;
-
         return $this;
     }
 
@@ -292,7 +263,6 @@ class Server
     public function setDataPrivacyEnabled(bool $enabled): self
     {
         $this->extras['CONTENT_DATAPRIVACY_ENABLED'] = $enabled;
-
         return $this;
     }
 
@@ -304,7 +274,6 @@ class Server
     public function setDataPrivacyText(?string $text): self
     {
         $this->extras['CONTENT_DATAPRIVACY_TEXT'] = $text;
-
         return $this;
     }
 
@@ -316,7 +285,6 @@ class Server
     public function setImpressumEnabled(bool $enabled): self
     {
         $this->extras['CONTENT_IMPRESSUM_ENABLED'] = $enabled;
-
         return $this;
     }
 
@@ -328,7 +296,6 @@ class Server
     public function setImpressumText(?string $text): self
     {
         $this->extras['CONTENT_IMPRESSUM_TEXT'] = $text;
-
         return $this;
     }
 
@@ -340,7 +307,6 @@ class Server
     public function setAccessibilityEnabled(bool $enabled): self
     {
         $this->extras['CONTENT_ACCESSIBILITY_ENABLED'] = $enabled;
-
         return $this;
     }
 
@@ -352,7 +318,6 @@ class Server
     public function setAccessibilityText(?string $text): self
     {
         $this->extras['CONTENT_ACCESSIBILITY_TEXT'] = $text;
-
         return $this;
     }
 }
