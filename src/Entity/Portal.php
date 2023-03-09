@@ -23,11 +23,10 @@ use cs_environment;
 use cs_list;
 use DateTime;
 use DateTimeImmutable;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 use Serializable;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -107,11 +106,10 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[ORM\Entity(repositoryClass: PortalRepository::class)]
 #[ORM\Table(name: 'portal')]
 #[ORM\HasLifecycleCallbacks]
+#[Vich\Uploadable]
 class Portal implements Serializable
 {
-    /**
-     * @OA\Property(description="The unique identifier.")
-     */
+    #[OA\Property(description: 'The unique identifier.')]
     #[ORM\Id]
     #[ORM\Column(name: 'id', type: 'integer')]
     #[ORM\GeneratedValue]
@@ -128,37 +126,22 @@ class Portal implements Serializable
 
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
     #[Groups(['api'])]
-    private DateTime|DateTimeImmutable|null $modificationDate = null;
+    private ?DateTime $modificationDate;
 
-    /**
-     * @var DateTimeInterface
-     */
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private $deletionDate;
+    private ?DateTime $deletionDate;
 
-    /**
-     * @var string
-     *
-     * @OA\Property(type="string", maxLength=255)
-     */
+    #[OA\Property(type: 'string', maxLength: 255)]
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     #[Groups(['api'])]
-    private $title;
+    private string $title;
 
-    /**
-     * @var string
-     *
-     * @OA\Property(type="string")
-     */
+    #[OA\Property(type: 'string')]
     #[ORM\Column(name: 'description_de', type: 'text')]
     #[Groups(['api'])]
     private ?string $descriptionGerman = null;
 
-    /**
-     * @var string
-     *
-     * @OA\Property(type="string")
-     */
+    #[OA\Property(type: 'string')]
     #[ORM\Column(name: 'description_en', type: 'text')]
     #[Groups(['api'])]
     private ?string $descriptionEnglish = null;
@@ -169,23 +152,14 @@ class Portal implements Serializable
     #[ORM\Column(name: 'terms_en', type: 'text')]
     private ?string $termsEnglish = null;
 
-    /**
-     * @var mixed[]|int[]|string[]|null[]|bool[]|string[]|mixed[][]|null
-     */
     #[ORM\Column(name: 'extras', type: 'array', nullable: true)]
     private ?array $extras = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'status', type: 'string', length: 20, nullable: false)]
-    private $status;
+    private string $status;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'activity', type: 'integer', nullable: false)]
-    private $activity = '0';
+    private int $activity = 0;
 
     /**
      * @ApiSubresource()
@@ -193,11 +167,8 @@ class Portal implements Serializable
     #[ORM\OneToMany(targetEntity: AuthSource::class, mappedBy: 'portal')]
     private Collection $authSources;
 
-    /**
-     * NOTE: This is not a mapped field of entity metadata, just a simple property used by VichUploaderBundle.
-     *
-     * @Vich\UploadableField(mapping="portal_logo", fileNameProperty="logoFilename")
-     */
+    // NOTE: This is not a mapped field of entity metadata, just a simple property.
+    #[Vich\UploadableField(mapping: 'portal_logo', fileNameProperty: 'logoFilename')]
     private ?File $logoFile = null;
 
     #[ORM\Column(name: 'logo_filename', type: 'string', length: 255, nullable: true)]
@@ -267,25 +238,14 @@ class Portal implements Serializable
         $this->authSources = new ArrayCollection();
     }
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set deleter.
-     *
-     * @return Portal
-     */
-    public function setDeleter(User $deleter = null)
+    public function setDeleter(User $deleter = null): Portal
     {
         $this->deleter = $deleter;
-
         return $this;
     }
 
@@ -304,26 +264,13 @@ class Portal implements Serializable
         $this->modificationDate = new DateTime('now');
     }
 
-    /**
-     * Set creationDate.
-     *
-     * @param DateTime $creationDate
-     *
-     * @return Portal
-     */
-    public function setCreationDate($creationDate)
+    public function setCreationDate(DateTime $creationDate): Portal
     {
         $this->creationDate = $creationDate;
-
         return $this;
     }
 
-    /**
-     * Get creationDate.
-     *
-     * @return DateTime
-     */
-    public function getCreationDate()
+    public function getCreationDate(): ?DateTime
     {
         return $this->creationDate;
     }
@@ -334,74 +281,35 @@ class Portal implements Serializable
         $this->modificationDate = new DateTime('now');
     }
 
-    /**
-     * Set modificationDate.
-     *
-     * @param DateTime $modificationDate
-     *
-     * @return Portal
-     */
-    public function setModificationDate($modificationDate)
+    public function setModificationDate(DateTime $modificationDate): Portal
     {
         $this->modificationDate = $modificationDate;
-
         return $this;
     }
 
-    /**
-     * Get modificationDate.
-     *
-     * @return DateTime
-     */
-    public function getModificationDate()
+    public function getModificationDate(): ?DateTime
     {
         return $this->modificationDate;
     }
 
-    /**
-     * Set deletionDate.
-     *
-     * @param DateTime $deletionDate
-     *
-     * @return Portal
-     */
-    public function setDeletionDate($deletionDate)
+    public function setDeletionDate(DateTime $deletionDate): Portal
     {
         $this->deletionDate = $deletionDate;
-
         return $this;
     }
 
-    /**
-     * Get deletionDate.
-     *
-     * @return DateTime
-     */
-    public function getDeletionDate()
+    public function getDeletionDate(): ?DateTime
     {
         return $this->deletionDate;
     }
 
-    /**
-     * Set title.
-     *
-     * @param string $title
-     *
-     * @return Portal
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): Portal
     {
         $this->title = $title;
-
         return $this;
     }
 
-    /**
-     * Get title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -412,64 +320,32 @@ class Portal implements Serializable
     public function setExtras(array $extras): Portal
     {
         $this->extras = $extras;
-
         return $this;
     }
 
-    /**
-     * Get extras.
-     *
-     * @return array
-     */
     public function getExtras(): ?array
     {
         return $this->extras;
     }
 
-    /**
-     * Set status.
-     *
-     * @param string $status
-     *
-     * @return Portal
-     */
-    public function setStatus($status)
+    public function setStatus(string $status): Portal
     {
         $this->status = $status;
-
         return $this;
     }
 
-    /**
-     * Get status.
-     *
-     * @return string
-     */
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->status;
     }
 
-    /**
-     * Set activity.
-     *
-     * @param int $activity
-     *
-     * @return Portal
-     */
-    public function setActivity($activity)
+    public function setActivity(int $activity): Portal
     {
         $this->activity = $activity;
-
         return $this;
     }
 
-    /**
-     * Get activity.
-     *
-     * @return int
-     */
-    public function getActivity()
+    public function getActivity(): int
     {
         return $this->activity;
     }
@@ -485,7 +361,6 @@ class Portal implements Serializable
             $this->authSources[] = $authSource;
             $authSource->setPortal($this);
         }
-
         return $this;
     }
 
@@ -498,7 +373,6 @@ class Portal implements Serializable
                 $authSource->setPortal(null);
             }
         }
-
         return $this;
     }
 
@@ -515,7 +389,6 @@ class Portal implements Serializable
             // using Doctrine otherwise the event listeners won't be called and the file is lost
             $this->modificationDate = new DateTimeImmutable();
         }
-
         return $this;
     }
 
@@ -527,7 +400,6 @@ class Portal implements Serializable
     public function setLogoFilename(?string $logoFilename): Portal
     {
         $this->logoFilename = $logoFilename;
-
         return $this;
     }
 
@@ -539,7 +411,6 @@ class Portal implements Serializable
     public function setMaxRoomActivityPoints(int $points): Portal
     {
         $this->extras['MAX_ROOM_ACTIVITY'] = $points;
-
         return $this;
     }
 
@@ -551,7 +422,6 @@ class Portal implements Serializable
     public function setSupportPageLink(?string $link): Portal
     {
         $this->extras['SUPPORTPAGELINK'] = $link;
-
         return $this;
     }
 
@@ -563,7 +433,6 @@ class Portal implements Serializable
     public function setSupportPageLinkTooltip(?string $tooltip): Portal
     {
         $this->extras['SUPPORTPAGELINKTOOLTIP'] = $tooltip;
-
         return $this;
     }
 
@@ -575,7 +444,6 @@ class Portal implements Serializable
     public function setSupportRequestsEnabled(bool $enabled): Portal
     {
         $this->extras['SERVICELINK'] = $enabled;
-
         return $this;
     }
 
@@ -587,7 +455,6 @@ class Portal implements Serializable
     public function setSupportEmail(?string $email): Portal
     {
         $this->extras['SERVICEEMAIL'] = $email;
-
         return $this;
     }
 
@@ -599,7 +466,6 @@ class Portal implements Serializable
     public function setSupportFormLink(?string $externalLink): Portal
     {
         $this->extras['SERVICELINKEXTERNAL'] = $externalLink;
-
         return $this;
     }
 
@@ -611,7 +477,6 @@ class Portal implements Serializable
     public function setAnnouncementText(?string $text): Portal
     {
         $this->extras['ANNOUNCEMENT_TEXT'] = $text;
-
         return $this;
     }
 
@@ -623,7 +488,6 @@ class Portal implements Serializable
     public function setAnnouncementTitle(string $title): Portal
     {
         $this->extras['ANNOUNCEMENT_TITLE'] = $title;
-
         return $this;
     }
 
@@ -635,7 +499,6 @@ class Portal implements Serializable
     public function setAnnouncementSeverity(string $severity): Portal
     {
         $this->extras['ANNOUNCEMENT_SEVERITY'] = $severity;
-
         return $this;
     }
 
@@ -647,7 +510,6 @@ class Portal implements Serializable
     public function setAnnouncementEnabled(bool $enabled): Portal
     {
         $this->extras['ANNOUNCEMENT_ENABLED'] = $enabled;
-
         return $this;
     }
 
@@ -659,47 +521,36 @@ class Portal implements Serializable
     public function setServerAnnouncementEnabled(bool $enabled): Portal
     {
         $this->extras['ANNOUNCEMENT_SERVER_ENABLED'] = $enabled;
-
         return $this;
     }
 
     public function getAGBChangeDate(): ?DateTimeImmutable
     {
         $agbChangeDateString = $this->extras['AGB_CHANGE_DATE'] ?? '';
-
-        return !empty($agbChangeDateString) ?
-            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $agbChangeDateString) :
-            null;
+        return !empty($agbChangeDateString) ? DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $agbChangeDateString) : null;
     }
 
     public function setAGBChangeDate(?DateTimeImmutable $agbChangeDate): Portal
     {
         $agbChangeDateString = $agbChangeDate ? $agbChangeDate->format('Y-m-d H:i:s') : '';
         $this->extras['AGB_CHANGE_DATE'] = $agbChangeDateString;
-
         return $this;
     }
 
-    /**
-     * @OA\Property(type="boolean")
-     */
     #[Groups(['api'])]
+    #[OA\Property(type: 'boolean')]
     public function hasAGBEnabled(): bool
     {
         /**
          * agb status 1 = yes, 2 = no (default).
-         *
-         * @var int
          */
         $agbStatus = $this->extras['AGBSTATUS'] ?? 2;
-
         return 1 === $agbStatus;
     }
 
     public function setAGBEnabled(bool $enabled): Portal
     {
         $this->extras['AGBSTATUS'] = $enabled ? 1 : 2;
-
         return $this;
     }
 
@@ -708,7 +559,6 @@ class Portal implements Serializable
         if ('EN' === strtoupper($language)) {
             return $this->getTimePulseNameEnglish();
         }
-
         return $this->getTimePulseNameGerman();
     }
 
@@ -723,7 +573,6 @@ class Portal implements Serializable
             $text = 'normal';
         }
         $this->extras['SHOWROOMSONHOME'] = $text;
-
         return $this;
     }
 
@@ -731,18 +580,14 @@ class Portal implements Serializable
     {
         /**
          * show templates: 1 = yes (default), -1 = no.
-         *
-         * @var int
          */
         $showTemplates = $this->extras['SHOW_TEMPLATE_IN_ROOM_LIST'] ?? 1;
-
         return 1 === $showTemplates ? true : false;
     }
 
     public function setShowTemplatesInRoomList(?bool $showTemplates): Portal
     {
         $this->extras['SHOW_TEMPLATE_IN_ROOM_LIST'] = $showTemplates ? 1 : -1;
-
         return $this;
     }
 
@@ -757,7 +602,6 @@ class Portal implements Serializable
             $text = 'activity';
         }
         $this->extras['SORTROOMSONHOME'] = $text;
-
         return $this;
     }
 
@@ -769,7 +613,6 @@ class Portal implements Serializable
     public function setDefaultFilterHideTemplates(bool $enabled): Portal
     {
         $this->defaultFilterHideTemplates = $enabled;
-
         return $this;
     }
 
@@ -781,7 +624,6 @@ class Portal implements Serializable
     public function setDefaultFilterHideArchived(bool $enabled): Portal
     {
         $this->defaultFilterHideArchived = $enabled;
-
         return $this;
     }
 
@@ -800,7 +642,6 @@ class Portal implements Serializable
             $status = 'all';
         }
         $this->extras['COMMUNITYROOMCREATIONSTATUS'] = $status;
-
         return $this;
     }
 
@@ -812,7 +653,6 @@ class Portal implements Serializable
     public function setProjectShowDeactivatedEntriesTitle(bool $projectShowDeactivatedEntriesTitle): Portal
     {
         $this->projectShowDeactivatedEntriesTitle = $projectShowDeactivatedEntriesTitle;
-
         return $this;
     }
 
@@ -824,7 +664,6 @@ class Portal implements Serializable
     public function setCommunityShowDeactivatedEntriesTitle(bool $communityShowDeactivatedEntriesTitle): Portal
     {
         $this->communityShowDeactivatedEntriesTitle = $communityShowDeactivatedEntriesTitle;
-
         return $this;
     }
 
@@ -843,7 +682,6 @@ class Portal implements Serializable
             $status = 'portal';
         }
         $this->extras['PROJECTCREATIONSTATUS'] = $status;
-
         return $this;
     }
 
@@ -863,7 +701,6 @@ class Portal implements Serializable
             $status = 'optional';
         }
         $this->extras['PROJECTROOMLINKSTATUS'] = $status;
-
         return $this;
     }
 
@@ -874,14 +711,12 @@ class Portal implements Serializable
     public function getDefaultProjectTemplateID(): int
     {
         $roomTemplateID = $this->extras['DEFAULTPROJECTTEMPLATEID'] ?? '-1';
-
         return intval($roomTemplateID);
     }
 
     public function setDefaultProjectTemplateID(?int $id): Portal
     {
         $this->extras['DEFAULTPROJECTTEMPLATEID'] = !empty($id) ? strval($id) : '-1';
-
         return $this;
     }
 
@@ -892,14 +727,12 @@ class Portal implements Serializable
     public function getDefaultCommunityTemplateID(): int
     {
         $roomTemplateID = $this->extras['DEFAULTCOMMUNITYTEMPLATEID'] ?? '-1';
-
         return intval($roomTemplateID);
     }
 
     public function setDefaultCommunityTemplateID(?int $id): Portal
     {
         $this->extras['DEFAULTCOMMUNITYTEMPLATEID'] = !empty($id) ? strval($id) : '-1';
-
         return $this;
     }
 
@@ -917,7 +750,6 @@ class Portal implements Serializable
     public function setTagMandatory(bool $isTagMandatory): Portal
     {
         $this->extras['TAGMANDATORY'] = $isTagMandatory;
-
         return $this;
     }
 
@@ -925,15 +757,12 @@ class Portal implements Serializable
     {
         /**
          * hide account name: 1 = yes, 2 = no (default).
-         *
-         * @var int
          */
         $hideAccountName = $this->extras['HIDE_ACCOUNTNAME'] ?? null;
         if (!isset($hideAccountName) && isset($this->extras['EXTRA_CONFIG'])) {
             // NOTE: in CommSy9 and earlier, HIDE_ACCOUNTNAME was part of an EXTRA_CONFIG array
             $hideAccountName = $this->extras['EXTRA_CONFIG']['HIDE_ACCOUNTNAME'] ?? 2;
         }
-
         return 1 === $hideAccountName ? true : false;
     }
 
@@ -941,7 +770,6 @@ class Portal implements Serializable
     {
         // NOTE: for consistency reasons, we keep the behavior of CommSy9 and earlier where `2` was used to indicate `no`
         $this->extras['HIDE_ACCOUNTNAME'] = $hideAccountName ? 1 : 2;
-
         return $this;
     }
 
@@ -949,24 +777,17 @@ class Portal implements Serializable
     {
         /**
          * hide mail by default: 1 = yes, 0 = no (default).
-         *
-         * @var int
          */
         $hideEmailAddress = $this->extras['HIDE_MAIL_BY_DEFAULT'] ?? 0;
-
         return 1 === $hideEmailAddress ? true : false;
     }
 
     public function setHideEmailAddressByDefault(?bool $hideEmailAddress): Portal
     {
         $this->extras['HIDE_MAIL_BY_DEFAULT'] = $hideEmailAddress ? 1 : 0;
-
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getDescriptionGerman(): ?string
     {
         return $this->descriptionGerman;
@@ -975,13 +796,9 @@ class Portal implements Serializable
     public function setDescriptionGerman(?string $descriptionGerman): Portal
     {
         $this->descriptionGerman = $descriptionGerman;
-
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getDescriptionEnglish(): ?string
     {
         return $this->descriptionEnglish;
@@ -990,7 +807,6 @@ class Portal implements Serializable
     public function setDescriptionEnglish(?string $descriptionEnglish): Portal
     {
         $this->descriptionEnglish = $descriptionEnglish;
-
         return $this;
     }
 
@@ -1002,7 +818,6 @@ class Portal implements Serializable
     public function setTermsGerman(string $termsGerman): Portal
     {
         $this->termsGerman = $termsGerman;
-
         return $this;
     }
 
@@ -1014,7 +829,6 @@ class Portal implements Serializable
     public function setTermsEnglish(string $termsEnglish): Portal
     {
         $this->termsEnglish = $termsEnglish;
-
         return $this;
     }
 
@@ -1022,18 +836,14 @@ class Portal implements Serializable
     {
         /**
          * show time pulses: 1 = yes, -1 = no (default).
-         *
-         * @var int
          */
         $showTimePulses = $this->extras['TIME_SHOW'] ?? -1;
-
         return 1 === $showTimePulses ? true : false;
     }
 
     public function setShowTimePulses(?bool $showTimePulses): Portal
     {
         $this->extras['TIME_SHOW'] = $showTimePulses ? 1 : -1;
-
         return $this;
     }
 
@@ -1050,7 +860,6 @@ class Portal implements Serializable
             $timePulseNamesByLanguage['DE'] = $timePulseName;
             $this->setTimeNameArray($timePulseNamesByLanguage);
         }
-
         return $this;
     }
 
@@ -1067,7 +876,6 @@ class Portal implements Serializable
             $timePulseNamesByLanguage['EN'] = $timePulseName;
             $this->setTimeNameArray($timePulseNamesByLanguage);
         }
-
         return $this;
     }
 
@@ -1079,7 +887,6 @@ class Portal implements Serializable
     public function setTimeNameArray(array $timePulseNamesByLanguage): Portal
     {
         $this->extras['TIME_NAME_ARRAY'] = $timePulseNamesByLanguage;
-
         return $this;
     }
 
@@ -1091,7 +898,6 @@ class Portal implements Serializable
     public function setNumberOfFutureTimePulses(?int $count): Portal
     {
         $this->extras['TIME_IN_FUTURE'] = $count ?? 0;
-
         return $this;
     }
 
@@ -1103,7 +909,6 @@ class Portal implements Serializable
     public function setTimeTextArray(array $timePulseTemplates): Portal
     {
         $this->extras['TIME_TEXT_ARRAY'] = $timePulseTemplates;
-
         return $this;
     }
 
@@ -1143,78 +948,57 @@ class Portal implements Serializable
         $manager->setContextLimit($this->getId());
         $manager->setContinuousLimit();
         $manager->select();
-
         return $manager->get();
     }
 
-    /**
-     * @param cs_environment $environment
-     *
-     * @return cs_list
-     */
-    public function getContactModeratorList($environment)
+    public function getContactModeratorList(cs_environment $environment): ?cs_list
     {
         $user_manager = $environment->getUserManager();
         $user_manager->setContextLimit($this->getId());
         $user_manager->setContactModeratorLimit();
         $user_manager->select();
         $contactModeratorList = $user_manager->get();
-
         if ($contactModeratorList->isEmpty()) {
             $contactModeratorList = $this->getModeratorList($environment);
         }
-
         return $contactModeratorList;
     }
 
-    /**
-     * @param cs_environment $environment
-     *
-     * @return cs_list
-     */
-    public function getModeratorList($environment)
+    public function getModeratorList(cs_environment $environment): ?cs_list
     {
         $userManager = $environment->getUserManager();
         $userManager->resetLimits();
         $userManager->setContextLimit($this->getId());
         $userManager->setModeratorLimit();
         $userManager->select();
-
         return $userManager->get();
     }
 
     // Serializable
-
     public function serialize()
     {
         $serializableData = get_object_vars($this);
-
         // exclude from serialization
         unset($serializableData['logoFile']);
-
         return serialize($serializableData);
     }
 
     public function unserialize($serialized)
     {
         $unserializedData = unserialize($serialized);
-
         foreach ($unserializedData as $key => $value) {
-            $this->$key = $value;
+            $this->{$key} = $value;
         }
     }
-
     // ##################################################
     // email text translation methods
     // ##################################################
-
     public function getEmailTextArray()
     {
         $retour = [];
         if ($this->_issetExtra('MAIL_TEXT_ARRAY')) {
             $retour = $this->getExtras()['MAIL_TEXT_ARRAY'];
         }
-
         return $retour;
     }
 
@@ -1254,7 +1038,6 @@ class Portal implements Serializable
         if (isset($extras) and is_array($extras) and array_key_exists($key, $extras) and isset($extras[$key])) {
             $result = true;
         }
-
         return $result;
     }
 
@@ -1273,7 +1056,6 @@ class Portal implements Serializable
     public function setClearInactiveAccountsFeatureEnabled(bool $clearInactiveAccountsFeatureEnabled): Portal
     {
         $this->clearInactiveAccountsFeatureEnabled = $clearInactiveAccountsFeatureEnabled;
-
         return $this;
     }
 
@@ -1285,7 +1067,6 @@ class Portal implements Serializable
     public function setClearInactiveAccountsNotifyLockDays(int $clearInactiveAccountsNotifyLockDays): Portal
     {
         $this->clearInactiveAccountsNotifyLockDays = $clearInactiveAccountsNotifyLockDays;
-
         return $this;
     }
 
@@ -1297,7 +1078,6 @@ class Portal implements Serializable
     public function setClearInactiveAccountsLockDays(int $clearInactiveAccountsLockDays): Portal
     {
         $this->clearInactiveAccountsLockDays = $clearInactiveAccountsLockDays;
-
         return $this;
     }
 
@@ -1309,7 +1089,6 @@ class Portal implements Serializable
     public function setClearInactiveAccountsNotifyDeleteDays(int $clearInactiveAccountsNotifyDeleteDays): Portal
     {
         $this->clearInactiveAccountsNotifyDeleteDays = $clearInactiveAccountsNotifyDeleteDays;
-
         return $this;
     }
 
@@ -1321,7 +1100,6 @@ class Portal implements Serializable
     public function setClearInactiveAccountsDeleteDays(int $clearInactiveAccountsDeleteDays): Portal
     {
         $this->clearInactiveAccountsDeleteDays = $clearInactiveAccountsDeleteDays;
-
         return $this;
     }
 
@@ -1333,7 +1111,6 @@ class Portal implements Serializable
     public function setClearInactiveRoomsFeatureEnabled(bool $clearInactiveRoomsFeatureEnabled): Portal
     {
         $this->clearInactiveRoomsFeatureEnabled = $clearInactiveRoomsFeatureEnabled;
-
         return $this;
     }
 
@@ -1345,7 +1122,6 @@ class Portal implements Serializable
     public function setClearInactiveRoomsNotifyLockDays(int $clearInactiveRoomsNotifyLockDays): Portal
     {
         $this->clearInactiveRoomsNotifyLockDays = $clearInactiveRoomsNotifyLockDays;
-
         return $this;
     }
 
@@ -1357,7 +1133,6 @@ class Portal implements Serializable
     public function setClearInactiveRoomsLockDays(int $clearInactiveRoomsLockDays): Portal
     {
         $this->clearInactiveRoomsLockDays = $clearInactiveRoomsLockDays;
-
         return $this;
     }
 
@@ -1369,7 +1144,6 @@ class Portal implements Serializable
     public function setClearInactiveRoomsNotifyDeleteDays(int $clearInactiveRoomsNotifyDeleteDays): Portal
     {
         $this->clearInactiveRoomsNotifyDeleteDays = $clearInactiveRoomsNotifyDeleteDays;
-
         return $this;
     }
 
@@ -1381,7 +1155,6 @@ class Portal implements Serializable
     public function setClearInactiveRoomsDeleteDays(int $clearInactiveRoomsDeleteDays): Portal
     {
         $this->clearInactiveRoomsDeleteDays = $clearInactiveRoomsDeleteDays;
-
         return $this;
     }
 
@@ -1393,7 +1166,6 @@ class Portal implements Serializable
     public function setAuthMembershipEnabled(bool $authMembershipEnabled): self
     {
         $this->authMembershipEnabled = $authMembershipEnabled;
-
         return $this;
     }
 
@@ -1405,7 +1177,6 @@ class Portal implements Serializable
     public function setAuthMembershipIdentifier(?string $authMembershipIdentifier): self
     {
         $this->authMembershipIdentifier = $authMembershipIdentifier;
-
         return $this;
     }
 }

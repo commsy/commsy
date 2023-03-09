@@ -18,8 +18,8 @@ use App\Controller\Api\GetAuthSourceDirectLoginUrl;
 use App\Repository\AuthSourceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use OpenApi\Annotations as OA;
 use InvalidArgumentException;
+use OpenApi\Attributes as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -71,36 +71,26 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
 #[ORM\DiscriminatorMap(['local' => 'AuthSourceLocal', 'oidc' => 'AuthSourceOIDC', 'ldap' => 'AuthSourceLdap', 'shib' => 'AuthSourceShibboleth', 'guest' => 'AuthSourceGuest'])]
 #[ORM\Table(name: 'auth_source')]
-#[ORM\Index(name: 'portal_id', columns: ['portal_id'])]
+#[ORM\Index(columns: ['portal_id'], name: 'portal_id')]
 abstract class AuthSource
 {
     public const ADD_ACCOUNT_YES = 'yes';
     public const ADD_ACCOUNT_NO = 'no';
     public const ADD_ACCOUNT_INVITE = 'invitation';
 
-    /**
-     * @OA\Property(description="The unique identifier.")
-     */
+    #[OA\Property(description: 'The unique identifier.')]
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[Groups(['api'])]
     private int $id;
 
-    /**
-     * @var ?string
-     *
-     * @OA\Property(type="string", maxLength=255)
-     */
+    #[OA\Property(type: 'string', maxLength: 255)]
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Groups(['api'])]
     private ?string $title = null;
 
-    /**
-     * @var ?string
-     *
-     * @OA\Property(type="string", maxLength=255)
-     */
+    #[OA\Property(type: 'string', maxLength: 255)]
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Groups(['api'])]
     private ?string $description = null;
@@ -109,18 +99,11 @@ abstract class AuthSource
     #[ORM\JoinColumn(name: 'portal_id')]
     private ?Portal $portal = null;
 
-    /**
-     * @var bool
-     *
-     * @OA\Property(type="boolean")
-     */
+    #[OA\Property(type: 'boolean')]
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['api'])]
     private ?bool $enabled = null;
 
-    /**
-     * @var bool
-     */
     #[ORM\Column(name: '`default`', type: Types::BOOLEAN)]
     private ?bool $default = null;
 
@@ -142,9 +125,7 @@ abstract class AuthSource
     #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $createRoom = true;
 
-    /**
-     * @OA\Property(type="string")
-     */
+    #[OA\Property(type: 'string')]
     #[Groups(['api'])]
     protected string $type = '';
 
@@ -156,13 +137,9 @@ abstract class AuthSource
     public function setId(int $id): self
     {
         $this->id = $id;
-
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): ?string
     {
         return $this->title;
@@ -171,13 +148,9 @@ abstract class AuthSource
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getDescription(): ?string
     {
         return $this->description;
@@ -186,7 +159,6 @@ abstract class AuthSource
     public function setDescription(?string $description): self
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -198,7 +170,6 @@ abstract class AuthSource
     public function setPortal(?Portal $portal): self
     {
         $this->portal = $portal;
-
         return $this;
     }
 
@@ -210,13 +181,9 @@ abstract class AuthSource
     public function setCreateRoom(bool $createRoom): self
     {
         $this->createRoom = $createRoom;
-
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isEnabled(): ?bool
     {
         return $this->enabled;
@@ -225,13 +192,9 @@ abstract class AuthSource
     public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
-
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isDefault(): ?bool
     {
         return $this->default;
@@ -240,7 +203,6 @@ abstract class AuthSource
     public function setDefault(bool $default): self
     {
         $this->default = $default;
-
         return $this;
     }
 
@@ -254,9 +216,7 @@ abstract class AuthSource
         if (!in_array($addAccount, [self::ADD_ACCOUNT_YES, self::ADD_ACCOUNT_NO, self::ADD_ACCOUNT_INVITE])) {
             throw new InvalidArgumentException('invalid value for add_account');
         }
-
         $this->addAccount = $addAccount;
-
         return $this;
     }
 
@@ -268,7 +228,6 @@ abstract class AuthSource
     public function setChangeUsername(bool $changeUsername): self
     {
         $this->changeUsername = $changeUsername;
-
         return $this;
     }
 
@@ -280,7 +239,6 @@ abstract class AuthSource
     public function setDeleteAccount(bool $deleteAccount): self
     {
         $this->deleteAccount = $deleteAccount;
-
         return $this;
     }
 
@@ -292,7 +250,6 @@ abstract class AuthSource
     public function setChangeUserdata(bool $changeUserdata): self
     {
         $this->changeUserdata = $changeUserdata;
-
         return $this;
     }
 
@@ -304,7 +261,6 @@ abstract class AuthSource
     public function setChangePassword(bool $changePassword): self
     {
         $this->changePassword = $changePassword;
-
         return $this;
     }
 
