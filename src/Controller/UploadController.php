@@ -147,6 +147,7 @@ class UploadController extends AbstractController
                     default:
                         $fileItem = $fileService->getNewFile();
 
+                        $fileItem->setPortalId($legacyEnvironment->getEnvironment()->getCurrentPortalID());
                         $fileItem->setTempKey($file->getPathname());
 
                         $fileData = [];
@@ -384,6 +385,7 @@ class UploadController extends AbstractController
 
                 $fileManager = $legacyEnvironment->getFileManager();
                 $fileItem = $fileManager->getNewItem();
+                $fileItem->setPortalId($legacyEnvironment->getCurrentPortalID());
                 $fileItem->setTempKey($fileInfo['file_id']);
                 $fileItem->setPostFile($fileInfo);
                 $fileItem->save();

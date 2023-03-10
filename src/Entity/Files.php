@@ -36,7 +36,7 @@ class Files
     #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
     private ?int $contextId = null;
 
-    #[ORM\Column(name: 'creator_id', type: Types::INTEGER)]
+    #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: true)]
     private ?int $creatorId = 0;
 
     #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
@@ -60,8 +60,12 @@ class Files
     #[ORM\Column(name: 'size', type: Types::INTEGER, nullable: true)]
     private ?int $size = null;
 
-    #[ORM\Column(name: 'extras', type: Types::TEXT, length: 16_777_215, nullable: true)]
-    private ?string $extras = null;
+    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
+    private ?array $extras = null;
+
+    #[ORM\ManyToOne()]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'cascade')]
+    private ?Portal $portal = null;
 
     public function __construct()
     {
@@ -316,11 +320,11 @@ class Files
     /**
      * Set extras.
      *
-     * @param string $extras
+     * @param array $extras
      *
      * @return Files
      */
-    public function setExtras($extras)
+    public function setExtras(array $extras): self
     {
         $this->extras = $extras;
 
@@ -330,10 +334,22 @@ class Files
     /**
      * Get extras.
      *
-     * @return string
+     * @return array|null
      */
-    public function getExtras()
+    public function getExtras(): ?array
     {
         return $this->extras;
+    }
+
+    public function getPortal(): ?Portal
+    {
+        return $this->portal;
+    }
+
+    public function setPortal(?Portal $portal): self
+    {
+        $this->portal = $portal;
+
+        return $this;
     }
 }

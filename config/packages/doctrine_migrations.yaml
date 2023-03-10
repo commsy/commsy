@@ -16,3 +16,6 @@ doctrine_migrations:
 
     # Possible values: "BY_YEAR", "BY_YEAR_AND_MONTH", false
     organize_migrations: BY_YEAR
+    
+    services:
+        'Doctrine\Migrations\Version\MigrationFactory': 'App\Migrations\Factory\MigrationFactoryDecorator'

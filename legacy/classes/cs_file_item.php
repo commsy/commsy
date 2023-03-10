@@ -12,15 +12,11 @@
  */
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Mime\MimeTypes;
 
 class cs_file_item extends cs_item
 {
-    private ?int $_portal_id = null;
-
-    /** constructor: cs_file_item
-     * the only available constructor, initial values for internal variables.
-     */
     public function __construct($environment)
     {
         parent::__construct($environment);
@@ -38,16 +34,6 @@ class cs_file_item extends cs_item
         }
 
         return $context_id;
-    }
-
-    public function setPortalID($value)
-    {
-        $this->_portal_id = (int)$value;
-    }
-
-    public function getPortalID()
-    {
-        return $this->_portal_id;
     }
 
     public function setPostFile($post_data)
@@ -101,6 +87,16 @@ class cs_file_item extends cs_item
     public function getFilePath()
     {
         return $this->_getValue('filepath');
+    }
+
+    public function setPortalId(int $portalId)
+    {
+        $this->_setValue('portal_id', $portalId);
+    }
+
+    public function getPortalId(): int
+    {
+        return (int) $this->_getValue('portal_id');
     }
 
     public function getDisplayName()
@@ -168,21 +164,11 @@ class cs_file_item extends cs_item
 
     public function getDiskFileName(): string
     {
-        // the files context id is the containing room
-        $roomId = $this->getContextID();
+        /** @var ContainerInterface $symfonyContainer */
+        global $symfonyContainer;
+        $projectDir = $symfonyContainer->getParameter('kernel.project_dir');
 
-        $roomManager = $this->_environment->getRoomManager();
-        $parentRoom = $roomManager->getItem($roomId);
-        if (!$parentRoom) {
-            $privateRoomManager = $this->_environment->getPrivateRoomManager();
-            $parentRoom = $privateRoomManager->getItem($roomId);
-        }
-
-        // the room context is either the portal or (unfortunately) in case of a user room the parent project room
-        $contextId = $parentRoom->getContextID();
-
-        $discManager = $this->_environment->getDiscManager();
-        return $discManager->getAbsoluteFilePath($contextId, $roomId, $this->getDiskFileNameWithoutFolder());
+        return $projectDir . '/' . $this->getFilePath();
     }
 
     public function getDiskFileNameWithoutFolder(): string

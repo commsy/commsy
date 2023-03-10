@@ -13,13 +13,24 @@
 
 namespace App\Utils;
 
+use App\Entity\Files;
 use App\Services\LegacyEnvironment;
 use cs_file_item;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class FileService
 {
-    public function __construct(private LegacyEnvironment $legacyEnvironment)
+    public function __construct(
+        private LegacyEnvironment $legacyEnvironment,
+        private ParameterBagInterface $parameterBag
+    ) {
+    }
+
+    public function makeAbsolute(Files $file): string
     {
+        $projectDir = $this->parameterBag->get('kernel.project_dir');
+
+        return $projectDir . '/' . $file->getFilepath();
     }
 
     public function getFile($fileId): ?cs_file_item
