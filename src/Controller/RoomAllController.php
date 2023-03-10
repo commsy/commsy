@@ -19,7 +19,6 @@ use App\Services\LegacyMarkup;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
-use cs_environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -53,8 +52,6 @@ class RoomAllController extends AbstractController
 
         $currentUser = $legacyEnvironment->getCurrentUser();
 
-        $infoArray = $this->getDetailInfo($roomItem, $itemService, $legacyEnvironment);
-
         $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
 
         $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
@@ -63,44 +60,9 @@ class RoomAllController extends AbstractController
         return $this->render('room_all/detail.html.twig', [
             'item' => $roomItem,
             'currentUser' => $currentUser,
-            'modifierList' => $infoArray['modifierList'],
-            'userCount' => $infoArray['userCount'],
-            'readCount' => $infoArray['readCount'],
-            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'memberStatus' => $memberStatus,
             'contactModeratorItems' => $contactModeratorItems,
             'portalId' => $portal->getId(),
         ]);
-    }
-
-    private function getDetailInfo(
-        $room,
-        ItemService $itemService,
-        cs_environment $legacyEnvironment
-    ) {
-        $readerManager = $legacyEnvironment->getReaderManager();
-
-        $info = [];
-
-        // modifier
-        $info['modifierList'][$room->getItemId()] = $itemService->getAdditionalEditorsForItem($room);
-
-        // total user count
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $userList = $userManager->get();
-
-        $info['userCount'] = $userList->getCount();
-
-        // total and since modification reader count
-        $readerCount = 0;
-        $readSinceModificationCount = 0;
-
-        $info['readCount'] = $readerCount;
-        $info['readSinceModificationCount'] = $readSinceModificationCount;
-
-        return $info;
     }
 }
