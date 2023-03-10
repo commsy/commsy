@@ -74,6 +74,7 @@ class cs_file_manager extends cs_manager
         $saved = false;
         $current_user = $this->_environment->getCurrentUser();
         $query = 'INSERT INTO ' . $this->addDatabasePrefix($this->_db_table) . ' SET' .
+            ' portal_id="' . encode(AS_DB, $file_item->getPortalId()) . '",' .
             ' context_id="' . encode(AS_DB, $file_item->getContextID()) . '",' .
             ' creation_date="' . getCurrentDateTimeInMySQL() . '", ' .
             ' creator_id="' . encode(AS_DB, $current_user->getItemID()) . '", ' .
@@ -87,13 +88,19 @@ class cs_file_manager extends cs_manager
             if ($saved) {
                 $discManager = $this->_environment->getDiscManager();
                 $filePath = $discManager->getRelativeFilePath(
-                    $this->_environment->getCurrentPortalID(),
+                    $file_item->getPortalId(),
                     $file_item->getContextID(),
-                    $file_item->getFileName()
+                    $file_item->getDiskFileNameWithoutFolder()
                 );
 
+                $fileSize = filesize($discManager->getAbsoluteFilePath(
+                    $file_item->getPortalId(),
+                    $file_item->getContextID(),
+                    $file_item->getDiskFileNameWithoutFolder()
+                ));
+
                 $query = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET' .
-                    ' size="' . encode(AS_DB, filesize($file_item->getDiskFileName())) . '",' .
+                    ' size="' . encode(AS_DB, $fileSize) . '",' .
                     ' filepath="' . encode(AS_DB, $filePath) . '"' .
                     ' WHERE files_id="' . encode(AS_DB, $file_item->getFileID()) . '"';
                 $this->_db_connector->performQuery($query);
@@ -118,15 +125,14 @@ class cs_file_manager extends cs_manager
 
     public function _saveOnDisk($file_item)
     {
+        /** @var cs_file_item $file_item */
         $success = false;
         $tempname = $file_item->getTempName();
         if (!empty($tempname)) {
             $disc_manager = $this->_environment->getDiscManager();
             $disc_manager->setContextID($file_item->getContextID());
-            $portal_id = $file_item->getPortalID();
-            if (isset($portal_id) and !empty($portal_id)) {
-                $disc_manager->setPortalID($portal_id);
-            }
+            $disc_manager->setPortalID($file_item->getPortalId());
+
             // Currently, the file manager does not unlink a file here, because it is also used for copying files when copying material between rooms.
             $success = $disc_manager->copyFile($tempname, $file_item->getDiskFileNameWithoutFolder(), false);
             if (!$success) {

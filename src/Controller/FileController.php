@@ -15,7 +15,7 @@ namespace App\Controller;
 
 use App\Entity\Portal;
 use App\Entity\Server;
-use App\Services\LegacyEnvironment;
+use App\Repository\FilesRepository;
 use App\Utils\FileService;
 use App\Utils\RoomService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,17 +40,21 @@ class FileController extends AbstractController
     public function getFile(
         Request $request,
         FileService $fileService,
-        LegacyEnvironment $legacyEnvironment,
+        FilesRepository $filesRepository,
         int $fileId,
         string $disposition = 'attachment'
     ): Response {
-        $file = $fileService->getFile($fileId);
-
-        if (!file_exists($file->getDiskFileName())) {
+        $file = $filesRepository->findOneBy(['filesId' => $fileId]);
+        if (!$file) {
             throw $this->createNotFoundException('The requested file does not exist');
         }
 
-        $response = new BinaryFileResponse($file->getDiskFileName());
+        $absolutePath = $fileService->makeAbsolute($file);
+        if (!file_exists($absolutePath)) {
+            throw $this->createNotFoundException('The requested file does not exist');
+        }
+
+        $response = new BinaryFileResponse($absolutePath);
 
         $fileName = $file->getFileName();
 
