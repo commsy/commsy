@@ -55,7 +55,7 @@ class TermsOfUseSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // Return early if this is not a GET request are it is an XHR request
+        // Return early if this is not a GET request or an XHR request
         if ('GET' !== $event->getRequest()->getMethod() || $event->getRequest()->isXmlHttpRequest()) {
             return;
         }
