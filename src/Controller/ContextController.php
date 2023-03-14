@@ -59,7 +59,7 @@ class ContextController extends AbstractController
         GroupService $groupService,
         int $roomId,
         int $itemId
-    ): array|Response {
+    ): Response {
         $legacyEnvironment = $environment->getEnvironment();
 
         $currentUserItem = $legacyEnvironment->getCurrentUserItem();
