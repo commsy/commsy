@@ -34,15 +34,10 @@ class ContextRequestType extends AbstractType
                             'value' => $options['checkNewMembersWithCode'],
                             'message' => 'Your access code is invalid.',
                         ]),
-                        new Constraints\NotBlank([
-                            'message' => 'Please enter an access code.',
-                        ]),
                     ],
                     'label' => 'Code',
-                    'attr' => [
-                    ],
                     'translation_domain' => 'room',
-                    'required' => true,
+                    'required' => false,
                 ])
                 ->add('coderequest', SubmitType::class, [
                     'attr' => [
