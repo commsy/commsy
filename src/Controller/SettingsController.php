@@ -16,7 +16,6 @@ namespace App\Controller;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
-use App\Entity\Terms;
 use App\Event\RoomSettingsChangedEvent;
 use App\Form\DataTransformer\AdditionalSettingsTransformer;
 use App\Form\DataTransformer\AppearanceSettingsTransformer;
@@ -36,6 +35,7 @@ use App\Mail\Factories\InvitationMessageFactory;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
+use App\Repository\TermsRepository;
 use App\Services\InvitationsService;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
@@ -46,13 +46,11 @@ use cs_room_item;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sylius\Bundle\ThemeBundle\Repository\ThemeRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -61,14 +59,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Security("is_granted('ITEM_ENTER', roomId)")]
 class SettingsController extends AbstractController
 {
-    private ParameterBagInterface $params;
-
-    #[Required]
-    public function setParameterBag(ParameterBagInterface $params)
-    {
-        $this->params = $params;
-    }
-
     #[Route(path: '/room/{roomId}/settings/general')]
     #[Security("is_granted('MODERATOR')")]
     public function generalAction(
@@ -178,6 +168,7 @@ class SettingsController extends AbstractController
         AdditionalSettingsTransformer $transformer,
         EventDispatcherInterface $eventDispatcher,
         LegacyEnvironment $legacyEnvironment,
+        TermsRepository $termsRepository,
         int $roomId
     ): Response {
         $portalItem = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
@@ -189,7 +180,6 @@ class SettingsController extends AbstractController
             throw $this->createNotFoundException('No room found for id '.$roomId);
         }
 
-        $termsRepository = $this->getDoctrine()->getRepository(Terms::class);
         $availableTerms = $termsRepository->findByContextId($portalId);
         $portalTerms = ['' => false];
         foreach ($availableTerms as $availableTerm) {
@@ -199,7 +189,6 @@ class SettingsController extends AbstractController
         $roomData = $transformer->transform($roomItem);
 
         if ($selectedTerms = $request->get('terms')) {
-            $termsRepository = $this->getDoctrine()->getRepository(Terms::class);
             $currentTerms = $termsRepository->findOneById($selectedTerms);
 
             $roomData['terms']['agb_text_de'] = $currentTerms->getContentDe();
@@ -251,7 +240,8 @@ class SettingsController extends AbstractController
         /**
          * If a specific theme is forced, we do not show any selection at all.
          */
-        $forceTheme = $this->params->get('commsy.force_theme');
+
+        $forceTheme = $this->getParameter('commsy.force_theme');
         $themeArray = !empty($forceTheme) ? null : $themeRepository->findAll();
 
         $form = $this->createForm(AppearanceSettingsType::class, $roomData, [

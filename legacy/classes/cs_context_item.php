@@ -16,34 +16,25 @@
  */
 class cs_context_item extends cs_item
 {
-    public $_default_colors = [];
+    public array $_default_colors = [];
 
-    public $_colors = [];
-
-    /**
-     * @var cs_list list of moderators
-     */
     private cs_list $moderator_list;
 
-    /**
-     * a list of the users.
-     */
-    private $_user_list = null;
+    private cs_list $userList;
 
-    public $_default_rubrics_array = [];
-    public $_plugin_rubrics_array = [];
+    public array $_default_rubrics_array = [];
 
     protected array $defaultHomeConf = [];
 
-    public $_current_rubrics_array = [];
+    public array $_current_rubrics_array = [];
 
-    public $_current_home_conf_array = [];
+    public array $_current_home_conf_array = [];
 
-    public $_rubric_support = [];
+    public array $_rubric_support = [];
 
-    public $_cache_may_enter = [];
+    public array $_cache_may_enter = [];
 
-    public $_count_items = null;
+    private ?int $countItems = null;
 
     /** constructor: cs_context_item
      * the only available constructor, initial values for internal variables.
@@ -89,6 +80,7 @@ class cs_context_item extends cs_item
         $colors['page_title'] = '#000000';
 
         $this->_default_colors = $colors;
+        $this->userList = new cs_list();
     }
 
     public function isOpenForGuests()
@@ -661,9 +653,7 @@ class cs_context_item extends cs_item
                 $retour = true;
             }
         }
-        // else {
-        //  $retour = true;
-        // }
+
         return $retour;
     }
 
@@ -1265,31 +1255,6 @@ class cs_context_item extends cs_item
         $this->_addExtra('LOGOFILENAME', (string) $value);
     }
 
-    /** get context of room.
-     *
-     * @return string
-     */
-    public function getRoomContext()
-    {
-        $retour = '';
-        if ($this->_issetExtra('ROOM_CONTEXT')) {
-            $retour = $this->_getExtra('ROOM_CONTEXT');
-        } else {
-            $retour = 'uni'; // not university
-        }
-
-        return $retour;
-    }
-
-    /** set context of room.
-     *
-     * @param string
-     */
-    public function setRoomContext($value)
-    {
-        $this->_addExtra('ROOM_CONTEXT', (string) $value);
-    }
-
     // ##################################################
     // email text translation methods
     // ##################################################
@@ -1364,7 +1329,6 @@ class cs_context_item extends cs_item
      */
     public function _getRubricArray($rubric)
     {
-        $commsy_context = $this->getRoomContext();
         $retour = [];
         if ($this->_issetExtra('RUBRIC_TRANSLATION_ARRAY')) {
             $rubric_translation_array = $this->_getExtra('RUBRIC_TRANSLATION_ARRAY');
@@ -1575,8 +1539,6 @@ class cs_context_item extends cs_item
     public function getHomeConf()
     {
         $retour = $this->_issetExtra('HOMECONF') ? $this->_getExtra('HOMECONF') : '';
-        $retour = $this->_changeContactInUser($retour);
-        $retour = $this->_disablePlugins($retour);
 
         if (empty($retour)) {
             $retour = $this->getDefaultHomeConf();
@@ -1584,57 +1546,6 @@ class cs_context_item extends cs_item
         }
 
         return $retour;
-    }
-
-    public function _disablePlugins($home_conf)
-    {
-        $home_conf_array = explode(',', $home_conf);
-        $current_portal_item = $this->_environment->getCurrentPortalItem();
-        if (!empty($current_portal_item)) {
-            global $c_plugin_array;
-            $unset_key_array = [];
-            foreach ($home_conf_array as $key => $rubric_conf) {
-                $plugin = substr($rubric_conf, 0, strpos($rubric_conf, '_'));
-                if (in_array($plugin, $this->_plugin_rubrics_array)) {
-                    if (!in_array($plugin, $c_plugin_array)
-                            or !$current_portal_item->isPluginOn($plugin)
-                    ) {
-                        $unset_key_array[] = $key;
-                    }
-                }
-            }
-            if (!empty($unset_key_array)) {
-                foreach ($unset_key_array as $key) {
-                    unset($home_conf_array[$key]);
-                }
-                $home_conf = implode(',', $home_conf_array);
-            }
-        }
-
-        return $home_conf;
-    }
-
-    public function _changeContactInUser($rubricsString)
-    {
-        $change_needed = false;
-        if (mb_stristr($rubricsString, 'contact_tiny')) {
-            $rubricsString = str_replace('contact_tiny', 'user_tiny', $rubricsString);
-            $change_needed = true;
-        }
-        if (mb_stristr($rubricsString, 'contact_short')) {
-            $rubricsString = str_replace('contact_short', 'user_short', $rubricsString);
-            $change_needed = true;
-        }
-        if (mb_stristr($rubricsString, 'contact_none')) {
-            $rubricsString = str_replace('contact_none', 'user_none', $rubricsString);
-            $change_needed = true;
-        }
-        if ($change_needed) {
-            $this->setHomeConf($rubricsString);
-            $this->save();
-        }
-
-        return $rubricsString;
     }
 
     /**
@@ -1660,168 +1571,23 @@ class cs_context_item extends cs_item
      * set home conf
      * this method sets the home conf.
      *
-     * @param string $value home conf
+     * @param string $config home conf
      */
-    public function setHomeConf(string $value)
+    public function setHomeConf(string $config)
     {
-        $this->_addExtra('HOMECONF', $value);
-    }
+        // validate
+        $rubrics = explode(',', $config);
+        $filtered = array_filter($rubrics, function ($rubric) {
+            [$rubricType, $rubricConf] = explode('_', $rubric);
+            return isset($this->defaultHomeConf[$rubricType]) && in_array($rubricConf, ['show', 'hide']);
+        });
 
-    // #########################################
-    // plugin configuration
-    // ############# BEGIN #####################
-
-    /** get part of the plugin config array, INTERNAL.
-     *
-     * @param string part: identifier of the plugin
-     *                     whole for the whole array
-     *
-     * @return int 1 = true / -1 = false
-     */
-    public function _getPluginConfig($identifier)
-    {
-        if ('whole' == $identifier) {
-            $retour = [];
-        } else {
-            $retour = '';
-        }
-        if ($this->_issetExtra('PLUGIN_CONFIG')) {
-            $plugin_config_array = $this->_getExtra('PLUGIN_CONFIG');
-            if ('whole' == $identifier) {
-                $retour = $plugin_config_array;
-            } elseif (isset($plugin_config_array[mb_strtoupper($identifier, 'UTF-8')])) {
-                $retour = $plugin_config_array[mb_strtoupper($identifier, 'UTF-8')];
-            }
+        if (count($rubrics) != count($filtered)) {
+            throw new LogicException('Invalid rubric configuration');
         }
 
-        return $retour;
+        $this->_addExtra('HOMECONF', $config);
     }
-
-    /** set part of the plugin config array, INTERNAL.
-     *
-     * @param string part: identifier of the plugin
-     *                     whole for the whole array
-     * @param array
-     */
-    public function _setPluginConfig($identifier, $value)
-    {
-        if ('whole' == $identifier) {
-            $this->_addExtra('PLUGIN_CONFIG', $value);
-        } else {
-            $plugin_config_array = $this->_getPluginConfig('whole');
-            $plugin_config_array[mb_strtoupper($identifier, 'UTF-8')] = (int) $value;
-            $this->_setPluginConfig('whole', $plugin_config_array);
-        }
-    }
-
-    public function getPluginConfig()
-    {
-        return $this->_getPluginConfig('whole');
-    }
-
-    public function setPluginConfig($value)
-    {
-        $this->_setPluginConfig('whole', $value);
-    }
-
-    /** is Plugin on / active.
-     *
-     * @param string identifier of the plugin
-     *
-     * @return bool true or false
-     */
-    public function isPluginOn($identifier)
-    {
-        $retour = false;
-        if (is_object($identifier)) {
-            $identifier = $identifier->getIdentifier();
-        }
-        $plugin_config = $this->_getPluginConfig($identifier);
-        if (1 == $plugin_config) {
-            $retour = true;
-            global $c_plugin_array;
-            if (!in_array($identifier, $c_plugin_array)) {
-                $retour = false;
-            }
-        }
-
-        return $retour;
-    }
-
-    /** set Plugin on.
-     *
-     * @param string identifier of the plugin
-     */
-    public function setPluginOn($identifier)
-    {
-        $this->_setPluginConfig($identifier, 1);
-    }
-
-    /** set Plugin off.
-     *
-     * @param string identifier of the plugin
-     */
-    public function setPluginOff($identifier)
-    {
-        $this->_setPluginConfig($identifier, -1);
-    }
-
-    /** get part of the plugin config array, INTERNAL.
-     *
-     * @param string type: PLUGIN for the plugin
-     *                     whole for the whole array
-     *
-     * @return string the configuration
-     */
-    public function getPluginConfigForPlugin($type)
-    {
-        if ('whole' == $type) {
-            $retour = [];
-        } else {
-            $retour = '';
-        }
-        if ($this->_issetExtra('PLUGIN_CONFIG_DATA')) {
-            $config_array = $this->_getExtra('PLUGIN_CONFIG_DATA');
-            if ('whole' == $type) {
-                $retour = $config_array;
-            } elseif (isset($config_array[mb_strtoupper($type, 'UTF-8')])) {
-                $retour = $config_array[mb_strtoupper($type, 'UTF-8')];
-            }
-        }
-
-        return $retour;
-    }
-
-    /** set part of the plugin config array, INTERNAL.
-     *
-     * @param string part: PLUGIN for the plugin
-     *                     whole for the whole array
-     * @param array or string value the configuration
-     */
-    public function setPluginConfigForPlugin($type, $value)
-    {
-        if ('whole' == $type) {
-            $this->_addExtra('PLUGIN_CONFIG_DATA', $value);
-        } else {
-            $config_array = $this->getPluginConfigForPlugin('whole');
-            $config_array[mb_strtoupper($type, 'UTF-8')] = $value;
-            $this->setPluginConfigForPlugin('whole', $config_array);
-        }
-    }
-
-    public function getPluginConfigData()
-    {
-        return $this->getPluginConfigForPlugin('whole');
-    }
-
-    public function setPluginConfigData($value)
-    {
-        $this->setPluginConfigForPlugin('whole', $value);
-    }
-
-    // ############## END ######################
-    // plugin configuration
-    // #########################################
 
     // #########################################
     // extras (add-ons) configuration
@@ -2237,13 +2003,11 @@ class cs_context_item extends cs_item
 
     public function getInformationBoxEntryID()
     {
-        $translator = $this->_environment->getTranslationObject();
-        $retour = '';
         if ($this->_issetExtra('INFORMATIONBOXENTRYID')) {
-            $retour = $this->_getExtra('INFORMATIONBOXENTRYID');
+            return $this->_getExtra('INFORMATIONBOXENTRYID');
         }
 
-        return $retour;
+        return '';
     }
 
     public function setInformationBoxEntryID($value)
@@ -2383,14 +2147,7 @@ class cs_context_item extends cs_item
             $current_room_modules = $this->getHomeConf();
             // rubric is mentioned? if not -> false
             if (!empty($rubric_type) and mb_stristr($current_room_modules, $rubric_type)) {
-                // for <rubric>_none, _rubric_support[<rubric>] previously was set to false; however,
-                // it now contains true since rubrics with <rubric>_none are activated in CS9 (while
-                // they were deactivated in CS8)
-                if ($this->isExtraRubric($rubric_type) and !$this->showExtraRubric($rubric_type)) {
-                    $this->_rubric_support[$rubric_type] = false;
-                } else {
-                    $this->_rubric_support[$rubric_type] = true;
-                }
+                $this->_rubric_support[$rubric_type] = true;
             } else {
                 $this->_rubric_support[$rubric_type] = false;
             }
@@ -2420,96 +2177,28 @@ class cs_context_item extends cs_item
         return $this->_current_rubrics_array;
     }
 
-    public function getAvailableDefaultRubricArray()
+    public function getAvailableDefaultRubricArray(): array
     {
-        $retour = [];
-        $temp = $this->_default_rubrics_array;
-        if ($this->isPrivateRoom()) {
-            unset($temp[4]);
-        }
-        foreach ($temp as $rubric) {
-            if ('contact' == $rubric) {
-                $rubric = 'user';
-            }
-            if (!$this->isExtraRubric($rubric)) {
-                $retour[] = $rubric;
-            } elseif ($this->isExtraRubric($rubric) and $this->showExtraRubric($rubric)) {
-                $retour[] = $rubric;
-            }
-        }
-
-        return $retour;
+        return $this->_default_rubrics_array;
     }
 
-    /**
-     * turn rubrics on or off unsing the defined
-     * keyword for rubrics.
-     */
-    public function withExtraRubric($rubric)
-    {
-        $retour = false;
-        $value = $this->_getExtraConfig($rubric);
-        if (1 == $value) {
-            $retour = true;
-        }
-
-        return $retour;
-    }
-
-    public function isExtraRubric($rubric): bool
-    {
-        return false;
-    }
-
-    public function showExtraRubric($rubric)
-    {
-        $retour = false;
-
-        // check leave
-        if (in_array($rubric, $this->_default_rubrics_array)) {
-            $value = $this->_getExtraConfig($rubric);
-            if (1 == $value) {
-                $retour = true;
-            }
-            // check if there is a parent node
-            if (!$retour and ($this->isProjectRoom() or $this->isCommunityRoom())) {
-                $context = $this->getContextItem();
-                $retour = $context->withExtraRubric($rubric);
-            }
-        }
-
-        return $retour;
-    }
-
-    public function setWithExtraRubric($rubric)
-    {
-        $this->_setExtraConfig($rubric, 1);
-    }
-
-    public function setWithoutExtraRubric($rubric)
-    {
-        $this->_setExtraConfig($rubric, 0);
-    }
-
-     public function isRSSOn()
+     public function isRSSOn(): bool
      {
-         $retour = true;
          $value = $this->getRSSStatus();
-         if (!empty($value) and -1 == $value) {
-             $retour = false;
+         if (!empty($value) && -1 == $value) {
+             return false;
          }
 
-         return $retour;
+         return true;
      }
 
      public function getRSSStatus()
      {
-         $retour = '';
          if ($this->_issetExtra('RSS_STATUS')) {
-             $retour = $this->_getExtra('RSS_STATUS');
+             return $this->_getExtra('RSS_STATUS');
          }
 
-         return $retour;
+         return '';
      }
 
      public function _setRSSStatus($value)
@@ -2552,474 +2241,6 @@ class cs_context_item extends cs_item
         }
 
         return $retour;
-    }
-
-    public function setWithAds()
-    {
-        $this->_setExtraConfig('ADS', 1);
-    }
-
-    public function setWithoutAds()
-    {
-        $this->_setExtraConfig('ADS', 0);
-    }
-
-    /** show ads ?
-     * can be switched at room configuration.
-     *
-     * true = show ads
-     * false = not show ads, default
-     *
-     * @return bool
-     */
-    public function showAds()
-    {
-        $retour = false;
-        if ($this->_issetExtra('SHOWADS')) {
-            $showads = $this->_getExtra('SHOWADS');
-            if (1 == $showads) {
-                $retour = true;
-                if (!$this->isServer()) {
-                    $retour = $retour and $this->withAds();
-                }
-            }
-        }
-
-        return $retour;
-    }
-
-    /** set show ads, INTERNAL.
-     *
-     * @param int show ads: -1 = not
-     *                           1 = yes
-     */
-    public function _setShowAds($value)
-    {
-        $this->_addExtra('SHOWADS', (int) $value);
-    }
-
-    /** set show ads.
-     */
-    public function setShowAds()
-    {
-        $this->_setShowAds(1);
-    }
-
-    /** set not show ads.
-     */
-    public function setNotShowAds()
-    {
-        $this->_setShowAds(-1);
-    }
-
-    /** set show ads, INTERNAL.
-     *
-     * @param int show ads: -1 = not
-     *                           1 = yes
-     */
-    public function _setShowGoogleAds($value)
-    {
-        $this->_addExtra('SHOWGOOGLEADS', (int) $value);
-    }
-
-    /** set show ads.
-     */
-    public function setShowGoogleAds()
-    {
-        $this->_setShowGoogleAds(1);
-    }
-
-    /** set not show ads.
-     */
-    public function setNotShowGoogleAds()
-    {
-        $this->_setShowGoogleAds(-1);
-    }
-
-    /** show Google ads ?
-     * can be switched at room configuration.
-     *
-     * true = show Google ads
-     * false = not show Google ads, default
-     *
-     * @return bool
-     */
-    public function showGoogleAds()
-    {
-        $retour = false;
-        if ($this->_issetExtra('SHOWGOOGLEADS')) {
-            $showgoogleads = $this->_getExtra('SHOWGOOGLEADS');
-            if (1 == $showgoogleads) {
-                $retour = true;
-                if (!$this->isServer()) {
-                    $retour = $retour and $this->withAds();
-                }
-            }
-        }
-
-        return $retour;
-    }
-
-    /** set show ads, INTERNAL.
-     *
-     * @param int show ads: -1 = not
-     *                           1 = yes
-     */
-    public function _setShowAmazonAds($value)
-    {
-        $this->_addExtra('SHOWAMAZONADS', (int) $value);
-    }
-
-    /** set show ads.
-     */
-    public function setShowAmazonAds()
-    {
-        $this->_setShowAmazonAds(1);
-    }
-
-    /** set not show ads.
-     */
-    public function setNotShowAmazonAds()
-    {
-        $this->_setShowAmazonAds(-1);
-    }
-
-    /** show Amazon ads ?
-     * can be switched at room configuration.
-     *
-     * true = show Amazon ads
-     * false = not show Amazon ads, default
-     *
-     * @return bool
-     */
-    public function showAmazonAds()
-    {
-        $retour = false;
-        if ($this->_issetExtra('SHOWAMAZONADS')) {
-            $showads = $this->_getExtra('SHOWAMAZONADS');
-            if (1 == $showads) {
-                $retour = true;
-                if (!$this->isServer()) {
-                    $retour = $retour and $this->withAds();
-                }
-            }
-        }
-
-        return $retour;
-    }
-
-    /** get part of sponsor array, INTERNAL.
-     *
-     * @param string part: main for main sponsors
-     *                     normal for normal sponsors
-     *                     little for little sponsors
-     *                     whole for the whole array
-     *
-     * @return array
-     */
-    public function _getSponsorArray($part)
-    {
-        $retour = [];
-        if ($this->_issetExtra('SPONSORS')) {
-            $sponsor_array = $this->_getExtra('SPONSORS');
-            if ('whole' == $part) {
-                $retour = $sponsor_array;
-            } elseif (isset($sponsor_array[$part])) {
-                $retour = $sponsor_array[$part];
-            }
-        }
-
-        return $retour;
-    }
-
-    /** get main sponsor array.
-     *
-     * @return array main sponsors
-     */
-    public function getMainSponsorArray()
-    {
-        return $this->_getSponsorArray('MAIN');
-    }
-
-    /** get normal sponsor array.
-     *
-     * @return array normal sponsors
-     */
-    public function getNormalSponsorArray()
-    {
-        return $this->_getSponsorArray('NORMAL');
-    }
-
-    /** get little sponsor array.
-     *
-     * @return array little sponsors
-     */
-    public function getLittleSponsorArray()
-    {
-        return $this->_getSponsorArray('LITTLE');
-    }
-
-    /** get whole sponsor array.
-     *
-     * @return array whole sponsors
-     */
-    public function getWholeSponsorArray()
-    {
-        return $this->_getSponsorArray('whole');
-    }
-
-    /** set part of sponsor array, INTERNAL.
-     *
-     * @param string part: main for main sponsors
-     *                     normal for normal sponsors
-     *                     little for little sponsors
-     *                     whole for the whole array
-     * @param array
-     */
-    public function _setSponsorArray($part, $array)
-    {
-        if ('whole' == $part) {
-            $this->_addExtra('SPONSORS', $array);
-        } else {
-            $sponsor_array = $this->getWholeSponsorArray();
-            $sponsor_array[$part] = $array;
-            $this->setWholeSponsorArray($sponsor_array);
-        }
-    }
-
-    /** set main sponsor array.
-     *
-     * @param array main sponsors
-     */
-    public function setMainSponsorArray($array)
-    {
-        $this->_setSponsorArray('MAIN', $array);
-    }
-
-    /** set normal sponsor array.
-     *
-     * @param array normal sponsors
-     */
-    public function setNormalSponsorArray($array)
-    {
-        $this->_setSponsorArray('NORMAL', $array);
-    }
-
-    /** set little sponsor array.
-     *
-     * @param array little sponsors
-     */
-    public function setLittleSponsorArray($array)
-    {
-        $this->_setSponsorArray('LITTLE', $array);
-    }
-
-    /** set whole sponsor array.
-     *
-     * @param array whole sponsors
-     */
-    public function setWholeSponsorArray($array)
-    {
-        $this->_setSponsorArray('whole', $array);
-    }
-
-    /** answer to question: has this room main sponsors?
-     *
-     * @return bool
-     */
-    public function hasMainSponsors()
-    {
-        $retour = false;
-        $sponsor_array = $this->getMainSponsorArray();
-        if (!empty($sponsor_array)) {
-            $retour = true;
-        }
-
-        return $retour;
-    }
-
-    /** answer to question: has this room normal sponsors?
-     *
-     * @return bool
-     */
-    public function hasNormalSponsors()
-    {
-        $retour = false;
-        $sponsor_array = $this->getNormalSponsorArray();
-        if (!empty($sponsor_array)) {
-            $retour = true;
-        }
-
-        return $retour;
-    }
-
-    /** answer to question: has this room little sponsors?
-     *
-     * @return bool
-     */
-    public function hasLittleSponsors()
-    {
-        $retour = false;
-        $sponsor_array = $this->getLittleSponsorArray();
-        if (!empty($sponsor_array)) {
-            $retour = true;
-        }
-
-        return $retour;
-    }
-
-    /** count main sponsors of this room.
-     *
-     * @return int number of main sponsors
-     */
-    public function getCountMainSponsors()
-    {
-        $retour = 0;
-        if ($this->hasMainSponsors()) {
-            $array = $this->getMainSponsorArray();
-            $retour = count($array);
-        }
-
-        return $retour;
-    }
-
-    /** count normal sponsors of this room.
-     *
-     * @return int number of normal sponsors
-     */
-    public function getCountNormalSponsors()
-    {
-        $retour = 0;
-        if ($this->hasNormalSponsors()) {
-            $array = $this->getNormalSponsorArray();
-            $retour = count($array);
-        }
-
-        return $retour;
-    }
-
-    /** count little sponsors of this room.
-     *
-     * @return int number of little sponsors
-     */
-    public function getCountLittleSponsors()
-    {
-        $retour = 0;
-        if ($this->hasLittleSponsors()) {
-            $array = $this->getLittleSponsorArray();
-            $retour = count($array);
-        }
-
-        return $retour;
-    }
-
-    /** set title for sponsors, INTERNAL, do not use.
-     *
-     * @param string part [MAIN|NORMAL|LITTLE]
-     * @param string value title of sponsors
-     */
-    public function _setSponsorTitle($part, $value)
-    {
-        if ('whole' == $part) {
-            $this->_addExtra('SPONSORTITLE', $value);
-        } else {
-            $title_array = $this->getWholeSponsorTitle();
-            $title_array[$part] = $value;
-            $this->setWholeSponsorTitle($title_array);
-        }
-    }
-
-    /** set title of main sponsors.
-     *
-     * @param string value title of main sponsors
-     */
-    public function setMainSponsorTitle($value)
-    {
-        $this->_setSponsorTitle('MAIN', $value);
-    }
-
-    /** set title of normal sponsors.
-     *
-     * @param string value title of normal sponsors
-     */
-    public function setNormalSponsorTitle($value)
-    {
-        $this->_setSponsorTitle('NORMAL', $value);
-    }
-
-    /** set title of little sponsors.
-     *
-     * @param string value title of little sponsors
-     */
-    public function setLittleSponsorTitle($value)
-    {
-        $this->_setSponsorTitle('LITTLE', $value);
-    }
-
-    /** set title of main sponsors to extra field.
-     *
-     * @param array value array of titles
-     */
-    public function setWholeSponsorTitle($value)
-    {
-        $this->_setSponsorTitle('whole', $value);
-    }
-
-    /** get title for sponsors, INTERNAL, do not use.
-     *
-     * @param string part [MAIN|NORMAL|LITTLE|whole]
-     *
-     * @return string or array title of sponsors
-     */
-    public function _getSponsorTitle($part)
-    {
-        $retour = '';
-        if ($this->_issetExtra('SPONSORTITLE')) {
-            $title_array = $this->_getExtra('SPONSORTITLE');
-            if ('whole' == $part) {
-                $retour = $title_array;
-            } elseif (isset($title_array[$part])) {
-                $retour = $title_array[$part];
-            }
-        }
-
-        return $retour;
-    }
-
-    /** get title for main sponsors.
-     *
-     * @return string value title of main sponsors
-     */
-    public function getMainSponsorTitle()
-    {
-        return $this->_getSponsorTitle('MAIN');
-    }
-
-    /** get title for normal sponsors.
-     *
-     * @return string value title of normal sponsors
-     */
-    public function getNormalSponsorTitle()
-    {
-        return $this->_getSponsorTitle('NORMAL');
-    }
-
-    /** get title for little sponsors.
-     *
-     * @return string value title of little sponsors
-     */
-    public function getLittleSponsorTitle()
-    {
-        return $this->_getSponsorTitle('LITTLE');
-    }
-
-    /** get title array for sponsors.
-     *
-     * @return array title of sponsors
-     */
-    public function getWholeSponsorTitle()
-    {
-        return $this->_getSponsorTitle('whole');
     }
 
     // ############## BEGIN ####################
@@ -3357,46 +2578,33 @@ class cs_context_item extends cs_item
     /** get users of the context
      * this method returns a list of users of the context.
      *
-     * @return object cs_list a list of user (cs_user_item)
+     * @return cs_list a list of user (cs_user_item)
      */
-    public function getUserList()
+    public function getUserList(): cs_list
     {
-        if (empty($this->_user_list)) {
+        if ($this->userList->isEmpty()) {
             $userManager = $this->_environment->getUserManager();
             $userManager->resetLimits();
             $userManager->setContextLimit($this->getItemID());
             $userManager->setUserLimit();
             $userManager->select();
-            $this->_user_list = $userManager->get();
+            $this->userList = $userManager->get();
         }
 
-        return $this->_user_list;
+        return $this->userList;
     }
 
     public function resetUserList()
     {
         $userManager = $this->_environment->getUserManager();
         $userManager->setCacheOff();
-        unset($this->_user_list);
+        $this->userList->reset();
     }
 
     public function isUser($user)
     {
-        $retour = false;
         $user_manager = $this->_environment->getUserManager();
-        /* DB-Optimierung vom 23.10.2010 */
-        $retour = $user_manager->isUserInContext($user->getUserID(), $this->getItemID(), $user->getAuthSource());
-//    $user_manager->setContextLimit($this->getItemID());
-//    $user_manager->setUserIDLimit($user->getUserID());
-//    $user_manager->setAuthSourceLimit($user->getAuthSource());
-//    $user_manager->setUserLimit();
-//    $user_manager->select();
-//    $user_list = $user_manager->get();
-//    if ( $user_list->isNotEmpty() ) {
-//      $retour = true;
-//    }
-        /* DB-Optimierung vom 23.10.2010 */
-        return $retour;
+        return $user_manager->isUserInContext($user->getUserID(), $this->getItemID(), $user->getAuthSource());
     }
 
     public function getUserByUserID($user_id, $auth_source)
@@ -3456,15 +2664,13 @@ class cs_context_item extends cs_item
 
     public function getCountItems($start, $end)
     {
-        if (!isset($this->_count_items)) {
+        if (!isset($this->countItems)) {
             $manager = $this->_environment->getItemManager();
             $manager->resetLimits();
             $manager->setContextLimit($this->getItemID());
-            $this->_count_items = $manager->getCountItems($start, $end);
+            $this->countItems = (int) $manager->getCountItems($start, $end);
         }
-        $retour = $this->_count_items;
-
-        return $retour;
+        return $this->countItems;
     }
 
     public function getCountProjects($start, $end)
@@ -3609,7 +2815,6 @@ class cs_context_item extends cs_item
         } else {
             $timespread = $this->getTimeSpread();
         }
-        $new_entries = 0;
         $conf = $this->getHomeConf();
         $rubrics = [];
         if (!empty($conf)) {
@@ -3632,7 +2837,6 @@ class cs_context_item extends cs_item
         $item_manager = $this->_environment->getItemManager();
         $item_manager->setContextLimit($this->getItemID());
         $item_manager->setExistenceLimit($timespread);
-//      $item_manager->setAgeLimit(7);
         $item_manager->setInactiveEntriesLimit(\cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
         $item_manager->setTypeArrayLimit($check_managers);
         $item_manager->resetData();

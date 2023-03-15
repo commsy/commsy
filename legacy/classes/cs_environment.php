@@ -26,16 +26,19 @@ class cs_environment
      * array - containing the objects.
      */
     public array $instance = [];
+
     /**
      * cs_user_item - containing the current user.
      */
     public $current_user;
+
     public $_portal_user = null;
 
     /**
      * integer - id of current room.
      */
     public $current_context_id = 0;
+
     /**
      * cs_context_item - current room.
      */
@@ -54,6 +57,7 @@ class cs_environment
      * string - current module name.
      */
     public $current_module;
+
     /**
      * string - current function name.
      */
@@ -63,6 +67,7 @@ class cs_environment
      * string - current parameter of the page.
      */
     public $_current_parameter_string = null;
+
     public $_current_parameter_array = null;
 
     /**
@@ -71,7 +76,6 @@ class cs_environment
     public $_selected_language = '';
 
     public $_plugin_class_array = null;
-    public $_rubric_plugin_class_list = null;
 
     private ?db_mysql_connector $_db_mysql_connector = null;
     private bool $_cache_on = true;
@@ -712,14 +716,6 @@ class cs_environment
         return $this->_getInstance('cs_entry_manager');
     }
 
-    /**
-     * @deprecated
-     */
-    public function getSessionID()
-    {
-        throw new LogicException('Calling cs_environment::getSessionID is no longer supported');
-    }
-
     /** get instance of a class, INTERNAL
      * returns a single instance of a class. a reference to the returned object must
      * be assigned, otherwise a copy is created.
@@ -845,7 +841,7 @@ class cs_environment
                 return $this->getBuzzwordManager();
             } elseif (CS_ENTRY_TYPE == $type) {
                 return $this->getEntryManager();
-            } elseif (!$this->isPlugin($type)) {
+            } else {
                 trigger_error('do not know this type [' . $type . ']', E_USER_ERROR);
             }
         }
@@ -1153,89 +1149,6 @@ class cs_environment
 
         return $retour;
     }
-
-    // ###############################################################
-    // plugin: begin
-    // ###############################################################
-
-    public function getPluginClass($plugin)
-    {
-        $retour = null;
-        if (!is_array($plugin)) {
-            if (empty($this->_plugin_class_array[$plugin])) {
-                $plugin_class_name = 'class_' . $plugin;
-                $plugin_filename = 'plugins/' . $plugin . '/' . $plugin_class_name . '.php';
-                if (file_exists($plugin_filename)) {
-                    include_once $plugin_filename;
-                    $this->_plugin_class_array[$plugin] = new $plugin_class_name($this);
-                }
-            }
-            if (!empty($this->_plugin_class_array[$plugin])) {
-                $retour = $this->_plugin_class_array[$plugin];
-            }
-        }
-
-        return $retour;
-    }
-
-    public function getRubrikPluginClassList($cid = '')
-    {
-        $key = $cid;
-        if (empty($key)) {
-            $key = 'all';
-        }
-        $retour = '';
-        if (!empty($this->_rubric_plugin_class_list[$key])) {
-            $retour = $this->_rubric_plugin_class_list[$key];
-        }
-        if (empty($retour)) {
-            if (!empty($cid)) {
-                // only portal
-                $portal_manager = $this->getPortalManager();
-                $portal_item = $portal_manager->getItem($cid);
-            }
-            global $c_plugin_array;
-            $this->_rubric_plugin_class_list[$key] = new cs_list();
-            if (isset($c_plugin_array)
-                and !empty($c_plugin_array)
-            ) {
-                foreach ($c_plugin_array as $plugin) {
-                    $plugin_class = $this->getPluginClass($plugin);
-                    if (!empty($plugin_class)
-                        and method_exists($plugin_class, 'isRubricPlugin')
-                        and $plugin_class->isRubricPlugin()
-                        and (empty($cid)
-                            or (isset($portal_item)
-                                and $portal_item->isPluginOn($plugin)
-                            )
-                        )
-                    ) {
-                        $this->_rubric_plugin_class_list[$key]->add($plugin_class);
-                    }
-                }
-            }
-            $retour = $this->_rubric_plugin_class_list[$key];
-        }
-
-        return $retour;
-    }
-
-    public function isPlugin($value)
-    {
-        $retour = false;
-        global $c_plugin_array;
-        if (isset($c_plugin_array)
-            and !empty($c_plugin_array)
-        ) {
-            $retour = in_array(mb_strtolower($value, 'UTF-8'), $c_plugin_array);
-        }
-
-        return $retour;
-    }
-
-    // ###############################################################
-    // plugin: end
-    // ###############################################################
 
     public function getDBConnector(): db_mysql_connector
     {

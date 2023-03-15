@@ -708,15 +708,6 @@ class cs_server_item extends cs_guide_item
         $this->_addExtra('SCRIBD_SECRET', $value);
     }
 
-    public function isPluginActive($plugin)
-    {
-        $retour = false;
-        // if ( $this->isPluginOn($plugin) ) {
-        //   $retour = true;
-        // }
-        return $retour;
-    }
-
     // # commsy server connections: portal2portal
     public function getOwnConnectionKey()
     {

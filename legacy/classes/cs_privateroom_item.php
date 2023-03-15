@@ -19,7 +19,6 @@ class cs_privateroom_item extends cs_room_item
     private ?cs_user_item $ownerUserItem = null;
 
     public $_check_customized_room_id_array = false;
-    private $_home_conf_done = false;
 
     /**
      * Constructor.
@@ -38,35 +37,8 @@ class cs_privateroom_item extends cs_room_item
         $this->defaultHomeConf[CS_ENTRY_TYPE] = 'show';
     }
 
-    private function _addPluginInRubricArray()
-    {
-        if (!$this->_home_conf_done) {
-            $i = count($this->_default_rubrics_array) - 1;
-            $portal_id = $this->getContextID();
-            $plugin_list = $this->_environment->getRubrikPluginClassList($portal_id);
-            if (isset($plugin_list)
-                and $plugin_list->isNotEmpty()
-            ) {
-                $plugin = $plugin_list->getFirst();
-                while ($plugin) {
-                    if ($plugin->inPrivateRoom()
-                        and $this->isPluginOn($plugin)
-                    ) {
-                        ++$i;
-                        $this->_plugin_rubrics_array[] = $plugin->getIdentifier();
-                        $this->_default_rubrics_array[$i] = $plugin->getIdentifier();
-                        $this->defaultHomeConf[$plugin->getIdentifier()] = $plugin->getHomeStatusDefault();
-                    }
-                    $plugin = $plugin_list->getNext();
-                }
-            }
-            $this->_home_conf_done = true;
-        }
-    }
-
     public function getHomeConf()
     {
-        $this->_addPluginInRubricArray();
         $rubrics = parent::getHomeConf();
         $retour = [];
         foreach (explode(',', $rubrics) as $rubric) {
@@ -79,9 +51,7 @@ class cs_privateroom_item extends cs_room_item
                 }
             }
         }
-        $retour = implode(',', $retour);
-
-        return $retour;
+        return implode(',', $retour);
     }
 
     public function isPrivateRoom()
@@ -288,10 +258,6 @@ class cs_privateroom_item extends cs_room_item
     {
         $manager = $this->_environment->getPrivateRoomManager();
         $this->_undelete($manager);
-    }
-
-    public function setRoomContext($value)
-    {
     }
 
     /** is newsletter active ?

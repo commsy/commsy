@@ -230,7 +230,6 @@ class ProjectController extends AbstractController
                 $legacyRoom->setModificatorItem($currentUser);
                 $legacyRoom->setContextID($legacyEnvironment->getCurrentPortalID());
                 $legacyRoom->open();
-                $legacyRoom->setRoomContext($communityRoom->getRoomContext());
                 $legacyRoom->setCommunityListByID([$roomId]);
 
                 // fill in form values from the new entity object

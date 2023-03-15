@@ -1392,8 +1392,6 @@ class cs_user_item extends cs_item
         // $this->_saveFiles();     // this must be done before saveFileLinks
         // $this->_saveFileLinks(); // this must be done after saving so we can be sure to have an item id
 
-        plugin_hook('user_save', $this);
-
         // ContactPersonString
         $context_item = $this->getContextItem();
         // get grouproom
