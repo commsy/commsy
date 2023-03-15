@@ -178,8 +178,6 @@ class RoomManager
 
         $this->calendarsService->createCalendar($newRoom, null, null, true);
 
-        // TODO: setRoomContext?
-
         if ($roomTemplate) {
             $newRoom = $this->copySettings($roomTemplate, $newRoom);
         }

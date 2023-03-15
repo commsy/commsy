@@ -948,19 +948,6 @@ class cs_room_item extends cs_context_item
         return $retour;
     }
 
-    public function isPluginActive($plugin)
-    {
-        $retour = false;
-        if ($this->isPluginOn($plugin)) {
-            $portal_item = $this->_environment->getCurrentPortalItem();
-            if ($portal_item->isPluginActive($plugin)) {
-                $retour = true;
-            }
-        }
-
-        return $retour;
-    }
-
     /** det description array.
      *
      * @return array description text in different languages

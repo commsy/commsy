@@ -43,11 +43,9 @@ class LegacyCopy implements CopyStrategy
     public function copySettings(cs_room_item $source, cs_room_item $target): void
     {
         $copy_array = [];
-        $copy_array['context'] = true;
         $copy_array['homeconf'] = true;
         $copy_array['timespread'] = true;
         $copy_array['extras'] = true;
-        $copy_array['plugins'] = true;
         $copy_array['color'] = true;
         $copy_array['todostatus'] = true;
         $copy_array['usageinfo'] = true;
@@ -83,7 +81,6 @@ class LegacyCopy implements CopyStrategy
         if ($source->isPrivateRoom()) {
             $copy_array['homeconf'] = false;
             $copy_array['timespread'] = false;
-            $copy_array['plugins'] = false;
             $copy_array['color'] = false;
             $copy_array['usageinfo'] = false;
             $copy_array['datespresentationstatus'] = false;
@@ -93,11 +90,6 @@ class LegacyCopy implements CopyStrategy
             $copy_array['logo'] = false;
             $copy_array['informationbox'] = false;
             $copy_array['myentrydisplayconf'] = true;
-        }
-
-        // room context
-        if ($copy_array['context']) {
-            $target->setRoomContext($source->getRoomContext());
         }
 
         // config of home
@@ -119,11 +111,6 @@ class LegacyCopy implements CopyStrategy
             $extra_config = $source->getExtraConfig();
             unset($extra_config['TEMPLATE']);
             $target->setExtraConfig($extra_config);
-        }
-
-        // config of plugins
-        if ($copy_array['plugins']) {
-            $target->setPluginConfig($source->getPluginConfig());
         }
 
         // config of colors

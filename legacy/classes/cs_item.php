@@ -2561,67 +2561,6 @@ class cs_item
         return false;
     }
 
-    // #########################################
-    // plugin configuration
-    // ############ START ######################
-
-    /** get part of the plugin config array, INTERNAL.
-     *
-     * @param string type: PLUGIN for the plugin
-     *                     whole for the whole array
-     *
-     * @return string the configuration
-     */
-    public function getPluginConfigForPlugin($type)
-    {
-        if ('whole' == $type) {
-            $retour = [];
-        } else {
-            $retour = '';
-        }
-        if ($this->_issetExtra('PLUGIN_CONFIG_DATA')) {
-            $config_array = $this->_getExtra('PLUGIN_CONFIG_DATA');
-            if ('whole' == $type) {
-                $retour = $config_array;
-            } elseif (isset($config_array[mb_strtoupper($type, 'UTF-8')])) {
-                $retour = $config_array[mb_strtoupper($type, 'UTF-8')];
-            }
-        }
-
-        return $retour;
-    }
-
-    /** set part of the plugin config array, INTERNAL.
-     *
-     * @param string part: PLUGIN for the plugin
-     *                     whole for the whole array
-     * @param array or string value the configuration
-     */
-    public function setPluginConfigForPlugin($type, $value)
-    {
-        if ('whole' == $type) {
-            $this->_addExtra('PLUGIN_CONFIG_DATA', $value);
-        } else {
-            $config_array = $this->getPluginConfigForPlugin('whole');
-            $config_array[mb_strtoupper($type, 'UTF-8')] = $value;
-            $this->setPluginConfigForPlugin('whole', $config_array);
-        }
-    }
-
-    public function getPluginConfigData()
-    {
-        return $this->getPluginConfigForPlugin('whole');
-    }
-
-    public function setPluginConfigData($value)
-    {
-        $this->setPluginConfigForPlugin('whole', $value);
-    }
-
-    // ############## END ######################
-    // plugin configuration
-    // #########################################
-
     /**
      * returns the locking date.
      *

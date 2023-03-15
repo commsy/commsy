@@ -112,27 +112,19 @@ class CronNewsletter implements CronTaskInterface
             }
 
             $roomList = new cs_list();
-            if (!$customizedRoomList->isEmpty()) {
-                $customizedRoomItem = $customizedRoomList->getFirst();
-                while ($customizedRoomItem) {
-                    if ($customizedRoomItem->isPrivateRoom()
-                        or !$customizedRoomItem->isShownInPrivateRoomHomeByItemID($id)
-                        or !$customizedRoomItem->isOpen()
-                        or $customizedRoomItem->getItemID() < 0
-                    ) {
-                        // do nothing
-                    } else {
-                        $roomList->add($customizedRoomItem);
-                    }
-
-                    $customizedRoomItem = $customizedRoomList->getNext();
+            foreach ($customizedRoomList as $customizedRoomItem) {
+                if (!$customizedRoomItem->isPrivateRoom()
+                    && $customizedRoomItem->isShownInPrivateRoomHomeByItemID($id)
+                    && $customizedRoomItem->isOpen()
+                    && $customizedRoomItem->getItemID() > 0
+                ) {
+                    $roomList->add($customizedRoomItem);
                 }
             }
 
             $translator->setRubricTranslationArray($privateRoom->getRubricTranslationArray());
 
-            $roomItem = $roomList->getFirst();
-            while ($roomItem) {
+            foreach ($roomList as $roomItem) {
                 $rubrics = [];
 
                 $conf = $roomItem->getHomeConf();
@@ -162,6 +154,7 @@ class CronNewsletter implements CronTaskInterface
                 } else {
                     $body_title .= '('.$count_total.'&nbsp;'.$translator->getMessage('ACTIVITY_PAGE_IMPRESSIONS').'; ';
                 }
+
                 $body_title .= $translator->getMessage('ACTIVITY_ACTIVE_MEMBERS').': ';
                 $body_title .= $active.'):'.BRLF;
                 $body2 = '';
@@ -169,11 +162,13 @@ class CronNewsletter implements CronTaskInterface
                 /** @var cs_annotations_manager $annotation_manager */
                 $annotation_manager = $this->legacyEnvironment->getManager('annotation');
                 $annotation_manager->setContextLimit($roomItem->getItemID());
+
                 if ('daily' == $mail_sequence) {
                     $annotation_manager->setAgeLimit(1);
                 } else {
                     $annotation_manager->setAgeLimit(7);
                 }
+
                 $annotation_manager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
                 $annotation_manager->select();
                 $annotation_list = $annotation_manager->get();
@@ -222,14 +217,9 @@ class CronNewsletter implements CronTaskInterface
                         $user_list = $user_manager->get();
 
                         $count_entries = 0;
-                        if (isset($user_list)
-                            and $user_list->isNotEmpty()
-                            and 1 == $user_list->getCount()
-                        ) {
+                        if (isset($user_list) && $user_list->isNotEmpty() && 1 == $user_list->getCount()) {
                             $ref_user = $user_list->getFirst();
-                            if (isset($ref_user)
-                                and $ref_user->getItemID() > 0
-                            ) {
+                            if (isset($ref_user) && $ref_user->getItemID() > 0) {
                                 $temp_body = '';
                                 while ($rubric_item) {
                                     $noticed_manager = $this->legacyEnvironment->getNoticedManager();
@@ -389,8 +379,6 @@ class CronNewsletter implements CronTaskInterface
                     $body2 .= '&nbsp;&nbsp;'.$translator->getMessage('COMMON_NO_NEW_ENTRIES').BRLF;
                 }
                 $body .= $body2;
-
-                $roomItem = $roomList->getNext();
             }
 
             if (empty($body)) {
