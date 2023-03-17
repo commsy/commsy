@@ -14,25 +14,20 @@ export class HashtagAction extends XHRAction {
         return new Promise<ActionResponse>((resolve) => {
             let responseHtml: string = backendResponse.html;
 
-            // insert form HTML with Select2Choice control containing available hashtags
+            // insert form HTML with select control containing available categories
             let $customChoicesPlaceholder = $('#commsy-select-actions-custom-choices');
             $customChoicesPlaceholder.html(responseHtml);
 
-            // TODO: better initialize dynamically loaded HTML components?
-            const children: any = $customChoicesPlaceholder.find('.js-select2-choice');
-            children.select2({ width: '100%', dropdownAutoWidth : true });
+            // listen to select changes and store IDs of all chosen categories as extra data
+            const select: any = $customChoicesPlaceholder.find('select').get(0);
+            const self = this;
+            select.addEventListener("change", (event) => {
+              const options = Array.from(event.target.selectedOptions);
+              const choices = options.map(function(option: HTMLOptionElement) {
+                return option.value;
+              });
 
-            // listen to changes to the Select2Choice control and store IDs of all chosen hashtags as extra data
-            let choices = [];
-            let self = this;
-            children.on('change.select2', function (e) {
-                const data = ($(this) as any).select2('data');
-
-                choices = data.map(function(sel) {
-                    return sel.id;
-                })
-
-                self.setExtraData('choices', choices);
+              self.setExtraData('choices', choices);
             });
 
             resolve(backendResponse);

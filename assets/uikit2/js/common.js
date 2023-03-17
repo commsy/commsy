@@ -4,7 +4,6 @@ require('nprogress/nprogress.css');
 require('fullcalendar/dist/fullcalendar.css');
 require('tooltipster/dist/css/tooltipster.bundle.css');
 require('video.js/dist/video-js.css');
-require('select2/dist/css/select2.css');
 
 // JS
 const $ = require('jquery');
@@ -19,9 +18,6 @@ require('tooltipster/dist/js/tooltipster.bundle');
 require('expose-loader?exposes=URI!urijs/src/URI');
 require('video.js/dist/video');
 require('jscolor-picker/jscolor');
-require('select2/dist/js/select2');
-require('select2/dist/js/i18n/de');
-require('select2/dist/js/i18n/en');
 
 require(['uikit'], function () {
     require('uikit/dist/js/components/autocomplete');
@@ -63,3 +59,6 @@ portfolio.bootstrap();
 import {MathJax} from "./commsy/MathJax";
 let mathJax = new MathJax();
 mathJax.bootstrap();
+
+// start the Stimulus application
+import '../../bootstrap';

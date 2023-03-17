@@ -13,13 +13,19 @@
 
 namespace App\Form\Type;
 
-use App\Form\Type\Custom\Select2ChoiceType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class XhrActionOptionsType extends AbstractType
 {
+    public function __construct(
+        private TranslatorInterface $translator
+    ) {
+    }
+
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
@@ -30,11 +36,14 @@ class XhrActionOptionsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $choices = [$this->translator->trans('Select some options') => ''] + $options['choices'];
+
         $builder
-            ->add('choices', Select2ChoiceType::class, [
+            ->add('choices', ChoiceType::class, [
+                'autocomplete' => true,
                 'label' => $options['label'],
                 'required' => false,
-                'choices' => $options['choices'],
+                'choices' => $choices,
                 'multiple' => true,
                 'attr' => [
                     'class' => 'uk-width-1-1',

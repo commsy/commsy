@@ -36,7 +36,7 @@ class AutoRoomMembershipCest
         $U->amOnRoute('app_settings_general', [
             'roomId' => $roomId,
         ]);
-        $U->fillField('#general_settings_room_slug', 'test-room');
+        $U->fillField('#general_settings_slugs', 'test-room');
         $U->click('#general_settings_save');
 
         $U->goToLogoutPath();

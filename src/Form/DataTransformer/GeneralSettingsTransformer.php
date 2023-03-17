@@ -13,11 +13,14 @@
 
 namespace App\Form\DataTransformer;
 
+use App\Entity\Room;
+use App\Repository\RoomRepository;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use App\Utils\UserService;
 use cs_environment;
 use cs_room_item;
+use Doctrine\Persistence\ManagerRegistry;
 
 class GeneralSettingsTransformer extends AbstractTransformer
 {
@@ -25,8 +28,13 @@ class GeneralSettingsTransformer extends AbstractTransformer
 
     private cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private RoomService $roomService, private UserService $userService)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private RoomService $roomService,
+        private UserService $userService,
+        private RoomRepository $roomRepository,
+        private ManagerRegistry $managerRegistry
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -57,9 +65,12 @@ class GeneralSettingsTransformer extends AbstractTransformer
             }
 
             $roomData['room_description'] = $roomItem->getDescription();
-            $roomData['room_slug'] = $roomItem->getSlug() ?? '';
 
-            // $rubrics = array_combine($defaultRubrics, array_fill(0, count($defaultRubrics), 'off'));
+            // slugs
+            /** @var Room $roomORM */
+            $roomORM = $this->roomRepository->findOneBy(['itemId' => $roomItem->getItemID()]);
+            $roomData['slugs'] = $roomORM->getSlugs();
+
             $rubrics = [];
             foreach ($this->roomService->getRubricInformation($roomItem->getItemID(), true) as $rubric) {
                 [$rubricName, $modifier] = explode('_', $rubric);
@@ -144,8 +155,12 @@ class GeneralSettingsTransformer extends AbstractTransformer
             $roomObject->setDescription('');
         }
 
-        // NOTE: validation of character input for the room_slug form field is handled by form field constraints
-        $roomObject->setSlug($roomData['room_slug'] ?? '');
+        /** @var Room $roomORM */
+        $roomORM = $this->roomRepository->findOneBy(['itemId' => $roomObject->getItemID()]);
+        $em = $this->managerRegistry->getManager();
+        $em->persist($roomORM);
+        $em->flush();
+        $em->detach($roomORM);
 
         // assignment
         if ($roomObject->isProjectRoom() && isset($roomData['community_rooms'])) {

@@ -13,22 +13,25 @@
 
 namespace App\Form\Type;
 
-use App\Form\Type\Custom\Select2ChoiceType;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
 use cs_environment;
-use cs_tag2tag_manager;
 use cs_tag_item;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class XhrCategorizeActionOptionsType extends AbstractType
 {
     private cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private CategoryService $categoryService)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private CategoryService $categoryService,
+        private TranslatorInterface $translator
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -42,15 +45,21 @@ class XhrCategorizeActionOptionsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /** @var cs_tag2tag_manager $tag2TagManager */
         $tag2TagManager = $this->legacyEnvironment->getTag2TagManager();
 
+        $choices = [$this->translator->trans('Select some options') => ''] + $options['choices'];
+
         $builder
-            ->add('choices', Select2ChoiceType::class, [
+            ->add('choices', ChoiceType::class, [
+                'autocomplete' => true,
                 'label' => $options['label'],
                 'required' => false,
-                'choices' => $options['choices'],
+                'choices' => $choices,
                 'choice_label' => function ($choice, $key, $value) use ($tag2TagManager) {
+                    if (empty($value)) {
+                        return $key;
+                    }
+
                     // remove the trailing category ID from $key (which was used in LabelService->transformTagArray() to uniquify the key)
                     $displayName = implode('_', explode('_', $key, -1));
 

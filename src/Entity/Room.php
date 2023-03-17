@@ -16,6 +16,8 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\RoomRepository;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use OpenApi\Attributes as OA;
@@ -140,8 +142,8 @@ class Room
     #[ORM\Column(name: 'activity_state', type: 'string', length: 15, options: ['default' => 'active'])]
     private string $activityState;
 
-    #[ORM\Column(name: 'slug', type: 'string', length: 255, nullable: true)]
-    private ?string $slug = null;
+    #[ORM\OneToMany(mappedBy: 'room', targetEntity: RoomSlug::class, cascade: ['persist'], orphanRemoval: true)]
+    private Collection $slugs;
 
     #[ORM\Column(name: 'activity_state_updated', type: 'datetime', nullable: true)]
     private ?DateTime $activityStateUpdated = null;
@@ -151,6 +153,7 @@ class Room
         $this->activityState = self::ACTIVITY_ACTIVE;
         $this->creationDate = new DateTime();
         $this->modificationDate = new DateTime();
+        $this->slugs = new ArrayCollection();
     }
 
     public function isIndexable(): bool
@@ -500,20 +503,47 @@ class Room
     }
 
     /**
-     * Set the room's slug (a unique textual identifier for this room).
+     * Get the room's slugs (unique textual identifier for this room).
+     *
+     * @return Collection<int, RoomSlug>
      */
-    public function setSlug(?string $slug): void
+    public function getSlugs(): Collection
     {
-        $slug = !empty($slug) ? strtolower($slug) : null;
-        $this->slug = $slug;
+        return $this->slugs;
     }
 
     /**
-     * Get the room's slug (a unique textual identifier for this room).
+     * Add a slug (a unique textual identifier for this room).
+     *
+     * @param RoomSlug $slug
+     * @return $this
      */
-    public function getSlug(): ?string
+    public function addSlug(RoomSlug $slug): self
     {
-        return $this->slug;
+        if (!$this->slugs->contains($slug)) {
+            $this->slugs->add($slug);
+            $slug->setRoom($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Removes a slug
+     *
+     * @param RoomSlug $slug
+     * @return $this
+     */
+    public function removeSlug(RoomSlug $slug): self
+    {
+        if ($this->slugs->removeElement($slug)) {
+            // set the owning side to null (unless already changed)
+            if ($slug->getRoom() === $this) {
+                $slug->setRoom(null);
+            }
+        }
+
+        return $this;
     }
 
     /**
