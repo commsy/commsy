@@ -32,8 +32,6 @@
                         // html
                     );
                 }
-
-                $('.js-select2-choice').select2();
             }
         });
     });

@@ -13,7 +13,6 @@
 
 namespace App\Form\Type\Context;
 
-use App\Form\Type\Custom\Select2ChoiceType;
 use App\Services\LegacyEnvironment;
 use cs_community_item;
 use cs_environment;
@@ -26,13 +25,16 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ProjectType extends AbstractType
 {
     private cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private TranslatorInterface $translator
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -59,8 +61,11 @@ class ProjectType extends AbstractType
                 'empty_data' => (!empty($options['preferredChoices'])) ? $options['preferredChoices'][0] : '',
             ]);
         if (!empty($options['times'])) {
-            $builder->add('time_interval', Select2ChoiceType::class, [
-                'choices' => $options['times'],
+            $choices = [$this->translator->trans('Select some options') => ''] + $options['times'];
+
+            $builder->add('time_interval', ChoiceType::class, [
+                'autocomplete' => true,
+                'choices' => $choices,
                 'required' => false,
                 'mapped' => false,
                 'expanded' => false,
@@ -69,7 +74,8 @@ class ProjectType extends AbstractType
                 'translation_domain' => 'room',
             ]);
         }
-        $builder->add('community_rooms', Select2ChoiceType::class, [
+        $builder->add('community_rooms', ChoiceType::class, [
+            'autocomplete' => true,
             'choice_loader' => new CallbackChoiceLoader(function () {
                 $currentPortalItem = $this->legacyEnvironment->getCurrentPortalItem();
                 $currentUser = $this->legacyEnvironment->getCurrentUserItem();
@@ -90,7 +96,8 @@ class ProjectType extends AbstractType
                     }
                 }
 
-                return iterator_to_array(getChoices($communityList, $currentUser));
+                return [$this->translator->trans('Select some options') => ''] +
+                    iterator_to_array(getChoices($communityList, $currentUser));
             }),
             'required' => $options['linkCommunitiesMandantory'],
             'mapped' => false,

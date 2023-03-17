@@ -15,7 +15,7 @@ namespace App\Facade;
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
-use App\Entity\Room;
+use App\Entity\RoomSlug;
 use App\Event\UserJoinedRoomEvent;
 use App\Form\Model\Csv\CsvUserDataset;
 use App\Mail\Mailer;
@@ -142,13 +142,18 @@ class UserCreatorFacade
             return;
         }
 
-        $roomRepository = $this->entityManager->getRepository(Room::class);
+        $roomSlugRepository = $this->entityManager->getRepository(RoomSlug::class);
 
         // map room slugs to actual room IDs
-        $roomIds = array_map(function (string $roomSlug) use ($roomRepository, $account) {
-            $room = $roomRepository->findOneByRoomSlug(trim($roomSlug), $account->getContextId());
+        $roomIds = array_map(function (string $roomSlug) use ($roomSlugRepository, $account) {
+            /** @var RoomSlug $slug */
+            $slug = $roomSlugRepository->findOneBy(['slug' => trim($roomSlug)]);
+            $room = $slug->getRoom();
+            if ($room->getContextId() == $account->getContextId()) {
+                return $room->getItemId();
+            }
 
-            return ($room) ? $room->getItemId() : null;
+            return null;
         }, $roomSlugs);
 
         // filter out any null values (where a room slug couldn't be mapped to an actual room ID)

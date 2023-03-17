@@ -2,7 +2,6 @@
 require('../css/commsy.less');
 
 require('nprogress/nprogress.css');
-require('select2/dist/css/select2.css');
 require("flatpickr/dist/themes/light.css");
 
 // JS
@@ -12,7 +11,6 @@ global.$ = global.jQuery = $;
 require('expose-loader?exposes=NProgress!nprogress/nprogress');
 require('moment/moment');
 require('expose-loader?exposes=URI!urijs/src/URI');
-require('select2/dist/js/select2');
 
 import UIkit from 'uikit3';
 import Icons from 'uikit3/dist/js/uikit-icons';
@@ -37,3 +35,6 @@ FormCollection.bootstrap();
 
 import {handleShibIdPSelect} from "./commsy/Login";
 handleShibIdPSelect();
+
+// start the Stimulus application
+import '../../bootstrap';

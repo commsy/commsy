@@ -15,7 +15,6 @@ namespace App\Filter;
 
 use App\Entity\SavedSearch;
 use App\EventSubscriber\ChosenRubricSubscriber;
-use App\Form\Type\Custom\Select2ChoiceType;
 use App\Model\SearchData;
 use App\Utils\ReaderService;
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
@@ -136,7 +135,8 @@ class SearchFilterType extends AbstractType
                 'multiple' => true,
                 'placeholder' => false,
             ])
-            ->add('selectedCreator', Select2ChoiceType::class, [
+            ->add('selectedCreator', Types\ChoiceType::class, [
+                'autocomplete' => true,
                 'choice_loader' => new CallbackChoiceLoader(function () use ($searchData) {
                     $translatedTitleAny = $this->translator->trans('any', [], 'form');
 
@@ -145,7 +145,8 @@ class SearchFilterType extends AbstractType
                 'label' => 'Creator',
                 'required' => false,
             ])
-            ->add('selectedContext', Select2ChoiceType::class, [
+            ->add('selectedContext', Types\ChoiceType::class, [
+                'autocomplete' => true,
                 'choice_loader' => new CallbackChoiceLoader(function () use ($searchData) {
                     $translatedTitleAny = $this->translator->trans('All my rooms', [], 'search');
 
@@ -229,14 +230,16 @@ class SearchFilterType extends AbstractType
 
         $builder
             ->addEventSubscriber(new ChosenRubricSubscriber($this->translator))
-            ->add('selectedHashtags', Select2ChoiceType::class, [
+            ->add('selectedHashtags', Types\ChoiceType::class, [
+                'autocomplete' => true,
                 'choice_loader' => new CallbackChoiceLoader(fn () => $this->buildTermChoices($searchData->getHashtags())),
                 'label' => 'Hashtags',
                 'expanded' => false,
                 'multiple' => true,
                 'required' => false,
             ])
-            ->add('selectedCategories', Select2ChoiceType::class, [
+            ->add('selectedCategories', Types\ChoiceType::class, [
+                'autocomplete' => true,
                 'choice_loader' => new CallbackChoiceLoader(fn () => $this->buildTermChoices($searchData->getCategories())),
                 'label' => 'Categories',
                 'expanded' => false,
@@ -291,13 +294,12 @@ class SearchFilterType extends AbstractType
      *
      * @param array|null $terms associative array of creator/hashtag/category terms (key: term name, value: count)
      */
-    private function buildTermChoices($terms): array
+    private function buildTermChoices(?array $terms): array
     {
-        if (!isset($terms) || empty($terms)) {
-            return [];
-        }
+        $choices = [$this->translator->trans('Select some options') => ''];
 
-        $choices = [];
+        $terms = $terms ?? [];
+
         foreach ($terms as $name => $count) {
             $term = $name.' ('.$count.')';
             $choices[$term] = $name;

@@ -139,36 +139,6 @@ class RoomRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    /**
-     * NOTE: This may be used by a UniqueEntity/UniqueRoomSlug annotation in App\Entity\Room.
-     *
-     * @param array $fields associative array of room identifiers with keys: `slug`, `contextId`
-     *
-     * @throws NonUniqueResultException
-     */
-    public function findOneByRoomIdentifiersArray(array $fields): ?Room
-    {
-        return $this->findOneByRoomSlug($fields['slug'], $fields['contextId']);
-    }
-
-    /**
-     * @param string $slug
-     *
-     * @throws NonUniqueResultException
-     */
-    public function findOneByRoomSlug(string $roomSlug, int $context): ?Room
-    {
-        return $this->createQueryBuilder('a')
-            ->where('a.slug = :slug')
-            ->andWhere('a.contextId = :contextId')
-            ->setParameters([
-                'slug' => $roomSlug,
-                'contextId' => $context,
-            ])
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
-
     public function countByPortalAndType()
     {
         return $this->createQueryBuilder('r')

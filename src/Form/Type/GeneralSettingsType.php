@@ -13,7 +13,7 @@
 
 namespace App\Form\Type;
 
-use App\Form\Type\Custom\Select2ChoiceType;
+use App\Form\DataTransformer\RoomSlugCollectionToStringTransformer;
 use App\Services\LegacyEnvironment;
 use App\Validator\Constraints\UniqueRoomSlug;
 use cs_environment;
@@ -29,16 +29,18 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class GeneralSettingsType extends AbstractType
 {
     private cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private TranslatorInterface $translator,
+        private RoomSlugCollectionToStringTransformer $roomSlugToStringTransformer
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -61,28 +63,39 @@ class GeneralSettingsType extends AbstractType
             ->add('access_check', ChoiceType::class, ['required' => false, 'choices' => ['Never' => 'never', 'Always' => 'always', 'Code' => 'withcode']])
             ->add('access_code', TextType::class, ['required' => false, 'attr' => ['style' => 'display: none;'], 'label' => false])
             ->add('room_description', TextareaType::class, ['attr' => ['class' => 'uk-form-width-large', 'style' => 'width: 90%'], 'required' => false])
-            ->add('room_slug', TextType::class, [
+            ->add('slugs', TextType::class, [
                 'required' => false,
-                'constraints' => [
-                    new UniqueRoomSlug([
-                        'roomItem' => $roomItem,
-                    ]),
-                    new Length([
-                        'max' => 255,
-                        'maxMessage' => 'Your workspace identifier must not exceed {{ limit }} characters.',
-                    ]),
-                    new Regex([
-                        'pattern' => '/^[[:alnum:]~._-]+$/', // unreserved URI chars only: any alphanumeric chars plus: ~._-
-                        'message' => 'Your workspace identifier may only contain lowercase English letters, digits or any of these special characters: -._~',
-                    ]),
-                ],
-                'attr' => ['class' => 'uk-form-width-large', 'style' => 'width: 90%'],
                 'label' => 'Room slug',
+                'autocomplete' => true,
+                'tom_select_options' => [
+                    'create' => true,
+                    'createOnBlur' => true,
+                    'delimiter' => ',',
+                ],
+                'attr' => [
+                    'data-controller' => 'custom-autocomplete',
+                ],
             ])
-            ->add('rubrics', CollectionType::class, ['required' => false, 'entry_type' => ChoiceType::class, 'entry_options' => ['choices' => ['Show' => 'show', 'Hide' => 'hide', 'Off' => 'off']], 'attr' => ['class' => 'uk-sortable', 'data-uk-sortable' => '']])
+            ->add('rubrics', CollectionType::class, [
+                'required' => false,
+                'entry_type' => ChoiceType::class,
+                'entry_options' => [
+                    'choices' => [
+                        'Show' => 'show',
+                        'Hide' => 'hide',
+                        'Off' => 'off',
+                    ],
+                ],
+                'attr' => ['class' => 'uk-sortable', 'data-uk-sortable' => ''],
+            ])
             ->add('rubricOrder', HiddenType::class, [])
             ->add('save', SubmitType::class, ['attr' => ['class' => 'uk-button-primary']])
         ;
+
+        $this->roomSlugToStringTransformer->setRoomId($roomItem->getItemID());
+
+        $builder->get('slugs')
+            ->addModelTransformer($this->roomSlugToStringTransformer);
 
         $roomCategories = $options['roomCategories'];
         if (isset($roomCategories) && !empty($roomCategories)) {
@@ -112,7 +125,14 @@ class GeneralSettingsType extends AbstractType
 
                 if (!empty($choices)) {
                     $form
-                        ->add('community_rooms', Select2ChoiceType::class, ['choices' => $choices, 'multiple' => true, 'required' => false, 'attr' => ['style' => 'width: 90%'], 'help' => 'Community rooms tip'])
+                        ->add('community_rooms', ChoiceType::class, [
+                            'autocomplete' => true,
+                            'choices' => $choices,
+                            'multiple' => true,
+                            'required' => false,
+                            'attr' => ['style' => 'width: 90%'],
+                            'help' => 'Community rooms tip',
+                        ])
                     ;
                 }
             }
@@ -122,7 +142,8 @@ class GeneralSettingsType extends AbstractType
             if ($portalItem->showTime() &&
                 ($roomItem->isProjectRoom() || $roomItem->isGroupRoom())) {
                 $form
-                    ->add('time_pulses', Select2ChoiceType::class, [
+                    ->add('time_pulses', ChoiceType::class, [
+                        'autocomplete' => true,
                         'label' => ucfirst($this->getTimeIntervalsDisplayName()),
                         'required' => false,
                         'choices' => $this->getTimeChoices(),
@@ -163,7 +184,7 @@ class GeneralSettingsType extends AbstractType
 
     private function getTimeChoices()
     {
-        $timeChoices = [];
+        $timeChoices = [$this->translator->trans('Select some options') => ''];
 
         $translator = $this->legacyEnvironment->getTranslationObject();
 
@@ -189,7 +210,7 @@ class GeneralSettingsType extends AbstractType
 
     private function getAssignableCommunityRoom()
     {
-        $results = [];
+        $results = [$this->translator->trans('Select some options') => ''];
 
         $currentPortal = $this->legacyEnvironment->getCurrentPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
