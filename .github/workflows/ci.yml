@@ -38,15 +38,15 @@ jobs:
                     ini-values: apc.enable_cli=1, date.timezone=Europe/Berlin
                     tools: composer:v2
 
-            -   name: Install yarn deps
-                run: yarn install
-
             -   name: Install php deps
                 run: composer install --no-progress
-
+                
             -   name: Generate JWT keypair
                 run: bin/console lexik:jwt:generate-keypair
 
+            -   name: Install yarn deps
+                run: yarn install
+                
             -   name: Build frontend package
                 run: yarn build
 
