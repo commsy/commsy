@@ -27,9 +27,6 @@ jobs:
                     ini-values: apc.enable_cli=1, date.timezone=Europe/Berlin
                     tools: composer:v2
 
-            -   name: Install yarn deps
-                run: yarn install
-
             -   name: Install php deps
                 run: composer install --prefer-dist --no-dev --no-scripts --no-progress --no-suggest
 
@@ -45,6 +42,9 @@ jobs:
             -   name: Run post install scripts
                 run: composer run-script --no-dev post-install-cmd
 
+            -   name: Install yarn deps
+                run: yarn install
+                
             -   name: Build frontend package
                 run: yarn build
 
