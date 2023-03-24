@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  onlyoffice:
+    image: onlyoffice/documentserver
+    restart: unless-stopped
+    environment:
+      WOPI_ENABLED: true
+    ports:
+      - '8080:80'
