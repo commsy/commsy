@@ -64,7 +64,7 @@ final class Version20230301172618 extends AbstractMigration implements Container
     public function postUp(Schema $schema): void
     {
         $this->fixPath();
-        $this->moveUserroomFiles();
+        $this->moveRoomFiles();
     }
 
     public function down(Schema $schema): void
@@ -107,13 +107,13 @@ final class Version20230301172618 extends AbstractMigration implements Container
         }
     }
 
-    private function moveUserroomFiles()
+    private function moveRoomFiles()
     {
         $qb = $this->connection->createQueryBuilder()
             ->select('f.context_id', 'f.filepath', 'i.context_id as pid')
             ->from('files', 'f')
-            ->innerJoin('f', 'items', 'i', 'f.context_id = i.item_id')
-            ->where('i.type = "userroom"');
+            ->innerJoin('f', 'items', 'i', 'f.context_id = i.item_id');
+
         $files = $qb->executeQuery()->fetchAllAssociative();
 
         $projectDirectory = $this->container->getParameter('kernel.project_dir');
