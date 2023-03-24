@@ -41,6 +41,9 @@ sh: ## Connect to the PHP FPM container
 debug-mailhog:
 	@$(DOCKER_COMP) -f docker-compose.yml -f docker-compose.override.yml -f docker/docker-compose.mailhog.yml up
 
+debug-office:
+	@$(DOCKER_COMP) -f docker-compose.yml -f docker-compose.override.yml -f docker/docker-compose.office.yml up
+
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————
 composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'
 	@$(eval c ?=)
