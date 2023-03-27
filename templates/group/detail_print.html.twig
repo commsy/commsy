@@ -34,17 +34,17 @@
                     <div>
                         {{ macros.title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
                     </div>
-            
+
                     {# description #}
                     <div>
-                        {{ macros.itemDescription('description', item, true, item.description) }}
+                        {{ macros.itemDescription(item, item.description) }}
                     </div>
-            
+
                     {# members #}
                     <div>
                         {{ macros.members(item,members) }}
                     </div>
- 
+
                     <div id="grouproom{{ item.itemId }}">
                         <hr class="uk-width-9-10"/>
                         <article class="uk-article uk-margin-left uk-margin-right">
@@ -53,7 +53,7 @@
                             <div class="uk-grid uk-margin-small-bottom">
                                 <div class="uk-width-9-10">
                                     <h4 class="cs-detail-section-header">
-                                        {{'grouproom'|trans({},'group') }} 
+                                        {{'grouproom'|trans({},'group') }}
                                     </h4>
                                 </div>
                             </div>
@@ -70,7 +70,7 @@
                                 {% if item.isGroupRoomActivated %}
                                     <span class="uk-text-bold">{{item.groupRoomItem.title|decodeHtmlEntity}}</span><br/>
                                     <p>
-                                    {{'grouproom description text'|trans({},'group') }}    
+                                    {{'grouproom description text'|trans({},'group') }}
                                     </p>
                                 {% else %}
                                     <span class="uk-text-bold">{{'no grouproom'|trans({},'group') }}</span><br/>
@@ -83,7 +83,7 @@
                                 {% if item.isGroupRoomActivated %}
                                     <span class="uk-text-bold">{{'grouproom information'|trans({},'group') }}</span><br/>
                                     <p>
-                                    {{'grouproom moderators'|trans({},'group') }}: {{item.groupRoomItem.ModeratorListString}}     
+                                    {{'grouproom moderators'|trans({},'group') }}: {{item.groupRoomItem.ModeratorListString}}
                                     </p>
                                     <p>
                                       ToDo: Zuganglinks
@@ -106,26 +106,26 @@
                             <div class="uk-grid uk-margin-small-bottom">
                                 <div class="uk-width-9-10">
                                     <h4 class="cs-detail-section-header">
-                                        {{'links'|trans({}) }} 
+                                        {{'links'|trans({}) }}
                                     </h4>
                                 </div>
                             </div>
- 
+
             {{ render(controller(
                 'App\\Controller\\LinkController::showDetailLongAction',
                 { 'roomId': item.contextId, 'itemId': item.itemId }
-            ))}}            
+            ))}}
                         </article>
                     </div>
-        
+
                 </article>
             </div>
             </div>
         </div>
 
-			        
+
 		{% endblock %}
-          
-        
+
+
     </body>
 </html>

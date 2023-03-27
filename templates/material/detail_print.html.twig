@@ -37,7 +37,7 @@
 
                         {# description #}
                         <div>
-                            {{ macros.itemDescription('description', item, true, item.description) }}
+                            {{ macros.itemDescription(item, item.description) }}
                         </div>
 
                         {# files #}
@@ -57,7 +57,7 @@
                             </div>
                         {% endif %}
                     </article>
-                
+
                 {% if sectionList is not empty %}
                     <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top page-break-before">
                         <div class="uk-grid">
@@ -65,19 +65,19 @@
                                 {{ 'Abschnitte'|trans({})|capitalize }}
                             </div>
                         </div>
-                    </div>       
+                    </div>
                     {# material sections #}
-                    {% for section in sectionList %}                               
+                    {% for section in sectionList %}
 
                             <article class="uk-article uk-position-relative page-break-inside">
                                 {# title #}
                                 <div>
                                     {{ macros.title(section, modifierList, userCount, readCount, readSinceModificationCount) }}
                                 </div>
-                                
+
                                 {# description #}
                                 <div>
-                                    {{ macros.itemDescription('description', section, true, section.description) }}
+                                    {{ macros.itemDescription(section, section.description) }}
                                 </div>
 
                                 {# files #}
@@ -86,14 +86,14 @@
                                     <hr>
                                 </div>
                             </article>
-                        
+
                     {% endfor %}
                 {% endif %}
-                
+
 
                 {# annotations #}
-                             
-                    
+
+
                         {{ render(controller(
                             'App\\Controller\\AnnotationController::feedPrintAction',
                             { 'roomId': roomId, 'linkedItemId': item.itemId }
@@ -102,12 +102,12 @@
 
             </div>
         </div>
-            
 
 
-			        
+
+
 		{% endblock %}
-          
-        
+
+
     </body>
 </html>

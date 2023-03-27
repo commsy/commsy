@@ -8,7 +8,7 @@
         {% if ratingArray.ratingOwnDetail %}
             {% set hasVoted = true %}
         {% endif %}
-    
+
         <div id="cs-rating-wrapper" data-cs-rating-wrapper='{"hasVoted": "{{ hasVoted }}"}'>
             {% for i in 1..5 %}
                 {% if rating >= i %}
@@ -78,7 +78,7 @@
 
 {% macro workflowTrafficLight(item) %}
     {% import _self as macros %}
-    
+
     {{ macros.workflowStatus(item.workflowTrafficLight) }}
 {% endmacro %}
 
@@ -108,35 +108,32 @@
     {% import _self as macros %}
 
     {% set preview %}
-
-    <div class="uk-grid">
-        <div class="uk-width-1-3">
-            <strong>{{ 'worflow status'|trans({}, "material") }}:</strong> <br/>
-            <div class="uk-flex-inline">
-                <div class="uk-margin-right">{{ macros.workflowTrafficLight(item) }}</div>
-                <div>{{workflowText}}</div>
-             </div>         
-        </div>
-
-        {% if workflowValidityDate != '0000-00-00 00:00:00' %}
+        <div class="uk-grid">
             <div class="uk-width-1-3">
-                <div class="uk-margin-bottom">
-                    <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
-                    {{ workflowValidityDate|craue_date }}       
-                </div>
+                <strong>{{ 'worflow status'|trans({}, "material") }}:</strong> <br/>
+                <div class="uk-flex-inline">
+                    <div class="uk-margin-right">{{ macros.workflowTrafficLight(item) }}</div>
+                    <div>{{workflowText}}</div>
+                 </div>
             </div>
-        {% endif %}
-        {% if workflowResubmissionDate != '0000-00-00 00:00:00' %}
-             <div class="uk-width-1-3">
-                <div class="uk-margin-bottom">
-                    <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/> 
-                    {{ workflowResubmissionDate|craue_date }}
-                </div>
-            </div>
-       {% endif %}
-    </div>
 
-        
+            {% if workflowValidityDate != '0000-00-00 00:00:00' %}
+                <div class="uk-width-1-3">
+                    <div class="uk-margin-bottom">
+                        <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
+                        {{ workflowValidityDate|craue_date }}
+                    </div>
+                </div>
+            {% endif %}
+            {% if workflowResubmissionDate != '0000-00-00 00:00:00' %}
+                 <div class="uk-width-1-3">
+                    <div class="uk-margin-bottom">
+                        <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/>
+                        {{ workflowResubmissionDate|craue_date }}
+                    </div>
+                </div>
+           {% endif %}
+        </div>
     {% endset %}
 
     {% set content %}
@@ -146,25 +143,25 @@
             <div class="uk-flex-inline uk-margin-bottom">
                 <div class="uk-margin-right">{{ macros.workflowTrafficLight(item) }}</div>
                 <div>{{workflowText}}</div>
-             </div>         
+             </div>
         </div>
         <div>
             {% if workflowValidityDate != '0000-00-00 00:00:00' %}
                 <div class="uk-margin-bottom">
                     <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
-                    {{ workflowValidityDate|craue_date }}       
+                    {{ workflowValidityDate|craue_date }}
                 </div>
             {% endif %}
         </div>
         <div >
             {% if workflowResubmissionDate != '0000-00-00 00:00:00' %}
                 <div class="uk-margin-bottom">
-                    <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/> 
+                    <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/>
                     {{ workflowResubmissionDate|craue_date }}
                 </div>
            {% endif %}
-       </div>
-       {% if not workflowGroupArray is empty %}
+        </div>
+        {% if not workflowGroupArray is empty %}
             <div>
                 <strong>{{ 'workflow marked as read by groups'|trans({}, "material") }}:</strong><br/>
                 {% set counter = 1 %}
@@ -174,30 +171,30 @@
                     {% set counter = counter + 1 %}
                 {% endfor %}
             </div>
-        {% endif %}       
+        {% endif %}
         {% if not workflowUserArray is empty %}
-            <div class="uk-width-1-2">            
+            <div class="uk-width-1-2">
                <strong>{{ 'workflow marked as read by users'|trans({}, "material") }}:</strong><br/>
                {% set counter = 1 %}
                {% for workflowUser in workflowUserArray %}
-                   {{workflowUser.name}} 
+                   {{workflowUser.name}}
                     {% if counter != workflowUserArray|length %}, {% endif %}
                     {% set counter = counter + 1 %}
                {% endfor %}
            </div>
-       {% endif %}       
-     </div>
-   {% endset %}
-    
+        {% endif %}
+    </div>
+    {% endset %}
+
     {{ macros.editContent('workflow', item, true, content, preview, true, false, 0) }}
 {% endmacro %}
 
 {% macro links(item,withTags,withCategories,roomCategories) %}
     {% import _self as macros %}
-    
+
     {%set countEntries = item.tagsArray|length + item.buzzwordArray|length + item.AllLinkeditemIDArray|length %}
 
-    
+
 
     {% set content %}
 
@@ -207,7 +204,7 @@
             {{ render(controller(
                 'App\\Controller\\LinkController::showDetailPrintAction',
                 { 'roomId': item.contextId, 'itemId': item.itemId }
-            ))}}            
+            ))}}
         </div>
         <div >
             <strong>{{ 'categories'|trans({}, "room") }}:</strong>
@@ -217,18 +214,18 @@
         </div>
         <div>
             <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
-            {% set tagArray = item.buzzwordList.to_array() %} 
+            {% set tagArray = item.buzzwordList.to_array() %}
             {% if (tagArray|length) > 0 %}
                 {% for tag in tagArray %}
-                    <button class="uk-button uk-margin-small-bottom">{{tag.title}}
+                    <button class="uk-button uk-margin-small-bottom">{{tag.title}}</button>
                 {% endfor %}
             {% else %}
-                {{ 'no linked items'|trans({}, "room")}}    
+                {{ 'no linked items'|trans({}, "room")}}
             {% endif %}
         </div>
     </div>
     {% endset %}
-    
+
     {{ macros.editContent('links', item, true, content, true, true, countEntries) }}
 {% endmacro %}
 
@@ -240,9 +237,6 @@
     <hr />
 
     <article >
-        <a name="description"></a>
-        {% include 'utils/edit_spinner.html.twig' %}
-
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
             <div class="uk-width-9-10">
@@ -256,63 +250,40 @@
         {# content #}
         {% if not fileArray is empty %}
             <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
-
-                
-                {# full content #}
                 <div>
-                    <div >
-                        {% set prefix='' %}
-                        {% for file in fileArray %}
-                                        {{prefix}}
-                                        {{ file.filename}}
-                                        ({{ file.fileSize }} kb)
-                                         {% set prefix=', ' %}
-                                    
-                        {% endfor %}
-                    </div>
+                    {{ fileArray|map(f => "#{f.filename} (#{f.filesize} kb)")|join(', ')}}
                 </div>
-
             </div>
         {% else %}
             <div class="uk-width-9-10 uk-margin-top-remove">
-                
                 <div>
                     <span class="uk-text-muted">{{ 'no content'|trans({}, "room") }}</span>
                 </div>
-
             </div>
         {% endif %}
-        
     </article>
 {% endmacro %}
 
-{% macro itemDescription(title, item, edit, content) %}
+{% macro itemDescription(item, content) %}
     <hr/>
 
     <article>
-        <a name="description"></a>
-        {% include 'utils/edit_spinner.html.twig' %}
-
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
             <div class="uk-width-9-10">
                 <h4 class="cs-detail-section-header">
-                    {{- title|trans({}) -}}
+                    {{- 'description'|trans({}) -}}
                 </h4>
             </div>
 
-
-        {# content #}
-        {% if not content is empty %}
-            <div class="uk-width-9-10">
-
-                {# preview #}
+            {# content #}
+            {% if not content is empty %}
                 <div>
                     <span class="{% if item.hasOverwrittenContent %}uk-text-muted{% endif %}">{{ content|commsyMarkup(item)|raw }}</span>
                 </div>
-
-            </div>
-        {% endif %}
+            {% endif %}
+        </div>
+    </article>
 {% endmacro %}
 
 {% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) %}
@@ -323,23 +294,22 @@
     {% if item.itemType is same as('material') %}
         {% set pathName = 'app_material_edit' %}
     {% elseif item.itemType is same as('section') %}
-        <a name="section{{item.ItemID}}"></a>
         {% set pathName = 'app_material_edit' %}
     {% endif %}
     {% if userCount == 0 %}
         {% set userCount = 1 %}
     {% endif %}
-    
+
     <div>
         <div class="{% if item.hasOverwrittenContent %}uk-text-muted{% endif %}">
             <div >
-                <div  >        
+                <div  >
                     <div>
                     {% if item.itemType is not same as('section') %}
                         <div>
                             <h1 class="uk-article-title{% if item.hasOverwrittenContent %} uk-text-muted{% endif %}">{{ item.title|decodeHtmlEntity }}</h1>
                             {% if item.itemType is same as('material') or item.itemType is same as('todo') %}
-                                <div top-padding=0>
+                                <div>
                                     {% if showRating and ratingArray is not null %}
                                         {{ macros.ratingStatusDetail(item, ratingArray) }}
                                     {% endif %}
@@ -357,24 +327,24 @@
                             {% endif %}
 
                         </div>
-                       
+
                     {% else %}
                         <div>
                             <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
                         </div>
                 {% endif %}
                 </div>
-                </div>        
-               
+                </div>
+
             </div>
             {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
         </div>
 
         <div >
-            <div >    
+            <div >
                 <div >
                     <div class="{% if item.hasOverwrittenContent %}uk-text-muted{% endif %}">
-                        
+
                             <div >
 
                                 <div class="uk-grid">
@@ -397,7 +367,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="uk-width-1-3">                           
+                                    <div class="uk-width-1-3">
                                         <div class="uk-clearfix">
                                             <div class="uk-margin-remove">
                                                 {% if modifierList[item.itemId] is defined %}
@@ -414,12 +384,12 @@
                                                 {% endif %}
                                             </div>
                                         </div>
-                                    </div>                            
-                                </div>                        
+                                    </div>
+                                </div>
                             </div>
                             <div class="uk-panel uk-margin-top">
                                 <div class="uk-grid">
-                                    <div class="uk-width-2-4">                           
+                                    <div class="uk-width-2-4">
                                         <div class="uk-clearfix">
                                             <div class="uk-align-left uk-width-1-1">
                                             {{ 'clicked since last editing'|trans({})}}: <br/>
@@ -428,20 +398,20 @@
                                                     <div class="uk-progress-bar cs-progress-bar" style="width: {{ activePercent }}%;">{{readSinceModificationCount}}</div>
                                                 </div>
                                            </div>
-                                        </div>                           
-                                    </div>                            
-                                    <div class="uk-width-2-4">                           
+                                        </div>
+                                    </div>
+                                    <div class="uk-width-2-4">
                                         <div class="uk-clearfix">
                                             <div class="uk-align-left uk-width-1-1">
                                             {{ 'clicked since creating'|trans({}) }}: <br/>
                                                 <div class="uk-progress">
                                                     {% set activePercent = (readCount/userCount*100)|round %}
                                                    <div class="uk-progress-bar cs-progress-bar" style="width: {{ activePercent }}%;">{{readCount}}</div>
-                                                </div> 
+                                                </div>
                                             </div>
-                                        </div>                           
-                                    </div>                            
-                                </div>                        
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                     </div>
                 </div>
@@ -456,7 +426,7 @@
     {% set opened = true %}
     <ul class="uk-list">
     {% for child in roomTags %}
-    
+
         {% set childTitle %}
             <div><span class="uk-text-muted">{{ child.title|decodeHtmlEntity }}</span></div>
         {% endset %}
@@ -467,7 +437,7 @@
                 {% endset %}
             {% endif %}
         {% endfor %}
-    
+
         {% if child.children is defined and not child.children is empty %}
             <li id="tag_{{ child.title|decodeHtmlEntity }}" data-jstree='{"opened": {{ opened }}}'>
                 {{ childTitle }}
@@ -486,9 +456,6 @@
     <hr />
 
     <article>
-        <a name="description"></a>
-        {% include 'utils/edit_spinner.html.twig' %}
-
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
             <div class="uk-width-9-10">
@@ -499,15 +466,11 @@
                     {% endif %}
                 </h4>
             </div>
-
-            
         </div>
 
         {# content #}
         {% if not content is empty and not preview is empty %}
             <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
-
-
                 {# full content #}
                 <div>
                     {{ content|raw }}
@@ -516,7 +479,7 @@
             </div>
         {% else %}
             <div class="uk-width-9-10 uk-margin-top-remove">
-                
+
                 {% if not content is empty %}
                     <div>
                         {{ content|raw }}
@@ -614,7 +577,7 @@
                     <div class="cs-comment-head">
                         <div class="uk-comment-meta">
                             {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(item.creator) }}
-                        </div>   
+                        </div>
                         <div class="uk-comment-meta uk-margin-bottom">
                             {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}
                         </div>
@@ -626,18 +589,15 @@
             </div>
         {% endif %}
 
-    </div>    
+    </div>
 {% endmacro %}
 
 {% macro details(date) %}
     {% import _self as macros %}
-    
+
     <hr class="uk-width-9-10"/>
 
     <article class="uk-article uk-margin-left uk-margin-right">
-        <a name="details"></a>
-        {% include 'utils/edit_spinner.html.twig' %}
-
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
             <div class="uk-width-9-10">
@@ -687,7 +647,7 @@
             </table>
         </div>
     </article>
-    
+
 {% endmacro %}
 
 {% macro participants(item,participants) %}
@@ -700,7 +660,7 @@
                     <br><br>
                     <br>
                 </div>
-                
+
         {% endfor %}
     {% endif %}
 {% endmacro %}
@@ -712,35 +672,31 @@
     {% if item.itemType is same as('user') %}
         {% set pathName = 'app_user_edit' %}
     {% elseif item.itemType is same as('section') %}
-        <a name="section{{item.ItemID}}"></a>
         {% set pathName = 'app_user_edit' %}
     {% endif %}
     {% if userCount == 0 %}
         {% set userCount = 1 %}
     {% endif %}
-    
+
     <div>
         <div>
             <div >
-                <div >        
+                <div >
                     <div class="uk-grid">
                         <div class="uk-width-1-1">
                             <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }} {{ item.fullname|decodeHtmlEntity }}</h1>
                         </div>
                     </div>
-                </div>        
+                </div>
                 <div class="uk-width-1-10  uk-text-right">
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
-                        {% include 'utils/edit_spinner.html.twig' %}
                     {% else %}
                         {{ macros.actionIcons('title', item, false) }}
                     {% endif %}
                 </div>
             </div>
-
-
 
             {# title, etc. #}
             <div class="uk-flex">
@@ -803,7 +759,7 @@
             </div>
         </div>
         <div >
-            <div >    
+            <div >
                 <div >
                     <div >
                         <div>
@@ -845,18 +801,15 @@
 
     {% set preview = '' %}
     {% set content = '' %}
- 
 
     {% if not members is empty %}
-
-    
         {% set content %}
         <div class="uk-margin-top uk-margin-bottom" data-uk-grid="{gutter: 20}">
             {% for member in members %}
         <div class="uk-width-medium-1-2">
 
             <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
- 
+
                 <div class="uk-panel-teaser cs-panel-teaser-user">
                    <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ absolute_url(path('app_user_image', {'roomId': member.contextId, 'itemId': member.itemId})) }}" data-uk-tooltip title="{{ utilsMacros.userFullname(member) }}">
                     <span class="uk-text-large uk-text-middle">
@@ -893,13 +846,12 @@
                         {% else %}
                             <span class="uk-text-muted" data-uk-tooltip title="{{'no street'|trans({}) }}">---</span><br/>
                         {% endif %}
-                        
+
                         {% if member.city %}
                             <span >{{ member.zipcode }} {{ member.city }}</span>
                         {% else %}
                             <span class="uk-text-muted" data-uk-tooltip title="{{'no city'|trans({}) }}">---</span>
                         {% endif %}
-                        </span>
                     </div>
                 </div>
             </div>
@@ -911,7 +863,6 @@
     {% endif %}
     {{ macros.editContent('members', item, false, content, preview, true, true, members|length) }}
 {% endmacro %}
-
 
 {% macro statusColor(readerList, itemId, type='comment') %}
     {% if type is same as('grid') %}
