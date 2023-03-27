@@ -13,10 +13,14 @@
 
 namespace App\Services;
 
+use App\Entity\Files;
+use App\Repository\FilesRepository;
+use App\Utils\FileService;
 use cs_environment;
 use Knp\Snappy\Pdf;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Mime\MimeTypes;
 
 /**
  * Class PrintService.
@@ -29,8 +33,11 @@ class PrintService
         LegacyEnvironment $legacyEnvironment,
         private Pdf $pdf,
         private SessionInterface $session,
+        private FilesRepository $filesRepository,
+        private FileService $fileService,
         private string $proxyIp,
-        private string $proxyPort
+        private string $proxyPort,
+        private string $kernelEnv
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -46,7 +53,7 @@ class PrintService
     {
         $this->setOptions();
 
-        return $this->pdf->getOutputFromHtml($html);
+        return $this->pdf->getOutputFromHtml($this->preProcessHtml($html));
     }
 
     /**
@@ -77,7 +84,7 @@ class PrintService
     /**
      * Sets wkhtmltopdf command line options.
      */
-    private function setOptions()
+    private function setOptions(): void
     {
         $roomItem = $this->legacyEnvironment->getCurrentContextItem();
         if (CS_PRIVATEROOM_TYPE === $roomItem->getRoomType()) {
@@ -99,7 +106,7 @@ class PrintService
             'header-right' => date($dateFormat),
             'header-left' => $roomItem->getTitle(),
             'header-center' => 'CommSy',
-            'no-images' => true,
+            'no-images' => false,
             'load-media-error-handling' => 'ignore',
             'load-error-handling' => 'ignore',
             'disable-javascript' => true,
@@ -116,5 +123,25 @@ class PrintService
         $this->pdf->setOption('cookie', [
             'PHPSESSID' => $this->session->getId(),
         ]);
+    }
+
+    private function preProcessHtml(string $html): string
+    {
+        if ($this->kernelEnv !== 'prod') {
+            $html = str_replace('https://localhost', 'http://caddy', $html);
+        }
+
+        $pattern = '~src=\".*/file/(\d+?)\"~';
+        return preg_replace_callback($pattern, function ($matches) {
+            /** @var Files $file */
+            $file = $this->filesRepository->find($matches[1]);
+            if ($file) {
+                $path = $this->fileService->makeAbsolute($file);
+                $mime = (new MimeTypes())->guessMimeType($path);
+                $base64 = base64_encode(file_get_contents($path));
+                return "src=\"data:$mime;base64,$base64\"";
+            }
+            return '';
+        }, $html);
     }
 }

@@ -33,9 +33,9 @@
 
 	                    {# description #}
 	                    <div>
-	                        {{ macros.itemDescription('description', user, true, user.description) }}
+	                        {{ macros.itemDescription(user, user.description) }}
 	                    </div>
-	            
+
 	                   {# groups #}
 
                     <div>
@@ -65,12 +65,12 @@
                             </div>
                         </article>
                     </div>
-	                    
+
 	                </article>
 
-			        
+
 		{% endblock %}
-          
-        
+
+
     </body>
 </html>

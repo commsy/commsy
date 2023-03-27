@@ -34,25 +34,25 @@
                         <div>
                             {{ macros.title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray) }}
                         </div>
-                
+
                         {# description #}
                         <div>
-                            {{ macros.itemDescription('description', item, true, item.description) }}
+                            {{ macros.itemDescription(item, item.description) }}
                         </div>
-                
+
                         {# files #}
                         <div>
                             {{ macros.files(item) }}
                         </div>
-            
+
                         {# links #}
                         <div>
                             {{ macros.links(item,showHashtags,showCategories,roomCategories) }}
                         </div>
-            
-                        
+
+
                     </article>
-                
+
                 {% if articleList is not empty %}
                     <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top page-break-before">
                         <div class="uk-grid">
@@ -60,7 +60,7 @@
                                 {{ 'Abschnitte'|trans({})|capitalize }}
                             </div>
                         </div>
-                    </div>       
+                    </div>
                     {# discussion sections #}
                     {% for section in articleList %}
 
@@ -69,10 +69,10 @@
                                 <div>
                                     {{ macros.title(section, modifierList, userCount, readCount, readSinceModificationCount) }}
                                 </div>
-                                
+
                                 {# description #}
                                 <div>
-                                    {{ macros.itemDescription('description', section, true, section.description) }}
+                                    {{ macros.itemDescription(section, section.description) }}
                                 </div>
 
                                 {# files #}
@@ -83,18 +83,18 @@
                                 {%- endif %}
                                 <hr>
                             </article>
-                        
+
                     {% endfor %}
                 {% endif %}
-                
+
             </div>
         </div>
-            
 
 
-			        
+
+
 		{% endblock %}
-          
-        
+
+
     </body>
 </html>

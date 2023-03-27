@@ -445,6 +445,7 @@ services:
             $pdf: '@knp_snappy.pdf'
             $proxyIp: '%commsy.settings.proxy_ip%'
             $proxyPort: '%commsy.settings.proxy_port%'
+            $kernelEnv: '%kernel.environment%'
 
     commsy.copy_service:
         alias: App\Services\MarkedService
