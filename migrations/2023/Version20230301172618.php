@@ -11,6 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
@@ -79,30 +80,27 @@ final class Version20230301172618 extends AbstractMigration implements Container
         $qb = $queryBuilder
             ->select('f.files_id', 'f.portal_id', 'f.context_id', 'f.filename', 'f.filepath')
             ->from('files', 'f')
-            ->where('f.filepath != ""')
-            ->andWhere('f.filepath NOT LIKE CONCAT("%", f.files_id, "%")');
+            ->where('f.filepath NOT LIKE CONCAT("%", f.files_id, "%")');
 
         $files = $qb->executeQuery()->fetchAllAssociative();
 
         foreach ($files as $file) {
             // fix wrong filepath
-            if ($file['filepath']) {
-                $lastSubstringBeginningWithDot = strrchr($file['filename'], '.');
-                if ($lastSubstringBeginningWithDot) {
-                    $fileExtension = substr($lastSubstringBeginningWithDot, 1);
+            $lastSubstringBeginningWithDot = strrchr($file['filename'], '.');
+            if ($lastSubstringBeginningWithDot) {
+                $fileExtension = substr($lastSubstringBeginningWithDot, 1);
 
-                    $filePath = DbConverter::getFilePath((int) $file['portal_id'], (int) $file['context_id']);
-                    $filePath .= $file['files_id'];
-                    $filePath .= '.' . $fileExtension;
+                $filePath = DbConverter::getFilePath((int) $file['portal_id'], (int) $file['context_id']);
+                $filePath .= $file['files_id'];
+                $filePath .= '.' . $fileExtension;
 
-                    $filePath = stristr($filePath, 'files');
+                $filePath = stristr($filePath, 'files');
 
-                    $this->connection->update('files', [
-                        'filepath' => $filePath,
-                    ], [
-                        'files_id' => $file['files_id'],
-                    ]);
-                }
+                $this->connection->update('files', [
+                    'filepath' => $filePath,
+                ], [
+                    'files_id' => $file['files_id'],
+                ]);
             }
         }
     }
@@ -110,50 +108,56 @@ final class Version20230301172618 extends AbstractMigration implements Container
     private function moveRoomFiles()
     {
         $qb = $this->connection->createQueryBuilder()
-            ->select('f.context_id', 'f.filepath', 'i.context_id as pid')
-            ->from('files', 'f')
-            ->innerJoin('f', 'items', 'i', 'f.context_id = i.item_id');
+            ->select('p.id')
+            ->from('portal', 'p');
 
-        $files = $qb->executeQuery()->fetchAllAssociative();
+        $exclude = $qb->executeQuery()->fetchFirstColumn();
+        $exclude[] = '99';
 
-        $projectDirectory = $this->container->getParameter('kernel.project_dir');
         $filesDirectory = $this->container->getParameter('files_directory');
 
-        foreach ($files as $file) {
-            $filesystem = new Filesystem();
+        $filesystem = new Filesystem();
 
-            $directory = $filesDirectory . '/' . $file['pid'];
-            if ($filesystem->exists($directory)) {
-                $contextLength = strlen($file['context_id']);
-                $srcFolder = $directory . '/';
-                for ($i = 0; $i < $contextLength; ++$i) {
-                    if ($i > 0 && 0 == $i % 4) {
-                        $srcFolder .= '/';
-                    }
+        $dirFinder = new Finder();
+        $dirFinder
+            ->directories()
+            ->in($filesDirectory)
+            ->depth('== 0')
+            ->name('/\d+/')
+            ->exclude($exclude);
 
-                    $srcFolder .= $file['context_id'][$i];
-                }
-                $srcFolder .= '_';
+        $directories = iterator_to_array($dirFinder);
+        /** @var SplFileInfo $directory */
+        foreach ($directories as $directory) {
+            $directoryPath = $directory->getPathname();
+            $fileFinder = new Finder();
+            $fileFinder
+                ->files()
+                ->in($directoryPath);
 
-                if ($filesystem->exists($srcFolder)) {
-                    $finderFileNames = (new Finder())->files()
-                        ->in($srcFolder);
+            $firstFolder = $directory->getBasename();
 
-                    if ($finderFileNames->hasResults()) {
-                        foreach ($finderFileNames as $finderFile) {
-                            $filesystem->copy($finderFile->getPathname(), $projectDirectory . '/' . $file['filepath']);
-                            $filesystem->remove($finderFile->getPathname());
-                        }
-                    }
+            $qb = $this->connection->createQueryBuilder()
+                ->select('i.context_id')
+                ->from('items', 'i')
+                ->where('i.item_id = :itemId')
+                ->setParameter('itemId', $firstFolder);
 
-                    $filesystem->remove($srcFolder);
-                }
+            $portalId = $qb->executeQuery()->fetchOne();
 
-                $finderDirectory = (new Finder())->files()->in($directory);
-                if (!$finderDirectory->hasResults()) {
-                    $filesystem->remove($directory);
+            if ($portalId) {
+                /** @var SplFileInfo $file */
+                foreach ($fileFinder as $file) {
+                    $oldPathName = $file->getPathname();
+                    $newPathName = "$filesDirectory/$portalId/{$file->getRelativePathname()}";
+
+                    $this->write("Moving $oldPathName => $newPathName");
+                    $filesystem->mkdir("$filesDirectory/$portalId/{$file->getRelativePath()}");
+                    $filesystem->rename($oldPathName, $newPathName);
                 }
             }
+
+            $filesystem->remove($directoryPath);
         }
     }
 }
