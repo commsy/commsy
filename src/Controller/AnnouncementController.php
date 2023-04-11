@@ -26,6 +26,7 @@ use App\Filter\AnnouncementFilterType;
 use App\Form\DataTransformer\AnnouncementTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\AnnouncementType;
+use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
@@ -352,7 +353,7 @@ class AnnouncementController extends BaseController
         $form = $this->createForm(AnnotationType::class);
 
         $alert = null;
-        if ($infoArray['announcement']->isLocked()) {
+        if (!$this->isGranted(ItemVoter::EDIT_LOCK, $itemId)) {
             $alert['type'] = 'warning';
             $alert['content'] = $this->translator->trans('item is locked', [], 'item');
         }

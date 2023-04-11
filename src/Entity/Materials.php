@@ -140,18 +140,6 @@ class Materials
     #[ORM\Column(name: 'workflow_validity_date', type: 'datetime', nullable: true)]
     private $workflowValidityDate;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'locking_date', type: 'datetime', nullable: true)]
-    private $lockingDate;
-
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'locking_user_id', type: 'integer', nullable: true)]
-    private $lockingUserId;
-
     #[ORM\OneToMany(targetEntity: 'Section', mappedBy: 'material')]
     private Collection $sections;
 
@@ -649,54 +637,6 @@ class Materials
     public function getWorkflowValidityDate()
     {
         return $this->workflowValidityDate;
-    }
-
-    /**
-     * Set lockingDate.
-     *
-     * @param DateTime $lockingDate
-     *
-     * @return Materials
-     */
-    public function setLockingDate($lockingDate)
-    {
-        $this->lockingDate = $lockingDate;
-
-        return $this;
-    }
-
-    /**
-     * Get lockingDate.
-     *
-     * @return DateTime
-     */
-    public function getLockingDate()
-    {
-        return $this->lockingDate;
-    }
-
-    /**
-     * Set lockingUserId.
-     *
-     * @param int $lockingUserId
-     *
-     * @return Materials
-     */
-    public function setLockingUserId($lockingUserId)
-    {
-        $this->lockingUserId = $lockingUserId;
-
-        return $this;
-    }
-
-    /**
-     * Get lockingUserId.
-     *
-     * @return int
-     */
-    public function getLockingUserId()
-    {
-        return $this->lockingUserId;
     }
 
     public function isIndexable()

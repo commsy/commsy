@@ -13,7 +13,7 @@
 
 namespace App\Form\Type\Event;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormEvent;
@@ -21,8 +21,9 @@ use Symfony\Component\Form\FormEvents;
 
 class AddEtherpadFormListener implements EventSubscriberInterface
 {
-    public function __construct(private ContainerInterface $container)
-    {
+    public function __construct(
+        private ParameterBagInterface $parameterBag
+    ) {
     }
 
     public static function getSubscribedEvents()
@@ -32,7 +33,7 @@ class AddEtherpadFormListener implements EventSubscriberInterface
 
     public function onPreSetData(FormEvent $event)
     {
-        $enabled = $this->container->getParameter('commsy.etherpad.enabled');
+        $enabled = $this->parameterBag->get('commsy.etherpad.enabled');
 
         $data = $event->getData();
         $form = $event->getForm();

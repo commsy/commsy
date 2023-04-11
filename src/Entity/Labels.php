@@ -103,18 +103,6 @@ class Labels
     #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
     private $public = '0';
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'locking_date', type: 'datetime', nullable: true)]
-    private $lockingDate;
-
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'locking_user_id', type: 'integer', nullable: true)]
-    private $lockingUserId;
-
     public function isIndexable()
     {
         return null == $this->deleter && null == $this->deletionDate &&
@@ -368,54 +356,6 @@ class Labels
     public function getPublic()
     {
         return $this->public;
-    }
-
-    /**
-     * Set lockingDate.
-     *
-     * @param DateTime $lockingDate
-     *
-     * @return Labels
-     */
-    public function setLockingDate($lockingDate)
-    {
-        $this->lockingDate = $lockingDate;
-
-        return $this;
-    }
-
-    /**
-     * Get lockingDate.
-     *
-     * @return DateTime
-     */
-    public function getLockingDate()
-    {
-        return $this->lockingDate;
-    }
-
-    /**
-     * Set lockingUserId.
-     *
-     * @param int $lockingUserId
-     *
-     * @return Labels
-     */
-    public function setLockingUserId($lockingUserId)
-    {
-        $this->lockingUserId = $lockingUserId;
-
-        return $this;
-    }
-
-    /**
-     * Get lockingUserId.
-     *
-     * @return int
-     */
-    public function getLockingUserId()
-    {
-        return $this->lockingUserId;
     }
 
     /**

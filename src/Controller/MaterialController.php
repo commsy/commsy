@@ -32,6 +32,8 @@ use App\Form\Type\MaterialSectionType;
 use App\Form\Type\MaterialType;
 use App\Form\Type\SectionType;
 use App\Http\JsonRedirectResponse;
+use App\Repository\LicenseRepository;
+use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
@@ -295,23 +297,15 @@ class MaterialController extends BaseController
         int $versionId = null
     ): Response {
         $roomItem = $this->getRoom($roomId);
-        if (null === $versionId) {
-            $material = $this->materialService->getMaterial($itemId);
-        } else {
-            $material = $this->materialService->getMaterialByVersion($itemId, $versionId);
-        }
-
         $infoArray = $this->getDetailInfo($roomId, $itemId, $versionId);
 
         $canExportToWordpress = false;
-        // TODO: check if no version is specified
-        // !isset($_GET['version_id'])
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
         $alert = null;
-        if ($material->isLocked()) {
+        if (!$this->isGranted(ItemVoter::EDIT_LOCK, $itemId)) {
             $alert['type'] = 'warning';
             $alert['content'] = $this->translator->trans('item is locked', [], 'item');
         }
@@ -868,6 +862,7 @@ class MaterialController extends BaseController
         Request $request,
         CategoryService $categoryService,
         LabelService $labelService,
+        LicenseRepository $licenseRepository,
         int $roomId,
         int $itemId
     ): Response {
@@ -904,22 +899,30 @@ class MaterialController extends BaseController
             $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
             $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
 
-            $licensesRepository = $this->getDoctrine()->getRepository(License::class);
-            $availableLicenses = $licensesRepository->findByContextOrderByPosition($this->legacyEnvironment->getCurrentPortalId());
+            $availableLicenses = $licenseRepository->findByContextOrderByPosition($this->legacyEnvironment->getCurrentPortalId());
             foreach ($availableLicenses as $availableLicense) {
                 $licenses[$availableLicense->getTitle()] = $availableLicense->getId();
                 $licensesContent[$availableLicense->getId()] = $availableLicense->getContent();
             }
 
-            $form = $this->createForm(MaterialType::class, $formData, ['action' => $this->generateUrl('app_material_edit', ['roomId' => $roomId, 'itemId' => $itemId]), 'placeholderText' => '['.$this->translator->trans('insert title').']', 'categoryMappingOptions' => [
-                'categories' => $labelService->getCategories($roomId),
-                'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
-                'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId]),
-            ], 'hashtagMappingOptions' => [
-                'hashtags' => $labelService->getHashtags($roomId),
-                'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
-                'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-            ], 'licenses' => $licenses, 'room' => $current_context]);
+            $form = $this->createForm(MaterialType::class, $formData, [
+                'action' => $this->generateUrl('app_material_edit', [
+                    'roomId' => $roomId,
+                    'itemId' => $itemId,
+                ]),
+                'placeholderText' => '['.$this->translator->trans('insert title').']',
+                'categoryMappingOptions' => [
+                    'categories' => $labelService->getCategories($roomId),
+                    'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
+                    'categoryEditUrl' => $this->generateUrl('app_category_add', ['roomId' => $roomId]),
+                ], 'hashtagMappingOptions' => [
+                    'hashtags' => $labelService->getHashtags($roomId),
+                    'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
+                    'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
+                ],
+                'licenses' => $licenses,
+                'room' => $current_context,
+            ]);
 
             $this->eventDispatcher->dispatch(new CommsyEditEvent($materialItem), CommsyEditEvent::EDIT);
         } else {

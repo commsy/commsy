@@ -655,6 +655,7 @@
                                 {{ form_label(hashtag) }}
                                 </div>
                             {% endfor %}
+                            {% do form.hashtag_mapping.hashtags.setRendered() %}
                         </div>
                         <div class="uk-margin-top uk-flex">
                             <div class="uk-margin-small-left">

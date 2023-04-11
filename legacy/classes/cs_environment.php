@@ -81,12 +81,11 @@ class cs_environment
     private bool $_cache_on = true;
     private ?misc_text_converter $_misc_text_converter = null;
 
-    /** get the current user
-     * returns the current user. If there is no current user it will be returned an emtpy user_item.
-     *
-     * @return cs_user_item
+    /**
+     * get the current user
+     * returns the current user. If there is no current user it will be returned an empty user_item.
      */
-    public function getCurrentUserItem()
+    public function getCurrentUserItem(): cs_user_item
     {
         if (!isset($this->current_user)) {
             $this->current_user = new cs_user_item($this);
@@ -756,97 +755,98 @@ class cs_environment
         }
     }
 
-    /** get instance of cs_XXX_manager by item_type.
+    /**
+     * Get an instance of cs_XXX_manager by item type.
      *
-     * @param string type of an item
+     * @param string $type The item type
      */
-    public function getManager($type): ?object
+    public function getManager(string $type): ?cs_manager
     {
-        if (!empty($type)) {
-            if (CS_DATE_TYPE == $type) {
-                return $this->getDateManager();
-            } elseif (CS_TODO_TYPE == $type || 'todos' == $type) {
-                return $this->getTodosManager();
-            } elseif ('contact' == $type || 'contacts' == $type || CS_USER_TYPE == $type || 'users' == $type || 'account' == $type) {
-                return $this->getUserManager();
-            } elseif (CS_MATERIAL_TYPE == $type || 'materials' == $type) {
-                return $this->getMaterialManager();
-            } elseif (CS_ANNOTATION_TYPE == $type || 'annotations' == $type) {
-                return $this->getAnnotationManager();
-            } elseif (CS_ASSESSMENT_TYPE == $type || 'assessments' == $type) {
-                return $this->getAssessmentManager();
-            } elseif ('discussion' == $type || 'discussions' == $type) {
-                return $this->getDiscussionManager();
-            } elseif ('discarticle' == $type || 'discarticles' == $type) {
-                return $this->getDiscussionArticlesManager();
-            } elseif ('announcements' == $type || CS_ANNOUNCEMENT_TYPE == $type) {
-                return $this->getAnnouncementManager();
-            } elseif ('portfolio' == $type || CS_PORTFOLIO_TYPE == $type) {
-                return $this->getPortfolioManager();
-            } elseif (CS_TOPIC_TYPE == $type) {
-                return $this->getTopicManager();
-            } elseif ('group' == $type || 'groups' == $type) {
-                return $this->getGroupManager();
-            } elseif ('task' == $type || 'tasks' == $type) {
-                return $this->getTaskManager();
-            } elseif ('section' == $type) {
-                return $this->getSectionManager();
-            } elseif ('label' == $type) {
-                return $this->getLabelManager();
-            } elseif ('log' == $type) {
-                return $this->getLogManager();
-            } elseif ('log_archive' == $type) {
-                return $this->getLogArchiveManager();
-            } elseif (CS_PROJECT_TYPE == $type) {
-                return $this->getProjectManager();
-            } elseif (CS_STEP_TYPE == $type) {
-                return $this->getStepManager();
-            } elseif (CS_ROOM_TYPE == $type) {
-                return $this->getRoomManager();
-            } elseif (CS_COMMUNITY_TYPE == $type) {
-                return $this->getCommunityManager();
-            } elseif (CS_PRIVATEROOM_TYPE == $type) {
-                return $this->getPrivateRoomManager();
-            } elseif (CS_GROUPROOM_TYPE == $type) {
-                return $this->getGroupRoomManager();
-            } elseif (cs_userroom_item::ROOM_TYPE_USER == $type) {
-                return $this->getUserRoomManager();
-            } elseif (CS_PORTAL_TYPE == $type) {
-                return $this->getPortalManager();
-            } elseif (CS_SERVER_TYPE == $type) {
-                return $this->getServerManager();
-            } elseif (CS_FILE_TYPE == $type) {
-                return $this->getFileManager();
-            } elseif (CS_LINK_TYPE == $type) {
-                return $this->getLinkManager();
-            } elseif (CS_LINKITEM_TYPE == $type) {
-                return $this->getLinkItemManager();
-            } elseif (CS_LINKMODITEM_TYPE == $type) {
-                return $this->getLinkModifierItemManager();
-            } elseif (CS_LINKITEMFILE_TYPE == $type) {
-                return $this->getLinkItemFileManager();
-            } elseif (CS_ITEM_TYPE == $type || 'items' == $type) {
-                return $this->getItemManager();
-            } elseif (CS_READER_TYPE == $type) {
-                return $this->getReaderManager();
-            } elseif (CS_NOTICED_TYPE == $type) {
-                return $this->getNoticedManager();
-            } elseif (CS_TIME_TYPE == $type) {
-                return $this->getTimeManager();
-            } elseif (CS_TAG_TYPE == $type) {
-                return $this->getTagManager();
-            } elseif (CS_TAG2TAG_TYPE == $type) {
-                return $this->getTag2TagManager();
-            } elseif (CS_BUZZWORD_TYPE == $type) {
-                return $this->getBuzzwordManager();
-            } elseif (CS_ENTRY_TYPE == $type) {
-                return $this->getEntryManager();
-            } else {
-                trigger_error('do not know this type [' . $type . ']', E_USER_ERROR);
-            }
+        if (empty($type)) {
+            return null;
         }
 
-        return null;
+        if (CS_DATE_TYPE == $type) {
+            return $this->getDateManager();
+        } elseif (CS_TODO_TYPE == $type || 'todos' == $type) {
+            return $this->getTodosManager();
+        } elseif ('contact' == $type || 'contacts' == $type || CS_USER_TYPE == $type || 'users' == $type || 'account' == $type) {
+            return $this->getUserManager();
+        } elseif (CS_MATERIAL_TYPE == $type || 'materials' == $type) {
+            return $this->getMaterialManager();
+        } elseif (CS_ANNOTATION_TYPE == $type || 'annotations' == $type) {
+            return $this->getAnnotationManager();
+        } elseif (CS_ASSESSMENT_TYPE == $type || 'assessments' == $type) {
+            return $this->getAssessmentManager();
+        } elseif ('discussion' == $type || 'discussions' == $type) {
+            return $this->getDiscussionManager();
+        } elseif ('discarticle' == $type || 'discarticles' == $type) {
+            return $this->getDiscussionArticlesManager();
+        } elseif ('announcements' == $type || CS_ANNOUNCEMENT_TYPE == $type) {
+            return $this->getAnnouncementManager();
+        } elseif ('portfolio' == $type || CS_PORTFOLIO_TYPE == $type) {
+            return $this->getPortfolioManager();
+        } elseif (CS_TOPIC_TYPE == $type) {
+            return $this->getTopicManager();
+        } elseif ('group' == $type || 'groups' == $type) {
+            return $this->getGroupManager();
+        } elseif ('task' == $type || 'tasks' == $type) {
+            return $this->getTaskManager();
+        } elseif ('section' == $type) {
+            return $this->getSectionManager();
+        } elseif ('label' == $type) {
+            return $this->getLabelManager();
+        } elseif ('log' == $type) {
+            return $this->getLogManager();
+        } elseif ('log_archive' == $type) {
+            return $this->getLogArchiveManager();
+        } elseif (CS_PROJECT_TYPE == $type) {
+            return $this->getProjectManager();
+        } elseif (CS_STEP_TYPE == $type) {
+            return $this->getStepManager();
+        } elseif (CS_ROOM_TYPE == $type) {
+            return $this->getRoomManager();
+        } elseif (CS_COMMUNITY_TYPE == $type) {
+            return $this->getCommunityManager();
+        } elseif (CS_PRIVATEROOM_TYPE == $type) {
+            return $this->getPrivateRoomManager();
+        } elseif (CS_GROUPROOM_TYPE == $type) {
+            return $this->getGroupRoomManager();
+        } elseif (cs_userroom_item::ROOM_TYPE_USER == $type) {
+            return $this->getUserRoomManager();
+        } elseif (CS_PORTAL_TYPE == $type) {
+            return $this->getPortalManager();
+        } elseif (CS_SERVER_TYPE == $type) {
+            return $this->getServerManager();
+        } elseif (CS_FILE_TYPE == $type) {
+            return $this->getFileManager();
+        } elseif (CS_LINK_TYPE == $type) {
+            return $this->getLinkManager();
+        } elseif (CS_LINKITEM_TYPE == $type) {
+            return $this->getLinkItemManager();
+        } elseif (CS_LINKMODITEM_TYPE == $type) {
+            return $this->getLinkModifierItemManager();
+        } elseif (CS_LINKITEMFILE_TYPE == $type) {
+            return $this->getLinkItemFileManager();
+        } elseif (CS_ITEM_TYPE == $type || 'items' == $type) {
+            return $this->getItemManager();
+        } elseif (CS_READER_TYPE == $type) {
+            return $this->getReaderManager();
+        } elseif (CS_NOTICED_TYPE == $type) {
+            return $this->getNoticedManager();
+        } elseif (CS_TIME_TYPE == $type) {
+            return $this->getTimeManager();
+        } elseif (CS_TAG_TYPE == $type) {
+            return $this->getTagManager();
+        } elseif (CS_TAG2TAG_TYPE == $type) {
+            return $this->getTag2TagManager();
+        } elseif (CS_BUZZWORD_TYPE == $type) {
+            return $this->getBuzzwordManager();
+        } elseif (CS_ENTRY_TYPE == $type) {
+            return $this->getEntryManager();
+        } else {
+            throw new LogicException('do not know this type [' . $type . ']');
+        }
     }
 
     /** get boolean, if you are in the community room or not.

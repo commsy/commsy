@@ -237,7 +237,10 @@
                     </div>
 
                     {# description #}
-                    <div id="description{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
+                    <div id="description{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
+                        editUrl: '{{ path('app_item_editdescription', { 'roomId': todo.contextId, 'itemId': todo.itemId, 'draft': draft }) }}',
+                        cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': todo.contextId, 'itemId': todo.itemId }) }}'
+                    }">
                         {{ macrosItem.itemDescription('description', todo, true, todo.description, draft) }}
                     </div>
 
@@ -417,7 +420,10 @@
                             </div>
 
                             {# description #}
-                            <div id="description{{ step.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': step.contextId, 'itemId': step.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': step.contextId, 'itemId': step.itemId}) }}' }">
+                            <div id="description{{ step.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
+                                editUrl: '{{ path('app_item_editdescription', { 'roomId': step.contextId, 'itemId': step.itemId }) }}',
+                                cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': step.contextId, 'itemId': step.itemId }) }}'
+                            }">
                                 {{ macrosItem.itemDescription('description', step, true, step.description) }}
                             </div>
 

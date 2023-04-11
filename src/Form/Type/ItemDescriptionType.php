@@ -102,7 +102,10 @@ class ItemDescriptionType extends AbstractType
     {
         $resolver
             ->setRequired(['itemId', 'configName', 'uploadUrl', 'filelistUrl'])
-            ->setDefaults(['translation_domain' => 'form'])
+            ->setDefaults([
+                'translation_domain' => 'form',
+                'lock_protection' => true,
+            ])
         ;
     }
 

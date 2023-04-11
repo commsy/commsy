@@ -29,13 +29,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ExtensionSettingsType extends AbstractType
 {
-    private cs_environment $legacyEnvironment;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-    }
-
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.

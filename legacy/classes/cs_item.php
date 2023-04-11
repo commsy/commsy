@@ -12,10 +12,13 @@
  */
 
 use App\Entity\Portal;
+use App\Lock\LockManager;
 use App\Proxy\PortalProxy;
 use App\Repository\MaterialsRepository;
+use App\Security\Authorization\Voter\ItemVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
+use Symfony\Component\Security\Core\Security;
 
 class cs_item
 {
@@ -1473,28 +1476,15 @@ class cs_item
         }
 
         if (true === $access) {
-            // check locking
-            global $symfonyContainer;
-            $checkLocking = $symfonyContainer->getParameter('commsy.settings.item_locking');
-            $checkLocking &= !$this->_issetExtra('etherpad_id'); // don't check locking for etherpads
+            // don't check locking for etherpads
+            if ($this->_issetExtra('etherpad_id')) {
+                $access = true;
+            } else {
+                global $symfonyContainer;
 
-            if ($checkLocking && !$user_item->isRoot() && method_exists($this, 'getLockingDate') && method_exists($this, 'getLockingUserId') && $this->hasLocking()) {
-                $lockingUserId = $this->getLockingUserId();
-
-                // grant access if there is no lock or we are the user who has created it
-                if (!$lockingUserId || $lockingUserId == $user_item->getItemId()) {
-                    $access = true;
-                } else {
-                    // if there is a lock, check the date
-                    $lockingDate = $this->getLockingDate();
-                    if ($lockingDate) {
-                        $editDate = new DateTime($lockingDate);
-                        $compareDate = new DateTime();
-                        $compareDate->modify('-20 minutes');
-
-                        $access = ($compareDate >= $editDate);
-                    }
-                }
+                /** @var Security $security */
+                $security = $symfonyContainer->get('app.security');
+                $access = $security->isGranted(ItemVoter::EDIT_LOCK, $this->getItemID());
             }
         } else {
             // NOTE: for guest users, $privateRoomUserItem will be null
@@ -1511,7 +1501,6 @@ class cs_item
                     }
 
                     return $mayEdit;
-                    break;
             }
         }
 
@@ -2559,64 +2548,6 @@ class cs_item
         }
 
         return false;
-    }
-
-    /**
-     * returns the locking date.
-     *
-     * @return Date
-     */
-    public function getLockingDate()
-    {
-        return $this->_getValue('locking_date');
-    }
-
-    /*
-     * returns the locking user id
-     *
-     * @return int
-     */
-    public function getLockingUserId()
-    {
-        return $this->_getValue('locking_user_id');
-    }
-
-    public function hasLocking()
-    {
-        return in_array($this->getItemType(), [CS_MATERIAL_TYPE, CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_GROUP_TYPE, CS_TODO_TYPE, CS_TOPIC_TYPE]);
-    }
-
-    public function lock()
-    {
-        $this->_environment->getManager($this->getItemType())->updateLocking($this->getItemId(), date('Y-m-d H:i:s'));
-    }
-
-    public function unlock()
-    {
-        $this->_environment->getManager($this->getItemType())->clearLocking($this->getItemId());
-    }
-
-    public function isLocked()
-    {
-        if ($this->getLockingDate() && '' != $this->getLockingDate()) {
-            $editDate = new DateTime($this->getLockingDate());
-            $compareDate = new DateTime();
-            $compareDate->modify('-20 minutes');
-
-            if ($compareDate < $editDate) {
-                if ($this->getLockingUserId() == $this->_environment->getCurrentUser()->getItemId()) {
-                    return false;
-                } else {
-                    return true;
-                }
-            } else {
-                $this->unlock();
-
-                return false;
-            }
-        } else {
-            return false;
-        }
     }
 
      protected function replaceElasticItem(ObjectPersisterInterface $objectPersister, $repository)

@@ -265,7 +265,10 @@
                     </div>
 
                     {# description #}
-                    <div id="description{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                    <div id="description{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
+                        editUrl: '{{ path('app_item_editdescription', { 'roomId': material.contextId, 'itemId': material.itemId, 'draft': draft }) }}',
+                        cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': material.contextId, 'itemId': material.itemId }) }}'
+                    }">
                         {{ macrosItem.itemDescription('description', material, true, material.description, draft) }}
                     </div>
 
@@ -403,7 +406,10 @@
                             </div>
 
                             {# description #}
-                            <div id="description{{ section.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+                            <div id="description{{ section.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
+                                editUrl: '{{ path('app_item_editdescription', { 'roomId': section.contextId, 'itemId': section.itemId }) }}',
+                                cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': section.contextId, 'itemId': section.itemId }) }}'
+                            }">
                                 {{ macrosItem.itemDescription('description', section, true, section.description) }}
                             </div>
 

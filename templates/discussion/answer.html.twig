@@ -87,8 +87,8 @@
     </header>
     <div class="uk-comment-body">
         <div id="description{{ article.itemId }}" class="cs-edit-section" data-uk-observe data-cs-edit="{{ {
-            'editUrl': path('app_item_editdescription', {'roomId': article.contextId, 'itemId': article.itemId}),
-            'cancelEditUrl': path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}),
+            'editUrl': path('app_item_editdescription', { 'roomId': article.contextId, 'itemId': article.itemId } ),
+            'cancelEditUrl': path('app_item_canceledit', { 'roomId': article.contextId, 'itemId': article.itemId} ),
             'toggleSelect': '#edit_toggle_' ~ article.itemId
         }|json_encode|e('html_attr') }}">
             {{ article.description|decodeHtmlEntity|raw }}

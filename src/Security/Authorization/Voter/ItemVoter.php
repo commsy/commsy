@@ -15,12 +15,14 @@ namespace App\Security\Authorization\Voter;
 
 use App\Entity\Account;
 use App\Entity\Portal;
+use App\Lock\LockManager;
 use App\Proxy\PortalProxy;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
 use cs_environment;
+use cs_item;
 use cs_room_item;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,6 +42,7 @@ class ItemVoter extends Voter
     public const ENTER = 'ITEM_ENTER';
     public const USERROOM = 'ITEM_USERROOM';
     public const DELETE = 'ITEM_DELETE';
+    public const EDIT_LOCK = 'ITEM_EDIT_LOCK';
 
     private cs_environment $legacyEnvironment;
 
@@ -49,7 +52,8 @@ class ItemVoter extends Voter
         private RoomService $roomService,
         private UserService $userService,
         private RequestStack $requestStack,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private LockManager $lockManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -65,6 +69,7 @@ class ItemVoter extends Voter
             self::ENTER,
             self::USERROOM,
             self::DELETE,
+            self::EDIT_LOCK,
         ]);
     }
 
@@ -115,6 +120,9 @@ class ItemVoter extends Voter
 
                 case self::DELETE:
                     return $this->canDelete($item, $currentUser);
+
+                case self::EDIT_LOCK:
+                    return $this->canEditLock($item, $currentUser);
             }
         } else {
             if ('NEW' == $itemId) {
@@ -135,7 +143,7 @@ class ItemVoter extends Voter
         throw new LogicException('This code should not be reached!');
     }
 
-    private function canView($item, $currentUser)
+    private function canView(cs_item $item, cs_user_item $currentUser)
     {
         if ($item->isDeleted()) {
             return false;
@@ -148,7 +156,7 @@ class ItemVoter extends Voter
         return false;
     }
 
-    private function canEdit($item, cs_user_item $currentUser): bool
+    private function canEdit(cs_item $item, cs_user_item $currentUser): bool
     {
         $contextItem = $item->getContextItem();
         if (null !== $contextItem && method_exists($contextItem, 'getArchived') && $contextItem->getArchived()) {
@@ -160,10 +168,8 @@ class ItemVoter extends Voter
             return false;
         }
 
-        if ($item->hasLocking()) {
-            if ($item->isLocked()) {
-                return false;
-            }
+        if (!$this->canEditLock($item, $currentUser)) {
+            return false;
         }
 
         if (CS_DATE_TYPE == $item->getItemType()) {
@@ -174,7 +180,7 @@ class ItemVoter extends Voter
 
         if (CS_DISCUSSION_TYPE == $item->getItemType()) {
             $request = $this->requestStack->getCurrentRequest();
-            if ('app_discussion_createarticle' == $request->get('_route')) {
+            if ('app_discussion_createanswer' == $request->get('_route')) {
                 return true;
             }
         }
@@ -192,7 +198,7 @@ class ItemVoter extends Voter
         return false;
     }
 
-    private function canAnnotate($item, $currentUser)
+    private function canAnnotate(cs_item $item, cs_user_item $currentUser)
     {
         $userStatus = $currentUser->getStatus();
         if (2 == $userStatus || 3 == $userStatus) { // user & moderator
@@ -204,7 +210,7 @@ class ItemVoter extends Voter
         return false;
     }
 
-    private function canParticipate($item, $currentUser)
+    private function canParticipate(cs_item $item, cs_user_item $currentUser)
     {
         $userStatus = $currentUser->getStatus();
         if (2 == $userStatus || 3 == $userStatus || 4 == $userStatus) { // user, moderator & read-only user
@@ -216,7 +222,7 @@ class ItemVoter extends Voter
         return false;
     }
 
-    private function canModerate($item, $currentUser)
+    private function canModerate(cs_item$item, cs_user_item $currentUser)
     {
         if (3 == $currentUser->getStatus()) {
             return true;
@@ -225,7 +231,7 @@ class ItemVoter extends Voter
         return false;
     }
 
-    private function canEnter($item, $currentUser, $user)
+    private function canEnter(cs_item|PortalProxy $item, $currentUser, $user): bool
     {
         if ($item->isPrivateRoom()) {
             return true;
@@ -283,6 +289,15 @@ class ItemVoter extends Voter
         }
 
         return false;
+    }
+
+    private function canEditLock(cs_item $item, cs_user_item $currentUser): bool
+    {
+        if ($currentUser->isRoot() || !$this->lockManager->supportsLocking($item->getItemID())) {
+            return true;
+        }
+
+        return $this->lockManager->userCanLock($item->getItemID());
     }
 
     private function hasUserroomItemPrivileges($item, $currentUser)

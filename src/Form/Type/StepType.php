@@ -72,7 +72,10 @@ class StepType extends AbstractType
     {
         $resolver
             ->setRequired(['placeholderText'])
-            ->setDefaults(['translation_domain' => 'form'])
+            ->setDefaults([
+                'translation_domain' => 'form',
+                'lock_protection' => true,
+            ])
         ;
     }
 }

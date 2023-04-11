@@ -85,6 +85,9 @@ class UploadType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
+            ->setDefaults([
+                'lock_protection' => true,
+            ])
             ->setRequired(['uploadUrl'])
         ;
     }

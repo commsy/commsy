@@ -40,7 +40,10 @@ class MaterialSectionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(['translation_domain' => 'form'])
+            ->setDefaults([
+                'translation_domain' => 'form',
+                'lock_protection' => true,
+            ])
         ;
     }
 
