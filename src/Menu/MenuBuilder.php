@@ -519,6 +519,12 @@ class MenuBuilder
             return $menu;
         }
 
+        // return empty for portal context (room list)
+        $portal = $this->portalRepository->find($roomId);
+        if ($portal) {
+            return $menu;
+        }
+
         // dashboard
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
