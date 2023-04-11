@@ -38,7 +38,10 @@
 
         {% if new is defined and new %}
             {# description #}
-            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': step.contextId, 'itemId': step.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': step.contextId, 'itemId': step.itemId}) }}' }">
+            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
+                editUrl: '{{ path('app_item_editdescription', { 'roomId': step.contextId, 'itemId': step.itemId }) }}',
+                cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': step.contextId, 'itemId': step.itemId }) }}'
+            }">
                 {{ macrosItem.itemDescription('description', step, true, step.description, step.draft) }}
             </div>
 

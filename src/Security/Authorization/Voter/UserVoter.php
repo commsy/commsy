@@ -16,6 +16,7 @@ namespace App\Security\Authorization\Voter;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use cs_environment;
 use cs_room_item;
 use cs_user_item;
 use LogicException;
@@ -28,10 +29,13 @@ class UserVoter extends Voter
     public const ROOM_MODERATOR = 'ROOM_MODERATOR';
     public const PARENT_ROOM_MODERATOR = 'PARENT_ROOM_MODERATOR';
 
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private UserService $userService, private RoomService $roomService)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private UserService $userService,
+        private RoomService $roomService
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 

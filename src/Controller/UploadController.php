@@ -69,21 +69,7 @@ class UploadController extends AbstractController
                     <other> ->  attachment to item
 
                     $file is an instance of Symfony\Component\HttpFoundation\File\UploadedFile
-                    Array
-                    (
-                        [0] => Symfony\Component\HttpFoundation\File\UploadedFile Object
-                            (
-                                [test:Symfony\Component\HttpFoundation\File\UploadedFile:private] =>
-                                [originalName:Symfony\Component\HttpFoundation\File\UploadedFile:private] => box_checked.png
-                                [mimeType:Symfony\Component\HttpFoundation\File\UploadedFile:private] => image/png
-                                [size:Symfony\Component\HttpFoundation\File\UploadedFile:private] => 2329
-                                [error:Symfony\Component\HttpFoundation\File\UploadedFile:private] => 0
-                                [pathName:SplFileInfo:private] => /tmp/phpjoYeVn
-                                [fileName:SplFileInfo:private] => phpjoYeVn
-                            )
-                    )
                 */
-
                 switch ($item->getItemType()) {
                     case 'user':
                         $srcfile = $file->getPathname();
@@ -216,11 +202,7 @@ class UploadController extends AbstractController
             $assignedFiles['files'][] = $formFile;
         }
 
-        if (in_array($item->getItemType(), [CS_SECTION_TYPE, CS_STEP_TYPE, CS_DISCARTICLE_TYPE])) {
-            $eventDispatcher->dispatch(new CommsyEditEvent($item->getLinkedItem()), CommsyEditEvent::EDIT);
-        } else {
-            $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
-        }
+        $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
 
         $form = $this->createForm(UploadType::class, $assignedFiles, [
             'uploadUrl' => $this->generateUrl('app_upload_upload', [
@@ -314,11 +296,7 @@ class UploadController extends AbstractController
         $tempManager = $legacyEnvironment->getManager($item->getItemType());
         $tempItem = $tempManager->getItem($item->getItemId());
 
-        if (in_array($item->getItemType(), [CS_SECTION_TYPE, CS_STEP_TYPE, CS_DISCARTICLE_TYPE])) {
-            $eventDispatcher->dispatch(new CommsyEditEvent($item->getLinkedItem()), CommsyEditEvent::SAVE);
-        } else {
-            $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
-        }
+        $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
 
         return $this->render('upload/upload_save.html.twig', ['roomId' => $roomId, 'item' => $tempItem]);
     }

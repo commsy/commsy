@@ -122,18 +122,6 @@ class Discussions
     private $extras;
 
     /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'locking_date', type: 'datetime', nullable: true)]
-    private $lockingDate;
-
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'locking_user_id', type: 'integer', nullable: true)]
-    private $lockingUserId;
-
-    /**
      * @var Discussionarticles[]|null
      */
     #[ORM\OneToMany(targetEntity: 'Discussionarticles', mappedBy: 'discussion')]
@@ -475,54 +463,6 @@ class Discussions
     public function getExtras()
     {
         return $this->extras;
-    }
-
-    /**
-     * Set lockingDate.
-     *
-     * @param DateTime $lockingDate
-     *
-     * @return Discussions
-     */
-    public function setLockingDate($lockingDate)
-    {
-        $this->lockingDate = $lockingDate;
-
-        return $this;
-    }
-
-    /**
-     * Get lockingDate.
-     *
-     * @return DateTime
-     */
-    public function getLockingDate()
-    {
-        return $this->lockingDate;
-    }
-
-    /**
-     * Set lockingUserId.
-     *
-     * @param int $lockingUserId
-     *
-     * @return Discussions
-     */
-    public function setLockingUserId($lockingUserId)
-    {
-        $this->lockingUserId = $lockingUserId;
-
-        return $this;
-    }
-
-    /**
-     * Get lockingUserId.
-     *
-     * @return int
-     */
-    public function getLockingUserId()
-    {
-        return $this->lockingUserId;
     }
 
     /**

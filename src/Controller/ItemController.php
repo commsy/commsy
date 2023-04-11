@@ -120,6 +120,7 @@ class ItemController extends AbstractController
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             ]),
+            'lock_protection' => !$draft,
         ];
 
         $withRecurrence = false;
@@ -131,11 +132,7 @@ class ItemController extends AbstractController
             }
         }
 
-        if (in_array($item->getItemType(), [CS_SECTION_TYPE, CS_STEP_TYPE, CS_DISCARTICLE_TYPE])) {
-            $eventDispatcher->dispatch(new CommsyEditEvent($item->getLinkedItem()), CommsyEditEvent::EDIT);
-        } else {
-            $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
-        }
+        $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
 
         $form = $this->createForm(ItemDescriptionType::class, $formData, $formOptions);
         $form->handleRequest($request);
@@ -196,11 +193,7 @@ class ItemController extends AbstractController
             $modifierList[$tempItem->getItemId()] = $itemService->getAdditionalEditorsForItem($tempItem);
         }
 
-        if (in_array($item->getItemType(), [CS_SECTION_TYPE, CS_STEP_TYPE, CS_DISCARTICLE_TYPE])) {
-            $eventDispatcher->dispatch(new CommsyEditEvent($item->getLinkedItem()), CommsyEditEvent::SAVE);
-        } else {
-            $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
-        }
+        $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
 
         return $this->render('item/save_description.html.twig', [
             // etherpad subscriber (material save)
@@ -1071,11 +1064,7 @@ class ItemController extends AbstractController
     ): Response {
         $item = $itemService->getTypedItem($itemId);
 
-        if (CS_SECTION_TYPE === $item->getItemType() || CS_STEP_TYPE === $item->getItemType()) {
-            $eventDispatcher->dispatch(new CommsyEditEvent($item->getLinkedItem()), CommsyEditEvent::CANCEL);
-        } else {
-            $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::CANCEL);
-        }
+        $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::CANCEL);
 
         return $this->render('item/cancel_edit.html.twig', ['canceledEdit' => true, 'roomId' => $roomId, 'item' => $item]);
     }

@@ -32,7 +32,6 @@ class FileVoter extends Voter
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private ItemService $itemService,
         private FileService $fileService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();

@@ -450,6 +450,10 @@
                 <source>Validation failed. Please check the form for errors.</source>
                 <target>Prüfung fehlgeschlagen. Bitte überprüfen Sie das Formular auf Fehler.</target>
             </trans-unit>
+            <trans-unit id="form_validation_lock">
+                <source>form.validation.lock</source>
+                <target>Der Eintrag wurde von einer anderen Person verändert. Bitte speichern Sie Ihre Änderungen manuell und laden Sie die Seite neu.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

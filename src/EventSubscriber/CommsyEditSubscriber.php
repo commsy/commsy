@@ -14,58 +14,82 @@
 namespace App\EventSubscriber;
 
 use App\Event\CommsyEditEvent;
+use App\Lock\LockManager;
 use App\Services\CalendarsService;
 use App\Utils\ReaderService;
 use cs_item;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class CommsyEditSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private ContainerInterface $container, private ReaderService $readerService, private CalendarsService $calendarsService)
-    {
+    public function __construct(
+        private ReaderService $readerService,
+        private CalendarsService $calendarsService,
+        private LockManager $lockManager,
+        private RequestStack $requestStack
+    ) {
     }
 
     public function onCommsyEdit(CommsyEditEvent $event)
     {
-        if ($event->getItem() instanceof cs_item) {
-            if ($event->getItem()->hasLocking()) {
-                $event->getItem()->lock();
-            }
+        if (!$event->getItem() instanceof cs_item) {
+            return;
+        }
+
+        $request = $this->requestStack->getCurrentRequest();
+        if (!$request || !$request->isMethod('GET')) {
+            return;
+        }
+
+        /** @var cs_item $item */
+        $item = $event->getItem();
+        if ($this->lockManager->supportsLocking($item->getItemID())) {
+            $this->lockManager->lockEntry($this->lockManager->getItemIdForLock($item->getItemID()));
         }
     }
 
     public function onCommsySave(CommsyEditEvent $event)
     {
-        if ($event->getItem() instanceof cs_item) {
-            /** @var cs_item $item */
-            $item = $event->getItem();
-
-            if ($item->hasLocking()) {
-                $item->unlock();
-            }
-            if (CS_DATE_TYPE == $item->getItemType()) {
-                if (!$item->isDraft()) {
-                    $this->calendarsService->updateSynctoken($item->getCalendarId());
-                }
-            }
-
-            $this->updateSearchIndex($item);
+        if (!$event->getItem() instanceof cs_item) {
+            return;
         }
+
+        /** @var cs_item $item */
+        $item = $event->getItem();
+        if ($this->lockManager->supportsLocking($item->getItemID())) {
+            $this->lockManager->unlockEntry($this->lockManager->getItemIdForLock($item->getItemID()));
+        }
+
+        if (CS_DATE_TYPE == $item->getItemType()) {
+            if (!$item->isDraft()) {
+                $this->calendarsService->updateSynctoken($item->getCalendarId());
+            }
+        }
+
+        $this->updateSearchIndex($item);
     }
 
     public function onCommsyCancel(CommsyEditEvent $event)
     {
-        if ($event->getItem() instanceof cs_item) {
-            if ($event->getItem()->hasLocking()) {
-                $event->getItem()->unlock();
-            }
+        if (!$event->getItem() instanceof cs_item) {
+            return;
+        }
+
+        /** @var cs_item $item */
+        $item = $event->getItem();
+        if ($this->lockManager->supportsLocking($item->getItemID())) {
+            $this->lockManager->unlockEntry($this->lockManager->getItemIdForLock($item->getItemID()));
         }
     }
 
     public static function getSubscribedEvents()
     {
-        return [CommsyEditEvent::EDIT => ['onCommsyEdit', 0], CommsyEditEvent::SAVE => ['onCommsySave', 0], CommsyEditEvent::CANCEL => ['onCommsyCancel', 0]];
+        return [
+            CommsyEditEvent::EDIT => 'onCommsyEdit',
+            CommsyEditEvent::SAVE => 'onCommsySave',
+            CommsyEditEvent::CANCEL => 'onCommsyCancel',
+        ];
     }
 
     /**

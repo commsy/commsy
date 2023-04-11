@@ -11,6 +11,7 @@
                 {{ form_errors(form.title) }}
             </div>
         </div>
+
         {% if form.vars.name != "section"  %}
             <div class="uk-margin-small-left uk-margin-small-top">
                 {% if form.editor_switch is defined %}
@@ -96,8 +97,7 @@
                 {{ form_row(form.cancel) }}
             </div>
         </div>
-        {{ form_row(form._token) }}
-        {{ form_end(form, {'render_rest': false}) }}
+        {{ form_end(form) }}
     </div>
 </div>
 

@@ -31,6 +31,7 @@ use App\Form\Type\GroupType;
 use App\Http\JsonDataResponse;
 use App\Mail\Mailer;
 use App\Room\Copy\LegacyCopy;
+use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
@@ -303,7 +304,7 @@ class GroupController extends BaseController
         $form = $this->createForm(AnnotationType::class);
 
         $alert = null;
-        if ($infoArray['group']->isLocked()) {
+        if (!$this->isGranted(ItemVoter::EDIT_LOCK, $itemId)) {
             $alert['type'] = 'warning';
             $alert['content'] = $this->translator->trans('item is locked', [], 'item');
         }

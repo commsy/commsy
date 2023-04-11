@@ -124,18 +124,6 @@ class Todos
     #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
     private $extras;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'locking_date', type: 'datetime', nullable: true)]
-    private $lockingDate;
-
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'locking_user_id', type: 'integer', nullable: true)]
-    private $lockingUserId;
-
     #[ORM\OneToMany(targetEntity: 'Step', mappedBy: 'todo')]
     private Collection $steps;
 
@@ -511,54 +499,6 @@ class Todos
     public function getExtras()
     {
         return $this->extras;
-    }
-
-    /**
-     * Set lockingDate.
-     *
-     * @param DateTime $lockingDate
-     *
-     * @return Todos
-     */
-    public function setLockingDate($lockingDate)
-    {
-        $this->lockingDate = $lockingDate;
-
-        return $this;
-    }
-
-    /**
-     * Get lockingDate.
-     *
-     * @return DateTime
-     */
-    public function getLockingDate()
-    {
-        return $this->lockingDate;
-    }
-
-    /**
-     * Set lockingUserId.
-     *
-     * @param int $lockingUserId
-     *
-     * @return Todos
-     */
-    public function setLockingUserId($lockingUserId)
-    {
-        $this->lockingUserId = $lockingUserId;
-
-        return $this;
-    }
-
-    /**
-     * Get lockingUserId.
-     *
-     * @return int
-     */
-    public function getLockingUserId()
-    {
-        return $this->lockingUserId;
     }
 
     /**

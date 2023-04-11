@@ -88,10 +88,18 @@ class GroupType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(['placeholderText', 'hashtagMappingOptions', 'categoryMappingOptions', 'room', 'templates']);
-
-        $resolver->setDefaults(['translation_domain' => 'form']);
-
-        $resolver->setAllowedTypes('room', 'cs_context_item');
+        $resolver
+            ->setRequired([
+                'placeholderText',
+                'hashtagMappingOptions',
+                'categoryMappingOptions',
+                'room',
+                'templates',
+            ])
+            ->setDefaults([
+                'translation_domain' => 'form',
+                'lock_protection' => true,
+            ])
+            ->setAllowedTypes('room', 'cs_context_item');
     }
 }

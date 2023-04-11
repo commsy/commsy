@@ -165,18 +165,6 @@ class Dates
     private $recurrencePattern;
 
     /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'locking_date', type: 'datetime', nullable: true)]
-    private $lockingDate;
-
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'locking_user_id', type: 'integer', nullable: true)]
-    private $lockingUserId;
-
-    /**
      * @var bool
      */
     #[ORM\Column(name: 'external', type: 'boolean', nullable: false)]
@@ -711,54 +699,6 @@ class Dates
     public function getRecurrencePattern()
     {
         return $this->recurrencePattern;
-    }
-
-    /**
-     * Set lockingDate.
-     *
-     * @param DateTime $lockingDate
-     *
-     * @return Dates
-     */
-    public function setLockingDate($lockingDate)
-    {
-        $this->lockingDate = $lockingDate;
-
-        return $this;
-    }
-
-    /**
-     * Get lockingDate.
-     *
-     * @return DateTime
-     */
-    public function getLockingDate()
-    {
-        return $this->lockingDate;
-    }
-
-    /**
-     * Set lockingUserId.
-     *
-     * @param int $lockingUserId
-     *
-     * @return Dates
-     */
-    public function setLockingUserId($lockingUserId)
-    {
-        $this->lockingUserId = $lockingUserId;
-
-        return $this;
-    }
-
-    /**
-     * Get lockingUserId.
-     *
-     * @return int
-     */
-    public function getLockingUserId()
-    {
-        return $this->lockingUserId;
     }
 
     /**

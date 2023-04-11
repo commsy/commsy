@@ -32,19 +32,55 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class MaterialType extends AbstractType
 {
-    public function __construct(private AddEtherpadFormListener $etherpadFormListener)
-    {
+    public function __construct(
+        private AddEtherpadFormListener $etherpadFormListener
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, ['constraints' => [new NotBlank()], 'label' => 'title', 'attr' => ['placeholder' => $options['placeholderText'], 'class' => 'uk-form-width-medium cs-form-title'], 'translation_domain' => 'material'])
-            ->add('permission', CheckboxType::class, ['label' => 'permission', 'required' => false, 'label_attr' => ['class' => 'uk-form-label']])
-            ->add('hidden', CheckboxType::class, ['label' => 'hidden', 'required' => false])
-            ->add('hiddendate', DateTimeSelectType::class, ['label' => 'hidden until'])
+            ->add('title', TextType::class, [
+                'constraints' => [new NotBlank()],
+                'label' => 'title',
+                'attr' => [
+                    'placeholder' => $options['placeholderText'],
+                    'class' => 'uk-form-width-medium cs-form-title',
+                ],
+                'translation_domain' => 'material',
+            ])
+            ->add('permission', CheckboxType::class, [
+                'label' => 'permission',
+                'required' => false,
+                'label_attr' => ['class' => 'uk-form-label'],
+            ])
+            ->add('hidden', CheckboxType::class, [
+                'label' => 'hidden',
+                'required' => false,
+            ])
+            ->add('hiddendate', DateTimeSelectType::class, [
+                'label' => 'hidden until',
+            ])
+            ->add('biblio_select', ChoiceType::class, [
+                'choices' => [
+                    'plain' => 'BiblioPlainType',
+                    'book' => 'BiblioBookType',
+                    'collection' => 'BiblioCollectionType',
+                    'article' => 'BiblioArticleType',
+                    'journal' => 'BiblioJournalType',
+                    'chapter' => 'BiblioChapterType',
+                    'newspaper' => 'BiblioNewspaperType',
+                    'thesis' => 'BiblioThesisType',
+                    'manuscript' => 'BiblioManuscriptType',
+                    'website' => 'BiblioWebsiteType',
+                    'document management' => 'BiblioDocManagementType',
+                    'picture' => 'BiblioPictureType',
+                ],
+                'label' => 'bib reference',
+                'choice_translation_domain' => true,
+                'required' => false,
+            ])
             ->addEventSubscriber($this->etherpadFormListener)
-            ->add('biblio_select', ChoiceType::class, ['choices' => ['plain' => 'BiblioPlainType', 'book' => 'BiblioBookType', 'collection' => 'BiblioCollectionType', 'article' => 'BiblioArticleType', 'journal' => 'BiblioJournalType', 'chapter' => 'BiblioChapterType', 'newspaper' => 'BiblioNewspaperType', 'thesis' => 'BiblioThesisType', 'manuscript' => 'BiblioManuscriptType', 'website' => 'BiblioWebsiteType', 'document management' => 'BiblioDocManagementType', 'picture' => 'BiblioPictureType'], 'label' => 'bib reference', 'choice_translation_domain' => true, 'required' => false])
             ->addEventSubscriber(new AddBibliographicFieldListener())
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $material = $event->getData();
@@ -76,9 +112,21 @@ class MaterialType extends AbstractType
                     }
                 }
             })
-            ->add('license_id', ChoiceType::class, ['required' => false, 'expanded' => false, 'multiple' => false, 'choices' => $options['licenses'], 'translation_domain' => 'material'])
-            ->add('save', SubmitType::class, ['attr' => ['class' => 'uk-button-primary'], 'label' => 'save'])
-            ->add('cancel', SubmitType::class, ['attr' => ['formnovalidate' => ''], 'label' => 'cancel'])
+            ->add('license_id', ChoiceType::class, [
+                'required' => false,
+                'expanded' => false,
+                'multiple' => false,
+                'choices' => $options['licenses'],
+                'translation_domain' => 'material',
+            ])
+            ->add('save', SubmitType::class, [
+                'attr' => ['class' => 'uk-button-primary'],
+                'label' => 'save',
+            ])
+            ->add('cancel', SubmitType::class, [
+                'attr' => ['formnovalidate' => ''],
+                'label' => 'cancel',
+            ])
         ;
     }
 
@@ -89,10 +137,12 @@ class MaterialType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(['placeholderText', 'hashtagMappingOptions', 'categoryMappingOptions', 'licenses', 'room']);
-
-        $resolver->setDefaults(['translation_domain' => 'form']);
-
-        $resolver->setAllowedTypes('room', 'cs_context_item');
+        $resolver
+            ->setRequired(['placeholderText', 'hashtagMappingOptions', 'categoryMappingOptions', 'licenses', 'room'])
+            ->setDefaults([
+                'translation_domain' => 'form',
+                'lock_protection' => true,
+            ])
+            ->setAllowedTypes('room', 'cs_context_item');
     }
 }

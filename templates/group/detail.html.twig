@@ -160,8 +160,10 @@
                     </div>
 
                     {# description #}
-                    <div id="description{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe
-                         data-cs-edit="{editUrl: '{{ path('app_item_editdescription', {'roomId': group.contextId, 'itemId': group.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
+                    <div id="description{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
+                        editUrl: '{{ path('app_item_editdescription', { 'roomId': group.contextId, 'itemId': group.itemId, 'draft': draft }) }}',
+                        cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': group.contextId, 'itemId': group.itemId }) }}'
+                    }">
                         {{ macrosItem.itemDescription('description', group, true, group.description, draft) }}
                     </div>
 

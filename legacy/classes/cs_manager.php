@@ -17,6 +17,7 @@
  * @author CommSy Development Group
  */
 
+use App\Lock\LockManager;
 use Doctrine\DBAL\Schema\Column;
 
 class cs_manager
@@ -612,10 +613,11 @@ class cs_manager
         }
 
         global $symfonyContainer;
-        $checkLocking = $symfonyContainer->getParameter('commsy.settings.item_locking');
 
-        if ($checkLocking && $item->hasLocking()) {
-            $item->unlock();
+        /** @var LockManager $lockManager */
+        $lockManager = $symfonyContainer->get(LockManager::class);
+        if ($lockManager->supportsLocking($item->getItemID())) {
+            $lockManager->unlockEntry($item->getItemID());
         }
     }
 
@@ -1406,37 +1408,6 @@ class cs_manager
         $query = 'DELETE FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.context_id = "'.$context_id.'"';
         $this->_db_connector->performQuery($query);
     }
-
-    public function updateLocking($itemId, $date)
-    {
-        $userItem = $this->_environment->getCurrentUserItem();
-        $query = '
-          UPDATE
-              '.$this->addDatabasePrefix($this->_db_table)." AS t
-          SET
-              t.locking_date = '".$date."',
-              t.locking_user_id = ".encode(AS_DB, $userItem->getItemId())."
-          WHERE
-              t.item_id = '".encode(AS_DB, $itemId)."'
-      ";
-
-        return $this->_db_connector->performQuery($query);
-    }
-
-   public function clearLocking($itemId)
-   {
-       $query = '
-          UPDATE
-              '.$this->addDatabasePrefix($this->_db_table)." AS t
-          SET
-              t.locking_date = NULL,
-              t.locking_user_id = NULL
-          WHERE
-              t.item_id = '".encode(AS_DB, $itemId)."'
-      ";
-
-       return $this->_db_connector->performQuery($query);
-   }
 
     /**
      * @param int[] $contextIds List of context ids

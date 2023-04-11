@@ -22,7 +22,7 @@ class ExtensionSettingsTransformer extends AbstractTransformer
 {
     private cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService)
+    public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

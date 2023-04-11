@@ -31,8 +31,11 @@ class ItemLinksType extends AbstractType
 {
     private cs_environment $environment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private RoomService $roomService, private ItemService $itemService)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private RoomService $roomService,
+        private ItemService $itemService
+    ) {
         $this->environment = $legacyEnvironment->getEnvironment();
     }
 
@@ -77,6 +80,7 @@ class ItemLinksType extends AbstractType
         $resolver
             ->setDefaults([
                 'translation_domain' => 'item',
+                'lock_protection' => true,
             ])
             ->setRequired([
                 'filterRubric',

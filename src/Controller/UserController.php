@@ -27,6 +27,7 @@ use App\Form\Type\UserSendType;
 use App\Form\Type\UserStatusChangeType;
 use App\Form\Type\UserType;
 use App\Mail\Mailer;
+use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\AvatarService;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
@@ -553,7 +554,7 @@ class UserController extends BaseController
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         $alert = null;
-        if ($infoArray['user']->isLocked()) {
+        if (!$this->isGranted(ItemVoter::EDIT_LOCK, $itemId)) {
             $alert['type'] = 'warning';
             $alert['content'] = $translator->trans('item is locked', [], 'item');
         }

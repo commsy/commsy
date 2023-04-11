@@ -27,6 +27,7 @@ use App\Form\DataTransformer\DiscussionarticleTransformer;
 use App\Form\DataTransformer\DiscussionTransformer;
 use App\Form\Type\DiscussionAnswerType;
 use App\Form\Type\DiscussionType;
+use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AssessmentService;
@@ -284,7 +285,7 @@ class DiscussionController extends BaseController
         $infoArray = $this->getDetailInfo($roomId, $itemId, $legacyMarkup, $assessmentService, $categoryService);
 
         $alert = null;
-        if ($infoArray['discussion']->isLocked()) {
+        if (!$this->isGranted(ItemVoter::EDIT_LOCK, $itemId)) {
             $alert['type'] = 'warning';
             $alert['content'] = $this->translator->trans('item is locked', [], 'item');
         }
@@ -616,7 +617,7 @@ class DiscussionController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/answerform')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")]
+    #[Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'discussion')")]
     public function answerRoot(
         int $roomId,
         int $itemId,

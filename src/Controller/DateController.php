@@ -31,6 +31,7 @@ use App\Form\Type\DateImportType;
 use App\Form\Type\DateType;
 use App\Repository\CalendarsRepository;
 use App\Security\Authorization\Voter\DateVoter;
+use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\CalendarsService;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -453,7 +454,7 @@ class DateController extends BaseController
         }
 
         $alert = null;
-        if ($this->dateService->getDate($itemId)->isLocked()) {
+        if (!$this->isGranted(ItemVoter::EDIT_LOCK, $itemId)) {
             $alert['type'] = 'warning';
             $alert['content'] = $this->translator->trans('item is locked', [], 'item');
         } else {

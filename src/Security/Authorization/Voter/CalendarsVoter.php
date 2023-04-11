@@ -14,6 +14,7 @@
 namespace App\Security\Authorization\Voter;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -22,7 +23,7 @@ class CalendarsVoter extends Voter
 {
     public const EDIT = 'CALENDARS_EDIT';
 
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
