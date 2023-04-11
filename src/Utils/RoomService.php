@@ -175,7 +175,7 @@ class RoomService
         return $contactModeratorList->to_array();
     }
 
-    public function getCurrentRoomItem()
+    public function getCurrentRoomItem(): ?cs_room_item
     {
         $currentContextId = $this->legacyEnvironment->getCurrentContextId();
 

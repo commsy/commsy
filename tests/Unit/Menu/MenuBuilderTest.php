@@ -46,7 +46,9 @@ class MenuBuilderTest extends Unit
             'isGranted' => false,
         ]);
         $invitationsService = Stub::make(InvitationsService::class);
-        $portalRepository = Stub::make(PortalRepository::class);
+        $portalRepository = Stub::make(PortalRepository::class, [
+            'find' => fn() => null,
+        ]);
         $security = Stub::make(Security::class, [
             'isGranted' => fn ($attr) => $attr === 'ROLE_ROOT' && $isRoot,
         ]);
