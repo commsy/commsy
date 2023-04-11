@@ -37,6 +37,8 @@ use App\Utils\UserService;
 use cs_dates_item;
 use cs_file_item;
 use cs_item;
+use cs_label_item;
+use cs_labels_manager;
 use cs_manager;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -921,7 +923,6 @@ class ItemController extends AbstractController
     {
         $environment = $legacyEnvironment->getEnvironment();
 
-        /** @var cs_item $baseItem */
         $baseItem = $itemService->getItem($itemId);
 
         /** @var cs_manager $rubricManager */
@@ -940,9 +941,15 @@ class ItemController extends AbstractController
         if ('date' == $item->getItemType()) {
             $rubricManager->setWithoutDateModeLimit();
         }
+
+        if ($rubricManager instanceof cs_labels_manager && $item instanceof cs_label_item) {
+            $rubricManager->setTypeLimit($item->getLabelType());
+        }
+
         if (!$environment->getCurrentUserItem()->isModerator()) {
             $rubricManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
         }
+
         $rubricManager->select();
         $itemList = $rubricManager->get();
         $items = $itemList->to_array();
@@ -955,6 +962,7 @@ class ItemController extends AbstractController
         $prevItemId = false;
         $nextItemId = false;
         $lastItemId = false;
+
         foreach ($items as $tempItem) {
             if (!$foundItem) {
                 if ($counterBefore > 5) {
@@ -982,6 +990,7 @@ class ItemController extends AbstractController
                 }
             }
         }
+
         if (!empty($items)) {
             if ($prevItemId) {
                 $firstItemId = $items[0]->getItemId();
@@ -991,7 +1000,18 @@ class ItemController extends AbstractController
             }
         }
 
-        return $this->render('item/stepper.html.twig', ['rubric' => $item->getItemType(), 'roomId' => $roomId, 'itemList' => $itemList, 'item' => $item, 'counterPosition' => $counterPosition, 'count' => sizeof($items), 'firstItemId' => $firstItemId, 'prevItemId' => $prevItemId, 'nextItemId' => $nextItemId, 'lastItemId' => $lastItemId]);
+        return $this->render('item/stepper.html.twig', [
+            'rubric' => $item->getItemType(),
+            'roomId' => $roomId,
+            'itemList' => $itemList,
+            'item' => $item,
+            'counterPosition' => $counterPosition,
+            'count' => sizeof($items),
+            'firstItemId' => $firstItemId,
+            'prevItemId' => $prevItemId,
+            'nextItemId' => $nextItemId,
+            'lastItemId' => $lastItemId,
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/get', condition: 'request.isXmlHttpRequest()')]
