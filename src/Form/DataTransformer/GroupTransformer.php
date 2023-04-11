@@ -33,6 +33,7 @@ class GroupTransformer extends AbstractTransformer
 
         if ($groupItem) {
             $groupData['title'] = html_entity_decode($groupItem->getTitle());
+            $groupData['description'] = $groupItem->getDescription();
         }
 
         return $groupData;
@@ -51,6 +52,7 @@ class GroupTransformer extends AbstractTransformer
     public function applyTransformation($groupObject, $groupData)
     {
         $groupObject->setTitle($groupData['title']);
+        $groupObject->setDescription($groupData['description']);
 
         return $groupObject;
     }
