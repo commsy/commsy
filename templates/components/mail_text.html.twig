@@ -1,0 +1,30 @@
+{% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+
+<div{{ attributes.defaults(stimulus_controller('mailtexts_editor', {
+    'fieldNameGerman': form.contentGerman.vars.id,
+    'fieldNameEnglish': form.contentEnglish.vars.id,
+})) }}>
+    {{ form_start(form) }}
+
+        {{ form_row(form.mailText) }}
+
+        <div class="uk-margin">
+            {{ form_row(form.contentGerman) }}
+        </div>
+
+        <div class="uk-form-controls">
+            {{ form_row(form.resetContentGerman) }}
+        </div>
+
+        <div class="uk-margin">
+            {{ form_row(form.contentEnglish) }}
+        </div>
+
+        <div class="uk-form-controls">
+            {{ form_row(form.resetContentEnglish) }}
+        </div>
+
+        {{ form_row(form.save) }}
+
+    {{ form_end(form) }}
+</div>
