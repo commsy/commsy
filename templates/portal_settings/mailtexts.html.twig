@@ -1,7 +1,5 @@
 {% extends 'layout.html.twig' %}
 
-{% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
-
 {% block sidebar_left %}
     {% include 'components/context_navigation.html.twig' with {'menu_name': 'portal_settings'} only %}
 {% endblock %}
@@ -10,16 +8,11 @@
     {% embed 'components/card.html.twig' %}
         {% block title %}{{ 'Mailtexts'|trans({}, "portal") }}{% endblock %}
         {% block body %}
-            {{ form_start(form) }}
-            {{ form_row(form.userIndexFilterChoice) }}
-            {{ form_row(form.loadMailTexts) }}
-            {{ form_row(form.contentGerman) }}
-            {{ form_row(form.resetContentGerman) }}
-            <hr />
-            {{ form_row(form.contentEnglish) }}
-            {{ form_row(form.resetContentEnglish) }}
-            <hr />
-            {{ form_end(form) }}
+            {{ component('mail_text', {
+                mailText: mailText,
+                form: form,
+                portal: portal
+            }) }}
         {% endblock %}
     {% endembed %}
 {% endblock %}

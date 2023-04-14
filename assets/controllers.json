@@ -9,6 +9,15 @@
                     "tom-select/dist/css/tom-select.bootstrap5.css": true
                 }
             }
+        },
+        "@symfony/ux-live-component": {
+            "live": {
+                "enabled": true,
+                "fetch": "eager",
+                "autoimport": {
+                    "@symfony/ux-live-component/styles/live.css": true
+                }
+            }
         }
     },
     "entrypoints": []

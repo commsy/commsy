@@ -1,0 +1,21 @@
+{% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+
+<div{{ attributes }}>
+    {{ form_start(form) }}
+
+        {{ form_row(form.mailText) }}
+
+        {{ form_row(form.contentGerman) }}
+        <div class="uk-form-controls">
+            {{ form_row(form.resetContentGerman) }}
+        </div>
+
+        {{ form_row(form.contentEnglish) }}
+        <div class="uk-form-controls">
+            {{ form_row(form.resetContentEnglish) }}
+        </div>
+
+        {{ form_row(form.save) }}
+
+    {{ form_end(form) }}
+</div>
