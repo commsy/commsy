@@ -17,10 +17,5 @@ export default class extends Controller {
     event.detail.options.render.option_create = function (data, escape) {
       return '<div class="create">+ <strong>' + escape(data.input) + '</strong>&hellip;</div>';
     };
-
-    console.log(event.detail.options); // Options that will be used to initialize TomSelect
-    event.detail.options.onChange = (value) => {
-      // ...
-    };
   }
 }

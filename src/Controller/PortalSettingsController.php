@@ -1432,10 +1432,6 @@ class PortalSettingsController extends AbstractController
         foreach ($portalUsers as $portalUser) {
             if (!in_array($portalUser->getUserID(),
                 $alreadyIncludedUserIDs) and $portalUser->getContextID() == $portalId) {
-                if ('cschoenf2' != $portalUser->getUserID()) {
-                    continue;
-                }
-
                 $userList[] = $portalUser;
                 $alreadyIncludedUserIDs[] = $portalUser->getUserID();
             }
