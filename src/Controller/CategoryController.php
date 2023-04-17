@@ -19,7 +19,7 @@ use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
 use App\Utils\RoomService;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,7 +55,7 @@ class CategoryController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/category/add')]
-    #[Security("is_granted('CATEGORY_EDIT')")]
+    #[IsGranted('CATEGORY_EDIT')]
     public function add(
         $roomId,
         Request $request,
@@ -86,7 +86,7 @@ class CategoryController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/category/new', methods: ['POST'])]
-    #[Security("is_granted('CATEGORY_EDIT')")]
+    #[IsGranted('CATEGORY_EDIT')]
     public function new(
         Request $request,
         CategoryService $categoryService,
@@ -107,7 +107,7 @@ class CategoryController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/category/delete/{categoryId}')]
-    #[Security("is_granted('CATEGORY_EDIT')")]
+    #[IsGranted('CATEGORY_EDIT')]
     public function delete($roomId, $categoryId, CategoryService $categoryService): RedirectResponse
     {
         $categoryService->removeTag($categoryId, $roomId);
@@ -118,7 +118,7 @@ class CategoryController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/category/edit/{categoryId}')]
-    #[Security("is_granted('CATEGORY_EDIT')")]
+    #[IsGranted('CATEGORY_EDIT')]
     public function edit(
         Request $request,
         RoomService $roomService,

@@ -40,7 +40,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Exception;
 use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sylius\Bundle\ThemeBundle\Repository\ThemeRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,7 +54,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Class RoomController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId)")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class RoomController extends AbstractController
 {
     private SessionInterface $session;
@@ -475,7 +475,7 @@ class RoomController extends AbstractController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/all/create', requirements: ['itemId' => '\d+'])]
-    #[Security("is_granted('ITEM_EDIT', 'NEW')")]
+    #[IsGranted('ITEM_NEW')]
     public function createAction(
         Request $request,
         RoomService $roomService,

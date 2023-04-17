@@ -36,6 +36,7 @@ class ItemVoter extends Voter
 {
     public const SEE = 'ITEM_SEE';
     public const EDIT = 'ITEM_EDIT';
+    public const NEW = 'ITEM_NEW';
     public const ANNOTATE = 'ITEM_ANNOTATE';
     public const PARTICIPATE = 'ITEM_PARTICIPATE';
     public const MODERATE = 'ITEM_MODERATE';
@@ -63,6 +64,7 @@ class ItemVoter extends Voter
         return in_array($attribute, [
             self::SEE,
             self::EDIT,
+            self::NEW,
             self::ANNOTATE,
             self::PARTICIPATE,
             self::MODERATE,
@@ -84,13 +86,16 @@ class ItemVoter extends Voter
 
         $itemId = $object;
 
-        $item = $this->itemService->getTypedItem($itemId);
+        $item = null;
+        if ($itemId) {
+            $item = $this->itemService->getTypedItem($itemId);
 
-        if (!$item) {
-            $portal = $this->entityManager->getRepository(Portal::class)->find($itemId);
+            if (!$item) {
+                $portal = $this->entityManager->getRepository(Portal::class)->find($itemId);
 
-            if ($portal) {
-                $item = new PortalProxy($portal, $this->legacyEnvironment);
+                if ($portal) {
+                    $item = new PortalProxy($portal, $this->legacyEnvironment);
+                }
             }
         }
 
@@ -125,18 +130,16 @@ class ItemVoter extends Voter
                     return $this->canEditLock($item, $currentUser);
             }
         } else {
-            if ('NEW' == $itemId) {
-                if (self::EDIT == $attribute) {
-                    // NOTE: by using `isGuest()` (instead of `isReallyGuest()`) we'll also catch logged-in users who
-                //       are currently viewing a community room with guest access which they are no member of
-                    if ($currentUser->isGuest() || $currentUser->isOnlyReadUser() || $currentUser->isRequested()) {
-                        return false;
-                    }
-
-                    $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
-
-                    return !(method_exists($currentRoom, 'getArchived') && $currentRoom->getArchived());
+            if ($attribute === self::NEW) {
+                // NOTE: by using `isGuest()` (instead of `isReallyGuest()`) we'll also catch logged-in users who
+                // are currently viewing a community room with guest access which they are no member of
+                if ($currentUser->isGuest() || $currentUser->isOnlyReadUser() || $currentUser->isRequested()) {
+                    return false;
                 }
+
+                $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
+
+                return !(method_exists($currentRoom, 'getArchived') && $currentRoom->getArchived());
             }
         }
 

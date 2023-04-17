@@ -24,7 +24,7 @@ use App\Utils\UserService;
 use cs_list;
 use cs_user_item;
 use DateTimeImmutable;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,7 +38,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 /**
  * Class ContextController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId)")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class ContextController extends AbstractController
 {
     private Mailer $mailer;

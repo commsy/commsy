@@ -29,7 +29,7 @@ use App\Utils\RoomService;
 use App\Utils\UserService;
 use cs_environment;
 use cs_user_item;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -44,7 +44,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ProfileController extends AbstractController
 {
     #[Route(path: '/room/{roomId}/user/{itemId}/general')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function general(
         Request $request,
         DiscService $discService,
@@ -158,7 +159,8 @@ class ProfileController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/address')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function address(
         Request $request,
         UserService $userService,
@@ -219,7 +221,8 @@ class ProfileController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/contact')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function contact(
         Request $request,
         PrivateRoomTransformer $privateRoomTransformer,
@@ -290,7 +293,8 @@ class ProfileController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/notifications')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_ENTER', roomId)")]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function notifications(
         Request $request,
         UserService $userService,
@@ -343,7 +347,7 @@ class ProfileController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/deleteroomprofile')]
-    #[Security("is_granted('ITEM_ENTER', roomId)")]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
     public function deleteRoomProfile(
         Request $request,
         LegacyEnvironment $legacyEnvironment,

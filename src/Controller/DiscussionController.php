@@ -35,7 +35,7 @@ use App\Utils\CategoryService;
 use App\Utils\DiscussionService;
 use App\Utils\LabelService;
 use App\Utils\TopicService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,7 +47,8 @@ use Symfony\Contracts\Service\Attribute\Required;
 /**
  * Class DiscussionController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'discussion')")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
+#[IsGranted('RUBRIC_DISCUSSION')]
 class DiscussionController extends BaseController
 {
     private DiscussionService $discussionService;
@@ -558,7 +559,7 @@ class DiscussionController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/discussion/create')]
-    #[Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'discussion')")]
+    #[IsGranted('ITEM_NEW')]
     public function create(
         int $roomId
     ): RedirectResponse {
@@ -617,7 +618,7 @@ class DiscussionController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/answerform')]
-    #[Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'discussion')")]
+    #[IsGranted('ITEM_NEW')]
     public function answerRoot(
         int $roomId,
         int $itemId,
@@ -663,7 +664,7 @@ class DiscussionController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/createanswer')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function createAnswer(
         int $roomId,
         int $itemId,
@@ -703,7 +704,7 @@ class DiscussionController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/editanswer')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function editAnswer(
         Request $request,
         DiscussionarticleTransformer $transformer,
@@ -750,7 +751,7 @@ class DiscussionController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/edit')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function edit(
         Request $request,
         CategoryService $categoryService,
@@ -860,7 +861,7 @@ class DiscussionController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/save')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function save(
         int $roomId,
         int $itemId

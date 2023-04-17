@@ -21,7 +21,13 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class RubricVoter extends Voter
 {
-    public const RUBRIC_SEE = 'RUBRIC_SEE';
+    public const ANNOUNCEMENT = 'RUBRIC_ANNOUNCEMENT';
+    public const DATE = 'RUBRIC_DATE';
+    public const DISCUSSION = 'RUBRIC_DISCUSSION';
+    public const GROUP = 'RUBRIC_GROUP';
+    public const MATERIAL = 'RUBRIC_MATERIAL';
+    public const TOPIC = 'RUBRIC_TOPIC';
+    public const USER = 'RUBRIC_USER';
 
     private cs_environment $legacyEnvironment;
 
@@ -32,17 +38,30 @@ class RubricVoter extends Voter
 
     protected function supports($attribute, $object)
     {
-        return in_array($attribute, [self::RUBRIC_SEE]);
+        return in_array($attribute, [
+            self::ANNOUNCEMENT,
+            self::DATE,
+            self::DISCUSSION,
+            self::GROUP,
+            self::MATERIAL,
+            self::TOPIC,
+            self::USER
+        ]);
     }
 
     protected function voteOnAttribute($attribute, $rubricName, TokenInterface $token)
     {
         $roomItem = $this->legacyEnvironment->getCurrentContextItem();
-
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         return match ($attribute) {
-            self::RUBRIC_SEE => $this->canView($roomItem, $currentUser, $rubricName),
+            self::ANNOUNCEMENT => $this->canView($roomItem, $currentUser, 'announcement'),
+            self::DATE => $this->canView($roomItem, $currentUser, 'date'),
+            self::DISCUSSION => $this->canView($roomItem, $currentUser, 'discussion'),
+            self::GROUP => $this->canView($roomItem, $currentUser, 'group'),
+            self::MATERIAL => $this->canView($roomItem, $currentUser, 'material'),
+            self::TOPIC => $this->canView($roomItem, $currentUser, 'topic'),
+            self::USER => $this->canView($roomItem, $currentUser, 'user'),
             default => throw new LogicException('This code should not be reached!'),
         };
     }

@@ -41,7 +41,7 @@ use cs_label_item;
 use cs_labels_manager;
 use cs_manager;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,7 +57,7 @@ use UnexpectedValueException;
 /**
  * Class ItemController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId)")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class ItemController extends AbstractController
 {
     private TransformerManager $transformerManager;
@@ -76,7 +76,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/editdescription/{draft}')]
-    #[Security("is_granted('ITEM_EDIT', itemId)")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function editDescriptionAction(
         DateService $dateService,
         ItemService $itemService,
@@ -178,7 +178,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/savedescription')]
-    #[Security("is_granted('ITEM_EDIT', itemId)")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function saveDescriptionAction(
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
@@ -206,7 +206,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/editworkflow')]
-    #[Security("is_granted('ITEM_EDIT', itemId)")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function editWorkflowAction(
         RoomService $roomService,
         ItemService $itemService,
@@ -257,7 +257,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/editlinks/{feedAmount}', defaults: ['feedAmount' => 20])]
-    #[Security("is_granted('ITEM_EDIT', itemId)")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function editLinksAction(
         LabelService $labelService,
         RoomService $roomService,
@@ -439,7 +439,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/editCatsBuzz/{feedAmount}', defaults: ['feedAmount' => 20])]
-    #[Security("is_granted('ITEM_EDIT', itemId)")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function editCatsBuzzAction(
         CategoryService $categoryService,
         LabelService $labelService,
@@ -620,7 +620,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/savelinks')]
-    #[Security("is_granted('ITEM_EDIT', itemId)")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function saveLinksAction(
         RoomService $roomService,
         ItemService $itemService,
@@ -756,7 +756,7 @@ class ItemController extends AbstractController
      * @return JsonResponse
      */
     #[Route(path: '/room/{roomId}/item/{itemId}/autocomplete/{feedAmount}', defaults: ['feedAmount' => 20])]
-    #[Security("is_granted('ITEM_EDIT', itemId)")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function autocompleteAction(
         RoomService $roomService,
         ItemService $itemService,
@@ -1008,7 +1008,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/get', condition: 'request.isXmlHttpRequest()')]
-    #[Security("is_granted('ITEM_SEE', itemId)")]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function singleArticleAction(
         ItemService $itemService,
         int $itemId
@@ -1025,7 +1025,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/links')]
-    #[Security("is_granted('ITEM_SEE', itemId)")]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function linksAction(
         RoomService $roomService,
         ItemService $itemService,

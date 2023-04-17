@@ -36,19 +36,16 @@ use App\Utils\AccountMail;
 use App\Utils\MailAssistant;
 use App\Utils\TopicService;
 use App\Utils\UserService;
-use cs_disc_manager;
 use cs_room_item;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Liip\ImagineBundle\Imagine\Data\DataManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
 use Nette\Utils\Strings;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -86,7 +83,8 @@ class UserController extends BaseController
      * @return array
      */
     #[Route(path: '/room/{roomId}/user/feed/{start}/{sort}')]
-    #[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
+    #[IsGranted('RUBRIC_USER')]
     public function feedAction(
         Request $request,
         int $roomId,
@@ -103,7 +101,8 @@ class UserController extends BaseController
      * @return array
      */
     #[Route(path: '/room/{roomId}/user/grid/{start}/{sort}')]
-    #[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
+    #[IsGranted('RUBRIC_USER')]
     public function gridAction(
         Request $request,
         int $roomId,
@@ -192,7 +191,8 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/{view}', defaults: ['view' => 'feedView'], requirements: ['view' => 'feedView|gridView'])]
-    #[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
+    #[IsGranted('RUBRIC_USER')]
     public function listAction(
         Request $request,
         int $roomId,
@@ -300,7 +300,8 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/print/{sort}', defaults: ['sort' => 'none'])]
-    #[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'user')")]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
+    #[IsGranted('RUBRIC_USER')]
     public function printlistAction(
         Request $request,
         PrintService $printService,
@@ -359,7 +360,7 @@ class UserController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/user/changeStatus')]
-    #[Security("is_granted('MODERATOR')")]
+    #[IsGranted('MODERATOR')]
     public function changeStatusAction(
         Request $request,
         EventDispatcherInterface $eventDispatcher,
@@ -765,7 +766,8 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/edit')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'user')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
+    #[IsGranted('RUBRIC_USER')]
     public function editAction(
         Request $request,
         UserTransformer $transformer,
@@ -807,7 +809,8 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/save')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'user')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
+    #[IsGranted('RUBRIC_USER')]
     public function saveAction(
         int $roomId,
         int $itemId
@@ -869,7 +872,8 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/send')]
-    #[Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'user')")]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
+    #[IsGranted('RUBRIC_USER')]
     public function sendAction(
         Request $request,
         TranslatorInterface $translator,

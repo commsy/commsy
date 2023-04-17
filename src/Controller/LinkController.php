@@ -18,7 +18,7 @@ use App\Utils\GroupService;
 use App\Utils\ItemService;
 use App\Utils\LabelService;
 use App\Utils\RoomService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class LinkController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId)")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class LinkController extends AbstractController
 {
     #[Route(path: '/room/{roomId}/link/{itemId}/{rubric}')]

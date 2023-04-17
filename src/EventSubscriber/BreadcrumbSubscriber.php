@@ -87,7 +87,10 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
                 $portal->getId()
             );
 
-            $this->addDashboard($privateRoom);
+            if ($privateRoom) {
+                $this->addDashboard($privateRoom);
+            }
+
             $this->addRubricAndEntry($request, $controller, $action);
             return;
         }

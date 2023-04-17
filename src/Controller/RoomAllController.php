@@ -19,8 +19,8 @@ use App\Services\LegacyMarkup;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,7 +28,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class RoomAllController.
  */
-#[Security("is_granted('ITEM_ENTER', portalId)")]
+#[IsGranted('ITEM_ENTER', subject: 'portalId')]
 class RoomAllController extends AbstractController
 {
     #[Route(path: '/portal/{portalId}/room/{itemId}', requirements: ['itemId' => '\d+'])]

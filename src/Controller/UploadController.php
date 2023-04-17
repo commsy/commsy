@@ -25,7 +25,7 @@ use cs_link_item;
 use cs_list;
 use DateTime;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -38,7 +38,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 /**
  * Class UploadController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId)")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class UploadController extends AbstractController
 {
     /**
@@ -283,7 +283,7 @@ class UploadController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/upload/{itemId}/saveupload')]
-    #[Security("is_granted('ITEM_EDIT', itemId)")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function uploadSaveAction(
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
@@ -337,7 +337,7 @@ class UploadController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/ckupload/{itemId}/')]
-    #[Security("is_granted('ITEM_EDIT', itemId)")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function ckuploadAction(
         Request $request,
         ItemService $itemService,

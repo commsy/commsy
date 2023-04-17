@@ -23,7 +23,6 @@ use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Action\MarkRead\MarkReadMaterial;
-use App\Entity\License;
 use App\Event\CommsyEditEvent;
 use App\Filter\MaterialFilterType;
 use App\Form\DataTransformer\MaterialTransformer;
@@ -46,7 +45,7 @@ use cs_material_item;
 use cs_room_item;
 use DateTime;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,7 +57,8 @@ use Symfony\Contracts\Service\Attribute\Required;
 /**
  * Class MaterialController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'material')")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
+#[IsGranted('RUBRIC_MATERIAL')]
 class MaterialController extends BaseController
 {
     private MaterialService $materialService;
@@ -826,7 +826,7 @@ class MaterialController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/saveworkflow')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function saveWorkflowAction(
         int $roomId,
         int $itemId
@@ -857,7 +857,7 @@ class MaterialController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/edit')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function editAction(
         Request $request,
         CategoryService $categoryService,
@@ -1001,7 +1001,7 @@ class MaterialController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/save')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function saveAction(
         int $roomId,
         int $itemId
@@ -1090,7 +1090,7 @@ class MaterialController extends BaseController
      * @return RedirectResponse
      */
     #[Route(path: '/room/{roomId}/material/create')]
-    #[Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'material')")]
+    #[IsGranted('ITEM_NEW')]
     public function createAction(
         int $roomId
     ): Response {
@@ -1111,7 +1111,7 @@ class MaterialController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/createsection')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function createSectionAction(
         int $roomId,
         int $itemId
@@ -1135,7 +1135,7 @@ class MaterialController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/savesection')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function saveSectionAction(
         Request $request,
         int $roomId,
@@ -1186,7 +1186,7 @@ class MaterialController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/sortsections')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function sortSectionsAction(
         Request $request,
         int $itemId
@@ -1211,7 +1211,7 @@ class MaterialController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/editsections')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function editSectionsAction(
         Request $request,
         int $roomId,
@@ -1262,7 +1262,7 @@ class MaterialController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/savesections')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function savesectionsAction(
         int $roomId,
         int $itemId
@@ -1279,7 +1279,7 @@ class MaterialController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/{versionId}/createversion/')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function createVersionAction(
         int $roomId,
         int $itemId,
