@@ -270,6 +270,11 @@ class Account implements
         return $this;
     }
 
+    public function getUserIdentifier(): string
+    {
+        return $this->getUsername();
+    }
+
     public function getPlainPassword(): ?string
     {
         return $this->plainPassword;

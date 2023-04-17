@@ -16,6 +16,7 @@ namespace App\Security;
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AuthSource;
+use App\Entity\AuthSourceLdap;
 use App\Entity\AuthSourceShibboleth;
 use App\Entity\Portal;
 use App\Facade\AccountCreatorFacade;
@@ -31,20 +32,25 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 use UnexpectedValueException;
 
-class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
+class ShibbolethAuthenticator extends AbstractCommsyAuthenticator
 {
     use TargetPathTrait;
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-        UrlGeneratorInterface $urlGenerator,
-        private AccountCreatorFacade $accountCreator,
-        RequestContext $requestContext,
-        private AccountManager $accountManager
-    ) {
+        UrlGeneratorInterface          $urlGenerator,
+        private AccountCreatorFacade   $accountCreator,
+        RequestContext                 $requestContext,
+        private AccountManager         $accountManager
+    )
+    {
         parent::__construct($urlGenerator, $requestContext);
     }
 
@@ -53,7 +59,7 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
      * used for the request. Returning false will cause this authenticator
      * to be skipped.
      */
-    public function supports(Request $request)
+    public function supports(Request $request): bool
     {
         return 'app_shibboleth_authshibbolethcheck' === $request->attributes->get('_route')
             && $request->isMethod('GET')
@@ -86,30 +92,10 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
         return false;
     }
 
-    /**
-     * Get the authentication credentials from the request and return them
-     * as any type (e.g. an associate array).
-     *
-     * Whatever value you return here will be passed to getUser() and checkCredentials()
-     *
-     * For example, for a form login, you might:
-     *
-     *      return [
-     *          'username' => $request->request->get('_username'),
-     *          'password' => $request->request->get('_password'),
-     *      ];
-     *
-     * Or for an API token that's on a header, you might use:
-     *
-     *      return ['api_key' => $request->headers->get('X-API-TOKEN')];
-     *
-     * @return mixed Any non-null value
-     *
-     * @throws UnexpectedValueException If null is returned
-     */
-    public function getCredentials(Request $request)
+    public function getCredentials(Request $request): array
     {
         $context = $request->attributes->get('context');
+
         /** @var AuthSourceShibboleth $authSource */
         $authSource = $this->entityManager->getRepository(AuthSourceShibboleth::class)
             ->findOneBy([
@@ -117,7 +103,6 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
                 'enabled' => 1,
             ]);
 
-        // extract credentials from request
         $credentials = [
             'context' => $context,
             'username' => $request->server->get($authSource->getMappingUsername()),
@@ -134,22 +119,11 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
         return $credentials;
     }
 
-    /**
-     * Return a UserInterface object based on the credentials.
-     *
-     * The *credentials* are the return value from getCredentials()
-     *
-     * You may throw an AuthenticationException if you wish. If you return
-     * null, then a UsernameNotFoundException is thrown for you.
-     *
-     * @param mixed $credentials
-     *
-     * @return UserInterface|null
-     *
-     * @throws AuthenticationException
-     */
-    public function getUser($credentials, UserProviderInterface $userProvider)
+
+    public function authenticate(Request $request): Passport
     {
+        $credentials = $this->getCredentials($request);
+
         // Check we got all parameters we need
         if (null === $credentials['context'] ||
             null === $credentials['username'] ||
@@ -160,9 +134,19 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
             throw new AuthenticationException();
         }
 
-        /** @var Collection $authSources */
-        $authSources = $this->entityManager->getRepository(Portal::class)->find($credentials['context'])->getAuthSources();
-        $shibAuthSource = $authSources->filter(fn (AuthSource $authSource) => $authSource instanceof AuthSourceShibboleth)->first();
+        $shibAuthSource = $this->entityManager->getRepository(AuthSourceShibboleth::class)
+            ->findOneBy([
+                'portal' => $credentials['context'],
+                'enabled' => 1,
+            ]);
+
+        $context = $request->attributes->get('context');
+
+        // Store the current context and the auth source id in the user session so we can
+        // refer to it later in the user provider to get the correct user.
+        $session = $request->getSession();
+        $session->set('context', $context);
+        $session->set('authSourceId', $shibAuthSource->getId());
 
         $account = $this->entityManager->getRepository(Account::class)
             ->findOneByCredentials($credentials['username'], $credentials['context'], $shibAuthSource);
@@ -191,105 +175,38 @@ class ShibbolethAuthenticator extends AbstractCommsyGuardAuthenticator
 
         $this->accountManager->propagateAccountDataToProfiles($account);
 
-        return $account;
+        return new SelfValidatingPassport(
+            new UserBadge($credentials['email']),
+            [
+                new CsrfTokenBadge(
+                    'authenticate',
+                    $request->request->get('_csrf_token')
+                ),
+            ]
+        );
     }
 
-    /**
-     * Returns true if the credentials are valid.
-     *
-     * If any value other than true is returned, authentication will
-     * fail. You may also throw an AuthenticationException if you wish
-     * to cause authentication to fail.
-     *
-     * The *credentials* are the return value from getCredentials()
-     *
-     * @param mixed $credentials
-     *
-     * @return bool
-     *
-     * @throws AuthenticationException
-     */
-    public function checkCredentials($credentials, UserInterface $user)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): Response
     {
-        // Credentials are checked remotely.
-        return true;
-    }
-
-    /**
-     * Called when authentication executed, but failed (e.g. wrong username password).
-     *
-     * This should return the Response sent back to the user, like a
-     * RedirectResponse to the login page or a 403 response.
-     *
-     * If you return null, the request will continue, but the user will
-     * not be authenticated. This is probably not what you want to do.
-     *
-     * @return Response|null
-     */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
-    {
-        if ($request->hasSession()) {
-            $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
-            $request->getSession()->set(AbstractCommsyGuardAuthenticator::LAST_SOURCE, 'shib');
-        }
-
-        $url = $this->getLoginUrl($request->attributes->get('context'));
-
-        return new RedirectResponse($url);
-    }
-
-    /**
-     * Called when authentication executed and was successful!
-     *
-     * This should return the Response sent back to the user, like a
-     * RedirectResponse to the last page they visited.
-     *
-     * If you return null, the current request will continue, and the user
-     * will be authenticated. This makes sense, for example, with an API.
-     *
-     * @param string $providerKey The provider (i.e. firewall) key
-     *
-     * @return Response|null
-     */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
-    {
-        /** @var Account $user */
-        $user = $token->getUser();
-
-        $context = $request->attributes->get('context');
-
-        // Store the current context and the auth source id in the user session so we can
-        // refer to it later in the user provider to get the correct user.
-        $session = $request->getSession();
-        $session->set('context', $context);
-        $session->set('authSourceId', $user->getAuthSource()->getId());
-
         // This will redirect the user to the route they visited initially.
-        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
 
         return new RedirectResponse($this->urlGenerator->generate('app_helper_portalenter', [
-            'context' => $context,
+            'context' => $request->request->get('context'),
         ]));
     }
 
-    /**
-     * Does this method support remember me cookies?
-     *
-     * Remember me cookie will be set if *all* of the following are met:
-     *  A) This method returns true
-     *  B) The remember_me key under your firewall is configured
-     *  C) The "remember me" functionality is activated. This is usually
-     *      done by having a _remember_me checkbox in your form, but
-     *      can be configured by the "always_remember_me" and "remember_me_parameter"
-     *      parameters under the "remember_me" firewall key
-     *  D) The onAuthenticationSuccess method returns a Response object
-     *
-     * @return bool
-     */
-    public function supportsRememberMe()
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
-        return false;
+        if ($request->hasSession()) {
+            $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
+            $request->getSession()->set(AbstractCommsyAuthenticator::LAST_SOURCE, 'shib');
+        }
+
+        $url = $this->getLoginUrl($request);
+
+        return new RedirectResponse($url);
     }
 }

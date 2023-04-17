@@ -13,30 +13,25 @@
 
 namespace App\Security;
 
-use App\Entity\Account;
-use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
-use App\Entity\Portal;
 use App\Utils\RequestContext;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
+class LoginFormAuthenticator extends AbstractCommsyAuthenticator
 {
     use TargetPathTrait;
 
@@ -44,7 +39,6 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
         private EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
         private CsrfTokenManagerInterface $csrfTokenManager,
-        private UserPasswordHasherInterface $passwordEncoder,
         RequestContext $requestContext
     ) {
         parent::__construct($urlGenerator, $requestContext);
@@ -81,57 +75,15 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
         return false;
     }
 
-    /**
-     * Return a UserInterface object based on the credentials.
-     *
-     * The *credentials* are the return value from getCredentials()
-     *
-     * You may throw an AuthenticationException if you wish. If you return
-     * null, then a UsernameNotFoundException is thrown for you.
-     *
-     * @param mixed $credentials
-     *
-     * @return UserInterface|null
-     */
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function authenticate(Request $request): Passport
     {
-        $token = new CsrfToken('authenticate', $credentials['csrf_token']);
-        if (!$this->csrfTokenManager->isTokenValid($token)) {
-            throw new InvalidCsrfTokenException();
-        }
+        $credentials = $this->getCredentials($request);
 
-        $user = null;
-        try {
-            if ('server' === $credentials['context']) {
-                $user = $this->entityManager->getRepository(Account::class)
-                    ->findOneBy([
-                        'username' => $credentials['email'],
-                        'contextId' => 99,
-                    ]);
-            } else {
-                /** @var Collection $authSources */
-                $authSources = $this->entityManager->getRepository(Portal::class)->find($credentials['context'])->getAuthSources();
-                $localAuthSource = $authSources->filter(fn (AuthSource $authSource) => $authSource instanceof AuthSourceLocal)->first();
-
-                $user = $this->entityManager->getRepository(Account::class)
-                    ->findOneByCredentials($credentials['email'], $credentials['context'], $localAuthSource);
-            }
-        } catch (NonUniqueResultException) {
-            throw new CustomUserMessageAuthenticationException('A problem with your account occurred.');
-        }
-
-        return $user;
-    }
-
-    public function checkCredentials($credentials, UserInterface $user)
-    {
-        return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
-    }
-
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
-    {
-        /** @var Account $user */
-        $user = $token->getUser();
+        $localAuthSource = $this->entityManager->getRepository(AuthSourceLocal::class)
+            ->findOneBy([
+                'portal' => $credentials['context'] === 'server' ? null : $credentials['context'],
+                'enabled' => 1,
+            ]);
 
         $context = ('server' === $request->request->get('context')) ? 99 : $request->request->get('context');
 
@@ -139,10 +91,25 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
         // refer to it later in the user provider to get the correct user.
         $session = $request->getSession();
         $session->set('context', $context);
-        $session->set('authSourceId', $user->getAuthSource()->getId());
+        $session->set('authSourceId', $localAuthSource->getId());
 
+        return new Passport(
+            new UserBadge($credentials['email']),
+            new PasswordCredentials($credentials['password']),
+            [
+                new CsrfTokenBadge(
+                    'authenticate',
+                    $request->request->get('_csrf_token')
+                ),
+                (new RememberMeBadge())->enable(),
+            ]
+        );
+    }
+
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): Response
+    {
         // This will redirect the user to the route they visited initially.
-        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
 
@@ -151,25 +118,15 @@ class LoginFormAuthenticator extends AbstractCommsyGuardAuthenticator
         ]));
     }
 
-    /**
-     * Override to change what happens after a bad username/password is submitted.
-     *
-     * @return RedirectResponse
-     */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
         if ($request->hasSession()) {
             $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
-            $request->getSession()->set(AbstractCommsyGuardAuthenticator::LAST_SOURCE, 'local');
+            $request->getSession()->set(AbstractCommsyAuthenticator::LAST_SOURCE, 'local');
         }
 
-        $url = $this->getLoginUrl($request->attributes->get('context'));
+        $url = $this->getLoginUrl($request);
 
         return new RedirectResponse($url);
-    }
-
-    public function supportsRememberMe()
-    {
-        return true;
     }
 }

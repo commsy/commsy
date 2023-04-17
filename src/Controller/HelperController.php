@@ -31,7 +31,7 @@ class HelperController extends AbstractController
      * @throws NoResultException|NonUniqueResultException
      */
     #[Route(path: '/portal/{context}/enter')]
-    #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
+    #[IsGranted('IS_AUTHENTICATED')]
     public function portalEnter(
         EntityManagerInterface $entityManager,
         string $context = 'server'

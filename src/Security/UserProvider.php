@@ -25,8 +25,10 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
 {
-    public function __construct(private RequestStack $requestStack, private EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private RequestStack $requestStack,
+        private EntityManagerInterface $entityManager
+    ) {
     }
 
     /**
