@@ -26,7 +26,7 @@
                     </a>
                 </li>
 
-                {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+                {% if is_granted('IS_IMPERSONATOR') %}
                     <li>
                         <a href="{{ path('app_logout', {'_switch_user': '_exit'}) }}"
                            title="{{ 'profile.exit_impersonation'|trans([], 'profile') }}">
@@ -51,7 +51,7 @@
                     <a href="{{ path('app_logout') }}"  class="uk-link-text"> <span uk-icon="icon: sign-out"></span> {{ 'Sign out'|trans([], 'profile') }}</a>
                 </li>
 
-                {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+                {% if is_granted('IS_IMPERSONATOR') %}
                     <li>
                         <a href="{{ path('app_logout', {'_switch_user': '_exit'}) }}"
                            title="{{ 'profile.exit_impersonation'|trans([], 'profile') }}">

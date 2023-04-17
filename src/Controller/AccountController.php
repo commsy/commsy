@@ -34,7 +34,7 @@ use App\Form\Type\Account\PersonalInformationType;
 use App\Form\Type\Account\PrivacyType;
 use App\Form\Type\SignUpFormType;
 use App\Privacy\PersonalDataCollector;
-use App\Security\AbstractCommsyGuardAuthenticator;
+use App\Security\AbstractCommsyAuthenticator;
 use App\Security\LdapAuthenticator;
 use App\Security\LoginFormAuthenticator;
 use App\Security\ShibbolethAuthenticator;
@@ -288,7 +288,7 @@ class AccountController extends AbstractController
                         AuthSourceShibboleth::class => $shibbolethAuthenticator,
                     ];
 
-                    /** @var AbstractCommsyGuardAuthenticator $guardAuthenticator */
+                    /** @var AbstractCommsyAuthenticator $guardAuthenticator */
                     $guardAuthenticator = $authSourceGuardAuthenticatorMap[$selectedAuthSource::class];
 
                     $credentials = [

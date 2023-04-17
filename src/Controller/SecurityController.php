@@ -27,7 +27,7 @@ use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Model\Password;
 use App\Model\ResetPasswordToken;
-use App\Security\AbstractCommsyGuardAuthenticator;
+use App\Security\AbstractCommsyAuthenticator;
 use App\Services\LegacyEnvironment;
 use DateInterval;
 use DateTime;
@@ -92,9 +92,9 @@ class SecurityController extends AbstractController
             $lastUsername = 'root';
         }
 
-        if ($request->hasSession() && ($session = $request->getSession())->has(AbstractCommsyGuardAuthenticator::LAST_SOURCE)) {
-            $lastSource = $session->get(AbstractCommsyGuardAuthenticator::LAST_SOURCE);
-            $session->remove(AbstractCommsyGuardAuthenticator::LAST_SOURCE);
+        if ($request->hasSession() && ($session = $request->getSession())->has(AbstractCommsyAuthenticator::LAST_SOURCE)) {
+            $lastSource = $session->get(AbstractCommsyAuthenticator::LAST_SOURCE);
+            $session->remove(AbstractCommsyAuthenticator::LAST_SOURCE);
         }
 
         $server = $entityManager->getRepository(Server::class)->getServer();
