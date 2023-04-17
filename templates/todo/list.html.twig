@@ -49,7 +49,7 @@
 
                 {# new entry #}
                 <li>
-                    {% if is_granted('ITEM_EDIT', 'NEW') %}
+                    {% if is_granted('ITEM_NEW') %}
                         <a href="{{ path('app_todo_create', {'roomId': roomId}) }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
                         </a>

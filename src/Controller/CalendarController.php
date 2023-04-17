@@ -20,8 +20,9 @@ use App\Repository\CalendarsRepository;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
+use cs_environment;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,13 +33,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Class CalendarController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId)")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
+#[IsGranted('RUBRIC_DATE')]
 class CalendarController extends AbstractController
 {
-    /**
-     * @var cs_environment
-     */
-    protected $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     /**
      * CalendarController constructor.
@@ -53,7 +52,7 @@ class CalendarController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/calendar/edit/{calendarId}')]
-    #[Security("is_granted('CALENDARS_EDIT') and is_granted('RUBRIC_SEE', 'date')")]
+    #[IsGranted('CALENDARS_EDIT')]
     public function editAction(
         Request $request,
         int $roomId,

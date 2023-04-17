@@ -16,8 +16,9 @@ namespace App\Controller;
 use App\Form\Type\Room\CancellableDeleteType;
 use App\Form\Type\Room\CancellableLockType;
 use App\Utils\RoomService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,11 +27,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Class CancellableLockAndDeleteController.
  */
-#[Security("(is_granted('ROOM_MODERATOR', itemId) or is_granted('PARENT_ROOM_MODERATOR', itemId)) and is_granted('ITEM_DELETE', itemId)")]
+#[IsGranted('ITEM_DELETE', subject: 'itemId')]
 class CancellableLockAndDeleteController extends AbstractController
 {
     #[Route(path: '/room/{roomId}/settings/cancellabledelete/{itemId}')]
-    #[Security("(is_granted('ROOM_MODERATOR', itemId) or is_granted('PARENT_ROOM_MODERATOR', itemId)) and is_granted('ITEM_DELETE', itemId)")]
     public function deleteOrLock(
         $roomId,
         Request $request,
@@ -38,6 +38,10 @@ class CancellableLockAndDeleteController extends AbstractController
         TranslatorInterface $translator,
         $itemId
     ): Response {
+        $this->denyAccessUnlessGranted(new Expression(
+            'is_granted("ROOM_MODERATOR", subject) or is_granted("PARENT_ROOM_MODERATOR", subject)'
+        ), $itemId);
+
         $roomItem = $roomService->getRoomItem($itemId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id '.$itemId);
@@ -115,12 +119,15 @@ class CancellableLockAndDeleteController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/settings/unlock/{itemId}')]
-    #[Security("is_granted('ROOM_MODERATOR', itemId) or is_granted('PARENT_ROOM_MODERATOR', itemId)")]
     public function unlock(
         $roomId,
         RoomService $roomService,
         $itemId
     ): Response {
+        $this->denyAccessUnlessGranted(new Expression(
+            'is_granted("ROOM_MODERATOR", itemId) or is_granted("PARENT_ROOM_MODERATOR", itemId)'
+        ));
+
         $roomItem = $roomService->getRoomItem($itemId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id '.$itemId);

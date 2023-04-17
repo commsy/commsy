@@ -21,7 +21,7 @@ use App\Form\Type\HashtagMergeType;
 use App\Repository\LabelRepository;
 use App\Services\LegacyEnvironment;
 use App\Utils\LabelService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -62,7 +62,7 @@ class HashtagController extends AbstractController
      * @return JsonResponse
      */
     #[Route(path: '/room/{roomId}/hashtag/add')]
-    #[Security("is_granted('HASHTAG_EDIT')")]
+    #[IsGranted('HASHTAG_EDIT')]
     public function addAction(
         Request $request,
         LegacyEnvironment $legacyEnvironment,
@@ -93,7 +93,7 @@ class HashtagController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/hashtag/edit/{labelId}')]
-    #[Security("is_granted('HASHTAG_EDIT')")]
+    #[IsGranted('HASHTAG_EDIT')]
     public function editAction(
         Request $request,
         LegacyEnvironment $legacyEnvironment,

@@ -47,7 +47,7 @@
             <ul class="uk-nav uk-nav-dropdown uk-list-striped">
 
                 <li>
-                    {% if is_granted('ITEM_EDIT', 'NEW') %}
+                    {% if is_granted('ITEM_NEW') %}
                         <a href="{{ path('app_discussion_create', {'roomId': roomId}) }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
                         </a>

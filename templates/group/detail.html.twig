@@ -52,7 +52,7 @@
 
                                         {% endif %}
 
-                                        {% if is_granted('ITEM_EDIT', 'NEW') %}
+                                        {% if is_granted('ITEM_NEW') %}
                                             {# new entry #}
                                             <li>
                                                 <a class="" href="{{ path('app_group_create', {'roomId': roomId}) }}"

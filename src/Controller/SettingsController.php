@@ -43,7 +43,7 @@ use App\Utils\RoomService;
 use App\Utils\UserroomService;
 use cs_project_item;
 use cs_room_item;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sylius\Bundle\ThemeBundle\Repository\ThemeRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -56,11 +56,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Class SettingsController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId)")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class SettingsController extends AbstractController
 {
     #[Route(path: '/room/{roomId}/settings/general')]
-    #[Security("is_granted('MODERATOR')")]
+    #[IsGranted('MODERATOR')]
     public function generalAction(
         Request $request,
         RoomCategoriesService $roomCategoriesService,
@@ -124,7 +124,7 @@ class SettingsController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/settings/moderation')]
-    #[Security("is_granted('MODERATOR')")]
+    #[IsGranted('MODERATOR')]
     public function moderationAction(
         Request $request,
         RoomService $roomService,
@@ -161,7 +161,7 @@ class SettingsController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/settings/additional')]
-    #[Security("is_granted('MODERATOR')")]
+    #[IsGranted('MODERATOR')]
     public function additionalAction(
         Request $request,
         RoomService $roomService,
@@ -220,7 +220,7 @@ class SettingsController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/settings/appearance')]
-    #[Security("is_granted('MODERATOR')")]
+    #[IsGranted('MODERATOR')]
     public function appearanceAction(
         Request $request,
         RoomService $roomService,
@@ -356,7 +356,7 @@ class SettingsController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/settings/extensions')]
-    #[Security("is_granted('MODERATOR')")]
+    #[IsGranted('MODERATOR')]
     public function extensionsAction(
         Request $request,
         RoomService $roomService,
@@ -423,7 +423,8 @@ class SettingsController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/settings/deleteuserrooms')]
-    #[Security("is_granted('MODERATOR') and is_granted('ITEM_DELETE', roomId)")]
+    #[IsGranted('MODERATOR')]
+    #[IsGranted('ITEM_DELETE', subject: 'roomId')]
     public function deleteUserRoomsAction(
         $roomId,
         Request $request,
@@ -454,7 +455,8 @@ class SettingsController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/settings/delete/')]
-    #[Security("is_granted('MODERATOR') and is_granted('ITEM_DELETE', roomId)")]
+    #[IsGranted('MODERATOR')]
+    #[IsGranted('ITEM_DELETE', subject: 'roomId')]
     public function deleteAction(
         int $roomId,
         Request $request,
@@ -519,7 +521,7 @@ class SettingsController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/settings/invitations')]
-    #[Security("is_granted('MODERATOR')")]
+    #[IsGranted('MODERATOR')]
     public function invitationsAction(
         Request $request,
         InvitationsService $invitationsService,

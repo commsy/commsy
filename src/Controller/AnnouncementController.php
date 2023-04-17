@@ -42,7 +42,7 @@ use cs_user_item;
 use DateInterval;
 use DateTime;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,7 +54,8 @@ use Symfony\Contracts\Service\Attribute\Required;
 /**
  * Class AnnouncementController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'announcement')")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
+#[IsGranted('RUBRIC_ANNOUNCEMENT')]
 class AnnouncementController extends BaseController
 {
     protected AnnouncementService $announcementService;
@@ -445,7 +446,7 @@ class AnnouncementController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/announcement/create')]
-    #[Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'announcement')")]
+    #[IsGranted('ITEM_NEW')]
     public function createAction(
         int $roomId
     ): RedirectResponse {
@@ -469,7 +470,7 @@ class AnnouncementController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/announcement/{itemId}/edit')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function editAction(
         Request $request,
         LabelService $labelService,
@@ -566,7 +567,7 @@ class AnnouncementController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/announcement/{itemId}/save')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function saveAction(
         int $roomId,
         int $itemId

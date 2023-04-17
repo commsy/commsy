@@ -20,8 +20,8 @@ use App\Utils\FileService;
 use App\Utils\RoomService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sylius\Bundle\ThemeBundle\Context\SettableThemeContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -36,7 +36,7 @@ use Vich\UploaderBundle\Handler\DownloadHandler;
 class FileController extends AbstractController
 {
     #[Route(path: '/file/{fileId}/{disposition}')]
-    #[Security("is_granted('FILE_DOWNLOAD', fileId)")]
+    #[IsGranted('FILE_DOWNLOAD', subject: 'fileId')]
     public function getFile(
         Request $request,
         FileService $fileService,

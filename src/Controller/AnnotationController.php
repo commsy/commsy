@@ -20,7 +20,7 @@ use App\Utils\AnnotationService;
 use App\Utils\ItemService;
 use App\Utils\PortfolioService;
 use App\Utils\ReaderService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -31,7 +31,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class AnnotationController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId)")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class AnnotationController extends AbstractController
 {
     #[Route(path: '/room/{roomId}/annotation/feed/{linkedItemId}/{start}/{firstTagId}/{secondTagId}')]
@@ -107,7 +107,7 @@ class AnnotationController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/annotation/{itemId}/edit', methods: ['GET', 'POST'])]
-    #[Security("is_granted('ITEM_EDIT', itemId)")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function editAction(
         ItemService $itemService,
         AnnotationTransformer $transformer,
@@ -146,7 +146,7 @@ class AnnotationController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/annotation/{itemId}/success', methods: ['GET'])]
-    #[Security("is_granted('ITEM_EDIT', itemId)")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function successAction(
         ItemService $itemService,
         int $itemId
@@ -162,7 +162,7 @@ class AnnotationController extends AbstractController
      * @return RedirectResponse
      */
     #[Route(path: '/room/{roomId}/annotation/{itemId}/create/{firstTagId}/{secondTagId}', methods: ['POST'])]
-    #[Security("is_granted('ITEM_ANNOTATE', itemId)")]
+    #[IsGranted('ITEM_ANNOTATE', subject: 'itemId')]
     public function createAction(
         ItemService $itemService,
         AnnotationService $annotationService,
@@ -218,7 +218,7 @@ class AnnotationController extends AbstractController
      * @return JsonResponse
      */
     #[Route(path: '/room/{roomId}/annotation/{itemId}/delete', methods: ['GET'])]
-    #[Security("is_granted('ITEM_EDIT', itemId)")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function deleteAction(
         ItemService $itemService,
         int $itemId

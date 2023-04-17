@@ -16,7 +16,7 @@
             <li>
                 <a class="uk-comment-title cs-link-highlight" href="{{ path('app_room_listall', {'roomId': roomItem.itemId}|merge({'room_filter[membership]': 1})) }}">{{ 'List my rooms'|trans([], 'room') }}</a>
             </li>
-            {% if userMayCreateContext and is_granted('ITEM_EDIT', 'NEW') %}
+            {% if userMayCreateContext and is_granted('ITEM_NEW') %}
                 <li>
                     <a class="uk-comment-title cs-link-highlight" href="{{ path('app_room_create', {'roomId': roomItem.itemId}) }}">{{ 'Create new context'|trans([], 'room') }}</a>
                 </li>

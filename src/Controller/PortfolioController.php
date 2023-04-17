@@ -25,7 +25,7 @@ use App\Utils\PortfolioService;
 use App\Utils\ReaderService;
 use App\Utils\UserService;
 use cs_environment;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -39,7 +39,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Class CalendarController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId)")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class PortfolioController extends AbstractController
 {
     private cs_environment $legacyEnvironment;

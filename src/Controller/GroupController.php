@@ -13,8 +13,6 @@
 
 namespace App\Controller;
 
-use App\Action\Activate\ActivateAction;
-use App\Action\Activate\DeactivateAction;
 use App\Action\Delete\DeleteAction;
 use App\Action\Download\DownloadAction;
 use App\Action\Mark\CategorizeAction;
@@ -43,11 +41,10 @@ use App\Utils\TopicService;
 use App\Utils\UserService;
 use cs_grouproom_item;
 use cs_room_item;
-use cs_user_item;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,7 +58,8 @@ use Symfony\Contracts\Service\Attribute\Required;
 /**
  * Class GroupController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'group')")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
+#[IsGranted('RUBRIC_GROUP')]
 class GroupController extends BaseController
 {
     private GroupService $groupService;
@@ -602,7 +600,7 @@ class GroupController extends BaseController
      * @return RedirectResponse
      */
     #[Route(path: '/room/{roomId}/group/create')]
-    #[Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'group')")]
+    #[IsGranted('ITEM_NEW')]
     public function createAction(
         int $roomId
     ): Response {
@@ -623,7 +621,7 @@ class GroupController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/group/{itemId}/edit')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function editAction(
         Request $request,
         CategoryService $categoryService,
@@ -727,7 +725,7 @@ class GroupController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/group/{itemId}/save')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function saveAction(
         int $roomId,
         int $itemId
@@ -1215,7 +1213,7 @@ class GroupController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/group/{itemId}/unlockgrouproom')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function unlockGrouproom($roomId, $itemId, GroupService $groupService): Response
     {
         $group = $groupService->getGroup($itemId);

@@ -37,14 +37,6 @@ class CategoryVoter extends Voter
 
     protected function voteOnAttribute($attribute, $object, TokenInterface $token)
     {
-        // get current logged in user
-        // $user = $token->getUser();
-
-        // make sure there is a user object (i.e. that the user is logged in)
-        // if (!$user instanceof User) {
-        //     return false
-        // }
-
         $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 

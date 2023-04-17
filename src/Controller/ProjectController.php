@@ -30,7 +30,7 @@ use App\Utils\RoomService;
 use App\Utils\UserService;
 use cs_environment;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,7 +41,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Class ProjectController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId)")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class ProjectController extends AbstractController
 {
     #[Route(path: '/room/{roomId}/project/feed/{start}/{sort}')]

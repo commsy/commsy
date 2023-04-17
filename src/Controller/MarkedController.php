@@ -22,7 +22,7 @@ use App\Services\MarkedService;
 use cs_item;
 use cs_room_item;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +32,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 /**
  * Class MarkedController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId)")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class MarkedController extends BaseController
 {
     private MarkedService $markedService;

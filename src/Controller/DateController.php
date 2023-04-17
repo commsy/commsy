@@ -47,7 +47,7 @@ use DateInterval;
 use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -61,7 +61,8 @@ use Symfony\Contracts\Service\Attribute\Required;
 /**
  * Class DateController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'date')")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
+#[IsGranted('RUBRIC_DATE')]
 class DateController extends BaseController
 {
     private DateService $dateService;
@@ -783,7 +784,7 @@ class DateController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/date/create/{dateDescription}')]
-    #[Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'date')")]
+    #[IsGranted('ITEM_NEW')]
     public function createAction(
         int $roomId,
         $dateDescription
@@ -928,7 +929,7 @@ class DateController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/date/{itemId}/edit')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'date')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function editAction(
         Request $request,
         CategoryService $categoryService,
@@ -1153,7 +1154,7 @@ class DateController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/date/{itemId}/save')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'date')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function saveAction(
         int $roomId,
         int $itemId
@@ -1588,7 +1589,7 @@ class DateController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/date/{itemId}/participate')]
-    #[Security("is_granted('ITEM_PARTICIPATE', itemId) and is_granted('RUBRIC_SEE', 'date')")]
+    #[IsGranted('ITEM_PARTICIPATE', subject: 'itemId')]
     public function participateAction(
         int $roomId,
         int $itemId

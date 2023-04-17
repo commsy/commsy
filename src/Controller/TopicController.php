@@ -38,7 +38,7 @@ use cs_room_item;
 use cs_topic_item;
 use cs_user_item;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,7 +49,8 @@ use Symfony\Contracts\Service\Attribute\Required;
 /**
  * Class TopicController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'topic')")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
+#[IsGranted('RUBRIC_TOPIC')]
 class TopicController extends BaseController
 {
     private TopicService $topicService;
@@ -366,7 +367,7 @@ class TopicController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/topic/create')]
-    #[Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'topic')")]
+    #[IsGranted('ITEM_NEW')]
     public function createAction(
         int $roomId
     ): RedirectResponse {
@@ -380,7 +381,7 @@ class TopicController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/edit')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function editAction(
         Request $request,
         CategoryService $categoryService,
@@ -472,7 +473,7 @@ class TopicController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/save')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function saveAction(
         int $roomId,
         int $itemId
@@ -632,7 +633,7 @@ class TopicController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/editpath')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function editPathAction(
         Request $request,
         int $roomId,
@@ -736,7 +737,7 @@ class TopicController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/savepath')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function savePathAction(
         int $itemId
     ): Response {

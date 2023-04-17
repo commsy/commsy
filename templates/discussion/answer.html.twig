@@ -29,7 +29,7 @@
             {# section actions #}
             {# NOTE: `getHasOverwrittenContent()` returns true for articles with answers which were "deleted" but should instead have their content overwritten to keep the discussion hierarchy intact. #}
             {% if not article.hasOverwrittenContent -%}
-                {% if is_granted('ITEM_EDIT', 'NEW') %}
+                {% if is_granted('ITEM_NEW') %}
                     {# answer #}
                     <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createanswer', {'roomId': roomId, 'itemId': discussion.itemId, 'answerTo': article.itemId }) }}">
                         <i class="uk-icon-hover uk-icon-small uk-icon-justify uk-icon-reply"></i>

@@ -1,5 +1,5 @@
 security:
-    enable_authenticator_manager: false
+    enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
 
     password_hashers:
@@ -49,7 +49,6 @@ security:
         api_v2_login:
             pattern: ^/api/v2/login
             stateless: true
-            anonymous: lazy
             json_login:
                 check_path: /api/v2/login_check
                 provider: in_memory
@@ -65,17 +64,15 @@ security:
                 provider: in_memory
 
         main:
-            anonymous: true
             user_checker: App\Security\UserChecker
             logout:
                 path: app_logout
-                success_handler: App\Security\LogoutSuccessHandler
+            entry_point: App\Security\LoginFormAuthenticator
             guard:
                 authenticators:
                     - App\Security\LoginFormAuthenticator
                     - App\Security\LdapAuthenticator
                     - App\Security\ShibbolethAuthenticator
-                entry_point: App\Security\LoginFormAuthenticator
                 provider: commsy_user_provider
             switch_user:
                 role: CAN_SWITCH_USER
@@ -85,20 +82,11 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/api/v2/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/v2/doc,   roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/v2,       roles: IS_AUTHENTICATED_FULLY }
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
-
-#        - { path: ^/portal/overview, roles: IS_AUTHENTICATED_ANONYMOUSLY}
-#
-#        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY}
-#
-#        - { path: ^/, roles: IS_AUTHENTICATED_REMEMBERED }
-
-        - { path: ^/dashboard, roles: IS_AUTHENTICATED_REMEMBERED }
-        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/v2/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/v2/doc, roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/dashboard, roles: IS_AUTHENTICATED }
+        - { path: ^/, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

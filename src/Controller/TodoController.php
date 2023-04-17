@@ -44,7 +44,8 @@ use cs_step_item;
 use cs_todo_item;
 use cs_user_item;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,7 +57,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 /**
  * Class TodoController.
  */
-#[Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'todo')")]
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class TodoController extends BaseController
 {
     private TodoService $todoService;
@@ -112,7 +113,7 @@ class TodoController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/todo/create')]
-    #[Security("is_granted('ITEM_EDIT', 'NEW') and is_granted('RUBRIC_SEE', 'todo')")]
+    #[IsGranted('ITEM_NEW')]
     public function createAction(
         int $roomId
     ): RedirectResponse {
@@ -371,12 +372,15 @@ class TodoController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/createstep')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo') or is_granted('ITEM_USERROOM', itemId) or is_granted('ITEM_PARTICIPATE', itemId)")]
     public function createStepAction(
         TodoTransformer $transformer,
         int $roomId,
         int $itemId
     ): Response {
+        $this->denyAccessUnlessGranted(new Expression(
+            'is_granted("ITEM_EDIT", subject) or is_granted("ITEM_USERROOM", subject) or is_granted("ITEM_PARTICIPATE", subject)'
+        ), $itemId);
+
         $step = $this->todoService->getNewStep();
         $step->setDraftStatus(1);
         $step->setTodoID($itemId);
@@ -396,7 +400,7 @@ class TodoController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/editstep')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function editStepAction(
         Request $request,
         TodoTransformer $transformer,
@@ -477,7 +481,7 @@ class TodoController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/edit')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function editAction(
         Request $request,
         CategoryService $categoryService,
@@ -578,7 +582,7 @@ class TodoController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/save')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function saveAction(
         int $roomId,
         int $itemId
@@ -783,11 +787,14 @@ class TodoController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/participate')]
-    #[Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo') or is_granted('ITEM_PARTICIPATE', itemId)")]
     public function participateAction(
         int $roomId,
         int $itemId
     ): RedirectResponse {
+        $this->denyAccessUnlessGranted(new Expression(
+            'is_granted("ITEM_EDIT", subject) or is_granted("ITEM_PARTICIPATE", subject)'
+        ), $itemId);
+
         $todo = $this->todoService->getTodo($itemId);
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         if (!$todo->isProcessor($this->legacyEnvironment->getCurrentUserItem())) {
