@@ -1,0 +1,19 @@
+.fc-button {
+    border: none;
+    margin-left: 0px;
+}
+
+.fc-button-primary,
+.fc-button-primary:hover {
+    background-color: @button-primary-background;
+}
+
+.fc-button-primary:not(:disabled):active,
+.fc-button-primary:not(:disabled).fc-button-active {
+    background-color: @button-link-hover-color;
+}
+
+.fc-button-primary:disabled {
+    background-color: @button-link-hover-color;
+    opacity: unset;
+}

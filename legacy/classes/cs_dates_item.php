@@ -478,7 +478,7 @@ class cs_dates_item extends cs_item
         return 1 == $this->_getValue('date_mode');
     }
 
-    public function getParticipantsItemList()
+    public function getParticipantsItemList(): cs_list
     {
         $members = new cs_list();
         $member_ids = $this->getLinkedItemIDArray(CS_USER_TYPE);

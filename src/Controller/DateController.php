@@ -45,9 +45,12 @@ use cs_room_item;
 use cs_user_item;
 use DateInterval;
 use DateTime;
+use DateTimeInterface;
+use DateTimeZone;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -351,7 +354,7 @@ class DateController extends BaseController
             'iCal' => $iCal,
             'calendars' => $calendars,
             'isArchived' => $roomItem->getArchived(),
-            'defaultView' => ('calendar' === $roomItem->getDatesPresentationStatus()) ? 'agendaWeek' : 'month',
+            'defaultView' => ('calendar' === $roomItem->getDatesPresentationStatus()) ? 'timeGridWeek' : 'dayGridMonth',
         ]);
     }
 
@@ -566,29 +569,16 @@ class DateController extends BaseController
                 $end = $endDateTime->format('Y-m-d H:i:s');
             }
 
-            $participantsList = $date->getParticipantsItemList();
-            $participantItem = $participantsList->getFirst();
-            $participantsNameArray = [];
-            while ($participantItem) {
-                $participantsNameArray[] = $participantItem->getFullname();
-                $participantItem = $participantsList->getNext();
-            }
-            $participantsDisplay = '';
-            if (!empty($participantsNameArray)) {
-                $participantsDisplay = implode(', ', $participantsNameArray);
-            }
+            $participantsNameArray = array_map(
+                fn (cs_user_item $participant) => $participant->getFullname(),
+                iterator_to_array($date->getParticipantsItemList())
+            );
+
+            $participantsDisplay = !empty($participantsNameArray) ? implode(', ', $participantsNameArray) : '';
 
             $color = $date->getCalendar()->getColor();
-
-            $textColor = '#ffffff';
-            if ($date->getCalendar()->hasLightColor()) {
-                $textColor = '#444444';
-            }
-
-            $borderColor = $date->getCalendar()->getColor();
-            if ($date->getCalendar()->hasLightColor()) {
-                $borderColor = '#888888';
-            }
+            $textColor = $date->getCalendar()->hasLightColor() ? '#444444' : '#ffffff';
+            $borderColor = $date->getCalendar()->hasLightColor() ? '#888888' : $date->getCalendar()->getColor();
 
             $recurringDescription = '';
             if ('' != $date->getRecurrencePattern()) {
@@ -650,7 +640,24 @@ class DateController extends BaseController
                 }
             }
 
-            $events[] = ['itemId' => $date->getItemId(), 'title' => html_entity_decode($date->getTitle()), 'start' => $start, 'end' => $end, 'color' => $color, 'calendar' => $date->getCalendar()->getTitle(), 'editable' => $this->isGranted(DateVoter::EDIT, $date), 'description' => $date->getDateDescription(), 'place' => $date->getPlace(), 'participants' => $participantsDisplay, 'contextId' => '', 'contextTitle' => '', 'recurringDescription' => $recurringDescription, 'textColor' => $textColor, 'borderColor' => $borderColor, 'allDay' => $date->isWholeDay()];
+            $events[] = [
+                'id' => $date->getItemId(),
+                'allDay' => $date->isWholeDay(),
+                'start' => $start,
+                'end' => $end,
+                'title' => html_entity_decode($date->getTitle()),
+                'color' => $color,
+                'calendar' => $date->getCalendar()->getTitle(),
+                'editable' => $this->isGranted(DateVoter::EDIT, $date),
+                'description' => $date->getDateDescription(),
+                'place' => $date->getPlace(),
+                'participants' => $participantsDisplay,
+                'contextId' => $date->getContextID(),
+                'contextTitle' => '',
+                'recurringDescription' => $recurringDescription,
+                'textColor' => $textColor,
+                'borderColor' => $borderColor,
+            ];
         }
 
         return new JsonResponse($events);
@@ -777,7 +784,24 @@ class DateController extends BaseController
 
             $context = $this->itemService->getTypedItem($date->getContextId());
 
-            $events[] = ['itemId' => $date->getItemId(), 'title' => $date->getTitle(), 'start' => $start, 'end' => $end, 'color' => $color, 'calendar' => $date->getCalendar()->getTitle(), 'editable' => $date->isPublic(), 'description' => $date->getDateDescription(), 'place' => $date->getPlace(), 'participants' => $participantsDisplay, 'contextId' => $context->getItemId(), 'contextTitle' => $context->getTitle(), 'recurringDescription' => $recurringDescription, 'textColor' => $textColor, 'borderColor' => $borderColor, 'allDay' => $date->isWholeDay()];
+            $events[] = [
+                'id' => $date->getItemId(),
+                'allDay' => $date->isWholeDay(),
+                'start' => $start,
+                'end' => $end,
+                'title' => $date->getTitle(),
+                'color' => $color,
+                'calendar' => $date->getCalendar()->getTitle(),
+                'editable' => $date->isPublic(),
+                'description' => $date->getDateDescription(),
+                'place' => $date->getPlace(),
+                'participants' => $participantsDisplay,
+                'contextId' => $context->getItemId(),
+                'contextTitle' => $context->getTitle(),
+                'recurringDescription' => $recurringDescription,
+                'textColor' => $textColor,
+                'borderColor' => $borderColor,
+            ];
         }
 
         return new JsonResponse($events);
@@ -787,7 +811,7 @@ class DateController extends BaseController
     #[IsGranted('ITEM_NEW')]
     public function createAction(
         int $roomId,
-        $dateDescription
+        $dateDescription = ''
     ): RedirectResponse {
         // create new material item
         $dateItem = $this->dateService->getNewDate();
@@ -795,7 +819,15 @@ class DateController extends BaseController
         $dateItem->setPrivateEditing('1');
 
         if ('now' != $dateDescription) {
-            $dateDescriptionArray = date_parse(urldecode($dateDescription));
+            $isoString = urldecode($dateDescription);
+            $date = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $isoString);
+
+
+
+            // if (!date.hasTime()) {
+            //   date.time('12:00:00');
+            // }
+            $dateDescriptionArray = date_parse($isoString);
         } else {
             $dateDescriptionArray = date_parse(date('Y-m-d H:i:s'));
         }
@@ -842,89 +874,45 @@ class DateController extends BaseController
     #[Route(path: '/room/{roomId}/date/{itemId}/calendaredit')]
     public function calendareditAction(
         Request $request,
-        int $itemId
+        int $itemId,
+        ParameterBagInterface $parameterBag
     ): Response {
         $date = $this->dateService->getDate($itemId);
 
         $requestContent = json_decode($request->getContent(), null, 512, JSON_THROW_ON_ERROR);
 
-        $startTimeArray = explode('T', $requestContent->start);
-        $endTimeArray = explode('T', $requestContent->end);
+        $dtz = new DateTimeZone($parameterBag->get('commsy.dates.timezone'));
+        $start = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $requestContent->start);
+        $start->setTimezone($dtz);
+        $end = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $requestContent->end);
+        $end->setTimezone($dtz);
 
-        $date->setStartingDay($startTimeArray[0]);
-
-        if (isset($startTimeArray[1])) {
-            $date->setStartingTime($startTimeArray[1]);
-        } else {
-            $date->setStartingTime('');
-        }
-
-        $date->setDateTime_start(str_ireplace('T', ' ', $requestContent->start));
+        $date->setStartingDay($start->format('Y-m-d'));
+        $date->setStartingTime($start->format('H:i:s'));
+        $date->setDateTime_start($start->format('Y-m-d H:i:s'));
 
         if (!$requestContent->allDay) {
-            if (isset($endTimeArray[0])) {
-                $date->setEndingDay($endTimeArray[0]);
-            } else {
-                $date->setEndingDay('');
-            }
-
-            if (isset($endTimeArray[1])) {
-                $date->setEndingTime($endTimeArray[1]);
-            } else {
-                $date->setEndingTime('');
-            }
-
-            if ('' != $requestContent->end) {
-                $date->setDateTime_end(str_ireplace('T', ' ', $requestContent->end));
-            }
+            $date->setEndingDay($end->format('Y-m-d'));
+            $date->setEndingTime($end->format('H:i:s'));
+            $date->setDateTime_end($end->format('Y-m-d H:i:s'));
         } else {
-            $endDateTime = new DateTime($requestContent->end);
-            $endDateTime->modify('-1 day');
-
-            $date->setEndingDay($endDateTime->format('Y-m-d'));
-
-            $date->setEndingTime($endDateTime->format('23:59:59'));
-
-            if ('' != $requestContent->end) {
-                $date->setDateTime_end($endDateTime->format('Y-m-d 23:59:59'));
-            }
+            $end->modify('-1 day');
+            $date->setEndingDay($end->format('Y-m-d'));
+            $date->setEndingTime($end->format('23:59:59'));
+            $date->setDateTime_end($end->format('Y-m-d 23:59:59'));
         }
 
-        // update modifier
         $date->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
-
         $date->save();
 
         $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$this->translator->trans('date changed',
             [], 'date');
 
-        $start = $date->getStartingDay();
-        if ('' != $date->getStartingTime()) {
-            $start .= 'T'.$date->getStartingTime().'Z';
-        }
-        $end = $date->getEndingDay();
-        if ('' == $end) {
-            $end = $date->getStartingDay();
-        }
-        if ('' != $date->getEndingTime()) {
-            $end .= 'T'.$date->getEndingTime().'Z';
-        }
-
         return new JsonResponse([
             'message' => $message,
+            'status' => 'success',
             'timeout' => '5550',
-            'layout' => 'cs-notify-message',
-            'data' => [
-                'itemId' => $date->getItemId(),
-                'title' => $date->getTitle(),
-                'start' => $start,
-                'end' => $end,
-                'color' => $date->getColor(),
-                'editable' => $date->isPublic(),
-                'description' => $date->getDateDescription(),
-                'place' => $date->getPlace(),
-                'participants' => '',
-            ],
+            'description' => $date->getDateDescription(),
         ]);
     }
 
