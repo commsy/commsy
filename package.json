@@ -24,6 +24,10 @@
   "devDependencies": {
     "@babel/core": "^7.17.0",
     "@babel/preset-env": "^7.16.0",
+    "@fullcalendar/core": "^4.4.0",
+    "@fullcalendar/daygrid": "^4.4.0",
+    "@fullcalendar/interaction": "^4.4.0",
+    "@fullcalendar/timegrid": "^4.4.0",
     "@hotwired/stimulus": "^3.0.0",
     "@symfony/stimulus-bridge": "^3.2.0",
     "@symfony/ux-autocomplete": "file:vendor/symfony/ux-autocomplete/assets",
@@ -35,7 +39,6 @@
     "expose-loader": "^4.0.0",
     "file-loader": "^6.2.0",
     "flatpickr": "^4.6.3",
-    "fullcalendar": "^3.10.2",
     "jquery": "^3.5.1",
     "jscolor-picker": "^2.0.4",
     "jstree": "^3.3.10",
