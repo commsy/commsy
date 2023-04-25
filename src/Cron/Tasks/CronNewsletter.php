@@ -31,14 +31,14 @@ use Symfony\Component\Routing\RouterInterface;
 
 class CronNewsletter implements CronTaskInterface
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private PortalRepository $portalRepository,
-        private RouterInterface $router,
-        private Mailer $mailer,
-        private AccountManager $accountManager
+        private readonly PortalRepository $portalRepository,
+        private readonly RouterInterface $router,
+        private readonly Mailer $mailer,
+        private readonly AccountManager $accountManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -129,7 +129,7 @@ class CronNewsletter implements CronTaskInterface
 
                 $conf = $roomItem->getHomeConf();
                 if (!empty($conf)) {
-                    $rubrics = explode(',', $conf);
+                    $rubrics = explode(',', (string) $conf);
                 }
 
                 $numRubrics = count($rubrics);

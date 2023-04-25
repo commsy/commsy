@@ -21,12 +21,12 @@ use DateTimeImmutable;
 
 class CronCheckTimeLabels implements CronTaskInterface
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private PortalRepository $portalRepository,
-        private PortalHelper $portalHelper
+        private readonly PortalRepository $portalRepository,
+        private readonly PortalHelper $portalHelper
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -63,7 +63,7 @@ class CronCheckTimeLabels implements CronTaskInterface
                 $lastTime = $timeList->getLast();
                 $lastTimeTitle = $lastTime->getTitle();
 
-                $lastTimeTitleExplode = explode('_', $lastTimeTitle);
+                $lastTimeTitleExplode = explode('_', (string) $lastTimeTitle);
                 $time_text_array = $portal->getTimeTextArray();
                 if ($lastTimeTitleExplode[1] == (is_countable($time_text_array) ? count($time_text_array) : 0)) {
                     $title = ($lastTimeTitleExplode[0] + 1).'_1';

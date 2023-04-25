@@ -29,7 +29,7 @@ class cs_log_manager extends cs_manager
      */
     public function __construct($environment)
     {
-        cs_manager::__construct($environment);
+        parent::__construct($environment);
         $this->_db_table = 'log';
     }
 
@@ -223,7 +223,7 @@ class cs_log_manager extends cs_manager
             $return_array = [];
             foreach ($result as $r) {
                 // Hide all ip adresses and update db
-                $remote_adress_array = explode('.', $r['ip']);
+                $remote_adress_array = explode('.', (string) $r['ip']);
                 $ip_adress = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
                 $query2 = 'UPDATE '.$this->addDatabasePrefix('log').' SET ip = "'.encode(AS_DB, $ip_adress).'" WHERE id = "'.encode(AS_DB, $r['id']).'" AND ip NOT LIKE "%XXX"';
 
@@ -242,7 +242,7 @@ class cs_log_manager extends cs_manager
         $text = 'NULL';
         if (!empty($array['post_content'])) {
             // warum zwei mal strtoupper ??? (TBD)
-            $post_text = mb_strtoupper($array['post_content'], 'UTF-8');
+            $post_text = mb_strtoupper((string) $array['post_content'], 'UTF-8');
             $post_content_big = mb_strtoupper($post_text, 'UTF-8');
             if (!empty($post_content_big) and (false !== mb_stristr($post_content_big, 'SELECT')
                or false !== mb_stristr($post_content_big, 'INSERT')
@@ -253,7 +253,7 @@ class cs_log_manager extends cs_manager
         if (empty($array['user_item_id'])) {
             $array['user_item_id'] = '0';
         }
-        if (empty($array['iid']) or 'NEW' == mb_strtoupper($array['iid'], 'UTF-8')) {
+        if (empty($array['iid']) or 'NEW' == mb_strtoupper((string) $array['iid'], 'UTF-8')) {
             $array['iid'] = '0';
         }
         if (!isset($array['queries'])) {

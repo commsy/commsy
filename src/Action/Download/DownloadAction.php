@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class DownloadAction implements ActionInterface
 {
-    public function __construct(private DownloadService $downloadService)
+    public function __construct(private readonly DownloadService $downloadService)
     {
     }
 

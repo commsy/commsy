@@ -13,14 +13,9 @@ class PortalAuthLocal
 
     public string $submitButton = '#auth_local_save';
 
-    /**
-     * @var FunctionalTester ;
-     */
-    protected FunctionalTester $functionalTester;
-
-    public function __construct(FunctionalTester $I)
-    {
-        $this->functionalTester = $I;
+    public function __construct(
+        protected FunctionalTester $functionalTester
+    ) {
     }
 
     public function configure(

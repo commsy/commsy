@@ -135,7 +135,7 @@ class cs_room2_manager extends cs_context_manager
            $public = '0';
        }
 
-       $title = str_ireplace("'", '"', $item->getTitle());
+       $title = str_ireplace("'", '"', (string) $item->getTitle());
 
        $query .= 'title="'.encode(AS_DB, $title).'",'.
                  "extras='".encode(AS_DB, serialize($item->getExtraInformation()))."',".
@@ -190,7 +190,7 @@ class cs_room2_manager extends cs_context_manager
            $public = 0;
        }
 
-       $title = str_ireplace("'", '"', $item->getTitle());
+       $title = str_ireplace("'", '"', (string) $item->getTitle());
 
        $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
                 'item_id="'.encode(AS_DB, $item->getItemID()).'",'.

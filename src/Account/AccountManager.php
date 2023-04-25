@@ -25,20 +25,21 @@ use cs_user_item;
 use cs_user_manager;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class AccountManager
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     /**
      * AccountManager constructor.
      */
     public function __construct(
-        private EntityManagerInterface $entityManager,
+        private readonly EntityManagerInterface $entityManager,
         LegacyEnvironment $legacyEnvironment,
-        private UserService $userService,
-        private SessionInterface $session
+        private readonly UserService $userService,
+        private readonly RequestStack $requestStack
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -184,7 +185,7 @@ class AccountManager
 
         // Update the user's session here too (normally done on login)
         // This will affect the translation language in cs_environment::getSelectedLanguage.
-        $this->session->set('_locale', $account->getLanguage());
+        $this->requestStack->getSession()->set('_locale', $account->getLanguage());
     }
 
     public function renewActivityUpdated(Account $account, bool $flush = true): void

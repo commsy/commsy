@@ -9,12 +9,13 @@ use App\Entity\RoomPrivat;
 use App\Entity\User;
 use App\Facade\AccountCreatorFacade;
 use App\Facade\PortalCreatorFacade;
-use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\UserTransformer;
-use Tests\Support\UnitTester;
+use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_user_item;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Tests\Support\UnitTester;
 
 
 class UserCest
@@ -76,9 +77,7 @@ class UserCest
         $legacyEnvironment = $I->grabService(LegacyEnvironment::class)->getEnvironment();
         $legacyEnvironment->setCurrentPortalID($portal->getId());
 
-        $localAuthSource = $portal->getAuthSources()->filter(function(AuthSource $authSource) {
-            return $authSource->getType() === 'local';
-        })->first();
+        $localAuthSource = $portal->getAuthSources()->filter(fn(AuthSource $authSource) => $authSource->getType() === 'local')->first();
 
         $account = new Account();
         $account->setAuthSource($localAuthSource);
@@ -90,7 +89,7 @@ class UserCest
         $account->setUsername('username');
         $account->setPlainPassword('ZSzq9z3aH8xDmGnLip');
 
-        /** @var UserPasswordEncoderInterface $passwordEncoder */
+        /** @var UserPasswordHasherInterface $passwordEncoder */
         $passwordEncoder = $I->grabService('security.password_encoder');
         $password = $passwordEncoder->encodePassword($account, $account->getPlainPassword());
         $account->setPassword($password);
@@ -111,8 +110,6 @@ class UserCest
     /**
      * Check that changing the account email address will affect the auth table, the portal user and the private room,
      * but not normal workspace users.
-     *
-     * @param UnitTester $I
      */
     public function changeAccountEmailTest(UnitTester $I)
     {

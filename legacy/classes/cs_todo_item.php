@@ -44,7 +44,7 @@ class cs_todo_item extends cs_item
      */
     public function __construct($environment)
     {
-        cs_item::__construct($environment);
+        parent::__construct($environment);
         $this->_type = CS_TODO_TYPE;
     }
 
@@ -73,7 +73,7 @@ class cs_todo_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function setTitle($title)
+    public function setTitle(string $title)
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();
@@ -309,7 +309,7 @@ class cs_todo_item extends cs_item
 
     public function setPlannedTime($time)
     {
-        $time = str_replace(',', '.', $time);
+        $time = str_replace(',', '.', (string) $time);
         $this->_setValue('minutes', $time);
     }
 

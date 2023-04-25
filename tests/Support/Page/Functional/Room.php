@@ -10,14 +10,9 @@ class Room
 
     public string $submitButton = '#context_save';
 
-    /**
-     * @var FunctionalTester ;
-     */
-    protected FunctionalTester $functionalTester;
-
-    public function __construct(FunctionalTester $I)
-    {
-        $this->functionalTester = $I;
+    public function __construct(
+        protected FunctionalTester $functionalTester
+    ) {
     }
 
     public function create(

@@ -408,7 +408,7 @@ class cs_privateroom_manager extends cs_room2_manager
                             return $this->_private_room_array[$user_item->getItemID()];
                         }
                     }
-                } catch (\Doctrine\DBAL\Exception $e) {
+                } catch (\Doctrine\DBAL\Exception) {
                     trigger_error('Problems selecting '.$this->_db_table.' items.', E_USER_WARNING);
                 }
             }

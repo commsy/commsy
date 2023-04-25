@@ -27,7 +27,7 @@ class cs_portal_manager extends cs_context_manager
     {
         $this->_db_table = 'portal';
         $this->_room_type = CS_PORTAL_TYPE;
-        cs_context_manager::__construct($environment);
+        parent::__construct($environment);
     }
 
      /** reset limits

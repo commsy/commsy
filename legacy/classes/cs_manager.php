@@ -271,13 +271,13 @@ class cs_manager
        $first_element = [];
        $tag2tag_manager = $this->_environment->getTag2TagManager();
        foreach ($array as $key => $value) {
-           $output = preg_replace('/[^0-9]/', '', $value);
+           $output = preg_replace('/[^0-9]/', '', (string) $value);
            if (!empty($output)) {
                $first_element[] = $value;
            } else {
-               $first_element[] = substr($key, 7);
+               $first_element[] = substr((string) $key, 7);
                if ($array[$key]) {
-                   $id_array = array_unique(array_merge($id_array, $tag2tag_manager->getRecursiveChildrenItemIDArray(substr($key, 7))));
+                   $id_array = array_unique(array_merge($id_array, $tag2tag_manager->getRecursiveChildrenItemIDArray(substr((string) $key, 7))));
                }
            }
        }
@@ -1155,7 +1155,7 @@ class cs_manager
                if (!$do_it) {
                    $do_it = true;
                } else {
-                   $insert_query = str_replace('SET,', 'SET ', $insert_query);
+                   $insert_query = str_replace('SET,', 'SET ', (string) $insert_query);
                    $result_insert = $this->_db_connector->performQuery($insert_query);
                    if (!isset($result_insert)) {
                        trigger_error('Problem creating item.', E_USER_ERROR);
@@ -1207,21 +1207,21 @@ class cs_manager
                $replace = false;
                $item_id = $query_result['item_id'];
                $desc = $query_result['description'];
-               preg_match_all('~\[[0-9]*(\]|\|)~u', $query_result['description'], $matches);
+               preg_match_all('~\[[0-9]*(\]|\|)~u', (string) $query_result['description'], $matches);
                if (isset($matches[0])) {
                    foreach ($matches[0] as $match) {
                        $id = mb_substr($match, 1);
                        $last_char = mb_substr($id, mb_strlen($id));
                        $id = mb_substr($id, 0, mb_strlen($id) - 1);
                        if (isset($id_array[$id])) {
-                           $desc = str_replace('['.$id.$last_char, '['.$id_array[$id].$last_char, $desc);
+                           $desc = str_replace('['.$id.$last_char, '['.$id_array[$id].$last_char, (string) $desc);
                            $replace = true;
                        }
                    }
                }
                // preg_match_all('~\(:item ([0-9]*) ~u', $query_result['description'], $matches);
                // because of html tags from (f)ckeditor
-               preg_match_all('~\(:item[^0-9]*([0-9]*) ~u', $query_result['description'], $matches);
+               preg_match_all('~\(:item[^0-9]*([0-9]*) ~u', (string) $query_result['description'], $matches);
                if (isset($matches[1])
                     and !empty($matches[1])
                ) {
@@ -1229,15 +1229,15 @@ class cs_manager
                        $id = $match;
                        if (isset($id_array[$id])) {
                            // $desc = str_replace('(:item '.$id,'(:item '.$id_array[$id],$desc);
-                           $match2 = str_replace($id, $id_array[$id], strip_tags($matches[0][$key]));
+                           $match2 = str_replace($id, $id_array[$id], strip_tags((string) $matches[0][$key]));
                            // if there are html tags, then there are double spaces, don't know why (IJ 27.10.2011)
                            $match2 = str_replace('  ', ' ', $match2);
-                           $desc = str_replace($matches[0][$key], $match2, $desc);
+                           $desc = str_replace($matches[0][$key], $match2, (string) $desc);
                            $replace = true;
                        }
                    }
                }
-               if (strstr($desc, '<!-- KFC TEXT')
+               if (strstr((string) $desc, '<!-- KFC TEXT')
                     and $replace
                ) {
                    $desc = renewSecurityHash($desc);

@@ -22,19 +22,19 @@ use cs_environment;
 use cs_item;
 use cs_room_item;
 use cs_user_item;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class InsertUserroomAction
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
-        private TranslatorInterface $translator,
+        private readonly TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
-        private MarkedService $markService,
-        private Security $security
+        private readonly MarkedService $markService,
+        private readonly Security $security
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

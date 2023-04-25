@@ -43,7 +43,7 @@ class cs_context_item extends cs_item
      */
     public function __construct($environment)
     {
-        cs_item::__construct($environment);
+        parent::__construct($environment);
         $this->_type = 'context';
 
         $colors = [];
@@ -113,12 +113,12 @@ class cs_context_item extends cs_item
 
     public function setMaterialOpenForGuests()
     {
-        $this->_addExtra('MATERIAL_GUESTS', 1, true);
+        $this->_addExtra('MATERIAL_GUESTS', 1);
     }
 
     public function setMaterialClosedForGuests()
     {
-        $this->_addExtra('MATERIAL_GUESTS', 0, true);
+        $this->_addExtra('MATERIAL_GUESTS', 0);
     }
 
     public function isAssignmentOnlyOpenForRoomMembers()
@@ -201,7 +201,7 @@ class cs_context_item extends cs_item
      *
      * @param string value title of the context
      */
-    public function setTitle($value)
+    public function setTitle(string $value)
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();
@@ -440,7 +440,7 @@ class cs_context_item extends cs_item
     public function setDescriptionByLanguage($value, $language)
     {
         $desc_array = $this->getDescriptionArray();
-        $desc_array[mb_strtoupper($language, 'UTF-8')] = $value;
+        $desc_array[mb_strtoupper((string) $language, 'UTF-8')] = $value;
         $this->setDescriptionArray($desc_array);
     }
 
@@ -1562,7 +1562,7 @@ class cs_context_item extends cs_item
         // this should always be the case
         $rubrics = array_filter($rubrics, fn ($rubric) => isset($this->defaultHomeConf[$rubric]));
 
-        $rubrics = array_map(fn ($rubric) => "${rubric}_show", $rubrics);
+        $rubrics = array_map(fn ($rubric) => "{$rubric}_show", $rubrics);
 
         return implode(',', $rubrics);
     }
@@ -1611,8 +1611,8 @@ class cs_context_item extends cs_item
             $extra_config_array = $this->_getExtra('EXTRA_CONFIG');
             if ('whole' == $type) {
                 $retour = $extra_config_array;
-            } elseif (isset($extra_config_array[mb_strtoupper($type, 'UTF-8')])) {
-                $retour = $extra_config_array[mb_strtoupper($type, 'UTF-8')];
+            } elseif (isset($extra_config_array[mb_strtoupper((string) $type, 'UTF-8')])) {
+                $retour = $extra_config_array[mb_strtoupper((string) $type, 'UTF-8')];
             }
         }
 
@@ -1631,7 +1631,7 @@ class cs_context_item extends cs_item
             $this->_addExtra('EXTRA_CONFIG', $value);
         } else {
             $extra_config_array = $this->_getExtraConfig('whole');
-            $extra_config_array[mb_strtoupper($type, 'UTF-8')] = $value;
+            $extra_config_array[mb_strtoupper((string) $type, 'UTF-8')] = $value;
             $this->_setExtraConfig('whole', $extra_config_array);
         }
     }
@@ -2146,7 +2146,7 @@ class cs_context_item extends cs_item
         if (!isset($this->_rubric_support[$rubric_type])) {
             $current_room_modules = $this->getHomeConf();
             // rubric is mentioned? if not -> false
-            if (!empty($rubric_type) and mb_stristr($current_room_modules, $rubric_type)) {
+            if (!empty($rubric_type) and mb_stristr((string) $current_room_modules, (string) $rubric_type)) {
                 $this->_rubric_support[$rubric_type] = true;
             } else {
                 $this->_rubric_support[$rubric_type] = false;
@@ -2160,7 +2160,7 @@ class cs_context_item extends cs_item
     {
         $current_room_modules = $this->getHomeConf();
         if (!empty($current_room_modules)) {
-            $tokens = explode(',', $current_room_modules);
+            $tokens = explode(',', (string) $current_room_modules);
             $pointer = 0;
             foreach ($tokens as $module) {
                 [$rubric, $view] = explode('_', $module);
@@ -2818,7 +2818,7 @@ class cs_context_item extends cs_item
         $conf = $this->getHomeConf();
         $rubrics = [];
         if (!empty($conf)) {
-            $rubrics = explode(',', $conf);
+            $rubrics = explode(',', (string) $conf);
         }
         $check_managers = [];
         foreach ($rubrics as $rubric) {

@@ -28,16 +28,16 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class CronManager
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     /**
      * @param CronTaskInterface[] $cronTasks
      */
     public function __construct(
-        private EntityManagerInterface $entityManager,
+        private readonly EntityManagerInterface $entityManager,
         LegacyEnvironment $legacyEnvironment,
-        private string $projectDir,
-        private iterable $cronTasks
+        private readonly string $projectDir,
+        private readonly iterable $cronTasks
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -56,7 +56,7 @@ class CronManager
         $stopwatch->openSection();
 
         $cronTasks = iterator_to_array($this->cronTasks);
-        usort($cronTasks, [$this, 'sortByPriority']);
+        usort($cronTasks, $this->sortByPriority(...));
         foreach ($cronTasks as $cronTask) {
             try {
                 $cronTaskRef = new ReflectionClass($cronTask);

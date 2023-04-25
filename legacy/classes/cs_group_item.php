@@ -133,7 +133,7 @@ class cs_group_item extends cs_label_item
 
                         $picture = $private_room_user_item->getPicture();
                         if (!empty($picture)) {
-                            $value_array = explode('_', $picture);
+                            $value_array = explode('_', (string) $picture);
                             $value_array[0] = 'cid'.$new_member_item->getContextID();
                             $new_picture_name = implode('_', $value_array);
                             $disc_manager = $this->_environment->getDiscManager();

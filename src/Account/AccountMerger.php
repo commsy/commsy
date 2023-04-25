@@ -23,15 +23,15 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class AccountMerger
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     /**
      * AccountMerger constructor.
      */
     public function __construct(
-        private UserService $userService,
+        private readonly UserService $userService,
         LegacyEnvironment $legacyEnvironment,
-        private EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

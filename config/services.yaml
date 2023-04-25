@@ -133,6 +133,7 @@ services:
     App\Services\LegacyEnvironment:
         arguments:
             $projectDir: '%kernel.project_dir%'
+            $serviceContainer: '@service_container'
 
     commsy_legacy.category_service:
         alias: App\Utils\CategoryService
@@ -433,5 +434,5 @@ services:
     
     # Public alias for Security
     app.security:
-        alias: Symfony\Component\Security\Core\Security
+        alias: Symfony\Bundle\SecurityBundle\Security
         public: true

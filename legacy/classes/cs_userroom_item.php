@@ -27,21 +27,17 @@ class cs_userroom_item extends cs_room_item
      *
      * @var string
      */
-    public const ROOM_TYPE_USER = 'userroom';
+    final public const ROOM_TYPE_USER = 'userroom';
 
     /**
      * the project room that hosts this user room.
-     *
-     * @var \cs_project_item
      */
-    private $_projectItem = null;
+    private ?cs_context_item $_projectItem = null;
 
     /**
      * the regular (i.e., non-moderator) user associated with this user room.
-     *
-     * @var cs_user_item
      */
-    private $_userItem = null;
+    private ?object $_userItem = null;
 
     /**
      * constructor.

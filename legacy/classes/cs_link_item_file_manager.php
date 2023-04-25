@@ -52,8 +52,8 @@ class cs_link_item_file_manager extends cs_link_father_manager
         $file_id_array = [];
         $file_id_array2 = [];
         foreach ($id_array as $key => $value) {
-            if (mb_stristr($key, CS_FILE_TYPE)) {
-                $real_file_id = str_replace(CS_FILE_TYPE, '', $key);
+            if (mb_stristr((string) $key, CS_FILE_TYPE)) {
+                $real_file_id = str_replace(CS_FILE_TYPE, '', (string) $key);
                 $file_id_array[] = $real_file_id;
                 $file_id_array2[] = $value;
             }

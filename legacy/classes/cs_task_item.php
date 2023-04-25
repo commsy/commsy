@@ -28,7 +28,7 @@ class cs_task_item extends cs_item
      */
     public function __construct($environment)
     {
-        cs_item::__construct($environment);
+        parent::__construct($environment);
         $this->_type = 'task';
     }
 
@@ -63,7 +63,7 @@ class cs_task_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function setTitle($value)
+    public function setTitle(string $value)
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();

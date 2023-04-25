@@ -21,12 +21,12 @@ use DateTimeImmutable;
 
 class RoomActivityDeleteWarningMessage extends Message
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private Portal $portal,
-        private object $room
+        private readonly Portal $portal,
+        private readonly object $room
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

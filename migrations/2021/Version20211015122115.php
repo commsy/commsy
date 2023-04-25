@@ -26,12 +26,8 @@ final class Version20211015122115 extends AbstractMigration
         $tablesWithExtras = array_filter($tables, function ($table) {
             $columns = $table->getColumns();
 
-            $withExtras = array_filter($columns, function ($column) {
-                return $column->getName() === 'extras';
-            });
-            $withItemId = array_filter($columns, function ($column) {
-                return $column->getName() === 'item_id';
-            });
+            $withExtras = array_filter($columns, fn($column) => $column->getName() === 'extras');
+            $withItemId = array_filter($columns, fn($column) => $column->getName() === 'item_id');
 
             return $withExtras && $withItemId;
         });

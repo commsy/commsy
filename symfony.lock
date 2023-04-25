@@ -775,9 +775,6 @@
     "symfony/polyfill-php80": {
         "version": "v1.17.0"
     },
-    "symfony/polyfill-php81": {
-        "version": "v1.23.0"
-    },
     "symfony/process": {
         "version": "v4.4.5"
     },
@@ -819,9 +816,6 @@
         "version": "v4.4.5"
     },
     "symfony/security-csrf": {
-        "version": "v4.4.5"
-    },
-    "symfony/security-guard": {
         "version": "v4.4.5"
     },
     "symfony/security-http": {

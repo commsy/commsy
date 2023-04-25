@@ -259,7 +259,7 @@ class cs_label_item extends cs_item
      *
      * @param string value title of the item
      */
-    public function setTitle($value)
+    public function setTitle(string $value)
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();

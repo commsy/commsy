@@ -22,13 +22,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class CommsyVoter implements VoterInterface
 {
-    public function __construct(private RequestStack $requestStack)
+    public function __construct(private readonly RequestStack $requestStack)
     {
     }
 
     public function matchItem(ItemInterface $item): ?bool
     {
-        [, $controller, $action] = explode('_', $this->requestStack->getCurrentRequest()->attributes->get('_route'));
+        [, $controller, $action] = explode('_', (string) $this->requestStack->getCurrentRequest()->attributes->get('_route'));
 
         // Room settings
         if ('settings' === $controller) {

@@ -18,14 +18,8 @@ use cs_room_item;
 
 class RoomArchivedMessage extends Message
 {
-    /**
-     * @var cs_room_item
-     */
-    private $room;
-
-    public function __construct(cs_room_item $roomItem, private int $numDays)
+    public function __construct(private cs_room_item $room, private int $numDays)
     {
-        $this->room = $roomItem;
     }
 
     public function getSubject(): string

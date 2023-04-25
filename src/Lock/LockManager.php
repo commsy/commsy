@@ -21,18 +21,18 @@ use cs_environment;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class LockManager
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
-        private Security $security,
-        private TokenGeneratorInterface $tokenGenerator,
-        private EntityManagerInterface $entityManager,
-        private ItemService $itemService,
+        private readonly Security $security,
+        private readonly TokenGeneratorInterface $tokenGenerator,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ItemService $itemService,
         LegacyEnvironment $environment
     ) {
         $this->legacyEnvironment = $environment->getEnvironment();

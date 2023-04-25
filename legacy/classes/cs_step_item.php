@@ -21,7 +21,7 @@ class cs_step_item extends cs_item
      */
     public function __construct($environment)
     {
-        cs_item::__construct($environment);
+        parent::__construct($environment);
         $this->_type = 'step';
     }
 
@@ -52,7 +52,7 @@ class cs_step_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function setTitle($title)
+    public function setTitle(string $title)
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();
@@ -233,12 +233,12 @@ class cs_step_item extends cs_item
     {
         $step_manager = $this->_environment->getStepManager();
         if (!empty($version) and 'current' == $version) {
-            $step_manager->delete($this->getItemID(), $this->getVersionID());
+            $step_manager->delete($this->getItemID());
         } elseif (isset($version)
                    and CS_ALL != $version
                    and is_int((int) $version)
         ) {
-            $step_manager->delete($this->getItemID(), $version);
+            $step_manager->delete($this->getItemID());
         } else {
             $step_manager->delete($this->getItemID());
         }
@@ -264,7 +264,7 @@ class cs_step_item extends cs_item
     public function deleteVersion()
     {
         $step_manager = $this->_environment->getStepManager();
-        $step_manager->delete($this->getItemID(), $this->getVersionID());
+        $step_manager->delete($this->getItemID());
     }
 
     /** Checks and sets the data of the step_item.

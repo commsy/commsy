@@ -7,6 +7,7 @@ use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
 use App\Entity\Room;
 use Codeception\Actor;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
@@ -65,8 +66,8 @@ class ApiTester extends Actor
 
     public function haveAccount(AuthSource $authSource, string $username, string $password): Account
     {
-        /** @var UserPasswordEncoderInterface $passwordEncoder */
-        $passwordEncoder = $this->grabService(UserPasswordEncoderInterface::class);
+        /** @var UserPasswordHasherInterface $passwordEncoder */
+        $passwordEncoder = $this->grabService(UserPasswordHasherInterface::class);
 
         $account = new Account();
         $this->haveInRepository($account, [

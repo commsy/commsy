@@ -32,9 +32,7 @@ final class FixPhysicalFilesTest extends Unit
         $this->tester->cleanDir($filesDirectory);
 
         $this->parameterBagStub = $this->makeEmpty(ParameterBagInterface::class, [
-            'get' => function () use ($filesDirectory) {
-                return $filesDirectory;
-            }
+            'get' => fn() => $filesDirectory
         ]);
 
         $this->tester->amInPath($filesDirectory);
@@ -160,14 +158,10 @@ final class FixPhysicalFilesTest extends Unit
         ]);
         $roomRepository = $this->makeEmpty(RoomRepository::class);
         $filesRepository = $this->makeEmpty(FilesRepository::class, [
-            'getNumFiles' => function (int $fileId, int $contextId) {
-                return $contextId == 1234123 ? 1 : 0;
-            },
+            'getNumFiles' => fn(int $fileId, int $contextId) => $contextId == 1_234_123 ? 1 : 0,
         ]);
         $itemRepository = $this->makeEmpty(ItemRepository::class, [
-            'getNumItems' => function (int $itemId) {
-                return ($itemId == 1234123 || $itemId == 1234888) ? 1 : 0;
-            },
+            'getNumItems' => fn(int $itemId) => ($itemId == 1_234_123 || $itemId == 1_234_888) ? 1 : 0,
         ]);
 
         $fix = new FixPhysicalFiles(
@@ -220,14 +214,10 @@ final class FixPhysicalFilesTest extends Unit
             ],
         ]);
         $filesRepository = $this->makeEmpty(FilesRepository::class, [
-            'getNumFiles' => function (int $fileId, int $contextId) {
-                return ($fileId == 1234 && $contextId == 1234123) ? 1 : 0;
-            },
+            'getNumFiles' => fn(int $fileId, int $contextId) => ($fileId == 1234 && $contextId == 1_234_123) ? 1 : 0,
         ]);
         $itemRepository = $this->makeEmpty(ItemRepository::class, [
-            'getNumItems' => function () {
-                return 1;
-            },
+            'getNumItems' => fn() => 1,
         ]);
 
         $fix = new FixPhysicalFiles(

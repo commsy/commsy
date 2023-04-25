@@ -39,7 +39,7 @@ class cs_file_item extends cs_item
     public function setPostFile($post_data)
     {
         $this->setTempName($post_data['tmp_name']);
-        $filename = rawurldecode(basename(rawurlencode($post_data['name'])));
+        $filename = rawurldecode(basename(rawurlencode((string) $post_data['name'])));
         $filename = str_replace(' ', '_', $filename);
         $this->setFileName($filename);
     }
@@ -101,7 +101,7 @@ class cs_file_item extends cs_item
 
     public function getDisplayName()
     {
-        $temp_display_name = rawurldecode($this->_getValue('filename'));
+        $temp_display_name = rawurldecode((string) $this->_getValue('filename'));
 
         return cs_utf8_encode($temp_display_name);
     }
@@ -133,7 +133,7 @@ class cs_file_item extends cs_item
     {
         $display_name = $this->getDisplayName();
         if (!empty($display_name)) {
-            return cs_strtolower(mb_substr(strrchr($display_name, '.'), 1));
+            return cs_strtolower(mb_substr(strrchr((string) $display_name, '.'), 1));
         }
     }
 

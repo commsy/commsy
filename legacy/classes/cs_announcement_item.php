@@ -67,7 +67,7 @@ class cs_announcement_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function setTitle($value)
+    public function setTitle(string $value)
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();

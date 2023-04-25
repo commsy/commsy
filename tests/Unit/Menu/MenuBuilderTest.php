@@ -14,11 +14,11 @@ use cs_privateroom_item;
 use cs_project_item;
 use cs_user_item;
 use Knp\Menu\FactoryInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\Security;
 use Tests\Support\UnitTester;
 
 class MenuBuilderTest extends Unit

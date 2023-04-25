@@ -14,6 +14,7 @@
 namespace App\Command;
 
 use App\Cron\CronManager;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputArgument;
@@ -22,14 +23,13 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('commsy:cron:main', 'main commsy cron')]
 class CronCommand extends Command
 {
     use LockableTrait;
-    protected static $defaultName = 'commsy:cron:main';
-    protected static $defaultDescription = 'main commsy cron';
 
     public function __construct(
-        private CronManager $cronManager
+        private readonly CronManager $cronManager
     ) {
         parent::__construct();
     }
@@ -57,7 +57,7 @@ class CronCommand extends Command
         $excludeOption = $input->getOption('exclude');
         $exclude = [];
         if ($excludeOption) {
-            $exclude = explode(',', $input->getOption('exclude'));
+            $exclude = explode(',', (string) $input->getOption('exclude'));
         }
 
         $io = new SymfonyStyle($input, $output);

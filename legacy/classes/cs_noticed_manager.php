@@ -26,17 +26,13 @@ class cs_noticed_manager
     public $_noticed_id_array = [];
     public $_cache_on = true;
 
-    private cs_environment $_environment;
-
     /** constructor: cs_noticed_manager
      * the only available constructor, initial values for internal variables.
      *
      * @param cs_environment the environment
      */
-    public function __construct(cs_environment $environment)
+    public function __construct(private readonly cs_environment $_environment)
     {
-        $this->_environment = $environment;
-
         $this->_current_user = $this->_environment->getCurrentUser();
         $this->_current_user_id = $this->_current_user->getItemID();
         $this->_db_connector = $this->_environment->getDBConnector();

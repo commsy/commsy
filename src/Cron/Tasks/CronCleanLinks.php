@@ -18,7 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class CronCleanLinks implements CronTaskInterface
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
     }
 

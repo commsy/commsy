@@ -66,15 +66,11 @@ final class Version20150623135455 extends AbstractMigration
         foreach ($tables as $table) {
             $columns = $schemaManager->listTableColumns($table);
 
-            if (array_filter($columns, function($column) {
-                return $column->getName() === 'creator_id';
-            })) {
+            if (array_filter($columns, fn($column) => $column->getName() === 'creator_id')) {
                 $this->addSql('ALTER TABLE ' . $table . ' MODIFY creator_id INT(11) NULL');
             }
 
-            if (array_filter($columns, function($column) {
-                return $column->getName() === 'modifier_id';
-            })) {
+            if (array_filter($columns, fn($column) => $column->getName() === 'modifier_id')) {
                 $this->addSql('ALTER TABLE ' . $table . ' MODIFY modifier_id INT(11) NULL');
             }
         }
@@ -87,22 +83,18 @@ final class Version20150623135455 extends AbstractMigration
 
         foreach ($tables as $table) {
             foreach ($columns as $column) {
-                $this->fixAssociations($table, $column, substr($table, 0, 3) === 'zzz');
+                $this->fixAssociations($table, $column, str_starts_with($table, 'zzz'));
             }
         }
 
         $roomColumns = $schemaManager->listTableColumns('room');
 
-        if (array_filter($roomColumns, function($column) {
-            return $column->getName() === 'description';
-        })) {
+        if (array_filter($roomColumns, fn($column) => $column->getName() === 'description')) {
             $this->addSql('ALTER TABLE room DROP COLUMN description');
         }
 
         $zzzRoomColumns = $schemaManager->listTableColumns('zzz_room');
-        if (array_filter($zzzRoomColumns, function($column) {
-            return $column->getName() === 'description';
-        })) {
+        if (array_filter($zzzRoomColumns, fn($column) => $column->getName() === 'description')) {
             $this->addSql('ALTER TABLE zzz_room DROP COLUMN description');
         }
     }
@@ -130,9 +122,7 @@ final class Version20150623135455 extends AbstractMigration
         $schemaManager = $this->connection->getSchemaManager();
         $roomColumns = $schemaManager->listTableColumns($tableName);
 
-        if (array_filter($roomColumns, function($column) use ($columnName) {
-            return $column->getName() === $columnName;
-        })) {
+        if (array_filter($roomColumns, fn($column) => $column->getName() === $columnName)) {
             $this->addSql('UPDATE ' . $tableName . ' LEFT JOIN ' . $userTable . ' ON ' . $tableName . '.' . $columnName . ' = ' . $userTable . '.item_id SET ' . $tableName . '.' . $columnName . ' = NULL WHERE ' . $userTable . '.item_id IS NULL');
         }
     }
@@ -167,23 +157,15 @@ final class Version20150623135455 extends AbstractMigration
         // old home configuration syntax looks like
         // [rubric]_[short|tiny|none]
         // since we now got a feed, we need to convert these values
-        $convertMap = array(
-            '' => 'show',
-            'short' => 'show',
-            'tiny' => 'show',
-            'none' => 'hide',
-            'nodisplay' => 'hide',
-            'show' => 'show',
-            'hide' => 'hide',
-        );
+        $convertMap = ['' => 'show', 'short' => 'show', 'tiny' => 'show', 'none' => 'hide', 'nodisplay' => 'hide', 'show' => 'show', 'hide' => 'hide'];
 
-        $convertedConfiguration = array();
+        $convertedConfiguration = [];
 
-        $rubricConfigurations = explode(',', $homeConfiguration);
+        $rubricConfigurations = explode(',', (string) $homeConfiguration);
         foreach ($rubricConfigurations as $rubricConfiguration) {
-            list($rubric, $mode) = explode('_', $rubricConfiguration);
+            [$rubric, $mode] = explode('_', $rubricConfiguration);
 
-            $convertedConfiguration[] = $rubric . '_' . ($convertMap[$mode] ? $convertMap[$mode] : $convertMap['']);
+            $convertedConfiguration[] = $rubric . '_' . ($convertMap[$mode] ?: $convertMap['']);
         }
 
         return implode(',', $convertedConfiguration);

@@ -19,13 +19,8 @@ use cs_user_item;
 
 class ItemDeletedMessage extends Message
 {
-    private $item;
-    private $deleter;
-
-    public function __construct(cs_item $item, cs_user_item $deleter)
+    public function __construct(private readonly cs_item $item, private readonly cs_user_item $deleter)
     {
-        $this->item = $item;
-        $this->deleter = $deleter;
     }
 
     public function getSubject(): string

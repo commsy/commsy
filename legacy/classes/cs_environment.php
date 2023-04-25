@@ -12,7 +12,7 @@
  */
 
 use App\Entity\Portal;
-use App\Helper\SessionHelper;
+use App\Helper\LocaleHelper;
 use App\Proxy\PortalProxy;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -174,10 +174,8 @@ class cs_environment
 
     /** get the current room item
      * current context id must be set.
-     *
-     * @return cs_context_item|PortalProxy
      */
-    public function getCurrentContextItem()
+    public function getCurrentContextItem(): cs_context_item|PortalProxy
     {
         if (
             null === $this->current_context_id ||
@@ -352,8 +350,8 @@ class cs_environment
         $array = $this->_getCurrentParameterArray();
         if (!empty($array)) {
             foreach ($array as $current_parameter) {
-                if (mb_stristr($current_parameter, $parameter . '=')) {
-                    $temp_array = explode('=', $current_parameter);
+                if (mb_stristr((string) $current_parameter, $parameter . '=')) {
+                    $temp_array = explode('=', (string) $current_parameter);
                     if ($temp_array[0] == $parameter) {
                         $value = $temp_array[1];
                     }
@@ -371,7 +369,7 @@ class cs_environment
         if (!isset($this->_current_parameter_array)) {
             $this->_current_parameter_array = [];
             if (isset($_SERVER['QUERY_STRING'])) {
-                $retour = explode('&', encode(FROM_GET, $_SERVER['QUERY_STRING']));
+                $retour = explode('&', (string) encode(FROM_GET, $_SERVER['QUERY_STRING']));
 
                 // GetParameterSäubern
                 $textConverter = $this->getTextConverter();
@@ -415,7 +413,7 @@ class cs_environment
         $retour = [];
         if ((is_countable($parameter_array) ? count($parameter_array) : 0) > 0) {
             foreach ($parameter_array as $parameter) {
-                $temp_parameter_array = explode('=', $parameter);
+                $temp_parameter_array = explode('=', (string) $parameter);
                 if (!empty($temp_parameter_array[1])) {
                     $retour[$temp_parameter_array[0]] = $temp_parameter_array[1];
                 } else {
@@ -427,7 +425,7 @@ class cs_environment
         if (isset($retour['search']) and ($retour['search'] == $translator->getMessage('COMMON_SEARCH_IN_ROOM') || $retour['search'] == $translator->getMessage('COMMON_SEARCH_IN_RUBRIC'))) {
             unset($retour['search']);
         }
-        array_walk_recursive($retour, [$this, 'cleanBadCode']);
+        array_walk_recursive($retour, $this->cleanBadCode(...));
 
         return $retour;
     }
@@ -722,8 +720,6 @@ class cs_environment
      * $news_manager = $enviroment->_getInstance('cs_news_manager');.
      *
      * @param string $name name of the class to be instantiated
-     *
-     * @return cs_manager|cs_noticed_manager|cs_reader_manager
      */
     private function _getInstance(string $name): cs_manager|cs_noticed_manager|cs_reader_manager
     {
@@ -1016,9 +1012,9 @@ class cs_environment
                 // See https://symfony.com/doc/4.4/session/locale_sticky_session.html
                 global $symfonyContainer;
 
-                $sessionHelper = $symfonyContainer->get(SessionHelper::class);
-                $session = $sessionHelper->getSession();
-                $this->_selected_language = $session->get('_locale', 'de');
+                /** @var LocaleHelper $localHelper */
+                $localHelper = $symfonyContainer->get(LocaleHelper::class);
+                $this->_selected_language = $localHelper->getLocale();
             } else {
                 // If in room context (and the room will fall back to the user's choice), we'll
                 // get the language from cs_environment::getUserLanguage. This method returns the

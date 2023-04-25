@@ -19,7 +19,7 @@ use Symfony\Component\Mime\Email;
 
 class cs_mail
 {
-    private $errors = [];
+    private array $errors = [];
     private bool $asHTML = false;
 
     /**
@@ -210,7 +210,7 @@ class cs_mail
         }
 
         // to
-        $to = explode(',', $this->cleanRecipients($this->recipients));
+        $to = explode(',', (string) $this->cleanRecipients($this->recipients));
         $to = array_filter($to, function ($email) {
             $validator = new EmailValidator();
 
@@ -224,7 +224,7 @@ class cs_mail
 
         // cc
         if (isset($this->ccRecipients)) {
-            $cc = explode(',', $this->cleanRecipients($this->ccRecipients));
+            $cc = explode(',', (string) $this->cleanRecipients($this->ccRecipients));
             if ($cc) {
                 $message->cc(...$cc);
             }
@@ -232,7 +232,7 @@ class cs_mail
 
         // bcc
         if (isset($this->bccRecipients)) {
-            $bcc = explode(',', $this->cleanRecipients($this->bccRecipients));
+            $bcc = explode(',', (string) $this->cleanRecipients($this->bccRecipients));
             if ($bcc) {
                 $message->bcc(...$bcc);
             }
@@ -268,7 +268,7 @@ class cs_mail
     private function cleanRecipients($value)
     {
         $retour = $value;
-        $retour = str_replace(', ', ',', $retour);
+        $retour = str_replace(', ', ',', (string) $retour);
 
         if (mb_substr_count($retour, '@') != mb_substr_count($retour, ',') + 1) {
             $retour_array = explode(',', $retour);

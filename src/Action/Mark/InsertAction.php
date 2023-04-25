@@ -27,13 +27,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class InsertAction
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
-        private TranslatorInterface $translator,
+        private readonly TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
-        private ItemService $itemService,
-        private MarkedService $markService
+        private readonly ItemService $itemService,
+        private readonly MarkedService $markService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

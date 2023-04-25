@@ -38,9 +38,7 @@ final class Version20170521105856 extends AbstractMigration
         $schemaManager = $this->connection->getSchemaManager();
         $tableIndexes = $schemaManager->listTableIndexes($tableName);
 
-        $filteredIndexes = array_filter($tableIndexes, function($index) use ($indexName) {
-            return $index->getName() === $indexName;
-        });
+        $filteredIndexes = array_filter($tableIndexes, fn($index) => $index->getName() === $indexName);
 
         if (!empty($filteredIndexes)) {
             $this->addSql('DROP INDEX ' . $indexName . ' ON ' . $tableName);

@@ -18,16 +18,15 @@ use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use PhpImap\Mailbox;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand('commsy:cron:emailupload', 'commsy email upload cron')]
 class EmailUploadCommand extends Command
 {
-    protected static $defaultName = 'commsy:cron:emailupload';
-    protected static $defaultDescription = 'commsy email upload cron';
-
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     /**
      * @param string $projectDir
@@ -40,7 +39,7 @@ class EmailUploadCommand extends Command
      */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private Mailer $mailer,
+        private readonly Mailer $mailer,
         private $projectDir,
         private $uploadEnabled,
         private $uploadServer,
@@ -100,7 +99,7 @@ class EmailUploadCommand extends Command
         $translator = $this->legacyEnvironment->getTranslationObject();
 
         // split the plain text part
-        $bodyLines = preg_split('/\\r\\n|\\r|\\n/', $mail->textPlain);
+        $bodyLines = preg_split('/\\r\\n|\\r|\\n/', (string) $mail->textPlain);
 
         // account / secret translations
         $translator->setSelectedLanguage('de');
@@ -113,7 +112,7 @@ class EmailUploadCommand extends Command
         $hasFooter = false;
         $footerStart = 0;
         foreach ($bodyLines as $line => $bodyLine) {
-            if ('-- ' == strip_tags($bodyLine)) {
+            if ('-- ' == strip_tags((string) $bodyLine)) {
                 $hasFooter = true;
                 $footerStart = $line;
             }
@@ -128,7 +127,7 @@ class EmailUploadCommand extends Command
             }
 
             if (!empty($bodyLine)) {
-                $bodyLine = strip_tags($bodyLine);
+                $bodyLine = strip_tags((string) $bodyLine);
 
                 $isNonMetaLine = true;
 
@@ -212,7 +211,7 @@ class EmailUploadCommand extends Command
                         $materialManager = $this->legacyEnvironment->getMaterialManager();
 
                         $materialItem = $materialManager->getNewItem();
-                        $materialItem->setTitle(trim(str_replace($privateSecret.':', '', $mail->subject)));
+                        $materialItem->setTitle(trim(str_replace($privateSecret.':', '', (string) $mail->subject)));
                         $materialItem->setDescription($nonMetaBody);
 
                         // attach files

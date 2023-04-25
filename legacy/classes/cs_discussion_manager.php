@@ -427,7 +427,7 @@ class cs_discussion_manager extends cs_manager
 
          try {
              $queryBuilder->executeStatement();
-         } catch (\Doctrine\DBAL\Exception $e) {
+         } catch (\Doctrine\DBAL\Exception) {
              trigger_error('Problems updating discussion.', E_USER_WARNING);
          }
      }
@@ -518,7 +518,7 @@ class cs_discussion_manager extends cs_manager
 
       try {
           $queryBuilder->executeStatement();
-      } catch (\Doctrine\DBAL\Exception $e) {
+      } catch (\Doctrine\DBAL\Exception) {
           trigger_error('Problems creating dates.', E_USER_WARNING);
       }
   }

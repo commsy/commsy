@@ -61,7 +61,7 @@ final class Version20160718213927 extends AbstractMigration
             if ($fileContextId) {
                 $portalId = (int) $file['portal_id'];
 
-                $lastSubstringBeginningWithDot = strrchr($file['filename'], '.');
+                $lastSubstringBeginningWithDot = strrchr((string) $file['filename'], '.');
                 if ($lastSubstringBeginningWithDot) {
                     $fileExtension = substr($lastSubstringBeginningWithDot, 1);
 

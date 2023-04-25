@@ -28,9 +28,7 @@ final class Version20190125123633 extends AbstractMigration
         foreach ($tables as $table) {
             $columns = $schemaManager->listTableColumns($table);
 
-            if (empty(array_filter($columns, function ($column) {
-                return $column->getName() === 'public';
-            }))) {
+            if (empty(array_filter($columns, fn($column) => $column->getName() === 'public'))) {
                 $this->addSql('ALTER TABLE ' . $table . ' ADD public TINYINT NOT NULL DEFAULT 0;');
             }
         }

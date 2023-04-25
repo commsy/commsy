@@ -26,7 +26,7 @@ class CronUpdateActivityState implements CronTaskInterface
 {
     private const BATCH_SIZE = 100;
 
-    public function __construct(private AccountsRepository $accountRepository, private RoomRepository $roomRepository, private MessageBusInterface $messageBus)
+    public function __construct(private readonly AccountsRepository $accountRepository, private readonly RoomRepository $roomRepository, private readonly MessageBusInterface $messageBus)
     {
     }
 

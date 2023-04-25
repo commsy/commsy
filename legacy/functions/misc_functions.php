@@ -37,14 +37,14 @@ function array2XML($array)
             } else {
                 $data = $array[$key];
                 // convert > and < to their html entities (gt; and &lt;)
-                if (strstr($data, '<')) {
-                    $data = mb_ereg_replace('<', '%CS_LT;', $data);
+                if (strstr((string) $data, '<')) {
+                    $data = mb_ereg_replace('<', '%CS_LT;', (string) $data);
                 }
-                if (strstr($data, '>')) {
-                    $data = mb_ereg_replace('>', '%CS_GT;', $data);
+                if (strstr((string) $data, '>')) {
+                    $data = mb_ereg_replace('>', '%CS_GT;', (string) $data);
                 }
-                if (strstr($data, '&')) {
-                    $data = mb_ereg_replace('&', '%CS_AND;', $data);
+                if (strstr((string) $data, '&')) {
+                    $data = mb_ereg_replace('&', '%CS_AND;', (string) $data);
                 }
             }
 
@@ -67,7 +67,7 @@ function XMLToArray($xml)
         $children = $xml->children();
         $return = null;
     } else {
-        $xml = simplexml_load_string($xml);
+        $xml = simplexml_load_string((string) $xml);
         if ($xml instanceof SimpleXMLElement) {
             $children = $xml->children();
         } else {
@@ -76,10 +76,10 @@ function XMLToArray($xml)
         $return = null;
     }
     foreach ($children as $element => $value) {
-        if (strstr($element, 'XML_')) {
-            $element_begin = mb_substr($element, 0, 4);
+        if (strstr((string) $element, 'XML_')) {
+            $element_begin = mb_substr((string) $element, 0, 4);
             if ($element_begin = 'XML_') {
-                $element = mb_substr($element, 4);
+                $element = mb_substr((string) $element, 4);
             }
         }
         if ($value instanceof SimpleXMLElement) {
@@ -91,7 +91,7 @@ function XMLToArray($xml)
                 $return[$element] = XMLToArray($value);
             } else {
                 if (!empty($element) and 'extras' == $element) {
-                    $value = mb_unserialize(utf8_decode((string) $value));
+                    $value = mb_unserialize(mb_convert_encoding((string) $value, 'ISO-8859-1'));
                 } elseif (isset($value)) {
                     // convert > and < to their html entities (gt; and &lt;)
                     if (strstr($value, '%CS_AND;')) {
@@ -103,7 +103,7 @@ function XMLToArray($xml)
                     if (strstr($value, '%CS_GT;')) {
                         $value = mb_ereg_replace('%CS_GT;', '>', $value);
                     }
-                    $value = utf8_decode($value); // needed for PHP5
+                    $value = mb_convert_encoding($value, 'ISO-8859-1'); // needed for PHP5
                 } else {
                     $value = '';
                 }
@@ -140,7 +140,7 @@ function XMLToArray($xml)
 function XML2Array($text)
 {
     $text = '<SAVE>'.$text.'</SAVE>';
-    $text = utf8_encode($text); // needed for PHP5
+    $text = mb_convert_encoding($text, 'UTF-8', 'ISO-8859-1'); // needed for PHP5
     $result = XMLToArray($text);
 
     return $result;
@@ -171,61 +171,11 @@ function multi_array_merge($array1, $array2)
     return $array1;
 }
 
-/** print value in mode print_r
- * methode to test and debug.
- */
-function pr($value)
-{
-    if (is_object($value)
-         and !empty($value->_environment)
-    ) {
-        $env = $value->_environment;
-        unset($value->_environment);
-    }
-    echo '<pre>';
-    print_r($value);
-    echo '</pre>'.LF.LF;
-    if (!empty($env)) {
-        $value->_environment = $env;
-    }
-}
-
-function el($value)
-{
-    error_log(print_r($value, true), 0);
-}
-
 function getmicrotime()
 {
-    list($usec, $sec) = explode(' ', microtime());
+    [$usec, $sec] = explode(' ', microtime());
 
     return (float) $usec + (float) $sec;
-}
-
-/** converts the item type into the module name.
- *
- * @return string module name
- */
-function type2Module($type)
-{
-    $module = '';
-    if (CS_TOPIC_TYPE == $type) {
-        $module = 'topic';
-    } elseif (CS_ANNOUNCEMENT_TYPE == $type) {
-        $module = CS_ANNOUNCEMENT_TYPE;
-    } elseif (CS_DATE_TYPE == $type) {
-        $module = 'date';
-    } elseif (CS_DISCARTICLE_TYPE == $type) {
-        $module = 'discussion';
-    } elseif (CS_SECTION_TYPE == $type) {
-        $module = 'material';
-    } elseif ('materials' == $type) {
-        $module = 'material';
-    } else {
-        $module = $type;
-    }
-
-    return $module;
 }
 
 /** converts the module name into item type.
@@ -235,7 +185,6 @@ function type2Module($type)
 function Module2Type($module)
 {
     $module = cs_strtolower($module);
-    $type = '';
     if ('topics' == $module) {
         $type = CS_TOPIC_TYPE;
     } elseif (CS_ANNOUNCEMENT_TYPE == $module) {
@@ -256,7 +205,6 @@ function Module2Type($module)
 function DBTable2Type($table)
 {
     $table = cs_strtolower($table);
-    $type = '';
     if ('annotations' == $table) {
         $type = CS_ANNOTATION_TYPE;
     } elseif ('dates' == $table) {
@@ -284,22 +232,6 @@ function DBTable2Type($table)
     }
 
     return $type;
-}
-
-function type2Table($type)
-{
-    $table = '';
-    if (CS_DISCUSSION_TYPE == $type) {
-        $table = 'discussions';
-    } elseif (CS_DISCARTICLE_TYPE == $type) {
-        $table = 'discussionarticles';
-    } elseif (CS_MATERIAL_TYPE == $type) {
-        $table = 'materials';
-    } else {
-        $table = $type;
-    }
-
-    return $table;
 }
 
 // Function to recursively add a directory,

@@ -22,12 +22,12 @@ use DateTimeImmutable;
 
 class CronPageImpressionAndUserActivity implements CronTaskInterface
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private PortalRepository $portalRepository,
-        private PortalHelper $portalHelper
+        private readonly PortalRepository $portalRepository,
+        private readonly PortalHelper $portalHelper
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

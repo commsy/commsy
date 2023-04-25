@@ -72,13 +72,13 @@ final class Version20230228115913 extends AbstractMigration
 
         $convertedConfiguration = [];
 
-        $rubricConfigurations = explode(',', $homeConfiguration);
+        $rubricConfigurations = explode(',', (string) $homeConfiguration);
         foreach ($rubricConfigurations as $rubricConfiguration) {
             if (!str_contains($rubricConfiguration, '_')) {
                 continue;
             }
 
-            list($rubric, $mode) = explode('_', $rubricConfiguration);
+            [$rubric, $mode] = explode('_', $rubricConfiguration);
 
             if (!empty($rubric) && !empty($mode) && $convertMap[$mode]) {
                 $convertedConfiguration[] = $rubric . '_' . $convertMap[$mode];

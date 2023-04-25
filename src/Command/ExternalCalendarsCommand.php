@@ -14,16 +14,15 @@
 namespace App\Command;
 
 use App\Services\CalendarsService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand('commsy:cron:externalcalendars', 'commsy external calendars cron')]
 class ExternalCalendarsCommand extends Command
 {
-    protected static $defaultName = 'commsy:cron:externalcalendars';
-    protected static $defaultDescription = 'commsy external calendars cron';
-
-    public function __construct(private CalendarsService $calendarsService)
+    public function __construct(private readonly CalendarsService $calendarsService)
     {
         parent::__construct();
     }
@@ -44,7 +43,7 @@ class ExternalCalendarsCommand extends Command
 
             if (filter_var($calendar->getExternalUrl(), FILTER_VALIDATE_URL)) {
                 // fetch and parse data from external calendars
-                $result = $this->calendarsService->importEvents(fopen(str_ireplace('webcal://', 'http://', $calendar->getExternalUrl()), 'r'), $calendar, true);
+                $result = $this->calendarsService->importEvents(fopen(str_ireplace('webcal://', 'http://', (string) $calendar->getExternalUrl()), 'r'), $calendar, true);
                 if (true !== $result) {
                     $output->write('<info>... Error: '.$result.'</info>');
                 }

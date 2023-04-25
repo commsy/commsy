@@ -28,7 +28,7 @@ class cs_server_item extends cs_guide_item
      */
     public function __construct($environment)
     {
-        cs_guide_item::__construct($environment);
+        parent::__construct($environment);
         $this->_type = CS_SERVER_TYPE;
     }
 
@@ -306,8 +306,8 @@ class cs_server_item extends cs_guide_item
         } else {
             $retour = [];
         }
-        if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
-            $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
+        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+            $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
         } else {
             $retour = $translator->getMessage('USAGE_INFO_HEADER');
         }
@@ -327,7 +327,7 @@ class cs_server_item extends cs_guide_item
         } else {
             $value_array = [];
         }
-        $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
+        $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
         $this->_addExtra('USAGE_INFO_HEADER', $value_array);
     }
 
@@ -344,8 +344,8 @@ class cs_server_item extends cs_guide_item
         } else {
             $retour = [];
         }
-        if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
-            $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
+        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+            $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
         } else {
             $retour = $translator->getMessage('USAGE_INFO_HEADER');
         }
@@ -365,7 +365,7 @@ class cs_server_item extends cs_guide_item
         } else {
             $value_array = [];
         }
-        $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
+        $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
         $this->_addExtra('USAGE_INFO_FORM_HEADER', $value_array);
     }
 
@@ -381,7 +381,7 @@ class cs_server_item extends cs_guide_item
         } else {
             $value_array = [];
         }
-        $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
+        $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
         $this->_addExtra('USAGE_INFO_TEXT', $value_array);
     }
 
@@ -397,7 +397,7 @@ class cs_server_item extends cs_guide_item
         } else {
             $value_array = [];
         }
-        $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
+        $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
         $this->_addExtra('USAGE_INFO_FORM_TEXT', $value_array);
     }
 
@@ -414,77 +414,30 @@ class cs_server_item extends cs_guide_item
         } else {
             $retour = [];
         }
-        if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
-            $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
+        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+            $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
         } else {
             $translator = $this->_environment->getTranslationObject();
-            $temp = mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8');
+            $temp = mb_strtoupper((string) $rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8');
             $tempMessage = '';
-            switch ($temp) {
-                case 'CONFIGURATION_BACKUP':
-                    $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_BACKUP_FORM');
-                    break;
-
-                case 'CONFIGURATION_COLOR':
-                    $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_COLOR_FORM');
-                    break;
-
-                case 'CONFIGURATION_EXTRA':
-                    $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_EXTRA_FORM');
-                    break;
-
-                case 'CONFIGURATION_IMS':
-                    $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_IMS_FORM');
-                    break;
-
-                case 'CONFIGURATION_LANGUAGE':
-                    $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_LANGUAGE_FORM');
-                    break;
-
-                case 'CONFIGURATION_NEWS':
-                    $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_NEWS_FORM');
-                    break;
-
-                case 'CONFIGURATION_PREFERENCES':
-                    $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_PREFERENCES_FORM');
-                    break;
-
-                case 'CONFIGURATION_SERVICE':
-                    $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_SERVICE_FORM');
-                    break;
-
-                case 'CONFIGURATION_OUTOFSERVICE':
-                    $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_OUTOFSERVICE_FORM');
-                    break;
-
-                case 'CONFIGURATION_SCRIBD':
-                    $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_SCRIBD_FORM');
-                    break;
-
-                case 'CONFIGURATION_UPDATE':
-                    $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_UPDATE_FORM');
-                    break;
-
-                case 'CONFIGURATION_HTMLTEXTAREA':
-                    $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_HTMLTEXTAREA_FORM');
-                    break;
-
-                case 'CONFIGURATION_CONNECTION':
-                    $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_CONNECTION_FORM');
-                    break;
-
-                case 'CONFIGURATION_DATASECURITY':
-                    $tempMessage = $translator->getMessage('USAGE_INFO_COMING_SOON');
-                    break;
-
-                case 'CONFIGURATION_PLUGINS':
-                    $tempMessage = $translator->getMessage('USAGE_INFO_COMING_SOON');
-                    break;
-
-                default:
-                    $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_server_item ('.__LINE__.')';
-                    break;
-            }
+            $tempMessage = match ($temp) {
+                'CONFIGURATION_BACKUP' => $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_BACKUP_FORM'),
+                'CONFIGURATION_COLOR' => $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_COLOR_FORM'),
+                'CONFIGURATION_EXTRA' => $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_EXTRA_FORM'),
+                'CONFIGURATION_IMS' => $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_IMS_FORM'),
+                'CONFIGURATION_LANGUAGE' => $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_LANGUAGE_FORM'),
+                'CONFIGURATION_NEWS' => $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_NEWS_FORM'),
+                'CONFIGURATION_PREFERENCES' => $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_PREFERENCES_FORM'),
+                'CONFIGURATION_SERVICE' => $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_SERVICE_FORM'),
+                'CONFIGURATION_OUTOFSERVICE' => $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_OUTOFSERVICE_FORM'),
+                'CONFIGURATION_SCRIBD' => $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_SCRIBD_FORM'),
+                'CONFIGURATION_UPDATE' => $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_UPDATE_FORM'),
+                'CONFIGURATION_HTMLTEXTAREA' => $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_HTMLTEXTAREA_FORM'),
+                'CONFIGURATION_CONNECTION' => $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_CONNECTION_FORM'),
+                'CONFIGURATION_DATASECURITY' => $translator->getMessage('USAGE_INFO_COMING_SOON'),
+                'CONFIGURATION_PLUGINS' => $translator->getMessage('USAGE_INFO_COMING_SOON'),
+                default => $translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_server_item ('.__LINE__.')',
+            };
 
             $retour = $tempMessage;
             if ($retour == 'USAGE_INFO_TEXT_SERVER_FOR_'.$temp.'_FORM' or 'tbd' == $retour) {
@@ -628,7 +581,7 @@ class cs_server_item extends cs_guide_item
     public function setOutOfServiceByLanguage($value, $language)
     {
         $desc_array = $this->getOutOfServiceArray();
-        $desc_array[mb_strtoupper($language, 'UTF-8')] = $value;
+        $desc_array[mb_strtoupper((string) $language, 'UTF-8')] = $value;
         $this->setOutOfServiceArray($desc_array);
     }
 
@@ -741,16 +694,16 @@ class cs_server_item extends cs_guide_item
 
             $key = '';
             $key .= $title;
-            $key .= rand(0, 9);
+            $key .= random_int(0, 9);
             $key .= $url;
-            $key .= rand(0, 9);
+            $key .= random_int(0, 9);
             $key .= $key;
-            $key .= rand(0, 9);
+            $key .= random_int(0, 9);
             $key .= getCurrentDateTimeInMySQL();
             $key = md5($key);
             $temp_array['id'] = $key;
 
-            $connection_array[count($connection_array) + 1] = $temp_array;
+            $connection_array[(is_countable($connection_array) ? count($connection_array) : 0) + 1] = $temp_array;
             $this->setServerConnectionArray($connection_array);
         }
     }
@@ -774,11 +727,11 @@ class cs_server_item extends cs_guide_item
             } else {
                 $key = '';
                 $key .= $title;
-                $key .= rand(0, 9);
+                $key .= random_int(0, 9);
                 $key .= $url;
-                $key .= rand(0, 9);
+                $key .= random_int(0, 9);
                 $key .= $key;
-                $key .= rand(0, 9);
+                $key .= random_int(0, 9);
                 $key .= getCurrentDateTimeInMySQL();
                 $key = md5($key);
                 $temp_array['id'] = $key;

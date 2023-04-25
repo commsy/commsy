@@ -74,7 +74,7 @@ class cs_dates_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function setTitle($value)
+    public function setTitle(string $value)
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();
@@ -955,7 +955,7 @@ class cs_dates_item extends cs_item
              $datetime .= ' '.$time_print;
          }
 
-         return trim($datetime);
+         return trim((string) $datetime);
      }
 
      /** asks if item is a date in an external calendar.

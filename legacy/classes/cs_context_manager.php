@@ -341,7 +341,7 @@ class cs_context_manager extends cs_manager
                 if ($this->_cache_on) {
                     $this->listCache[$user_id.'_'.$auth_source.'_'.$context_id] = $list;
                 }
-            } catch (\Doctrine\DBAL\Exception $e) {
+            } catch (\Doctrine\DBAL\Exception) {
                 trigger_error('Problems selecting '.$this->_db_table.' items.', E_USER_WARNING);
             }
         } else {

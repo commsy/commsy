@@ -76,7 +76,7 @@ class cs_links_manager extends cs_manager
      */
     public function __construct($environment)
     {
-        cs_manager::__construct($environment);
+        parent::__construct($environment);
         $this->_db_table = 'links';
     }
 
@@ -550,7 +550,7 @@ class cs_links_manager extends cs_manager
      *
      * @param cs_item
      */
-    public function saveItem($item)
+    public function saveItem($item): never
     {
         trigger_error('cs_links_manager->saveItem(): Do not use this Function! Use save() instead!', E_USER_ERROR);
     }

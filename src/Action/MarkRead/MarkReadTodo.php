@@ -18,7 +18,7 @@ use cs_item;
 
 class MarkReadTodo implements MarkReadInterface
 {
-    public function __construct(private TodoService $todoService)
+    public function __construct(private readonly TodoService $todoService)
     {
     }
 

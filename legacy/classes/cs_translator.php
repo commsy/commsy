@@ -289,7 +289,7 @@ class cs_translator
         foreach ($message_array as $key => $value) {
             foreach ($value as $key2 => $value2) {
                 for ($i = 0; $i < 10; ++$i) {
-                    $value2 = str_replace('%'.($i + 1), '{'.$i.'}', $value2);
+                    $value2 = str_replace('%'.($i + 1), '{'.$i.'}', (string) $value2);
                 }
                 $value2 = strtr($value2, "\n", ' ');
                 $key = strtr($key, ' ', '_');
@@ -310,7 +310,7 @@ class cs_translator
      */
     public function _getRubricOutMessageTag($messag_tag)
     {
-        return mb_substr($messag_tag, 0, mb_strpos($messag_tag, '_'));
+        return mb_substr((string) $messag_tag, 0, mb_strpos((string) $messag_tag, '_'));
     }
 
     /** get an array of the available languages
@@ -452,10 +452,10 @@ class cs_translator
         if ($this->_issetSessionLanguage()) {
             $language = $this->_getSessionLanguage();
         }
-        if (!empty($this->_email_array[$MsgID][mb_strtoupper($language, 'UTF-8')])) {
-            $retour = $this->text_replace($this->_email_array[$MsgID][mb_strtoupper($language, 'UTF-8')], $param1, $param2, $param3, $param4, $param5);
-        } elseif (!empty($this->_email_array[$MsgID][mb_strtolower($language, 'UTF-8')])) {
-            $retour = $this->text_replace($this->_email_array[$MsgID][mb_strtolower($language, 'UTF-8')], $param1, $param2, $param3, $param4, $param5);
+        if (!empty($this->_email_array[$MsgID][mb_strtoupper((string) $language, 'UTF-8')])) {
+            $retour = $this->text_replace($this->_email_array[$MsgID][mb_strtoupper((string) $language, 'UTF-8')], $param1, $param2, $param3, $param4, $param5);
+        } elseif (!empty($this->_email_array[$MsgID][mb_strtolower((string) $language, 'UTF-8')])) {
+            $retour = $this->text_replace($this->_email_array[$MsgID][mb_strtolower((string) $language, 'UTF-8')], $param1, $param2, $param3, $param4, $param5);
         } else {
             if ($this->_inProjectRoom()) {
                 $retour = match ($MsgID) {
@@ -554,7 +554,7 @@ class cs_translator
         if (!$this->isLanguageAvailable($language)) {
             $language = $this->_default_language;
         }
-        $msg_array = explode('_', $MsgID);
+        $msg_array = explode('_', (string) $MsgID);
         $year_small_temp = $msg_array[0];
         $year_small = $year_small_temp[2].$year_small_temp[3];
         $year_small_plus = $year_small + 1;
@@ -571,8 +571,8 @@ class cs_translator
         if ($year_small_minus < 10) {
             $year_small_minus = '0'.$year_small_minus;
         }
-        if (isset($msg_array[1]) and !empty($this->timeMessageArray[$msg_array[1]][mb_strtoupper($language, 'UTF-8')])) {
-            $retour = $this->text_replace($this->timeMessageArray[$msg_array[1]][mb_strtoupper($language, 'UTF-8')], $msg_array[0], $msg_array[0] + 1, $msg_array[0] - 1, $year_small, $year_small_plus, $year_small_minus);
+        if (isset($msg_array[1]) and !empty($this->timeMessageArray[$msg_array[1]][mb_strtoupper((string) $language, 'UTF-8')])) {
+            $retour = $this->text_replace($this->timeMessageArray[$msg_array[1]][mb_strtoupper((string) $language, 'UTF-8')], $msg_array[0], $msg_array[0] + 1, $msg_array[0] - 1, $year_small, $year_small_plus, $year_small_minus);
         }
 
         return $retour;
@@ -799,14 +799,14 @@ class cs_translator
     {
         $tags = [];
         // filling the array $placeholders with the occurring placeholder strings
-        preg_match_all('~%(?:_[A-Z0-9]+)+~u', $text, $placeholders);
+        preg_match_all('~%(?:_[A-Z0-9]+)+~u', (string) $text, $placeholders);
 
         // if placeholders were found, explode them into their sub-elements
         if ((is_countable($placeholders[0]) ? count($placeholders[0]) : 0) > 0) {
             $i = 0;
 
             foreach ($placeholders[0] as $placeholder) {
-                $placeholder_elements = explode('_', $placeholder);
+                $placeholder_elements = explode('_', (string) $placeholder);
 
                 // get the replacement strings for the placeholders
                 if ('ART' == $placeholder_elements[2]) {
@@ -832,7 +832,7 @@ class cs_translator
             }
 
             // replace the placeholders with their corresponding replacement strings
-            $new_text = str_replace($placeholders[0], $tags, $text);
+            $new_text = str_replace($placeholders[0], $tags, (string) $text);
 
             return $new_text;
         }
@@ -882,9 +882,9 @@ class cs_translator
             if (!empty($genus)
                  and !empty($adjective_array)
                  and !empty($language)
-                 and !empty($adjective_array[mb_strtoupper($adjective)][mb_strtoupper($language)][mb_strtoupper($genus)])
+                 and !empty($adjective_array[mb_strtoupper((string) $adjective)][mb_strtoupper($language)][mb_strtoupper((string) $genus)])
             ) {
-                $adjective_tranlsation = $adjective_array[mb_strtoupper($adjective)][mb_strtoupper($language)][mb_strtoupper($genus)];
+                $adjective_tranlsation = $adjective_array[mb_strtoupper((string) $adjective)][mb_strtoupper($language)][mb_strtoupper((string) $genus)];
                 if (!empty($adjective_tranlsation)) {
                     if ('BIG' == $upper_case) {
                         $adjective_tranlsation = cs_ucfirst($adjective_tranlsation);
@@ -1071,7 +1071,7 @@ class cs_translator
     public function getDateTimeInLang($datetime, $oclock = true)
     {
         $date = $this->_getDateTimeInLang($datetime, $oclock);
-        $date = mb_eregi_replace('/', ' ', $date);
+        $date = mb_eregi_replace('/', ' ', (string) $date);
 
         return $date;
     }
@@ -1085,9 +1085,9 @@ class cs_translator
         if ($this->_issetSessionLanguage()) {
             $language = $this->_getSessionLanguage();
         }
-        $length = mb_strlen($datetime);
+        $length = mb_strlen((string) $datetime);
 
-        if (2 == mb_substr_count($datetime, '-')) {
+        if (2 == mb_substr_count((string) $datetime, '-')) {
             $year = $datetime[0].$datetime[1].$datetime[2].$datetime[3];
             $month = $datetime[5].$datetime[6];
             $day = $datetime[8].$datetime[9];
@@ -1125,7 +1125,7 @@ class cs_translator
             } elseif (12 == $hour) {
                 $ampm = 'pm';
             }
-            if (1 == mb_strlen($hour)) {
+            if (1 == mb_strlen((string) $hour)) {
                 $hour = '0'.$hour;
             }
             $Datetime = $month.'/'.$day.'/'.$year.' '.$hour.':'.$min.$ampm;
@@ -1200,7 +1200,7 @@ public function getShortMonthNameToInt($month)
     public function getDateTimeInLangWithoutOClock($datetime, $oclock = true)
     {
         $date = $this->_getDateTimeInLangWithoutOClock($datetime, $oclock);
-        $date = mb_eregi_replace('/', ' ', $date);
+        $date = mb_eregi_replace('/', ' ', (string) $date);
 
         return $date;
     }
@@ -1214,9 +1214,9 @@ public function getShortMonthNameToInt($month)
         if ($this->_issetSessionLanguage()) {
             $language = $this->_getSessionLanguage();
         }
-        $length = mb_strlen($datetime);
+        $length = mb_strlen((string) $datetime);
 
-        if (2 == mb_substr_count($datetime, '-')) {
+        if (2 == mb_substr_count((string) $datetime, '-')) {
             $year = $datetime[0].$datetime[1].$datetime[2].$datetime[3];
             $month = $datetime[5].$datetime[6];
             $day = $datetime[8].$datetime[9];
@@ -1254,7 +1254,7 @@ public function getShortMonthNameToInt($month)
             } elseif (12 == $hour) {
                 $ampm = 'pm';
             }
-            if (1 == mb_strlen($hour)) {
+            if (1 == mb_strlen((string) $hour)) {
                 $hour = '0'.$hour;
             }
             $Datetime = $day.'/'.$this->getShortMonthName($month).'/'.$year.' '.$hour.':'.$min.$ampm;
@@ -1273,7 +1273,7 @@ public function getShortMonthNameToInt($month)
      */
     public function getTimeInLang($datetime)
     {
-        $Time = explode(' ', $this->_getDateTimeInLang($datetime));
+        $Time = explode(' ', (string) $this->_getDateTimeInLang($datetime));
 
         return $Time[1];
     }
@@ -1282,7 +1282,7 @@ public function getShortMonthNameToInt($month)
      */
     public function getDateInLang($datetime)
     {
-        $Date = explode(' ', $this->_getDateTimeInLang($datetime));
+        $Date = explode(' ', (string) $this->_getDateTimeInLang($datetime));
         $Date[0] = mb_eregi_replace(',', '', $Date[0]);
 
         return $Date[0];
@@ -1290,7 +1290,7 @@ public function getShortMonthNameToInt($month)
 
     public function getDateInLangWithoutOClock($datetime)
     {
-        $Date = explode(' ', $this->_getDateTimeInLangWithoutOClock($datetime));
+        $Date = explode(' ', (string) $this->_getDateTimeInLangWithoutOClock($datetime));
         $Date[0] = mb_eregi_replace(',', '', $Date[0]);
         $Date[0] = mb_eregi_replace('/', ' ', $Date[0]);
 
@@ -1299,9 +1299,8 @@ public function getShortMonthNameToInt($month)
 
     /** translate a Time from a time string depending on selectet language.
      */
-    public function getTimeLanguage($timestring)
+    public function getTimeLanguage(string $timestring): ?string
     {
-        $ret_time = null;
         $language = $this->_selected_language;
         if ($this->_issetSessionLanguage()) {
             $language = $this->_getSessionLanguage();
@@ -1324,48 +1323,17 @@ public function getShortMonthNameToInt($month)
             } elseif (12 == $hour) {
                 $ampm = ' pm';
             }
-            if (1 == mb_strlen($hour)) {
+            if (1 == mb_strlen((string) $hour)) {
                 $hour = '0'.$hour;
             }
-            $ret_time = $hour.':'.$min.$ampm;
+            return $hour.':'.$min.$ampm;
         } elseif ('de' == $language) {
-            $ret_time = $hour.':'.$min;
+            return $hour.':'.$min;
         } elseif ('ru' == $language) {
-            $ret_time = $hour.':'.$min;
+            return $hour.':'.$min;
         }
 
-        return $ret_time;
-    }
-
-    /** translate a Date from a date string depending on selectet language.
-     */
-    public function getDateLanguage($datestring)
-    {
-        $language = $this->_selected_language;
-        if ($this->_issetSessionLanguage()) {
-            $language = $this->_getSessionLanguage();
-        }
-
-        if (2 == mb_substr_count($datestring, '-')) {
-            $year = $datestring[0].$datestring[1].$datestring[2].$datestring[3];
-            $month = $datestring[5].$datestring[6];
-            $day = $datestring[8].$datestring[9];
-        } else {
-            $year = $datestring[0].$datestring[1].$datestring[2].$datestring[3];
-            $month = $datestring[4].$datestring[5];
-            $day = $datestring[6].$datestring[7];
-        }
-
-        // create datetime depends on language
-        if ('en' == $language) {
-            $datestring = $month.'/'.$day.'/'.$year;
-        } elseif ('de' == $language) {
-            $datestring = $day.'.'.$month.'.'.$year;
-        } elseif ('ru' == $language) {
-            $datestring = $day.'.'.$month.'.'.$year;
-        }
-
-        return $datestring;
+        return null;
     }
 
     /** getMessageArray
@@ -1391,30 +1359,6 @@ public function getShortMonthNameToInt($month)
         $this->_loadAllMessages();
 
         return $this->getMessageArray();
-    }
-
-    public function getLanguageLabelTranslated($language)
-    {
-        $retour = '';
-        $retour = match (mb_strtoupper($language, 'UTF-8')) {
-            'DE' => $this->getMessage('DE'),
-            'EN' => $this->getMessage('EN'),
-            default => $retour,
-        };
-
-        return $retour;
-    }
-
-    public function getLanguageLabelOriginally($language)
-    {
-        $retour = '';
-        $retour = match (mb_strtoupper($language, 'UTF-8')) {
-            'DE' => $this->getMessageInLang($language, 'DE'),
-            'EN' => $this->getMessageInLang($language, 'EN'),
-            default => $retour,
-        };
-
-        return $retour;
     }
 
     public function getUnusedTags()

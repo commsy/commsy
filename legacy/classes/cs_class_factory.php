@@ -13,7 +13,7 @@
 
 class cs_class_factory
 {
-    private $_class_array = [
+    private array $_class_array = [
         'misc_text_converter' => [
             'name' => 'misc_text_converter',
             'filename' => 'misc_text_converter.php',

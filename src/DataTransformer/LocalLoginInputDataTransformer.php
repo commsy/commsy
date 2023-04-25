@@ -20,7 +20,7 @@ use App\Entity\Account;
 
 class LocalLoginInputDataTransformer implements DataTransformerInterface
 {
-    public function __construct(private ValidatorInterface $validator)
+    public function __construct(private readonly ValidatorInterface $validator)
     {
     }
 

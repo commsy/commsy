@@ -13,16 +13,17 @@
 
 namespace App\Helper;
 
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Translation\LocaleSwitcher;
 
-class SessionHelper
+class LocaleHelper
 {
-    public function __construct(private SessionInterface $session)
-    {
+    public function __construct(
+        private readonly LocaleSwitcher $localeSwitcher
+    ) {
     }
 
-    public function getSession(): SessionInterface
+    public function getLocale(): string
     {
-        return $this->session;
+        return $this->localeSwitcher->getLocale();
     }
 }

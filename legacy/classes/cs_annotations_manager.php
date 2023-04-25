@@ -258,7 +258,7 @@ class cs_annotations_manager extends cs_manager
     {
         parent::_update($annotation_item);
 
-        $version_id = $annotation_item->getLinkedVersionID() ? $annotation_item->getLinkedVersionID() : '0';
+        $version_id = $annotation_item->getLinkedVersionID() ?: '0';
 
         $query = 'UPDATE '.$this->addDatabasePrefix('annotations').' SET '.
                  'modification_date="'.getCurrentDateTimeInMySQL().'",'.
@@ -308,7 +308,7 @@ class cs_annotations_manager extends cs_manager
     public function _newAnnotation($annotation_item)
     {
         $current_datetime = getCurrentDateTimeInMySQL();
-        $version_id = $annotation_item->getLinkedVersionID() ? $annotation_item->getLinkedVersionID() : '0';
+        $version_id = $annotation_item->getLinkedVersionID() ?: '0';
 
         $query = 'INSERT INTO '.$this->addDatabasePrefix('annotations').' SET '.
                  'item_id="'.encode(AS_DB, $annotation_item->getItemID()).'",'.

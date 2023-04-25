@@ -25,9 +25,7 @@ final class Version20190924133007 extends AbstractMigration
         // This will drop the primary key only if it exists
         $schemaManager = $this->connection->getSchemaManager();
         $authTableIndexes = $schemaManager->listTableIndexes('auth');
-        if (!empty(array_filter($authTableIndexes, function (Index $index) {
-            return $index->isPrimary();
-        }))) {
+        if (!empty(array_filter($authTableIndexes, fn(Index $index) => $index->isPrimary()))) {
             $this->addSql('ALTER TABLE auth DROP PRIMARY KEY;');
         }
 

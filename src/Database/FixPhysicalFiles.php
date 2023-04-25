@@ -28,12 +28,12 @@ use Symfony\Component\Finder\Finder;
 class FixPhysicalFiles implements DatabaseCheck
 {
     public function __construct(
-        private ParameterBagInterface $parameterBag,
-        private PortalRepository $portalRepository,
-        private RoomRepository $roomRepository,
-        private FilesRepository $filesRespository,
-        private ItemRepository $itemRepository,
-        private LoggerInterface $cleanupLogger
+        private readonly ParameterBagInterface $parameterBag,
+        private readonly PortalRepository $portalRepository,
+        private readonly RoomRepository $roomRepository,
+        private readonly FilesRepository $filesRespository,
+        private readonly ItemRepository $itemRepository,
+        private readonly LoggerInterface $cleanupLogger
     ) {
     }
 

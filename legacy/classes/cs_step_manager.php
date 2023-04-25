@@ -70,7 +70,7 @@ class cs_step_manager extends cs_manager
      */
     public function __construct($environment)
     {
-        cs_manager::__construct($environment);
+        parent::__construct($environment);
         $this->_db_table = CS_STEP_TYPE;
         $this->_translator = $environment->getTranslationObject();
     }
