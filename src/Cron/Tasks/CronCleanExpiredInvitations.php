@@ -18,7 +18,7 @@ use DateTimeImmutable;
 
 class CronCleanExpiredInvitations implements CronTaskInterface
 {
-    public function __construct(private InvitationsService $invitationsService)
+    public function __construct(private readonly InvitationsService $invitationsService)
     {
     }
 

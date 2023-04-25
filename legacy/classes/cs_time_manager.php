@@ -23,7 +23,7 @@ class cs_time_manager extends cs_labels_manager
      */
     public function __construct($environment)
     {
-        cs_labels_manager::__construct($environment);
+        parent::__construct($environment);
     }
 
      /** get an empty time item

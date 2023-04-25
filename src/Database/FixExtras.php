@@ -78,70 +78,70 @@ class FixExtras extends GeneralCheck
         // i:1;
         // b:0;
         // N;
-        $data = array();
+        $data = [];
         $index = null;
         $len = strlen($broken);
         $i = 0;
 
-        while (strlen($broken)) {
+        while (strlen((string) $broken)) {
             $i++;
             if ($i > $len) {
                 break;
             }
 
-            if (substr($broken, 0, 1) == '}') // end of array
+            if (str_starts_with((string) $broken, '}')) // end of array
             {
-                $broken = substr($broken, 1);
+                $broken = substr((string) $broken, 1);
                 return $data;
             } else {
-                $bite = substr($broken, 0, 2);
+                $bite = substr((string) $broken, 0, 2);
                 switch ($bite) {
                     case 's:': // key or value
                         $re = '/^s:\d+:"([^\"]*)";/';
-                        if (preg_match($re, $broken, $m)) {
+                        if (preg_match($re, (string) $broken, $m)) {
                             if ($index === null) {
                                 $index = $m[1];
                             } else {
                                 $data[$index] = $m[1];
                                 $index = null;
                             }
-                            $broken = preg_replace($re, '', $broken);
+                            $broken = preg_replace($re, '', (string) $broken);
                         }
                         break;
 
                     case 'i:': // key or value
                         $re = '/^i:(\d+);/';
-                        if (preg_match($re, $broken, $m)) {
+                        if (preg_match($re, (string) $broken, $m)) {
                             if ($index === null) {
                                 $index = (int)$m[1];
                             } else {
                                 $data[$index] = (int)$m[1];
                                 $index = null;
                             }
-                            $broken = preg_replace($re, '', $broken);
+                            $broken = preg_replace($re, '', (string) $broken);
                         }
                         break;
 
                     case 'b:': // value only
                         $re = '/^b:[01];/';
-                        if (preg_match($re, $broken, $m)) {
+                        if (preg_match($re, (string) $broken, $m)) {
                             $data[$index] = (bool)$m[1];
                             $index = null;
-                            $broken = preg_replace($re, '', $broken);
+                            $broken = preg_replace($re, '', (string) $broken);
                         }
                         break;
 
                     case 'a:': // value only
                         $re = '/^a:\d+:\{/';
-                        if (preg_match($re, $broken, $m)) {
-                            $broken = preg_replace('/^a:\d+:\{/', '', $broken);
+                        if (preg_match($re, (string) $broken, $m)) {
+                            $broken = preg_replace('/^a:\d+:\{/', '', (string) $broken);
                             $data[$index] = $this->repairSerializedArray_R($broken);
                             $index = null;
                         }
                         break;
 
                     case 'N;': // value only
-                        $broken = substr($broken, 2);
+                        $broken = substr((string) $broken, 2);
                         $data[$index] = null;
                         $index = null;
                         break;

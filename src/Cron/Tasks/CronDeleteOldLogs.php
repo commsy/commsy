@@ -19,7 +19,7 @@ use DateTimeImmutable;
 
 class CronDeleteOldLogs implements CronTaskInterface
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

@@ -25,12 +25,12 @@ use Symfony\Component\Routing\RouterInterface;
 
 class CronExpireTakeOver implements CronTaskInterface
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private ParameterBagInterface $parameterBag,
-        private RouterInterface $router
+        private readonly ParameterBagInterface $parameterBag,
+        private readonly RouterInterface $router
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

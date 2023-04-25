@@ -10,14 +10,9 @@ class PortalWorkspaceMembership
 
     public string $submitButton = '#auth_workspace_membership_save';
 
-    /**
-     * @var FunctionalTester ;
-     */
-    protected FunctionalTester $functionalTester;
-
-    public function __construct(FunctionalTester $I)
-    {
-        $this->functionalTester = $I;
+    public function __construct(
+        protected FunctionalTester $functionalTester
+    ) {
     }
 
     public function configure(int $portalId, bool $enabled, string $identifier): void

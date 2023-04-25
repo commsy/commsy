@@ -26,83 +26,6 @@ function encode($mode, $value)
     return $retour;
 }
 
-function getRubricMessageTageName($rubric, $plural = false)
-{
-    global $environment;
-    $translator = $environment->getTranslationObject();
-    switch ($rubric) {
-        case CS_MATERIAL_TYPE:
-            if ($plural) {
-                return $translator->getMessage('COMMON_MATERIAL_INDEX');
-            } else {
-                return $translator->getMessage('COMMON_MATERIAL');
-            }
-            // no break
-        case CS_ANNOUNCEMENT_TYPE:
-            if ($plural) {
-                return $translator->getMessage('COMMON_ANNOUNCEMENT_INDEX');
-            } else {
-                return $translator->getMessage('COMMON_ANNOUNCEMENT');
-            }
-            // no break
-        case CS_DATE_TYPE:
-            if ($plural) {
-                return $translator->getMessage('COMMON_DATE_INDEX');
-            } else {
-                return $translator->getMessage('COMMON_DATE');
-            }
-            // no break
-        case CS_TODO_TYPE:
-            if ($plural) {
-                return $translator->getMessage('COMMON_TODO_INDEX');
-            } else {
-                return $translator->getMessage('COMMON_TODO');
-            }
-            // no break
-        case CS_GROUP_TYPE:
-            if ($plural) {
-                return $translator->getMessage('COMMON_GROUP_INDEX');
-            } else {
-                return $translator->getMessage('COMMON_GROUP');
-            }
-            // no break
-        case CS_TOPIC_TYPE:
-            if ($plural) {
-                return $translator->getMessage('COMMON_TOPIC_INDEX');
-            } else {
-                return $translator->getMessage('COMMON_TOPIC');
-            }
-            // no break
-        case CS_USER_TYPE:
-            if ($plural) {
-                return $translator->getMessage('COMMON_USER_INDEX');
-            } else {
-                return $translator->getMessage('COMMON_USER');
-            }
-            // no break
-        case CS_DISCUSSION_TYPE:
-            if ($plural) {
-                return $translator->getMessage('COMMON_DISCUSSION_INDEX');
-            } else {
-                return $translator->getMessage('COMMON_DISCUSSION');
-            }
-            // no break
-        case CS_MYROOM_TYPE:
-            if ($plural) {
-                return $translator->getMessage('COMMON_MYROOM_INDEX');
-            } else {
-                return $translator->getMessage('COMMON_MYROOM');
-            }
-            // no break
-        case CS_PROJECT_TYPE:
-            if ($plural) {
-                return $translator->getMessage('COMMON_PROJECT_INDEX');
-            } else {
-                return $translator->getMessage('COMMON_PROJECT');
-            }
-    }
-}
-
 /** returns a string that is x characters at the most but won't
  *  break in the middle of a word.
  *
@@ -116,7 +39,7 @@ function chunkText($text, $length)
     $first_tag = '(:';
     $last_tag = ':)';
 
-    $text = trim($text);
+    $text = trim((string) $text);
     $mySubstring = preg_replace('~^(.{1,$length})[ .,].*~u', '\\1', $text); // ???
     if (mb_strlen($mySubstring) > $length) {
         $mySubstring = mb_substr($text, 0, $length);
@@ -188,86 +111,6 @@ function cs_strtolower($value)
     return mb_strtolower(strtr($value, UC_CHARS, LC_CHARS), 'UTF-8');
 }
 
-// Checks if a string is a valid email-address.
-// It does not recognize all options specified by RFC 2822, especially quoted strings with whitespaces
-// are not recognized, but we would have to build a parser to accomplish that...
-function isEmailValid($email)
-{
-    // ------------------
-    // --->UTF8 - OK<----
-    // ------------------
-    $result = preg_match('^(['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*)@(['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*)\.[A-z]+^u', $email);
-
-    return $result;
-}
-
-// Checks if there are umlauts or special characters in the string.
-function withUmlaut($value)
-{
-    // ------------------
-    // --->UTF8 - OK<----
-    // ------------------
-    $retour = true;
-    $regs = [];
-    mb_ereg('[A-Za-z0-9\._]+', $value, $regs);
-    if ($regs[0] == $value) {
-        $retour = false;
-    }
-
-    return $retour;
-}
-
-function toggleUmlaut($value)
-{
-    // ------------------
-    // --->UTF8 - OK<----
-    // ------------------
-    $retour = $value;
-    $retour = str_replace('Ä', 'Ae', $retour);
-    $retour = str_replace('ä', 'ae', $retour);
-    $retour = str_replace('Ö', 'Oe', $retour);
-    $retour = str_replace('ö', 'oe', $retour);
-    $retour = str_replace('Ü', 'Ue', $retour);
-    $retour = str_replace('ü', 'ue', $retour);
-    $retour = str_replace('ß', 'ss', $retour);
-
-    return $retour;
-}
-
-function toggleUmlautTemp($value)
-{
-    // ------------------
-    // --->UTF8 - OK<----
-    // ------------------
-    $retour = $value;
-    $retour = str_replace('Ä', 'AAAEEE', $retour);
-    $retour = str_replace('ä', 'aaaeee', $retour);
-    $retour = str_replace('Ö', 'OOOEEE', $retour);
-    $retour = str_replace('ö', 'oooeee', $retour);
-    $retour = str_replace('Ü', 'UUUEEE', $retour);
-    $retour = str_replace('ü', 'uuueee', $retour);
-    $retour = str_replace('ß', 'SsSsSs', $retour);
-
-    return $retour;
-}
-
-function toggleUmlautTempBack($value)
-{
-    // ------------------
-    // --->UTF8 - OK<----
-    // ------------------
-    $retour = $value;
-    $retour = str_replace('AAAEEE', 'Ä', $retour);
-    $retour = str_replace('aaaeee', 'ä', $retour);
-    $retour = str_replace('OOOEEE', 'Ö', $retour);
-    $retour = str_replace('oooeee', 'ö', $retour);
-    $retour = str_replace('UUUEEE', 'Ü', $retour);
-    $retour = str_replace('uuueee', 'ü', $retour);
-    $retour = str_replace('SsSsSs', 'ß', $retour);
-
-    return $retour;
-}
-
 function mb_unserialize($serial_str)
 {
     $retour = @unserialize($serial_str);
@@ -277,7 +120,7 @@ function mb_unserialize($serial_str)
             $data = $match[2];
 
             return "s:$length:\"$data\";";
-        }, $serial_str);
+        }, (string) $serial_str);
 
         $retour = @unserialize($serial_str);
         if (empty($retour)) {
@@ -293,17 +136,17 @@ function _correct_a($value)
     $retour = $value;
 
     $found = [];
-    preg_match_all('~a:([0-9]*):~', $value, $found);
+    preg_match_all('~a:([0-9]*):~', (string) $value, $found);
     if (!empty($found[1][0])) {
-        $begin = substr($value, 0, strpos($value, '{') + 1);
-        $middle = substr($value, strpos($value, '{') + 1, strrpos($value, '}') - strpos($value, '{') - 1);
-        $end = substr($value, strrpos($value, '}'));
-        if (count($found[1]) > 1) {
+        $begin = substr((string) $value, 0, strpos((string) $value, '{') + 1);
+        $middle = substr((string) $value, strpos((string) $value, '{') + 1, strrpos((string) $value, '}') - strpos((string) $value, '{') - 1);
+        $end = substr((string) $value, strrpos((string) $value, '}'));
+        if ((is_countable($found[1]) ? count($found[1]) : 0) > 1) {
             $middle = _correct_a($middle);
         }
         $count_sem = 0;
         $count_klam = 0;
-        for ($i = 0; $i < strlen($middle); ++$i) {
+        for ($i = 0; $i < strlen((string) $middle); ++$i) {
             if (0 == $count_klam
                  and ';' == $middle[$i]
             ) {
@@ -328,16 +171,9 @@ function _correct_a($value)
 
 function cs_ucfirst($text)
 {
-    $return_text = mb_strtoupper(mb_substr($text, 0, 1, 'UTF-8'), 'UTF-8');
+    $return_text = mb_strtoupper(mb_substr((string) $text, 0, 1, 'UTF-8'), 'UTF-8');
 
-    return $return_text.mb_substr($text, 1, mb_strlen($text, 'UTF-8'), 'UTF-8');
-}
-
-function cs_lcfirst($text)
-{
-    $return_text = mb_strtolower(mb_substr($text, 0, 1, 'UTF-8'), 'UTF-8');
-
-    return $return_text.mb_substr($text, 1, mb_strlen($text, 'UTF-8'), 'UTF-8');
+    return $return_text.mb_substr((string) $text, 1, mb_strlen((string) $text, 'UTF-8'), 'UTF-8');
 }
 
 // von http://de3.php.net/sprintf
@@ -363,7 +199,7 @@ if (!function_exists('mb_vsprintf')) {
         }
 
         // Use UTF-8 in the format so we can use the u flag in preg_split
-        $format = mb_convert_encoding($format, 'UTF-8', $encoding);
+        $format = mb_convert_encoding((string) $format, 'UTF-8', $encoding);
 
         $newformat = ''; // build a new format in UTF-8
         $newargv = []; // unhandled args in unchanged encoding
@@ -371,7 +207,7 @@ if (!function_exists('mb_vsprintf')) {
         while ('' !== $format) {
             // Split the format in two parts: $pre and $post by the first %-directive
             // We get also the matched groups
-            list($pre, $sign, $filler, $align, $size, $precision, $type, $post) =
+            [$pre, $sign, $filler, $align, $size, $precision, $type, $post] =
                 preg_split("!\%(\+?)('.|[0 ]|)(-?)([1-9][0-9]*|)(\.[1-9][0-9]*|)([%a-zA-Z])!u",
                     $format, 2, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -384,7 +220,7 @@ if (!function_exists('mb_vsprintf')) {
                 $newformat .= '%%';
             } elseif ('s' == $type) {
                 $arg = array_shift($argv);
-                $arg = mb_convert_encoding($arg, 'UTF-8', $encoding);
+                $arg = mb_convert_encoding((string) $arg, 'UTF-8', $encoding);
                 $padding_pre = '';
                 $padding_post = '';
 
@@ -432,65 +268,6 @@ function cs_utf8_encode($value)
     if (mb_check_encoding($value, 'UTF-8')) {
         return $value;
     } elseif (mb_check_encoding($value, 'ISO-8859-1')) {
-        return utf8_encode($value);
+        return mb_convert_encoding((string) $value, 'UTF-8', 'ISO-8859-1');
     }
-}
-
-/**
- * Encodes String to UTF8.
- *
- * @param string $string
- *
- * @return string
- */
-function cs_utf8_encode2($string)
-{
-    if (check_utf8($string)) {
-        return $string;
-    } else {
-        if (function_exists('mb_convert_encoding')) {
-            return mb_convert_encoding($string, 'utf-8');
-        } else {
-            return utf8_encode($string);
-        }
-    }
-}
-
-function check_utf8($str)
-{
-    $len = strlen($str);
-    for ($i = 0; $i < $len; ++$i) {
-        $c = ord($str[$i]);
-        if ($c > 128) {
-            if ($c > 247) {
-                return false;
-            } elseif ($c > 239) {
-                $bytes = 4;
-            } elseif ($c > 223) {
-                $bytes = 3;
-            } elseif ($c > 191) {
-                $bytes = 2;
-            } else {
-                return false;
-            }
-            if (($i + $bytes) > $len) {
-                return false;
-            }
-            while ($bytes > 1) {
-                ++$i;
-                $b = ord($str[$i]);
-                if ($b < 128 || $b > 191) {
-                    return false;
-                }
-                --$bytes;
-            }
-        }
-    }
-
-    return true;
-} // end of check_utf8
-
-function is_utf8($string)
-{
-    return check_utf8($string);
 }

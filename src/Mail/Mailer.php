@@ -21,7 +21,7 @@ use Symfony\Component\Mime\Exception\RfcComplianceException;
 
 class Mailer
 {
-    public function __construct(private MessageBuilder $messageBuilder, private MailerInterface $symfonyMailer, private LoggerInterface $logger)
+    public function __construct(private readonly MessageBuilder $messageBuilder, private readonly MailerInterface $symfonyMailer, private readonly LoggerInterface $logger)
     {
     }
 

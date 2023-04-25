@@ -30,32 +30,22 @@ class AutoRoomMembershipSubscriberTest extends Unit
         $roomslugs = ['a-test-room', 'another-test-room'];
 
         $portal = $this->makeEmpty(Portal::class, [
-            'getAuthMembershipEnabled' => function () {
-                return true;
-            },
-            'getAuthMembershipIdentifier' => function () {
-                return 'roomslugs';
-            }
+            'getAuthMembershipEnabled' => fn() => true,
+            'getAuthMembershipIdentifier' => fn() => 'roomslugs'
         ]);
         $this->assertInstanceOf(Portal::class, $portal);
 
         $authSource = $this->makeEmpty(AuthSource::class, [
-            'getPortal' => function () use ($portal) {
-                return $portal;
-            }]);
+            'getPortal' => fn() => $portal]);
         $this->assertInstanceOf(AuthSource::class, $authSource);
 
         $account = $this->makeEmpty(Account::class, [
-            'getAuthSource' => function () use ($authSource) {
-                return $authSource;
-            }
+            'getAuthSource' => fn() => $authSource
         ]);
         $this->assertInstanceOf(Account::class, $account);
 
         $authToken = $this->makeEmpty(TokenInterface::class, [
-            'getUser' => function () use ($account) {
-                return $account;
-            }
+            'getUser' => fn() => $account
         ]);
         $this->assertInstanceOf(TokenInterface::class, $authToken);
 

@@ -26,7 +26,7 @@ class TodoStatusAction implements ActionInterface
 {
     private ?string $newStatus = null;
 
-    public function __construct(private TranslatorInterface $translator, private TodoService $todoService)
+    public function __construct(private readonly TranslatorInterface $translator, private readonly TodoService $todoService)
     {
     }
 

@@ -59,7 +59,7 @@ class cs_discussionarticles_manager extends cs_manager
     /*
      * Translation Object
      */
-    private $_translator;
+    private readonly cs_translator $_translator;
 
     /** constructor: cs_discussionarticles_manager
      * the only available constructor, initial values for internal variables.
@@ -284,7 +284,7 @@ class cs_discussionarticles_manager extends cs_manager
     {
         // to get the parent's position, remove the trailing position element from the given item's position
         $itemPosition = $item->getPosition();
-        $parentPosition = implode('.', explode('.', $itemPosition, -1));
+        $parentPosition = implode('.', explode('.', (string) $itemPosition, -1));
         if (empty($parentPosition)) {
             return null;
         }
@@ -422,7 +422,7 @@ class cs_discussionarticles_manager extends cs_manager
             $this->_current_article_id = $this->_create_id;
             $discussionarticle_item->setItemID($this->getCreateID());
             $this->_newDiscussionArticle($discussionarticle_item);
-        } catch (\Doctrine\DBAL\Exception $e) {
+        } catch (\Doctrine\DBAL\Exception) {
             trigger_error('Problems creating discussionarticle item.', E_USER_WARNING);
             $this->_create_id = null;
         }
@@ -467,7 +467,7 @@ class cs_discussionarticles_manager extends cs_manager
 
         try {
             $queryBuilder->executeStatement();
-        } catch (\Doctrine\DBAL\Exception $e) {
+        } catch (\Doctrine\DBAL\Exception) {
             trigger_error('Problems creating discarticle.', E_USER_WARNING);
         }
     }

@@ -21,7 +21,7 @@ use cs_room_item;
 
 class InvitationMessageFactory
 {
-    public function __construct(private LegacyEnvironment $legacyEnvironment)
+    public function __construct(private readonly LegacyEnvironment $legacyEnvironment)
     {
     }
 

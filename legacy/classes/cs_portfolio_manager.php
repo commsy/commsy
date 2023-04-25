@@ -23,7 +23,7 @@ class cs_portfolio_manager extends cs_manager
 
     public function cs_announcement_manager($environment)
     {
-        cs_manager::__construct($environment);
+        parent::__construct($environment);
         $this->_db_table = CS_PORTFOLIO_TYPE;
         $this->_translator = $environment->getTranslationObject();
     }

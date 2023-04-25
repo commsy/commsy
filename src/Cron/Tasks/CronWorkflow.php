@@ -23,12 +23,12 @@ use Symfony\Component\Routing\RouterInterface;
 
 class CronWorkflow implements CronTaskInterface
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private RouterInterface $router,
-        private Mailer $mailer
+        private readonly RouterInterface $router,
+        private readonly Mailer $mailer
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -63,7 +63,7 @@ class CronWorkflow implements CronTaskInterface
 
                     $additionalReceiver = $material->getWorkflowResubmissionWhoAdditional();
                     if (!empty($additionalReceiver)) {
-                        foreach (explode(',', $additionalReceiver) as $receiver) {
+                        foreach (explode(',', (string) $additionalReceiver) as $receiver) {
                             $to[] = trim($receiver);
                         }
                     }
@@ -131,7 +131,7 @@ class CronWorkflow implements CronTaskInterface
 
                     $additionalReceiver = $material->getWorkflowValidityWhoAdditional();
                     if (!empty($additionalReceiver)) {
-                        $to = array_merge($to, explode(',', $additionalReceiver));
+                        $to = array_merge($to, explode(',', (string) $additionalReceiver));
                     }
 
                     $to = array_unique($to);

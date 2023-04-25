@@ -23,13 +23,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AccountActivityLockedMessage extends Message
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
-        private UrlGeneratorInterface $urlGenerator,
+        private readonly UrlGeneratorInterface $urlGenerator,
         LegacyEnvironment $legacyEnvironment,
-        private Portal $portal,
-        private Account $account
+        private readonly Portal $portal,
+        private readonly Account $account
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

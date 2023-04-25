@@ -16,35 +16,11 @@ function getCurrentDate()
     return date('Ymd');
 }
 
-// format of date_string = DD.MM
-function getDateFromDateString($date_string)
-{
-    $month = $date_string[3].$date_string[4];
-    $day = $date_string[0].$date_string[1];
-
-    return date('Ymd', mktime(date('H'), date('i'), date('s'), $month, $day, date('Y')));
-}
-
 if (!function_exists('getCurrentDateTimeInMySQL')) {
-    function getCurrentDateTimeInMySQL()
+    function getCurrentDateTimeInMySQL(): string
     {
         return date('Y-m-d H:i:s');
     }
-}
-
-function getCurrentDateTimeMinusMinutesInMySQL($minutes)
-{
-    return date('Y-m-d H:i:s', mktime(date('H'), date('i') - $minutes, date('s'), date('m'), date('d'), date('Y')));
-}
-
-function getCurrentDateTimeMinusSecondsInMySQL($seconds)
-{
-    return date('Y-m-d H:i:s', mktime(date('H'), date('i'), date('s') - $seconds, date('m'), date('d'), date('Y')));
-}
-
-function getCurrentDateTimeMinusHoursInMySQL($hours)
-{
-    return date('Y-m-d H:i:s', mktime(date('H') - $hours, date('i'), date('s'), date('m'), date('d'), date('Y')));
 }
 
 if (!function_exists('getCurrentDateTimeMinusDaysInMySQL')) {
@@ -84,7 +60,7 @@ function convertDateFromInput($date, $language)
     $converted = [];
     $matches = [];
     $original = $date;
-    $date = str_replace(' ', '', $date);
+    $date = str_replace(' ', '', (string) $date);
 
     $region = match ($language) {
         'en' => 'british',
@@ -162,8 +138,8 @@ function convertDateFromInput($date, $language)
             $converted['error'] = true;
         } else {
             $converted['conforms'] = true;
-            $converted['timestamp'] = str_pad($year, 4, '0', STR_PAD_LEFT).str_pad($month, 2, '0', STR_PAD_LEFT).str_pad($day, 2, '0', STR_PAD_LEFT);
-            $converted['datetime'] = str_pad($year, 4, '0', STR_PAD_LEFT).'-'.str_pad($month, 2, '0', STR_PAD_LEFT).'-'.str_pad($day, 2, '0', STR_PAD_LEFT);
+            $converted['timestamp'] = str_pad((string) $year, 4, '0', STR_PAD_LEFT).str_pad((string) $month, 2, '0', STR_PAD_LEFT).str_pad($day, 2, '0', STR_PAD_LEFT);
+            $converted['datetime'] = str_pad((string) $year, 4, '0', STR_PAD_LEFT).'-'.str_pad((string) $month, 2, '0', STR_PAD_LEFT).'-'.str_pad($day, 2, '0', STR_PAD_LEFT);
             $converted['display'] = '';
             $converted['error'] = false;
         }
@@ -178,7 +154,7 @@ function convertTimeFromInput($time)
     $original = $time;
 
     // Remove spaces to prevent hassle
-    $time = trim(str_replace(' ', '', $time));
+    $time = trim(str_replace(' ', '', (string) $time));
 
     $hours = '00';
     $minutes = '00';
@@ -223,8 +199,8 @@ function convertTimeFromInput($time)
 
     if ($conforms) {
         $converted['conforms'] = true;
-        $converted['timestamp'] = str_pad($hours, 2, '0', STR_PAD_LEFT).str_pad($minutes, 2, '0', STR_PAD_LEFT).$secs;
-        $converted['datetime'] = str_pad($hours, 2, '0', STR_PAD_LEFT).':'.str_pad($minutes, 2, '0', STR_PAD_LEFT).':'.$secs;
+        $converted['timestamp'] = str_pad((string) $hours, 2, '0', STR_PAD_LEFT).str_pad($minutes, 2, '0', STR_PAD_LEFT).$secs;
+        $converted['datetime'] = str_pad((string) $hours, 2, '0', STR_PAD_LEFT).':'.str_pad($minutes, 2, '0', STR_PAD_LEFT).':'.$secs;
         if (empty($stct)) {
             $converted['display'] = '';
         } else {
@@ -240,26 +216,16 @@ function convertTimeFromInput($time)
     return $converted;
 }
 
-function extractDateTimeFromInput($datetime)
-{
-    $parts = explode(' ', $datetime);
-    $result = [];
-    $result['Time'] = $parts[1];
-    $result['Date'] = $parts[0];
-
-    return $result;
-}
-
 function getDifference($timestamp_lower, $timestamp_higher)
 {
-    $day_lower = substr($timestamp_lower, 6, 2);
-    $day_higher = substr($timestamp_higher, 6, 2);
+    $day_lower = substr((string) $timestamp_lower, 6, 2);
+    $day_higher = substr((string) $timestamp_higher, 6, 2);
 
-    $month_lower = substr($timestamp_lower, 4, 2);
-    $month_higher = substr($timestamp_higher, 4, 2);
+    $month_lower = substr((string) $timestamp_lower, 4, 2);
+    $month_higher = substr((string) $timestamp_higher, 4, 2);
 
-    $year_lower = substr($timestamp_lower, 0, 4);
-    $year_higher = substr($timestamp_higher, 0, 4);
+    $year_lower = substr((string) $timestamp_lower, 0, 4);
+    $year_higher = substr((string) $timestamp_higher, 0, 4);
 
     $from_date = mktime(0, 0, 0, $month_lower, $day_lower, $year_lower);
     $till_date = mktime(0, 0, 0, $month_higher, $day_higher, $year_higher);
@@ -275,54 +241,6 @@ function getDifference($timestamp_lower, $timestamp_higher)
     $totaldays = (($endtimestamp - $begtimestamp) / 86400);
 
     return $totaldays;
-}
-
-function getTimeDifference($timestamp_lower, $timestamp_higher)
-{
-    $hour_lower = substr($timestamp_lower, 0, 2);
-    $hour_higher = substr($timestamp_higher, 0, 2);
-
-    $minute_lower = substr($timestamp_lower, 2, 2);
-    $minute_higher = substr($timestamp_higher, 2, 2);
-
-    $second_lower = substr($timestamp_lower, 4, 2);
-    $second_higher = substr($timestamp_higher, 4, 2);
-
-    $from_time = mktime($hour_lower, $minute_lower, $second_lower, 1, 1, 1990);
-    $till_time = mktime($hour_higher, $minute_higher, $second_higher, 1, 1, 1990);
-
-    /*$begtimestamp = "";
-
-    for($ts = $from_time; $ts <= $till_time; $ts+=3600) {
-       if ($begtimestamp=="") {
-          $begtimestamp=$ts; //this line freezes first timestamp
-       }
-    }
-    $endtimestamp=$ts; //this line freezes the last timestamp
-
-    $totalhours = (($endtimestamp-$begtimestamp) / 3600);*/
-    $totalhours = round(($till_time - $from_time) / 3600);
-
-    return $totalhours;
-}
-
-function getSecondDifference($datetime_lower, $datetime_higher)
-{
-    $hour_lower = substr($datetime_lower, 11, 2);
-    $hour_higher = substr($datetime_higher, 11, 2);
-
-    $minute_lower = substr($datetime_lower, 14, 2);
-    $minute_higher = substr($datetime_higher, 14, 2);
-
-    $second_lower = substr($datetime_lower, 17, 2);
-    $second_higher = substr($datetime_higher, 17, 2);
-
-    $from_time = mktime($hour_lower, $minute_lower, $second_lower, 1, 1, 1990);
-    $till_time = mktime($hour_higher, $minute_higher, $second_higher, 1, 1, 1990);
-
-    $totalseconds = round($till_time - $from_time);
-
-    return $totalseconds;
 }
 
 // ####
@@ -361,26 +279,6 @@ function getTimeLanguage($timestring)
     return $translator->getTimeLanguage($timestring);
 }
 
-function getDateLanguage($datestring)
-{
-    global $environment;
-    $translator = $environment->getTranslationObject();
-
-    return $translator->getDateLanguage($datestring);
-}
-
-// TimeString in following format: YYYYMMDD
-function getDateFromString($timestring)
-{
-    $result = [];
-    $result['day'] = substr($timestring, 6, 2);
-    $result['month'] = substr($timestring, 4, 2);
-    $result['year'] = substr($timestring, 0, 4);
-    $result['timestamp'] = $timestring;
-
-    return $result;
-}
-
 /*
  * Find the number of days in a month
  * Year is between 1 and 32767 inclusive
@@ -388,8 +286,8 @@ function getDateFromString($timestring)
  */
 function daysInMonth($month, $year)
 {
-    if (8 == strlen($month)) {
-        $month = substr($month, 4, 2);
+    if (8 == strlen((string) $month)) {
+        $month = substr((string) $month, 4, 2);
     }
     $daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     $days = 0;
@@ -400,13 +298,6 @@ function daysInMonth($month, $year)
     }
 
     return $days;
-}
-
-function DateAdd($v, $d = null, $f = 'd/m/Y')
-{
-    $d = ($d ?: date('Y-m-d h:m:s'));
-
-    return date($f, strtotime($v.' days', strtotime($d)));
 }
 
 function getDayNameFromInt($day)
@@ -423,36 +314,6 @@ function getDayNameFromInt($day)
         '5' => $translator->getMessage('COMMON_DATE_FRIDAY'),
         '6' => $translator->getMessage('COMMON_DATE_SATURDAY'),
         default => '',
-    };
-
-    return $ret;
-}
-
-function getLongMonthNameFromInt($int)
-{
-    return getLongMonthName($int - 1);
-}
-
-function getLongMonthName($month)
-{
-    $ret = null;
-    global $environment;
-    $translator = $environment->getTranslationObject();
-
-    $ret = match ($month) {
-        '0' => $translator->getMessage('COMMON_DATE_JANUARY_LONG'),
-        '1' => $translator->getMessage('COMMON_DATE_FEBRUARY_LONG'),
-        '2' => $translator->getMessage('COMMON_DATE_MARCH_LONG'),
-        '3' => $translator->getMessage('COMMON_DATE_APRIL_LONG'),
-        '4' => $translator->getMessage('COMMON_DATE_MAY_LONG'),
-        '5' => $translator->getMessage('COMMON_DATE_JUNE_LONG'),
-        '6' => $translator->getMessage('COMMON_DATE_JULY_LONG'),
-        '7' => $translator->getMessage('COMMON_DATE_AUGUST_LONG'),
-        '8' => $translator->getMessage('COMMON_DATE_SEPTEMBER_LONG'),
-        '9' => $translator->getMessage('COMMON_DATE_OCTOBER_LONG'),
-        '10' => $translator->getMessage('COMMON_DATE_NOVEMBER_LONG'),
-        '11' => $translator->getMessage('COMMON_DATE_DECEMBER_LONG'),
-        default => $ret,
     };
 
     return $ret;
@@ -520,7 +381,7 @@ function getYearFromDateTime($datetime)
 {
     $retour = '';
     if (!empty($datetime)) {
-        $retour = substr($datetime, 0, 4);
+        $retour = substr((string) $datetime, 0, 4);
     }
 
     return $retour;
@@ -530,7 +391,7 @@ function getMonthFromDateTime($datetime)
 {
     $retour = '';
     if (!empty($datetime)) {
-        $retour = substr($datetime, 5, 2);
+        $retour = substr((string) $datetime, 5, 2);
     }
 
     return $retour;
@@ -540,7 +401,7 @@ function getDayFromDateTime($datetime)
 {
     $retour = '';
     if (!empty($datetime)) {
-        $retour = substr($datetime, 8, 2);
+        $retour = substr((string) $datetime, 8, 2);
     }
 
     return $retour;
@@ -557,36 +418,3 @@ function datetime2Timestamp($datetime)
 
     return mktime($hour, $min, $sec, $month, $day, $year);
 }
-
-function isDatetimeCorrect($language, $date, $time = '')
-{
-    $time_result = [];
-    $retour = false;
-    $date_result = convertDateFromInput($date, $language);
-    if (empty($time)
-         or preg_replace('/[A-Za-z ]/', '', $time) != $time
-    ) {
-        $time_result['conforms'] = '1';
-        $time_result['datetime'] = '00:00:00';
-    } else {
-        $time_result = convertTimeFromInput($time);
-    }
-    if (empty($date_result['error'])
-         and empty($time_result['error'])
-         and !empty($date_result['conforms'])
-         and !empty($time_result['conforms'])
-    ) {
-        if (!empty($time_result['datetime'])
-             and !empty($date_result['datetime'])
-        ) {
-            $value = $date_result['datetime'].' '.$time_result['datetime'];
-            if ($value == date('Y-m-d H:i:s', datetime2Timestamp($value))) {
-                $retour = true;
-            }
-        }
-    }
-
-    return $retour;
-}
-
-date_default_timezone_set(date_default_timezone_get());

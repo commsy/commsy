@@ -33,7 +33,7 @@ class cs_portfolio_item extends cs_item
         return $this->_getValue('title');
     }
 
-    public function setTitle($value)
+    public function setTitle(string $value)
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();

@@ -23,7 +23,7 @@ class db_mysql_connector
     private array $queryArray = [];
     private bool $logQuery = false;
 
-    private Connection $connection;
+    private readonly Connection $connection;
 
     public function __construct()
     {
@@ -43,17 +43,17 @@ class db_mysql_connector
                 $this->queryArray[] = $query;
             }
 
-            if ('SELECT' === mb_substr(trim($query), 0, 6) || 'SHOW' === mb_substr(trim($query), 0, 4)) {
+            if ('SELECT' === mb_substr(trim((string) $query), 0, 6) || 'SHOW' === mb_substr(trim((string) $query), 0, 4)) {
                 return $result->fetchAllAssociative();
-            } elseif ('INSERT' === mb_substr(trim($query), 0, 6)) {
-                if (strstr($query, 'INSERT INTO item_link_file')
-                    || strstr($query, 'INSERT INTO external2commsy_id')
-                    || strstr($query, 'INSERT INTO links')
-                    || strstr($query, 'INSERT INTO link_modifier_item')
-                    || strstr($query, 'INSERT INTO materials')
-                    || strstr($query, 'INSERT INTO noticed')
-                    || strstr($query, 'INSERT INTO reader')
-                    || strstr($query, 'INSERT INTO section')) {
+            } elseif ('INSERT' === mb_substr(trim((string) $query), 0, 6)) {
+                if (strstr((string) $query, 'INSERT INTO item_link_file')
+                    || strstr((string) $query, 'INSERT INTO external2commsy_id')
+                    || strstr((string) $query, 'INSERT INTO links')
+                    || strstr((string) $query, 'INSERT INTO link_modifier_item')
+                    || strstr((string) $query, 'INSERT INTO materials')
+                    || strstr((string) $query, 'INSERT INTO noticed')
+                    || strstr((string) $query, 'INSERT INTO reader')
+                    || strstr((string) $query, 'INSERT INTO section')) {
                     return $result;
                 } else {
                     return $this->connection->lastInsertId();

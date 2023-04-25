@@ -11,6 +11,10 @@ namespace Tests\Unit;
 use App\Mail\Messages\ItemDeletedMessage;
 use App\Mail\Recipient;
 use App\Mail\RecipientFactory;
+use Codeception\Stub;
+use cs_list;
+use cs_room_item;
+use cs_user_item;
 use Tests\Support\UnitTester;
 
 class MailCest
@@ -30,21 +34,21 @@ class MailCest
         $mailer = $I->grabService(\App\Mail\Mailer::class);
 
         require_once 'classes/cs_room_item.php';
-        /** @var \cs_room_item $room */
-        $room = \Codeception\Stub::make(\cs_room_item::class, [
+        /** @var cs_room_item $room */
+        $room = Stub::make(cs_room_item::class, [
             'itemId' => 123,
         ]);
 
         $message = new \App\Mail\Messages\RoomArchivedMessage($room, 1122);
 
-        $invalid = \Codeception\Stub::make(Recipient::class, [
+        $invalid = Stub::make(Recipient::class, [
             'firstname' => 'firstname',
             'lastname' => 'lastname',
             'email' => 'invalidemail',
             'language' => 'de',
         ]);
 
-        $valid = \Codeception\Stub::make(Recipient::class, [
+        $valid = Stub::make(Recipient::class, [
             'firstname' => 'firstname',
             'lastname' => 'lastname',
             'email' => 'valid@test.de',
@@ -64,14 +68,14 @@ class MailCest
         $mailer = $I->grabService(\App\Mail\Mailer::class);
 
         require_once 'classes/cs_room_item.php';
-        /** @var \cs_room_item $room */
-        $room = \Codeception\Stub::make(\cs_room_item::class, [
+        /** @var cs_room_item $room */
+        $room = Stub::make(cs_room_item::class, [
             'itemId' => 123,
         ]);
 
         $message = new \App\Mail\Messages\RoomArchivedMessage($room, 1122);
 
-        $valid = \Codeception\Stub::make(Recipient::class, [
+        $valid = Stub::make(Recipient::class, [
             'firstname' => 'firstname',
             'lastname' => 'lastname',
             'email' => 'valid@test.de',
@@ -86,14 +90,14 @@ class MailCest
     public function roomArchivedMessage(UnitTester $I)
     {
         require_once 'classes/cs_room_item.php';
-        /** @var \cs_room_item $room */
-        $room = \Codeception\Stub::make(\cs_room_item::class, [
+        /** @var cs_room_item $room */
+        $room = Stub::make(cs_room_item::class, [
             'itemId' => 123,
         ]);
 
         $message = new \App\Mail\Messages\RoomArchivedMessage($room, 1122);
 
-        $valid = \Codeception\Stub::make(Recipient::class, [
+        $valid = Stub::make(Recipient::class, [
             'firstname' => 'firstname',
             'lastname' => 'lastname',
             'email' => 'valid@test.de',
@@ -112,38 +116,28 @@ class MailCest
         require_once 'classes/cs_room_item.php';
 
         /** @var \cs_item $item */
-        $item = \Codeception\Stub::make(\cs_item::class, [
+        $item = Stub::make(\cs_item::class, [
             'itemId' => 123,
-            'getContextItem' => function() {
-                return \Codeception\Stub::make(\cs_room_item::class, [
-                    'itemId' => 123,
-                    'title' => 'Room',
-                ]);
-            },
+            'getContextItem' => fn() => Stub::make(cs_room_item::class, [
+                'itemId' => 123,
+                'title' => 'Room',
+            ]),
         ]);
 
-        $deleter = \Codeception\Stub::make(\cs_user_item::class, [
-            'getFirstname' => function () {
-                return 'firstname';
-            },
-            'getLastname' => function() {
-                return 'lastname';
-            },
-            'getEmail' => function() {
-                return 'mail@mail.de';
-            },
+        $deleter = Stub::make(cs_user_item::class, [
+            'getFirstname' => fn() => 'firstname',
+            'getLastname' => fn() => 'lastname',
+            'getEmail' => fn() => 'mail@mail.de',
             'getContextItem' => function() {
-                $room = \Codeception\Stub::make(\cs_room_item::class, [
-                    'getLanguage' => function() {
-                        return 'de';
-                    }
+                $room = Stub::make(cs_room_item::class, [
+                    'getLanguage' => fn() => 'de'
                 ]);
 
                 return $room;
             },
         ]);
 
-        $recipient = \Codeception\Stub::make(Recipient::class, [
+        $recipient = Stub::make(Recipient::class, [
             'firstname' => 'firstname',
             'lastname' => 'lastname',
             'email' => 'valid@test.de',
@@ -162,26 +156,16 @@ class MailCest
     public function recipientFactoryModerators(UnitTester $I)
     {
         require_once 'classes/cs_room_item.php';
-        $moderators = new \cs_list();
+        $moderators = new cs_list();
 
-        $moderatorWithMail = \Codeception\Stub::make(\cs_user_item::class, [
-            'getOpenRoomWantMail' => function() {
-                return true;
-            },
-            'getFirstname' => function () {
-                return 'firstname';
-            },
-            'getLastname' => function() {
-                return 'lastname';
-            },
-            'getEmail' => function() {
-                return 'mail@mail.de';
-            },
+        $moderatorWithMail = Stub::make(cs_user_item::class, [
+            'getOpenRoomWantMail' => fn() => true,
+            'getFirstname' => fn() => 'firstname',
+            'getLastname' => fn() => 'lastname',
+            'getEmail' => fn() => 'mail@mail.de',
             'getContextItem' => function() {
-                $room = \Codeception\Stub::make(\cs_room_item::class, [
-                    'getLanguage' => function() {
-                        return 'de';
-                    }
+                $room = Stub::make(cs_room_item::class, [
+                    'getLanguage' => fn() => 'de'
                 ]);
 
                 return $room;
@@ -189,24 +173,14 @@ class MailCest
         ]);
         $I->assertTrue($moderatorWithMail->getOpenRoomWantMail());
 
-        $moderatorWithoutMail = \Codeception\Stub::make(\cs_user_item::class, [
-            'getOpenRoomWantMail' => function() {
-                return false;
-            },
-            'getFirstname' => function () {
-                return 'firstname';
-            },
-            'getLastname' => function() {
-                return 'lastname';
-            },
-            'getEmail' => function() {
-                return 'mail@mail.de';
-            },
+        $moderatorWithoutMail = Stub::make(cs_user_item::class, [
+            'getOpenRoomWantMail' => fn() => false,
+            'getFirstname' => fn() => 'firstname',
+            'getLastname' => fn() => 'lastname',
+            'getEmail' => fn() => 'mail@mail.de',
             'getContextItem' => function() {
-                $room = \Codeception\Stub::make(\cs_room_item::class, [
-                    'getLanguage' => function() {
-                        return 'de';
-                    }
+                $room = Stub::make(cs_room_item::class, [
+                    'getLanguage' => fn() => 'de'
                 ]);
 
                 return $room;
@@ -218,8 +192,8 @@ class MailCest
         $moderators->add($moderatorWithMail);
         $moderators->add($moderatorWithoutMail);
 
-        /** @var \cs_room_item $room */
-        $room = \Codeception\Stub::make(\cs_room_item::class, [
+        /** @var cs_room_item $room */
+        $room = Stub::make(cs_room_item::class, [
             'itemId' => 123,
             '_moderator_list' => $moderators,
         ]);
@@ -229,9 +203,7 @@ class MailCest
         $I->assertCount(2, $recipients);
 
         // Test with optional closure
-        $recipients = RecipientFactory::createModerationRecipients($room, function ($moderator) {
-            return $moderator->getOpenRoomWantMail();
-        });
+        $recipients = RecipientFactory::createModerationRecipients($room, fn($moderator) => $moderator->getOpenRoomWantMail());
         $I->assertCount(1, $recipients);
     }
 }

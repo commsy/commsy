@@ -18,7 +18,7 @@ use cs_item;
 
 class MarkReadMaterial implements MarkReadInterface
 {
-    public function __construct(private MaterialService $materialService)
+    public function __construct(private readonly MaterialService $materialService)
     {
     }
 

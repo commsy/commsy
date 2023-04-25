@@ -22,7 +22,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RemoveAction implements ActionInterface
 {
-    public function __construct(private TranslatorInterface $translator, private MarkedService $markedService)
+    public function __construct(private readonly TranslatorInterface $translator, private readonly MarkedService $markedService)
     {
     }
 

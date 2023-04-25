@@ -107,13 +107,13 @@ final class Version20170225121940 extends AbstractMigration
                     $articleId = $article['item_id'];
                     $articlePosition = $article['position'];
 
-                    $numDots = substr_count($articlePosition, '.');
+                    $numDots = substr_count((string) $articlePosition, '.');
                     $oldLevel = $numDots;
 
                     if ($oldLevel == 0) {
                         $newPosition = sprintf('%1$04d', $articlePosition);
                     } else {
-                        $expPosition = explode('.', $articlePosition);
+                        $expPosition = explode('.', (string) $articlePosition);
                         $newPosition = '';
                         for ($i = 1; $i <= $oldLevel; $i++) {
                             $currentPosition = $expPosition[$i];

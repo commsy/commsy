@@ -23,8 +23,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class FixAbandonedGrouprooms implements DatabaseCheck
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private ItemService $itemService,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ItemService $itemService,
         LegacyEnvironment $legacyEnvironment
     ) {
     }

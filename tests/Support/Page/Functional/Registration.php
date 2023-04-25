@@ -15,14 +15,9 @@ class Registration
     public string $secondPasswordField = '#sign_up_form_plainPassword_second';
     public string $submitButton = '#sign_up_form_submit';
 
-    /**
-     * @var FunctionalTester ;
-     */
-    protected FunctionalTester $functionalTester;
-
-    public function __construct(FunctionalTester $I)
-    {
-        $this->functionalTester = $I;
+    public function __construct(
+        protected FunctionalTester $functionalTester
+    ) {
     }
 
     public function register(

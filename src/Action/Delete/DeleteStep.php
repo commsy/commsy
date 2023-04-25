@@ -19,7 +19,7 @@ use Symfony\Component\Routing\RouterInterface;
 
 class DeleteStep implements DeleteInterface
 {
-    public function __construct(private RouterInterface $router)
+    public function __construct(private readonly RouterInterface $router)
     {
     }
 
@@ -28,10 +28,7 @@ class DeleteStep implements DeleteInterface
         $item->delete();
     }
 
-    /**
-     * @return string|null
-     */
-    public function getRedirectRoute(cs_item $item)
+    public function getRedirectRoute(cs_item $item): ?string
     {
         /** @var cs_step_item $step */
         $step = $item;

@@ -20,9 +20,9 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class CronHardDelete implements CronTaskInterface
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private ParameterBagInterface $parameterBag)
+    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly ParameterBagInterface $parameterBag)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

@@ -20,7 +20,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MessageBuilder
 {
-    public function __construct(private TranslatorInterface $translator, private string $emailFrom)
+    public function __construct(private readonly TranslatorInterface $translator, private readonly string $emailFrom)
     {
     }
 

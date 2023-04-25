@@ -375,10 +375,7 @@ class cs_community_item extends cs_room_item
 
    public function getUsageInfoTextForRubric($rubric)
    {
-       $translator = $this->_environment->getTranslationObject();
-
        // index Seiten
-       $funct = $this->_environment->getCurrentFunction();
        if ($this->_issetExtra('USAGE_INFO_TEXT')) {
            $retour = $this->_getExtra('USAGE_INFO_TEXT');
            if (empty($retour)) {
@@ -389,8 +386,8 @@ class cs_community_item extends cs_room_item
        } else {
            $retour = [];
        }
-       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
-           $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
+       if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+           $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
        } else {
            $retour = '';
        }
@@ -411,10 +408,10 @@ class cs_community_item extends cs_room_item
            $value_array = [];
        }
        if (!empty($string)) {
-           $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
+           $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
        } else {
-           if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')])) {
-               unset($value_array[mb_strtoupper($rubric, 'UTF-8')]);
+           if (isset($value_array[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+               unset($value_array[mb_strtoupper((string) $rubric, 'UTF-8')]);
            }
        }
        $this->_addExtra('USAGE_INFO_TEXT', $value_array);
@@ -433,10 +430,10 @@ class cs_community_item extends cs_room_item
            $value_array = [];
        }
        if (!empty($string)) {
-           $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
+           $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
        } else {
-           if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')])) {
-               unset($value_array[mb_strtoupper($rubric, 'UTF-8')]);
+           if (isset($value_array[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+               unset($value_array[mb_strtoupper((string) $rubric, 'UTF-8')]);
            }
        }
        $this->_addExtra('USAGE_INFO_FORM_TEXT', $value_array);
@@ -456,8 +453,8 @@ class cs_community_item extends cs_room_item
        } else {
            $retour = [];
        }
-       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
-           $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
+       if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+           $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
        } else {
            $retour = '';
        }
@@ -479,8 +476,8 @@ class cs_community_item extends cs_room_item
        } else {
            $retour = [];
        }
-       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
-           $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
+       if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+           $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
        } else {
            $retour = '';
        }
@@ -502,8 +499,8 @@ class cs_community_item extends cs_room_item
        } else {
            $retour = [];
        }
-       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
-           $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
+       if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+           $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
        } else {
            $retour = '';
        }

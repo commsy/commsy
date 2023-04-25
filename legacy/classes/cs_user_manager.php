@@ -151,7 +151,7 @@ class cs_user_manager extends cs_manager
      */
     public function __construct($environment)
     {
-        cs_manager::__construct($environment);
+        parent::__construct($environment);
         $this->_db_table = 'user';
     }
 
@@ -486,7 +486,7 @@ class cs_user_manager extends cs_manager
 
              try {
                  $result = $this->_db_connector->performQuery($qb->getSQL(), $qb->getParameters());
-             } catch (\Doctrine\DBAL\Exception $e) {
+             } catch (\Doctrine\DBAL\Exception) {
                  trigger_error('Problems selecting user.', E_USER_WARNING);
              }
 
@@ -510,7 +510,7 @@ class cs_user_manager extends cs_manager
     public function _performQuery($mode = 'select')
     {
         if (!empty($this->_user_limit)
-             and 'GUEST' == mb_strtoupper($this->_user_limit)
+             and 'GUEST' == mb_strtoupper((string) $this->_user_limit)
         ) {
             return [];
         }
@@ -657,7 +657,7 @@ class cs_user_manager extends cs_manager
         }
 
         if (isset($this->_name_limit)) {
-            $name_array = explode(' ', $this->_name_limit);
+            $name_array = explode(' ', (string) $this->_name_limit);
             if (1 == count($name_array)) {
                 $query .= ' AND ('.$this->addDatabasePrefix('user').'.firstname LIKE "'.encode(AS_DB, $name_array[0]).'" OR '.$this->addDatabasePrefix('user').'.lastname LIKE "'.encode(AS_DB, $name_array[0]).'")';
             } else {
@@ -1357,7 +1357,7 @@ class cs_user_manager extends cs_manager
         $current_datetime = getCurrentDateTimeInMySQL();
         $currentUser = $this->_environment->getCurrentUserItem();
 
-        $deleterId = ('' !== $currentUser->getItemID()) ? $currentUser->getItemID() : 0;
+        $deleterId = (0 !== $currentUser->getItemID()) ? $currentUser->getItemID() : 0;
 
         $query = 'UPDATE '.$this->addDatabasePrefix('user').' SET '.
                  'deletion_date="'.$current_datetime.'",'.
@@ -1698,7 +1698,7 @@ class cs_user_manager extends cs_manager
         } elseif (!empty($this->_room_limit)) {
             $query .= " context_id = '".encode(AS_DB, $this->_room_limit)."'";
         }
-        $query .= ' and '.$this->addDatabasePrefix($this->_db_table).".extras LIKE '%LASTLOGIN_".mb_strtoupper($plugin)."%' and user.creation_date < '".encode(AS_DB, $end)."'";
+        $query .= ' and '.$this->addDatabasePrefix($this->_db_table).".extras LIKE '%LASTLOGIN_".mb_strtoupper((string) $plugin)."%' and user.creation_date < '".encode(AS_DB, $end)."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problems counting all accounts.', E_USER_WARNING);
@@ -1708,8 +1708,8 @@ class cs_user_manager extends cs_manager
                 $extra_array = [];
                 if (!empty($rs['extras'])) {
                     $extra_array = mb_unserialize($rs['extras']);
-                    if (!empty($extra_array['LASTLOGIN_'.mb_strtoupper($plugin)])
-                         and $extra_array['LASTLOGIN_'.mb_strtoupper($plugin)] > $start
+                    if (!empty($extra_array['LASTLOGIN_'.mb_strtoupper((string) $plugin)])
+                         and $extra_array['LASTLOGIN_'.mb_strtoupper((string) $plugin)] > $start
                     ) {
                         $retour_array[] = $rs['email'];
                     }

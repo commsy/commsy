@@ -583,7 +583,7 @@ class cs_file_manager extends cs_manager
                             $disc_manager->setContextID($query_result['context_id']);
                             $file_info = [];
                             if (!empty($query_result['filename'])) {
-                                $file_info = pathinfo($query_result['filename']);
+                                $file_info = pathinfo((string) $query_result['filename']);
                             }
                             $file_ext = '';
                             if (!empty($file_info['extension'])) {

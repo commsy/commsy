@@ -86,7 +86,7 @@ final class Version20230301172618 extends AbstractMigration implements Container
 
         foreach ($files as $file) {
             // fix wrong filepath
-            $lastSubstringBeginningWithDot = strrchr($file['filename'], '.');
+            $lastSubstringBeginningWithDot = strrchr((string) $file['filename'], '.');
             if ($lastSubstringBeginningWithDot) {
                 $fileExtension = substr($lastSubstringBeginningWithDot, 1);
 

@@ -22,9 +22,7 @@ class Factories extends Module
             'email' => Faker::email(),
             'language' => 'de',
             'plainPassword' => Faker::password(),
-            'password' => function($object) {
-                return password_hash($object->getPlainPassword(), PASSWORD_BCRYPT);
-            },
+            'password' => fn($object) => password_hash((string) $object->getPlainPassword(), PASSWORD_BCRYPT),
         ]);
     }
 }

@@ -12,18 +12,15 @@
  */
 
 use App\Entity\Portal;
-use App\Lock\LockManager;
 use App\Proxy\PortalProxy;
 use App\Repository\MaterialsRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class cs_item
 {
-    protected cs_environment $_environment;
-
     /**
      * string - containing the type of the item.
      */
@@ -67,9 +64,8 @@ class cs_item
      *
      * @param cs_environment $_environment
      */
-    public function __construct(cs_environment $_environment)
+    public function __construct(protected cs_environment $_environment)
     {
-        $this->_environment = $_environment;
         $this->_changed['general'] = true;
         $this->_type = 'item';
     }
@@ -249,7 +245,7 @@ class cs_item
         if (!isset($this->_setBuzzwordsByIDs)) {
             $buzzword_array = $this->getBuzzwordArray();
             if (!empty($buzzword_array)) {
-                array_walk($buzzword_array, fn ($buzzword) => trim($buzzword));
+                array_walk($buzzword_array, fn ($buzzword) => trim((string) $buzzword));
                 $label_manager = $this->_environment->getLabelManager();
                 $label_manager->resetLimits();
                 $label_manager->setTypeLimit('buzzword');
@@ -1657,7 +1653,7 @@ class cs_item
         $context_item = $this->_environment->getCurrentContextItem();
         $conf = $context_item->getHomeConf();
         if (!empty($conf)) {
-            $rubrics = explode(',', $conf);
+            $rubrics = explode(',', (string) $conf);
         } else {
             $rubrics = [];
         }
@@ -1686,7 +1682,7 @@ class cs_item
          $conf = $context_item->getHomeConf();
 
          // translation of entry to rubrics for new private room
-         if ($this->_environment->inPrivateRoom() && mb_stristr($conf, CS_ENTRY_TYPE)) {
+         if ($this->_environment->inPrivateRoom() && mb_stristr((string) $conf, CS_ENTRY_TYPE)) {
              $temp_array = [];
              $temp_array3 = [];
              $rubric_array2 = [];
@@ -1696,11 +1692,11 @@ class cs_item
              $temp_array[] = CS_MATERIAL_TYPE;
              $temp_array[] = CS_DATE_TYPE;
              foreach ($temp_array as $temp_rubric) {
-                 if (!mb_stristr($conf, $temp_rubric)) {
+                 if (!mb_stristr((string) $conf, $temp_rubric)) {
                      $temp_array3[] = $temp_rubric.'_nodisplay';
                  }
              }
-             $rubric_array = explode(',', $conf);
+             $rubric_array = explode(',', (string) $conf);
              foreach ($rubric_array as $temp_rubric) {
                  if (!mb_stristr($temp_rubric, CS_ENTRY_TYPE)) {
                      $rubric_array2[] = $temp_rubric;
@@ -1711,7 +1707,7 @@ class cs_item
              $conf = implode(',', $rubric_array2);
          }
 
-         $rubrics = !empty($conf) ? explode(',', $conf) : [];
+         $rubrics = !empty($conf) ? explode(',', (string) $conf) : [];
 
          $type_array = [];
          foreach ($rubrics as $rubric) {
@@ -1873,7 +1869,7 @@ class cs_item
 
          $context_item = $this->_environment->getCurrentContextItem();
          $current_room_modules = $context_item->getHomeConf();
-         $roomModules = !empty($current_room_modules) ? explode(',', $current_room_modules) : [];
+         $roomModules = !empty($current_room_modules) ? explode(',', (string) $current_room_modules) : [];
 
          $rubric_array = [];
          foreach ($roomModules as $module) {
@@ -1901,7 +1897,7 @@ class cs_item
                  if (CS_ENTRY_TYPE != $temp_rubric) {
                      $rubric_array2[] = $temp_rubric;
                  } else {
-                     $rubric_array2 = array_merge($rubric_array2, $temp_array2);
+                     $rubric_array2 = [...$rubric_array2, ...$temp_array2];
                  }
              }
              $rubric_array = $rubric_array2;
@@ -2209,7 +2205,7 @@ class cs_item
     public function getDescriptionWithoutHTML()
     {
         $retour = $this->getDescription();
-        $retour = str_replace('<!-- KFC TEXT -->', '', $retour);
+        $retour = str_replace('<!-- KFC TEXT -->', '', (string) $retour);
         $retour = preg_replace('~<[A-Za-z][^>.]+>~u', '', $retour);
 
         return $retour;
@@ -2410,7 +2406,7 @@ class cs_item
 
     public function setWorkflowResubmissionWhoAdditional($value)
     {
-        $value = str_replace(["\t", ' '], '', $value);
+        $value = str_replace(["\t", ' '], '', (string) $value);
         $value_array = explode(',', $value);
         $this->_setExtra('WORKFLOWRESUBMISSIONWHOADDITIONAL', $value_array);
     }
@@ -2482,7 +2478,7 @@ class cs_item
 
     public function setWorkflowValidityWhoAdditional($value)
     {
-        $value = str_replace(["\t", ' '], '', $value);
+        $value = str_replace(["\t", ' '], '', (string) $value);
         $value_array = explode(',', $value);
         $this->_setExtra('WORKFLOWVALIDITYWHOADDITIONAL', $value_array);
     }

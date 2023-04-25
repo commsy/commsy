@@ -20,7 +20,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class CronCleanTemporary implements CronTaskInterface
 {
-    public function __construct(private ParameterBagInterface $parameterBag)
+    public function __construct(private readonly ParameterBagInterface $parameterBag)
     {
     }
 

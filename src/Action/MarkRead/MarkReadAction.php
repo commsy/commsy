@@ -22,7 +22,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MarkReadAction implements ActionInterface
 {
-    public function __construct(private MarkReadInterface $markReadStrategy, private TranslatorInterface $translator)
+    public function __construct(private MarkReadInterface $markReadStrategy, private readonly TranslatorInterface $translator)
     {
     }
 

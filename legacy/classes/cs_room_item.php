@@ -136,7 +136,7 @@ class cs_room_item extends cs_context_item
     public function _getBeginDateFromTimeLabel($title)
     {
         $retour = '';
-        $title_array = explode('_', $title);
+        $title_array = explode('_', (string) $title);
         $day_month = $this->_getBeginDayMonthFromTimeLabel($title);
         if (isset($title_array[0])
              and isset($day_month[0])
@@ -153,7 +153,7 @@ class cs_room_item extends cs_context_item
     public function _getEndDateFromTimeLabel($title)
     {
         $retour = '';
-        $title_array = explode('_', $title);
+        $title_array = explode('_', (string) $title);
         $day_month = $this->_getEndDayMonthFromTimeLabel($title);
         if (isset($title_array[0])
              and isset($day_month[0])
@@ -174,7 +174,7 @@ class cs_room_item extends cs_context_item
             $portal_item = $this->_environment->getCurrentPortalItem();
         }
         $time_text_array = $portal_item->getTimeTextArray();
-        $title_array = explode('_', $title);
+        $title_array = explode('_', (string) $title);
         $retour = $time_text_array[$title_array[1]][$key];
 
         return $retour;
@@ -209,7 +209,7 @@ class cs_room_item extends cs_context_item
     {
         if (!empty($fullname)) {
             $value = $this->_getValue('contact_persons');
-            if (!mb_stristr($value, $fullname)) {
+            if (!mb_stristr((string) $value, (string) $fullname)) {
                 $value .= $fullname.', ';
                 $this->_setValue('contact_persons', $value);
             }
@@ -218,7 +218,7 @@ class cs_room_item extends cs_context_item
 
     public function getContactPersonString()
     {
-        $return = trim($this->_getValue('contact_persons'));
+        $return = trim((string) $this->_getValue('contact_persons'));
         if (!empty($return)
              and mb_strstr($return, ',')
              and ',' == mb_substr($return, mb_strlen($return) - 1)
@@ -242,7 +242,7 @@ class cs_room_item extends cs_context_item
         while ($current_moderator) {
             $contact_name = $current_moderator->getFullname();
             if (!empty($contact_name)
-                 and 'GUEST' != mb_strtoupper($contact_name)
+                 and 'GUEST' != mb_strtoupper((string) $contact_name)
             ) {
                 $this->setContactPerson($contact_name);
             }
@@ -842,8 +842,8 @@ class cs_room_item extends cs_context_item
         } else {
             $retour = [];
         }
-        if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
-            $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
+        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+            $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
         } else {
             $retour = $translator->getMessage('USAGE_INFO_HEADER');
         }
@@ -863,7 +863,7 @@ class cs_room_item extends cs_context_item
         } else {
             $value_array = [];
         }
-        $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
+        $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
         $this->_addExtra('USAGE_INFO_HEADER', $value_array);
     }
 
@@ -880,8 +880,8 @@ class cs_room_item extends cs_context_item
         } else {
             $retour = [];
         }
-        if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
-            $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
+        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+            $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
         } else {
             $retour = $translator->getMessage('USAGE_INFO_HEADER');
         }
@@ -901,7 +901,7 @@ class cs_room_item extends cs_context_item
         } else {
             $value_array = [];
         }
-        $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
+        $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
         $this->_addExtra('USAGE_INFO_FORM_HEADER', $value_array);
     }
 

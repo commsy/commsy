@@ -195,7 +195,7 @@ class cs_list implements IteratorAggregate
             }
 
             // sort temp array
-            usort($temp_array, fn ($a, $b) => strnatcasecmp($a[$sort_by], $b[$sort_by]));
+            usort($temp_array, fn ($a, $b) => strnatcasecmp((string) $a[$sort_by], (string) $b[$sort_by]));
 
             // create sorted list array
             unset($this->data);

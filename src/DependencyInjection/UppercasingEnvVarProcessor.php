@@ -18,14 +18,14 @@ use Symfony\Component\DependencyInjection\EnvVarProcessorInterface;
 
 class UppercasingEnvVarProcessor implements EnvVarProcessorInterface
 {
-    public function getEnv($prefix, $name, Closure $getEnv)
+    public function getEnv($prefix, $name, Closure $getEnv): mixed
     {
         $env = $getEnv($name);
 
-        return strtoupper($env);
+        return strtoupper((string) $env);
     }
 
-    public static function getProvidedTypes()
+    public static function getProvidedTypes(): array
     {
         return [
             'uppercase' => 'string',

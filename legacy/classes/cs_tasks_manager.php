@@ -50,7 +50,7 @@ class cs_tasks_manager extends cs_manager
      */
     public function __construct($environment)
     {
-        cs_manager::__construct($environment);
+        parent::__construct($environment);
         $this->_db_table = 'tasks';
     }
 

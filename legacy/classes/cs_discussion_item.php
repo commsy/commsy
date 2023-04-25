@@ -57,7 +57,7 @@ class cs_discussion_item extends cs_item
     *
     * @author CommSy Development Group
     */
-   public function setTitle($title)
+   public function setTitle(string $title)
    {
        // sanitize title
        $converter = $this->_environment->getTextConverter();

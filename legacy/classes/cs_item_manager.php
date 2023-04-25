@@ -801,7 +801,6 @@ class cs_item_manager extends cs_manager
          foreach ($r3 as $r) {
              $read_date_array[$r['user_id']][$r['item_id']] = $r['read_date'];
          }
-         // pr($read_date_array);
 
          $tmp_result = [];
          $annotation_manager = $this->_environment->getAnnotationManager();
@@ -898,7 +897,6 @@ class cs_item_manager extends cs_manager
          unset($section_manager);
          unset($discarticle_manager);
          unset($annotation_manager);
-         // pr($result);
          return $result;
      }
 

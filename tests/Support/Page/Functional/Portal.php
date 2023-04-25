@@ -11,14 +11,9 @@ class Portal
 
     public string $submitButton = '#portal_general_save';
 
-    /**
-     * @var FunctionalTester ;
-     */
-    protected FunctionalTester $functionalTester;
-
-    public function __construct(FunctionalTester $I)
-    {
-        $this->functionalTester = $I;
+    public function __construct(
+        protected FunctionalTester $functionalTester
+    ) {
     }
 
     public function create(string $title, string $germanDesc = '', string $englishDesc = ''): void

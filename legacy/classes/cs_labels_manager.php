@@ -846,7 +846,7 @@ class cs_labels_manager extends cs_manager
 
       try {
           $queryBuilder->executeStatement();
-      } catch (\Doctrine\DBAL\Exception $e) {
+      } catch (\Doctrine\DBAL\Exception) {
           trigger_error('Problems creating announcement.', E_USER_WARNING);
       }
   }
@@ -981,7 +981,7 @@ class cs_labels_manager extends cs_manager
                      $disc_manager = $this->_environment->getDiscManager();
                      $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
                      if ($disc_manager->copyImageFromRoomToRoom($extra_array['LABELPICTURE'], $new_id)) {
-                         $value_array = explode('_', $extra_array['LABELPICTURE']);
+                         $value_array = explode('_', (string) $extra_array['LABELPICTURE']);
                          $value_array[0] = 'cid'.$new_id;
                          $extra_array['LABELPICTURE'] = implode('_', $value_array);
 

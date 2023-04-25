@@ -29,7 +29,7 @@ class HashtagAction implements ActionInterface
      */
     private ?array $hashtagIds = null;
 
-    public function __construct(private TranslatorInterface $translator, private LabelService $labelService)
+    public function __construct(private readonly TranslatorInterface $translator, private readonly LabelService $labelService)
     {
     }
 

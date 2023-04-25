@@ -21,7 +21,7 @@ class cs_section_item extends cs_item
      */
     public function __construct($environment)
     {
-        cs_item::__construct($environment);
+        parent::__construct($environment);
         $this->_type = 'section';
     }
 
@@ -54,7 +54,7 @@ class cs_section_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function setTitle($title)
+    public function setTitle(string $title)
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();
@@ -74,10 +74,7 @@ class cs_section_item extends cs_item
         return $this->_getValue('material_item_id');
     }
 
-    /**
-     * @return \cs_material_item|null
-     */
-    public function getLinkedItem()
+    public function getLinkedItem(): ?cs_material_item
     {
         $retour = null;
         $item_id = $this->getLinkedItemID();

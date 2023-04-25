@@ -19,9 +19,9 @@ class cs_tag_item extends cs_item
     private $_position_array = [];
     private $_position_old_array = [];
     /**
-     * @var mixed|\cs_list
+     * @var mixed|cs_list
      */
-    private $_children_list = null;
+    private ?cs_list $_children_list = null;
     private $_save_position_without_change = false;
 
     /** constructor
@@ -31,7 +31,7 @@ class cs_tag_item extends cs_item
      */
     public function __construct($environment)
     {
-        cs_item::__construct($environment);
+        parent::__construct($environment);
         $this->_type = CS_TAG_TYPE;
     }
 
@@ -173,7 +173,7 @@ class cs_tag_item extends cs_item
      *
      * @param string value title of the tag
      */
-    public function setTitle($value)
+    public function setTitle(string $value)
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();

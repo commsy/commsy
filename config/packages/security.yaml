@@ -58,10 +58,8 @@ security:
         api_v2:
             pattern: ^/api/v2(?!/doc$)
             stateless: true
-            guard:
-                authenticators:
-                    - lexik_jwt_authentication.jwt_token_authenticator
-                provider: in_memory
+            provider: in_memory
+            jwt: ~
 
         main:
             user_checker: App\Security\UserChecker

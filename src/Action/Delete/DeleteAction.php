@@ -26,7 +26,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DeleteAction implements ActionInterface
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     private DeleteInterface $deleteStrategy;
 
@@ -36,9 +36,9 @@ class DeleteAction implements ActionInterface
     }
 
     public function __construct(
-        private DeleteGeneric $deleteGeneric,
-        private TranslatorInterface $translator,
-        private UserService $userService,
+        private readonly DeleteGeneric $deleteGeneric,
+        private readonly TranslatorInterface $translator,
+        private readonly UserService $userService,
         LegacyEnvironment $legacyEnvironment
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();

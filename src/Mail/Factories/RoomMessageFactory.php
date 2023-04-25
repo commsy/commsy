@@ -23,7 +23,7 @@ use LogicException;
 
 class RoomMessageFactory
 {
-    public function __construct(private LegacyEnvironment $legacyEnvironment, private PortalRepository $portalRepository)
+    public function __construct(private readonly LegacyEnvironment $legacyEnvironment, private readonly PortalRepository $portalRepository)
     {
     }
 

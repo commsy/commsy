@@ -11,15 +11,6 @@
  * file that was distributed with this source code.
  */
 
-function curl_mailto($mailaddress, $linktext, $title = '')
-{
-    if (isset($_GET['mode']) and 'print' == $_GET['mode']) {
-        return $linktext;
-    } else {
-        return '<a href="mailto:'.$mailaddress.'" title="'.$title.'">'.$linktext.'</a>';
-    }
-}
-
 /**
  * Construct a hypertext reference in conjunction with a curl.
  * This function is for convenience and combines curl construction
@@ -50,7 +41,7 @@ function ahref_curl($context_id, $module, $function, $parameter, $linktext, $tit
         // $ahref = '<a'.$style.' href="'.$address.'"';
         $ahref = '<a href="'.$address.'"'.$style;
         if ('' != $title) {
-            $ahref .= ' title="'.strip_tags($title).'"';
+            $ahref .= ' title="'.strip_tags((string) $title).'"';
         }
         if ('' != $name) {
             $ahref .= ' name="'.$name.'"';
@@ -79,7 +70,7 @@ function ahref_curl($context_id, $module, $function, $parameter, $linktext, $tit
     } else {
         $ahref = '<a'.$style;
         if ('' != $title) {
-            $ahref .= ' title="'.strip_tags($title).'"';
+            $ahref .= ' title="'.strip_tags((string) $title).'"';
         }
         if ('' != $name) {
             $ahref .= ' name="'.$name.'"';
@@ -101,33 +92,6 @@ function ahref_curl($context_id, $module, $function, $parameter, $linktext, $tit
             return $ahref;
         }
     }
-}
-
-function ahref_curl2($curl, $linktext, $title = '', $target = '', $fragment = '', $jshack = '', $name = '', $style = '', $id = '', $empty_adress = false)
-{
-    if (!empty($style)) {
-        $style = ' '.$style;
-    }
-    $retour = '<a'.$style.' href="'.$curl.'"';
-    if ('' != $title) {
-        $retour .= ' title="'.strip_tags($title).'"';
-    }
-    if ('' != $name) {
-        $retour .= ' name="'.$name.'"';
-    }
-    if ('' != $target) {
-        $retour .= ' target="'.$target.'"';
-    }
-    if ('' != $jshack) {
-        $retour .= ' '.$jshack;
-    }
-    if ('' != $id) {
-        $retour .= ' id="'.$id.'"';
-    }
-
-    $retour .= '>'.$linktext.'</a>';
-
-    return $retour;
 }
 
 /**
@@ -167,17 +131,15 @@ function curl($context_id, $module, $function, $parameter, $fragment = '', $file
  */
 function _curl($amp_flag, $context_id, $module, $function, $parameter, $fragment = '', $filehack = '', $file = '')
 {
-    global $environment;
-
     if (empty($file)) {
-        $address = mb_substr($_SERVER['SCRIPT_NAME'], mb_strrpos($_SERVER['SCRIPT_NAME'], '/') + 1);
+        $address = mb_substr((string) $_SERVER['SCRIPT_NAME'], mb_strrpos((string) $_SERVER['SCRIPT_NAME'], '/') + 1);
         global $c_single_entry_point;
         if ($address != $c_single_entry_point) {
             $address = $c_single_entry_point;
         }
     } else {
         $address = $file;
-        if (!strstr($file, '.php')) {
+        if (!strstr((string) $file, '.php')) {
             $address .= '.php';
         }
     }
@@ -205,7 +167,7 @@ function _curl($amp_flag, $context_id, $module, $function, $parameter, $fragment
     }
 
     if (!empty($filehack)) {
-        $filehack = rawurlencode($filehack);
+        $filehack = rawurlencode((string) $filehack);
         $address .= '/'.$filehack;
     }
 
@@ -221,27 +183,4 @@ function _curl($amp_flag, $context_id, $module, $function, $parameter, $fragment
     }
 
     return $address;
-}
-
-/**
- * for java migration.
- *
- * @param $get  array with get parameter from http request
- * @param $post array with post parameter from http request
- */
-function parameterString($get, $post)
-{
-    $param = '';
-    foreach ($get as $key => $value) {
-        if ('mod' != $key and 'fct' != $key) {
-            $param .= '&'.$key.'='.$value;
-        }
-    }
-    foreach ($post as $key => $value) {
-        if ('mod' != $key and 'fct' != $key) {
-            $param .= '&'.$key.'='.$value;
-        }
-    }
-
-    return $param;
 }

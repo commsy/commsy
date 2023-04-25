@@ -21,7 +21,7 @@ use cs_time_item;
 
 class PortalHelper
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

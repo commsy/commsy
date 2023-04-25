@@ -505,7 +505,7 @@ class cs_announcement_manager extends cs_manager
 
         try {
             $queryBuilder->executeStatement();
-        } catch (\Doctrine\DBAL\Exception $e) {
+        } catch (\Doctrine\DBAL\Exception) {
             trigger_error('Problems creating announcement.', E_USER_WARNING);
         }
     }

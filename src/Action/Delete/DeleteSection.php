@@ -19,7 +19,7 @@ use Symfony\Component\Routing\RouterInterface;
 
 class DeleteSection implements DeleteInterface
 {
-    public function __construct(private RouterInterface $router)
+    public function __construct(private readonly RouterInterface $router)
     {
     }
 
@@ -32,10 +32,7 @@ class DeleteSection implements DeleteInterface
         $section->delete($material->getVersionID());
     }
 
-    /**
-     * @return string|null
-     */
-    public function getRedirectRoute(cs_item $item)
+    public function getRedirectRoute(cs_item $item): ?string
     {
         /** @var cs_section_item $section */
         $section = $item;

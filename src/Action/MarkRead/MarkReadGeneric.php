@@ -18,7 +18,7 @@ use cs_item;
 
 class MarkReadGeneric implements MarkReadInterface
 {
-    public function __construct(private ItemService $itemService)
+    public function __construct(private readonly ItemService $itemService)
     {
     }
 

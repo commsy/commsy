@@ -468,7 +468,7 @@ class cs_user_item extends cs_item
     public function setHomepage($value)
     {
         if (!empty($value) and '-1' != $value) {
-            if (!mb_ereg('https?://([a-z0-9_./?&=#:@]|-)*', $value)) {
+            if (!mb_ereg('https?://([a-z0-9_./?&=#:@]|-)*', (string) $value)) {
                 $value = 'http://'.$value;
             }
         }
@@ -650,14 +650,13 @@ class cs_user_item extends cs_item
      *
      * @return string description of the user
      */
-    public function getPicture()
+    public function getPicture(): string
     {
-        $retour = '';
         if ($this->_issetExtra('USERPICTURE')) {
-            $retour = $this->_getExtra('USERPICTURE');
+            return $this->_getExtra('USERPICTURE');
         }
 
-        return $retour;
+        return '';
     }
 
     public function getPictureUrl($full = false, $amp = true)
@@ -1175,7 +1174,7 @@ class cs_user_item extends cs_item
      */
     public function isReallyGuest()
     {
-        return 0 == $this->_getValue('status') and 'guest' == mb_strtolower($this->_getValue('user_id'), 'UTF-8');
+        return 0 == $this->_getValue('status') and 'guest' == mb_strtolower((string) $this->_getValue('user_id'), 'UTF-8');
     }
 
     /** user has requested an account
@@ -1627,205 +1626,6 @@ class cs_user_item extends cs_item
         }
 
         return $access;
-    }
-
-    /**
-     * @param object cs_user User-Item with changed information
-     */
-    public function changeRelatedUser($dummy_item)
-    {
-        $related_user = $this->getRelatedUserList();
-        if (!$related_user->isEmpty()) {
-            $user_item = $related_user->getFirst();
-            while ($user_item) {
-                $old_fullname = $user_item->getFullName();
-                $value = $dummy_item->getFirstName();
-                if (!empty($value)) {
-                    $user_item->setFirstName($value);
-                }
-                $value = $dummy_item->getLastName();
-                if (!empty($value)) {
-                    $user_item->setLastName($value);
-                }
-                $value = $dummy_item->getTitle();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setTitle($value);
-                }
-                $value = $dummy_item->getTelephone();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setTelephone($value);
-                }
-                $value = $dummy_item->getBirthday();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setBirthday($value);
-                }
-                $value = $dummy_item->getCellularphone();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setCellularphone($value);
-                }
-                $value = $dummy_item->getHomepage();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setHomepage($value);
-                }
-                $value = $dummy_item->getOrganisation();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setOrganisation($value);
-                }
-                $value = $dummy_item->getPosition();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setPosition($value);
-                }
-                $value = $dummy_item->getStreet();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setStreet($value);
-                }
-                $value = $dummy_item->getZipCode();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setZipCode($value);
-                }
-                $value = $dummy_item->getCity();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setCity($value);
-                }
-                $value = $dummy_item->getDescription();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setDescription($value);
-                }
-                $value = $dummy_item->getPicture();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $new_picture_name = '';
-                    } else {
-                        $value_array = explode('_', $value);
-                        $value_array[0] = 'cid'.$user_item->getContextID();
-                        $new_picture_name = implode('_', $value_array);
-                        $disc_manager = $this->_environment->getDiscManager();
-                        $disc_manager->copyImageFromRoomToRoom($value, $user_item->getContextID());
-                    }
-                    $user_item->setPicture($new_picture_name);
-                }
-                $value = $dummy_item->getEmail();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setEmail($value);
-
-                    if (!$dummy_item->isEmailVisible()) {
-                        $user_item->setEmailNotVisible();
-                    } else {
-                        $user_item->setEmailVisible();
-                    }
-                }
-                $value = $dummy_item->getRoom();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setRoom($value);
-                }
-                $value = $dummy_item->getICQ();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setICQ($value);
-                }
-                $value = $dummy_item->getJabber();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setJabber($value);
-                }
-                $value = $dummy_item->getMSN();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setMSN($value);
-                }
-                $value = $dummy_item->getSkype();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setSkype($value);
-                }
-                $value = $dummy_item->getYahoo();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setYahoo($value);
-                }
-                $value = $dummy_item->getExternalID();
-                if (!empty($value)) {
-                    if (-1 == $value) {
-                        $value = '';
-                    }
-                    $user_item->setExternalID($value);
-                }
-                $value = $dummy_item->getIsAllowedToCreateContext();
-                if (!empty($value)) {
-                    $user_item->setIsAllowedToCreateContext($value);
-                }
-
-                $current_user_item = $this->_environment->getCurrentUserItem();
-                if (!$current_user_item->isRoot()
-                    and $current_user_item->getItemID() != $user_item->getContextID()
-                    and $current_user_item->getUserID() == $user_item->getUserID()
-                    and $current_user_item->getAuthSource() == $user_item->getAuthSource()
-                ) {
-                    $user_item->setModificatorItem($user_item);
-                }
-
-                $user_item->save();
-                if ($old_fullname != $user_item->getFullName()
-                    and $user_item->isContact()
-                ) {
-                    $room_id = $user_item->getContextID();
-                    $room_manager = $this->_environment->getRoomManager();
-                    $room_item = $room_manager->getItem($room_id);
-                    $room_item->renewContactPersonString();
-                }
-
-                $user_item = $related_user->getNext();
-            }
-        }
     }
 
     /**
@@ -2428,8 +2228,8 @@ class cs_user_item extends cs_item
     public function getLastLoginPlugin($plugin)
     {
         $retour = '';
-        if ($this->_issetExtra('LASTLOGIN_'.mb_strtoupper($plugin))) {
-            $retour = $this->_getExtra('LASTLOGIN_'.mb_strtoupper($plugin));
+        if ($this->_issetExtra('LASTLOGIN_'.mb_strtoupper((string) $plugin))) {
+            $retour = $this->_getExtra('LASTLOGIN_'.mb_strtoupper((string) $plugin));
         }
 
         return $retour;
@@ -2443,7 +2243,7 @@ class cs_user_item extends cs_item
      */
     public function setLastLoginPlugin($value, $plugin)
     {
-        $this->_addExtra('LASTLOGIN_'.mb_strtoupper($plugin), (string) $value);
+        $this->_addExtra('LASTLOGIN_'.mb_strtoupper((string) $plugin), (string) $value);
     }
 
     public function isTemporaryLocked()

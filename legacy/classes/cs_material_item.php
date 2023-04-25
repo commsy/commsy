@@ -67,7 +67,7 @@ class cs_material_item extends cs_item
      *
      * @param string value title of the material
      */
-    public function setTitle($value)
+    public function setTitle(string $value)
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();
@@ -846,7 +846,7 @@ class cs_material_item extends cs_item
         if (!isset($this->_setBuzzwordsByIDs)) {
             $buzzword_array = $this->getBuzzwordArray();
             if (!empty($buzzword_array)) {
-                array_walk($buzzword_array, fn ($buzzword) => trim($buzzword));
+                array_walk($buzzword_array, fn ($buzzword) => trim((string) $buzzword));
                 $label_manager = $this->_environment->getLabelManager();
                 $label_manager->resetLimits();
                 $label_manager->setTypeLimit('buzzword');
@@ -1074,7 +1074,7 @@ public function copy()
             $label = $label_list->getFirst();
 
             while ($label) {
-                if (0 == strcmp($label->getName(), ltrim($this->getLabel()))) {
+                if (0 == strcmp((string) $label->getName(), ltrim($this->getLabel()))) {
                     $exist = $label->getItemID();
                 }
                 $label = $label_list->getNext();
@@ -1137,7 +1137,7 @@ public function copy()
                                    isset($buzzwords_in_room_array[$j]['id']) and
                                    !empty($buzzwords_in_room_array[$j]['id'])
                         ) {
-                            if (0 == strcmp($buzzwords_in_room_array[$j]['name'], ltrim($original_buzzword_array[$i]))) {
+                            if (0 == strcmp((string) $buzzwords_in_room_array[$j]['name'], ltrim((string) $original_buzzword_array[$i]))) {
                                 $buzzword_ids[] = $buzzwords_in_room_array[$j]['id'];
                                 $found = true;
                                 break;
@@ -1147,7 +1147,7 @@ public function copy()
                                 $buzzword_manager->reset();
                                 $buzzword_item = $buzzword_manager->getNewItem();
                                 $buzzword_item->setLabelType('buzzword');
-                                $buzzword_item->setTitle(ltrim($original_buzzword_array[$i]));
+                                $buzzword_item->setTitle(ltrim((string) $original_buzzword_array[$i]));
                                 $buzzword_item->setContextID($this->_environment->getCurrentContextID());
                                 $user = $this->_environment->getCurrentUserItem();
                                 $buzzword_item->setCreatorItem($user);
@@ -1165,7 +1165,7 @@ public function copy()
                         $buzzword_manager->reset();
                         $buzzword_item = $buzzword_manager->getNewItem();
                         $buzzword_item->setLabelType('buzzword');
-                        $buzzword_item->setTitle(ltrim($original_buzzword_array[$i]));
+                        $buzzword_item->setTitle(ltrim((string) $original_buzzword_array[$i]));
                         $buzzword_item->setContextID($this->_environment->getCurrentContextID());
                         $user = $this->_environment->getCurrentUserItem();
                         $buzzword_item->setCreatorItem($user);
@@ -1244,7 +1244,7 @@ public function _updateInternalLinksInText($item, $id_array)
 {
     $temp_description = $item->getDescription();
     foreach ($id_array as $old_id => $new_id) {
-        $temp_description = str_replace('['.$old_id.']', '['.$new_id.']', $temp_description);
+        $temp_description = str_replace('['.$old_id.']', '['.$new_id.']', (string) $temp_description);
         $temp_description = str_replace('(:item '.$old_id, '(:item '.$new_id, $temp_description);
     }
     $item->setDescription($temp_description);
@@ -1274,7 +1274,7 @@ public function copyVersion($id)
         if (!empty($label_list)) {
             $label = $label_list->getFirst();
             while ($label) {
-                if (0 == strcmp($label->getName(), ltrim($this->getLabel()))) {
+                if (0 == strcmp((string) $label->getName(), ltrim($this->getLabel()))) {
                     $exist = $label->getItemID();
                 }
                 $label = $label_list->getNext();
@@ -1336,7 +1336,7 @@ public function copyVersion($id)
                                    isset($buzzwords_in_room_array[$j]['id']) and
                                    !empty($buzzwords_in_room_array[$j]['id'])
                         ) {
-                            if (0 == strcmp($buzzwords_in_room_array[$j]['name'], ltrim($original_buzzword_array[$i]))) {
+                            if (0 == strcmp((string) $buzzwords_in_room_array[$j]['name'], ltrim((string) $original_buzzword_array[$i]))) {
                                 $buzzword_ids[] = $buzzwords_in_room_array[$j]['id'];
                                 $found = true;
                                 break;
@@ -1346,7 +1346,7 @@ public function copyVersion($id)
                                 $buzzword_manager->reset();
                                 $buzzword_item = $buzzword_manager->getNewItem();
                                 $buzzword_item->setLabelType('buzzword');
-                                $buzzword_item->setTitle(ltrim($original_buzzword_array[$i]));
+                                $buzzword_item->setTitle(ltrim((string) $original_buzzword_array[$i]));
                                 $buzzword_item->setContextID($this->_environment->getCurrentContextID());
                                 $buzzword_item->setCreatorItem($this->_environment->getCurrentUserItem());
                                 $buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
@@ -1363,7 +1363,7 @@ public function copyVersion($id)
                         $buzzword_manager->reset();
                         $buzzword_item = $buzzword_manager->getNewItem();
                         $buzzword_item->setLabelType('buzzword');
-                        $buzzword_item->setTitle(ltrim($original_buzzword_array[$i]));
+                        $buzzword_item->setTitle(ltrim((string) $original_buzzword_array[$i]));
                         $buzzword_item->setContextID($this->_environment->getCurrentContextID());
                         $buzzword_item->setCreatorItem($this->_environment->getCurrentUserItem());
                         $buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());

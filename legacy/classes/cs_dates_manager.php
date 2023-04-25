@@ -73,12 +73,12 @@ class cs_dates_manager extends cs_manager
     /**
      * @var bool Controls return of external dates
      */
-    private $externalLimit = true;
+    private bool $externalLimit = true;
 
     /**
      * @var bool Hides recurring entries
      */
-    private $hideRecurringEntriesLimit = false;
+    private bool $hideRecurringEntriesLimit = false;
 
     /** constructor
      * the only available constructor, initial values for internal variables
@@ -266,7 +266,7 @@ class cs_dates_manager extends cs_manager
    /**
     * @param bool $externalLimit limit external dates
     */
-   public function setExternalLimit($externalLimit)
+   public function setExternalLimit(bool $externalLimit)
    {
        $this->externalLimit = $externalLimit;
    }
@@ -842,7 +842,7 @@ class cs_dates_manager extends cs_manager
 
         try {
             $queryBuilder->executeStatement();
-        } catch (\Doctrine\DBAL\Exception $e) {
+        } catch (\Doctrine\DBAL\Exception) {
             trigger_error('Problems updating dates.', E_USER_WARNING);
         }
     }
@@ -981,7 +981,7 @@ class cs_dates_manager extends cs_manager
 
         try {
             $queryBuilder->executeStatement();
-        } catch (\Doctrine\DBAL\Exception $e) {
+        } catch (\Doctrine\DBAL\Exception) {
             trigger_error('Problems creating dates.', E_USER_WARNING);
         }
     }

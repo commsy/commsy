@@ -21,18 +21,15 @@ use cs_room_item;
 
 class InvitationMessage extends Message
 {
-    private cs_environment $legacyEnvironment;
-
-    private cs_room_item $room;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private Portal $portal,
-        cs_room_item $room,
-        private string $token
+        private readonly Portal $portal,
+        private readonly cs_room_item $room,
+        private readonly string $token
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->room = $room;
     }
 
     public function getSubject(): string

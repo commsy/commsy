@@ -498,8 +498,8 @@ class cs_grouproom_item extends cs_room_item
         } else {
             $retour = [];
         }
-        if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
-            $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
+        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+            $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
         } else {
             $retour = $translator->getMessage('USAGE_INFO_HEADER');
         }
@@ -517,7 +517,7 @@ class cs_grouproom_item extends cs_room_item
         } else {
             $value_array = [];
         }
-        $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
+        $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
         $this->_addExtra('USAGE_INFO_HEADER', $value_array);
     }
 
@@ -532,8 +532,8 @@ class cs_grouproom_item extends cs_room_item
         } else {
             $retour = [];
         }
-        if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
-            $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
+        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+            $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
         } else {
             $retour = $translator->getMessage('USAGE_INFO_HEADER');
         }
@@ -551,7 +551,7 @@ class cs_grouproom_item extends cs_room_item
         } else {
             $value_array = [];
         }
-        $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
+        $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
         $this->_addExtra('USAGE_INFO_FORM_HEADER', $value_array);
     }
 
@@ -566,8 +566,8 @@ class cs_grouproom_item extends cs_room_item
         } else {
             $retour = [];
         }
-        if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
-            $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
+        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+            $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
         } else {
             $retour = '';
         }
@@ -586,10 +586,10 @@ class cs_grouproom_item extends cs_room_item
             $value_array = [];
         }
         if (!empty($string)) {
-            $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
+            $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
         } else {
-            if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')])) {
-                unset($value_array[mb_strtoupper($rubric, 'UTF-8')]);
+            if (isset($value_array[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+                unset($value_array[mb_strtoupper((string) $rubric, 'UTF-8')]);
             }
         }
         $this->_addExtra('USAGE_INFO_TEXT', $value_array);
@@ -606,10 +606,10 @@ class cs_grouproom_item extends cs_room_item
             $value_array = [];
         }
         if (!empty($string)) {
-            $value_array[mb_strtoupper($rubric, 'UTF-8')] = $string;
+            $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
         } else {
-            if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')])) {
-                unset($value_array[mb_strtoupper($rubric, 'UTF-8')]);
+            if (isset($value_array[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+                unset($value_array[mb_strtoupper((string) $rubric, 'UTF-8')]);
             }
         }
         $this->_addExtra('USAGE_INFO_FORM_TEXT', $value_array);
@@ -626,8 +626,8 @@ class cs_grouproom_item extends cs_room_item
         } else {
             $retour = [];
         }
-        if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
-            $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
+        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+            $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
         } else {
             $retour = '';
         }
@@ -646,8 +646,8 @@ class cs_grouproom_item extends cs_room_item
         } else {
             $retour = [];
         }
-        if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
-            $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
+        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+            $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
         } else {
             $retour = '';
         }
@@ -666,8 +666,8 @@ class cs_grouproom_item extends cs_room_item
         } else {
             $retour = [];
         }
-        if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])) {
-            $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
+        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
+            $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
         } else {
             $retour = '';
         }
@@ -920,7 +920,7 @@ class cs_grouproom_item extends cs_room_item
             $body .= $translator->getMessage('GROUPROOM_MAIL_BODY_PROJECT_ROOM').LF;
 
             if (isset($project_room) and !empty($project_room)) {
-                $body .= html_entity_decode($project_room->getTitle());
+                $body .= html_entity_decode((string) $project_room->getTitle());
             } else {
                 $body .= $translator->getMessage('GROUPROOM_MAIL_BODY_PROJECT_ROOMS_EMPTY');
             }
@@ -929,13 +929,13 @@ class cs_grouproom_item extends cs_room_item
             $body .= $translator->getMessage('MAIL_SEND_TO', implode(LF, $moderator_name_array));
             $body .= LF.LF;
             if ($room_item->isPortal()) {
-                $body .= $translator->getMessage('MAIL_SEND_WHY_PORTAL', html_entity_decode($room_item->getTitle()));
+                $body .= $translator->getMessage('MAIL_SEND_WHY_PORTAL', html_entity_decode((string) $room_item->getTitle()));
             } elseif ($room_item->isCommunityRoom()) {
-                $body .= $translator->getMessage('MAIL_SEND_WHY_COMMUNITY', html_entity_decode($room_item->getTitle()));
+                $body .= $translator->getMessage('MAIL_SEND_WHY_COMMUNITY', html_entity_decode((string) $room_item->getTitle()));
             } elseif ($room_item->isProjectRoom()) {
-                $body .= $translator->getMessage('MAIL_SEND_WHY_PROJECT', html_entity_decode($room_item->getTitle()));
+                $body .= $translator->getMessage('MAIL_SEND_WHY_PROJECT', html_entity_decode((string) $room_item->getTitle()));
             } else {
-                $body .= $translator->getMessage('GROUPROOM_MAIL_SEND_WHY_GROUP', html_entity_decode($room_item->getTitle()));
+                $body .= $translator->getMessage('GROUPROOM_MAIL_SEND_WHY_GROUP', html_entity_decode((string) $room_item->getTitle()));
             }
 
             // send email

@@ -24,7 +24,7 @@ class DatabaseChecks
     /**
      * @param DatabaseCheck[] $checks
      */
-    public function __construct(private iterable $checks)
+    public function __construct(private readonly iterable $checks)
     {
     }
 

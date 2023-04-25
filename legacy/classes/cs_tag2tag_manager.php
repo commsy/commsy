@@ -21,7 +21,7 @@ class cs_tag2tag_manager extends cs_manager
      */
     public function __construct($environment)
     {
-        cs_manager::__construct($environment);
+        parent::__construct($environment);
         $this->_db_table = CS_TAG2TAG_TYPE;
         $this->_cached_rows = [];
         $this->_cached_father_id_array = [];
@@ -393,7 +393,7 @@ class cs_tag2tag_manager extends cs_manager
              }
 
              usort($temp_array,
-                 fn ($a, $b) => strnatcasecmp($a['name'], $b['name']));
+                 fn ($a, $b) => strnatcasecmp((string) $a['name'], (string) $b['name']));
 
              // 3. change sort order
              foreach ($children_array as $id) {

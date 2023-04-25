@@ -18,7 +18,7 @@ use Symfony\Component\Filesystem\Path;
 
 class cs_disc_manager
 {
-    public const RELATIVE_FILES_PATH = 'files/';
+    final public const RELATIVE_FILES_PATH = 'files/';
 
     private $firstId = null;
     private $secondId = null;
@@ -135,9 +135,9 @@ class cs_disc_manager
         }
         $this->makeFolder($this->firstId, $new_room_id);
         $source_file = str_replace('//', '/', $this->getFilePath('',
-            $old_room_id).'/'.$old_file_id.'.'.cs_strtolower(mb_substr(strrchr($filename, '.'), 1)));
+            $old_room_id).'/'.$old_file_id.'.'.cs_strtolower(mb_substr(strrchr((string) $filename, '.'), 1)));
         $target_file = str_replace('//', '/', $this->getFilePath('',
-            $new_room_id).'/'.$new_file_id.'.'.cs_strtolower(mb_substr(strrchr($filename, '.'), 1)));
+            $new_room_id).'/'.$new_file_id.'.'.cs_strtolower(mb_substr(strrchr((string) $filename, '.'), 1)));
 
         // copy
         if (file_exists($source_file)) {
@@ -152,7 +152,7 @@ class cs_disc_manager
         if (!empty($picture_name) && !empty($new_room_id)) {
             $this->makeFolder($this->firstId, $new_room_id);
 
-            $value_array = explode('_', $picture_name);
+            $value_array = explode('_', (string) $picture_name);
             $old_room_id = $value_array[0];
             $old_room_id = str_replace('cid', '', $old_room_id);
             $value_array[0] = 'cid'.$new_room_id;
@@ -226,11 +226,6 @@ class cs_disc_manager
         return $this->lastSavedFilename;
     }
 
-    /**
-     * @param int $fileId
-     * @param string $fileExt
-     * @return string
-     */
     public function getCurrentFileName(int $fileId, string $fileExt): string
     {
         return "$fileId.$fileExt";

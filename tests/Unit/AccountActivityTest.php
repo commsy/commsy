@@ -34,33 +34,25 @@ class AccountActivityTest extends Unit
         $this->tester->assertContains('abandoned', $places);
 
         /** @var Transition $notifyLockTransition */
-        $notifyLockTransition = array_filter($definition->getTransitions(), function ($transition) {
-            return $transition->getName() === 'notify_lock';
-        });
+        $notifyLockTransition = array_filter($definition->getTransitions(), fn($transition) => $transition->getName() === 'notify_lock');
         $this->tester->assertNotEmpty($notifyLockTransition);
         $this->tester->assertContains('active', current($notifyLockTransition)->getFroms());
         $this->tester->assertContains('active_notified', current($notifyLockTransition)->getTos());
 
         /** @var Transition $lockTransition */
-        $lockTransition = array_filter($definition->getTransitions(), function ($transition) {
-            return $transition->getName() === 'lock';
-        });
+        $lockTransition = array_filter($definition->getTransitions(), fn($transition) => $transition->getName() === 'lock');
         $this->tester->assertNotEmpty($lockTransition);
         $this->tester->assertContains('active_notified', current($lockTransition)->getFroms());
         $this->tester->assertContains('idle', current($lockTransition)->getTos());
 
         /** @var Transition $notifyForsakeTransition */
-        $notifyForsakeTransition = array_filter($definition->getTransitions(), function ($transition) {
-            return $transition->getName() === 'notify_forsake';
-        });
+        $notifyForsakeTransition = array_filter($definition->getTransitions(), fn($transition) => $transition->getName() === 'notify_forsake');
         $this->tester->assertNotEmpty($notifyForsakeTransition);
         $this->tester->assertContains('idle', current($notifyForsakeTransition)->getFroms());
         $this->tester->assertContains('idle_notified', current($notifyForsakeTransition)->getTos());
 
         /** @var Transition $forsakeTransition */
-        $forsakeTransition = array_filter($definition->getTransitions(), function ($transition) {
-            return $transition->getName() === 'forsake';
-        });
+        $forsakeTransition = array_filter($definition->getTransitions(), fn($transition) => $transition->getName() === 'forsake');
         $this->tester->assertNotEmpty($forsakeTransition);
         $this->tester->assertContains('idle_notified', current($forsakeTransition)->getFroms());
         $this->tester->assertContains('abandoned', current($forsakeTransition)->getTos());
@@ -84,33 +76,25 @@ class AccountActivityTest extends Unit
         $this->tester->assertContains('abandoned', $places);
 
         /** @var Transition $notifyLockTransition */
-        $notifyLockTransition = array_filter($definition->getTransitions(), function ($transition) {
-            return $transition->getName() === 'notify_lock';
-        });
+        $notifyLockTransition = array_filter($definition->getTransitions(), fn($transition) => $transition->getName() === 'notify_lock');
         $this->tester->assertNotEmpty($notifyLockTransition);
         $this->tester->assertContains('active', current($notifyLockTransition)->getFroms());
         $this->tester->assertContains('active_notified', current($notifyLockTransition)->getTos());
 
         /** @var Transition $lockTransition */
-        $lockTransition = array_filter($definition->getTransitions(), function ($transition) {
-            return $transition->getName() === 'lock';
-        });
+        $lockTransition = array_filter($definition->getTransitions(), fn($transition) => $transition->getName() === 'lock');
         $this->tester->assertNotEmpty($lockTransition);
         $this->tester->assertContains('active_notified', current($lockTransition)->getFroms());
         $this->tester->assertContains('idle', current($lockTransition)->getTos());
 
         /** @var Transition $notifyForsakeTransition */
-        $notifyForsakeTransition = array_filter($definition->getTransitions(), function ($transition) {
-            return $transition->getName() === 'notify_forsake';
-        });
+        $notifyForsakeTransition = array_filter($definition->getTransitions(), fn($transition) => $transition->getName() === 'notify_forsake');
         $this->tester->assertNotEmpty($notifyForsakeTransition);
         $this->tester->assertContains('idle', current($notifyForsakeTransition)->getFroms());
         $this->tester->assertContains('idle_notified', current($notifyForsakeTransition)->getTos());
 
         /** @var Transition $forsakeTransition */
-        $forsakeTransition = array_filter($definition->getTransitions(), function ($transition) {
-            return $transition->getName() === 'forsake';
-        });
+        $forsakeTransition = array_filter($definition->getTransitions(), fn($transition) => $transition->getName() === 'forsake');
         $this->tester->assertNotEmpty($forsakeTransition);
         $this->tester->assertContains('idle_notified', current($forsakeTransition)->getFroms());
         $this->tester->assertContains('abandoned', current($forsakeTransition)->getTos());

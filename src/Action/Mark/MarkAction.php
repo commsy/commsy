@@ -16,23 +16,26 @@ namespace App\Action\Mark;
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
 use cs_room_item;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MarkAction implements ActionInterface
 {
-    public function __construct(private TranslatorInterface $translator, private SessionInterface $session)
-    {
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+        private readonly RequestStack $requestStack
+    ) {
     }
 
     public function execute(cs_room_item $roomItem, array $items): Response
     {
-        $currentClipboardIds = $this->session->get('clipboard_ids', []);
+        $session = $this->requestStack->getSession();
+        $currentClipboardIds = $session->get('clipboard_ids', []);
         foreach ($items as $item) {
             if (!in_array($item->getItemID(), $currentClipboardIds)) {
                 $currentClipboardIds[] = $item->getItemID();
-                $this->session->set('clipboard_ids', $currentClipboardIds);
+                $session->set('clipboard_ids', $currentClipboardIds);
             }
         }
 

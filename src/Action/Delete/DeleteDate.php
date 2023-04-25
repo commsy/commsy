@@ -29,12 +29,12 @@ class DeleteDate implements DeleteInterface
 
     private string $dateMode = 'normal';
 
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
-        private RouterInterface $router,
-        private MarkedService $markedService,
-        private CalendarsService $calendarsService,
+        private readonly RouterInterface $router,
+        private readonly MarkedService $markedService,
+        private readonly CalendarsService $calendarsService,
         LegacyEnvironment $legacyEnvironment
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -94,10 +94,7 @@ class DeleteDate implements DeleteInterface
         }
     }
 
-    /**
-     * @return string|null
-     */
-    public function getRedirectRoute(cs_item $item)
+    public function getRedirectRoute(cs_item $item): ?string
     {
         /** @var cs_dates_item $date */
         $date = $item;

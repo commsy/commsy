@@ -25,7 +25,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AccountMessageFactory
 {
-    public function __construct(private UrlGeneratorInterface $urlGenerator, private LegacyEnvironment $legacyEnvironment, private AccountManager $accountManager)
+    public function __construct(private readonly UrlGeneratorInterface $urlGenerator, private readonly LegacyEnvironment $legacyEnvironment, private readonly AccountManager $accountManager)
     {
     }
 

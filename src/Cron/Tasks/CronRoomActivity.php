@@ -23,9 +23,9 @@ class CronRoomActivity implements CronTaskInterface
 {
     private const QUOTIENT = 4;
 
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private EntityManagerInterface $entityManager)
+    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly EntityManagerInterface $entityManager)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

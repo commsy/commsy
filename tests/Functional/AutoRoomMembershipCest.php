@@ -13,11 +13,6 @@ class AutoRoomMembershipCest
     /**
      * Tests that a room user gets automatically created for an account on login if the login request
      * contains a key (as defined in the portal) with the room's unique textual identifier (slug).
-     *
-     * @param Root $R
-     * @param User $U
-     * @param PortalWorkspaceMembership $portalWorkspaceMembershipPage
-     * @param Room $roomPage
      */
     public function autoCreateRoomMember(
         Root $R,

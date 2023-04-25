@@ -28,7 +28,7 @@ function getSecurityHash($value)
 
 function renewSecurityHash($value)
 {
-    $value = preg_replace('~<!-- KFC TEXT -->~u', '', $value);
+    $value = preg_replace('~<!-- KFC TEXT -->~u', '', (string) $value);
     $value = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u', '', $value);
     $fck_text = '<!-- KFC TEXT '.getSecurityHash($value).' -->';
     $value = $fck_text.$value.$fck_text;

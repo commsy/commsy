@@ -22,25 +22,25 @@ use App\Utils\RoomService;
 use cs_environment;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\Security;
 
 class MenuBuilder
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
-        private FactoryInterface $factory,
-        private RoomService $roomService,
+        private readonly FactoryInterface $factory,
+        private readonly RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
-        private AuthorizationCheckerInterface $authorizationChecker,
-        private InvitationsService $invitationsService,
-        private PortalRepository $portalRepository,
-        private Security $security,
-        private RouterInterface $router
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly InvitationsService $invitationsService,
+        private readonly PortalRepository $portalRepository,
+        private readonly Security $security,
+        private readonly RouterInterface $router
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -565,7 +565,7 @@ class MenuBuilder
             $route = 'app_dashboard_overview';
         }
 
-        [$bundle, $controller, $action] = explode('_', $currentRequest->attributes->get('_route'));
+        [$bundle, $controller, $action] = explode('_', (string) $currentRequest->attributes->get('_route'));
 
         // NOTE: hide dashboard menu in dashboard overview and room list!
         if (!$userIsRoot &&
@@ -582,7 +582,7 @@ class MenuBuilder
                 $route = 'app_'.$value.'_list';
                 if ('date' == $value) {
                     $room = $this->roomService->getRoomItem($roomId);
-                    if ('normal' != $room->getDatesPresentationStatus()) {
+                    if (0 != $room->getDatesPresentationStatus()) {
                         $route = 'app_date_calendar';
                     }
                 }

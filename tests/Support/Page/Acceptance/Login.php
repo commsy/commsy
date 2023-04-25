@@ -12,14 +12,8 @@ class Login
     public static $passwordField = 'input[name="password"]';
     public static $loginButton = 'form[name="login"] input[type="submit"]';
 
-    /**
-     * @var AcceptanceTester
-     */
-    protected AcceptanceTester $tester;
-
-    public function __construct(AcceptanceTester $I)
+    public function __construct(protected AcceptanceTester $tester)
     {
-        $this->tester = $I;
     }
 
     public function login($name, $password)

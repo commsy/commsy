@@ -23,12 +23,12 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class FixPhysicalFileLinks implements DatabaseCheck
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
+        private readonly EntityManagerInterface $entityManager,
         LegacyEnvironment $legacyEnvironment,
-        private LoggerInterface $cleanupLogger
+        private readonly LoggerInterface $cleanupLogger
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -92,7 +92,7 @@ class FixPhysicalFileLinks implements DatabaseCheck
 
     private function getFileExtension($file): string
     {
-        $filename = utf8_encode(rawurldecode($file['filename']));
+        $filename = mb_convert_encoding(rawurldecode((string) $file['filename']), 'UTF-8', 'ISO-8859-1');
 
         if (!empty($filename)) {
             return cs_strtolower(mb_substr(strrchr($filename, '.'), 1));
