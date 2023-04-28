@@ -22,7 +22,6 @@ use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_list;
 use DateTime;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -387,7 +386,7 @@ class Portal implements Serializable
         if (null !== $logoFile) {
             // VichUploaderBundle NOTE: it is required that at least one field changes if you are
             // using Doctrine otherwise the event listeners won't be called and the file is lost
-            $this->modificationDate = new DateTimeImmutable();
+            $this->modificationDate = new DateTime();
         }
         return $this;
     }
@@ -524,13 +523,13 @@ class Portal implements Serializable
         return $this;
     }
 
-    public function getAGBChangeDate(): ?DateTimeImmutable
+    public function getAGBChangeDate(): ?DateTime
     {
         $agbChangeDateString = $this->extras['AGB_CHANGE_DATE'] ?? '';
-        return !empty($agbChangeDateString) ? DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $agbChangeDateString) : null;
+        return !empty($agbChangeDateString) ? DateTime::createFromFormat('Y-m-d H:i:s', $agbChangeDateString) : null;
     }
 
-    public function setAGBChangeDate(?DateTimeImmutable $agbChangeDate): Portal
+    public function setAGBChangeDate(?DateTime $agbChangeDate): Portal
     {
         $agbChangeDateString = $agbChangeDate ? $agbChangeDate->format('Y-m-d H:i:s') : '';
         $this->extras['AGB_CHANGE_DATE'] = $agbChangeDateString;
@@ -1002,7 +1001,7 @@ class Portal implements Serializable
         return $retour;
     }
 
-    public function setEmailText($message_tag, $array)
+    public function setEmailText($message_tag, $array): void
     {
         $mail_text_array = [];
         if ($this->_issetExtra('MAIL_TEXT_ARRAY')) {
@@ -1016,7 +1015,7 @@ class Portal implements Serializable
         $this->_addExtra('MAIL_TEXT_ARRAY', $mail_text_array);
     }
 
-    public function setEmailTextArray($array)
+    public function setEmailTextArray($array): void
     {
         if (!empty($array)) {
             $this->_addExtra('MAIL_TEXT_ARRAY', $array);
@@ -1026,12 +1025,12 @@ class Portal implements Serializable
     /** exists the extra information with the name $key ?
      * this method returns a boolean, if the value exists or not.
      *
-     * @param string key   the key (name) of the value
+     * @param string $key   the key (name) of the value
      *
      * @return bool true, if value exists
      *              false, if not
      */
-    public function _issetExtra($key)
+    public function _issetExtra(string $key): bool
     {
         $result = false;
         $extras = $this->getExtras();

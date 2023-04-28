@@ -91,7 +91,8 @@ class TermsOfUseSubscriber implements EventSubscriberInterface
                     // Redirect to tou site
                     if ('app_tou_portal' !== $event->getRequest()->attributes->get('_route') &&
                         'app_account_deleteaccount' !== $event->getRequest()->attributes->get('_route') &&
-                        'app_logout' !== $event->getRequest()->attributes->get('_route')
+                        'app_logout' !== $event->getRequest()->attributes->get('_route') &&
+                        'app_migration_password' !== $event->getRequest()->attributes->get('_route')
                     ) {
                         $event->setController(fn () => new RedirectResponse($this->urlGenerator->generate('app_tou_portal', [
                             'portalId' => $portal->getId(),

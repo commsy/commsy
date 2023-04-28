@@ -450,10 +450,6 @@ class cs_file_manager extends cs_manager
                             $file_item = $this->getItem($old_item_id);
                             if (!empty($file_item)) {
                                 $result = $disc_manager->copyFileFromRoomToRoom($old_id, $old_item_id, $file_item->getFileName(), $new_id, $new_item_id);
-                                if (!$result) {
-                                    // include_once('functions/error_functions.php');
-                                    // trigger_error('can not copy file on disc',E_USER_ERROR);
-                                }
                             } else {
                                 trigger_error('can not get old file item', E_USER_ERROR);
                             }

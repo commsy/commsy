@@ -942,29 +942,6 @@ class cs_user_manager extends cs_manager
         }
 
         return $retour;
-        /*
-        $user_array = array();
-        if ( isset($room_id_array) and !empty($room_id_array) ) {
-           $query = 'SELECT * FROM user WHERE user.context_id IN ('.implode(",", $room_id_array).') AND user.user_id = "'.encode(AS_DB,$user_id).'" AND user.status >= "2"';
-           $query .= ' AND user.deleter_id IS NULL';
-           $query .= ' AND user.deletion_date IS NULL';
-           $query .= ' AND user.auth_source = "'.$auth_source_id.'"';
-           $query .= ' GROUP BY user.item_id';
-           $result = $this->_db_connector->performQuery($query);
-           if ( !isset($result) ) {
-              include_once('functions/error_functions.php');
-              trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
-           } else {
-              foreach ($result as $rs ) {
-                 $user = $this->_buildItem($rs);
-                 $user_array[$rs['context_id']] = $user;
-              }
-              unset($result);
-              unset($query);
-           }
-        }
-        return $user_array;
-        */
     }
 
     public function getMembershipContextIDArrayByUserAndRoomIDLimit($user_id, $room_id_array, $auth_source_id)
