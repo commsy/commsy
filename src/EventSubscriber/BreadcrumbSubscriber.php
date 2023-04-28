@@ -265,6 +265,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
     ): void
     {
         // rubric & entry
+        $route = explode('_', (string) $request->get('_route'));
         $routeParameters = $request->get('_route_params');
         if (array_key_exists('itemId', $routeParameters)) {
             // link to rubric
