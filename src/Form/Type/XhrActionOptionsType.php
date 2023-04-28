@@ -22,7 +22,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class XhrActionOptionsType extends AbstractType
 {
     public function __construct(
-        private TranslatorInterface $translator
+        private readonly TranslatorInterface $translator
     ) {
     }
 
@@ -75,7 +75,7 @@ class XhrActionOptionsType extends AbstractType
      *
      * @return string The prefix of the template block name
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'xhr_action';
     }

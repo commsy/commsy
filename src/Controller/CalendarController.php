@@ -22,12 +22,12 @@ use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use cs_environment;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -37,17 +37,18 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('RUBRIC_DATE')]
 class CalendarController extends AbstractController
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     /**
      * CalendarController constructor.
      */
-    public function __construct(LegacyEnvironment $legacyEnvironment,
-                                protected CalendarsService $calendarsService,
-                                protected TranslatorInterface $translator,
-                                protected RoomService $roomService,
-                                protected EventDispatcherInterface $eventDispatcher)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private CalendarsService $calendarsService,
+        private TranslatorInterface $translator,
+        private RoomService $roomService,
+        private EventDispatcherInterface $eventDispatcher
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -56,9 +57,9 @@ class CalendarController extends AbstractController
     public function editAction(
         Request $request,
         int $roomId,
-        int $calendarId = null,
         CalendarsRepository $calendarsRepository,
-        ManagerRegistry $doctrine
+        ManagerRegistry $doctrine,
+        int $calendarId = null
     ): Response {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -87,8 +88,8 @@ class CalendarController extends AbstractController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             // tells Doctrine you want to (eventually) save the Product (no queries yet)
             if ($calendar->getExternalUrl()) {
-                $calendar->setExternalUrl(str_ireplace('webcals://', 'https://', $calendar->getExternalUrl()));
-                $calendar->setExternalUrl(str_ireplace('webcal://', 'http://', $calendar->getExternalUrl()));
+                $calendar->setExternalUrl(str_ireplace('webcals://', 'https://', (string) $calendar->getExternalUrl()));
+                $calendar->setExternalUrl(str_ireplace('webcal://', 'http://', (string) $calendar->getExternalUrl()));
             }
 
             if ('delete' == $editForm->getClickedButton()->getName()) {
@@ -110,7 +111,7 @@ class CalendarController extends AbstractController
         $this->eventDispatcher->dispatch(new CommsyEditEvent($calendar), CommsyEditEvent::EDIT);
 
         return $this->render('calendar/edit.html.twig', [
-            'editForm' => $editForm->createView(),
+            'editForm' => $editForm,
             'roomId' => $roomId,
             'calendars' => $calendars,
             'calendarId' => $calendarId,

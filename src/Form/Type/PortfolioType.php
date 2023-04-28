@@ -33,7 +33,7 @@ class PortfolioType extends AbstractType
     /**
      * PortfolioType constructor.
      */
-    public function __construct(private TranslatorInterface $translator, private PortfolioService $portfolioService)
+    public function __construct(private readonly TranslatorInterface $translator, private readonly PortfolioService $portfolioService)
     {
     }
 

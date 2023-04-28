@@ -22,13 +22,10 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class ItemDeletedEvent extends Event
 {
-    public const NAME = 'item.deleted';
+    final public const NAME = 'item.deleted';
 
-    private $item;
-
-    public function __construct(cs_item $item)
+    public function __construct(private readonly cs_item $item)
     {
-        $this->item = $item;
     }
 
     public function getItem(): cs_item

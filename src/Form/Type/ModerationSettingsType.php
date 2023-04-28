@@ -30,9 +30,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ModerationSettingsType extends AbstractType
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private TranslatorInterface $translator)
+    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly TranslatorInterface $translator)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -52,7 +52,7 @@ class ModerationSettingsType extends AbstractType
         $availableRubrics = array_merge(['home'], $roomItem->getAvailableRubrics());
         $rubricOptions = [];
         foreach ($availableRubrics as $rubric) {
-            $translatedTitle = $this->translator->trans(ucfirst($rubric), ['%count%' => 1], 'rubric');
+            $translatedTitle = $this->translator->trans(ucfirst((string) $rubric), ['%count%' => 1], 'rubric');
             $rubricOptions[$translatedTitle] = $rubric;
         }
 

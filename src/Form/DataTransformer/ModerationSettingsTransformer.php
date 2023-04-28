@@ -22,9 +22,9 @@ class ModerationSettingsTransformer extends AbstractTransformer
 {
     protected $entity = 'moderation_settings';
 
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private RoomService $roomService)
+    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly RoomService $roomService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->emailTexts = [
@@ -87,7 +87,7 @@ class ModerationSettingsTransformer extends AbstractTransformer
             $roomData['usernotice']['description_home'] = $roomItem->getUsageInfoTextForRubricInForm('home');
             foreach ($roomItem->getAvailableRubrics() as $rubric) {
                 $temp_array = [];
-                $temp_array['rubric'] = match (mb_strtoupper($rubric, 'UTF-8')) {
+                $temp_array['rubric'] = match (mb_strtoupper((string) $rubric, 'UTF-8')) {
                     'ANNOUNCEMENT' => $translator->getMessage('ANNOUNCEMENT_INDEX'),
                     'DATE' => $translator->getMessage('DATE_INDEX'),
                     'DISCUSSION' => $translator->getMessage('DISCUSSION_INDEX'),
@@ -118,7 +118,7 @@ class ModerationSettingsTransformer extends AbstractTransformer
             foreach ($roomItem->getEmailTextArray() as $name => $valueArray) {
                 foreach ($valueArray as $language => $message) {
                     if (!empty($message)) {
-                        $roomData['email_configuration'][mb_strtolower(str_replace('CHOICE', 'BODY', $name)).'_'.$language] = $message;
+                        $roomData['email_configuration'][mb_strtolower(str_replace('CHOICE', 'BODY', (string) $name)).'_'.$language] = $message;
                     }
                 }
             }
@@ -126,7 +126,7 @@ class ModerationSettingsTransformer extends AbstractTransformer
             $emailDefaultValues = [];
             foreach (array_values($this->emailTexts) as $message_tag) {
                 foreach (['de', 'en'] as $language) {
-                    $emailDefaultValues[mb_strtolower(str_replace('CHOICE', 'BODY', $message_tag)).'_'.$language] = $translator->getEmailMessageInLang($language, $message_tag);
+                    $emailDefaultValues[mb_strtolower(str_replace('CHOICE', 'BODY', (string) $message_tag)).'_'.$language] = $translator->getEmailMessageInLang($language, $message_tag);
                 }
             }
 
@@ -142,11 +142,9 @@ class ModerationSettingsTransformer extends AbstractTransformer
      * @param object $roomObject
      * @param array  $roomData
      *
-     * @return cs_room_item|null
-     *
      * @throws TransformationFailedException if room item is not found
      */
-    public function applyTransformation($roomObject, $roomData)
+    public function applyTransformation($roomObject, $roomData): cs_room_item
     {
         if (!empty($roomData['homenotice']['item_id'])) {
             $roomObject->setInformationBoxEntryID($roomData['homenotice']['item_id']);
@@ -169,9 +167,9 @@ class ModerationSettingsTransformer extends AbstractTransformer
             $languages = $this->legacyEnvironment->getAvailableLanguageArray();
 
             foreach ($roomData['email_configuration'] as $name => $value) {
-                if (str_starts_with($name, 'mail_body')) {
-                    $fieldName = strtoupper(substr($name, 0, -3));
-                    $lang = substr($name, -2);
+                if (str_starts_with((string) $name, 'mail_body')) {
+                    $fieldName = strtoupper(substr((string) $name, 0, -3));
+                    $lang = substr((string) $name, -2);
 
                     if (in_array($lang, $languages)) {
                         $store[$fieldName][$lang] = $value;

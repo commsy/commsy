@@ -26,7 +26,7 @@ class RoomSlugCollectionToStringTransformer implements DataTransformerInterface
     private int $roomId;
 
     public function __construct(
-        private RoomRepository $roomRepository
+        private readonly RoomRepository $roomRepository
     ) {
     }
 

@@ -14,8 +14,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use App\Utils\EntityDatesTrait;
 use DateTime;
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -31,124 +31,78 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\UniqueConstraint(name: 'unique_non_soft_deleted_idx', columns: ['user_id', 'auth_source', 'context_id', 'not_deleted'])]
 class User
 {
+    use EntityDatesTrait;
+
     /**
-     * @var int
-     *
      * @OA\Property(description="The unique identifier.")
      */
     #[ORM\Column(name: 'item_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[Groups(['api_read'])]
-    public $itemId = '0';
-    /**
-     * @var int
-     */
+    public int $itemId;
+
     #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
     private $contextId;
+
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
     private ?User $creator = null;
+
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
     private ?User $modifier = null;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private $deleterId;
-    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
-    #[Groups(['api_read'])]
-    private DateTime $creationDate;
-    /**
-     * @var DateTimeInterface
-     */
-    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
-    #[Groups(['api_read'])]
-    private $modificationDate;
-    /**
-     * @var DateTimeInterface
-     */
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private $deletionDate;
+
     #[ORM\Column(name: 'not_deleted', type: 'boolean', insertable: false, updatable: false, generated: 'ALWAYS', columnDefinition: 'TINYINT(1) AS (IF (deleter_id IS NULL AND deletion_date IS NULL, 1, NULL)) PERSISTENT AFTER deletion_date')]
     private $isNotDeleted;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'user_id', type: 'string', length: 100, nullable: false)]
     #[Groups(['api_read'])]
     public $userId;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'status', type: 'smallint', nullable: false)]
     #[Groups(['api_read'])]
     private $status = '0';
-    /**
-     * @var bool
-     */
+
     #[ORM\Column(name: 'is_contact', type: 'boolean', nullable: false)]
-    private $isContact = '0';
-    /**
-     * @var string
-     */
+    private string $isContact = '0';
+
     #[ORM\Column(name: 'firstname', type: 'string', length: 50, nullable: false)]
     #[Groups(['api_read'])]
     private $firstname;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'lastname', type: 'string', length: 100, nullable: false)]
     #[Groups(['api_read'])]
     private $lastname;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'email', type: 'string', length: 100, nullable: false)]
     private $email;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'city', type: 'string', length: 100, nullable: false)]
     private $city;
-    /**
-     * @var DateTimeInterface
-     */
+
     #[ORM\Column(name: 'lastlogin', type: 'datetime', nullable: true)]
     private $lastlogin;
-    /**
-     * @var bool
-     */
     #[ORM\Column(name: 'visible', type: 'boolean', nullable: false)]
-    private $visible = '1';
-    /**
-     * @var string
-     */
+    private string $visible = '1';
+
     #[ORM\Column(name: 'extras', type: 'text', length: 16_777_215, nullable: true)]
     private $extras;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'auth_source', type: 'integer', nullable: true)]
     private $authSource;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'description', type: 'text', length: 65535, nullable: true)]
     private $description;
-    /**
-     * @var DateTimeInterface
-     */
+
     #[ORM\Column(name: 'expire_date', type: 'datetime', nullable: true)]
     private $expireDate;
-    #[ORM\Column(name: 'use_portal_email', type: 'boolean')]
-    private $usePortalEmail = false;
 
-    public function __construct()
-    {
-        $this->creationDate = new DateTime('0000-00-00 00:00:00');
-    }
+    #[ORM\Column(name: 'use_portal_email', type: 'boolean')]
+    private false $usePortalEmail = false;
 
     /**
      * Set contextId.
@@ -250,78 +204,6 @@ class User
     public function isDeleted(): bool
     {
         return null !== $this->deleterId && null !== $this->deletionDate;
-    }
-
-    /**
-     * Set creationDate.
-     *
-     * @param DateTime $creationDate
-     *
-     * @return User
-     */
-    public function setCreationDate($creationDate)
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get creationDate.
-     *
-     * @return DateTime
-     */
-    public function getCreationDate()
-    {
-        return $this->creationDate;
-    }
-
-    /**
-     * Set modificationDate.
-     *
-     * @param DateTime $modificationDate
-     *
-     * @return User
-     */
-    public function setModificationDate($modificationDate)
-    {
-        $this->modificationDate = $modificationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get modificationDate.
-     *
-     * @return DateTime
-     */
-    public function getModificationDate()
-    {
-        return $this->modificationDate;
-    }
-
-    /**
-     * Set deletionDate.
-     *
-     * @param DateTime $deletionDate
-     *
-     * @return User
-     */
-    public function setDeletionDate($deletionDate)
-    {
-        $this->deletionDate = $deletionDate;
-
-        return $this;
-    }
-
-    /**
-     * Get deletionDate.
-     *
-     * @return DateTime
-     */
-    public function getDeletionDate()
-    {
-        return $this->deletionDate;
     }
 
     /**
@@ -630,12 +512,7 @@ class User
         return $this->expireDate;
     }
 
-    /**
-     * Get itemId.
-     *
-     * @return int
-     */
-    public function getItemId()
+    public function getItemId(): int
     {
         return $this->itemId;
     }

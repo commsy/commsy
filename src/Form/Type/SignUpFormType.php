@@ -34,9 +34,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class SignUpFormType extends AbstractType
 {
     public function __construct(
-        private TranslatorInterface $translator,
-        private TranslationRepository $translationRepository,
-        private RequestStack $requestStack
+        private readonly TranslatorInterface $translator,
+        private readonly TranslationRepository $translationRepository,
+        private readonly RequestStack $requestStack
     ) {
     }
 

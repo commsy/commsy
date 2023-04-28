@@ -14,6 +14,7 @@
 namespace App\Entity;
 
 use App\Repository\LabelRepository;
+use App\Utils\EntityDatesTrait;
 use App\Validator\Constraints as CommsyAssert;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -26,13 +27,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[CommsyAssert\UniqueLabelName]
 class Labels
 {
-    /**
-     * @var int
-     */
+    use EntityDatesTrait;
+
     #[ORM\Column(name: 'item_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $itemId = '0';
+    private int $itemId;
 
     /**
      * @var int
@@ -52,26 +52,8 @@ class Labels
     #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id')]
     private ?User $deleter = null;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
-    private $creationDate = '0000-00-00 00:00:00';
-
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
-    private $modificationDate = '0000-00-00 00:00:00';
-
     #[ORM\Column(name: 'activation_date', type: 'datetime')]
     private ?DateTime $activationDate = null;
-
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private $deletionDate;
 
     /**
      * @var string
@@ -82,7 +64,7 @@ class Labels
     /**
      * @var string
      */
-    #[ORM\Column(name: 'description', type: 'text', length: 16777215, nullable: true)]
+    #[ORM\Column(name: 'description', type: 'text', length: 16_777_215, nullable: true)]
     private $description;
 
     /**
@@ -91,17 +73,17 @@ class Labels
     #[ORM\Column(name: 'type', type: 'string', length: 15, nullable: false)]
     private $type;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'extras', type: 'array', nullable: true)]
     private $extras;
 
-    /**
-     * @var bool
-     */
     #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
-    private $public = '0';
+    private string $public = '0';
+
+    public function __construct()
+    {
+        $this->creationDate = new DateTime();
+        $this->modificationDate = new DateTime();
+    }
 
     public function isIndexable()
     {
@@ -114,12 +96,7 @@ class Labels
         ;
     }
 
-    /**
-     * Get itemId.
-     *
-     * @return int
-     */
-    public function getItemId()
+    public function getItemId(): int
     {
         return $this->itemId;
     }
@@ -149,54 +126,6 @@ class Labels
     }
 
     /**
-     * Set creationDate.
-     *
-     * @param DateTime $creationDate
-     *
-     * @return Labels
-     */
-    public function setCreationDate($creationDate)
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get creationDate.
-     *
-     * @return DateTime
-     */
-    public function getCreationDate()
-    {
-        return $this->creationDate;
-    }
-
-    /**
-     * Set modificationDate.
-     *
-     * @param DateTime $modificationDate
-     *
-     * @return Labels
-     */
-    public function setModificationDate($modificationDate)
-    {
-        $this->modificationDate = $modificationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get modificationDate.
-     *
-     * @return DateTime
-     */
-    public function getModificationDate()
-    {
-        return $this->modificationDate;
-    }
-
-    /**
      * Set activationDate.
      */
     public function setActivationDate(DateTime $activationDate): self
@@ -212,30 +141,6 @@ class Labels
     public function getActivationDate(): ?DateTime
     {
         return $this->activationDate;
-    }
-
-    /**
-     * Set deletionDate.
-     *
-     * @param DateTime $deletionDate
-     *
-     * @return Labels
-     */
-    public function setDeletionDate($deletionDate)
-    {
-        $this->deletionDate = $deletionDate;
-
-        return $this;
-    }
-
-    /**
-     * Get deletionDate.
-     *
-     * @return DateTime
-     */
-    public function getDeletionDate()
-    {
-        return $this->deletionDate;
     }
 
     /**

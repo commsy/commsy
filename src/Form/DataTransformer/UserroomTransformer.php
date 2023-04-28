@@ -44,11 +44,9 @@ class UserroomTransformer extends AbstractTransformer
      * @param object $userroomObject
      * @param array  $userroomData
      *
-     * @return cs_userroom_item|null
-     *
      * @throws TransformationFailedException if room item is not found
      */
-    public function applyTransformation($userroomObject, $userroomData)
+    public function applyTransformation($userroomObject, $userroomData): cs_userroom_item
     {
         $userroomObject->setTitle($userroomData['title']);
         $userroomObject->setDescription($userroomData['description']);

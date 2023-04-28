@@ -22,12 +22,12 @@ use Twig\TwigFunction;
 
 class PageTitleExtension extends AbstractExtension
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private RoomService $roomService,
-        private TranslatorInterface $translator
+        private readonly RoomService $roomService,
+        private readonly TranslatorInterface $translator
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -38,8 +38,8 @@ class PageTitleExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('pageTitle', [$this, 'pageTitle'], ['is_safe' => ['html']]),
-            new TwigFunction('shortPageTitle', [$this, 'shortPageTitle'], ['is_safe' => ['html']]),
+            new TwigFunction('pageTitle', $this->pageTitle(...), ['is_safe' => ['html']]),
+            new TwigFunction('shortPageTitle', $this->shortPageTitle(...), ['is_safe' => ['html']]),
         ];
     }
 

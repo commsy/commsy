@@ -22,8 +22,10 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class MembershipManager
 {
-    public function __construct(private UserService $userService, private EventDispatcherInterface $eventDispatcher)
-    {
+    public function __construct(
+        private readonly UserService $userService,
+        private readonly EventDispatcherInterface $eventDispatcher
+    ) {
     }
 
     public function joinGroup(cs_group_item $group, Account $account): void
@@ -61,9 +63,7 @@ class MembershipManager
     /**
      * Return Boolean if the last moderator.
      *
-     * @param cs_room_item $room
      * @param $currentUser
-     * @return bool
      */
     public function isLastModerator(cs_room_item $room, $currentUser): bool
     {

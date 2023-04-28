@@ -25,12 +25,9 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class ModeratorAccountDeleteConstraintValidator extends ConstraintValidator
 {
-    /**
-     * @var cs_environment
-     */
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(private UserService $userService, LegacyEnvironment $legacyEnvironment)
+    public function __construct(private readonly UserService $userService, LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

@@ -51,11 +51,10 @@ class AppearanceSettingsTransformer extends AbstractTransformer
      * @param object $roomObject
      * @param array  $roomData
      *
-     * @return cs_room_item|null
      *
      * @throws TransformationFailedException if room item is not found
      */
-    public function applyTransformation($roomObject, $roomData)
+    public function applyTransformation($roomObject, $roomData): cs_room_item
     {
         if (isset($roomData['dates_status'])) {
             $roomObject->setDatesPresentationStatus($roomData['dates_status']);

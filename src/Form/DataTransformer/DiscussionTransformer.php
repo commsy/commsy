@@ -14,12 +14,14 @@
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
+use cs_discussion_item;
+use cs_environment;
 
 class DiscussionTransformer extends AbstractTransformer
 {
     protected $entity = 'discussion';
 
-    private \cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -29,7 +31,7 @@ class DiscussionTransformer extends AbstractTransformer
     /**
      * Transforms a cs_discussion_item object to an array.
      *
-     * @param \cs_discussion_item $discussionItem
+     * @param cs_discussion_item $discussionItem
      *
      * @return array
      */
@@ -47,7 +49,7 @@ class DiscussionTransformer extends AbstractTransformer
                 $discussionData['hidden'] = true;
 
                 $activating_date = $discussionItem->getActivatingDate();
-                if (!stristr($activating_date, '9999')) {
+                if (!stristr((string) $activating_date, '9999')) {
                     $datetime = new \DateTime($activating_date);
                     $discussionData['hiddendate']['date'] = $datetime;
                     $discussionData['hiddendate']['time'] = $datetime;
@@ -72,11 +74,9 @@ class DiscussionTransformer extends AbstractTransformer
      * @param object $discussionObject
      * @param array  $discussionData
      *
-     * @return \cs_discussion_item|null
-     *
      * @throws TransformationFailedException if room item is not found
      */
-    public function applyTransformation($discussionObject, $discussionData)
+    public function applyTransformation($discussionObject, $discussionData): cs_discussion_item
     {
         $discussionObject->setTitle($discussionData['title']);
         $discussionObject->setDescription($discussionData['description'] ?: '');
@@ -92,7 +92,7 @@ class DiscussionTransformer extends AbstractTransformer
                     // add validdate to validdate
                     $datetime = $discussionData['hiddendate']['date'];
                     if ($discussionData['hiddendate']['time']) {
-                        $time = explode(':', $discussionData['hiddendate']['time']->format('H:i'));
+                        $time = explode(':', (string) $discussionData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
                     $discussionObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
@@ -112,8 +112,8 @@ class DiscussionTransformer extends AbstractTransformer
 
         // external viewer
         if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
-            if (!empty(trim($discussionData['external_viewer']))) {
-                $userIds = explode(' ', $discussionData['external_viewer']);
+            if (!empty(trim((string) $discussionData['external_viewer']))) {
+                $userIds = explode(' ', (string) $discussionData['external_viewer']);
                 $discussionObject->setExternalViewerAccounts($userIds);
             } else {
                 $discussionObject->unsetExternalViewerAccounts();

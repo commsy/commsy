@@ -18,7 +18,7 @@ class TransformerManager
     /**
      * TransformerManager constructor.
      */
-    public function __construct(private iterable $transformers)
+    public function __construct(private readonly iterable $transformers)
     {
     }
 

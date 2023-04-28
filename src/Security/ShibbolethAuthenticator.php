@@ -15,13 +15,9 @@ namespace App\Security;
 
 use App\Account\AccountManager;
 use App\Entity\Account;
-use App\Entity\AuthSource;
-use App\Entity\AuthSourceLdap;
 use App\Entity\AuthSourceShibboleth;
-use App\Entity\Portal;
 use App\Facade\AccountCreatorFacade;
 use App\Utils\RequestContext;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,26 +25,23 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
-use UnexpectedValueException;
 
 class ShibbolethAuthenticator extends AbstractCommsyAuthenticator
 {
     use TargetPathTrait;
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
+        private readonly EntityManagerInterface $entityManager,
         UrlGeneratorInterface          $urlGenerator,
-        private AccountCreatorFacade   $accountCreator,
+        private readonly AccountCreatorFacade   $accountCreator,
         RequestContext                 $requestContext,
-        private AccountManager         $accountManager
+        private readonly AccountManager         $accountManager
     )
     {
         parent::__construct($urlGenerator, $requestContext);
@@ -112,7 +105,7 @@ class ShibbolethAuthenticator extends AbstractCommsyAuthenticator
         ];
 
         $request->getSession()->set(
-            Security::LAST_USERNAME,
+            SecurityRequestAttributes::LAST_USERNAME,
             $credentials['email']
         );
 
@@ -201,7 +194,7 @@ class ShibbolethAuthenticator extends AbstractCommsyAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
         if ($request->hasSession()) {
-            $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
+            $request->getSession()->set(SecurityRequestAttributes::AUTHENTICATION_ERROR, $exception);
             $request->getSession()->set(AbstractCommsyAuthenticator::LAST_SOURCE, 'shib');
         }
 

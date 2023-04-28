@@ -22,7 +22,7 @@ class PortfolioTransformer extends AbstractTransformer
 {
     protected $entity = 'portfolio';
 
-    private cs_portfolio_manager $portfolioManager;
+    private readonly cs_portfolio_manager $portfolioManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -41,8 +41,8 @@ class PortfolioTransformer extends AbstractTransformer
         $portfolioData = [];
 
         if ($portfolioItem) {
-            $portfolioData['title'] = html_entity_decode($portfolioItem->getTitle());
-            $portfolioData['description'] = html_entity_decode($portfolioItem->getDescription());
+            $portfolioData['title'] = html_entity_decode((string) $portfolioItem->getTitle());
+            $portfolioData['description'] = html_entity_decode((string) $portfolioItem->getDescription());
             $portfolioData['is_template'] = $portfolioItem->isTemplate();
 
             $externalTemplate = $this->portfolioManager->getExternalTemplate($portfolioItem->getItemId());
@@ -61,11 +61,9 @@ class PortfolioTransformer extends AbstractTransformer
      * @param object $portfolioObject
      * @param array  $portfolioData
      *
-     * @return cs_portfolio_item|null
-     *
      * @throws TransformationFailedException if room item is not found
      */
-    public function applyTransformation($portfolioObject, $portfolioData)
+    public function applyTransformation($portfolioObject, $portfolioData): cs_portfolio_item
     {
         $portfolioObject->setTitle($portfolioData['title']);
         $portfolioObject->setDescription($portfolioData['description']);
@@ -76,10 +74,10 @@ class PortfolioTransformer extends AbstractTransformer
             $portfolioObject->unsetTemplate();
         }
 
-        $externalTemplateUserIds = explode(';', trim($portfolioData['external_template']));
+        $externalTemplateUserIds = explode(';', trim((string) $portfolioData['external_template']));
         $portfolioObject->setExternalTemplate($externalTemplateUserIds);
 
-        $externalViewerUserIds = explode(';', trim($portfolioData['external_viewer']));
+        $externalViewerUserIds = explode(';', trim((string) $portfolioData['external_viewer']));
         $portfolioObject->setExternalViewer($externalViewerUserIds);
 
         return $portfolioObject;

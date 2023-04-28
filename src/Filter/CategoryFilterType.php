@@ -25,8 +25,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CategoryFilterType extends AbstractType
 {
-    public function __construct(private RequestStack $requestStack, private CategoryService $categoryService, private RoomService $roomService)
-    {
+    public function __construct(
+        private readonly RequestStack $requestStack,
+        private readonly CategoryService $categoryService,
+        private readonly RoomService $roomService
+    ) {
     }
 
     /**

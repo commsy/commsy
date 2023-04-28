@@ -21,7 +21,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class PortalCreatorFacade
 {
-    public function __construct(private ManagerRegistry $registry)
+    public function __construct(private readonly ManagerRegistry $registry)
     {
     }
 

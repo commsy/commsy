@@ -24,14 +24,14 @@ use cs_tag_item;
 
 class LabelService
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    private cs_labels_manager $labelManager;
+    private readonly cs_labels_manager $labelManager;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private ItemService $itemService,
-        private CategoryService $categoryService
+        private readonly ItemService $itemService,
+        private readonly CategoryService $categoryService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->labelManager = $this->legacyEnvironment->getLabelManager();

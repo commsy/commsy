@@ -22,17 +22,12 @@ use Twig\TwigFilter;
 
 class RoomTitleResolver extends AbstractExtension
 {
-    /**
-     * @var cs_environment
-     */
-    private $legacyEnvironment;
-
-    private $userService;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private RoomService $roomService,
-        private TranslatorInterface $translator
+        private readonly RoomService $roomService,
+        private readonly TranslatorInterface $translator
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -40,7 +35,7 @@ class RoomTitleResolver extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('roomtitle', [$this, 'resolveRoomTitle']),
+            new TwigFilter('roomtitle', $this->resolveRoomTitle(...)),
         ];
     }
 

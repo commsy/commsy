@@ -29,7 +29,7 @@ use Symfony\Component\Workflow\Event\GuardEvent;
 
 class AccountActivityStateSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private PortalRepository $portalRepository, private AccountManager $accountManager, private AccountMessageFactory $accountMessageFactory, private Mailer $mailer)
+    public function __construct(private readonly PortalRepository $portalRepository, private readonly AccountManager $accountManager, private readonly AccountMessageFactory $accountMessageFactory, private readonly Mailer $mailer)
     {
     }
 

@@ -13,24 +13,24 @@
 
 namespace App\Controller;
 
-use App\Entity\SavedSearch;
 use App\Form\Type\MyViewsType;
 use App\Model\SearchData;
 use App\Repository\CalendarsRepository;
 use App\Repository\PortalRepository;
+use App\Repository\SavedSearchRepository;
 use App\Repository\ServerRepository;
 use App\RoomFeed\RoomFeedGenerator;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
 use Doctrine\ORM\NonUniqueResultException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -148,6 +148,7 @@ class DashboardController extends AbstractController
 
     #[Route(path: '/dashboard/{roomId}/feed/{start}/{sort}')]
     public function feedAction(
+        int $roomId,
         Request $request,
         ReaderService $readerService,
         RoomFeedGenerator $roomFeedGenerator,
@@ -163,7 +164,6 @@ class DashboardController extends AbstractController
 
         $feedList = $roomFeedGenerator->getDashboardFeedList($max, $lastId);
         $user = $environment->getPortalUserItem();
-        $currentContextId = $environment->getCurrentContextID();
 
         $readerList = [];
         $feedItems = [];
@@ -178,7 +178,7 @@ class DashboardController extends AbstractController
         return $this->render('dashboard/feed.html.twig', [
             'feedList' => $feedItems,
             'readerList' => $readerList,
-            'currentContextId' => $currentContextId,
+            'currentContextId' => $roomId,
         ]);
     }
 
@@ -215,14 +215,17 @@ class DashboardController extends AbstractController
         return $this->render('dashboard/rss.html.twig');
     }
 
-#[Route(path: '/dashboard/{roomId}/myviews')]
-    public function myViewsAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment): Response
+    #[Route(path: '/dashboard/{roomId}/myviews')]
+    public function myViewsAction(
+        $roomId,
+        Request $request,
+        LegacyEnvironment $legacyEnvironment,
+        SavedSearchRepository $repository
+    ): Response
     {
         $searchData = new SearchData();
 
         // get the current user's saved searches
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository(SavedSearch::class);
         $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
         $portalUserId = $currentUser->getRelatedPortalUserItem()->getItemId();
 
@@ -253,7 +256,7 @@ class DashboardController extends AbstractController
         }
 
         return $this->render('dashboard/my_views.html.twig', [
-            'myViewsForm' => $myViewsForm->createView(),
+            'myViewsForm' => $myViewsForm,
         ]);
     }
 

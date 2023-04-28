@@ -22,7 +22,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class MandatoryProjectRoomAssignmentValidator extends ConstraintValidator
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment

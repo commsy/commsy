@@ -27,7 +27,7 @@ class UploadType extends AbstractType
         /**
          * The Symfony translator.
          */
-        private TranslatorInterface $translator
+        private readonly TranslatorInterface $translator
     ) {
     }
 

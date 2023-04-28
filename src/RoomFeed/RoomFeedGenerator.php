@@ -24,12 +24,12 @@ use cs_project_item;
 use cs_user_item;
 use cs_userroom_item;
 use DateTime;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Security\Core\Security;
 
 class RoomFeedGenerator
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     /**
      * @var array limits
@@ -38,9 +38,9 @@ class RoomFeedGenerator
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private RoomService $roomService,
-        private ItemService $itemService,
-        private Security $security
+        private readonly RoomService $roomService,
+        private readonly ItemService $itemService,
+        private readonly Security $security
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -123,7 +123,7 @@ class RoomFeedGenerator
                  * and is sorted the same way across all rubrics we do later on when getting the next items.
                  */
 
-                usort($previousFeedEntries, [$this, 'sortByModificationDate']);
+                usort($previousFeedEntries, $this->sortByModificationDate(...));
 
                 /*
                  * Iterate over all previous feed entries and break as soon as we found the last item id. Excluded ids
@@ -161,7 +161,7 @@ class RoomFeedGenerator
             }
         }
 
-        usort($feedList, [$this, 'sortByModificationDate']);
+        usort($feedList, $this->sortByModificationDate(...));
 
         $feedList = array_slice($feedList, 0, $size);
 

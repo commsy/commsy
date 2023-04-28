@@ -34,32 +34,32 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class ItemVoter extends Voter
 {
-    public const SEE = 'ITEM_SEE';
-    public const EDIT = 'ITEM_EDIT';
-    public const NEW = 'ITEM_NEW';
-    public const ANNOTATE = 'ITEM_ANNOTATE';
-    public const PARTICIPATE = 'ITEM_PARTICIPATE';
-    public const MODERATE = 'ITEM_MODERATE';
-    public const ENTER = 'ITEM_ENTER';
-    public const USERROOM = 'ITEM_USERROOM';
-    public const DELETE = 'ITEM_DELETE';
-    public const EDIT_LOCK = 'ITEM_EDIT_LOCK';
+    final public const SEE = 'ITEM_SEE';
+    final public const EDIT = 'ITEM_EDIT';
+    final public const NEW = 'ITEM_NEW';
+    final public const ANNOTATE = 'ITEM_ANNOTATE';
+    final public const PARTICIPATE = 'ITEM_PARTICIPATE';
+    final public const MODERATE = 'ITEM_MODERATE';
+    final public const ENTER = 'ITEM_ENTER';
+    final public const USERROOM = 'ITEM_USERROOM';
+    final public const DELETE = 'ITEM_DELETE';
+    final public const EDIT_LOCK = 'ITEM_EDIT_LOCK';
 
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private ItemService $itemService,
-        private RoomService $roomService,
-        private UserService $userService,
-        private RequestStack $requestStack,
-        private EntityManagerInterface $entityManager,
-        private LockManager $lockManager
+        private readonly ItemService $itemService,
+        private readonly RoomService $roomService,
+        private readonly UserService $userService,
+        private readonly RequestStack $requestStack,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LockManager $lockManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    protected function supports($attribute, $object)
+    protected function supports($attribute, $subject): bool
     {
         return in_array($attribute, [
             self::SEE,
@@ -75,7 +75,7 @@ class ItemVoter extends Voter
         ]);
     }
 
-    protected function voteOnAttribute($attribute, $object, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         // get current logged in user
         $user = $token->getUser();
@@ -84,7 +84,7 @@ class ItemVoter extends Voter
             return true;
         }
 
-        $itemId = $object;
+        $itemId = $subject;
 
         $item = null;
         if ($itemId) {

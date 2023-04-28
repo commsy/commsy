@@ -20,7 +20,6 @@ use App\Utils\FileService;
 use App\Utils\RoomService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sylius\Bundle\ThemeBundle\Context\SettableThemeContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,6 +30,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Vich\UploaderBundle\Handler\DownloadHandler;
 
 class FileController extends AbstractController
@@ -61,7 +61,7 @@ class FileController extends AbstractController
         // NOTE: makeDisposition() (which generates the HTTP header's Content-Disposition field-value) requires a fallback filename
         // (for legacy user agents that do not support the "filename*" form); the fallback filename must be ASCII-only and must not
         // contain any percent characters or path separators, thus we strip these characters here
-        $fallbackFileName = str_replace(['%', '/', '\\'], '', $fileName);
+        $fallbackFileName = str_replace(['%', '/', '\\'], '', (string) $fileName);
         $fallbackFileName = mb_convert_encoding($fallbackFileName, 'US-ASCII', 'UTF-8');
 
         $contentDisposition = $response->headers->makeDisposition(
@@ -126,7 +126,7 @@ class FileController extends AbstractController
             $completePath = $themesDir.'/'.$themeName.'/bg.jpg';
 
             if (!file_exists($completePath)) {
-                $completePath = $themesDir.'/'.mb_strtolower($roomItem->getColorArray()['schema']).'/bg.jpg';
+                $completePath = $themesDir.'/'.mb_strtolower((string) $roomItem->getColorArray()['schema']).'/bg.jpg';
             }
         } elseif ('custom' == $imageType) {
             if ('' != $filename) {

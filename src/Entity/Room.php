@@ -55,11 +55,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Index(columns: ['type'], name: 'type')]
 class Room
 {
-    public const ACTIVITY_ACTIVE = 'active';
-    public const ACTIVITY_ACTIVE_NOTIFIED = 'active_notified';
-    public const ACTIVITY_IDLE = 'idle';
-    public const ACTIVITY_IDLE_NOTIFIED = 'idle_notified';
-    public const ACTIVITY_ABANDONED = 'abandoned';
+    final public const ACTIVITY_ACTIVE = 'active';
+    final public const ACTIVITY_ACTIVE_NOTIFIED = 'active_notified';
+    final public const ACTIVITY_IDLE = 'idle';
+    final public const ACTIVITY_IDLE_NOTIFIED = 'idle_notified';
+    final public const ACTIVITY_ABANDONED = 'abandoned';
 
     #[OA\Property(description: 'The unique identifier')]
     #[ORM\Column(name: 'item_id', type: 'integer')]
@@ -515,7 +515,6 @@ class Room
     /**
      * Add a slug (a unique textual identifier for this room).
      *
-     * @param RoomSlug $slug
      * @return $this
      */
     public function addSlug(RoomSlug $slug): self
@@ -531,7 +530,6 @@ class Room
     /**
      * Removes a slug
      *
-     * @param RoomSlug $slug
      * @return $this
      */
     public function removeSlug(RoomSlug $slug): self

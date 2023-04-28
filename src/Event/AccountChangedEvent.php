@@ -23,20 +23,17 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class AccountChangedEvent extends Event
 {
-    /**
-     * @var cs_user_item The unchanged item
-     */
-    private $oldAccount;
-
-    /**
-     * @var cs_user_item The updated item
-     */
-    private $newAccount;
-
-    public function __construct(cs_user_item $oldAccount, cs_user_item $newAccount)
+    public function __construct(
+        /**
+         * @var cs_user_item The unchanged item
+         */
+        private readonly cs_user_item $oldAccount,
+        /**
+         * @var cs_user_item The updated item
+         */
+        private readonly cs_user_item $newAccount
+    )
     {
-        $this->oldAccount = $oldAccount;
-        $this->newAccount = $newAccount;
     }
 
     public function getOldAccount(): cs_user_item

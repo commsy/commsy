@@ -23,10 +23,7 @@ use Twig\TwigFunction;
  */
 class SelectedLanguageExtension extends AbstractExtension
 {
-    /**
-     * @var cs_environment
-     */
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -36,7 +33,7 @@ class SelectedLanguageExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('selectedLanguage', [$this, 'selectedLanguage']),
+            new TwigFunction('selectedLanguage', $this->selectedLanguage(...)),
         ];
     }
 

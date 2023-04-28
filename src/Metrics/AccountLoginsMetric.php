@@ -20,7 +20,7 @@ use Symfony\Component\Security\Http\SecurityEvents;
 
 class AccountLoginsMetric extends AbstractMetric implements MetricInterface, EventSubscriberInterface
 {
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             SecurityEvents::INTERACTIVE_LOGIN => 'onSecurityInteractiveLogin',

@@ -42,13 +42,12 @@ use cs_user_item;
 use DateInterval;
 use DateTime;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -65,8 +64,6 @@ class AnnouncementController extends BaseController
     protected AssessmentService $assessmentService;
 
     protected CategoryService $categoryService;
-
-    private SessionInterface $session;
 
     #[Required]
     public function setAnnotationService(AnnotationService $annotationService): void
@@ -93,12 +90,6 @@ class AnnouncementController extends BaseController
     public function setCategoryService(CategoryService $categoryService): void
     {
         $this->categoryService = $categoryService;
-    }
-
-    #[Required]
-    public function setSession(SessionInterface $session): void
-    {
-        $this->session = $session;
     }
 
     #[Route(path: '/room/{roomId}/announcement/feed/{start}/{sort}')]
@@ -137,9 +128,9 @@ class AnnouncementController extends BaseController
         }
 
         if (empty($sort)) {
-            $sort = $this->session->get('sortAnnouncements', 'date');
+            $sort = $request->getSession()->get('sortAnnouncements', 'date');
         }
-        $this->session->set('sortAnnouncements', $sort);
+        $request->getSession()->set('sortAnnouncements', $sort);
 
         // get announcement list from manager service
         /** @var cs_announcement_item[] $announcements */
@@ -247,21 +238,18 @@ class AnnouncementController extends BaseController
             $this->announcementService->hideInvalidEntries();
         }
 
-        $sort = $this->session->get('sortAnnouncements', 'date');
+        $sort = $request->getSession()->get('sortAnnouncements', 'date');
 
         // get announcement list from manager service
         $itemsCountArray = $this->announcementService->getCountArray($roomId);
 
         $usageInfo = false;
-        /* @noinspection PhpUndefinedMethodInspection */
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('announcement')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('announcement');
-            /* @noinspection PhpUndefinedMethodInspection */
-            /* @noinspection PhpUndefinedMethodInspection */
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('announcement');
         }
 
-        return $this->render('announcement/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm->createView(), 'module' => 'announcement', 'itemsCountArray' => $itemsCountArray, 'showRating' => $roomItem->isAssessmentActive(), 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => $roomItem->withAssociations(), 'showCategories' => $roomItem->withTags(), 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'sort' => $sort]);
+        return $this->render('announcement/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'announcement', 'itemsCountArray' => $itemsCountArray, 'showRating' => $roomItem->isAssessmentActive(), 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => $roomItem->withAssociations(), 'showCategories' => $roomItem->withTags(), 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'sort' => $sort]);
     }
 
     #[Route(path: '/room/{roomId}/announcement/print/{sort}', defaults: ['sort' => 'none'])]
@@ -293,7 +281,7 @@ class AnnouncementController extends BaseController
 
         // get announcement list from manager service
         if ('none' === $sort || empty($sort)) {
-            $sort = $this->session->get('sortAnnouncements', 'date');
+            $sort = $request->getSession()->get('sortAnnouncements', 'date');
         }
         /** @var cs_announcement_item[] $announcements */
         $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, $sort);
@@ -394,7 +382,7 @@ class AnnouncementController extends BaseController
             'buzzExpanded' => $infoArray['buzzExpanded'],
             'catzExpanded' => $infoArray['catzExpanded'],
             'user' => $infoArray['user'],
-            'annotationForm' => $form->createView(),
+            'annotationForm' => $form,
             'ratingArray' => $infoArray['ratingArray'],
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem
@@ -563,7 +551,7 @@ class AnnouncementController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($announcementItem), CommsyEditEvent::EDIT);
 
-        return $this->render('announcement/edit.html.twig', ['form' => $form->createView(), 'announcement' => $announcementItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('announcement/edit.html.twig', ['form' => $form, 'announcement' => $announcementItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
     }
 
     #[Route(path: '/room/{roomId}/announcement/{itemId}/save')]

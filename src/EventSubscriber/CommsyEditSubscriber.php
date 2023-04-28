@@ -24,10 +24,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class CommsyEditSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private ReaderService $readerService,
-        private CalendarsService $calendarsService,
-        private LockManager $lockManager,
-        private RequestStack $requestStack
+        private readonly ReaderService $readerService,
+        private readonly CalendarsService $calendarsService,
+        private readonly LockManager $lockManager,
+        private readonly RequestStack $requestStack
     ) {
     }
 
@@ -83,7 +83,7 @@ class CommsyEditSubscriber implements EventSubscriberInterface
         }
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             CommsyEditEvent::EDIT => 'onCommsyEdit',

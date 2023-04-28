@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class CommsyGlobals
 {
-    public function __construct(private EntityManagerInterface $entityManager, private ParameterBagInterface $parameterBag, private RequestStack $requestStack, private RequestContext $requestContext)
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly ParameterBagInterface $parameterBag, private readonly RequestStack $requestStack, private readonly RequestContext $requestContext)
     {
     }
 

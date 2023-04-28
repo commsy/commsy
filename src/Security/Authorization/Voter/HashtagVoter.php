@@ -21,21 +21,21 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class HashtagVoter extends Voter
 {
-    public const EDIT = 'HASHTAG_EDIT';
+    final public const EDIT = 'HASHTAG_EDIT';
 
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    protected function supports($attribute, $object)
+    protected function supports($attribute, $subject): bool
     {
         return in_array($attribute, [self::EDIT]);
     }
 
-    protected function voteOnAttribute($attribute, $object, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();

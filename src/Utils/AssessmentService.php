@@ -14,12 +14,14 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_assessments_manager;
+use cs_environment;
 
 class AssessmentService
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    private $assessmentManager;
+    private readonly cs_assessments_manager $assessmentManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

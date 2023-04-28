@@ -45,11 +45,9 @@ class GroupTransformer extends AbstractTransformer
      * @param object $groupObject
      * @param array  $groupData
      *
-     * @return cs_group_item|null
-     *
      * @throws TransformationFailedException if room item is not found
      */
-    public function applyTransformation($groupObject, $groupData)
+    public function applyTransformation($groupObject, $groupData): cs_group_item
     {
         $groupObject->setTitle($groupData['title']);
         $groupObject->setDescription($groupData['description']);

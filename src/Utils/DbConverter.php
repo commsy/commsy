@@ -35,7 +35,7 @@ class DbConverter
             $data = $match[2];
 
             return "s:$length:\"$data\";";
-        }, $value);
+        }, (string) $value);
 
         $val = @unserialize($value);
         if (false === $val && 'b:0;' != $value) {

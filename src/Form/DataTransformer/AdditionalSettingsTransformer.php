@@ -22,7 +22,7 @@ class AdditionalSettingsTransformer extends AbstractTransformer
 {
     protected $entity = 'additional_settings';
 
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -104,11 +104,9 @@ class AdditionalSettingsTransformer extends AbstractTransformer
      * @param object $roomObject
      * @param array  $roomData
      *
-     * @return cs_room_item|null
-     *
      * @throws TransformationFailedException if room item is not found
      */
-    public function applyTransformation($roomObject, $roomData)
+    public function applyTransformation($roomObject, $roomData): cs_room_item
     {
         $agbtext_array = [];
         /********* save buzzword and tag options ******/
@@ -231,10 +229,10 @@ class AdditionalSettingsTransformer extends AbstractTransformer
         $languages = $this->legacyEnvironment->getAvailableLanguageArray();
         $current_user = $this->legacyEnvironment->getCurrentUserItem();
         foreach ($languages as $language) {
-            if (!empty($roomData['terms']['agb_text_'.mb_strtolower($language, 'UTF-8')])) {
-                $agbtext_array[mb_strtoupper($language, 'UTF-8')] = $roomData['terms']['agb_text_'.mb_strtolower($language, 'UTF-8')];
+            if (!empty($roomData['terms']['agb_text_'.mb_strtolower((string) $language, 'UTF-8')])) {
+                $agbtext_array[mb_strtoupper((string) $language, 'UTF-8')] = $roomData['terms']['agb_text_'.mb_strtolower((string) $language, 'UTF-8')];
             } else {
-                $agbtext_array[mb_strtoupper($language, 'UTF-8')] = '';
+                $agbtext_array[mb_strtoupper((string) $language, 'UTF-8')] = '';
             }
         }
 

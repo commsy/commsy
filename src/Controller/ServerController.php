@@ -19,13 +19,14 @@ use App\Entity\Server;
 use App\Entity\User;
 use App\Facade\PortalCreatorFacade;
 use App\Form\Type\Portal\PortalGeneralType;
+use App\Repository\PortalRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ServerController extends AbstractController
 {
@@ -52,12 +53,14 @@ class ServerController extends AbstractController
      * Shows a list of all active portals in this installation.
      */
     #[Route(path: '/portal/show')]
-    public function show(EntityManagerInterface $entityManager): Response
+    public function show(
+        EntityManagerInterface $entityManager,
+        PortalRepository $portalRepository
+    ): Response
     {
         $server = $entityManager->getRepository(Server::class)->getServer();
 
-        $activePortals = $this->getDoctrine()->getRepository(Portal::class)
-            ->findAllActive();
+        $activePortals = $portalRepository->findAllActive();
 
         $userRepository = $entityManager->getRepository(User::class);
         $roomRepository = $entityManager->getRepository(Room::class);
@@ -105,7 +108,7 @@ class ServerController extends AbstractController
         }
 
         return $this->render('server/create_portal.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 

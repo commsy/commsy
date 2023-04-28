@@ -15,6 +15,7 @@ namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
 use cs_item;
+use cs_reader_manager;
 use cs_user_item;
 use Symfony\Component\Cache\Adapter\FilesystemTagAwareAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -26,14 +27,14 @@ class ReaderService
      *
      * @var string
      */
-    public const READ_STATUS_NEW = 'new';
+    final public const READ_STATUS_NEW = 'new';
 
     /**
      * Read status constant that identifies a "changed" item, i.e. an item with unread changes.
      *
      * @var string
      */
-    public const READ_STATUS_CHANGED = 'changed';
+    final public const READ_STATUS_CHANGED = 'changed';
 
     /**
      * Read status constant that identifies an "unread" item, i.e. an item that either hasn't been
@@ -41,7 +42,7 @@ class ReaderService
      *
      * @var string
      */
-    public const READ_STATUS_UNREAD = 'unread';
+    final public const READ_STATUS_UNREAD = 'unread';
 
     // TODO: most CommSy code currently uses an empty string ('') instead of READ_STATUS_SEEN/'seen'
     /**
@@ -49,26 +50,26 @@ class ReaderService
      *
      * @var string
      */
-    public const READ_STATUS_SEEN = 'seen';
+    final public const READ_STATUS_SEEN = 'seen';
 
     /**
      * Read status constant that identifies an item that has a "new annotation" which hasn't been seen before.
      *
      * @var string
      */
-    public const READ_STATUS_NEW_ANNOTATION = 'new_annotation';
+    final public const READ_STATUS_NEW_ANNOTATION = 'new_annotation';
 
     /**
      * Read status constant that identifies an item that has a "changed annotation", i.e. an annotation with unread changes.
      *
      * @var string
      */
-    public const READ_STATUS_CHANGED_ANNOTATION = 'changed_annotation';
+    final public const READ_STATUS_CHANGED_ANNOTATION = 'changed_annotation';
 
-    private FilesystemTagAwareAdapter $readStatusCache;
-    private $readerManager;
+    private readonly FilesystemTagAwareAdapter $readStatusCache;
+    private readonly cs_reader_manager $readerManager;
 
-    public function __construct(private LegacyEnvironment $legacyEnvironment, private ItemService $itemService)
+    public function __construct(private readonly LegacyEnvironment $legacyEnvironment, private readonly ItemService $itemService)
     {
         $this->readerManager = $this->legacyEnvironment->getEnvironment()->getReaderManager();
 

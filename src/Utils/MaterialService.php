@@ -14,31 +14,28 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use cs_list;
 use cs_manager;
 use cs_material_item;
+use cs_material_manager;
 use cs_noticed_manager;
 use cs_reader_manager;
 use cs_section_item;
+use cs_section_manager;
 use Symfony\Component\Form\FormInterface;
 
 class MaterialService
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    private $materialManager;
+    private readonly cs_material_manager $materialManager;
 
-    private $sectionManager;
+    private readonly cs_section_manager $sectionManager;
 
-    /**
-     * @var cs_noticed_manager
-     */
-    private $noticedManager;
+    private readonly cs_noticed_manager $noticedManager;
 
-    /**
-     * @var cs_reader_manager
-     */
-    private $readerManager;
+    private readonly cs_reader_manager $readerManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

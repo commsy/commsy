@@ -23,9 +23,9 @@ use cs_userroom_item;
 
 class ItemService
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    private cs_item_manager $itemManager;
+    private readonly cs_item_manager $itemManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -147,7 +147,7 @@ class ItemService
 
                 $file_name_array = [];
                 foreach ($file_array as $file) {
-                    $file_name_array[htmlentities($file->getDisplayName(), ENT_NOQUOTES, 'UTF-8')] = $file;
+                    $file_name_array[htmlentities((string) $file->getDisplayName(), ENT_NOQUOTES, 'UTF-8')] = $file;
                 }
 
                 return $file_name_array;

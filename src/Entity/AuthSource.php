@@ -74,9 +74,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Index(columns: ['portal_id'], name: 'portal_id')]
 abstract class AuthSource
 {
-    public const ADD_ACCOUNT_YES = 'yes';
-    public const ADD_ACCOUNT_NO = 'no';
-    public const ADD_ACCOUNT_INVITE = 'invitation';
+    final public const ADD_ACCOUNT_YES = 'yes';
+    final public const ADD_ACCOUNT_NO = 'no';
+    final public const ADD_ACCOUNT_INVITE = 'invitation';
 
     #[OA\Property(description: 'The unique identifier.')]
     #[ORM\Column(type: Types::INTEGER)]

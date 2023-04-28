@@ -46,7 +46,7 @@ class AnnouncementTransformer extends AbstractTransformer
                 $announcementData['hidden'] = true;
 
                 $activating_date = $announcementItem->getActivatingDate();
-                if (!stristr($activating_date, '9999')) {
+                if (!stristr((string) $activating_date, '9999')) {
                     $datetime = new DateTime($activating_date);
                     $announcementData['hiddendate']['date'] = $datetime;
                     $announcementData['hiddendate']['time'] = $datetime;
@@ -62,10 +62,8 @@ class AnnouncementTransformer extends AbstractTransformer
      *
      * @param cs_announcement_item $announcementObject
      * @param array                 $announcementData
-     *
-     * @return cs_announcement_item|null
      */
-    public function applyTransformation($announcementObject, $announcementData)
+    public function applyTransformation($announcementObject, $announcementData): cs_announcement_item
     {
         $announcementObject->setTitle($announcementData['title']);
         $announcementObject->setDescription($announcementData['description']);
@@ -79,7 +77,7 @@ class AnnouncementTransformer extends AbstractTransformer
         if ($announcementData['validdate']['date'] && $announcementData['validdate']['time']) {
             // add validdate to validdate
             $datetime = $announcementData['validdate']['date'];
-            $time = explode(':', $announcementData['validdate']['time']->format('H:i'));
+            $time = explode(':', (string) $announcementData['validdate']['time']->format('H:i'));
             $datetime->setTime($time[0], $time[1]);
             $announcementObject->setSecondDateTime($datetime->format('Y-m-d H:i:s'));
         }
@@ -90,7 +88,7 @@ class AnnouncementTransformer extends AbstractTransformer
                     // add validdate to validdate
                     $datetime = $announcementData['hiddendate']['date'];
                     if ($announcementData['hiddendate']['time']) {
-                        $time = explode(':', $announcementData['hiddendate']['time']->format('H:i'));
+                        $time = explode(':', (string) $announcementData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
                     $announcementObject->setActivationDate($datetime->format('Y-m-d H:i:s'));

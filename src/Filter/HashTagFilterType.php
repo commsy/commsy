@@ -26,8 +26,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class HashTagFilterType extends AbstractType
 {
-    public function __construct(private RequestStack $requestStack, private RoomService $roomService)
-    {
+    public function __construct(
+        private readonly RequestStack $requestStack,
+        private readonly RoomService $roomService
+    ) {
     }
 
     /**
@@ -68,7 +70,7 @@ class HashTagFilterType extends AbstractType
      *
      * @return string The prefix of the template block name
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'hashtag_filter';
     }

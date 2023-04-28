@@ -19,14 +19,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class RootVoter extends Voter
 {
-    public const ROOT = 'ROLE_ROOT';
+    final public const ROOT = 'ROLE_ROOT';
 
-    protected function supports($attribute, $subject)
+    protected function supports($attribute, $subject): bool
     {
         return self::ROOT === $attribute;
     }
 
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
 
@@ -35,6 +35,6 @@ class RootVoter extends Voter
             return false;
         }
 
-        return 'root' === $user->getUsername();
+        return 'root' === $user->getUserIdentifier();
     }
 }

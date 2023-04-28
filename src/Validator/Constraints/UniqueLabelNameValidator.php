@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 
 class UniqueLabelNameValidator extends ConstraintValidator
 {
-    public function __construct(private LabelRepository $labelRepository)
+    public function __construct(private readonly LabelRepository $labelRepository)
     {
     }
 

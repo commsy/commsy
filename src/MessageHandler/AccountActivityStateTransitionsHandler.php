@@ -17,12 +17,13 @@ use App\Entity\Account;
 use App\Message\AccountActivityStateTransitions;
 use App\Repository\AccountsRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Workflow\WorkflowInterface;
 
-class AccountActivityStateTransitionsHandler implements MessageHandlerInterface
+#[AsMessageHandler]
+class AccountActivityStateTransitionsHandler
 {
-    public function __construct(private AccountsRepository $accountRepository, private EntityManagerInterface $entityManager, private WorkflowInterface $accountActivityStateMachine)
+    public function __construct(private readonly AccountsRepository $accountRepository, private readonly EntityManagerInterface $entityManager, private readonly WorkflowInterface $accountActivityStateMachine)
     {
     }
 

@@ -14,7 +14,6 @@
 namespace App\Form\DataTransformer;
 
 use cs_privateroom_item;
-use cs_room_item;
 
 class PrivateRoomTransformer extends AbstractTransformer
 {
@@ -80,10 +79,9 @@ class PrivateRoomTransformer extends AbstractTransformer
      *
      * @param cs_privateroom_item $privateRoomObject
      * @param array $privateRoomData
-     * @return cs_room_item|null
      *
      */
-    public function applyTransformation($privateRoomObject, $privateRoomData)
+    public function applyTransformation($privateRoomObject, $privateRoomData): cs_privateroom_item
     {
         if ($privateRoomObject) {
             if ('1' == $privateRoomData['widgetStatus']) {

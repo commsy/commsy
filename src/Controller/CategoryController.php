@@ -19,12 +19,12 @@ use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
 use App\Utils\RoomService;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CategoryController extends AbstractController
 {
@@ -38,7 +38,7 @@ class CategoryController extends AbstractController
         $defaultData = ['roomId' => $roomId];
         $form = $this->createForm(Types\TagType::class, $defaultData, ['action' => $this->generateUrl('app_category_new', ['roomId' => $roomId])]);
 
-        return $this->render('category/show.html.twig', ['tags' => $roomTags, 'form' => $form->createView()]);
+        return $this->render('category/show.html.twig', ['tags' => $roomTags, 'form' => $form]);
     }
 
     public function showDetail(
@@ -51,7 +51,7 @@ class CategoryController extends AbstractController
         $defaultData = ['roomId' => $roomId];
         $form = $this->createForm(Types\TagType::class, $defaultData, ['action' => $this->generateUrl('app_category_new', ['roomId' => $roomId])]);
 
-        return $this->render('category/show_detail.html.twig', ['tags' => $roomTags, 'form' => $form->createView()]);
+        return $this->render('category/show_detail.html.twig', ['tags' => $roomTags, 'form' => $form]);
     }
 
     #[Route(path: '/room/{roomId}/category/add')]
@@ -140,7 +140,7 @@ class CategoryController extends AbstractController
         $category = new Tag();
         if ($categoryId) {
             $category = $repository->findOneByItemId($categoryId);
-            $category->setTitle(html_entity_decode($category->getTitle()));
+            $category->setTitle(html_entity_decode((string) $category->getTitle()));
         }
 
         $createNewForm = $this->createForm(Types\CategoryNewType::class, $category);
@@ -190,7 +190,7 @@ class CategoryController extends AbstractController
             $structure = $data['structure'];
             if ($structure) {
                 // decode into array
-                $structure = json_decode($structure, true, 512, JSON_THROW_ON_ERROR);
+                $structure = json_decode((string) $structure, true, 512, JSON_THROW_ON_ERROR);
 
                 $categoryService->updateStructure($structure, $roomId);
             }
@@ -236,11 +236,11 @@ class CategoryController extends AbstractController
         }
 
         return $this->render('category/edit.html.twig', [
-            'newForm' => $createNewForm->createView(),
-            'editForm' => $editForm->createView(),
+            'newForm' => $createNewForm,
+            'editForm' => $editForm,
             'roomId' => $roomId,
             'editTitle' => $categoryEditTitle,
-            'mergeForm' => $mergeForm->createView(),
+            'mergeForm' => $mergeForm,
         ]);
     }
 }

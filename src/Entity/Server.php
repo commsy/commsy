@@ -112,7 +112,7 @@ class Server
     private ?DateTimeInterface $modificationDate = null;
 
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private ?DateTime $deletionDate;
+    private ?DateTime $deletionDate = null;
 
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private string $title;

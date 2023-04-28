@@ -29,7 +29,7 @@ class DateImportType extends AbstractType
         /**
          * The Symfony translator.
          */
-        private TranslatorInterface $translator
+        private readonly TranslatorInterface $translator
     ) {
     }
 
@@ -76,7 +76,7 @@ class DateImportType extends AbstractType
      *
      * @return string The prefix of the template block name
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'upload';
     }

@@ -22,24 +22,21 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class PortalModeratorVoter extends Voter
 {
-    public const PORTAL_MODERATOR = 'PORTAL_MODERATOR';
+    final public const PORTAL_MODERATOR = 'PORTAL_MODERATOR';
 
-    /**
-     * @var cs_environment
-     */
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    protected function supports($attribute, $subject)
+    protected function supports($attribute, $subject): bool
     {
         return $subject instanceof Portal && self::PORTAL_MODERATOR === $attribute;
     }
 
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
 
@@ -48,7 +45,7 @@ class PortalModeratorVoter extends Voter
             return false;
         }
 
-        if ('root' === $user->getUsername()) {
+        if ('root' === $user->getUserIdentifier()) {
             return true;
         }
 

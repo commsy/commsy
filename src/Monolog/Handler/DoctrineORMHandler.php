@@ -26,7 +26,7 @@ use Monolog\Processor\WebProcessor;
  */
 class DoctrineORMHandler extends AbstractProcessingHandler
 {
-    public function __construct(private EntityManagerInterface $em, $level = Logger::DEBUG, $bubble = true)
+    public function __construct(private readonly EntityManagerInterface $em, $level = Logger::DEBUG, $bubble = true)
     {
         parent::__construct($level, $bubble);
 

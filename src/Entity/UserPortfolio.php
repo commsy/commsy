@@ -22,13 +22,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'user_portfolio')]
 class UserPortfolio
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'p_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
-    private $pId = '0';
+    private int $pId;
 
     /**
      * @var string

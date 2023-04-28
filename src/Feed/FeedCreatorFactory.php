@@ -26,16 +26,16 @@ use Traversable;
 
 class FeedCreatorFactory
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     private array $creators = [];
     private bool $isGuestAccess = false;
 
     public function __construct(
-        private ItemService $itemService,
+        private readonly ItemService $itemService,
         LegacyEnvironment $legacyEnvironment,
-        private TranslatorInterface $translator,
-        private RouterInterface $router,
+        private readonly TranslatorInterface $translator,
+        private readonly RouterInterface $router,
         #[TaggedIterator('app.feed.creator')] iterable $creators
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();

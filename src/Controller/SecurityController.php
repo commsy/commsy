@@ -33,8 +33,10 @@ use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -65,12 +67,12 @@ class SecurityController extends AbstractController
     }
 
     #[Route(path: '/login/{context}/{authSourceId?}', name: 'app_login', priority: -1)]
-    #[ParamConverter('authSource', class: AuthSource::class, options: ['mapping' => ['authSourceId' => 'id']])]
     public function login(
         AuthenticationUtils $authenticationUtils,
         EntityManagerInterface $entityManager,
         Request $request,
         string $context = 'server',
+        #[MapEntity(class: AuthSource::class, mapping: ['authSourceId' => 'id'])]
         ?AuthSource $authSource = null
     ): Response {
         // get the login error if there is one
@@ -114,7 +116,7 @@ class SecurityController extends AbstractController
      * @throws Exception
      */
     #[Route(path: '/logout', name: 'app_logout', methods: ['GET'])]
-    public function logout()
+    public function logout(): never
     {
         // controller can be blank: it will never be executed!
         throw new Exception('Don\'t forget to activate logout in security.yaml');
@@ -127,7 +129,8 @@ class SecurityController extends AbstractController
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         Mailer $mailer,
-        TranslatorInterface $symfonyTranslator
+        TranslatorInterface $symfonyTranslator,
+        ManagerRegistry $managerRegistry
     ): Response {
         $requestAccounts = new RequestAccounts($portal->getId());
         $form = $this->createForm(RequestAccountsType::class, $requestAccounts);
@@ -143,7 +146,7 @@ class SecurityController extends AbstractController
             }
 
             if ('submit' === $clickedButtonName) {
-                $accountsRepository = $this->getDoctrine()->getRepository(Account::class);
+                $accountsRepository = $managerRegistry->getRepository(Account::class);
                 $matchingAccounts = $accountsRepository->findByEmailAndPortalId(
                     $requestAccounts->getEmail(),
                     $portal->getId()
@@ -189,7 +192,7 @@ class SecurityController extends AbstractController
         }
 
         return $this->render('security/request_accounts.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -203,7 +206,8 @@ class SecurityController extends AbstractController
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         Mailer $mailer,
-        RouterInterface $router
+        RouterInterface $router,
+        ManagerRegistry $managerRegistry
     ): Response {
         $localAccount = new LocalAccount($portal->getId());
         $form = $this->createForm(RequestPasswordResetType::class, $localAccount);
@@ -219,12 +223,12 @@ class SecurityController extends AbstractController
             }
 
             if ('submit' === $clickedButtonName) {
-                $localSource = $this->getDoctrine()->getRepository(AuthSourceLocal::class)
+                $localSource = $managerRegistry->getRepository(AuthSourceLocal::class)
                     ->findOneBy([
                         'portal' => $localAccount->getContextId(),
                         'enabled' => 1,
                     ]);
-                $localAccount = $this->getDoctrine()->getRepository(Account::class)
+                $localAccount = $managerRegistry->getRepository(Account::class)
                     ->findOneByCredentials(
                         $localAccount->getUsername(),
                         $localAccount->getContextId(),
@@ -282,7 +286,7 @@ class SecurityController extends AbstractController
         }
 
         return $this->render('security/request_password_reset.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -296,7 +300,8 @@ class SecurityController extends AbstractController
         string $token,
         Request $request,
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
+        ManagerRegistry $managerRegistry
     ): Response {
         $session = $request->getSession();
         if (!$session->has('ResetPasswordToken')) {
@@ -334,13 +339,13 @@ class SecurityController extends AbstractController
             $accountFromToken = $resetPasswordToken->getAccount();
 
             // update password
-            $localSource = $this->getDoctrine()->getRepository(AuthSourceLocal::class)
+            $localSource = $managerRegistry->getRepository(AuthSourceLocal::class)
                 ->findOneBy([
                     'portal' => $accountFromToken->getContextId(),
                     'enabled' => 1,
                 ]);
             /** @var Account $localAccount */
-            $localAccount = $this->getDoctrine()->getRepository(Account::class)
+            $localAccount = $managerRegistry->getRepository(Account::class)
                 ->findOneByCredentials(
                     $accountFromToken->getUsername(),
                     $accountFromToken->getContextId(),
@@ -362,7 +367,7 @@ class SecurityController extends AbstractController
         }
 
         return $this->render('security/password_reset.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 

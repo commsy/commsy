@@ -41,7 +41,7 @@ class InstitutionTransformer extends AbstractTransformer
                 $labelData['hidden'] = true;
 
                 $activating_date = $labelItem->getActivatingDate();
-                if (!stristr($activating_date, '9999')) {
+                if (!stristr((string) $activating_date, '9999')) {
                     $datetime = new DateTime($activating_date);
                     $labelData['hiddendate']['date'] = $datetime;
                     $labelData['hiddendate']['time'] = $datetime;
@@ -58,11 +58,9 @@ class InstitutionTransformer extends AbstractTransformer
      * @param cs_label_item $labelObject
      * @param array          $labelData
      *
-     * @return cs_label_item|null
-     *
      * @throws TransformationFailedException if room item is not found
      */
-    public function applyTransformation($labelObject, $labelData)
+    public function applyTransformation($labelObject, $labelData): cs_label_item
     {
         $labelObject->setTitle($labelData['title']);
         $labelObject->setDescription($labelData['description']);
@@ -79,7 +77,7 @@ class InstitutionTransformer extends AbstractTransformer
                     // add validdate to validdate
                     $datetime = $labelData['hiddendate']['date'];
                     if ($labelData['hiddendate']['time']) {
-                        $time = explode(':', $labelData['hiddendate']['time']->format('H:i'));
+                        $time = explode(':', (string) $labelData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
                     $labelObject->setModificationDate($datetime->format('Y-m-d H:i:s'));

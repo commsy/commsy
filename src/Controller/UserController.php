@@ -16,7 +16,6 @@ namespace App\Controller;
 use App\Action\Copy\InsertUserroomAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Entity\Portal;
-use App\Entity\User;
 use App\Event\UserLeftRoomEvent;
 use App\Event\UserStatusChangedEvent;
 use App\Filter\UserFilterType;
@@ -27,6 +26,7 @@ use App\Form\Type\UserSendType;
 use App\Form\Type\UserStatusChangeType;
 use App\Form\Type\UserType;
 use App\Mail\Mailer;
+use App\Repository\UserRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\AvatarService;
 use App\Services\LegacyEnvironment;
@@ -45,7 +45,6 @@ use Exception;
 use Liip\ImagineBundle\Imagine\Data\DataManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
 use Nette\Utils\Strings;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,6 +54,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -65,13 +65,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class UserController extends BaseController
 {
     private UserService $userService;
-    private SessionInterface $session;
-
-    #[Required]
-    public function setSession(SessionInterface $session): void
-    {
-        $this->session = $session;
-    }
 
     #[Required]
     public function setUserService(UserService $userService): void
@@ -186,7 +179,7 @@ class UserController extends BaseController
         }
 
         return $this->render('user/send_mail_via_contact_form.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -195,6 +188,7 @@ class UserController extends BaseController
     #[IsGranted('RUBRIC_USER')]
     public function listAction(
         Request $request,
+        UserRepository $userRepository,
         int $roomId,
         $view
     ): Response {
@@ -207,7 +201,7 @@ class UserController extends BaseController
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        $sort = $this->session->get('sortUsers', 'name');
+        $sort = $request->getSession()->get('sortUsers', 'name');
 
         // setup filter form
         $userStatus = $this->resolveUserStatus('user');
@@ -239,11 +233,11 @@ class UserController extends BaseController
         }
 
         // number of users which are waiting for confirmation
-        $userTasks = $this->getDoctrine()->getRepository(User::class)->getConfirmableUserByContextId($roomId)->getQuery()->getResult();
+        $userTasks = $userRepository->getConfirmableUserByContextId($roomId)->getQuery()->getResult();
 
         return $this->render('user/list.html.twig', [
             'roomId' => $roomId,
-            'form' => $filterForm->createView(),
+            'form' => $filterForm,
             'module' => 'user',
             'itemsCountArray' => $itemsCountArray,
             'showRating' => false,
@@ -295,7 +289,7 @@ class UserController extends BaseController
         ]);
 
         return $this->render('user/send_mail.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -330,7 +324,7 @@ class UserController extends BaseController
 
         // get user list from manager service
         if ('none' === $sort || empty($sort)) {
-            $sort = $this->session->get('sortUsers', 'name');
+            $sort = $request->getSession()->get('sortUsers', 'name');
         }
         $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, $sort);
 
@@ -535,7 +529,7 @@ class UserController extends BaseController
 
         return $this->render('user/change_status.html.twig', [
             'users' => $users,
-            'form' => $form->createView(),
+            'form' => $form,
             'status' => $formData['status'],
         ]);
     }
@@ -735,7 +729,7 @@ class UserController extends BaseController
         $groups = [];
         $context_item = $this->legacyEnvironment->getCurrentContextItem();
         $conf = $context_item->getHomeConf();
-        if (strpos($conf, 'group_show')) {
+        if (strpos((string) $conf, 'group_show')) {
             $groups = $this->userService->getUser($itemId)->getGroupList()->to_array();
         }
 
@@ -805,7 +799,7 @@ class UserController extends BaseController
             return $this->redirectToRoute('app_user_save', ['roomId' => $roomId, 'itemId' => $itemId]);
         }
 
-        return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'showHashtags' => $current_context->withBuzzwords(), 'showCategories' => $current_context->withTags()]);
+        return $this->render('user/edit.html.twig', ['form' => $form, 'showHashtags' => $current_context->withBuzzwords(), 'showCategories' => $current_context->withTags()]);
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/save')]
@@ -967,7 +961,7 @@ class UserController extends BaseController
         }
 
         return $this->render('user/send.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -1230,9 +1224,9 @@ class UserController extends BaseController
         }
 
         if (empty($sort)) {
-            $sort = $this->session->get('sortUsers', 'name');
+            $sort = $request->getSession()->get('sortUsers', 'name');
         }
-        $this->session->set('sortUsers', $sort);
+        $request->getSession()->set('sortUsers', $sort);
 
         // get user list from manager service
         $users = $this->userService->getListUsers($roomId, $max, $start, $currentUser->isModerator(), $sort, false);
@@ -1447,7 +1441,7 @@ class UserController extends BaseController
         }
 
         return $this->render('user/send_multiple.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 

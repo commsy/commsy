@@ -23,33 +23,21 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'row', columns: ['row', 'column'])]
 class TagPortfolio
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'p_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
-    private $pId = '0';
+    private int $pId;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 't_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
-    private $tId = '0';
+    private int $tId;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'row', type: 'integer', nullable: true)]
-    private $row = '0';
+    private int $row;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'column', type: 'integer', nullable: true)]
-    private $column = '0';
+    private int $column;
 
     /**
      * @var string

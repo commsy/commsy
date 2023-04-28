@@ -11,46 +11,18 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Entity;
+namespace App\Utils;
 
 use DateTime;
-use DateTimeInterface;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Assessments.
- */
-#[ORM\Entity]
-#[ORM\Table(name: 'assessments')]
-#[ORM\Index(name: 'item_link_id', columns: ['item_link_id'])]
-#[ORM\Index(name: 'context_id', columns: ['context_id'])]
-#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
-#[ORM\Index(name: 'deleter_id', columns: ['deleter_id'])]
-class Assessments
+trait EntityDatesTrait
 {
-    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private ?int $itemId = null;
-
-    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
-    private ?int $contextId = null;
-
-    #[ORM\Column(name: 'creator_id', type: Types::INTEGER)]
-    private ?int $creatorId = null;
-
-    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
-    private ?int $deleterId = null;
-
-    #[ORM\Column(name: 'item_link_id', type: Types::INTEGER)]
-    private ?int $itemLinkId = null;
-
-    #[ORM\Column(name: 'assessment', type: Types::INTEGER)]
-    private ?int $assessment = null;
-
     #[ORM\Column(name: 'creation_date', type: 'datetime')]
     private DateTime $creationDate;
+
+    #[ORM\Column(name: 'modification_date', type: 'datetime')]
+    private DateTime $modificationDate;
 
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private ?DateTime $deletionDate;
@@ -59,6 +31,13 @@ class Assessments
     public function setInitialDateValues(): void
     {
         $this->creationDate = new DateTime('now');
+        $this->modificationDate = new DateTime('now');
+    }
+
+    #[ORM\PreUpdate]
+    public function setModificationDateValue(): void
+    {
+        $this->modificationDate = new DateTime('now');
     }
 
     public function setCreationDate(DateTime $creationDate): self
@@ -70,6 +49,17 @@ class Assessments
     public function getCreationDate(): DateTime
     {
         return $this->creationDate;
+    }
+
+    public function setModificationDate(DateTime $modificationDate): self
+    {
+        $this->modificationDate = $modificationDate;
+        return $this;
+    }
+
+    public function getModificationDate(): DateTime
+    {
+        return $this->modificationDate;
     }
 
     public function setDeletionDate(?DateTime $deletionDate): self

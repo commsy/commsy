@@ -46,17 +46,16 @@ use App\Utils\UserService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\Security as CoreSecurity;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use UnexpectedValueException;
@@ -151,7 +150,7 @@ class AccountController extends AbstractController
 
         return $this->render('account/sign_up.html.twig', [
             'portal' => $portal,
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -163,7 +162,7 @@ class AccountController extends AbstractController
         PrivateRoomTransformer $privateRoomTransformer,
         UserTransformer $userTransformer,
         EventDispatcherInterface $eventDispatcher,
-        CoreSecurity $security
+        Security $security
     ): Response {
         /** @var Account $account */
         $account = $security->getUser();
@@ -196,7 +195,7 @@ class AccountController extends AbstractController
         }
 
         return $this->render('account/personal.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'hasToChangeEmail' => $portalUser->hasToChangeEmail(),
         ]);
     }
@@ -205,7 +204,7 @@ class AccountController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function changePassword(
         Request $request,
-        CoreSecurity $security,
+        Security $security,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager
     ): Response {
@@ -230,7 +229,7 @@ class AccountController extends AbstractController
         }
 
         return $this->render('account/change_password.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'passwordChanged' => $passwordChanged,
         ]);
     }
@@ -241,7 +240,7 @@ class AccountController extends AbstractController
     public function mergeAccounts(
         Request $request,
         Portal $portal,
-        CoreSecurity $security,
+        Security $security,
         UserService $userService,
         EntityManagerInterface $entityManager,
         LdapAuthenticator $ldapAuthenticator,
@@ -261,7 +260,7 @@ class AccountController extends AbstractController
         if ($form->isSubmitted()) {
             $formData = $form->getData();
 
-            if (strtolower($portalUser->getUserID()) == strtolower($formData['combineUserId']) &&
+            if (strtolower($portalUser->getUserID()) == strtolower((string) $formData['combineUserId']) &&
                 $formData['auth_source'] === $account->getAuthSource()
             ) {
                 $form->get('combineUserId')->addError(new FormError('Invalid user'));
@@ -315,7 +314,7 @@ class AccountController extends AbstractController
         }
 
         return $this->render('account/merge_accounts.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -326,7 +325,7 @@ class AccountController extends AbstractController
         UserService $userService,
         PrivateRoomTransformer $privateRoomTransformer,
         UserTransformer $userTransformer,
-        CoreSecurity $security
+        Security $security
     ): Response {
         /** @var Account $account */
         $account = $security->getUser();
@@ -350,7 +349,7 @@ class AccountController extends AbstractController
         }
 
         return $this->render('account/newsletter.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'portalEmail' => $portalUser->getRoomEmail(),
         ]);
     }
@@ -370,7 +369,7 @@ class AccountController extends AbstractController
         }
 
         return $this->render('account/privacy.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -382,7 +381,7 @@ class AccountController extends AbstractController
         PersonalDataCollector $dataCollector,
         PrintService $printService,
         RoomService $roomService,
-        CoreSecurity $security,
+        Security $security,
         UserService $userService,
         TranslatorInterface $translator
     ): Response {
@@ -427,7 +426,7 @@ class AccountController extends AbstractController
         PrivateRoomTransformer $privateRoomTransformer,
         UserTransformer $userTransformer,
         EventDispatcherInterface $eventDispatcher,
-        CoreSecurity $security
+        Security $security
     ): Response {
         /** @var Account $account */
         $account = $security->getUser();
@@ -461,7 +460,7 @@ class AccountController extends AbstractController
         }
 
         return $this->render('account/additional.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'uploadEmail' => $this->getParameter('commsy.upload.account'),
             'portalEmail' => $portalUser->getRoomEmail(),
         ]);
@@ -513,8 +512,8 @@ class AccountController extends AbstractController
 
         return $this->render('account/delete_account.html.twig', [
             'override' => $deleteParameter,
-            'form_lock' => $lockForm->createView(),
-            'form_delete' => $deleteForm->createView(),
+            'form_lock' => $lockForm,
+            'form_delete' => $deleteForm,
         ]);
     }
 }

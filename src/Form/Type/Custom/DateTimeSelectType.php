@@ -14,6 +14,7 @@
 namespace App\Form\Type\Custom;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -21,7 +22,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class DateTimeSelectType extends AbstractType
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -47,7 +48,7 @@ class DateTimeSelectType extends AbstractType
      *
      * @return string|null The name of the parent type if any, null otherwise
      */
-    public function getParent()
+    public function getParent(): ?string
     {
         return FormType::class;
     }
@@ -59,7 +60,7 @@ class DateTimeSelectType extends AbstractType
      *
      * @return string The prefix of the template block name
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'date_time';
     }

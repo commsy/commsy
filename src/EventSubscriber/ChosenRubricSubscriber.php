@@ -23,11 +23,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ChosenRubricSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private TranslatorInterface $translator)
+    public function __construct(private readonly TranslatorInterface $translator)
     {
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [FormEvents::PRE_SET_DATA => 'onPreSetData'];
     }

@@ -17,9 +17,9 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class CommsyEditEvent extends Event
 {
-    public const EDIT = 'commsy.edit';
-    public const SAVE = 'commsy.save';
-    public const CANCEL = 'commsy.cancel';
+    final public const EDIT = 'commsy.edit';
+    final public const SAVE = 'commsy.save';
+    final public const CANCEL = 'commsy.cancel';
 
     public function __construct(protected $item)
     {

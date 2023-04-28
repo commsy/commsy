@@ -31,7 +31,7 @@ class PortfolioEditCategoryType extends AbstractType
     /**
      * PortfolioType constructor.
      */
-    public function __construct(private TranslatorInterface $translator)
+    public function __construct(private readonly TranslatorInterface $translator)
     {
     }
 
@@ -137,7 +137,7 @@ class PortfolioEditCategoryType extends AbstractType
      *
      * @return string The prefix of the template block name
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'portfolio';
     }

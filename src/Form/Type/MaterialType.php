@@ -33,7 +33,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class MaterialType extends AbstractType
 {
     public function __construct(
-        private AddEtherpadFormListener $etherpadFormListener
+        private readonly AddEtherpadFormListener $etherpadFormListener
     ) {
     }
 

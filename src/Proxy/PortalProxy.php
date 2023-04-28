@@ -16,19 +16,19 @@ namespace App\Proxy;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceGuest;
 use App\Entity\Portal;
+use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_list;
 
 class PortalProxy
 {
-    /**
-     * @var cs_environment
-     */
-    private $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
-    public function __construct(private Portal $portal, cs_environment $legacyEnvironment)
-    {
-        $this->legacyEnvironment = $legacyEnvironment;
+    public function __construct(
+        private readonly Portal $portal,
+        readonly LegacyEnvironment $environment
+    ) {
+        $this->legacyEnvironment = $this->environment->getEnvironment();
     }
 
     public function getItemId(): int

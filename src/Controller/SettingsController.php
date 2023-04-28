@@ -43,13 +43,13 @@ use App\Utils\RoomService;
 use App\Utils\UserroomService;
 use cs_project_item;
 use cs_room_item;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sylius\Bundle\ThemeBundle\Repository\ThemeRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -119,7 +119,7 @@ class SettingsController extends AbstractController
         }
 
         return $this->render('settings/general.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -156,7 +156,7 @@ class SettingsController extends AbstractController
         }
 
         return $this->render('settings/moderation.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -214,7 +214,7 @@ class SettingsController extends AbstractController
         }
 
         return $this->render('settings/additional.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'deletesRoomIfUnused' => $portalItem->isActivatedDeletingUnusedRooms(),
         ]);
     }
@@ -286,8 +286,8 @@ class SettingsController extends AbstractController
                     } // case 2: file was send as base64 string via hidden "room_image_data" text field
                     else {
                         $data = $room_image_data['room_image_data'];
-                        [$fileName, $type, $date] = explode(';', $data);
-                        [, $data] = explode(',', $data);
+                        [$fileName, $type, $date] = explode(';', (string) $data);
+                        [, $data] = explode(',', (string) $data);
                         [, $extension] = explode('/', $type);
                         $data = base64_decode($data);
                         $fileName = 'cid'.$roomId.'_bgimage_'.$fileName;
@@ -311,9 +311,9 @@ class SettingsController extends AbstractController
                     }
                     $fileName = '';
                     $data = $room_logo_data['room_logo_data'];
-                    [$fileName, $type, $date] = explode(';', $data);
+                    [$fileName, $type, $date] = explode(';', (string) $data);
                     $fileName = filter_var($fileName, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
-                    [, $data] = explode(',', $data);
+                    [, $data] = explode(',', (string) $data);
                     [, $extension] = explode('/', $type);
                     $data = base64_decode($data);
                     $fileName = 'cid'.$roomId.'_logo_'.$fileName;
@@ -348,7 +348,7 @@ class SettingsController extends AbstractController
         ]);
 
         return $this->render('settings/appearance.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'bgImageFilepathCustom' => $backgroundImageCustom,
             'bgImageFilepathTheme' => $backgroundImageTheme,
             'logoImageFilepath' => $logoImage,
@@ -418,7 +418,7 @@ class SettingsController extends AbstractController
         }
 
         return $this->render('settings/extensions.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -450,7 +450,7 @@ class SettingsController extends AbstractController
         }
 
         return $this->render('settings/delete_user_rooms.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -514,9 +514,9 @@ class SettingsController extends AbstractController
         }
 
         return $this->render('settings/delete.html.twig', [
-            'delete_form' => $deleteForm->createView(),
+            'delete_form' => $deleteForm,
             'relatedGroupRooms' => $relatedGroupRooms,
-            'lock_form' => $lockForm->createView(),
+            'lock_form' => $lockForm,
         ]);
     }
 
@@ -595,7 +595,7 @@ class SettingsController extends AbstractController
         }
 
         return $this->render('settings/invitations.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 }

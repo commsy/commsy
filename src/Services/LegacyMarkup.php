@@ -20,7 +20,7 @@ class LegacyMarkup
 {
     private array $files = [];
 
-    public function __construct(private RouterInterface $router, private TranslatorInterface $translator)
+    public function __construct(private readonly RouterInterface $router, private readonly TranslatorInterface $translator)
     {
     }
 
@@ -58,14 +58,14 @@ class LegacyMarkup
         $matches = [];
 
         foreach ($regExpFatherArray as $exp) {
-            $found = preg_match_all($exp, $text, $matches);
+            $found = preg_match_all($exp, (string) $text, $matches);
 
             if ($found) {
                 $matches[0] = array_unique($matches[0]); // doppelte einsparen
 
                 foreach ($matches[0] as $value) {
                     // delete HTML-tags and string conversion #########
-                    $valueNew = strip_tags($value);
+                    $valueNew = strip_tags((string) $value);
                     $valueNew = str_replace('&nbsp;', ' ', $valueNew);
                     // #################################################
 
@@ -74,8 +74,8 @@ class LegacyMarkup
                         $args = $this->getArgs($valueNew, $regExp);
 
                         foreach ($args as $arg) {
-                            if (strstr($arg, "'") &&
-                                (substr_count($arg, "'") % 2) == 1) {
+                            if (strstr((string) $arg, "'") &&
+                                (substr_count((string) $arg, "'") % 2) == 1) {
                                 $check = true;
                                 break;
                             }
@@ -92,21 +92,21 @@ class LegacyMarkup
                             $args = $this->getArgs2($valueNew, $regExp);
                         }
 
-                        if ('(:file' == $markup && mb_stristr($valueNew, '(:file')) {
+                        if ('(:file' == $markup && mb_stristr((string) $valueNew, '(:file')) {
                             $valueNew = $this->formatFile($valueNew, $args);
                             break;
                         }
 
-                        if ('(:image' == $markup && mb_stristr($valueNew, '(:image')) {
+                        if ('(:image' == $markup && mb_stristr((string) $valueNew, '(:image')) {
                             $valueNew = $this->formatImage($valueNew, $args);
                         }
 
-                        if ('(:item' == $markup && mb_stristr($valueNew, '(:item')) {
+                        if ('(:item' == $markup && mb_stristr((string) $valueNew, '(:item')) {
                             $valueNew = $this->formatItem($valueNew, $args);
                             break;
                         }
 
-                        if ('(:link' == $markup && mb_stristr($valueNew, '(:link')) {
+                        if ('(:link' == $markup && mb_stristr((string) $valueNew, '(:link')) {
                             $valueNew = $this->formatLink($valueNew, $args);
                             break;
                         }
@@ -116,43 +116,43 @@ class LegacyMarkup
 //                            break;
 //                        }
 
-                        if ('(:wmplayer' == $markup && mb_stristr($valueNew, '(:wmplayer')) {
+                        if ('(:wmplayer' == $markup && mb_stristr((string) $valueNew, '(:wmplayer')) {
                             $valueNew = $this->formatDeprecated($valueNew, $args);
 
                             break;
                         }
 
-                        if ('(:quicktime' == $markup && mb_stristr($valueNew, '(:quicktime')) {
+                        if ('(:quicktime' == $markup && mb_stristr((string) $valueNew, '(:quicktime')) {
                             $valueNew = $this->formatDeprecated($valueNew, $args);
                             break;
                         }
 
-                        if ('(:youtube' == $markup && mb_stristr($valueNew, '(:youtube')) {
+                        if ('(:youtube' == $markup && mb_stristr((string) $valueNew, '(:youtube')) {
                             $valueNew = $this->formatYoutube($valueNew, $args);
                             break;
                         }
 
-                        if ('(:googlevideo' == $markup && mb_stristr($valueNew, '(:googlevideo')) {
+                        if ('(:googlevideo' == $markup && mb_stristr((string) $valueNew, '(:googlevideo')) {
                             $valueNew = $this->formatDeprecated($valueNew, $args);
                             break;
                         }
 
-                        if ('(:podcampus' == $markup && mb_stristr($valueNew, '(:podcampus')) {
+                        if ('(:podcampus' == $markup && mb_stristr((string) $valueNew, '(:podcampus')) {
                             $valueNew = $this->formatDeprecated($valueNew, $args);
                             break;
                         }
 
-                        if ('(:vimeo' == $markup && mb_stristr($valueNew, '(:vimeo')) {
+                        if ('(:vimeo' == $markup && mb_stristr((string) $valueNew, '(:vimeo')) {
                             $valueNew = $this->formatDeprecated($valueNew, $args);
                             break;
                         }
 
-                        if ('(:mp3' == $markup && mb_stristr($valueNew, '(:mp3')) {
+                        if ('(:mp3' == $markup && mb_stristr((string) $valueNew, '(:mp3')) {
                             $valueNew = $this->formatDeprecated($valueNew, $args);
                             break;
                         }
 
-                        if ('(:lecture2go' == $markup && mb_stristr($valueNew, '(:lecture2go')) {
+                        if ('(:lecture2go' == $markup && mb_stristr((string) $valueNew, '(:lecture2go')) {
                             $valueNew = $this->formatLecture2Go($valueNew, $args);
                             break;
                         }
@@ -167,40 +167,40 @@ class LegacyMarkup
 //                            break;
 //                        }
 
-                        if ('(:flickr' == $markup && mb_stristr($valueNew, '(:flickr')) {
+                        if ('(:flickr' == $markup && mb_stristr((string) $valueNew, '(:flickr')) {
                             $valueNew = $this->formatDeprecated($valueNew, $args);
                             break;
                         }
                     }
 
-                    $text = str_replace($value, $valueNew, $text);
+                    $text = str_replace($value, $valueNew, (string) $text);
                 }
             }
         }
 
         // CS8-Video
         $cs8VideoRegex = '~<div\sclass="commsyPlayer">.*?<source\ssrc=".*?iid=(\d*?)".*?<\/div>~us';
-        $cs8VideoFound = preg_match_all($cs8VideoRegex, $text, $cs8VideoMatches, PREG_SET_ORDER);
+        $cs8VideoFound = preg_match_all($cs8VideoRegex, (string) $text, $cs8VideoMatches, PREG_SET_ORDER);
 
         if ($cs8VideoFound) {
             foreach ($cs8VideoMatches as $cs8VideoMatch) {
                 $cs8VideoHTML = $cs8VideoMatch[0];
                 $cs8VideoReplace = $this->formatCS8Video($cs8VideoHTML, $cs8VideoMatch[1]);
 
-                $text = str_replace($cs8VideoHTML, $cs8VideoReplace, $text);
+                $text = str_replace($cs8VideoHTML, $cs8VideoReplace, (string) $text);
             }
         }
 
         // CS8-Images
         $cs8ImageRegex = '~<img.*?src=".*?iid=(\d*?)".*?\/>~u';
-        $cs8ImageFound = preg_match_all($cs8ImageRegex, $text, $cs8ImageMatches, PREG_SET_ORDER);
+        $cs8ImageFound = preg_match_all($cs8ImageRegex, (string) $text, $cs8ImageMatches, PREG_SET_ORDER);
 
         if ($cs8ImageFound) {
             foreach ($cs8ImageMatches as $cs8ImageMatch) {
                 $cs8ImageHTML = $cs8ImageMatch[0];
                 $cs8ImageReplace = $this->formatCS8Image($cs8ImageHTML, $cs8ImageMatch[1]);
 
-                $text = str_replace($cs8ImageHTML, $cs8ImageReplace, $text);
+                $text = str_replace($cs8ImageHTML, $cs8ImageReplace, (string) $text);
             }
         }
 
@@ -211,10 +211,10 @@ class LegacyMarkup
     {
         $variable_array = [];
         $matches = [];
-        preg_match_all($reg_exp, $data, $matches);
+        preg_match_all($reg_exp, (string) $data, $matches);
         $j = 0;
         while (isset($matches[$j][0])) {
-            $variable_array[$j] = trim($matches[$j][0]);
+            $variable_array[$j] = trim((string) $matches[$j][0]);
             ++$j;
         }
 
@@ -223,13 +223,13 @@ class LegacyMarkup
 
     private function getArgs2($data, $reg_exp)
     {
-        $reg_exp = str_replace('?)?', ')', $reg_exp);
+        $reg_exp = str_replace('?)?', ')', (string) $reg_exp);
         $variable_array = [];
         $matches = [];
-        preg_match_all($reg_exp, $data, $matches);
+        preg_match_all($reg_exp, (string) $data, $matches);
         $j = 0;
         while (isset($matches[$j][0])) {
-            $variable_array[$j] = trim($matches[$j][0]);
+            $variable_array[$j] = trim((string) $matches[$j][0]);
             ++$j;
         }
         $last_element = array_pop($variable_array);
@@ -273,10 +273,10 @@ class LegacyMarkup
     private function getSubText($text, $search)
     {
         $retour = '';
-        $pos = strpos($text, (string) $search);
+        $pos = strpos((string) $text, (string) $search);
         $komma_closed = false;
         $end_tag_begin = false;
-        for ($i = $pos + strlen($search); $i < strlen($text); ++$i) {
+        for ($i = $pos + strlen((string) $search); $i < strlen((string) $text); ++$i) {
             if ($end_tag_begin
                 and ')' == $text[$i]
                 and $komma_closed) {
@@ -292,7 +292,7 @@ class LegacyMarkup
             }
         }
         if ($end_tag_begin) {
-            $retour = substr($text, $pos, $i - $pos + 1);
+            $retour = substr((string) $text, $pos, $i - $pos + 1);
         }
 
         return $retour;
@@ -301,7 +301,7 @@ class LegacyMarkup
     private function parseArgs($x)
     {
         $z = [];
-        $x = str_replace('&#39;', "'", $x);
+        $x = str_replace('&#39;', "'", (string) $x);
         $x = str_replace('&quot;', '"', $x);
         preg_match_all('~([-+]|(?>(\\w+)[:=]{0,1}))?("[^"]*"|\'[^\']*\'|\\S+)~u', $x, $terms, PREG_SET_ORDER);
         foreach ($terms as $t) {
@@ -337,7 +337,7 @@ class LegacyMarkup
         $src = $array[1].$array[2];
         if (empty($array[1])) {
             if (!empty($array[2])) {
-                $lookupFileName = htmlentities($array[2], ENT_NOQUOTES, 'UTF-8');
+                $lookupFileName = htmlentities((string) $array[2], ENT_NOQUOTES, 'UTF-8');
                 if (!isset($this->files[$lookupFileName])) {
                     $lookupFileName = $array[2];
                 }
@@ -346,7 +346,7 @@ class LegacyMarkup
                     $file = $this->files[$lookupFileName];
 
                     if ($file) {
-                        $lowerFilename = mb_strtolower($file->getFilename(), 'UTF-8');
+                        $lowerFilename = mb_strtolower((string) $file->getFilename(), 'UTF-8');
                         if (mb_stristr($lowerFilename, 'png') ||
                             mb_stristr($lowerFilename, 'jpg') ||
                             mb_stristr($lowerFilename, 'jpeg') ||
@@ -461,7 +461,7 @@ class LegacyMarkup
             $image_text = '<a href="'.$source.'"'.$target.'>'.$word.'</a>';
         }
         if (!empty($image_text)) {
-            $text = str_replace($array[0], $image_text, $text);
+            $text = str_replace($array[0], $image_text, (string) $text);
         }
 
         return $text;
@@ -477,7 +477,7 @@ class LegacyMarkup
             return $text;
         }
 
-        $tempFileName = htmlentities($array[1], ENT_NOQUOTES, 'UTF-8');
+        $tempFileName = htmlentities((string) $array[1], ENT_NOQUOTES, 'UTF-8');
 
         if (!empty($this->files[$tempFileName])) {
             $file = $this->files[$tempFileName];
@@ -502,7 +502,7 @@ class LegacyMarkup
 
             $fileText = '<a href="'.$src.'">'.$name.'</a>';
 
-            return str_replace($array[0], $fileText, $text);
+            return str_replace($array[0], $fileText, (string) $text);
         }
 
         return $text;
@@ -609,14 +609,14 @@ class LegacyMarkup
         ]);
 
         $altRegex = '~<img.*?alt="(\w*?)".*?\/>~u';
-        $altFound = preg_match($altRegex, $text, $altMatches);
+        $altFound = preg_match($altRegex, (string) $text, $altMatches);
         $alt = '';
         if ($altFound) {
             $alt = $altMatches[1];
         }
 
         $styleRegex = '~<img.*?style="(.*?)".*?\/>~u';
-        $styleFound = preg_match($styleRegex, $text, $styleMatches);
+        $styleFound = preg_match($styleRegex, (string) $text, $styleMatches);
         $style = '';
         if ($styleFound) {
             $style = $styleMatches[1];

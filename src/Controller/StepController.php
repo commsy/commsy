@@ -29,7 +29,7 @@ class StepController extends BaseController
 {
     private TodoService $todoService;
 
-    public function __construct(private TodoStatusAction $todoStatusAction)
+    public function __construct(private readonly TodoStatusAction $todoStatusAction)
     {
     }
 
@@ -74,7 +74,7 @@ class StepController extends BaseController
         foreach ($roomToDoItems as $roomToDoItem) {
             $steps = $roomToDoItem->getStepItemList()->_data;
             foreach ($steps as $step) {
-                if (0 == strcmp($step->getItemID(), $itemId)) {
+                if (0 == strcmp((string) $step->getItemID(), (string) $itemId)) {
                     $items = [$roomToDoItem];
                     $room = $roomToDoItem->getContextItem();
                 }

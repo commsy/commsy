@@ -13,7 +13,7 @@
 
 namespace App\Entity;
 
-use DateTime;
+use App\Utils\EntityDatesTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,29 +24,19 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'context_id', columns: ['context_id'])]
 class Tag
 {
-    /**
-     * @var int
-     */
+    use EntityDatesTrait;
+
     #[ORM\Column(name: 'item_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $itemId = '0';
+    private int $itemId;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
     private $contextId;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
-    private $creatorId = '0';
+    private string $creatorId = '0';
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: true)]
     private $modifierId;
 
@@ -54,36 +44,10 @@ class Tag
     #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id')]
     private ?User $deleter = null;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
-    private $creationDate = '0000-00-00 00:00:00';
-
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
-    private $modificationDate = '0000-00-00 00:00:00';
-
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private $deletionDate;
-
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private $title;
 
-    /**
-     * Get itemId.
-     *
-     * @return int
-     */
-    public function getItemId()
+    public function getItemId(): int
     {
         return $this->itemId;
     }
@@ -180,78 +144,6 @@ class Tag
     public function getDeleter()
     {
         return $this->deleter;
-    }
-
-    /**
-     * Set creationDate.
-     *
-     * @param DateTime $creationDate
-     *
-     * @return Tag
-     */
-    public function setCreationDate($creationDate)
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get creationDate.
-     *
-     * @return DateTime
-     */
-    public function getCreationDate()
-    {
-        return $this->creationDate;
-    }
-
-    /**
-     * Set modificationDate.
-     *
-     * @param DateTime $modificationDate
-     *
-     * @return Tag
-     */
-    public function setModificationDate($modificationDate)
-    {
-        $this->modificationDate = $modificationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get modificationDate.
-     *
-     * @return DateTime
-     */
-    public function getModificationDate()
-    {
-        return $this->modificationDate;
-    }
-
-    /**
-     * Set deletionDate.
-     *
-     * @param DateTime $deletionDate
-     *
-     * @return Tag
-     */
-    public function setDeletionDate($deletionDate)
-    {
-        $this->deletionDate = $deletionDate;
-
-        return $this;
-    }
-
-    /**
-     * Get deletionDate.
-     *
-     * @return DateTime
-     */
-    public function getDeletionDate()
-    {
-        return $this->deletionDate;
     }
 
     /**

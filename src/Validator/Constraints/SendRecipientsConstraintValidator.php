@@ -15,12 +15,13 @@ namespace App\Validator\Constraints;
 
 use App\Form\Model\Send;
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 class SendRecipientsConstraintValidator extends ConstraintValidator
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

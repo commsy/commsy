@@ -24,7 +24,7 @@ use App\Services\LegacyEnvironment;
  */
 class TimePulsesService
 {
-    public function __construct(private LegacyEnvironment $legacyEnvironment)
+    public function __construct(private readonly LegacyEnvironment $legacyEnvironment)
     {
     }
 
@@ -50,7 +50,7 @@ class TimePulsesService
         }
 
         // sort all time pulse templates first by start month & day, then by end month & day
-        uasort($timePulseTemplates, [TimePulseTemplate::class, 'compare']);
+        uasort($timePulseTemplates, TimePulseTemplate::compare(...));
 
         return $timePulseTemplates;
     }
@@ -86,8 +86,8 @@ class TimePulsesService
         $timePulseTemplate->setTitleEnglish($rawTimePulseTemplate['EN']);
 
         // expected format for the raw BEGIN/END values: <DAYNUMBER>.<MONTHNUMBER> (like "01.01" or "31.12")
-        $startParts = explode('.', $rawTimePulseTemplate['BEGIN']);
-        $endParts = explode('.', $rawTimePulseTemplate['END']);
+        $startParts = explode('.', (string) $rawTimePulseTemplate['BEGIN']);
+        $endParts = explode('.', (string) $rawTimePulseTemplate['END']);
         if (2 !== count($startParts) || 2 !== count($endParts)) {
             return null;
         }
@@ -233,7 +233,7 @@ class TimePulsesService
                         $last_new_clock_pulse = array_pop($clock_pulse_array);
                         $clock_pulse_array[] = $last_new_clock_pulse;
                         if ($time_label->getTitle() < $first_new_clock_pulse) {
-                            $temp_clock_pulse_array = explode('_', $time_label->getTitle());
+                            $temp_clock_pulse_array = explode('_', (string) $time_label->getTitle());
                             $clock_pulse_pos = $temp_clock_pulse_array[1];
                             if ($clock_pulse_pos > $count) {
                                 if (!$time_label->isDeleted()) {

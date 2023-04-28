@@ -15,15 +15,17 @@ namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
 use cs_announcement_item;
+use cs_announcement_manager;
+use cs_environment;
 use cs_label_item;
 use cs_manager;
 use Symfony\Component\Form\Form;
 
 class AnnouncementService
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    private $announcementManager;
+    private readonly cs_announcement_manager $announcementManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

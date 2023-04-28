@@ -31,17 +31,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CalendarsService
 {
-    private ObjectManager $objectManager;
+    private readonly ObjectManager $objectManager;
 
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
-        private CalendarsRepository $calendarsRepository,
+        private readonly CalendarsRepository $calendarsRepository,
         ManagerRegistry $doctrine,
-        private DateService $dateService,
+        private readonly DateService $dateService,
         LegacyEnvironment $legacyEnvironment,
-        private TranslatorInterface $translator,
-        private DeleteAction $deleteAction
+        private readonly TranslatorInterface $translator,
+        private readonly DeleteAction $deleteAction
     ) {
         $this->objectManager = $doctrine->getManager();
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -257,8 +257,8 @@ class CalendarsService
                             $tempOrganizerString .= $event->ORGANIZER['CN'];
                         }
                         // lowercase "mailto:" is required for proper comparison with the sanitized description from `cs_date_item->getDescription()` below
-                        $organizerMailto = str_ireplace('MAILTO:', 'mailto:', $event->ORGANIZER->getValue());
-                        $organizerEmail = str_ireplace('MAILTO:', '', $event->ORGANIZER->getValue());
+                        $organizerMailto = str_ireplace('MAILTO:', 'mailto:', (string) $event->ORGANIZER->getValue());
+                        $organizerEmail = str_ireplace('MAILTO:', '', (string) $event->ORGANIZER->getValue());
                         $attendeeArray[] = $tempOrganizerString.' (<a href="'.$organizerMailto.'">'.$organizerEmail.'</a>)';
                     }
                     if ($event->ATTENDEE) {
@@ -267,8 +267,8 @@ class CalendarsService
                             if (isset($tempAttendee['CN'])) {
                                 $tempAttendeeString .= $tempAttendee['CN'];
                             }
-                            $attendeeMailto = str_ireplace('MAILTO:', 'mailto:', $tempAttendee->getValue());
-                            $attendeeEmail = str_ireplace('MAILTO:', '', $tempAttendee->getValue());
+                            $attendeeMailto = str_ireplace('MAILTO:', 'mailto:', (string) $tempAttendee->getValue());
+                            $attendeeEmail = str_ireplace('MAILTO:', '', (string) $tempAttendee->getValue());
                             $attendeeArray[] = $tempAttendeeString.' (<a href="'.$organizerMailto.'">'.$organizerEmail.'</a>)';
                         }
                     }

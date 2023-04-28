@@ -15,15 +15,18 @@ namespace App\Facade;
 
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AccountCreatorFacade
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(private EntityManagerInterface $entityManager, LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        LegacyEnvironment $legacyEnvironment
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 

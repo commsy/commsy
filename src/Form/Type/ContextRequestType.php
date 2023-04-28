@@ -128,7 +128,7 @@ class ContextRequestType extends AbstractType
      *
      * @return string The prefix of the template block name
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'request';
     }

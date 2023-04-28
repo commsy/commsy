@@ -18,7 +18,7 @@ use cs_noticed_manager;
 
 class NoticedService
 {
-    private cs_noticed_manager $noticedManager;
+    private readonly cs_noticed_manager $noticedManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

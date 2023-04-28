@@ -23,12 +23,9 @@ use Twig\TwigFunction;
 
 class FormatDateTimeRangeExtension extends AbstractExtension
 {
-    /**
-     * @var cs_environment
-     */
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private TranslatorInterface $translator, private Craue\FormatDateTimeExtension $dateTimeFormatter)
+    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly TranslatorInterface $translator, private readonly Craue\FormatDateTimeExtension $dateTimeFormatter)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -36,7 +33,7 @@ class FormatDateTimeRangeExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('formatDateTimeRange', [$this, 'formatDateTimeRange']),
+            new TwigFunction('formatDateTimeRange', $this->formatDateTimeRange(...)),
         ];
     }
 

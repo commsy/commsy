@@ -15,18 +15,18 @@ namespace App\Form\Type\Portal;
 
 use App\Entity\PortalUserChangeStatus;
 use App\Security\Authorization\Voter\RootVoter;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Security\Core\Security;
 
 class AccountIndexDetailChangeStatusType extends AbstractType
 {
     /**
      * AccountIndexDetailChangeStatusType constructor.
      */
-    public function __construct(private Security $security)
+    public function __construct(private readonly Security $security)
     {
     }
 

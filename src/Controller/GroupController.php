@@ -44,15 +44,14 @@ use cs_room_item;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -64,8 +63,6 @@ class GroupController extends BaseController
 {
     private GroupService $groupService;
 
-    private SessionInterface $session;
-
     private UserService $userService;
 
     private Mailer $mailer;
@@ -74,12 +71,6 @@ class GroupController extends BaseController
     public function setGroupService(GroupService $groupService): void
     {
         $this->groupService = $groupService;
-    }
-
-    #[Required]
-    public function setSession(SessionInterface $session): void
-    {
-        $this->session = $session;
     }
 
     #[Required]
@@ -117,7 +108,7 @@ class GroupController extends BaseController
             $this->groupService->hideDeactivatedEntries();
         }
 
-        $sort = $this->session->get('sortGroups', 'date');
+        $sort = $request->getSession()->get('sortGroups', 'date');
 
         // get group list from manager service
         $itemsCountArray = $this->groupService->getCountArray($roomId);
@@ -128,7 +119,7 @@ class GroupController extends BaseController
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('group');
         }
 
-        return $this->render('group/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm->createView(), 'module' => 'group', 'itemsCountArray' => $itemsCountArray, 'showRating' => false, 'showHashTags' => $roomItem->withBuzzwords(), 'showCategories' => $roomItem->withTags(), 'showAssociations' => false, 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'sort' => $sort]);
+        return $this->render('group/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'group', 'itemsCountArray' => $itemsCountArray, 'showRating' => false, 'showHashTags' => $roomItem->withBuzzwords(), 'showCategories' => $roomItem->withTags(), 'showAssociations' => false, 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'sort' => $sort]);
     }
 
     #[Route(path: '/room/{roomId}/group/print/{sort}', defaults: ['sort' => 'none'])]
@@ -158,7 +149,7 @@ class GroupController extends BaseController
 
         // get group list from manager service
         if ('none' === $sort || empty($sort)) {
-            $sort = $this->session->get('sortGroups', 'date');
+            $sort = $request->getSession()->get('sortGroups', 'date');
         }
         $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0, $sort);
 
@@ -219,9 +210,9 @@ class GroupController extends BaseController
         }
 
         if (empty($sort)) {
-            $sort = $this->session->get('sortGroups', 'date');
+            $sort = $request->getSession()->get('sortGroups', 'date');
         }
-        $this->session->set('sortGroups', $sort);
+        $request->getSession()->set('sortGroups', $sort);
 
         // get group list from manager service
         $groups = $this->groupService->getListGroups($roomId, $max, $start, $sort);
@@ -344,7 +335,7 @@ class GroupController extends BaseController
             'user' => $infoArray['user'],
             'userIsMember' => $infoArray['userIsMember'],
             'memberStatus' => $memberStatus,
-            'annotationForm' => $form->createView(),
+            'annotationForm' => $form,
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
             'isArchived' => $roomItem->getArchived(),
@@ -717,7 +708,7 @@ class GroupController extends BaseController
         $this->eventDispatcher->dispatch(new CommsyEditEvent($groupItem), CommsyEditEvent::EDIT);
 
         return $this->render('group/edit.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'group' => $groupItem,
             'isDraft' => $isDraft,
             'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
@@ -1035,7 +1026,7 @@ class GroupController extends BaseController
                 }
 
                 // NOTE: as of #2461 all mail should be sent as BCC mail
-                $allRecipients = array_merge($to, $toCC, $toBCC);
+                $allRecipients = [...$to, ...$toCC, ...$toBCC];
                 $message->bcc(...$mailAssistant->convertArrayToAddresses($allRecipients));
 
                 $this->addFlash('recipientCount', count($allRecipients));
@@ -1057,7 +1048,7 @@ class GroupController extends BaseController
         }
 
         return $this->render('group/send_multiple.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -1171,7 +1162,7 @@ class GroupController extends BaseController
                 }
 
                 // NOTE: as of #2461 all mail should be sent as BCC mail
-                $allRecipients = array_merge($to, $toCC, $toBCC);
+                $allRecipients = [...$to, ...$toCC, ...$toBCC];
                 $email->bcc(...$mailAssistant->convertArrayToAddresses($allRecipients));
 
                 $this->addFlash('recipientCount', count($allRecipients));
@@ -1193,7 +1184,7 @@ class GroupController extends BaseController
         }
 
         return $this->render('group/send.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 

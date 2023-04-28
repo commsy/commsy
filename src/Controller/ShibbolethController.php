@@ -68,7 +68,7 @@ class ShibbolethController extends AbstractController
      * @throws Exception
      */
     #[Route(path: '/login/{context}/auth/shib/check')]
-    public function authShibbolethCheck()
+    public function authShibbolethCheck(): never
     {
         // controller can be blank: it will never be executed!
         throw new Exception('Handled by guard authenticator');

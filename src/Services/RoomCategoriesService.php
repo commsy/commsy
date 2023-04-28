@@ -20,7 +20,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class RoomCategoriesService
 {
-    private EntityManagerInterface $em;
+    private readonly EntityManagerInterface $em;
 
     public function __construct(ManagerRegistry $doctrine)
     {

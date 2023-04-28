@@ -18,7 +18,7 @@ use cs_tag_item;
 
 class CategoryService
 {
-    public function __construct(private LegacyEnvironment $legacyEnvironment)
+    public function __construct(private readonly LegacyEnvironment $legacyEnvironment)
     {
     }
 

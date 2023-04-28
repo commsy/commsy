@@ -26,14 +26,14 @@ class GeneralSettingsTransformer extends AbstractTransformer
 {
     protected $entity = 'general_settings';
 
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private RoomService $roomService,
-        private UserService $userService,
-        private RoomRepository $roomRepository,
-        private ManagerRegistry $managerRegistry
+        private readonly RoomService $roomService,
+        private readonly UserService $userService,
+        private readonly RoomRepository $roomRepository,
+        private readonly ManagerRegistry $managerRegistry
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -73,7 +73,7 @@ class GeneralSettingsTransformer extends AbstractTransformer
 
             $rubrics = [];
             foreach ($this->roomService->getRubricInformation($roomItem->getItemID(), true) as $rubric) {
-                [$rubricName, $modifier] = explode('_', $rubric);
+                [$rubricName, $modifier] = explode('_', (string) $rubric);
                 $rubrics[$rubricName] = $modifier;
             }
             foreach (array_diff($defaultRubrics, array_keys($rubrics)) as $deactivated_rubric) {
@@ -126,16 +126,14 @@ class GeneralSettingsTransformer extends AbstractTransformer
      * @param object $roomObject
      * @param array  $roomData
      *
-     * @return cs_room_item|null
-     *
      * @throws TransformationFailedException if room item is not found
      */
-    public function applyTransformation($roomObject, $roomData)
+    public function applyTransformation($roomObject, $roomData): cs_room_item
     {
         $rubricArray = [];
-        foreach (explode(',', $roomData['rubricOrder']) as $rubricName) {
+        foreach (explode(',', (string) $roomData['rubricOrder']) as $rubricName) {
             $rubricValue = $roomData['rubrics'][$rubricName];
-            if (0 == strcmp($rubricValue, 'off')) {
+            if (0 == strcmp((string) $rubricValue, 'off')) {
                 continue;
             }
             $rubricArray[] = $rubricName.'_'.$rubricValue;
@@ -150,7 +148,7 @@ class GeneralSettingsTransformer extends AbstractTransformer
         }
 
         if (isset($roomData['room_description'])) {
-            $roomObject->setDescription(strip_tags($roomData['room_description']));
+            $roomObject->setDescription(strip_tags((string) $roomData['room_description']));
         } else {
             $roomObject->setDescription('');
         }

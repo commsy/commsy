@@ -23,13 +23,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'id', columns: ['id'])]
 class RoomCategoriesLinks
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    private $id = '0';
+    private int $id;
 
     /**
      * @var int
@@ -43,12 +40,7 @@ class RoomCategoriesLinks
     #[ORM\Column(name: 'category_id', type: 'integer', nullable: false)]
     private $category_id;
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }

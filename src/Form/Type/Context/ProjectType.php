@@ -29,11 +29,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ProjectType extends AbstractType
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private TranslatorInterface $translator
+        private readonly TranslatorInterface $translator
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

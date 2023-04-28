@@ -16,8 +16,8 @@ namespace App\Security;
 use App\Utils\RequestContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 
 abstract class AbstractCommsyAuthenticator extends AbstractAuthenticator
 {
@@ -57,7 +57,7 @@ abstract class AbstractCommsyAuthenticator extends AbstractAuthenticator
         ];
 
         $request->getSession()->set(
-            Security::LAST_USERNAME,
+            SecurityRequestAttributes::LAST_USERNAME,
             $credentials['email']
         );
 

@@ -19,9 +19,9 @@ use Elastica\Query\Range;
 
 class CreationDateFilterCondition implements FilterConditionInterface
 {
-    private ?DateTime $startDate;
+    private ?DateTime $startDate = null;
 
-    private ?DateTime $endDate;
+    private ?DateTime $endDate = null;
 
     public function getStartDate(): ?DateTime
     {

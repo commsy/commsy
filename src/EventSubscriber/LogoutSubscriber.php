@@ -15,19 +15,19 @@ namespace App\EventSubscriber;
 
 use App\Entity\Account;
 use App\Entity\AuthSourceShibboleth;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Event\LogoutEvent;
 use Symfony\Component\Security\Http\HttpUtils;
 
 class LogoutSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private Security $security,
-        private HttpUtils $httpUtils,
-        private UrlGeneratorInterface $urlGenerator
+        private readonly Security $security,
+        private readonly HttpUtils $httpUtils,
+        private readonly UrlGeneratorInterface $urlGenerator
     ) {
     }
 
@@ -41,7 +41,7 @@ class LogoutSubscriber implements EventSubscriberInterface
     public function onLogout(LogoutEvent $event): void
     {
         $request = $event->getRequest();
-        
+
         /** @var Account $account */
         $account = $this->security->getUser();
         if ($account) {

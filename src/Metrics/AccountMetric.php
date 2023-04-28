@@ -19,7 +19,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class AccountMetric extends AbstractMetric implements MetricInterface
 {
-    public function __construct(private ManagerRegistry $doctrine)
+    public function __construct(private readonly ManagerRegistry $doctrine)
     {
     }
 

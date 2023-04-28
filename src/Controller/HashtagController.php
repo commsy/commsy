@@ -21,12 +21,12 @@ use App\Form\Type\HashtagMergeType;
 use App\Repository\LabelRepository;
 use App\Services\LegacyEnvironment;
 use App\Utils\LabelService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class HashtagController extends AbstractController
@@ -114,7 +114,7 @@ class HashtagController extends AbstractController
 
         if ($labelId) {
             $hashtag = $labelRepository->findOneByItemId($labelId);
-            $hashtag->setName(html_entity_decode($hashtag->getName()));
+            $hashtag->setName(html_entity_decode((string) $hashtag->getName()));
         } else {
             $hashtag = new Labels();
             $hashtag->setContextId($roomId);
@@ -150,7 +150,7 @@ class HashtagController extends AbstractController
 
         $hashtags = $labelRepository->findRoomHashtags($roomId);
         foreach ($hashtags as $hashtag) {
-            $hashtag->setName(html_entity_decode($hashtag->getName()));
+            $hashtag->setName(html_entity_decode((string) $hashtag->getName()));
         }
 
         $mergeData = new MergeHashtags();
@@ -202,11 +202,11 @@ class HashtagController extends AbstractController
         $eventDispatcher->dispatch(new CommsyEditEvent(null), CommsyEditEvent::EDIT);
 
         return $this->render('hashtag/edit.html.twig', [
-            'editForm' => $editForm->createView(),
+            'editForm' => $editForm,
             'roomId' => $roomId,
             'hashtags' => $hashtags,
             'labelId' => $labelId,
-            'mergeForm' => $mergeForm->createView(),
+            'mergeForm' => $mergeForm,
         ]);
     }
 }

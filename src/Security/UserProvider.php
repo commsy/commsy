@@ -26,8 +26,8 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 class UserProvider implements UserProviderInterface
 {
     public function __construct(
-        private RequestStack $requestStack,
-        private EntityManagerInterface $entityManager
+        private readonly RequestStack $requestStack,
+        private readonly EntityManagerInterface $entityManager
     ) {
     }
 
@@ -40,7 +40,7 @@ class UserProvider implements UserProviderInterface
      *
      * @throws UserNotFoundException if the user is not found
      */
-    public function loadUserByUsername($username): Account
+    public function loadUserByIdentifier($username): Account
     {
         // Load a User object from your data source or throw UsernameNotFoundException.
         // The $username argument may not actually be a username:
@@ -110,7 +110,7 @@ class UserProvider implements UserProviderInterface
     /**
      * Tells Symfony to use this provider for this User class.
      */
-    public function supportsClass($class)
+    public function supportsClass($class): bool
     {
         return Account::class === $class;
     }

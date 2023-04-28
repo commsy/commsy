@@ -33,14 +33,14 @@ use WhiteOctober\BreadcrumbsBundle\Model\Breadcrumbs;
 
 class BreadcrumbSubscriber implements EventSubscriberInterface
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private RoomService $roomService,
-        private ItemService $itemService,
-        private TranslatorInterface $translator,
-        private Breadcrumbs $breadcrumbs
+        private readonly RoomService $roomService,
+        private readonly ItemService $itemService,
+        private readonly TranslatorInterface $translator,
+        private readonly Breadcrumbs $breadcrumbs
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -62,7 +62,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
         }
         $request = $event->getRequest();
 
-        $route = explode('_', $request->get('_route'));
+        $route = explode('_', (string) $request->get('_route'));
 
         if (count($route) < 3) {
             return;
@@ -265,6 +265,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
     ): void
     {
         // rubric & entry
+        $route = explode('_', (string) $request->get('_route'));
         $routeParameters = $request->get('_route_params');
         if (array_key_exists('itemId', $routeParameters)) {
             // link to rubric
@@ -311,7 +312,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
      */
     private function isDateCalendar(cs_room_item $room, string $controller): bool
     {
-        if ('date' == $controller and 'normal' !== $room->getDatesPresentationStatus()) {
+        if ('date' == $controller && 'normal' !== $room->getDatesPresentationStatus()) {
             return true;
         }
 

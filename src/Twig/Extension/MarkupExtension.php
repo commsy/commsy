@@ -23,13 +23,13 @@ use Twig\TwigFilter;
 
 class MarkupExtension extends AbstractExtension
 {
-    public function __construct(private RequestStack $requestStack, private LegacyMarkup $legacyMarkup)
+    public function __construct(private readonly RequestStack $requestStack, private readonly LegacyMarkup $legacyMarkup)
     {
     }
 
     public function getFilters(): array
     {
-        return [new TwigFilter('commsyMarkup', [$this, 'commsyMarkup'])];
+        return [new TwigFilter('commsyMarkup', $this->commsyMarkup(...))];
     }
 
     public function commsyMarkup($text, cs_item $item = null)
@@ -62,7 +62,7 @@ class MarkupExtension extends AbstractExtension
         $text = $this->interpreteLinks($text);
 
         // The etherpad ignores the first row, if it is not surrounded by a paragraph tag
-        if (0 !== !strpos($text, '<p>') && '</p>' != substr($text, -4)) {
+        if (0 !== !strpos((string) $text, '<p>') && !str_ends_with((string) $text, '</p>')) {
             $text = '<p>'.$text.'</p>';
         }
 
@@ -86,9 +86,9 @@ class MarkupExtension extends AbstractExtension
         $RFC1738_CHARS = "A-Za-z0-9\?:@&=/;_\.\+!\*'(,%\$~#-";
         $RFC2822_CHARS = "A-Za-z0-9!#\$%&'\*\+/=\?\^_`{\|}~-";
 
-        preg_match('~<!-- KFC TEXT [a-z0-9]* -->~u', $text, $values);
+        preg_match('~<!-- KFC TEXT [a-z0-9]* -->~u', (string) $text, $values);
         foreach ($values as $key => $value) {
-            $text = str_replace($value, 'COMMSY_FCKEDITOR'.$key.' ', $text);
+            $text = str_replace($value, 'COMMSY_FCKEDITOR'.$key.' ', (string) $text);
         }
         $text = ' '.$text;
 
@@ -144,14 +144,14 @@ class MarkupExtension extends AbstractExtension
     {
         $matches = [];
 
-        while (preg_match('~(^|\n)(\s*)(!+)(\s*)(.*)~u', $text, $matches)) {
+        while (preg_match('~(^|\n)(\s*)(!+)(\s*)(.*)~u', (string) $text, $matches)) {
             $numBangs = mb_strlen($matches[3]);
 
             // normal (one '!') is h4, biggest is h1; The more bang '!', the bigger the heading
             $headingLevel = max(5 - $numBangs, 1);
             $heading = "<h$headingLevel>$matches[5]</h$headingLevel>\n";
 
-            $text = preg_replace('~(^|\n)(\s*)(!+)(\s*)(.*)~u', $heading, $text, 1);
+            $text = preg_replace('~(^|\n)(\s*)(!+)(\s*)(.*)~u', $heading, (string) $text, 1);
         }
 
         return $text;
@@ -172,11 +172,11 @@ class MarkupExtension extends AbstractExtension
         $list_open = false;
 
         // split up paragraphs in lines
-        $lines = preg_split('~\s*\n~uU', $text);
+        $lines = preg_split('~\s*\n~uU', (string) $text);
         foreach ($lines as $line) {
             $line_html = '';
             // find horizontal rulers
-            if (preg_match('~^--(-+)\s*($|\n|<)~u', $line)) {
+            if (preg_match('~^--(-+)\s*($|\n|<)~u', (string) $line)) {
                 if ($list_open) {
                     $line_html .= $this->_close_list($last_list_type);
                     $list_open = false;
@@ -185,7 +185,7 @@ class MarkupExtension extends AbstractExtension
             }
 
             // process lists
-            elseif (preg_match('~^(-|#)(\s*)(.*)~su', $line, $matches)) {
+            elseif (preg_match('~^(-|#)(\s*)(.*)~su', (string) $line, $matches)) {
                 $list_type = $matches[1];
 
                 if (!$list_open) {
@@ -229,7 +229,7 @@ class MarkupExtension extends AbstractExtension
      */
     private function commsyMarkupEscapes($text)
     {
-        $text = str_replace("\*", '&ast;', $text);
+        $text = str_replace("\*", '&ast;', (string) $text);
         $text = str_replace("\_", '&lowbar;', $text);
         $text = str_replace("\!", '&excl;', $text);
         $text = str_replace("\-", '&macr;', $text);

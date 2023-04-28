@@ -24,7 +24,6 @@ use App\Utils\UserService;
 use cs_list;
 use cs_user_item;
 use DateTimeImmutable;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,6 +31,7 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -86,7 +86,7 @@ class ContextController extends AbstractController
             $formOptions['withAGB'] = true;
 
             // get agb text in users language
-            $agbText = $roomItem->getAGBTextArray()[strtoupper($legacyEnvironment->getUserLanguage())];
+            $agbText = $roomItem->getAGBTextArray()[strtoupper((string) $legacyEnvironment->getUserLanguage())];
         }
 
         if ($roomItem->checkNewMembersNever()) {
@@ -377,7 +377,7 @@ class ContextController extends AbstractController
         }
 
         return $this->render('context/request.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'agbText' => $agbText,
             'title' => html_entity_decode($roomItem->getTitle()),
         ]);

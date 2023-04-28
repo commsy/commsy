@@ -22,20 +22,8 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class UserJoinedRoomEvent extends Event
 {
-    /**
-     * @var cs_user_item
-     */
-    private $user;
-
-    /**
-     * @var cs_room_item
-     */
-    private $room;
-
-    public function __construct(cs_user_item $user, cs_room_item $room)
+    public function __construct(private readonly cs_user_item $user, private readonly cs_room_item $room)
     {
-        $this->user = $user;
-        $this->room = $room;
     }
 
     public function getUser(): cs_user_item

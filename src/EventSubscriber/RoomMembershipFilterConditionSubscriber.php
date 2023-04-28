@@ -23,8 +23,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class RoomMembershipFilterConditionSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private UserService $userService)
-    {
+    public function __construct(
+        private readonly UserService $userService
+    ) {
     }
 
     /**

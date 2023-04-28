@@ -189,13 +189,13 @@ class cs_step_item extends cs_item
     /** get groups of a step
      * this method returns a list of groups which are linked to the step.
      *
-     * @return object cs_list a list of groups (cs_label_item)
+     * @return int
      *
      * @author CommSy Development Group
      */
-    public function getMinutes()
+    public function getMinutes(): int
     {
-        return $this->_getValue('minutes');
+        return (int) $this->_getValue('minutes');
     }
 
     public function setMinutes($min)

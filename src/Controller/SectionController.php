@@ -28,8 +28,11 @@ class SectionController extends BaseController
     /**
      * SectionController constructor.
      */
-    public function __construct(private MaterialService $materialService, DeleteSection $deleteSection, private DeleteAction $deleteAction)
-    {
+    public function __construct(
+        private readonly MaterialService $materialService,
+        DeleteSection $deleteSection,
+        private readonly DeleteAction $deleteAction
+    ) {
         $this->deleteAction->setDeleteStrategy($deleteSection);
     }
 

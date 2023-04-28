@@ -23,7 +23,7 @@ class CalendarType extends AbstractType
      *
      * @return string|null The name of the parent type if any, null otherwise
      */
-    public function getParent()
+    public function getParent(): ?string
     {
         return ChoiceFilterType::class;
     }

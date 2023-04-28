@@ -125,10 +125,10 @@ class Portal implements Serializable
 
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
     #[Groups(['api'])]
-    private ?DateTime $modificationDate;
+    private ?DateTime $modificationDate = null;
 
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private ?DateTime $deletionDate;
+    private ?DateTime $deletionDate = null;
 
     #[OA\Property(type: 'string', maxLength: 255)]
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]

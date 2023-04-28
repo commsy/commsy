@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use App\Utils\EntityDatesTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -27,17 +28,13 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 class Todos
 {
-    /**
-     * @var int
-     */
+    use EntityDatesTrait;
+
     #[ORM\Column(name: 'item_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $itemId = '0';
+    private int $itemId;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
     private $contextId;
 
@@ -49,78 +46,33 @@ class Todos
     #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
     private ?User $modifier = null;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private $deleterId;
-
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
-    private $creationDate = '0000-00-00 00:00:00';
-
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
-    private $modificationDate;
 
     #[ORM\Column(name: 'activation_date', type: 'datetime')]
     private ?DateTime $activationDate = null;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private $deletionDate;
-
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private $title;
 
-    /**
-     * @var DateTime
-     */
     #[ORM\Column(name: 'date', type: 'datetime', nullable: true)]
     private $date;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'status', type: 'integer', nullable: false)]
     private $status = '1';
 
-    /**
-     * @var float
-     */
     #[ORM\Column(name: 'minutes', type: 'float', precision: 10, scale: 0, nullable: true)]
     private $minutes;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'time_type', type: 'smallint', nullable: false)]
-    private $timeType = '1';
+    private string $timeType = '1';
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'description', type: 'text', length: 16777215, nullable: true)]
+    #[ORM\Column(name: 'description', type: 'text', length: 16_777_215, nullable: true)]
     private $description;
 
-    /**
-     * @var bool
-     */
     #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
-    private $public = '0';
+    private string $public = '0';
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
     private $extras;
 
@@ -167,12 +119,7 @@ class Todos
         return null == $this->deleterId && null == $this->deletionDate;
     }
 
-    /**
-     * Get itemId.
-     *
-     * @return int
-     */
-    public function getItemId()
+    public function getItemId(): int
     {
         return $this->itemId;
     }
@@ -226,54 +173,6 @@ class Todos
     }
 
     /**
-     * Set creationDate.
-     *
-     * @param DateTime $creationDate
-     *
-     * @return Todos
-     */
-    public function setCreationDate($creationDate)
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get creationDate.
-     *
-     * @return DateTime
-     */
-    public function getCreationDate()
-    {
-        return $this->creationDate;
-    }
-
-    /**
-     * Set modificationDate.
-     *
-     * @param DateTime $modificationDate
-     *
-     * @return Todos
-     */
-    public function setModificationDate($modificationDate)
-    {
-        $this->modificationDate = $modificationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get modificationDate.
-     *
-     * @return DateTime
-     */
-    public function getModificationDate()
-    {
-        return $this->modificationDate;
-    }
-
-    /**
      * Set activationDate.
      */
     public function setActivationDate(DateTime $activationDate): self
@@ -290,31 +189,7 @@ class Todos
     {
         return $this->activationDate;
     }
-
-    /**
-     * Set deletionDate.
-     *
-     * @param DateTime $deletionDate
-     *
-     * @return Todos
-     */
-    public function setDeletionDate($deletionDate)
-    {
-        $this->deletionDate = $deletionDate;
-
-        return $this;
-    }
-
-    /**
-     * Get deletionDate.
-     *
-     * @return DateTime
-     */
-    public function getDeletionDate()
-    {
-        return $this->deletionDate;
-    }
-
+    
     /**
      * Set title.
      *

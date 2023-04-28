@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SendListType extends AbstractType
 {
-    public function __construct(private MailAssistant $mailAssistant)
+    public function __construct(private readonly MailAssistant $mailAssistant)
     {
     }
 
@@ -216,7 +216,7 @@ class SendListType extends AbstractType
      *
      * @return string The prefix of the template block name
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'sendList';
     }

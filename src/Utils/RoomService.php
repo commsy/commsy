@@ -23,11 +23,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RoomService
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private LegacyCopy $legacyCopy
+        private readonly LegacyCopy $legacyCopy
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -63,7 +63,7 @@ class RoomService
 
             $rubrics = [];
             if (!empty($homeConfiguration)) {
-                $rubricConfigurations = explode(',', $homeConfiguration);
+                $rubricConfigurations = explode(',', (string) $homeConfiguration);
 
                 foreach ($rubricConfigurations as $rubricConfiguration) {
                     [$rubricName] = explode('_', $rubricConfiguration);
@@ -82,7 +82,6 @@ class RoomService
 
     /**
      * @param int $roomId The id of the room
-     * @param array $exclude
      * @return string[] List of rubrics needed for querying
      */
     public function getVisibleRoomRubrics(int $roomId, array $exclude = ['hide', 'off']): array
@@ -352,7 +351,7 @@ class RoomService
         }
 
         if (!empty($remoteServiceLink)) {
-            if (strstr($remoteServiceLink, '%')) {
+            if (strstr((string) $remoteServiceLink, '%')) {
                 $textConverter = $this->legacyEnvironment->getTextConverter();
                 $remoteServiceLink = $textConverter->convertPercent($remoteServiceLink, true, true);
             }

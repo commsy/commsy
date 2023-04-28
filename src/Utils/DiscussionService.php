@@ -14,15 +14,18 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_discussion_manager;
+use cs_discussionarticles_manager;
+use cs_environment;
 use Symfony\Component\Form\FormInterface;
 
 class DiscussionService
 {
-    private \cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    private \cs_discussion_manager $discussionManager;
+    private readonly cs_discussion_manager $discussionManager;
 
-    private \cs_discussionarticles_manager $discussionArticleManager;
+    private readonly cs_discussionarticles_manager $discussionArticleManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -176,7 +179,7 @@ class DiscussionService
         foreach ($articleList as $article) {
             /** @var \cs_discussionarticle_item $article */
             $base = &$tree;
-            $expLevel = explode('.', $article->getPosition());
+            $expLevel = explode('.', (string) $article->getPosition());
             foreach ($expLevel as $level) {
                 $base = &$base['children'][$level];
             }
@@ -200,12 +203,12 @@ class DiscussionService
          * it would be much better to ask only for all childs of an article or directly
          * for the latest position.
          */
-        $numParentDots = substr_count($parentPosition, '.');
+        $numParentDots = substr_count((string) $parentPosition, '.');
         $newRelativeNumericPosition = 1;
         foreach ($discussion->getAllArticles() as $article) {
             $position = $article->getPosition();
 
-            $numDots = substr_count($position, '.');
+            $numDots = substr_count((string) $position, '.');
 
             if (0 == $parentPosition) {
                 if (0 == $numDots) {
@@ -217,9 +220,9 @@ class DiscussionService
             } else {
                 // if the parent position is one level above the child ones and
                 // the position string is start of the child position
-                if ($numDots == $numParentDots + 1 && str_starts_with($position, $parentPosition)) {
+                if ($numDots == $numParentDots + 1 && str_starts_with((string) $position, (string) $parentPosition)) {
                     // extract the last position part
-                    $positionExp = explode('.', $position);
+                    $positionExp = explode('.', (string) $position);
                     $lastPositionPart = $positionExp[sizeof($positionExp) - 1];
 
                     // compare against our latest stored position

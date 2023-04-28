@@ -55,7 +55,7 @@ class AccountIndexUser extends AbstractType
     /**
      * @return mixed
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return $this->name;
     }

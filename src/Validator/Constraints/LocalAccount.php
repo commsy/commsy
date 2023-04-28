@@ -21,7 +21,7 @@ class LocalAccount extends Constraint
 {
     public $message = 'login unknown';
 
-    public function getTargets()
+    public function getTargets(): string|array
     {
         return self::CLASS_CONSTRAINT;
     }

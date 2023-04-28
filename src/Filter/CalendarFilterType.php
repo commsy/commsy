@@ -22,8 +22,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CalendarFilterType extends AbstractType
 {
-    public function __construct(private RequestStack $requestStack, private CalendarsService $calendarService)
-    {
+    public function __construct(
+        private readonly RequestStack $requestStack,
+        private readonly CalendarsService $calendarService
+    ) {
     }
 
     /**

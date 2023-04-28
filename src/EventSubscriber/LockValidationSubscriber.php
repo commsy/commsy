@@ -25,9 +25,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class LockValidationSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private LockManager $lockManager,
-        private TranslatorInterface $translator,
-        private RequestStack $requestStack
+        private readonly LockManager $lockManager,
+        private readonly TranslatorInterface $translator,
+        private readonly RequestStack $requestStack
     ) {
     }
 

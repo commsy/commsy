@@ -24,19 +24,13 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'user_id', columns: ['user_id'])]
 class WorkflowRead
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'item_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
-    private $itemId;
+    private int $itemId;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'user_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
-    private $userId = '0';
+    private int $userId;
 }

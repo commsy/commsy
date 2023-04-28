@@ -22,7 +22,7 @@ class DateTransformer extends AbstractTransformer
 {
     protected $entity = 'date';
 
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -67,7 +67,7 @@ class DateTransformer extends AbstractTransformer
                 $dateData['hidden'] = true;
 
                 $activating_date = $dateItem->getActivatingDate();
-                if (!stristr($activating_date, '9999')) {
+                if (!stristr((string) $activating_date, '9999')) {
                     $datetime = new DateTime($activating_date);
                     $dateData['hiddendate']['date'] = $datetime;
                     $dateData['hiddendate']['time'] = $datetime;
@@ -138,7 +138,7 @@ class DateTransformer extends AbstractTransformer
                     // add validdate to validdate
                     $datetime = $dateData['hiddendate']['date'];
                     if ($dateData['hiddendate']['time']) {
-                        $time = explode(':', $dateData['hiddendate']['time']->format('H:i'));
+                        $time = explode(':', (string) $dateData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
                     $dateObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
@@ -158,8 +158,8 @@ class DateTransformer extends AbstractTransformer
 
         // external viewer
         if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
-            if (!empty(trim($dateData['external_viewer']))) {
-                $userIds = explode(' ', $dateData['external_viewer']);
+            if (!empty(trim((string) $dateData['external_viewer']))) {
+                $userIds = explode(' ', (string) $dateData['external_viewer']);
                 $dateObject->setExternalViewerAccounts($userIds);
             } else {
                 $dateObject->unsetExternalViewerAccounts();

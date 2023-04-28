@@ -13,8 +13,7 @@
 
 namespace App\Entity;
 
-use DateTime;
-use DateTimeInterface;
+use App\Utils\EntityDatesTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -27,95 +26,51 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'todo_item_id', columns: ['todo_item_id'])]
 class Step
 {
-    /**
-     * @var int
-     */
+    use EntityDatesTrait;
+
     #[ORM\Column(name: 'item_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $itemId = '0';
-    /**
-     * @var int
-     */
+    private int $itemId;
+
     #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
     private $contextId;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
-    private $creatorId = '0';
-    /**
-     * @var int
-     */
+    private string $creatorId = '0';
+
     #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: true)]
     private $modifierId;
-    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: true)]
-    private DateTime $creationDate;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private $deleterId;
-    /**
-     * @var DateTimeInterface
-     */
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private $deletionDate;
-    /**
-     * @var DateTimeInterface
-     */
-    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
-    private $modificationDate;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private $title;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'description', type: 'text', length: 16_777_215, nullable: true)]
     private $description;
-    /**
-     * @var float
-     */
+
     #[ORM\Column(name: 'minutes', type: 'float', precision: 10, scale: 0, nullable: false)]
-    private $minutes = '0';
-    /**
-     * @var int
-     */
+    private string $minutes = '0';
+
     #[ORM\Column(name: 'time_type', type: 'smallint', nullable: false)]
-    private $timeType = '1';
-    /**
-     * @var int
-     */
+    private string $timeType = '1';
+
     #[ORM\Column(name: 'todo_item_id', type: 'integer', nullable: false)]
     private $todoItemId;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
     private $extras;
-    /**
-     * @var bool
-     */
+
     #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
-    private $public = '0';
+    private string $public = '0';
+
     #[ORM\ManyToOne(targetEntity: 'Todos', inversedBy: 'steps')]
     #[ORM\JoinColumn(name: 'todo_item_id', referencedColumnName: 'item_id')]
     private ?Todos $todo = null;
 
-    public function __construct()
-    {
-        $this->creationDate = new DateTime('0000-00-00 00:00:00');
-    }
-
-    /**
-     * Get itemId.
-     *
-     * @return int
-     */
-    public function getItemId()
+    public function getItemId(): int
     {
         return $this->itemId;
     }
@@ -193,30 +148,6 @@ class Step
     }
 
     /**
-     * Set creationDate.
-     *
-     * @param DateTime $creationDate
-     *
-     * @return Step
-     */
-    public function setCreationDate($creationDate)
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get creationDate.
-     *
-     * @return DateTime
-     */
-    public function getCreationDate()
-    {
-        return $this->creationDate;
-    }
-
-    /**
      * Set deleterId.
      *
      * @param int $deleterId
@@ -238,54 +169,6 @@ class Step
     public function getDeleterId()
     {
         return $this->deleterId;
-    }
-
-    /**
-     * Set deletionDate.
-     *
-     * @param DateTime $deletionDate
-     *
-     * @return Step
-     */
-    public function setDeletionDate($deletionDate)
-    {
-        $this->deletionDate = $deletionDate;
-
-        return $this;
-    }
-
-    /**
-     * Get deletionDate.
-     *
-     * @return DateTime
-     */
-    public function getDeletionDate()
-    {
-        return $this->deletionDate;
-    }
-
-    /**
-     * Set modificationDate.
-     *
-     * @param DateTime $modificationDate
-     *
-     * @return Step
-     */
-    public function setModificationDate($modificationDate)
-    {
-        $this->modificationDate = $modificationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get modificationDate.
-     *
-     * @return DateTime
-     */
-    public function getModificationDate()
-    {
-        return $this->modificationDate;
     }
 
     /**

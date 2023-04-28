@@ -20,22 +20,22 @@ use Twig\TwigFunction;
 
 class RoomExtension extends AbstractExtension
 {
-    public function __construct(private LegacyEnvironment $legacyEnvironment)
+    public function __construct(private readonly LegacyEnvironment $legacyEnvironment)
     {
     }
 
     public function getFilters()
     {
         return [
-            new TwigFilter('roomTitle', [$this, 'roomTitle']),
+            new TwigFilter('roomTitle', $this->roomTitle(...)),
         ];
     }
 
     public function getFunctions()
     {
         return [
-            new TwigFunction('roomExpandedHashtags', [$this, 'roomExpandedHashtags']),
-            new TwigFunction('roomExpandedCategories', [$this, 'roomExpandedCategories']),
+            new TwigFunction('roomExpandedHashtags', $this->roomExpandedHashtags(...)),
+            new TwigFunction('roomExpandedCategories', $this->roomExpandedCategories(...)),
         ];
     }
 
