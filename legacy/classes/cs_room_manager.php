@@ -606,10 +606,7 @@ class cs_room_manager extends cs_context_manager
         $id_array = [];
         $query = 'SELECT item_id, context_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'"';
         $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or !$result) {
-            // include_once('functions/error_functions.php');
-            // trigger_error('Problem deleting items.',E_USER_ERROR);
-        } else {
+        if ($result) {
             foreach ($result as $rs) {
                 $temp_array['item_id'] = $rs['item_id'];
                 $temp_array['portal_id'] = $rs['context_id'];

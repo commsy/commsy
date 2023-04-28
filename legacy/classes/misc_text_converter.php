@@ -612,8 +612,6 @@ class misc_text_converter
                  and 'left' != $value
                  and 'right' != $value
             ) {
-                // include_once('functions/error_functions.php');
-                // trigger_error('float must be left or right',E_USER_WARNING);
             } elseif ('text' == $key
                        or 'alt' == $key
                        or 'gallery' == $key
@@ -624,60 +622,40 @@ class misc_text_converter
             } elseif ('width' == $key
                        and !is_numeric($value)
             ) {
-                // include_once('functions/error_functions.php');
-                // trigger_error('width must be a number',E_USER_WARNING);
             } elseif ('height' == $key
                        and !is_numeric($value)
             ) {
-                // include_once('functions/error_functions.php');
-                // trigger_error('height must be a number',E_USER_WARNING);
             } elseif ('width' == $key
                        and $value > 1000
             ) {
-                // include_once('functions/error_functions.php');
-                // trigger_error('width must be under 1000',E_USER_WARNING);
             } elseif ('height' == $key
                        and $value > 1000
             ) {
-                // include_once('functions/error_functions.php');
-                // trigger_error('height must be under 1000',E_USER_WARNING);
             } elseif ('icon' == $key
                        and 'true' != $value
                        and 'false' != $value
             ) {
-                // include_once('functions/error_functions.php');
-                // trigger_error('icon must be true or false',E_USER_WARNING);
             } elseif ('size' == $key
                        and 'true' != $value
                        and 'false' != $value
             ) {
-                // include_once('functions/error_functions.php');
-                // trigger_error('size must be true or false',E_USER_WARNING);
             } elseif ('play' == $key
                        and 'true' != $value
                        and 'false' != $value
             ) {
-                // include_once('functions/error_functions.php');
-                // trigger_error('play must be true or false',E_USER_WARNING);
             } elseif ('navigation' == $key
                        and 'true' != $value
                        and 'false' != $value
             ) {
-                // include_once('functions/error_functions.php');
-                // trigger_error('navigation must be true or false',E_USER_WARNING);
             } elseif ('orientation' == $key
                        and 'portrait' != $value
                        and 'landscape' != $value
             ) {
-                // include_once('functions/error_functions.php');
-                // trigger_error('orientation must be portrait or landscape',E_USER_WARNING);
             } elseif ('target' == $key
                        and '_blank' != $value
                        and '_top' != $value
                        and '_parent' != $value
             ) {
-                // include_once('functions/error_functions.php');
-                // trigger_error('target must be _blank, _top or _parent',E_USER_WARNING);
             } else {
                 $retour[$key] = $value;
             }

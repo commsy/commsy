@@ -114,7 +114,6 @@
             "legacy/functions/curl_functions.php",
             "legacy/functions/date_functions.php",
             "legacy/functions/development_functions.php",
-            "legacy/functions/error_functions.php",
             "legacy/functions/file_functions.php",
             "legacy/functions/language_functions.php",
             "legacy/functions/misc_functions.php",
