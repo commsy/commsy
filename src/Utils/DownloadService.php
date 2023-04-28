@@ -18,6 +18,7 @@ use App\Services\LegacyEnvironment;
 use App\Services\PrintService;
 use cs_environment;
 use cs_item;
+use Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -101,8 +102,7 @@ class DownloadService
         $filename = $zipFile;
 
         if (true !== $zip->open($filename, ZipArchive::CREATE)) {
-            include_once 'functions/error_functions.php';
-            trigger_error('can not open zip-file '.$filename, E_USER_WARNING);
+            throw new Exception("can not open zip-file $filename");
         }
         $temp_dir = getcwd();
         chdir($directory);
