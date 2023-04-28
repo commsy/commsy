@@ -22,7 +22,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UniqueModeratorConstraintValidator extends ConstraintValidator
 {
-    public function __construct(private UserService $userService, private LegacyEnvironment $legacyEnvironment, private TranslatorInterface $translator)
+    public function __construct(private readonly UserService $userService, private readonly LegacyEnvironment $legacyEnvironment, private readonly TranslatorInterface $translator)
     {
     }
 

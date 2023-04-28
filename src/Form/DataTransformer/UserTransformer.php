@@ -20,19 +20,19 @@ use cs_environment;
 use cs_user_item;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class UserTransformer extends AbstractTransformer
 {
     protected $entity = 'user';
 
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private EntityManagerInterface $entityManager,
-        private Security $security,
-        private AccountManager $accountManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly Security $security,
+        private readonly AccountManager $accountManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -98,10 +98,8 @@ class UserTransformer extends AbstractTransformer
      *
      * @param object $userObject
      * @param array  $userData
-     *
-     * @return cs_user_item|null
      */
-    public function applyTransformation($userObject, $userData)
+    public function applyTransformation($userObject, $userData): cs_user_item
     {
         /** @var cs_user_item $userObject */
         if ($userObject) {

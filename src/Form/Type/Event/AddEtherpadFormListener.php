@@ -22,11 +22,11 @@ use Symfony\Component\Form\FormEvents;
 class AddEtherpadFormListener implements EventSubscriberInterface
 {
     public function __construct(
-        private ParameterBagInterface $parameterBag
+        private readonly ParameterBagInterface $parameterBag
     ) {
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [FormEvents::PRE_SET_DATA => 'onPreSetData'];
     }

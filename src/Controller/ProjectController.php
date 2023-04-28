@@ -30,11 +30,11 @@ use App\Utils\RoomService;
 use App\Utils\UserService;
 use cs_environment;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -122,7 +122,7 @@ class ProjectController extends AbstractController
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('project');
         }
 
-        return $this->render('project/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm->createView(), 'module' => 'project', 'itemsCountArray' => $itemsCountArray, 'usageInfo' => $usageInfo, 'userCanCreateContext' => $legacyEnvironment->getCurrentUserItem()->isAllowedToCreateContext()]);
+        return $this->render('project/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'project', 'itemsCountArray' => $itemsCountArray, 'usageInfo' => $usageInfo, 'userCanCreateContext' => $legacyEnvironment->getCurrentUserItem()->isAllowedToCreateContext()]);
     }
 
     /**
@@ -191,7 +191,7 @@ class ProjectController extends AbstractController
         $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
         $defaultTemplateIDs = ('-1' === $defaultId) ? [] : [$defaultId];
 
-        $timesDisplay = ucfirst($currentPortalItem->getCurrentTimeName());
+        $timesDisplay = ucfirst((string) $currentPortalItem->getCurrentTimeName());
         $times = $roomService->getTimePulses(true);
 
         $room = new Room();
@@ -302,7 +302,7 @@ class ProjectController extends AbstractController
         }
 
         return $this->render('project/create.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -338,7 +338,7 @@ class ProjectController extends AbstractController
         }
 
         return $this->render('project/delete.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 

@@ -924,9 +924,9 @@ class cs_context_item extends cs_item
 
     /** get dates status.
      *
-     * @return int dates status "normal" or "calendar"
+     * @return string dates status "normal" or "calendar"
      */
-    public function getDatesPresentationStatus()
+    public function getDatesPresentationStatus(): string
     {
         $retour = 'normal';
         if ($this->_issetExtra('DATEPRESENTATIONSTATUS')) {

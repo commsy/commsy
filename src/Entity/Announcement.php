@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use App\Utils\EntityDatesTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,13 +26,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 class Announcement
 {
-    /**
-     * @var int
-     */
+    use EntityDatesTrait;
+
     #[ORM\Column(name: 'item_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $itemId = '0';
+    private int $itemId;
 
     /**
      * @var int
@@ -51,63 +51,30 @@ class Announcement
     #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id')]
     private ?User $deleter = null;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
-    private $creationDate = '0000-00-00 00:00:00';
-
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
-    private $modificationDate;
-
     #[ORM\Column(name: 'activation_date', type: 'datetime')]
     private ?DateTime $activationDate = null;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private $deletionDate;
+    #[ORM\Column(name: 'title', type: 'string', length: 255)]
+    private string $title;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
-    private $title;
+    #[ORM\Column(name: 'description', type: 'text', length: 16_777_215, nullable: true)]
+    private ?string $description;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'description', type: 'text', length: 16777215, nullable: true)]
-    private $description;
+    #[ORM\Column(name: 'enddate', type: 'datetime')]
+    private DateTime $enddate;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'enddate', type: 'datetime', nullable: false)]
-    private $enddate = '0000-00-00 00:00:00';
-
-    /**
-     * @var bool
-     */
     #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
-    private $public = '0';
+    private string $public = '0';
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
     private $extras;
 
-    /**
-     * Get itemId.
-     *
-     * @return int
-     */
-    public function getItemId()
+    public function __construct()
+    {
+        $this->enddate = new DateTime();
+    }
+
+    public function getItemId(): int
     {
         return $this->itemId;
     }
@@ -136,57 +103,9 @@ class Announcement
         return $this->contextId;
     }
 
-    /**
-     * Get creationDate.
-     *
-     * @return DateTime
-     */
-    public function getCreationDate()
-    {
-        return $this->creationDate;
-    }
-
-    /**
-     * Set deletionDate.
-     *
-     * @param DateTime $deletionDate
-     *
-     * @return Announcement
-     */
-    public function setDeletionDate($deletionDate)
-    {
-        $this->deletionDate = $deletionDate;
-
-        return $this;
-    }
-
     public function isIndexable()
     {
         return null == $this->deleter && null == $this->deletionDate;
-    }
-
-    /**
-     * Set modificationDate.
-     *
-     * @param DateTime $modificationDate
-     *
-     * @return Materials
-     */
-    public function setModificationDate($modificationDate)
-    {
-        $this->modificationDate = $modificationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get modificationDate.
-     *
-     * @return DateTime
-     */
-    public function getModificationDate()
-    {
-        return $this->modificationDate;
     }
 
     /**
@@ -205,16 +124,6 @@ class Announcement
     public function getActivationDate(): ?DateTime
     {
         return $this->activationDate;
-    }
-
-    /**
-     * Get deletionDate.
-     *
-     * @return DateTime
-     */
-    public function getDeletionDate()
-    {
-        return $this->deletionDate;
     }
 
     /**
@@ -265,26 +174,14 @@ class Announcement
         return $this->description;
     }
 
-    /**
-     * Set enddate.
-     *
-     * @param DateTime $enddate
-     *
-     * @return Announcement
-     */
-    public function setEnddate($enddate)
+    public function setEnddate(DateTime $enddate): self
     {
         $this->enddate = $enddate;
 
         return $this;
     }
 
-    /**
-     * Get enddate.
-     *
-     * @return DateTime
-     */
-    public function getEnddate()
+    public function getEnddate(): DateTime
     {
         return $this->enddate;
     }

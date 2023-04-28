@@ -45,13 +45,12 @@ use cs_material_item;
 use cs_room_item;
 use DateTime;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -70,7 +69,6 @@ class MaterialController extends BaseController
     private MaterialTransformer $materialTransformer;
 
     private AssessmentService $assessmentService;
-    private SessionInterface $session;
 
     #[Required]
     public function setCategoryService(CategoryService $categoryService)
@@ -108,12 +106,6 @@ class MaterialController extends BaseController
         $this->assessmentService = $assessmentService;
     }
 
-    #[Required]
-    public function setSession(SessionInterface $session): void
-    {
-        $this->session = $session;
-    }
-
     #[Route(path: '/room/{roomId}/material/feed/{start}/{sort}')]
     public function feedAction(
         Request $request,
@@ -148,9 +140,9 @@ class MaterialController extends BaseController
         }
 
         if (empty($sort)) {
-            $sort = $this->session->get('sortMaterials', 'date');
+            $sort = $request->getSession()->get('sortMaterials', 'date');
         }
-        $this->session->set('sortMaterials', $sort);
+        $request->getSession()->set('sortMaterials', $sort);
 
         // get material list from manager service
         $materials = $this->materialService->getListMaterials($roomId, $max, $start, $sort);
@@ -207,7 +199,7 @@ class MaterialController extends BaseController
             $this->materialService->hideDeactivatedEntries();
         }
 
-        $sort = $this->session->get('sortMaterials', 'date');
+        $sort = $request->getSession()->get('sortMaterials', 'date');
 
         // get material list from manager service
         $itemsCountArray = $this->materialService->getCountArray($roomId);
@@ -218,7 +210,7 @@ class MaterialController extends BaseController
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('material');
         }
 
-        return $this->render('material/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm->createView(), 'module' => 'material', 'itemsCountArray' => $itemsCountArray, 'showRating' => $roomItem->isAssessmentActive(), 'showAssociations' => $roomItem->withAssociations(), 'showWorkflow' => $roomItem->withWorkflow(), 'showHashTags' => $roomItem->withBuzzwords(), 'showCategories' => $roomItem->withTags(), 'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(), 'catzExpanded' => $roomItem->isTagsShowExpanded(), 'material_filter' => $filterForm, 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'isMaterialOpenForGuests' => $roomItem->isMaterialOpenForGuests(), 'sort' => $sort]);
+        return $this->render('material/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'material', 'itemsCountArray' => $itemsCountArray, 'showRating' => $roomItem->isAssessmentActive(), 'showAssociations' => $roomItem->withAssociations(), 'showWorkflow' => $roomItem->withWorkflow(), 'showHashTags' => $roomItem->withBuzzwords(), 'showCategories' => $roomItem->withTags(), 'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(), 'catzExpanded' => $roomItem->isTagsShowExpanded(), 'material_filter' => $filterForm, 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'isMaterialOpenForGuests' => $roomItem->isMaterialOpenForGuests(), 'sort' => $sort]);
     }
 
     #[Route(path: '/room/{roomId}/material/print/{sort}', defaults: ['sort' => 'none'])]
@@ -247,7 +239,7 @@ class MaterialController extends BaseController
 
         // get material list from manager service
         if ('none' === $sort || empty($sort)) {
-            $sort = $this->session->get('sortMaterials', 'date');
+            $sort = $request->getSession()->get('sortMaterials', 'date');
         }
         $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, $sort);
 
@@ -357,7 +349,7 @@ class MaterialController extends BaseController
             'buzzExpanded' => $infoArray['buzzExpanded'],
             'catzExpanded' => $infoArray['catzExpanded'],
             'user' => $infoArray['user'],
-            'annotationForm' => $form->createView(),
+            'annotationForm' => $form,
             'ratingArray' => $infoArray['ratingArray'],
             'canExportToWordpress' => $canExportToWordpress,
             'roomCategories' => $infoArray['roomCategories'],
@@ -997,7 +989,7 @@ class MaterialController extends BaseController
             }
         }
 
-        return $this->render('material/edit.html.twig', ['isSaved' => $isSaved, 'isDraft' => $isDraft, 'isMaterial' => $isMaterial, 'form' => $form->createView(), 'currentUser' => $this->legacyEnvironment->getCurrentUserItem(), 'material' => $typedItem, 'licenses' => $licenses, 'licensesContent' => $licensesContent]);
+        return $this->render('material/edit.html.twig', ['isSaved' => $isSaved, 'isDraft' => $isDraft, 'isMaterial' => $isMaterial, 'form' => $form, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem(), 'material' => $typedItem, 'licenses' => $licenses, 'licensesContent' => $licensesContent]);
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/save')]
@@ -1131,7 +1123,7 @@ class MaterialController extends BaseController
         $form = $this->createForm(SectionType::class, $formData, ['action' => $this->generateUrl('app_material_savesection',
             ['roomId' => $roomId, 'itemId' => $section->getItemID()]), 'placeholderText' => '['.$this->translator->trans('insert title').']']);
 
-        return $this->render('material/create_section.html.twig', ['form' => $form->createView(), 'sectionList' => $sectionList, 'material' => $material, 'section' => $section, 'modifierList' => [], 'userCount' => 0, 'readCount' => 0, 'readSinceModificationCount' => 0]);
+        return $this->render('material/create_section.html.twig', ['form' => $form, 'sectionList' => $sectionList, 'material' => $material, 'section' => $section, 'modifierList' => [], 'userCount' => 0, 'readCount' => 0, 'readSinceModificationCount' => 0]);
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/savesection')]
@@ -1258,7 +1250,7 @@ class MaterialController extends BaseController
             return $this->redirectToRoute('app_material_savesections', ['roomId' => $roomId, 'itemId' => $itemId]);
         }
 
-        return $this->render('material/edit_sections.html.twig', ['material' => $material, 'form' => $form->createView(), 'sectionList' => $material->getSectionList()->to_array()]);
+        return $this->render('material/edit_sections.html.twig', ['material' => $material, 'form' => $form, 'sectionList' => $material->getSectionList()->to_array()]);
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/savesections')]

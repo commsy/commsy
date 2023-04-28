@@ -35,47 +35,32 @@ class Tag2tag
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private $linkId;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'from_item_id', type: 'integer', nullable: false)]
-    private $fromItemId = '0';
+    #[ORM\Column(name: 'from_item_id', type: 'integer')]
+    private int $fromItemId;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'to_item_id', type: 'integer', nullable: false)]
-    private $toItemId = '0';
+    #[ORM\Column(name: 'to_item_id', type: 'integer')]
+    private int $toItemId;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'context_id', type: 'integer', nullable: false)]
-    private $contextId = '0';
+    #[ORM\Column(name: 'context_id', type: 'integer')]
+    private int $contextId;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
-    private $creatorId = '0';
+    #[ORM\Column(name: 'creator_id', type: 'integer')]
+    private int $creatorId;
 
     /**
      * @var DateTime
      */
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
-    private $creationDate = '0000-00-00 00:00:00';
+    private string $creationDate = '0000-00-00 00:00:00';
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: false)]
-    private $modifierId = '0';
+    private string $modifierId = '0';
 
     /**
      * @var DateTime
      */
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
-    private $modificationDate = '0000-00-00 00:00:00';
+    private string $modificationDate = '0000-00-00 00:00:00';
 
     /**
      * @var int

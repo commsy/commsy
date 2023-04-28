@@ -24,9 +24,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class GetAccountsCheckLocalLogin
 {
     public function __construct(
-        private PortalRepository $portalRepository,
-        private AccountsRepository $accountsRepository,
-        private UserPasswordHasherInterface $passwordEncoder
+        private readonly PortalRepository $portalRepository,
+        private readonly AccountsRepository $accountsRepository,
+        private readonly UserPasswordHasherInterface $passwordEncoder
     ) {}
 
     public function __invoke(Account $data): Account

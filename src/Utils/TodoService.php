@@ -14,6 +14,7 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use cs_manager;
 use cs_noticed_manager;
 use cs_reader_manager;
@@ -25,27 +26,15 @@ use Symfony\Component\Form\FormInterface;
 
 class TodoService
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    /**
-     * @var cs_todos_manager
-     */
-    private $todoManager;
+    private readonly cs_todos_manager $todoManager;
 
-    /**
-     * @var cs_step_manager
-     */
-    private $stepManager;
+    private readonly cs_step_manager $stepManager;
 
-    /**
-     * @var cs_noticed_manager
-     */
-    private $noticedManager;
+    private readonly cs_noticed_manager $noticedManager;
 
-    /**
-     * @var cs_reader_manager
-     */
-    private $readerManager;
+    private readonly cs_reader_manager $readerManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

@@ -803,10 +803,10 @@ class cs_user_item extends cs_item
     /** get flag, if moderator wants a mail at new accounts
      * this method returns the getaccountwantmail flag.
      *
-     * @return int value no, moderator doesn't want an e-mail
+     * @return string value no, moderator doesn't want an e-mail
      *             yes, moderator wants an e-mail
      */
-    public function getAccountWantMail()
+    public function getAccountWantMail(): string
     {
         $retour = 'yes';
         if ($this->_issetExtra('ACCOUNTWANTMAIL')) {

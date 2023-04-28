@@ -21,7 +21,7 @@ use Symfony\Component\Form\FormInterface;
 
 class TopicService
 {
-    private cs_topic_manager $topicManager;
+    private readonly cs_topic_manager $topicManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

@@ -16,7 +16,7 @@ namespace App\Services;
 use App\Utils\ItemService;
 use cs_item;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class MarkedService
 {
@@ -25,14 +25,16 @@ class MarkedService
     /**
      * MarkedService constructor.
      */
-    public function __construct(private ItemService $itemService, private SessionInterface $session)
-    {
+    public function __construct(
+        private readonly ItemService $itemService,
+        private readonly RequestStack $requestStack
+    ) {
     }
 
     public function getCountArray($roomId)
     {
         $itemsCountArray = [];
-        $currentClipboardIds = $this->session->get('clipboard_ids', []);
+        $currentClipboardIds = $this->requestStack->getSession()->get('clipboard_ids', []);
 
         if ($this->type) {
             $itemsCountArray['count'] = sizeof($this->getListEntries());
@@ -54,7 +56,7 @@ class MarkedService
      */
     public function getListEntries($max = null, $start = null, $sort = null)
     {
-        $currentClipboardIds = $this->session->get('clipboard_ids', []);
+        $currentClipboardIds = $this->requestStack->getSession()->get('clipboard_ids', []);
 
         $entries = [];
         $counter = 0;
@@ -112,7 +114,7 @@ class MarkedService
 
     public function removeEntries($roomId, $entries)
     {
-        $currentClipboardIds = $this->session->get('clipboard_ids', []);
+        $currentClipboardIds = $this->requestStack->getSession()->get('clipboard_ids', []);
 
         $clipboardIds = [];
         foreach ($currentClipboardIds as $currentClipboardId) {
@@ -121,18 +123,18 @@ class MarkedService
             }
         }
 
-        $this->session->set('clipboard_ids', $clipboardIds);
+        $this->requestStack->getSession()->set('clipboard_ids', $clipboardIds);
 
         return $this->getCountArray($roomId);
     }
 
     public function removeItemFromClipboard(int $itemId)
     {
-        $currentClipboardIds = $this->session->get('clipboard_ids', []);
+        $currentClipboardIds = $this->requestStack->getSession()->get('clipboard_ids', []);
 
         if (in_array($itemId, $currentClipboardIds)) {
             unset($currentClipboardIds[array_search($itemId, $currentClipboardIds)]);
-            $this->session->set('clipboard_ids', $currentClipboardIds);
+            $this->requestStack->getSession()->set('clipboard_ids', $currentClipboardIds);
         }
     }
 }

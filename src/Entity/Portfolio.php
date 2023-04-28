@@ -25,25 +25,16 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'modifier_id', columns: ['modifier_id'])]
 class Portfolio
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'item_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $itemId = '0';
+    private int $itemId;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
-    private $creatorId = '0';
+    #[ORM\Column(name: 'creator_id', type: 'integer')]
+    private int $creatorId;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: false)]
-    private $modifierId = '0';
+    #[ORM\Column(name: 'modifier_id', type: 'integer')]
+    private int $modifierId;
 
     /**
      * @var string
@@ -54,7 +45,7 @@ class Portfolio
     /**
      * @var string
      */
-    #[ORM\Column(name: 'description', type: 'text', length: 16777215, nullable: false)]
+    #[ORM\Column(name: 'description', type: 'text', length: 16_777_215, nullable: false)]
     private $description;
 
     /**
@@ -75,9 +66,6 @@ class Portfolio
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private $deletionDate;
 
-    /**
-     * @var bool
-     */
     #[ORM\Column(name: 'template', type: 'boolean', nullable: false)]
-    private $template = '-1';
+    private string $template = '-1';
 }

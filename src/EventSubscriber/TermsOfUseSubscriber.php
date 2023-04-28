@@ -19,29 +19,29 @@ use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
 use cs_environment;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Security;
 
 class TermsOfUseSubscriber implements EventSubscriberInterface
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private UrlGeneratorInterface $urlGenerator,
-        private Security $security,
-        private EntityManagerInterface $entityManager,
-        private UserService $userService
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly Security $security,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly UserService $userService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::CONTROLLER => 'onKernelController',

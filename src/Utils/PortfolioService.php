@@ -15,12 +15,13 @@ namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
 use cs_portfolio_item;
+use cs_portfolio_manager;
 
 class PortfolioService
 {
-    private $portfolioManager;
+    private readonly cs_portfolio_manager $portfolioManager;
 
-    public function __construct(private LegacyEnvironment $legacyEnvironment)
+    public function __construct(private readonly LegacyEnvironment $legacyEnvironment)
     {
         $this->portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
         $this->portfolioManager->reset();

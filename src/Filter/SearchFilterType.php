@@ -30,7 +30,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SearchFilterType extends AbstractType
 {
-    public function __construct(private TranslatorInterface $translator)
+    public function __construct(private readonly TranslatorInterface $translator)
     {
     }
 
@@ -270,7 +270,7 @@ class SearchFilterType extends AbstractType
      *
      * @param array|null $rubrics associative array of rubrics (key: rubric name, value: count)
      */
-    private function buildRubricsChoices($rubrics): array
+    private function buildRubricsChoices(?array $rubrics): array
     {
         if (!isset($rubrics) || empty($rubrics)) {
             return [];
@@ -298,7 +298,7 @@ class SearchFilterType extends AbstractType
     {
         $choices = [$this->translator->trans('Select some options') => ''];
 
-        $terms = $terms ?? [];
+        $terms ??= [];
 
         foreach ($terms as $name => $count) {
             $term = $name.' ('.$count.')';

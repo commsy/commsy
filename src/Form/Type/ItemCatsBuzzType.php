@@ -16,6 +16,7 @@ namespace App\Form\Type;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
+use cs_environment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -26,9 +27,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ItemCatsBuzzType extends AbstractType
 {
-    private $environment;
+    private readonly cs_environment $environment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private RoomService $roomService, private ItemService $itemService)
+    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly RoomService $roomService, private readonly ItemService $itemService)
     {
         $this->environment = $legacyEnvironment->getEnvironment();
     }
@@ -94,7 +95,7 @@ class ItemCatsBuzzType extends AbstractType
      *
      * @return string The prefix of the template block name
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'itemLinks';
     }

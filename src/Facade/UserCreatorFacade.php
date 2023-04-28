@@ -31,17 +31,17 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class UserCreatorFacade
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private AccountCreatorFacade $accountFacade,
-        private UserService $userService,
-        private EntityManagerInterface $entityManager,
-        private UserPasswordHasherInterface $passwordEncoder,
-        private EventDispatcherInterface $eventDispatcher,
-        private Mailer $mailer,
-        private AccountMail $accountMail
+        private readonly AccountCreatorFacade $accountFacade,
+        private readonly UserService $userService,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly UserPasswordHasherInterface $passwordEncoder,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly Mailer $mailer,
+        private readonly AccountMail $accountMail
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

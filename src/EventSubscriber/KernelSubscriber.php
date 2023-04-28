@@ -15,6 +15,7 @@ namespace App\EventSubscriber;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
+use cs_environment;
 use cs_room_item;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -33,11 +34,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class KernelSubscriber implements EventSubscriberInterface
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
-        private ItemService $itemService,
-        private UrlGeneratorInterface $urlGenerator,
+        private readonly ItemService $itemService,
+        private readonly UrlGeneratorInterface $urlGenerator,
         LegacyEnvironment $legacyEnvironment
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -46,7 +47,7 @@ class KernelSubscriber implements EventSubscriberInterface
     /**
      * {@inheritDoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [KernelEvents::REQUEST => [
             'onKernelRequest',

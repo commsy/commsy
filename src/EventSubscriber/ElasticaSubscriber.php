@@ -37,16 +37,16 @@ use Symfony\Component\Mime\MimeTypes;
 
 class ElasticaSubscriber implements EventSubscriberInterface
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     /**
      * ElasticCustomPropertyListener constructor.
      */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private ItemService $itemService,
-        private IndexManager $indexManager,
-        private ParameterBagInterface $parameterBag
+        private readonly ItemService $itemService,
+        private readonly IndexManager $indexManager,
+        private readonly ParameterBagInterface $parameterBag
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -315,7 +315,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
 
                     $indexInfo = [
                         'filename' => $legacyFile->getFileName(),
-                        'filename_no_ext' => pathinfo($legacyFile->getFileName(), PATHINFO_FILENAME),
+                        'filename_no_ext' => pathinfo((string) $legacyFile->getFileName(), PATHINFO_FILENAME),
                         'data' => '',
                     ];
                     if (in_array($mimeType, self::VALID_MIMES)) {

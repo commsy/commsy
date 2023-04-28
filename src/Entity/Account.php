@@ -107,11 +107,11 @@ class Account implements
     PasswordHasherAwareInterface,
     Serializable
 {
-    public const ACTIVITY_ACTIVE = 'active';
-    public const ACTIVITY_ACTIVE_NOTIFIED = 'active_notified';
-    public const ACTIVITY_IDLE = 'idle';
-    public const ACTIVITY_IDLE_NOTIFIED = 'idle_notified';
-    public const ACTIVITY_ABANDONED = 'abandoned';
+    final public const ACTIVITY_ACTIVE = 'active';
+    final public const ACTIVITY_ACTIVE_NOTIFIED = 'active_notified';
+    final public const ACTIVITY_IDLE = 'idle';
+    final public const ACTIVITY_IDLE_NOTIFIED = 'idle_notified';
+    final public const ACTIVITY_ABANDONED = 'abandoned';
 
     #[ORM\Column(type: 'integer')]
     #[ORM\Id]
@@ -137,7 +137,7 @@ class Account implements
     #[Assert\Regex(pattern: '/(*UTF8)[\p{Lu}\p{Lt}]/', message: 'Your password must contain at least one uppercase character.')]
     #[Assert\Regex(pattern: '/[[:punct:]]/', message: 'Your password must contain at least one special character.')]
     #[Assert\Regex(pattern: '/\p{Nd}/', message: 'Your password must contain at least one numeric character.')]
-    private ?string $plainPassword;
+    private ?string $plainPassword = null;
 
     #[ORM\Column(type: 'string', length: 32, nullable: true)]
     private ?string $passwordMd5;

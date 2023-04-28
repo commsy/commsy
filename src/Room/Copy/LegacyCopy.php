@@ -27,15 +27,15 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class LegacyCopy implements CopyStrategy
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     /**
      * LegacyCopy constructor.
      */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private ItemService $itemService,
-        private EventDispatcherInterface $eventDispatcher
+        private readonly ItemService $itemService,
+        private readonly EventDispatcherInterface $eventDispatcher
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -233,7 +233,7 @@ class LegacyCopy implements CopyStrategy
             if ($source->getItemID() > 99) {
                 if ($disc_manager->copyImageFromRoomToRoom($source->getBGImageFilename(), $target->getItemID())) {
                     $logo_file_name_new = str_replace($source->getItemID(), $target->getItemID(),
-                        $source->getBGImageFilename());
+                        (string) $source->getBGImageFilename());
                     $target->setBGImageFilename($logo_file_name_new);
                 }
             } else {
@@ -369,7 +369,7 @@ class LegacyCopy implements CopyStrategy
         // link modifier item
         $manager = $this->legacyEnvironment->getLinkModifierItemManager();
         foreach ($id_array as $value) {
-            if (!mb_stristr($value, CS_FILE_TYPE)) {
+            if (!mb_stristr((string) $value, CS_FILE_TYPE)) {
                 $manager->markEdited($value, $creator->getItemID());
             }
         }
@@ -402,55 +402,55 @@ class LegacyCopy implements CopyStrategy
             $new_array = [];
             foreach ($array as $key => $value) {
                 $replace = false;
-                preg_match_all('~\[[0-9]*(\]|\|)~u', $value, $matches);
+                preg_match_all('~\[[0-9]*(\]|\|)~u', (string) $value, $matches);
                 if (isset($matches[0])) {
                     foreach ($matches[0] as $match) {
                         $id = mb_substr($match, 1);
                         $last_char = mb_substr($id, mb_strlen($id));
                         $id = mb_substr($id, 0, mb_strlen($id) - 1);
                         if (isset($new_id_array[$id])) {
-                            $value = str_replace('['.$id.$last_char, '['.$new_id_array[$id].$last_char, $value);
+                            $value = str_replace('['.$id.$last_char, '['.$new_id_array[$id].$last_char, (string) $value);
                             $replace = true;
                         }
                     }
                     $new_array[$key] = $value;
                 }
-                preg_match_all('~\(:item ([0-9]*) ~u', $value, $matches);
+                preg_match_all('~\(:item ([0-9]*) ~u', (string) $value, $matches);
                 if (isset($matches[1])
                     and !empty($matches[1])
                 ) {
                     foreach ($matches[1] as $match) {
                         $id = $match;
                         if (isset($new_id_array[$id])) {
-                            $value = str_replace('(:item '.$id, '(:item '.$new_id_array[$id], $value);
+                            $value = str_replace('(:item '.$id, '(:item '.$new_id_array[$id], (string) $value);
                             $replace = true;
                         }
                     }
                     $new_array[$key] = $value;
                 }
                 // cid=([0-9]*)
-                preg_match_all('~iid=([0-9]*) ~u', $value, $matches);
+                preg_match_all('~iid=([0-9]*) ~u', (string) $value, $matches);
                 if (isset($matches[0])
                     and !empty($matches[0])
                 ) {
                     foreach ($matches[1] as $match) {
                         $id = $match;
                         if (isset($new_id_array[$id])) {
-                            $value = str_replace('iid='.$id, 'iid='.$new_id_array[$id], $value);
+                            $value = str_replace('iid='.$id, 'iid='.$new_id_array[$id], (string) $value);
                             $replace = true;
                         }
                     }
                     $new_array[$key] = $value;
                 }
 
-                preg_match_all('~cid=([0-9]*) ~xu', $value, $matches);
+                preg_match_all('~cid=([0-9]*) ~xu', (string) $value, $matches);
                 if (isset($matches[0])
                     and !empty($matches[0])
                 ) {
                     foreach ($matches[1] as $match) {
                         $id = $match;
                         if (isset($new_id_array[$id])) {
-                            $value = str_replace('cid='.$id, 'cid='.$target->getItemID(), $value);
+                            $value = str_replace('cid='.$id, 'cid='.$target->getItemID(), (string) $value);
                             $replace = true;
                         }
                     }
@@ -461,7 +461,7 @@ class LegacyCopy implements CopyStrategy
                 if (!empty($new_array[$key])
                     and $replace
                 ) {
-                    if (strstr($new_array[$key], '<!-- KFC TEXT')) {
+                    if (strstr((string) $new_array[$key], '<!-- KFC TEXT')) {
                         include_once 'functions/security_functions.php';
                         $new_array[$key] = renewSecurityHash($new_array[$key]);
                     }
@@ -474,55 +474,55 @@ class LegacyCopy implements CopyStrategy
             $new_array = [];
             foreach ($array as $key => $value) {
                 $replace = false;
-                preg_match_all('~\[[0-9]*(\]|\|)~u', $value, $matches);
+                preg_match_all('~\[[0-9]*(\]|\|)~u', (string) $value, $matches);
                 if (isset($matches[0])) {
                     foreach ($matches[0] as $match) {
                         $id = mb_substr($match, 1);
                         $last_char = mb_substr($id, mb_strlen($id));
                         $id = mb_substr($id, 0, mb_strlen($id) - 1);
                         if (isset($new_id_array[$id])) {
-                            $value = str_replace('['.$id.$last_char, '['.$new_id_array[$id].$last_char, $value);
+                            $value = str_replace('['.$id.$last_char, '['.$new_id_array[$id].$last_char, (string) $value);
                             $replace = true;
                         }
                     }
                     $new_array[$key] = $value;
                 }
-                preg_match_all('~\(:item ([0-9]*) ~u', $value, $matches);
+                preg_match_all('~\(:item ([0-9]*) ~u', (string) $value, $matches);
                 if (isset($matches[1])
                     and !empty($matches[1])
                 ) {
                     foreach ($matches[1] as $match) {
                         $id = $match;
                         if (isset($new_id_array[$id])) {
-                            $value = str_replace('(:item '.$id, '(:item '.$new_id_array[$id], $value);
+                            $value = str_replace('(:item '.$id, '(:item '.$new_id_array[$id], (string) $value);
                             $replace = true;
                         }
                     }
                     $new_array[$key] = $value;
                 }
 
-                preg_match_all('~iid=([0-9]*) ~u', $value, $matches);
+                preg_match_all('~iid=([0-9]*) ~u', (string) $value, $matches);
                 if (isset($matches[0])
                     and !empty($matches[0])
                 ) {
                     foreach ($matches[1] as $match) {
                         $id = $match;
                         if (isset($new_id_array[$id])) {
-                            $value = str_replace('iid='.$id, 'iid='.$new_id_array[$id], $value);
+                            $value = str_replace('iid='.$id, 'iid='.$new_id_array[$id], (string) $value);
                             $replace = true;
                         }
                     }
                     $new_array[$key] = $value;
                 }
 
-                preg_match_all('~cid=([0-9]*) ~xu', $value, $matches);
+                preg_match_all('~cid=([0-9]*) ~xu', (string) $value, $matches);
                 if (isset($matches[0])
                     and !empty($matches[0])
                 ) {
                     foreach ($matches[1] as $match) {
                         $id = $match;
                         if (isset($new_id_array[$id])) {
-                            $value = str_replace('cid='.$id, 'cid='.$target->getItemID(), $value);
+                            $value = str_replace('cid='.$id, 'cid='.$target->getItemID(), (string) $value);
                             $replace = true;
                         }
                     }
@@ -533,7 +533,7 @@ class LegacyCopy implements CopyStrategy
                 if (!empty($new_array[$key])
                     and $replace
                 ) {
-                    if (strstr($new_array[$key], '<!-- KFC TEXT')) {
+                    if (strstr((string) $new_array[$key], '<!-- KFC TEXT')) {
                         include_once 'functions/security_functions.php';
                         $new_array[$key] = renewSecurityHash($new_array[$key]);
                     }

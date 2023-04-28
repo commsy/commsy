@@ -22,7 +22,7 @@ class MaterialTransformer extends AbstractTransformer
 {
     protected $entity = 'material';
 
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -55,7 +55,7 @@ class MaterialTransformer extends AbstractTransformer
                     if ('document' == $bibKind || 'docmanagement' == $bibKind) {
                         $bibKind = 'DocManagement';
                     }
-                    $materialData['biblio_select'] = 'Biblio'.ucfirst($bibKind).'Type';
+                    $materialData['biblio_select'] = 'Biblio'.ucfirst((string) $bibKind).'Type';
                 }
 
                 /* @var cs_material_item $materialItem */
@@ -107,7 +107,7 @@ class MaterialTransformer extends AbstractTransformer
                 $materialData['hidden'] = true;
 
                 $activating_date = $materialItem->getActivatingDate();
-                if (!stristr($activating_date, '9999')) {
+                if (!stristr((string) $activating_date, '9999')) {
                     $datetime = new DateTime($activating_date);
                     $materialData['hiddendate']['date'] = $datetime;
                     $materialData['hiddendate']['time'] = $datetime;
@@ -124,11 +124,9 @@ class MaterialTransformer extends AbstractTransformer
      * @param object $materialObject
      * @param array  $materialData
      *
-     * @return cs_material_item|null
-     *
      * @throws TransformationFailedException if room item is not found
      */
-    public function applyTransformation($materialObject, $materialData)
+    public function applyTransformation($materialObject, $materialData): cs_material_item
     {
         $materialObject->setTitle($materialData['title']);
         $materialObject->setDescription($materialData['description']);
@@ -156,7 +154,7 @@ class MaterialTransformer extends AbstractTransformer
                 // BiblioPlainType
                 if (isset($materialData['biblio_select'])) {
                     $type = $materialData['biblio_select'];
-                    $type = str_replace('Biblio', '', $type);
+                    $type = str_replace('Biblio', '', (string) $type);
                     $type = str_replace('Type', '', $type);
 
                     if (!empty($type)) {
@@ -171,8 +169,8 @@ class MaterialTransformer extends AbstractTransformer
 
             // external viewer
             if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
-                if (!empty(trim($materialData['external_viewer']))) {
-                    $userIds = explode(' ', $materialData['external_viewer']);
+                if (!empty(trim((string) $materialData['external_viewer']))) {
+                    $userIds = explode(' ', (string) $materialData['external_viewer']);
                     $materialObject->setExternalViewerAccounts($userIds);
                 } else {
                     $materialObject->unsetExternalViewerAccounts();
@@ -185,7 +183,7 @@ class MaterialTransformer extends AbstractTransformer
                 // add validdate to validdate
                 $datetime = $materialData['hiddendate']['date'];
                 if ($materialData['hiddendate']['time']) {
-                    $time = explode(':', $materialData['hiddendate']['time']->format('H:i'));
+                    $time = explode(':', (string) $materialData['hiddendate']['time']->format('H:i'));
                     $datetime->setTime($time[0], $time[1]);
                 }
                 $materialObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
@@ -209,7 +207,7 @@ class MaterialTransformer extends AbstractTransformer
         // sections
         if (isset($materialData['sectionOrder'])) {
             $section_manager = $this->legacyEnvironment->getSectionManager();
-            $newSectionOrder = explode(',', $materialData['sectionOrder']);
+            $newSectionOrder = explode(',', (string) $materialData['sectionOrder']);
             foreach ($newSectionOrder as $counter => $id) {
                 $section_item = $section_manager->getItem($id);
                 if (!empty($section_item)) {

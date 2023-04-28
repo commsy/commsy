@@ -23,7 +23,7 @@ use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class ServerAppearanceType extends AbstractType
 {
-    public function __construct(private RouterInterface $router)
+    public function __construct(private readonly RouterInterface $router)
     {
     }
 

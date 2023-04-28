@@ -24,13 +24,13 @@ class UserListBuilder
 {
     private ?Account $account = null;
 
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     private array $contextIds;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private UserService $userService
+        private readonly UserService $userService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 

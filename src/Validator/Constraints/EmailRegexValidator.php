@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class EmailRegexValidator extends ConstraintValidator
 {
-    public function __construct(private TranslationRepository $translationRepository, private RequestStack $requestStack)
+    public function __construct(private readonly TranslationRepository $translationRepository, private readonly RequestStack $requestStack)
     {
     }
 

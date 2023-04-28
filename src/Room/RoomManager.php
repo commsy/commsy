@@ -29,15 +29,15 @@ use LogicException;
 
 class RoomManager
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     /**
      * AccountManager constructor.
      */
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private ItemService $itemService,
-        private CalendarsService $calendarsService,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ItemService $itemService,
+        private readonly CalendarsService $calendarsService,
         LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();

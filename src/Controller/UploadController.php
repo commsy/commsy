@@ -25,7 +25,6 @@ use cs_link_item;
 use cs_list;
 use DateTime;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -33,6 +32,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -151,7 +151,7 @@ class UploadController extends AbstractController
         $responseData = [];
         foreach ($fileIds as $fileId) {
             $tempFile = $fileService->getFile($fileId);
-            $responseData[$fileId] = htmlentities($tempFile->getFilename()).' ('.$tempFile->getCreationDate().')';
+            $responseData[$fileId] = htmlentities((string) $tempFile->getFilename()).' ('.$tempFile->getCreationDate().')';
         }
 
         return $response->setData([
@@ -278,7 +278,7 @@ class UploadController extends AbstractController
         }
 
         return $this->render('upload/upload_form.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 

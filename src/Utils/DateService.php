@@ -22,9 +22,9 @@ use Symfony\Component\Form\FormInterface;
 
 class DateService
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    private cs_dates_manager $datesManager;
+    private readonly cs_dates_manager $datesManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -254,10 +254,8 @@ class DateService
      * @param string $uid
      * @param int    $calendarId
      * @param int    $roomId
-     *
-     * @return cs_dates_item|bool
      */
-    public function getDateByUid($uid, $calendarId, $roomId)
+    public function getDateByUid($uid, $calendarId, $roomId): \cs_dates_item|bool
     {
         $this->datesManager->reset();
         $this->datesManager->setUidArrayLimit(['"'.$uid.'"']);

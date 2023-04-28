@@ -40,15 +40,13 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Exception;
 use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sylius\Bundle\ThemeBundle\Repository\ThemeRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -57,14 +55,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class RoomController extends AbstractController
 {
-    private SessionInterface $session;
-
-    #[Required]
-    public function setSession(SessionInterface $session): void
-    {
-        $this->session = $session;
-    }
-
     #[Route(path: '/room/{roomId}', requirements: ['roomId' => '\d+'])]
     public function homeAction(
         Request $request,
@@ -74,6 +64,7 @@ class RoomController extends AbstractController
         LegacyMarkup $legacyMarkup,
         LegacyEnvironment $legacyEnvironment,
         ThemeRepositoryInterface $themeRepository,
+        UserRepository $userRepository,
         int $roomId
     ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -194,11 +185,11 @@ class RoomController extends AbstractController
             }
         }
 
-        $userTasks = $this->getDoctrine()->getRepository(User::class)->getConfirmableUserByContextId($roomId)->getQuery()->getResult();
+        $userTasks = $userRepository->getConfirmableUserByContextId($roomId)->getQuery()->getResult();
 
         return $this->render('room/home.html.twig', [
             'homeInformationEntry' => $homeInformationEntry,
-            'form' => $filterForm->createView(),
+            'form' => $filterForm,
             'roomItem' => $roomItem,
             'timeSpread' => $timeSpread,
             'numNewEntries' => $numNewEntries,
@@ -299,7 +290,7 @@ class RoomController extends AbstractController
             return $this->render('room/moderationsupport.html.twig');
         }
 
-        return $this->render('room/moderationsupport.html.twig', ['form' => $form->createView()]);
+        return $this->render('room/moderationsupport.html.twig', ['form' => $form]);
     }
 
     /**
@@ -328,7 +319,7 @@ class RoomController extends AbstractController
             default => [CS_PROJECT_TYPE, CS_COMMUNITY_TYPE],
         };
 
-        $sort = $this->session->get('sortRooms', $portal->getSortRoomsBy() ?? 'activity');
+        $sort = $request->getSession()->get('sortRooms', $portal->getSortRoomsBy() ?? 'activity');
 
         $filterForm = $this->createForm(RoomFilterType::class, [
             'template' => $portal->getDefaultFilterHideTemplates(),
@@ -336,7 +327,7 @@ class RoomController extends AbstractController
         ], [
             'showTime' => $portal->getShowTimePulses(),
             'timePulses' => $roomService->getTimePulses(),
-            'timePulsesDisplayName' => ucfirst($portal->getTimePulseName($legacyEnvironment->getSelectedLanguage())),
+            'timePulsesDisplayName' => ucfirst((string) $portal->getTimePulseName($legacyEnvironment->getSelectedLanguage())),
         ]);
 
         $filterForm->handleRequest($request);
@@ -371,7 +362,7 @@ class RoomController extends AbstractController
         return $this->render('room/list_all.html.twig', [
             'roomId' => $roomId,
             'portal' => $portal,
-            'form' => $filterForm->createView(),
+            'form' => $filterForm,
             'itemsCountArray' => [
                 'count' => $count,
                 'countAll' => $countAll,
@@ -406,9 +397,9 @@ class RoomController extends AbstractController
         };
 
         if (empty($sort)) {
-            $sort = $this->session->get('sortRooms', $portal->getSortRoomsBy() ?? 'activity');
+            $sort = $request->getSession()->get('sortRooms', $portal->getSortRoomsBy() ?? 'activity');
         }
-        $this->session->set('sortRooms', $sort);
+        $request->getSession()->set('sortRooms', $sort);
 
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -426,7 +417,7 @@ class RoomController extends AbstractController
         ], [
             'showTime' => $portal->getShowTimePulses(),
             'timePulses' => $roomService->getTimePulses(),
-            'timePulsesDisplayName' => ucfirst($portal->getTimePulseName($legacyEnvironment->getSelectedLanguage())),
+            'timePulsesDisplayName' => ucfirst((string) $portal->getTimePulseName($legacyEnvironment->getSelectedLanguage())),
         ]);
 
         // manually bind values from the request
@@ -507,7 +498,7 @@ class RoomController extends AbstractController
         }
         $defaultTemplateIDs = ('-1' === $defaultId) ? [] : [$defaultId];
 
-        $timesDisplay = ucfirst($currentPortalItem->getCurrentTimeName());
+        $timesDisplay = ucfirst((string) $currentPortalItem->getCurrentTimeName());
         $times = $roomService->getTimePulses(true);
 
         $current_user = $legacyEnvironment->getCurrentUserItem();
@@ -670,7 +661,7 @@ class RoomController extends AbstractController
         }
 
         return $this->render('room/create.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 

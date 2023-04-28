@@ -35,13 +35,12 @@ use App\Utils\CategoryService;
 use App\Utils\DiscussionService;
 use App\Utils\LabelService;
 use App\Utils\TopicService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -52,18 +51,11 @@ use Symfony\Contracts\Service\Attribute\Required;
 class DiscussionController extends BaseController
 {
     private DiscussionService $discussionService;
-    private SessionInterface $session;
 
     #[Required]
     public function setDiscussionService(DiscussionService $discussionService): void
     {
         $this->discussionService = $discussionService;
-    }
-
-    #[Required]
-    public function setSession(SessionInterface $session): void
-    {
-        $this->session = $session;
     }
 
     #[Route(path: '/room/{roomId}/discussion/feed/{start}/{sort}')]
@@ -101,9 +93,9 @@ class DiscussionController extends BaseController
         }
 
         if (empty($sort)) {
-            $sort = $this->session->get('sortDiscussions', 'latest');
+            $sort = $request->getSession()->get('sortDiscussions', 'latest');
         }
-        $this->session->set('sortDiscussions', $sort);
+        $request->getSession()->set('sortDiscussions', $sort);
 
         // get discussion list from manager service
         $discussions = $this->discussionService->getListDiscussions($roomId, $max, $start, $sort);
@@ -152,7 +144,7 @@ class DiscussionController extends BaseController
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        $sort = $this->session->get('sortDiscussions', 'latest');
+        $sort = $request->getSession()->get('sortDiscussions', 'latest');
 
         // get the discussion manager service
         $filterForm = $this->createFilterForm($roomItem);
@@ -177,7 +169,7 @@ class DiscussionController extends BaseController
 
         return $this->render('discussion/list.html.twig', [
             'roomId' => $roomId,
-            'form' => $filterForm->createView(),
+            'form' => $filterForm,
             'module' => 'discussion',
             'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),
@@ -221,7 +213,7 @@ class DiscussionController extends BaseController
 
         // get discussion list from manager service
         if ('none' === $sort || empty($sort)) {
-            $sort = $this->session->get('sortDiscussions', 'latest');
+            $sort = $request->getSession()->get('sortDiscussions', 'latest');
         }
         $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, $sort);
 
@@ -263,16 +255,6 @@ class DiscussionController extends BaseController
         return $printService->buildPdfResponse($html);
     }
 
-    /**
-     * @param Request $request
-     * @param TopicService $topicService
-     * @param LegacyMarkup $legacyMarkup
-     * @param int $roomId
-     * @param int $itemId
-     * @param AssessmentService $assessmentService
-     * @param CategoryService $categoryService
-     * @return Response
-     */
     #[Route(path: '/room/{roomId}/discussion/{itemId}', requirements: ['itemId' => '\d+'])]
     public function detail(
         Request $request,
@@ -656,7 +638,7 @@ class DiscussionController extends BaseController
         }
 
         return $this->render('discussion/create_answer.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'parentId' => 0,
             'withUpload' => false,
@@ -695,7 +677,7 @@ class DiscussionController extends BaseController
         ]);
 
         return $this->render('discussion/create_answer.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'article' => $article,
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'parentId' => $parentId,
@@ -857,7 +839,7 @@ class DiscussionController extends BaseController
             $this->eventDispatcher->dispatch(new CommsyEditEvent($discussionItem), CommsyEditEvent::EDIT);
         }
 
-        return $this->render('discussion/edit.html.twig', ['form' => $form->createView(), 'discussion' => $discussionItem, 'discussionArticle' => $discussionArticleItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('discussion/edit.html.twig', ['form' => $form, 'discussion' => $discussionItem, 'discussionArticle' => $discussionArticleItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
     }
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/save')]

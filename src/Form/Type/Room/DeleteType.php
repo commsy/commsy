@@ -38,7 +38,7 @@ class DeleteType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\IdenticalTo([
-                        'value' => mb_strtoupper($options['confirm_string']),
+                        'value' => mb_strtoupper((string) $options['confirm_string']),
                         'message' => 'The input does not match {{ compared_value }}',
                     ]),
                     new MandatoryProjectRoomAssignment([
@@ -82,7 +82,7 @@ class DeleteType extends AbstractType
      *
      * @return string The prefix of the template block name
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'delete_room';
     }

@@ -23,7 +23,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class RoomTimePulsesFilterConditionSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private RoomService $roomService)
+    public function __construct(private readonly RoomService $roomService)
     {
     }
 

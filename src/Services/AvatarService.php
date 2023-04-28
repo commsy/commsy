@@ -33,7 +33,7 @@ class AvatarService
     /**
      * @param string $kernelProjectDir
      */
-    public function __construct(private UserService $userService, private $kernelProjectDir)
+    public function __construct(private readonly UserService $userService, private $kernelProjectDir)
     {
     }
 

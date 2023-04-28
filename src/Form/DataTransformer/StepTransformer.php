@@ -41,11 +41,9 @@ class StepTransformer extends AbstractTransformer
      * @param object $stepObject
      * @param array  $stepData
      *
-     * @return cs_step_item|null
-     *
      * @throws TransformationFailedException if room item is not found
      */
-    public function applyTransformation($stepObject, $stepData)
+    public function applyTransformation($stepObject, $stepData): cs_step_item
     {
         $stepObject->setDescription($stepData['description']);
 

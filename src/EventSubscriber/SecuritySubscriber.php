@@ -17,27 +17,24 @@ use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use App\Utils\RequestContext;
 use cs_environment;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 
 class SecuritySubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var cs_environment|LegacyEnvironment
-     */
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private RouterInterface $router,
-        private Security $security,
-        private RequestContext $requestContext
+        private readonly RouterInterface $router,
+        private readonly Security $security,
+        private readonly RequestContext $requestContext
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -96,7 +93,7 @@ class SecuritySubscriber implements EventSubscriberInterface
         }
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             SecurityEvents::INTERACTIVE_LOGIN => 'onSecurityInteractiveLogin',

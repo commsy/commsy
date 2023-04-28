@@ -320,9 +320,7 @@ class Files
     /**
      * Set extras.
      *
-     * @param array $extras
      *
-     * @return Files
      */
     public function setExtras(array $extras): self
     {
@@ -333,8 +331,6 @@ class Files
 
     /**
      * Get extras.
-     *
-     * @return array|null
      */
     public function getExtras(): ?array
     {

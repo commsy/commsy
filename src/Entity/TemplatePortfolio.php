@@ -22,19 +22,13 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'template_portfolio')]
 class TemplatePortfolio
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'p_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
-    private $pId = '0';
+    private int $pId;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'u_id', type: 'string', length: 32)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
-    private $uId = '';
+    private string $uId = '';
 }

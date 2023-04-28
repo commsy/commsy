@@ -26,12 +26,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CommsyFeedContentProvider implements FeedProviderInterface
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private TranslatorInterface $translator,
-        private FeedCreatorFactory $feedCreatorFactory
+        private readonly TranslatorInterface $translator,
+        private readonly FeedCreatorFactory $feedCreatorFactory
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

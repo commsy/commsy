@@ -25,37 +25,37 @@ use App\Utils\PortfolioService;
 use App\Utils\ReaderService;
 use App\Utils\UserService;
 use cs_environment;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security as CoreSecurity;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class CalendarController.
  */
-#[IsGranted('ITEM_ENTER', subject: 'roomId')]
+#[\Symfony\Component\Security\Http\Attribute\IsGranted('ITEM_ENTER', subject: 'roomId')]
 class PortfolioController extends AbstractController
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     /**
      * PortfolioController constructor.
      */
-    public function __construct(private PortfolioService $portfolioService,
-                                private PortfolioTransformer $transformer,
-                                private ReaderService $readerService,
-                                private ItemService $itemService,
-                                private UserService $userService,
-                                private CategoryService $categoryService,
-                                LegacyEnvironment $legacyEnvironment,
-                                private CoreSecurity $security)
-    {
+    public function __construct(
+        private readonly PortfolioService $portfolioService,
+        private readonly PortfolioTransformer $transformer,
+        private readonly ReaderService $readerService,
+        private readonly ItemService $itemService,
+        private readonly UserService $userService,
+        private readonly CategoryService $categoryService,
+        LegacyEnvironment $legacyEnvironment,
+        private readonly Security $security
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -81,8 +81,8 @@ class PortfolioController extends AbstractController
     #[Route(path: '/room/{roomId}/portfolio/{portfolioId}', requirements: ['portfolioId' => '\d+'])]
     public function portfolioAction(
         int $roomId,
-        int $portfolioId = null,
-        CoreSecurity $security
+        Security $security,
+        int $portfolioId = null
     ) {
         $portfolio = $this->portfolioService->getPortfolio($portfolioId);
         $linkItemIds = [];
@@ -218,7 +218,7 @@ class PortfolioController extends AbstractController
             'readerList' => $readerList,
             'firstTag' => $this->categoryService->getTag($firstTagId),
             'secondTag' => $this->categoryService->getTag($secondTagId),
-            'annotationForm' => $form->createView(),
+            'annotationForm' => $form,
             'portfolio' => $portfolio,
             'portfolioId' => $portfolioId,
         ]);
@@ -292,7 +292,7 @@ class PortfolioController extends AbstractController
         }
 
         return $this->render('portfolio/edit.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'item' => $item,
             'portfolio' => $portfolioItem,
         ]);
@@ -336,7 +336,7 @@ class PortfolioController extends AbstractController
                     $form->addError(new FormError($translator->trans('Title may not be empty', [], 'portfolio')));
 
                     return $this->render('portfolio/editcategory.html.twig', [
-                        'form' => $form->createView(),
+                        'form' => $form,
                         'categoryTerm' => $categoryTerm,
                     ]);
                 }
@@ -412,7 +412,7 @@ class PortfolioController extends AbstractController
         }
 
         return $this->render('portfolio/editcategory.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'categoryTerm' => $categoryTerm,
         ]);
     }

@@ -18,7 +18,7 @@ use App\Repository\RoomRepository;
 
 class GetAccountsWorkspaces
 {
-    public function __construct(private RoomRepository $roomRepository)
+    public function __construct(private readonly RoomRepository $roomRepository)
     {
     }
 

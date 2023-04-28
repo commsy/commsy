@@ -41,13 +41,13 @@ use cs_label_item;
 use cs_labels_manager;
 use cs_manager;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -69,10 +69,6 @@ class ItemController extends AbstractController
     public function setTransformerManager(TransformerManager $transformerManager): void
     {
         $this->transformerManager = $transformerManager;
-    }
-
-    public function __construct(private LabelService $labelService)
-    {
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/editdescription/{draft}')]
@@ -172,7 +168,7 @@ class ItemController extends AbstractController
             'isMaterial' => $itemType == 'material',
             'itemId' => $itemId,
             'roomId' => $roomId,
-            'form' => $form->createView(),
+            'form' => $form,
             'withRecurrence' => $withRecurrence,
         ]);
     }
@@ -253,7 +249,7 @@ class ItemController extends AbstractController
         $workflowData['withResubmission'] = $room->withWorkflowResubmission();
         $workflowData['workflowValidity'] = $room->withWorkflowValidity();
 
-        return $this->render('item/edit_workflow.html.twig', ['item' => $tempItem, 'form' => $form->createView(), 'workflow' => $workflowData]);
+        return $this->render('item/edit_workflow.html.twig', ['item' => $tempItem, 'form' => $form, 'workflow' => $workflowData]);
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/editlinks/{feedAmount}', defaults: ['feedAmount' => 20])]
@@ -430,7 +426,7 @@ class ItemController extends AbstractController
         return $this->render('item/edit_links.html.twig', [
             'itemId' => $itemId,
             'roomId' => $roomId,
-            'form' => $form->createView(),
+            'form' => $form,
             'showCategories' => $roomItem->withTags(),
             'showHashtags' => $roomItem->withBuzzwords(),
             'items' => $items,
@@ -611,7 +607,7 @@ class ItemController extends AbstractController
         return $this->render('item/edit_cats_buzz.html.twig', [
             'itemId' => $itemId,
             'roomId' => $roomId,
-            'form' => $form->createView(),
+            'form' => $form,
             'showCategories' => $roomItem->withTags(),
             'showHashtags' => $roomItem->withBuzzwords(),
             'items' => $items,
@@ -722,7 +718,7 @@ class ItemController extends AbstractController
         }
 
         return $this->render('item/send.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -861,7 +857,7 @@ class ItemController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
-            $userIds = explode(',', $data['entries']);
+            $userIds = explode(',', (string) $data['entries']);
             $recipients = [];
             foreach ($userIds as $userId) {
                 $user = $userService->getUser($userId);
@@ -883,7 +879,7 @@ class ItemController extends AbstractController
         }
 
         return $this->render('item/send_list.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -1031,7 +1027,9 @@ class ItemController extends AbstractController
         ItemService $itemService,
         CategoryService $categoryService,
         LegacyEnvironment $environment,
-        int $roomId, int $itemId
+        LabelService $labelService,
+        int $roomId,
+        int $itemId
     ): Response {
         $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -1042,7 +1040,7 @@ class ItemController extends AbstractController
         if ($current_context->withTags()) {
             $roomCategories = $categoryService->getTags($roomId);
             $itemCategories = $item->getTagsArray();
-            $categories = $this->labelService->getTagDetailArray($roomCategories, $itemCategories);
+            $categories = $labelService->getTagDetailArray($roomCategories, $itemCategories);
         }
 
         $roomItem = $roomService->getRoomItem($roomId);

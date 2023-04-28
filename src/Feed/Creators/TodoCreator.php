@@ -26,7 +26,7 @@ class TodoCreator extends Creator
     {
         return $this->translator->trans('Task: %title% (due date %due_date%)', [
             '%title%' => $item->getTitle(),
-            '%due_date%' => date('d.m.Y', strtotime($item->getDate())),
+            '%due_date%' => date('d.m.Y', strtotime((string) $item->getDate())),
         ], 'rss');
     }
 

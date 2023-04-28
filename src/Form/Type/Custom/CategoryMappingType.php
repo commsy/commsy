@@ -32,7 +32,7 @@ class CategoryMappingType extends AbstractType
                 'placeholder' => false,
                 'choices' => $options['categories'],
                 'choice_label' => fn ($choice, $key, $value) => // remove the trailing category ID from $key (which was used in LabelService->transformTagArray() to uniquify the key)
-implode('_', explode('_', $key, -1)),
+implode('_', explode('_', (string) $key, -1)),
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
@@ -65,7 +65,7 @@ implode('_', explode('_', $key, -1)),
         $resolver->setDefaults([
             'translation_domain' => 'form',
             'constraints' => [
-                new Callback([$this, 'validate']),
+                new Callback($this->validate(...)),
             ],
             'assignment_is_mandatory' => true,
         ]);

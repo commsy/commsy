@@ -14,6 +14,7 @@
 namespace App\Form\Type;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -23,7 +24,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class InvitationsSettingsType extends AbstractType
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

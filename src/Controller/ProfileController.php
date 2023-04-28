@@ -29,13 +29,13 @@ use App\Utils\RoomService;
 use App\Utils\UserService;
 use cs_environment;
 use cs_user_item;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -93,7 +93,7 @@ class ProfileController extends AbstractController
                         mkdir($saveDir, 0777, true);
                     }
                     $data = $formData['image_data'];
-                    [$fileName, $type, $data] = explode(';', $data);
+                    [$fileName, $type, $data] = explode(';', (string) $data);
                     [, $data] = explode(',', $data);
                     [, $extension] = explode('/', $type);
                     $data = base64_decode($data);
@@ -154,7 +154,7 @@ class ProfileController extends AbstractController
             'roomId' => $roomId,
             'roomTitle' => $roomItem->getTitle(),
             'user' => $userItem,
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -217,7 +217,7 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('app_profile_address', ['roomId' => $roomId, 'itemId' => $itemId]);
         }
 
-        return $this->render('profile/address.html.twig', ['form' => $form->createView()]);
+        return $this->render('profile/address.html.twig', ['form' => $form]);
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/contact')]
@@ -289,7 +289,7 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('app_profile_contact', ['roomId' => $roomId, 'itemId' => $itemId]);
         }
 
-        return $this->render('profile/contact.html.twig', ['form' => $form->createView()]);
+        return $this->render('profile/contact.html.twig', ['form' => $form]);
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/notifications')]
@@ -304,8 +304,8 @@ class ProfileController extends AbstractController
         $userItem = $userService->getUser($itemId);
         $userData = [];
 
-        $userData['mail_account'] = 'yes' === $userItem->getAccountWantMail() ? true : false;
-        $userData['mail_room'] = 'yes' === $userItem->getOpenRoomWantMail() ? true : false;
+        $userData['mail_account'] = 'yes' === $userItem->getAccountWantMail();
+        $userData['mail_room'] = 'yes' === $userItem->getOpenRoomWantMail();
         $userData['mail_item_deleted'] = $userItem->getDeleteEntryWantMail();
 
         $form = $this->createForm(RoomProfileNotificationsType::class, $userData, ['itemId' => $itemId]);
@@ -322,7 +322,7 @@ class ProfileController extends AbstractController
         }
 
         return $this->render('profile/notifications.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -422,8 +422,8 @@ class ProfileController extends AbstractController
 
         return $this->render('profile/delete_room_profile.html.twig', [
             'override' => $deleteParameter,
-            'form_lock' => $lockForm->createView(),
-            'form_delete' => $deleteForm->createView(),
+            'form_lock' => $lockForm,
+            'form_delete' => $deleteForm,
         ]);
     }
 }

@@ -34,12 +34,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class GeneralSettingsType extends AbstractType
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private TranslatorInterface $translator,
-        private RoomSlugCollectionToStringTransformer $roomSlugToStringTransformer
+        private readonly TranslatorInterface $translator,
+        private readonly RoomSlugCollectionToStringTransformer $roomSlugToStringTransformer
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -144,7 +144,7 @@ class GeneralSettingsType extends AbstractType
                 $form
                     ->add('time_pulses', ChoiceType::class, [
                         'autocomplete' => true,
-                        'label' => ucfirst($this->getTimeIntervalsDisplayName()),
+                        'label' => ucfirst((string) $this->getTimeIntervalsDisplayName()),
                         'required' => false,
                         'choices' => $this->getTimeChoices(),
                         'multiple' => true,

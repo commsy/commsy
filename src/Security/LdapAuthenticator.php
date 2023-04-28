@@ -35,6 +35,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CustomCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 class LdapAuthenticator extends AbstractCommsyAuthenticator
@@ -42,11 +43,11 @@ class LdapAuthenticator extends AbstractCommsyAuthenticator
     use TargetPathTrait;
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
+        private readonly EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
-        private AccountCreatorFacade $accountCreator,
+        private readonly AccountCreatorFacade $accountCreator,
         RequestContext $requestContext,
-        private AccountManager $accountManager
+        private readonly AccountManager $accountManager
     ) {
         parent::__construct($urlGenerator, $requestContext);
     }
@@ -133,7 +134,7 @@ class LdapAuthenticator extends AbstractCommsyAuthenticator
             $account->setAuthSource($ldapAuthSource);
             $account->setContextId($credentials['context']);
             $account->setLanguage('de');
-            $account->setUsername($ldapUser->getUsername());
+            $account->setUsername($ldapUser->getUserIdentifier());
             $account->setFirstname($extraFields['givenName']);
             $account->setLastname($extraFields['sn']);
             $account->setEmail($extraFields['mail']);
@@ -210,7 +211,7 @@ class LdapAuthenticator extends AbstractCommsyAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
         if ($request->hasSession()) {
-            $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
+            $request->getSession()->set(SecurityRequestAttributes::AUTHENTICATION_ERROR, $exception);
             $request->getSession()->set(AbstractCommsyAuthenticator::LAST_SOURCE, 'ldap');
         }
 

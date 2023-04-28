@@ -13,6 +13,7 @@
 
 namespace App\Form\DataTransformer;
 
+use cs_annotation_item;
 use cs_item;
 
 class AnnotationTransformer extends AbstractTransformer
@@ -42,10 +43,8 @@ class AnnotationTransformer extends AbstractTransformer
      *
      * @param object $materialObject
      * @param array  $annotationData
-     *
-     * @return cs_item|null
      */
-    public function applyTransformation($annotationObject, $annotationData)
+    public function applyTransformation($annotationObject, $annotationData): cs_annotation_item
     {
         $annotationObject->setDescription($annotationData['description']);
 

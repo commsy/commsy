@@ -14,14 +14,16 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use cs_manager;
+use cs_project_manager;
 use Symfony\Component\Form\Form;
 
 class ProjectService
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    private $projectManager;
+    private readonly cs_project_manager $projectManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

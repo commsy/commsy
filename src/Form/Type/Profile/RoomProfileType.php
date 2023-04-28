@@ -14,6 +14,7 @@
 namespace App\Form\Type\Profile;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -28,14 +29,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RoomProfileType extends AbstractType
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     /**
      * @var mixed|null
      */
-    private $userItem;
+    private ?object $userItem = null;
 
-    public function __construct(private EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
+    public function __construct(private readonly EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

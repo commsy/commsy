@@ -23,7 +23,7 @@ class ReadStatusFilterCondition implements FilterConditionInterface
 {
     private ?string $readStatus = null;
 
-    public function __construct(private UserService $userService, private ItemService $itemService, private ReaderService $readerService)
+    public function __construct(private readonly UserService $userService, private readonly ItemService $itemService, private readonly ReaderService $readerService)
     {
     }
 

@@ -333,11 +333,11 @@ class ICalController extends AbstractController
             $myEntries = $currentContextItem->getMyCalendarDisplayConfig();
             $myRooms = [];
             foreach ($myEntries as $entry) {
-                $expEntry = explode('_', $entry);
+                $expEntry = explode('_', (string) $entry);
 
                 if (2 == sizeof($expEntry)) {
                     if ('dates' == $expEntry[1] || 'todo' == $expEntry[1]) {
-                        $entry = str_replace('_dates', '', $entry);
+                        $entry = str_replace('_dates', '', (string) $entry);
                         $entry = str_replace('_todo', '', $entry);
 
                         $myRooms[] = $entry;

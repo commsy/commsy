@@ -15,6 +15,7 @@ namespace App\Privacy;
 
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
+use cs_environment;
 use cs_privateroom_item;
 use cs_user_item;
 use DateTime;
@@ -26,15 +27,12 @@ use DateTime;
  */
 class PersonalDataCollector
 {
-    /**
-     * @var LegacyEnvironment
-     */
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     /**
      * PersonalDataCollector constructor.
      */
-    public function __construct(LegacyEnvironment $legacyEnvironment, private UserService $userService)
+    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly UserService $userService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

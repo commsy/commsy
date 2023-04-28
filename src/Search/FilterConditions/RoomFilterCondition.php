@@ -18,7 +18,7 @@ use Elastica\Query\Ids;
 
 class RoomFilterCondition implements FilterConditionInterface
 {
-    public function __construct(private UserService $userService)
+    public function __construct(private readonly UserService $userService)
     {
     }
 

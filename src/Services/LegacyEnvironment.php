@@ -22,9 +22,9 @@ class LegacyEnvironment
     private ?cs_environment $environment = null;
 
     public function __construct(
-        private string $projectDir,
-        private Container $serviceContainer,
-        private RequestStack $requestStack
+        private readonly string $projectDir,
+        private readonly Container $serviceContainer,
+        private readonly RequestStack $requestStack
     ) {
     }
 

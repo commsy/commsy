@@ -29,9 +29,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class LockExtension extends AbstractTypeExtension
 {
     public function __construct(
-        private LockManager $lockManager,
-        private LockValidationSubscriber $lockValidationSubscriber,
-        private RequestStack $requestStack
+        private readonly LockManager $lockManager,
+        private readonly LockValidationSubscriber $lockValidationSubscriber,
+        private readonly RequestStack $requestStack
     ) {
     }
 

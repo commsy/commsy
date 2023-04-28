@@ -21,11 +21,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ReadStatusSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private ItemService $itemService, private ReaderService $readerService)
+    public function __construct(private readonly ItemService $itemService, private readonly ReaderService $readerService)
     {
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             ReadStatusPreChangeEvent::class => 'onReadStatusPreChange',

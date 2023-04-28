@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\Event\TerminateEvent;
 
 class LoggingSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private RoomService $roomService, private LegacyEnvironment $legacyEnvironment)
+    public function __construct(private readonly RoomService $roomService, private readonly LegacyEnvironment $legacyEnvironment)
     {
     }
 
@@ -100,7 +100,7 @@ class LoggingSubscriber implements EventSubscriberInterface
         }
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             TerminateEvent::class => 'onTerminateEvent',

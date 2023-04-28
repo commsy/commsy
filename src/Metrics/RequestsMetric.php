@@ -20,11 +20,11 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class RequestsMetric extends AbstractMetric implements MetricInterface, EventSubscriberInterface
 {
-    public function __construct(private RequestContext $requestContext)
+    public function __construct(private readonly RequestContext $requestContext)
     {
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::TERMINATE => 'onKernelTerminate',

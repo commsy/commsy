@@ -32,7 +32,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SendType extends AbstractType
 {
-    public function __construct(private MailAssistant $mailAssistant, private TranslatorInterface $translator)
+    public function __construct(private readonly MailAssistant $mailAssistant, private readonly TranslatorInterface $translator)
     {
     }
 

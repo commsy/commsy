@@ -29,21 +29,20 @@ use ZipArchive;
 
 class DownloadService
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private Container $serviceContainer,
-        private PrintService $printService,
-        private ItemService $itemService,
-        private MaterialService $materialService,
-        private ReaderService $readerService,
-        private AnnotationService $annotationService,
-        private AssessmentService $assessmentService,
-        private FormFactoryInterface $formFactory,
-        private Environment $environment,
-        private ParameterBagInterface $parameterBag,
-        private CategoryService $categoryService
+        private readonly PrintService $printService,
+        private readonly ItemService $itemService,
+        private readonly MaterialService $materialService,
+        private readonly ReaderService $readerService,
+        private readonly AnnotationService $annotationService,
+        private readonly AssessmentService $assessmentService,
+        private readonly FormFactoryInterface $formFactory,
+        private readonly Environment $environment,
+        private readonly ParameterBagInterface $parameterBag,
+        private readonly CategoryService $categoryService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -52,7 +51,7 @@ class DownloadService
     {
         $itemIds = is_array($itemIds) ? $itemIds : [$itemIds];
 
-        $exportTempFolder = $this->serviceContainer->getParameter('kernel.project_dir').'/files/temp/zip_export/'.time();
+        $exportTempFolder = $this->parameterBag->get('kernel.project_dir').'/files/temp/zip_export/'.time();
 
         $fileSystem = new Filesystem();
 
@@ -138,7 +137,7 @@ class DownloadService
                     if (!$fileSystem->exists($targetFilePath)) {
                         $fileSystem->copy($sourceFilePath, $targetFilePath);
                     } else {
-                        $fileNameWithoutExtension = mb_substr($file->getFilename(), 0, strlen($file->getFilename()) - (strlen($file->getExtension()) + 1));
+                        $fileNameWithoutExtension = mb_substr((string) $file->getFilename(), 0, strlen((string) $file->getFilename()) - (strlen((string) $file->getExtension()) + 1));
 
                         $counter = 1;
                         if (isset($filesCounter[$fileNameWithoutExtension])) {

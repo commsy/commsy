@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use App\Utils\EntityDatesTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -27,13 +28,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 class Discussions
 {
-    /**
-     * @var int
-     */
+    use EntityDatesTrait;
+
     #[ORM\Column(name: 'item_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $itemId = '0';
+    private int $itemId;
 
     /**
      * @var int
@@ -55,26 +55,8 @@ class Discussions
     #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private $deleterId;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
-    private $creationDate = '0000-00-00 00:00:00';
-
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
-    private $modificationDate;
-
     #[ORM\Column(name: 'activation_date', type: 'datetime')]
     private ?DateTime $activationDate = null;
-
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private $deletionDate;
 
     /**
      * @var string
@@ -97,23 +79,14 @@ class Discussions
     #[ORM\Column(name: 'latest_article_modification_date', type: 'datetime', nullable: true)]
     private $latestArticleModificationDate;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'status', type: 'integer', nullable: false)]
-    private $status = '1';
+    private string $status = '1';
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'discussion_type', type: 'string', length: 10, nullable: false)]
-    private $discussionType = 'simple';
+    private string $discussionType = 'simple';
 
-    /**
-     * @var bool
-     */
     #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
-    private $public = '0';
+    private string $public = '0';
 
     /**
      * @var string
@@ -137,12 +110,7 @@ class Discussions
         return null == $this->deleterId && null == $this->deletionDate;
     }
 
-    /**
-     * Get itemId.
-     *
-     * @return int
-     */
-    public function getItemId()
+    public function getItemId(): int
     {
         return $this->itemId;
     }
@@ -196,44 +164,6 @@ class Discussions
     }
 
     /**
-     * Set creationDate.
-     *
-     * @param DateTime $creationDate
-     *
-     * @return Discussions
-     */
-    public function setCreationDate($creationDate)
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get creationDate.
-     *
-     * @return DateTime
-     */
-    public function getCreationDate()
-    {
-        return $this->creationDate;
-    }
-
-    /**
-     * Set modificationDate.
-     *
-     * @param DateTime $modificationDate
-     *
-     * @return Discussions
-     */
-    public function setModificationDate($modificationDate)
-    {
-        $this->modificationDate = $modificationDate;
-
-        return $this;
-    }
-
-    /**
      * Set activationDate.
      */
     public function setActivationDate(DateTime $activationDate): self
@@ -249,40 +179,6 @@ class Discussions
     public function getActivationDate(): ?DateTime
     {
         return $this->activationDate;
-    }
-
-    /**
-     * Get modificationDate.
-     *
-     * @return DateTime
-     */
-    public function getModificationDate()
-    {
-        return $this->modificationDate;
-    }
-
-    /**
-     * Set deletionDate.
-     *
-     * @param DateTime $deletionDate
-     *
-     * @return Discussions
-     */
-    public function setDeletionDate($deletionDate)
-    {
-        $this->deletionDate = $deletionDate;
-
-        return $this;
-    }
-
-    /**
-     * Get deletionDate.
-     *
-     * @return DateTime
-     */
-    public function getDeletionDate()
-    {
-        return $this->deletionDate;
     }
 
     /**

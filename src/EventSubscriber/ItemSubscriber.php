@@ -21,20 +21,21 @@ use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
+use cs_environment;
 use cs_item;
 use cs_user_item;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ItemSubscriber implements EventSubscriberInterface
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(private Mailer $mailer, LegacyEnvironment $legacyEnvironment, private ItemService $itemService, private ReaderService $readerService)
+    public function __construct(private readonly Mailer $mailer, LegacyEnvironment $legacyEnvironment, private readonly ItemService $itemService, private readonly ReaderService $readerService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             ItemDeletedEvent::NAME => 'onItemDeleted',

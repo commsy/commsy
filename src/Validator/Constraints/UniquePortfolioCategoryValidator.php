@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class UniquePortfolioCategoryValidator extends ConstraintValidator
 {
-    public function __construct(private PortfolioService $portfolioService)
+    public function __construct(private readonly PortfolioService $portfolioService)
     {
     }
 

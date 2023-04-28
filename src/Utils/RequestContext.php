@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RequestContext
 {
-    public function __construct(private PortalRepository $portalRepository, private RoomRepository $roomRepository, private ItemService $itemService)
+    public function __construct(private readonly PortalRepository $portalRepository, private readonly RoomRepository $roomRepository, private readonly ItemService $itemService)
     {
     }
 

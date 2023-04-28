@@ -27,7 +27,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CsvImportType extends AbstractType
 {
-    public function __construct(private TranslatorInterface $translator, private FileToUserImportTransformer $transformer)
+    public function __construct(private readonly TranslatorInterface $translator, private readonly FileToUserImportTransformer $transformer)
     {
     }
 

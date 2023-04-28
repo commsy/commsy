@@ -14,6 +14,7 @@
 namespace App\Entity;
 
 use App\Repository\MaterialsRepository;
+use App\Utils\EntityDatesTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -29,6 +30,16 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'modifier_id', columns: ['modifier_id'])]
 class Materials
 {
+    use EntityDatesTrait;
+
+    #[ORM\Id]
+    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    private $itemId;
+
+    #[ORM\Column(name: 'version_id', type: 'integer')]
+    private $versionId;
+
     /**
      * @var int
      */
@@ -43,30 +54,12 @@ class Materials
     #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id')]
     private ?User $deleter = null;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
-    private $creationDate = '0000-00-00 00:00:00';
-
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
     private ?User $modifier = null;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
-    private $modificationDate;
-
     #[ORM\Column(name: 'activation_date', type: 'datetime')]
     private ?DateTime $activationDate = null;
-
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private $deletionDate;
 
     /**
      * @var string
@@ -77,7 +70,7 @@ class Materials
     /**
      * @var string
      */
-    #[ORM\Column(name: 'description', type: 'text', length: 16777215, nullable: true)]
+    #[ORM\Column(name: 'description', type: 'text', length: 16_777_215, nullable: true)]
     private $description;
 
     /**
@@ -92,17 +85,11 @@ class Materials
     #[ORM\Column(name: 'publishing_date', type: 'string', length: 20, nullable: true)]
     private $publishingDate;
 
-    /**
-     * @var bool
-     */
     #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
-    private $public = '0';
+    private string $public = '0';
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'world_public', type: 'smallint', nullable: false)]
-    private $worldPublic = '0';
+    private string $worldPublic = '0';
 
     /**
      * @var string
@@ -110,11 +97,8 @@ class Materials
     #[ORM\Column(name: 'extras', type: 'array', nullable: true)]
     private $extras;
 
-    /**
-     * @var bool
-     */
     #[ORM\Column(name: 'new_hack', type: 'boolean', nullable: false)]
-    private $newHack = '0';
+    private string $newHack = '0';
 
     /**
      * @var int
@@ -122,11 +106,8 @@ class Materials
     #[ORM\Column(name: 'copy_of', type: 'integer', nullable: true)]
     private $copyOf;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'workflow_status', type: 'string', length: 255, nullable: false)]
-    private $workflowStatus = '3_none';
+    private string $workflowStatus = '3_none';
 
     /**
      * @var DateTime
@@ -143,18 +124,7 @@ class Materials
     #[ORM\OneToMany(targetEntity: 'Section', mappedBy: 'material')]
     private Collection $sections;
 
-    /**
-     * @param int $itemId
-     * @param int $versionId
-     */
-    public function __construct(#[ORM\Id]
-    #[ORM\Column(name: 'item_id', type: 'integer')]
-    #[ORM\GeneratedValue(strategy: 'NONE')]
-    private $itemId, /**
-     * Todo: Id.
-     */
-    #[ORM\Column(name: 'version_id', type: 'integer')]
-    private $versionId)
+    public function __construct()
     {
         $this->sections = new ArrayCollection();
     }
@@ -262,54 +232,6 @@ class Materials
     }
 
     /**
-     * Set creationDate.
-     *
-     * @param DateTime $creationDate
-     *
-     * @return Materials
-     */
-    public function setCreationDate($creationDate)
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get creationDate.
-     *
-     * @return DateTime
-     */
-    public function getCreationDate()
-    {
-        return $this->creationDate;
-    }
-
-    /**
-     * Set modificationDate.
-     *
-     * @param DateTime $modificationDate
-     *
-     * @return Materials
-     */
-    public function setModificationDate($modificationDate)
-    {
-        $this->modificationDate = $modificationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get modificationDate.
-     *
-     * @return DateTime
-     */
-    public function getModificationDate()
-    {
-        return $this->modificationDate;
-    }
-
-    /**
      * Set activationDate.
      */
     public function setActivationDate(DateTime $activationDate): self
@@ -325,30 +247,6 @@ class Materials
     public function getActivationDate(): ?DateTime
     {
         return $this->activationDate;
-    }
-
-    /**
-     * Set deletionDate.
-     *
-     * @param DateTime $deletionDate
-     *
-     * @return Materials
-     */
-    public function setDeletionDate($deletionDate)
-    {
-        $this->deletionDate = $deletionDate;
-
-        return $this;
-    }
-
-    /**
-     * Get deletionDate.
-     *
-     * @return DateTime
-     */
-    public function getDeletionDate()
-    {
-        return $this->deletionDate;
     }
 
     /**

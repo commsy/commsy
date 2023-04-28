@@ -15,6 +15,7 @@ namespace App\Utils;
 
 use App\Room\RoomManager;
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use cs_project_item;
 use cs_room_item;
 use cs_user_item;
@@ -27,13 +28,13 @@ use cs_userroom_item;
  */
 class UserroomService
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private RoomService $roomService,
-        private UserService $userService,
-        private RoomManager $roomManager)
+        private readonly RoomService $roomService,
+        private readonly UserService $userService,
+        private readonly RoomManager $roomManager)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }

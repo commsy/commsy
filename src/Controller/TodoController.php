@@ -44,14 +44,13 @@ use cs_step_item;
 use cs_todo_item;
 use cs_user_item;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -61,18 +60,11 @@ use Symfony\Contracts\Service\Attribute\Required;
 class TodoController extends BaseController
 {
     private TodoService $todoService;
-    private SessionInterface $session;
 
     #[Required]
     public function setTodoService(TodoService $todoService): void
     {
         $this->todoService = $todoService;
-    }
-
-    #[Required]
-    public function setSession(SessionInterface $session): void
-    {
-        $this->session = $session;
     }
 
     #[Route(path: '/room/{roomId}/todo')]
@@ -98,7 +90,7 @@ class TodoController extends BaseController
             $this->todoService->hideCompletedEntries();
         }
 
-        $sort = $this->session->get('sortTodos', 'duedate_rev');
+        $sort = $request->getSession()->get('sortTodos', 'duedate_rev');
 
         // get todo list from manager service
         $itemsCountArray = $this->todoService->getCountArray($roomId);
@@ -109,7 +101,7 @@ class TodoController extends BaseController
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('todo');
         }
 
-        return $this->render('todo/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm->createView(), 'module' => 'todo', 'itemsCountArray' => $itemsCountArray, 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => $roomItem->withAssociations(), 'showCategories' => $roomItem->withTags(), 'statusList' => $roomItem->getExtraToDoStatusArray(), 'usageInfo' => $usageInfo, 'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(), 'catzExpanded' => $roomItem->isTagsShowExpanded(), 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'sort' => $sort]);
+        return $this->render('todo/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'todo', 'itemsCountArray' => $itemsCountArray, 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => $roomItem->withAssociations(), 'showCategories' => $roomItem->withTags(), 'statusList' => $roomItem->getExtraToDoStatusArray(), 'usageInfo' => $usageInfo, 'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(), 'catzExpanded' => $roomItem->isTagsShowExpanded(), 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'sort' => $sort]);
     }
 
     #[Route(path: '/room/{roomId}/todo/create')]
@@ -163,9 +155,9 @@ class TodoController extends BaseController
         }
 
         if (empty($sort)) {
-            $sort = $this->session->get('sortTodos', 'duedate_rev');
+            $sort = $request->getSession()->get('sortTodos', 'duedate_rev');
         }
-        $this->session->set('sortTodos', $sort);
+        $request->getSession()->set('sortTodos', $sort);
 
         // get todo list from manager service
         /** @var cs_todo_item[] $todos */
@@ -347,7 +339,7 @@ class TodoController extends BaseController
             'readerList' => $readerList,
             'modifierList' => $modifierList,
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
-            'annotationForm' => $form->createView(),
+            'annotationForm' => $form,
             'userCount' => $all_user_count,
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
@@ -393,7 +385,7 @@ class TodoController extends BaseController
         ]), 'placeholderText' => '['.$this->translator->trans('insert title').']']);
 
         return $this->render('todo/edit_step.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'step' => $step,
             'new' => true,
         ]);
@@ -475,7 +467,7 @@ class TodoController extends BaseController
         }
 
         return $this->render('todo/edit_step.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'step' => $step,
         ]);
     }
@@ -578,7 +570,7 @@ class TodoController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($todoItem), CommsyEditEvent::EDIT);
 
-        return $this->render('todo/edit.html.twig', ['form' => $form->createView(), 'todo' => $todoItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('todo/edit.html.twig', ['form' => $form, 'todo' => $todoItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
     }
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/save')]
@@ -743,7 +735,7 @@ class TodoController extends BaseController
 
         // get todo list from manager service
         if ('none' === $sort || empty($sort)) {
-            $sort = $this->session->get('sortTodos', 'duedate_rev');
+            $sort = $request->getSession()->get('sortTodos', 'duedate_rev');
         }
         /** @var cs_todo_item[] $todos */
         $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0, $sort);

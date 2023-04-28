@@ -22,13 +22,13 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-final class ThemeSubscriber implements EventSubscriberInterface
+final readonly class ThemeSubscriber implements EventSubscriberInterface
 {
     public function __construct(private ThemeRepositoryInterface $themeRepository, private SettableThemeContext $themeContext, private ParameterBagInterface $parameterBag, private RoomService $roomService)
     {
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => 'onKernelRequest',

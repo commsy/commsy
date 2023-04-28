@@ -13,8 +13,7 @@
 
 namespace App\Entity;
 
-use DateTime;
-use DateTimeInterface;
+use App\Utils\EntityDatesTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,73 +27,37 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'linked_item_id', columns: ['linked_item_id'])]
 class Annotations
 {
-    /**
-     * @var int
-     */
+    use EntityDatesTrait;
+
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private ?int $itemId = 0;
-    /**
-     * @var int
-     */
+    private int $itemId;
+
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'creator_id', type: Types::INTEGER)]
     private ?int $creatorId = 0;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
     private ?int $modifierId = null;
-    #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
-    private DateTime $creationDate;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private ?int $deleterId = null;
-    /**
-     * @var DateTimeInterface
-     */
-    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $deletionDate = null;
-    /**
-     * @var DateTimeInterface
-     */
-    #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $modificationDate = null;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
     private ?string $description = null;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'linked_item_id', type: Types::INTEGER)]
     private ?int $linkedItemId = 0;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'linked_version_id', type: Types::INTEGER)]
     private ?int $linkedVersionId = 0;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'extras', type: Types::TEXT, length: 65535, nullable: true)]
     private ?string $extras = null;
-    /**
-     * @var bool
-     */
+
     #[ORM\Column(name: 'public', type: Types::BOOLEAN)]
     private ?bool $public = false;
-
-    public function __construct()
-    {
-        $this->creationDate = new DateTime('0000-00-00 00:00:00');
-    }
 }

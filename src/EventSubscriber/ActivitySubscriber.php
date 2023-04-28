@@ -24,17 +24,17 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class ActivitySubscriber implements EventSubscriberInterface
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private EntityManagerInterface $entityManager,
-        private RoomManager $roomManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly RoomManager $roomManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::TERMINATE => 'onKernelTerminate',

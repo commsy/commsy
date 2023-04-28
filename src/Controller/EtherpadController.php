@@ -58,7 +58,7 @@ class EtherpadController extends AbstractController
         // create etherpad session with author and group
         $timestamp = time() + (60 * 60 * 24);
         $session = $client->createSession($group->groupID, $author->authorID, $timestamp);
-        setcookie('sessionID', $session->sessionID, ['expires' => $timestamp, 'path' => '/', 'domain' => '.'.$request->getHost()]);
+        setcookie('sessionID', (string) $session->sessionID, ['expires' => $timestamp, 'path' => '/', 'domain' => '.'.$request->getHost()]);
 
         $fs = new Filesystem();
         $baseUrl = $etherpadService->getBaseUrl();

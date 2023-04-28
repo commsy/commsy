@@ -22,11 +22,11 @@ use App\Services\MarkedService;
 use cs_item;
 use cs_room_item;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -134,7 +134,7 @@ class MarkedController extends BaseController
 
         return $this->render('marked/list.html.twig', [
             'roomId' => $roomId,
-            'form' => $filterForm->createView(),
+            'form' => $filterForm,
             'module' => 'marked',
             'itemsCountArray' => $itemsCountArray,
             'usageInfo' => null,

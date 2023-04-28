@@ -23,14 +23,13 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class UserStatusChangedEvent extends Event
 {
-    /**
-     * @var cs_user_item The new user object
-     */
-    private $user;
-
-    public function __construct(cs_user_item $user)
+    public function __construct(
+        /**
+         * @var cs_user_item The new user object
+         */
+        private readonly cs_user_item $user
+    )
     {
-        $this->user = $user;
     }
 
     public function getUser(): cs_user_item

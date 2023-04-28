@@ -21,7 +21,7 @@ use Symfony\Component\Form\FormEvents;
 
 class AddContextFieldListener implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [FormEvents::PRE_SET_DATA => 'onPreSetData', FormEvents::POST_SUBMIT => 'onPostSubmit', FormEvents::PRE_SUBMIT => 'onPreSubmit'];
     }

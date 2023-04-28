@@ -25,7 +25,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RoomFilterType extends AbstractType
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -65,7 +65,7 @@ class RoomFilterType extends AbstractType
                         return null;
                     }
 
-                    $tokens = explode(' ', $values['value']);
+                    $tokens = explode(' ', (string) $values['value']);
 
                     $expr = $filterQuery->getExpr();
                     /** @var QueryBuilder $qb */

@@ -25,9 +25,9 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class ReadStatusPreChangeEvent extends Event
 {
-    private string $newReadStatus;
+    private readonly string $newReadStatus;
 
-    public function __construct(private int $userId, private int $itemId, string $newReadStatus)
+    public function __construct(private readonly int $userId, private readonly int $itemId, string $newReadStatus)
     {
         if (
             ReaderService::READ_STATUS_NEW !== $newReadStatus &&

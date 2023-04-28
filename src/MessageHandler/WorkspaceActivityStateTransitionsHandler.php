@@ -17,12 +17,13 @@ use App\Entity\Room;
 use App\Message\WorkspaceActivityStateTransitions;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Workflow\WorkflowInterface;
 
-class WorkspaceActivityStateTransitionsHandler implements MessageHandlerInterface
+#[AsMessageHandler]
+class WorkspaceActivityStateTransitionsHandler
 {
-    public function __construct(private RoomRepository $roomRepository, private EntityManagerInterface $entityManager, private WorkflowInterface $roomActivityStateMachine)
+    public function __construct(private readonly RoomRepository $roomRepository, private readonly EntityManagerInterface $entityManager, private readonly WorkflowInterface $roomActivityStateMachine)
     {
     }
 

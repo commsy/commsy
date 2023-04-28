@@ -14,12 +14,13 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_disc_manager;
 
 class DiscService
 {
-    private $discManager;
+    private readonly cs_disc_manager $discManager;
 
-    public function __construct(private LegacyEnvironment $legacyEnvironment)
+    public function __construct(private readonly LegacyEnvironment $legacyEnvironment)
     {
         $this->discManager = $this->legacyEnvironment->getEnvironment()->getDiscManager();
     }

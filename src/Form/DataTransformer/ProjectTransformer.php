@@ -44,11 +44,9 @@ class ProjectTransformer extends AbstractTransformer
      * @param object $projectObject
      * @param array  $projectData
      *
-     * @return cs_project_item|null
-     *
      * @throws TransformationFailedException if room item is not found
      */
-    public function applyTransformation($projectObject, $projectData)
+    public function applyTransformation($projectObject, $projectData): cs_project_item
     {
         $projectObject->setTitle($projectData['title']);
         $projectObject->setDescription($projectData['description']);

@@ -49,16 +49,15 @@ use DateTimeInterface;
 use DateTimeZone;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -69,18 +68,11 @@ use Symfony\Contracts\Service\Attribute\Required;
 class DateController extends BaseController
 {
     private DateService $dateService;
-    private SessionInterface $session;
 
     #[Required]
     public function setDateService(DateService $dateService): void
     {
         $this->dateService = $dateService;
-    }
-
-    #[Required]
-    public function setSession(SessionInterface $session): void
-    {
-        $this->session = $session;
     }
 
     #[Route(path: '/room/{roomId}/date/feed/{start}/{sort}')]
@@ -122,9 +114,9 @@ class DateController extends BaseController
         }
 
         if (empty($sort)) {
-            $sort = $this->session->get('sortDates', 'time');
+            $sort = $request->getSession()->get('sortDates', 'time');
         }
-        $this->session->set('sortDates', $sort);
+        $request->getSession()->set('sortDates', $sort);
 
         // get material list from manager service
         $dates = $this->dateService->getListDates($roomId, $max, $start, $sort);
@@ -156,7 +148,7 @@ class DateController extends BaseController
     ): Response {
         $roomItem = $this->getRoom($roomId);
 
-        $sort = $this->session->get('sortDates', 'time');
+        $sort = $request->getSession()->get('sortDates', 'time');
 
         $filterForm = $this->createFilterForm($roomItem);
 
@@ -220,7 +212,7 @@ class DateController extends BaseController
 
         return $this->render('date/list.html.twig', [
             'roomId' => $roomId,
-            'form' => $filterForm->createView(),
+            'form' => $filterForm,
             'module' => 'date',
             'itemsCountArray' => $itemsCountArray,
             'usageInfo' => $usageInfo,
@@ -256,7 +248,7 @@ class DateController extends BaseController
 
         // get date list from manager service
         if ('none' === $sort || empty($sort)) {
-            $sort = $this->session->get('sortDates', 'time');
+            $sort = $request->getSession()->get('sortDates', 'time');
         }
         $dates = $this->dateService->getListDates($roomId, $numAllDates, 0, $sort);
 
@@ -348,7 +340,7 @@ class DateController extends BaseController
 
         return $this->render('date/calendar.html.twig', [
             'roomId' => $roomId,
-            'form' => $filterForm->createView(),
+            'form' => $filterForm,
             'module' => 'date',
             'usageInfo' => $usageInfo,
             'iCal' => $iCal,
@@ -484,7 +476,7 @@ class DateController extends BaseController
             'readerList' => $readerList,
             'modifierList' => $modifierList,
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
-            'annotationForm' => $form->createView(),
+            'annotationForm' => $form,
             'userCount' => $all_user_count,
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
@@ -819,7 +811,7 @@ class DateController extends BaseController
         $dateItem->setPrivateEditing('1');
 
         if ('now' != $dateDescription) {
-            $isoString = urldecode($dateDescription);
+            $isoString = urldecode((string) $dateDescription);
             $date = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $isoString);
 
 
@@ -1101,7 +1093,7 @@ class DateController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($dateItem), CommsyEditEvent::EDIT);
 
-        return $this->render('date/edit.html.twig', ['form' => $form->createView(), 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'currentUser' => $this->legacyEnvironment->getCurrentUserItem(), 'withRecurrence' => '' != $dateItem->getRecurrencePattern(), 'date' => $dateItem]);
+        return $this->render('date/edit.html.twig', ['form' => $form, 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'currentUser' => $this->legacyEnvironment->getCurrentUserItem(), 'withRecurrence' => '' != $dateItem->getRecurrencePattern(), 'date' => $dateItem]);
     }
 
     private function getTagDetailArray($baseCategories, $itemCategories)
@@ -1442,12 +1434,12 @@ class DateController extends BaseController
             while ($tempDate) {
                 if (in_array('startingTime', $valuesToChange)) {
                     $tempDate->setStartingTime($dateItem->getStartingTime());
-                    $tempDate->setDateTime_start(mb_substr($tempDate->getDateTime_start(), 0,
+                    $tempDate->setDateTime_start(mb_substr((string) $tempDate->getDateTime_start(), 0,
                         10).' '.$dateItem->getStartingTime());
                 }
                 if (in_array('endingTime', $valuesToChange)) {
                     $tempDate->setEndingTime($dateItem->getEndingTime());
-                    $tempDate->setDateTime_end(mb_substr($tempDate->getDateTime_end(), 0,
+                    $tempDate->setDateTime_end(mb_substr((string) $tempDate->getDateTime_end(), 0,
                         10).' '.$dateItem->getEndingTime());
                 }
                 if (in_array('place', $valuesToChange)) {
@@ -1690,7 +1682,7 @@ class DateController extends BaseController
             }
         }
 
-        return $this->render('date/import.html.twig', ['form' => $form->createView()]);
+        return $this->render('date/import.html.twig', ['form' => $form]);
     }
 
     /**
@@ -1709,7 +1701,7 @@ class DateController extends BaseController
 
         $responseData = [];
         foreach ($files['files'] as $file) {
-            if (stristr($file->getMimeType(), 'text/calendar')) {
+            if (stristr((string) $file->getMimeType(), 'text/calendar')) {
                 $filename = $roomId.'_'.date('Ymdhis').'_'.$file->getClientOriginalName();
                 if ($file->move($projectDir.'/var/temp/', $filename)) {
                     $responseData[$filename] = $file->getClientOriginalName();

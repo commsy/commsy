@@ -26,11 +26,11 @@ class AutoRoomMembershipSubscriber implements EventSubscriberInterface
     // separator which separates multiple room identifiers
     private const SEPARATOR = ';';
 
-    public function __construct(private UserCreatorFacade $userCreator)
+    public function __construct(private readonly UserCreatorFacade $userCreator)
     {
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             SecurityEvents::INTERACTIVE_LOGIN => 'onSecurityInteractiveLogin',
@@ -71,7 +71,7 @@ class AutoRoomMembershipSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $membershipIdentifiers = explode(self::SEPARATOR, trim($membershipIdentifierString));
+        $membershipIdentifiers = explode(self::SEPARATOR, trim((string) $membershipIdentifierString));
         if (empty($membershipIdentifiers)) {
             return;
         }

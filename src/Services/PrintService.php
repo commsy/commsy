@@ -18,8 +18,8 @@ use App\Repository\FilesRepository;
 use App\Utils\FileService;
 use cs_environment;
 use Knp\Snappy\Pdf;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Mime\MimeTypes;
 
 /**
@@ -27,17 +27,17 @@ use Symfony\Component\Mime\MimeTypes;
  */
 class PrintService
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private Pdf $pdf,
-        private SessionInterface $session,
-        private FilesRepository $filesRepository,
-        private FileService $fileService,
-        private string $proxyIp,
-        private string $proxyPort,
-        private string $kernelEnv
+        private readonly Pdf $pdf,
+        private readonly RequestStack $requestStack,
+        private readonly FilesRepository $filesRepository,
+        private readonly FileService $fileService,
+        private readonly string $proxyIp,
+        private readonly string $proxyPort,
+        private readonly string $kernelEnv
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -121,7 +121,7 @@ class PrintService
 
         // set cookie for authentication - needed to request images
         $this->pdf->setOption('cookie', [
-            'PHPSESSID' => $this->session->getId(),
+            'PHPSESSID' => $this->requestStack->getSession()->getId(),
         ]);
     }
 

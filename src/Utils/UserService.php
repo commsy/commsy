@@ -38,21 +38,18 @@ use Symfony\Component\Mime\Address;
 
 class UserService
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    private cs_user_manager $userManager;
+    private readonly cs_user_manager $userManager;
 
-    /**
-     * @var cs_room_manager|cs_manager|
-     */
-    private cs_room_manager $roomManager;
+    private readonly cs_room_manager $roomManager;
 
     /**
      * UserService constructor.
      */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private RoomService $roomService
+        private readonly RoomService $roomService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
@@ -348,7 +345,7 @@ class UserService
     {
         $user = $this->userManager->getItem($userId);
         // hotfix for birthday strings not containing valid date strings
-        if (!is_null($user) && !strtotime($user->getBirthday())) {
+        if (!is_null($user) && !strtotime((string) $user->getBirthday())) {
             $user->setBirthday('');
         }
 
@@ -753,8 +750,6 @@ class UserService
     /**
      * Sends an email to the users with the given IDs informing them about a user status change.
      *
-     * @param Mailer $mailer
-     * @param AccountMail $accountMail
      * @param int[] $userIds IDs of user items whose users shall receive the email
      * @param string $action indicates the kind of user status change, possible values:
      *                       user-delete, user-block, user-confirm, user-status-user, user-status-moderator,
@@ -927,7 +922,6 @@ class UserService
     }
 
     /**
-     * @param int $contextId
      * @return cs_user_item|null
      */
     public function getUserModeratorsInContext(int $contextId): ?cs_list

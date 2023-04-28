@@ -26,7 +26,7 @@ class PasswordChangeType extends AbstractType
     /**
      * NewPasswordType constructor.
      */
-    public function __construct(private TranslatorInterface $translator)
+    public function __construct(private readonly TranslatorInterface $translator)
     {
     }
 
@@ -77,7 +77,7 @@ class PasswordChangeType extends AbstractType
      *
      * @return string The prefix of the template block name
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'extension_settings';
     }

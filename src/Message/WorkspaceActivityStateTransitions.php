@@ -18,7 +18,7 @@ class WorkspaceActivityStateTransitions
     /**
      * @param int[] $ids
      */
-    public function __construct(private array $ids)
+    public function __construct(private readonly array $ids)
     {
     }
 

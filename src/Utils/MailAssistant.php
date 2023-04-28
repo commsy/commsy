@@ -28,11 +28,11 @@ use Twig\Environment;
 
 class MailAssistant
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private Environment $twig
+        private readonly Environment $twig
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -133,7 +133,7 @@ class MailAssistant
 
         $recipients['to'][$item->getEmail()] = $item->getFullName();
         if (!is_null($moderatorIds)) {
-            $moderatorIds = explode(', ', $moderatorIds);
+            $moderatorIds = explode(', ', (string) $moderatorIds);
             foreach ($moderatorIds as $moderatorId) {
                 $moderator = $userService->getUser($moderatorId);
                 $recipients['to'][$moderator->getEmail()] = $moderator->getFullName();

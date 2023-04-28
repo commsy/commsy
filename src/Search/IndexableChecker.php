@@ -14,10 +14,11 @@
 namespace App\Search;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 
 class IndexableChecker
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

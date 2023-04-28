@@ -21,8 +21,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class HomeNoticeConstraintValidator extends ConstraintValidator
 {
     public function __construct(
-        private TranslatorInterface $translator,
-        private ItemService $itemService
+        private readonly TranslatorInterface $translator,
+        private readonly ItemService $itemService
     ) {}
 
     public function validate($homeNoticeItemId, Constraint $constraint)

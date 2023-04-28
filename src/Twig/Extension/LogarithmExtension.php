@@ -21,7 +21,7 @@ class LogarithmExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('log', [$this, 'logarithmFilter']),
+            new TwigFilter('log', $this->logarithmFilter(...)),
         ];
     }
 

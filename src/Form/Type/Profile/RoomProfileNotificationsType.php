@@ -14,6 +14,7 @@
 namespace App\Form\Type\Profile;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -22,12 +23,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RoomProfileNotificationsType extends AbstractType
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     /**
      * @var mixed|null
      */
-    private $userItem;
+    private ?object $userItem = null;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -84,7 +85,7 @@ class RoomProfileNotificationsType extends AbstractType
      *
      * @return string The prefix of the template block name
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'room_profile';
     }

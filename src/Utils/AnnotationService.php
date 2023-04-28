@@ -14,12 +14,14 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_annotations_manager;
+use cs_environment;
 
 class AnnotationService
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    private $annotationManager;
+    private readonly cs_annotations_manager $annotationManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

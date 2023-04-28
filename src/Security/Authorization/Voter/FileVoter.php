@@ -16,7 +16,6 @@ namespace App\Security\Authorization\Voter;
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use App\Utils\FileService;
-use App\Utils\ItemService;
 use cs_environment;
 use cs_file_item;
 use cs_user_item;
@@ -26,29 +25,27 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class FileVoter extends Voter
 {
-    public const DOWNLOAD = 'FILE_DOWNLOAD';
+    final public const DOWNLOAD = 'FILE_DOWNLOAD';
 
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private FileService $fileService
+        private readonly FileService $fileService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    protected function supports($attribute, $object)
+    protected function supports($attribute, $subject): bool
     {
-        $supported = in_array($attribute, [
+        return in_array($attribute, [
             self::DOWNLOAD,
         ]);
-
-        return $supported;
     }
 
-    protected function voteOnAttribute($attribute, $object, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
-        $fileId = $object;
+        $fileId = $subject;
 
         $fileItem = $this->fileService->getFile($fileId);
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();

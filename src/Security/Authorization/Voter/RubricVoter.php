@@ -21,22 +21,22 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class RubricVoter extends Voter
 {
-    public const ANNOUNCEMENT = 'RUBRIC_ANNOUNCEMENT';
-    public const DATE = 'RUBRIC_DATE';
-    public const DISCUSSION = 'RUBRIC_DISCUSSION';
-    public const GROUP = 'RUBRIC_GROUP';
-    public const MATERIAL = 'RUBRIC_MATERIAL';
-    public const TOPIC = 'RUBRIC_TOPIC';
-    public const USER = 'RUBRIC_USER';
+    final public const ANNOUNCEMENT = 'RUBRIC_ANNOUNCEMENT';
+    final public const DATE = 'RUBRIC_DATE';
+    final public const DISCUSSION = 'RUBRIC_DISCUSSION';
+    final public const GROUP = 'RUBRIC_GROUP';
+    final public const MATERIAL = 'RUBRIC_MATERIAL';
+    final public const TOPIC = 'RUBRIC_TOPIC';
+    final public const USER = 'RUBRIC_USER';
 
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    protected function supports($attribute, $object)
+    protected function supports($attribute, $subject): bool
     {
         return in_array($attribute, [
             self::ANNOUNCEMENT,
@@ -49,7 +49,7 @@ class RubricVoter extends Voter
         ]);
     }
 
-    protected function voteOnAttribute($attribute, $rubricName, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         $roomItem = $this->legacyEnvironment->getCurrentContextItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();

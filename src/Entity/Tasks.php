@@ -14,7 +14,7 @@
 namespace App\Entity;
 
 use App\Repository\TasksRepository;
-use DateTime;
+use App\Utils\EntityDatesTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,65 +26,28 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 class Tasks
 {
-    /**
-     * @var int
-     */
+    use EntityDatesTrait;
+
     #[ORM\Column(name: 'item_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $itemId = '0';
+    private int $itemId;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
     private $contextId;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
-    private $creatorId = '0';
+    private string $creatorId = '0';
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private $deleterId;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
-    private $creationDate = '0000-00-00 00:00:00';
-
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
-    private $modificationDate = '0000-00-00 00:00:00';
-
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private $deletionDate;
-
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private $title;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'status', type: 'string', length: 20, nullable: false)]
     private $status;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'linked_item_id', type: 'integer', nullable: false)]
-    private $linkedItemId = '0';
+    private string $linkedItemId = '0';
 }

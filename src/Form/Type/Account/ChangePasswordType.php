@@ -14,6 +14,7 @@
 namespace App\Form\Type\Account;
 
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -28,7 +29,7 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 class ChangePasswordType extends AbstractType
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -118,7 +119,7 @@ class ChangePasswordType extends AbstractType
      *
      * @return string The prefix of the template block name
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'profile_changepassword';
     }

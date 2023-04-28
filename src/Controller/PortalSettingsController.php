@@ -99,9 +99,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -110,7 +110,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -159,8 +159,8 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/general.html.twig', [
-            'portalForm' => $portalForm->createView(),
-            'serverForm' => $serverForm->createView(),
+            'portalForm' => $portalForm,
+            'serverForm' => $serverForm,
             'tab' => $request->query->has('tab') ? $request->query->get('tab') : 'portal',
         ]);
     }
@@ -202,8 +202,8 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/appearance.html.twig', [
-            'portalForm' => $portalForm->createView(),
-            'serverForm' => $serverForm->createView(),
+            'portalForm' => $portalForm,
+            'serverForm' => $serverForm,
             'tab' => $request->query->has('tab') ? $request->query->get('tab') : 'portal',
         ]);
     }
@@ -236,8 +236,8 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/support.html.twig', [
-            'supportPageForm' => $supportPageForm->createView(),
-            'supportRequestsForm' => $supportRequestsForm->createView(),
+            'supportPageForm' => $supportPageForm,
+            'supportRequestsForm' => $supportRequestsForm,
         ]);
     }
 
@@ -258,7 +258,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/portalhome.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -302,20 +302,17 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/room_creation.html.twig', [
-            'communityRoomsForm' => $communityRoomsForm->createView(),
-            'projectRoomsForm' => $projectRoomsForm->createView(),
+            'communityRoomsForm' => $communityRoomsForm,
+            'projectRoomsForm' => $projectRoomsForm,
         ]);
     }
 
-    /**
-     * @param int|null $roomCategoryId
-     */
     #[Route(path: '/portal/{portalId}/settings/roomcategories/{roomCategoryId?}')]
     #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function roomCategories(
         Portal $portal,
-        $roomCategoryId,
+        ?int $roomCategoryId,
         Request $request,
         RoomCategoriesService $roomCategoriesService,
         EventDispatcherInterface $dispatcher,
@@ -378,8 +375,8 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/room_categories.html.twig', [
-            'editForm' => $editForm->createView(),
-            'linkForm' => $linkForm->createView(),
+            'editForm' => $editForm,
+            'linkForm' => $linkForm,
             'portal' => $portal,
             'roomCategoryId' => $roomCategoryId,
             'roomCategories' => $roomCategories,
@@ -436,7 +433,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/auth_ldap.html.twig', [
-            'form' => $ldapForm->createView(),
+            'form' => $ldapForm,
         ]);
     }
 
@@ -491,7 +488,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/auth_local.html.twig', [
-            'form' => $localForm->createView(),
+            'form' => $localForm,
             'portal' => $portal,
         ]);
     }
@@ -516,7 +513,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/auth_workspace_membership.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -548,7 +545,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/csv_import.html.twig', [
-            'form' => $importForm->createView(),
+            'form' => $importForm,
             'portal' => $portal,
         ]);
     }
@@ -603,7 +600,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/auth_guest.html.twig', [
-            'form' => $authGuestForm->createView(),
+            'form' => $authGuestForm,
         ]);
     }
 
@@ -660,7 +657,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/auth_shibboleth.html.twig', [
-            'form' => $authShibbolethForm->createView(),
+            'form' => $authShibbolethForm,
             'portal' => $portal,
         ]);
     }
@@ -755,7 +752,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/mailtexts.html.twig', [
-            'form' => $mailTextForm->createView(),
+            'form' => $mailTextForm,
             'portalId' => $portalId,
         ]);
     }
@@ -768,17 +765,18 @@ class PortalSettingsController extends AbstractController
         ?int $licenseId,
         Request $request,
         EventDispatcherInterface $dispatcher,
-        LegacyEnvironment $environment
+        LegacyEnvironment $environment,
+        ManagerRegistry $managerRegistry
     ): Response {
         $portalId = $portal->getId();
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
         $repository = $em->getRepository(License::class);
 
         $license = new License();
         if ($licenseId) {
             $license = $repository->findOneById($licenseId);
-            $license->setTitle(html_entity_decode($license->getTitle()));
+            $license->setTitle(html_entity_decode((string) $license->getTitle()));
         }
 
         $licenseForm = $this->createForm(LicenseType::class, $license);
@@ -843,7 +841,7 @@ class PortalSettingsController extends AbstractController
 
             $structure = $data['structure'];
             if ($structure) {
-                $structure = json_decode($structure, true, 512, JSON_THROW_ON_ERROR);
+                $structure = json_decode((string) $structure, true, 512, JSON_THROW_ON_ERROR);
 
                 // update position
                 $repository->updatePositions($structure, $portalId);
@@ -855,8 +853,8 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/licenses.html.twig', [
-            'licenseForm' => $licenseForm->createView(),
-            'licenseSortForm' => $sortForm->createView(),
+            'licenseForm' => $licenseForm,
+            'licenseSortForm' => $sortForm,
             'portalId' => $portalId,
             'pageTitle' => $pageTitle,
         ]);
@@ -878,7 +876,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/privacy.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -926,21 +924,18 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/inactive.html.twig', [
-            'inactiveAccountsForm' => $accountInactiveForm->createView(),
-            'inactiveRoomsForm' => $roomInactiveForm->createView(),
+            'inactiveAccountsForm' => $accountInactiveForm,
+            'inactiveRoomsForm' => $roomInactiveForm,
             'tab' => $request->query->has('tab') ? $request->query->get('tab') : 'inactive',
         ]);
     }
 
-    /**
-     * @param int|null $timePulseTemplateId
-     */
     #[Route(path: '/portal/{portalId}/settings/timepulses/{timePulseTemplateId?}')]
     #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function timePulses(
         Portal $portal,
-        $timePulseTemplateId,
+        ?int $timePulseTemplateId,
         Request $request,
         TimePulsesService $timePulsesService,
         EntityManagerInterface $entityManager
@@ -1006,8 +1001,8 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/time_pulses.html.twig', [
-            'optionsForm' => $optionsForm->createView(),
-            'editForm' => $editForm->createView(),
+            'optionsForm' => $optionsForm,
+            'editForm' => $editForm,
             'portal' => $portal,
             'timePulseTemplateId' => $timePulseTemplateId,
             'timePulseTemplates' => $timePulseTemplates,
@@ -1047,8 +1042,8 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/announcements.html.twig', [
-            'portalForm' => $portalForm->createView(),
-            'serverForm' => $serverForm->createView(),
+            'portalForm' => $portalForm,
+            'serverForm' => $serverForm,
             'tab' => $request->query->has('tab') ? $request->query->get('tab') : 'portal',
         ]);
     }
@@ -1119,10 +1114,10 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/contents.html.twig', [
-            'termsForm' => $termsForm->createView(),
-            'dataPrivacyForm' => $dataPrivacyForm->createView(),
-            'impressumForm' => $impressumForm->createView(),
-            'accessibilityForm' => $accessibilityForm->createView(),
+            'termsForm' => $termsForm,
+            'dataPrivacyForm' => $dataPrivacyForm,
+            'impressumForm' => $impressumForm,
+            'accessibilityForm' => $accessibilityForm,
             'portal' => $portal,
             'tab' => $request->query->has('tab') ? $request->query->get('tab') : 'portal',
         ]);
@@ -1139,11 +1134,12 @@ class PortalSettingsController extends AbstractController
         Request $request,
         EventDispatcherInterface $dispatcher,
         LegacyEnvironment $environment,
+        ManagerRegistry $managerRegistry,
         int $termId = null
     ): Response {
         $legacyEnvironment = $environment->getEnvironment();
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $managerRegistry->getManager();
         $repository = $em->getRepository(Terms::class);
 
         if ($termId) {
@@ -1180,7 +1176,7 @@ class PortalSettingsController extends AbstractController
         $dispatcher->dispatch(new CommsyEditEvent(null), 'commsy.edit');
 
         return $this->render('portal_settings/room_terms_templates.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'portalId' => $portal->getId(),
             'terms' => $terms,
             'termId' => $termId,
@@ -1233,7 +1229,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/account_index_delete_user.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'portalId' => $portalId,
             'userId' => $userId,
             'user' => $user,
@@ -1256,7 +1252,7 @@ class PortalSettingsController extends AbstractController
         $users = [];
         $userNames = [];
 
-        foreach (explode(', ', $userIds) as $userId) {
+        foreach (explode(', ', (string) $userIds) as $userId) {
             $user = $userService->getUser($userId);
             $users[] = $user;
             $userNames[] = $user->getFullName();
@@ -1277,7 +1273,7 @@ class PortalSettingsController extends AbstractController
                 $IdsMailRecipients = [];
                 switch ($action) {
                     case 'user-delete':
-                        foreach (explode(',', $userIds) as $userId) {
+                        foreach (explode(',', (string) $userIds) as $userId) {
                             $user = $userService->getUser($userId);
                             $user->delete();
                             $user->save();
@@ -1286,7 +1282,7 @@ class PortalSettingsController extends AbstractController
                         $this->addFlash('deleteSuccess', true);
                         break;
                     case 'user-block':
-                        foreach (explode(',', $userIds) as $userId) {
+                        foreach (explode(',', (string) $userIds) as $userId) {
                             $user = $userService->getUser($userId);
                             $user->reject();
 
@@ -1300,7 +1296,7 @@ class PortalSettingsController extends AbstractController
                         $this->addFlash('performedSuccessfully', true);
                         break;
                     case 'user-confirm':
-                        foreach (explode(',', $userIds) as $userId) {
+                        foreach (explode(',', (string) $userIds) as $userId) {
                             $user = $userService->getUser($userId);
                             $user->makeUser();
 
@@ -1314,7 +1310,7 @@ class PortalSettingsController extends AbstractController
                         $this->addFlash('performedSuccessfully', true);
                         break;
                     case 'user-status-reading-user':
-                        foreach (explode(',', $userIds) as $userId) {
+                        foreach (explode(',', (string) $userIds) as $userId) {
                             $user = $userService->getUser($userId);
                             $user->setStatus(4);
 
@@ -1328,7 +1324,7 @@ class PortalSettingsController extends AbstractController
                         $this->addFlash('performedSuccessfully', true);
                         break;
                     case 'user-status-user':
-                        foreach (explode(',', $userIds) as $userId) {
+                        foreach (explode(',', (string) $userIds) as $userId) {
                             $user = $userService->getUser($userId);
                             $user->makeUser();
                             $user->setStatus(2);
@@ -1343,7 +1339,7 @@ class PortalSettingsController extends AbstractController
                         $this->addFlash('performedSuccessfully', true);
                         break;
                     case 'user-status-moderator':
-                        foreach (explode(',', $userIds) as $userId) {
+                        foreach (explode(',', (string) $userIds) as $userId) {
                             $user = $userService->getUser($userId);
                             $user->makeModerator();
                             $user->setStatus(3);
@@ -1358,7 +1354,7 @@ class PortalSettingsController extends AbstractController
                         $this->addFlash('performedSuccessfully', true);
                         break;
                     case 'user-contact':
-                        foreach (explode(',', $userIds) as $userId) {
+                        foreach (explode(',', (string) $userIds) as $userId) {
                             $user = $userService->getUser($userId);
                             $user->makeContactPerson();
 
@@ -1372,7 +1368,7 @@ class PortalSettingsController extends AbstractController
                         $this->addFlash('performedSuccessfully', true);
                         break;
                     case 'user-contact-remove':
-                        foreach (explode(',', $userIds) as $userId) {
+                        foreach (explode(',', (string) $userIds) as $userId) {
                             $user = $userService->getUser($userId);
                             $user->makeNoContactPerson();
 
@@ -1404,7 +1400,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/account_index_perform_user.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'portalId' => $portalId,
             'users' => implode(', ', $userNames),
             'action' => $action,
@@ -1480,15 +1476,15 @@ class PortalSettingsController extends AbstractController
                 } else {
                     foreach ($tempUserList as $singleUser) {
                         $machtesUserIdLowercased = str_contains(strtolower($singleUser->getUserID()),
-                            strtolower($searchParam));
+                            strtolower((string) $searchParam));
                         $machtesUserNameLowercased = str_contains(strtolower($singleUser->getFullName()),
-                            strtolower($searchParam));
+                            strtolower((string) $searchParam));
                         $matchesFirstNameLowercased = str_contains(strtolower($singleUser->getFirstName()),
-                            strtolower($searchParam));
+                            strtolower((string) $searchParam));
                         $matchesLastNameLowercased = str_contains(strtolower($singleUser->getLastName()),
-                            strtolower($searchParam));
+                            strtolower((string) $searchParam));
                         $matchMailLowercased = str_contains(strtolower($singleUser->getEmail()),
-                            strtolower($searchParam));
+                            strtolower((string) $searchParam));
 
                         if (($matchesLastNameLowercased
                                 or $machtesUserIdLowercased
@@ -1669,7 +1665,7 @@ class PortalSettingsController extends AbstractController
         );
 
         return $this->render('portal_settings/account_index.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'userList' => $userList,
             'portal' => $portal,
             'pagination' => $pagination,
@@ -1817,7 +1813,7 @@ class PortalSettingsController extends AbstractController
     ): Response {
         $user = $userService->getCurrentUserItem();
         $recipientArray = [];
-        $recipients = explode(', ', $recipients);
+        $recipients = explode(', ', (string) $recipients);
         foreach ($recipients as $recipient) {
             $currentUser = $userService->getUser($recipient);
             array_push($recipientArray, $currentUser);
@@ -1880,7 +1876,7 @@ class PortalSettingsController extends AbstractController
 
         return $this->render('portal_settings/account_index_send_mail.html.twig', [
             'user' => $user,
-            'form' => $form->createView(),
+            'form' => $form,
             'recipients' => $recipientArray,
         ]);
     }
@@ -1901,7 +1897,7 @@ class PortalSettingsController extends AbstractController
         RouterInterface $router
     ): Response {
         $recipientArray = [];
-        $recipients = explode(', ', $recipients);
+        $recipients = explode(', ', (string) $recipients);
         foreach ($recipients as $recipient) {
             $currentUser = $userService->getUser($recipient);
             array_push($recipientArray, $currentUser);
@@ -1951,7 +1947,7 @@ class PortalSettingsController extends AbstractController
 
         return $this->render('portal_settings/account_index_send_merge_mail.html.twig', [
             'portal' => $portal,
-            'form' => $form->createView(),
+            'form' => $form,
             'recipients' => $recipientArray,
         ]);
     }
@@ -2096,7 +2092,7 @@ class PortalSettingsController extends AbstractController
             'user' => $user,
             'canImpersonate' => $canImpersonate,
             'authSource' => $authSourceRepository->findOneBy(['id' => $user->getAuthSource()]),
-            'form' => $form->createView(),
+            'form' => $form,
             'portal' => $portal,
             'communities' => implode(', ', $communityListNames),
             'projects' => implode(', ', $projectsListNames),
@@ -2235,7 +2231,7 @@ class PortalSettingsController extends AbstractController
 
         return $this->render('portal_settings/account_index_detail_edit.html.twig', [
             'user' => $user,
-            'form' => $form->createView(),
+            'form' => $form,
             'portal' => $portal,
         ]);
     }
@@ -2322,7 +2318,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/account_index_detail_change_status.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'user' => $user,
             'portal' => $portal,
             'portalId' => $portal->getId(),
@@ -2419,7 +2415,8 @@ class PortalSettingsController extends AbstractController
         Request $request,
         UserService $userService,
         LegacyEnvironment $legacyEnvironment,
-        AccountManager $accountManager
+        AccountManager $accountManager,
+        ManagerRegistry $managerRegistry
     ): Response {
         $user = $userService->getUser($request->get('userId'));
         $userAssignWorkspace = new PortalUserAssignWorkspace();
@@ -2487,7 +2484,7 @@ class PortalSettingsController extends AbstractController
                     $portal->getId());
 
                 if ($projectRooms->getCount() < 1) {
-                    $repository = $this->getDoctrine()->getRepository(Room::class);
+                    $repository = $managerRegistry->getRepository(Room::class);
                     $projectRooms = $repository->findAll();
                 }
 
@@ -2510,7 +2507,7 @@ class PortalSettingsController extends AbstractController
 
                 return $this->render('portal_settings/account_index_detail_assign_workspace.html.twig', [
                     'portal' => $portal,
-                    'form' => $form->createView(),
+                    'form' => $form,
                     'user' => $user,
                 ]);
             }
@@ -2518,7 +2515,7 @@ class PortalSettingsController extends AbstractController
 
         return $this->render('portal_settings/account_index_detail_assign_workspace.html.twig', [
             'portal' => $portal,
-            'form' => $form->createView(),
+            'form' => $form,
             'user' => $user,
         ]);
     }
@@ -2556,7 +2553,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/account_index_detail_change_password.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'portalUser' => $portalUser,
             'portal' => $portal,
         ]);

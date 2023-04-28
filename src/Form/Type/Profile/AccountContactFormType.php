@@ -15,6 +15,7 @@ namespace App\Form\Type\Profile;
 
 use App\Form\Type\CheckedFileType;
 use App\Services\LegacyEnvironment;
+use cs_environment;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
@@ -30,12 +31,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AccountContactFormType extends AbstractType
 {
-    private $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    private $userItem;
-
-    public function __construct(private EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment, private TranslatorInterface $translator)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        LegacyEnvironment $legacyEnvironment,
+        private readonly TranslatorInterface $translator
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -147,7 +149,7 @@ class AccountContactFormType extends AbstractType
      *
      * @return string The prefix of the template block name
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'room_profile_contact';
     }

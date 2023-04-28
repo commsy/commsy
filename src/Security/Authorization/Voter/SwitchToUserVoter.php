@@ -19,7 +19,6 @@ use cs_user_item;
 use DateTimeImmutable;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class SwitchToUserVoter extends Voter
@@ -27,14 +26,15 @@ class SwitchToUserVoter extends Voter
     /**
      * SwitchToUserVoter constructor.
      */
-    public function __construct(private Security $security, private UserService $userService)
-    {
+    public function __construct(
+        private readonly UserService $userService
+    ) {
     }
 
     /**
      * {@inheritDoc}
      */
-    protected function supports($attribute, $subject)
+    protected function supports($attribute, $subject): bool
     {
         return in_array($attribute, ['CAN_SWITCH_USER'])
             && $subject instanceof UserInterface;
@@ -43,7 +43,7 @@ class SwitchToUserVoter extends Voter
     /**
      * {@inheritDoc}
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         /** @var Account $account */
         $account = $token->getUser();

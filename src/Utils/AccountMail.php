@@ -25,15 +25,16 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class AccountMail
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private RouterInterface $router)
+    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly RouterInterface $router)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function generateSubject(string $action): string
     {
+        $subject = null;
         $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
         $room = $this->legacyEnvironment->getCurrentContextItem();
 

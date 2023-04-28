@@ -16,6 +16,7 @@ namespace App\Security;
 use App\Utils\RequestContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Authorization\AccessDeniedHandlerInterface;
@@ -23,15 +24,15 @@ use Symfony\Component\Security\Http\Authorization\AccessDeniedHandlerInterface;
 class AccessDeniedHandler implements AccessDeniedHandlerInterface
 {
     public function __construct(
-        private RequestContext $requestContext,
-        private UrlGeneratorInterface $urlGenerator
+        private readonly RequestContext $requestContext,
+        private readonly UrlGeneratorInterface $urlGenerator
     ) {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function handle(Request $request, AccessDeniedException $accessDeniedException)
+    public function handle(Request $request, AccessDeniedException $accessDeniedException): ?Response
     {
         $portal = $this->requestContext->fetchPortal($request);
         $contextId = $this->requestContext->fetchContextId($request);
@@ -42,5 +43,7 @@ class AccessDeniedHandler implements AccessDeniedHandlerInterface
                 'itemId' => $contextId,
             ]));
         }
+
+        return null;
     }
 }

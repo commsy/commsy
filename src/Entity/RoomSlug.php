@@ -15,12 +15,13 @@ namespace App\Entity;
 
 use App\Repository\RoomSlugRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Stringable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RoomSlugRepository::class)]
 #[UniqueEntity('slug', message: 'A workspace with the same workspace identifier already exists.')]
-class RoomSlug
+class RoomSlug implements Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

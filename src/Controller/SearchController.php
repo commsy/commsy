@@ -48,13 +48,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 use ReflectionClass;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -66,7 +66,7 @@ class SearchController extends BaseController
     /**
      * SearchController constructor.
      */
-    public function __construct(private UrlGeneratorInterface $router)
+    public function __construct(private readonly UrlGeneratorInterface $router)
     {
     }
 
@@ -102,7 +102,7 @@ class SearchController extends BaseController
         ]);
 
         return $this->render('search/search_form.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'roomId' => $roomId,
             'originalRoomId' => $originalRoomId,
             'originalRoomTitle' => $originalRoomItem ? $originalRoomItem->getTitle() : '',
@@ -122,7 +122,7 @@ class SearchController extends BaseController
         ]);
 
         return $this->render('search/item_search_form.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'roomId' => $roomId,
         ]);
     }
@@ -406,7 +406,7 @@ class SearchController extends BaseController
         $results = $this->prepareResults($searchResults, $readerService, $calendarsService, $roomId);
 
         return $this->render('search/results.html.twig', [
-            'filterForm' => $filterForm->createView(),
+            'filterForm' => $filterForm,
             'roomId' => $roomId,
             'totalHits' => $totalHits,
             'results' => $results,
@@ -792,7 +792,7 @@ class SearchController extends BaseController
 
             if (!$lastType || $lastType != $room->getType()) {
                 if (in_array($room->getType(), ['project', 'community', 'userroom'])) {
-                    $title = $translator->trans(ucfirst($room->getType()).' Rooms', [], 'room');
+                    $title = $translator->trans(ucfirst((string) $room->getType()).' Rooms', [], 'room');
                 } else {
                     $title = $translator->trans('Group Rooms', [], 'room');
                 }
@@ -815,7 +815,7 @@ class SearchController extends BaseController
             }
 
             $results[] = [
-                'title' => html_entity_decode($room->getTitle()),
+                'title' => html_entity_decode((string) $room->getTitle()),
                 'text' => $room->getType(),
                 'url' => $url,
             ];
@@ -906,7 +906,7 @@ class SearchController extends BaseController
             $type = strtolower(rtrim($reflection->getShortName(), 's'));
 
             if ('label' === $type) {
-                $type = strtolower(rtrim($searchResult->getType(), 's'));
+                $type = strtolower(rtrim((string) $searchResult->getType(), 's'));
             }
 
             if ($json) {

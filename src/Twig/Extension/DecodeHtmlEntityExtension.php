@@ -26,12 +26,12 @@ class DecodeHtmlEntityExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('decodeHtmlEntity', [$this, 'decodeHtmlEntity']),
+            new TwigFilter('decodeHtmlEntity', $this->decodeHtmlEntity(...)),
         ];
     }
 
     public function decodeHtmlEntity($arg)
     {
-        return html_entity_decode($arg);
+        return html_entity_decode((string) $arg);
     }
 }

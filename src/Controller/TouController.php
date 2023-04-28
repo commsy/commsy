@@ -21,10 +21,10 @@ use App\Utils\UserService;
 use DateTimeImmutable;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 
 class TouController extends AbstractController
 {
@@ -71,7 +71,7 @@ class TouController extends AbstractController
         }
 
         return $this->render('tou/portal.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'portal' => $portal,
             'portalUser' => $portalUser,
         ]);
@@ -86,7 +86,7 @@ class TouController extends AbstractController
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
         $currentContext = $legacyEnvironment->getCurrentContextItem();
 
-        $touText = $currentContext->getAGBTextArray()[strtoupper($legacyEnvironment->getUserLanguage())];
+        $touText = $currentContext->getAGBTextArray()[strtoupper((string) $legacyEnvironment->getUserLanguage())];
 
         $form = $this->createForm(TouAcceptType::class, null, [
             'uikit3' => false,
@@ -115,7 +115,7 @@ class TouController extends AbstractController
         return $this->render('tou/room.html.twig', [
             'context' => $currentContext,
             'touText' => $touText,
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 }

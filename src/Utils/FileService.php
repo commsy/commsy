@@ -21,8 +21,8 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class FileService
 {
     public function __construct(
-        private LegacyEnvironment $legacyEnvironment,
-        private ParameterBagInterface $parameterBag
+        private readonly LegacyEnvironment $legacyEnvironment,
+        private readonly ParameterBagInterface $parameterBag
     ) {
     }
 

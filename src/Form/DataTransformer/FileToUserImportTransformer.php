@@ -28,9 +28,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class FileToUserImportTransformer implements DataTransformerInterface
 {
-    private string $tempUploadDir;
+    private readonly string $tempUploadDir;
 
-    public function __construct(ParameterBagInterface $parameterBag, private ValidatorInterface $validator)
+    public function __construct(ParameterBagInterface $parameterBag, private readonly ValidatorInterface $validator)
     {
         $this->tempUploadDir = $parameterBag->get('files_directory').'/temp/';
     }

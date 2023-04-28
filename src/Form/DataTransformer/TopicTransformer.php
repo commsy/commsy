@@ -33,7 +33,7 @@ class TopicTransformer extends AbstractTransformer
         $topicData = [];
 
         if ($topicItem) {
-            $topicData['title'] = html_entity_decode($topicItem->getTitle());
+            $topicData['title'] = html_entity_decode((string) $topicItem->getTitle());
             $topicData['description'] = $topicItem->getDescription();
             $topicData['permission'] = $topicItem->isPrivateEditing();
 
@@ -41,7 +41,7 @@ class TopicTransformer extends AbstractTransformer
                 $topicData['hidden'] = true;
 
                 $activating_date = $topicItem->getActivatingDate();
-                if (!stristr($activating_date, '9999')) {
+                if (!stristr((string) $activating_date, '9999')) {
                     $datetime = new DateTime($activating_date);
                     $topicData['hiddendate']['date'] = $datetime;
                     $topicData['hiddendate']['time'] = $datetime;
@@ -58,11 +58,9 @@ class TopicTransformer extends AbstractTransformer
      * @param object $topicObject
      * @param array  $topicData
      *
-     * @return cs_topic_item|null
-     *
      * @throws TransformationFailedException if room item is not found
      */
-    public function applyTransformation($topicObject, $topicData)
+    public function applyTransformation($topicObject, $topicData): cs_topic_item
     {
         $topicObject->setTitle($topicData['title']);
         $topicObject->setDescription($topicData['description']);
@@ -80,7 +78,7 @@ class TopicTransformer extends AbstractTransformer
                     // TODO: the date-object ought to resepct the chosen system language
                     $datetime = $topicData['hiddendate']['date'];
                     if ($topicData['hiddendate']['time']) {
-                        $time = explode(':', $topicData['hiddendate']['time']->format('H:i'));
+                        $time = explode(':', (string) $topicData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
                     $topicObject->setActivationDate($datetime->format('Y-m-d H:i:s'));

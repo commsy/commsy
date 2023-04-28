@@ -22,9 +22,9 @@ use Symfony\Component\Form\Form;
 
 class GroupService
 {
-    private cs_group_manager $groupManager;
+    private readonly cs_group_manager $groupManager;
 
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {

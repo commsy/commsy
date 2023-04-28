@@ -18,7 +18,7 @@ class PrometheusCollector
     /**
      * @param MetricInterface[] $metrics
      */
-    public function __construct(private iterable $metrics)
+    public function __construct(private readonly iterable $metrics)
     {
     }
 

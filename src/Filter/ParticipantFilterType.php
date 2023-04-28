@@ -22,7 +22,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ParticipantFilterType extends AbstractType
 {
-    public function __construct(private RequestStack $requestStack, private UserService $userService)
+    public function __construct(private readonly RequestStack $requestStack, private readonly UserService $userService)
     {
     }
 

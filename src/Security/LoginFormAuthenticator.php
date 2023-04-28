@@ -29,6 +29,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 class LoginFormAuthenticator extends AbstractCommsyAuthenticator
@@ -36,9 +37,9 @@ class LoginFormAuthenticator extends AbstractCommsyAuthenticator
     use TargetPathTrait;
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
+        private readonly EntityManagerInterface $entityManager,
         UrlGeneratorInterface $urlGenerator,
-        private CsrfTokenManagerInterface $csrfTokenManager,
+        private readonly CsrfTokenManagerInterface $csrfTokenManager,
         RequestContext $requestContext
     ) {
         parent::__construct($urlGenerator, $requestContext);
@@ -121,7 +122,7 @@ class LoginFormAuthenticator extends AbstractCommsyAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
         if ($request->hasSession()) {
-            $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
+            $request->getSession()->set(SecurityRequestAttributes::AUTHENTICATION_ERROR, $exception);
             $request->getSession()->set(AbstractCommsyAuthenticator::LAST_SOURCE, 'local');
         }
 

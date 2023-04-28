@@ -39,7 +39,7 @@ class DeleteType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\IdenticalTo([
-                        'value' => mb_strtoupper($options['data']['confirm_string']),
+                        'value' => mb_strtoupper((string) $options['data']['confirm_string']),
                         'message' => 'The input does not match {{ compared_value }}',
                     ]),
                     new ModeratorAccountDeleteConstraint(),
@@ -76,7 +76,7 @@ class DeleteType extends AbstractType
      *
      * @return string The prefix of the template block name
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'profile_delete';
     }

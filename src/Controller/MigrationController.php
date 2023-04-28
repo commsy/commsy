@@ -48,7 +48,7 @@ class MigrationController extends AbstractController
         }
 
         return $this->render('migration/password.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 }

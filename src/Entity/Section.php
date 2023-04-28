@@ -13,8 +13,7 @@
 
 namespace App\Entity;
 
-use DateTime;
-use DateTimeInterface;
+use App\Utils\EntityDatesTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -27,155 +26,82 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'material_item_id', columns: ['material_item_id'])]
 class Section
 {
-    /**
-     * @var int
-     */
+    use EntityDatesTrait;
+
     #[ORM\Column(name: 'item_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
-    private $itemId = '0';
-    /**
-     * @var int
-     */
+    private int $itemId;
+
     #[ORM\Column(name: 'version_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
-    private $versionId = '0';
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
-    private $contextId;
-    /**
-     * @var int
-     */
+    private int $versionId;
+
+    #[ORM\Column(name: 'context_id', type: 'integer')]
+    private int $contextId;
+
     #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
-    private $creatorId = '0';
-    /**
-     * @var int
-     */
+    private string $creatorId = '0';
+
     #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: true)]
     private $modifierId;
-    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: true)]
-    private DateTime $creationDate;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private $deleterId;
-    /**
-     * @var DateTimeInterface
-     */
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private $deletionDate;
-    /**
-     * @var DateTimeInterface
-     */
-    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
-    private $modificationDate;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private $title;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'description', type: 'text', length: 16_777_215, nullable: true)]
     private $description;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'number', type: 'smallint', nullable: false)]
-    private $number = '0';
+    private string $number = '0';
+
     #[ORM\ManyToOne(targetEntity: 'Materials', inversedBy: 'sections')]
     #[ORM\JoinColumn(name: 'material_item_id', referencedColumnName: 'item_id')]
     #[ORM\JoinColumn(name: 'version_id', referencedColumnName: 'version_id')]
     private ?Materials $material = null;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
     private $extras;
-    /**
-     * @var bool
-     */
+
     #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
-    private $public = '0';
+    private string $public = '0';
 
-    public function __construct()
-    {
-        $this->creationDate = new DateTime('0000-00-00 00:00:00');
-    }
-
-    /**
-     * Set itemId.
-     *
-     * @param int $itemId
-     *
-     * @return Section
-     */
-    public function setItemId($itemId)
+    public function setItemId(int $itemId)
     {
         $this->itemId = $itemId;
 
         return $this;
     }
 
-    /**
-     * Get itemId.
-     *
-     * @return int
-     */
-    public function getItemId()
+    public function getItemId(): int
     {
         return $this->itemId;
     }
 
-    /**
-     * Set versionId.
-     *
-     * @param int $versionId
-     *
-     * @return Section
-     */
-    public function setVersionId($versionId)
+    public function setVersionId(int $versionId)
     {
         $this->versionId = $versionId;
 
         return $this;
     }
 
-    /**
-     * Get versionId.
-     *
-     * @return int
-     */
-    public function getVersionId()
+    public function getVersionId(): int
     {
         return $this->versionId;
     }
 
-    /**
-     * Set contextId.
-     *
-     * @param int $contextId
-     *
-     * @return Section
-     */
-    public function setContextId($contextId)
+    public function setContextId(int $contextId)
     {
         $this->contextId = $contextId;
 
         return $this;
     }
 
-    /**
-     * Get contextId.
-     *
-     * @return int
-     */
-    public function getContextId()
+    public function getContextId(): int
     {
         return $this->contextId;
     }
@@ -229,30 +155,6 @@ class Section
     }
 
     /**
-     * Set creationDate.
-     *
-     * @param DateTime $creationDate
-     *
-     * @return Section
-     */
-    public function setCreationDate($creationDate)
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get creationDate.
-     *
-     * @return DateTime
-     */
-    public function getCreationDate()
-    {
-        return $this->creationDate;
-    }
-
-    /**
      * Set deleterId.
      *
      * @param int $deleterId
@@ -274,54 +176,6 @@ class Section
     public function getDeleterId()
     {
         return $this->deleterId;
-    }
-
-    /**
-     * Set deletionDate.
-     *
-     * @param DateTime $deletionDate
-     *
-     * @return Section
-     */
-    public function setDeletionDate($deletionDate)
-    {
-        $this->deletionDate = $deletionDate;
-
-        return $this;
-    }
-
-    /**
-     * Get deletionDate.
-     *
-     * @return DateTime
-     */
-    public function getDeletionDate()
-    {
-        return $this->deletionDate;
-    }
-
-    /**
-     * Set modificationDate.
-     *
-     * @param DateTime $modificationDate
-     *
-     * @return Section
-     */
-    public function setModificationDate($modificationDate)
-    {
-        $this->modificationDate = $modificationDate;
-
-        return $this;
-    }
-
-    /**
-     * Get modificationDate.
-     *
-     * @return DateTime
-     */
-    public function getModificationDate()
-    {
-        return $this->modificationDate;
     }
 
     /**

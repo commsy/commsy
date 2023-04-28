@@ -45,11 +45,9 @@ class SectionTransformer extends AbstractTransformer
      * @param object $sectionObject
      * @param array  $sectionData
      *
-     * @return cs_section_item|null
-     *
      * @throws TransformationFailedException if room item is not found
      */
-    public function applyTransformation($sectionObject, $sectionData)
+    public function applyTransformation($sectionObject, $sectionData): cs_section_item
     {
         $sectionObject->setTitle($sectionData['title']);
         $sectionObject->setDescription($sectionData['description']);

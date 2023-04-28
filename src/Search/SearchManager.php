@@ -36,7 +36,7 @@ class SearchManager
      */
     private array $queryConditions = [];
 
-    public function __construct(private TransformedFinder $commsyFinder, private UserService $userService, private ItemService $itemService)
+    public function __construct(private readonly TransformedFinder $commsyFinder, private readonly UserService $userService, private readonly ItemService $itemService)
     {
     }
 

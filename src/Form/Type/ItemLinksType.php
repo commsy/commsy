@@ -29,12 +29,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ItemLinksType extends AbstractType
 {
-    private cs_environment $environment;
+    private readonly cs_environment $environment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private RoomService $roomService,
-        private ItemService $itemService
+        private readonly RoomService $roomService,
+        private readonly ItemService $itemService
     ) {
         $this->environment = $legacyEnvironment->getEnvironment();
     }
@@ -105,7 +105,7 @@ class ItemLinksType extends AbstractType
      *
      * @return string The prefix of the template block name
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'itemLinks';
     }

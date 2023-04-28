@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraint;
 #[Attribute]
 class EmailRegex extends Constraint
 {
-    public function getTargets()
+    public function getTargets(): string|array
     {
         return self::CLASS_CONSTRAINT;
     }

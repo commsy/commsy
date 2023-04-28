@@ -29,7 +29,6 @@ use App\Form\Type\TopicType;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
-use App\Utils\AnnotationService;
 use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
 use App\Utils\LabelService;
@@ -38,12 +37,12 @@ use cs_room_item;
 use cs_topic_item;
 use cs_user_item;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -55,8 +54,6 @@ class TopicController extends BaseController
 {
     private TopicService $topicService;
 
-    private AnnotationService $annotationService;
-
     /**
      * @param mixed $topicService
      */
@@ -64,15 +61,6 @@ class TopicController extends BaseController
     public function setTopicService(TopicService $topicService): void
     {
         $this->topicService = $topicService;
-    }
-
-    /**
-     * @param mixed $annotationService
-     */
-    #[Required]
-    public function setAnnotationService(AnnotationService $annotationService): void
-    {
-        $this->annotationService = $annotationService;
     }
 
     #[Route(path: '/room/{roomId}/topic')]
@@ -103,7 +91,7 @@ class TopicController extends BaseController
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('topic');
         }
 
-        return $this->render('topic/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm->createView(), 'module' => 'topic', 'itemsCountArray' => $itemsCountArray, 'showRating' => false, 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => false, 'showCategories' => $roomItem->withTags(), 'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(), 'catzExpanded' => $roomItem->isTagsShowExpanded(), 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('topic/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'topic', 'itemsCountArray' => $itemsCountArray, 'showRating' => false, 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => false, 'showCategories' => $roomItem->withTags(), 'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(), 'catzExpanded' => $roomItem->isTagsShowExpanded(), 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem()]);
     }
 
     #[Route(path: '/room/{roomId}/topic/feed/{start}/{sort}')]
@@ -222,7 +210,7 @@ class TopicController extends BaseController
             'showCategories' => $infoArray['showCategories'],
             'roomCategories' => $categories,
             'user' => $infoArray['user'],
-            'annotationForm' => $form->createView(),
+            'annotationForm' => $form,
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
             'isLinkedToItems' => $isLinkedToItems
@@ -469,7 +457,7 @@ class TopicController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($topicItem), CommsyEditEvent::EDIT);
 
-        return $this->render('topic/edit.html.twig', ['form' => $form->createView(), 'topic' => $topicItem, 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('topic/edit.html.twig', ['form' => $form, 'topic' => $topicItem, 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
     }
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/save')]
@@ -695,7 +683,7 @@ class TopicController extends BaseController
                 if (!empty($formDataPath)) {
                     $sortingPlace = 1;
                     if (isset($formData['pathOrder'])) {
-                        foreach (explode(',', $formData['pathOrder']) as $orderItemId) {
+                        foreach (explode(',', (string) $formData['pathOrder']) as $orderItemId) {
                             if ($linkItem = $linkManager->getItemByFirstAndSecondID($item->getItemId(), $orderItemId,
                                 true)) {
                                 if (in_array($orderItemId, $formDataPath)) {
@@ -714,7 +702,7 @@ class TopicController extends BaseController
                 }
 
                 if (isset($formData['pathOrder'])) {
-                    foreach (explode(',', $formData['pathOrder']) as $orderItemId) {
+                    foreach (explode(',', (string) $formData['pathOrder']) as $orderItemId) {
                         if ($linkItem = $linkManager->getItemByFirstAndSecondID($item->getItemId(), $orderItemId)) {
                             if (!in_array($orderItemId, $formDataPath)) {
                                 $linkManager->cleanSortingPlaces($this->itemService->getTypedItem($orderItemId));
@@ -733,7 +721,7 @@ class TopicController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
 
-        return $this->render('topic/edit_path.html.twig', ['form' => $form->createView()]);
+        return $this->render('topic/edit_path.html.twig', ['form' => $form]);
     }
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/savepath')]

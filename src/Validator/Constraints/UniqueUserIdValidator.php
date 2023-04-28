@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class UniqueUserIdValidator extends ConstraintValidator
 {
-    public function __construct(private EntityManagerInterface $entityManager, private Security $security)
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly \Symfony\Bundle\SecurityBundle\Security $security)
     {
     }
 

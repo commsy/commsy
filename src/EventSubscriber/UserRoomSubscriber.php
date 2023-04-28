@@ -24,11 +24,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UserRoomSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private UserroomService $userroomService)
+    public function __construct(private readonly UserroomService $userroomService)
     {
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             UserJoinedRoomEvent::class => 'onUserJoinedRoom',

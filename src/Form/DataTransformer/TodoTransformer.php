@@ -22,7 +22,7 @@ class TodoTransformer extends AbstractTransformer
 {
     protected $entity = 'todo';
 
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -41,7 +41,7 @@ class TodoTransformer extends AbstractTransformer
         $todoData = [];
 
         if ($todoItem) {
-            $todoData['title'] = html_entity_decode($todoItem->getTitle());
+            $todoData['title'] = html_entity_decode((string) $todoItem->getTitle());
             $todoData['description'] = $todoItem->getDescription();
             $todoData['permission'] = $todoItem->isPrivateEditing();
 
@@ -49,7 +49,7 @@ class TodoTransformer extends AbstractTransformer
                 $todoData['hidden'] = true;
 
                 $activating_date = $todoItem->getActivatingDate();
-                if (!stristr($activating_date, '9999')) {
+                if (!stristr((string) $activating_date, '9999')) {
                     $datetime = new DateTime($activating_date);
                     $todoData['hiddendate']['date'] = $datetime;
                     $todoData['hiddendate']['time'] = $datetime;
@@ -101,10 +101,8 @@ class TodoTransformer extends AbstractTransformer
      *
      * @param cs_todo_item $todoObject
      * @param array         $todoData
-     *
-     * @return cs_todo_item
      */
-    public function applyTransformation($todoObject, $todoData)
+    public function applyTransformation($todoObject, $todoData): cs_todo_item
     {
         $todoObject->setTitle($todoData['title']);
         $todoObject->setDescription($todoData['description']);
@@ -123,7 +121,7 @@ class TodoTransformer extends AbstractTransformer
                     // add validdate to validdate
                     $datetime = $todoData['hiddendate']['date'];
                     if ($todoData['hiddendate']['time']) {
-                        $time = explode(':', $todoData['hiddendate']['time']->format('H:i'));
+                        $time = explode(':', (string) $todoData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
                     $todoObject->setActivationDate($datetime->format('Y-m-d H:i:s'));
@@ -156,7 +154,7 @@ class TodoTransformer extends AbstractTransformer
 
             // steps
             if (isset($todoData['stepOrder'])) {
-                $newStepOrder = explode(',', $todoData['stepOrder']);
+                $newStepOrder = explode(',', (string) $todoData['stepOrder']);
             }
 
             if (isset($todoData['due_date']['date'])) {
@@ -170,8 +168,8 @@ class TodoTransformer extends AbstractTransformer
 
         // external viewer
         if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
-            if (!empty(trim($todoData['external_viewer']))) {
-                $userIds = explode(' ', $todoData['external_viewer']);
+            if (!empty(trim((string) $todoData['external_viewer']))) {
+                $userIds = explode(' ', (string) $todoData['external_viewer']);
                 $todoObject->setExternalViewerAccounts($userIds);
             } else {
                 $todoObject->unsetExternalViewerAccounts();

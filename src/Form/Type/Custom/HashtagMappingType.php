@@ -64,7 +64,7 @@ class HashtagMappingType extends AbstractType
         $resolver->setDefaults([
             'translation_domain' => 'form',
             'constraints' => [
-                new Callback([$this, 'validate']),
+                new Callback($this->validate(...)),
             ],
             'assignment_is_mandatory' => true,
         ]);

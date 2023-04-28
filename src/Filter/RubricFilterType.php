@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class RubricFilterType extends AbstractType
 {
-    public function __construct(private RoomService $roomService, private RequestStack $requestStack)
+    public function __construct(private readonly RoomService $roomService, private readonly RequestStack $requestStack)
     {
     }
 

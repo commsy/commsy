@@ -23,11 +23,11 @@ use Symfony\Component\HttpKernel\Event\ViewEvent;
 
 class EtherpadEditSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private ParameterBagInterface $params, private MaterialService $materialService, private EtherpadService $etherpadService)
+    public function __construct(private readonly ParameterBagInterface $params, private readonly MaterialService $materialService, private readonly EtherpadService $etherpadService)
     {
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             'kernel.view' => [
@@ -77,7 +77,7 @@ class EtherpadEditSubscriber implements EventSubscriberInterface
                             $textObject = $client->getHTML($materialItem->getEtherpadEditorID());
 
                             // save etherpad text to material description
-                            $materialItem->setDescription(nl2br($textObject->html));
+                            $materialItem->setDescription(nl2br((string) $textObject->html));
                             $materialItem->save();
                         }
                     }

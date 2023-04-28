@@ -25,12 +25,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class XhrCategorizeActionOptionsType extends AbstractType
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private CategoryService $categoryService,
-        private TranslatorInterface $translator
+        private readonly CategoryService $categoryService,
+        private readonly TranslatorInterface $translator
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -116,7 +116,7 @@ class XhrCategorizeActionOptionsType extends AbstractType
      *
      * @return string The prefix of the template block name
      */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'xhr_action';
     }

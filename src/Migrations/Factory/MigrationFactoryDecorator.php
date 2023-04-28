@@ -23,8 +23,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class MigrationFactoryDecorator implements MigrationFactory
 {
     public function __construct(
-        private MigrationFactory $migrationFactory,
-        private ContainerInterface $container
+        private readonly MigrationFactory $migrationFactory,
+        private readonly ContainerInterface $container
     ) {
     }
 
