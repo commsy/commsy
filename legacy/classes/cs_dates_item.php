@@ -40,12 +40,6 @@ class cs_dates_item extends cs_item
      */
     public function _setItemData($data_array)
     {
-        // check data before setting
-        // if(!(isset($data_array['title']) and !empty($data_array['title'])
-        //   and isset($data_array['start_day']) and !empty($data_array['start_day']))) {
-        //   include_once('functions/error_functions.php');trigger_error("At least one mandatory field is not set for item ".$data_array['item_id'], E_USER_WARNING);
-        //   var_dump($data_array);
-        // }
         $this->_data = $data_array;
     }
 
@@ -638,9 +632,6 @@ class cs_dates_item extends cs_item
     public function cloneCopy()
     {
         $clone_item = clone $this; // "clone" needed for php5
-        // if( !empty($this->_changed) ) {
-        //   include_once('functions/error_functions.php');trigger_error("attempt to clone unsaved / changed material; clone will match the persistent state of this item", E_USER_WARNING);
-        // }
         $group_list = $this->getGroupList();
         $clone_item->setGroupList($group_list);
         $topic_list = $this->getTopicList();

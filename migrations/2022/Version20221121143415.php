@@ -34,8 +34,7 @@ final class Version20221121143415 extends AbstractMigration
             SET
                 a.last_login = u.lastlogin
             WHERE
-                u.deleter_id IS NULL AND
-                u.deletion_date IS NULL
+                u.not_deleted = 1;
         ');
 
         $this->addSql('

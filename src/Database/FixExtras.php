@@ -30,8 +30,8 @@ class FixExtras extends GeneralCheck
                     $unserialized = @unserialize($extra);
 
                     if ($unserialized === false) {
-
-                        $repaired = $this->repairSerializedArray($extra);
+                        $io->info("Invalid entry found: $extra");
+                        $repaired = $this->repairStringLength($extra);
                         $io->info("Fixing to: $repaired");
 
                         if (!@unserialize($repaired)) {
@@ -53,102 +53,24 @@ class FixExtras extends GeneralCheck
         return true;
     }
 
-    /**
-     * Extract what remains from an unintentionally truncated serialized string
-     *
-     * @param string $serialized The serialized array
-     */
-    private function repairSerializedArray(string $serialized): string
+    private function repairStringLength(string $serialized): string
     {
-        $tmp = preg_replace('/^a:\d+:\{/', '', $serialized);
-        return serialize($this->repairSerializedArray_R($tmp));
-    }
+        // single string
+        $fixed = preg_replace_callback(
+            '/^s:(\d+)(?=:"(.*?)";$)/s',
+            fn (array $match) => 's:' . strlen($match[2]),
+            $serialized
+        );
 
-    /**
-     * The recursive function that does all of the heavy lifing. Do not call directly.
-     * @param string $broken The broken serialzized array
-     * @return array Returns the repaired string
-     */
-    private function repairSerializedArray_R(string &$broken): array
-    {
-        // array and string length can be ignored
-        // sample serialized data
-        // a:0:{}
-        // s:4:"four";
-        // i:1;
-        // b:0;
-        // N;
-        $data = [];
-        $index = null;
-        $len = strlen($broken);
-        $i = 0;
-
-        while (strlen((string) $broken)) {
-            $i++;
-            if ($i > $len) {
-                break;
-            }
-
-            if (str_starts_with((string) $broken, '}')) // end of array
-            {
-                $broken = substr((string) $broken, 1);
-                return $data;
-            } else {
-                $bite = substr((string) $broken, 0, 2);
-                switch ($bite) {
-                    case 's:': // key or value
-                        $re = '/^s:\d+:"([^\"]*)";/';
-                        if (preg_match($re, (string) $broken, $m)) {
-                            if ($index === null) {
-                                $index = $m[1];
-                            } else {
-                                $data[$index] = $m[1];
-                                $index = null;
-                            }
-                            $broken = preg_replace($re, '', (string) $broken);
-                        }
-                        break;
-
-                    case 'i:': // key or value
-                        $re = '/^i:(\d+);/';
-                        if (preg_match($re, (string) $broken, $m)) {
-                            if ($index === null) {
-                                $index = (int)$m[1];
-                            } else {
-                                $data[$index] = (int)$m[1];
-                                $index = null;
-                            }
-                            $broken = preg_replace($re, '', (string) $broken);
-                        }
-                        break;
-
-                    case 'b:': // value only
-                        $re = '/^b:[01];/';
-                        if (preg_match($re, (string) $broken, $m)) {
-                            $data[$index] = (bool)$m[1];
-                            $index = null;
-                            $broken = preg_replace($re, '', (string) $broken);
-                        }
-                        break;
-
-                    case 'a:': // value only
-                        $re = '/^a:\d+:\{/';
-                        if (preg_match($re, (string) $broken, $m)) {
-                            $broken = preg_replace('/^a:\d+:\{/', '', (string) $broken);
-                            $data[$index] = $this->repairSerializedArray_R($broken);
-                            $index = null;
-                        }
-                        break;
-
-                    case 'N;': // value only
-                        $broken = substr((string) $broken, 2);
-                        $data[$index] = null;
-                        $index = null;
-                        break;
-                }
-            }
+        if ($fixed === $serialized) {
+            // nested strings
+            $fixed = preg_replace_callback(
+                '/(?<=^|;)s:(\d+)(?=:"(.*?)";(?:}|a:|s:|b:|d:|i:|o:|N;))/s',
+                fn (array $match) => 's:' . strlen($match[2]),
+                $serialized
+            );
         }
 
-        return $data;
+        return $fixed;
     }
 }
