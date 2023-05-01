@@ -22,7 +22,7 @@ jobs:
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '8.0'
+                    php-version: '8.2'
                     extensions: zip, imap, ldap, apcu
                     ini-values: apc.enable_cli=1, date.timezone=Europe/Berlin
                     tools: composer:v2
