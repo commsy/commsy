@@ -20,8 +20,8 @@ use App\Utils\FileService;
 use App\Utils\RoomService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sylius\Bundle\ThemeBundle\Context\SettableThemeContext;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\HeaderUtils;
@@ -197,8 +197,11 @@ class FileController extends AbstractController
      *
      */
     #[Route(path: '/logo/portal/{portalId}')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
-    public function portalLogo(Portal $portal, DownloadHandler $downloadHandler): Response
+    public function portalLogo(
+        #[MapEntity(id: 'portalId')]
+        Portal $portal,
+        DownloadHandler $downloadHandler
+    ): Response
     {
         if (!$portal->getLogoFile()) {
             throw $this->createNotFoundException('logo not found');

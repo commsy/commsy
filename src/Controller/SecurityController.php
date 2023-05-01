@@ -123,8 +123,8 @@ class SecurityController extends AbstractController
     }
 
     #[Route(path: '/login/{portalId}/request_accounts')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     public function requestAccounts(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
         LegacyEnvironment $legacyEnvironment,

@@ -7,13 +7,12 @@ use App\Entity\AuthSource;
 use App\Entity\Portal;
 use App\EventSubscriber\AutoRoomMembershipSubscriber;
 use App\Facade\UserCreatorFacade;
-use Tests\Support\UnitTester;
 use Codeception\Stub;
 use Codeception\Test\Unit;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
+use Tests\Support\UnitTester;
 
 class AutoRoomMembershipSubscriberTest extends Unit
 {
@@ -44,11 +43,6 @@ class AutoRoomMembershipSubscriberTest extends Unit
         ]);
         $this->assertInstanceOf(Account::class, $account);
 
-        $authToken = $this->makeEmpty(TokenInterface::class, [
-            'getUser' => fn() => $account
-        ]);
-        $this->assertInstanceOf(TokenInterface::class, $authToken);
-
         $request = $this->makeEmpty(Request::class, [
             'server' => $this->make(ParameterBag::class, [
                 'parameters' => [
@@ -63,9 +57,12 @@ class AutoRoomMembershipSubscriberTest extends Unit
         ]);
         $this->assertInstanceOf(UserCreatorFacade::class, $userCreator);
 
-        $subscriber = new AutoRoomMembershipSubscriber($userCreator);
+        $loginEvent = $this->makeEmpty(LoginSuccessEvent::class, [
+            'getUser' => $account,
+            'getRequest' => $request,
+        ]);
 
-        $loginEvent = new InteractiveLoginEvent($request, $authToken);
-        $subscriber->onSecurityInteractiveLogin($loginEvent);
+        $subscriber = new AutoRoomMembershipSubscriber($userCreator);
+        $subscriber->onLoginSuccess($loginEvent);
     }
 }

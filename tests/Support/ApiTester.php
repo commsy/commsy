@@ -66,8 +66,8 @@ class ApiTester extends Actor
 
     public function haveAccount(AuthSource $authSource, string $username, string $password): Account
     {
-        /** @var UserPasswordHasherInterface $passwordEncoder */
-        $passwordEncoder = $this->grabService(UserPasswordHasherInterface::class);
+        /** @var UserPasswordHasherInterface $passwordHasher */
+        $passwordHasher = $this->grabService(UserPasswordHasherInterface::class);
 
         $account = new Account();
         $this->haveInRepository($account, [
@@ -75,7 +75,7 @@ class ApiTester extends Actor
             'authSource' => $authSource,
             'username' => $username,
             'email' => 'some@mail.example',
-            'password' => $passwordEncoder->encodePassword($account, $password),
+            'password' => $passwordHasher->hashPassword($account, $password),
             'firstname' => 'firstname',
             'lastname' => 'lastname',
             'language' => 'de',

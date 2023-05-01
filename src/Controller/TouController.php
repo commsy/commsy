@@ -19,7 +19,7 @@ use App\Form\Type\TouAcceptType;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
 use DateTimeImmutable;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,8 +29,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class TouController extends AbstractController
 {
     #[Route(path: '/portal/{portalId}/terms')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     public function portal(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Security $security,
         Request $request,

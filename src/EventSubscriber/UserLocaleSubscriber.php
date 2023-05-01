@@ -15,8 +15,7 @@ namespace App\EventSubscriber;
 
 use App\Entity\Account;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 /**
  * Class UserLocaleSubscriber.
@@ -29,14 +28,14 @@ class UserLocaleSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin',
+            LoginSuccessEvent::class => 'onLoginSuccess',
         ];
     }
 
-    public function onInteractiveLogin(InteractiveLoginEvent $event)
+    public function onLoginSuccess(LoginSuccessEvent $event): void
     {
         /** @var Account $account */
-        $account = $event->getAuthenticationToken()->getUser();
+        $account = $event->getUser();
 
         if (!$account instanceof Account) {
             return;

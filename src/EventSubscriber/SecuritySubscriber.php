@@ -23,8 +23,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 class SecuritySubscriber implements EventSubscriberInterface
 {
@@ -39,7 +38,7 @@ class SecuritySubscriber implements EventSubscriberInterface
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
+    public function onLoginSuccess(LoginSuccessEvent $event): void
     {
         if ('app_account_personal' === $event->getRequest()->attributes->get('_route')) {
             return;
@@ -66,7 +65,7 @@ class SecuritySubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onKernelRequest(RequestEvent $event)
+    public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
 
@@ -76,8 +75,7 @@ class SecuritySubscriber implements EventSubscriberInterface
 
         /** @var Account $account */
         $account = $this->security->getUser();
-
-        if (null === $account || 'root' === $account->getUsername()) {
+        if (!$account instanceof Account || 'root' === $account->getUsername()) {
             return;
         }
 
@@ -96,7 +94,7 @@ class SecuritySubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            SecurityEvents::INTERACTIVE_LOGIN => 'onSecurityInteractiveLogin',
+            LoginSuccessEvent::class => 'onLoginSuccess',
             KernelEvents::REQUEST => 'onKernelRequest',
         ];
     }
