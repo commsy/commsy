@@ -15,22 +15,21 @@ namespace App\Metrics;
 
 use App\Entity\Account;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 class AccountLoginsMetric extends AbstractMetric implements MetricInterface, EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
         return [
-            SecurityEvents::INTERACTIVE_LOGIN => 'onSecurityInteractiveLogin',
+            LoginSuccessEvent::class => 'onLoginSuccess',
         ];
     }
 
-    public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
+    public function onLoginSuccess(LoginSuccessEvent $event): void
     {
         /** @var Account $account */
-        $account = $event->getAuthenticationToken()->getUser();
+        $account = $event->getUser();
 
         if (!$account instanceof Account || !$account->getAuthSource() || !$account->getAuthSource()->getPortal()) {
             return;

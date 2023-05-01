@@ -100,6 +100,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -125,9 +126,13 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/general')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function general(Portal $portal, Request $request, EntityManagerInterface $entityManager): Response
+    public function general(
+        #[MapEntity(id: 'portalId')]
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response
     {
         $portalForm = $this->createForm(PortalGeneralType::class, $portal);
         $portalForm->handleRequest($request);
@@ -166,9 +171,13 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/appearance')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function appearance(Portal $portal, Request $request, EntityManagerInterface $entityManager): Response
+    public function appearance(
+        #[MapEntity(id: 'portalId')]
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response
     {
         $portalForm = $this->createForm(PortalAppearanceType::class, $portal);
         $portalForm->handleRequest($request);
@@ -209,9 +218,13 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/support')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function support(Portal $portal, Request $request, EntityManagerInterface $entityManager): Response
+    public function support(
+        #[MapEntity(id: 'portalId')]
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response
     {
         // support page form
         $supportPageForm = $this->createForm(SupportType::class, $portal);
@@ -242,10 +255,13 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/portalhome')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
-    #[ParamConverter('environment', class: LegacyEnvironment::class)]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function portalhome(Portal $portal, Request $request, EntityManagerInterface $entityManager): Response
+    public function portalhome(
+        #[MapEntity(id: 'portalId')]
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response
     {
         $form = $this->createForm(PortalhomeType::class, $portal);
 
@@ -263,9 +279,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/roomcreation')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function roomCreation(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
         EntityManagerInterface $entityManager,
@@ -308,9 +324,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/roomcategories/{roomCategoryId?}')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function roomCategories(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         ?int $roomCategoryId,
         Request $request,
@@ -384,9 +400,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/auth/ldap')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function authLdap(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
         EntityManagerInterface $entityManager
@@ -438,9 +454,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/auth/local')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function authLocal(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
         EntityManagerInterface $entityManager
@@ -494,9 +510,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/auth/workspacemembership')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function authWorkspaceMembership(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         ManagerRegistry $doctrine,
         Request $request
@@ -518,11 +534,11 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/csvimport')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function csvImportAction(
         Request $request,
         UserCreatorFacade $userCreator,
+        #[MapEntity(id: 'portalId')]
         Portal $portal
     ): Response {
         $importForm = $this->createForm(CsvImportType::class, [], [
@@ -551,9 +567,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/auth/guest')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function authGuest(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
         EntityManagerInterface $entityManager
@@ -605,9 +621,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/auth/shib')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function authShibboleth(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
         EntityManagerInterface $entityManager
@@ -666,9 +682,9 @@ class PortalSettingsController extends AbstractController
      * @param RoomService $roomService
      */
     #[Route(path: '/portal/{portalId}/settings/mailtexts')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function mailtexts(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
         EntityManagerInterface $entityManager,
@@ -758,9 +774,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/licenses/{licenseId?}')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function licenses(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         ?int $licenseId,
         Request $request,
@@ -861,9 +877,13 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/privacy')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function privacy(Portal $portal, Request $request, EntityManagerInterface $entityManager): Response
+    public function privacy(
+        #[MapEntity(id: 'portalId')]
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response
     {
         $form = $this->createForm(PrivacyType::class, $portal);
 
@@ -881,9 +901,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/inactive')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function inactive(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
         EntityManagerInterface $entityManager,
@@ -931,9 +951,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/timepulses/{timePulseTemplateId?}')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function timePulses(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         ?int $timePulseTemplateId,
         Request $request,
@@ -1010,9 +1030,13 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/announcements')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function announcements(Portal $portal, Request $request, EntityManagerInterface $entityManager): Response
+    public function announcements(
+        #[MapEntity(id: 'portalId')]
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response
     {
         $portalForm = $this->createForm(PortalAnnouncementsType::class, $portal);
         $portalForm->handleRequest($request);
@@ -1049,9 +1073,13 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/contents')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function contents(Portal $portal, Request $request, EntityManagerInterface $entityManager): Response
+    public function contents(
+        #[MapEntity(id: 'portalId')]
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response
     {
         $termsForm = $this->createForm(TermsType::class, $portal);
         $termsForm->handleRequest($request);
@@ -1127,9 +1155,9 @@ class PortalSettingsController extends AbstractController
      * Handles portal terms templates for use inside rooms.
      */
     #[Route(path: '/portal/{portalId}/settings/contents/roomTermsTemplates/{termId}')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function roomTermsTemplates(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
         EventDispatcherInterface $dispatcher,
@@ -1185,11 +1213,11 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/accountindex/{userId}/deleteUser')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function accountIndexDeleteUser(
         $portalId,
         $userId,
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         UserService $userService,
         Request $request
@@ -1238,12 +1266,12 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/accountindex/{userIds}/performUserAction/{action}')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function accountIndexPerformUserAction(
         $portalId,
         $userIds,
         $action,
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         UserService $userService,
         Request $request,
@@ -1409,10 +1437,10 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/accountindex')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function accountIndex(
         $portalId,
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         UserService $userService,
         Request $request,
@@ -1796,7 +1824,6 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/accountindex/sendmail/{recipients}/{action}', defaults: ['action' => 'user-account_send_mail'])]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function accountIndexSendMail(
         $portalId,
@@ -1808,6 +1835,7 @@ class PortalSettingsController extends AbstractController
         UserService $userService,
         ItemService $itemService,
         Mailer $mailer,
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         RouterInterface $router
     ): Response {
@@ -1882,9 +1910,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/accountindex/sendmergemail/{recipients}')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function accountIndexSendMergeMail(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         $portalId,
         $recipients,
@@ -1953,9 +1981,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/accountindex/detail/{userId}')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function accountIndexDetail(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
         UserService $userService,
@@ -2108,9 +2136,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/accountindex/detail/{userId}/edit')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function accountIndexDetailEdit(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
         UserService $userService,
@@ -2237,9 +2265,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/accountIndex/detail/{userId}/changeStatus')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function accountIndexDetailChangeStatus(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
         UserService $userService,
@@ -2327,9 +2355,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/accountIndex/detail/{userId}/hidemailallwrks')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function accountIndexDetailHideMailAllWrks(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
         UserService $userService
@@ -2357,9 +2385,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/accountIndex/detail/{userId}/showmailallwroks')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function accountIndexDetailShowMailAllWroks(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
         UserService $userService
@@ -2387,9 +2415,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/accountIndex/detail/{userId}/takeOver')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function accountIndexDetailTakeOver(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         UserService $userService,
         Request $request,
@@ -2408,9 +2436,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/accountIndex/detail/{userId}/assignWorkspace')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function accountIndexDetailAssignWorkspace(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
         UserService $userService,
@@ -2521,11 +2549,11 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/accountIndex/detail/{accountId}/changePassword')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
-    #[ParamConverter('account', class: Account::class, options: ['id' => 'accountId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function accountIndexDetailChangePassword(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
+        #[MapEntity(id: 'accountId')]
         Account $account,
         Request $request,
         UserService $userService,
@@ -2560,9 +2588,9 @@ class PortalSettingsController extends AbstractController
     }
 
     #[Route(path: '/portal/{portalId}/settings/translations/{translationId?}')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function translations(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         ?int $translationId,
         Request $request,

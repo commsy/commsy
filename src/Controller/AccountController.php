@@ -63,7 +63,6 @@ use UnexpectedValueException;
 class AccountController extends AbstractController
 {
     #[Route(path: '/register/{id}')]
-    #[ParamConverter('portal', class: Portal::class)]
     public function signUp(
         Portal $portal,
         Request $request,

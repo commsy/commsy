@@ -17,7 +17,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\NormalizerFormatter;
 use Monolog\Handler\AbstractProcessingHandler;
-use Monolog\Logger;
+use Monolog\Level;
+use Monolog\LogRecord;
 use Monolog\Processor\WebProcessor;
 
 /**
@@ -26,16 +27,19 @@ use Monolog\Processor\WebProcessor;
  */
 class DoctrineORMHandler extends AbstractProcessingHandler
 {
-    public function __construct(private readonly EntityManagerInterface $em, $level = Logger::DEBUG, $bubble = true)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        $level = Level::Debug,
+        $bubble = true
+    ) {
         parent::__construct($level, $bubble);
 
         $this->pushProcessor(new WebProcessor());
     }
 
-    protected function write(array $record): void
+    protected function write(LogRecord $record): void
     {
-        $record = $record['formatted'];
+        $record = $record->formatted;
 
         dump($record);
     }

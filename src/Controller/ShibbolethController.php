@@ -17,7 +17,7 @@ use App\Entity\AuthSource;
 use App\Entity\AuthSourceShibboleth;
 use App\Entity\Portal;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,8 +27,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class ShibbolethController extends AbstractController
 {
     #[Route(path: '/login/{portalId}/auth/shib')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     public function authShibbolethInit(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request
     ): Response {

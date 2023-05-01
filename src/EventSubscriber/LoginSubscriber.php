@@ -22,8 +22,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 class LoginSubscriber implements EventSubscriberInterface
 {
@@ -38,11 +37,11 @@ class LoginSubscriber implements EventSubscriberInterface
     {
         return [
             KernelEvents::REQUEST => 'onKernelRequest',
-            SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin',
+            LoginSuccessEvent::class => 'onLoginSuccess',
         ];
     }
 
-    public function onKernelRequest(RequestEvent $event)
+    public function onKernelRequest(RequestEvent $event): void
     {
         if (HttpKernelInterface::MAIN_REQUEST != $event->getRequestType()) {
             return;
@@ -71,7 +70,7 @@ class LoginSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onInteractiveLogin(InteractiveLoginEvent $event)
+    public function onLoginSuccess(LoginSuccessEvent $event): void
     {
         /** @var Account $account */
         $account = $this->security->getUser();
