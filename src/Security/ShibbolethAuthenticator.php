@@ -15,13 +15,9 @@ namespace App\Security;
 
 use App\Account\AccountManager;
 use App\Entity\Account;
-use App\Entity\AuthSource;
-use App\Entity\AuthSourceLdap;
 use App\Entity\AuthSourceShibboleth;
-use App\Entity\Portal;
 use App\Facade\AccountCreatorFacade;
 use App\Utils\RequestContext;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,14 +26,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
-use UnexpectedValueException;
 
 class ShibbolethAuthenticator extends AbstractCommsyAuthenticator
 {
@@ -175,15 +167,7 @@ class ShibbolethAuthenticator extends AbstractCommsyAuthenticator
 
         $this->accountManager->propagateAccountDataToProfiles($account);
 
-        return new SelfValidatingPassport(
-            new UserBadge($credentials['email']),
-            [
-                new CsrfTokenBadge(
-                    'authenticate',
-                    $request->request->get('_csrf_token')
-                ),
-            ]
-        );
+        return new SelfValidatingPassport(new UserBadge($credentials['email']));
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): Response
