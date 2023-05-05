@@ -167,7 +167,7 @@ class ShibbolethAuthenticator extends AbstractCommsyAuthenticator
 
         $this->accountManager->propagateAccountDataToProfiles($account);
 
-        return new SelfValidatingPassport(new UserBadge($credentials['email']));
+        return new SelfValidatingPassport(new UserBadge($credentials['username']));
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): Response
