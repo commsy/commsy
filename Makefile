@@ -41,6 +41,9 @@ sh: ## Connect to the PHP FPM container
 debug-mailhog:
 	@$(DOCKER_COMP) -f docker-compose.yml -f docker-compose.override.yml -f docker/docker-compose.mailhog.yml up
 
+build-office:
+	@$(DOCKER_COMP) -f docker-compose.yml -f docker-compose.override.yml -f docker/docker-compose.office.yml build --pull --no-cache
+
 debug-office:
 	@$(DOCKER_COMP) -f docker-compose.yml -f docker-compose.override.yml -f docker/docker-compose.office.yml up
 

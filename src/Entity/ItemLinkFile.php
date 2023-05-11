@@ -24,39 +24,44 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'item_link_file')]
 class ItemLinkFile
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'item_iid', type: Types::INTEGER)]
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'NONE')]
-    private ?int $itemIid = 0;
+    private int $itemId;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'item_vid', type: Types::INTEGER)]
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'NONE')]
-    private ?int $itemVid = 0;
+    private int $itemVersionId;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'file_id', type: Types::INTEGER)]
+    #[ORM\OneToOne(inversedBy: 'itemLink', targetEntity: Files::class)]
+    #[ORM\JoinColumn(name: 'file_id', referencedColumnName: 'files_id', nullable: false)]
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'NONE')]
-    private ?int $fileId = 0;
+    private Files $file;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private ?int $deleterId = null;
 
-    /**
-     * @var DateTimeInterface
-     */
     #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTimeInterface $deletionDate = null;
+
+    public function getItemId(): int
+    {
+        return $this->itemId;
+    }
+
+    public function setItemId(int $itemId): self
+    {
+        $this->itemId = $itemId;
+        return $this;
+    }
+
+    public function getItemVersionId(): int
+    {
+        return $this->itemVersionId;
+    }
+
+    public function setItemVersionId(int $itemVersionId): self
+    {
+        $this->itemVersionId = $itemVersionId;
+        return $this;
+    }
 }
