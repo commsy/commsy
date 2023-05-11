@@ -23,21 +23,22 @@ use Doctrine\ORM\Mapping as ORM;
  * Files.
  */
 #[ORM\Entity(repositoryClass: FilesRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: 'files')]
-#[ORM\Index(name: 'context_id', columns: ['context_id'])]
-#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
+#[ORM\Index(columns: ['context_id'], name: 'context_id')]
+#[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
 class Files
 {
     #[ORM\Column(name: 'files_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private ?int $filesId = null;
+    private int $filesId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
-    private ?int $contextId = null;
+    private int $contextId;
 
     #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: true)]
-    private ?int $creatorId = 0;
+    private ?int $creatorId = null;
 
     #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private ?int $deleterId = null;
@@ -52,10 +53,10 @@ class Files
     private ?DateTimeInterface $deletionDate = null;
 
     #[ORM\Column(name: 'filename', type: Types::STRING, length: 255)]
-    private ?string $filename = null;
+    private string $filename;
 
     #[ORM\Column(name: 'filepath', type: Types::STRING, length: 255)]
-    private ?string $filepath = null;
+    private string $filepath;
 
     #[ORM\Column(name: 'size', type: Types::INTEGER, nullable: true)]
     private ?int $size = null;
@@ -66,6 +67,15 @@ class Files
     #[ORM\ManyToOne()]
     #[ORM\JoinColumn(nullable: false, onDelete: 'cascade')]
     private ?Portal $portal = null;
+
+    #[ORM\OneToOne(mappedBy: 'file', targetEntity: ItemLinkFile::class, cascade: ['persist', 'remove'])]
+    private ItemLinkFile $itemLink;
+
+    #[ORM\Column(length: 1024, nullable: true)]
+    private ?string $lockingId = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $lockingDate = null;
 
     public function __construct()
     {
@@ -91,237 +101,126 @@ class Files
         }
     }
 
-    /**
-     * Get filesId.
-     *
-     * @return int
-     */
-    public function getFilesId()
+    public function getFilesId(): int
     {
         return $this->filesId;
     }
 
-    /**
-     * Set contextId.
-     *
-     * @param int $contextId
-     *
-     * @return Files
-     */
-    public function setContextId($contextId)
+    public function setContextId($contextId): self
     {
         $this->contextId = $contextId;
 
         return $this;
     }
 
-    /**
-     * Get contextId.
-     *
-     * @return int
-     */
-    public function getContextId()
+    public function getContextId(): int
     {
         return $this->contextId;
     }
 
-    /**
-     * Set creatorId.
-     *
-     * @param int $creatorId
-     *
-     * @return Files
-     */
-    public function setCreatorId($creatorId)
+    public function setCreatorId($creatorId): self
     {
         $this->creatorId = $creatorId;
 
         return $this;
     }
 
-    /**
-     * Get creatorId.
-     *
-     * @return int
-     */
-    public function getCreatorId()
+    public function getCreatorId(): ?int
     {
         return $this->creatorId;
     }
 
-    /**
-     * Set deleterId.
-     *
-     * @param int $deleterId
-     *
-     * @return Files
-     */
-    public function setDeleterId($deleterId)
+    public function setDeleterId($deleterId): self
     {
         $this->deleterId = $deleterId;
 
         return $this;
     }
 
-    /**
-     * Get deleterId.
-     *
-     * @return int
-     */
-    public function getDeleterId()
+
+    public function getDeleterId(): ?int
     {
         return $this->deleterId;
     }
 
-    /**
-     * Set creationDate.
-     *
-     * @param DateTime $creationDate
-     *
-     * @return Files
-     */
-    public function setCreationDate($creationDate)
+    public function setCreationDate(DateTime $creationDate): self
     {
         $this->creationDate = $creationDate;
 
         return $this;
     }
 
-    /**
-     * Get creationDate.
-     *
-     * @return DateTime
-     */
-    public function getCreationDate()
+    public function getCreationDate(): DateTime
     {
         return $this->creationDate;
     }
 
-    /**
-     * Set modificationDate.
-     *
-     * @param DateTime $modificationDate
-     *
-     * @return Files
-     */
-    public function setModificationDate($modificationDate)
+    #[ORM\PreUpdate]
+    public function setModificationDateValue()
+    {
+        $this->modificationDate = new DateTime('now');
+    }
+
+    public function setModificationDate(DateTimeInterface $modificationDate): self
     {
         $this->modificationDate = $modificationDate;
 
         return $this;
     }
 
-    /**
-     * Get modificationDate.
-     *
-     * @return DateTime
-     */
-    public function getModificationDate()
+    public function getModificationDate(): DateTimeInterface
     {
         return $this->modificationDate;
     }
 
-    /**
-     * Set deletionDate.
-     *
-     * @param DateTime $deletionDate
-     *
-     * @return Files
-     */
-    public function setDeletionDate($deletionDate)
+    public function setDeletionDate($deletionDate): self
     {
         $this->deletionDate = $deletionDate;
 
         return $this;
     }
 
-    /**
-     * Get deletionDate.
-     *
-     * @return DateTime
-     */
-    public function getDeletionDate()
+    public function getDeletionDate(): ?DateTimeInterface
     {
         return $this->deletionDate;
     }
 
-    /**
-     * Set filename.
-     *
-     * @param string $filename
-     *
-     * @return Files
-     */
-    public function setFilename($filename)
+    public function setFilename(string $filename): self
     {
         $this->filename = $filename;
 
         return $this;
     }
 
-    /**
-     * Get filename.
-     *
-     * @return string
-     */
-    public function getFilename()
+    public function getFilename(): string
     {
         return $this->filename;
     }
 
-    /**
-     * Set filepath.
-     *
-     * @param string $filepath
-     *
-     * @return Files
-     */
-    public function setFilepath($filepath)
+    public function setFilepath(string $filepath): self
     {
         $this->filepath = $filepath;
 
         return $this;
     }
 
-    /**
-     * Get filepath.
-     *
-     * @return string
-     */
-    public function getFilepath()
+    public function getFilepath(): string
     {
         return $this->filepath;
     }
 
-    /**
-     * Set size.
-     *
-     * @param int $size
-     *
-     * @return Files
-     */
-    public function setSize($size)
+    public function setSize(int $size): self
     {
         $this->size = $size;
 
         return $this;
     }
 
-    /**
-     * Get size.
-     *
-     * @return int
-     */
-    public function getSize()
+    public function getSize(): ?int
     {
         return $this->size;
     }
 
-    /**
-     * Set extras.
-     *
-     *
-     */
     public function setExtras(array $extras): self
     {
         $this->extras = $extras;
@@ -329,9 +228,6 @@ class Files
         return $this;
     }
 
-    /**
-     * Get extras.
-     */
     public function getExtras(): ?array
     {
         return $this->extras;
@@ -345,6 +241,42 @@ class Files
     public function setPortal(?Portal $portal): self
     {
         $this->portal = $portal;
+
+        return $this;
+    }
+
+    public function getItemLink(): ItemLinkFile
+    {
+        return $this->itemLink;
+    }
+
+    public function setItemLink(ItemLinkFile $itemLink): self
+    {
+        $this->itemLink = $itemLink;
+
+        return $this;
+    }
+
+    public function getLockingId(): ?string
+    {
+        return $this->lockingId;
+    }
+
+    public function setLockingId(?string $lockingId): self
+    {
+        $this->lockingId = $lockingId;
+
+        return $this;
+    }
+
+    public function getLockingDate(): ?\DateTimeInterface
+    {
+        return $this->lockingDate;
+    }
+
+    public function setLockingDate(?\DateTimeInterface $lockingDate): self
+    {
+        $this->lockingDate = $lockingDate;
 
         return $this;
     }

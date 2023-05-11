@@ -24,15 +24,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
-class LockManager
+final readonly class LockManager
 {
-    private readonly cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
-        private readonly Security $security,
-        private readonly TokenGeneratorInterface $tokenGenerator,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly ItemService $itemService,
+        private Security $security,
+        private TokenGeneratorInterface $tokenGenerator,
+        private EntityManagerInterface $entityManager,
+        private ItemService $itemService,
         LegacyEnvironment $environment
     ) {
         $this->legacyEnvironment = $environment->getEnvironment();

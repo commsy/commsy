@@ -94,6 +94,7 @@ services:
             - '../src/Model/'
             - '../src/Proxy/'
             - '../src/Tests/'
+            - '../src/WOPI/REST/Request'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
@@ -438,3 +439,12 @@ services:
     app.security:
         alias: Symfony\Bundle\SecurityBundle\Security
         public: true
+    
+    # Public alias for Token storage
+    app.token_storage:
+        alias: Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface
+        public: true
+    
+    # Authentication
+    App\Security\WOPIJWTAuthenticator:
+        parent: lexik_jwt_authentication.security.jwt_authenticator

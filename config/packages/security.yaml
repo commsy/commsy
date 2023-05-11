@@ -31,6 +31,9 @@ security:
             memory:
                 users:
                     commsy: { password: '%env(API_METRICS_SECRET)%' }
+        
+        jwt:
+            lexik_jwt: ~
 
     role_hierarchy:
         ROLE_API_WRITE: ROLE_API_READ
@@ -55,6 +58,13 @@ security:
                 provider: in_memory
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+                
+        api_v2_wopi:
+            pattern: ^/api/v2/wopi
+            stateless: true
+            provider: jwt
+            jwt:
+                authenticator: App\Security\WOPIJWTAuthenticator
 
         api_v2:
             pattern: ^/api/v2(?!/doc$)

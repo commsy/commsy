@@ -2,9 +2,11 @@ version: '3.4'
 
 services:
   onlyoffice:
-    image: onlyoffice/documentserver
+    build: ./docker/office
     restart: unless-stopped
     environment:
       WOPI_ENABLED: true
+      SSL_CERTIFICATE_PATH: /app/onlyoffice/DocumentServer/data/certs/onlyoffice.crt
+      SSL_KEY_PATH: /app/onlyoffice/DocumentServer/data/certs/onlyoffice.key
     ports:
-      - '8080:80'
+      - '8443:443'
