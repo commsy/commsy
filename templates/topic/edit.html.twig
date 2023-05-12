@@ -18,7 +18,8 @@
                 </label>
                 <div>
                     {{ form_widget(form.permission) }}
-                    <i class="uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': macros.userFullname(topic.creator) }, 'form') }}"></i>
+                    <i class="uk-visible-small uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip title="{{ 'permission-info'|trans({'%name%': macros.userFullname(topic.creator) }, 'form') }}"></i>
+                    <i class="uk-hidden-small uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': macros.userFullname(topic.creator) }, 'form') }}"></i>
                 </div>
             </div>
             <div class="uk-margin-small-left uk-flex">
@@ -46,7 +47,7 @@
                 <div class="uk-margin-small-left">
                     {{ form_row(form.cancel) }}
                 </div>
-            </div>   
+            </div>
         {{ form_row(form._token) }}
         {{ form_end(form, {'render_rest': false}) }}
     </div>
