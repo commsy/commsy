@@ -24,7 +24,8 @@
             </label>
             <div>
                 {{ form_widget(form.permission) }}
-                <i class="uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': macros.userFullname(discussionItem.creator)}, 'form') }}"></i>
+                <i class="uk-visible-small uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip title="{{ 'permission-info'|trans({'%name%': macros.userFullname(discussionItem.creator)}, 'form') }}"></i>
+                <i class="uk-hidden-small uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': macros.userFullname(discussionItem.creator)}, 'form') }}"></i>
             </div>
         </div>
         {% endif %}
@@ -52,7 +53,8 @@
             {% if form.external_viewer is defined %}
                 <div class="uk-form-row">
                     {{ form_row(form.external_viewer) }}
-                    <i class="uk-icon-question-circle uk-icon-justify uk-icon-small uk-icon-bottom" data-uk-tooltip="{pos:'right'}" title="{{ 'external_viewer_desc' | trans({}, 'form') }}"></i>
+                    <i class="uk-visible-small uk-icon-question-circle uk-icon-justify uk-icon-small uk-icon-bottom" data-uk-tooltip title="{{ 'external_viewer_desc' | trans({}, 'form') }}"></i>
+                    <i class="uk-hidden-small uk-icon-question-circle uk-icon-justify uk-icon-small uk-icon-bottom" data-uk-tooltip="{pos:'right'}" title="{{ 'external_viewer_desc' | trans({}, 'form') }}"></i>
                 </div>
             {%  endif %}
         {% endif %}
