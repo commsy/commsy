@@ -6,3 +6,7 @@ controllers:
 
 api_login_check:
     path: /api/v2/login_check
+
+api_doc:
+    path: /api/v2/doc
+    controller: api_platform.swagger_ui.action

@@ -7,23 +7,29 @@ use App\WOPI\Discovery\Response\App;
 use App\WOPI\Discovery\Response\NetZone;
 use App\WOPI\Discovery\Response\WOPIDiscovery;
 use App\WOPI\Discovery\Response\WOPIZone;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use function _PHPStan_532094bc1\React\Promise\Stream\first;
 
-final class DiscoveryService
+final readonly class DiscoveryService
 {
     public function __construct(
-        private readonly HttpClientInterface $httpClient,
-        private readonly SerializerInterface $serializer,
-        private readonly DiscoveryCache $cache
+        private HttpClientInterface   $httpClient,
+        private SerializerInterface   $serializer,
+        private DiscoveryCache        $cache,
+        private ParameterBagInterface $parameterBag
     ) {
     }
 
-    public function getWOPIDiscovery(string $discoveryBaseUrl): ?WOPIDiscovery
+    public function getWOPIDiscovery(): ?WOPIDiscovery
     {
+        $discoveryBaseUrl = $this->parameterBag->get('commsy.online_office.base_url');
+        if (!$discoveryBaseUrl) {
+            return null;
+        }
+
         /**
          * TODO:
          * A more dynamic option is to re-run discovery when proof key validation fails,

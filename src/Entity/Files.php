@@ -75,7 +75,7 @@ class Files
     private ?string $lockingId = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $lockingDate = null;
+    private ?DateTimeInterface $lockingDate = null;
 
     public function __construct()
     {
@@ -269,12 +269,12 @@ class Files
         return $this;
     }
 
-    public function getLockingDate(): ?\DateTimeInterface
+    public function getLockingDate(): ?DateTimeInterface
     {
         return $this->lockingDate;
     }
 
-    public function setLockingDate(?\DateTimeInterface $lockingDate): self
+    public function setLockingDate(?DateTimeInterface $lockingDate): self
     {
         $this->lockingDate = $lockingDate;
 

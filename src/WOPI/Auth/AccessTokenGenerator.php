@@ -4,16 +4,17 @@ namespace App\WOPI\Auth;
 
 use App\Entity\Account;
 use App\Entity\Files;
+use App\WOPI\Permission\WOPIPermission;
 use DateTimeImmutable;
 use Exception;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUser;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 
 final readonly class AccessTokenGenerator
 {
+    public const TOKEN_VALID_NUM_HOURS = 10;
+
     public function __construct(
-        private Security $security,
         private JWTTokenManagerInterface $tokenManager
     ) {
     }
@@ -21,13 +22,9 @@ final readonly class AccessTokenGenerator
     /**
      * @throws Exception
      */
-    public function generateToken(Files $file, string $permission, int $validHours): string
+    public function generateToken(Account $account, Files $file, WOPIPermission $permission): string
     {
-        $account = $this->security->getUser();
-        if (!$account instanceof Account) {
-            throw new Exception('No valid account found for token generation.');
-        }
-
+        $validHours = self::TOKEN_VALID_NUM_HOURS;
         $expiration = new DateTimeImmutable("+$validHours hour");
 
         $user = JWTUser::createFromPayload($account->getUsername(), []);
@@ -35,7 +32,7 @@ final readonly class AccessTokenGenerator
             'exp' => $expiration->getTimestamp(),
             'aid' => $account->getId(),
             'fid' => $file->getFilesId(),
-            'permission' => $permission,
+            'permission' => $permission->value,
         ]);
     }
 }

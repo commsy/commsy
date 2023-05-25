@@ -15,6 +15,7 @@ use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /** class for a user
  * this class implements a user item.
@@ -2589,7 +2590,10 @@ class cs_user_item extends cs_item
             }
         } else {
             global $symfonyContainer;
-            $tokenStorage = $symfonyContainer->get('security.token_storage');
+
+            /** @var TokenStorageInterface $tokenStorage */
+            $tokenStorage = $symfonyContainer->get('app.token_storage');
+
             /** @var Account $user */
             $user = $tokenStorage->getToken()->getUser();
 

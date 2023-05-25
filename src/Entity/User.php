@@ -13,11 +13,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use App\Repository\UserRepository;
 use App\Utils\EntityDatesTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -25,17 +25,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'user')]
-#[ORM\Index(name: 'creator_idx', columns: ['creator_id'])]
-#[ORM\Index(name: 'deleted_idx', columns: ['deletion_date', 'deleter_id'])]
-#[ORM\Index(name: 'context_idx', columns: ['context_id'])]
+#[ORM\Index(columns: ['creator_id'], name: 'creator_idx')]
+#[ORM\Index(columns: ['deletion_date', 'deleter_id'], name: 'deleted_idx')]
+#[ORM\Index(columns: ['context_id'], name: 'context_idx')]
 #[ORM\UniqueConstraint(name: 'unique_non_soft_deleted_idx', columns: ['user_id', 'auth_source', 'context_id', 'not_deleted'])]
 class User
 {
     use EntityDatesTrait;
 
-    /**
-     * @OA\Property(description="The unique identifier.")
-     */
+    #[ApiProperty(description: 'The unique identifier.')]
     #[ORM\Column(name: 'item_id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]

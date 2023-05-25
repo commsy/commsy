@@ -13,16 +13,16 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Controller\Api\GetAccountsCheckLocalLogin;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 use App\Controller\Api\GetAccountsWorkspaces;
-use App\Dto\LocalLoginInput;
+use App\Dto\LocalLoginInputRequest;
 use App\Repository\AccountsRepository;
 use App\Validator\Constraints\EmailRegex;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
-use Serializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherAwareInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -33,152 +33,109 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Account.
  *
- * @ApiResource(
- *     security="is_granted('ROLE_API_READ')",
- *     collectionOperations={
- *     },
- *     itemOperations={
- *         "get",
- *         "check_local_login"={
- *             "method"="POST",
- *             "path"="accounts/checkLocalLogin",
- *             "controller"=GetAccountsCheckLocalLogin::class,
- *             "status"=200,
- *             "read"=false,
- *             "write"=false,
- *             "input"=LocalLoginInput::class,
- *             "validation_groups"={"checkLocalLoginValidation"},
- *             "normalization_context"={
- *                 "groups"={"api"},
- *             },
- *             "denormalization_context"={
- *                 "groups"={"api_check_local_login"},
- *              },
- *             "openapi_context"={
- *                 "summary"="Checks plain user credentials and returns account information",
- *                 "parameters"={
- *                 },
- *                 "requestBody"={
- *                     "required"=true,
- *                     "description"="Local login data",
- *                     "content"={
- *                         "application/json"={
- *                             "schema"={
- *                                 "type"="object",
- *                                 "properties"={
- *                                     "contextId"={
- *                                         "type"="int",
- *                                     },
- *                                     "username"={
- *                                         "type"="string",
- *                                     },
- *                                     "password"={
- *                                         "type"="string",
- *                                     }
- *                                 },
- *                             },
- *                         },
- *                     },
- *                 },
- *             },
- *         },
- *         "get_workspaces"={
- *             "method"="GET",
- *             "path"="accounts/{id}/workspaces",
- *             "controller"=GetAccountsWorkspaces::class,
- *         }
- *     },
- *     normalizationContext={
- *         "groups"={"api"}
- *     },
- *     denormalizationContext={
- *         "groups"={"api"}
- *     }
- * )
  */
 #[ORM\Entity(repositoryClass: AccountsRepository::class)]
 #[UniqueEntity(fields: ['contextId', 'username', 'authSource'], repositoryMethod: 'findOneByCredentialsArray', errorPath: 'username')]
 #[ORM\Table(name: 'accounts')]
 #[ORM\UniqueConstraint(name: 'accounts_idx', columns: ['context_id', 'username', 'auth_source_id'])]
 #[EmailRegex]
-class Account implements
-    UserInterface,
-    PasswordAuthenticatedUserInterface,
-    PasswordHasherAwareInterface,
-    Serializable
+#[ApiResource(
+    operations: [
+        new Get(),
+        new Get(
+            uriTemplate: 'accounts/{id}/workspaces',
+            controller: GetAccountsWorkspaces::class,
+        ),
+        new Post(
+            uriTemplate: 'accounts/checkLocalLogin',
+            status: 200,
+            openapiContext: [
+                'summary' => 'Checks plain user credentials and returns account information',
+                'parameters' => [],
+                'requestBody' => [
+                    'required' => true,
+                    'description' => 'Local login data',
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'contextId' => ['type' => 'integer'],
+                                    'username' => ['type' => 'string'],
+                                    'password' => ['type' => 'string'],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            normalizationContext: ['groups' => ['api']],
+            denormalizationContext: ['groups' => ['api_check_local_login']],
+            input: LocalLoginInputRequest::class,
+            messenger: 'input'
+        )
+    ],
+    normalizationContext: ['groups' => ['api']],
+    denormalizationContext: ['groups' => ['api']],
+    security: "is_granted('ROLE_API_READ')"
+)]
+class Account implements UserInterface, PasswordAuthenticatedUserInterface, PasswordHasherAwareInterface
 {
-    final public const ACTIVITY_ACTIVE = 'active';
-    final public const ACTIVITY_ACTIVE_NOTIFIED = 'active_notified';
-    final public const ACTIVITY_IDLE = 'idle';
-    final public const ACTIVITY_IDLE_NOTIFIED = 'idle_notified';
-    final public const ACTIVITY_ABANDONED = 'abandoned';
-
+    public final const ACTIVITY_ACTIVE = 'active';
+    public final const ACTIVITY_ACTIVE_NOTIFIED = 'active_notified';
+    public final const ACTIVITY_IDLE = 'idle';
+    public final const ACTIVITY_IDLE_NOTIFIED = 'idle_notified';
+    public final const ACTIVITY_ABANDONED = 'abandoned';
     #[ORM\Column(type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[Groups(['api', 'api_check_local_login'])]
     private ?int $id = null;
-
     #[ORM\Column(type: 'integer')]
-    #[Assert\NotBlank(groups: ['checkLocalLoginValidation'])]
     #[Groups(['api_check_local_login'])]
     private int $contextId;
-
     #[ORM\Column(type: 'string', length: 100)]
-    #[Assert\NotBlank(groups: ['Default', 'checkLocalLoginValidation'])]
+    #[Assert\NotBlank]
     #[Assert\Regex(pattern: '/^(root|guest)$/i', match: false, message: '{{ value }} is a reserved name')]
     #[Groups(['api', 'api_check_local_login'])]
     private string $username;
-
     #[Assert\NotBlank]
     #[Assert\NotCompromisedPassword]
     #[Assert\Length(max: 4096, min: 8, minMessage: 'Your password must be at least {{ limit }} characters long.')]
-    #[Assert\Regex(pattern: '/(*UTF8)[\p{Ll}\p{Lm}\p{Lo}]/', message: 'Your password must contain at least one lowercase character.')]
-    #[Assert\Regex(pattern: '/(*UTF8)[\p{Lu}\p{Lt}]/', message: 'Your password must contain at least one uppercase character.')]
+    #[Assert\Regex(pattern: '/(*UTF8)[\\p{Ll}\\p{Lm}\\p{Lo}]/', message: 'Your password must contain at least one lowercase character.')]
+    #[Assert\Regex(pattern: '/(*UTF8)[\\p{Lu}\\p{Lt}]/', message: 'Your password must contain at least one uppercase character.')]
     #[Assert\Regex(pattern: '/[[:punct:]]/', message: 'Your password must contain at least one special character.')]
-    #[Assert\Regex(pattern: '/\p{Nd}/', message: 'Your password must contain at least one numeric character.')]
+    #[Assert\Regex(pattern: '/\\p{Nd}/', message: 'Your password must contain at least one numeric character.')]
     private ?string $plainPassword = null;
-
     #[ORM\Column(type: 'string', length: 32, nullable: true)]
     private ?string $passwordMd5;
-
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Assert\NotBlank(groups: ['checkLocalLoginValidation'])]
     #[Groups(['api_check_local_login'])]
     private ?string $password;
-
     #[ORM\Column(type: 'string', length: 50)]
     #[Assert\NotBlank]
     #[Groups(['api'])]
     private string $firstname;
-
     #[ORM\Column(type: 'string', length: 50)]
     #[Assert\NotBlank]
     #[Groups(['api'])]
     private string $lastname;
-
     #[ORM\Column(name: 'email', type: 'string', length: 100)]
     #[Assert\Email]
     #[Groups(['api'])]
     private string $email;
-
     #[ORM\Column(name: 'language', type: 'string', length: 10)]
     private string $language;
-
     #[ORM\ManyToOne(targetEntity: AuthSource::class)]
     #[ORM\JoinColumn]
     private AuthSource $authSource;
-
     #[ORM\Column(name: 'locked', type: 'boolean')]
     #[Groups(['api'])]
     private bool $locked = false;
-
     #[ORM\Column(name: 'last_login', type: 'datetime', nullable: true)]
     private ?DateTime $lastLogin;
-
     #[ORM\Column(name: 'activity_state', type: 'string', length: 15, options: ['default' => 'active'])]
     private string $activityState;
-
     #[ORM\Column(name: 'activity_state_updated', type: 'datetime', nullable: true)]
     private ?DateTime $activityStateUpdated = null;
 
@@ -404,16 +361,9 @@ class Account implements
 
     public function setActivityState(string $activityState): Account
     {
-        if (!in_array($activityState, [
-            self::ACTIVITY_ACTIVE,
-            self::ACTIVITY_ACTIVE_NOTIFIED,
-            self::ACTIVITY_IDLE,
-            self::ACTIVITY_IDLE_NOTIFIED,
-            self::ACTIVITY_ABANDONED,
-        ])) {
+        if (!in_array($activityState, [self::ACTIVITY_ACTIVE, self::ACTIVITY_ACTIVE_NOTIFIED, self::ACTIVITY_IDLE, self::ACTIVITY_IDLE_NOTIFIED, self::ACTIVITY_ABANDONED])) {
             throw new InvalidArgumentException('Invalid activity');
         }
-
         $this->activityState = $activityState;
         return $this;
     }
@@ -430,19 +380,16 @@ class Account implements
     }
 
     // Serializable
-    public function serialize()
+    public function __serialize(): array
     {
         $serializableData = get_object_vars($this);
-
-        // exclude from serialization
         unset($serializableData['authSource']);
-        return serialize($serializableData);
+        return $serializableData;
     }
 
-    public function unserialize($serialized)
+    public function __unserialize(array $data): void
     {
-        $unserializedData = unserialize($serialized);
-        foreach ($unserializedData as $key => $value) {
+        foreach ($data as $key => $value) {
             $this->{$key} = $value;
         }
     }

@@ -14,7 +14,7 @@ final readonly class WOPISrc
 
     public function getUrl(string $wopiFileId): string
     {
-        $url = $this->router->generate('api_files_endpoints_get_checkfileinfo_item', [
+        $url = $this->router->generate('_api_wopi/files/{fileId}_get', [
             'fileId' => $wopiFileId,
         ], UrlGeneratorInterface::ABSOLUTE_URL);
 

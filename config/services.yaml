@@ -67,6 +67,9 @@ parameters:
     commsy.dates.timezone: '%env(TIMEZONE)%'
     craue_twig_extensions.formatDateTime.datetype: medium
     craue_twig_extensions.formatDateTime.timetype: short
+    
+    # Online Office
+    commsy.online_office.base_url: '%env(ONLINE_OFFICE_BASE_URL)%'
 
 services:
     # default configuration for services in *this* file
@@ -448,3 +451,4 @@ services:
     # Authentication
     App\Security\WOPIJWTAuthenticator:
         parent: lexik_jwt_authentication.security.jwt_authenticator
+        autowire: true

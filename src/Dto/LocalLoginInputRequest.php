@@ -16,7 +16,7 @@ namespace App\Dto;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class LocalLoginInput
+final class LocalLoginInputRequest
 {
     #[Assert\NotBlank]
     #[Groups(['api_check_local_login'])]
@@ -35,7 +35,7 @@ final class LocalLoginInput
         return $this->contextId;
     }
 
-    public function setContextId(int $contextId): LocalLoginInput
+    public function setContextId(int $contextId): LocalLoginInputRequest
     {
         $this->contextId = $contextId;
 
@@ -47,7 +47,7 @@ final class LocalLoginInput
         return $this->username;
     }
 
-    public function setUsername(string $username): LocalLoginInput
+    public function setUsername(string $username): LocalLoginInputRequest
     {
         $this->username = $username;
 
@@ -59,7 +59,7 @@ final class LocalLoginInput
         return $this->password;
     }
 
-    public function setPassword(string $password): LocalLoginInput
+    public function setPassword(string $password): LocalLoginInputRequest
     {
         $this->password = $password;
 
