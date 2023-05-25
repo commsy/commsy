@@ -4,11 +4,14 @@ namespace Tests\Support;
 use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
+use App\Entity\Files;
 use App\Entity\Portal;
 use App\Entity\Room;
+use App\Repository\FilesRepository;
 use Codeception\Actor;
+use DateTime;
+use DateTimeInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * Inherited Methods
@@ -37,6 +40,7 @@ class ApiTester extends Actor
             'enabled' => true,
             'default' => true,
             'createRoom' => true,
+            'description' => 'desc',
         ]);
 
         $portal = new Portal();
@@ -44,6 +48,8 @@ class ApiTester extends Actor
         $this->haveInRepository($portal, [
             'title' => $title,
             'status' => 1,
+            'descriptionGerman' => 'descDE',
+            'descriptionEnglish' => 'descEN',
         ]);
 
         return $portal;
@@ -59,6 +65,7 @@ class ApiTester extends Actor
             'title' => $title,
             'status' => 1,
             'archived' => false,
+            'roomDescription' => 'desc',
         ]);
 
         return $room;
@@ -82,6 +89,27 @@ class ApiTester extends Actor
         ]);
 
         return $account;
+    }
+
+    public function haveFile(
+        Portal $portal,
+        ?string $lockingId = null,
+        ?DateTimeInterface $lockingDate = null,
+        string $filename = 'file.docx'): Files
+    {
+        $fileId = $this->haveInRepository(Files::class, [
+            'contextId' => 999,
+            'creationDate' => new DateTime(),
+            'filename' => $filename,
+            'filepath' => "files/{$portal->getId()}/999_/$filename",
+            'lockingId' => $lockingId,
+            'lockingDate' => $lockingDate,
+            'portal' => $portal,
+        ]);
+
+        /** @var FilesRepository $fileRepository */
+        $fileRepository = $this->grabService(FilesRepository::class);
+        return $fileRepository->find($fileId);
     }
 
     public function amFullAuthenticated()

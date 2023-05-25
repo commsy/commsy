@@ -3,8 +3,8 @@
 namespace Tests\Api;
 
 use App\Entity\AuthSource;
-use Tests\Support\ApiTester;
 use Codeception\Util\HttpCode;
+use Tests\Support\ApiTester;
 
 class PortalCest
 {
@@ -126,13 +126,19 @@ class PortalCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
 
-        $I->seeResponseMatchesJsonType([
-            'id' => 'integer',
-            'title' => 'string',
-            'description' => 'string|null',
-            'enabled' => 'boolean',
-            'type' => 'string',
-        ]);
+        $I->seeResponseIsValidOnJsonSchemaString(json_encode([
+            'type' => 'array',
+            'items' => [
+                'type' => 'object',
+                'properties' => [
+                    'id' => ['type' => 'integer'],
+                    'title' => ['type' => 'string'],
+                    'description' => ['type' => 'string'],
+                    'enabled' => ['type' => 'boolean'],
+                    'type' => ['type' => 'string'],
+                ],
+            ],
+        ]));
 
         /** @var AuthSource $authSource */
         $authSource = $portal->getAuthSources()->get(0);
@@ -155,13 +161,19 @@ class PortalCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
 
-        $I->seeResponseMatchesJsonType([
-            'id' => 'integer',
-            'title' => 'string',
-            'description' => 'string|null',
-            'enabled' => 'boolean',
-            'type' => 'string',
-        ]);
+        $I->seeResponseIsValidOnJsonSchemaString(json_encode([
+            'type' => 'array',
+            'items' => [
+                'type' => 'object',
+                'properties' => [
+                    'id' => ['type' => 'integer'],
+                    'title' => ['type' => 'string'],
+                    'description' => ['type' => 'string'],
+                    'enabled' => ['type' => 'boolean'],
+                    'type' => ['type' => 'string'],
+                ],
+            ],
+        ]));
 
         /** @var AuthSource $authSource */
         $authSource = $portal->getAuthSources()->get(0);
@@ -220,10 +232,13 @@ class PortalCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
 
-        $I->seeResponseMatchesJsonType([
-            'de' => 'string|null',
-            'en' => 'string|null',
-        ]);
+        $I->seeResponseIsValidOnJsonSchemaString(json_encode([
+            'type' => 'object',
+            'properties' => [
+                'de' => ['type' => ['string', 'null']],
+                'en' => ['type' => ['string', 'null']],
+            ],
+        ]));
     }
 
     public function getPortalTermsReadOnly(ApiTester $I)
@@ -236,9 +251,12 @@ class PortalCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
 
-        $I->seeResponseMatchesJsonType([
-            'de' => 'string|null',
-            'en' => 'string|null',
-        ]);
+        $I->seeResponseIsValidOnJsonSchemaString(json_encode([
+            'type' => 'object',
+            'properties' => [
+                'de' => ['type' => ['string', 'null']],
+                'en' => ['type' => ['string', 'null']],
+            ],
+        ]));
     }
 }

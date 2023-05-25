@@ -13,8 +13,10 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Annotation\ApiSubresource;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Controller\Api\GetPortalAnnouncement;
 use App\Controller\Api\GetPortalTou;
 use App\Repository\PortalRepository;
@@ -25,210 +27,160 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use OpenApi\Attributes as OA;
 use Serializable;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * Portal.
- *
- * @Vich\Uploadable
- * @ApiResource(
- *     security="is_granted('ROLE_API_READ')",
- *     collectionOperations={
- *         "get",
- *     },
- *     itemOperations={
- *         "get",
- *         "get_announcement"={
- *             "method"="GET",
- *             "path"="portals/{id}/announcement",
- *             "controller"=GetPortalAnnouncement::class,
- *             "openapi_context"={
- *                 "summary"="Get portal announcement",
- *                 "responses"={
- *                     "200"={
- *                         "description"="Portal announcement",
- *                         "content"={
- *                             "application/json"={
- *                                 "schema"={
- *                                     "type"="object",
- *                                     "properties"={
- *                                         "enabled"={"type"="boolean"},
- *                                         "title"={"type"="string"},
- *                                         "severity"={"type"="string"},
- *                                         "text"={"type"="string"},
- *                                     },
- *                                 },
- *                             },
- *                         },
- *                     },
- *                 },
- *             },
- *         },
- *         "get_tou"={
- *             "method"="GET",
- *             "path"="portals/{id}/tou",
- *             "controller"=GetPortalTou::class,
- *             "openapi_context"={
- *                 "summary"="Get portal terms of use",
- *                 "responses"={
- *                     "200"={
- *                         "description"="Portal terms of use",
- *                         "content"={
- *                             "application/json"={
- *                                 "schema"={
- *                                     "type"="object",
- *                                     "properties"={
- *                                         "de"={"type"="string","nullable"=true},
- *                                         "en"={"type"="string","nullable"=true},
- *                                     },
- *                                 },
- *                             },
- *                         },
- *                     },
- *                 },
- *             },
- *         },
- *     },
- *     normalizationContext={
- *         "groups"={"api"},
- *     },
- *     denormalizationContext={
- *         "groups"={"api"},
- *     }
- * )
- */
 #[ORM\Entity(repositoryClass: PortalRepository::class)]
 #[ORM\Table(name: 'portal')]
 #[ORM\HasLifecycleCallbacks]
 #[Vich\Uploadable]
+#[ApiResource(
+    operations: [
+        new Get(),
+        new Get(
+            uriTemplate: 'portals/{id}/announcement',
+            controller: GetPortalAnnouncement::class,
+            openapiContext: [
+                'summary' => 'Get portal announcement',
+                'responses' => [[
+                    'description' => 'Portal announcement',
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'enabled' => ['type' => 'boolean'],
+                                    'title' => ['type' => 'string'],
+                                    'severity' => ['type' => 'string'],
+                                    'text' => ['type' => 'string'],
+                                ],
+                            ],
+                        ],
+                    ],
+                ]],
+            ],
+        ),
+        new Get(
+            uriTemplate: 'portals/{id}/tou',
+            controller: GetPortalTou::class,
+            openapiContext: [
+                'summary' => 'Get portal terms of use',
+                'responses' => [[
+                    'description' => 'Portal terms of use',
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'de' => ['type' => 'string', 'nullable' => true],
+                                    'en' => ['type' => 'string', 'nullable' => true],
+                                ],
+                            ],
+                        ],
+                    ],
+                ]],
+            ],
+        ),
+        new GetCollection()
+    ],
+    normalizationContext: ['groups' => ['api']],
+    denormalizationContext: ['groups' => ['api']],
+    security: "is_granted('ROLE_API_READ')"
+)]
 class Portal implements Serializable
 {
-    #[OA\Property(description: 'The unique identifier.')]
+    #[ApiProperty(description: 'The unique identifier.')]
     #[ORM\Id]
     #[ORM\Column(name: 'id', type: 'integer')]
     #[ORM\GeneratedValue]
     #[Groups(['api'])]
     private $id;
-
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id', nullable: true)]
     private ?User $deleter = null;
-
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     #[Groups(['api'])]
     private ?DateTime $creationDate = null;
-
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
     #[Groups(['api'])]
     private ?DateTime $modificationDate = null;
-
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private ?DateTime $deletionDate = null;
-
-    #[OA\Property(type: 'string', maxLength: 255)]
+    #[ApiProperty(openapiContext: ['type' => 'string', 'maxLength' => 255])]
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     #[Groups(['api'])]
     private string $title;
-
-    #[OA\Property(type: 'string')]
+    #[ApiProperty(openapiContext: ['type' => 'string'])]
     #[ORM\Column(name: 'description_de', type: 'text')]
     #[Groups(['api'])]
     private ?string $descriptionGerman = null;
-
-    #[OA\Property(type: 'string')]
+    #[ApiProperty(openapiContext: ['type' => 'string'])]
     #[ORM\Column(name: 'description_en', type: 'text')]
     #[Groups(['api'])]
     private ?string $descriptionEnglish = null;
-
     #[ORM\Column(name: 'terms_de', type: 'text')]
     private ?string $termsGerman = null;
-
     #[ORM\Column(name: 'terms_en', type: 'text')]
     private ?string $termsEnglish = null;
-
     #[ORM\Column(name: 'extras', type: 'array', nullable: true)]
     private ?array $extras = null;
-
     #[ORM\Column(name: 'status', type: 'string', length: 20, nullable: false)]
     private string $status;
-
     #[ORM\Column(name: 'activity', type: 'integer', nullable: false)]
     private int $activity = 0;
-
     /**
-     * @ApiSubresource()
      */
     #[ORM\OneToMany(targetEntity: AuthSource::class, mappedBy: 'portal')]
     private Collection $authSources;
-
     // NOTE: This is not a mapped field of entity metadata, just a simple property.
     #[Vich\UploadableField(mapping: 'portal_logo', fileNameProperty: 'logoFilename')]
     private ?File $logoFile = null;
-
     #[ORM\Column(name: 'logo_filename', type: 'string', length: 255, nullable: true)]
     private ?string $logoFilename = null;
-
     #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private bool $defaultFilterHideTemplates = false;
-
     #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private bool $defaultFilterHideArchived = false;
-
     #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private bool $authMembershipEnabled = false;
-
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
     #[Assert\NotBlank(message: 'The request identifier must not be empty.', groups: ['authMembershipValidation'])]
     #[Assert\Length(max: 100, maxMessage: 'The request identifier must not exceed {{ limit }} characters.', groups: ['Default', 'authMembershipValidation'])]
     #[Assert\Regex(pattern: '/^[[:alnum:]~._-]+$/', message: 'The request identifier may only contain lowercase English letters, digits or any of these special characters: -._~', groups: ['authMembershipValidation'])]
     private ?string $authMembershipIdentifier = null;
-
     #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private bool $clearInactiveAccountsFeatureEnabled = false;
-
     #[ORM\Column(type: 'smallint', options: ['default' => 180])]
     #[Assert\Positive(message: 'This value should be positive.')]
     private int $clearInactiveAccountsNotifyLockDays = 180;
-
     #[ORM\Column(type: 'smallint', options: ['default' => 30])]
     #[Assert\Positive(message: 'This value should be positive.')]
     private int $clearInactiveAccountsLockDays = 30;
-
     #[ORM\Column(type: 'smallint', options: ['default' => 180])]
     #[Assert\Positive(message: 'This value should be positive.')]
     private int $clearInactiveAccountsNotifyDeleteDays = 180;
-
     #[ORM\Column(type: 'smallint', options: ['default' => 30])]
     #[Assert\Positive(message: 'This value should be positive.')]
     private int $clearInactiveAccountsDeleteDays = 30;
-
     #[ORM\Column(type: 'boolean', options: ['default' => 0])]
     private bool $clearInactiveRoomsFeatureEnabled = false;
-
     #[ORM\Column(type: 'smallint', options: ['default' => 180])]
     #[Assert\Positive(message: 'This value should be positive.')]
     private int $clearInactiveRoomsNotifyLockDays = 180;
-
     #[ORM\Column(type: 'smallint', options: ['default' => 30])]
     #[Assert\Positive(message: 'This value should be positive.')]
     private int $clearInactiveRoomsLockDays = 30;
-
     #[ORM\Column(type: 'smallint', options: ['default' => 180])]
     #[Assert\Positive(message: 'This value should be positive.')]
     private int $clearInactiveRoomsNotifyDeleteDays = 180;
-
     #[ORM\Column(type: 'smallint', options: ['default' => 30])]
     #[Assert\Positive(message: 'This value should be positive.')]
     private int $clearInactiveRoomsDeleteDays = 30;
-
     #[ORM\Column(type: 'boolean', options: ['default' => 1])]
     private bool $projectShowDeactivatedEntriesTitle = true;
-
     #[ORM\Column(type: 'boolean', options: ['default' => 1])]
     private bool $communityShowDeactivatedEntriesTitle = true;
 
@@ -537,7 +489,7 @@ class Portal implements Serializable
     }
 
     #[Groups(['api'])]
-    #[OA\Property(type: 'boolean')]
+    #[ApiProperty(openapiContext: ['type' => 'boolean'])]
     public function hasAGBEnabled(): bool
     {
         /**
@@ -1025,7 +977,7 @@ class Portal implements Serializable
     /** exists the extra information with the name $key ?
      * this method returns a boolean, if the value exists or not.
      *
-     * @param string $key   the key (name) of the value
+     * @param string $key the key (name) of the value
      *
      * @return bool true, if value exists
      *              false, if not

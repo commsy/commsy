@@ -13,119 +13,104 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use App\Controller\Api\GetAuthSourceDirectLoginUrl;
 use App\Repository\AuthSourceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
-use OpenApi\Attributes as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * AuthSource.
- *
- * @ApiResource(
- *     security="is_granted('ROLE_API_READ')",
- *     collectionOperations={
- *         "get"
- *     },
- *     itemOperations={
- *         "get",
- *         "get_direct_login_url"={
- *             "method"="GET",
- *             "path"="auth_sources/{id}/login_url",
- *             "controller"=GetAuthSourceDirectLoginUrl::class,
- *             "openapi_context"={
- *                 "summary"="Get a single auth source login url",
- *                 "responses"={
- *                     "200"={
- *                         "description"="A direct login url",
- *                         "content"={
- *                             "application/json"={
- *                                 "schema"={
- *                                     "type"="object",
- *                                     "properties"={
- *                                         "url"={
- *                                             "type"="string",
- *                                         },
- *                                     },
- *                                 },
- *                             },
- *                         },
- *                     },
- *                 },
- *             },
- *         },
- *     },
- *     normalizationContext={
- *         "groups"={"api"}
- *     },
- *     denormalizationContext={
- *         "groups"={"api"}
- *     }
- * )
- */
 #[ORM\Entity(repositoryClass: AuthSourceRepository::class)]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
 #[ORM\DiscriminatorMap(['local' => 'AuthSourceLocal', 'oidc' => 'AuthSourceOIDC', 'ldap' => 'AuthSourceLdap', 'shib' => 'AuthSourceShibboleth', 'guest' => 'AuthSourceGuest'])]
 #[ORM\Table(name: 'auth_source')]
 #[ORM\Index(columns: ['portal_id'], name: 'portal_id')]
+#[ApiResource(
+    operations: [
+        new Get(),
+        new Get(
+            uriTemplate: 'auth_sources/{id}/login_url',
+            controller: GetAuthSourceDirectLoginUrl::class,
+            openapiContext: [
+                'summary' => 'Get a single auth source login url',
+                'responses' => [[
+                    'description' => 'A direct login url',
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'url' => ['type' => 'string'],
+                                ],
+                            ],
+                        ],
+                    ],
+                ]],
+            ],
+        ),
+        new GetCollection(),
+    ],
+    normalizationContext: ['groups' => ['api']],
+    denormalizationContext: ['groups' => ['api']],
+    security: "is_granted('ROLE_API_READ')"
+)]
+#[ApiResource(
+    uriTemplate: '/portals/{id}/auth_sources.{_format}',
+    operations: [new GetCollection()],
+    uriVariables: [
+        'id' => new Link(
+            fromProperty: 'authSources',
+            fromClass: Portal::class
+        )
+    ]
+)]
 abstract class AuthSource
 {
-    final public const ADD_ACCOUNT_YES = 'yes';
-    final public const ADD_ACCOUNT_NO = 'no';
-    final public const ADD_ACCOUNT_INVITE = 'invitation';
-
-    #[OA\Property(description: 'The unique identifier.')]
+    public final const ADD_ACCOUNT_YES = 'yes';
+    public final const ADD_ACCOUNT_NO = 'no';
+    public final const ADD_ACCOUNT_INVITE = 'invitation';
+    #[ApiProperty(description: 'The unique identifier.')]
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[Groups(['api'])]
     private int $id;
-
-    #[OA\Property(type: 'string', maxLength: 255)]
+    #[ApiProperty(openapiContext: ['type' => 'string', 'maxLength' => 255])]
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Groups(['api'])]
     private ?string $title = null;
-
-    #[OA\Property(type: 'string', maxLength: 255)]
+    #[ApiProperty(openapiContext: ['type' => 'string', 'maxLength' => 255])]
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Groups(['api'])]
     private ?string $description = null;
-
     #[ORM\ManyToOne(targetEntity: Portal::class, inversedBy: 'authSources')]
     #[ORM\JoinColumn(name: 'portal_id')]
     private ?Portal $portal = null;
-
-    #[OA\Property(type: 'boolean')]
+    #[ApiProperty(openapiContext: ['type' => 'boolean'])]
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['api'])]
     private ?bool $enabled = null;
-
     #[ORM\Column(name: '`default`', type: Types::BOOLEAN)]
     private ?bool $default = null;
-
     #[ORM\Column(type: Types::STRING, length: 10, columnDefinition: "ENUM('yes', 'no', 'invitation')")]
     protected string $addAccount;
-
     #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $changeUsername;
-
     #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $deleteAccount;
-
     #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $changeUserdata;
-
     #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $changePassword;
-
     #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $createRoom = true;
-
-    #[OA\Property(type: 'string')]
+    #[ApiProperty(openapiContext: ['type' => 'string'])]
     #[Groups(['api'])]
     protected string $type = '';
 

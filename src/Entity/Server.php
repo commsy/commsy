@@ -13,80 +13,60 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Controller\Api\GetServerAnnouncement;
 use App\Repository\ServerRepository;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
-use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * Server.
- *
- * @Vich\Uploadable
- * @ApiResource(
- *     security="is_granted('ROLE_API_READ')",
- *     collectionOperations={
- *         "get",
- *     },
- *     itemOperations={
- *         "get",
- *         "get_announcement"={
- *             "method"="GET",
- *             "path"="servers/{id}/announcement",
- *             "controller"=GetServerAnnouncement::class,
- *             "openapi_context"={
- *                 "summary"="Get server announcement",
- *                 "responses"={
- *                     "200"={
- *                         "description"="Server announcement",
- *                         "content"={
- *                             "application/json"={
- *                                 "schema"={
- *                                     "type"="object",
- *                                     "properties"={
- *                                         "enabled"={
- *                                             "type"="boolean",
- *                                         },
- *                                         "title"={
- *                                             "type"="string",
- *                                         },
- *                                         "severity"={
- *                                             "type"="string",
- *                                         },
- *                                         "text"={
- *                                             "type"="string",
- *                                         },
- *                                     },
- *                                 },
- *                             },
- *                         },
- *                     },
- *                 },
- *             },
- *         },
- *     },
- *     normalizationContext={
- *         "groups"={"api"},
- *     },
- *     denormalizationContext={
- *         "groups"={"api"},
- *     }
- * )
- */
 #[ORM\Entity(repositoryClass: ServerRepository::class)]
 #[ORM\Table(name: 'server')]
 #[ORM\Index(columns: ['context_id'], name: 'context_id')]
 #[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
 #[Vich\Uploadable]
+#[ApiResource(
+    operations: [
+        new Get(),
+        new Get(
+            uriTemplate: 'servers/{id}/announcement',
+            controller: GetServerAnnouncement::class,
+            openapiContext: [
+                'summary' => 'Get server announcement',
+                'responses' => [[
+                    'description' => 'Server announcement',
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'enabled' => ['type' => 'boolean'],
+                                    'title' => ['type' => 'string'],
+                                    'severity' => ['type' => 'string'],
+                                    'text' => ['type' => 'string'],
+                                ],
+                            ],
+                        ],
+                    ],
+                ]],
+            ],
+        ),
+        new GetCollection(),
+    ],
+    normalizationContext: ['groups' => ['api']],
+    denormalizationContext: ['groups' => ['api']],
+    security: "is_granted('ROLE_API_READ')",
+)]
 class Server
 {
-    #[OA\Property(description: 'The unique identifier.')]
+    #[ApiProperty(description: 'The unique identifier.')]
     #[ORM\Id]
     #[ORM\Column(name: 'item_id', type: 'integer')]
     #[ORM\GeneratedValue]
@@ -95,25 +75,18 @@ class Server
 
     #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
     private int $contextId;
-
     #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
     private ?int $creatorId = 0;
-
     #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: true)]
     private int $modifierId;
-
     #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
     private int $deleterId;
-
     #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
     private DateTime $creationDate;
-
     #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
     private ?DateTimeInterface $modificationDate = null;
-
     #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
     private ?DateTime $deletionDate = null;
-
     #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
     private string $title;
 

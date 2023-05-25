@@ -273,8 +273,14 @@
                     </div>
 
                     {# files #}
-                    <div id="files{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId, 'versionId': material.versionId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                        {{ macrosItem.files(material, draft) }}
+                    <div id="files{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{{ {
+                        'editUrl': path('app_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId, 'versionId': material.versionId}),
+                        'cancelEditUrl': path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId})
+                    }|json_encode|e('html_attr') }}">
+                        {{ component('item_files', {
+                            item: material,
+                            draft: draft
+                        }) }}
                     </div>
 
                     {% if not draft %}
@@ -407,8 +413,13 @@
                             </div>
 
                             {# files #}
-                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId, 'versionId': section.versionId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
-                                {{ macrosItem.files(section) }}
+                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{{ {
+                                'editUrl': path('app_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId, 'versionId': section.versionId}),
+                                'cancelEditUrl': path('app_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId})
+                            }|json_encode|e('html_attr') }}">
+                                {{ component('item_files', {
+                                    item: section
+                                }) }}
                             </div>
                         </article>
                     </div>

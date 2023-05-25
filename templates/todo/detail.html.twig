@@ -245,8 +245,14 @@
                     </div>
 
                     {# files #}
-                    <div id="files{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
-                        {{ macrosItem.files(todo, draft) }}
+                    <div id="files{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{{ {
+                        'editUrl': path('app_upload_uploadform', {'roomId': todo.contextId, 'itemId': todo.itemId}),
+                        'cancelEditUrl': path('app_item_canceledit', {'roomId': todo.contextId, 'itemId': todo.itemId})
+                    }|json_encode|e('html_attr') }}">
+                        {{ component('item_files', {
+                            item: todo,
+                            draft: draft
+                        }) }}
                     </div>
 
                     {% if not draft %}
@@ -421,8 +427,13 @@
                             </div>
 
                             {# files #}
-                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': step.contextId, 'itemId': step.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': step.contextId, 'itemId': step.itemId}) }}' }">
-                                {{ macrosItem.files(step) }}
+                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{{ {
+                                'editUrl': path('app_upload_uploadform', {'roomId': step.contextId, 'itemId': step.itemId}),
+                                'cancelEditUrl': path('app_item_canceledit', {'roomId': step.contextId, 'itemId': step.itemId})
+                            }|json_encode|e('html_attr') }}">
+                                {{ component('item_files', {
+                                    item: step,
+                                }) }}
                             </div>
                         </article>
                     </div>

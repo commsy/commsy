@@ -1,0 +1,157 @@
+{% import 'utils/macros.html.twig' as macrosUtils %}
+
+{% if simple %}
+    <ul class="uk-thumbnav">
+        {% for file in item.fileList %}
+            <li>
+                {% set disposition = 'attachment' %}
+                {% if file.extension|lower == 'pdf' %}
+                    {% set disposition = 'inline' %}
+                {% endif %}
+                <a href="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': disposition }) }}" target="_blank" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename }}">
+                    <i class="uk-icon-small {{ macrosUtils.iconClassForFileType(file.extension) }}" ></i>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    {% set fileArray = item.fileList.to_array %}
+
+    <hr class="uk-width-9-10"/>
+
+    <article class="uk-article uk-margin-left uk-margin-right">
+        <a name="description"></a>
+        {% include 'utils/edit_spinner.html.twig' %}
+
+        {# title row #}
+        <div class="uk-grid uk-margin-small-bottom">
+            <div class="uk-width-8-10">
+                <h4 class="cs-detail-section-header">
+                    {{- "files"|trans({}) }}
+                    ({{ fileArray|length }})
+                </h4>
+            </div>
+
+            <div class="uk-width-2-10 uk-flex uk-flex-right">
+                {# edit action #}
+                {% if is_granted('ITEM_EDIT', item.itemId) %}
+                    <div id="{{ item.type }}-files-edit" class="uk-display-inline cs-edit {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
+                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                    </div>
+                {% endif %}
+
+                {# toggle action #}
+                <div class="uk-display-inline cs-toggle-icon uk-margin-left {% if (fileArray|length) < 1 %} uk-invisible {% endif %}">
+                    <a class="cs-toggle" data-uk-toggle="{target:'.toggle-files-{{ item.itemId }}'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+                </div>
+            </div>
+        </div>
+
+        {# content #}
+        {% if not fileArray is empty %}
+            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+
+                {# preview #}
+                <div class="toggle-files-{{ item.itemId }} cs-toggle-full">
+                    {% if fileArray|length > 10 %}
+                        <div class="uk-slidenav-position uk-margin-top uk-margin-bottom" data-uk-slider="{infinite: true}">
+                            <div class="uk-slider-container">
+                                <ul class="uk-slider uk-grid uk-grid-width-medium-1-10">
+                    {% else %}
+                        <div class="uk-margin-top uk-margin-bottom">
+                            <div>
+                                <ul class="uk-grid cs-file-grid uk-grid-width-medium-1-10">
+                    {% endif %}
+
+                                {% for file in fileArray %}
+                                    <li>
+                                        <div class="uk-panel uk-panel-box-secondary cs-file-panel-box uk-vertical-align">
+                                            {% if file.extension|lower == 'jpg' or file.extension|lower == 'jpeg' or file.extension|lower == 'png' or file.extension|lower == 'gif' %}
+                                                <a class="uk-margin-remove" href="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" data-uk-lightbox="{group:{{ item.itemId }}}" data-lightbox-type="image">
+                                                    <div class="uk-clearfix">
+                                                        <div class="cs-align-center" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename}} ({{ file.fileSize }} kb)">
+                                                            <img class="cs-align-center cs-slider" style="height:28px;" src="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" />
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            {% else %}
+                                                {% set disposition = 'attachment' %}
+                                                {% if file.extension|lower == 'pdf' %}
+                                                    {% set disposition = 'inline' %}
+                                                {% endif %}
+
+                                                <div class="uk-clearfix">
+                                                    <div class="cs-align-center" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename}} ({{ file.fileSize }} kb)">
+                                                        <div class="cs-align-center uk-vertical-align-middle">
+                                                            <a href="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': disposition }) }}" target="_blank"><i class="cs-icon-medium  cs-slider {{ macrosUtils.iconClassForFileType(file.extension) }}"></i></a>
+                                                        </div>
+                                                        {% if this.supportsOnlineOffice(file) %}
+                                                            <div class="uk-vertical-align-bottom">
+                                                                <a target="_blank" href="{{ path('app_wopi_host', {
+                                                                    'roomId': item.contextId,
+                                                                    'itemId': item.itemId,
+                                                                    'fileId': file.fileId
+                                                                }) }}">Online Office</a>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        {% if fileArray|length > 10 %}
+                            <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-previous" data-uk-slider-item="previous" draggable="false"></a>
+                            <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-next" data-uk-slider-item="next" draggable="false"></a>
+                        {% endif %}
+                    </div>
+
+                    <a class="" href="#" data-cs-unhide-collapsed="{src: '.toggle-files-{{ item.itemId }}'}" data-cs-readmore>
+                        <span class="cs-readmoreless">{{- "read more"|trans({}) -}}</span>
+                    </a>
+
+                </div>
+
+                {# full content #}
+                <div class="toggle-files-{{ item.itemId }} cs-toggle-content uk-hidden">
+                    <div class="uk-margin-top uk-margin-bottom" data-uk-grid="{gutter: 20}" data-uk-check-display>
+                        {% for file in fileArray %}
+                            <div class="uk-width-medium-1-2 uk-width-large-1-4">
+                                <div class="uk-panel uk-panel-box-secondary uk-vertical-align">
+                                    {% if file.extension|lower == 'jpg' or file.extension|lower == 'jpeg' or file.extension|lower == 'png' or file.extension|lower == 'gif' %}
+                                        <a class="uk-margin-remove" href="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" data-uk-lightbox="{group:{{ item.itemId }}}" data-lightbox-type="image">
+                                            <div class="uk-clearfix">
+                                                <div class="cs-align-center">
+                                                    <img class="cs-align-center cs-slider" style="height:80px;" src="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" />
+                                                </div>
+                                            </div>
+                                        </a>
+                                    {% else %}
+                                        <div class="uk-clearfix">
+                                            <div class="cs-align-center">
+                                                <div class="cs-align-center uk-vertical-align-middle">
+                                                    <i class="cs-icon-xxl-large  cs-slider {{ macrosUtils.iconClassForFileType(file.extension) }}"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="uk-vertical-align-middle" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename }}">
+                                        <a href="{{ path('app_file_getfile', {'fileId': file.fileId}) }}" target="_blank">{{ file.filename|u.truncate(20) }}</a><br/>
+                                        ({{ file.fileSize }} kb)
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <a class="" href="#" data-cs-unhide-collapsed="{src: '.toggle-files-{{ item.itemId }}'}" data-cs-readmore>
+                        <span class="cs-readmoreless uk-hidden">{{- "read less"|trans({}) -}}</span>
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </article>
+{% endif %}

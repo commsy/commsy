@@ -1,27 +1,19 @@
 <?php
 
-/*
- * This file is part of CommSy.
- *
- * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
- * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
- * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
- *
- * For the full copyright and license information, please view the LICENSE.md
- * file that was distributed with this source code.
- */
+namespace App\MessageHandler;
 
-namespace App\Controller\Api;
-
+use App\Dto\LocalLoginInputRequest;
 use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Repository\AccountsRepository;
 use App\Repository\PortalRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class GetAccountsCheckLocalLogin
+#[AsMessageHandler]
+class AccountsCheckLocalLoginRequestHandler
 {
     public function __construct(
         private readonly PortalRepository $portalRepository,
@@ -29,7 +21,7 @@ class GetAccountsCheckLocalLogin
         private readonly UserPasswordHasherInterface $passwordHasher
     ) {}
 
-    public function __invoke(Account $data): Account
+    public function __invoke(LocalLoginInputRequest $data): Account
     {
         $portal = $this->portalRepository->findActivePortal($data->getContextId());
 

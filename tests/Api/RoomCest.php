@@ -29,7 +29,7 @@ class RoomCest
             'modificationDate' => 'string',
             'title' => 'string',
             'type' => 'string',
-            'roomDescription' => 'string|null',
+            'roomDescription' => 'string',
         ]);
 
         $I->seeResponseContainsJson([
@@ -55,7 +55,7 @@ class RoomCest
             'modificationDate' => 'string',
             'title' => 'string',
             'type' => 'string',
-            'roomDescription' => 'string|null',
+            'roomDescription' => 'string',
         ]);
 
         $I->seeResponseContainsJson([
@@ -84,7 +84,7 @@ class RoomCest
             'modificationDate' => 'string',
             'title' => 'string',
             'type' => 'string',
-            'roomDescription' => 'string|null',
+            'roomDescription' => 'string',
         ]);
 
         $I->seeResponseContainsJson([
@@ -111,7 +111,7 @@ class RoomCest
             'modificationDate' => 'string',
             'title' => 'string',
             'type' => 'string',
-            'roomDescription' => 'string|null',
+            'roomDescription' => 'string',
         ]);
 
         $I->seeResponseContainsJson([

@@ -1,5 +1,4 @@
 {% import 'utils/macros.html.twig' as macros %}
-{% import 'item/macros.html.twig' as macrosItem %}
 {% import 'discussion/macros.html.twig' as macrosDiscussion %}
 
 <article id="answer_{{ count }}" class="uk-comment">
@@ -101,7 +100,10 @@
                 'cancelEditUrl': path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}),
                 'toggleSelect': '#edit_files_toggle_' ~ article.itemId
             }|json_encode|e('html_attr') }}">
-                {{ macrosItem.files_simple(article) }}
+                {{ component('item_files', {
+                    item: article,
+                    simple: true
+                }) }}
             </div>
         {%- endif %}
     </div>

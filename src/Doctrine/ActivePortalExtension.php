@@ -13,9 +13,10 @@
 
 namespace App\Doctrine;
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
+use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
+use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use ApiPlatform\Metadata\Operation;
 use App\Entity\Portal;
 use Doctrine\ORM\QueryBuilder;
 
@@ -25,8 +26,9 @@ final class ActivePortalExtension implements QueryCollectionExtensionInterface, 
         QueryBuilder $queryBuilder,
         QueryNameGeneratorInterface $queryNameGenerator,
         string $resourceClass,
-        string $operationName = null
-    ) {
+        Operation $operation = null,
+        array $context = []
+    ): void {
         $this->addWhere($queryBuilder, $resourceClass);
     }
 
@@ -35,9 +37,9 @@ final class ActivePortalExtension implements QueryCollectionExtensionInterface, 
         QueryNameGeneratorInterface $queryNameGenerator,
         string $resourceClass,
         array $identifiers,
-        string $operationName = null,
+        Operation $operation = null,
         array $context = []
-    ) {
+    ): void {
         $this->addWhere($queryBuilder, $resourceClass);
     }
 

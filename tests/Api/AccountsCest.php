@@ -18,7 +18,7 @@ class AccountsCest
     {
         $I->amReadOnlyAuthenticated();
         $portal = $I->havePortal('Some portal');
-        $account = $I->haveAccount($portal->getAuthSources()->first(), 'username', 'mypassword');
+        $I->haveAccount($portal->getAuthSources()->first(), 'username', 'mypassword');
 
         $I->sendPostAsJson('/v2/accounts/checkLocalLogin');
         $I->seeResponseCodeIsClientError();
