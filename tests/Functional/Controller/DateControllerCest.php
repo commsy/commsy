@@ -8,7 +8,7 @@ use Tests\Support\Page\Functional\Room;
 use Tests\Support\Step\Functional\Root;
 use Tests\Support\Step\Functional\User;
 
-class AnnouncementControllerCest
+class DateControllerCest
 {
     private int $roomId;
 
@@ -24,21 +24,23 @@ class AnnouncementControllerCest
 
     public function create(FunctionalTester $I)
     {
-        $I->amOnRoute('app_announcement_create', [
+        $I->amOnRoute('app_date_create', [
             'roomId' => $this->roomId,
+            'dateDescription' => 'now',
         ]);
         $I->seeResponseCodeIsSuccessful();
     }
 
     public function detail(FunctionalTester $I)
     {
-        $I->amOnRoute('app_announcement_create', [
+        $I->amOnRoute('app_date_create', [
             'roomId' => $this->roomId,
+            'dateDescription' => 'now',
         ]);
         $I->seeResponseCodeIsSuccessful();
 
-        $itemId = $I->grabFromCurrentUrl('~^/room/\d+/announcement/(\d+)~');
-        $I->amOnRoute('app_announcement_detail', [
+        $itemId = $I->grabFromCurrentUrl('~^/room/\d+/date/(\d+)~');
+        $I->amOnRoute('app_date_detail', [
             'roomId' => $this->roomId,
             'itemId' => $itemId,
         ]);
@@ -47,7 +49,7 @@ class AnnouncementControllerCest
         // Forbidden
         $I->goToLogoutPath();
         $I->stopFollowingRedirects();
-        $I->amOnRoute('app_announcement_detail', [
+        $I->amOnRoute('app_date_detail', [
             'roomId' => $this->roomId,
             'itemId' => $itemId,
         ]);
@@ -56,13 +58,14 @@ class AnnouncementControllerCest
 
     public function edit(FunctionalTester $I)
     {
-        $I->amOnRoute('app_announcement_create', [
+        $I->amOnRoute('app_date_create', [
             'roomId' => $this->roomId,
+            'dateDescription' => 'now',
         ]);
         $I->seeResponseCodeIsSuccessful();
 
-        $itemId = $I->grabFromCurrentUrl('~^/room/\d+/announcement/(\d+)~');
-        $I->amOnRoute('app_announcement_edit', [
+        $itemId = $I->grabFromCurrentUrl('~^/room/\d+/date/(\d+)~');
+        $I->amOnRoute('app_date_edit', [
             'roomId' => $this->roomId,
             'itemId' => $itemId,
         ]);
@@ -71,7 +74,7 @@ class AnnouncementControllerCest
 
     public function feed(FunctionalTester $I)
     {
-        $I->amOnRoute('app_announcement_feed', [
+        $I->amOnRoute('app_date_feed', [
             'roomId' => $this->roomId,
         ]);
         $I->seeResponseCodeIsSuccessful();
@@ -79,7 +82,7 @@ class AnnouncementControllerCest
 
     public function list(FunctionalTester $I)
     {
-        $I->amOnRoute('app_announcement_list', [
+        $I->amOnRoute('app_date_list', [
             'roomId' => $this->roomId,
         ]);
         $I->seeResponseCodeIsSuccessful();

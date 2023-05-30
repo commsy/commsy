@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tests\Functional\Controller;
 
 use Tests\Support\FunctionalTester;
@@ -8,7 +7,7 @@ use Tests\Support\Page\Functional\Room;
 use Tests\Support\Step\Functional\Root;
 use Tests\Support\Step\Functional\User;
 
-class AnnouncementControllerCest
+class UserControllerCest
 {
     private int $roomId;
 
@@ -22,56 +21,33 @@ class AnnouncementControllerCest
         $this->roomId = $U->grabFromCurrentUrl('~^/portal/\d+/room/(\d+)~');
     }
 
-    public function create(FunctionalTester $I)
-    {
-        $I->amOnRoute('app_announcement_create', [
-            'roomId' => $this->roomId,
-        ]);
-        $I->seeResponseCodeIsSuccessful();
-    }
-
     public function detail(FunctionalTester $I)
     {
-        $I->amOnRoute('app_announcement_create', [
+        $I->amOnRoute('app_user_list', [
             'roomId' => $this->roomId,
         ]);
-        $I->seeResponseCodeIsSuccessful();
+        $I->click('ul#user-feed article:first-child .uk-comment-title a');
+        $userId = $I->grabFromCurrentUrl('~^/room/\d+/user/(\d+)~');
 
-        $itemId = $I->grabFromCurrentUrl('~^/room/\d+/announcement/(\d+)~');
-        $I->amOnRoute('app_announcement_detail', [
+        $I->amOnRoute('app_user_detail', [
             'roomId' => $this->roomId,
-            'itemId' => $itemId,
+            'itemId' => $userId,
         ]);
         $I->seeResponseCodeIsSuccessful();
 
         // Forbidden
         $I->goToLogoutPath();
         $I->stopFollowingRedirects();
-        $I->amOnRoute('app_announcement_detail', [
+        $I->amOnRoute('app_user_detail', [
             'roomId' => $this->roomId,
-            'itemId' => $itemId,
+            'itemId' => $userId,
         ]);
         $I->seeResponseCodeIsRedirection();
     }
 
-    public function edit(FunctionalTester $I)
-    {
-        $I->amOnRoute('app_announcement_create', [
-            'roomId' => $this->roomId,
-        ]);
-        $I->seeResponseCodeIsSuccessful();
-
-        $itemId = $I->grabFromCurrentUrl('~^/room/\d+/announcement/(\d+)~');
-        $I->amOnRoute('app_announcement_edit', [
-            'roomId' => $this->roomId,
-            'itemId' => $itemId,
-        ]);
-        $I->seeResponseCodeIsSuccessful();
-    }
-
     public function feed(FunctionalTester $I)
     {
-        $I->amOnRoute('app_announcement_feed', [
+        $I->amOnRoute('app_user_feed', [
             'roomId' => $this->roomId,
         ]);
         $I->seeResponseCodeIsSuccessful();
@@ -79,7 +55,7 @@ class AnnouncementControllerCest
 
     public function list(FunctionalTester $I)
     {
-        $I->amOnRoute('app_announcement_list', [
+        $I->amOnRoute('app_user_list', [
             'roomId' => $this->roomId,
         ]);
         $I->seeResponseCodeIsSuccessful();

@@ -540,10 +540,9 @@ class UserController extends BaseController
         ]);
     }
 
-    /**
-     * @return array
-     */
     #[Route(path: '/room/{roomId}/user/{itemId}', requirements: ['itemId' => '\d+'])]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
+    #[IsGranted('RUBRIC_USER')]
     public function detailAction(
         Request $request,
         TopicService $topicService,
@@ -565,10 +564,7 @@ class UserController extends BaseController
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
-        $isSelf = false;
-        if ($this->legacyEnvironment->getCurrentUserItem()->getItemId() == $itemId) {
-            $isSelf = true;
-        }
+        $isSelf = $this->legacyEnvironment->getCurrentUserItem()->getItemId() == $itemId;
 
         $legacyMarkup->addFiles($this->itemService->getItemFileList($itemId));
 
@@ -577,10 +573,12 @@ class UserController extends BaseController
 
         $moderatorIds = [];
         $userRoomItem = null;
-        if ($roomItem->isProjectRoom() &&
+        if (
+            $roomItem->isProjectRoom() &&
             $roomItem->getShouldCreateUserRooms() &&
             !is_null($infoArray['user']->getLinkedUserroomItem()) &&
-            $this->isGranted('ITEM_ENTER', $infoArray['user']->getLinkedUserroomItemId())) {
+            $this->isGranted('ITEM_ENTER', $infoArray['user']->getLinkedUserroomItemId())
+        ) {
             $userRoomItem = $infoArray['user']->getLinkedUserroomItem();
             $moderators = $infoArray['user']->getLinkedUserroomItem()->getModeratorList();
             foreach ($moderators as $moderator) {

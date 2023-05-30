@@ -8,7 +8,7 @@ use Tests\Support\Page\Functional\Room;
 use Tests\Support\Step\Functional\Root;
 use Tests\Support\Step\Functional\User;
 
-class AnnouncementControllerCest
+class MaterialControllerCest
 {
     private int $roomId;
 
@@ -24,7 +24,7 @@ class AnnouncementControllerCest
 
     public function create(FunctionalTester $I)
     {
-        $I->amOnRoute('app_announcement_create', [
+        $I->amOnRoute('app_material_create', [
             'roomId' => $this->roomId,
         ]);
         $I->seeResponseCodeIsSuccessful();
@@ -32,13 +32,13 @@ class AnnouncementControllerCest
 
     public function detail(FunctionalTester $I)
     {
-        $I->amOnRoute('app_announcement_create', [
+        $I->amOnRoute('app_material_create', [
             'roomId' => $this->roomId,
         ]);
         $I->seeResponseCodeIsSuccessful();
 
-        $itemId = $I->grabFromCurrentUrl('~^/room/\d+/announcement/(\d+)~');
-        $I->amOnRoute('app_announcement_detail', [
+        $itemId = $I->grabFromCurrentUrl('~^/room/\d+/material/(\d+)~');
+        $I->amOnRoute('app_material_detail', [
             'roomId' => $this->roomId,
             'itemId' => $itemId,
         ]);
@@ -47,7 +47,7 @@ class AnnouncementControllerCest
         // Forbidden
         $I->goToLogoutPath();
         $I->stopFollowingRedirects();
-        $I->amOnRoute('app_announcement_detail', [
+        $I->amOnRoute('app_material_detail', [
             'roomId' => $this->roomId,
             'itemId' => $itemId,
         ]);
@@ -56,13 +56,13 @@ class AnnouncementControllerCest
 
     public function edit(FunctionalTester $I)
     {
-        $I->amOnRoute('app_announcement_create', [
+        $I->amOnRoute('app_material_create', [
             'roomId' => $this->roomId,
         ]);
         $I->seeResponseCodeIsSuccessful();
 
-        $itemId = $I->grabFromCurrentUrl('~^/room/\d+/announcement/(\d+)~');
-        $I->amOnRoute('app_announcement_edit', [
+        $itemId = $I->grabFromCurrentUrl('~^/room/\d+/material/(\d+)~');
+        $I->amOnRoute('app_material_edit', [
             'roomId' => $this->roomId,
             'itemId' => $itemId,
         ]);
@@ -71,7 +71,7 @@ class AnnouncementControllerCest
 
     public function feed(FunctionalTester $I)
     {
-        $I->amOnRoute('app_announcement_feed', [
+        $I->amOnRoute('app_material_feed', [
             'roomId' => $this->roomId,
         ]);
         $I->seeResponseCodeIsSuccessful();
@@ -79,7 +79,7 @@ class AnnouncementControllerCest
 
     public function list(FunctionalTester $I)
     {
-        $I->amOnRoute('app_announcement_list', [
+        $I->amOnRoute('app_material_list', [
             'roomId' => $this->roomId,
         ]);
         $I->seeResponseCodeIsSuccessful();
