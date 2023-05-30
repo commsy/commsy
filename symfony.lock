@@ -312,12 +312,12 @@
         "version": "v5.0.10"
     },
     "lexik/jwt-authentication-bundle": {
-        "version": "2.5",
+        "version": "2.18",
         "recipe": {
             "repo": "github.com/symfony/recipes",
-            "branch": "master",
+            "branch": "main",
             "version": "2.5",
-            "ref": "5b2157bcd5778166a5696e42f552ad36529a07a6"
+            "ref": "e9481b233a11ef7e15fe055a2b21fd3ac1aa2bb7"
         },
         "files": [
             "config/packages/lexik_jwt_authentication.yaml"
@@ -924,12 +924,12 @@
         ]
     },
     "symfony/webpack-encore-bundle": {
-        "version": "1.16",
+        "version": "1.17",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "1.10",
-            "ref": "f8fc53f1942f76679e9ee3c25fd44865355707b5"
+            "ref": "eff2e505d4557c967b6710fe06bd947ba555cae5"
         },
         "files": [
             "assets/app.js",
