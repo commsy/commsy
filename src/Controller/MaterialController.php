@@ -469,26 +469,18 @@ class MaterialController extends BaseController
         $read_count = 0;
         $read_since_modification_count = 0;
 
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
+        $id_array = $user_list->getIDArray();
         $readerManager->getLatestReaderByUserIDArray($id_array, $material->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($material->getItemID(),
-                $current_user->getItemID());
+
+        foreach ($user_list as $current_user) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($material->getItemID(), $current_user->getItemID());
             if (!empty($current_reader)) {
+                ++$read_count;
+
                 if ($current_reader['read_date'] >= $material->getModificationDate()) {
-                    ++$read_count;
                     ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
                 }
             }
-            $current_user = $user_list->getNext();
         }
 
         $readerList = [];

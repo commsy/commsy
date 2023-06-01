@@ -695,23 +695,17 @@ class cs_manager
             if (method_exists($item, 'getItemID')) {
                 $item_id = $item->getItemID();
                 if (!empty($item_id)) {
-                    // external viewer
-                    $itemManager = $this->_environment->getItemManager();
-                    $externalViewer = $itemManager->getExternalViewerUserArrayForItem($item_id);
-                    $item->setExternalViewerAccounts($externalViewer);
-
                     // cache
                     if (empty($this->_cache_object[$item_id])) {
                         $this->_cache_object[$item_id] = $item;
                     }
                 }
-            }
-        }
 
-        if ($this->_cache_on && method_exists($item, 'getItemID')) {
-            $item_id = $item->getItemID();
-            if (!empty($item_id) && empty($this->_cache_object[$item_id])) {
-                $this->_cache_object[$item_id] = $item;
+                if ($this->_cache_on) {
+                    if (!empty($item_id) && empty($this->_cache_object[$item_id])) {
+                        $this->_cache_object[$item_id] = $item;
+                    }
+                }
             }
         }
 
