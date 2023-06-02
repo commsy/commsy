@@ -84,7 +84,7 @@
                     {% if showRating %}
                         {{ macros.ratingStatus(material, ratingList) }}
                     {% endif %}
-                    {% if showWorkflow %}
+                    {% if showWorkflow and withTrafficLight %}
                         {{ macros.workflowTrafficLight(material, workflowTitles) }}
                     {% endif %}
                     {{ macros.license(material) }}
