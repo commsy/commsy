@@ -11,44 +11,20 @@
  * file that was distributed with this source code.
  */
 
-function getCurrentDate()
+function getCurrentDate(): string
 {
     return date('Ymd');
 }
 
-// format of date_string = DD.MM
-function getDateFromDateString($date_string)
-{
-    $month = $date_string[3].$date_string[4];
-    $day = $date_string[0].$date_string[1];
-
-    return date('Ymd', mktime(date('H'), date('i'), date('s'), $month, $day, date('Y')));
-}
-
 if (!function_exists('getCurrentDateTimeInMySQL')) {
-    function getCurrentDateTimeInMySQL()
+    function getCurrentDateTimeInMySQL(): string
     {
         return date('Y-m-d H:i:s');
     }
 }
 
-function getCurrentDateTimeMinusMinutesInMySQL($minutes)
-{
-    return date('Y-m-d H:i:s', mktime(date('H'), date('i') - $minutes, date('s'), date('m'), date('d'), date('Y')));
-}
-
-function getCurrentDateTimeMinusSecondsInMySQL($seconds)
-{
-    return date('Y-m-d H:i:s', mktime(date('H'), date('i'), date('s') - $seconds, date('m'), date('d'), date('Y')));
-}
-
-function getCurrentDateTimeMinusHoursInMySQL($hours)
-{
-    return date('Y-m-d H:i:s', mktime(date('H') - $hours, date('i'), date('s'), date('m'), date('d'), date('Y')));
-}
-
 if (!function_exists('getCurrentDateTimeMinusDaysInMySQL')) {
-    function getCurrentDateTimeMinusDaysInMySQL($days)
+    function getCurrentDateTimeMinusDaysInMySQL($days): string
     {
         return date('Y-m-d H:i:s', mktime(date('H'), date('i'), date('s'), date('m'), date('d') - $days, date('Y')));
     }
@@ -61,7 +37,7 @@ function getCurrentDateTimeMinusMonthsInMySQL($months)
 
 function getCurrentDateTimePlusMinutesInMySQL($minutes)
 {
-    return date('Y-m-d H:i:s', mktime(date('H'), date('i') + $minutes, date('s'), date('m'), date('d'), date('Y')));
+    return date('Y-m-d H:i:s', mktime(date('H'), date('i') . $minutes, date('s'), date('m'), date('d'), date('Y')));
 }
 
 if (!function_exists('getCurrentDateTimePlusDaysInMySQL')) {
@@ -240,89 +216,12 @@ function convertTimeFromInput($time)
     return $converted;
 }
 
-function extractDateTimeFromInput($datetime)
+function getDifference(string $timestampLower, string $timestampHigher): int
 {
-    $parts = explode(' ', $datetime);
-    $result = [];
-    $result['Time'] = $parts[1];
-    $result['Date'] = $parts[0];
+    $lower = DateTimeImmutable::createFromFormat('Ymd', $timestampLower);
+    $higher = DateTimeImmutable::createFromFormat('Ymd', $timestampHigher);
 
-    return $result;
-}
-
-function getDifference($timestamp_lower, $timestamp_higher)
-{
-    $day_lower = substr($timestamp_lower, 6, 2);
-    $day_higher = substr($timestamp_higher, 6, 2);
-
-    $month_lower = substr($timestamp_lower, 4, 2);
-    $month_higher = substr($timestamp_higher, 4, 2);
-
-    $year_lower = substr($timestamp_lower, 0, 4);
-    $year_higher = substr($timestamp_higher, 0, 4);
-
-    $from_date = mktime(0, 0, 0, $month_lower, $day_lower, $year_lower);
-    $till_date = mktime(0, 0, 0, $month_higher, $day_higher, $year_higher);
-    $begtimestamp = '';
-
-    for ($ts = $from_date; $ts <= $till_date; $ts += 86400) {
-        if ('' == $begtimestamp) {
-            $begtimestamp = $ts; // this line freezes first timestamp
-        }
-    }
-    $endtimestamp = $ts; // this line freezes the last timestamp
-
-    $totaldays = (($endtimestamp - $begtimestamp) / 86400);
-
-    return $totaldays;
-}
-
-function getTimeDifference($timestamp_lower, $timestamp_higher)
-{
-    $hour_lower = substr($timestamp_lower, 0, 2);
-    $hour_higher = substr($timestamp_higher, 0, 2);
-
-    $minute_lower = substr($timestamp_lower, 2, 2);
-    $minute_higher = substr($timestamp_higher, 2, 2);
-
-    $second_lower = substr($timestamp_lower, 4, 2);
-    $second_higher = substr($timestamp_higher, 4, 2);
-
-    $from_time = mktime($hour_lower, $minute_lower, $second_lower, 1, 1, 1990);
-    $till_time = mktime($hour_higher, $minute_higher, $second_higher, 1, 1, 1990);
-
-    /*$begtimestamp = "";
-
-    for($ts = $from_time; $ts <= $till_time; $ts+=3600) {
-       if ($begtimestamp=="") {
-          $begtimestamp=$ts; //this line freezes first timestamp
-       }
-    }
-    $endtimestamp=$ts; //this line freezes the last timestamp
-
-    $totalhours = (($endtimestamp-$begtimestamp) / 3600);*/
-    $totalhours = round(($till_time - $from_time) / 3600);
-
-    return $totalhours;
-}
-
-function getSecondDifference($datetime_lower, $datetime_higher)
-{
-    $hour_lower = substr($datetime_lower, 11, 2);
-    $hour_higher = substr($datetime_higher, 11, 2);
-
-    $minute_lower = substr($datetime_lower, 14, 2);
-    $minute_higher = substr($datetime_higher, 14, 2);
-
-    $second_lower = substr($datetime_lower, 17, 2);
-    $second_higher = substr($datetime_higher, 17, 2);
-
-    $from_time = mktime($hour_lower, $minute_lower, $second_lower, 1, 1, 1990);
-    $till_time = mktime($hour_higher, $minute_higher, $second_higher, 1, 1, 1990);
-
-    $totalseconds = round($till_time - $from_time);
-
-    return $totalseconds;
+    return $lower->diff($higher)->format('%a');
 }
 
 // ####
