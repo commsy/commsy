@@ -387,7 +387,7 @@ class MaterialController extends BaseController
         int $itemId
     ): Response {
         if ($request->request->has('payload')) {
-            $payload = $request->request->get('payload');
+            $payload = $request->request->all('payload');
 
             if (isset($payload['read']) && $payload['read']) {
                 $read = $payload['read'];

@@ -940,7 +940,7 @@ class TodoController extends BaseController
             throw new Exception('payload information not provided');
         }
 
-        $payload = $request->request->get('payload');
+        $payload = $request->request->all('payload');
         if (!isset($payload['status'])) {
             throw new Exception('new status string not provided');
         }
@@ -955,12 +955,12 @@ class TodoController extends BaseController
     /**
      * @throws Exception
      */
-    #[Route(path: '/room/{roomId}/todo/xhr/changesatatus/{itemId}', condition: 'request.isXmlHttpRequest()')]
+    #[Route(path: '/room/{roomId}/todo/xhr/changestatus/{itemId}', condition: 'request.isXmlHttpRequest()')]
     public function xhrStatusFromDetailAction($roomId, $itemId, Request $request, TodoStatusAction $action): Response
     {
         $room = $this->roomService->getRoomItem($roomId);
         $items = [$this->todoService->getTodo($itemId)];
-        $payload = $request->request->get('payload');
+        $payload = $request->request->all('payload');
         if (!isset($payload['status'])) {
             throw new Exception('new status string not provided');
         }

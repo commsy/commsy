@@ -1835,7 +1835,7 @@ class DateController extends BaseController
 
         $recurring = false;
         if ($request->request->has('payload')) {
-            $payload = $request->request->get('payload');
+            $payload = $request->request->all('payload');
 
             $recurring = isset($payload['recurring']) ?? false;
         }

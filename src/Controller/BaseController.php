@@ -224,10 +224,10 @@ abstract class BaseController extends AbstractController
                 throw new Exception('select all is not set, but no "positiveItemIds" were provided');
             }
 
-            $positiveItemIds = $request->request->get('positiveItemIds');
+            $positiveItemIds = $request->request->all('positiveItemIds');
         } else {
             if ($request->request->has('negativeItemIds')) {
-                $negativeItemIds = $request->request->get('negativeItemIds');
+                $negativeItemIds = $request->request->all('negativeItemIds');
             }
         }
 
