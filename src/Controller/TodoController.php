@@ -132,7 +132,7 @@ class TodoController extends BaseController
         // or from query paramters (AJAX)
         $todoFilter = $request->get('todoFilter');
         if (!$todoFilter) {
-            $todoFilter = $request->query->get('todo_filter');
+            $todoFilter = $request->query->all('todo_filter');
         }
 
         $roomItem = $this->roomService->getRoomItem($roomId);
@@ -986,7 +986,7 @@ class TodoController extends BaseController
     ) {
         if ($selectAll) {
             if ($request->query->has('todo_filter')) {
-                $currentFilter = $request->query->get('todo_filter');
+                $currentFilter = $request->query->all('todo_filter');
                 $filterForm = $this->createFilterForm($roomItem);
 
                 // manually bind values from the request

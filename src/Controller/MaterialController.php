@@ -118,7 +118,7 @@ class MaterialController extends BaseController
         // or from query paramters (AJAX)
         $materialFilter = $request->get('materialFilter');
         if (!$materialFilter) {
-            $materialFilter = $request->query->get('material_filter');
+            $materialFilter = $request->query->all('material_filter');
         }
 
         $roomItem = $this->getRoom($roomId);
@@ -1480,7 +1480,7 @@ class MaterialController extends BaseController
 
         if ($selectAll) {
             if ($request->query->has('material_filter')) {
-                $currentFilter = $request->query->get('material_filter');
+                $currentFilter = $request->query->all('material_filter');
                 $filterForm = $this->createFilterForm($roomItem);
 
                 // manually bind values from the request

@@ -6,7 +6,7 @@
         {{ render(controller(
             'App\\Controller\\MarkedController::feedAction', {
                 'roomId': roomId,
-                'markFilter': app.request.query.get('marked_filter')
+                'markFilter': app.request.query.all('marked_filter')
             }
         ))}}
     </ul>

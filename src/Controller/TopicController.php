@@ -106,7 +106,7 @@ class TopicController extends BaseController
         // or from query paramters (AJAX)
         $topicFilter = $request->get('topicFilter');
         if (!$topicFilter) {
-            $topicFilter = $request->query->get('topic_filter');
+            $topicFilter = $request->query->all('topic_filter');
         }
 
         $roomItem = $this->getRoom($roomId);
@@ -863,7 +863,7 @@ class TopicController extends BaseController
     ) {
         if ($selectAll) {
             if ($request->query->has('topic_filter')) {
-                $currentFilter = $request->query->get('topic_filter');
+                $currentFilter = $request->query->all('topic_filter');
                 $filterForm = $this->createFilterForm($roomItem);
 
                 // manually bind values from the request

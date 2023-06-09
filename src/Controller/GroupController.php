@@ -188,7 +188,7 @@ class GroupController extends BaseController
         // or from query paramters (AJAX)
         $groupFilter = $request->get('groupFilter');
         if (!$groupFilter) {
-            $groupFilter = $request->query->get('group_filter');
+            $groupFilter = $request->query->all('group_filter');
         }
 
         $roomManager = $this->legacyEnvironment->getRoomManager();
@@ -1405,7 +1405,7 @@ class GroupController extends BaseController
         // get the user service
         if ($selectAll) {
             if ($request->query->has('group_filter')) {
-                $currentFilter = $request->query->get('group_filter');
+                $currentFilter = $request->query->all('group_filter');
                 $filterForm = $this->createFilterForm($roomItem);
 
                 // manually bind values from the request

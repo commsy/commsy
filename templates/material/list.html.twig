@@ -5,7 +5,7 @@
         {{ render(controller(
             'App\\Controller\\MaterialController::feedAction', {
                 'roomId': roomId,
-                'materialFilter': app.request.query.get('material_filter')
+                'materialFilter': app.request.query.all('material_filter')
             }
         ))}}
     </ul>
@@ -67,7 +67,7 @@
 
                 {# print #}
                 <li>
-                    <a href="{{ path('app_material_printlist', {'roomId': roomId,'material_filter':app.request.query.get('material_filter')}) }}" target="_blank" id="print">
+                    <a href="{{ path('app_material_printlist', {'roomId': roomId,'material_filter':app.request.query.all('material_filter')}) }}" target="_blank" id="print">
                         <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                     </a>
                 </li>
