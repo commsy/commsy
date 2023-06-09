@@ -5,7 +5,7 @@
         {{ render(controller(
             'App\\Controller\\TodoController::feedAction', {
                 'roomId': roomId,
-                'todoFilter': app.request.query.get('todo_filter')
+                'todoFilter': app.request.query.all('todo_filter')
             }
         ))}}
     </ul>

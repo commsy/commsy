@@ -6,7 +6,7 @@
         {{ render(controller(
             'App\\Controller\\GroupController::feedAction', {
                 'roomId': roomId,
-                'groupFilter': app.request.query.get('group_filter')
+                'groupFilter': app.request.query.all('group_filter')
              }
         ))}}
     </div>
