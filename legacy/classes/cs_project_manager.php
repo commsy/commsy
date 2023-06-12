@@ -353,12 +353,12 @@ class cs_project_manager extends cs_room2_manager
       }
   }
 
-    public function getRelatedProjectRooms($userItem, $contextId)
+    public function getRelatedProjectRooms($userItem, $contextId): cs_list
     {
         return $this->getRelatedContextListForUserInt($userItem->getUserID(), $userItem->getAuthSource(), $contextId);
     }
 
-    public function getRelatedProjectListForUser(cs_user_item $user, $contextId = null, bool $withExtras = true)
+    public function getRelatedProjectListForUser(cs_user_item $user, $contextId = null, bool $withExtras = true): cs_list
     {
         if (!$contextId) {
             $contextId = $this->_environment->getCurrentPortalID();
@@ -367,7 +367,7 @@ class cs_project_manager extends cs_room2_manager
         return $this->getRelatedContextListForUserInt($user->getUserID(), $user->getAuthSource(), $contextId, false, false, $withExtras);
     }
 
-   public function getUserRelatedProjectListForUser($user_item, bool $withExtras = true)
+   public function getUserRelatedProjectListForUser($user_item, bool $withExtras = true): cs_list
    {
        return $this->getRelatedContextListForUserInt($user_item->getUserID(), $user_item->getAuthSource(), $this->_environment->getCurrentPortalID(), false, true, $withExtras);
    }
@@ -377,7 +377,7 @@ class cs_project_manager extends cs_room2_manager
        return $this->_getRelatedContextListForUserSortByTime($user_item->getUserID(), $user_item->getAuthSource(), $this->_environment->getCurrentPortalID());
    }
 
-   public function getRelatedProjectListForUserForMyArea($user_item)
+   public function getRelatedProjectListForUserForMyArea($user_item): cs_list
    {
        return $this->getRelatedContextListForUserInt($user_item->getUserID(), $user_item->getAuthSource(), $this->_environment->getCurrentPortalID(), true);
    }

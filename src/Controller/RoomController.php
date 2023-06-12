@@ -74,6 +74,7 @@ class RoomController extends AbstractController
         LegacyMarkup $legacyMarkup,
         LegacyEnvironment $legacyEnvironment,
         ThemeRepositoryInterface $themeRepository,
+        UserRepository $userRepository,
         int $roomId
     ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -194,7 +195,7 @@ class RoomController extends AbstractController
             }
         }
 
-        $userTasks = $this->getDoctrine()->getRepository(User::class)->getConfirmableUserByContextId($roomId)->getQuery()->getResult();
+        $userTasks = $userRepository->getConfirmableUserByContextId($roomId)->getQuery()->getResult();
 
         return $this->render('room/home.html.twig', [
             'homeInformationEntry' => $homeInformationEntry,
