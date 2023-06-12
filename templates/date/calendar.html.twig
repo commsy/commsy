@@ -54,7 +54,7 @@
 
                                         {# print #}
                                         <li>
-                                            <a href="{{ path('app_date_printlist', {'roomId': roomId,'date_filter':app.request.query.get('date_filter')}) }}" target="_blank" id="print">
+                                            <a href="{{ path('app_date_printlist', {'roomId': roomId,'date_filter':app.request.query.all('date_filter')}) }}" target="_blank" id="print">
                                                 <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                                             </a>
                                         </li>
@@ -135,7 +135,7 @@
         </div>
 
         <div id='calendar' class="uk-margin-top"
-             data-events-url='{{ path('app_date_events', {'roomId': roomId, 'dateFilter': app.request.query.get('date_filter')}) }}'
+             data-events-url='{{ path('app_date_events', {'roomId': roomId, 'dateFilter': app.request.query.all('date_filter')}) }}'
              data-events-list-url='{{ path('app_date_list', {'roomId': '<roomId>'}) }}'
              data-events-create-url='{{ path('app_date_create', {'roomId': roomId}) }}'
              data-confirm-change='{{ 'confirm change'|trans({},"date")}}'

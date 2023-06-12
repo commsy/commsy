@@ -118,7 +118,7 @@ class MaterialController extends BaseController
         // or from query paramters (AJAX)
         $materialFilter = $request->get('materialFilter');
         if (!$materialFilter) {
-            $materialFilter = $request->query->get('material_filter');
+            $materialFilter = $request->query->all('material_filter');
         }
 
         $roomItem = $this->getRoom($roomId);
@@ -169,12 +169,22 @@ class MaterialController extends BaseController
             $ratingList = $this->assessmentService->getListAverageRatings($itemIds);
         }
 
-        return $this->render('material/feed.html.twig', ['roomId' => $roomId, 'materials' => $materials, 'readerList' => $readerList, 'showRating' => $current_context->isAssessmentActive(), 'showWorkflow' => $current_context->withWorkflow(), 'ratingList' => $ratingList, 'allowedActions' => $allowedActions, 'workflowTitles' => [
-            '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
-            '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
-            '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
-            '3_none' => '',
-        ]]);
+        return $this->render('material/feed.html.twig', [
+            'roomId' => $roomId,
+            'materials' => $materials,
+            'readerList' => $readerList,
+            'showRating' => $current_context->isAssessmentActive(),
+            'showWorkflow' => $current_context->withWorkflow(),
+            'withTrafficLight' => $roomItem->withWorkflowTrafficLight(),
+            'ratingList' => $ratingList,
+            'allowedActions' => $allowedActions,
+            'workflowTitles' => [
+                '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
+                '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
+                '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
+                '3_none' => '',
+            ]
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/material')]
@@ -377,7 +387,7 @@ class MaterialController extends BaseController
         int $itemId
     ): Response {
         if ($request->request->has('payload')) {
-            $payload = $request->request->get('payload');
+            $payload = $request->request->all('payload');
 
             if (isset($payload['read']) && $payload['read']) {
                 $read = $payload['read'];
@@ -1023,12 +1033,23 @@ class MaterialController extends BaseController
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
-        return $this->render('material/save.html.twig', ['roomId' => $roomId, 'item' => $tempItem, 'modifierList' => $modifierList, 'userCount' => $infoArray['userCount'], 'readCount' => $infoArray['readCount'], 'readSinceModificationCount' => $infoArray['readSinceModificationCount'], 'showRating' => $infoArray['showRating'], 'showWorkflow' => $infoArray['showWorkflow'], 'workflowTitles' => [
-            '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
-            '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
-            '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
-            '3_none' => '',
-        ]]);
+        return $this->render('material/save.html.twig', [
+            'roomId' => $roomId,
+            'item' => $tempItem,
+            'modifierList' => $modifierList,
+            'userCount' => $infoArray['userCount'],
+            'readCount' => $infoArray['readCount'],
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'showRating' => $infoArray['showRating'],
+            'showWorkflow' => $infoArray['showWorkflow'],
+            'withTrafficLight' => $roomItem->withWorkflowTrafficLight(),
+            'workflowTitles' => [
+                '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
+                '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
+                '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
+                '3_none' => '',
+            ]
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/print')]
@@ -1459,7 +1480,7 @@ class MaterialController extends BaseController
 
         if ($selectAll) {
             if ($request->query->has('material_filter')) {
-                $currentFilter = $request->query->get('material_filter');
+                $currentFilter = $request->query->all('material_filter');
                 $filterForm = $this->createFilterForm($roomItem);
 
                 // manually bind values from the request

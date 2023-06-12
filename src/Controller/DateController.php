@@ -89,7 +89,7 @@ class DateController extends BaseController
         // or from query paramters (AJAX)
         $dateFilter = $request->get('dateFilter');
         if (!$dateFilter) {
-            $dateFilter = $request->query->get('date_filter');
+            $dateFilter = $request->query->all('date_filter');
         }
 
         if ($dateFilter) {
@@ -511,7 +511,7 @@ class DateController extends BaseController
         // or from query paramters (AJAX)
         $dateFilter = $request->get('dateFilter');
         if (!$dateFilter) {
-            $dateFilter = $request->query->get('date_filter');
+            $dateFilter = $request->query->all('date_filter');
         }
 
         $startDate = $request->get('start');
@@ -1835,7 +1835,7 @@ class DateController extends BaseController
 
         $recurring = false;
         if ($request->request->has('payload')) {
-            $payload = $request->request->get('payload');
+            $payload = $request->request->all('payload');
 
             $recurring = isset($payload['recurring']) ?? false;
         }
@@ -1888,7 +1888,7 @@ class DateController extends BaseController
     ) {
         if ($selectAll) {
             if ($request->query->has('date_filter')) {
-                $currentFilter = $request->query->get('date_filter');
+                $currentFilter = $request->query->all('date_filter');
                 $filterForm = $this->createFilterForm($roomItem);
 
                 // manually bind values from the request

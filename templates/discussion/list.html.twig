@@ -6,7 +6,7 @@
         {{ render(controller(
             'App\\Controller\\DiscussionController::feed', {
                 'roomId': roomId,
-                'discussionFilter': app.request.query.get('discussion_filter')
+                'discussionFilter': app.request.query.all('discussion_filter')
             }
         ))}}
     </ul>
@@ -60,7 +60,7 @@
 
                 {# print #}
                 <li>
-                    <a href="{{ path('app_discussion_printlist', {'roomId': roomId,'discussion_filter':app.request.query.get('discussion_filter')}) }}" target="_blank" id="print">
+                    <a href="{{ path('app_discussion_printlist', {'roomId': roomId,'discussion_filter':app.request.query.all('discussion_filter')}) }}" target="_blank" id="print">
                         <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                     </a>
                 </li>

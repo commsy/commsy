@@ -132,7 +132,7 @@ class TodoController extends BaseController
         // or from query paramters (AJAX)
         $todoFilter = $request->get('todoFilter');
         if (!$todoFilter) {
-            $todoFilter = $request->query->get('todo_filter');
+            $todoFilter = $request->query->all('todo_filter');
         }
 
         $roomItem = $this->roomService->getRoomItem($roomId);
@@ -940,7 +940,7 @@ class TodoController extends BaseController
             throw new Exception('payload information not provided');
         }
 
-        $payload = $request->request->get('payload');
+        $payload = $request->request->all('payload');
         if (!isset($payload['status'])) {
             throw new Exception('new status string not provided');
         }
@@ -955,12 +955,12 @@ class TodoController extends BaseController
     /**
      * @throws Exception
      */
-    #[Route(path: '/room/{roomId}/todo/xhr/changesatatus/{itemId}', condition: 'request.isXmlHttpRequest()')]
+    #[Route(path: '/room/{roomId}/todo/xhr/changestatus/{itemId}', condition: 'request.isXmlHttpRequest()')]
     public function xhrStatusFromDetailAction($roomId, $itemId, Request $request, TodoStatusAction $action): Response
     {
         $room = $this->roomService->getRoomItem($roomId);
         $items = [$this->todoService->getTodo($itemId)];
-        $payload = $request->request->get('payload');
+        $payload = $request->request->all('payload');
         if (!isset($payload['status'])) {
             throw new Exception('new status string not provided');
         }
@@ -986,7 +986,7 @@ class TodoController extends BaseController
     ) {
         if ($selectAll) {
             if ($request->query->has('todo_filter')) {
-                $currentFilter = $request->query->get('todo_filter');
+                $currentFilter = $request->query->all('todo_filter');
                 $filterForm = $this->createFilterForm($roomItem);
 
                 // manually bind values from the request

@@ -104,7 +104,7 @@ class AnnouncementController extends BaseController
         // or from query paramters (AJAX)
         $announcementFilter = $request->get('announcementFilter');
         if (!$announcementFilter) {
-            $announcementFilter = $request->query->get('announcement_filter');
+            $announcementFilter = $request->query->all('announcement_filter');
         }
 
         /** @var cs_room_item $roomItem */
@@ -728,7 +728,7 @@ class AnnouncementController extends BaseController
     ) {
         if ($selectAll) {
             if ($request->query->has('announcement_filter')) {
-                $currentFilter = $request->query->get('announcement_filter');
+                $currentFilter = $request->query->all('announcement_filter');
                 $filterForm = $this->createFilterForm($roomItem);
 
                 // manually bind values from the request
