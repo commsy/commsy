@@ -126,7 +126,7 @@ abstract class BaseController extends AbstractController
         $categories = $this->labelService->getCategories($roomId, true);
 
         // NOTE: CategorizeAction.ts extracts the chosen choices and XHRAction->execute() stores them as request 'payload'
-        $payload = $request->request->get('payload', []);
+        $payload = $request->request->all('payload', []);
         $choices = $payload['choices'] ?? [];
 
         // provide a form with custom form options that are required for this action
@@ -169,7 +169,7 @@ abstract class BaseController extends AbstractController
         $hashtags = $this->labelService->getHashtags($roomId);
 
         // NOTE: HashtagAction.ts extracts the chosen choices and XHRAction->execute() stores them as request 'payload'
-        $payload = $request->request->get('payload', []);
+        $payload = $request->request->all('payload', []);
         $choices = $payload['choices'] ?? [];
 
         // provide a form with custom form options that are required for this action
@@ -224,10 +224,10 @@ abstract class BaseController extends AbstractController
                 throw new Exception('select all is not set, but no "positiveItemIds" were provided');
             }
 
-            $positiveItemIds = $request->request->get('positiveItemIds');
+            $positiveItemIds = $request->request->all('positiveItemIds');
         } else {
             if ($request->request->has('negativeItemIds')) {
-                $negativeItemIds = $request->request->get('negativeItemIds');
+                $negativeItemIds = $request->request->all('negativeItemIds');
             }
         }
 

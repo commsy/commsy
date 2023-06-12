@@ -9,7 +9,7 @@
         {{ render(controller(
             'App\\Controller\\RoomController::feedAllAction', {
                 'roomId': roomId,
-                'roomFilter': app.request.query.get('room_filter')
+                'roomFilter': app.request.query.all('room_filter')
             }
         ))}}
     </ul>

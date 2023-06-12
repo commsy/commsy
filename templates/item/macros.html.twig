@@ -341,28 +341,31 @@
                 </div>
             </div>
         {% endif %}
-       {% if not workflowGroupArray is empty %}
-            <div class="uk-width-1-2">
-                <strong>{{ 'workflow marked as read by groups'|trans({}, "material") }}:</strong><br/>
-                {% set counter = 1 %}
-                {% for workflowGroup in workflowGroupArray %}
-                    <a href="{{ path('app_group_detail', {'roomId': item.contextId, 'itemId': workflowGroup.iid}) }}">{{workflowGroup.title|decodeHtmlEntity}}</a> ({{workflowGroup.userCount}} {{ 'of'|trans({}, "room") }} {{workflowGroup.userCountComplete}})
-                    {% if counter != workflowGroupArray|length %}, {% endif %}
-                    {% set counter = counter + 1 %}
-                {% endfor %}
-            </div>
+        {% set workflowReaderShowTo = item.contextItem.getWorkflowReaderShowTo %}
+        {% if workflowReaderShowTo is same as('all') or (workflowReaderShowTo is same as('moderator') and is_granted('MODERATOR')) %}
+            {% if not workflowGroupArray is empty %}
+                <div class="uk-width-1-2">
+                    <strong>{{ 'workflow marked as read by groups'|trans({}, "material") }}:</strong><br/>
+                    {% set counter = 1 %}
+                    {% for workflowGroup in workflowGroupArray %}
+                        <a href="{{ path('app_group_detail', {'roomId': item.contextId, 'itemId': workflowGroup.iid}) }}">{{ workflowGroup.title|decodeHtmlEntity }}</a> ({{ workflowGroup.userCount }} {{ 'of'|trans({}, "room") }} {{ workflowGroup.userCountComplete }})
+                        {% if counter != workflowGroupArray|length %}, {% endif %}
+                        {% set counter = counter + 1 %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if not workflowUserArray is empty %}
+                <div class="uk-width-1-2">
+                    <strong>{{ 'workflow marked as read by users'|trans({}, "material") }}:</strong><br/>
+                    {% set counter = 1 %}
+                    {% for workflowUser in workflowUserArray %}
+                        <a href="{{ path('app_user_detail', {'roomId': item.contextId, 'itemId': workflowUser.iid}) }}">{{ workflowUser.name }}</a>
+                        {% if counter != workflowUserArray|length %}, {% endif %}
+                        {% set counter = counter + 1 %}
+                    {% endfor %}
+                </div>
+            {% endif %}
         {% endif %}
-        {% if not workflowUserArray is empty %}
-            <div class="uk-width-1-2">
-               <strong>{{ 'workflow marked as read by users'|trans({}, "material") }}:</strong><br/>
-               {% set counter = 1 %}
-               {% for workflowUser in workflowUserArray %}
-                   <a href="{{ path('app_user_detail', {'roomId': item.contextId, 'itemId': workflowUser.iid}) }}">{{workflowUser.name}}</a>
-                    {% if counter != workflowUserArray|length %}, {% endif %}
-                    {% set counter = counter + 1 %}
-               {% endfor %}
-           </div>
-       {% endif %}
      </div>
    {% endset %}
 

@@ -55,7 +55,7 @@ class MarkedController extends BaseController
         // or from query parameters (AJAX)
         $markedFilter = $request->get('markFilter');
         if (!$markedFilter) {
-            $markedFilter = $request->query->get('marked_filter');
+            $markedFilter = $request->query->all('marked_filter');
         }
 
         $roomItem = $this->loadRoom($roomId);
@@ -221,7 +221,7 @@ class MarkedController extends BaseController
     ) {
         if ($selectAll) {
             if ($request->query->has('marked_filter')) {
-                $currentFilter = $request->query->get('marked_filter');
+                $currentFilter = $request->query->all('marked_filter');
                 $filterForm = $this->createFilterForm($roomItem);
 
                 // manually bind values from the request

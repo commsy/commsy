@@ -64,7 +64,7 @@ class StepController extends BaseController
     /**
      * @throws Exception
      */
-    #[Route(path: '/room/{roomId}/step/xhr/changesatatus/{itemId}', condition: 'request.isXmlHttpRequest()')]
+    #[Route(path: '/room/{roomId}/step/xhr/changestatus/{itemId}', condition: 'request.isXmlHttpRequest()')]
     public function xhrChangeStatusAction($roomId, $itemId, Request $request, TodoService $todoService): Response
     {
         $items = null;
@@ -72,7 +72,7 @@ class StepController extends BaseController
         $roomToDoItems = $todoService->getTodosById($roomId, []);
 
         foreach ($roomToDoItems as $roomToDoItem) {
-            $steps = $roomToDoItem->getStepItemList()->_data;
+            $steps = $roomToDoItem->getStepItemList();
             foreach ($steps as $step) {
                 if (0 == strcmp((string) $step->getItemID(), (string) $itemId)) {
                     $items = [$roomToDoItem];
@@ -81,7 +81,7 @@ class StepController extends BaseController
             }
         }
 
-        $payload = $request->request->get('payload');
+        $payload = $request->request->all('payload');
         if (!isset($payload['status'])) {
             throw new Exception('new status string not provided');
         }

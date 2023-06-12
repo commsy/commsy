@@ -7,7 +7,7 @@
             {{ render(controller(
                 'App\\Controller\\UserController::feedAction', {
                     'roomId': roomId,
-                    'userFilter': app.request.query.get('user_filter')
+                    'userFilter': app.request.query.all('user_filter')
                 }
             )) }}
         </ul>
@@ -20,7 +20,7 @@
             {{ render(controller(
                 'App\\Controller\\UserController::gridAction', {
                     'roomId': roomId,
-                    'userFilter': app.request.query.get('user_filter')
+                    'userFilter': app.request.query.all('user_filter')
                 }
             )) }}
         </div>
@@ -67,7 +67,7 @@
         {% block dropdown %}
             <ul class="uk-nav uk-nav-dropdown uk-list-striped">
                 <li>
-                    <a href="{{ path('app_user_printlist', {'roomId': roomId,'user_filter':app.request.query.get('user_filter')}) }}" target="_blank" id="print">
+                    <a href="{{ path('app_user_printlist', {'roomId': roomId,'user_filter':app.request.query.all('user_filter')}) }}" target="_blank" id="print">
                         <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                     </a>
                 </li>

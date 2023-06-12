@@ -71,7 +71,7 @@ class DiscussionController extends BaseController
         // or from query paramters (AJAX)
         $discussionFilter = $request->get('discussionFilter');
         if (!$discussionFilter) {
-            $discussionFilter = $request->query->get('discussion_filter');
+            $discussionFilter = $request->query->all('discussion_filter');
         }
 
         $roomItem = $this->getRoom($roomId);
@@ -1113,7 +1113,7 @@ class DiscussionController extends BaseController
         // get the discussion manager service
         if ($selectAll) {
             if ($request->query->has('discussion_filter')) {
-                $currentFilter = $request->query->get('discussion_filter');
+                $currentFilter = $request->query->all('discussion_filter');
                 $filterForm = $this->createFilterForm($roomItem);
 
                 // manually bind values from the request

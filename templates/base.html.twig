@@ -72,7 +72,7 @@
                                 {{ render(controller(
                                     'App\\Controller\\SearchController::searchFormAction', {
                                         'roomId': requestContextId,
-                                        'requestData': app.request.query.get('search') ?? app.request.query.get('search_filter')
+                                        'requestData': app.request.query.all('search') ?? app.request.query.all('search_filter')
                                     }
                                 )) }}
                             {% endif %}

@@ -403,7 +403,7 @@ class RoomController extends AbstractController
 
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
-        $roomFilter = $request->attributes->get('roomFilter') ?: $request->query->get('room_filter');
+        $roomFilter = $request->attributes->get('roomFilter') ?: $request->query->all('room_filter');
 
         // Prepare query builder for active and archived rooms
         $activeRoomQueryBuilder = $roomRepository->getMainRoomQueryBuilder($portal->getId(), $roomTypes, $sort);

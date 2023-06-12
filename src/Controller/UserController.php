@@ -1192,7 +1192,7 @@ class UserController extends BaseController
         // or from query paramters (AJAX)
         $userFilter = $request->get('userFilter');
         if (!$userFilter) {
-            $userFilter = $request->query->get('user_filter');
+            $userFilter = $request->query->all('user_filter');
         }
 
         // $this->userManager->get()->to_array()
@@ -1519,7 +1519,7 @@ class UserController extends BaseController
     ) {
         if ($selectAll) {
             if ($request->query->has('user_filter')) {
-                $currentFilter = $request->query->get('user_filter');
+                $currentFilter = $request->query->all('user_filter');
                 $filterForm = $this->createFilterForm($roomItem);
 
                 // manually bind values from the request
