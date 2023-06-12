@@ -153,6 +153,14 @@
                         {{ macrosItem.itemDescription('description', discussion, true, discussion.description, draft) }}
                     </div>
 
+                    {# files #}
+                    <div id="files{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{{ {
+                        'editUrl': path('app_upload_uploadform', {'roomId': discussion.contextId, 'itemId': discussion.itemId}),
+                        'cancelEditUrl': path('app_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId})
+                    }|json_encode|e('html_attr') }}">
+                        {{ macrosItem.files(discussion, draft) }}
+                    </div>
+
                     {% if not draft %}
                         {# links #}
                         <div id="links{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }">
