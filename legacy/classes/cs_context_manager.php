@@ -215,7 +215,13 @@ class cs_context_manager extends cs_manager
    }
 
     /**
-     * @return cs_list|mixed
+     * @param $user_id
+     * @param $auth_source
+     * @param $context_id
+     * @param bool $grouproom
+     * @param bool $only_user
+     * @param bool $withExtras
+     * @return cs_list
      */
     public function getRelatedContextListForUserInt(
         $user_id,
@@ -224,7 +230,7 @@ class cs_context_manager extends cs_manager
         bool $grouproom = false,
         bool $only_user = false,
         bool $withExtras = true
-    ) {
+    ): cs_list {
         $list = new cs_list();
 
         if ('guest' === $user_id && CS_COMMUNITY_TYPE !== $this->_room_type) {

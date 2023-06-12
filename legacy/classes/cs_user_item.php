@@ -1223,14 +1223,14 @@ class cs_user_item extends cs_item
         return $room_manager->getItem($this->getRoomID());
     }
 
-    public function getUserRelatedCommunityList(bool $withExtras = true)
+    public function getUserRelatedCommunityList(bool $withExtras = true): cs_list
     {
         $manager = $this->_environment->getCommunityManager();
 
         return $manager->getUserRelatedCommunityListForUser($this, $withExtras);
     }
 
-    public function getRelatedCommunityList()
+    public function getRelatedCommunityList(): cs_list
     {
         $manager = $this->_environment->getCommunityManager();
 
@@ -1251,7 +1251,7 @@ class cs_user_item extends cs_item
         return $manager->getUserRoomsUserIsMemberOf($this, $withExtras);
     }
 
-    public function getUserRelatedProjectList(bool $withExtras = true)
+    public function getUserRelatedProjectList(bool $withExtras = true): cs_list
     {
         $manager = $this->_environment->getProjectManager();
 
@@ -1273,20 +1273,16 @@ class cs_user_item extends cs_item
         return $list;
     }
 
-    public function getUserRelatedGroupList()
+    public function getUserRelatedGroupList(): cs_list
     {
         $manager = $this->_environment->getGrouproomManager();
-        $list = $manager->getUserRelatedGroupListForUser($this);
-
-        return $list;
+        return $manager->getUserRelatedGroupListForUser($this);
     }
 
     public function getRelatedGroupList()
     {
         $manager = $this->_environment->getGrouproomManager();
-        $list = $manager->getRelatedGroupListForUser($this);
-
-        return $list;
+        return $manager->getRelatedGroupListForUser($this);
     }
 
     public function getRelatedProjectListSortByTime()
