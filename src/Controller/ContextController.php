@@ -21,7 +21,6 @@ use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
 use App\Utils\GroupService;
 use App\Utils\UserService;
-use cs_list;
 use cs_user_item;
 use DateTimeImmutable;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -31,7 +30,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -64,7 +62,7 @@ class ContextController extends AbstractController
 
         $currentUserItem = $legacyEnvironment->getCurrentUserItem();
         if ($currentUserItem->isReallyGuest()) {
-            throw new AccessDeniedException();
+            throw $this->createAccessDeniedException();
         }
 
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -130,7 +128,7 @@ class ContextController extends AbstractController
                 }
 
                 if ($roomItem->checkNewMembersAlways() ||
-                    ($roomItem->checkNewMembersWithCode() && !isset($formData['code']))) {
+                    ($roomItem->checkNewMembersWithCode() && $form->get('request')->isClicked())) {
                     // The user either needs to ask for access or provided no code
                     $newUser->request();
                     $isRequest = true;
@@ -263,7 +261,6 @@ class ContextController extends AbstractController
 
                 // inform user if request required no authorization
                 if ($newUser->isUser()) {
-                    /** @var cs_list $moderatorList */
                     $moderatorList = $roomItem->getModeratorList();
 
                     $contactModerator = $moderatorList->getFirst();

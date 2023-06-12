@@ -26,6 +26,25 @@ class ContextRequestType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder
+            ->add('request', SubmitType::class, [
+                'attr' => [
+                    'class' => 'uk-button-primary',
+                ],
+                'label' => 'become member',
+                'translation_domain' => 'room',
+            ])
+            ->add('cancel', SubmitType::class, [
+                'attr' => [
+                    'class' => 'uk-button-secondary',
+                    'formnovalidate' => '',
+                ],
+                'label' => 'cancel',
+                'translation_domain' => 'form',
+                'validation_groups' => false,
+            ])
+        ;
+
         if ($options['checkNewMembersWithCode']) {
             $builder
                 ->add('code', TextType::class, [
@@ -33,6 +52,7 @@ class ContextRequestType extends AbstractType
                         new Constraints\EqualTo([
                             'value' => $options['checkNewMembersWithCode'],
                             'message' => 'Your access code is invalid.',
+                            'groups' => 'code'
                         ]),
                     ],
                     'label' => 'Code',
@@ -43,36 +63,9 @@ class ContextRequestType extends AbstractType
                     'attr' => [
                         'class' => 'uk-button-primary',
                     ],
-                    'label' => 'become member',
+                    'label' => 'become member code',
                     'translation_domain' => 'room',
-                ])
-                ->add('codecancel', SubmitType::class, [
-                    'attr' => [
-                        'class' => 'uk-button-secondary',
-                        'formnovalidate' => '',
-                    ],
-                    'label' => 'cancel',
-                    'translation_domain' => 'form',
-                    'validation_groups' => false,
-                ])
-            ;
-        } else {
-            $builder
-                ->add('request', SubmitType::class, [
-                    'attr' => [
-                        'class' => 'uk-button-primary',
-                    ],
-                    'label' => 'become member',
-                    'translation_domain' => 'room',
-                ])
-                ->add('cancel', SubmitType::class, [
-                    'attr' => [
-                        'class' => 'uk-button-secondary',
-                        'formnovalidate' => '',
-                    ],
-                    'label' => 'cancel',
-                    'translation_domain' => 'form',
-                    'validation_groups' => false,
+                    'validation_groups' => ['Default', 'code'],
                 ])
             ;
         }
