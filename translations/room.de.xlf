@@ -146,6 +146,10 @@
                 <source>become member</source>
                 <target>Mitgliedschaft beantragen</target>
             </trans-unit>
+            <trans-unit id="become member code">
+                <source>become member code</source>
+                <target>Mitgliedschaft mit Code beantragen</target>
+            </trans-unit>
             <trans-unit id="description">
                 <source>description</source>
                 <target>Teilnahmegrund</target>

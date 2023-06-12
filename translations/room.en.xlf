@@ -146,6 +146,10 @@
                 <source>become member</source>
                 <target>Become member</target>
             </trans-unit>
+            <trans-unit id="become member code">
+                <source>become member code</source>
+                <target>Become member with code</target>
+            </trans-unit>
             <trans-unit id="description">
                 <source>description</source>
                 <target>Description</target>
