@@ -290,6 +290,8 @@ class cs_discussion_item extends cs_item
    {
        $discussion_manager = $this->_environment->getDiscussionManager();
        $this->_save($discussion_manager);
+       $this->_saveFiles();
+       $this->_saveFileLinks();
 
        $this->updateElastic();
    }
