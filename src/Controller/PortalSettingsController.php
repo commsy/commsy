@@ -1995,32 +1995,40 @@ class PortalSettingsController extends AbstractController
 
         foreach ($relatedUsers as $relatedUser) {
             $contextID = $relatedUser->getContextID();
-            $locked = '0' === $relatedUser->getStatus() ? '('.$translator->trans('Locked', [], 'portal').') ' : '';
+            $locked = '0' === $relatedUser->getStatus() ? '('.$translator->trans('Locked', [], 'portal').')' : '';
             $relatedRoomItem = $roomService->getRoomItem($contextID);
-            if ('project' === $relatedRoomItem->getType()) {
-                if ('2' == $relatedRoomItem->getStatus()) {
-                    $projectsArchivedListNames[] = $locked.$relatedRoomItem->getTitle().'( ID: '.$relatedRoomItem->getItemID().' ) (ARCH.)';
-                } else {
-                    $projectsListNames[] = $locked.$relatedRoomItem->getTitle().'( ID: '.$relatedRoomItem->getItemID().' )';
-                }
-            } elseif ('community' === $relatedRoomItem->getType()) {
-                if ('2' == $relatedRoomItem->getStatus()) {
-                    $communityArchivedListNames[] = $locked.$relatedRoomItem->getTitle().'( ID: '.$relatedRoomItem->getItemID().' ) (ARCH.)';
-                } else {
-                    $communityListNames[] = $locked.$relatedRoomItem->getTitle().'( ID: '.$relatedRoomItem->getItemID().' )';
-                }
-            } elseif ('userroom' === $relatedRoomItem->getType()) {
-                if ('2' == $relatedRoomItem->getStatus()) {
-                    $userRoomsArchivedListNames[] = $locked.$relatedRoomItem->getTitle().'( ID: '.$relatedRoomItem->getItemID().' ) (ARCH.)';
-                } else {
-                    $userRoomListNames[] = $locked.$relatedRoomItem->getTitle().'( ID: '.$relatedRoomItem->getItemID().' )';
-                }
-            } elseif ('privateroom' === $relatedRoomItem->getType()) {
-                if ('2' == $relatedRoomItem->getStatus()) {
-                    $privateRoomArchivedNameList[] = $locked.$relatedRoomItem->getTitle().'( ID: '.$relatedRoomItem->getItemID().' ) (ARCH.)';
-                } else {
-                    $privateRoomNameList[] = $locked.$relatedRoomItem->getTitle().'( ID: '.$relatedRoomItem->getItemID().' )';
-                }
+
+            $listName = "$locked {$relatedRoomItem->getTitle()}( ID: {$relatedRoomItem->getItemID()} )";
+
+            switch ($relatedRoomItem->getType()) {
+                case 'project':
+                    if ($relatedRoomItem->getArchived()) {
+                        $projectsArchivedListNames[] = "$listName (ARCH.)";
+                    } else {
+                        $projectsListNames[] = $listName;
+                    }
+                    break;
+                case 'community':
+                    if ($relatedRoomItem->getArchived()) {
+                        $communityArchivedListNames[] = "$listName (ARCH.)";
+                    } else {
+                        $communityListNames[] = $listName;
+                    }
+                    break;
+                case 'userroom':
+                    if ($relatedRoomItem->getArchived()) {
+                        $userRoomsArchivedListNames[] = "$listName (ARCH.)";
+                    } else {
+                        $userRoomListNames[] = $listName;
+                    }
+                    break;
+                case 'privateroom':
+                    if ($relatedRoomItem->getArchived()) {
+                        $privateRoomArchivedNameList[] = "$listName (ARCH.)";
+                    } else {
+                        $privateRoomNameList[] = $listName;
+                    }
+                    break;
             }
         }
 
@@ -2061,14 +2069,14 @@ class PortalSettingsController extends AbstractController
                     'portal' => $portal,
                     'portalId' => $portal->getId(),
                     'userId' => $user->getItemID(),
-                    'communities' => implode(', ', $communityListNames),
-                    'projects' => implode(', ', $projectsListNames),
-                    'privaterooms' => implode(', ', $privateRoomNameList),
-                    'userrooms' => implode(', ', $userRoomListNames),
-                    'communitiesArchived' => implode(', ', $communityArchivedListNames),
-                    'projectsArchived' => implode(', ', $projectsArchivedListNames),
-                    'privateRoomsArchived' => implode(', ', $privateRoomArchivedNameList),
-                    'userroomsArchived' => implode(', ', $userRoomsArchivedListNames),
+                    'communities' => $communityListNames,
+                    'projects' => $projectsListNames,
+                    'privaterooms' => $privateRoomNameList,
+                    'userrooms' => $userRoomListNames,
+                    'communitiesArchived' => $communityArchivedListNames,
+                    'projectsArchived' => $projectsArchivedListNames,
+                    'privateRoomsArchived' => $privateRoomArchivedNameList,
+                    'userroomsArchived' => $userRoomsArchivedListNames,
                     'hasNext' => $hasNext,
                     'hasPrevious' => $hasPrevious,
                 ]);
@@ -2098,14 +2106,14 @@ class PortalSettingsController extends AbstractController
             'authSource' => $authSourceRepository->findOneBy(['id' => $user->getAuthSource()]),
             'form' => $form->createView(),
             'portal' => $portal,
-            'communities' => implode(', ', $communityListNames),
-            'projects' => implode(', ', $projectsListNames),
-            'privaterooms' => implode(', ', $privateRoomNameList),
-            'userrooms' => implode(', ', $userRoomListNames),
-            'communitiesArchived' => implode(', ', $communityArchivedListNames),
-            'projectsArchived' => implode(', ', $projectsArchivedListNames),
-            'privateRoomsArchived' => implode(', ', $privateRoomArchivedNameList),
-            'userroomsArchived' => implode(', ', $userRoomsArchivedListNames),
+            'communities' => $communityListNames,
+            'projects' => $projectsListNames,
+            'privaterooms' => $privateRoomNameList,
+            'userrooms' => $userRoomListNames,
+            'communitiesArchived' => $communityArchivedListNames,
+            'projectsArchived' => $projectsArchivedListNames,
+            'privateRoomsArchived' => $privateRoomArchivedNameList,
+            'userroomsArchived' => $userRoomsArchivedListNames,
             'hasNext' => $hasNext,
             'hasPrevious' => $hasPrevious,
         ]);
