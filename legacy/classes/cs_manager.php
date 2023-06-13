@@ -435,7 +435,7 @@ class cs_manager
     /** get one item (newest version)
      * this method returns an item in his newest version - this method needs to be overwritten.
      *
-     * @param int item_id id of the commsy item
+     * @param int $item_id id of the commsy item
      *
      * @return object cs_item one commsy items
      */
@@ -611,20 +611,13 @@ class cs_manager
         } catch (\Doctrine\DBAL\Exception $e) {
             trigger_error($e->getMessage(), E_USER_WARNING);
         }
-
-        global $symfonyContainer;
-
-        /** @var LockManager $lockManager */
-        $lockManager = $symfonyContainer->get(LockManager::class);
-        if ($lockManager->supportsLocking($item->getItemID())) {
-            $lockManager->unlockEntry($item->getItemID());
-        }
     }
 
     /** delete a commsy item
      * this method deletes a commsy item.
      *
-     * @param int item_id the item id of the commsy item
+     * @param $itemId the item id of the commsy item
+     * @throws \Doctrine\DBAL\Exception
      */
     public function delete($itemId)
     {
