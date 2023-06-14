@@ -881,11 +881,10 @@ class DateController extends BaseController
 
         $requestContent = json_decode($request->getContent(), null, 512, JSON_THROW_ON_ERROR);
 
-        $dtz = new DateTimeZone($parameterBag->get('commsy.dates.timezone'));
         $start = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $requestContent->start);
-        $start->setTimezone($dtz);
+        $start->setTimezone(new DateTimeZone('UTC'));
         $end = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $requestContent->end);
-        $end->setTimezone($dtz);
+        $end->setTimezone(new DateTimeZone('UTC'));
 
         $date->setStartingDay($start->format('Y-m-d'));
         $date->setStartingTime($start->format('H:i:s'));
