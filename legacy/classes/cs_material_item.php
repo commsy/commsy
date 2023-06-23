@@ -1070,16 +1070,13 @@ public function copy()
         $label_manager->select();
         $label_list = $label_manager->get();
         $exist = null;
-        if (!empty($label_list)) {
-            $label = $label_list->getFirst();
 
-            while ($label) {
-                if (0 == strcmp($label->getName(), ltrim($this->getLabel()))) {
-                    $exist = $label->getItemID();
-                }
-                $label = $label_list->getNext();
+        foreach ($label_list as $label) {
+            if (0 == strcmp($label->getName(), ltrim($this->getLabel()))) {
+                $exist = $label->getItemID();
             }
         }
+
         if (!isset($exist)) {
             $temp_array = [];
             $label_manager = $this->_environment->getLabelManager();
@@ -1111,14 +1108,11 @@ public function copy()
         $buzzword_manager->setTypeLimit('buzzword');
         $buzzword_manager->select();
         $buzzword_list = $buzzword_manager->get();
-        if (!empty($buzzword_list)) {
-            $buzzword = $buzzword_list->getFirst();
-            while ($buzzword) {
-                $temp_array['name'] = $buzzword->getName();
-                $temp_array['id'] = $buzzword->getItemId();
-                $buzzwords_in_room_array[] = $temp_array;
-                $buzzword = $buzzword_list->getNext();
-            }
+
+        foreach ($buzzword_list as $buzzword) {
+            $temp_array['name'] = $buzzword->getName();
+            $temp_array['id'] = $buzzword->getItemId();
+            $buzzwords_in_room_array[] = $temp_array;
         }
 
         // if buzzword exists, put id in array, if it doesn't exist, create it, then put id in array

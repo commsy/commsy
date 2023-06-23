@@ -167,36 +167,38 @@ class cs_file_manager extends cs_manager
 
     public function _performQuery($count = false)
     {
-        $query = 'SELECT  ' . $this->addDatabasePrefix('files') . '.files_id, ' . $this->addDatabasePrefix('files') . '.creator_id, ' . $this->addDatabasePrefix('files') . '.deleter_id, ' . $this->addDatabasePrefix('files') . '.creation_date, ' . $this->addDatabasePrefix('files') . '.modification_date, ' . $this->addDatabasePrefix('files') . '.deletion_date, ' . $this->addDatabasePrefix('files') . '.filename, ' . $this->addDatabasePrefix('files') . '.filepath, ' . $this->addDatabasePrefix('files') . '.context_id, ' . $this->addDatabasePrefix('files') . '.size, ' . $this->addDatabasePrefix('files') . '.extras';
-        $query .= ' FROM ' . $this->addDatabasePrefix($this->_db_table);
-        $query .= ' WHERE 1';
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
-        if (true == $this->_delete_limit) {
-            $query .= ' AND ' . $this->addDatabasePrefix('files') . '.deleter_id IS NULL';
-            $query .= ' AND ' . $this->addDatabasePrefix('files') . '.deletion_date IS NULL';
+        $queryBuilder
+            ->select('f.files_id', 'f.portal_id', 'f.context_id', 'f.creator_id', 'f.deleter_id',
+                'f.creation_date', 'f.modification_date', 'f.deletion_date', 'f.filename', 'f.filepath',
+                'f.size', 'f.extras')
+            ->from($this->addDatabasePrefix('files'), 'f');
+
+        if ($this->_delete_limit) {
+            $queryBuilder
+                ->andWhere('f.deleter_id IS NULL')
+                ->andWhere('f.deletion_date IS NULL');
         }
 
         if (isset($this->_id_array_limit)) {
-            $id_string = implode(', ', $this->_id_array_limit);
-            if ('' == $id_string) {
-                $query .= ' AND 1=0';
-            } else {
-                $query .= ' AND ' . $this->addDatabasePrefix('files.') . 'files_id IN (' . encode(AS_DB, $id_string) . ')';
-            }
+            $queryBuilder
+                ->andWhere($queryBuilder->expr()->in('f.files_id', $this->_id_array_limit));
         }
 
         if (!empty($this->_room_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.context_id="' . encode(AS_DB, $this->_room_limit) . '"';
+            $queryBuilder
+                ->andWhere('f.context_id = :roomLimit')
+                ->setParameter('roomLimit', $this->_room_limit);
         }
         if (!empty($this->_limit_newer)) {
-            $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.creation_date>"' . encode(AS_DB, $this->_limit_newer) . '"';
+            $queryBuilder
+                ->andWhere('f.creation_date > :limitNewer')
+                ->setParameter('limitNewer', $this->_limit_newer);
         }
 
-        if (isset($this->_order)) {
-            $query .= ' ORDER BY ' . $this->_order;
-        } else {
-            $query .= ' ORDER BY filename DESC';
-        }
+        $queryBuilder
+            ->orderBy('f.filename', 'DESC');
 
         $cache_exists = false;
         if (!empty($this->_cache)) {
@@ -210,24 +212,30 @@ class cs_file_manager extends cs_manager
                     }
                 }
             }
+
             if (!$cache_exists) {
                 $result = [];
             }
         }
+
         if (!$cache_exists) {
-            // perform query
-            $r = $this->_db_connector->performQuery($query);
-            if (!isset($r)) {
-                trigger_error('Problems with links: "' . $this->_dberror . '" from query: "' . $query . '"', E_USER_WARNING);
-            } else {
+            try {
+                $r = $this->_db_connector->performQuery(
+                    $queryBuilder->getSQL(),
+                    $queryBuilder->getParameters()
+                );
+
                 if ($this->_cache_on) {
                     foreach ($r as $res) {
                         $this->_cache[$res['files_id']] = $res;
                     }
                 }
                 $result = $r;
+            } catch (\Doctrine\DBAL\Exception $e) {
+                trigger_error('Problems selecting '.$this->_db_table.' items.', E_USER_WARNING);
             }
         }
+
         if (empty($result)) {
             $result = [];
         }
