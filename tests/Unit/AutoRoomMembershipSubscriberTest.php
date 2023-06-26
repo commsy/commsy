@@ -7,13 +7,14 @@ use App\Entity\AuthSource;
 use App\Entity\Portal;
 use App\EventSubscriber\AutoRoomMembershipSubscriber;
 use App\Facade\UserCreatorFacade;
-use Tests\Support\UnitTester;
 use Codeception\Stub;
 use Codeception\Test\Unit;
+use Exception;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
+use Tests\Support\UnitTester;
 
 class AutoRoomMembershipSubscriberTest extends Unit
 {
@@ -23,7 +24,7 @@ class AutoRoomMembershipSubscriberTest extends Unit
      * Tests whether `AutoRoomMembershipSubscriber->onSecurityInteractiveLogin()` gets to call
      * the `UserCreatorFacade->addUserToRoomsWithSlugs()` method.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testSubscriberMethodCalled()
     {
@@ -52,12 +53,12 @@ class AutoRoomMembershipSubscriberTest extends Unit
         ]);
         $this->assertInstanceOf(Account::class, $account);
 
-        $authToken = $this->makeEmpty(TokenInterface::class, [
+        $passport = $this->makeEmpty(Passport::class, [
             'getUser' => function () use ($account) {
                 return $account;
             }
         ]);
-        $this->assertInstanceOf(TokenInterface::class, $authToken);
+        $this->assertInstanceOf(Passport::class, $passport);
 
         $request = $this->makeEmpty(Request::class, [
             'server' => $this->make(ParameterBag::class, [
@@ -75,7 +76,11 @@ class AutoRoomMembershipSubscriberTest extends Unit
 
         $subscriber = new AutoRoomMembershipSubscriber($userCreator);
 
-        $loginEvent = new InteractiveLoginEvent($request, $authToken);
-        $subscriber->onSecurityInteractiveLogin($loginEvent);
+        $loginEvent = $this->makeEmpty(LoginSuccessEvent::class, [
+            'getRequest' => fn() => $request,
+            'getUser' => fn() => $account,
+        ]);
+
+        $subscriber->onLoginSuccess($loginEvent);
     }
 }
