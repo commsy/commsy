@@ -28,14 +28,14 @@ class UserActivitySubscriber implements EventSubscriberInterface
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::TERMINATE => 'updateActivity',
         ];
     }
 
-    public function updateActivity(TerminateEvent $event)
+    public function updateActivity(TerminateEvent $event): void
     {
         /*
            restrict logging to the following requests:

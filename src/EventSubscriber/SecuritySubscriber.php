@@ -23,14 +23,10 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 class SecuritySubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var cs_environment|LegacyEnvironment
-     */
     private cs_environment $legacyEnvironment;
 
     public function __construct(
@@ -42,7 +38,15 @@ class SecuritySubscriber implements EventSubscriberInterface
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            LoginSuccessEvent::class => 'onLoginSuccess',
+            KernelEvents::REQUEST => 'onKernelRequest',
+        ];
+    }
+
+    public function onLoginSuccess(LoginSuccessEvent $event): void
     {
         if ('app_account_personal' === $event->getRequest()->attributes->get('_route')) {
             return;
@@ -69,7 +73,7 @@ class SecuritySubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onKernelRequest(RequestEvent $event)
+    public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
 
@@ -94,13 +98,5 @@ class SecuritySubscriber implements EventSubscriberInterface
                 'portalId' => $portal->getId(),
             ])));
         }
-    }
-
-    public static function getSubscribedEvents()
-    {
-        return [
-            SecurityEvents::INTERACTIVE_LOGIN => 'onSecurityInteractiveLogin',
-            KernelEvents::REQUEST => 'onKernelRequest',
-        ];
     }
 }

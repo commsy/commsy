@@ -18,8 +18,7 @@ use App\Entity\AuthSource;
 use App\Entity\Portal;
 use App\Facade\UserCreatorFacade;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 class AutoRoomMembershipSubscriber implements EventSubscriberInterface
 {
@@ -30,17 +29,16 @@ class AutoRoomMembershipSubscriber implements EventSubscriberInterface
     {
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
-            SecurityEvents::INTERACTIVE_LOGIN => 'onSecurityInteractiveLogin',
+            LoginSuccessEvent::class => 'onLoginSuccess',
         ];
     }
 
-    public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
+    public function onLoginSuccess(LoginSuccessEvent $event): void
     {
-        /** @var Account $account */
-        $account = $event->getAuthenticationToken()->getUser();
+        $account = $event->getUser();
         if (!$account instanceof Account) {
             return;
         }

@@ -22,31 +22,33 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 class LoginSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private Security $security, private UrlGeneratorInterface $urlGenerator, private AccountManager $accountManager)
-    {
+    public function __construct(
+        private Security $security,
+        private UrlGeneratorInterface $urlGenerator,
+        private AccountManager $accountManager
+    ) {
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => 'onKernelRequest',
-            SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin',
+            LoginSuccessEvent::class => 'onLoginSuccess',
         ];
     }
 
-    public function onKernelRequest(RequestEvent $event)
+    public function onKernelRequest(RequestEvent $event): void
     {
         if (HttpKernelInterface::MAIN_REQUEST != $event->getRequestType()) {
             return;
         }
 
-        /** @var Account $account */
         $account = $this->security->getUser();
+
         if (!$account instanceof Account) {
             return;
         }
@@ -68,10 +70,10 @@ class LoginSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onInteractiveLogin(InteractiveLoginEvent $event)
+    public function onLoginSuccess(LoginSuccessEvent $event): void
     {
         /** @var Account $account */
-        $account = $this->security->getUser();
+        $account = $event->getUser();
 
         if ($account instanceof Account) {
             $this->accountManager->resetInactivity($account);
