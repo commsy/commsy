@@ -289,13 +289,7 @@
 {% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) %}
     {% import 'utils/macros.html.twig' as utilsMacros %}
     {% import _self as macros %}
-    {% set pathName = '' %}
-    {% set material = item %}
-    {% if item.itemType is same as('material') %}
-        {% set pathName = 'app_material_edit' %}
-    {% elseif item.itemType is same as('section') %}
-        {% set pathName = 'app_material_edit' %}
-    {% endif %}
+
     {% if userCount == 0 %}
         {% set userCount = 1 %}
     {% endif %}
@@ -668,12 +662,7 @@
 {% macro titleUser(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) %}
     {% import 'utils/macros.html.twig' as utilsMacros %}
     {% import _self as macros %}
-    {% set pathName = '' %}
-    {% if item.itemType is same as('user') %}
-        {% set pathName = 'app_user_edit' %}
-    {% elseif item.itemType is same as('section') %}
-        {% set pathName = 'app_user_edit' %}
-    {% endif %}
+
     {% if userCount == 0 %}
         {% set userCount = 1 %}
     {% endif %}
