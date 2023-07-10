@@ -453,15 +453,6 @@ class TopicController extends BaseController
                 }
 
                 $topicItem->save();
-
-                if ($item->isDraft()) {
-                    $item->setDraftStatus(0);
-                    $item->saveAsItem();
-                }
-            } else {
-                if ($form->get('cancel')->isClicked()) {
-                    // ToDo ...
-                }
             }
 
             return $this->redirectToRoute('app_topic_save', ['roomId' => $roomId, 'itemId' => $itemId]);

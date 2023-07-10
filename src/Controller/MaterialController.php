@@ -975,11 +975,6 @@ class MaterialController extends BaseController
 
                 $typedItem->save();
 
-                if ($item->isDraft()) {
-                    $item->setDraftStatus(0);
-                    $item->saveAsItem();
-                }
-
                 if (CS_SECTION_TYPE == $typedItem->getItemType()) {
                     $linkedMaterialItem = $this->materialService->getMaterial($typedItem->getlinkedItemID());
                     $linkedMaterialItem->save();
@@ -1140,8 +1135,13 @@ class MaterialController extends BaseController
 
         $formData = $this->materialTransformer->transform($section);
 
-        $form = $this->createForm(SectionType::class, $formData, ['action' => $this->generateUrl('app_material_savesection',
-            ['roomId' => $roomId, 'itemId' => $section->getItemID()]), 'placeholderText' => '['.$this->translator->trans('insert title').']']);
+        $form = $this->createForm(SectionType::class, $formData, [
+            'action' => $this->generateUrl('app_material_savesection', [
+                'roomId' => $roomId,
+                'itemId' => $section->getItemID(),
+            ]),
+            'placeholderText' => '['.$this->translator->trans('insert title').']',
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -1156,7 +1156,6 @@ class MaterialController extends BaseController
 
                 // update modifier
                 $section->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
-
                 $section->save();
 
                 $section->getLinkedItem()->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
@@ -1235,11 +1234,6 @@ class MaterialController extends BaseController
                 $material->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
                 $material->save();
-
-                if ($item->isDraft()) {
-                    $item->setDraftStatus(0);
-                    $item->saveAsItem();
-                }
             } else {
                 if ($form->get('cancel')->isClicked()) {
                     return $this->redirectToRoute('app_material_detail',

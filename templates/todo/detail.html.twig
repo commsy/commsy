@@ -267,14 +267,7 @@
                     {% endif %}
 
                     {% if draft %}
-                        <div id="draft-buttons-wrapper">
-                            <a href="#" class="uk-button uk-button-primary" data-draft-save>
-                                {{ 'create entry'|trans({}, "form") }}
-                            </a>
-                            <a href="#" class="uk-button uk-button-secondary" data-draft-cancel>
-                                {{ 'cancel'|trans({}, "form") }}
-                            </a>
-                        </div>
+                        {{ macros.draftButtons(roomId, todo.itemId) }}
                     {% endif %}
                 </article>
             </div>

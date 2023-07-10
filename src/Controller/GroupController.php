@@ -704,11 +704,6 @@ class GroupController extends BaseController
                 }
 
                 $groupItem->save();
-
-                if ($item->isDraft()) {
-                    $item->setDraftStatus(0);
-                    $item->saveAsItem();
-                }
             }
 
             return $this->redirectToRoute('app_group_save', ['roomId' => $roomId, 'itemId' => $itemId]);
