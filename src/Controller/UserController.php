@@ -20,12 +20,10 @@ use App\Entity\User;
 use App\Event\UserLeftRoomEvent;
 use App\Event\UserStatusChangedEvent;
 use App\Filter\UserFilterType;
-use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\Profile\AccountContactFormType;
 use App\Form\Type\SendType;
 use App\Form\Type\UserSendType;
 use App\Form\Type\UserStatusChangeType;
-use App\Form\Type\UserType;
 use App\Mail\Mailer;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\AvatarService;
@@ -79,9 +77,6 @@ class UserController extends BaseController
         $this->userService = $userService;
     }
 
-    /**
-     * @return array
-     */
     #[Route(path: '/room/{roomId}/user/feed/{start}/{sort}')]
     #[IsGranted('ITEM_ENTER', subject: 'roomId')]
     #[IsGranted('RUBRIC_USER')]
@@ -97,9 +92,6 @@ class UserController extends BaseController
         );
     }
 
-    /**
-     * @return array
-     */
     #[Route(path: '/room/{roomId}/user/grid/{start}/{sort}')]
     #[IsGranted('ITEM_ENTER', subject: 'roomId')]
     #[IsGranted('RUBRIC_USER')]
@@ -761,112 +753,6 @@ class UserController extends BaseController
         $infoArray['status'] = $user->getStatus();
 
         return $infoArray;
-    }
-
-    #[Route(path: '/room/{roomId}/user/{itemId}/edit')]
-    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    #[IsGranted('RUBRIC_USER')]
-    public function editAction(
-        Request $request,
-        UserTransformer $transformer,
-        int $roomId,
-        int $itemId
-    ): Response {
-        $item = $this->itemService->getItem($itemId);
-
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
-        $userItem = $this->userService->getuser($itemId);
-        if (!$userItem) {
-            throw $this->createNotFoundException('No user found for id '.$itemId);
-        }
-        $formData = $transformer->transform($userItem);
-        $formOptions = ['action' => $this->generateUrl('app_user_edit', ['roomId' => $roomId, 'itemId' => $itemId]), 'uploadUrl' => $this->generateUrl('app_upload_upload', ['roomId' => $roomId])];
-        $form = $this->createForm(UserType::class, $formData, $formOptions);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $saveType = $form->getClickedButton()->getName();
-            if ('save' == $saveType) {
-                $userItem = $transformer->applyTransformation($userItem, $form->getData());
-
-                // update modifier
-                $userItem->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
-
-                $userItem->save();
-
-                if ($item->isDraft()) {
-                    $item->setDraftStatus(0);
-                    $item->saveAsItem();
-                }
-            }
-
-            return $this->redirectToRoute('app_user_save', ['roomId' => $roomId, 'itemId' => $itemId]);
-        }
-
-        return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'showHashtags' => $current_context->withBuzzwords(), 'showCategories' => $current_context->withTags()]);
-    }
-
-    #[Route(path: '/room/{roomId}/user/{itemId}/save')]
-    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    #[IsGranted('RUBRIC_USER')]
-    public function saveAction(
-        int $roomId,
-        int $itemId
-    ): Response {
-        $user = $this->userService->getUser($itemId);
-
-        $itemArray = [$user];
-        $modifierList = [];
-        foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
-        }
-
-        $readerManager = $this->legacyEnvironment->getReaderManager();
-
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-        $readerManager->getLatestReaderByUserIDArray($id_array, $user->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($user->getItemID(),
-                $current_user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $user->getModificationDate()) {
-                    ++$read_count;
-                    ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
-                }
-            }
-            $current_user = $user_list->getNext();
-        }
-        $readerList = [];
-        $modifierList = [];
-        foreach ($itemArray as $item) {
-            $reader = $this->readerService->getLatestReader($item->getItemId());
-            if (empty($reader)) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                $readerList[$item->getItemId()] = 'changed';
-            }
-
-            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
-        }
-
-        return $this->render('user/save.html.twig', ['roomId' => $roomId, 'item' => $user, 'modifierList' => $modifierList, 'userCount' => $all_user_count, 'readCount' => $read_count, 'readSinceModificationCount' => $read_since_modification_count]);
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/send')]
