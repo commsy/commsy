@@ -39,6 +39,7 @@ use App\Utils\LabelService;
 use App\Utils\MailAssistant;
 use App\Utils\TopicService;
 use App\Utils\UserService;
+use cs_group_item;
 use cs_grouproom_item;
 use cs_room_item;
 use Egulias\EmailValidator\EmailValidator;
@@ -596,28 +597,21 @@ class GroupController extends BaseController
         return $result;
     }
 
-    /**
-     * @return RedirectResponse
-     */
     #[Route(path: '/room/{roomId}/group/create')]
     #[IsGranted('ITEM_NEW')]
     public function createAction(
         int $roomId
-    ): Response {
+    ): RedirectResponse {
         // create new group item
         $groupItem = $this->groupService->getNewGroup();
         $groupItem->setDraftStatus(1);
         $groupItem->setPrivateEditing(1);
-        $groupItem->save();
+        $groupItem->save(false);
 
-        return $this->redirectToRoute('app_group_detail',
-            ['roomId' => $roomId, 'itemId' => $groupItem->getItemId()]);
-    }
-
-    #[Route(path: '/room/{roomId}/group/new')]
-    public function newAction(int $roomId): Response
-    {
-        return $this->render('group/new.html.twig');
+        return $this->redirectToRoute('app_group_detail', [
+            'roomId' => $roomId,
+            'itemId' => $groupItem->getItemId(),
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/group/{itemId}/edit')]
@@ -706,7 +700,10 @@ class GroupController extends BaseController
                 $groupItem->save();
             }
 
-            return $this->redirectToRoute('app_group_save', ['roomId' => $roomId, 'itemId' => $itemId]);
+            return $this->redirectToRoute('app_group_save', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+                ]);
         }
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($groupItem), CommsyEditEvent::EDIT);
@@ -725,14 +722,9 @@ class GroupController extends BaseController
         int $roomId,
         int $itemId
     ): Response {
-        $item = $this->itemService->getItem($itemId);
         $group = $this->groupService->getGroup($itemId);
 
         $itemArray = [$group];
-        $modifierList = [];
-        foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
-        }
 
         $readerManager = $this->legacyEnvironment->getReaderManager();
         $userManager = $this->legacyEnvironment->getUserManager();
@@ -744,15 +736,9 @@ class GroupController extends BaseController
         $read_count = 0;
         $read_since_modification_count = 0;
 
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-        $readerManager->getLatestReaderByUserIDArray($id_array, $group->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
+        $readerManager->getLatestReaderByUserIDArray($user_list->getIDArray(), $group->getItemID());
+
+        foreach ($user_list as $current_user) {
             $current_reader = $readerManager->getLatestReaderForUserByID($group->getItemID(),
                 $current_user->getItemID());
             if (!empty($current_reader)) {
@@ -763,27 +749,23 @@ class GroupController extends BaseController
                     ++$read_count;
                 }
             }
-            $current_user = $user_list->getNext();
         }
-        $read_percentage = round(($read_count / $all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count / $all_user_count) * 100);
 
-        $readerList = [];
         $modifierList = [];
         foreach ($itemArray as $item) {
-            $reader = $this->readerService->getLatestReader($item->getItemId());
-            if (empty($reader)) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                $readerList[$item->getItemId()] = 'changed';
-            }
-
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($group), CommsyEditEvent::SAVE);
 
-        return $this->render('group/save.html.twig', ['roomId' => $roomId, 'item' => $group, 'modifierList' => $modifierList, 'userCount' => $all_user_count, 'readCount' => $read_count, 'readSinceModificationCount' => $read_since_modification_count]);
+        return $this->render('group/save.html.twig', [
+            'roomId' => $roomId,
+            'item' => $group,
+            'modifierList' => $modifierList,
+            'userCount' => $all_user_count,
+            'readCount' => $read_count,
+            'readSinceModificationCount' => $read_since_modification_count,
+        ]);
     }
 
     /**
