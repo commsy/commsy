@@ -756,3 +756,16 @@
         {{ title|decodeHtmlEntity }}
     {% endif %}
 {% endmacro %}
+
+{% macro draftButtons(roomId, itemId) %}
+    <div id="draft-buttons-wrapper">
+        <a href="#" class="uk-button uk-button-primary" data-draft-save="{{ {
+            'undraftUrl': path('app_item_undraft', { 'roomId': roomId, 'itemId': itemId })
+        }|json_encode|e('html_attr') }}">
+            {{ 'create entry'|trans({}, "form") }}
+        </a>
+        <a href="#" class="uk-button uk-button-secondary" data-draft-cancel>
+            {{ 'cancel'|trans({}, "form") }}
+        </a>
+    </div>
+{% endmacro %}

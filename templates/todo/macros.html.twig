@@ -11,7 +11,7 @@
     {% if userCount == 0 %}
         {% set userCount = 1 %}
     {% endif %}
-    
+
     <div id="step{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path(pathName, {'roomId': item.contextId, 'itemId': item.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': item.contextId, 'itemId': item.itemId}) }}', draft: '{{ draft }}'}">
         <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
@@ -26,11 +26,11 @@
                             </div>
                         {% endif %}
                     </div>
-                </div>        
+                </div>
                 <div class="uk-width-2-10 uk-text-right">
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
-                        {{ macros.actionIcons('title', item, true) }}
+                        {{ macros.actionIcons('title', item, true, draft) }}
                         {% include 'utils/edit_spinner.html.twig' %}
                     {% else %}
                         {{ macros.actionIcons('title', item, false) }}
@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="uk-margin-left uk-margin-right uk-position-relative">
-            <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">    
+            <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">
                 <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
                     <div class="uk-width-9-10 uk-padding-remove">
                         <div class="toggle-title-{{ item.itemId }}">
@@ -97,7 +97,7 @@
                                             </div>
                                         </div>
                                         <div class="uk-clearfix">
-                                            {{ 'creator'|trans({})}} 
+                                            {{ 'creator'|trans({})}}
                                         </div>
                                     </li>
                                     <li class="uk-grid-width-4-10">
@@ -119,11 +119,11 @@
                                                     {% endif %}
                                                 {% endif %}
                                             </div>
-                                        </div>                           
+                                        </div>
                                         {% if modifierList[item.itemId] is defined %}
                                         {% if not modifierList[item.itemId] is empty %}
                                         <div class="uk-clearfix">
-                                            {{ 'editors'|trans({})}} 
+                                            {{ 'editors'|trans({})}}
                                         </div>
                                         {% endif %}
                                         {% endif %}
@@ -132,7 +132,7 @@
                             </div>
                             <div class="uk-panel uk-margin-top">
                                 <div class="uk-grid">
-                                    <div class="uk-width-2-5">                           
+                                    <div class="uk-width-2-5">
                                         <div class="uk-clearfix">
                                             <div class="uk-align-left uk-width-1-1">
                                             {{ 'clicked since last editing'|trans({})}}: <br/>
@@ -141,22 +141,22 @@
                                                     <div class="uk-progress-bar cs-progress-bar" style="width: {{ activePercent }}%;">{{readSinceModificationCount}}</div>
                                                 </div>
                                            </div>
-                                        </div>                           
-                                    </div>                            
-                                    <div class="uk-width-1-5">                            
-                                    </div>                            
-                                    <div class="uk-width-2-5">                           
+                                        </div>
+                                    </div>
+                                    <div class="uk-width-1-5">
+                                    </div>
+                                    <div class="uk-width-2-5">
                                         <div class="uk-clearfix">
                                             <div class="uk-align-left uk-width-1-1">
                                             {{ 'clicked since creating'|trans({}) }}: <br/>
                                                 <div class="uk-progress">
                                                     {% set activePercent = (readCount/userCount*100)|round %}
                                                    <div class="uk-progress-bar cs-progress-bar" style="width: {{ activePercent }}%;">{{readCount}}</div>
-                                                </div> 
+                                                </div>
                                             </div>
-                                        </div>                           
-                                    </div>                            
-                                </div>                        
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div><!-- toggle-title uk-hidden -->
 
@@ -253,7 +253,7 @@
                             </div>
                         {% endif %}
                     </div>
-                </div>        
+                </div>
                 <div class="uk-width-2-10 uk-text-right">
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
@@ -266,7 +266,7 @@
             </div>
         </div>
         <div class="uk-margin-left uk-margin-right uk-position-relative">
-            <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">    
+            <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">
                 <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
                     <div class="uk-width-9-10 uk-padding-remove">
                         <div class="toggle-title-{{ item.itemId }}">
@@ -320,10 +320,10 @@
                                             </div>
                                         </div>
                                         <div class="uk-clearfix">
-                                            {{ 'creator'|trans({})}} 
+                                            {{ 'creator'|trans({})}}
                                         </div>
                                     </div>
-                                    <div class="uk-width-2-5">                           
+                                    <div class="uk-width-2-5">
                                         <div class="uk-clearfix">
                                             <div class="uk-margin-remove">
                                                 {% if modifierList[item.itemId] is defined %}
@@ -342,20 +342,20 @@
                                                     {% endif %}
                                                 {% endif %}
                                             </div>
-                                        </div>                           
+                                        </div>
                                         {% if modifierList[item.itemId] is defined %}
                                         {% if not modifierList[item.itemId] is empty %}
                                         <div class="uk-clearfix">
-                                            {{ 'editors'|trans({})}} 
+                                            {{ 'editors'|trans({})}}
                                         </div>
                                         {% endif %}
                                         {% endif %}
-                                    </div>                            
-                                </div>                        
+                                    </div>
+                                </div>
                             </div>
                             <div class="uk-panel uk-margin-top">
                                 <div class="uk-grid">
-                                    <div class="uk-width-2-5">                           
+                                    <div class="uk-width-2-5">
                                         <div class="uk-clearfix">
                                             <div class="uk-align-left uk-width-1-1">
                                             {{ 'clicked since last editing'|trans({})}}: <br/>
@@ -364,22 +364,22 @@
                                                     <div class="uk-progress-bar cs-progress-bar" style="width: {{ activePercent }}%;">{{readSinceModificationCount}}</div>
                                                 </div>
                                            </div>
-                                        </div>                           
-                                    </div>                            
-                                    <div class="uk-width-1-5">                            
-                                    </div>                            
-                                    <div class="uk-width-2-5">                           
+                                        </div>
+                                    </div>
+                                    <div class="uk-width-1-5">
+                                    </div>
+                                    <div class="uk-width-2-5">
                                         <div class="uk-clearfix">
                                             <div class="uk-align-left uk-width-1-1">
                                             {{ 'clicked since creating'|trans({}) }}: <br/>
                                                 <div class="uk-progress">
                                                     {% set activePercent = (readCount/userCount*100)|round %}
                                                    <div class="uk-progress-bar cs-progress-bar" style="width: {{ activePercent }}%;">{{readCount}}</div>
-                                                </div> 
+                                                </div>
                                             </div>
-                                        </div>                           
-                                    </div>                            
-                                </div>                        
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -492,7 +492,7 @@
                                 </a>
 
                                 {{ macrosUtils.fileListShort(step) }}
-                            </li>                      
+                            </li>
                         {% endfor %}
                     </ul>
                 </div>

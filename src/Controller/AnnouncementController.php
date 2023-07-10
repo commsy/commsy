@@ -551,11 +551,6 @@ class AnnouncementController extends BaseController
                 }
 
                 $announcementItem->save();
-
-                if ($item->isDraft()) {
-                    $item->setDraftStatus(0);
-                    $item->saveAsItem();
-                }
             }
 
             return $this->redirectToRoute('app_announcement_save', ['roomId' => $roomId, 'itemId' => $itemId]);

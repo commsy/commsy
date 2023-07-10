@@ -1066,6 +1066,28 @@ class ItemController extends AbstractController
 
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::CANCEL);
 
-        return $this->render('item/cancel_edit.html.twig', ['canceledEdit' => true, 'roomId' => $roomId, 'item' => $item]);
+        // cancel editing a NEW entry => return to list view
+        // cancel editing an EXISTING entry => return to detail view of the entry
+        $redirectUrl = $this->generateUrl("app_{$item->getType()}_" . ($item->isDraft() ? 'list' : 'detail'), [
+            'roomId' => $roomId,
+            'itemId' => $item->getItemID(),
+        ]);
+
+        return $this->json([
+            'redirectUrl' => $redirectUrl,
+        ]);
+    }
+
+    #[Route(path: '/room/{roomId}/item/{itemId}/undraft', condition: 'request.isXmlHttpRequest()')]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
+    public function undraft(
+        ItemService $itemService,
+        int $itemId
+    ): Response {
+        $item = $itemService->getItem($itemId);
+        $item->setDraftStatus(0);
+        $item->saveAsItem();
+
+        return new Response();
     }
 }

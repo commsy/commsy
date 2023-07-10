@@ -840,11 +840,6 @@ class DiscussionController extends BaseController
                         $discussionArticleItem->save();
                     }
                 }
-
-                if ($item->isDraft()) {
-                    $item->setDraftStatus(0);
-                    $item->saveAsItem();
-                }
             }
 
             return $this->redirectToRoute('app_discussion_save', ['roomId' => $roomId, 'itemId' => $itemId]);

@@ -1052,11 +1052,6 @@ class DateController extends BaseController
                 }
 
                 $dateItem->save();
-
-                if ($item->isDraft()) {
-                    $item->setDraftStatus(0);
-                    $item->saveAsItem();
-                }
             } else {
                 if ('saveThisDate' == $saveType) {
                     if (!$dateItem->getDateTime_recurrence()) {

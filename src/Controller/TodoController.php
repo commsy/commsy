@@ -566,11 +566,6 @@ class TodoController extends BaseController
                 }
 
                 $todoItem->save();
-
-                if ($item->isDraft()) {
-                    $item->setDraftStatus(0);
-                    $item->saveAsItem();
-                }
             }
 
             return $this->redirectToRoute('app_todo_save', ['roomId' => $roomId, 'itemId' => $itemId]);
