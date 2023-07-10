@@ -69,7 +69,7 @@ class cs_group_item extends cs_label_item
     /** save news item
      * this methode save the news item into the database.
      */
-    public function save($save_other = true)
+    public function save(bool $saveGrouproom = true): void
     {
         $current_user_item = null;
         $save_time = false;
@@ -78,7 +78,7 @@ class cs_group_item extends cs_label_item
         $parentRoom = $this->getContextItem();
         $portal = $parentRoom->getContextItem();
 
-        if ($save_other) {
+        if ($saveGrouproom) {
             if (!$this->_issetGroupRoomItemID() && $this->isGroupRoomActivated()) {
                 $new_group_room = true;
 
@@ -191,7 +191,7 @@ class cs_group_item extends cs_label_item
             $grouproom_item->setLogoFilename($disc_manager->getLastSavedFileName());
             $save2 = true;
         }
-        if (isset($save2) and $save2 and $save_other) {
+        if (isset($save2) and $save2 and $saveGrouproom) {
             $grouproom_item->setLinkedGroupItemID($this->getItemID());
             $grouproom_item->saveOnlyItem();
         }
