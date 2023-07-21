@@ -26,7 +26,6 @@
 
     init: function() {
       let $this = this;
-
       let element = $this.element[0];
 
       // Look for div.cs-delete and show on mouseover. This is to show the delete icon on bigger screens
@@ -181,10 +180,6 @@
           );
 
         promises.push(promise);
-
-        if (draftMode === false) {
-          sendForms();
-        }
       });
     },
 
@@ -283,12 +278,9 @@
         // Simulate a click on each individual form submit button
         $(formElements).find('.uk-button-primary').click();
 
-        // This is a really strange workaround. Sub-entries like sections have a title form section that does not work
-        // like the other form sections. In fact, they rely not on an ajax call submitting the form data, but instead
-        // clicking the "hidden" edit button in that section will submit the form normally.
-        // But in parallel the other two sections (description and files) are send via ajax.
-        if (itemType === "section" || itemType === "step" || itemType === "article") {
-          draftMode = false;
+        // Discussion articles will not use ajax at all to create a new answer???
+        if (itemType === "article") {
+          return;
         }
 
         // Resolve all collected promises
