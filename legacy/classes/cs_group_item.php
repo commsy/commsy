@@ -114,7 +114,7 @@ class cs_group_item extends cs_label_item
                 // Zeitpunkte
                 $save_time = $portal->showTime();
 
-                $grouproom_item->saveOnlyItem();
+                $grouproom_item->save(false);
 
                 // add member of group to the group room
                 $current_user_item = $this->_environment->getCurrentUserItem();
@@ -193,7 +193,7 @@ class cs_group_item extends cs_label_item
         }
         if (isset($save2) and $save2 and $saveGrouproom) {
             $grouproom_item->setLinkedGroupItemID($this->getItemID());
-            $grouproom_item->saveOnlyItem();
+            $grouproom_item->save(false);
         }
         if (isset($new_group_room) and $new_group_room) {
             $this->setGroupRoomItemID($grouproom_item->getItemID());
@@ -208,24 +208,19 @@ class cs_group_item extends cs_label_item
         $this->updateElastic();
     }
 
-    /** save news item
-     * this methode save the news item into the database.
-     */
-    public function saveOnlyItem()
-    {
-        $this->save(false);
-    }
-
     /** delete group item
      * this methode delete the group item
      * with the group room.
      */
-    public function delete()
+    public function delete(bool $deleteGrouproom = true): void
     {
-        $room = $this->getGroupRoomItem();
-        if (isset($room)) {
-            $room->delete();
+        if ($deleteGrouproom) {
+            $room = $this->getGroupRoomItem();
+            if (isset($room)) {
+                $room->delete();
+            }
         }
+
         parent::delete();
     }
 
