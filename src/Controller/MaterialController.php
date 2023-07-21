@@ -1073,14 +1073,11 @@ class MaterialController extends BaseController
         return $printService->buildPdfResponse($html);
     }
 
-    /**
-     * @return RedirectResponse
-     */
     #[Route(path: '/room/{roomId}/material/create')]
     #[IsGranted('ITEM_NEW')]
     public function createAction(
         int $roomId
-    ): Response {
+    ): RedirectResponse {
         $roomItem = $this->getRoom($roomId);
 
         // create new material item
@@ -1093,8 +1090,10 @@ class MaterialController extends BaseController
         }
         $materialItem->save();
 
-        return $this->redirectToRoute('app_material_detail',
-            ['roomId' => $roomId, 'itemId' => $materialItem->getItemId()]);
+        return $this->redirectToRoute('app_material_detail', [
+            'roomId' => $roomId,
+            'itemId' => $materialItem->getItemId(),
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/createsection')]
@@ -1114,11 +1113,12 @@ class MaterialController extends BaseController
         $section->setNumber($countSections + 1);
         $section->save();
 
-        $formData = $this->materialTransformer->transform($section);
-        $form = $this->createForm(SectionType::class, $formData, ['action' => $this->generateUrl('app_material_savesection',
-            ['roomId' => $roomId, 'itemId' => $section->getItemID()]), 'placeholderText' => '['.$this->translator->trans('insert title').']']);
-
-        return $this->render('material/create_section.html.twig', ['form' => $form->createView(), 'sectionList' => $sectionList, 'material' => $material, 'section' => $section, 'modifierList' => [], 'userCount' => 0, 'readCount' => 0, 'readSinceModificationCount' => 0]);
+        return $this->render('material/create_section.html.twig', [
+            'sectionList' => $sectionList,
+            'material' => $material,
+            'section' => $section,
+            'modifierList' => [],
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/savesection')]

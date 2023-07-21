@@ -4,7 +4,7 @@
 
     $(".newSection").on('click', function(){
         // Create new section element in material view
-        
+
         var url = $(this).data('sectionUrl');
         // send ajax request to get new section item
         $.ajax({
@@ -12,7 +12,6 @@
         })
         .done(function(result) {
             // set section item in material view
-
             if ($('.material-section').last()[0]) {
                 $('.material-section').last().after(result);
                 $('.material-section').last()[0].scrollIntoView();
@@ -20,7 +19,6 @@
                 $('#section-content').html(result);
                 $('#section-content').children()[0].scrollIntoView();
             }
-            
         });
     });
 
@@ -36,7 +34,7 @@
                 var id = $(this).attr('id').match(/([\d]+)/g);
                 sorting.push(id);
             });
-            
+
             $.ajax({
                 type: "POST",
                 url: $(this).data('ukUrl'),
@@ -45,7 +43,7 @@
             .done(function(result) {
                 location.reload();
             });
-            
+
         });
 
         $("#sorting_cancel").unbind().on('click', function() {
