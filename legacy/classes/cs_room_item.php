@@ -546,22 +546,22 @@ class cs_room_item extends cs_context_item
         $this->_sendMailToModeration('community', 'undelete');
     }
 
-    public function _sendMailRoomUnDeleteToPortalModeration()
+    public function _sendMailRoomUnDeleteToPortalModeration(): void
     {
         $this->_sendMailToModeration('portal', 'undelete');
     }
 
-    public function _sendMailRoomOpenToProjectModeration()
+    public function _sendMailRoomOpenToProjectModeration(): void
     {
         $this->_sendMailToModeration('project', 'open');
     }
 
-    public function _sendMailRoomOpenToCommunityModeration()
+    public function _sendMailRoomOpenToCommunityModeration(): void
     {
         $this->_sendMailToModeration('community', 'open');
     }
 
-    public function _sendMailRoomOpenToPortalModeration()
+    public function _sendMailRoomOpenToPortalModeration(): void
     {
         $this->_sendMailToModeration('portal', 'open');
     }

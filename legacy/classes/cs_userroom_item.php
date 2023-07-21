@@ -84,11 +84,6 @@ class cs_userroom_item extends cs_room_item
         $this->updateElastic();
     }
 
-    public function saveOnlyItem()
-    {
-        $this->save(false);
-    }
-
     public function delete()
     {
         parent::delete();
