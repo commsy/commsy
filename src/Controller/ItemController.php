@@ -41,6 +41,7 @@ use cs_label_item;
 use cs_labels_manager;
 use cs_manager;
 use Exception;
+use LogicException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -94,11 +95,16 @@ class ItemController extends AbstractController
 
         $itemType = $item->getItemType();
 
+        // User description in the users profile (ProfileController)
+        if ($itemType === 'user') {
+            throw new LogicException('user description is not handled by this method');
+        }
+
         // NOTE: we disable the CommSy-related & MathJax toolbar items for users & groups, so their CKEEditor controls
         // won't allow any media upload; this is done since user & group detail views currently have no means to manage
         // (e.g. delete again) any attached files
         $configName = match ($itemType) {
-            'user', 'group' => 'cs_item_nomedia_config',
+            'group' => 'cs_item_nomedia_config',
             'discarticle' => 'cs_annotation_config',
             default => 'cs_item_config',
         };
