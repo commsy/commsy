@@ -437,6 +437,8 @@ class PortalSettingsController extends AbstractController
 
         return $this->render('portal_settings/auth_ldap.html.twig', [
             'form' => $ldapForm->createView(),
+            'portal' => $portal,
+            'authSource' => $ldapSource,
         ]);
     }
 
@@ -493,6 +495,7 @@ class PortalSettingsController extends AbstractController
         return $this->render('portal_settings/auth_local.html.twig', [
             'form' => $localForm->createView(),
             'portal' => $portal,
+            'authSource' => $localSource,
         ]);
     }
 
@@ -604,6 +607,8 @@ class PortalSettingsController extends AbstractController
 
         return $this->render('portal_settings/auth_guest.html.twig', [
             'form' => $authGuestForm->createView(),
+            'portal' => $portal,
+            'authSource' => $guestSource,
         ]);
     }
 
@@ -662,6 +667,7 @@ class PortalSettingsController extends AbstractController
         return $this->render('portal_settings/auth_shibboleth.html.twig', [
             'form' => $authShibbolethForm->createView(),
             'portal' => $portal,
+            'authSource' => $shibSource,
         ]);
     }
 
