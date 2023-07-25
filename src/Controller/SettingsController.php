@@ -41,6 +41,7 @@ use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
 use App\Utils\RoomService;
 use App\Utils\UserroomService;
+use cs_grouproom_item;
 use cs_project_item;
 use cs_room_item;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -101,13 +102,8 @@ class SettingsController extends AbstractController
             if (!$roomItem->isGroupRoom()) {
                 $roomItem->save();
             } else {
+                /** @var cs_grouproom_item $roomItem */
                 $roomItem->save(false);
-            }
-
-            $formData = $form->getData();
-
-            if (isset($formData['categories'])) {
-                $roomCategoriesService->setRoomCategoriesLinkedToContext($roomItem->getItemId(), $formData['categories']);
             }
 
             $roomSettingsChangedEvent = new RoomSettingsChangedEvent($oldRoom, $roomItem);
