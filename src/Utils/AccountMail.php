@@ -138,7 +138,7 @@ class AccountMail
                 break;
         }
 
-        if ('user-delete' !== $action) {
+        if (!in_array($action, ['user-delete', 'user-block'])) {
             $body .= '<br/><br/>';
             $body .= $absoluteRoomUrl;
         }
