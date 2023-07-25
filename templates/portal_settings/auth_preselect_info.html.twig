@@ -1,0 +1,11 @@
+{% if authSource.enabled %}
+    <div class="uk-margin">
+        <div class="uk-form-controls">
+            {% set preselectUrl = absolute_url(path('app_login', {
+                'context': portal.id,
+                'authSourceId': authSource.id
+            })) %}
+            {{ 'portal.auth.preselect_url'|trans({}, 'portal') }}: <a href="{{ preselectUrl }}">{{ preselectUrl }}</a>
+        </div>
+    </div>
+{% endif %}

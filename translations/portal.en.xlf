@@ -1096,6 +1096,10 @@
                 <source>authSource</source>
                 <target>Authentification source</target>
             </trans-unit>
+            <trans-unit id="portal_auth_preselect_url">
+                <source>portal.auth.preselect_url</source>
+                <target>Pre-select URL</target>
+            </trans-unit>
             <trans-unit id="portal_auth_default_source">
                 <source>Default Source</source>
                 <target>Default Source</target>
