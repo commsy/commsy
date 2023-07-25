@@ -16,6 +16,7 @@ namespace App\Form\DataTransformer;
 use App\Entity\Room;
 use App\Repository\RoomRepository;
 use App\Services\LegacyEnvironment;
+use App\Services\RoomCategoriesService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
 use cs_environment;
@@ -33,7 +34,8 @@ class GeneralSettingsTransformer extends AbstractTransformer
         private RoomService $roomService,
         private UserService $userService,
         private RoomRepository $roomRepository,
-        private ManagerRegistry $managerRegistry
+        private ManagerRegistry $managerRegistry,
+        private RoomCategoriesService $roomCategoriesService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -155,12 +157,20 @@ class GeneralSettingsTransformer extends AbstractTransformer
             $roomObject->setDescription('');
         }
 
+        // room categories
+        if (isset($roomData['categories'])) {
+            $this->roomCategoriesService->setRoomCategoriesLinkedToContext(
+                $roomObject->getItemId(),
+                $roomData['categories']
+            );
+        }
+
+        // room slugs
         /** @var Room $roomORM */
         $roomORM = $this->roomRepository->findOneBy(['itemId' => $roomObject->getItemID()]);
         $em = $this->managerRegistry->getManager();
         $em->persist($roomORM);
         $em->flush();
-        $em->detach($roomORM);
 
         // assignment
         if ($roomObject->isProjectRoom() && isset($roomData['community_rooms'])) {
