@@ -33,6 +33,12 @@ class AccessDeniedHandler implements AccessDeniedHandlerInterface
      */
     public function handle(Request $request, AccessDeniedException $accessDeniedException)
     {
+        // Do not respond with a redirect if this is a xml request. This way we can handle
+        // 403 responses in js .ajax() calls.
+        if ($request->isXmlHttpRequest()) {
+            return;
+        }
+
         $portal = $this->requestContext->fetchPortal($request);
         $contextId = $this->requestContext->fetchContextId($request);
 
