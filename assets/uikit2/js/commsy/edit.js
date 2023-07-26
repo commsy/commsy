@@ -105,9 +105,9 @@
 
       // send ajax request to get edit html
       $.ajax({
-        url: this.options.editUrl
+        url: this.options.editUrl,
       })
-        .done(function(result) {
+        .done(function(result, textStatus, jqXHR) {
           // replace article html
           $section.html($(result));
           registerDraftFormButtonEvents();
@@ -119,6 +119,10 @@
           // which are too long become truncated. However, data-uk-grid-match will now adjust the height of all
           // columns in a row.
           UI.trigger('resize');
+        })
+        .fail(function() {
+          // We might get a 403 response if there is an active lock or an error response in general.
+          window.location.reload();
         });
     },
 
