@@ -85,7 +85,6 @@ class AccountIndexType extends AbstractType
                     'Remove contact' => 8,
                     '--------------------' => 19,
                     'Send mail' => 9,
-                    'Mail combine ids' => 11,
                     '---------------------' => 20,
                     'Hide mail all wrks' => 13,
                     'Show mail all wrks' => 15,

@@ -14,8 +14,6 @@
 namespace App\Form\Type\Profile;
 
 use App\Form\Type\CheckedFileType;
-use App\Services\LegacyEnvironment;
-use Doctrine\ORM\EntityManagerInterface;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -30,13 +28,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AccountContactFormType extends AbstractType
 {
-    private $legacyEnvironment;
-
-    private $userItem;
-
-    public function __construct(private EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment, private TranslatorInterface $translator)
-    {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+    public function __construct(
+        private TranslatorInterface $translator
+    ) {
     }
 
     /**

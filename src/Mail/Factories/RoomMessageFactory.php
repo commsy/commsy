@@ -17,8 +17,10 @@ use App\Entity\Room;
 use App\Mail\MessageInterface;
 use App\Mail\Messages\RoomActivityDeleteWarningMessage;
 use App\Mail\Messages\RoomActivityLockWarningMessage;
+use App\Mail\Messages\UserJoinedContextMessage;
 use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
+use cs_user_item;
 use LogicException;
 
 class RoomMessageFactory
@@ -55,5 +57,11 @@ class RoomMessageFactory
         }
 
         return null;
+    }
+
+    public function createUserJoinedContextMessage(Room $room, cs_user_item $newUser, ?string $comment): MessageInterface
+    {
+        $portal = $this->portalRepository->find($room->getContextId());
+        return new UserJoinedContextMessage($this->legacyEnvironment, $portal, $room, $newUser, $comment);
     }
 }

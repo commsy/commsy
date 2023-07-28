@@ -963,26 +963,17 @@ class GroupController extends BaseController
                 $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
                 // TODO: refactor all mail sending code so that it is handled by a central class (like `MailAssistant.php`)
-                $to = [];
-                $toBCC = [];
+                $recipients = [];
                 $validator = new EmailValidator();
-                $failedUsers = [];
                 foreach ($users as $user) {
                     $userEmail = $user->getEmail();
                     $userName = $user->getFullName();
                     if ($validator->isValid($userEmail, new RFCValidation())) {
-                        if ($user->isEmailVisible()) {
-                            $to[$userEmail] = $userName;
-                        } else {
-                            $toBCC[$userEmail] = $userName;
-                        }
-                    } else {
-                        $failedUsers[] = $user;
+                        $recipients[$userEmail] = $userName;
                     }
                 }
 
                 $replyTo = [];
-                $toCC = [];
                 $currentUserEmail = $currentUser->getEmail();
                 $currentUserName = $currentUser->getFullName();
                 if ($validator->isValid($currentUserEmail, new RFCValidation())) {
@@ -992,11 +983,7 @@ class GroupController extends BaseController
 
                     // form option: copy_to_sender
                     if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                        if ($currentUser->isEmailVisible()) {
-                            $toCC[$currentUserEmail] = $currentUserName;
-                        } else {
-                            $toBCC[$currentUserEmail] = $currentUserName;
-                        }
+                        $recipients[$currentUserEmail] = $currentUserName;
                     }
                 }
 
@@ -1011,11 +998,14 @@ class GroupController extends BaseController
                     $message = $mailAssistant->addAttachments($formDataFiles, $message);
                 }
 
-                // NOTE: as of #2461 all mail should be sent as BCC mail
-                $allRecipients = array_merge($to, $toCC, $toBCC);
-                $message->bcc(...$mailAssistant->convertArrayToAddresses($allRecipients));
+                $mailSend = true;
+                foreach ($recipients as $email => $name) {
+                    $message->to(new Address($email, $name));
+                    $send = $this->mailer->sendEmailObject($message, $portalItem->getTitle());
+                    $mailSend = $mailSend && $send;
+                }
 
-                $this->addFlash('recipientCount', count($allRecipients));
+                $this->addFlash('recipientCount', count($recipients));
 
                 // send mail
                 $mailSend = $this->mailer->sendEmailObject($message, $portalItem->getTitle());
@@ -1099,26 +1089,17 @@ class GroupController extends BaseController
                 $users = $this->userService->getUsersByGroupIds($roomId, $item->getItemID(), true);
 
                 // TODO: refactor all mail sending code so that it is handled by a central class (like `MailAssistant.php`)
-                $to = [];
-                $toBCC = [];
+                $recipients = [];
                 $validator = new EmailValidator();
-                $failedUsers = [];
                 foreach ($users as $user) {
                     $userEmail = $user->getEmail();
                     $userName = $user->getFullName();
                     if ($validator->isValid($userEmail, new RFCValidation())) {
-                        if ($user->isEmailVisible()) {
-                            $to[$userEmail] = $userName;
-                        } else {
-                            $toBCC[$userEmail] = $userName;
-                        }
-                    } else {
-                        $failedUsers[] = $user;
+                        $recipients[$userEmail] = $userName;
                     }
                 }
 
                 $replyTo = [];
-                $toCC = [];
                 $currentUserEmail = $currentUser->getEmail();
                 $currentUserName = $currentUser->getFullName();
                 if ($validator->isValid($currentUserEmail, new RFCValidation())) {
@@ -1128,11 +1109,7 @@ class GroupController extends BaseController
 
                     // form option: copy_to_sender
                     if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                        if ($currentUser->isEmailVisible()) {
-                            $toCC[$currentUserEmail] = $currentUserName;
-                        } else {
-                            $toBCC[$currentUserEmail] = $currentUserName;
-                        }
+                        $recipients[$currentUserEmail] = $currentUserName;
                     }
                 }
 
@@ -1147,14 +1124,14 @@ class GroupController extends BaseController
                     $email = $mailAssistant->addAttachments($formDataFiles, $email);
                 }
 
-                // NOTE: as of #2461 all mail should be sent as BCC mail
-                $allRecipients = array_merge($to, $toCC, $toBCC);
-                $email->bcc(...$mailAssistant->convertArrayToAddresses($allRecipients));
+                $mailSend = true;
+                foreach ($recipients as $userEmail => $userName) {
+                    $email->to(new Address($userEmail, $userName));
+                    $send = $this->mailer->sendEmailObject($email, $portalItem->getTitle());
+                    $mailSend = $mailSend && $send;
+                }
 
-                $this->addFlash('recipientCount', count($allRecipients));
-
-                // send mail
-                $mailSend = $this->mailer->sendEmailObject($email, $portalItem->getTitle());
+                $this->addFlash('recipientCount', count($recipients));
                 $this->addFlash('mailSend', $mailSend);
 
                 // redirect to success page

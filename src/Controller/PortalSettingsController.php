@@ -79,6 +79,7 @@ use App\Form\Type\Portal\TimePulsesType;
 use App\Form\Type\Portal\TimePulseTemplateType;
 use App\Form\Type\TermType;
 use App\Form\Type\TranslationType;
+use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
 use App\Model\TimePulseTemplate;
 use App\Repository\AuthSourceRepository;
@@ -1613,18 +1614,6 @@ class PortalSettingsController extends AbstractController
                             'portalId' => $portalId,
                             'recipients' => implode(', ', $IdsMailRecipients),
                         ]);
-                    case 11: // send mail merge userIDs
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                array_push($IdsMailRecipients, $id);
-                            }
-                        }
-
-                        return $this->redirectToRoute('app_portalsettings_accountindexsendmergemail', [
-                            'portalId' => $portalId,
-                            'recipients' => implode(', ', $IdsMailRecipients),
-                        ]);
                     case 13: // hide mail everywhere
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
@@ -1819,14 +1808,15 @@ class PortalSettingsController extends AbstractController
         ItemService $itemService,
         Mailer $mailer,
         Portal $portal,
-        RouterInterface $router
+        RouterInterface $router,
+        ContactFormHelper $contactFormHelper
     ): Response {
         $user = $userService->getCurrentUserItem();
         $recipientArray = [];
-        $recipients = explode(', ', $recipients);
-        foreach ($recipients as $recipient) {
-            $currentUser = $userService->getUser($recipient);
-            array_push($recipientArray, $currentUser);
+        $recipientIds = explode(', ', $recipients);
+        foreach ($recipientIds as $recipientId) {
+            $currentUser = $userService->getUser($recipientId);
+            $recipientArray[] = $currentUser;
         }
 
         $multipleRecipients = sizeof($recipientArray) > 1;
@@ -1846,30 +1836,16 @@ class PortalSettingsController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $data = $form->getData();
-                $mailRecipients = $data->getRecipients();
-
-                if ($data->getCopyToSender()) {
-                    $mailRecipients[] = $userService->getCurrentUserItem();
-                }
-
-                $recipientCount = 0;
-
-                foreach ($mailRecipients as $mailRecipient) {
-                    $item = $itemService->getTypedItem($mailRecipient->getItemId());
-                    $email = $mailAssistant->getAccountIndexActionMessage($form, $item);
-                    $mailer->sendEmailObject($email, $portal->getTitle());
-
-                    if (!is_null($email->getTo())) {
-                        $recipientCount += count($email->getTo());
-                    }
-                    if (!is_null($email->getCc())) {
-                        $recipientCount += count($email->getCc());
-                    }
-                    if (!is_null($email->getBcc())) {
-                        $recipientCount += count($email->getBcc());
-                    }
-                }
+                $recipientCount = $contactFormHelper->handleContactFormSending(
+                    $sendMail->getSubject(),
+                    $sendMail->getMessage(),
+                    $portal->getTitle(),
+                    $userService->getCurrentUserItem(),
+                    [],
+                    $sendMail->getRecipients(),
+                    '',
+                    $sendMail->getCopyToSender()
+                );
 
                 $this->addFlash('recipientCount', $recipientCount);
 
@@ -1886,77 +1862,6 @@ class PortalSettingsController extends AbstractController
 
         return $this->render('portal_settings/account_index_send_mail.html.twig', [
             'user' => $user,
-            'form' => $form->createView(),
-            'recipients' => $recipientArray,
-        ]);
-    }
-
-    #[Route(path: '/portal/{portalId}/settings/accountindex/sendmergemail/{recipients}')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
-    #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function accountIndexSendMergeMail(
-        Portal $portal,
-        $portalId,
-        $recipients,
-        Request $request,
-        LegacyEnvironment $legacyEnvironment,
-        MailAssistant $mailAssistant,
-        UserService $userService,
-        ItemService $itemService,
-        Mailer $mailer,
-        RouterInterface $router
-    ): Response {
-        $recipientArray = [];
-        $recipients = explode(', ', $recipients);
-        foreach ($recipients as $recipient) {
-            $currentUser = $userService->getUser($recipient);
-            array_push($recipientArray, $currentUser);
-        }
-
-        $sendMail = new AccountIndexSendMergeMail();
-        $sendMail->setRecipients($recipientArray);
-
-        $action = 'user-account-merge';
-        $accountMail = new AccountMail($legacyEnvironment, $router);
-        $body = $accountMail->generateBody($userService->getCurrentUserItem(), $action);
-        $subject = $accountMail->generateSubject($action);
-        $sendMail->setSubject($subject);
-        $sendMail->setMessage($body);
-
-        $form = $this->createForm(AccountIndexSendMergeMailType::class, $sendMail);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $mailRecipients = $data->getRecipients();
-
-            $recipientCount = 0;
-            foreach ($mailRecipients as $mailRecipient) {
-                $item = $itemService->getTypedItem($mailRecipient->getItemId());
-                $email = $mailAssistant->getAccountIndexPasswordMessage($form, $item);
-                $mailer->sendEmailObject($email, $portal->getTitle());
-
-                if (!is_null($email->getTo())) {
-                    $recipientCount += count($email->getTo());
-                }
-                if (!is_null($email->getCc())) {
-                    $recipientCount += count($email->getCc());
-                }
-                if (!is_null($email->getBcc())) {
-                    $recipientCount += count($email->getBcc());
-                }
-            }
-
-            $this->addFlash('recipientCount', $recipientCount);
-
-            $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
-                'portalId' => $portal->getId(),
-            ]);
-            $this->addFlash('savedSuccess', $returnUrl);
-        }
-
-        return $this->render('portal_settings/account_index_send_merge_mail.html.twig', [
-            'portal' => $portal,
             'form' => $form->createView(),
             'recipients' => $recipientArray,
         ]);

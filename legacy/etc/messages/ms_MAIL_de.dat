@@ -191,8 +191,6 @@ $message["MAIL_CHOICE_USER_STATUS_MODERATOR"]["de"] = "Status Moderator";
 $message["MAIL_CHOICE_USER_STATUS_READ_ONLY_USER"]["de"] = "Status LesendeR BenutzerIn";
 $message["MAIL_CHOICE_USER_STATUS_USER"]["de"] = "Kennung freischalten / Status BenutzerIn";
 $message["MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON"]["de"] = "Status AnsprechpartnerIn entfernen";
-$message["MAIL_COMMENT_BY"]["de"] = "Kommentar von %1:
-%2";
 $message["MAIL_COMMENT_IMS"]["de"] = "Durchgeführt von %1";
 $message["MAIL_EDIT_RESET"]["de"] = "Zurücksetzen?";
 $message["MAIL_EDIT_RESET_TEXT"]["de"] = "Wollen Sie den E-Mail-Text auf den vom System vorgegebenen Text zurücksetzen?";
@@ -225,5 +223,4 @@ $message["MAIL_SUBJECT_USER_STATUS_USER"]["de"] = "%1: neuer Status - BenutzerIn
 $message["MAIL_SUBJECT_USER_UNMAKE_CONTACT_PERSON"]["de"] = "%1: keinE AnsprechpartnerIn mehr";
 $message["MAIL_TO"]["de"] = "An:";
 $message["MAIL_TO_MODERATOR_HEADLINE"]["de"] = "E-Mail an die Moderation";
-$message["MAIL_USER_FREE_LINK"]["de"] = "Zur Freischaltung folgen Sie bitte diesem Link:";
 ?>

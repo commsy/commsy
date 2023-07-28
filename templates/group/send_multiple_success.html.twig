@@ -1,5 +1,7 @@
 {% extends 'base/room.html.twig' %}
 
+{% import "mail/flashes.html.twig" as flashes %}
+
 {% block content %}
     <div class="uk-grid">
 
@@ -12,16 +14,7 @@
                     </div>
                 </div>
 
-                {% set recipientCount = app.flashes('recipientCount')|first %}
-
-                <div class="uk-alert uk-alert-success">
-                    <i class="uk-icon-check-square-o uk-icon-medium"></i>
-                    {{ 'Your email has been successfully sent to multiple users'|trans({'%user_count%': recipientCount}, "mail") }}
-                </div>
-
-                <div>
-                    {{ 'Back to'|trans({}, "mail") }} <a href="{{ link }}">{{ 'group'|trans({}, 'menu') }}</a>
-                </div>
+                {{ flashes.mailSendFlashes(link, 'group'|trans({}, 'menu')) }}
             </div>
 
         </div>
