@@ -438,10 +438,6 @@
                 <source>Send mail</source>
                 <target>Send mail</target>
             </trans-unit>
-            <trans-unit id="mail_combine_ids">
-                <source>Mail combine ids</source>
-                <target>Mail: merge ids</target>
-            </trans-unit>
             <trans-unit id="hide_mail_all_wrks">
                 <source>Hide mail all wrks</source>
                 <target>Hide mail in all workspaces</target>
@@ -1095,6 +1091,10 @@
             <trans-unit id="authentication_source">
                 <source>authSource</source>
                 <target>Authentification source</target>
+            </trans-unit>
+            <trans-unit id="portal_auth_preselect_url">
+                <source>portal.auth.preselect_url</source>
+                <target>Pre-select URL</target>
             </trans-unit>
             <trans-unit id="portal_auth_default_source">
                 <source>Default Source</source>

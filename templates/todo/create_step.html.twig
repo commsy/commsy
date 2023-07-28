@@ -1,0 +1,27 @@
+{% import 'utils/macros.html.twig' as macros %}
+{% import 'todo/macros.html.twig' as macrosTodo %}
+{% import 'item/macros.html.twig' as macrosItem %}
+
+<div class="uk-panel uk-panel-box uk-margin-top">
+    <article class="uk-article uk-position-relative cs-edit-draft">
+        {# title #}
+        <div class="cs-toggle" data-uk-observe>
+            {{ macrosTodo.title(step, [], 0, 0, 0, true) }}
+        </div>
+
+        {# description #}
+        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
+                editUrl: '{{ path('app_item_editdescription', { 'roomId': step.contextId, 'itemId': step.itemId }) }}',
+                cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': step.contextId, 'itemId': step.itemId }) }}'
+            }">
+            {{ macrosItem.itemDescription('description', step, true, step.description, step.draft) }}
+        </div>
+
+        {# files #}
+        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': step.contextId, 'itemId': step.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': step.contextId, 'itemId': step.itemId}) }}' }">
+            {{ macrosItem.files(step, step.draft) }}
+        </div>
+
+        {{ macros.draftButtons(step.contextId, step.itemId) }}
+    </article>
+</div>

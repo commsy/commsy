@@ -38,13 +38,19 @@
                     {{ form_errors(form) }}
 
                     {# code request #}
-                    {% if form.code is defined %}
+                    {% if form.code is defined and form.coderequest is defined %}
                         <div class="uk-form-row">
                             <div class="uk-form-controls uk-form-controls-text">
                                 {{ 'room code description'|trans({}, 'room') }}
                             </div>
                         </div>
                         {{ form_row(form.code) }}
+
+                        <div class="uk-form-row">
+                            <div class="uk-form-controls uk-button-group">
+                                {{ form_widget(form.coderequest) }}
+                            </div>
+                        </div>
                     {% endif %}
 
                     {# regular request with free text #}
@@ -79,34 +85,22 @@
                     {% endif %}
 
                     {# buttons #}
-                    {% if form.coderequest is defined and form.codecancel is defined %}
+                    {% if form.request is defined and form.cancel is defined %}
                         <div class="uk-form-row">
                             <div class="uk-form-controls uk-button-group">
-                                {{ form_widget(form.coderequest) }}
+                                {{ form_widget(form.request) }}
 
                                 <div class="uk-margin-small-left">
-                                    {{ form_widget(form.codecancel) }}
+                                    {{ form_widget(form.cancel) }}
                                 </div>
                             </div>
                         </div>
-                    {% else %}
-                        {% if form.request is defined and form.cancel is defined %}
-                            <div class="uk-form-row">
-                                <div class="uk-form-controls uk-button-group">
-                                    {{ form_widget(form.request) }}
-
-                                    <div class="uk-margin-small-left">
-                                        {{ form_widget(form.cancel) }}
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
                     {% endif %}
-                    
+
                     {{ form_end(form) }}
                 </div>
             </div>
         </div>
-        
+
     </div>
 {% endblock %}

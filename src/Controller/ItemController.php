@@ -21,10 +21,8 @@ use App\Form\Type\ItemCatsBuzzType;
 use App\Form\Type\ItemDescriptionType;
 use App\Form\Type\ItemLinksType;
 use App\Form\Type\ItemWorkflowType;
-use App\Form\Type\SendListType;
 use App\Form\Type\SendType;
 use App\Mail\Mailer;
-use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
 use App\Utils\DateService;
@@ -33,14 +31,13 @@ use App\Utils\LabelService;
 use App\Utils\MailAssistant;
 use App\Utils\MaterialService;
 use App\Utils\RoomService;
-use App\Utils\UserService;
 use cs_dates_item;
 use cs_file_item;
 use cs_item;
 use cs_label_item;
 use cs_labels_manager;
 use cs_manager;
-use Exception;
+use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -90,11 +87,16 @@ class ItemController extends AbstractController
 
         $itemType = $item->getItemType();
 
+        // User description in the users profile (ProfileController)
+        if ($itemType === 'user') {
+            throw new LogicException('user description is not handled by this method');
+        }
+
         // NOTE: we disable the CommSy-related & MathJax toolbar items for users & groups, so their CKEEditor controls
         // won't allow any media upload; this is done since user & group detail views currently have no means to manage
         // (e.g. delete again) any attached files
         $configName = match ($itemType) {
-            'user', 'group' => 'cs_item_nomedia_config',
+            'group' => 'cs_item_nomedia_config',
             'discarticle' => 'cs_annotation_config',
             default => 'cs_item_config',
         };
@@ -704,10 +706,7 @@ class ItemController extends AbstractController
             }
 
             // send mail
-            $email = $mailAssistant->getItemSendMessage($form, $item);
-            $mailer->sendEmailObject($email, $portalItem->getTitle());
-
-            $recipientCount = count($email->getTo() ?? []) + count($email->getCc() ?? []) + count($email->getBcc() ?? []);
+            $recipientCount = $mailAssistant->handleItemSendMessage($form, $item, $portalItem->getTitle());
             $this->addFlash('recipientCount', $recipientCount);
 
             // redirect to success page
@@ -817,69 +816,6 @@ class ItemController extends AbstractController
 
         return new JsonResponse([
             $optionsData['itemsLatest'],
-        ]);
-    }
-
-    /**
-     * @throws Exception
-     */
-    #[Route(path: '/room/{roomId}/item/sendlist', condition: 'request.isXmlHttpRequest()')]
-    public function sendlistAction(
-        Request $request,
-        RoomService $roomService,
-        UserService $userService,
-        LegacyEnvironment $legacyEnvironment,
-        Mailer $mailer,
-        int $roomId
-    ): Response {
-        // extract item id from request data
-        $requestContent = $request->getContent();
-        if (empty($requestContent)) {
-            throw new Exception('no request content given');
-        }
-
-        $room = $roomService->getRoomItem($roomId);
-
-        $environment = $legacyEnvironment->getEnvironment();
-        $currentUser = $environment->getCurrentUser();
-
-        // prepare form
-        $formMessage = $this->renderView('email/item_list_template.txt.twig', ['user' => $currentUser, 'room' => $room]);
-
-        $formData = [
-            'message' => $formMessage,
-        ];
-
-        $form = $this->createForm(SendListType::class, $formData, []);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            $userIds = explode(',', (string) $data['entries']);
-            $recipients = [];
-            foreach ($userIds as $userId) {
-                $user = $userService->getUser($userId);
-                if ($user) {
-                    $recipients[] = RecipientFactory::createRecipient($user);
-                }
-            }
-
-            $mailer->sendMultipleRaw(
-                $data['subject'],
-                $data['message'],
-                $recipients,
-                $currentUser->getFullname(),
-                [],
-                $data['copy_to_sender'] ? [$currentUser->getEmail()] : []
-            );
-
-            return $this->render('item/send_list.html.twig');
-        }
-
-        return $this->render('item/send_list.html.twig', [
-            'form' => $form,
         ]);
     }
 
@@ -1064,6 +1000,28 @@ class ItemController extends AbstractController
 
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::CANCEL);
 
-        return $this->render('item/cancel_edit.html.twig', ['canceledEdit' => true, 'roomId' => $roomId, 'item' => $item]);
+        // cancel editing a NEW entry => return to list view
+        // cancel editing an EXISTING entry => return to detail view of the entry
+        $redirectUrl = $this->generateUrl("app_{$item->getType()}_" . ($item->isDraft() ? 'list' : 'detail'), [
+            'roomId' => $roomId,
+            'itemId' => $item->getItemID(),
+        ]);
+
+        return $this->json([
+            'redirectUrl' => $redirectUrl,
+        ]);
+    }
+
+    #[Route(path: '/room/{roomId}/item/{itemId}/undraft', condition: 'request.isXmlHttpRequest()')]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
+    public function undraft(
+        ItemService $itemService,
+        int $itemId
+    ): Response {
+        $item = $itemService->getItem($itemId);
+        $item->setDraftStatus(0);
+        $item->saveAsItem();
+
+        return new Response();
     }
 }

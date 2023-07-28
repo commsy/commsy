@@ -25,6 +25,7 @@ export function setup(locales, id: string, editable: boolean = true): void {
         },
         locales: locales,
         locale: calendarEl.dataset.locale === 'de' ? 'de' : 'en-gb',
+        timeZone: 'UTC',
         dateClick(info) {
           if (editable) {
             const createEl = document.getElementById('create-date');

@@ -69,12 +69,21 @@
                         {# global search #}
                         {% if app.request.attributes.get('_route') is not same as('app_tou_accept') %}
                             {% if requestContextId is not same as 99 %}
-                                {{ render(controller(
-                                    'App\\Controller\\SearchController::searchFormAction', {
-                                        'roomId': requestContextId,
+                                {#
+                                    SearchController is also protected by an IsGranted Attribute. However, in prod env only,
+                                    the sub controller permission check will not result in an access denied response, but
+                                    will only prevent the rendering, of the search form. This will obfuscate potential
+                                    missing security checks (which only occure in production). Be carefull to check in later
+                                    versions before removing!
+                                #}
+                                {% if is_granted('ITEM_ENTER', requestContextId) %}
+                                    {{ render(controller(
+                                        'App\\Controller\\SearchController::searchFormAction', {
+                                            'roomId': requestContextId,
                                         'requestData': app.request.query.all('search') ?? app.request.query.all('search_filter')
-                                    }
-                                )) }}
+                                        }
+                                    )) }}
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                     </div>

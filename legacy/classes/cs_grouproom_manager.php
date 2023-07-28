@@ -310,12 +310,12 @@ class cs_grouproom_manager extends cs_room2_manager
          unset($item);
      }
 
-     public function getRelatedGroupListForUser($user_item)
+     public function getRelatedGroupListForUser($user_item): cs_list
      {
          return $this->getRelatedContextListForUserInt($user_item->getUserID(), $user_item->getAuthSource(), $this->_environment->getCurrentPortalID());
      }
 
-     public function getUserRelatedGroupListForUser($user_item)
+     public function getUserRelatedGroupListForUser($user_item): cs_list
      {
          return $this->getRelatedContextListForUserInt($user_item->getUserID(), $user_item->getAuthSource(), $this->_environment->getCurrentPortalID(), false, true);
      }

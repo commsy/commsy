@@ -435,7 +435,7 @@ class cs_manager
     /** get one item (newest version)
      * this method returns an item in his newest version - this method needs to be overwritten.
      *
-     * @param int item_id id of the commsy item
+     * @param int $item_id id of the commsy item
      *
      * @return object cs_item one commsy items
      */
@@ -611,20 +611,13 @@ class cs_manager
         } catch (\Doctrine\DBAL\Exception $e) {
             trigger_error($e->getMessage(), E_USER_WARNING);
         }
-
-        global $symfonyContainer;
-
-        /** @var LockManager $lockManager */
-        $lockManager = $symfonyContainer->get(LockManager::class);
-        if ($lockManager->supportsLocking($item->getItemID())) {
-            $lockManager->unlockEntry($item->getItemID());
-        }
     }
 
     /** delete a commsy item
      * this method deletes a commsy item.
      *
-     * @param int item_id the item id of the commsy item
+     * @param $itemId the item id of the commsy item
+     * @throws \Doctrine\DBAL\Exception
      */
     public function delete($itemId)
     {
@@ -695,23 +688,17 @@ class cs_manager
             if (method_exists($item, 'getItemID')) {
                 $item_id = $item->getItemID();
                 if (!empty($item_id)) {
-                    // external viewer
-                    $itemManager = $this->_environment->getItemManager();
-                    $externalViewer = $itemManager->getExternalViewerUserArrayForItem($item_id);
-                    $item->setExternalViewerAccounts($externalViewer);
-
                     // cache
                     if (empty($this->_cache_object[$item_id])) {
                         $this->_cache_object[$item_id] = $item;
                     }
                 }
-            }
-        }
 
-        if ($this->_cache_on && method_exists($item, 'getItemID')) {
-            $item_id = $item->getItemID();
-            if (!empty($item_id) && empty($this->_cache_object[$item_id])) {
-                $this->_cache_object[$item_id] = $item;
+                if ($this->_cache_on) {
+                    if (!empty($item_id) && empty($this->_cache_object[$item_id])) {
+                        $this->_cache_object[$item_id] = $item;
+                    }
+                }
             }
         }
 

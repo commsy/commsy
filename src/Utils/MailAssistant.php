@@ -15,10 +15,12 @@ namespace App\Utils;
 
 use App\Form\Model\File;
 use App\Form\Model\Send;
+use App\Mail\Mailer;
 use App\Services\LegacyEnvironment;
 use cs_dates_item;
 use cs_environment;
 use cs_item;
+use cs_list;
 use cs_todo_item;
 use cs_user_item;
 use Symfony\Component\Form\FormInterface;
@@ -32,6 +34,7 @@ class MailAssistant
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
+        private readonly Mailer $mailer,
         private readonly Environment $twig
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -117,239 +120,22 @@ class MailAssistant
         return false;
     }
 
-    public function getUserContactMessage(
+    public function handleItemSendMessage(
         FormInterface $form,
-        $item,
-        $moderatorIds,
-        UserService $userService
-    ): Email {
-        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-        $formData = $form->getData();
-
-        $recipients = [
-            'to' => [],
-            'bcc' => [],
-        ];
-
-        $recipients['to'][$item->getEmail()] = $item->getFullName();
-        if (!is_null($moderatorIds)) {
-            $moderatorIds = explode(', ', (string) $moderatorIds);
-            foreach ($moderatorIds as $moderatorId) {
-                $moderator = $userService->getUser($moderatorId);
-                $recipients['to'][$moderator->getEmail()] = $moderator->getFullName();
-            }
-        }
-
-        $to = $recipients['to'];
-        $toBCC = $recipients['bcc'];
-
-        $replyTo = [];
-        $currentUserEmail = $currentUser->getEmail();
-        $currentUserName = $currentUser->getFullName();
-        if ($currentUser->isEmailVisible()) {
-            $replyTo[] = new Address($currentUserEmail, $currentUserName);
-        }
-
-        $formDataSubject = $formData['subject'];
-        $formDataMessage = $formData['message'];
-
-        $message = (new Email())
-            ->subject($formDataSubject)
-            ->html($formDataMessage ?: '')
-            ->replyTo(...$replyTo);
-
-        // form option: files
-        $formDataFiles = $formData['files'];
-
-        if (!empty($formDataFiles)) {
-            $message = $this->addAttachments($formDataFiles, $message);
-        }
-
-        // form option: copy_to_sender
-        $toCC = [];
-
-        $isCopyToSender = $form->has('copy_to_sender') && $formData['copy_to_sender'];
-
-        if ($isCopyToSender) {
-            if ($currentUser->isEmailVisible()) {
-                $toCC[$currentUserEmail] = $currentUserName;
-            } else {
-                $toBCC[$currentUserEmail] = $currentUserName;
-            }
-        }
-
-        $hasAdditionalRecipient = $form->has('additional_recipient') && !empty($formData['additional_recipient']);
-
-        if ($hasAdditionalRecipient) {
-            $toCC[$formData['additional_recipient']] = $formData['additional_recipient'];
-        }
-
-        $allRecipients = array_merge($to, $toCC, $toBCC);
-        $message->bcc(...$this->convertArrayToAddresses($allRecipients));
-
-        return $message;
-    }
-
-    public function getAccountIndexActionMessage(
-        FormInterface $form,
-        $item
-    ): Email {
-        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-        $formData = $form->getData();
-
-        $recipients = [
-            'to' => [],
-            'bcc' => [],
-        ];
-
-        $recipients['to'][$item->getEmail()] = $item->getFullName();
-
-        $to = $recipients['to'];
-        $toBCC = $recipients['bcc'];
-
-        $replyTo = [];
-        $currentUserEmail = $currentUser->getEmail();
-        $currentUserName = $currentUser->getFullName();
-        if ($currentUser->isEmailVisible()) {
-            $replyTo[] = new Address($currentUserEmail, $currentUserName);
-        }
-
-        $formDataSubject = $formData->getSubject();
-
-        $formDataMessage = $formData->getMessage();
-
-        $message = (new Email())
-            ->subject($formDataSubject)
-            ->html($formDataMessage)
-            ->replyTo(...$replyTo);
-
-        // form option: copy_to_sender
-        $toCC = [];
-
-        $isCopyToSender = $form->has('copy_to_sender') && $formData['copy_to_sender'];
-
-        if ($isCopyToSender) {
-            if ($currentUser->isEmailVisible()) {
-                $toCC[$currentUserEmail] = $currentUserName;
-            } else {
-                $toBCC[$currentUserEmail] = $currentUserName;
-            }
-        }
-
-        if (!empty($to)) {
-            $message->to(...$this->convertArrayToAddresses($to));
-        }
-
-        if (!empty($toCC)) {
-            $message->cc(...$this->convertArrayToAddresses($toCC));
-        }
-
-        if (!empty($toBCC)) {
-            $message->bcc(...$this->convertArrayToAddresses($toBCC));
-        }
-
-        return $message;
-    }
-
-    public function getAccountIndexPasswordMessage(
-        FormInterface $form,
-        $item): Email
+        cs_item $item,
+        string $from
+    ): int
     {
+        $recipientCount = 0;
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         $formData = $form->getData();
 
-        $recipients = [
-            'to' => [],
-            'bcc' => [],
-        ];
-
-        $recipients['to'][$item->getEmail()] = $item->getFullName();
-
-        $to = $recipients['to'];
-        $toBCC = $recipients['bcc'];
-
         $replyTo = [];
-        $currentUserEmail = $currentUser->getEmail();
-        $currentUserName = $currentUser->getFullName();
         if ($currentUser->isEmailVisible()) {
-            $replyTo[] = new Address($currentUserEmail, $currentUserName);
-        }
-
-        $formDataSubject = $formData->getSubject();
-
-        $formDataMessage = $formData->getMessage();
-
-        $message = (new Email())
-            ->subject($formDataSubject)
-            ->html($formDataMessage)
-            ->replyTo(...$replyTo);
-
-        // form option: copy_to_sender
-        $toCC = [];
-
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->resetLimits();
-        $userManager->setUserLimit();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->select();
-        $portaluserList = $userManager->get();
-        $moderators = [];
-        foreach ($portaluserList as $portalUser) {
-            if (3 == $portalUser->getStatus()) {
-                array_push($moderators, $portalUser);
-            }
-        }
-
-        if ($form->getData()->getCopyCCToModertor()) {
-            foreach ($moderators as $moderator) {
-                $toCC[$moderator->getEmail()] = $moderator->getFullName();
-            }
-        }
-        if ($form->getData()->getCopyBCCToModerator()) {
-            foreach ($moderators as $moderator) {
-                $toBCC[$moderator->getEmail()] = $moderator->getFullName();
-            }
-        }
-        if ($form->getData()->getCopyCCToSender()) {
-            $toCC[$currentUserEmail] = $currentUserName;
-        }
-        if ($form->getData()->getCopyBCCToSender()) {
-            $toBCC[$currentUserEmail] = $currentUserName;
-        }
-
-        if (!empty($to)) {
-            $message->to(...$this->convertArrayToAddresses($to));
-        }
-
-        if (!empty($toCC)) {
-            $message->cc(...$this->convertArrayToAddresses($toCC));
-        }
-
-        if (!empty($toBCC)) {
-            $message->bcc(...$this->convertArrayToAddresses($toBCC));
-        }
-
-        return $message;
-    }
-
-    public function getItemSendMessage(FormInterface $form, cs_item $item): Email
-    {
-        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-        $formData = $form->getData();
-
-        $recipients = $this->getRecipients($form, $item);
-        $to = $recipients['to'];
-        $toBCC = $recipients['bcc'];
-
-        $replyTo = [];
-        $currentUserEmail = $currentUser->getEmail();
-        $currentUserName = $currentUser->getFullName();
-        if ($currentUser->isEmailVisible()) {
-            $replyTo[] = new Address($currentUserEmail, $currentUserName);
+            $replyTo[] = new Address($currentUser->getEmail(), $currentUser->getFullName());
         }
 
         $formDataSubject = (Send::class == $formData::class ? (is_null($formData->getSubject()) ? false : $formData->getSubject()) : $formData['subject']);
-
         $formDataMessage = (Send::class == $formData::class ? (is_null($formData->getMessage()) ? false : $formData->getMessage()) : $formData['message']);
 
         $message = (new Email())
@@ -359,62 +145,54 @@ class MailAssistant
 
         // form option: files
         $formDataFiles = (Send::class == $formData::class ? (is_null($formData->getFiles()) ? false : $formData->getFiles()) : $formData['files']);
-
         if ($formDataFiles) {
             $message = $this->addAttachments($formDataFiles, $message);
         }
 
         // form option: copy_to_sender
-        $toCC = [];
-
         $isSendToCreator = (Send::class == $formData::class ? (is_null($formData->getSendToCreator()) ? false : $formData->getSendToCreator()) : $form->has('send_to_creator') && $formData['send_to_creator']);
-
         if ($isSendToCreator) {
-            /** @var cs_user_item $itemCreator */
+            $recipientCount++;
             $itemCreator = $item->getCreatorItem();
-            if ($itemCreator->isEmailVisible()) {
-                $to[$itemCreator->getEmail()] = $itemCreator->getFullName();
-            } else {
-                $toBCC[$itemCreator->getEmail()] = $itemCreator->getFullName();
-            }
+            $creatorMessage = clone $message;
+            $creatorMessage->to(new Address($itemCreator->getEmail(), $itemCreator->getFullName()));
+            $this->mailer->sendEmailObject($creatorMessage, $from);
         }
 
         $isCopyToSender = (Send::class == $formData::class ? (is_null($formData->getCopyToSender()) ? false : $formData->getCopyToSender()) : $form->has('copy_to_sender') && $formData['copy_to_sender']);
-
         if ($isCopyToSender) {
-            if ($currentUser->isEmailVisible()) {
-                $toCC[$currentUserEmail] = $currentUserName;
-            } else {
-                $toBCC[$currentUserEmail] = $currentUserName;
-            }
+            $recipientCount++;
+            $senderMessage = clone $message;
+            $senderMessage->to(new Address($currentUser->getEmail(), $currentUser->getFullName()));
+            $this->mailer->sendEmailObject($senderMessage, $from);
         }
 
-        // form option: additional_recipients
-        $isAdditionalRecipients = (Send::class == $formData::class ? (is_null($formData->getAdditionalRecipients())
-            ? false : true) : $form->has('additional_recipients'));
+        $recipients = $this->getRecipients($form, $item);
 
+        // form option: additional_recipients
+        $isAdditionalRecipients = (Send::class == $formData::class ? !is_null($formData->getAdditionalRecipients()) : $form->has('additional_recipients'));
         if ($isAdditionalRecipients) {
             $formDataAdditionalRecipients = (Send::class == $formData::class
                 ? ($formData->getAdditionalRecipients()) : $formData['additional_recipients']);
             $additionalRecipients = array_filter($formDataAdditionalRecipients);
 
             if (!empty($additionalRecipients)) {
-                $to = array_merge($to, array_combine($additionalRecipients, $additionalRecipients));
+                $recipients = array_merge($recipients, array_combine($additionalRecipients, $additionalRecipients));
             }
         }
 
-        $allRecipients = array_merge($to, $toCC, $toBCC);
-        $message->bcc(...$this->convertArrayToAddresses($allRecipients));
+        foreach ($recipients as $email => $name) {
+            $recipientCount++;
+            $message->to(new Address($email, $name));
+            $this->mailer->sendEmailObject($message, $from);
+        }
 
-        return $message;
+        return $recipientCount;
     }
 
-    private function getRecipients(FormInterface $form, $item)
+    private function getRecipients(FormInterface $form, $item): array
     {
-        $recipients = [
-            'to' => [],
-            'bcc' => [],
-        ];
+        $recipients = new cs_list();
 
         $formData = $form->getData();
         $isSendToAll = (Send::class == $formData::class ? (is_null($formData->getSendToAll()) ? false : $formData->getSendToAll()) : $form->has('send_to_all') && $formData['send_to_all']);
@@ -425,9 +203,8 @@ class MailAssistant
             $userManager->setUserLimit();
             $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
             $userManager->select();
-            $userList = $userManager->get();
 
-            $this->addRecipients($recipients, $userList);
+            $recipients->addList($userManager->get());
         }
 
         $isSendToAttendees = (Send::class == $formData::class ? (is_null($formData->getSendToAttendees()) ? false : $formData->getSendToAttendees()) : $form->has('send_to_attendees') && $formData['send_to_attendees']);
@@ -435,8 +212,7 @@ class MailAssistant
         // form option: send_to_attendees
         if ($isSendToAttendees) {
             if ($item instanceof cs_dates_item) {
-                $attendees = $item->getParticipantsItemList();
-                $this->addRecipients($recipients, $attendees);
+                $recipients->addList($item->getParticipantsItemList());
             }
         }
 
@@ -445,8 +221,7 @@ class MailAssistant
 
         if ($isSendToAssigned) {
             if ($item instanceof cs_todo_item) {
-                $processors = $item->getProcessorItemList();
-                $this->addRecipients($recipients, $processors);
+                $recipients->addList($item->getProcessorItemList());
             }
         }
 
@@ -455,9 +230,7 @@ class MailAssistant
 
         if ($isSendToGroupAll) {
             $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
-            $userList = $currentContextItem->getUserList();
-
-            $this->addRecipients($recipients, $userList);
+            $recipients->addList($currentContextItem->getUserList());
         }
 
         // form option: send_to_groups
@@ -472,37 +245,23 @@ class MailAssistant
             $userManager->resetLimits();
             $userManager->setUserLimit();
 
-            $group = $groups->getFirst();
-            while ($group) {
+            foreach ($groups as $group) {
                 $userManager->setGroupLimit($group->getItemID());
                 $userManager->select();
 
-                $userList = $userManager->get();
-                $this->addRecipients($recipients, $userList);
-
-                $group = $groups->getNext();
+                $recipients->addList($userManager->get());
             }
         }
 
-        return $recipients;
-    }
-
-    private function addRecipients(&$recipients, $userList)
-    {
-        $user = $userList->getFirst();
-        while ($user) {
-            if ($user->isEmailVisible()) {
-                if (!array_key_exists($user->getEmail(), $recipients['to'])) {
-                    $recipients['to'][$user->getEmail()] = $user->getFullName();
-                }
-            } else {
-                if (!array_key_exists($user->getEmail(), $recipients['bcc'])) {
-                    $recipients['bcc'][$user->getEmail()] = $user->getFullName();
-                }
+        $recipientArray = [];
+        foreach ($recipients as $recipient) {
+            /** @var cs_user_item $recipient */
+            if (!array_key_exists($recipient->getEmail(), $recipientArray)) {
+                $recipientArray[$recipient->getEmail()] = $recipient->getFullName();
             }
-
-            $user = $userList->getNext();
         }
+
+        return $recipientArray;
     }
 
     /**
@@ -559,16 +318,5 @@ class MailAssistant
         }
 
         return $choiceArray;
-    }
-
-    public function convertArrayToAddresses(array $recipients): array
-    {
-        $addresses = [];
-
-        foreach ($recipients as $email => $name) {
-            $addresses[] = new Address($email, $name);
-        }
-
-        return $addresses;
     }
 }

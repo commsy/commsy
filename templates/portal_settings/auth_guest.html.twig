@@ -14,6 +14,7 @@
             {{ form_row(form.typeChoice) }}
             {{ form_row(form.type) }}
             <hr />
+            {% include 'portal_settings/auth_preselect_info.html.twig' %}
             {{ form_row(form.enabled) }}
             {{ form_row(form.title) }}
             {{ form_row(form.description) }}

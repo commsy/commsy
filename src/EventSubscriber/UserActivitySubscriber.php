@@ -35,7 +35,7 @@ class UserActivitySubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function updateActivity(TerminateEvent $event)
+    public function updateActivity(TerminateEvent $event): void
     {
         /*
            restrict logging to the following requests:

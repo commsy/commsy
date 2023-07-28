@@ -103,25 +103,25 @@ class cs_community_manager extends cs_room2_manager
         $this->_template_limit = null;
     }
 
-      public function getRelatedCommunityRooms(cs_user_item $userItem, $contextId)
+      public function getRelatedCommunityRooms(cs_user_item $userItem, $contextId): cs_list
       {
           return $this->getRelatedContextListForUserInt($userItem->getUserID(), $userItem->getAuthSource(), $contextId);
       }
 
-      public function getRelatedCommunityListForUser($user_item, bool $withExtras = true)
+      public function getRelatedCommunityListForUser($user_item, bool $withExtras = true): cs_list
       {
           return $this->getRelatedContextListForUserInt($user_item->getUserID(), $user_item->getAuthSource(),
               $this->_environment->getCurrentPortalID(), false, false, $withExtras);
       }
 
-     public function getRelatedCommunityListForUserAllUserStatus($user_item)
+     public function getRelatedCommunityListForUserAllUserStatus($user_item): cs_list
      {
          $this->_all_status_limit = true;
 
          return $this->getRelatedCommunityListForUser($user_item);
      }
 
-     public function getUserRelatedCommunityListForUser($user_item, bool $withExtras = true)
+     public function getUserRelatedCommunityListForUser($user_item, bool $withExtras = true): cs_list
      {
          return $this->getRelatedContextListForUserInt($user_item->getUserID(), $user_item->getAuthSource(), $this->_environment->getCurrentPortalID(), false, true, $withExtras);
      }

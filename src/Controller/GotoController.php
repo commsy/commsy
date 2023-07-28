@@ -23,8 +23,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class GotoController extends AbstractController
 {
     /**
-     * @param EntityManager $entityManager
-     *
      * @throws Exception
      */
     #[Route(path: '/goto/{itemId}')]
@@ -41,7 +39,7 @@ class GotoController extends AbstractController
             ->from('items')
             ->where('deletion_date IS NULL')
             ->andWhere('item_id = :item_id')
-            ->setParameter(':item_id', $itemId);
+            ->setParameter('item_id', $itemId);
 
         $stmt = $queryBuilder->executeQuery();
         $item = $stmt->fetchAssociative();

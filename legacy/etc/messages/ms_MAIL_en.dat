@@ -189,8 +189,6 @@ $message["MAIL_CHOICE_USER_STATUS_MODERATOR"]["en"] = "Status change: moderator"
 $message["MAIL_CHOICE_USER_STATUS_READ_ONLY_USER"]["en"] = "Status change: read only user";
 $message["MAIL_CHOICE_USER_STATUS_USER"]["en"] = "Approve membership / status user";
 $message["MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON"]["en"] = "Change status: no contact person";
-$message["MAIL_COMMENT_BY"]["en"] = "Comment by %1:
-%2";
 $message["MAIL_COMMENT_IMS"]["en"] = "Done by %1";
 $message["MAIL_EDIT_RESET"]["en"] = "Reset?";
 $message["MAIL_EDIT_RESET_TEXT"]["en"] = "Reset the e-mail text to system default?";
@@ -223,5 +221,4 @@ $message["MAIL_SUBJECT_USER_STATUS_USER"]["en"] = "%1: new status - user";
 $message["MAIL_SUBJECT_USER_UNMAKE_CONTACT_PERSON"]["en"] = "%1: not a contact person anymore";
 $message["MAIL_TO"]["en"] = "To:";
 $message["MAIL_TO_MODERATOR_HEADLINE"]["en"] = "E-mail to moderator/s";
-$message["MAIL_USER_FREE_LINK"]["en"] = "To approve membership for this person/account, please click the following link:";
 ?>

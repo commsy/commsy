@@ -9,6 +9,7 @@ use App\EventSubscriber\AutoRoomMembershipSubscriber;
 use App\Facade\UserCreatorFacade;
 use Codeception\Stub;
 use Codeception\Test\Unit;
+use Exception;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
@@ -22,7 +23,7 @@ class AutoRoomMembershipSubscriberTest extends Unit
      * Tests whether `AutoRoomMembershipSubscriber->onSecurityInteractiveLogin()` gets to call
      * the `UserCreatorFacade->addUserToRoomsWithSlugs()` method.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testSubscriberMethodCalled()
     {

@@ -22,6 +22,7 @@ use App\Utils\FileService;
 use App\Utils\ItemService;
 use App\Utils\UserService;
 use cs_link_item;
+use cs_link_item_file;
 use cs_list;
 use DateTime;
 use Exception;
@@ -218,15 +219,11 @@ class UploadController extends AbstractController
                 $formData = $form->getData();
                 $files = $formData['files'];
 
-                $checkedFileIds = [];
-                $uncheckedFileIds = [];
-                foreach ($files as $file) {
-                    if ($file->getChecked()) {
-                        $checkedFileIds[] = $file->getFileId();
-                    } else {
-                        $uncheckedFileIds[] = $file->getFileId();
-                    }
-                }
+                $checkedFormFiles = array_filter($files, fn (File $file) => $file->getChecked());
+                $checkedFileIds = array_map(fn (File $file) => $file->getFileId(), $checkedFormFiles);
+
+                $uncheckedFormFiles = array_filter($files, fn (File $file) => !$file->getChecked());
+                $uncheckedFileIds = array_map(fn (File $file) => $file->getFileId(), $uncheckedFormFiles);
 
                 // update item
                 $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -253,28 +250,21 @@ class UploadController extends AbstractController
 
                     /** @var cs_list $linkItemList */
                     $linkItemList = $linkItemManager->get();
+                    $linkedItemsNotDeleted = array_filter(
+                        $linkItemList->to_array(),
+                        fn(cs_link_item_file $linkItem) => !$linkItem->isDeleted()
+                    );
 
-                    $delete = true;
-                    if ($linkItemList->isNotEmpty()) {
-                        /** @var cs_link_item $linkItem */
-                        $linkItem = $linkItemList->getFirst();
-                        while ($linkItem) {
-                            if (!$linkItem->isDeleted()) {
-                                $delete = false;
-                                break;
-                            }
-
-                            $linkItem = $linkItemList->getNext();
-                        }
-                    }
-
-                    if ($delete) {
+                    if (!empty($linkedItemsNotDeleted)) {
                         $tempFile->delete();
                     }
                 }
             }
 
-            return $this->redirectToRoute('app_upload_uploadsave', ['roomId' => $roomId, 'itemId' => $itemId]);
+            return $this->redirectToRoute('app_upload_uploadsave', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
         }
 
         return $this->render('upload/upload_form.html.twig', [

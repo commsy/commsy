@@ -16,22 +16,22 @@ namespace App\Controller;
 use App\Event\UserJoinedRoomEvent;
 use App\Facade\MembershipManager;
 use App\Form\Type\ContextRequestType;
+use App\Mail\Factories\RoomMessageFactory;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
+use App\Repository\RoomRepository;
 use App\Services\LegacyEnvironment;
 use App\Utils\GroupService;
 use App\Utils\UserService;
-use cs_list;
 use cs_user_item;
 use DateTimeImmutable;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -57,6 +57,8 @@ class ContextController extends AbstractController
         EventDispatcherInterface $eventDispatcher,
         MembershipManager $membershipManager,
         GroupService $groupService,
+        RoomMessageFactory $roomMessageFactory,
+        RoomRepository $roomRepository,
         int $roomId,
         int $itemId
     ): Response {
@@ -64,7 +66,7 @@ class ContextController extends AbstractController
 
         $currentUserItem = $legacyEnvironment->getCurrentUserItem();
         if ($currentUserItem->isReallyGuest()) {
-            throw new AccessDeniedException();
+            throw $this->createAccessDeniedException();
         }
 
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -130,7 +132,7 @@ class ContextController extends AbstractController
                 }
 
                 if ($roomItem->checkNewMembersAlways() ||
-                    ($roomItem->checkNewMembersWithCode() && !isset($formData['code']))) {
+                    ($roomItem->checkNewMembersWithCode() && $form->get('request')->isClicked())) {
                     // The user either needs to ask for access or provided no code
                     $newUser->request();
                     $isRequest = true;
@@ -177,104 +179,22 @@ class ContextController extends AbstractController
                             'yes' == $moderator->getAccountWantMail()
                     );
 
-                    // language
-                    $language = $roomItem->getLanguage();
-                    if ('user' == $language) {
-                        $language = $newUser->getLanguage();
-                        if ('browser' == $language) {
-                            $language = $legacyEnvironment->getSelectedLanguage();
-                        }
-                    }
-
-                    $translator = $legacyEnvironment->getTranslationObject();
-
-                    if (!empty($moderatorRecipients)) {
-                        $savedLanguage = $translator->getSelectedLanguage();
-                        $translator->setSelectedLanguage($language);
-
-                        $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(date('Y-m-d H:i:s')),
-                            $translator->getTimeInLang(date('Y-m-d H:i:s')));
-                        $body .= "\n\n";
-
-                        if ($legacyEnvironment->getCurrentPortalItem()->getHideAccountname()) {
-                            $userId = 'XXX '.$translator->getMessage('COMMON_DATASECURITY');
-                        } else {
-                            $userId = $newUser->getUserID();
-                        }
-                        if ($roomItem->isGroupRoom()) {
-                            $body .= $translator->getMessage('GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY',
-                                $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
-                        } else {
-                            if ($roomItem->isCommunityRoom()) {
-                                $body .= $translator->getMessage('USER_JOIN_COMMUNITY_MAIL_BODY',
-                                    $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
-                            } else {
-                                $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY', $newUser->getFullname(),
-                                    $userId, $newUser->getEmail(), $roomItem->getTitle());
-                            }
-                        }
-                        $body .= "\n\n";
-
-                        if ($isRequest) {
-                            $body .= $translator->getMessage('USER_GET_MAIL_STATUS_YES');
-                        } else {
-                            $body .= $translator->getMessage('USER_GET_MAIL_STATUS_NO');
-                        }
-                        $body .= "\n\n";
-
-                        if ($form->has('description') && $formData['description']) {
-                            $body .= $translator->getMessage('MAIL_COMMENT_BY', $newUser->getFullname(),
-                                $formData['description']);
-                            $body .= "\n\n";
-                        }
-
-                        $moderators = '';
-                        foreach ($moderatorRecipients as $recipient) {
-                            $moderators .= $recipient->getFirstname().' '.$recipient->getLastname()."\n";
-                        }
-
-                        $body .= $translator->getMessage('MAIL_SEND_TO', $moderators);
-                        $body .= "\n";
-
-                        if ($isRequest) {
-                            $body .= $translator->getMessage('MAIL_USER_FREE_LINK')."\n";
-                            $body .= $this->generateUrl('app_user_list', [
-                                'roomId' => $roomItem->getItemID(),
-                                'user_filter' => [
-                                    'user_status' => 1,
-                                ],
-                            ], UrlGeneratorInterface::ABSOLUTE_URL);
-                        } else {
-                            $body .= $this->generateUrl('app_room_home', [
-                                'roomId' => $roomItem->getItemID(),
-                            ], UrlGeneratorInterface::ABSOLUTE_URL);
-                        }
-
-                        $subject = $translator->getMessage(
-                            'USER_JOIN_CONTEXT_MAIL_SUBJECT',
-                            $newUser->getFullname(),
-                            $roomItem->getTitle()
-                        );
-                        $this->mailer->sendMultipleRaw($subject, nl2br($body), $moderatorRecipients);
-
-                        $translator->setSelectedLanguage($savedLanguage);
-                    }
+                    $room = $roomRepository->find($itemId);
+                    $message = $roomMessageFactory->createUserJoinedContextMessage(
+                        $room,
+                        $newUser,
+                        $form->has('description') ? $formData['description'] : null
+                    );
+                    $this->mailer->sendMultiple($message, $moderatorRecipients);
                 }
 
                 // inform user if request required no authorization
                 if ($newUser->isUser()) {
-                    /** @var cs_list $moderatorList */
                     $moderatorList = $roomItem->getModeratorList();
-
                     $contactModerator = $moderatorList->getFirst();
 
-                    $modFullName = '';
-                    $modEmail = '';
-
-                    if ($contactModerator) {
-                        $modFullName = $contactModerator->getFullname();
-                        $modEmail = $contactModerator->getEmail();
-                    }
+                    $modFullName = $contactModerator ? $contactModerator->getFullname() : '';
+                    $modEmail = $contactModerator ? $contactModerator->getEmail() : '';
 
                     $translator = $legacyEnvironment->getTranslationObject();
                     $translator->setEmailTextArray($roomItem->getEmailTextArray());

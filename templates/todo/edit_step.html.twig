@@ -3,7 +3,7 @@
 <div class="uk-panel uk-panel-box uk-margin-top">
     {% include 'utils/save_spinner.html.twig' %}
 
-    <article class="uk-article uk-position-relative {% if new is defined and new %}cs-edit-draft{% endif %}">
+    <article class="uk-article uk-position-relative">
         {# title #}
         <div class="cs-toggle" data-uk-observe>
             <div class="uk-form-horizontal">
@@ -35,29 +35,5 @@
                 {{ form_end(form) }}
             </div>
         </div>
-
-        {% if new is defined and new %}
-            {# description #}
-            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
-                editUrl: '{{ path('app_item_editdescription', { 'roomId': step.contextId, 'itemId': step.itemId }) }}',
-                cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': step.contextId, 'itemId': step.itemId }) }}'
-            }">
-                {{ macrosItem.itemDescription('description', step, true, step.description, step.draft) }}
-            </div>
-
-            {# files #}
-            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': step.contextId, 'itemId': step.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': step.contextId, 'itemId': step.itemId}) }}' }">
-                {{ macrosItem.files(step, step.draft) }}
-            </div>
-
-            <div id="draft-buttons-wrapper" data-item-type="step">
-                <a href="#" class="uk-button uk-button-primary" data-draft-save>
-                    {{ 'create entry'|trans({}, "form") }}
-                </a>
-                <a href="#" class="uk-button uk-button-secondary" data-draft-cancel>
-                    {{ 'cancel'|trans({}, "form") }}
-                </a>
-            </div>
-        {% endif %}
     </article>
 </div>

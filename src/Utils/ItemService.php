@@ -35,10 +35,8 @@ class ItemService
 
     /**
      * @param int $itemId
-     *
-     * @return cs_item
      */
-    public function getItem($itemId)
+    public function getItem($itemId): ?cs_item
     {
         return $this->itemManager->getItem($itemId);
     }

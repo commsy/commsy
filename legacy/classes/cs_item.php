@@ -57,7 +57,7 @@ class cs_item
     public $_link_modifier = true;
     public $_db_load_extras = true;
 
-    private ?array $_external_viewer_user_array = null;
+    private array $externalViewerUsers = [];
 
     /** constructor
      * the only available constructor, initial values for internal variables.
@@ -1151,21 +1151,21 @@ class cs_item
          return $saved;
      }
 
-     private function persistExternalViewer()
+     private function persistExternalViewer(): void
      {
-         if (isset($this->_external_viewer_user_array) and !empty($this->_external_viewer_user_array)) {
+         if (!empty($this->externalViewerUsers)) {
              $item_manager = $this->_environment->getItemManager();
 
              $user_id_array = $item_manager->getExternalViewerUserArrayForItem($this->getItemID());
 
              // persist new external viewers
-             $newExternalViewers = array_diff($this->_external_viewer_user_array, $user_id_array);
+             $newExternalViewers = array_diff($this->externalViewerUsers, $user_id_array);
              foreach ($newExternalViewers as $newExternalViewer) {
                  $item_manager->setExternalViewerEntry($this->getItemID(), $newExternalViewer);
              }
 
              // delete removed external viewers
-             $removedExternalViewers = array_diff($user_id_array, $this->_external_viewer_user_array);
+             $removedExternalViewers = array_diff($user_id_array, $this->externalViewerUsers);
              foreach ($removedExternalViewers as $removedExternalViewer) {
                  $item_manager->deleteExternalViewerEntry($this->getItemID(), $removedExternalViewer);
              }
@@ -2268,20 +2268,19 @@ class cs_item
         $this->_setObject(CS_TOPIC_TYPE, $value, false);
     }
 
-     public function setExternalViewerAccounts(array $user_id_array)
+     public function setExternalViewerAccounts(array $user_id_array): void
      {
-         $this->_external_viewer_user_array = $user_id_array;
+         $this->externalViewerUsers = $user_id_array;
      }
 
-     public function unsetExternalViewerAccounts()
+     public function unsetExternalViewerAccounts(): void
      {
-         $this->_external_viewer_user_array = null;
+         $this->externalViewerUsers = [];
      }
 
-     public function getExternalViewerString()
+     public function getExternalViewerString(): string
      {
          $item_manager = $this->_environment->getItemManager();
-
          return $item_manager->getExternalViewerUserStringForItem($this->getItemID());
      }
 

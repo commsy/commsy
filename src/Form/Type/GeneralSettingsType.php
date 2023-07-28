@@ -15,7 +15,6 @@ namespace App\Form\Type;
 
 use App\Form\DataTransformer\RoomSlugCollectionToStringTransformer;
 use App\Services\LegacyEnvironment;
-use App\Validator\Constraints\UniqueRoomSlug;
 use cs_environment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;

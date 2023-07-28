@@ -16,6 +16,7 @@ namespace App\Feed;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_manager;
+use cs_privateroom_item;
 use DateTime;
 use Debril\RssAtomBundle\Exception\FeedException\FeedNotFoundException;
 use Debril\RssAtomBundle\Provider\FeedProviderInterface;
@@ -46,12 +47,10 @@ class CommsyFeedContentProvider implements FeedProviderInterface
         $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
 
         if ($this->isGranted($currentContextItem, $request)) {
-            $userItem = null;
-
             $isGuestAccess = true;
             if ($request->query->has('hid')) {
                 $hash = $request->query->get('hid');
-                $userItem = $currentContextItem->getUserByRSSHash($hash);
+                $currentContextItem->getUserByRSSHash($hash);
                 $isGuestAccess = false;
             }
 
@@ -191,24 +190,18 @@ class CommsyFeedContentProvider implements FeedProviderInterface
         $itemManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
 
         if ($contextItem->isPrivateRoom()) {
+            /** @var cs_privateroom_item $contextItem */
             $ownerUserItem = $contextItem->getOwnerUserItem();
-
-            $roomIds = [];
 
             $projectList = $ownerUserItem->getUserRelatedProjectList();
             $communityList = $ownerUserItem->getUserRelatedCommunityList();
             $groupRoomList = $ownerUserItem->getUserRelatedGroupList();
 
             $fullList = $projectList;
-            $fullList = $fullList->addList($communityList);
-            $fullList = $fullList->addList($groupRoomList);
+            $fullList->addList($communityList);
+            $fullList->addList($groupRoomList);
 
-            $roomItem = $fullList->getFirst();
-            while ($roomItem) {
-                $roomIds[] = $roomItem->getItemID();
-
-                $roomItem = $fullList->getNext();
-            }
+            $roomIds = $fullList->getIDArray();
 
             $itemManager->setContextArrayLimit($roomIds);
         } else {
