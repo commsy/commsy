@@ -35,40 +35,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class BaseController extends AbstractController
 {
-    /**
-     * @var ItemService
-     */
-    protected $itemService;
-
-    /**
-     * @var cs_environment
-     */
-    protected $legacyEnvironment;
-
-    /**
-     * @var RoomService
-     */
-    protected $roomService;
-
-    /**
-     * @var ReaderService
-     */
-    protected $readerService;
-
-    /**
-     * @var LabelService
-     */
-    protected $labelService;
-
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
+    protected ItemService $itemService;
+    protected cs_environment $legacyEnvironment;
+    protected RoomService $roomService;
+    protected ReaderService $readerService;
+    protected LabelService $labelService;
+    protected TranslatorInterface $translator;
+    protected EventDispatcherInterface $eventDispatcher;
 
     #[Required]
     public function setItemService(ItemService $itemService): void
@@ -101,7 +74,7 @@ abstract class BaseController extends AbstractController
     }
 
     #[Required]
-    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
         $this->eventDispatcher = $eventDispatcher;
     }
@@ -109,7 +82,8 @@ abstract class BaseController extends AbstractController
     #[Required]
     public function setRoomService(
         RoomService $service
-    ) {
+    ): void
+    {
         $this->roomService = $service;
     }
 

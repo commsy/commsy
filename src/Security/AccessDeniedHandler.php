@@ -21,11 +21,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Authorization\AccessDeniedHandlerInterface;
 
-class AccessDeniedHandler implements AccessDeniedHandlerInterface
+readonly class AccessDeniedHandler implements AccessDeniedHandlerInterface
 {
     public function __construct(
-        private readonly RequestContext $requestContext,
-        private readonly UrlGeneratorInterface $urlGenerator
+        private RequestContext $requestContext,
+        private UrlGeneratorInterface $urlGenerator
     ) {
     }
 
@@ -34,6 +34,12 @@ class AccessDeniedHandler implements AccessDeniedHandlerInterface
      */
     public function handle(Request $request, AccessDeniedException $accessDeniedException): ?Response
     {
+        // Do not respond with a redirect if this is a xml request. This way we can handle
+        // 403 responses in js .ajax() calls.
+        if ($request->isXmlHttpRequest()) {
+            return null;
+        }
+
         $portal = $this->requestContext->fetchPortal($request);
         $contextId = $this->requestContext->fetchContextId($request);
 

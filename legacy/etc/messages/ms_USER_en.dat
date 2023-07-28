@@ -79,27 +79,13 @@ Name: %1
 Account: %2
 E-mail: %3
 Language: %4";
-$message["USER_GET_MAIL_STATUS_NO"]["en"] = "The account has already been activated by the system.";
-$message["USER_GET_MAIL_STATUS_YES"]["en"] = "The account is queued for approval by the moderator/s.";
 $message["USER_GET_MAIL_SUBJECT"]["en"] = "Account request [%1]";
 $message["USER_HEADER"]["en"] = "Members";
 $message["USER_HOMEPAGE"]["en"] = "Homepage";
 $message["USER_ICQ"]["en"] = "ICQ";
 $message["USER_INDEX"]["en"] = "Members";
 $message["USER_JABBER"]["en"] = "Jabber";
-$message["USER_JOIN_COMMUNITY_MAIL_BODY"]["en"] = "%1 requests an account [%2] for the %_COMMUNITY_SUB_NOMS_BIG &quot;%4&quot;.
-
-Complete information:
-Name: %1
-Account: %2
-E-mail: %3";
 $message["USER_JOIN_COMMUNITY_MAIL_BODY_BY_MODERATOR"]["en"] = "%1 requests an account [%2] by %5 for the %_COMMUNITY_SUB_NOMS_BIG &quot;%4&quot;.
-
-Complete information:
-Name: %1
-Account: %2
-E-mail: %3";
-$message["USER_JOIN_CONTEXT_MAIL_BODY"]["en"] = "%1 requests an account [%2] for the %_PROJECT_SUB_NOMS_BIG &quot;%4&quot;.
 
 Complete information:
 Name: %1
@@ -111,7 +97,6 @@ Complete information:
 Name: %1
 Account: %2
 E-mail: %3";
-$message["USER_JOIN_CONTEXT_MAIL_SUBJECT"]["en"] = "%2: Request for membership [%1]";
 $message["USER_LANGUAGE"]["en"] = "Language";
 $message["USER_LANGUAGE_DESC"]["en"] = "This CommSy will be presented to you in the selected language. Furthermore all e-mails that are sent to you via this CommSy will be in that language.";
 $message["USER_LASTLOGIN"]["en"] = "Last log-in";

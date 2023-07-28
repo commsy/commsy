@@ -158,6 +158,10 @@
                 <source>%portal_name%: Your account has been deleted</source>
                 <target>%portal_name%: Your account has been deleted</target>
             </trans-unit>
+            <trans-unit id="mail_subject_user_joined_context">
+                <source>mail.subject.user_joined_context</source>
+                <target>%room_title%: Request for membership [%fullname%]</target>
+            </trans-unit>
             <trans-unit id="mail_subject_workspace_activity_lock_warning">
                 <source>%portal_name%: Workspace will be locked in %num_days% days</source>
                 <target>%portal_name%: Workspace will be locked in %num_days% days</target>
@@ -213,6 +217,38 @@
             <trans-unit id="mail_invitation_room_link_post">
                 <source>mail.invitation_room_link_post</source>
                 <target>There are three ways of applying for room membership. You can either enter your motivation into the free-text field, enter a membership code or click “Become member ”, depending on which method the room moderator has chosen. If you need a membership code, request it directly from the room moderator or the person who has invited you.</target>
+            </trans-unit>
+            <trans-unit id="mail_user_joined_grouproom">
+                <source>mail.user_joined_grouproom</source>
+                <target>%fullname% requests admission [%user_id%] for group workspace "%room_title%".</target>
+            </trans-unit>
+            <trans-unit id="mail_user_joined_community">
+                <source>mail.user_joined_community</source>
+                <target>%fullname% requests an account [%user_id%] for community workspace "%room_title%".</target>
+            </trans-unit>
+            <trans-unit id="mail_user_joined_project">
+                <source>mail.user_joined_project</source>
+                <target>%fullname% requests an account [%user_id%] for project worksapce "%room_title%".</target>
+            </trans-unit>
+            <trans-unit id="mail_user_joined_details">
+                <source>mail.user_joined_details</source>
+                <target>Details</target>
+            </trans-unit>
+            <trans-unit id="mail_user_joined_approved_system">
+                <source>mail.user_joined_approved_system</source>
+                <target>The account has already been activated by the system.</target>
+            </trans-unit>
+            <trans-unit id="mail_user_joined_approved_manual">
+                <source>mail.user_joined_approved_manual</source>
+                <target>The account is queued for approval by the moderator/s.</target>
+            </trans-unit>
+            <trans-unit id="mail_user_joined_comment">
+                <source>mail.user_joined_comment</source>
+                <target>Comment:</target>
+            </trans-unit>
+            <trans-unit id="mail_user_joined_approve_link_desc">
+                <source>mail.user_joined_approve_link_desc</source>
+                <target>To approve membership for this person/account, please click the following link:</target>
             </trans-unit>
         </body>
     </file>

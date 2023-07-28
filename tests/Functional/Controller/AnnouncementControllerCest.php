@@ -43,6 +43,15 @@ class AnnouncementControllerCest
             'itemId' => $itemId,
         ]);
         $I->seeResponseCodeIsSuccessful();
+
+        // Forbidden
+        $I->goToLogoutPath();
+        $I->stopFollowingRedirects();
+        $I->amOnRoute('app_announcement_detail', [
+            'roomId' => $this->roomId,
+            'itemId' => $itemId,
+        ]);
+        $I->seeResponseCodeIsRedirection();
     }
 
     public function edit(FunctionalTester $I)

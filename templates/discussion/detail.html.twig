@@ -153,6 +153,14 @@
                         {{ macrosItem.itemDescription('description', discussion, true, discussion.description, draft) }}
                     </div>
 
+                    {# files #}
+                    <div id="files{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{{ {
+                        'editUrl': path('app_upload_uploadform', {'roomId': discussion.contextId, 'itemId': discussion.itemId}),
+                        'cancelEditUrl': path('app_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId})
+                    }|json_encode|e('html_attr') }}">
+                        {{ macrosItem.files(discussion, draft) }}
+                    </div>
+
                     {% if not draft %}
                         {# links #}
                         <div id="links{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }">
@@ -172,14 +180,7 @@
                     {% endif %}
 
                     {% if draft %}
-                        <div id="draft-buttons-wrapper">
-                            <a href="#" class="uk-button uk-button-primary" data-draft-save>
-                                {{ 'create entry'|trans({}, "form") }}
-                            </a>
-                            <a href="#" class="uk-button uk-button-secondary" data-draft-cancel>
-                                {{ 'cancel'|trans({}, "form") }}
-                            </a>
-                        </div>
+                        {{ macros.draftButtons(roomId, discussion.itemId) }}
                     {% endif %}
                 </article>
             </div>

@@ -18,7 +18,7 @@ use cs_environment;
 use cs_group_item;
 use cs_group_manager;
 use cs_manager;
-use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
 
 class GroupService
 {
@@ -61,7 +61,7 @@ class GroupService
      *
      * @return cs_group_item[]
      */
-    public function getListGroups($roomId, $max = null, $start = null, $sort = null)
+    public function getListGroups($roomId, $max = null, $start = null, $sort = null): array
     {
         $this->groupManager->setContextLimit($roomId);
         if (null !== $max && null !== $start) {
@@ -95,7 +95,7 @@ class GroupService
         return $userList->to_array();
     }
 
-    public function setFilterConditions(Form $filterForm)
+    public function setFilterConditions(FormInterface $filterForm): void
     {
         $formData = $filterForm->getData();
 
@@ -134,12 +134,12 @@ class GroupService
         }
     }
 
-    public function getNewGroup()
+    public function getNewGroup(): cs_group_item
     {
         return $this->groupManager->getNewItem();
     }
 
-    public function hideDeactivatedEntries()
+    public function hideDeactivatedEntries(): void
     {
         $this->groupManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }

@@ -365,7 +365,6 @@ class TodoController extends BaseController
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/createstep')]
     public function createStepAction(
-        TodoTransformer $transformer,
         int $roomId,
         int $itemId
     ): Response {
@@ -378,16 +377,8 @@ class TodoController extends BaseController
         $step->setTodoID($itemId);
         $step->save();
 
-        $formData = $transformer->transform($step);
-        $form = $this->createForm(StepType::class, $formData, ['action' => $this->generateUrl('app_todo_editstep', [
-            'roomId' => $roomId,
-            'itemId' => $step->getItemID(),
-        ]), 'placeholderText' => '['.$this->translator->trans('insert title').']']);
-
-        return $this->render('todo/edit_step.html.twig', [
-            'form' => $form,
+        return $this->render('todo/create_step.html.twig', [
             'step' => $step,
-            'new' => true,
         ]);
     }
 
@@ -417,41 +408,28 @@ class TodoController extends BaseController
         $this->eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()), CommsyEditEvent::EDIT);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                if ($form->isSubmitted() && $form->isValid()) {
-                    $formData = $form->getData();
+                $formData = $form->getData();
 
-                    // update title
-                    $step->setTitle($formData['title']);
+                // update title
+                $step->setTitle($formData['title']);
 
-                    // spend hours
-                    $step->setMinutes($formData['time_spend']['hour'] * 60 + $formData['time_spend']['minute']);
+                // spend hours
+                $step->setMinutes($formData['time_spend']['hour'] * 60 + $formData['time_spend']['minute']);
 
-                    if ($item->isDraft()) {
-                        $item->setDraftStatus(0);
-                        $item->saveAsItem();
-                    }
+                // update modifier
+                $step->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
-                    // update modifier
-                    $step->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
+                $step->save();
 
-                    $step->save();
+                $step->getLinkedItem()->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
 
-                    $step->getLinkedItem()->setModificatorItem($this->legacyEnvironment->getCurrentUserItem());
+                // this will also update the todo item's modification date to indicate that it has changes
+                $step->getLinkedItem()->save();
 
-                    // this will also update the todo item's modification date to indicate that it has changes
-                    $step->getLinkedItem()->save();
-
-                    $this->eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()),
-                        CommsyEditEvent::SAVE);
-
-                    return $this->redirectToRoute('app_todo_detail', [
-                        'roomId' => $roomId,
-                        'itemId' => $step->getTodoID(),
-                        '_fragment' => 'step'.$itemId,
-                    ]);
-                }
+                $this->eventDispatcher->dispatch(new CommsyEditEvent($step->getLinkedItem()),
+                    CommsyEditEvent::SAVE);
             } else {
                 if ($form->get('cancel')->isClicked()) {
                     // remove not saved item
@@ -558,11 +536,6 @@ class TodoController extends BaseController
                 }
 
                 $todoItem->save();
-
-                if ($item->isDraft()) {
-                    $item->setDraftStatus(0);
-                    $item->saveAsItem();
-                }
             }
 
             return $this->redirectToRoute('app_todo_save', ['roomId' => $roomId, 'itemId' => $itemId]);

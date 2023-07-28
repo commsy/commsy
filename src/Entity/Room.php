@@ -205,6 +205,11 @@ class Room
         return $this;
     }
 
+    public function isGroupRoom(): bool
+    {
+        return 'grouproom' === $this->type;
+    }
+
     public function isProjectRoom(): bool
     {
         return 'project' === $this->type;

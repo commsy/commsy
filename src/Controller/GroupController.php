@@ -39,6 +39,7 @@ use App\Utils\LabelService;
 use App\Utils\MailAssistant;
 use App\Utils\TopicService;
 use App\Utils\UserService;
+use cs_group_item;
 use cs_grouproom_item;
 use cs_room_item;
 use Egulias\EmailValidator\EmailValidator;
@@ -587,28 +588,21 @@ class GroupController extends BaseController
         return $result;
     }
 
-    /**
-     * @return RedirectResponse
-     */
     #[Route(path: '/room/{roomId}/group/create')]
     #[IsGranted('ITEM_NEW')]
     public function createAction(
         int $roomId
-    ): Response {
+    ): RedirectResponse {
         // create new group item
         $groupItem = $this->groupService->getNewGroup();
         $groupItem->setDraftStatus(1);
         $groupItem->setPrivateEditing(1);
-        $groupItem->save();
+        $groupItem->save(false);
 
-        return $this->redirectToRoute('app_group_detail',
-            ['roomId' => $roomId, 'itemId' => $groupItem->getItemId()]);
-    }
-
-    #[Route(path: '/room/{roomId}/group/new')]
-    public function newAction(int $roomId): Response
-    {
-        return $this->render('group/new.html.twig');
+        return $this->redirectToRoute('app_group_detail', [
+            'roomId' => $roomId,
+            'itemId' => $groupItem->getItemId(),
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/group/{itemId}/edit')]
@@ -695,14 +689,12 @@ class GroupController extends BaseController
                 }
 
                 $groupItem->save();
-
-                if ($item->isDraft()) {
-                    $item->setDraftStatus(0);
-                    $item->saveAsItem();
-                }
             }
 
-            return $this->redirectToRoute('app_group_save', ['roomId' => $roomId, 'itemId' => $itemId]);
+            return $this->redirectToRoute('app_group_save', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+                ]);
         }
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($groupItem), CommsyEditEvent::EDIT);
@@ -721,14 +713,9 @@ class GroupController extends BaseController
         int $roomId,
         int $itemId
     ): Response {
-        $item = $this->itemService->getItem($itemId);
         $group = $this->groupService->getGroup($itemId);
 
         $itemArray = [$group];
-        $modifierList = [];
-        foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
-        }
 
         $readerManager = $this->legacyEnvironment->getReaderManager();
         $userManager = $this->legacyEnvironment->getUserManager();
@@ -740,15 +727,9 @@ class GroupController extends BaseController
         $read_count = 0;
         $read_since_modification_count = 0;
 
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-        $readerManager->getLatestReaderByUserIDArray($id_array, $group->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
+        $readerManager->getLatestReaderByUserIDArray($user_list->getIDArray(), $group->getItemID());
+
+        foreach ($user_list as $current_user) {
             $current_reader = $readerManager->getLatestReaderForUserByID($group->getItemID(),
                 $current_user->getItemID());
             if (!empty($current_reader)) {
@@ -759,27 +740,23 @@ class GroupController extends BaseController
                     ++$read_count;
                 }
             }
-            $current_user = $user_list->getNext();
         }
-        $read_percentage = round(($read_count / $all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count / $all_user_count) * 100);
 
-        $readerList = [];
         $modifierList = [];
         foreach ($itemArray as $item) {
-            $reader = $this->readerService->getLatestReader($item->getItemId());
-            if (empty($reader)) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                $readerList[$item->getItemId()] = 'changed';
-            }
-
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($group), CommsyEditEvent::SAVE);
 
-        return $this->render('group/save.html.twig', ['roomId' => $roomId, 'item' => $group, 'modifierList' => $modifierList, 'userCount' => $all_user_count, 'readCount' => $read_count, 'readSinceModificationCount' => $read_since_modification_count]);
+        return $this->render('group/save.html.twig', [
+            'roomId' => $roomId,
+            'item' => $group,
+            'modifierList' => $modifierList,
+            'userCount' => $all_user_count,
+            'readCount' => $read_count,
+            'readSinceModificationCount' => $read_since_modification_count,
+        ]);
     }
 
     /**
@@ -977,26 +954,17 @@ class GroupController extends BaseController
                 $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
                 // TODO: refactor all mail sending code so that it is handled by a central class (like `MailAssistant.php`)
-                $to = [];
-                $toBCC = [];
+                $recipients = [];
                 $validator = new EmailValidator();
-                $failedUsers = [];
                 foreach ($users as $user) {
                     $userEmail = $user->getEmail();
                     $userName = $user->getFullName();
                     if ($validator->isValid($userEmail, new RFCValidation())) {
-                        if ($user->isEmailVisible()) {
-                            $to[$userEmail] = $userName;
-                        } else {
-                            $toBCC[$userEmail] = $userName;
-                        }
-                    } else {
-                        $failedUsers[] = $user;
+                        $recipients[$userEmail] = $userName;
                     }
                 }
 
                 $replyTo = [];
-                $toCC = [];
                 $currentUserEmail = $currentUser->getEmail();
                 $currentUserName = $currentUser->getFullName();
                 if ($validator->isValid($currentUserEmail, new RFCValidation())) {
@@ -1006,11 +974,7 @@ class GroupController extends BaseController
 
                     // form option: copy_to_sender
                     if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                        if ($currentUser->isEmailVisible()) {
-                            $toCC[$currentUserEmail] = $currentUserName;
-                        } else {
-                            $toBCC[$currentUserEmail] = $currentUserName;
-                        }
+                        $recipients[$currentUserEmail] = $currentUserName;
                     }
                 }
 
@@ -1025,11 +989,14 @@ class GroupController extends BaseController
                     $message = $mailAssistant->addAttachments($formDataFiles, $message);
                 }
 
-                // NOTE: as of #2461 all mail should be sent as BCC mail
-                $allRecipients = [...$to, ...$toCC, ...$toBCC];
-                $message->bcc(...$mailAssistant->convertArrayToAddresses($allRecipients));
+                $mailSend = true;
+                foreach ($recipients as $email => $name) {
+                    $message->to(new Address($email, $name));
+                    $send = $this->mailer->sendEmailObject($message, $portalItem->getTitle());
+                    $mailSend = $mailSend && $send;
+                }
 
-                $this->addFlash('recipientCount', count($allRecipients));
+                $this->addFlash('recipientCount', count($recipients));
 
                 // send mail
                 $mailSend = $this->mailer->sendEmailObject($message, $portalItem->getTitle());
@@ -1113,26 +1080,17 @@ class GroupController extends BaseController
                 $users = $this->userService->getUsersByGroupIds($roomId, $item->getItemID(), true);
 
                 // TODO: refactor all mail sending code so that it is handled by a central class (like `MailAssistant.php`)
-                $to = [];
-                $toBCC = [];
+                $recipients = [];
                 $validator = new EmailValidator();
-                $failedUsers = [];
                 foreach ($users as $user) {
                     $userEmail = $user->getEmail();
                     $userName = $user->getFullName();
                     if ($validator->isValid($userEmail, new RFCValidation())) {
-                        if ($user->isEmailVisible()) {
-                            $to[$userEmail] = $userName;
-                        } else {
-                            $toBCC[$userEmail] = $userName;
-                        }
-                    } else {
-                        $failedUsers[] = $user;
+                        $recipients[$userEmail] = $userName;
                     }
                 }
 
                 $replyTo = [];
-                $toCC = [];
                 $currentUserEmail = $currentUser->getEmail();
                 $currentUserName = $currentUser->getFullName();
                 if ($validator->isValid($currentUserEmail, new RFCValidation())) {
@@ -1142,11 +1100,7 @@ class GroupController extends BaseController
 
                     // form option: copy_to_sender
                     if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                        if ($currentUser->isEmailVisible()) {
-                            $toCC[$currentUserEmail] = $currentUserName;
-                        } else {
-                            $toBCC[$currentUserEmail] = $currentUserName;
-                        }
+                        $recipients[$currentUserEmail] = $currentUserName;
                     }
                 }
 
@@ -1161,14 +1115,14 @@ class GroupController extends BaseController
                     $email = $mailAssistant->addAttachments($formDataFiles, $email);
                 }
 
-                // NOTE: as of #2461 all mail should be sent as BCC mail
-                $allRecipients = [...$to, ...$toCC, ...$toBCC];
-                $email->bcc(...$mailAssistant->convertArrayToAddresses($allRecipients));
+                $mailSend = true;
+                foreach ($recipients as $userEmail => $userName) {
+                    $email->to(new Address($userEmail, $userName));
+                    $send = $this->mailer->sendEmailObject($email, $portalItem->getTitle());
+                    $mailSend = $mailSend && $send;
+                }
 
-                $this->addFlash('recipientCount', count($allRecipients));
-
-                // send mail
-                $mailSend = $this->mailer->sendEmailObject($email, $portalItem->getTitle());
+                $this->addFlash('recipientCount', count($recipients));
                 $this->addFlash('mailSend', $mailSend);
 
                 // redirect to success page

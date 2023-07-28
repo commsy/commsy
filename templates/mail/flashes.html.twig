@@ -1,0 +1,20 @@
+{% macro mailSendFlashes(backLink, backLabel) %}
+    {% set mailSend = app.flashes('mailSend')|first %}
+    {% set recipientCount = app.flashes('recipientCount')|first %}
+
+    {% if mailSend is same as (true) %}
+        <div class="uk-alert uk-alert-success">
+            <i class="uk-icon-check-square-o uk-icon-medium"></i>
+            {{ 'Your email has been successfully sent to multiple users'|trans({'%user_count%': recipientCount}, "mail") }}
+        </div>
+    {% else %}
+        <div class="uk-alert uk-alert-warning">
+            <i class="uk-icon-exclamation-triangle uk-icon-medium"></i>
+            {{ 'Your email may only have been partially sent.'|trans({}, "mail") }}
+        </div>
+    {% endif %}
+
+    <div>
+        {{ 'Back to'|trans({}, "mail") }} <a href="{{ backLink }}">{{ backLabel }}</a>
+    </div>
+{% endmacro %}

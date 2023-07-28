@@ -165,16 +165,16 @@
                     <h3>{{ 'Workspace membership' |trans({}, 'portal') }}</h3>
                     <dl class="uk-description-list">
                         <dt>{{ 'Community workspaces' |trans({}, 'portal') }}</dt>
-                        <dd>{{ communities | default('None' | trans({}, 'portal')) }}</dd>
+                        <dd>{{ communities | join(', ') | default('None' | trans({}, 'portal')) }}</dd>
 
                         <dt>{{ 'Project workspaces' | trans({}, 'portal') }}</dt>
-                        <dd>{{ projects | default('None' | trans({}, 'portal')) }}</dd>
+                        <dd>{{ projects | join(', ') | default('None' | trans({}, 'portal')) }}</dd>
 
                         <dt>{{ 'Userroom workspaces' | trans({}, 'portal') }}</dt>
-                        <dd>{{ userrooms | default('None' | trans({}, 'portal')) }}</dd>
+                        <dd>{{ userrooms | join(', ') | default('None' | trans({}, 'portal')) }}</dd>
 
                         <dt>{{'Privateroom workspaces' | trans({}, 'portal') }}</dt>
-                        <dd>{{ privaterooms | default('None' | trans({}, 'portal')) }}</dd>
+                        <dd>{{ privaterooms | join(', ') | default('None' | trans({}, 'portal')) }}</dd>
                     </dl>
                 </div>
 
@@ -182,16 +182,16 @@
                     <h3>{{ 'Archived workspaces' | trans({}, 'portal') }}</h3>
                     <dl class="uk-description-list">
                         <dt>{{ 'Community workspaces' | trans({}, 'portal') }}</dt>
-                        <dd>{{ communitiesArchived | default('None' | trans({}, 'portal')) }}</dd>
+                        <dd>{{ communitiesArchived | join(', ') | default('None' | trans({}, 'portal')) }}</dd>
 
                         <dt>{{ 'Project workspaces' | trans({}, 'portal') }}</dt>
-                        <dd>{{ projectsArchived | default('None' | trans({}, 'portal')) }}</dd>
+                        <dd>{{ projectsArchived | join(', ') | default('None' | trans({}, 'portal')) }}</dd>
 
                         <dt>{{ 'Userroom workspaces' | trans({}, 'portal') }}</dt>
-                        <dd>{{ userroomsArchived | default('None' | trans({}, 'portal')) }}</dd>
+                        <dd>{{ userroomsArchived | join(', ') | default('None' | trans({}, 'portal')) }}</dd>
 
                         <dt>{{ 'Privateroom workspaces' | trans({}, 'portal') }}</dt>
-                        <dd>{{ privateRoomsArchived | default('None' | trans({}, 'portal')) }}</dd>
+                        <dd>{{ privateRoomsArchived | join(', ') | default('None' | trans({}, 'portal')) }}</dd>
                     </dl>
                 </div>
             </div>

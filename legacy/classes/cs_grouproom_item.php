@@ -174,14 +174,6 @@ class cs_grouproom_item extends cs_room_item
          $this->replaceElasticItem($objectPersister, $repository);
      }
 
-    /** save news item
-     * this methode save the news item into the database.
-     */
-    public function saveOnlyItem()
-    {
-        $this->save(false);
-    }
-
     /** delete project
      * this method deletes the group room.
      */
@@ -203,7 +195,7 @@ class cs_grouproom_item extends cs_room_item
 
         // delete linked group
         $group = $this->getLinkedGroupItem();
-        $group->delete();
+        $group->delete(false);
 
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
@@ -686,79 +678,79 @@ class cs_grouproom_item extends cs_room_item
     // - unlock
     // ###############################################################
 
-    private function _sendMailRoomDelete()
+    private function _sendMailRoomDelete(): void
     {
         $this->_sendMailRoomDeleteToGroupModeration();
         $this->_sendMailRoomDeleteToProjectModeration();
         $this->_sendMailRoomDeleteToPortalModeration();
     }
 
-    private function _sendMailRoomDeleteToGroupModeration()
+    private function _sendMailRoomDeleteToGroupModeration(): void
     {
         $this->_sendMailToModeration('group', 'delete');
     }
 
-    private function _sendMailRoomUnDelete()
+    private function _sendMailRoomUnDelete(): void
     {
         $this->_sendMailRoomUnDeleteToGroupModeration();
         $this->_sendMailRoomUnDeleteToProjectModeration();
         $this->_sendMailRoomUnDeleteToPortalModeration();
     }
 
-    private function _sendMailRoomUnDeleteToGroupModeration()
+    private function _sendMailRoomUnDeleteToGroupModeration(): void
     {
         $this->_sendMailToModeration('group', 'undelete');
     }
 
-    private function _sendMailRoomOpen()
+    private function _sendMailRoomOpen(): void
     {
         $this->_sendMailRoomOpenToGroupModeration();
         $this->_sendMailRoomOpenToProjectModeration();
         $this->_sendMailRoomOpenToPortalModeration();
     }
 
-    private function _sendMailRoomOpenToGroupModeration()
+    private function _sendMailRoomOpenToGroupModeration(): void
     {
         $this->_sendMailToModeration('group', 'open');
     }
 
-    private function _sendMailRoomArchive()
+    private function _sendMailRoomArchive(): void
     {
         $this->_sendMailRoomArchiveToGroupModeration();
         $this->_sendMailRoomArchiveToProjectModeration();
         $this->_sendMailRoomArchiveToPortalModeration();
     }
 
-    private function _sendMailRoomArchiveToGroupModeration()
+    private function _sendMailRoomArchiveToGroupModeration(): void
     {
         $this->_sendMailToModeration('group', 'archive');
     }
 
-    private function _sendMailRoomReOpen()
+    private function _sendMailRoomReOpen(): void
     {
         $this->_sendMailRoomReOpenToGroupModeration();
         $this->_sendMailRoomReOpenToProjectModeration();
         $this->_sendMailRoomReOpenToPortalModeration();
     }
 
-    private function _sendMailRoomReOpenToGroupModeration()
+    private function _sendMailRoomReOpenToGroupModeration(): void
     {
         $this->_sendMailToModeration('group', 'reopen');
     }
 
-    private function _sendMailRoomLock()
+    private function _sendMailRoomLock(): void
     {
         $this->_sendMailRoomLockToGroupModeration();
         $this->_sendMailRoomLockToProjectModeration();
         $this->_sendMailRoomLockToPortalModeration();
     }
 
-    private function _sendMailRoomLockToGroupModeration()
+    private function _sendMailRoomLockToGroupModeration(): void
     {
         $this->_sendMailToModeration('group', 'lock');
     }
 
-    private function _sendMailRoomUnlock()
+    private function _sendMailRoomUnlock(): void
     {
         $this->_sendMailRoomUnlockToGroupModeration();
         $this->_sendMailRoomUnlockToProjectModeration();
@@ -770,61 +762,57 @@ class cs_grouproom_item extends cs_room_item
         $this->_sendMailToModeration('group', 'unlock');
     }
 
-    public function _sendMailToModeration($room_moderation, $room_change)
+    public function _sendMailToModeration($room_moderation, $room_change): void
     {
-        if ('project' == $room_moderation) {
-            $project_room_item = $this->getLinkedProjectItem();
-            if (isset($project_room_item) and !empty($project_room_item)) {
-                $this->_sendMailToModeration2($project_room_item, $room_change);
-            }
-        } elseif ('group' == $room_moderation) {
-            $this->_sendMailToModeration2($this, $room_change);
-        } elseif ('portal' == $room_moderation) {
-            $this->_sendMailToModeration2($this->getContextItem(), $room_change);
-        } else {
-            trigger_error('lost room moderation', E_USER_WARNING);
+        switch ($room_moderation) {
+            case 'project':
+                $project_room_item = $this->getLinkedProjectItem();
+                if ($project_room_item) {
+                    $this->_sendMailToModeration2($project_room_item, $room_change);
+                }
+                break;
+            case 'group':
+                $this->_sendMailToModeration2($this, $room_change);
+                break;
+            case 'portal':
+                $this->_sendMailToModeration2($this->getContextItem(), $room_change);
+                break;
+            default:
+                throw new UnexpectedValueException('$room_moderation value not handled');
         }
     }
 
-    private function _sendMailToModeration2($room_item, $room_change)
+    private function _sendMailToModeration2($room_item, $room_change): void
     {
         $translator = $this->_environment->getTranslationObject();
         $default_language = 'de';
 
         $current_portal = $this->_environment->getCurrentPortalItem();
-        if (empty($current_portal)
-             or !$current_portal->isPortal()
-        ) {
+        if (!$current_portal) {
             $current_portal = $this->getContextItem();
-            if (!empty($current_portal)
-                 and $current_portal->isProjectRoom()
-            ) {
+            if (!empty($current_portal) && $current_portal->isProjectRoom()) {
                 $current_portal = $current_portal->getContextItem();
             }
         }
-        $current_user = $this->_environment->getCurrentUserItem();
 
+        $current_user = $this->_environment->getCurrentUserItem();
         $moderator_list = $room_item->getModeratorList();
 
         // get moderators
         $receiver_array = [];
         $moderator_name_array = [];
 
-        if ($moderator_list->isNotEmpty()) {
-            $mod_item = $moderator_list->getFirst();
-            while ($mod_item) {
-                if ('yes' == $mod_item->getOpenRoomWantMail()) {
-                    $language = $room_item->getLanguage();
-                    if ('user' == $language) {
-                        $language = $mod_item->getLanguage();
-                        if ('browser' == $language) {
-                            $language = $default_language;
-                        }
+        foreach ($moderator_list as $mod_item) {
+            if ('yes' == $mod_item->getOpenRoomWantMail()) {
+                $language = $room_item->getLanguage();
+                if ('user' == $language) {
+                    $language = $mod_item->getLanguage();
+                    if ('browser' == $language) {
+                        $language = $default_language;
                     }
-                    $receiver_array[$language][] = $mod_item->getEmail();
-                    $moderator_name_array[] = $mod_item->getFullname();
                 }
-                $mod_item = $moderator_list->getNext();
+                $receiver_array[$language][] = $mod_item->getEmail();
+                $moderator_name_array[] = $mod_item->getFullname();
             }
         }
 

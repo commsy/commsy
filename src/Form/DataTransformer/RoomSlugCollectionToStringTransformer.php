@@ -55,10 +55,6 @@ class RoomSlugCollectionToStringTransformer implements DataTransformerInterface
      */
     public function reverseTransform($slugStr): ?Collection
     {
-        if (!$slugStr) {
-            return null;
-        }
-
         if (!$this->roomId) {
             throw new LogicException('room id is not set');
         }

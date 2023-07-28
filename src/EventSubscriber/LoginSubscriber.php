@@ -15,21 +15,21 @@ namespace App\EventSubscriber;
 
 use App\Account\AccountManager;
 use App\Entity\Account;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
-class LoginSubscriber implements EventSubscriberInterface
+readonly class LoginSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly Security $security,
-        private readonly UrlGeneratorInterface $urlGenerator,
-        private readonly AccountManager $accountManager
+        private Security $security,
+        private UrlGeneratorInterface $urlGenerator,
+        private AccountManager $accountManager
     ) {
     }
 
@@ -47,7 +47,6 @@ class LoginSubscriber implements EventSubscriberInterface
             return;
         }
 
-        /** @var Account $account */
         $account = $this->security->getUser();
         if (!$account instanceof Account) {
             return;
@@ -73,7 +72,7 @@ class LoginSubscriber implements EventSubscriberInterface
     public function onLoginSuccess(LoginSuccessEvent $event): void
     {
         /** @var Account $account */
-        $account = $this->security->getUser();
+        $account = $event->getUser();
 
         if ($account instanceof Account) {
             $this->accountManager->resetInactivity($account);

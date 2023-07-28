@@ -6,24 +6,7 @@
     <article class="uk-article uk-position-relative cs-edit-draft">
         {# title #}
         <div class="cs-toggle" data-uk-observe>
-            {{ form_start(form) }}
-            {{ form_errors(form) }}
-            <div class="uk-flex">
-                <div id="remove-on-click" class="uk-width-9-10">
-                    {{ form_widget(form.title) }}
-                </div>
-            </div>
-            <div class="uk-flex uk-margin-small-top">
-                <div class="uk-margin-small-left">
-                    {{ form_row(form.save) }}
-                </div>
-                <div class="uk-margin-small-left">
-                    {{ form_row(form.cancel) }}
-                </div>
-            </div>
-
-            {{ form_end(form) }}
-            {#{ macrosMaterial.title(section, modifierList, userCount, readCount, readSinceModificationCount) }#}
+            {{ macrosMaterial.title(section, modifierList, 0, 0, 0, true) }}
         </div>
 
         {# description #}
@@ -39,13 +22,6 @@
             {{ macrosItem.files(section, section.draft) }}
         </div>
 
-        <div id="draft-buttons-wrapper" data-item-type="section">
-            <a href="#" class="uk-button uk-button-primary" data-draft-save>
-                {{ 'create entry'|trans({}, "form") }}
-            </a>
-            <a href="#" class="uk-button uk-button-secondary" data-draft-cancel>
-                {{ 'cancel'|trans({}, "form") }}
-            </a>
-        </div>
+        {{ macros.draftButtons(section.contextId, section.itemId) }}
     </article>
 </div>

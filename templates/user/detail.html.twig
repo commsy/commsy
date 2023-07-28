@@ -217,7 +217,7 @@
                         editUrl: '{{ path('app_item_editdescription', { 'roomId': user.contextId, 'itemId': user.itemId }) }}',
                         cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': user.contextId, 'itemId': user.itemId }) }}'
                     }">
-                        {{ macrosItem.itemDescription('description', user, isSelf, user.description) }}
+                        {{ macrosItem.itemDescription('description', user, false, user.description) }}
                     </div>
 
                     {# groups #}

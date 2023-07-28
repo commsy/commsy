@@ -1,0 +1,53 @@
+{{ '[This email was generated automatically at %time_generated%.]'|trans({ '%time_generated%': 'now'|date|craue_datetime('de-DE') }, 'mail') }}
+
+<br/><br/>
+
+{% set newUserId = newUser.userId %}
+{% if portal.hideAccountname %}
+    {% set newUserId = 'XXX(' ~ 'messages.datasecurity'|trans() ~ ')' %}
+{% endif %}
+
+{% if room.isGroupRoom %}
+    {{ 'mail.user_joined_grouproom'|trans({ '%room_title%': room.title, '%user_id%': newUserId, '%fullname%': newUser.fullname }, 'mail') }}
+{% elseif room.isCommunityRoom %}
+    {{ 'mail.user_joined_community'|trans({ '%room_title%': room.title, '%user_id%': newUserId, '%fullname%': newUser.fullname }, 'mail') }}
+{% else %}
+    {{ 'mail.user_joined_project'|trans({ '%room_title%': room.title, '%user_id%': newUserId, '%fullname%': newUser.fullname }, 'mail') }}
+{% endif %}
+
+<br/><br/>
+
+{{ 'mail.user_joined_details'|trans({}, 'mail') }}:<br/>
+Name: {{ newUser.fullname }}<br/>
+Account: {{ newUserId }}<br/>
+E-Mail: {{ newUser.email }}
+
+<br/><br/>
+
+{% if newUser.isRequested %}
+    {{ 'mail.user_joined_approved_system'|trans({}, 'mail') }}
+{% else %}
+    {{ 'mail.user_joined_approved_manual'|trans({}, 'mail') }}
+{% endif %}
+
+{% if comment is not null %}
+    <br/><br/>
+
+    {{ 'mail.user_joined_comment'|trans({}, 'mail') }}<br/>
+    {{ comment }}
+{% endif %}
+
+<br/><br/>
+
+{% if newUser.isRequested %}
+    {{ 'mail.user_joined_approve_link_desc'|trans({}, 'mail') }}<br/>
+    {% set approveLink = absolute_url(path('app_user_list', { 'roomId': room.itemId, 'user_filter[user_status]': 1 })) %}
+    <a href="{{ approveLink }}">{{ approveLink }}</a>
+{% else %}
+    {% set homeLink = absolute_url(path('app_room_home', { 'roomId': room.itemId })) %}
+    <a href="{{ homeLink }}">{{ homeLink }}</a>
+{% endif %}
+
+<br/><br/>
+
+{{ 'You received this email as one of the moderator/s in the workspace "%room_name%".'|trans({ '%room_name%': room.title }, 'mail') }}

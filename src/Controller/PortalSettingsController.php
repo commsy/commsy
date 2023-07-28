@@ -17,7 +17,6 @@ use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AccountIndex;
 use App\Entity\AccountIndexSendMail;
-use App\Entity\AccountIndexSendMergeMail;
 use App\Entity\AccountIndexUser;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceGuest;
@@ -47,7 +46,6 @@ use App\Form\Type\Portal\AccountIndexDetailEditType;
 use App\Form\Type\Portal\AccountIndexDetailType;
 use App\Form\Type\Portal\AccountIndexPerformUserActionType;
 use App\Form\Type\Portal\AccountIndexSendMailType;
-use App\Form\Type\Portal\AccountIndexSendMergeMailType;
 use App\Form\Type\Portal\AccountIndexType;
 use App\Form\Type\Portal\AuthGuestType;
 use App\Form\Type\Portal\AuthLdapType;
@@ -79,6 +77,7 @@ use App\Form\Type\Portal\TimePulsesType;
 use App\Form\Type\Portal\TimePulseTemplateType;
 use App\Form\Type\TermType;
 use App\Form\Type\TranslationType;
+use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
 use App\Model\TimePulseTemplate;
 use App\Repository\AuthSourceRepository;
@@ -99,10 +98,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -111,7 +109,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -450,6 +447,8 @@ class PortalSettingsController extends AbstractController
 
         return $this->render('portal_settings/auth_ldap.html.twig', [
             'form' => $ldapForm,
+            'portal' => $portal,
+            'authSource' => $ldapSource,
         ]);
     }
 
@@ -506,6 +505,7 @@ class PortalSettingsController extends AbstractController
         return $this->render('portal_settings/auth_local.html.twig', [
             'form' => $localForm,
             'portal' => $portal,
+            'authSource' => $localSource,
         ]);
     }
 
@@ -617,6 +617,8 @@ class PortalSettingsController extends AbstractController
 
         return $this->render('portal_settings/auth_guest.html.twig', [
             'form' => $authGuestForm,
+            'portal' => $portal,
+            'authSource' => $guestSource,
         ]);
     }
 
@@ -675,6 +677,7 @@ class PortalSettingsController extends AbstractController
         return $this->render('portal_settings/auth_shibboleth.html.twig', [
             'form' => $authShibbolethForm,
             'portal' => $portal,
+            'authSource' => $shibSource,
         ]);
     }
 
@@ -1631,18 +1634,6 @@ class PortalSettingsController extends AbstractController
                             'portalId' => $portalId,
                             'recipients' => implode(', ', $IdsMailRecipients),
                         ]);
-                    case 11: // send mail merge userIDs
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                array_push($IdsMailRecipients, $id);
-                            }
-                        }
-
-                        return $this->redirectToRoute('app_portalsettings_accountindexsendmergemail', [
-                            'portalId' => $portalId,
-                            'recipients' => implode(', ', $IdsMailRecipients),
-                        ]);
                     case 13: // hide mail everywhere
                         foreach ($ids as $id => $checked) {
                             if ($checked) {
@@ -1837,14 +1828,15 @@ class PortalSettingsController extends AbstractController
         Mailer $mailer,
         #[MapEntity(id: 'portalId')]
         Portal $portal,
-        RouterInterface $router
+        RouterInterface $router,
+        ContactFormHelper $contactFormHelper
     ): Response {
         $user = $userService->getCurrentUserItem();
         $recipientArray = [];
-        $recipients = explode(', ', (string) $recipients);
-        foreach ($recipients as $recipient) {
-            $currentUser = $userService->getUser($recipient);
-            array_push($recipientArray, $currentUser);
+        $recipientIds = explode(', ', (string) $recipients);
+        foreach ($recipientIds as $recipientId) {
+            $currentUser = $userService->getUser($recipientId);
+            $recipientArray[] = $currentUser;
         }
 
         $multipleRecipients = sizeof($recipientArray) > 1;
@@ -1864,30 +1856,16 @@ class PortalSettingsController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $data = $form->getData();
-                $mailRecipients = $data->getRecipients();
-
-                if ($data->getCopyToSender()) {
-                    $mailRecipients[] = $userService->getCurrentUserItem();
-                }
-
-                $recipientCount = 0;
-
-                foreach ($mailRecipients as $mailRecipient) {
-                    $item = $itemService->getTypedItem($mailRecipient->getItemId());
-                    $email = $mailAssistant->getAccountIndexActionMessage($form, $item);
-                    $mailer->sendEmailObject($email, $portal->getTitle());
-
-                    if (!is_null($email->getTo())) {
-                        $recipientCount += count($email->getTo());
-                    }
-                    if (!is_null($email->getCc())) {
-                        $recipientCount += count($email->getCc());
-                    }
-                    if (!is_null($email->getBcc())) {
-                        $recipientCount += count($email->getBcc());
-                    }
-                }
+                $recipientCount = $contactFormHelper->handleContactFormSending(
+                    $sendMail->getSubject(),
+                    $sendMail->getMessage(),
+                    $portal->getTitle(),
+                    $userService->getCurrentUserItem(),
+                    [],
+                    $sendMail->getRecipients(),
+                    '',
+                    $sendMail->getCopyToSender()
+                );
 
                 $this->addFlash('recipientCount', $recipientCount);
 
@@ -1904,77 +1882,6 @@ class PortalSettingsController extends AbstractController
 
         return $this->render('portal_settings/account_index_send_mail.html.twig', [
             'user' => $user,
-            'form' => $form,
-            'recipients' => $recipientArray,
-        ]);
-    }
-
-    #[Route(path: '/portal/{portalId}/settings/accountindex/sendmergemail/{recipients}')]
-    #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function accountIndexSendMergeMail(
-        #[MapEntity(id: 'portalId')]
-        Portal $portal,
-        $portalId,
-        $recipients,
-        Request $request,
-        LegacyEnvironment $legacyEnvironment,
-        MailAssistant $mailAssistant,
-        UserService $userService,
-        ItemService $itemService,
-        Mailer $mailer,
-        RouterInterface $router
-    ): Response {
-        $recipientArray = [];
-        $recipients = explode(', ', (string) $recipients);
-        foreach ($recipients as $recipient) {
-            $currentUser = $userService->getUser($recipient);
-            array_push($recipientArray, $currentUser);
-        }
-
-        $sendMail = new AccountIndexSendMergeMail();
-        $sendMail->setRecipients($recipientArray);
-
-        $action = 'user-account-merge';
-        $accountMail = new AccountMail($legacyEnvironment, $router);
-        $body = $accountMail->generateBody($userService->getCurrentUserItem(), $action);
-        $subject = $accountMail->generateSubject($action);
-        $sendMail->setSubject($subject);
-        $sendMail->setMessage($body);
-
-        $form = $this->createForm(AccountIndexSendMergeMailType::class, $sendMail);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $mailRecipients = $data->getRecipients();
-
-            $recipientCount = 0;
-            foreach ($mailRecipients as $mailRecipient) {
-                $item = $itemService->getTypedItem($mailRecipient->getItemId());
-                $email = $mailAssistant->getAccountIndexPasswordMessage($form, $item);
-                $mailer->sendEmailObject($email, $portal->getTitle());
-
-                if (!is_null($email->getTo())) {
-                    $recipientCount += count($email->getTo());
-                }
-                if (!is_null($email->getCc())) {
-                    $recipientCount += count($email->getCc());
-                }
-                if (!is_null($email->getBcc())) {
-                    $recipientCount += count($email->getBcc());
-                }
-            }
-
-            $this->addFlash('recipientCount', $recipientCount);
-
-            $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
-                'portalId' => $portal->getId(),
-            ]);
-            $this->addFlash('savedSuccess', $returnUrl);
-        }
-
-        return $this->render('portal_settings/account_index_send_merge_mail.html.twig', [
-            'portal' => $portal,
             'form' => $form,
             'recipients' => $recipientArray,
         ]);
@@ -2019,32 +1926,40 @@ class PortalSettingsController extends AbstractController
 
         foreach ($relatedUsers as $relatedUser) {
             $contextID = $relatedUser->getContextID();
-            $locked = '0' === $relatedUser->getStatus() ? '('.$translator->trans('Locked', [], 'portal').') ' : '';
+            $locked = '0' === $relatedUser->getStatus() ? '('.$translator->trans('Locked', [], 'portal').')' : '';
             $relatedRoomItem = $roomService->getRoomItem($contextID);
-            if ('project' === $relatedRoomItem->getType()) {
-                if ('2' == $relatedRoomItem->getStatus()) {
-                    $projectsArchivedListNames[] = $locked.$relatedRoomItem->getTitle().'( ID: '.$relatedRoomItem->getItemID().' ) (ARCH.)';
-                } else {
-                    $projectsListNames[] = $locked.$relatedRoomItem->getTitle().'( ID: '.$relatedRoomItem->getItemID().' )';
-                }
-            } elseif ('community' === $relatedRoomItem->getType()) {
-                if ('2' == $relatedRoomItem->getStatus()) {
-                    $communityArchivedListNames[] = $locked.$relatedRoomItem->getTitle().'( ID: '.$relatedRoomItem->getItemID().' ) (ARCH.)';
-                } else {
-                    $communityListNames[] = $locked.$relatedRoomItem->getTitle().'( ID: '.$relatedRoomItem->getItemID().' )';
-                }
-            } elseif ('userroom' === $relatedRoomItem->getType()) {
-                if ('2' == $relatedRoomItem->getStatus()) {
-                    $userRoomsArchivedListNames[] = $locked.$relatedRoomItem->getTitle().'( ID: '.$relatedRoomItem->getItemID().' ) (ARCH.)';
-                } else {
-                    $userRoomListNames[] = $locked.$relatedRoomItem->getTitle().'( ID: '.$relatedRoomItem->getItemID().' )';
-                }
-            } elseif ('privateroom' === $relatedRoomItem->getType()) {
-                if ('2' == $relatedRoomItem->getStatus()) {
-                    $privateRoomArchivedNameList[] = $locked.$relatedRoomItem->getTitle().'( ID: '.$relatedRoomItem->getItemID().' ) (ARCH.)';
-                } else {
-                    $privateRoomNameList[] = $locked.$relatedRoomItem->getTitle().'( ID: '.$relatedRoomItem->getItemID().' )';
-                }
+
+            $listName = "$locked {$relatedRoomItem->getTitle()}( ID: {$relatedRoomItem->getItemID()} )";
+
+            switch ($relatedRoomItem->getType()) {
+                case 'project':
+                    if ($relatedRoomItem->getArchived()) {
+                        $projectsArchivedListNames[] = "$listName (ARCH.)";
+                    } else {
+                        $projectsListNames[] = $listName;
+                    }
+                    break;
+                case 'community':
+                    if ($relatedRoomItem->getArchived()) {
+                        $communityArchivedListNames[] = "$listName (ARCH.)";
+                    } else {
+                        $communityListNames[] = $listName;
+                    }
+                    break;
+                case 'userroom':
+                    if ($relatedRoomItem->getArchived()) {
+                        $userRoomsArchivedListNames[] = "$listName (ARCH.)";
+                    } else {
+                        $userRoomListNames[] = $listName;
+                    }
+                    break;
+                case 'privateroom':
+                    if ($relatedRoomItem->getArchived()) {
+                        $privateRoomArchivedNameList[] = "$listName (ARCH.)";
+                    } else {
+                        $privateRoomNameList[] = $listName;
+                    }
+                    break;
             }
         }
 
@@ -2085,14 +2000,14 @@ class PortalSettingsController extends AbstractController
                     'portal' => $portal,
                     'portalId' => $portal->getId(),
                     'userId' => $user->getItemID(),
-                    'communities' => implode(', ', $communityListNames),
-                    'projects' => implode(', ', $projectsListNames),
-                    'privaterooms' => implode(', ', $privateRoomNameList),
-                    'userrooms' => implode(', ', $userRoomListNames),
-                    'communitiesArchived' => implode(', ', $communityArchivedListNames),
-                    'projectsArchived' => implode(', ', $projectsArchivedListNames),
-                    'privateRoomsArchived' => implode(', ', $privateRoomArchivedNameList),
-                    'userroomsArchived' => implode(', ', $userRoomsArchivedListNames),
+                    'communities' => $communityListNames,
+                    'projects' => $projectsListNames,
+                    'privaterooms' => $privateRoomNameList,
+                    'userrooms' => $userRoomListNames,
+                    'communitiesArchived' => $communityArchivedListNames,
+                    'projectsArchived' => $projectsArchivedListNames,
+                    'privateRoomsArchived' => $privateRoomArchivedNameList,
+                    'userroomsArchived' => $userRoomsArchivedListNames,
                     'hasNext' => $hasNext,
                     'hasPrevious' => $hasPrevious,
                 ]);
@@ -2122,14 +2037,14 @@ class PortalSettingsController extends AbstractController
             'authSource' => $authSourceRepository->findOneBy(['id' => $user->getAuthSource()]),
             'form' => $form,
             'portal' => $portal,
-            'communities' => implode(', ', $communityListNames),
-            'projects' => implode(', ', $projectsListNames),
-            'privaterooms' => implode(', ', $privateRoomNameList),
-            'userrooms' => implode(', ', $userRoomListNames),
-            'communitiesArchived' => implode(', ', $communityArchivedListNames),
-            'projectsArchived' => implode(', ', $projectsArchivedListNames),
-            'privateRoomsArchived' => implode(', ', $privateRoomArchivedNameList),
-            'userroomsArchived' => implode(', ', $userRoomsArchivedListNames),
+            'communities' => $communityListNames,
+            'projects' => $projectsListNames,
+            'privaterooms' => $privateRoomNameList,
+            'userrooms' => $userRoomListNames,
+            'communitiesArchived' => $communityArchivedListNames,
+            'projectsArchived' => $projectsArchivedListNames,
+            'privateRoomsArchived' => $privateRoomArchivedNameList,
+            'userroomsArchived' => $userRoomsArchivedListNames,
             'hasNext' => $hasNext,
             'hasPrevious' => $hasPrevious,
         ]);

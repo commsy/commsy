@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-function getCurrentDate()
+function getCurrentDate(): string
 {
     return date('Ymd');
 }
@@ -24,7 +24,7 @@ if (!function_exists('getCurrentDateTimeInMySQL')) {
 }
 
 if (!function_exists('getCurrentDateTimeMinusDaysInMySQL')) {
-    function getCurrentDateTimeMinusDaysInMySQL($days)
+    function getCurrentDateTimeMinusDaysInMySQL($days): string
     {
         return date('Y-m-d H:i:s', mktime(date('H'), date('i'), date('s'), date('m'), date('d') - $days, date('Y')));
     }
@@ -37,7 +37,7 @@ function getCurrentDateTimeMinusMonthsInMySQL($months)
 
 function getCurrentDateTimePlusMinutesInMySQL($minutes)
 {
-    return date('Y-m-d H:i:s', mktime(date('H'), date('i') + $minutes, date('s'), date('m'), date('d'), date('Y')));
+    return date('Y-m-d H:i:s', mktime(date('H'), date('i') . $minutes, date('s'), date('m'), date('d'), date('Y')));
 }
 
 if (!function_exists('getCurrentDateTimePlusDaysInMySQL')) {
@@ -216,31 +216,12 @@ function convertTimeFromInput($time)
     return $converted;
 }
 
-function getDifference($timestamp_lower, $timestamp_higher)
+function getDifference(string $timestampLower, string $timestampHigher): int
 {
-    $day_lower = substr((string) $timestamp_lower, 6, 2);
-    $day_higher = substr((string) $timestamp_higher, 6, 2);
+    $lower = DateTimeImmutable::createFromFormat('Ymd', $timestampLower);
+    $higher = DateTimeImmutable::createFromFormat('Ymd', $timestampHigher);
 
-    $month_lower = substr((string) $timestamp_lower, 4, 2);
-    $month_higher = substr((string) $timestamp_higher, 4, 2);
-
-    $year_lower = substr((string) $timestamp_lower, 0, 4);
-    $year_higher = substr((string) $timestamp_higher, 0, 4);
-
-    $from_date = mktime(0, 0, 0, $month_lower, $day_lower, $year_lower);
-    $till_date = mktime(0, 0, 0, $month_higher, $day_higher, $year_higher);
-    $begtimestamp = '';
-
-    for ($ts = $from_date; $ts <= $till_date; $ts += 86400) {
-        if ('' == $begtimestamp) {
-            $begtimestamp = $ts; // this line freezes first timestamp
-        }
-    }
-    $endtimestamp = $ts; // this line freezes the last timestamp
-
-    $totaldays = (($endtimestamp - $begtimestamp) / 86400);
-
-    return $totaldays;
+    return $lower->diff($higher)->format('%a');
 }
 
 // ####

@@ -34,10 +34,8 @@ class cs_group_manager extends cs_labels_manager
 
     /** get an empty group item
      *  get an empty label (group) item.
-     *
-     *  @return cs_label_item a group label
      */
-    public function getNewItem($label_type = '')
+    public function getNewItem($label_type = ''): cs_group_item
     {
         return new cs_group_item($this->_environment);
     }

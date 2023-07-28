@@ -49,7 +49,7 @@ class PrintService
      *
      * @return string Generated PDF content
      */
-    public function getPdfContent($html)
+    public function getPdfContent(string $html): string
     {
         $this->setOptions();
 
@@ -59,13 +59,13 @@ class PrintService
     /**
      * Generates a pdf response, converting the given html content.
      *
-     * @param string $html     HTML content
-     * @param bool   $debug    Return plain html, instead of a pdf document (helps debugging); defaults to false
+     * @param string $html HTML content
+     * @param bool $debug Return plain html, instead of a pdf document (helps debugging); defaults to false
      * @param string $fileName the file name for the generated PDF document; defaults to "print.pdf"
      *
      * @return Response HTML Response containing the generated PDF
      */
-    public function buildPdfResponse($html, $debug = false, $fileName = 'print.pdf')
+    public function buildPdfResponse(string $html, bool $debug = false, string $fileName = 'print.pdf'): Response
     {
         if ($debug) {
             return new Response($html);
@@ -131,7 +131,7 @@ class PrintService
             $html = str_replace('https://localhost', 'http://caddy', $html);
         }
 
-        $pattern = '~src=\".*/file/(\d+?)\"~';
+        $pattern = '~src=\".*/file/(\d+?)(/inline)?\"~';
         return preg_replace_callback($pattern, function ($matches) {
             /** @var Files $file */
             $file = $this->filesRepository->find($matches[1]);

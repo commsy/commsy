@@ -125,8 +125,8 @@ class CancellableLockAndDeleteController extends AbstractController
         $itemId
     ): Response {
         $this->denyAccessUnlessGranted(new Expression(
-            'is_granted("ROOM_MODERATOR", itemId) or is_granted("PARENT_ROOM_MODERATOR", itemId)'
-        ));
+            'is_granted("ROOM_MODERATOR", subject) or is_granted("PARENT_ROOM_MODERATOR", subject)'
+        ), $itemId);
 
         $roomItem = $roomService->getRoomItem($itemId);
         if (!$roomItem) {
