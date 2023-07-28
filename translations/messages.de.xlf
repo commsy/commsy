@@ -125,7 +125,7 @@
             <trans-unit id="30">
                 <source>marked %count% entries as read</source>
                  <target>{0} Keine Einträge als gelesen markiert.|{1} Ein Eintrag als gelesen markiert.|]1,Inf[ %count% Einträge als gelesen markiert.</target>
-           </trans-unit>            
+           </trans-unit>
             <trans-unit id="31">
                 <source>%count% deleted entries</source>
                  <target>{0} Keine Einträge gelöscht.|{1} Ein Eintrag gelöscht.|]1,Inf[ %count% Einträge gelöscht.</target>
@@ -137,11 +137,11 @@
             <trans-unit id="33">
                 <source>action error</source>
                  <target>Beim Ausführen der Aktion ist ein Fehler aufgetreten.</target>
-           </trans-unit>  
+           </trans-unit>
             <trans-unit id="34">
                 <source>No more results found</source>
                  <target>Keine weiteren Einträge vorhanden.</target>
-           </trans-unit>            
+           </trans-unit>
            <trans-unit id="35">
                 <source>of</source>
                 <target>von</target>
@@ -349,7 +349,7 @@
            <trans-unit id="64">
                 <source>set status of %count% users to blocked</source>
                  <target>{0} Keine Kennung gesperrt.|{1} Eine Kennung gesperrt.|]1,Inf[ %count% Kennungen gesperrt.</target>
-           </trans-unit> 
+           </trans-unit>
             <trans-unit id="65">
                 <source>confirmed %count% users</source>
                  <target>{0} Keine Kennung freigeschaltet.|{1} Eine Kennung freigeschaltet.|]1,Inf[ %count% Kennungen freigeschaltet.</target>
@@ -466,6 +466,10 @@
              <trans-unit id="deactivated_entry">
                  <source>Deactivated entry</source>
                  <target>(Deaktivierter Eintrag)</target>
+             </trans-unit>
+             <trans-unit id="messages_datasecurity">
+                  <source>messages.datasecurity</source>
+                  <target>aus Datenschutzgründen verborgen</target>
              </trans-unit>
         </body>
     </file>

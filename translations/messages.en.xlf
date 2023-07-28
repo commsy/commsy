@@ -77,7 +77,7 @@
             <trans-unit id="18">
                 <source>trash</source>
                 <target>delete</target>
-            </trans-unit>         
+            </trans-unit>
             <trans-unit id="19">
                 <source>description</source>
                 <target>Description</target>
@@ -125,7 +125,7 @@
             <trans-unit id="30">
                 <source>marked %count% entries as read</source>
                  <target>{0} No entries marked as read.|{1} One entry marked as read.|]1,Inf[ %count% entries marked as read.</target>
-           </trans-unit>            
+           </trans-unit>
             <trans-unit id="31">
                 <source>%count% deleted entries</source>
                  <target>{0} No entries deleted.|{1} One entry deleted.|]1,Inf[ %count% entries deleted.</target>
@@ -137,11 +137,11 @@
             <trans-unit id="33">
                 <source>action error</source>
                  <target>An error has occured.</target>
-           </trans-unit> 
+           </trans-unit>
             <trans-unit id="34">
                 <source>No more results found</source>
                  <target>No more results found.</target>
-           </trans-unit>            
+           </trans-unit>
            <trans-unit id="35">
                 <source>of</source>
                 <target>of</target>
@@ -349,7 +349,7 @@
             <trans-unit id="64">
                 <source>set status of %count% users to blocked</source>
                  <target>{0} No user locked.|{1} One user locked.|]1,Inf[ %count% users locked.</target>
-           </trans-unit> 
+           </trans-unit>
             <trans-unit id="65">
                 <source>confirmed %count% users</source>
                  <target>{0} No user Approved/Unlocked.|{1} One user Approved/Unlocked.|]1,Inf[ %count% users Approved/Unlocked.</target>
@@ -470,6 +470,10 @@
             <trans-unit id="deactivated_entry">
                  <source>Deactivated entry</source>
                  <target>(Deactivated entry)</target>
+            </trans-unit>
+            <trans-unit id="messages_datasecurity">
+                 <source>messages.datasecurity</source>
+                 <target>hidden because of datasecurity</target>
             </trans-unit>
         </body>
     </file>

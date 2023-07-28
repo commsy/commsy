@@ -24,6 +24,7 @@ use App\Form\Type\Profile\AccountContactFormType;
 use App\Form\Type\SendType;
 use App\Form\Type\UserSendType;
 use App\Form\Type\UserStatusChangeType;
+use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\AvatarService;
@@ -111,6 +112,7 @@ class UserController extends BaseController
     public function sendMailViaContactForm(
         Request $request,
         MailAssistant $mailAssistant,
+        ContactFormHelper $contactFormHelper,
         Mailer $mailer,
         TranslatorInterface $translator,
         $roomId,
@@ -120,7 +122,7 @@ class UserController extends BaseController
     ): Response {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
-        $item = $this->itemService->getTypedItem($itemId);
+        $item = $this->userService->getUser($itemId);
         $formData = null;
         if (!is_null($item->getLinkedUserroomItem())) {
             $recipients = [];
@@ -162,11 +164,26 @@ class UserController extends BaseController
                 ]);
             }
 
-            // send mail
-            $email = $mailAssistant->getUserContactMessage($form, $item, $moderatorIds, $this->userService);
-            $mailer->sendEmailObject($email, $portalItem->getTitle());
+            $formData = $form->getData();
 
-            $recipientCount = count($email->getTo() ?? []) + count($email->getCc() ?? []) + count($email->getBcc() ?? []);
+            $recipients = [$item];
+            $moderators = explode(', ', $moderatorIds);
+            foreach ($moderators as $moderatorId) {
+                $recipients[] = $this->userService->getUser($moderatorId);
+            }
+
+            // send mail
+            $recipientCount = $contactFormHelper->handleContactFormSending(
+                $formData['subject'],
+                $formData['message'] ?: '',
+                $portalItem->getTitle(),
+                $this->legacyEnvironment->getCurrentUserItem(),
+                $formData['files'],
+                $recipients,
+                $formData['additional_recipient'],
+                $formData['copy_to_sender']
+            );
+
             $this->addFlash('recipientCount', $recipientCount);
 
             // redirect to success page
@@ -574,7 +591,7 @@ class UserController extends BaseController
             $userRoomItem = $infoArray['user']->getLinkedUserroomItem();
             $moderators = $infoArray['user']->getLinkedUserroomItem()->getModeratorList();
             foreach ($moderators as $moderator) {
-                array_push($moderatorIds, $moderator->getItemId());
+                $moderatorIds[] = $moderator->getItemId();
             }
         }
 
@@ -818,23 +835,18 @@ class UserController extends BaseController
                     $email->replyTo($sender);
                 }
 
+                $recipients = [$recipient];
+
                 // form option: copy_to_sender
                 if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                    if ($currentUser->isEmailVisible()) {
-                        $email->cc($sender);
-                    } else {
-                        $email->addBcc($sender);
-                    }
-                }
-
-                if ($item->isEmailVisible()) {
-                    $email->to($recipient);
-                } else {
-                    $email->addBcc($recipient);
+                    $recipients[] = $sender;
                 }
 
                 // send mail
-                $mailer->sendEmailObject($email, $portalItem->getTitle());
+                foreach ($recipients as $rec) {
+                    $email->to($rec);
+                    $mailer->sendEmailObject($email, $portalItem->getTitle());
+                }
 
                 // redirect to success page
                 return $this->redirectToRoute('app_user_sendsuccess', [
@@ -1262,24 +1274,18 @@ class UserController extends BaseController
                 $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
                 // TODO: refactor all mail sending code so that it is handled by a central class (like `MailAssistant.php`)
-                $to = [];
-                $toBCC = [];
+                $recipients = [];
                 $validator = new EmailValidator();
                 $failedUsers = [];
                 foreach ($users as $user) {
                     if ($validator->isValid($user->getEmail(), new RFCValidation())) {
-                        if ($user->isEmailVisible()) {
-                            $to[] = new Address($user->getEmail(), $user->getFullName());
-                        } else {
-                            $toBCC[] = new Address($user->getEmail(), $user->getFullName());
-                        }
+                        $recipients[] = new Address($user->getEmail(), $user->getFullName());
                     } else {
                         $failedUsers[] = $user;
                     }
                 }
 
                 $replyTo = [];
-                $toCC = [];
                 if ($validator->isValid($currentUser->getEmail(), new RFCValidation())) {
                     if ($currentUser->isEmailVisible()) {
                         $replyTo[] = new Address($currentUser->getEmail(), $currentUser->getFullName());
@@ -1287,11 +1293,7 @@ class UserController extends BaseController
 
                     // form option: copy_to_sender
                     if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                        if ($currentUser->isEmailVisible()) {
-                            $toCC[] = new Address($currentUser->getEmail(), $currentUser->getFullName());
-                        } else {
-                            $toBCC[] = new Address($currentUser->getEmail(), $currentUser->getFullName());
-                        }
+                        $recipients[] = new Address($currentUser->getEmail(), $currentUser->getFullName());
                     }
                 }
 
@@ -1306,15 +1308,16 @@ class UserController extends BaseController
                     $email = $mailAssistant->addAttachments($formDataFiles, $email);
                 }
 
-                // NOTE: as of #2461 all mail should be sent as BCC mail
-                $allRecipients = array_merge($to, $toCC, $toBCC);
-                $email->bcc(...$allRecipients);
-                $recipientCount = count($allRecipients);
+                $mailSend = true;
+                foreach ($recipients as $recipient) {
+                    $email->to($recipient);
+                    $send = $mailer->sendEmailObject($email, $portalItem->getTitle());
+                    $mailSend = $mailSend && $send;
+                }
 
-                $this->addFlash('recipientCount', $recipientCount);
+                $this->addFlash('recipientCount', $recipients);
 
                 // send mail
-                $mailSend = $mailer->sendEmailObject($email, $portalItem->getTitle());
                 $mailSend = $mailSend && empty($failedUsers);
                 $this->addFlash('mailSend', $mailSend);
 

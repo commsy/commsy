@@ -438,10 +438,6 @@
                 <source>Send mail</source>
                 <target>E-Mail schicken</target>
             </trans-unit>
-            <trans-unit id="mail_combine_ids">
-                <source>Mail combine ids</source>
-                <target>E-Mail: Kennungen zusammenführen</target>
-            </trans-unit>
             <trans-unit id="hide_mail_all_wrks">
                 <source>Hide mail all wrks</source>
                 <target>E-Mail in allen Räumen verbergen</target>

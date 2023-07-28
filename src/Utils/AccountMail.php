@@ -37,7 +37,7 @@ class AccountMail
         $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
         $room = $this->legacyEnvironment->getCurrentContextItem();
 
-        $subject = match ($action) {
+        return match ($action) {
             'user-delete' => $legacyTranslator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_DELETE', $room->getTitle()),
             'user-block' => $legacyTranslator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_LOCK', $room->getTitle()),
             'user-confirm' => $legacyTranslator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE', $room->getTitle()),
@@ -49,10 +49,8 @@ class AccountMail
             'user-account-merge' => $legacyTranslator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_MERGE', $room->getTitle()),
             'user-account_password' => $legacyTranslator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_PASSWORD', $room->getTitle()),
             'user-account_send_mail' => $legacyTranslator->getMessage('MAIL_SUBJECT', $room->getTitle()),
-            default => $subject,
+            default => '',
         };
-
-        return $subject;
     }
 
     /**

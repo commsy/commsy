@@ -12,6 +12,10 @@
  */
 
 use App\Entity\Room;
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /** father class for a rooms (project or community)
@@ -786,6 +790,7 @@ class cs_project_item extends cs_room_item
          $translator = $this->_environment->getTranslationObject();
          $default_language = 'de';
 
+         /** @var ContainerInterface $symfonyContainer */
          global $symfonyContainer;
          $default_sender_address = $symfonyContainer->getParameter('commsy.email.from');
 
@@ -814,28 +819,24 @@ class cs_project_item extends cs_room_item
          $receiver_array = [];
          $moderator_name_array = [];
 
-         if ($moderator_list->isNotEmpty()) {
-             $mod_item = $moderator_list->getFirst();
-             while ($mod_item) {
-                 if ('yes' == $mod_item->getOpenRoomWantMail()) {
-                     $language = $room_item->getLanguage();
-                     if ('user' == $language) {
-                         $language = $mod_item->getLanguage();
-                         if ('browser' == $language) {
-                             $language = $default_language;
-                         }
+         foreach ($moderator_list as $mod_item) {
+             if ('yes' == $mod_item->getOpenRoomWantMail()) {
+                 $language = $room_item->getLanguage();
+                 if ('user' == $language) {
+                     $language = $mod_item->getLanguage();
+                     if ('browser' == $language) {
+                         $language = $default_language;
                      }
-                     $receiver_array[$language][] = $mod_item->getEmail();
-                     $moderator_name_array[] = $mod_item->getFullname();
                  }
-                 $mod_item = $moderator_list->getNext();
+                 $receiver_array[$language] = $mod_item->getEmail();
+                 $moderator_name_array[] = $mod_item->getFullname();
              }
          }
 
          // now email information
-         foreach ($receiver_array as $key => $value) {
+         foreach ($receiver_array as $lang => $email) {
              $save_language = $translator->getSelectedLanguage();
-             $translator->setSelectedLanguage($key);
+             $translator->setSelectedLanguage($lang);
              $subject = '';
              if ($room_item->isCommunityRoom() or $room_item->isPortal()) {
                  $subject .= html_entity_decode($room_item->getTitle().': ');
@@ -897,7 +898,6 @@ class cs_project_item extends cs_room_item
              );
 
              if ('delete' != $room_change) {
-                 global $symfonyContainer;
                  $url = $symfonyContainer->get('router')->generate('app_room_home', [
                      'roomId' => $this->getItemID(),
                  ], UrlGeneratorInterface::ABSOLUTE_URL);
@@ -962,19 +962,16 @@ class cs_project_item extends cs_room_item
              }
 
              // send email
-             $mail = new cs_mail();
-             $mail->set_to(implode(',', $value));
-             $mail->set_from_email($default_sender_address);
-             if (isset($current_portal)) {
-                 $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $current_portal->getTitle()));
-             } else {
-                 $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $room_item->getTitle()));
-             }
-             $mail->set_reply_to_name($current_user->getFullname());
-             $mail->set_reply_to_email($current_user->getEmail());
-             $mail->set_subject($subject);
-             $mail->set_message($body);
-             $mail->send();
+             $from = $translator->getMessage(
+                 'SYSTEM_MAIL_MESSAGE',
+                 isset($current_portal) ? $current_portal->getTitle() : $room_item->getTitle()
+             );
+             $replyTo = new Address($current_user->getEmail(), $current_user->getFullName());
+
+             /** @var Mailer $mailer */
+             $mailer = $symfonyContainer->get(Mailer::class);
+             $mailer->sendRaw($subject, $body, RecipientFactory::createFromRaw($email), $from, [$replyTo]);
+
              $translator->setSelectedLanguage($save_language);
          }
      }

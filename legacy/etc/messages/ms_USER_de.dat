@@ -79,8 +79,6 @@ Name: %1
 Kennung: %2
 E-Mail Adresse: %3
 Sprache: %4";
-$message["USER_GET_MAIL_STATUS_NO"]["de"] = "Die Kennung ist bereits durch das System freigeschaltet worden.";
-$message["USER_GET_MAIL_STATUS_YES"]["de"] = "Die Kennung muss noch freigeschaltet werden.";
 $message["USER_GET_MAIL_SUBJECT"]["de"] = "Neue Kennung beantragt: [%1]";
 $message["USER_HEADER"]["de"] = "Personen";
 $message["USER_HOMEPAGE"]["de"] = "Homepage";
@@ -88,19 +86,7 @@ $message["USER_ICQ"]["de"] = "ICQ";
 $message["USER_ICQ_ERROR"]["de"] = "The ICQ number should only contain digits.";
 $message["USER_INDEX"]["de"] = "Personen";
 $message["USER_JABBER"]["de"] = "Jabber";
-$message["USER_JOIN_COMMUNITY_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] für %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG &quot;%4&quot; angemeldet.
-
-Die Informationen im Einzelnen:
-Name: %1
-Kennung: %2
-E-Mail Adresse: %3";
 $message["USER_JOIN_COMMUNITY_MAIL_BODY_BY_MODERATOR"]["de"] = "%1 wurde mit der Kennung [%2] von %5 für %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG &quot;%4&quot; angemeldet.
-
-Die Informationen im Einzelnen:
-Name: %1
-Kennung: %2
-E-Mail Adresse: %3";
-$message["USER_JOIN_CONTEXT_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] für %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG &quot;%4&quot; angemeldet.
 
 Die Informationen im Einzelnen:
 Name: %1
@@ -112,7 +98,6 @@ Die Informationen im Einzelnen:
 Name: %1
 Kennung: %2
 E-Mail Adresse: %3";
-$message["USER_JOIN_CONTEXT_MAIL_SUBJECT"]["de"] = "%2: Teilnahmeanfrage [%1]";
 $message["USER_LANGUAGE"]["de"] = "Sprache";
 $message["USER_LANGUAGE_DESC"]["de"] = "In dieser Sprache wird Ihnen dieses CommSy präsentiert. Außerdem sind alle E-Mails, die über dieses CommSy an Sie verschickt werden, in dieser Sprache.";
 $message["USER_LASTLOGIN"]["de"] = "Zuletzt online";

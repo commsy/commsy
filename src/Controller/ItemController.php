@@ -714,10 +714,7 @@ class ItemController extends AbstractController
             }
 
             // send mail
-            $email = $mailAssistant->getItemSendMessage($form, $item);
-            $mailer->sendEmailObject($email, $portalItem->getTitle());
-
-            $recipientCount = count($email->getTo() ?? []) + count($email->getCc() ?? []) + count($email->getBcc() ?? []);
+            $recipientCount = $mailAssistant->handleItemSendMessage($form, $item, $portalItem->getTitle());
             $this->addFlash('recipientCount', $recipientCount);
 
             // redirect to success page
@@ -827,69 +824,6 @@ class ItemController extends AbstractController
 
         return new JsonResponse([
             $optionsData['itemsLatest'],
-        ]);
-    }
-
-    /**
-     * @throws Exception
-     */
-    #[Route(path: '/room/{roomId}/item/sendlist', condition: 'request.isXmlHttpRequest()')]
-    public function sendlistAction(
-        Request $request,
-        RoomService $roomService,
-        UserService $userService,
-        LegacyEnvironment $legacyEnvironment,
-        Mailer $mailer,
-        int $roomId
-    ): Response {
-        // extract item id from request data
-        $requestContent = $request->getContent();
-        if (empty($requestContent)) {
-            throw new Exception('no request content given');
-        }
-
-        $room = $roomService->getRoomItem($roomId);
-
-        $environment = $legacyEnvironment->getEnvironment();
-        $currentUser = $environment->getCurrentUser();
-
-        // prepare form
-        $formMessage = $this->renderView('email/item_list_template.txt.twig', ['user' => $currentUser, 'room' => $room]);
-
-        $formData = [
-            'message' => $formMessage,
-        ];
-
-        $form = $this->createForm(SendListType::class, $formData, []);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            $userIds = explode(',', $data['entries']);
-            $recipients = [];
-            foreach ($userIds as $userId) {
-                $user = $userService->getUser($userId);
-                if ($user) {
-                    $recipients[] = RecipientFactory::createRecipient($user);
-                }
-            }
-
-            $mailer->sendMultipleRaw(
-                $data['subject'],
-                $data['message'],
-                $recipients,
-                $currentUser->getFullname(),
-                [],
-                $data['copy_to_sender'] ? [$currentUser->getEmail()] : []
-            );
-
-            return $this->render('item/send_list.html.twig');
-        }
-
-        return $this->render('item/send_list.html.twig', [
-            'form' => $form->createView(),
         ]);
     }
 

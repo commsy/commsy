@@ -12,6 +12,10 @@
  */
 
 use App\Entity\Room;
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /** class for a community
@@ -620,6 +624,7 @@ class cs_community_item extends cs_room_item
        $translator = $this->_environment->getTranslationObject();
        $default_language = 'de';
 
+       /** @var ContainerInterface $symfonyContainer */
        global $symfonyContainer;
        $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
        $default_sender_address = $emailFrom;
@@ -649,32 +654,28 @@ class cs_community_item extends cs_room_item
        $receiver_array = [];
        $moderator_name_array = [];
 
-       if ($moderator_list->isNotEmpty()) {
-           $mod_item = $moderator_list->getFirst();
-           while ($mod_item) {
-               if ('yes' == $mod_item->getOpenRoomWantMail()) {
-                   $language = $room_item->getLanguage();
-                   if ('user' == $language) {
-                       $language = $mod_item->getLanguage();
-                       if ('browser' == $language) {
-                           $language = $default_language;
-                       }
+       foreach ($moderator_list as $mod_item) {
+           if ('yes' == $mod_item->getOpenRoomWantMail()) {
+               $language = $room_item->getLanguage();
+               if ('user' == $language) {
+                   $language = $mod_item->getLanguage();
+                   if ('browser' == $language) {
+                       $language = $default_language;
                    }
-                   $receiver_array[$language][] = $mod_item->getEmail();
-                   $moderator_name_array[] = $mod_item->getFullname();
                }
-               $mod_item = $moderator_list->getNext();
+               $receiver_array[$language] = $mod_item->getEmail();
+               $moderator_name_array[] = $mod_item->getFullname();
            }
        }
 
        // now email information
-       foreach ($receiver_array as $key => $value) {
+       foreach ($receiver_array as $lang => $email) {
            $subject = '';
            if ($room_item->isPortal()) {
                $subject .= $room_item->getTitle().': ';
            }
            $save_language = $translator->getSelectedLanguage();
-           $translator->setSelectedLanguage($key);
+           $translator->setSelectedLanguage($lang);
            $title = str_ireplace('&amp;', '&', $this->getTitle());
            if ('open' == $room_change) {
                $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_OPEN', $title);
@@ -748,27 +749,19 @@ class cs_community_item extends cs_room_item
            }
 
            // send email
-           $mail = new cs_mail();
-           $mail->set_to(implode(',', $value));
-           $mail->set_from_email($default_sender_address);
-           if (isset($current_portal)) {
-               $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $current_portal->getTitle()));
-           } else {
-               $server_item = $this->_environment->getServerItem();
-               $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $server_item->getTitle()));
-               unset($server_item);
-           }
-           $mail->set_reply_to_name($current_user->getFullname());
-           $mail->set_reply_to_email($current_user->getEmail());
-           $mail->set_subject($subject);
-           $mail->set_message($body);
-           $mail->send();
+           $from = $translator->getMessage(
+               'SYSTEM_MAIL_MESSAGE',
+               isset($current_portal) ? $current_portal->getTitle() : $this->_environment->getServerItem()->getTitle()
+           );
+
+           $replyTo = new Address($current_user->getEmail(), $current_user->getFullName());
+
+           /** @var Mailer $mailer */
+           $mailer = $symfonyContainer->get(Mailer::class);
+           $mailer->sendRaw($subject, $body, RecipientFactory::createFromRaw($email), $from, [$replyTo]);
+
            $translator->setSelectedLanguage($save_language);
-           unset($save_language);
-           unset($mail);
        }
-       unset($current_portal);
-       unset($current_user);
    }
 
    public function getCountUsedAccounts($start, $end)

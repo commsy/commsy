@@ -158,6 +158,10 @@
                 <source>%portal_name%: Your account has been deleted</source>
                 <target>%portal_name%: Ihre Kennung wurde gelöscht</target>
             </trans-unit>
+            <trans-unit id="mail_subject_user_joined_context">
+                <source>mail.subject.user_joined_context</source>
+                <target>%room_title%: Teilnahmeanfrage [%fullname%]</target>
+            </trans-unit>
             <trans-unit id="mail_subject_workspace_activity_lock_warning">
                 <source>%portal_name%: Workspace will be locked in %num_days% days</source>
                 <target>%portal_name%: Raum wird in %num_days% Tagen gesperrt</target>
@@ -213,6 +217,38 @@
             <trans-unit id="mail_invitation_room_link_post">
                 <source>mail.invitation_room_link_post</source>
                 <target>Dort befinden sich Auswahlmöglichkeiten für die Teilnahme. Diese erfolgt je nach Raumeinstellung per Antrag oder per Code. Sollte im letzteren Fall der Code Ihnen nicht vorliegen, erfragen Sie diesen bitte bei der/dem Einladenden.</target>
+            </trans-unit>
+            <trans-unit id="mail_user_joined_grouproom">
+                <source>mail.user_joined_grouproom</source>
+                <target>%fullname% hat sich mit der Kennung [%user_id%] für den Gruppenraum "%room_title%" angemeldet.</target>
+            </trans-unit>
+            <trans-unit id="mail_user_joined_community">
+                <source>mail.user_joined_community</source>
+                <target>%fullname% hat sich mit der Kennung [%user_id%] für den Gemeinschaftsraum "%room_title%" angemeldet.</target>
+            </trans-unit>
+            <trans-unit id="mail_user_joined_project">
+                <source>mail.user_joined_project</source>
+                <target>%fullname% hat sich mit der Kennung [%user_id%] für den Projektraum "%room_title%" angemeldet.</target>
+            </trans-unit>
+            <trans-unit id="mail_user_joined_details">
+                <source>mail.user_joined_details</source>
+                <target>Die Informationen im Einzelnen</target>
+            </trans-unit>
+            <trans-unit id="mail_user_joined_approved_system">
+                <source>mail.user_joined_approved_system</source>
+                <target>Die Kennung ist bereits durch das System freigeschaltet worden.</target>
+            </trans-unit>
+            <trans-unit id="mail_user_joined_approved_manual">
+                <source>mail.user_joined_approved_manual</source>
+                <target>Die Kennung muss noch freigeschaltet werden.</target>
+            </trans-unit>
+            <trans-unit id="mail_user_joined_comment">
+                <source>mail.user_joined_comment</source>
+                <target>Kommentar:</target>
+            </trans-unit>
+            <trans-unit id="mail_user_joined_approve_link_desc">
+                <source>mail.user_joined_approve_link_desc</source>
+                <target>Zur Freischaltung folgen Sie bitte diesem Link:</target>
             </trans-unit>
         </body>
     </file>
