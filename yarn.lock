@@ -4427,10 +4427,10 @@ typescript@^4.2.3:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
-"uikit3@npm:uikit@3.15.17":
-  version "3.15.17"
-  resolved "https://registry.yarnpkg.com/uikit/-/uikit-3.15.17.tgz#91fb93a41e275458bce845000c079a0a639c4ae2"
-  integrity sha512-WGZosS2P9rShonmAldc1NsW5AyICguY964eVPeuferdbK6gVH1ab+WyGGkE4m5hUPXZ6m/EVUC0EeHkBrHPq0A==
+"uikit3@npm:uikit@3.16.23":
+  version "3.16.23"
+  resolved "https://registry.yarnpkg.com/uikit/-/uikit-3.16.23.tgz#340354d6e586c6e379112624bb60d720ef98dc46"
+  integrity sha512-dVHyOhwBg5UwTEC5IRlclVkWhlbB7G7VM7uA2h5W5wFBl2PhkklZR3npwW/yBrECTaaegM/PiUvdOc1niu7wuA==
 
 "uikit@npm:uikit@2.27.4":
   version "2.27.4"
