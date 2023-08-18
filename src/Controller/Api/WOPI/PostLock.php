@@ -6,6 +6,7 @@ use _PHPStan_532094bc1\Nette\Neon\Exception;
 use App\Entity\Files;
 use App\Lock\FileLockManager;
 use App\Repository\FilesRepository;
+use App\Security\Voter\WOPIVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,6 +32,8 @@ final class PostLock extends AbstractController
         if (!$request) {
             throw new Exception();
         }
+
+        $this->denyAccessUnlessGranted(WOPIVoter::EDIT, $file);
 
         $operation = $request->headers->get('X-WOPI-Override');
         if (!in_array($operation, ['LOCK', 'REFRESH_LOCK', 'UNLOCK'])) {

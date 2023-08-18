@@ -10,6 +10,7 @@ use App\WOPI\Discovery\DiscoveryService;
 use App\WOPI\Permission\PermissionResolver;
 use App\WOPI\REST\WOPIFileId;
 use App\WOPI\REST\WOPISrc;
+use DateTimeImmutable;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -57,10 +58,11 @@ class WOPIController extends AbstractController
 
         $token = $tokenGenerator->generateToken($account, $file, $permission);
 
+        $ttlDate = new DateTimeImmutable("+" . AccessTokenGenerator::TOKEN_VALID_NUM_HOURS . " hour");
         $response = $this->render('wopi/host.html.twig', [
             'actionUrl' => $actionUrl,
             'access_token' => $token,
-            'access_token_ttl' => AccessTokenGenerator::TOKEN_VALID_NUM_HOURS * 60 * 60 * 1000,
+            'access_token_ttl' => $ttlDate->format('Uv'),
             'favicon_url' => $app->getFavIconUrl(),
         ]);
         $response->setCache(['no_cache' => true, 'no_store' => true,]);

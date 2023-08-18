@@ -44,7 +44,7 @@ final readonly class WOPICheckFileInfo
             ->setUserId($token['aid'])
             ->setVersion($sha1)
             ->setUserFriendlyName($account->getUsername())
-            //->setReadOnly(!$writeable)
+            ->setReadOnly(!$writeable)
             ->setUserCanWrite($writeable);
     }
 }

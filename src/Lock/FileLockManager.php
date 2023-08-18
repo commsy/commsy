@@ -31,7 +31,7 @@ final class FileLockManager
         $file->setLockingDate($lockingDate);
         $file->setLockingId($lock);
 
-        $em =  $this->managerRegistry->getManager();
+        $em = $this->managerRegistry->getManager();
         $em->persist($file);
         $em->flush();
     }
@@ -41,7 +41,7 @@ final class FileLockManager
         $file->setLockingId(null);
         $file->setLockingDate(null);
 
-        $em =  $this->managerRegistry->getManager();
+        $em = $this->managerRegistry->getManager();
         $em->persist($file);
         $em->flush();
     }
@@ -51,7 +51,7 @@ final class FileLockManager
         $lockingDate = (new DateTimeImmutable())->modify('+' . self::LOCK_DURATION_MINUTES . ' minutes');
         $file->setLockingDate($lockingDate);
 
-        $em =  $this->managerRegistry->getManager();
+        $em = $this->managerRegistry->getManager();
         $em->persist($file);
         $em->flush();
 
