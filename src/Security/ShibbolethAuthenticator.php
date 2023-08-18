@@ -178,7 +178,7 @@ class ShibbolethAuthenticator extends AbstractCommsyAuthenticator
         }
 
         return new RedirectResponse($this->urlGenerator->generate('app_helper_portalenter', [
-            'context' => $request->request->get('context'),
+            'context' => $request->attributes->get('context'),
         ]));
     }
 
