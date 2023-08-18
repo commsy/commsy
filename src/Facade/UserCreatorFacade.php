@@ -148,17 +148,20 @@ class UserCreatorFacade
         $roomIds = array_map(function (string $roomSlug) use ($roomSlugRepository, $account) {
             /** @var RoomSlug $slug */
             $slug = $roomSlugRepository->findOneBy(['slug' => trim($roomSlug)]);
-            $room = $slug->getRoom();
-            if ($room->getContextId() == $account->getContextId()) {
-                return $room->getItemId();
+            if ($slug) {
+                $room = $slug->getRoom();
+                if ($room->getContextId() == $account->getContextId()) {
+                    return $room->getItemId();
+                }
             }
 
             return null;
         }, $roomSlugs);
 
         // filter out any null values (where a room slug couldn't be mapped to an actual room ID)
-        $roomIds = array_filter($roomIds);
-
+        // and make them unique
+        $roomIds = array_unique(array_filter($roomIds));
+        
         // create room users
         $portalUser = $this->userService->getPortalUser($account);
         $this->addUserToRoomsWithIds($portalUser, $roomIds, 2, true);
