@@ -51,13 +51,26 @@ class WOPICest
         $I->seeResponseCodeIs(HttpCode::INTERNAL_SERVER_ERROR);
     }
 
+    public function lockUnlockedFileForbidden(ApiTester $I)
+    {
+        $file = $I->haveFile($this->portal);
+        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::VIEW);
+        $I->amBearerAuthenticated($token);
+
+        $I->haveHttpHeader('X-WOPI-Override', 'LOCK');
+        $I->haveHttpHeader('X-WOPI-Lock', 'some');
+        $I->sendPost("/v2/wopi/files/{$file->getFilesId()}");
+        $I->seeResponseCodeIs(HttpCode::FORBIDDEN);
+        $I->dontSeeHttpHeader('X-WOPI-Lock');
+    }
+
     /**
      * If the file is currently unlocked, the host should lock the file and return 200 OK.
      */
     public function lockUnlockedFile(ApiTester $I)
     {
         $file = $I->haveFile($this->portal);
-        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::VIEW);
+        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::EDIT);
         $I->amBearerAuthenticated($token);
 
         $I->haveHttpHeader('X-WOPI-Override', 'LOCK');
@@ -75,7 +88,7 @@ class WOPICest
     public function lockLockedFile(ApiTester $I)
     {
         $file = $I->haveFile($this->portal, 'lock', new DateTimeImmutable());
-        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::VIEW);
+        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::EDIT);
         $I->amBearerAuthenticated($token);
 
         $I->haveHttpHeader('X-WOPI-Override', 'LOCK');
@@ -88,7 +101,7 @@ class WOPICest
     public function lockLockedFileInvalid(ApiTester $I)
     {
         $file = $I->haveFile($this->portal, 'lock', new DateTimeImmutable());
-        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::VIEW);
+        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::EDIT);
         $I->amBearerAuthenticated($token);
 
         $I->haveHttpHeader('X-WOPI-Override', 'LOCK');
@@ -101,7 +114,7 @@ class WOPICest
     public function refreshLockedFile(ApiTester $I)
     {
         $file = $I->haveFile($this->portal, 'lock', new DateTimeImmutable());
-        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::VIEW);
+        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::EDIT);
         $I->amBearerAuthenticated($token);
 
         $I->haveHttpHeader('X-WOPI-Override', 'REFRESH_LOCK');
@@ -114,7 +127,7 @@ class WOPICest
     public function refreshUnlockedFile(ApiTester $I)
     {
         $file = $I->haveFile($this->portal);
-        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::VIEW);
+        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::EDIT);
         $I->amBearerAuthenticated($token);
 
         $I->haveHttpHeader('X-WOPI-Override', 'REFRESH_LOCK');
@@ -127,7 +140,7 @@ class WOPICest
     public function refreshLockedFileInvalid(ApiTester $I)
     {
         $file = $I->haveFile($this->portal, 'lock', new DateTimeImmutable());
-        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::VIEW);
+        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::EDIT);
         $I->amBearerAuthenticated($token);
 
         $I->haveHttpHeader('X-WOPI-Override', 'REFRESH_LOCK');
@@ -140,7 +153,7 @@ class WOPICest
     public function unlockLockedFile(ApiTester $I)
     {
         $file = $I->haveFile($this->portal, 'lock', new DateTimeImmutable());
-        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::VIEW);
+        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::EDIT);
         $I->amBearerAuthenticated($token);
 
         $I->haveHttpHeader('X-WOPI-Override', 'UNLOCK');
@@ -153,7 +166,7 @@ class WOPICest
     public function unlockUnlockedFile(ApiTester $I)
     {
         $file = $I->haveFile($this->portal);
-        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::VIEW);
+        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::EDIT);
         $I->amBearerAuthenticated($token);
 
         $I->haveHttpHeader('X-WOPI-Override', 'UNLOCK');
@@ -166,7 +179,7 @@ class WOPICest
     public function unlockLockedFileInvalid(ApiTester $I)
     {
         $file = $I->haveFile($this->portal, 'lock', new DateTimeImmutable());
-        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::VIEW);
+        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::EDIT);
         $I->amBearerAuthenticated($token);
 
         $I->haveHttpHeader('X-WOPI-Override', 'UNLOCK');
@@ -321,7 +334,6 @@ class WOPICest
     /**
      * test:
      * - CheckFileInfo
-     * - PostLock
      * - proof key validation
      * - controller test for host page (check if user has permission to view / edit file -> token generation)
      * - lock expiration???
