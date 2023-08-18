@@ -321,6 +321,7 @@ class WOPICest
     /**
      * test:
      * - CheckFileInfo
+     * - PostLock
      * - proof key validation
      * - controller test for host page (check if user has permission to view / edit file -> token generation)
      * - lock expiration???
