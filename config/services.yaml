@@ -70,6 +70,11 @@ parameters:
     
     # Online Office
     commsy.online_office.base_url: '%env(ONLINE_OFFICE_BASE_URL)%'
+    commsy.online_office.proofkey_validation: true
+    
+when@test:
+    parameters:
+        commsy.online_office.proofkey_validation: false
 
 services:
     # default configuration for services in *this* file

@@ -6,6 +6,7 @@ use App\WOPI\Discovery\DiscoveryService;
 use DateTimeImmutable;
 use phpseclib3\Crypt\PublicKeyLoader;
 use phpseclib3\Crypt\RSA;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Throwable;
 
@@ -16,12 +17,17 @@ final readonly class ProofKeyValidator
 
     public function __construct(
         private DiscoveryService $discoveryService,
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
+        private ContainerBagInterface $params
     ) {
     }
 
     public function isValid(): bool
     {
+        if (!$this->params->get('commsy.online_office.proofkey_validation')) {
+            return true;
+        }
+
         $request = $this->requestStack->getCurrentRequest();
         if (!$request) {
             return false;
