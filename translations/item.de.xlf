@@ -53,7 +53,7 @@
             <trans-unit id="additionalActions">
                 <source>additional actions</source>
                 <target>Weitere Aktionen</target>
-            </trans-unit>   
+            </trans-unit>
             <trans-unit id="annotation">
                 <source>annotation</source>
                 <target>Anmerkung</target>
@@ -89,6 +89,10 @@
             <trans-unit id="itemIsLocked">
                 <source>item is locked</source>
                 <target>Dieser Eintrag wird gerade von einer anderen Person bearbeitet und ist daher gesperrt.</target>
+            </trans-unit>
+            <trans-unit id="item_file_live_edit">
+                <source>item.file.live_edit</source>
+                <target>Live bearbeiten</target>
             </trans-unit>
         </body>
     </file>

@@ -14,13 +14,17 @@
 namespace App\Security\Authorization\Voter;
 
 use App\Entity\Account;
+use App\Entity\Files;
 use App\Entity\Portal;
+use App\Lock\FileLockManager;
 use App\Lock\LockManager;
 use App\Proxy\PortalProxy;
+use App\Repository\FilesRepository;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use App\WOPI\Discovery\DiscoveryService;
 use cs_environment;
 use cs_item;
 use cs_room_item;
@@ -54,7 +58,9 @@ class ItemVoter extends Voter
         private readonly UserService $userService,
         private readonly RequestStack $requestStack,
         private readonly EntityManagerInterface $entityManager,
-        private readonly LockManager $lockManager
+        private readonly LockManager $lockManager,
+        private readonly FileLockManager $fileLockManager,
+        private readonly DiscoveryService $discoveryService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -195,6 +201,17 @@ class ItemVoter extends Voter
         }
 
         if ($item->mayEdit($currentUser)) {
+            if ($this->discoveryService->getWOPIDiscovery() !== null) {
+                /** @var FilesRepository $fileRepository */
+                $fileRepository = $this->entityManager->getRepository(Files::class);
+                $files = $fileRepository->findBy(['filesId' => $item->getFileIDArray()]);
+                foreach ($files as $file) {
+                    if ($this->fileLockManager->isLocked($file)) {
+                        return false;
+                    }
+                }
+            }
+
             return true;
         }
 
