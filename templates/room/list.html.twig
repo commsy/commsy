@@ -99,9 +99,9 @@
                 {% if showRating and feedItem.itemType is not same as('user') %}
                     {{ macros.ratingStatus(feedItem) }}
                     {% if feedItem.itemType is same as('todo') %}
-                        <i class="{{ macros.iconClassForItemType(feedItem.itemType, feedItem.internalStatus) }} cs-icon-xs-small" data-uk-tooltip title="{{ feedItem.status }}"></i>
+                        <i class="{{ macros.iconClassForItemType(feedItem.itemType, feedItem.internalStatus) }}" data-uk-tooltip title="{{ feedItem.status }}"></i>
                     {% else %}
-                        <i class="{{ macros.iconClassForItemType(feedItem.itemType) }} cs-icon-xs-small"></i>
+                        <i class="{{ macros.iconClassForItemType(feedItem.itemType) }}"></i>
                     {% endif %}
                 {% else %}
                     {% if feedItem.itemType is same as('todo') %}

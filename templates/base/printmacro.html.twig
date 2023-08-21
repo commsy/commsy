@@ -13,18 +13,18 @@
             {% for i in 1..5 %}
                 {% if rating >= i %}
                     {% if not ratingArray.ratingOwnDetail %}
-                        <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+                        <i class="uk-icon-star uk-text-warning"></i>
                     {% else %}
-                        <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+                        <i class="uk-icon-star uk-text-warning"></i>
                     {% endif %}
                 {% endif %}
             {% endfor %}
             {% for i in 1..5 %}
                 {% if rating < i %}
                     {% if not ratingArray.ratingOwnDetail %}
-                        <i class="cs-icon-star-small uk-icon-star-o"></i>
+                        <i class="uk-icon-star-o"></i>
                     {% else %}
-                        <i class="cs-icon-star-small uk-icon-star-o uk-text-muted"></i>
+                        <i class="uk-icon-star-o uk-text-muted"></i>
                     {% endif %}
                 {% endif %}
             {% endfor %}
@@ -39,12 +39,12 @@
                                 <td class="uk-padding-top-remove uk-padding-bottom-remove">
                                     {% for i in 1..5 %}
                                         {% if ratingValue >= i %}
-                                            <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+                                            <i class="uk-icon-star uk-text-warning"></i>
                                         {% endif %}
                                     {% endfor %}
                                     {% for i in 1..5 %}
                                         {% if ratingValue < i %}
-                                            <i class="cs-icon-star-small uk-icon-star-o uk-text-muted"></i>
+                                            <i class="uk-icon-star-o uk-text-muted"></i>
                                         {% endif %}
                                     {% endfor %}
                                 </td>
@@ -85,21 +85,21 @@
 {% macro workflowStatus(status) %}
     <div class="uk-text-nowrap">
     {% if status == '0_green' %}
-        <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-success"></i>
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+        <i class="uk-icon-circle uk-text-success"></i>
+        <i class="uk-icon-circle-o"></i>
+        <i class="uk-icon-circle-o"></i>
     {% elseif status == '1_yellow' %}
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-        <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-warning"></i>
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+        <i class="uk-icon-circle-o"></i>
+        <i class="uk-icon-circle uk-text-warning"></i>
+        <i class="uk-icon-circle-o"></i>
     {% elseif status == '2_red' %}
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-        <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-danger"></i>
+        <i class="uk-icon-circle-o"></i>
+        <i class="uk-icon-circle-o"></i>
+        <i class="uk-icon-circle uk-text-danger"></i>
     {% else %}
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+        <i class="uk-icon-circle-o"></i>
+        <i class="uk-icon-circle-o"></i>
+        <i class="uk-icon-circle-o"></i>
     {% endif %}
     </div>
 {% endmacro %}
@@ -690,7 +690,7 @@
             {# title, etc. #}
             <div class="uk-flex">
                 <div>
-                    <img class="uk-thumbnail uk-border-circle cs-avatar-user-detail" src="{{ absolute_url(app.request.baseURL) }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.itemID }}/image" alt="">
+                    <img class="uk-thumbnail uk-border-circle" src="{{ absolute_url(app.request.baseURL) }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.itemID }}/image" alt="">
                 </div>
                 <div>
                     <table class="uk-table-condensed" style="margin-bottom:30px;">
@@ -907,12 +907,12 @@
     <div class="uk-text-nowrap" data-uk-dropdown="{pos:'bottom-right', remaintime:200}">
         {% for i in 1..5 %}
             {% if rating >= i %}
-                <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+                <i class="uk-icon-star uk-text-warning"></i>
             {% endif %}
         {% endfor %}
         {% for i in 1..5 %}
             {% if rating < i %}
-                <i class="cs-icon-star-small uk-icon-star-o"></i>
+                <i class="uk-icon-star-o"></i>
             {% endif %}
         {% endfor %}
     </div>

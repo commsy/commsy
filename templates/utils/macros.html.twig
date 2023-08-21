@@ -371,12 +371,12 @@
     <div class="uk-text-nowrap" data-uk-dropdown="{pos:'bottom-right', remaintime:200}">
         {% for i in 1..5 %}
             {% if rating >= i %}
-                <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+                <i class="uk-icon-star uk-text-warning"></i>
             {% endif %}
         {% endfor %}
         {% for i in 1..5 %}
             {% if rating < i %}
-                <i class="cs-icon-star-small uk-icon-star-o"></i>
+                <i class="uk-icon-star-o"></i>
             {% endif %}
         {% endfor %}
     </div>
@@ -402,9 +402,9 @@
                             "rating": "{{ i }}", "url": "{{ path(ratingPath, {'roomId': item.contextId, 'itemId': item.itemId, 'vote': i}) }}",
                             "successMessage": "<i class=\"uk-icon-star\"></i> {{ 'ratingStored'|trans({}, 'material') }}",
                             "errorMessage": "<i class=\"uk-icon-info\"></i> {{ 'action error'|trans }}"
-                        }'><i class="cs-icon-star-small uk-icon-star uk-text-warning"></i></a>
+                        }'><i class="uk-icon-star uk-text-warning"></i></a>
                     {% else %}
-                        <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+                        <i class="uk-icon-star uk-text-warning"></i>
                     {% endif %}
                 {% endif %}
             {% endfor %}
@@ -415,9 +415,9 @@
                             "rating": "{{ i }}", "url": "{{ path(ratingPath, {'roomId': item.contextId, 'itemId': item.itemId, 'vote': i}) }}",
                             "successMessage": "<i class=\"uk-icon-star\"></i> {{ 'ratingStored'|trans({}, 'material') }}",
                             "errorMessage": "<i class=\"uk-icon-info\"></i> {{ 'action error'|trans }}"
-                        }'><i class="cs-icon-star-small uk-icon-star-o"></i></a>
+                        }'><i class="uk-icon-star-o"></i></a>
                     {% else %}
-                        <i class="cs-icon-star-small uk-icon-star-o uk-text-muted"></i>
+                        <i class="uk-icon-star-o uk-text-muted"></i>
                     {% endif %}
                 {% endif %}
             {% endfor %}
@@ -432,12 +432,12 @@
                                 <td class="uk-padding-top-remove uk-padding-bottom-remove">
                                     {% for i in 1..5 %}
                                         {% if ratingValue >= i %}
-                                            <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+                                            <i class="uk-icon-star uk-text-warning"></i>
                                         {% endif %}
                                     {% endfor %}
                                     {% for i in 1..5 %}
                                         {% if ratingValue < i %}
-                                            <i class="cs-icon-star-small uk-icon-star-o uk-text-muted"></i>
+                                            <i class="uk-icon-star-o uk-text-muted"></i>
                                         {% endif %}
                                     {% endfor %}
                                 </td>
@@ -487,21 +487,21 @@
     <div class="uk-text-nowrap">
         <span class="cs-workflow-traffic-light" data-uk-tooltip title="{{ title }}">
             {% if status is same as('0_green') %}
-                <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-success"></i>
-                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+                <i class="uk-icon-circle uk-text-success"></i>
+                <i class="uk-icon-circle-o"></i>
+                <i class="uk-icon-circle-o"></i>
             {% elseif status is same as('1_yellow') %}
-                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-                <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-warning"></i>
-                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+                <i class="uk-icon-circle-o"></i>
+                <i class="uk-icon-circle uk-text-warning"></i>
+                <i class="uk-icon-circle-o"></i>
             {% elseif status is same as('2_red') %}
-                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-                <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-danger"></i>
+                <i class="uk-icon-circle-o"></i>
+                <i class="uk-icon-circle-o"></i>
+                <i class="uk-icon-circle uk-text-danger"></i>
             {% else %}
-                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+                <i class="uk-icon-circle-o"></i>
+                <i class="uk-icon-circle-o"></i>
+                <i class="uk-icon-circle-o"></i>
             {% endif %}
         </span>
     </div>
