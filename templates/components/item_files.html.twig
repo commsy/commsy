@@ -71,7 +71,7 @@
 
                                                 <div class="uk-margin-bottom-remove">
                                                     <a href="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': disposition }) }}" target="_blank">
-                                                        <i class="cs-icon-medium {{ macrosUtils.iconClassForFileType(file.extension) }}"></i><br>
+                                                        <i class="uk-icon-medium {{ macrosUtils.iconClassForFileType(file.extension) }}"></i><br>
                                                         <span>{{ file.filename|u.truncate(40, '...') }}</span>
                                                     </a>
                                                 </div>

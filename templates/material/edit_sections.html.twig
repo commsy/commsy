@@ -10,7 +10,7 @@
         <div class="">
             <div class="">
                 <div class="uk-width-9-10">
-                    <h4 class="uk-width-1-2 cs-brand-color">
+                    <h4 class="uk-width-1-2 uk-text-primary">
                         {{ 'sort sections'|trans }}
                     </h4>
                 </div>
@@ -18,14 +18,14 @@
                     <div style="position:absolute;" class="uk-list section-list uk-list-striped">
                         {% set counter = 1 %}
                         {% for section in form.sections %}
-                            <div class="uk-panel uk-panel-box cs-remove-padding cs-brand-color">
+                            <div class="uk-panel uk-panel-box uk-padding-remove uk-text-primary">
                                 {{counter}}.
                             </div>
                         {% set counter = counter + 1  %}
                         {% endfor %}
                     </div>
                     {% if not form.sections is empty %}
-                        <ul class="uk-list uk-sortable section-list cs-padding-left-20 uk-list-striped uk-width-2-3" data-uk-sortable>
+                        <ul class="uk-list uk-sortable section-list uk-margin-left uk-list-striped uk-width-2-3" data-uk-sortable>
                             {% set counter = 0 %}
                             {% for sectionId, sectionName in form.sections %}
                                 <li class="uk-panel uk-panel-box uk-sortable-handle" id="section_{{sectionId}}">

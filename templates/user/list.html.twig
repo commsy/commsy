@@ -267,11 +267,11 @@
             </a>
         </div>
         <div class="uk-float-right uk-margin-small-left">
-            <i class="uk-icon-list-ul uk-icon-small cs-icon-mute" data-uk-tooltip title="{{ 'list view'|trans({}, "date") }}"></i>
+            <i class="uk-icon-list-ul uk-icon-small uk-text-muted" data-uk-tooltip title="{{ 'list view'|trans({}, "date") }}"></i>
         </div>
     {% elseif view == 'gridView' %}
         <div class="uk-float-right uk-margin-small-left">
-            <i class="uk-icon-folder-o uk-icon-small cs-icon-mute" data-uk-tooltip title="{{ 'tiles'|trans({}, "user") }}"></i>
+            <i class="uk-icon-folder-o uk-icon-small uk-text-muted" data-uk-tooltip title="{{ 'tiles'|trans({}, "user") }}"></i>
         </div>
         <div class="uk-float-right uk-margin-small-left">
             <a href="{{ path('app_user_list', app.request.query.all|merge({'roomId': roomId, 'view': 'feedView'})) }}" class="uk-text-contrast">
