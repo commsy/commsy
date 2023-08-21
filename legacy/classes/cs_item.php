@@ -2046,7 +2046,7 @@ class cs_item
        otherwise get file-ids according to links in material_link_file
        @return array file_id_array
     */
-    public function getFileIDArray()
+    public function getFileIDArray(): array
     {
         $file_id_array = [];
         if (isset($this->_data['file_id_array']) and !empty($this->_data['file_id_array'])) { // check if file_id_array has been set by user or this method has been called before

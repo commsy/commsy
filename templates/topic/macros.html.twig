@@ -323,11 +323,11 @@
             {% else %}
                 <div class="uk-margin-bottom">
                     <div>
-                        <ul class="uk-grid cs-file-grid uk-grid-width-medium-1-10">
+                        <ul class="uk-grid uk-grid-width-medium-1-10">
             {% endif %}
         {% for member in members %}
             <li>
-                <div class="uk-panel cs-file-panel-box uk-vertical-align" data-uk-tooltip title="{{member.title}} {{ macros.userFullname(member) }}">
+                <div class="uk-panel uk-margin-small-left uk-vertical-align" data-uk-tooltip title="{{member.title}} {{ macros.userFullname(member) }}">
                     {% if not member.isDeleted and member.isUser %}
                         {{ macros.userIconLink(member) }}
                     {% else %}

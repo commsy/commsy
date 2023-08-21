@@ -90,6 +90,10 @@
                 <source>item is locked</source>
                 <target>This entry is currently edited by another user and is therefore locked for editing.</target>
             </trans-unit>
+            <trans-unit id="item_file_live_edit">
+                <source>item.file.live_edit</source>
+                <target>Edit live</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>
