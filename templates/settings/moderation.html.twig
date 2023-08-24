@@ -22,13 +22,13 @@
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Usage notes'|trans({}, 'settings') }}</h1> 
+                            <h1 class='uk-panel-title'>{{ 'Usage notes'|trans({}, 'settings') }}</h1>
                             <div style="margin-bottom: 25px;">{{ 'Usage notes text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.usernotice) }}
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Email configuration'|trans({}, 'settings') }}</h1> 
+                            <h1 class='uk-panel-title'>{{ 'Email configuration'|trans({}, 'settings') }}</h1>
                             <div style="margin-bottom: 25px;">{{ 'Email configuration text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.email_configuration) }}
                         </div>
@@ -36,21 +36,6 @@
                 </div>
             </div>
         </div>
-        
-{#         <div class="uk-width-medium-1-4">
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>{{ 'Information'|trans({}, 'settings') }}</div>
-                    </div>
-                </div>
-
-                <div>
-                    {{ 'Useful information'|trans({}, 'settings') }}
-                </div>
-            </div>
-        </div> #}
-        
     </div>
     <script>
     var settings_page = 'moderation_settings';
@@ -71,13 +56,13 @@
     var englishEditor = document.getElementById('moderation_settings_email_configuration_moderation_mail_body_en');
 
    // HTML5 alternative to "onkeyup": "oninput"
-    germanEditor.onkeyup = function(e){  
+    germanEditor.onkeyup = function(e){
         var fieldName = settings_page + "[" + subForm + "][" + emailTemplateSelection.value.toLowerCase() + "_de]";
         form.elements[fieldName].value = germanEditor.value;
     }
 
-    englishEditor.onkeyup = function(e){     
-        var fieldName = settings_page + "[" + subForm + "][" + emailTemplateSelection.value.toLowerCase() + "_en]";     
+    englishEditor.onkeyup = function(e){
+        var fieldName = settings_page + "[" + subForm + "][" + emailTemplateSelection.value.toLowerCase() + "_en]";
         form.elements[fieldName].value = englishEditor.value;
     }
 
@@ -87,7 +72,7 @@
 
         if(templateOption.substring(0, 4) === 'MAIL'){
             var fieldName = (settings_page + "[" + subForm + "][" + templateOption).toLowerCase();
-            
+
             germanEditor.value = form.elements[fieldName + "_de]"].value;
             englishEditor.value = form.elements[fieldName + "_en]"].value;
 
@@ -111,9 +96,9 @@
     ckeditor.on('instanceReady', function(e){
 
         titleField.onblur = function(e){
-            document.getElementById(hiddenTitleField + rubricSelection.value).value = this.value; 
+            document.getElementById(hiddenTitleField + rubricSelection.value).value = this.value;
         };
- 
+
         this.on('blur', function(e){
             document.getElementById(hiddenTextField + rubricSelection.value).value = this.getData();
         });
@@ -131,7 +116,7 @@
         // initially display data from DB once the CKEditor is ready
         titleField.value = document.getElementById(hiddenTitleField + rubricSelection.value).value;
         ckeditor.setData(document.getElementById(hiddenTextField + rubricSelection.value).value);
-      
+
     });
     </script>
 {% endblock content %}

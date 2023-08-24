@@ -1,0 +1,21 @@
+<div class="uk-panel uk-panel-box{% if style %}-{{ style }}{% endif %}{% if not padding %} uk-padding-remove{% endif %}"{% if sticky %} data-uk-sticky{% endif %}>
+
+    <div class="uk-panel-teaser{% if not padding %} uk-margin-remove{% endif %}{% if severity %} cs-panel-teaser-{{ severity }}{% endif %}">
+        <div class="uk-flex">
+            <div class="uk-flex-inline uk-flex-item-1">
+                {% if title %}
+                    <div class="uk-text-large">
+                        {{ title }}
+                    </div>
+                {% endif %}
+
+                {% block teaser_left %}{% endblock %}
+            </div>
+            <div class="uk-flex-item-none">
+                {% block teaser_right %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    {% block content %}{% endblock %}
+</div>

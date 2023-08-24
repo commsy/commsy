@@ -13,56 +13,8 @@
 
 @panel-teaser-margin-top: @panel-title-margin-bottom;
 
-
-// // Variables
-// // ========================================================================
-
-// @panel-title-margin-bottom:                     @global-margin;
-// @panel-title-font-size:                         round((@global-font-size * 1.28)); // 18px / 20px
-// @panel-title-line-height:                       round((@panel-title-font-size * 1.32)); // 24px / 26px
-// @panel-title-color:                             @global-color;
-
-// @panel-box-padding:                             @global-margin;
-// @panel-box-background:                          #fafafa;
-// @panel-box-color:                               @global-color;
-// @panel-box-title-color:                         @global-color;
-// @panel-box-teaser-margin:                       -(@panel-box-padding + 1);
-
-// @panel-box-secondary-background:                #fff;
-
-// @panel-hover-padding:                           @global-margin;
-// @panel-hover-color:                             @global-color;
-// @panel-hover-hover-color:                       @global-color;
-// @panel-hover-hover-background:                  #fafafa;
-// @panel-hover-teaser-margin:                     -(@panel-hover-padding + 1);
-
-// @panel-header-title-border:                     @global-border;
-// @panel-header-title-color:                      @global-color;
-
-// @panel-divider-gutter:                          @global-grid-gutter;
-// @panel-divider-gutter-large:                    @global-grid-gutter-large;
-// @panel-divider-border:                          @global-border;
-
-// //
-// // New
-// //
-
-// @panel-box-border:                              @global-border;
-// @panel-box-primary-border:                      fade(@panel-box-primary-color, 30%);
-
-// @panel-hover-border:                            @global-border;
-
-
-// // Sub-object: `uk-panel-title`
-// // ========================================================================
-
-// .hook-panel-title() {}
-
-
-// // Sub-object: `uk-panel-badge`
-// // ========================================================================
-
-// .hook-panel-badge() {}
+@panel-title-color: #2d7091;
+@panel-box-title-color: @panel-title-color;
 
 /* Sub-object: `panel-footer`
  ========================================================================== */
@@ -123,11 +75,18 @@
 
 // .hook-panel-header() {}
 
+.uk-panel-teaser {
+    color: #FFFFFF;
+    background-color: @cs-brand-color;
+    padding: 10px;
+    border-bottom: 2px solid #ECF0F1;
+}
 
 // Modifier: `cs-panel-teaser-primary`
 // ========================================================================
 
-.cs-panel-teaser-primary {
+.cs-panel-teaser-primary,
+.uk-panel-teaser {
     color: #FFFFFF;
     background-color: @cs-brand-color;
     padding: 10px;
@@ -153,7 +112,7 @@
 }
 
 .cs-panel-border {
-    border: 2px solid @list-striped-background;    
+    border: 2px solid @list-striped-background;
 }
 
 .cs-panel-teaser-header {

@@ -12,77 +12,62 @@
         <div class="uk-width-medium-4-5">
 
             {# project content panel #}
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+            {% component 'v2:panel' with { title: item.type|trans([], 'room') } %}
+                {% import 'item/macros.html.twig' as macrosItem %}
+                {% import 'room/macros.html.twig' as macrosRoom %}
 
-                <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow">
-                    <div class="uk-flex">
-                        <div class="uk-flex-inline uk-flex-item-1">
-                            <div class="uk-text-large">
-                                {% if item.isProjectRoom %}
-                                    {{ 'project'|trans([], 'room') }}
-                                {% elseif item.isGroupRoom %}
-                                    {{ 'grouproom'|trans([], 'room') }}
-                                {% elseif item.isUserroom %}
-                                    {{ 'userroom'|trans([], 'room') }}
-                                {% else %}
-                                    {{ 'community'|trans([], 'room') }}
-                                {% endif %}
-                            </div>
+                {% block teaser_right %}
+                    {# actions #}
+                    {% if not project.isUserroom and (is_granted('ROOM_MODERATOR', project.itemId) or is_granted('PARENT_ROOM_MODERATOR', project.itemId)) %}
+                        {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+                            {% block dropdown %}
+                                <ul class="uk-nav uk-nav-dropdown cs-list-moderation uk-padding-remove uk-margin-remove uk-text-left">
+                                    <li>
+                                        {% if project.isLocked %}
+                                            <a href="{{ path('app_cancellablelockanddelete_unlock', {'roomId': project.contextId, 'itemId': project.itemId}) }}">
+                                                <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify uk-visible-large"></i> {{ 'Unlock workspace'|trans({}, 'room') }}
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': project.contextId, 'itemId': project.itemId}) }}">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-lock uk-visible-large"></i> {{ 'Lock workspace'|trans({}, 'room') }}
+                                            </a>
+                                        {% endif %}
+                                    </li>
+                                    <li>
+                                        <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': project.contextId, 'itemId': project.itemId}) }}">
+                                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'Delete workspace'|trans({}, 'room') }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            {% endblock %}
+                        {% endcomponent %}
+                    {% endif %}
+                {% endblock %}
+
+                {% block content %}
+                    <article class="uk-article uk-position-relative" data-uk-observe>
+                        {# title, etc. #}
+                        <div class="cs-toggle" data-uk-observe>
+                            {{ macrosRoom.title(project) }}
                         </div>
 
-                        {# actions #}
-                        <div class="uk-flex-item-none">
-                            {% if not project.isUserroom and (is_granted('ROOM_MODERATOR', project.itemId) or is_granted('PARENT_ROOM_MODERATOR', project.itemId)) %}
-                                {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
-                                    {% block dropdown %}
-                                        <ul class="uk-nav uk-nav-dropdown cs-list-moderation uk-padding-remove uk-margin-remove uk-text-left">
-                                            <li>
-                                                {% if project.isLocked %}
-                                                    <a href="{{ path('app_cancellablelockanddelete_unlock', {'roomId': project.contextId, 'itemId': project.itemId}) }}">
-                                                        <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify uk-visible-large"></i> {{ 'Unlock workspace'|trans({}, 'room') }}
-                                                    </a>
-                                                {% else %}
-                                                    <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': project.contextId, 'itemId': project.itemId}) }}">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-lock uk-visible-large"></i> {{ 'Lock workspace'|trans({}, 'room') }}
-                                                    </a>
-                                                {% endif %}
-                                            </li>
-                                            <li>
-                                                <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': project.contextId, 'itemId': project.itemId}) }}">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'Delete workspace'|trans({}, 'room') }}
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    {% endblock %}
-                                {% endcomponent %}
-                            {% endif %}
+                        {# description #}
+                        <div id="description{{ project.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
+                            editUrl: '{{ path('app_item_editdescription', { 'roomId': project.contextId, 'itemId': project.itemId }) }}',
+                            cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': project.contextId, 'itemId': project.itemId }) }}'
+                        }">
+                            {{ macrosItem.itemDescription('description', project, true, project.description) }}
                         </div>
-                    </div>
-                </div>
 
-                {# content #}
-                <article class="uk-article uk-position-relative" data-uk-observe>
-                    {# title, etc. #}
-                    <div class="cs-toggle" data-uk-observe>
-                        {{ macrosRoom.title(project) }}
-                    </div>
+                        {# access #}
+                        <div id="description{{ project.itemId }}" class="cs-toggle" data-uk-observe>
+                            <hr class="uk-width-9-10"/>
 
-                    {# description #}
-                    <div id="description{{ project.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
-                        editUrl: '{{ path('app_item_editdescription', { 'roomId': project.contextId, 'itemId': project.itemId }) }}',
-                        cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': project.contextId, 'itemId': project.itemId }) }}'
-                    }">
-                        {{ macrosItem.itemDescription('description', project, true, project.description) }}
-                    </div>
-
-                    {# access #}
-                    <div id="description{{ project.itemId }}" class="cs-toggle" data-uk-observe>
-                        <hr class="uk-width-9-10"/>
-
-                        {{ macrosRoom.access(project, project.contextId, memberStatus, contactModeratorItems) }}
-                    </div>
-                </article>
-            </div>
+                            {{ macrosRoom.access(project, project.contextId, memberStatus, contactModeratorItems) }}
+                        </div>
+                    </article>
+                {% endblock %}
+            {% endcomponent %}
         </div>
 
         <div class="uk-width-medium-1-5 uk-hidden-small">
