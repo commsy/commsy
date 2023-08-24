@@ -13,8 +13,9 @@ if [ "$1" = 'supervisord' ] || [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1
 
     if [ "$APP_ENV" != 'prod' ]; then
         composer install --prefer-dist --no-progress --no-suggest --no-interaction
-        bin/console lexik:jwt:generate-keypair --skip-if-exists
     fi
+
+    bin/console lexik:jwt:generate-keypair --skip-if-exists
 
     echo "Waiting for db to be ready..."
     ATTEMPTS_LEFT_TO_REACH_DATABASE=60

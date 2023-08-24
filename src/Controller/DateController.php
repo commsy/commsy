@@ -38,6 +38,7 @@ use App\Services\PrintService;
 use App\Utils\AnnotationService;
 use App\Utils\CategoryService;
 use App\Utils\DateService;
+use App\Utils\ItemService;
 use App\Utils\LabelService;
 use App\Utils\TopicService;
 use cs_dates_item;
@@ -78,6 +79,7 @@ class DateController extends BaseController
     #[Route(path: '/room/{roomId}/date/feed/{start}/{sort}')]
     public function feedAction(
         Request $request,
+        ItemService $itemService,
         int $roomId,
         int $max = 10,
         int $start = 0,
@@ -122,15 +124,11 @@ class DateController extends BaseController
         $dates = $this->dateService->getListDates($roomId, $max, $start, $sort);
 
         $readerList = [];
-        $allowedActions = [];
         foreach ($dates as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-            if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'categorize', 'hashtag', 'activate', 'deactivate', 'save', 'delete'];
-            } else {
-                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'save'];
-            }
         }
+
+        $allowedActions = $itemService->getAllowedActionsForItems($dates);
 
         return $this->render('date/feed.html.twig', [
             'roomId' => $roomId,

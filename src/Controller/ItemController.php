@@ -1016,6 +1016,7 @@ class ItemController extends AbstractController
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function undraft(
         ItemService $itemService,
+        int $roomId,
         int $itemId
     ): Response {
         $item = $itemService->getItem($itemId);

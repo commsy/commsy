@@ -28,7 +28,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 /**
  * Class RoomAllController.
  */
-#[IsGranted('ITEM_ENTER', subject: 'portalId')]
+#[IsGranted('ITEM_ENTER', subject: 'portal')]
 class RoomAllController extends AbstractController
 {
     #[Route(path: '/portal/{portalId}/room/{itemId}', requirements: ['itemId' => '\d+'])]

@@ -59,7 +59,6 @@ class LegacySubscriber implements EventSubscriberInterface
             return;
         }
 
-        /** @var Account $account */
         $account = $this->security->getUser();
 
         // NOTE: for guests, $account is null but setupUser() will handle this
@@ -71,10 +70,7 @@ class LegacySubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @return void
-     */
-    private function setupContext(Request $request, ?Account $account)
+    private function setupContext(Request $request, ?Account $account): void
     {
         $contextId = null;
         $contextId ??= $request->attributes->get('roomId');
@@ -94,10 +90,7 @@ class LegacySubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @return void
-     */
-    private function setupUser(?Account $account)
+    private function setupUser(?Account $account): void
     {
         $userManager = $this->legacyEnvironment->getUserManager();
 

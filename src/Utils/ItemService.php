@@ -13,6 +13,7 @@
 
 namespace App\Utils;
 
+use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyEnvironment;
 use cs_annotation_item;
 use cs_environment;
@@ -20,15 +21,17 @@ use cs_item;
 use cs_item_manager;
 use cs_list;
 use cs_userroom_item;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class ItemService
 {
     private readonly cs_environment $legacyEnvironment;
-
     private readonly cs_item_manager $itemManager;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        private readonly Security $security,
+        LegacyEnvironment $legacyEnvironment
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->itemManager = $this->legacyEnvironment->getItemManager();
     }
@@ -222,5 +225,25 @@ class ItemService
                 }
             }
         }
+    }
+
+    public function getAllowedActionsForItems(array $items): array
+    {
+        $allowedActions = [];
+
+        foreach ($items as $item) {
+            /** @var cs_item $item */
+            if ($this->security->isGranted('ITEM_EDIT', $item->getItemID())) {
+                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'categorize', 'hashtag', 'activate', 'deactivate', 'save'];
+
+                if ($this->security->isGranted(ItemVoter::FILE_LOCK, $item->getItemID())) {
+                    $allowedActions[$item->getItemID()][] = 'delete';
+                }
+            } else {
+                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'save'];
+            }
+        }
+
+        return $allowedActions;
     }
 }

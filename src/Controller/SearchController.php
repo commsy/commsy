@@ -37,6 +37,7 @@ use App\Search\QueryConditions\MostFieldsQueryCondition;
 use App\Search\QueryConditions\RoomQueryCondition;
 use App\Search\QueryConditions\TitleQueryCondition;
 use App\Search\SearchManager;
+use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\CalendarsService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
@@ -963,7 +964,9 @@ class SearchController extends BaseController
                 $allowedActions = ['mark'];
                 if (method_exists($searchResult, 'getItemId')) {
                     if ($this->isGranted('ITEM_EDIT', $searchResult->getItemId()) && ('user' !== $type)) {
-                        $allowedActions[] = 'delete';
+                        if ($this->isGranted(ItemVoter::FILE_LOCK, $searchResult->getItemId())) {
+                            $allowedActions[] = 'delete';
+                        }
                     }
                 }
                 // handle Date entities representing date items from external calendar sources

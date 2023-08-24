@@ -16,11 +16,13 @@ namespace App\Action\Delete;
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
 use App\Http\JsonRedirectResponse;
+use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
 use cs_environment;
 use cs_item;
 use cs_room_item;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -39,6 +41,7 @@ class DeleteAction implements ActionInterface
         private readonly DeleteGeneric $deleteGeneric,
         private readonly TranslatorInterface $translator,
         private readonly UserService $userService,
+        private readonly Security $security,
         LegacyEnvironment $legacyEnvironment
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -84,6 +87,10 @@ class DeleteAction implements ActionInterface
     {
         $currentUser = $this->legacyEnvironment->getCurrentUser();
         if (!$item->mayEdit($currentUser)) {
+            return false;
+        }
+
+        if (!$this->security->isGranted(ItemVoter::FILE_LOCK, $item->getItemId())) {
             return false;
         }
 

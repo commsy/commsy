@@ -173,7 +173,11 @@ class TodoController extends BaseController
             if ($this->isGranted('ITEM_EDIT', $item->getItemID()) or
                 $this->isGranted('ITEM_ENTER', $roomId) and 'userroom' == $roomItem->getType()
                 or ('project' == $roomItem->getType() and $this->isGranted('ITEM_PARTICIPATE', $roomId))) {
-                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'categorize', 'hashtag', 'activate', 'deactivate', 'save', 'delete', 'markpending', 'markinprogress', 'markdone'];
+                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'categorize', 'hashtag', 'activate', 'deactivate', 'save', 'markpending', 'markinprogress', 'markdone'];
+
+                if ($this->isGranted(ItemVoter::FILE_LOCK, $item->getItemID())) {
+                    $allowedActions[] = 'delete';
+                }
 
                 $statusArray = $roomItem->getExtraToDoStatusArray();
                 foreach ($statusArray as $tempStatus) {

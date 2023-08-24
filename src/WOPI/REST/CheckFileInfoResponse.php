@@ -58,6 +58,12 @@ class CheckFileInfoResponse
     #[SerializedName('UserCanWrite')]
     private bool $userCanWrite;
 
+    #[SerializedName('UserCanNotWriteRelative')]
+    private bool $userCanNotWriteRelative;
+
+    #[SerializedName('SupportsLocks')]
+    private bool $supportsLocks;
+
     public function getBaseFileName(): string
     {
         return $this->baseFileName;
@@ -142,6 +148,28 @@ class CheckFileInfoResponse
     public function setUserCanWrite(bool $userCanWrite): self
     {
         $this->userCanWrite = $userCanWrite;
+        return $this;
+    }
+
+    public function isUserCanNotWriteRelative(): bool
+    {
+        return $this->userCanNotWriteRelative;
+    }
+
+    public function setUserCanNotWriteRelative(bool $userCanNotWriteRelative): self
+    {
+        $this->userCanNotWriteRelative = $userCanNotWriteRelative;
+        return $this;
+    }
+
+    public function isSupportsLocks(): bool
+    {
+        return $this->supportsLocks;
+    }
+
+    public function setSupportsLocks(bool $supportsLocks): self
+    {
+        $this->supportsLocks = $supportsLocks;
         return $this;
     }
 }

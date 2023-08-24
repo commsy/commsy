@@ -281,7 +281,7 @@ class UserController extends BaseController
         Request $request
     ): Response {
         $userItems = [];
-        $userIds = $request->query->get('userIds');
+        $userIds = $request->query->all('userIds');
         foreach ($userIds as $userId) {
             $userItems[] = $this->userService->getUser($userId);
         }
@@ -377,7 +377,7 @@ class UserController extends BaseController
 
         if ($request->query->has('userDetail')) {
             $formData['status'] = $request->query->get('status');
-            $formData['userIds'] = $request->query->get('userIds');
+            $formData['userIds'] = $request->query->all('userIds');
         } else {
             if (!$request->request->has('user_status')) {
                 $formData['status'] = $request->request->get('status');
@@ -514,7 +514,7 @@ class UserController extends BaseController
                     if ($request->query->has('userDetail') && 'user-delete' !== $formData['status']) {
                         return $this->redirectToRoute('app_user_detail', [
                             'roomId' => $roomId,
-                            'itemId' => array_values($request->query->get('userIds'))[0],
+                            'itemId' => array_values($request->query->all('userIds'))[0],
                         ]);
                     } else {
                         return $this->redirectToRoute('app_user_list', [
@@ -526,7 +526,7 @@ class UserController extends BaseController
                 if ($request->query->has('userDetail')) {
                     return $this->redirectToRoute('app_user_detail', [
                         'roomId' => $roomId,
-                        'itemId' => array_values($request->query->get('userIds'))[0],
+                        'itemId' => array_values($request->query->all('userIds'))[0],
                     ]);
                 } else {
                     return $this->redirectToRoute('app_user_list', [

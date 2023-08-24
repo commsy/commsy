@@ -3,8 +3,8 @@
 namespace App\WOPI\REST;
 
 use App\Entity\Files;
-use App\Security\Authorization\Voter\ItemVoter;
 use App\Utils\FileService;
+use App\WOPI\Permission\WOPIPermission;
 use Exception;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUser;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -21,6 +21,9 @@ final readonly class WOPICheckFileInfo
     ) {
     }
 
+    /**
+     * @throws Exception
+     */
     public function generateResponse(Files $file): CheckFileInfoResponse
     {
         $account = $this->security->getUser();
@@ -30,11 +33,8 @@ final readonly class WOPICheckFileInfo
 
         $token = $this->tokenManager->decode($this->tokenStorage->getToken());
 
-        $itemId = $file->getItemLink()->getItemId();
-
         $sha1 = sha1_file($this->fileService->makeAbsolute($file));
-        //$writeable = $this->security->isGranted(ItemVoter::EDIT, $itemId);
-        $writeable = true;
+        $writeable = $token['permission'] === WOPIPermission::EDIT->value;
 
         return (new CheckFileInfoResponse())
             ->setBaseFileName($file->getFilename())
@@ -45,6 +45,7 @@ final readonly class WOPICheckFileInfo
             ->setVersion($sha1)
             ->setUserFriendlyName($account->getUsername())
             ->setReadOnly(!$writeable)
-            ->setUserCanWrite($writeable);
+            ->setUserCanWrite($writeable)
+            ->setSupportsLocks(true);
     }
 }
