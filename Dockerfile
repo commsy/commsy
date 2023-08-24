@@ -1,17 +1,21 @@
+#syntax=docker/dockerfile:1.4
+
+# Versions
+FROM php:8.2-fpm-alpine AS php_upstream
+FROM mlocati/php-extension-installer:2 AS php_extension_installer_upstream
+FROM composer/composer:2-bin AS composer_upstream
+FROM caddy:2-alpine AS caddy_upstream
+
 # the different stages of this Dockerfile are meant to be built into separate images
 # https://docs.docker.com/develop/develop-images/multistage-build/#stop-at-a-specific-build-stage
 # https://docs.docker.com/compose/compose-file/#target
 
-# https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-ARG PHP_VERSION=8.2
-ARG CADDY_VERSION=2
-
-FROM php:${PHP_VERSION}-fpm-alpine AS commsy_php
+FROM php_upstream AS commsy_php
 
 ENV APP_ENV=prod
 
 # php extensions installer: https://github.com/mlocati/docker-php-extension-installer
-COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+COPY --from=php_extension_installer_upstream --link /usr/bin/install-php-extensions /usr/local/bin/
 
 # persistent / runtime deps
 RUN apk add --no-cache \
@@ -60,7 +64,7 @@ COPY --from=surnet/alpine-wkhtmltopdf:3.17.0-0.12.6-full /bin/wkhtmltopdf /usr/l
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
-COPY --from=composer/composer:2-bin /composer /usr/bin/composer
+COPY --from=composer_upstream --link /composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
@@ -139,7 +143,7 @@ CMD ["php-fpm"]
 
 ##############################################################################
 
-FROM caddy:${CADDY_VERSION} AS commsy_caddy
+FROM caddy_upstream AS commsy_caddy
 
 WORKDIR /var/www/html
 
