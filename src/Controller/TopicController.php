@@ -31,6 +31,7 @@ use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
+use App\Utils\ItemService;
 use App\Utils\LabelService;
 use App\Utils\TopicService;
 use cs_room_item;
@@ -97,6 +98,7 @@ class TopicController extends BaseController
     #[Route(path: '/room/{roomId}/topic/feed/{start}/{sort}')]
     public function feedAction(
         Request $request,
+        ItemService $itemService,
         int $roomId,
         int $max = 10,
         int $start = 0,
@@ -128,15 +130,11 @@ class TopicController extends BaseController
         $topics = $this->topicService->getListTopics($roomId, $max, $start);
 
         $readerList = [];
-        $allowedActions = [];
         foreach ($topics as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-            if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = ['markread', 'categorize', 'hashtag', 'activate', 'deactivate', 'save', 'delete'];
-            } else {
-                $allowedActions[$item->getItemID()] = ['markread', 'save'];
-            }
         }
+
+        $allowedActions = $itemService->getAllowedActionsForItems($topics);
 
         return $this->render('topic/feed.html.twig', ['roomId' => $roomId, 'topics' => $topics, 'readerList' => $readerList, 'showRating' => false, 'allowedActions' => $allowedActions]);
     }

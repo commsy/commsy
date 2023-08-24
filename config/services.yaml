@@ -76,6 +76,10 @@ when@test:
     parameters:
         commsy.online_office.proofkey_validation: false
 
+when@dev:
+    parameters:
+        commsy.online_office.proofkey_validation: false
+
 services:
     # default configuration for services in *this* file
     _defaults:

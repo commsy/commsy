@@ -33,6 +33,7 @@ use App\Services\PrintService;
 use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
 use App\Utils\DiscussionService;
+use App\Utils\ItemService;
 use App\Utils\LabelService;
 use App\Utils\TopicService;
 use Symfony\Component\Form\FormInterface;
@@ -62,6 +63,7 @@ class DiscussionController extends BaseController
     public function feed(
         Request $request,
         AssessmentService $assessmentService,
+        ItemService $itemService,
         int $roomId,
         int $max = 10,
         int $start = 0,
@@ -103,15 +105,11 @@ class DiscussionController extends BaseController
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $readerList = [];
-        $allowedActions = [];
         foreach ($discussions as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-            if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'categorize', 'hashtag', 'activate', 'deactivate', 'save', 'delete'];
-            } else {
-                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'save'];
-            }
         }
+
+        $allowedActions = $itemService->getAllowedActionsForItems($discussions);
 
         $ratingList = [];
         if ($current_context->isAssessmentActive()) {

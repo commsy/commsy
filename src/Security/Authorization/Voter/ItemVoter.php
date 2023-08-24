@@ -48,6 +48,7 @@ class ItemVoter extends Voter
     final public const USERROOM = 'ITEM_USERROOM';
     final public const DELETE = 'ITEM_DELETE';
     final public const EDIT_LOCK = 'ITEM_EDIT_LOCK';
+    final public const FILE_LOCK = 'ITEM_FILE_LOCK';
 
     private readonly cs_environment $legacyEnvironment;
 
@@ -78,6 +79,7 @@ class ItemVoter extends Voter
             self::USERROOM,
             self::DELETE,
             self::EDIT_LOCK,
+            self::FILE_LOCK
         ]);
     }
 
@@ -90,17 +92,20 @@ class ItemVoter extends Voter
             return true;
         }
 
-        $itemId = $subject;
-
         $item = null;
-        if ($itemId) {
-            $item = $this->itemService->getTypedItem($itemId);
+        if ($subject instanceof Portal) {
+            $item = new PortalProxy($subject, $this->legacyEnvironment);
+        } else {
+            $itemId = $subject;
+            if ($itemId) {
+                $item = $this->itemService->getTypedItem($itemId);
 
-            if (!$item) {
-                $portal = $this->entityManager->getRepository(Portal::class)->find($itemId);
+                if (!$item) {
+                    $portal = $this->entityManager->getRepository(Portal::class)->find($itemId);
 
-                if ($portal) {
-                    $item = new PortalProxy($portal, $this->legacyEnvironment);
+                    if ($portal) {
+                        $item = new PortalProxy($portal, $this->legacyEnvironment);
+                    }
                 }
             }
         }
@@ -134,6 +139,9 @@ class ItemVoter extends Voter
 
                 case self::EDIT_LOCK:
                     return $this->canEditLock($item, $currentUser);
+
+                case self::FILE_LOCK:
+                    return $this->canFileLock($item);
             }
         } else {
             if ($attribute === self::NEW) {
@@ -201,17 +209,6 @@ class ItemVoter extends Voter
         }
 
         if ($item->mayEdit($currentUser)) {
-            if ($this->discoveryService->getWOPIDiscovery() !== null) {
-                /** @var FilesRepository $fileRepository */
-                $fileRepository = $this->entityManager->getRepository(Files::class);
-                $files = $fileRepository->findBy(['filesId' => $item->getFileIDArray()]);
-                foreach ($files as $file) {
-                    if ($this->fileLockManager->isLocked($file)) {
-                        return false;
-                    }
-                }
-            }
-
             return true;
         }
 
@@ -242,7 +239,7 @@ class ItemVoter extends Voter
         return false;
     }
 
-    private function canModerate(cs_item$item, cs_user_item $currentUser)
+    private function canModerate(cs_item $item, cs_user_item $currentUser)
     {
         if (3 == $currentUser->getStatus()) {
             return true;
@@ -318,6 +315,22 @@ class ItemVoter extends Voter
         }
 
         return $this->lockManager->userCanLock($item->getItemID());
+    }
+
+    private function canFileLock(cs_item $item): bool
+    {
+        if ($this->discoveryService->getWOPIDiscovery() !== null) {
+            /** @var FilesRepository $fileRepository */
+            $fileRepository = $this->entityManager->getRepository(Files::class);
+            $files = $fileRepository->findBy(['filesId' => $item->getFileIDArray()]);
+            foreach ($files as $file) {
+                if ($this->fileLockManager->isLocked($file)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private function hasUserroomItemPrivileges($item, $currentUser)

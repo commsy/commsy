@@ -102,7 +102,7 @@
                                         {# delete #}
                                         {% if not date.isExternal %}
                                             <li>
-                                                {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                                {% if is_granted('ITEM_EDIT', item.itemId) and is_granted('ITEM_FILE_LOCK', item.itemId) %}
                                                     <a  href="#" data-cs-action="{{ {
                                                         'url': path('app_date_xhrdelete', {'roomId': roomId, 'itemId': date.itemId}),
                                                         'action': 'delete',
@@ -129,7 +129,7 @@
                                         {# delete all entries of recurring date #}
                                         {% if isRecurring %}
                                             <li>
-                                                {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                                {% if is_granted('ITEM_EDIT', item.itemId) and is_granted('ITEM_FILE_LOCK', item.itemId) %}
                                                     <a  href="#" data-cs-action="{{ {
                                                         'url': path('app_date_xhrdelete', {'roomId': roomId, 'itemId': date.itemId, 'recurring': 'true'}),
                                                         'action': 'delete',

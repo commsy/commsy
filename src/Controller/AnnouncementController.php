@@ -33,6 +33,7 @@ use App\Utils\AnnotationService;
 use App\Utils\AnnouncementService;
 use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
+use App\Utils\ItemService;
 use App\Utils\LabelService;
 use App\Utils\TopicService;
 use cs_announcement_item;
@@ -95,6 +96,7 @@ class AnnouncementController extends BaseController
     #[Route(path: '/room/{roomId}/announcement/feed/{start}/{sort}')]
     public function feedAction(
         Request $request,
+        ItemService $itemService,
         int $roomId,
         int $max = 10,
         int $start = 0,
@@ -139,15 +141,11 @@ class AnnouncementController extends BaseController
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $readerList = [];
-        $allowedActions = [];
         foreach ($announcements as $item) {
             $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-            if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'categorize', 'hashtag', 'activate', 'deactivate', 'save', 'delete'];
-            } else {
-                $allowedActions[$item->getItemID()] = ['markread', 'mark', 'save'];
-            }
         }
+
+        $allowedActions = $itemService->getAllowedActionsForItems($announcements);
 
         $ratingList = [];
         if ($current_context->isAssessmentActive()) {
