@@ -46,7 +46,7 @@ use App\Utils\UserService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormError;
@@ -235,9 +235,9 @@ class AccountController extends AbstractController
 
     #[Route(path: '/portal/{portalId}/account/merge')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     public function mergeAccounts(
         Request $request,
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Security $security,
         UserService $userService,
@@ -374,8 +374,8 @@ class AccountController extends AbstractController
 
     #[Route(path: '/portal/{portalId}/account/privacy/print')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     public function privacyPrint(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         PersonalDataCollector $dataCollector,
         PrintService $printService,
