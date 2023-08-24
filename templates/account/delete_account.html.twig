@@ -6,19 +6,11 @@
 
 {% block content %}
     <div class="uk-grid">
-
-        <div class="uk-width-medium-4-4">
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
-
-                <div class="uk-panel-teaser cs-panel-teaser-warning">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <span class="uk-text-uppercase uk-text-bold">
-                            {{ 'lockAccount'|trans({}, 'profile') }}
-                        </span>
-                    </div>
-                </div>
-                <div class="uk-alert uk-alert-warning">
-                    {{ form_start(form_lock) }}
+        <div class="uk-width-medium-1-1">
+            {% component 'v2:panel' with { severity: 'warning', title: 'lockAccount'|trans({}, 'profile') } %}
+                {% block content %}
+                    <div class="uk-alert uk-alert-warning">
+                        {{ form_start(form_lock) }}
                         <span>{{ 'lockAccountText'|trans({}, 'profile') }}</span>
 
                         <div class="uk-margin">
@@ -40,27 +32,22 @@
                             {{ form_widget(form_lock.confirm_field) }}
                             {{ form_widget(form_lock.confirm_button) }}
                         </div>
-                    {{ form_end(form_lock) }}
-                </div>
-
-                <br/>
-
-                <div class="uk-panel-teaser cs-panel-teaser-danger">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <span class="uk-text-uppercase uk-text-bold">
-                            {{ 'deleteAccount'|trans({}, 'profile') }}
-                        </span>
+                        {{ form_end(form_lock) }}
                     </div>
-                </div>
-                <div class="uk-alert uk-alert-danger">
-                    {{ form_start(form_delete) }}
-                    {% if override == 'FALSE' %}
-                        <span>{{ 'deleteAccountTextFalse'|trans({}, 'profile') }}</span>
-                    {% elseif override == 'FLAG' %}
-                        <span>{{ 'deleteAccountTextFlag'|trans({}, 'profile') }}</span>
-                    {% else %}
-                        <span>{{ 'deleteAccountText'|trans({}, 'profile') }}</span>
-                    {% endif %}
+                {% endblock %}
+            {% endcomponent %}
+
+            {% component 'v2:panel' with { severity: 'danger', title: 'deleteAccount'|trans({}, 'profile') } %}
+                {% block content %}
+                    <div class="uk-alert uk-alert-danger">
+                        {{ form_start(form_delete) }}
+                        {% if override == 'FALSE' %}
+                            <span>{{ 'deleteAccountTextFalse'|trans({}, 'profile') }}</span>
+                        {% elseif override == 'FLAG' %}
+                            <span>{{ 'deleteAccountTextFlag'|trans({}, 'profile') }}</span>
+                        {% else %}
+                            <span>{{ 'deleteAccountText'|trans({}, 'profile') }}</span>
+                        {% endif %}
 
                         <div class="uk-margin">
                             {{ 'Delete explanation start'|trans({}, 'settings') }}
@@ -74,18 +61,18 @@
                                     <br /><a href="/room/{{ error.message}}">
                                     {{ error.message | roomtitle}}
                                 </a><br />
-                                    {% else %}
-                                        {{ error.message}}<br/>
+                                {% else %}
+                                    {{ error.message}}<br/>
                                 {% endif %}
                             {% endfor %}
                             {{ form_widget(form_delete.confirm_field) }}
                             {{ form_widget(form_delete.confirm_button) }}
                             <span class="uk-margin-left uk-text-uppercase uk-text-bold">{{ 'warning'|trans({}, 'menu') }}</span> {{ 'irreversibleMessage'|trans({}, 'menu') }}
                         </div>
-                    {{ form_end(form_delete) }}
-                </div>
-
-            </div>
+                        {{ form_end(form_delete) }}
+                    </div>
+                {% endblock %}
+            {% endcomponent %}
         </div>
     </div>
 {% endblock content %}
