@@ -35,7 +35,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -200,8 +199,8 @@ class SecurityController extends AbstractController
      * @throws NonUniqueResultException
      */
     #[Route(path: '/login/{portalId}/request_password_reset')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     public function requestPasswordReset(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
         LegacyEnvironment $legacyEnvironment,
@@ -294,8 +293,8 @@ class SecurityController extends AbstractController
      * @throws NonUniqueResultException
      */
     #[Route(path: '/login/{portalId}/password_reset/{token}')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
     public function passwordReset(
+        #[MapEntity(id: 'portalId')]
         Portal $portal,
         string $token,
         Request $request,
@@ -372,8 +371,10 @@ class SecurityController extends AbstractController
     }
 
     #[Route(path: '/login/{portalId}/simultaneous')]
-    #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
-    public function simultaneousLogin(Portal $portal): Response
+    public function simultaneousLogin(
+        #[MapEntity(id: 'portalId')]
+        Portal $portal
+    ): Response
     {
         return $this->render('security/simultaneous_login.html.twig');
     }

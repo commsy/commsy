@@ -16,6 +16,7 @@ namespace App\Utils;
 use App\Services\LegacyEnvironment;
 use cs_annotations_manager;
 use cs_environment;
+use cs_list;
 
 class AnnotationService
 {
@@ -84,26 +85,19 @@ class AnnotationService
         return $annotationItem->getItemID();
     }
 
-    public function markAnnotationsReadedAndNoticed($annotationList)
+    public function markAnnotationsReadedAndNoticed(cs_list $annotationList)
     {
         $readerManager = $this->legacyEnvironment->getReaderManager();
         $noticedManager = $this->legacyEnvironment->getNoticedManager();
 
-        // collect an array of all ids and precach
-        $idArray = [];
-        $annotation = $annotationList->getFirst();
-        while ($annotation) {
-            $idArray[] = $annotation->getItemID();
-
-            $annotation = $annotationList->getNext();
-        }
+        // collect an array of all ids and precache
+        $idArray = $annotationList->getIDArray();
 
         $readerManager->getLatestReaderByIDArray($idArray);
         $noticedManager->getLatestNoticedByIDArray($idArray);
 
         // mark if needed
-        $annotation = $annotationList->getFirst();
-        while ($annotation) {
+        foreach ($annotationList as $annotation) {
             $reader = $readerManager->getLatestReader($annotation->getItemID());
             if (empty($reader) || $reader['read_date'] < $annotation->getModificationDate()) {
                 $readerManager->markRead($annotation->getItemID(), 0);
@@ -113,8 +107,6 @@ class AnnotationService
             if (empty($noticed) || $noticed['read_date'] < $annotation->getModificationDate()) {
                 $noticedManager->markNoticed($annotation->getItemID(), 0);
             }
-
-            $annotation = $annotationList->getNext();
         }
     }
 }
