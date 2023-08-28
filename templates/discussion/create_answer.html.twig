@@ -5,7 +5,7 @@
 <div class="uk-panel uk-panel-box uk-margin-top" data-parentId="{{ parentId }}">
     <article class="uk-article uk-position-relative cs-edit-draft uk-flex">
         {# user icon #}
-        <div class="uk-margin-right uk-flex-item-none">
+        <div class="uk-margin-right uk-flex-none">
             {% if not user.isDeleted and user.isUser %}
                 {{ macros.userIconLink(user) }}
             {% else %}
@@ -37,7 +37,7 @@
             {# files #}
             {% if withUpload %}
                 <div class="uk-margin-bottom">
-                    <a class="cs-toggle uk-margin-left" data-uk-toggle="{target:'.toggle-files'}">
+                    <a class="cs-toggle uk-margin-left" uk-toggle="{target:'.toggle-files'}">
                         {{ 'add files here'|trans({}, "form") }}
                     </a>
                 </div>

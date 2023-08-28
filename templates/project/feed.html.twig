@@ -10,7 +10,7 @@
                     <input type="checkbox" value="{{ project.itemId }}">
                 </form>
             </div>
-            <div class="uk-margin-right uk-flex-item-none">
+            <div class="uk-margin-right uk-flex-none">
                     {% if not project.modificatorItem.isDeleted and project.modificatorItem.isUser %}
                         {{ macros.userIconLink(project.modificatorItem) }}
                     {% else %}

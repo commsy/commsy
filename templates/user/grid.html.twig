@@ -1,7 +1,7 @@
 {% import 'utils/macros.html.twig' as macros %}
 
 {% for user in users %}
-    <div class="uk-width-medium-1-2">
+    <div class="uk-width-1-2@m">
         {% set entryAllowedActions = '' %}
         {% if allowedActions[user.itemId] is defined %}
             {% set entryAllowedActions = allowedActions[user.itemId] %}
@@ -65,7 +65,7 @@
                     {{ 'no email'|trans({}) }}
                 {% endif %}
             </span><br/>
-            <div class="uk-flex uk-flex-space-between">
+            <div class="uk-flex uk-flex-between">
                 <div>
                     {% if user.telephone %}
                         <a href="tel:{{user.telephone}}">{{ user.telephone|u.truncate(20) }}</a><br/>
@@ -84,7 +84,7 @@
                     {% else %}
                         <span class="uk-text-muted" data-uk-tooltip title="{{'no street'|trans({}) }}">&#8230;</span><br/>
                     {% endif %}
-                    
+
                     {% if user.city %}
                         <span >{{ user.zipcode }} {{ user.city }}</span>
                     {% else %}
@@ -96,7 +96,7 @@
         </article>
     </div>
 {% else %}
-    <div class="uk-width-medium-1-1">
+    <div class="uk-width-1-1@m">
         {{ 'No more results found'|trans}}
     </div>
 {% endfor %}

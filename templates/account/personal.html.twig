@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-    {% component 'v2:panel' with { title: 'personal'|trans({}, 'menu') } %}
+    {% component 'v3:card' with { title: 'personal'|trans({}, 'menu') } %}
         {% block content %}
             {% if hasToChangeEmail == true %}
                 <div class="uk-alert uk-alert-danger">

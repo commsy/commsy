@@ -21,7 +21,7 @@
             {% import 'utils/macros.html.twig' as utilsMacros %}
 
             {% block dropdown %}
-                <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                <ul class="uk-nav uk-dropdown-nav uk-list-striped">
                     {# sorting options #}
                     {{ utilsMacros.sortActor('title', 'title', 'rubric', 'title', 'title_rev', '') }}
                     {{ utilsMacros.sortActor('modificator', 'modifier', 'rubric', 'modificator', 'modificator_rev', '') }}
@@ -35,7 +35,7 @@
     {% if is_granted('ITEM_NEW') and userCanCreateContext %}
         {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
             {% block dropdown %}
-                <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                <ul class="uk-nav uk-dropdown-nav uk-list-striped">
                     <li>
                          <a href="{{ path('app_project_create', {'roomId': roomId}) }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'New project room'|trans([], 'project') }}

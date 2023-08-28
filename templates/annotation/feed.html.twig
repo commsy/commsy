@@ -8,7 +8,7 @@
         <header class="uk-comment-header uk-margin-remove uk-flex">
 
             {# user icon #}
-            <div class="uk-margin-right uk-flex-item-none toggle-{{ annotation.itemId }}">
+            <div class="uk-margin-right uk-flex-none toggle-{{ annotation.itemId }}">
                 {% if not annotation.creator.isDeleted and annotation.creator.isUser %}
                     {{ utilMacros.userIconLink(annotation.creator) }}
                 {% else %}
@@ -17,7 +17,7 @@
             </div>
 
             {# user link #}
-            <div class="uk-margin-right uk-flex-item-none toggle-{{ annotation.itemId }} uk-hidden">
+            <div class="uk-margin-right uk-flex-none toggle-{{ annotation.itemId }} uk-hidden">
                 {% if not annotation.creator.isDeleted and annotation.creator.isUser %}
                     {{ utilMacros.userIconLink(annotation.creator) }}
                 {% endif %}

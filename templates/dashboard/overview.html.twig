@@ -11,12 +11,12 @@
     {{ wo_render_breadcrumbs({ viewTemplate: "breadcrumbs/breadcrumbs.html.twig" }) }}
 {% endblock %}
 
-{% block content %}
+{% block main %}
     <div id="dashboard-cover" aria-hidden="false">
         <h1 class="uk-h2">{{ 'my home'|trans({}, "menu") }}</h1>
     </div>
 
-    <div class="uk-grid uk-grid-match" data-uk-grid-margin>
+    <div class="uk-grid-match" uk-grid>
         {% set showServerNews = server.announcementEnabled|default(false) %}
         {% if showServerNews and not (portal.serverAnnouncementEnabled ?? true) %}
             {% set showServerNews = false %}
@@ -47,16 +47,16 @@
         {% endif %}
     </div>
 
-    <div class="uk-grid" data-uk-grid-margin>
+    <div uk-grid>
         {# right column #}
-        <div class="uk-width-medium-1-2 uk-push-1-2">
+        <div class="uk-width-1-2@m uk-push-1-2">
             {{ macros.dashboardMyViews(roomItem) }}
             {{ macros.dashboardCalendar(roomItem, calendars, iCal, contextArray) }}
             {{ macros.dashboardExternalAccess(roomItem) }}
         </div>
 
         {# left column #}
-        <div class="uk-width-medium-1-2 uk-pull-1-2 uk-row-first">
+        <div class="uk-width-1-2@m uk-pull-1-2 uk-row-first">
             {{ macros.dashboardAllRooms(roomItem, userMayCreateContext) }}
             {{ macros.dashboardFeed(roomItem) }}
         </div>

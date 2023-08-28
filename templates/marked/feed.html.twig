@@ -15,7 +15,7 @@
             </div>
 
             {# user icon and modification time #}
-            <div class="uk-margin-right uk-flex-item-none">
+            <div class="uk-margin-right uk-flex-none">
                 {% if not entry.modificatorItem.isDeleted and entry.modificatorItem.isUser %}
                     {{ macros.userIconLink(entry.modificatorItem) }}
                 {% else %}

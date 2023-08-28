@@ -7,7 +7,7 @@
     {% endif %}
 
     <header class="uk-comment-header uk-flex">
-        <div class="uk-flex-item-1">
+        <div class="uk-flex-1">
             {# avatar #}
             {% if not article.modificatorItem.isDeleted and article.modificatorItem.isUser %}
                 {{ macros.userIconLink(article.modificatorItem, 42, true, ['uk-border-circle', 'uk-comment-avatar']) }}
@@ -36,7 +36,7 @@
 
                     {% component 'v2:dropdown' with { toggleType: 'link' } %}
                         {% block dropdown %}
-                            <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                            <ul class="uk-nav uk-dropdown-nav uk-list-striped">
                                 {% if is_granted('ITEM_EDIT', article.itemId) %}
                                     {# edit #}
                                     <li>

@@ -35,14 +35,14 @@
         <h4 class="cs-list-section-header">
             <span class="cs-detail-section-header-background">
                 {{ 'hashtags'|trans({}, "room") }}
-                
+
                 {% if is_granted('HASHTAG_EDIT') %}
                     <a href="{{ path('app_hashtag_edit', {'roomId': app.request.attributes.get('roomId') }) }}"><i class="uk-icon-edit"></i></a>
                 {% endif %}
 
                 {% if form.children|length > 0 %}
                     <span class="cs-detail-section-header-background uk-align-right">
-                        <a id="room-hashtags-toggle" class="cs-toggle uk-margin-small-right" data-uk-toggle="{
+                        <a id="room-hashtags-toggle" class="cs-toggle uk-margin-small-right" uk-toggle="{
                             target:'#room-hashtags',
                             cls: 'cs-toggle-full-filter'
                         }" data-uk-tooltip title="{% if expanded %}{{ "hide"|trans({}) }}{% else %}{{ "unhide"|trans({}) }}{% endif %}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}" data-cs-toggle-link-moreless="#room-hashtags-toggle-moreless">
@@ -84,7 +84,7 @@
         <hr class="cs-list-divider"/>
         <h4 class="cs-list-section-header">
             <span class="cs-detail-section-header-background">
-                {{ 'categories'|trans({}, "room") }} 
+                {{ 'categories'|trans({}, "room") }}
 
                 {% if is_granted('CATEGORY_EDIT') %}
                     <a href="{{ path('app_category_edit', {'roomId': app.request.attributes.get('roomId') }) }}"><i class="uk-icon-edit"></i></a>
@@ -92,7 +92,7 @@
 
                 {% if form.children|length > 0 %}
                     <span class="cs-detail-section-header-background uk-align-right">
-                        <a id="room-categories-toggle" class="cs-toggle uk-margin-small-right" data-uk-toggle="{
+                        <a id="room-categories-toggle" class="cs-toggle uk-margin-small-right" uk-toggle="{
                             target:'#room-categories',
                             cls: 'cs-toggle-full-filter'
                         }" data-uk-tooltip title="{% if expanded %}{{ "hide"|trans({}) }}{% else %}{{ "unhide"|trans({}) }}{% endif %}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}" data-cs-toggle-link-moreless="#room-categories-toggle-moreless">
@@ -138,11 +138,11 @@
         <hr class="cs-list-divider"/>
         <h4 class="cs-list-section-header">
             <span class="cs-detail-section-header-background">
-                {{ 'participants'|trans({}, "date") }} 
+                {{ 'participants'|trans({}, "date") }}
             </span>
             {% if form.children|length > 0 %}
                 <span class="cs-detail-section-header-background uk-align-right">
-                    <a id="participants-toggle" class="cs-toggle uk-margin-small-right" data-uk-toggle="{target:'#participants', cls: 'cs-toggle-full-filter'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}" data-cs-toggle-link-moreless="#participants-toggle-moreless"><i class="uk-icon uk-icon-chevron-down"></i></a>
+                    <a id="participants-toggle" class="cs-toggle uk-margin-small-right" uk-toggle="{target:'#participants', cls: 'cs-toggle-full-filter'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}" data-cs-toggle-link-moreless="#participants-toggle-moreless"><i class="uk-icon uk-icon-chevron-down"></i></a>
                 </span>
             {% endif %}
         </h4>
@@ -190,7 +190,7 @@
 
             {% if form.children|length > 0 %}
                 <span class="cs-detail-section-header-background uk-align-right">
-                    <a id="calendars-toggle" class="cs-toggle uk-margin-small-right" data-uk-toggle="{target:'#calendars', cls: 'cs-toggle-full-filter'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}" data-cs-toggle-link-moreless="#calendars-toggle-moreless"><i class="uk-icon uk-icon-chevron-down"></i></a>
+                    <a id="calendars-toggle" class="cs-toggle uk-margin-small-right" uk-toggle="{target:'#calendars', cls: 'cs-toggle-full-filter'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}" data-cs-toggle-link-moreless="#calendars-toggle-moreless"><i class="uk-icon uk-icon-chevron-down"></i></a>
                 </span>
             {% endif %}
             </span>

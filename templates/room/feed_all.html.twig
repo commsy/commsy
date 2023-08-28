@@ -24,7 +24,7 @@
 {% endmacro %}
 
 {% for room in rooms %}
-    <article class="uk-comment uk-margin-top-remove">
+    <article class="uk-comment uk-margin-remove-top">
 
         <div class="uk-grid">
             <div class="uk-width-6-10">
@@ -34,8 +34,8 @@
                             <input type="checkbox" value="{{ room.itemId }}">
                         </form>
                     </div>
-                    <div class="uk-margin-right uk-flex-item-none">
-                        <div class="uk-container-center uk-margin-small-top" style="width:24px; height:24px;">
+                    <div class="uk-margin-right uk-flex-none">
+                        <div class="uk-margin-small-top" style="width:24px; height:24px;">
                             {{ macrosUtils.contextLinkIcon(roomId, room, projectsMemberStatus[room.itemId]) }}
                         </div>
                         <div class="uk-comment-meta">

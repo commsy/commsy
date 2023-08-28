@@ -16,7 +16,7 @@
                 {% endif %}
             {% endif %}
             <header class="uk-comment-header uk-margin-remove uk-flex">
-                <div class="uk-margin-right uk-flex-item-none">
+                <div class="uk-margin-right uk-flex-none">
                     {% if feedItem.itemType is not same as('user') %}
                         {% if feedItem.type is not same as('date') %}
                             {% if not feedItem.modificatorItem.isDeleted and feedItem.modificatorItem.isUser %}
@@ -33,7 +33,7 @@
                                 {% endif %}
                             {% else %}
                                 <div class="uk-vertical-align uk-text-center uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;" data-uk-tooltip title="{{ feedItem.calendar.title }}">
-                                    <div class="uk-container-center uk-vertical-align-middle" style="width:24px; height:24px;">
+                                    <div class="uk-vertical-align-middle" style="width:24px; height:24px;">
                                         <i class="uk-icon-medium uk-icon-calendar" style="color:{{ feedItem.calendar.color }}; width:24px; height:24px;"></i>
                                     </div>
                                 </div>

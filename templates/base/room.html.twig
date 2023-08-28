@@ -1,7 +1,7 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout.html.twig' %}
 
-{% block side_navigation %}
-    {{ knp_menu_render('main') }}
+{% block sidebar_left %}
+    {% include 'components/context_navigation.html.twig' with {'menu_name': 'main'} only %}
 {% endblock %}
 
 {% block breadcrumb %}
@@ -20,13 +20,13 @@
         {% endif %}
     {% endblock %}
 
-    <div class="uk-grid" data-uk-grid-margin>
+    <div class="uk-grid" uk-grid>
 
-        <div class="uk-width-medium-1-3 uk-push-2-3">
+        <div class="uk-width-1-3@m uk-push-2-3">
             {% block sidebar %}{% endblock %}
         </div>
 
-        <div class="uk-width-medium-2-3 uk-pull-1-3">
+        <div class="uk-width-2-3@m uk-pull-1-3">
             {% block main_content %}{% endblock %}
         </div>
 

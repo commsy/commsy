@@ -33,7 +33,7 @@
             </div>
 
             {# user icon and modification time #}
-            <div class="uk-margin-right uk-flex-item-none">
+            <div class="uk-margin-right uk-flex-none">
                 {% if not result.isExternal %}
                     {% if entity.modifier is defined and entity.modifier is not empty %}
                         {# NOTE: `status >= 2` is used here since, opposed to the legacy model classes,
@@ -53,7 +53,7 @@
                     {% endif %}
                 {% else %}
                     <div class="uk-vertical-align uk-text-center uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;" data-uk-tooltip title="{{ result.calendar ? result.calendar.title }}">
-                        <div class="uk-container-center uk-vertical-align-middle" style="width:24px; height:24px;">
+                        <div class="uk-vertical-align-middle" style="width:24px; height:24px;">
                             <i class="uk-icon-medium uk-icon-calendar" style="color:{{ result.calendar ? result.calendar.color }}; width:24px; height:24px;"></i>
                         </div>
                     </div>

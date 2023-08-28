@@ -71,7 +71,7 @@
                 {% endif %}
             </div>
             <div class="uk-vertical-align-middle uk-margin-remove">
-                <a class="toggle-{{ item.itemId }}" data-uk-toggle="{target:'.toggle-{{ item.itemId }}', animation:'uk-animation-fade'}">{{ 'show more'|trans({}) }}</a>
+                <a class="toggle-{{ item.itemId }}" uk-toggle="{target:'.toggle-{{ item.itemId }}', animation:'uk-animation-fade'}">{{ 'show more'|trans({}) }}</a>
             </div>
         </div>
         <div class="uk-comment-header uk-margin-remove uk-flex uk-hidden toggle-{{ item.itemId }}">
@@ -92,7 +92,7 @@
                 <div class="uk-comment-meta">
                     {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|format_date }} {{ item.modificationDate|format_time }}
                 </div>
-                <a class="toggle-{{ item.itemId }} uk-hidden" data-uk-toggle="{target:'.toggle-{{ item.itemId }}', animation:'uk-animation-fade'}">{{ 'show less'|trans({}) }}</a>
+                <a class="toggle-{{ item.itemId }} uk-hidden" uk-toggle="{target:'.toggle-{{ item.itemId }}', animation:'uk-animation-fade'}">{{ 'show less'|trans({}) }}</a>
             </div>
             {% if modifierList[item.itemId] is defined %}
                 {% if not modifierList[item.itemId] is empty %}
@@ -298,7 +298,7 @@
         {% endif %}
         <div class="uk-display-inline cs-toggle-icon uk-margin-left
         {% if (title == 'links') and (item.AllLinkeditemIDArray|length < 1) %} uk-invisible {% endif %} {% if (title == 'categoriesAndBuzzwords') and (item.buzzwordArray|length < 1) %} uk-invisible {% endif %}">
-            <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+            <a class="cs-toggle" uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
         </div>
    </div>
 {% endmacro %}
@@ -343,7 +343,7 @@
 
             </div>
         {% else %}
-            <div class="uk-width-9-10 uk-margin-top-remove">
+            <div class="uk-width-9-10 uk-margin-remove-top">
 
                 {% if not content is empty %}
                     <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-content">
@@ -622,7 +622,7 @@
 
         <div class="uk-form-label">{{ 'categoriesAndBuzzwords'|trans({}, "messages")|capitalize }}</div>
         <div class="uk-form-controls">
-            <ul id="mandatoryLinkFormTabs" class="uk-tab" data-uk-tab="{connect:'#mandatoryLinksForm'}">
+            <ul id="mandatoryLinkFormTabs" class="uk-tab" uk-tab="{connect:'#mandatoryLinksForm'}">
                 {% if form.category_mapping.categories is defined %}
                     <li><a href="">{{ 'categories'|trans({})|capitalize }}</a></li>
                 {% endif %}

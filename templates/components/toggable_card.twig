@@ -1,6 +1,6 @@
 {% set randomId = random(111111, 999999) %}
 
-<div class="uk-card uk-card-small uk-card-default uk-margin-small"{% if sticky is defined %}data-uk-sticky{% endif %}>
+<div class="uk-card uk-card-small uk-card-default uk-margin-small"{% if sticky is defined %}uk-sticky{% endif %}>
     <div class="uk-card-header">
         <div class="uk-flex">
             <h3 class="uk-card-title uk-margin-remove">{% block title %}{% endblock %}</h3>

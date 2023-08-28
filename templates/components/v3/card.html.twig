@@ -1,10 +1,10 @@
-<div class="uk-panel uk-panel-box{% if style %}-{{ style }}{% endif %}{% if not padding %} uk-padding-remove{% endif %}"{% if sticky %} uk-sticky{% endif %}>
+<div class="uk-card uk-card-{{ style }} uk-card-small{% if not padding %} uk-padding-remove{% endif %}"{% if sticky %} uk-sticky{% endif %}>
 
-    <div class="uk-panel-teaser{% if not padding %} uk-margin-remove{% endif %}{% if severity %} cs-panel-teaser-{{ severity }}{% endif %}">
+    <div class="uk-card-header{% if not padding %} uk-margin-remove{% endif %}{% if severity %} cs-panel-teaser-{{ severity }}{% endif %}">
         <div class="uk-flex">
             <div class="uk-flex-inline uk-flex-1">
                 {% if title %}
-                    <div class="uk-text-large">
+                    <div class="uk-card-title">
                         {{ title }}
                     </div>
                 {% endif %}
@@ -17,5 +17,7 @@
         </div>
     </div>
 
-    {% block content %}{% endblock %}
+    <div class="uk-card-body">
+        {% block content %}{% endblock %}
+    </div>
 </div>

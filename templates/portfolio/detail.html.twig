@@ -4,11 +4,11 @@
 
 {% block content %}
     <div class="uk-grid">
-        <div class="uk-width-medium-2-3">
+        <div class="uk-width-2-3@m">
             <div class="uk-panel uk-panel-box uk-margin-bottom">
                 {# panel title bar #}
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                    <div class="uk-flex uk-flex-middle uk-flex-between">
                         <div class="uk-text-large">{{ firstTag.title }} / {{ secondTag.title }}</div>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                                 {% endif %}
                             {% endif %}
                             <header class="uk-comment-header uk-margin-remove uk-flex">
-                                <div class="uk-margin-right uk-flex-item-none">
+                                <div class="uk-margin-right uk-flex-none">
                                     {% if feedItem.itemType is not same as('user') %}
                                         {% if feedItem.type is not same as('date') %}
                                             {% if feedItem.modificatorItem.isUser %}
@@ -47,7 +47,7 @@
                                                 {% endif %}
                                             {% else %}
                                                 <div class="uk-vertical-align uk-text-center uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;" data-uk-tooltip title="{{ feedItem.calendar.title }}">
-                                                    <div class="uk-container-center uk-vertical-align-middle" style="width:24px; height:24px;">
+                                                    <div class="uk-vertical-align-middle" style="width:24px; height:24px;">
                                                         <i class="uk-icon-medium uk-icon-calendar" style="color:{{ feedItem.calendar.color }}; width:24px; height:24px;"></i>
                                                     </div>
                                                 </div>
@@ -130,7 +130,7 @@
 
             <div class="uk-panel uk-panel-box uk-margin-bottom uk-margin-small-top">
                 <div class="uk-panel-teaser uk-margin cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                    <div class="uk-flex uk-flex-middle uk-flex-between">
                         <div>{{ 'Comments'|trans({}, 'portfolio') }}</div>
                     </div>
                 </div>
@@ -139,7 +139,7 @@
 
                         <article class="uk-comment">
                             <header class="uk-comment-header uk-margin-remove uk-flex">
-                                <div class="uk-margin-right uk-flex-item-none">
+                                <div class="uk-margin-right uk-flex-none">
                                     {#{  macros.userIconLink(user) }#}
                                 </div>
                                 <div class="uk-width-8-10">
@@ -163,7 +163,7 @@
             </div>
         </div>
 
-        <div class="uk-width-medium-1-3">
+        <div class="uk-width-1-3@m">
             {% block content_right_column %}
             {% endblock %}
         </div>

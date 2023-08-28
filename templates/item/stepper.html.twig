@@ -1,4 +1,4 @@
-<div class="uk-flex-inline uk-flex-item-1">
+<div class="uk-flex-inline uk-flex-1">
 
     {% set detailPath = 'app_' ~ rubric ~ '_detail' %}
 
@@ -20,7 +20,7 @@
     <div class="uk-margin-right">
         {% component 'v2:dropdown' with { icon: 'caret-down', title: rubric|capitalize|trans({}, "rubric", null, 0) ~ counterPosition ~ '/' ~ count } %}
             {% block dropdown %}
-                <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                <ul class="uk-nav uk-dropdown-nav uk-list-striped">
                     {% for tempItem in itemList %}
                         {% if tempItem.itemId != item.itemId %}
                             <li><a href="{{ path(detailPath, {'roomId': roomId, 'itemId': tempItem.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempItem.title|decodeHtmlEntity }}">{{ tempItem.title|decodeHtmlEntity|u.truncate(25) }}</a></li>

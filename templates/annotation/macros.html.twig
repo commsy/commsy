@@ -1,6 +1,6 @@
 {% macro editAnnotationContent(title, item, content) %}
     {% import 'utils/macros.html.twig' as macros %}
-    <div class="uk-grid uk-margin-top-remove">
+    <div class="uk-grid uk-margin-remove-top">
 
         <div class="cs-comment-head">
             <div class="uk-comment-meta">
@@ -53,7 +53,7 @@
 
                 {# toggle action #}
                 <div class="uk-display-inline cs-toggle-icon uk-margin-left uk-invisible" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}', limit: 70}">
-                    <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}', cls: 'cs-toggle-full'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}">
+                    <a class="cs-toggle" uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}', cls: 'cs-toggle-full'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}">
                         <i class="uk-icon-hover uk-icon-small uk-icon-chevron-down"></i>
                     </a>
                 </div>

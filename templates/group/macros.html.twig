@@ -34,7 +34,7 @@
         </div>
         <div class="uk-margin-left uk-margin-right uk-position-relative">
             <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">
-                <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
+                <div class="uk-grid uk-margin-small-left uk-margin-remove-top">
                     <div class="uk-width-9-10 uk-padding-remove">
                         <div class="toggle-title-{{ item.itemId }}">
                             <div class="uk-panel">
@@ -184,7 +184,7 @@
         </div>
         <div class="uk-margin-left uk-margin-right uk-position-relative">
             <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">
-                <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
+                <div class="uk-grid uk-margin-small-left uk-margin-remove-top">
                     <div class="uk-width-9-10 uk-padding-remove">
                         <div class="toggle-title-{{ item.itemId }}">
                             <div class="uk-panel">
@@ -348,7 +348,7 @@
         {% set content %}
         <div class="uk-margin-top uk-margin-bottom" data-uk-grid="{gutter: 20}" data-uk-check-display>
             {% for member in members %}
-        <div class="uk-width-medium-1-2">
+        <div class="uk-width-1-2@m">
 
             <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
 
@@ -369,7 +369,7 @@
                         {{ 'no email'|trans({}) }}
                     {% endif %}
                 </span><br/>
-                <div class="uk-flex uk-flex-space-between">
+                <div class="uk-flex uk-flex-between">
                     <div>
                         {% if member.telephone %}
                             <a href="tel:{{member.telephone}}" data-uk-tooltip title="{{member.telephone}}" >{{ member.telephone|u.truncate(20) }}</a><br/>

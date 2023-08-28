@@ -40,7 +40,7 @@
         </div>
         <div class="uk-margin-left uk-margin-right uk-position-relative">
             <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">
-                <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
+                <div class="uk-grid uk-margin-small-left uk-margin-remove-top">
                     <div class="uk-width-9-10 uk-padding-remove">
                         <div class="toggle-title-{{ item.itemId }}">
                             <div class="uk-panel">
@@ -69,7 +69,7 @@
                         </div>
                         <div class="toggle-title-{{ item.itemId }} uk-hidden">
                             <div class="uk-panel">
-                                <ul class="uk-grid" data-uk-grid-margin>
+                                <ul class="uk-grid" uk-grid>
                                     <li class="uk-grid-width-4-10">
                                         <div class="uk-flex">
                                             <div class="uk-margin-right">
@@ -267,7 +267,7 @@
         </div>
         <div class="uk-margin-left uk-margin-right uk-position-relative">
             <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">
-                <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
+                <div class="uk-grid uk-margin-small-left uk-margin-remove-top">
                     <div class="uk-width-9-10 uk-padding-remove">
                         <div class="toggle-title-{{ item.itemId }}">
                             <div class="uk-panel">
@@ -473,7 +473,7 @@
             <div class="uk-width-2-10 uk-flex uk-flex-right">
                 {# toggle action #}
                 <div class="uk-display-inline cs-toggle-icon uk-margin-left" data-cs-unhide-collapsed="{src: '.toggle-sections-{{ item.itemId }}'}">
-                    <a class="cs-toggle" data-uk-toggle="{target:'.toggle-sections-{{ item.itemId }}', cls: 'cs-toggle-full'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+                    <a class="cs-toggle" uk-toggle="{target:'.toggle-sections-{{ item.itemId }}', cls: 'cs-toggle-full'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
                 </div>
            </div>
         </div>

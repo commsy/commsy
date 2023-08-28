@@ -23,7 +23,7 @@
         {% import 'utils/macros.html.twig' as utilsMacros %}
 
         {% block dropdown %}
-            <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+            <ul class="uk-nav uk-dropdown-nav uk-list-striped">
                 {# sorting options #}
                 {%- set initialStateTitle = sort is same as('title') ? 'asc' : (sort is same as('title_rev') ? 'desc' : '') -%}
                 {%- set initialStateTime = sort is same as('time') ? 'asc' : (sort is same as('time_rev') ? 'desc' : '') -%}
@@ -42,7 +42,7 @@
         {% block dropdown %}
             {% import 'utils/macros.html.twig' as utilsMacros %}
 
-            <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-nav-parent-icon" data-uk-nav>
+            <ul class="uk-nav uk-dropdown-nav uk-list-striped uk-nav-parent-icon" data-uk-nav>
 
                 {# new entry #}
                 <li>

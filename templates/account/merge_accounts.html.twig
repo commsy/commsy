@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-    {% component 'v2:panel' with { title: 'combineAccount'|trans({}, 'profile') } %}
+    {% component 'v3:card' with { title: 'combineAccount'|trans({}, 'profile') } %}
         {% block content %}
             {{ form_start(form) }}
                 {{ form_errors(form) }}

@@ -9,7 +9,7 @@
 {% block content %}
     <div class="uk-grid">
 
-        <div class="uk-width-medium-4-5">
+        <div class="uk-width-4-5@m">
 
             {# group content panel #}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
@@ -25,12 +25,12 @@
                         ))}}
 
                         {# actions #}
-                        <div class="uk-flex-item-none">
+                        <div class="uk-flex-none">
 
                             {# additional actions #}
                             {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
                                 {% block dropdown %}
-                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                                    <ul class="uk-nav uk-dropdown-nav uk-list-striped">
 
                                         {% if not isArchived and not item.isSystemLabel %}
                                             {# join and leave group (and group room) #}
@@ -245,10 +245,10 @@
             </div>
         </div>
 
-        <div class="uk-width-medium-1-5 uk-hidden-small">
+        <div class="uk-width-1-5@m uk-hidden-small">
 
             {# quick navigation #}
-            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
+            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" uk-sticky>
                 <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
                     {{ 'quick navigation'|trans({})|capitalize }}
                 </div>

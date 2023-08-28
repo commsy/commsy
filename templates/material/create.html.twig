@@ -8,7 +8,7 @@
 
 {% block content %}
     <div class="uk-grid">
-        <div class="uk-width-medium-1-5">
+        <div class="uk-width-1-5@m">
             <div class="uk-panel uk-panel-box uk-margin-bottom">
                 <ul class="uk-nav uk-nav-parent-icon" data-uk-nav>
                     <li><a href="#">{{ 'description'|trans({})|capitalize }}</a></li>
@@ -20,14 +20,14 @@
                 </ul>
             </div>
         </div>
-        <div class="uk-width-medium-4-5">
+        <div class="uk-width-4-5@m">
             <div class="uk-panel uk-panel-box uk-margin-bottom">
                 {# content #}
                 <article class="uk-article uk-position-relative">
                     {{ form_start(form, {'attr': {'class': 'uk-form-stacked'}}) }}
                     {{ form_errors(form) }}
                     {{ form_end(form) }}
-                    
+
                     <script>
                     var $biblio = $('#material_biblio_select');
                     // When sport gets selected ...

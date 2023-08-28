@@ -23,20 +23,20 @@ Encore
      */
 
     // entry points UiKit2
-    .addEntry('app_default', './assets/uikit2/js/app_default.js')
-    .addEntry('app_confetti', './assets/uikit2/js/app_confetti.js')
-    .addEntry('app_darkblue', './assets/uikit2/js/app_darkblue.js')
-    .addEntry('app_football', './assets/uikit2/js/app_football.js')
-    .addEntry('app_grey', './assets/uikit2/js/app_grey.js')
-    .addEntry('app_ocean', './assets/uikit2/js/app_ocean.js')
-    .addEntry('app_red', './assets/uikit2/js/app_red.js')
-    .addEntry('app_redgrey', './assets/uikit2/js/app_redgrey.js')
-    .addEntry('app_schulcommsyhh', './assets/uikit2/js/app_schulcommsyhh.js')
-    .addEntry('app_stars', './assets/uikit2/js/app_stars.js')
-    .addEntry('app_sun', './assets/uikit2/js/app_sun.js')
-    .addEntry('app_uhh', './assets/uikit2/js/app_uhh.js')
+    // .addEntry('app_confetti', './assets/uikit2/js/app_confetti.js')
+    // .addEntry('app_darkblue', './assets/uikit2/js/app_darkblue.js')
+    // .addEntry('app_football', './assets/uikit2/js/app_football.js')
+    // .addEntry('app_grey', './assets/uikit2/js/app_grey.js')
+    // .addEntry('app_ocean', './assets/uikit2/js/app_ocean.js')
+    // .addEntry('app_red', './assets/uikit2/js/app_red.js')
+    // .addEntry('app_redgrey', './assets/uikit2/js/app_redgrey.js')
+    // .addEntry('app_schulcommsyhh', './assets/uikit2/js/app_schulcommsyhh.js')
+    // .addEntry('app_stars', './assets/uikit2/js/app_stars.js')
+    // .addEntry('app_sun', './assets/uikit2/js/app_sun.js')
+    // .addEntry('app_uhh', './assets/uikit2/js/app_uhh.js')
 
     // entry points UiKit3
+    .addEntry('app_default', './assets/uikit3/js/app_portal.js')
     .addEntry('app_portal', './assets/uikit3/js/app_portal.js')
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)

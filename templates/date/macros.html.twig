@@ -30,7 +30,7 @@
         </div>
         <div class="uk-margin-left uk-margin-right uk-position-relative">
             <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">
-                <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
+                <div class="uk-grid uk-margin-small-left uk-margin-remove-top">
                     <div class="uk-width-9-10 uk-padding-remove">
                         <div class="toggle-title-{{ item.itemId }}">
                             <div class="uk-panel">
@@ -46,7 +46,7 @@
                                                     {% endif %}
                                                 {% else %}
                                                     <div class="uk-vertical-align uk-text-center uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;" data-uk-tooltip title="{{ item.calendar.title }}">
-                                                        <div class="uk-container-center uk-vertical-align-middle" style="width:24px; height:24px;">
+                                                        <div class="uk-vertical-align-middle" style="width:24px; height:24px;">
                                                             <i class="uk-icon-medium uk-icon-calendar" style="color:{{ item.calendar.color }}; width:24px; height:24px;"></i>
                                                         </div>
                                                     </div>
@@ -69,7 +69,7 @@
                         </div>
                         <div class="toggle-title-{{ item.itemId }} uk-hidden">
                             <div class="uk-panel">
-                                <ul class="uk-grid" data-uk-grid-margin>
+                                <ul class="uk-grid" uk-grid>
                                     <li class="uk-grid-width-4-10">
                                         <div class="uk-flex">
                                             <div class="uk-margin-right">
@@ -246,7 +246,7 @@
         </div>
         <div class="uk-margin-left uk-margin-right uk-position-relative">
             <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">
-                <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
+                <div class="uk-grid uk-margin-small-left uk-margin-remove-top">
                     <div class="uk-width-9-10 uk-padding-remove">
                         <div class="toggle-title-{{ item.itemId }}">
                             <div class="uk-panel">
@@ -449,7 +449,7 @@
                 {# toggle action #}
                 {% if not sectionList is empty %}
                     <div class="cs-toggle-icon uk-margin-left uk-width-1-1 uk-invisible" data-cs-unhide-collapsed="{src: '.toggle-sections-{{ item.itemId }}'}">
-                        <a class="cs-toggle" data-uk-toggle="{target:'.toggle-sections-{{ item.itemId }}', cls: 'cs-toggle-full'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+                        <a class="cs-toggle" uk-toggle="{target:'.toggle-sections-{{ item.itemId }}', cls: 'cs-toggle-full'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
                     </div>
                 {% endif %}
            </div>
@@ -481,7 +481,7 @@
 
             </div>
         {% else %}
-            <div class="uk-width-9-10 uk-margin-top-remove">
+            <div class="uk-width-9-10 uk-margin-remove-top">
 
                 <div class="toggle-sections-{{ item.itemId }} cs-toggle-empty">
                     <span class="uk-text-muted">{{ 'no content'|trans({}, "room") }}</span>

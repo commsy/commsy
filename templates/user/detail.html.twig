@@ -9,7 +9,7 @@
 {% block content %}
     <div class="uk-grid">
 
-        <div class="uk-width-medium-4-5">
+        <div class="uk-width-4-5@m">
 
             {# user content panel #}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
@@ -19,7 +19,7 @@
                     <div class="uk-flex">
 
                         {# quick item navigation #}
-                        <div class="uk-flex-inline uk-flex-item-1">
+                        <div class="uk-flex-inline uk-flex-1">
 
                             {# back navigation #}
                             <div class="uk-margin-right">
@@ -39,7 +39,7 @@
                             <div class="uk-margin-right">
                                 {% component 'v2:dropdown' with { icon: 'caret-down', title: 'User'|trans({'%count%':0}, "rubric") ~ counterPosition ~ '/' ~ count } %}
                                     {% block dropdown %}
-                                       <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                                       <ul class="uk-nav uk-dropdown-nav uk-list-striped">
                                            {% for tempUser in userList %}
                                                 {% if tempUser.itemId != user.itemId %}
                                                     <li><a href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': tempUser.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity }}">{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity|u.truncate(25) }}</a></li>
@@ -68,13 +68,13 @@
                         </div>
 
                         {# actions #}
-                        <div class="uk-flex-item-none">
+                        <div class="uk-flex-none">
 
 
                             {# additional actions #}
                             {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
                                 {% block dropdown %}
-                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                                    <ul class="uk-nav uk-dropdown-nav uk-list-striped">
                                         {# print #}
                                         <li>
                                             <a href="{{ path('app_user_print', {'roomId': roomId, 'itemId': user.itemId}) }}" target="_blank" id="print">
@@ -137,7 +137,7 @@
                             {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
                                 {% component 'v2:dropdown' with { icon: 'caret-down', title: 'Manage user'|trans({},'user')|capitalize } %}
                                     {% block dropdown %}
-                                        <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                                        <ul class="uk-nav uk-dropdown-nav uk-list-striped">
                                             {% if user.isRequested %}
                                                 {# confirm #}
                                                 <li>
@@ -282,7 +282,7 @@
                                 <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
                                     <div class="uk-grid">
                                        {% for group in linkedGroups %}
-                                        <div class="uk-width-medium-1-3">
+                                        <div class="uk-width-1-3@m">
                                             <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
                                                 <div class="uk-panel-teaser cs-panel-teaser-user">
                                                    <div class="uk-grid">
@@ -303,7 +303,7 @@
                                                     {{'send mail to group'|trans({}) }}
                                                 </a>
                                                 </span><br/>
-                                                <div class="uk-flex uk-flex-space-between">
+                                                <div class="uk-flex uk-flex-between">
                                                     <div>
                                                         {{'members'|trans({}) }}: {{group.getCountMemberItemList}}
                                                     </div>
@@ -315,7 +315,7 @@
                                         </div>
                                         {% endfor %}
                                         {% if userRoomItem is not null %}
-                                            <div class="uk-width-medium-1-3">
+                                            <div class="uk-width-1-3@m">
                                                 <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
                                                     <div class="uk-panel-teaser cs-panel-teaser-user">
                                                         <div class="uk-grid">
@@ -334,7 +334,7 @@
                                                     {{'send mail to group'|trans({}) }}
                                                 </a>
                                                 </span><br/>
-                                                    <div class="uk-flex uk-flex-space-between">
+                                                    <div class="uk-flex uk-flex-between">
                                                         <div>
                                                             {{'members'|trans({}) }}: {{ userRoomItemMemberCount }}
                                                         </div>
@@ -393,10 +393,10 @@
 
         </div>
 
-        <div class="uk-width-medium-1-5 uk-hidden-small">
+        <div class="uk-width-1-5@m uk-hidden-small">
 
             {# quick navigation #}
-            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
+            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" uk-sticky>
                 <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
                     {{ 'quick navigation'|trans({})|capitalize }}
                 </div>

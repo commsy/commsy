@@ -1,7 +1,7 @@
 {% import 'utils/macros.html.twig' as macros %}
 
 {% for group in groups %}
-        <div class="uk-width-medium-1-2">
+        <div class="uk-width-1-2@m">
 
             {% set entryAllowedActions = '' %}
             {% if allowedActions[group.itemId] is defined %}
@@ -43,7 +43,7 @@
                         {% endif %}
                     </div>
                 </div>
-                <div class="uk-flex-space-between uk-margin-small-top">
+                <div class="uk-flex-between uk-margin-small-top">
                     <div>
                         {{'members'|trans({}) }}: {{group.getCountMemberItemList}}
                     </div>

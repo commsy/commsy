@@ -255,7 +255,7 @@
                 </div>
             </div>
         {% else %}
-            <div class="uk-width-9-10 uk-margin-top-remove">
+            <div class="uk-width-9-10 uk-margin-remove-top">
                 <div>
                     <span class="uk-text-muted">{{ 'no content'|trans({}, "room") }}</span>
                 </div>
@@ -472,7 +472,7 @@
 
             </div>
         {% else %}
-            <div class="uk-width-9-10 uk-margin-top-remove">
+            <div class="uk-width-9-10 uk-margin-remove-top">
 
                 {% if not content is empty %}
                     <div>
@@ -559,7 +559,7 @@
 
 {% macro editAnnotationContent(title, item, content) %}
     {% import 'utils/macros.html.twig' as macros %}
-    <div class="uk-grid uk-margin-top-remove">
+    <div class="uk-grid uk-margin-remove-top">
 
         {# content #}
         {% if not content is empty %}
@@ -795,7 +795,7 @@
         {% set content %}
         <div class="uk-margin-top uk-margin-bottom" data-uk-grid="{gutter: 20}">
             {% for member in members %}
-        <div class="uk-width-medium-1-2">
+        <div class="uk-width-1-2@m">
 
             <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
 
@@ -816,7 +816,7 @@
                         {{ 'no email'|trans({}) }}
                     {% endif %}
                 </span><br/>
-                <div class="uk-flex uk-flex-space-between">
+                <div class="uk-flex uk-flex-between">
                     <div>
                         {% if member.telephone %}
                             <a>{{ member.telephone}}</a><br/>

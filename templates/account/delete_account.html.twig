@@ -6,8 +6,8 @@
 
 {% block content %}
     <div class="uk-grid">
-        <div class="uk-width-medium-1-1">
-            {% component 'v2:panel' with { severity: 'warning', title: 'lockAccount'|trans({}, 'profile') } %}
+        <div class="uk-width-1-1@m">
+            {% component 'v3:card' with { severity: 'warning', title: 'lockAccount'|trans({}, 'profile') } %}
                 {% block content %}
                     <div class="uk-alert uk-alert-warning">
                         {{ form_start(form_lock) }}
@@ -37,7 +37,7 @@
                 {% endblock %}
             {% endcomponent %}
 
-            {% component 'v2:panel' with { severity: 'danger', title: 'deleteAccount'|trans({}, 'profile') } %}
+            {% component 'v3:card' with { severity: 'danger', title: 'deleteAccount'|trans({}, 'profile') } %}
                 {% block content %}
                     <div class="uk-alert uk-alert-danger">
                         {{ form_start(form_delete) }}

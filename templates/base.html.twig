@@ -24,8 +24,8 @@
                 <div id="commsy_logo"></div>
             </a>
 
-            <div class="uk-flex uk-flex-inline uk-flex-wrap uk-flex-wrap-space-between uk-height-1-1 uk-width-1-1">
-                <div class="uk-flex-item-1">
+            <div class="uk-flex uk-flex-inline uk-flex-wrap uk-flex-wrap-between uk-height-1-1 uk-width-1-1">
+                <div class="uk-flex-1">
                     {# Context Navigation #}
                     {% block side_navigation %}
                     {% endblock %}
@@ -65,7 +65,7 @@
             <nav class="uk-navbar uk-navbar-attached">
                 {# right #}
                 <div class="uk-navbar-flip">
-                    <div class="uk-navbar-content">
+                    <div class="uk-navbar-item">
                         {# global search #}
                         {% if app.request.attributes.get('_route') is not same as('app_tou_accept') %}
                             {% if requestContextId is not same as 99 %}
@@ -96,7 +96,7 @@
                         )) }}
                     {% endif %}
 
-                    <div class="uk-navbar-content">
+                    <div class="uk-navbar-item">
                         <ul class="uk-navbar-nav">
                             <li id="navbar_user_icon" class="uk-parent" data-uk-dropdown>
                                 {{ render(controller(
@@ -167,7 +167,7 @@
                                     </script>
                                 </div>
 
-                                <div class="loading uk-text-center uk-margin-small-top uk-container-center">
+                                <div class="loading uk-text-center uk-margin-small-top">
                                     <i class="uk-icon-spinner uk-icon-small uk-icon-spin"></i>
                                 </div>
 
@@ -200,5 +200,6 @@
 
             <script src="{{ asset('build/tex-chtml.js') }}" async></script>
         {% endblock %}
+        <script src="https://getuikit.com/migrate.min.js"></script>
     </body>
 </html>

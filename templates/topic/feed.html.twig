@@ -2,17 +2,17 @@
 
 {% for topic in topics %}
 
-        <div class="uk-width-medium-1-2">
+        <div class="uk-width-1-2@m">
 
             {% set entryAllowedActions = '' %}
             {% if allowedActions[topic.itemId] is defined %}
                 {% set entryAllowedActions = allowedActions[topic.itemId] %}
             {% endif %}
             <article class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
- 
+
                 <div class="uk-panel-teaser cs-panel-teaser-user">
                     {{ macros.statusColor(readerList, topic.itemId, 'grid') }}
- 
+
                     <div class="items-checkbox uk-float-left uk-margin-small-right uk-hidden">
                         <form class="uk-form">
                             <input type="checkbox" value="{{ topic.itemId }}">
@@ -32,22 +32,22 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <span>
                    {% set fileArray = topic.fileList.to_array %}
-                   {{'files'|trans({}) }}: {% if not fileArray is empty %} {{macros.fileListShort(topic)}} {% else %} {{'no files'|trans({}) }} {% endif %}             
+                   {{'files'|trans({}) }}: {% if not fileArray is empty %} {{macros.fileListShort(topic)}} {% else %} {{'no files'|trans({}) }} {% endif %}
                 </span><br/>
 
-                <div class="uk-flex-space-between uk-text-nowrap">
+                <div class="uk-flex-between uk-text-nowrap">
                     <div>
-                        {{'links'|trans({}) }}: {{topic.getCountAllLinkItemList}}              
+                        {{'links'|trans({}) }}: {{topic.getCountAllLinkItemList}}
                     </div>
                     <div>
-                        {{'topic path'|trans({}) }}: {% if topic.isPathActive %} {{'topic path activated'|trans({}) }}{% else %} {{'topic path not activated'|trans({}) }} {% endif %}              
+                        {{'topic path'|trans({}) }}: {% if topic.isPathActive %} {{'topic path activated'|trans({}) }}{% else %} {{'topic path not activated'|trans({}) }} {% endif %}
                     </div>
                 </div>
 
-                
+
             </article>
         </div>
 

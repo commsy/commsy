@@ -6,10 +6,10 @@
 
     <div class="uk-grid">
 
-        <div class="uk-width-medium-4-4">
+        <div class="uk-width-4-4@m">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                    <div class="uk-flex uk-flex-middle uk-flex-between">
                         <div>{{ 'Additional configuration'|trans({}, 'settings') }}</div>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
 
                         {# terms #}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Terms'|trans({}, 'settings') }}</h1> 
+                            <h1 class='uk-panel-title'>{{ 'Terms'|trans({}, 'settings') }}</h1>
                             <div style="margin-bottom: 25px;">{{ 'Terms text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.terms) }}
                         </div>
@@ -83,7 +83,7 @@
 
             </div>
         </div>
-        
+
     </div>
     <script>
 
@@ -152,9 +152,9 @@
 
         var newInputCopy = newInput.cloneNode(true);
         var superfluousDiv = newInput.parentNode;
-        var containerDiv = superfluousDiv.parentNode; 
+        var containerDiv = superfluousDiv.parentNode;
 
-        containerDiv.removeChild(superfluousDiv); 
+        containerDiv.removeChild(superfluousDiv);
         containerDiv.appendChild(newInputCopy);
 
         addRemoveLink(newInputCopy);
