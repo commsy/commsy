@@ -13,12 +13,12 @@
             <div class="uk-width-medium-2-3 cs-cover-height uk-margin-bottom">
                 {% if roomItem.withInformationBox %}
                     <div class="uk-panel uk-panel-box cs-cover-grid-opacity " data-uk-parallax="{opacity: '0.5'}">
+                        <div class="uk-margin-top uk-align-right">
+                            {% set pathName = 'app_' ~ homeInformationEntry.type ~ '_detail' %}
+                            <a href="{{ path(pathName, {'roomId': roomItem.itemId, 'itemId': homeInformationEntry.itemId}) }}">{{ 'link to entry'|trans({}, "room") }}</a>
+                        </div>
                         <div>
                             {{ homeInformationEntry.description|commsyMarkup|raw }}
-                        </div>
-                        <div class="uk-margin-top uk-align-right">
-                        {% set pathName = 'app_' ~ homeInformationEntry.type ~ '_detail' %}
-                        <a href="{{ path(pathName, {'roomId': roomItem.itemId, 'itemId': homeInformationEntry.itemId}) }}">{{ 'link to entry'|trans({}, "room") }}</a>
                         </div>
                     </div>
                 {% endif %}
