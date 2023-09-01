@@ -97,82 +97,40 @@
                 {% endblock %}
 
                 {% block teaser_right %}
-                    {% block sortbox %}
-                    {% endblock %}
-
-                    {% block editbox %}
-                    {% endblock %}
-
-                    {% block listAddons %}
-                    {% endblock %}
+                    {{ block(outerBlocks.sortbox) }}
+                    {{ block(outerBlocks.editbox) }}
+                    {{ block(outerBlocks.listAddons) }}
                 {% endblock %}
-            {% endcomponent %}
 
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                {% block content %}
+                    {# will be displayed when selection mode is active #}
+                    <div id="commsy-select-actions" class="uk-hidden" style="margin-left: -10px; margin-right: -10px; padding-left: 10px; padding-right: 10px" uk-sticky>
+                        <div class="uk-grid uk-margin-remove">
+                            {# may contain optional form controls required for the current action #}
+                            <div id="commsy-select-actions-custom-choices" class="uk-width-1-1 uk-margin-remove uk-margin-top uk-padding-remove"></div>
 
-                <div uk-sticky="{boundary: true}" style="margin-top: -10px; margin-left: -10px; margin-right: -10px">
-                    <div class="uk-panel-teaser cs-panel-teaser-primary">
-                        <div class="uk-flex uk-flex-wrap uk-flex-middle uk-flex-between">
-                            <div class="uk-text-large">
-                                {% block listTitle %}
-                                    {% if module is defined and module is not empty %}
-
-                                        {{ module|capitalize|trans({'%count%': 1}, "rubric") }}
-                                    {% else %}
-                                        Missing rubric title
-                                    {% endif %}
-                                {% endblock %}
-
-                                <div id="commsy-list-count-display" style="display:inline;">
-                                    ({{itemsCountArray.count}} {{ 'of'|trans({},'messages')}} {{itemsCountArray.countAll}})
-                                </div>
-                                <div id="commsy-list-count-edit" style="display:inline;" class="uk-hidden">
-                                    (<span id="commsy-list-count-all">{{itemsCountArray.count}}</span> {{ 'of'|trans({},'messages')}} {{itemsCountArray.countAll}}, <span id="commsy-list-count-selected">0</span> {{ 'selected'|trans({},'messages')}})
-                                </div>
-                            </div>
-                            <div>
-                            {% block sortbox %}
-                            {% endblock %}
-
-                            {% block editbox %}
-                            {% endblock %}
-
-                            {% block listAddons %}
-                            {% endblock %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {# will be displayed when selection mode is active #}
-                <div id="commsy-select-actions" class="uk-hidden" style="margin-left: -10px; margin-right: -10px; padding-left: 10px; padding-right: 10px" uk-sticky>
-                    <div class="uk-grid uk-margin-remove">
-                        {# may contain optional form controls required for the current action #}
-                        <div id="commsy-select-actions-custom-choices" class="uk-width-1-1 uk-margin-remove uk-margin-top uk-padding-remove"></div>
-
-                        {# change selection #}
-                        <div class="cs-list-select-buttons uk-width-2-4 uk-margin-remove uk-margin-top uk-padding-bottom uk-padding-top">
+                            {# change selection #}
+                            <div class="cs-list-select-buttons uk-width-2-4 uk-margin-remove uk-margin-top uk-padding-bottom uk-padding-top">
                                 <button id="commsy-select-actions-select-all" class="uk-button" type="button" data-uk-button>{{ 'select all entries'|trans({},'rubric')}}</button>
                                 <button id="commsy-select-actions-unselect" class="uk-button" type="button" data-uk-button>{{ 'unselect entries'|trans({},'rubric')}}</button>
-                        </div>
+                            </div>
 
-                        {# selection actions old code #}
-                        <div class="cs-list-select-buttons uk-text-right uk-width-2-4 uk-margin-remove uk-margin-top uk-padding-bottom">
-                            <button id="commsy-select-actions-ok" class="uk-button">{{ 'execute'|trans({},'rubric')}}</button>
-                            <button id="commsy-select-actions-cancel" class="uk-button" type="button" data-uk-button>{{ 'cancel'|trans({},'rubric')}}</button>
-                        </div>
+                            {# selection actions old code #}
+                            <div class="cs-list-select-buttons uk-text-right uk-width-2-4 uk-margin-remove uk-margin-top uk-padding-bottom">
+                                <button id="commsy-select-actions-ok" class="uk-button">{{ 'execute'|trans({},'rubric')}}</button>
+                                <button id="commsy-select-actions-cancel" class="uk-button" type="button" data-uk-button>{{ 'cancel'|trans({},'rubric')}}</button>
+                            </div>
 
+                        </div>
                     </div>
-                </div>
 
-                {% block taskinfo %}
+                    {{ block(outerBlocks.taskinfo) }}
+
+                    <div class="feed uk-margin-top">
+                        {{ block(outerBlocks.feed) }}
+                    </div>
                 {% endblock %}
-
-                <div class="feed uk-margin-top">
-                    {% block feed %}
-                    {% endblock%}
-                </div>
-            </div>
+            {% endcomponent %}
         </div>
 
     </div>
