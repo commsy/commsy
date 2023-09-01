@@ -1,0 +1,6 @@
+{% component 'v2:list' with { elements: this.pinnedItems } %}
+    {% block element %}
+        {# TODO: create a href links to item detail views #}
+        {{ element.title }}
+    {% endblock %}
+{% endcomponent %}
