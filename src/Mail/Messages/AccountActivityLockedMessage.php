@@ -56,7 +56,7 @@ class AccountActivityLockedMessage extends Message
         return [
             'hello' => $legacyTranslator->getEmailMessage(
                 'MAIL_BODY_HELLO',
-                $this->account->getFirstname().$this->account->getLastname()
+                "{$this->account->getFirstname()} {$this->account->getLastname()}"
             ),
             'content' => $legacyTranslator->getEmailMessage(
                 'EMAIL_INACTIVITY_LOCK_NOW_BODY',
