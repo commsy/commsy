@@ -1536,16 +1536,13 @@ class cs_context_item extends cs_item
         return $this->moderator_list;
     }
 
-    public function getHomeConf()
+    public function getHomeConf(): string
     {
-        $retour = $this->_issetExtra('HOMECONF') ? $this->_getExtra('HOMECONF') : '';
-
-        if (empty($retour)) {
-            $retour = $this->getDefaultHomeConf();
-            $this->setHomeConf($retour);
+        if (!$this->_issetExtra('HOMECONF')) {
+            $this->setHomeConf($this->getDefaultHomeConf());
         }
 
-        return $retour;
+        return $this->_getExtra('HOMECONF');
     }
 
     /**
@@ -1567,16 +1564,10 @@ class cs_context_item extends cs_item
         return implode(',', $rubrics);
     }
 
-    /**
-     * set home conf
-     * this method sets the home conf.
-     *
-     * @param string $config home conf
-     */
-    public function setHomeConf(string $config)
+    public function setHomeConf(string $config): void
     {
         // validate
-        $rubrics = explode(',', $config);
+        $rubrics = empty($config) ? [] : explode(',', $config);
         $filtered = array_filter($rubrics, function ($rubric) {
             [$rubricType, $rubricConf] = explode('_', $rubric);
             return isset($this->defaultHomeConf[$rubricType]) && in_array($rubricConf, ['show', 'hide']);
@@ -1595,12 +1586,9 @@ class cs_context_item extends cs_item
 
     /** get part of the extra config array, INTERNAL.
      *
-     * @param string type: ads for sponsoring / ads
-     *                     whole for the whole array
-     *
      * @return int 1 = true / 0 = false
      */
-    public function _getExtraConfig($type)
+    public function _getExtraConfig(string $type)
     {
         if ('whole' == $type) {
             $retour = [];
@@ -2145,12 +2133,9 @@ class cs_context_item extends cs_item
     {
         if (!isset($this->_rubric_support[$rubric_type])) {
             $current_room_modules = $this->getHomeConf();
+
             // rubric is mentioned? if not -> false
-            if (!empty($rubric_type) and mb_stristr($current_room_modules, $rubric_type)) {
-                $this->_rubric_support[$rubric_type] = true;
-            } else {
-                $this->_rubric_support[$rubric_type] = false;
-            }
+            $this->_rubric_support[$rubric_type] = !empty($rubric_type) && mb_stristr($current_room_modules, $rubric_type);
         }
 
         return $this->_rubric_support[$rubric_type];
