@@ -263,17 +263,8 @@ class DiscussionController extends BaseController
         return $printService->buildPdfResponse($html);
     }
 
-    /**
-     * @param Request $request
-     * @param TopicService $topicService
-     * @param LegacyMarkup $legacyMarkup
-     * @param int $roomId
-     * @param int $itemId
-     * @param AssessmentService $assessmentService
-     * @param CategoryService $categoryService
-     * @return Response
-     */
     #[Route(path: '/room/{roomId}/discussion/{itemId}', requirements: ['itemId' => '\d+'])]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function detail(
         Request $request,
         TopicService $topicService,

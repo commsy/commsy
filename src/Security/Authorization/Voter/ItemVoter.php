@@ -143,7 +143,7 @@ class ItemVoter extends Voter
             }
         }
 
-        throw new LogicException('This code should not be reached!');
+        return false;
     }
 
     private function canView(cs_item $item, cs_user_item $currentUser)
