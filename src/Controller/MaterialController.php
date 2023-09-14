@@ -284,10 +284,8 @@ class MaterialController extends BaseController
         return $printService->buildPdfResponse($html);
     }
 
-    /**
-     * @return array
-     */
     #[Route(path: '/room/{roomId}/material/{itemId}/{versionId}', requirements: ['itemId' => '\d+', 'versionId' => '\d+'])]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function detailAction(
         Request $request,
         TopicService $topicService,

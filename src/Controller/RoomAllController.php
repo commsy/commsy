@@ -32,6 +32,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class RoomAllController extends AbstractController
 {
     #[Route(path: '/portal/{portalId}/room/{itemId}', requirements: ['itemId' => '\d+'])]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function detailAction(
         #[MapEntity(id: 'portalId')]
         Portal $portal,

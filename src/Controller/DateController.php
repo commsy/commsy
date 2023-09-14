@@ -358,10 +358,8 @@ class DateController extends BaseController
         ]);
     }
 
-    /**
-     * @return array
-     */
     #[Route(path: '/room/{roomId}/date/{itemId}', requirements: ['itemId' => '\d+'])]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function detailAction(
         Request $request,
         AnnotationService $annotationService,

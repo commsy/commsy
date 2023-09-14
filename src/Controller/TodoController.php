@@ -200,10 +200,8 @@ class TodoController extends BaseController
         return $this->render('todo/feed.html.twig', ['roomId' => $roomId, 'todos' => $todos, 'readerList' => $readerList, 'showRating' => $current_context->isAssessmentActive(), 'showWorkflow' => $current_context->withWorkflow(), 'ratingList' => $ratingList, 'allowedActions' => $allowedActions]);
     }
 
-    /**
-     * @return array
-     */
     #[Route(path: '/room/{roomId}/todo/{itemId}', requirements: ['itemId' => '\d+'])]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function detailAction(
         Request $request,
         AnnotationService $annotationService,

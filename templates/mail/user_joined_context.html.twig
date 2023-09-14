@@ -41,10 +41,10 @@ E-Mail: {{ newUser.email }}
 
 {% if newUser.isRequested %}
     {{ 'mail.user_joined_approve_link_desc'|trans({}, 'mail') }}<br/>
-    {% set approveLink = absolute_url(path('app_user_list', { 'roomId': room.itemId, 'user_filter[user_status]': 1 })) %}
+    {% set approveLink = url('app_user_list', { 'roomId': room.itemId, 'user_filter[user_status]': 1 }) %}
     <a href="{{ approveLink }}">{{ approveLink }}</a>
 {% else %}
-    {% set homeLink = absolute_url(path('app_room_home', { 'roomId': room.itemId })) %}
+    {% set homeLink = url('app_room_home', { 'roomId': room.itemId }) %}
     <a href="{{ homeLink }}">{{ homeLink }}</a>
 {% endif %}
 
