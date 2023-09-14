@@ -6,7 +6,7 @@
 
 <br/><br/>
 {{ 'Workspace: %workspace%'|trans({ '%workspace%': room.title }, 'mail') }}<br/>
-{% set url = absolute_url(path('app_room_home', { 'roomId': room.itemId })) %}
+{% set url = url('app_room_home', { 'roomId': room.itemId }) %}
 <a href="{{ url }}">{{ url }}</a>
 
 <br/><br/>

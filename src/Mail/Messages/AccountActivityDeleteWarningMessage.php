@@ -56,7 +56,7 @@ class AccountActivityDeleteWarningMessage extends Message
         return [
             'hello' => $legacyTranslator->getEmailMessage(
                 'MAIL_BODY_HELLO',
-                $this->account->getFirstname().$this->account->getLastname()
+                "{$this->account->getFirstname()} {$this->account->getLastname()}"
             ),
             'content' => $legacyTranslator->getEmailMessage(
                 'EMAIL_INACTIVITY_DELETE_NEXT_BODY',

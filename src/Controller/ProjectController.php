@@ -125,10 +125,8 @@ class ProjectController extends AbstractController
         return $this->render('project/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'project', 'itemsCountArray' => $itemsCountArray, 'usageInfo' => $usageInfo, 'userCanCreateContext' => $legacyEnvironment->getCurrentUserItem()->isAllowedToCreateContext()]);
     }
 
-    /**
-     * @return array
-     */
     #[Route(path: '/room/{roomId}/project/{itemId}', requirements: ['itemId' => '\d+'])]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function detailAction(
         ItemService $itemService,
         RoomService $roomService,

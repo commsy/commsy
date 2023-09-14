@@ -63,7 +63,7 @@ class RoomSlugCollectionToStringTransformer implements DataTransformerInterface
         $room = $this->roomRepository->find($this->roomId);
         $roomSlugs = $room->getSlugs();
 
-        $slugs = explode(',', $slugStr);
+        $slugs = empty($slugStr) ? [] : explode(',', $slugStr);
         $formSlugs = array_map(function ($slug) use ($room) {
             $formSlug = new RoomSlug();
             $formSlug->setSlug($slug);

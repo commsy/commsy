@@ -254,6 +254,7 @@ class DiscussionController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}', requirements: ['itemId' => '\d+'])]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function detail(
         Request $request,
         TopicService $topicService,

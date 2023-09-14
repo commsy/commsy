@@ -258,10 +258,8 @@ class GroupController extends BaseController
         return $this->render('group/feed.html.twig', ['roomId' => $roomId, 'groups' => $groups, 'readerList' => $readerList, 'showRating' => false, 'allowedActions' => $allowedActions, 'memberStatus' => $allGroupsMemberStatus, 'isRoot' => $this->legacyEnvironment->getCurrentUser()->isRoot()]);
     }
 
-    /**
-     * @return array
-     */
     #[Route(path: '/room/{roomId}/group/{itemId}', requirements: ['itemId' => '\d+'])]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function detail(
         Request $request,
         AnnotationService $annotationService,
@@ -856,10 +854,8 @@ class GroupController extends BaseController
         ]);
     }
 
-    /**
-     * @return array
-     */
     #[Route(path: '/room/{roomId}/group/{itemId}/members', requirements: ['itemId' => '\d+'])]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function membersAction(
         int $itemId
     ): Response {

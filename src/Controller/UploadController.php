@@ -21,7 +21,7 @@ use App\Utils\DiscService;
 use App\Utils\FileService;
 use App\Utils\ItemService;
 use App\Utils\UserService;
-use cs_link_item;
+use cs_file_item;
 use cs_link_item_file;
 use cs_list;
 use DateTime;
@@ -187,25 +187,26 @@ class UploadController extends AbstractController
         }
 
         // collect currently assigned files
-        $assignedFiles = [];
-
-        $currentFileIds = $item->getFileIDArray();
-        foreach ($currentFileIds as $currentFileId) {
-            $currentFile = $fileService->getFile($currentFileId);
-
+        $assignedFiles = array_map(function (cs_file_item $file) {
             // convert legacy file object into a form usable file object
             $formFile = new File();
-            $formFile->setFileId($currentFile->getFileID());
-            $formFile->setFilename($currentFile->getFileName());
-            $formFile->setCreationDate(new DateTime($currentFile->getCreationDate()));
+            $formFile->setFileId($file->getFileID());
+            $formFile->setFilename($file->getFileName());
+            $formFile->setCreationDate(new DateTime($file->getCreationDate()));
             $formFile->setChecked(true);
 
-            $assignedFiles['files'][] = $formFile;
-        }
+            return $formFile;
+        }, $item->getFileList()->to_array());
+
+        // Make a copy of the assigned files
+        // The variable $assignedFiles will be modified when the form submit is handled
+        $originalFiles = array_map(fn (File $file) => clone $file, $assignedFiles);
 
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
 
-        $form = $this->createForm(UploadType::class, $assignedFiles, [
+        $form = $this->createForm(UploadType::class, [
+            'files' => $assignedFiles,
+        ], [
             'uploadUrl' => $this->generateUrl('app_upload_upload', [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
@@ -220,9 +221,10 @@ class UploadController extends AbstractController
                 $files = $formData['files'];
 
                 $checkedFormFiles = array_filter($files, fn (File $file) => $file->getChecked());
+                $checkedFormFiles = array_merge($checkedFormFiles, $originalFiles);
                 $checkedFileIds = array_map(fn (File $file) => $file->getFileId(), $checkedFormFiles);
 
-                $uncheckedFormFiles = array_filter($files, fn (File $file) => !$file->getChecked());
+                $uncheckedFormFiles = array_filter($files, fn (File $file) => $file->getFileId() !== null & !$file->getChecked());
                 $uncheckedFileIds = array_map(fn (File $file) => $file->getFileId(), $uncheckedFormFiles);
 
                 // update item
