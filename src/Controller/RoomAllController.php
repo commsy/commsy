@@ -33,6 +33,7 @@ class RoomAllController extends AbstractController
 {
     #[Route(path: '/portal/{portalId}/room/{itemId}', requirements: ['itemId' => '\d+'])]
     #[ParamConverter('portal', class: Portal::class, options: ['id' => 'portalId'])]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function detailAction(
         Portal $portal,
         ItemService $itemService,
