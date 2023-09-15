@@ -42,4 +42,17 @@ class ItemRepository extends ServiceEntityRepositoryAlias
 
         return $query->getSingleScalarResult();
     }
+
+    public function getPinnedItemsByRoomId(int $roomId): array
+    {
+        return $this->createQueryBuilder('i')
+            ->where('i.pinned = 1')
+            ->andWhere('i.contextId = :roomId')
+            ->andWhere('i.draft = 0')
+            ->andWhere('i.deletionDate IS NULL')
+            ->andWhere('i.deleterId IS NULL')
+            ->setParameter('roomId', $roomId)
+            ->getQuery()
+            ->execute();
+    }
 }

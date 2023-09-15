@@ -13,14 +13,41 @@
 
 namespace App\Components;
 
+use App\Repository\ItemRepository;
+use App\Utils\ItemService;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
+use Symfony\UX\TwigComponent\Attribute\PreMount;
 
 #[AsTwigComponent('pinned_items')]
 final class PinnedItemsComponent
 {
+    public int $roomId;
+
+    public function __construct(
+        private readonly ItemRepository $itemRepository,
+        private readonly ItemService $itemService,
+    ) {
+    }
+
+    #[PreMount]
+    public function preMount(array $data): array
+    {
+        $resolver = new OptionsResolver();
+
+        $resolver->setRequired([
+            'roomId',
+        ]);
+
+        return $resolver->resolve($data);
+    }
+
     public function getPinnedItems(): iterable
     {
-        // TODO: return cs_items
-        return [ [ 'title' => 'Gaudeamushütte' ], [ 'title' => 'Gruttenhütte' ] ];
+        $items = $this->itemRepository->getPinnedItemsByRoomId($this->roomId);
+
+        $typedItems = array_map(fn ($item) => $this->itemService->getTypedItem($item->getItemID()), $items);
+
+        return $typedItems;
     }
 }

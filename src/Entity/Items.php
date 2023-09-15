@@ -15,6 +15,7 @@ namespace App\Entity;
 
 use App\Repository\ItemRepository;
 use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -63,4 +64,20 @@ abstract class Items
 
     #[ORM\Column(name: 'activation_date', type: 'datetime')]
     private ?DateTime $activationDate = null;
+
+    #[ORM\Column(name: 'draft', type: Types::BOOLEAN, options: ['default' => 0])]
+    private bool $draft = false;
+
+    #[ORM\Column(name: 'pinned', type: Types::BOOLEAN, options: ['default' => 0])]
+    private bool $pinned = false;
+
+    public function isPinned(): bool
+    {
+        return $this->pinned;
+    }
+
+    public function setPinned(bool $pinned): void
+    {
+        $this->pinned = $pinned;
+    }
 }
