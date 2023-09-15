@@ -18,7 +18,7 @@
                 </div>
             </div>
         {% endif %}
-        {{ component('pinned_items') }}
+        {{ component('pinned_items', { roomId: commsy.room.itemId }) }}
     {% endblock %}
 
     <div class="uk-grid" data-uk-grid-margin>
