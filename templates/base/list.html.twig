@@ -7,7 +7,7 @@
 
         {# sidebar #}
         {% block listsidebar %}
-            <div class="uk-width-1-3@m uk-push-2-3">
+            <div class="uk-width-1-3@m uk-flex-last@m">
 
                 {# pinned items #}
                 {% if pinnedItemsCount is defined and pinnedItemsCount > 0 %}
@@ -31,7 +31,7 @@
 
                     {% component 'v3:card' with { title: usageInfo.title } %}
                         {% block teaser_right %}
-                            <a href="#" class="button-toggle uk-button-mini uk-button-secondary" uk-toggle="{target: '#usage-info'}">
+                            <a href="#" class="button-toggle uk-button-small uk-button-secondary" uk-toggle="{target: '#usage-info'}">
                                 <i class="uk-icon-chevron-up"></i>
                             </a>
                         {% endblock %}
@@ -46,7 +46,7 @@
 
                 {% component 'v3:card' with { title: 'list filter'|trans({},"room") } %}
                     {% block teaser_right %}
-                        <a href="#" class="button-toggle uk-button-mini uk-button-secondary" uk-toggle="{target: '.cs-toggleable'}">
+                        <a href="#" class="button-toggle uk-button-small uk-button-secondary" uk-toggle="{target: '.cs-toggleable'}">
                             <i class="uk-icon-chevron-up"></i>
                         </a>
                     {% endblock %}
@@ -54,7 +54,7 @@
                     {% block content %}
                         <div class="cs-toggleable uk-hidden-small">
                             {{ form_start(form) }}
-                            <div class="uk-block uk-block-default uk-padding-remove" uk-sticky="{boundary: true}">
+                            <div class="uk-section uk-section-default uk-padding-remove" uk-sticky="{boundary: true}">
                                 <div class="uk-margin-top uk-margin-small-bottom uk-text-right">
                                     {{ form_widget(form.submit) }}
                                 </div>
@@ -72,7 +72,7 @@
 
         {# feed #}
         {% block contentwidth %}
-            <div class="uk-width-2-3@m uk-pull-1-3">
+            <div class="uk-width-2-3@m">
         {% endblock %}
 
             {% component 'v3:card' with { sticky: true } %}

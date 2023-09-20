@@ -1,9 +1,12 @@
 {% macro dashboardAllRooms(roomItem, userMayCreateContext) %}
     {% component 'v3:card' with { title: 'Rooms'|trans({}, 'room') } %}
         {% block content %}
-            <form action="{{ path('app_room_listall', {'roomId': roomItem.itemId}) }}" class="uk-form-horizontal uk-form">
-                <input type="text" name="room_filter[title]" placeholder="{{ 'search-filter-placeholder'|trans({}, "room") }}" style="min-width:225px;">
-                <button type="submit" class="uk-button uk-button-primary">{{ 'Room search'|trans({}, "search") }}</button>
+            <form action="{{ path('app_room_listall', {'roomId': roomItem.itemId}) }}" class="uk-form-horizontal">
+                <input class="uk-input" type="text" name="room_filter[title]" placeholder="{{ 'search-filter-placeholder'|trans({}, "room") }}">
+
+                <div class="uk-margin">
+                    <button type="submit" class="uk-button uk-button-primary">{{ 'Room search'|trans({}, "search") }}</button>
+                </div>
             </form>
 
             <ul class="uk-list">

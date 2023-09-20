@@ -88,7 +88,7 @@
                     {{ 'quick navigation'|trans({})|capitalize }}
                 </div>
                 <div id="cs-nav-quick" class="cs-nav-quick">
-                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ project.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
+                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ project.itemId }}\']'}" uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
                         <li><a href="#description{{ project.itemId }}">{{ 'entry description'|trans({})}}</a></li>
                         <li><a href="#access{{ project.itemId }}">{{ 'Membership'|trans({},'room')}}</a></li>
                     </ul>

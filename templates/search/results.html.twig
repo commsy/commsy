@@ -16,7 +16,7 @@
                     <div class="uk-panel-teaser cs-panel-teaser-primary">
                         <div class="uk-clearfix">
                             <div class="uk-float-right">
-                                <a href="#" class="button-toggle uk-button-mini uk-button-secondary" uk-toggle="{target: '#manage-my-views'}">
+                                <a href="#" class="button-toggle uk-button-small uk-button-secondary" uk-toggle="{target: '#manage-my-views'}">
                                     <i class="uk-icon-chevron-up"></i>
                                 </a>
                             </div>
@@ -47,7 +47,7 @@
                                     {{ 'Filter results'|trans({}, 'search')}}
                                 </div>
                                 <div class="uk-flex-right uk-flex-inline uk-flex-middle">
-                                    <a href="#" class="button-toggle uk-button-mini uk-button-secondary uk-margin-small-left" uk-toggle="{target: '.cs-toggleable'}" style="padding-top: 1px; padding-bottom: 1px">
+                                    <a href="#" class="button-toggle uk-button-small uk-button-secondary uk-margin-small-left" uk-toggle="{target: '.cs-toggleable'}" style="padding-top: 1px; padding-bottom: 1px">
                                         <i class="uk-icon-chevron-up"></i>
                                     </a>
                                 </div>
@@ -231,7 +231,7 @@
                     </ul>
 
                     {# setup "load more" if we do not show all results yet #}
-                    <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{
+                    <div class="feed-load-more" uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{
                             "url": "{{ app.request.baseURL }}/room/{{ roomId }}/searchmore/",
                             "target": "#search-feed",
                             "query": {

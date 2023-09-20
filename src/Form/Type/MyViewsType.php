@@ -50,7 +50,7 @@ class MyViewsType extends AbstractType
             ])
             ->add('create', Types\SubmitType::class, [
                 'attr' => [
-                    'class' => 'uk-button-primary uk-margin-small-left',
+                    'class' => 'uk-button-primary',
                 ],
                 'label' => 'create',
                 'validation_groups' => false,

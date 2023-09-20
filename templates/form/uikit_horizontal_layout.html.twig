@@ -20,13 +20,13 @@
                     <div class="uk-nestable-toggle" data-nestable-action="toggle">
                     </div>
                     {{ child.label -}}
-                    <a class="uk-button uk-button-mini uk-button-primary uk-float-right uk-margin-left" href="{{ path('app_category_edit', {
+                    <a class="uk-button uk-button-small uk-button-primary uk-float-right uk-margin-left" href="{{ path('app_category_edit', {
                         roomId: app.request.attributes.get('roomId'),
                         categoryId: child.data
                     }) }}">
                         {{- 'Edit'|trans({}, 'form') -}}
                     </a>
-                    <a class="uk-button uk-button-mini uk-button-danger uk-float-right" href="{{ path('app_category_delete', {
+                    <a class="uk-button uk-button-small uk-button-danger uk-float-right" href="{{ path('app_category_delete', {
                         roomId: app.request.attributes.get('roomId'),
                         categoryId: child.data
                     }) }}">

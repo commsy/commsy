@@ -16,49 +16,65 @@
         <h1 class="uk-h2">{{ 'my home'|trans({}, "menu") }}</h1>
     </div>
 
-    <div class="uk-grid-match" uk-grid>
-        {% set showServerNews = server.announcementEnabled|default(false) %}
-        {% if showServerNews and not (portal.serverAnnouncementEnabled ?? true) %}
-            {% set showServerNews = false %}
-        {% endif %}
+    {% set showServerNews = server.announcementEnabled|default(false) %}
+    {% if showServerNews and not (portal.serverAnnouncementEnabled ?? true) %}
+        {% set showServerNews = false %}
+    {% endif %}
 
-        {% set showPortalNews = portal.announcementEnabled|default(false) %}
+    {% set showPortalNews = portal.announcementEnabled|default(false) %}
 
-        {# portal announcements #}
-        {% if showPortalNews %}
-            <div class="{% if showServerNews %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
-                <div class="uk-alert{% if portal.announcementSeverity != 'normal' %} uk-alert-{{ portal.announcementSeverity }}{% endif %}" style="border: 1px solid #DFE3E4" data-uk-alert>
-                    <a class="uk-alert-close uk-close" href=""></a>
-                    <h3 class="uk-article-title">{{ portal.announcementTitle }}</h3>
-                    <p>{{ portal.announcementText|raw }}</p>
+    {% if showPortalNews or showServerNews %}
+        <div class="uk-grid-match" uk-grid>
+            {# portal announcements #}
+            {% if showPortalNews %}
+                <div class="{% if showServerNews %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
+                    <div class="uk-alert{% if portal.announcementSeverity != 'normal' %} uk-alert-{{ portal.announcementSeverity }}{% endif %}" style="border: 1px solid #DFE3E4" data-uk-alert>
+                        <a class="uk-alert-close uk-close" href=""></a>
+                        <h3 class="uk-article-title">{{ portal.announcementTitle }}</h3>
+                        <p>{{ portal.announcementText|raw }}</p>
+                    </div>
                 </div>
-            </div>
-        {% endif %}
+            {% endif %}
 
-        {# server announcements #}
-        {% if showServerNews %}
-            <div class="{% if showPortalNews %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
-                <div class="uk-alert{% if server.announcementSeverity != 'normal' %} uk-alert-{{ server.announcementSeverity }}{% endif %}" style="border: 1px solid #DFE3E4" data-uk-alert>
-                    <a class="uk-alert-close uk-close" href=""></a>
-                    <h3>{{ server.announcementTitle }}</h3>
-                    <p>{{ server.announcementText|raw }}</p>
+            {# server announcements #}
+            {% if showServerNews %}
+                <div class="{% if showPortalNews %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
+                    <div class="uk-alert{% if server.announcementSeverity != 'normal' %} uk-alert-{{ server.announcementSeverity }}{% endif %}" style="border: 1px solid #DFE3E4" data-uk-alert>
+                        <a class="uk-alert-close uk-close" href=""></a>
+                        <h3>{{ server.announcementTitle }}</h3>
+                        <p>{{ server.announcementText|raw }}</p>
+                    </div>
                 </div>
-            </div>
-        {% endif %}
-    </div>
+            {% endif %}
+        </div>
+    {% endif %}
 
     <div uk-grid>
         {# right column #}
-        <div class="uk-width-1-2@m uk-push-1-2">
-            {{ macros.dashboardMyViews(roomItem) }}
-            {{ macros.dashboardCalendar(roomItem, calendars, iCal, contextArray) }}
-            {{ macros.dashboardExternalAccess(roomItem) }}
+        <div class="uk-width-1-2@m uk-flex-last@m">
+            <div class="uk-flex uk-flex-column">
+                <div>
+                    {{ macros.dashboardMyViews(roomItem) }}
+                </div>
+                <div class="uk-margin-top">
+                    {{ macros.dashboardCalendar(roomItem, calendars, iCal, contextArray) }}
+                </div>
+                <div class="uk-margin-top">
+                    {{ macros.dashboardExternalAccess(roomItem) }}
+                </div>
+            </div>
         </div>
 
         {# left column #}
-        <div class="uk-width-1-2@m uk-pull-1-2 uk-row-first">
-            {{ macros.dashboardAllRooms(roomItem, userMayCreateContext) }}
-            {{ macros.dashboardFeed(roomItem) }}
+        <div class="uk-width-1-2@m">
+            <div class="uk-flex uk-flex-column">
+                <div>
+                    {{ macros.dashboardAllRooms(roomItem, userMayCreateContext) }}
+                </div>
+                <div class="uk-margin-top">
+                    {{ macros.dashboardFeed(roomItem) }}
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

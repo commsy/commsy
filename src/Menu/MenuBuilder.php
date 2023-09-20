@@ -28,19 +28,19 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class MenuBuilder
+final readonly class MenuBuilder
 {
-    private readonly cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
-        private readonly FactoryInterface $factory,
-        private readonly RoomService $roomService,
+        private FactoryInterface $factory,
+        private RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
-        private readonly AuthorizationCheckerInterface $authorizationChecker,
-        private readonly InvitationsService $invitationsService,
-        private readonly PortalRepository $portalRepository,
-        private readonly Security $security,
-        private readonly RouterInterface $router
+        private AuthorizationCheckerInterface $authorizationChecker,
+        private InvitationsService $invitationsService,
+        private PortalRepository $portalRepository,
+        private Security $security,
+        private RouterInterface $router
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -57,6 +57,7 @@ class MenuBuilder
         $userIsRoot = $this->security->isGranted('ROLE_ROOT');
 
         $menu = $this->factory->createItem('root');
+        $menu->setChildrenAttribute('class', 'uk-nav uk-nav-default uk-nav-divider');
 
         if ('' != $currentUser->getItemId() && null != $account) {
             if (!$userIsRoot) {
@@ -164,6 +165,7 @@ class MenuBuilder
         $currentUser = $this->legacyEnvironment->getCurrentUser();
 
         $menu = $this->factory->createItem('root');
+        $menu->setChildrenAttribute('class', 'uk-nav uk-nav-default uk-nav-divider');
 
         if ('' != $currentUser->getItemId()) {
             $menu->addChild('general', [
@@ -255,6 +257,7 @@ class MenuBuilder
 
         // create root item
         $menu = $this->factory->createItem('root');
+        $menu->setChildrenAttribute('class', 'uk-nav uk-nav-default uk-nav-divider');
 
         if ($roomId) {
             // general settings
@@ -313,7 +316,6 @@ class MenuBuilder
     {
         $menu = $this->factory->createItem('root');
         $menu->setChildrenAttribute('class', 'uk-nav uk-nav-default uk-nav-divider');
-        $menu->setExtra('currentClass', 'asdf');
 
         $currentStack = $requestStack->getCurrentRequest();
         if ($currentStack) {
@@ -513,6 +515,7 @@ class MenuBuilder
 
         // create root item for knpmenu
         $menu = $this->factory->createItem('root');
+        $menu->setChildrenAttribute('class', 'uk-nav uk-nav-default uk-nav-divider');
 
         $roomId = $currentRequest->attributes->get('roomId');
         if (!$roomId) {
@@ -540,7 +543,7 @@ class MenuBuilder
         }
 
         $label = 'home';
-        $icon = 'uk-icon-home';
+        $icon = 'home';
         $route = 'app_room_home';
 
         if (!$inPrivateRoom) {
@@ -561,7 +564,7 @@ class MenuBuilder
                 'todo' => 'todo',
             ];
             $label = 'overview';
-            $icon = 'uk-icon-justify uk-icon-qrcode';
+            $icon = 'world';
             $route = 'app_dashboard_overview';
         }
 
@@ -574,7 +577,12 @@ class MenuBuilder
             ('room' != $controller || 'detail' != $action)
         ) {
             // home navigation
-            $menu->addChild('room_home', ['label' => $label, 'route' => $route, 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => $icon.' uk-icon-small']])
+            $menu->addChild('room_home', [
+                'label' => $label,
+                'route' => $route,
+                'routeParameters' => ['roomId' => $roomId],
+                'extras' => ['icon' => $icon],
+            ])
             ->setExtra('translation_domain', 'menu');
 
             // loop through rubrics to build the menu
@@ -612,13 +620,13 @@ class MenuBuilder
                     'label' => 'Room profile',
                     'route' => 'app_profile_general',
                     'routeParameters' => ['roomId' => $roomId, 'itemId' => $currentUser->getItemID()],
-                    'extras' => ['icon' => 'uk-icon-street-view uk-icon-small'],
+                    'extras' => ['icon' => 'user'],
                 ])
                 ->setExtra('translation_domain', 'menu');
 
                 if ($this->authorizationChecker->isGranted('MODERATOR')) {
                     $menu->addChild(' ', ['uri' => '#']);
-                    $menu->addChild('room_configuration', ['label' => 'settings', 'route' => 'app_settings_general', 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => 'uk-icon-wrench uk-icon-small']])
+                    $menu->addChild('room_configuration', ['label' => 'settings', 'route' => 'app_settings_general', 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => 'settings']])
                     ->setExtra('translation_domain', 'menu');
                 }
             }
@@ -637,17 +645,17 @@ class MenuBuilder
     private function getRubricIcon(string $rubric): string
     {
         $class = match ($rubric) {
-            'announcement' => 'uk-icon-justify uk-icon-comment-o uk-icon-small',
-            'date' => 'uk-icon-justify uk-icon-calendar uk-icon-small',
-            'material' => 'uk-icon-justify uk-icon-file-o uk-icon-small',
-            'discussion' => 'uk-icon-justify uk-icon-comments-o uk-icon-small',
-            'user' => 'uk-icon-justify uk-icon-user uk-icon-small',
-            'group' => 'uk-icon-justify uk-icon-group uk-icon-small',
-            'todo' => 'uk-icon-justify uk-icon-check-square-o uk-icon-small',
-            'topic' => 'uk-icon-justify uk-icon-book uk-icon-small',
-            'project' => 'uk-icon-justify uk-icon-sitemap uk-icon-small',
-            'institution' => 'uk-icon-justify uk-icon-institution uk-icon-small',
-            default => 'uk-icon-justify uk-icon-home uk-icon-small',
+            'announcement' => 'comment',
+            'date' => 'calendar',
+            'material' => 'file',
+            'discussion' => 'comments',
+            'user' => 'user',
+            'group' => 'users',
+            'todo' => 'check',
+            'topic' => 'tag',
+            'project' => 'social',
+            'institution' => 'social',
+            default => 'home',
         };
 
         return $class;
