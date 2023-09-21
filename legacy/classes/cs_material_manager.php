@@ -286,7 +286,7 @@ class cs_material_manager extends cs_manager
      *
      * @return \cs_material_item the material
      */
-    public function getItem($item_id)
+    public function getItem(?int $item_id)
     {
         $material = null;
         if (!empty($item_id)
@@ -322,7 +322,7 @@ class cs_material_manager extends cs_manager
      *
      * @return cs_list list of cs_items
      */
-    public function getItemList($id_array)
+    public function getItemList(array $id_array)
     {
         $list = null;
         if (empty($id_array)) {
@@ -1017,7 +1017,7 @@ class cs_material_manager extends cs_manager
   /**
    * documentation TBD.
    */
-  public function delete($material_id, $version_id = null)
+  public function delete(int $itemId, $version_id = null): void
   {
       $current_datetime = getCurrentDateTimeInMySQL();
       $current_user = $this->_environment->getCurrentUserItem();
@@ -1028,7 +1028,7 @@ class cs_material_manager extends cs_manager
           $query = 'UPDATE '.$this->addDatabasePrefix('materials').' SET '.
                    'deletion_date="'.$current_datetime.'",'.
                    'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                   ' WHERE item_id="'.encode(AS_DB, $material_id).'"';
+                   ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
           if ($version_id) {
               $query .= ' AND version_id="'.encode(AS_DB, $version_id).'"';
           }
@@ -1037,11 +1037,10 @@ class cs_material_manager extends cs_manager
               trigger_error('Problems deleting material: "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_WARNING);
           } else {
               if (is_null($version_id)) {
-                  parent::delete($material_id);
+                  parent::delete($itemId);
               }
           }
       }
-      unset($current_user);
   }
 
     /**

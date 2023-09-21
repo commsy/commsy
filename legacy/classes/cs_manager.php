@@ -439,7 +439,7 @@ class cs_manager
      *
      * @return object cs_item one commsy items
      */
-    public function getItem($item_id)
+    public function getItem(?int $item_id)
     {
         throw new LogicException('cs_manager (getItem): needs to be overwritten !!!');
     }
@@ -453,7 +453,7 @@ class cs_manager
    *
    * @author CommSy Development Group
    */
-  public function getItemList($id_array)
+  public function getItemList(array $id_array)
   {
       echo static::class.': cs_manager->getItemList needs to be overwritten !!!<br />'."\n";
   }
@@ -616,10 +616,10 @@ class cs_manager
     /** delete a commsy item
      * this method deletes a commsy item.
      *
-     * @param $itemId the item id of the commsy item
+     * @param int $itemId id of the commsy item
      * @throws \Doctrine\DBAL\Exception
      */
-    public function delete($itemId)
+    public function delete(int $itemId): void
     {
         $currentDatetime = getCurrentDateTimeInMySQL();
         $currentUser = $this->_environment->getCurrentUserItem();
@@ -726,14 +726,13 @@ class cs_manager
         $this->_data = $data;
     }
 
-   /** count all items limited by the limits
+   /**
+    * count all items limited by the limits
     * this method returns the number of selected items limited by the limits.
     * if no items are loaded, the count is performed by the database
     * depends on _performQuery(), which must be overwritten.
-    *
-    * @return int count annotations
     */
-   public function getCountAll()
+   public function getCountAll(): int
    {
        $result = 0;
        if (empty($this->_id_array)) {

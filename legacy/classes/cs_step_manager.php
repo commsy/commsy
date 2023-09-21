@@ -220,7 +220,7 @@ class cs_step_manager extends cs_manager
         return new cs_step_item($this->_environment);
     }
 
-     public function getItem($item_id)
+     public function getItem(?int $item_id)
      {
          $step = null;
          if (!empty($this->_cache_object[$item_id])) {
@@ -245,7 +245,7 @@ class cs_step_manager extends cs_manager
      *
      * @return object cs_list of cs_step_items
      */
-    public function getItemList($id_array)
+    public function getItemList(array $id_array)
     {
         $step_list = null;
         if (empty($id_array)) {
@@ -416,7 +416,7 @@ class cs_step_manager extends cs_manager
      *
      * @param cs_step_item the step item to be deleted
      */
-    public function delete($item_id)
+    public function delete(int $itemId): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();
@@ -424,13 +424,13 @@ class cs_step_manager extends cs_manager
         $query = 'UPDATE '.$this->addDatabasePrefix('step').' SET '.
                  'deletion_date="'.$current_datetime.'",'.
                  'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                 ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
+                 ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems deleting step from query: "'.$query.'"', E_USER_WARNING);
         } else {
-            parent::delete($item_id);
+            parent::delete($itemId);
         }
     }
 

@@ -231,7 +231,7 @@ class cs_discussionarticles_manager extends cs_manager
      *
      * @return cs_list list of cs_items
      */
-    public function getItemList($id_array)
+    public function getItemList(array $id_array)
     {
         return $this->_getItemList('discussionarticles', $id_array);
     }
@@ -472,7 +472,7 @@ class cs_discussionarticles_manager extends cs_manager
         }
     }
 
-    public function delete($item_id)
+    public function delete(int $itemId): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();
@@ -480,17 +480,15 @@ class cs_discussionarticles_manager extends cs_manager
         $query = 'UPDATE '.$this->addDatabasePrefix('discussionarticles').' SET ' .
             'deletion_date="'.$current_datetime.'",' .
             'deleter_id="'.encode(AS_DB, $user_id).'"' .
-            ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
+            ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems deleting discarticle.', E_USER_WARNING);
         } else {
             $link_manager = $this->_environment->getLinkManager();
-            $link_manager->deleteLinksBecauseItemIsDeleted($item_id);
-            parent::delete($item_id);
-            unset($link_manager);
+            $link_manager->deleteLinksBecauseItemIsDeleted($itemId);
+            parent::delete($itemId);
         }
-        unset($current_user);
     }
 
     /**
