@@ -247,7 +247,7 @@ class cs_file_manager extends cs_manager
      *
      * @param cs_file_item the file "item" to be deleted
      */
-    public function delete($item_id)
+    public function delete(int $itemId): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();
@@ -255,14 +255,13 @@ class cs_file_manager extends cs_manager
         $query = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET ' .
             'deletion_date="' . $current_datetime . '",' .
             'deleter_id="' . encode(AS_DB, $user_id) . '"' .
-            ' WHERE files_id="' . encode(AS_DB, $item_id) . '"';
+            ' WHERE files_id="' . encode(AS_DB, $itemId) . '"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems deleting files from query: "' . $query . '"', E_USER_WARNING);
         } else {
             $link_manager = $this->_environment->getLinkItemFileManager();
-            $link_manager->deleteByFileID($item_id);
-            unset($link_manager);
+            $link_manager->deleteByFileID($itemId);
         }
     }
 

@@ -100,9 +100,9 @@ class cs_log_manager extends cs_manager
         return $retour;
     }
 
-    public function delete($item_id)
+    public function delete(int $itemId): void
     {
-        return $this->_performQuery('delete');
+        $this->_performQuery('delete');
     }
 
     public function deleteByArray($array)

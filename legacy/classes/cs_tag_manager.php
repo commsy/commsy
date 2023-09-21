@@ -390,7 +390,7 @@ class cs_tag_manager extends cs_manager
      *
      * @return object cs_item a tag
      */
-    public function getItem($item_id)
+    public function getItem(?int $item_id)
     {
         $retour = null;
 
@@ -468,7 +468,7 @@ class cs_tag_manager extends cs_manager
       *
       * @return cs_list list of cs_items
       */
-     public function getItemList($id_array)
+     public function getItemList(array $id_array)
      {
          return $this->_getItemList('tag', $id_array);
      }
@@ -613,7 +613,7 @@ class cs_tag_manager extends cs_manager
          }
      }
 
-    public function delete($item_id, $deleteTag2TagRecursive = true)
+    public function delete(int $itemId, $deleteTag2TagRecursive = true): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();
@@ -621,22 +621,20 @@ class cs_tag_manager extends cs_manager
         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
                  'deletion_date="'.$current_datetime.'",'.
                  'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                 ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
+                 ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems deleting '.$this->_db_table.'.', E_USER_WARNING);
         } else {
             $link_manager = $this->_environment->getLinkItemManager();
-            $link_manager->deleteLinksBecauseItemIsDeleted($item_id);
-            unset($link_manager);
+            $link_manager->deleteLinksBecauseItemIsDeleted($itemId);
             $tag2tag_manager = $this->_environment->getTag2TagManager();
             if ($deleteTag2TagRecursive) {
-                $tag2tag_manager->deleteTagLinksForTag($item_id);
+                $tag2tag_manager->deleteTagLinksForTag($itemId);
             } else {
-                $tag2tag_manager->deleteTagLinks($item_id);
+                $tag2tag_manager->deleteTagLinks($itemId);
             }
-            unset($tag2tag_manager);
-            parent::delete($item_id);
+            parent::delete($itemId);
         }
     }
 

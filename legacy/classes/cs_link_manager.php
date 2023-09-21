@@ -654,7 +654,7 @@ class cs_link_manager extends cs_manager
         }
     }
 
-    public function getItemList($id_array)
+    public function getItemList(array $id_array)
     {
         return $this->_getItemList('link_items', $id_array);
     }
@@ -734,7 +734,7 @@ class cs_link_manager extends cs_manager
        *
        * @param int item_id the link_item
        */
-      public function delete($item_id)
+      public function delete(int $itemId): void
       {
           $current_datetime = getCurrentDateTimeInMySQL();
           $current_user = $this->_environment->getCurrentUserItem();
@@ -742,13 +742,13 @@ class cs_link_manager extends cs_manager
           $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB, $user_id).'"'.
-              ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
+              ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
           $result = $this->_db_connector->performQuery($query);
           if (!isset($result) or !$result) {
               trigger_error('Problems deleting link_items from query: "'.$query.'"', E_USER_WARNING);
           } else {
               // delete item from table 'items'
-              parent::delete($item_id);
+              parent::delete($itemId);
           }
 
           // reset cache
@@ -1135,7 +1135,7 @@ class cs_link_manager extends cs_manager
       *
       * @return object cs_link_item a link item
       */
-     public function getItem($item_id)
+     public function getItem(?int $item_id)
      {
          $item = null;
          if (!empty($item_id)
