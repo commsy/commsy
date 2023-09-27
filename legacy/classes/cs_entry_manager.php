@@ -296,7 +296,7 @@ class cs_entry_manager extends cs_manager
       *
       * @return object cs_item a label
       */
-     public function getItem($item_id)
+     public function getItem(?int $item_id)
      {
          $announcement = null;
 
@@ -326,7 +326,7 @@ class cs_entry_manager extends cs_manager
          return $announcement;
      }
 
-     public function getItemList($id_array)
+     public function getItemList(array $id_array)
      {
          return $this->_getItemList(CS_ITEM_TYPE, $id_array);
      }
@@ -455,24 +455,24 @@ class cs_entry_manager extends cs_manager
         unset($user);
     }
 
-    public function delete($item_id)
+    public function delete(int $itemId): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $user_id = $this->_current_user->getItemID() ?: 0;
         $query = 'UPDATE '.$this->addDatabasePrefix('announcement').' SET '.
                  'deletion_date="'.$current_datetime.'",'.
                  'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                 ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
+                 ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems deleting announcement.', E_USER_WARNING);
         } else {
             unset($result);
             $link_manager = $this->_environment->getLinkManager();
-            $link_manager->deleteLinks($item_id, 0, 'relevant_for');
+            $link_manager->deleteLinks($itemId, 0, 'relevant_for');
             unset($link_manager);
-            //  $link_manager->deleteLinksBecauseItemIsDeleted($item_id);  // so wäre es einheitlich
-            parent::delete($item_id);
+            //  $link_manager->deleteLinksBecauseItemIsDeleted($itemId);  // so wäre es einheitlich
+            parent::delete($itemId);
         }
     }
 

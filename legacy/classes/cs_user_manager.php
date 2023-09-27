@@ -11,6 +11,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\EventDispatcher\EventDispatcher;
+
 /** class for database connection to the database table "user"
  * this class implements a database manager for the table "user".
  */
@@ -832,10 +834,8 @@ class cs_user_manager extends cs_manager
     /** get a user in newest version.
      *
      * @param int item_id id of the item
-     *
-     * @return object cs_item a label
      */
-    public function getItem($item_id)
+    public function getItem(?int $item_id): ?cs_user_item
     {
         $user = null;
         if (isset($this->_cache[$item_id])) {
@@ -1007,7 +1007,7 @@ class cs_user_manager extends cs_manager
         return $user_list;
     }
 
-    public function getItemList($id_array)
+    public function getItemList(array $id_array)
     {
         return $this->_getItemList('user', $id_array);
     }
@@ -1224,10 +1224,9 @@ class cs_user_manager extends cs_manager
      *
      * @param cs_user_item the user item to be deleted
      */
-    public function delete($item_id)
+    public function delete(int $itemId): void
     {
-        /** @var \cs_user_item $user_item */
-        $user_item = $this->getItem($item_id);
+        $user_item = $this->getItem($itemId);
         if ($this->_environment->inPortal()) {
             if (isset($user_item)
                  and !empty($user_item)
@@ -1236,7 +1235,7 @@ class cs_user_manager extends cs_manager
                 // fire an AccountDeletedEvent (which will e.g. trigger deletion of the user's saved searches)
                 global $symfonyContainer;
 
-                /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
+                /** @var EventDispatcher $eventDispatcher */
                 $eventDispatcher = $symfonyContainer->get('event_dispatcher');
 
                 $accountDeletedEvent = new \App\Event\AccountDeletedEvent($user_item);
@@ -1324,7 +1323,7 @@ class cs_user_manager extends cs_manager
 
         // delete hash values
         $hash_manager = $this->_environment->getHashManager();
-        $hash_manager->deleteHashesForUser($item_id);
+        $hash_manager->deleteHashesForUser($itemId);
         unset($hash_manager);
 
         // delete all related items
@@ -1339,15 +1338,12 @@ class cs_user_manager extends cs_manager
         $query = 'UPDATE '.$this->addDatabasePrefix('user').' SET '.
                  'deletion_date="'.$current_datetime.'",'.
                  'deleter_id="'.encode(AS_DB, $deleterId).'"'.
-                 ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
+                 ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems deleting user.', E_USER_WARNING);
         } else {
-            unset($result);
-            parent::delete($item_id);
-
-            return true;
+            parent::delete($itemId);
         }
     }
 
