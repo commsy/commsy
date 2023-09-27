@@ -102,7 +102,7 @@ class cs_portfolio_manager extends cs_manager
          }
      }
 
-     public function getItem($item_id): ?cs_portfolio_item
+     public function getItem(?int $item_id): ?cs_portfolio_item
      {
          $portfolio_item = null;
          if (!empty($item_id)) {
@@ -130,7 +130,7 @@ class cs_portfolio_manager extends cs_manager
          return $portfolio_item;
      }
 
-     public function getItemList($id_array)
+     public function getItemList(array $id_array)
      {
          return $this->_getItemList(CS_PORTFOLIO_TYPE, $id_array);
      }
@@ -301,17 +301,17 @@ class cs_portfolio_manager extends cs_manager
         unset($portfolio_item);
     }
 
-    public function delete($item_id)
+    public function delete(int $itemId): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
                  'deletion_date="'.$current_datetime.'"'.
-                 ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
+                 ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems deleting portfolio.', E_USER_WARNING);
         } else {
-            parent::delete($item_id);
+            parent::delete($itemId);
 
             $this->deletePortfolioTags($item_id);
             $this->deletePortfolioAnnotations($item_id);
