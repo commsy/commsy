@@ -7,13 +7,11 @@ paths:
     support: tests/Support
     envs: tests/_envs
 actor_suffix: Tester
+bootstrap: bootstrap.php
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
         - Tests\Support\DatabaseMigrationExtension
-params:
-    - .env
-    - .env.test
 modules:
     config:
         Db:
@@ -29,11 +27,11 @@ modules:
                 - 'USE commsy_test;'
         Symfony:
             app_path: 'src'
-            environment: 'test'
 
         Doctrine2:
             cleanup: false
 settings:
+    memory_limit: 4096M
     shuffle: true
     colors: true
     report_useless_tests: true
