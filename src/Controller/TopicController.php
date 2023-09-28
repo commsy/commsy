@@ -26,6 +26,7 @@ use App\Form\DataTransformer\TopicTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\TopicPathType;
 use App\Form\Type\TopicType;
+use App\Repository\ItemRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -67,7 +68,8 @@ class TopicController extends BaseController
     #[Route(path: '/room/{roomId}/topic')]
     public function listAction(
         Request $request,
-        int $roomId
+        int $roomId,
+        ItemRepository $itemRepository
     ): Response {
         $roomItem = $this->getRoom($roomId);
         if (!$roomItem) {
@@ -86,13 +88,32 @@ class TopicController extends BaseController
         // get topic list from manager service
         $itemsCountArray = $this->topicService->getCountArray($roomId);
 
+        $pinnedItems = $itemRepository->getPinnedItemsByRoomIdAndType($roomId, [ CS_TOPIC_TYPE, CS_LABEL_TYPE ]);
+
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('topic')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('topic');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('topic');
         }
 
-        return $this->render('topic/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'topic', 'itemsCountArray' => $itemsCountArray, 'showRating' => false, 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => false, 'showCategories' => $roomItem->withTags(), 'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(), 'catzExpanded' => $roomItem->isTagsShowExpanded(), 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('topic/list.html.twig', [
+            'roomId' => $roomId,
+            'form' => $filterForm,
+            'module' => CS_TOPIC_TYPE,
+            'relatedModule' => CS_LABEL_TYPE,
+            'itemsCountArray' => $itemsCountArray,
+            'showRating' => false,
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showAssociations' => false,
+            'showCategories' => $roomItem->withTags(),
+            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
+            'catzExpanded' => $roomItem->isTagsShowExpanded(),
+            'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
+            'usageInfo' => $usageInfo,
+            'isArchived' => $roomItem->getArchived(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'pinnedItemsCount' => count($pinnedItems)
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/topic/feed/{start}/{sort}')]

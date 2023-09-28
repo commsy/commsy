@@ -26,6 +26,7 @@ use App\Filter\AnnouncementFilterType;
 use App\Form\DataTransformer\AnnouncementTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\AnnouncementType;
+use App\Repository\ItemRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -216,7 +217,8 @@ class AnnouncementController extends BaseController
     #[Route(path: '/room/{roomId}/announcement')]
     public function listAction(
         Request $request,
-        int $roomId
+        int $roomId,
+        ItemRepository $itemRepository
     ): Response {
         $roomItem = $this->roomService->getRoomItem($roomId);
 
@@ -241,13 +243,30 @@ class AnnouncementController extends BaseController
         // get announcement list from manager service
         $itemsCountArray = $this->announcementService->getCountArray($roomId);
 
+        $pinnedItems = $itemRepository->getPinnedItemsByRoomIdAndType($roomId, [ CS_ANNOUNCEMENT_TYPE ]);
+
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('announcement')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('announcement');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('announcement');
         }
 
-        return $this->render('announcement/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'announcement', 'itemsCountArray' => $itemsCountArray, 'showRating' => $roomItem->isAssessmentActive(), 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => $roomItem->withAssociations(), 'showCategories' => $roomItem->withTags(), 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'sort' => $sort]);
+        return $this->render('announcement/list.html.twig', [
+            'roomId' => $roomId,
+            'form' => $filterForm,
+            'module' => CS_ANNOUNCEMENT_TYPE,
+            'relatedModule' => null,
+            'itemsCountArray' => $itemsCountArray,
+            'showRating' => $roomItem->isAssessmentActive(),
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showAssociations' => $roomItem->withAssociations(),
+            'showCategories' => $roomItem->withTags(),
+            'usageInfo' => $usageInfo,
+            'isArchived' => $roomItem->getArchived(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'sort' => $sort,
+            'pinnedItemsCount' => count($pinnedItems)
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/announcement/print/{sort}', defaults: ['sort' => 'none'])]

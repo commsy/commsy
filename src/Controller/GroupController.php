@@ -28,6 +28,7 @@ use App\Form\Type\GroupSendType;
 use App\Form\Type\GroupType;
 use App\Http\JsonDataResponse;
 use App\Mail\Mailer;
+use App\Repository\ItemRepository;
 use App\Room\Copy\LegacyCopy;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
@@ -89,7 +90,8 @@ class GroupController extends BaseController
     #[Route(path: '/room/{roomId}/group')]
     public function listAction(
         Request $request,
-        int $roomId
+        int $roomId,
+        ItemRepository $itemRepository
     ): Response {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -114,13 +116,30 @@ class GroupController extends BaseController
         // get group list from manager service
         $itemsCountArray = $this->groupService->getCountArray($roomId);
 
+        $pinnedItems = $itemRepository->getPinnedItemsByRoomIdAndType($roomId, [ CS_GROUP_TYPE, CS_LABEL_TYPE ]);
+
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('group')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('group');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('group');
         }
 
-        return $this->render('group/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'group', 'itemsCountArray' => $itemsCountArray, 'showRating' => false, 'showHashTags' => $roomItem->withBuzzwords(), 'showCategories' => $roomItem->withTags(), 'showAssociations' => false, 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'sort' => $sort]);
+        return $this->render('group/list.html.twig', [
+            'roomId' => $roomId,
+            'form' => $filterForm,
+            'module' => CS_GROUP_TYPE,
+            'relatedModule' => CS_LABEL_TYPE,
+            'itemsCountArray' => $itemsCountArray,
+            'showRating' => false,
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showCategories' => $roomItem->withTags(),
+            'showAssociations' => false,
+            'usageInfo' => $usageInfo,
+            'isArchived' => $roomItem->getArchived(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'sort' => $sort,
+            'pinnedItemsCount' => count($pinnedItems)
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/group/print/{sort}', defaults: ['sort' => 'none'])]

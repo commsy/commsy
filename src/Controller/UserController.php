@@ -25,6 +25,7 @@ use App\Form\Type\UserSendType;
 use App\Form\Type\UserStatusChangeType;
 use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
+use App\Repository\ItemRepository;
 use App\Repository\UserRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\AvatarService;
@@ -199,6 +200,7 @@ class UserController extends BaseController
         Request $request,
         UserRepository $userRepository,
         int $roomId,
+        ItemRepository $itemRepository,
         $view
     ): Response {
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
@@ -235,6 +237,8 @@ class UserController extends BaseController
             $itemsCountArray = $this->userService->getCountArray($roomId, $currentUser->isModerator());
         }
 
+        $pinnedItems = $itemRepository->getPinnedItemsByRoomIdAndType($roomId, [ CS_USER_TYPE ]);
+
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('user')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('user');
@@ -247,7 +251,8 @@ class UserController extends BaseController
         return $this->render('user/list.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm,
-            'module' => 'user',
+            'module' => CS_USER_TYPE,
+            'relatedModule' => null,
             'itemsCountArray' => $itemsCountArray,
             'showRating' => false,
             'showHashTags' => false,
@@ -260,6 +265,7 @@ class UserController extends BaseController
             'user' => $currentUser,
             'sort' => $sort,
             'shouldCreateUserRooms' => $roomItem->isProjectRoom() ? $roomItem->getShouldCreateUserRooms() : false,
+            'pinnedItemsCount' => count($pinnedItems)
         ]);
     }
 

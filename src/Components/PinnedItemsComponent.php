@@ -23,6 +23,7 @@ use Symfony\UX\TwigComponent\Attribute\PreMount;
 final class PinnedItemsComponent
 {
     public int $roomId;
+    public array $itemTypes = [];
 
     public function __construct(
         private readonly ItemRepository $itemRepository,
@@ -39,14 +40,33 @@ final class PinnedItemsComponent
             'roomId',
         ]);
 
+        $resolver->setDefaults([
+            'itemTypes' => [],
+        ]);
+
         return $resolver->resolve($data);
     }
 
     public function getPinnedItems(): iterable
     {
-        $items = $this->itemRepository->getPinnedItemsByRoomId($this->roomId);
+        if (empty($this->itemTypes)) {
+            $items = $this->itemRepository->getPinnedItemsByRoomId($this->roomId);
+        } else {
+            $items = $this->itemRepository->getPinnedItemsByRoomIdAndType($this->roomId, $this->itemTypes);
+        }
 
         $typedItems = array_map(fn ($item) => $this->itemService->getTypedItem($item->getItemID()), $items);
+
+        if (!empty($this->itemTypes)) {
+            // for CS_LABEL_TYPE items in $typedItems, filter out label types not given in itemTypes
+            $typedItems = array_filter($typedItems, function ($typedItem) {
+                if ($typedItem->getType() === CS_LABEL_TYPE && !in_array($typedItem->getLabelType(), $this->itemTypes)) {
+                    return false;
+                }
+
+                return true;
+            });
+        }
 
         return $typedItems;
     }
