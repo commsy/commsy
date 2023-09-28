@@ -1,5 +1,6 @@
 {% extends 'base/list.html.twig' %}
 {% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
+{% import 'common/feed.html.twig' as feed %}
 
 {% block feed %}
     <ul id="announcements-feed" class="uk-comment-list" data-uk-observe>
@@ -11,10 +12,7 @@
         ))}}
     </ul>
 
-    <div class="feed-load-more" uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/announcement/feed/", "target": "#announcements-feed"}'>
-        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
-    </div>
-    <div class="cs-toggle-class"></div>
+    {{ feed.spinner('announcements', app.request.baseUrl ~ '/room/' ~ commsy.room.itemId ~ '/announcement/feed/') }}
 {% endblock %}
 
 {% block sortbox %}

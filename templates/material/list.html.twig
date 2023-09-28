@@ -1,4 +1,5 @@
 {% extends 'base/list.html.twig' %}
+{% import 'common/feed.html.twig' as feed %}
 
 {% block feed %}
     <ul id="materials-feed" class="uk-comment-list" data-uk-observe>
@@ -10,10 +11,7 @@
         ))}}
     </ul>
 
-    <div class="feed-load-more" uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/material/feed/", "target": "#materials-feed"}'>
-        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
-        <div class="cs-toggle-class"></div>
-    </div>
+    {{ feed.spinner('materials', app.request.baseUrl ~ '/room/' ~ commsy.room.itemId ~ '/material/feed/') }}
 {% endblock %}
 
 {% block sortbox %}

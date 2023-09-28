@@ -1,8 +1,8 @@
 {% extends 'base/room.html.twig' %}
-
 {% form_theme filterForm 'form/uikit_horizontal_dynamic_layout.html.twig' %}
+{% import 'common/feed.html.twig' as feed %}
 
-{% block content %}
+{% block main %}
     <div class="uk-grid" uk-grid>
 
         {# sidebar #}
@@ -231,10 +231,8 @@
                     </ul>
 
                     {# setup "load more" if we do not show all results yet #}
-                    <div class="feed-load-more" uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{
-                            "url": "{{ app.request.baseURL }}/room/{{ roomId }}/searchmore/",
-                            "target": "#search-feed",
-                            "query": {
+                    {% set query %}
+                        {
                             "search_filter[selectedSavedSearch]": "{{ searchData.selectedSavedSearchId }}",
                             "search_filter[selectedSavedSearchTitle]": "{{ searchData.selectedSavedSearchTitle ?? '' }}",
                             "search_filter[phrase]": "{{ searchData.phrase }}",
@@ -259,11 +257,10 @@
                             "search_filter[selectedTodoStatus]": "{{ searchData.selectedTodoStatus ? searchData.selectedTodoStatus : 0 }}",
                             "search_filter[sortBy]": "{{ searchData.sortBy }}",
                             "search_filter[sortOrder]": "{{ searchData.sortOrder }}"
-                            }
-                    }'>
-                        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
-                        <div class="cs-toggle-class"></div>
-                    </div>
+                        }
+'                   {% endset %}
+
+                    {{ feed.spinner('search', app.request.baseUrl ~ '/room/' ~ commsy.room.itemId ~ '/searchmore/', query) }}
                 </div>
             </div>
 

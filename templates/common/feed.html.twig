@@ -1,0 +1,8 @@
+{% macro spinner(id, url, query = '') %}
+    <div class="feed-load-more uk-text-center"
+         uk-scrollspy="{cls: 'uk-animation-fade', repeat: true, topoffset: 0}"
+         data-feed='{"url": "{{ url }}", "target": "#{{ id }}-feed"{% if query is not empty %} "query": "{{ query }}"{% endif %}'
+    >
+        <div uk-spinner></div>
+    </div>
+{% endmacro %}
