@@ -28,7 +28,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'items')]
 #[ORM\Index(name: 'context_id', columns: ['context_id'])]
 #[ORM\Index(name: 'type', columns: ['type'])]
-abstract class Items
+class Items
 {
     /**
      * @var int
@@ -70,6 +70,132 @@ abstract class Items
 
     #[ORM\Column(name: 'pinned', type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $pinned = false;
+
+    /**
+     * @return int
+     */
+    public function getItemId(): int
+    {
+        return $this->itemId;
+    }
+
+    /**
+     * @param int $itemId
+     * @return Items
+     */
+    public function setItemId(int $itemId): Items
+    {
+        $this->itemId = $itemId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getContextId(): int
+    {
+        return $this->contextId;
+    }
+
+    /**
+     * @param int $contextId
+     * @return Items
+     */
+    public function setContextId(int $contextId): Items
+    {
+        $this->contextId = $contextId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDeleterId(): int
+    {
+        return $this->deleterId;
+    }
+
+    /**
+     * @param int $deleterId
+     * @return Items
+     */
+    public function setDeleterId(int $deleterId): Items
+    {
+        $this->deleterId = $deleterId;
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDeletionDate(): DateTime
+    {
+        return $this->deletionDate;
+    }
+
+    /**
+     * @param DateTime $deletionDate
+     * @return Items
+     */
+    public function setDeletionDate(DateTime $deletionDate): Items
+    {
+        $this->deletionDate = $deletionDate;
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getModificationDate(): DateTime
+    {
+        return $this->modificationDate;
+    }
+
+    /**
+     * @param DateTime $modificationDate
+     * @return Items
+     */
+    public function setModificationDate(DateTime $modificationDate): Items
+    {
+        $this->modificationDate = $modificationDate;
+        return $this;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getActivationDate(): ?DateTime
+    {
+        return $this->activationDate;
+    }
+
+    /**
+     * @param DateTime|null $activationDate
+     * @return Items
+     */
+    public function setActivationDate(?DateTime $activationDate): Items
+    {
+        $this->activationDate = $activationDate;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDraft(): bool
+    {
+        return $this->draft;
+    }
+
+    /**
+     * @param bool $draft
+     * @return Items
+     */
+    public function setDraft(bool $draft): Items
+    {
+        $this->draft = $draft;
+        return $this;
+    }
 
     public function isPinned(): bool
     {

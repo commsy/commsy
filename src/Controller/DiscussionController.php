@@ -27,6 +27,7 @@ use App\Form\DataTransformer\DiscussionarticleTransformer;
 use App\Form\DataTransformer\DiscussionTransformer;
 use App\Form\Type\DiscussionAnswerType;
 use App\Form\Type\DiscussionType;
+use App\Repository\ItemRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -134,7 +135,8 @@ class DiscussionController extends BaseController
     #[Route(path: '/room/{roomId}/discussion')]
     public function list(
         Request $request,
-        int $roomId
+        int $roomId,
+        ItemRepository $itemRepository
     ): Response {
         $roomItem = $this->getRoom($roomId);
 
@@ -159,6 +161,8 @@ class DiscussionController extends BaseController
         // get discussion list from manager service
         $itemsCountArray = $this->discussionService->getCountArray($roomId);
 
+        $pinnedItems = $itemRepository->getPinnedItemsByRoomIdAndType($roomId, [ CS_DISCUSSION_TYPE, CS_DISCARTICLE_TYPE ]);
+
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('discussion')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('discussion');
@@ -168,7 +172,8 @@ class DiscussionController extends BaseController
         return $this->render('discussion/list.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm,
-            'module' => 'discussion',
+            'module' => CS_DISCUSSION_TYPE,
+            'relatedModule' => CS_DISCARTICLE_TYPE,
             'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),
             'showWorkflow' => $roomItem->withWorkflow(),
@@ -181,6 +186,7 @@ class DiscussionController extends BaseController
             'isArchived' => $roomItem->getArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'sort' => $sort,
+            'pinnedItemsCount' => count($pinnedItems)
         ]);
     }
 

@@ -30,6 +30,7 @@ use App\Form\Type\AnnotationType;
 use App\Form\Type\DateImportType;
 use App\Form\Type\DateType;
 use App\Repository\CalendarsRepository;
+use App\Repository\ItemRepository;
 use App\Security\Authorization\Voter\DateVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\CalendarsService;
@@ -142,7 +143,8 @@ class DateController extends BaseController
     public function listAction(
         Request $request,
         int $roomId,
-        CalendarsRepository $calendarsRepository
+        CalendarsRepository $calendarsRepository,
+        ItemRepository $itemRepository
     ): Response {
         $roomItem = $this->getRoom($roomId);
 
@@ -208,10 +210,13 @@ class DateController extends BaseController
 
         $calendars = $calendarsRepository->findBy(['context_id' => $roomId, 'external_url' => ['', null]]);
 
+        $pinnedItems = $itemRepository->getPinnedItemsByRoomIdAndType($roomId, [ CS_DATE_TYPE ]);
+
         return $this->render('date/list.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm,
-            'module' => 'date',
+            'module' => CS_DATE_TYPE,
+            'relatedModule' => null,
             'itemsCountArray' => $itemsCountArray,
             'usageInfo' => $usageInfo,
             'iCal' => $iCal,
@@ -221,6 +226,7 @@ class DateController extends BaseController
             'sort' => $sort,
             'showHashTags' => $roomItem->withBuzzwords(),
             'showCategories' => $roomItem->withTags(),
+            'pinnedItemsCount' => count($pinnedItems)
         ]);
     }
 
@@ -277,7 +283,8 @@ class DateController extends BaseController
     public function calendarAction(
         Request $request,
         int $roomId,
-        CalendarsRepository $calendarsRepository
+        CalendarsRepository $calendarsRepository,
+        ItemRepository $itemRepository
     ): Response {
         $roomItem = $this->getRoom($roomId);
         $filterForm = $this->createFilterForm($roomItem, false, true);
@@ -336,15 +343,19 @@ class DateController extends BaseController
 
         $calendars = $calendarsRepository->findBy(['context_id' => $roomId, 'external_url' => ['', null]]);
 
+        $pinnedItems = $itemRepository->getPinnedItemsByRoomIdAndType($roomId, [ CS_DATE_TYPE ]);
+
         return $this->render('date/calendar.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm,
-            'module' => 'date',
+            'module' => CS_DATE_TYPE,
+            'relatedModule' => null,
             'usageInfo' => $usageInfo,
             'iCal' => $iCal,
             'calendars' => $calendars,
             'isArchived' => $roomItem->getArchived(),
             'defaultView' => ('calendar' === $roomItem->getDatesPresentationStatus()) ? 'timeGridWeek' : 'dayGridMonth',
+            'pinnedItemsCount' => count($pinnedItems)
         ]);
     }
 

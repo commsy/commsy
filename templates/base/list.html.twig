@@ -8,6 +8,25 @@
         {# sidebar #}
         {% block listsidebar %}
             <div class="uk-width-medium-1-3 uk-push-2-3">
+
+                {# pinned items #}
+                {% if pinnedItemsCount is defined and pinnedItemsCount > 0 %}
+
+                    {% component 'v2:panel' with { title: 'Pinned entries'|trans({}, "room") } %}
+                        {% block teaser_right %}
+                            <a href="#" class="button-toggle uk-button-mini uk-button-secondary" data-uk-toggle="{target: '#pinned-items'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        {% endblock %}
+
+                        {% block content %}
+                            <div id="pinned-items">
+                                {{ component('pinned_items', { roomId: commsy.room.itemId, itemTypes: [module, relatedModule] }) }}
+                            </div>
+                        {% endblock %}
+                    {% endcomponent %}
+                {% endif %}
+
                 {% if usageInfo is defined and usageInfo is not empty %}
 
                     {% component 'v2:panel' with { title: usageInfo.title } %}

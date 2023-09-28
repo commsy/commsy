@@ -29,6 +29,7 @@ use App\Form\DataTransformer\TodoTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\StepType;
 use App\Form\Type\TodoType;
+use App\Repository\ItemRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -70,7 +71,8 @@ class TodoController extends BaseController
     #[Route(path: '/room/{roomId}/todo')]
     public function listAction(
         Request $request,
-        int $roomId
+        int $roomId,
+        ItemRepository $itemRepository
     ): Response {
         $roomItem = $this->roomService->getRoomItem($roomId);
 
@@ -95,13 +97,32 @@ class TodoController extends BaseController
         // get todo list from manager service
         $itemsCountArray = $this->todoService->getCountArray($roomId);
 
+        $pinnedItems = $itemRepository->getPinnedItemsByRoomIdAndType($roomId, [ CS_TODO_TYPE, CS_STEP_TYPE ]);
+
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('todo')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('todo');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('todo');
         }
 
-        return $this->render('todo/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'todo', 'itemsCountArray' => $itemsCountArray, 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => $roomItem->withAssociations(), 'showCategories' => $roomItem->withTags(), 'statusList' => $roomItem->getExtraToDoStatusArray(), 'usageInfo' => $usageInfo, 'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(), 'catzExpanded' => $roomItem->isTagsShowExpanded(), 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'sort' => $sort]);
+        return $this->render('todo/list.html.twig', [
+            'roomId' => $roomId,
+            'form' => $filterForm,
+            'module' => CS_TODO_TYPE,
+            'relatedModule' => CS_STEP_TYPE,
+            'itemsCountArray' => $itemsCountArray,
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showAssociations' => $roomItem->withAssociations(),
+            'showCategories' => $roomItem->withTags(),
+            'statusList' => $roomItem->getExtraToDoStatusArray(),
+            'usageInfo' => $usageInfo,
+            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
+            'catzExpanded' => $roomItem->isTagsShowExpanded(),
+            'isArchived' => $roomItem->getArchived(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'sort' => $sort,
+            'pinnedItemsCount' => count($pinnedItems)
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/todo/create')]

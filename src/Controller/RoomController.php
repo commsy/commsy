@@ -21,6 +21,7 @@ use App\Form\Type\ContextType;
 use App\Form\Type\ModerationSupportType;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
+use App\Repository\ItemRepository;
 use App\Repository\PortalRepository;
 use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
@@ -65,6 +66,7 @@ class RoomController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         ThemeRepositoryInterface $themeRepository,
         UserRepository $userRepository,
+        ItemRepository $itemRepository,
         int $roomId
     ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -187,6 +189,8 @@ class RoomController extends AbstractController
 
         $userTasks = $userRepository->getConfirmableUserByContextId($roomId)->getQuery()->getResult();
 
+        $pinnedItems = $itemRepository->getPinnedItemsByRoomId($roomId);
+
         return $this->render('room/home.html.twig', [
             'homeInformationEntry' => $homeInformationEntry,
             'form' => $filterForm,
@@ -208,6 +212,7 @@ class RoomController extends AbstractController
             'userTasks' => $userTasks,
             'deletesRoomIfUnused' => $portalItem->isActivatedDeletingUnusedRooms(),
             'daysUnusedBeforeRoomDeletion' => $portalItem->getDaysUnusedBeforeDeletingRooms(),
+            'pinnedItemsCount' => count($pinnedItems)
         ]);
     }
 

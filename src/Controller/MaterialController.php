@@ -31,6 +31,7 @@ use App\Form\Type\MaterialSectionType;
 use App\Form\Type\MaterialType;
 use App\Form\Type\SectionType;
 use App\Http\JsonRedirectResponse;
+use App\Repository\ItemRepository;
 use App\Repository\LicenseRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
@@ -188,7 +189,8 @@ class MaterialController extends BaseController
     #[Route(path: '/room/{roomId}/material')]
     public function listAction(
         Request $request,
-        int $roomId
+        int $roomId,
+        ItemRepository $itemRepository
     ): Response {
         $roomItem = $this->getRoom($roomId);
 
@@ -212,13 +214,35 @@ class MaterialController extends BaseController
         // get material list from manager service
         $itemsCountArray = $this->materialService->getCountArray($roomId);
 
+        $pinnedItems = $itemRepository->getPinnedItemsByRoomIdAndType($roomId, [ CS_MATERIAL_TYPE, CS_SECTION_TYPE ]);
+
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('material')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('material');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('material');
         }
 
-        return $this->render('material/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'material', 'itemsCountArray' => $itemsCountArray, 'showRating' => $roomItem->isAssessmentActive(), 'showAssociations' => $roomItem->withAssociations(), 'showWorkflow' => $roomItem->withWorkflow(), 'showHashTags' => $roomItem->withBuzzwords(), 'showCategories' => $roomItem->withTags(), 'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(), 'catzExpanded' => $roomItem->isTagsShowExpanded(), 'material_filter' => $filterForm, 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'isMaterialOpenForGuests' => $roomItem->isMaterialOpenForGuests(), 'sort' => $sort]);
+        return $this->render('material/list.html.twig', [
+            'roomId' => $roomId,
+            'form' => $filterForm,
+            'module' => CS_MATERIAL_TYPE,
+            'relatedModule' => CS_SECTION_TYPE,
+            'itemsCountArray' => $itemsCountArray,
+            'showRating' => $roomItem->isAssessmentActive(),
+            'showAssociations' => $roomItem->withAssociations(),
+            'showWorkflow' => $roomItem->withWorkflow(),
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showCategories' => $roomItem->withTags(),
+            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
+            'catzExpanded' => $roomItem->isTagsShowExpanded(),
+            'material_filter' => $filterForm,
+            'usageInfo' => $usageInfo,
+            'isArchived' => $roomItem->getArchived(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'isMaterialOpenForGuests' => $roomItem->isMaterialOpenForGuests(),
+            'sort' => $sort,
+            'pinnedItemsCount' => count($pinnedItems)
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/material/print/{sort}', defaults: ['sort' => 'none'])]
