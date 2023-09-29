@@ -69,23 +69,23 @@
              <trans-unit id="16">
                 <source>Roomlist</source>
                 <target>Raum wechseln</target>
-            </trans-unit>            
+            </trans-unit>
              <trans-unit id="17">
                 <source>find rooms</source>
                 <target>Raum suchen</target>
-            </trans-unit>            
+            </trans-unit>
              <trans-unit id="18">
                 <source>days</source>
                 <target>Tage</target>
-            </trans-unit>            
+            </trans-unit>
              <trans-unit id="19">
                 <source>new Entries</source>
                 <target>Neue Beiträge</target>
-            </trans-unit>            
+            </trans-unit>
              <trans-unit id="20">
                 <source>dashboard description text</source>
                 <target>Ihr persönlicher Bereich mit vielen Funktionen und Widgets.</target>
-            </trans-unit>            
+            </trans-unit>
              <trans-unit id="21">
                 <source>own rooms</source>
                 <target>Meine Räume</target>
@@ -93,15 +93,15 @@
              <trans-unit id="22">
                 <source>room search text</source>
                 <target>Eingrenzen nach z.B. Name, Beschreibung, ModeratorIn, ... </target>
-            </trans-unit>           
+            </trans-unit>
              <trans-unit id="23">
                 <source>dashboard</source>
                 <target>Dashboard</target>
-            </trans-unit>           
+            </trans-unit>
              <trans-unit id="24">
                 <source>Home</source>
                 <target>Einstiegsseite</target>
-            </trans-unit>           
+            </trans-unit>
              <trans-unit id="25">
                 <source>settings</source>
                 <target>Einstellungen</target>
@@ -141,6 +141,14 @@
             <trans-unit id="action_remove_marked">
                 <source>remove marked</source>
                 <target>Entfernen aus "Meine Auswahl"</target>
+            </trans-unit>
+            <trans-unit id="action_add_to_pinned">
+                <source>add to pinned entries</source>
+                <target>Anpinnen</target>
+            </trans-unit>
+            <trans-unit id="action_remove_pinned">
+                <source>remove from pinned entries</source>
+                <target>Pin entfernen</target>
             </trans-unit>
             <trans-unit id="31">
                 <source>mark read</source>

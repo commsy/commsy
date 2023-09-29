@@ -1,6 +1,8 @@
 import * as $ from 'jquery';
 import {MarkAction} from "./MarkAction";
 import {BaseAction} from "./AbstractAction";
+import {PinAction} from "./PinAction";
+import {UnpinAction} from "./UnpinAction";
 import {DeleteAction} from "./DeleteAction";
 import {WorkflowAction} from "./WorkflowAction";
 import {JoinAction} from "./JoinAction";
@@ -135,6 +137,10 @@ export function createAction(actionData: ActionData): BaseAction {
             return new DeleteAction(actionData);
         case 'mark':
             return new MarkAction(actionData);
+        case 'pin':
+          return new PinAction(actionData);
+        case 'unpin':
+          return new UnpinAction(actionData);
         case 'insert':
             return new InsertAction(actionData);
         case 'insertuserroom':

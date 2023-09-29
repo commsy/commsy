@@ -589,9 +589,11 @@ class cs_manager
             ->update($this->addDatabasePrefix('items'))
             ->set('context_id', ':contextId')
             ->set('activation_date', ':activationDate')
+            ->set('pinned', ':pinned')
             ->where('item_id = :itemId')
             ->setParameter('contextId', $item->getContextID())
             ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
+            ->setParameter('pinned', $item->isPinned() ? 1 : 0)
             ->setParameter('itemId', $item->getItemID());
 
         if ($item->isChangeModificationOnSave() || $this->_update_with_changing_modification_information) {
