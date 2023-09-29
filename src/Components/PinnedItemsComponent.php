@@ -13,7 +13,6 @@
 
 namespace App\Components;
 
-use App\Repository\ItemRepository;
 use App\Utils\ItemService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
@@ -26,7 +25,6 @@ final class PinnedItemsComponent
     public array $itemTypes = [];
 
     public function __construct(
-        private readonly ItemRepository $itemRepository,
         private readonly ItemService $itemService,
     ) {
     }
@@ -49,25 +47,6 @@ final class PinnedItemsComponent
 
     public function getPinnedItems(): iterable
     {
-        if (empty($this->itemTypes)) {
-            $items = $this->itemRepository->getPinnedItemsByRoomId($this->roomId);
-        } else {
-            $items = $this->itemRepository->getPinnedItemsByRoomIdAndType($this->roomId, $this->itemTypes);
-        }
-
-        $typedItems = array_map(fn ($item) => $this->itemService->getTypedItem($item->getItemID()), $items);
-
-        if (!empty($this->itemTypes)) {
-            // for CS_LABEL_TYPE items in $typedItems, filter out label types not given in itemTypes
-            $typedItems = array_filter($typedItems, function ($typedItem) {
-                if ($typedItem->getType() === CS_LABEL_TYPE && !in_array($typedItem->getLabelType(), $this->itemTypes)) {
-                    return false;
-                }
-
-                return true;
-            });
-        }
-
-        return $typedItems;
+        return $this->itemService->getPinnedItems($this->roomId, $this->itemTypes);
     }
 }

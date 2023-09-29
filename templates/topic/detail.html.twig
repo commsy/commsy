@@ -109,6 +109,49 @@
                                             </a>
                                         </li>
 
+                                        {# pin/unpin #}
+                                        {% if not pinned %}
+                                            <li>
+                                                {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
+                                                    <a href="#" data-cs-action="{{ {
+                                                        'url': path('app_topic_xhrpin', {'roomId': roomId}),
+                                                        'action': 'pin',
+                                                        'itemId': topic.itemId,
+                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                        'mode': 'click',
+                                                        'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry pinned|%count% entries pinned'|trans({'%count%':1}, 'item')
+                                                    }|json_encode|e('html_attr') }}">
+                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                                                    </a>
+                                                {% else %}
+                                                    <span class="uk-text-muted">
+                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                                                    </span>
+                                                {% endif %}
+                                            </li>
+                                        {% endif %}
+
+                                        {% if pinned %}
+                                            <li>
+                                                {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
+                                                    <a href="#" data-cs-action="{{ {
+                                                        'url': path('app_topic_xhrunpin', {'roomId': roomId}),
+                                                        'action': 'unpin',
+                                                        'itemId': topic.itemId,
+                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                        'mode': 'click',
+                                                        'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry unpinned|%count% entries unpinned'|trans({'%count%':1}, 'item')
+                                                    }|json_encode|e('html_attr') }}">
+                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                                    </a>
+                                                {% else %}
+                                                    <span class="uk-text-muted">
+                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                                    </span>
+                                                {% endif %}
+                                            </li>
+                                        {% endif %}
+
                                         {# send #}
                                         <li>
                                             {% if user.isUser %}
