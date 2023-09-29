@@ -22,6 +22,8 @@ use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Action\MarkRead\MarkReadTodo;
+use App\Action\Pin\PinAction;
+use App\Action\Pin\UnpinAction;
 use App\Action\TodoStatus\TodoStatusAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\TodoFilterType;
@@ -29,13 +31,13 @@ use App\Form\DataTransformer\TodoTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\StepType;
 use App\Form\Type\TodoType;
-use App\Repository\ItemRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
 use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
+use App\Utils\ItemService;
 use App\Utils\LabelService;
 use App\Utils\TodoService;
 use App\Utils\TopicService;
@@ -72,7 +74,7 @@ class TodoController extends BaseController
     public function listAction(
         Request $request,
         int $roomId,
-        ItemRepository $itemRepository
+        ItemService $itemService
     ): Response {
         $roomItem = $this->roomService->getRoomItem($roomId);
 
@@ -97,7 +99,7 @@ class TodoController extends BaseController
         // get todo list from manager service
         $itemsCountArray = $this->todoService->getCountArray($roomId);
 
-        $pinnedItems = $itemRepository->getPinnedItemsByRoomIdAndType($roomId, [ CS_TODO_TYPE, CS_STEP_TYPE ]);
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_TODO_TYPE, CS_STEP_TYPE ]);
 
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('todo')) {
@@ -369,6 +371,7 @@ class TodoController extends BaseController
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
             'draft' => $this->itemService->getItem($itemId)->isDraft(),
+            'pinned' => $this->itemService->getItem($itemId)->isPinned(),
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
             'showAssociations' => $current_context->withAssociations(),
@@ -832,6 +835,36 @@ class TodoController extends BaseController
         $markReadAction->setMarkReadStrategy($markReadTodo);
 
         return $markReadAction->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/todo/xhr/pin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrPinAction(
+        Request $request,
+        PinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/todo/xhr/unpin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrUnpinAction(
+        Request $request,
+        UnpinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
     }
 
     /**

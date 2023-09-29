@@ -21,13 +21,14 @@ use App\Action\Mark\CategorizeAction;
 use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
 use App\Action\MarkRead\MarkReadAction;
+use App\Action\Pin\PinAction;
+use App\Action\Pin\UnpinAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\DiscussionFilterType;
 use App\Form\DataTransformer\DiscussionarticleTransformer;
 use App\Form\DataTransformer\DiscussionTransformer;
 use App\Form\Type\DiscussionAnswerType;
 use App\Form\Type\DiscussionType;
-use App\Repository\ItemRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -136,7 +137,7 @@ class DiscussionController extends BaseController
     public function list(
         Request $request,
         int $roomId,
-        ItemRepository $itemRepository
+        ItemService $itemService
     ): Response {
         $roomItem = $this->getRoom($roomId);
 
@@ -161,7 +162,7 @@ class DiscussionController extends BaseController
         // get discussion list from manager service
         $itemsCountArray = $this->discussionService->getCountArray($roomId);
 
-        $pinnedItems = $itemRepository->getPinnedItemsByRoomIdAndType($roomId, [ CS_DISCUSSION_TYPE, CS_DISCARTICLE_TYPE ]);
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_DISCUSSION_TYPE, CS_DISCARTICLE_TYPE ]);
 
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('discussion')) {
@@ -300,6 +301,7 @@ class DiscussionController extends BaseController
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'userCount' => $infoArray['userCount'],
             'draft' => $infoArray['draft'],
+            'pinned' => $infoArray['pinned'],
             'showRating' => $infoArray['showRating'],
             'showHashtags' => $infoArray['showHashtags'],
             'showAssociations' => $infoArray['showAssociations'],
@@ -491,6 +493,7 @@ class DiscussionController extends BaseController
         $infoArray['readSinceModificationCount'] = $read_since_modification_count;
         $infoArray['userCount'] = $all_user_count;
         $infoArray['draft'] = $this->itemService->getItem($itemId)->isDraft();
+        $infoArray['pinned'] = $this->itemService->getItem($itemId)->isPinned();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['user'] = $this->legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
@@ -986,6 +989,36 @@ class DiscussionController extends BaseController
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $markReadAction->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/discussion/xhr/pin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrPinAction(
+        Request $request,
+        PinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/discussion/xhr/unpin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrUnpinAction(
+        Request $request,
+        UnpinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
     }
 
     /**

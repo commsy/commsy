@@ -15,6 +15,8 @@ namespace App\Controller;
 
 use App\Action\Copy\InsertUserroomAction;
 use App\Action\MarkRead\MarkReadAction;
+use App\Action\Pin\PinAction;
+use App\Action\Pin\UnpinAction;
 use App\Entity\Portal;
 use App\Event\UserLeftRoomEvent;
 use App\Event\UserStatusChangedEvent;
@@ -25,7 +27,6 @@ use App\Form\Type\UserSendType;
 use App\Form\Type\UserStatusChangeType;
 use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
-use App\Repository\ItemRepository;
 use App\Repository\UserRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\AvatarService;
@@ -33,6 +34,7 @@ use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AccountMail;
+use App\Utils\ItemService;
 use App\Utils\MailAssistant;
 use App\Utils\TopicService;
 use App\Utils\UserService;
@@ -200,7 +202,7 @@ class UserController extends BaseController
         Request $request,
         UserRepository $userRepository,
         int $roomId,
-        ItemRepository $itemRepository,
+        ItemService $itemService,
         $view
     ): Response {
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
@@ -237,7 +239,7 @@ class UserController extends BaseController
             $itemsCountArray = $this->userService->getCountArray($roomId, $currentUser->isModerator());
         }
 
-        $pinnedItems = $itemRepository->getPinnedItemsByRoomIdAndType($roomId, [ CS_USER_TYPE ]);
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_USER_TYPE ]);
 
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('user')) {
@@ -612,6 +614,7 @@ class UserController extends BaseController
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'userCount' => $infoArray['userCount'],
             'draft' => $infoArray['draft'],
+            'pinned' => $infoArray['pinned'],
             'showRating' => false,
             'userRoomItem' => $userRoomItem,
             'userRoomItemMemberCount' => null == $userRoomItem ? [] : $userRoomItem->getUserList()->getCount(),
@@ -760,6 +763,7 @@ class UserController extends BaseController
         $infoArray['readSinceModificationCount'] = $read_since_modification_count;
         $infoArray['userCount'] = $all_user_count;
         $infoArray['draft'] = $this->itemService->getItem($itemId)->isDraft();
+        $infoArray['pinned'] = $this->itemService->getItem($itemId)->isPinned();
         $infoArray['showRating'] = false;
         $infoArray['showWorkflow'] = false;
         $infoArray['currentUser'] = $this->legacyEnvironment->getCurrentUserItem();
@@ -1364,6 +1368,36 @@ class UserController extends BaseController
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $markReadAction->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/user/xhr/pin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrPinAction(
+        Request $request,
+        PinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/user/xhr/unpin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrUnpinAction(
+        Request $request,
+        UnpinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
     }
 
     /**

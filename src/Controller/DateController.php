@@ -22,6 +22,8 @@ use App\Action\Mark\CategorizeAction;
 use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
 use App\Action\MarkRead\MarkReadAction;
+use App\Action\Pin\PinAction;
+use App\Action\Pin\UnpinAction;
 use App\Entity\Calendars;
 use App\Event\CommsyEditEvent;
 use App\Filter\DateFilterType;
@@ -30,7 +32,6 @@ use App\Form\Type\AnnotationType;
 use App\Form\Type\DateImportType;
 use App\Form\Type\DateType;
 use App\Repository\CalendarsRepository;
-use App\Repository\ItemRepository;
 use App\Security\Authorization\Voter\DateVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\CalendarsService;
@@ -144,7 +145,7 @@ class DateController extends BaseController
         Request $request,
         int $roomId,
         CalendarsRepository $calendarsRepository,
-        ItemRepository $itemRepository
+        ItemService $itemService
     ): Response {
         $roomItem = $this->getRoom($roomId);
 
@@ -210,7 +211,7 @@ class DateController extends BaseController
 
         $calendars = $calendarsRepository->findBy(['context_id' => $roomId, 'external_url' => ['', null]]);
 
-        $pinnedItems = $itemRepository->getPinnedItemsByRoomIdAndType($roomId, [ CS_DATE_TYPE ]);
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_DATE_TYPE ]);
 
         return $this->render('date/list.html.twig', [
             'roomId' => $roomId,
@@ -284,7 +285,7 @@ class DateController extends BaseController
         Request $request,
         int $roomId,
         CalendarsRepository $calendarsRepository,
-        ItemRepository $itemRepository
+        ItemService $itemService
     ): Response {
         $roomItem = $this->getRoom($roomId);
         $filterForm = $this->createFilterForm($roomItem, false, true);
@@ -343,7 +344,7 @@ class DateController extends BaseController
 
         $calendars = $calendarsRepository->findBy(['context_id' => $roomId, 'external_url' => ['', null]]);
 
-        $pinnedItems = $itemRepository->getPinnedItemsByRoomIdAndType($roomId, [ CS_DATE_TYPE ]);
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_DATE_TYPE ]);
 
         return $this->render('date/calendar.html.twig', [
             'roomId' => $roomId,
@@ -490,6 +491,7 @@ class DateController extends BaseController
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
             'draft' => $this->itemService->getItem($itemId)->isDraft(),
+            'pinned' => $this->itemService->getItem($itemId)->isPinned(),
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
             'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
@@ -1748,6 +1750,36 @@ class DateController extends BaseController
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $markReadAction->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/date/xhr/pin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrPinAction(
+        Request $request,
+        PinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/date/xhr/unpin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrUnpinAction(
+        Request $request,
+        UnpinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
     }
 
     /**

@@ -13,6 +13,7 @@
 
 namespace App\Utils;
 
+use App\Repository\ItemRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyEnvironment;
 use cs_annotation_item;
@@ -30,6 +31,7 @@ class ItemService
 
     public function __construct(
         private readonly Security $security,
+        private readonly ItemRepository $itemRepository,
         LegacyEnvironment $legacyEnvironment
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -194,6 +196,46 @@ class ItemService
         $itemList = $itemManager->get();
 
         return $itemList->to_array();
+    }
+
+    /**
+     * Returns all pinned items of the given type(s) which are contained in the room specified
+     * by the given room ID.
+     *
+     * If no $types are specified explicitly, this method will return pinned items of any type.
+     *
+     * Note that, to have this method return pinned group items (and only these), you must
+     * pass `[ CS_GROUP_TYPE, CS_LABEL_TYPE ]` as $types array. Similarly, to have this
+     * method return pinned topic items (and only these), pass `[ CS_TOPIC_TYPE, CS_LABEL_TYPE ]`
+     * as $types array.
+     *
+     * @param int $roomId
+     * @param string[] $types array of item types for which pinned items shall be returned
+     *
+     * @return mixed[] array of pinned items
+     */
+    public function getPinnedItems(int $roomId, array $types = []): iterable
+    {
+        if (empty($types)) {
+            $items = $this->itemRepository->getPinnedItemsByRoomId($roomId);
+        } else {
+            $items = $this->itemRepository->getPinnedItemsByRoomIdAndType($roomId, $types);
+        }
+
+        $typedItems = array_map(fn ($item) => $this->getTypedItem($item->getItemID()), $items);
+
+        if (!empty($types)) {
+            // for CS_LABEL_TYPE items in $typedItems, filter out label types not given in $types
+            $typedItems = array_filter($typedItems, function ($typedItem) use ($types) {
+                if ($typedItem->getType() === CS_LABEL_TYPE && !in_array($typedItem->getLabelType(), $types)) {
+                    return false;
+                }
+
+                return true;
+            });
+        }
+
+        return $typedItems;
     }
 
     /**

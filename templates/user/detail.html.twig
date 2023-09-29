@@ -81,6 +81,50 @@
                                                 <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                                             </a>
                                         </li>
+
+                                        {# pin/unpin #}
+                                        {% if not pinned %}
+                                            <li>
+                                                {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
+                                                    <a href="#" data-cs-action="{{ {
+                                                        'url': path('app_user_xhrpin', {'roomId': roomId}),
+                                                        'action': 'pin',
+                                                        'itemId': user.itemId,
+                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                        'mode': 'click',
+                                                        'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry pinned|%count% entries pinned'|trans({'%count%':1}, 'item')
+                                                    }|json_encode|e('html_attr') }}">
+                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                                                    </a>
+                                                {% else %}
+                                                    <span class="uk-text-muted">
+                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                                                    </span>
+                                                {% endif %}
+                                            </li>
+                                        {% endif %}
+
+                                        {% if pinned %}
+                                            <li>
+                                                {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
+                                                    <a href="#" data-cs-action="{{ {
+                                                        'url': path('app_user_xhrunpin', {'roomId': roomId}),
+                                                        'action': 'unpin',
+                                                        'itemId': user.itemId,
+                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                        'mode': 'click',
+                                                        'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry unpinned|%count% entries unpinned'|trans({'%count%':1}, 'item')
+                                                    }|json_encode|e('html_attr') }}">
+                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                                    </a>
+                                                {% else %}
+                                                    <span class="uk-text-muted">
+                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                                    </span>
+                                                {% endif %}
+                                            </li>
+                                        {% endif %}
+
                                         <li>
                                             <a href="{{ path('app_user_send', {'roomId' : roomId, 'itemId': user.itemId}) }}" id="send">
                                                 <i class="uk-icon-justify uk-icon-small uk-icon-send-o uk-visible-large"></i> {{ 'send email'|trans({},'user') }}

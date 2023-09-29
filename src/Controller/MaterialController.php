@@ -33,7 +33,6 @@ use App\Form\Type\MaterialSectionType;
 use App\Form\Type\MaterialType;
 use App\Form\Type\SectionType;
 use App\Http\JsonRedirectResponse;
-use App\Repository\ItemRepository;
 use App\Repository\LicenseRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
@@ -192,7 +191,7 @@ class MaterialController extends BaseController
     public function listAction(
         Request $request,
         int $roomId,
-        ItemRepository $itemRepository
+        ItemService $itemService
     ): Response {
         $roomItem = $this->getRoom($roomId);
 
@@ -216,7 +215,7 @@ class MaterialController extends BaseController
         // get material list from manager service
         $itemsCountArray = $this->materialService->getCountArray($roomId);
 
-        $pinnedItems = $itemRepository->getPinnedItemsByRoomIdAndType($roomId, [ CS_MATERIAL_TYPE, CS_SECTION_TYPE ]);
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_MATERIAL_TYPE, CS_SECTION_TYPE ]);
 
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('material')) {
