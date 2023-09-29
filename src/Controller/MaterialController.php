@@ -23,6 +23,8 @@ use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Action\MarkRead\MarkReadMaterial;
+use App\Action\Pin\PinAction;
+use App\Action\Pin\UnpinAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\MaterialFilterType;
 use App\Form\DataTransformer\MaterialTransformer;
@@ -369,6 +371,7 @@ class MaterialController extends BaseController
             'workflowUnread' => $infoArray['workflowUnread'],
             'workflowRead' => $infoArray['workflowRead'],
             'draft' => $infoArray['draft'],
+            'pinned' => $infoArray['pinned'],
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
             'withTrafficLight' => $roomItem->withWorkflowTrafficLight(),
@@ -784,6 +787,7 @@ class MaterialController extends BaseController
         $infoArray['workflowUnread'] = $workflowUnread;
         $infoArray['workflowRead'] = $workflowRead;
         $infoArray['draft'] = $this->itemService->getItem($itemId)->isDraft();
+        $infoArray['pinned'] = $this->itemService->getItem($itemId)->isPinned();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['showWorkflow'] = $current_context->withWorkflow();
         $infoArray['user'] = $this->legacyEnvironment->getCurrentUserItem();
@@ -1358,6 +1362,36 @@ class MaterialController extends BaseController
         $markReadAction->setMarkReadStrategy($markReadMaterial);
 
         return $markReadAction->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/material/xhr/pin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrPinAction(
+        Request $request,
+        PinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/material/xhr/unpin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrUnpinAction(
+        Request $request,
+        UnpinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
     }
 
     /**

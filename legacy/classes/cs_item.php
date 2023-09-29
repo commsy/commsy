@@ -2527,6 +2527,18 @@ class cs_item
         $this->_setValue('draft', (string) $value);
     }
 
+    public function isPinned(): bool
+    {
+        $isPinned = $this->_getValue('pinned');
+
+        return empty($isPinned) ? false : true;
+    }
+
+    public function setPinned(bool $pinned)
+    {
+        $this->_setValue('pinned', $pinned ? 1 : 0);
+    }
+
     /**
      * @return bool
      *
