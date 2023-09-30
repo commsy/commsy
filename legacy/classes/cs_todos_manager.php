@@ -372,7 +372,7 @@ class cs_todos_manager extends cs_manager
      *
      * @return \cs_todo_item a todo
      */
-    public function getItem($item_id)
+    public function getItem(?int $item_id)
     {
         $todo = null;
         if (!empty($item_id)
@@ -407,7 +407,7 @@ class cs_todos_manager extends cs_manager
      *
      * @return object cs_list of cs_todo_items
      */
-    public function getItemList($id_array)
+    public function getItemList(array $id_array)
     {
         return $this->_getItemList('todo', $id_array);
     }
@@ -552,7 +552,7 @@ class cs_todos_manager extends cs_manager
      *
      * @param cs_todo_item the todo item to be deleted
      */
-    public function delete($item_id)
+    public function delete(int $itemId): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();
@@ -560,17 +560,15 @@ class cs_todos_manager extends cs_manager
         $query = 'UPDATE '.$this->addDatabasePrefix('todos').' SET '.
                 'deletion_date="'.$current_datetime.'",'.
                 'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
+                ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems deleting todos from query: "'.$query.'"', E_USER_WARNING);
         } else {
             $link_manager = $this->_environment->getLinkManager();
-            $link_manager->deleteLinksBecauseItemIsDeleted($item_id);
-            unset($link_manager);
-            parent::delete($item_id);
+            $link_manager->deleteLinksBecauseItemIsDeleted($itemId);
+            parent::delete($itemId);
         }
-        unset($current_user);
     }
 
      public function deleteTodosOfUser($uid)

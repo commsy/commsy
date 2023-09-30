@@ -184,6 +184,9 @@
           );
 
         promises.push(promise);
+        if (draftMode === false) {
+          handleFormsPromises();
+        }
       });
     },
 
@@ -226,7 +229,7 @@
     });
   });
 
-  function sendForms(undraftUrl = '') {
+  function handleFormsPromises(undraftUrl = '') {
     Promise.all(promises)
       .then(() => new Promise((resolve) => {
         // All form sections and have been saved
@@ -289,7 +292,7 @@
 
         // Resolve all collected promises
         const undraftUrl = $(this).data('draft-save').undraftUrl;
-        sendForms(undraftUrl);
+        handleFormsPromises(undraftUrl);
       }
     });
 
