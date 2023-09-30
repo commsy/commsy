@@ -12,13 +12,13 @@
             {# home information text #}
             <div class="uk-width-medium-2-3 cs-cover-height uk-margin-bottom">
                 {% if roomItem.withInformationBox %}
-                    <div class="uk-panel uk-panel-box cs-cover-grid-opacity " data-uk-parallax="{opacity: '0.5'}">
+                    <div class="uk-panel uk-panel-box cs-cover-grid-opacity">
+                        <div class="uk-margin-top uk-align-right">
+                            {% set pathName = 'app_' ~ homeInformationEntry.type ~ '_detail' %}
+                            <a href="{{ path(pathName, {'roomId': roomItem.itemId, 'itemId': homeInformationEntry.itemId}) }}">{{ 'link to entry'|trans({}, "room") }}</a>
+                        </div>
                         <div>
                             {{ homeInformationEntry.description|commsyMarkup|raw }}
-                        </div>
-                        <div class="uk-margin-top uk-align-right">
-                        {% set pathName = 'app_' ~ homeInformationEntry.type ~ '_detail' %}
-                        <a href="{{ path(pathName, {'roomId': roomItem.itemId, 'itemId': homeInformationEntry.itemId}) }}">{{ 'link to entry'|trans({}, "room") }}</a>
                         </div>
                     </div>
                 {% endif %}
@@ -31,7 +31,7 @@
                         <img src="{{ logoImageFilepath }}">
                     </div>
                     {% if countAnnouncements > 0 %}
-                        <div class="uk-panel uk-panel-box cs-cover-grid-opacity" data-uk-parallax="{opacity: '0.5'}" style="padding-bottom: 0px; padding-top: 0px;">
+                        <div class="uk-panel uk-panel-box cs-cover-grid-opacity" style="padding-bottom: 0px; padding-top: 0px;">
                             <ul id="announcements-feed" class="uk-comment-list" data-uk-observe>
                                 {{ render(controller(
                                     'App\\Controller\\AnnouncementController::shortfeedAction',
@@ -42,7 +42,7 @@
                     {% endif %}
                 {% else %}
                     {% if countAnnouncements > 0 %}
-                        <div class="uk-panel uk-panel-box cs-cover-grid-opacity" data-uk-parallax="{opacity: '0.5'}">
+                        <div class="uk-panel uk-panel-box cs-cover-grid-opacity">
                             <ul id="announcements-feed" class="uk-comment-list" data-uk-observe>
                                 {{ render(controller(
                                     'App\\Controller\\AnnouncementController::shortfeedAction',
@@ -261,14 +261,6 @@
                 // determines image height as imgHeight = coverHeight * heightFactor;
                 var heightFactor = 1.2;
 
-                // 1 => set 'margin-bottom' => parallax * 1
-                // -1 => set 'margin-top' => parallax * -1,
-                // default: 1 (nicely fakes stereoscopic effect on panorama images! ;)
-                // TODO: pass via parameter (perhaps let user choose direction?)
-                var transDir = 1;
-                var marginSelect = 'margin-top';
-                if(transDir < 0) marginSelect = 'margin-bottom';
-
                 if(img_width < cover_width){
                     // scale image width to cover width
                     img_width  *= (cover_width / img_width);
@@ -286,28 +278,11 @@
                 $("#room_image").css({'width' : img_width, 'height' : img_height, 'max-width' : 'none'});
 
                 var marginOffset = -1*(Math.abs(img_height - cover_height)/2);
-                $("#room_image").css(marginSelect, marginOffset);
+                $("#room_image").css('margin-top', marginOffset);
 
-                // horizontically center image if its wider than the cover area
+                // horizontically center image if it's wider than the cover area
                 if(img_width > cover_width){
                     $("#room_image").css('margin-left', -1*(Math.abs(img_width - cover_width)/2));
-                }
-
-                // activate parallax scrolling
-                if(window.innerHeight > img_height){
-                    $("#room_image").attr("data-uk-parallax", "{y: '"+(transDir * Math.abs(img_height - cover_height))+"'}");
-                }
-
-                window.onresize = function(e){
-                    var activated = typeof($("#room_image").attr('data-uk-parallax'));
-                    var heightDiff = this.innerHeight - img_height;
-                    if(heightDiff < 0 && activated !== 'undefined'){
-                        // FIXME: this does not seem to deactive the parallax scrolling effect!
-                        $("#room_image").removeAttr("data-uk-parallax");
-                    }
-                    else if(heightDiff >= 0 && activated === 'undefined'){
-                        $("#room_image").attr("data-uk-parallax", "{y: '"+(transDir * Math.abs(img_height - cover_height))+"'}");
-                    }
                 }
             });
         });

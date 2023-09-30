@@ -37,23 +37,6 @@ class cs_privateroom_item extends cs_room_item
         $this->defaultHomeConf[CS_ENTRY_TYPE] = 'show';
     }
 
-    public function getHomeConf()
-    {
-        $rubrics = parent::getHomeConf();
-        $retour = [];
-        foreach (explode(',', (string) $rubrics) as $rubric) {
-            if (!mb_stristr($rubric, CS_USER_TYPE)) {
-                if (!mb_stristr($rubric, CS_MATERIAL_TYPE)
-                    and !mb_stristr($rubric, CS_TOPIC_TYPE)
-                    and !mb_stristr($rubric, CS_TODO_TYPE)
-                ) {
-                    $retour[] = $rubric;
-                }
-            }
-        }
-        return implode(',', $retour);
-    }
-
     public function isPrivateRoom()
     {
         return true;

@@ -235,7 +235,7 @@ class cs_section_manager extends cs_manager
        *
        * @return object cs_item a label
        */
-      public function getItem($item_id)
+      public function getItem(?int $item_id)
       {
           $section = null;
           $query = 'SELECT * FROM '.$this->addDatabasePrefix('section').' WHERE '.$this->addDatabasePrefix('section').".item_id = '".encode(AS_DB, $item_id)."'";
@@ -461,7 +461,7 @@ class cs_section_manager extends cs_manager
      *
      * @param cs_section_item the section item to be deleted
      */
-    public function delete($item_id, $version_id = null)
+    public function delete(int $itemId, $version_id = null): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();
@@ -469,7 +469,7 @@ class cs_section_manager extends cs_manager
         $query = 'UPDATE '.$this->addDatabasePrefix('section').' SET '.
                  'deletion_date="'.$current_datetime.'",'.
                  'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                 ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
+                 ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
         if ($version_id) {
             $query .= ' AND version_id="'.encode(AS_DB, $version_id).'"';
         }
@@ -479,7 +479,7 @@ class cs_section_manager extends cs_manager
             trigger_error('Problems deleting section from query: "'.$query.'"', E_USER_WARNING);
         } else {
             if (is_null($version_id)) {
-                parent::delete($item_id);
+                parent::delete($itemId);
             }
         }
     }

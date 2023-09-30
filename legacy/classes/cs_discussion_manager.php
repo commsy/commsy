@@ -345,7 +345,7 @@ class cs_discussion_manager extends cs_manager
       *
       * @throws \Doctrine\DBAL\Exception
       */
-     public function getItem($item_id): ?cs_discussion_item
+     public function getItem(?int $item_id): ?cs_discussion_item
      {
          $discussion = null;
          if (!empty($item_id)
@@ -373,7 +373,7 @@ class cs_discussion_manager extends cs_manager
          }
      }
 
-    public function getItemList($id_array)
+    public function getItemList(array $id_array)
     {
         return $this->_getItemList('discussion', $id_array);
     }
@@ -527,7 +527,7 @@ class cs_discussion_manager extends cs_manager
      *
      * @param cs_discussion_item the discussion item to be deleted
      */
-    public function delete($item_id)
+    public function delete(int $itemId): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();
@@ -535,15 +535,14 @@ class cs_discussion_manager extends cs_manager
         $query = 'UPDATE '.$this->addDatabasePrefix('discussions').' SET '.
                  'deletion_date="'.$current_datetime.'",'.
                  'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                 ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
+                 ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems deleting discussion.', E_USER_WARNING);
         } else {
             $link_manager = $this->_environment->getLinkManager();
-            $link_manager->deleteLinksBecauseItemIsDeleted($item_id);
-            parent::delete($item_id);
-            unset($link_manager);
+            $link_manager->deleteLinksBecauseItemIsDeleted($itemId);
+            parent::delete($itemId);
         }
     }
 

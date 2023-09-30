@@ -50,8 +50,17 @@ jobs:
             -   name: Build frontend package
                 run: yarn build
 
-            -   name: Run tests
-                run: vendor/bin/codecept run --env github
+            -   name: Run Unit tests
+                run: vendor/bin/codecept run Unit --env github
+
+            -   name: Run Acceptance tests
+                run: vendor/bin/codecept run Acceptance --env github
+
+            -   name: Run Functional tests
+                run: vendor/bin/codecept run Functional --env github
+
+            -   name: Run Api tests
+                run: vendor/bin/codecept run Api --env github
 
     release-docker:
         name: Create and push docker images

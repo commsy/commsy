@@ -161,10 +161,8 @@ class TopicController extends BaseController
         return $this->render('topic/feed.html.twig', ['roomId' => $roomId, 'topics' => $topics, 'readerList' => $readerList, 'showRating' => false, 'allowedActions' => $allowedActions]);
     }
 
-    /**
-     * @return array
-     */
     #[Route(path: '/room/{roomId}/topic/{itemId}', requirements: ['itemId' => '\d+'])]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function detailAction(
         Request $request,
         CategoryService $categoryService,

@@ -187,7 +187,7 @@ class cs_tasks_manager extends cs_manager
      *
      * @return object cs_item a task
      */
-    public function getItem($item_id)
+    public function getItem(?int $item_id)
     {
         $task = null;
         $query = 'SELECT * FROM '.$this->addDatabasePrefix('tasks').' WHERE '.$this->addDatabasePrefix('tasks').".item_id = '".encode(AS_DB, $item_id)."'";
@@ -218,7 +218,7 @@ class cs_tasks_manager extends cs_manager
       *
       * @return cs_list list of cs_items
       */
-     public function getItemList($id_array)
+     public function getItemList(array $id_array)
      {
          return $this->_getItemList('tasks', $id_array);
      }
@@ -345,7 +345,7 @@ class cs_tasks_manager extends cs_manager
      *
      * @param int item_id item id of the task
      */
-    public function delete($item_id)
+    public function delete(int $itemId): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();
@@ -355,12 +355,12 @@ class cs_tasks_manager extends cs_manager
                  'deletion_date="'.$current_datetime.'",'.
                  'deleter_id="'.encode(AS_DB, $user_id).'",'.
                  'status="CLOSED"'.
-                 ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
+                 ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems deleting tasks from query: "'.$query.'"', E_USER_WARNING);
         } else {
-            parent::delete($item_id);
+            parent::delete($itemId);
         }
     }
 }

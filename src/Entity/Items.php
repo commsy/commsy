@@ -18,16 +18,35 @@ use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Items.
- */
 #[ORM\Entity(repositoryClass: ItemRepository::class)]
 #[ORM\InheritanceType('JOINED')]
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
-#[ORM\DiscriminatorMap(['annotation' => 'Annotations', 'announcement' => 'Announcement', 'assessments' => 'Assessments', 'auth_source' => 'AuthSource', 'community' => 'Room', 'date' => 'Dates', 'discarticle' => 'Discussionarticles', 'discussion' => 'Discussions', 'grouproom' => 'Room', 'label' => 'Labels', 'link_item' => 'LinkItems', 'material' => 'Materials', 'portal' => 'Portal', 'portfolio' => 'Portfolio', 'privateroom' => 'RoomPrivat', 'project' => 'Room', 'section' => 'Section', 'server' => 'Server', 'step' => 'Step', 'tag' => 'Tag', 'task' => 'Tasks', 'todo' => 'Todos', 'user' => 'User'])]
+#[ORM\DiscriminatorMap([
+    'annotation' => 'Annotations',
+    'announcement' => 'Announcement',
+    'assessments' => 'Assessments',
+    'community' => 'Room',
+    'date' => 'Dates',
+    'discarticle' => 'Discussionarticles',
+    'discussion' => 'Discussions',
+    'grouproom' => 'Room',
+    'label' => 'Labels',
+    'link_item' => 'LinkItems',
+    'material' => 'Materials',
+    'portfolio' => 'Portfolio',
+    'privateroom' => 'RoomPrivat',
+    'project' => 'Room',
+    'section' => 'Section',
+    'server' => 'Server',
+    'step' => 'Step',
+    'tag' => 'Tag',
+    'task' => 'Tasks',
+    'todo' => 'Todos',
+    'user' => 'User'
+])]
 #[ORM\Table(name: 'items')]
-#[ORM\Index(name: 'context_id', columns: ['context_id'])]
-#[ORM\Index(name: 'type', columns: ['type'])]
+#[ORM\Index(columns: ['context_id'], name: 'context_id')]
+#[ORM\Index(columns: ['type'], name: 'type')]
 class Items
 {
     /**

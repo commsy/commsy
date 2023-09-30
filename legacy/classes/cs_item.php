@@ -1056,7 +1056,7 @@ class cs_item
 
              $user_id = $this->_getValue($role.'_id');
              if (null !== $user_id) {
-                 $user = $user_manager->getItem($user_id);
+                 $user = $user_manager->getItem((int) $user_id);
                  $this->_data[$role] = $user;
              }
          }
@@ -1979,10 +1979,10 @@ class cs_item
 
     public function deleteAssociatedAnnotations()
     {
-        $annotation_manager = $this->_environment->getAnnotationManager();
+        $item_manager = $this->_environment->getItemManager();
+        $item = $item_manager->getItem($this->getItemID());
 
-        // get all annotations linked with the item
-        $annotation_list = $annotation_manager->getAnnotatedItemList($this->getItemID());
+        $annotation_list = $item->getAnnotationList();
         foreach ($annotation_list as $annotation) {
             /** @var cs_annotation_item $annotation */
             $annotation->delete();

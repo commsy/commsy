@@ -297,7 +297,7 @@ class cs_item_manager extends cs_manager
          }
      }
 
-    public function getItemList($id_array)
+    public function getItemList(array $id_array)
     {
         return $this->_getItemList('items', $id_array);
     }

@@ -447,7 +447,7 @@ class cs_context_manager extends cs_manager
     *
     * @return \cs_context_item cs_context a room: project, community, portal, server
     */
-   public function getItem($item_id)
+   public function getItem(?int $item_id)
    {
        $retour = null;
        if (!empty($item_id)
@@ -679,7 +679,7 @@ class cs_context_manager extends cs_manager
      *
      * @param int item_id item id of the project
      */
-    public function delete($itemId)
+    public function delete(int $itemId): void
     {
         $currentDateTime = getCurrentDateTimeInMySQL();
         $currentUser = $this->_environment->getCurrentUserItem();

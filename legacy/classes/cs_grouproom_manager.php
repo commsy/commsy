@@ -281,7 +281,7 @@ class cs_grouproom_manager extends cs_room2_manager
          }
      }
 
-     public function getItemList($id_array)
+     public function getItemList(array $id_array)
      {
          return $this->_getItemList(CS_ROOM_TYPE, $id_array);
      }

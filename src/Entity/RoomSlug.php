@@ -38,6 +38,7 @@ class RoomSlug implements Stringable
         pattern: '/^[[:alnum:]~._-]+$/',
         message: 'Your workspace identifier may only contain lowercase English letters, digits or any of these special characters: -._~'
     )]
+    #[Assert\NotBlank]
     private string $slug;
 
     #[ORM\ManyToOne(inversedBy: 'slugs')]

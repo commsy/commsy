@@ -342,10 +342,8 @@ class AnnouncementController extends BaseController
         return $printService->buildPdfResponse($html);
     }
 
-    /**
-     * @return array
-     */
     #[Route(path: '/room/{roomId}/announcement/{itemId}', requirements: ['itemId' => '\d+'])]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function detailAction(
         Request $request,
         LegacyMarkup $legacyMarkup,
