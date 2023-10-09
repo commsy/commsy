@@ -95,17 +95,11 @@ class Dates
     #[ORM\Column(name: 'place', type: 'string', length: 100, nullable: true)]
     private $place;
 
-    /**
-     * @var DateTime
-     */
     #[ORM\Column(name: 'datetime_start', type: 'datetime', nullable: false)]
-    private string $datetimeStart = '0000-00-00 00:00:00';
+    private DateTime $datetimeStart;
 
-    /**
-     * @var DateTime
-     */
     #[ORM\Column(name: 'datetime_end', type: 'datetime', nullable: false)]
-    private string $datetimeEnd = '0000-00-00 00:00:00';
+    private DateTime $datetimeEnd;
 
     #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
     private string $public = '0';
