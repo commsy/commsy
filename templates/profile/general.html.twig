@@ -41,7 +41,7 @@
                                         </div>
 
                                         <!-- user profile image -->
-                                        <div class="uk-clearfix uk-cover-background uk-position-relative">
+                                        <div class="uk-clearfix uk-background-cover uk-position-relative">
                                             <img id="profile_form_user_image" class="uk-thumbnail uk-float-right uk-margin-bottom uk-border-circle" src="{{ path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
                                             <div class="uk-position-cover">
                                                 {{ form_widget(form.image) }}

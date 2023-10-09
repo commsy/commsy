@@ -16,12 +16,8 @@
 
 @card-secondary-hover-background:              @card-secondary-background;
 
-
-@card-small-header-padding-vertical: 10px;
-
-
-
-
+@card-small-header-padding-horizontal:         round((@global-margin / 2));
+@card-small-header-padding-vertical:           round((@global-margin / 3));
 
 .hook-card-default-header() {
     background-color: @cs-brand-color;
@@ -201,7 +197,7 @@
 }
 
 .cs-panel-border {
-    border: 2px solid @list-striped-background;    
+    border: 2px solid @list-striped-background;
 }
 
 // Modifier: `cs-panel-teaser-danger`

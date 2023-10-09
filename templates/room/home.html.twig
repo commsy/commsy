@@ -3,7 +3,7 @@
 {% import 'common/feed.html.twig' as feed %}
 
 {% block cover %}
-    <div id="cover" class="uk-cover-background uk-position-relative cs-cover-background" aria-hidden="false">
+    <div id="cover" class="uk-background-cover uk-position-relative cs-cover-background" aria-hidden="false">
         {% if bgImageFilepath is not empty %}
             <img id="room_image" src="{{ bgImageFilepath }}">
         {% endif %}

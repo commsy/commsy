@@ -4,9 +4,7 @@
         <div class="uk-flex">
             <div class="uk-flex-inline uk-flex-1">
                 {% if title %}
-                    <div class="uk-card-title">
-                        {{ title }}
-                    </div>
+                    <h3 class="uk-card-title uk-margin-remove-bottom">{{ title }}</h3>
                 {% endif %}
 
                 {% block teaser_left %}{% endblock %}

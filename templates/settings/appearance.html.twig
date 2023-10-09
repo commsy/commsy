@@ -39,7 +39,7 @@
 
                             {{ form_widget(form.room_image.choice) }}
 
-                            <div id="bgPreview" class="uk-form-controls uk-cover-background uk-position-relative uk-hidden">
+                            <div id="bgPreview" class="uk-form-controls uk-background-cover uk-position-relative uk-hidden">
                                 {% if bgImageFilepathCustom is not empty %}
                                     <img id="customBackgroundImage" style="display: none; width: 856px; height: 180px;" src="{{bgImageFilepathCustom}}" />
                                 {% else %}
@@ -75,7 +75,7 @@
                             <div class="uk-margin-small-bottom">{{ 'Room logo text'|trans({}, 'settings') }}</div>
                             <div style="margin-bottom: 25px;"><em>{{ 'tip'|trans({}, 'messages')}}:</em> {{ 'Room logo tip'|trans({}, 'settings') }}</div>
                             {{ form_row(form.room_logo.activate) }}
-                            <div id="logo_preview" class="uk-form-controls uk-cover-background uk-position-relative uk-hidden">
+                            <div id="logo_preview" class="uk-form-controls uk-background-cover uk-position-relative uk-hidden">
                                 {% if logoImageFilepath is not empty %}
                                     <img id="logoImage" style="width: 200px; height: 200px;" src="{{logoImageFilepath}}" />
                                 {% else %}
