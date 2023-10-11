@@ -16,7 +16,7 @@ namespace App\Filter;
 use App\Entity\Labels;
 use App\Repository\LabelRepository;
 use App\Utils\RoomService;
-use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
+use Spiriit\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;

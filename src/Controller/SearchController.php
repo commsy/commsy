@@ -560,7 +560,7 @@ class SearchController extends BaseController
         // contexts parameter
         $searchData->setSelectedContext($searchParams['selectedContext'] ?? 'all');
 
-        // appearing in parameter (based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\ChoiceFilterType)
+        // appearing in parameter (based on Spiriit\Bundle\FormFilterBundle\Filter\Form\Type\ChoiceFilterType)
         $searchData->setAppearsIn($searchParams['appears_in'] ?? []);
 
         // read status parameter
@@ -581,7 +581,7 @@ class SearchController extends BaseController
         // todostatus parameter
         $searchData->setSelectedTodoStatus($searchParams['selectedTodoStatus'] ?? 0);
 
-        // date ranges based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\DateRangeFilterType in combination with the UIKit datepicker
+        // date ranges based on Spiriit\Bundle\FormFilterBundle\Filter\Form\Type\DateRangeFilterType in combination with the UIKit datepicker
         // creation_date_range parameter
         if (!empty($searchParams['creation_date_range'])) {
             $creationDateRange = [];
