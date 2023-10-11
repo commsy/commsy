@@ -475,6 +475,10 @@
                  <source>messages.datasecurity</source>
                  <target>hidden because of datasecurity</target>
             </trans-unit>
+            <trans-unit id="messages_load_all">
+                <source>messages.load_all</source>
+                <target>Load all datasets</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
