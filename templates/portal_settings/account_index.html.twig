@@ -29,7 +29,7 @@
                         <table class="uk-table uk-table-striped uk-table-hover uk-table-small">
                             <thead>
                                 <tr>
-                                    <th class="uk-table-shrink"></th>
+                                    <th class="uk-table-shrink"><input class="uk-checkbox" type="checkbox" onclick="form.querySelectorAll('td input[type=\'checkbox\']').forEach((e) => e.checked = this.checked)"></th>
                                     <th>
                                         {{ knp_pagination_sortable(pagination, 'Name (user id)'|trans({},"portal"), 'a.username') }}
                                     </th>
@@ -72,7 +72,15 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+
                         {{ 'Found users'|trans({},"portal") }}: {{ pagination.getTotalItemCount }}<br />
+                        {% if pagination.count < pagination.totalItemCount %}
+                            <a href="{{ path('app_portalsettings_accountindex', app.request.query.all|merge({
+                                'portalId': portal.id,
+                                'limit': pagination.totalItemCount,
+                                'page': 1
+                            })) }}">{{ 'messages.load_all'|trans() }}</a><br />
+                        {% endif %}
                         {{ knp_pagination_render(pagination) }}
                     </div>
                 {{ form_end(form) }}

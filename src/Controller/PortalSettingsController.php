@@ -1472,7 +1472,7 @@ class PortalSettingsController extends AbstractController
         $pagination = $paginator->paginate(
             $queryBuilder,
             $request->query->getInt('page', 1),
-            20
+            $request->query->getInt('limit', 20)
         );
 
         $portalUsersForAccounts = array_map(function (Account $account) use ($userRepository) {
