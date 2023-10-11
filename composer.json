@@ -27,7 +27,7 @@
         "knplabs/knp-menu-bundle": "^3.0",
         "knplabs/knp-paginator-bundle": "^6.2",
         "knplabs/knp-snappy-bundle": "^1.7",
-        "lexik/form-filter-bundle": "^8.0",
+        "spiriitlabs/form-filter-bundle": "^9.0",
         "lexik/jwt-authentication-bundle": "^2.14",
         "liip/imagine-bundle": "^2.3",
         "masterminds/html5": "^2.7",
