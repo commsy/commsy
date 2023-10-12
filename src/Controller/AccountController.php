@@ -22,6 +22,7 @@ use App\Entity\AuthSourceLocal;
 use App\Entity\AuthSourceShibboleth;
 use App\Entity\Portal;
 use App\Event\AccountChangedEvent;
+use App\Event\AccountCreatedEvent;
 use App\Facade\AccountCreatorFacade;
 use App\Form\DataTransformer\PrivateRoomTransformer;
 use App\Form\DataTransformer\UserTransformer;
@@ -71,7 +72,8 @@ class AccountController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         TranslatorInterface $translator,
         InvitationsService $invitationsService,
-        UserService $userService
+        UserService $userService,
+        EventDispatcherInterface $eventDispatcher
     ): Response {
         $legacyEnvironment->getEnvironment()->setCurrentPortalID($portal->getId());
 
@@ -120,6 +122,8 @@ class AccountController extends AbstractController
             $account->setPassword($password);
 
             $accountFacade->persistNewAccount($account);
+
+            $eventDispatcher->dispatch(new AccountCreatedEvent($account));
 
             $portalUser = $userService->getPortalUser($account);
 
