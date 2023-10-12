@@ -20,7 +20,7 @@
 
                         {# quick item navigation #}
                         {{ render(controller(
-                            'App\\Controller\\ItemController::stepperAction',
+                            'App\\Controller\\ItemController::stepper',
                             { 'roomId': roomId, 'itemId': item.itemId }
                         ))}}
 
@@ -475,7 +475,7 @@
                     {% endif %}
 
                     {{ render(controller(
-                        'App\\Controller\\AnnotationController::feedAction',
+                        'App\\Controller\\AnnotationController::feed',
                         { 'roomId': roomId, 'linkedItemId': item.itemId }
                     ))}}
 

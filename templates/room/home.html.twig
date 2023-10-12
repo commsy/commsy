@@ -34,7 +34,7 @@
                         <div class="uk-panel uk-panel-box cs-cover-grid-opacity" style="padding-bottom: 0px; padding-top: 0px;">
                             <ul id="announcements-feed" class="uk-comment-list" data-uk-observe>
                                 {{ render(controller(
-                                    'App\\Controller\\AnnouncementController::shortfeedAction',
+                                    'App\\Controller\\AnnouncementController::shortfeed',
                                     { 'roomId': roomItem.itemId }
                                 ))}}
                             </ul>
@@ -45,7 +45,7 @@
                         <div class="uk-panel uk-panel-box cs-cover-grid-opacity">
                             <ul id="announcements-feed" class="uk-comment-list" data-uk-observe>
                                 {{ render(controller(
-                                    'App\\Controller\\AnnouncementController::shortfeedAction',
+                                    'App\\Controller\\AnnouncementController::shortfeed',
                                     { 'roomId': roomItem.itemId }
                                 ))}}
                             </ul>
@@ -217,7 +217,7 @@
                 <div class="feed uk-margin-top">
                     <ul id="room-feed" class="uk-comment-list">
                         {{ render(controller(
-                            'App\\Controller\\RoomController::feedAction',
+                            'App\\Controller\\RoomController::feed',
                             { 'roomId': roomItem.itemId }
                         ))}}
                     </ul>

@@ -202,7 +202,7 @@
         <div >
             <strong>{{ 'linked entries'|trans({}, "room") }}:</strong> <br/>
             {{ render(controller(
-                'App\\Controller\\LinkController::showDetailPrintAction',
+                'App\\Controller\\LinkController::showDetailPrint',
                 { 'roomId': item.contextId, 'itemId': item.itemId }
             ))}}
         </div>

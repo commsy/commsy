@@ -30,7 +30,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class LinkController extends AbstractController
 {
     #[Route(path: '/room/{roomId}/link/{itemId}/{rubric}')]
-    public function showAction(
+    public function show(
         GroupService $groupService,
         ItemService $itemService,
         LabelService $labelService,
@@ -86,7 +86,7 @@ class LinkController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/material/link/{itemId}')]
-    public function showDetailAction(
+    public function showDetail(
         GroupService $groupService,
         ItemService $itemService,
         LabelService $labelService,
@@ -142,7 +142,7 @@ class LinkController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/material/link/{itemId}')]
-    public function showDetailPrintAction(
+    public function showDetailPrint(
         GroupService $groupService,
         ItemService $itemService,
         LabelService $labelService,
@@ -198,7 +198,7 @@ class LinkController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/material/link/{itemId}')]
-    public function showDetailShortAction(
+    public function showDetailShort(
         GroupService $groupService,
         ItemService $itemService,
         LabelService $labelService,
@@ -246,7 +246,7 @@ class LinkController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/material/link/{itemId}')]
-    public function showDetailLongAction(
+    public function showDetailLong(
         GroupService $groupService,
         ItemService $itemService,
         LabelService $labelService,
@@ -294,7 +294,7 @@ class LinkController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/material/link/{itemId}')]
-    public function showDetailLongToggleAction(
+    public function showDetailLongToggle(
         GroupService $groupService,
         ItemService $itemService,
         LabelService $labelService,

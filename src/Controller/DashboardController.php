@@ -43,7 +43,7 @@ class DashboardController extends AbstractController
      * @throws NonUniqueResultException
      */
     #[Route(path: '/dashboard/{roomId}')]
-    public function overviewAction(
+    public function overview(
          ItemService $itemService,
          LegacyEnvironment $environment,
          PortalRepository $portalRepository,
@@ -147,7 +147,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route(path: '/dashboard/{roomId}/feed/{start}/{sort}')]
-    public function feedAction(
+    public function feed(
         int $roomId,
         Request $request,
         ReaderService $readerService,
@@ -186,7 +186,7 @@ class DashboardController extends AbstractController
      * @return JsonResponse
      */
     #[Route(path: '/dashboard/{roomId}/edit')]
-    public function editAction(
+    public function edit(
         Request $request,
         TranslatorInterface $translator,
         LegacyEnvironment $environment,
@@ -209,14 +209,14 @@ class DashboardController extends AbstractController
     }
 
     #[Route(path: '/dashboard/{roomId}/rss')]
-    public function rssAction(
+    public function rss(
         int $roomId
     ): Response {
         return $this->render('dashboard/rss.html.twig');
     }
 
     #[Route(path: '/dashboard/{roomId}/myviews')]
-    public function myViewsAction(
+    public function myViews(
         $roomId,
         Request $request,
         LegacyEnvironment $legacyEnvironment,
@@ -261,7 +261,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route(path: '/dashboard/{roomId}/externalaccess')]
-    public function externalaccessAction(
+    public function externalaccess(
         LegacyEnvironment $environment,
         int $roomId
     ): Response {

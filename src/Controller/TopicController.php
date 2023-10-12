@@ -65,7 +65,7 @@ class TopicController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/topic')]
-    public function listAction(
+    public function list(
         Request $request,
         int $roomId
     ): Response {
@@ -96,7 +96,7 @@ class TopicController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/topic/feed/{start}/{sort}')]
-    public function feedAction(
+    public function feed(
         Request $request,
         ItemService $itemService,
         int $roomId,
@@ -141,7 +141,7 @@ class TopicController extends BaseController
 
     #[Route(path: '/room/{roomId}/topic/{itemId}', requirements: ['itemId' => '\d+'])]
     #[IsGranted('ITEM_SEE', subject: 'itemId')]
-    public function detailAction(
+    public function detail(
         Request $request,
         CategoryService $categoryService,
         LegacyMarkup $legacyMarkup,
@@ -352,7 +352,7 @@ class TopicController extends BaseController
 
     #[Route(path: '/room/{roomId}/topic/create')]
     #[IsGranted('ITEM_NEW')]
-    public function createAction(
+    public function create(
         int $roomId
     ): RedirectResponse {
         // create new topic item
@@ -366,7 +366,7 @@ class TopicController extends BaseController
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/edit')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editAction(
+    public function edit(
         Request $request,
         CategoryService $categoryService,
         LabelService $labelService,
@@ -449,7 +449,7 @@ class TopicController extends BaseController
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/save')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function saveAction(
+    public function save(
         int $roomId,
         int $itemId
     ): Response {
@@ -512,7 +512,7 @@ class TopicController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/print')]
-    public function printAction(
+    public function print(
         PrintService $printService,
         int $roomId,
         int $itemId
@@ -552,7 +552,7 @@ class TopicController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/topic/print/{sort}', defaults: ['sort' => 'none'])]
-    public function printlistAction(
+    public function printlist(
         Request $request,
         AssessmentService $assessmentService,
         PrintService $printService,
@@ -609,7 +609,7 @@ class TopicController extends BaseController
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/editpath')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editPathAction(
+    public function editPath(
         Request $request,
         int $roomId,
         int $itemId
@@ -713,7 +713,7 @@ class TopicController extends BaseController
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/savepath')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function savePathAction(
+    public function savePath(
         int $itemId
     ): Response {
         $item = $this->itemService->getItem($itemId);
@@ -733,7 +733,7 @@ class TopicController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/topic/download')]
-    public function downloadAction(
+    public function download(
         Request $request,
         DownloadAction $action,
         int $roomId
@@ -751,7 +751,7 @@ class TopicController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/topic/xhr/markread', condition: 'request.isXmlHttpRequest()')]
-    public function xhrMarkReadAction(
+    public function xhrMarkRead(
         Request $request,
         MarkReadAction $markReadAction,
         int $roomId
@@ -768,7 +768,7 @@ class TopicController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/topic/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
-    public function xhrCategorizeAction(
+    public function xhrCategorize(
         Request $request,
         CategorizeAction $action,
         int $roomId
@@ -782,7 +782,7 @@ class TopicController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/topic/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
-    public function xhrHashtagAction(
+    public function xhrHashtag(
         Request $request,
         HashtagAction $action,
         int $roomId
@@ -794,7 +794,7 @@ class TopicController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/topic/xhr/activate', condition: 'request.isXmlHttpRequest()')]
-    public function xhrActivateAction(
+    public function xhrActivate(
         Request $request,
         ActivateAction $action,
         $roomId
@@ -809,7 +809,7 @@ class TopicController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/topic/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeactivateAction(
+    public function xhrDeactivate(
         Request $request,
         DeactivateAction $action,
         $roomId
@@ -824,7 +824,7 @@ class TopicController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/topic/xhr/delete', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeleteAction(
+    public function xhrDelete(
         Request $request,
         DeleteAction $action,
         int $roomId

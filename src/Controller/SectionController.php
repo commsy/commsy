@@ -40,7 +40,7 @@ class SectionController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/section/xhr/delete', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeleteAction(
+    public function xhrDelete(
         Request $request,
         int $roomId
     ): Response {

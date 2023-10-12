@@ -35,7 +35,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class AnnotationController extends AbstractController
 {
     #[Route(path: '/room/{roomId}/annotation/feed/{linkedItemId}/{start}/{firstTagId}/{secondTagId}')]
-    public function feedAction(
+    public function feed(
         AnnotationService $annotationService,
         ItemService $itemService,
         ReaderService $readerService,
@@ -83,7 +83,7 @@ class AnnotationController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/annotation/feed/{linkedItemId}/{start}')]
-    public function feedPrintAction(
+    public function feedPrint(
         AnnotationService $annotationService,
         ReaderService $readerService,
         int $roomId,
@@ -108,7 +108,7 @@ class AnnotationController extends AbstractController
 
     #[Route(path: '/room/{roomId}/annotation/{itemId}/edit', methods: ['GET', 'POST'])]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editAction(
+    public function edit(
         ItemService $itemService,
         AnnotationTransformer $transformer,
         LegacyEnvironment $environment,
@@ -147,7 +147,7 @@ class AnnotationController extends AbstractController
 
     #[Route(path: '/room/{roomId}/annotation/{itemId}/success', methods: ['GET'])]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function successAction(
+    public function success(
         ItemService $itemService,
         int $itemId
     ): Response {
@@ -163,7 +163,7 @@ class AnnotationController extends AbstractController
      */
     #[Route(path: '/room/{roomId}/annotation/{itemId}/create/{firstTagId}/{secondTagId}', methods: ['POST'])]
     #[IsGranted('ITEM_ANNOTATE', subject: 'itemId')]
-    public function createAction(
+    public function create(
         ItemService $itemService,
         AnnotationService $annotationService,
         Request $request,
@@ -219,7 +219,7 @@ class AnnotationController extends AbstractController
      */
     #[Route(path: '/room/{roomId}/annotation/{itemId}/delete', methods: ['GET'])]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function deleteAction(
+    public function delete(
         ItemService $itemService,
         int $itemId
     ): Response {

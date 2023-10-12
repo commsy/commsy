@@ -70,7 +70,7 @@ class ItemController extends AbstractController
 
     #[Route(path: '/room/{roomId}/item/{itemId}/editdescription/{draft}')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editDescriptionAction(
+    public function editDescription(
         DateService $dateService,
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
@@ -177,7 +177,7 @@ class ItemController extends AbstractController
 
     #[Route(path: '/room/{roomId}/item/{itemId}/savedescription')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function saveDescriptionAction(
+    public function saveDescription(
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
         int $roomId,
@@ -205,7 +205,7 @@ class ItemController extends AbstractController
 
     #[Route(path: '/room/{roomId}/item/{itemId}/editworkflow')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editWorkflowAction(
+    public function editWorkflow(
         RoomService $roomService,
         ItemService $itemService,
         MaterialService $materialService,
@@ -256,7 +256,7 @@ class ItemController extends AbstractController
 
     #[Route(path: '/room/{roomId}/item/{itemId}/editlinks/{feedAmount}', defaults: ['feedAmount' => 20])]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editLinksAction(
+    public function editLinks(
         LabelService $labelService,
         RoomService $roomService,
         ItemService $itemService,
@@ -438,7 +438,7 @@ class ItemController extends AbstractController
 
     #[Route(path: '/room/{roomId}/item/{itemId}/editCatsBuzz/{feedAmount}', defaults: ['feedAmount' => 20])]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editCatsBuzzAction(
+    public function editCatsBuzz(
         CategoryService $categoryService,
         LabelService $labelService,
         RoomService $roomService,
@@ -619,7 +619,7 @@ class ItemController extends AbstractController
 
     #[Route(path: '/room/{roomId}/item/{itemId}/savelinks')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function saveLinksAction(
+    public function saveLinks(
         RoomService $roomService,
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
@@ -642,7 +642,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/{itemId}/send')]
-    public function sendAction(
+    public function send(
         Request $request,
         ItemService $itemService,
         MailAssistant $mailAssistant,
@@ -722,7 +722,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/{itemId}/send/success')]
-    public function sendSuccessAction(
+    public function sendSuccess(
         ItemService $itemService,
         int $roomId, int $itemId
     ): Response {
@@ -752,7 +752,7 @@ class ItemController extends AbstractController
      */
     #[Route(path: '/room/{roomId}/item/{itemId}/autocomplete/{feedAmount}', defaults: ['feedAmount' => 20])]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function autocompleteAction(
+    public function autocomplete(
         RoomService $roomService,
         ItemService $itemService,
         LegacyEnvironment $legacyEnvironment,
@@ -823,7 +823,7 @@ class ItemController extends AbstractController
      * @return JsonResponse
      */
     #[Route(path: '/room/{roomId}/item/{itemId}/filelist')]
-    public function filelistAction($roomId, $itemId, ItemService $itemService): Response
+    public function filelist($roomId, $itemId, ItemService $itemService): Response
     {
         /** @var cs_item $item */
         $item = $itemService->getItem($itemId);
@@ -844,7 +844,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/stepper')]
-    public function stepperAction($roomId, $itemId, ItemService $itemService, LegacyEnvironment $legacyEnvironment): Response
+    public function stepper($roomId, $itemId, ItemService $itemService, LegacyEnvironment $legacyEnvironment): Response
     {
         $environment = $legacyEnvironment->getEnvironment();
 
@@ -941,7 +941,7 @@ class ItemController extends AbstractController
 
     #[Route(path: '/room/{roomId}/item/{itemId}/get', condition: 'request.isXmlHttpRequest()')]
     #[IsGranted('ITEM_SEE', subject: 'itemId')]
-    public function singleArticleAction(
+    public function singleArticle(
         ItemService $itemService,
         int $itemId
     ): Response {
@@ -958,7 +958,7 @@ class ItemController extends AbstractController
 
     #[Route(path: '/room/{roomId}/item/{itemId}/links')]
     #[IsGranted('ITEM_SEE', subject: 'itemId')]
-    public function linksAction(
+    public function links(
         RoomService $roomService,
         ItemService $itemService,
         CategoryService $categoryService,
@@ -990,7 +990,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/canceledit')]
-    public function cancelEditAction(
+    public function cancelEdit(
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
         int $roomId,

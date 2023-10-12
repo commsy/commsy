@@ -40,7 +40,7 @@ class DiscussionArticleController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/discussion_article/xhr/delete', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeleteAction(
+    public function xhrDelete(
         Request $request,
         DeleteAction $action,
         int $roomId

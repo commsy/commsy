@@ -68,7 +68,7 @@ class TodoController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/todo')]
-    public function listAction(
+    public function list(
         Request $request,
         int $roomId
     ): Response {
@@ -106,7 +106,7 @@ class TodoController extends BaseController
 
     #[Route(path: '/room/{roomId}/todo/create')]
     #[IsGranted('ITEM_NEW')]
-    public function createAction(
+    public function create(
         int $roomId
     ): RedirectResponse {
         // create new todo item
@@ -120,7 +120,7 @@ class TodoController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/todo/feed/{start}/{sort}')]
-    public function feedAction(
+    public function feed(
         Request $request,
         AssessmentService $assessmentService,
         int $roomId,
@@ -202,7 +202,7 @@ class TodoController extends BaseController
 
     #[Route(path: '/room/{roomId}/todo/{itemId}', requirements: ['itemId' => '\d+'])]
     #[IsGranted('ITEM_SEE', subject: 'itemId')]
-    public function detailAction(
+    public function detail(
         Request $request,
         AnnotationService $annotationService,
         AssessmentService $assessmentService,
@@ -366,7 +366,7 @@ class TodoController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/createstep')]
-    public function createStepAction(
+    public function createStep(
         int $roomId,
         int $itemId
     ): Response {
@@ -386,7 +386,7 @@ class TodoController extends BaseController
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/editstep')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editStepAction(
+    public function editStep(
         Request $request,
         TodoTransformer $transformer,
         int $roomId,
@@ -454,7 +454,7 @@ class TodoController extends BaseController
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/edit')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editAction(
+    public function edit(
         Request $request,
         CategoryService $categoryService,
         LabelService $labelService,
@@ -550,7 +550,7 @@ class TodoController extends BaseController
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/save')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function saveAction(
+    public function save(
         int $roomId,
         int $itemId
     ): Response {
@@ -625,7 +625,7 @@ class TodoController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/rating/{vote}')]
-    public function ratingAction(
+    public function rating(
         AssessmentService $assessmentService,
         int $roomId,
         int $itemId,
@@ -645,7 +645,7 @@ class TodoController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/print')]
-    public function printAction(
+    public function print(
         AssessmentService $assessmentService,
         CategoryService $categoryService,
         PrintService $printService,
@@ -687,7 +687,7 @@ class TodoController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/todo/print/{sort}', defaults: ['sort' => 'none'])]
-    public function printlistAction(
+    public function printlist(
         Request $request,
         AssessmentService $assessmentService,
         PrintService $printService,
@@ -754,7 +754,7 @@ class TodoController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/participate')]
-    public function participateAction(
+    public function participate(
         int $roomId,
         int $itemId
     ): RedirectResponse {
@@ -780,7 +780,7 @@ class TodoController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/download')]
-    public function downloadAction(
+    public function download(
         Request $request,
         DownloadAction $action,
         int $roomId
@@ -798,7 +798,7 @@ class TodoController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/markread', condition: 'request.isXmlHttpRequest()')]
-    public function xhrMarkReadAction(
+    public function xhrMarkRead(
         Request $request,
         MarkReadAction $markReadAction,
         MarkReadTodo $markReadTodo,
@@ -815,7 +815,7 @@ class TodoController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/mark', condition: 'request.isXmlHttpRequest()')]
-    public function xhrMarkAction(
+    public function xhrMark(
         Request $request,
         MarkAction $action,
         $roomId
@@ -832,7 +832,7 @@ class TodoController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
-    public function xhrCategorizeAction(
+    public function xhrCategorize(
         Request $request,
         CategorizeAction $action,
         int $roomId
@@ -846,7 +846,7 @@ class TodoController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
-    public function xhrHashtagAction(
+    public function xhrHashtag(
         Request $request,
         HashtagAction $action,
         int $roomId
@@ -858,7 +858,7 @@ class TodoController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/activate', condition: 'request.isXmlHttpRequest()')]
-    public function xhrActivateAction(
+    public function xhrActivate(
         Request $request,
         ActivateAction $action,
         $roomId
@@ -873,7 +873,7 @@ class TodoController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeactivateAction(
+    public function xhrDeactivate(
         Request $request,
         DeactivateAction $action,
         $roomId
@@ -888,7 +888,7 @@ class TodoController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/delete', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeleteAction(
+    public function xhrDelete(
         Request $request,
         DeleteAction $action,
         int $roomId
@@ -903,7 +903,7 @@ class TodoController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/status', condition: 'request.isXmlHttpRequest()')]
-    public function xhrStatusAction(
+    public function xhrStatus(
         Request $request,
         TodoStatusAction $action,
         int $roomId
@@ -931,7 +931,7 @@ class TodoController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/changestatus/{itemId}', condition: 'request.isXmlHttpRequest()')]
-    public function xhrStatusFromDetailAction($roomId, $itemId, Request $request, TodoStatusAction $action): Response
+    public function xhrStatusFromDetail($roomId, $itemId, Request $request, TodoStatusAction $action): Response
     {
         $room = $this->roomService->getRoomItem($roomId);
         $items = [$this->todoService->getTodo($itemId)];

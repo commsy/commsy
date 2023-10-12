@@ -70,7 +70,7 @@ class ICalController extends AbstractController
      * @throws Exception
      */
     #[Route(path: '/ical/{contextId}')]
-    public function getContentAction(
+    public function getContent(
         Request $request,
         LegacyEnvironment $environment,
         int $contextId
