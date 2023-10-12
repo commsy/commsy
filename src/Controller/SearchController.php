@@ -753,16 +753,17 @@ class SearchController extends BaseController
 
     /**
      * Generates JSON results for the room navigation search-as-you-type form.
-     *
-     * @return JsonResponse The JSON result
      */
     #[Route(path: '/room/{roomId}/search/rooms')]
-    public function roomNavigationAction(
+    public function roomNavigation(
+        // Do not remove $roomId even if it is unused, @IsGranted() relies on this argument
+        /* @noinspection PhpUnusedParameterInspection */
+        int $roomId,
         Request $request,
         SearchManager $searchManager,
         RouterInterface $router,
         TranslatorInterface $translator
-    ): Response {
+    ): JsonResponse {
         $results = [];
 
         $query = $request->get('search', '');
