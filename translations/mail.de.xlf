@@ -250,6 +250,14 @@
                 <source>mail.user_joined_approve_link_desc</source>
                 <target>Zur Freischaltung folgen Sie bitte diesem Link:</target>
             </trans-unit>
+            <trans-unit id="mail_account_registration_subject">
+                <source>mail.account_registration.subject</source>
+                <target>Neue Kennung beantragt "%username%"</target>
+            </trans-unit>
+            <trans-unit id="mail_account_registration_intro">
+                <source>mail.account_registration.intro</source>
+                <target>%fullname% hat sich mit der Kennung "%username%" angemeldet.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

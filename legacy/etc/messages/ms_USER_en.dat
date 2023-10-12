@@ -72,14 +72,6 @@ $message["USER_EXPIRED_PASSWORD"]["en"] = "Password expired";
 $message["USER_EXPORT_ITEM_ZIP"]["en"] = "User";
 $message["USER_FIRSTNAME"]["en"] = "First name";
 $message["USER_FULLNAME"]["en"] = "Name";
-$message["USER_GET_MAIL_BODY"]["en"] = "%1 requests an account [%2].
-
-Further information:
-Name: %1
-Account: %2
-E-mail: %3
-Language: %4";
-$message["USER_GET_MAIL_SUBJECT"]["en"] = "Account request [%1]";
 $message["USER_HEADER"]["en"] = "Members";
 $message["USER_HOMEPAGE"]["en"] = "Homepage";
 $message["USER_ICQ"]["en"] = "ICQ";
