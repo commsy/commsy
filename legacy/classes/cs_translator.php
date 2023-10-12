@@ -887,9 +887,9 @@ class cs_translator
                 $adjective_tranlsation = $adjective_array[mb_strtoupper((string) $adjective)][mb_strtoupper($language)][mb_strtoupper((string) $genus)];
                 if (!empty($adjective_tranlsation)) {
                     if ('BIG' == $upper_case) {
-                        $adjective_tranlsation = cs_ucfirst($adjective_tranlsation);
+                        $adjective_tranlsation = ucfirst($adjective_tranlsation);
                     } elseif ('LOW' == $upper_case) {
-                        $adjective_tranlsation = cs_ucfirst($adjective_tranlsation);
+                        $adjective_tranlsation = ucfirst($adjective_tranlsation);
                     }
                     $retour = $adjective_tranlsation.' ';
                 }
@@ -986,7 +986,7 @@ class cs_translator
             $text = 'rubric';
         }
         if ('BIG' == $upper_case) {
-            $text = cs_ucfirst($text);
+            $text = ucfirst($text);
         }
 
         return $text;

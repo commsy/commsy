@@ -721,7 +721,7 @@ class cs_labels_manager extends cs_manager
               $db_array['description'] = $translator->getMessage('GROUP_ALL_DESC');
           }
       }
-      $db_array['extras'] = mb_unserialize($db_array['extras']);
+      $db_array['extras'] = unserialize($db_array['extras']);
       $item = parent::_buildItem($db_array);
 
       return $item;

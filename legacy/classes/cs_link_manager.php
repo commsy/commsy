@@ -1169,7 +1169,7 @@ class cs_link_manager extends cs_manager
      public function _buildItem($db_array)
      {
          if (!empty($db_array['extras'])) {
-             $db_array['extras'] = mb_unserialize($db_array['extras']);
+             $db_array['extras'] = unserialize($db_array['extras']);
          }
 
          return parent::_buildItem($db_array);

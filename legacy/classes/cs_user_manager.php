@@ -1040,7 +1040,7 @@ class cs_user_manager extends cs_manager
      */
     public function _buildItem($db_array)
     {
-        $db_array['extras'] = mb_unserialize($db_array['extras']);
+        $db_array['extras'] = unserialize($db_array['extras']);
 
         return parent::_buildItem($db_array);
     }
@@ -1680,7 +1680,7 @@ class cs_user_manager extends cs_manager
             foreach ($result as $rs) {
                 $extra_array = [];
                 if (!empty($rs['extras'])) {
-                    $extra_array = mb_unserialize($rs['extras']);
+                    $extra_array = unserialize($rs['extras']);
                     if (!empty($extra_array['LASTLOGIN_'.mb_strtoupper((string) $plugin)])
                          and $extra_array['LASTLOGIN_'.mb_strtoupper((string) $plugin)] > $start
                     ) {

@@ -91,7 +91,7 @@ function XMLToArray($xml)
                 $return[$element] = XMLToArray($value);
             } else {
                 if (!empty($element) and 'extras' == $element) {
-                    $value = mb_unserialize(mb_convert_encoding((string) $value, 'ISO-8859-1'));
+                    $value = unserialize(mb_convert_encoding((string) $value, 'ISO-8859-1'));
                 } elseif (isset($value)) {
                     // convert > and < to their html entities (gt; and &lt;)
                     if (strstr($value, '%CS_AND;')) {
@@ -154,7 +154,7 @@ function XML2Array($text)
  *
  * @return  $array1 array merged array
  */
-function multi_array_merge($array1, $array2)
+function multi_array_merge(array $array1, array $array2): array
 {
     foreach ($array2 as $key => $value) {
         if (is_array($value)) {
@@ -171,7 +171,7 @@ function multi_array_merge($array1, $array2)
     return $array1;
 }
 
-function getmicrotime()
+function getmicrotime(): float
 {
     [$usec, $sec] = explode(' ', microtime());
 
