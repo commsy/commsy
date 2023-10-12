@@ -264,11 +264,6 @@ class AccountFilterType extends AbstractType
         ;
     }
 
-    public function getBlockPrefix()
-    {
-        return 'account_filter';
-    }
-
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
