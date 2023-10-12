@@ -504,13 +504,6 @@ class RoomController extends AbstractController
         $templates['*'.$msg] = '-1';
 
         // re-sort array by elements
-        foreach ($templates as $index => $entry) {
-            if (!('No template' == $index)) {
-                unset($templates[$index]);
-                $templates[$index] = $entry;
-            }
-        }
-
         uasort($templates, fn ($a, $b) => $a <=> $b);
 
         $formData = [];
@@ -526,10 +519,9 @@ class RoomController extends AbstractController
         ]);
 
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
-            if ($form->get('save')->isClicked() && isset($formData['type_select'])) {
+            if ($form->get('save')->isClicked()) {
                 if ('project' == $formData['type_select']) {
                     $roomManager = $legacyEnvironment->getProjectManager();
                 } elseif ('community' == $formData['type_select']) {
@@ -612,7 +604,9 @@ class RoomController extends AbstractController
                     'portalId' => $legacyEnvironment->getCurrentPortalID(),
                     'itemId' => $legacyRoom->getItemId(),
                 ]);
-            } else {
+            }
+
+            if ($form->get('cancel')->isClicked()) {
                 return $this->redirectToRoute('app_room_listall', [
                     'roomId' => $roomId,
                 ]);
