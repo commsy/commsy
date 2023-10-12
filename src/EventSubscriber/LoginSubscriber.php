@@ -15,13 +15,13 @@ namespace App\EventSubscriber;
 
 use App\Account\AccountManager;
 use App\Entity\Account;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 readonly class LoginSubscriber implements EventSubscriberInterface

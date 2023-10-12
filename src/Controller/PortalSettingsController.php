@@ -1600,7 +1600,7 @@ class PortalSettingsController extends AbstractController
 
         return $this->render('portal_settings/account_index.html.twig', [
             'form' => $form,
-            'filterForm' => $filterForm->createView(),
+            'filterForm' => $filterForm,
             'pagination' => $pagination,
             'portalUsersForAccounts' => $portalUsersForAccounts,
             'portal' => $portal,
