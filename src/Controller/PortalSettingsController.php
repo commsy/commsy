@@ -537,7 +537,7 @@ class PortalSettingsController extends AbstractController
 
     #[Route(path: '/portal/{portalId}/settings/csvimport')]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function csvImportAction(
+    public function csvImport(
         Request $request,
         UserCreatorFacade $userCreator,
         #[MapEntity(id: 'portalId')]
@@ -1272,7 +1272,7 @@ class PortalSettingsController extends AbstractController
 
     #[Route(path: '/portal/{portalId}/settings/accountindex/{userIds}/performUserAction/{action}')]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function accountIndexPerformUserAction(
+    public function accountIndexPerformUser(
         $portalId,
         $userIds,
         $action,
@@ -1475,9 +1475,8 @@ class PortalSettingsController extends AbstractController
             $request->query->getInt('limit', 20)
         );
 
-        $portalUsersForAccounts = array_map(function (Account $account) use ($userRepository) {
-            return $userRepository->findPortalUser($account);
-        }, iterator_to_array($pagination));
+        $portalUsersForAccounts = array_map(fn(Account $account) =>
+            $userRepository->findPortalUser($account), iterator_to_array($pagination));
 
         $accountIndex = new AccountIndex();
         $accountIndexUserIds = [];

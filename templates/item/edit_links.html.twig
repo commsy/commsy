@@ -48,7 +48,7 @@
                                 <li>
                                     {# search entries #}
                                     {{ render(controller(
-                                    'App\\Controller\\SearchController::itemSearchFormAction',
+                                    'App\\Controller\\SearchController::itemSearchForm',
                                     { 'roomId': app.request.attributes.get('roomId'), 'linkSearch': itemId }
                                     )) }}
                                 </li>

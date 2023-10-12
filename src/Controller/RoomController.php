@@ -53,7 +53,7 @@ use UnexpectedValueException;
 class RoomController extends AbstractController
 {
     #[Route(path: '/room/{roomId}', requirements: ['roomId' => '\d+'])]
-    public function homeAction(
+    public function home(
         Request $request,
         ItemService $itemService,
         RoomService $roomService,
@@ -209,7 +209,7 @@ class RoomController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/feed/{start}/{sort}', requirements: ['roomId' => '\d+'])]
-    public function feedAction(
+    public function feed(
         Request $request,
         ReaderService $readerService,
         RoomFeedGenerator $roomFeedGenerator,
@@ -261,7 +261,7 @@ class RoomController extends AbstractController
      * @throws NonUniqueResultException
      */
     #[Route(path: '/room/{roomId}/all', requirements: ['roomId' => '\d+'])]
-    public function listAllAction(
+    public function listAll(
         Request $request,
         RoomService $roomService,
         FilterBuilderUpdater $filterBuilderUpdater,
@@ -334,7 +334,7 @@ class RoomController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/all/feed/{start}/{sort}')]
-    public function feedAllAction(
+    public function feedAll(
         Request $request,
         RoomService $roomService,
         FilterBuilderUpdater $filterBuilderUpdater,
@@ -428,7 +428,7 @@ class RoomController extends AbstractController
      */
     #[Route(path: '/room/{roomId}/all/create', requirements: ['itemId' => '\d+'])]
     #[IsGranted('ITEM_NEW')]
-    public function createAction(
+    public function create(
         Request $request,
         RoomService $roomService,
         UserService $userService,

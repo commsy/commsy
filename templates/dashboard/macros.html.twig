@@ -37,7 +37,7 @@
             <div class="feed">
                 <ul id="dashboard-feed" class="uk-comment-list">
                     {{ render(controller(
-                        'App\\Controller\\DashboardController::feedAction',
+                        'App\\Controller\\DashboardController::feed',
                         { 'roomId': roomItem.itemId }
                     ))}}
                 </ul>
@@ -63,7 +63,7 @@
             </div>
 
             {{ render(controller(
-            'App\\Controller\\DateController::calendardashboardAction',
+            'App\\Controller\\DateController::calendardashboard',
             { 'roomId': roomItem.itemId }
             ))}}
         </div>
@@ -80,7 +80,7 @@
             </div>
 
             {{ render(controller(
-            'App\\Controller\\DashboardController::rssAction',
+            'App\\Controller\\DashboardController::rss',
             { 'roomId': roomItem.itemId }
             ))}}
         </div>
@@ -97,7 +97,7 @@
             </div>
 
             {{ render(controller(
-            'App\\Controller\\DashboardController::externalaccessAction',
+            'App\\Controller\\DashboardController::externalaccess',
             { 'roomId': roomItem.itemId }
             ))}}
         </div>
@@ -112,7 +112,7 @@
             </div>
         </div>
         {{ render(controller(
-            'App\\Controller\\DashboardController::myViewsAction',
+            'App\\Controller\\DashboardController::myViews',
             { 'roomId': roomItem.itemId }
         )) }}
     </div>

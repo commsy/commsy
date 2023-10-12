@@ -44,7 +44,7 @@ class MarkedController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/mark/feed/{start}/{sort}')]
-    public function feedAction(
+    public function feed(
         Request $request,
         int $roomId,
         int $max = 10,
@@ -115,7 +115,7 @@ class MarkedController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/mark')]
-    public function listAction(
+    public function list(
         Request $request,
         int $roomId
     ): Response {
@@ -151,7 +151,7 @@ class MarkedController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/mark/xhr/insert', condition: 'request.isXmlHttpRequest()')]
-    public function xhrInsertAction(
+    public function xhrInsert(
         Request $request,
         InsertAction $action,
         int $roomId
@@ -168,7 +168,7 @@ class MarkedController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/mark/xhr/remove', condition: 'request.isXmlHttpRequest()')]
-    public function xhrRemoveAction(
+    public function xhrRemove(
         Request $request,
         RemoveAction $action,
         int $roomId): Response
@@ -185,7 +185,7 @@ class MarkedController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/mark/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
-    public function xhrCategorizeAction(
+    public function xhrCategorize(
         Request $request,
         CategorizeAction $action,
         int $roomId
@@ -199,7 +199,7 @@ class MarkedController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/mark/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
-    public function xhrHashtagAction(
+    public function xhrHashtag(
         Request $request,
         HashtagAction $action,
         int $roomId

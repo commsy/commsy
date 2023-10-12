@@ -77,7 +77,7 @@ class SearchController extends BaseController
      * Request data needs to be passed directly, since we can not handle data
      * from the main request here.
      */
-    public function searchFormAction(
+    public function searchForm(
         int $roomId,
         $requestData,
         RoomService $roomService
@@ -113,7 +113,7 @@ class SearchController extends BaseController
     /**
      * @param $roomId int The id of the containing context
      */
-    public function itemSearchFormAction(
+    public function itemSearchForm(
         int $roomId
     ): Response {
         $form = $this->createForm(SearchItemType::class, [], [
@@ -128,17 +128,14 @@ class SearchController extends BaseController
         ]);
     }
 
-    /**
-     * @return JsonResponse
-     */
     #[Route(path: '/room/{roomId}/search/itemresults')]
-    public function itemSearchResultsAction(
+    public function itemSearchResults(
         Request $request,
         SearchManager $searchManager,
         ReaderService $readerService,
         CalendarsService $calendarsService,
         int $roomId
-    ): Response {
+    ): JsonResponse {
         $query = $request->get('search', '');
 
         // query conditions
@@ -163,20 +160,15 @@ class SearchController extends BaseController
         return $response;
     }
 
-    /**
-     * @param $roomId int The context id
-     *
-     * @return JsonResponse
-     */
     #[Route(path: '/room/{roomId}/search/instantresults')]
-    public function instantResultsAction(
+    public function instantResults(
         Request $request,
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
         ReaderService $readerService,
         CalendarsService $calendarsService,
         int $roomId
-    ): Response {
+    ): JsonResponse {
         $query = $request->get('search', '');
 
         // query conditions
@@ -206,7 +198,7 @@ class SearchController extends BaseController
      * Displays search results.
      */
     #[Route(path: '/room/{roomId}/search/results')]
-    public function resultsAction(
+    public function results(
         Request $request,
         RoomService $roomService,
         SearchManager $searchManager,
@@ -421,7 +413,7 @@ class SearchController extends BaseController
      * Returns more search results.
      */
     #[Route(path: '/room/{roomId}/searchmore/{start}/{sort}')]
-    public function moreResultsAction(
+    public function moreResults(
         Request $request,
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
@@ -840,7 +832,7 @@ class SearchController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/search/xhr/mark', condition: 'request.isXmlHttpRequest()')]
-    public function xhrMarkAction(
+    public function xhrMark(
         Request $request,
         MarkAction $markAction,
         int $roomId
@@ -855,7 +847,7 @@ class SearchController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/search/xhr/delete', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeleteAction(
+    public function xhrDelete(
         Request $request,
         DeleteAction $deleteAction,
         int $roomId

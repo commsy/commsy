@@ -31,7 +31,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class HashtagController extends AbstractController
 {
-    public function showAction(
+    public function show(
         int $roomId,
         LabelRepository $labelRepository
     ): Response {
@@ -40,7 +40,7 @@ class HashtagController extends AbstractController
         ]);
     }
 
-    public function showDetailAction(
+    public function showDetail(
         int $roomId,
         LabelRepository $labelRepository
     ): Response {
@@ -49,7 +49,7 @@ class HashtagController extends AbstractController
         ]);
     }
 
-    public function showDetailShortAction(
+    public function showDetailShort(
         int $roomId,
         LabelRepository $labelRepository
     ): Response {
@@ -63,7 +63,7 @@ class HashtagController extends AbstractController
      */
     #[Route(path: '/room/{roomId}/hashtag/add')]
     #[IsGranted('HASHTAG_EDIT')]
-    public function addAction(
+    public function add(
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         LabelService $labelService,
@@ -94,7 +94,7 @@ class HashtagController extends AbstractController
 
     #[Route(path: '/room/{roomId}/hashtag/edit/{labelId}')]
     #[IsGranted('HASHTAG_EDIT')]
-    public function editAction(
+    public function edit(
         Request $request,
         LegacyEnvironment $legacyEnvironment,
         EventDispatcherInterface $eventDispatcher,
