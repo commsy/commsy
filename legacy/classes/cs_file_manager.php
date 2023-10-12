@@ -379,7 +379,7 @@ class cs_file_manager extends cs_manager
                 trigger_error('Problems getting data "' . $this->_db_table . '".', E_USER_WARNING);
             } else {
                 foreach ($sql_result as $sql_row) {
-                    $extra_array = mb_unserialize($sql_row['extras']);
+                    $extra_array = unserialize($sql_row['extras']);
                     $current_data_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$item_id];
                     // $current_copy_date_array[$extra_array['COPY']['ITEM_ID']] = $extra_array['COPY']['DATETIME'];
                     // $current_mod_date_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$modification_date];
@@ -423,7 +423,7 @@ class cs_file_manager extends cs_manager
                         elseif ('extras' == $key
                             and !empty($old_item_id)
                         ) {
-                            $extra_array = mb_unserialize($value);
+                            $extra_array = unserialize($value);
                             $extra_array['COPY']['ITEM_ID'] = $old_item_id;
                             $extra_array['COPY']['COPYING_DATE'] = $current_date;
                             $value = serialize($extra_array);
@@ -614,7 +614,7 @@ class cs_file_manager extends cs_manager
      */
     public function _buildItem($db_array)
     {
-        $db_array['extras'] = mb_unserialize($db_array['extras']);
+        $db_array['extras'] = unserialize($db_array['extras']);
 
         return parent::_buildItem($db_array);
     }

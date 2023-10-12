@@ -101,9 +101,7 @@ class cs_file_item extends cs_item
 
     public function getDisplayName()
     {
-        $temp_display_name = rawurldecode((string) $this->_getValue('filename'));
-
-        return cs_utf8_encode($temp_display_name);
+        return mb_convert_encoding(rawurldecode((string)$this->_getValue('filename')), 'UTF-8');
     }
 
     public function setTempKey($value)
