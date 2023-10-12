@@ -18,9 +18,6 @@ use App\Event\UserJoinedRoomEvent;
 use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
-use App\Form\Type\ModerationSupportType;
-use App\Mail\Mailer;
-use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
 use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
@@ -47,7 +44,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use UnexpectedValueException;
 
 /**
  * Class RoomController.
@@ -257,42 +254,6 @@ class RoomController extends AbstractController
         return $this->render('room/list.html.twig', ['feedList' => $feedList, 'readerList' => $readerList, 'showRating' => $current_context->isAssessmentActive()]);
     }
 
-    #[Route(path: '/room/{roomId}/moderationsupport', requirements: ['roomId' => '\d+'])]
-    public function moderationsupportAction(
-        Request $request,
-        TranslatorInterface $translator,
-        LegacyEnvironment $environment,
-        Mailer $mailer,
-        int $roomId
-    ): Response {
-        $moderationsupportData = [];
-        $form = $this->createForm(ModerationSupportType::class, $moderationsupportData, ['action' => $this->generateUrl('app_room_moderationsupport', ['roomId' => $roomId])]);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            $legacyEnvironment = $environment->getEnvironment();
-            $currentUser = $legacyEnvironment->getCurrentUser();
-            $roomManager = $legacyEnvironment->getRoomManager();
-            $roomItem = $roomManager->getItem($roomId);
-
-            $moderationRecipients = RecipientFactory::createModerationRecipients($roomItem);
-
-            $mailer->sendMultipleRaw(
-                $data['subject'],
-                $data['message'],
-                $moderationRecipients,
-                $currentUser->getFullName(),
-                [$currentUser->getEmail()]
-            );
-
-            return $this->render('room/moderationsupport.html.twig');
-        }
-
-        return $this->render('room/moderationsupport.html.twig', ['form' => $form]);
-    }
-
     /**
      * @param Request $request [description]
      *
@@ -484,9 +445,7 @@ class RoomController extends AbstractController
         $type = '';
         $context = $request->get('context');
         if ($context) {
-            if (isset($context['type_select'])) {
-                $type = $context['type_select'];
-            }
+            $type = $context['type_select'] ?? '';
         }
 
         // NOTE: `getDefault...TemplateID()` may also return '-1' (if no default template is defined)
