@@ -14,6 +14,7 @@
 namespace App\Entity;
 
 use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -23,22 +24,22 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'noticed')]
 class Noticed
 {
-    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private int $itemId;
 
-    #[ORM\Column(name: 'version_id', type: 'integer')]
+    #[ORM\Column(name: 'version_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private int $versionId;
 
-    #[ORM\Column(name: 'user_id', type: 'integer')]
+    #[ORM\Column(name: 'user_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private string $userId = '0';
 
-    #[ORM\Column(name: 'read_date', type: 'datetime')]
+    #[ORM\Column(name: 'read_date', type: Types::DATETIME_MUTABLE)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private DateTime $readDate;

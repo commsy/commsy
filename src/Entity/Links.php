@@ -22,81 +22,51 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'links')]
-#[ORM\Index(name: 'context_id', columns: ['context_id'])]
-#[ORM\Index(name: 'link_type', columns: ['link_type'])]
-#[ORM\Index(name: 'from_item_id', columns: ['from_item_id'])]
-#[ORM\Index(name: 'from_version_id', columns: ['from_version_id'])]
-#[ORM\Index(name: 'to_item_id', columns: ['to_item_id'])]
-#[ORM\Index(name: 'to_version_id', columns: ['to_version_id'])]
+#[ORM\Index(columns: ['context_id'], name: 'context_id')]
+#[ORM\Index(columns: ['link_type'], name: 'link_type')]
+#[ORM\Index(columns: ['from_item_id'], name: 'from_item_id')]
+#[ORM\Index(columns: ['from_version_id'], name: 'from_version_id')]
+#[ORM\Index(columns: ['to_item_id'], name: 'to_item_id')]
+#[ORM\Index(columns: ['to_version_id'], name: 'to_version_id')]
 class Links
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'from_item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $fromItemId = 0;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'from_version_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $fromVersionId = 0;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'to_item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $toItemId = 0;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'to_version_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $toVersionId = 0;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'link_type', type: Types::STRING, length: 30)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?string $linkType = null;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private ?int $deleterId = null;
 
-    /**
-     * @var DateTimeInterface
-     */
     #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTimeInterface $deletionDate = null;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'x', type: Types::INTEGER, nullable: true)]
     private ?int $x = null;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'y', type: Types::INTEGER, nullable: true)]
     private ?int $y = null;
 }

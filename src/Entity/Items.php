@@ -15,6 +15,8 @@ namespace App\Entity;
 
 use App\Repository\ItemRepository;
 use DateTime;
+use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ItemRepository::class)]
@@ -48,38 +50,23 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(columns: ['type'], name: 'type')]
 abstract class Items
 {
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $itemId;
+    private ?int $itemId = null;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
-    private $contextId;
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
+    private ?int $contextId = null;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
-    private $deleterId;
+    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
+    private ?int $deleterId = null;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private $deletionDate;
+    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $deletionDate = null;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: true)]
-    private $modificationDate;
+    #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $modificationDate = null;
 
-    #[ORM\Column(name: 'activation_date', type: 'datetime')]
+    #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
     private ?DateTime $activationDate = null;
 }

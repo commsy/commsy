@@ -21,20 +21,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'external_viewer')]
-#[ORM\Index(name: 'item_id', columns: ['item_id', 'user_id'])]
+#[ORM\Index(columns: ['item_id', 'user_id'], name: 'item_id')]
 class ExternalViewer
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $itemId = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'user_id', type: Types::STRING, length: 32)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]

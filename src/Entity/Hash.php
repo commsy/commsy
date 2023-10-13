@@ -21,27 +21,18 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'hash')]
-#[ORM\Index(name: 'rss', columns: ['rss'])]
-#[ORM\Index(name: 'ical', columns: ['ical'])]
+#[ORM\Index(columns: ['rss'], name: 'rss')]
+#[ORM\Index(columns: ['ical'], name: 'ical')]
 class Hash
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'user_item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $userItemId = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'rss', type: Types::STRING, length: 32, nullable: true)]
     private ?string $rss = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'ical', type: Types::STRING, length: 32, nullable: true)]
     private ?string $ical = null;
 

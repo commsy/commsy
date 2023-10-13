@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,12 +23,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'template_portfolio')]
 class TemplatePortfolio
 {
-    #[ORM\Column(name: 'p_id', type: 'integer')]
+    #[ORM\Column(name: 'p_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private int $pId;
 
-    #[ORM\Column(name: 'u_id', type: 'string', length: 32)]
+    #[ORM\Column(name: 'u_id', type: Types::STRING, length: 32)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private string $uId = '';

@@ -15,6 +15,7 @@ namespace App\Entity;
 
 use App\Utils\EntityDatesTrait;
 use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,22 +23,19 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'dates')]
-#[ORM\Index(name: 'context_id', columns: ['context_id'])]
-#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
+#[ORM\Index(columns: ['context_id'], name: 'context_id')]
+#[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
 class Dates
 {
     use EntityDatesTrait;
 
-    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $itemId;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
-    private $contextId;
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
+    private ?int $contextId = null;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
@@ -47,107 +45,68 @@ class Dates
     #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
     private ?User $modifier = null;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
-    private $deleterId;
+    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
+    private ?int $deleterId = null;
 
-    #[ORM\Column(name: 'activation_date', type: 'datetime')]
+    #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
     private ?DateTime $activationDate = null;
 
-    #[ORM\Column(name: 'title', type: 'string', length: 255)]
-    private $title;
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 255)]
+    private ?string $title = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'description', type: 'text', length: 16_777_215, nullable: true)]
-    private $description;
+    #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
+    private ?string $description = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'start_time', type: 'string', length: 100, nullable: true)]
-    private $startTime;
+    #[ORM\Column(name: 'start_time', type: Types::STRING, length: 100, nullable: true)]
+    private ?string $startTime = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'end_time', type: 'string', length: 100, nullable: true)]
-    private $endTime;
+    #[ORM\Column(name: 'end_time', type: Types::STRING, length: 100, nullable: true)]
+    private ?string $endTime = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'start_day', type: 'string', length: 100, nullable: false)]
-    private $startDay;
+    #[ORM\Column(name: 'start_day', type: Types::STRING, length: 100, nullable: false)]
+    private string $startDay;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'end_day', type: 'string', length: 100, nullable: true)]
-    private $endDay;
+    #[ORM\Column(name: 'end_day', type: Types::STRING, length: 100, nullable: true)]
+    private ?string $endDay = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'place', type: 'string', length: 100, nullable: true)]
-    private $place;
+    #[ORM\Column(name: 'place', type: Types::STRING, length: 100, nullable: true)]
+    private ?string $place = null;
 
-    #[ORM\Column(name: 'datetime_start', type: 'datetime', nullable: false)]
+    #[ORM\Column(name: 'datetime_start', type: Types::DATETIME_MUTABLE, nullable: false)]
     private DateTime $datetimeStart;
 
-    #[ORM\Column(name: 'datetime_end', type: 'datetime', nullable: false)]
+    #[ORM\Column(name: 'datetime_end', type: Types::DATETIME_MUTABLE, nullable: false)]
     private DateTime $datetimeEnd;
 
-    #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
+    #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
     private string $public = '0';
 
-    #[ORM\Column(name: 'date_mode', type: 'boolean', nullable: false)]
+    #[ORM\Column(name: 'date_mode', type: Types::BOOLEAN, nullable: false)]
     private string $dateMode = '0';
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
-    private $extras;
+    #[ORM\Column(name: 'extras', type: Types::TEXT, length: 65535, nullable: true)]
+    private ?string $extras = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'color', type: 'string', length: 255, nullable: true)]
-    private $color;
+    #[ORM\Column(name: 'color', type: Types::STRING, length: 255, nullable: true)]
+    private ?string $color = null;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'recurrence_id', type: 'integer', nullable: true)]
-    private $recurrenceId;
+    #[ORM\Column(name: 'recurrence_id', type: Types::INTEGER, nullable: true)]
+    private ?int $recurrenceId = null;
+    #
+    #[ORM\Column(name: 'recurrence_pattern', type: Types::TEXT, length: 65535, nullable: true)]
+    private ?string $recurrencePattern = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'recurrence_pattern', type: 'text', length: 65535, nullable: true)]
-    private $recurrencePattern;
-
-    #[ORM\Column(name: 'external', type: 'boolean', nullable: false)]
+    #[ORM\Column(name: 'external', type: Types::BOOLEAN, nullable: false)]
     private string $external = '0';
 
-    #[ORM\Column(name: 'whole_day', type: 'boolean', nullable: false)]
+    #[ORM\Column(name: 'whole_day', type: Types::BOOLEAN, nullable: false)]
     private string $wholeDay = '0';
 
-    /**
-     * @var uid
-     */
-    #[ORM\Column(name: 'uid', type: 'string', length: 255, nullable: true)]
-    private $uid;
+    #[ORM\Column(name: 'uid', type: Types::STRING, length: 255, nullable: true)]
+    private ?string $uid = null;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'calendar_id', type: 'integer', nullable: true)]
-    private $calendarId;
+    #[ORM\Column(name: 'calendar_id', type: Types::INTEGER, nullable: true)]
+    private ?int $calendarId = null;
 
     public function isIndexable()
     {

@@ -15,6 +15,7 @@ namespace App\Entity;
 
 use App\Repository\TasksRepository;
 use App\Utils\EntityDatesTrait;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,32 +23,32 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity(repositoryClass: TasksRepository::class)]
 #[ORM\Table(name: 'tasks')]
-#[ORM\Index(name: 'context_id', columns: ['context_id'])]
-#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
+#[ORM\Index(columns: ['context_id'], name: 'context_id')]
+#[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
 class Tasks
 {
     use EntityDatesTrait;
 
-    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $itemId;
 
-    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
-    private $contextId;
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
+    private ?int $contextId = null;
 
-    #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
+    #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: false)]
     private string $creatorId = '0';
 
-    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
-    private $deleterId;
+    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
+    private ?int $deleterId = null;
 
-    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
-    private $title;
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
+    private string $title;
 
-    #[ORM\Column(name: 'status', type: 'string', length: 20, nullable: false)]
-    private $status;
+    #[ORM\Column(name: 'status', type: Types::STRING, length: 20, nullable: false)]
+    private string $status;
 
-    #[ORM\Column(name: 'linked_item_id', type: 'integer', nullable: false)]
+    #[ORM\Column(name: 'linked_item_id', type: Types::INTEGER, nullable: false)]
     private string $linkedItemId = '0';
 }

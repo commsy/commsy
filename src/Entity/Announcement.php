@@ -15,6 +15,7 @@ namespace App\Entity;
 
 use App\Utils\EntityDatesTrait;
 use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,22 +23,19 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'announcement')]
-#[ORM\Index(name: 'context_id', columns: ['context_id'])]
-#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
+#[ORM\Index(columns: ['context_id'], name: 'context_id')]
+#[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
 class Announcement
 {
     use EntityDatesTrait;
 
-    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $itemId;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
-    private $contextId;
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
+    private ?int $contextId = null;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
@@ -51,23 +49,23 @@ class Announcement
     #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id')]
     private ?User $deleter = null;
 
-    #[ORM\Column(name: 'activation_date', type: 'datetime')]
+    #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
     private ?DateTime $activationDate = null;
 
-    #[ORM\Column(name: 'title', type: 'string', length: 255)]
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 255)]
     private string $title;
 
-    #[ORM\Column(name: 'description', type: 'text', length: 16_777_215, nullable: true)]
-    private ?string $description;
+    #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
+    private ?string $description = null;
 
-    #[ORM\Column(name: 'enddate', type: 'datetime')]
+    #[ORM\Column(name: 'enddate', type: Types::DATETIME_MUTABLE)]
     private DateTime $enddate;
 
-    #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
+    #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
     private string $public = '0';
 
-    #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
-    private $extras;
+    #[ORM\Column(name: 'extras', type: Types::TEXT, length: 65535, nullable: true)]
+    private ?string $extras = null;
 
     public function __construct()
     {

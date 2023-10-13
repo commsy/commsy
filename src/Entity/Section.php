@@ -14,6 +14,7 @@
 namespace App\Entity;
 
 use App\Utils\EntityDatesTrait;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -21,42 +22,42 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'section')]
-#[ORM\Index(name: 'context_id', columns: ['context_id'])]
-#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
-#[ORM\Index(name: 'material_item_id', columns: ['material_item_id'])]
+#[ORM\Index(columns: ['context_id'], name: 'context_id')]
+#[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
+#[ORM\Index(columns: ['material_item_id'], name: 'material_item_id')]
 class Section
 {
     use EntityDatesTrait;
 
-    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private int $itemId;
 
-    #[ORM\Column(name: 'version_id', type: 'integer')]
+    #[ORM\Column(name: 'version_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private int $versionId;
 
-    #[ORM\Column(name: 'context_id', type: 'integer')]
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
     private int $contextId;
 
-    #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
+    #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: false)]
     private string $creatorId = '0';
 
-    #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: true)]
-    private $modifierId;
+    #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
+    private ?int $modifierId = null;
 
-    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
-    private $deleterId;
+    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
+    private ?int $deleterId = null;
 
-    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
-    private $title;
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
+    private string $title;
 
-    #[ORM\Column(name: 'description', type: 'text', length: 16_777_215, nullable: true)]
-    private $description;
+    #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
+    private ?string $description = null;
 
-    #[ORM\Column(name: 'number', type: 'smallint', nullable: false)]
+    #[ORM\Column(name: 'number', type: Types::SMALLINT, nullable: false)]
     private string $number = '0';
 
     #[ORM\ManyToOne(targetEntity: 'Materials', inversedBy: 'sections')]
@@ -64,10 +65,10 @@ class Section
     #[ORM\JoinColumn(name: 'version_id', referencedColumnName: 'version_id')]
     private ?Materials $material = null;
 
-    #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
-    private $extras;
+    #[ORM\Column(name: 'extras', type: Types::TEXT, length: 65535, nullable: true)]
+    private ?string $extras = null;
 
-    #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
+    #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
     private string $public = '0';
 
     public function setItemId(int $itemId)

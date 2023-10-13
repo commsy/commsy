@@ -14,6 +14,7 @@
 namespace App\Entity;
 
 use App\Utils\EntityDatesTrait;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -21,31 +22,31 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'tag')]
-#[ORM\Index(name: 'context_id', columns: ['context_id'])]
+#[ORM\Index(columns: ['context_id'], name: 'context_id')]
 class Tag
 {
     use EntityDatesTrait;
 
-    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $itemId;
 
-    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
-    private $contextId;
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
+    private ?int $contextId = null;
 
-    #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
+    #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: false)]
     private string $creatorId = '0';
 
-    #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: true)]
-    private $modifierId;
+    #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
+    private ?int $modifierId = null;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id')]
     private ?User $deleter = null;
 
-    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
-    private $title;
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
+    private string $title;
 
     public function getItemId(): int
     {
