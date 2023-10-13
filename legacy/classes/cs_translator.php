@@ -1062,7 +1062,7 @@ class cs_translator
             $text = $cs_article[$language][$mode][$rubric_array[$language]['GENUS']][cs_strtoupper($position)];
         }
         if ('BIG' == $upper_case) {
-            $text = cs_ucfirst($text);
+            $text = ucfirst($text);
         }
 
         return $text;
