@@ -8,7 +8,7 @@ use App\Mail\Message;
 class AccountCreatedModerationMessage extends Message
 {
     public function __construct(
-        private Account $account
+        private readonly Account $account
     ) {}
 
     public function getSubject(): string

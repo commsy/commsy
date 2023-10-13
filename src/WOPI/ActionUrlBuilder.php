@@ -4,7 +4,7 @@ namespace App\WOPI;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-final class ActionUrlBuilder
+final readonly class ActionUrlBuilder
 {
     private ArrayCollection $parts;
 
@@ -108,13 +108,13 @@ final class ActionUrlBuilder
 
         $url = "{$parsed['scheme']}://$host:$port{$parsed['path']}?&";
         foreach ($matches as $match) {
-            list(, $key, $parameter, $and) = $match;
+            [, $key, $parameter, $and] = $match;
 
             if (!$this->parts->containsKey($parameter)) {
                 continue;
             }
 
-            $value = urlencode($this->parts->get($parameter));
+            $value = urlencode((string) $this->parts->get($parameter));
             $url .= "$key=$value$and";
         }
 

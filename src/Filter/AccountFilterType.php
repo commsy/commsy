@@ -33,7 +33,7 @@ class AccountFilterType extends AbstractType
                         return null;
                     }
 
-                    $tokens = explode(' ', $values['value']);
+                    $tokens = explode(' ', (string) $values['value']);
 
                     $expr = $filterQuery->getExpr();
                     $qb = $filterQuery->getQueryBuilder();
@@ -89,169 +89,130 @@ class AccountFilterType extends AbstractType
                     /** @var QueryBuilder $qb */
                     $qb = $filterQuery->getQueryBuilder();
 
-                    switch ($status) {
+                    match ($status) {
                         // Members
-                        case 1:
-                            $qb
-                                ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                                ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
-                                ->andWhere('r.itemId IS NOT NULL')
-                                ->andWhere('ru.isNotDeleted = :notDeleted')
-                                ->andWhere('r.deleter IS NULL')
-                                ->andWhere('r.deletionDate IS NULL')
-                                ->andWhere('(r.type = :project OR r.type = :community)')
-                                ->setParameter('notDeleted', true)
-                                ->setParameter('project', 'project')
-                                ->setParameter('community', 'community');
-                            break;
-
+                        1 => $qb
+                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
+                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
+                            ->andWhere('r.itemId IS NOT NULL')
+                            ->andWhere('ru.isNotDeleted = :notDeleted')
+                            ->andWhere('r.deleter IS NULL')
+                            ->andWhere('r.deletionDate IS NULL')
+                            ->andWhere('(r.type = :project OR r.type = :community)')
+                            ->setParameter('notDeleted', true)
+                            ->setParameter('project', 'project')
+                            ->setParameter('community', 'community'),
                         // Locked
-                        case 2:
-                            $qb
-                                ->andWhere($expr->eq('a.locked', ':locked'))
-                                ->setParameter('locked', true);
-                            break;
-
+                        2 => $qb
+                            ->andWhere($expr->eq('a.locked', ':locked'))
+                            ->setParameter('locked', true),
                         // Requesting
-                        case 3:
-                            $qb
-                                ->innerJoin(User::class, 'pu', Join::WITH, 'pu.contextId = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
-                                ->andWhere($expr->eq('pu.status', ':status'))
-                                ->setParameter('status', 1);
-                            break;
-
+                        3 => $qb
+                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.contextId = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
+                            ->andWhere($expr->eq('pu.status', ':status'))
+                            ->setParameter('status', 1),
                         // User
-                        case 4:
-                            $qb
-                                ->innerJoin(User::class, 'pu', Join::WITH, 'pu.contextId = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
-                                ->andWhere($expr->eq('pu.status', ':status'))
-                                ->setParameter('status', 2);
-                            break;
-
+                        4 => $qb
+                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.contextId = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
+                            ->andWhere($expr->eq('pu.status', ':status'))
+                            ->setParameter('status', 2),
                         // Moderator
-                        case 5:
-                            $qb
-                                ->innerJoin(User::class, 'pu', Join::WITH, 'pu.contextId = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
-                                ->andWhere($expr->eq('pu.status', ':status'))
-                                ->setParameter('status', 3);
-                            break;
-
+                        5 => $qb
+                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.contextId = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
+                            ->andWhere($expr->eq('pu.status', ':status'))
+                            ->setParameter('status', 3),
                         // Contact
-                        case 6:
-                            $qb
-                                ->innerJoin(User::class, 'pu', Join::WITH, 'pu.contextId = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
-                                ->andWhere($expr->eq('pu.isContact', ':contact'))
-                                ->setParameter('contact', true);
-                            break;
-
+                        6 => $qb
+                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.contextId = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
+                            ->andWhere($expr->eq('pu.isContact', ':contact'))
+                            ->setParameter('contact', true),
                         // Community workspace moderator
-                        case 7:
-                            $qb
-                                ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                                ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
-                                ->andWhere('ru.isNotDeleted = :notDeleted')
-                                ->andWhere('ru.status = :status')
-                                ->andWhere('r.deleter IS NULL')
-                                ->andWhere('r.deletionDate IS NULL')
-                                ->andWhere('r.type = :type')
-                                ->setParameter('notDeleted', true)
-                                ->setParameter('type', 'community')
-                                ->setParameter('status', 3);
-                            break;
-
+                        7 => $qb
+                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
+                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
+                            ->andWhere('ru.isNotDeleted = :notDeleted')
+                            ->andWhere('ru.status = :status')
+                            ->andWhere('r.deleter IS NULL')
+                            ->andWhere('r.deletionDate IS NULL')
+                            ->andWhere('r.type = :type')
+                            ->setParameter('notDeleted', true)
+                            ->setParameter('type', 'community')
+                            ->setParameter('status', 3),
                         // Community workspace contact
-                        case 8:
-                            $qb
-                                ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                                ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
-                                ->andWhere('ru.isNotDeleted = :notDeleted')
-                                ->andWhere('ru.isContact = :contact')
-                                ->andWhere('r.deleter IS NULL')
-                                ->andWhere('r.deletionDate IS NULL')
-                                ->andWhere('r.type = :type')
-                                ->setParameter('notDeleted', true)
-                                ->setParameter('type', 'community')
-                                ->setParameter('contact', true);
-                            break;
-
+                        8 => $qb
+                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
+                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
+                            ->andWhere('ru.isNotDeleted = :notDeleted')
+                            ->andWhere('ru.isContact = :contact')
+                            ->andWhere('r.deleter IS NULL')
+                            ->andWhere('r.deletionDate IS NULL')
+                            ->andWhere('r.type = :type')
+                            ->setParameter('notDeleted', true)
+                            ->setParameter('type', 'community')
+                            ->setParameter('contact', true),
                         // Project workspace moderator
-                        case 9:
-                            $qb
-                                ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                                ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
-                                ->andWhere('ru.isNotDeleted = :notDeleted')
-                                ->andWhere('ru.status = :status')
-                                ->andWhere('r.deleter IS NULL')
-                                ->andWhere('r.deletionDate IS NULL')
-                                ->andWhere('r.type = :type')
-                                ->setParameter('notDeleted', true)
-                                ->setParameter('type', 'project')
-                                ->setParameter('status', 3);
-                            break;
-
+                        9 => $qb
+                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
+                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
+                            ->andWhere('ru.isNotDeleted = :notDeleted')
+                            ->andWhere('ru.status = :status')
+                            ->andWhere('r.deleter IS NULL')
+                            ->andWhere('r.deletionDate IS NULL')
+                            ->andWhere('r.type = :type')
+                            ->setParameter('notDeleted', true)
+                            ->setParameter('type', 'project')
+                            ->setParameter('status', 3),
                         // project workspace contact
-                        case 10:
-                            $qb
-                                ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                                ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
-                                ->andWhere('ru.isNotDeleted = :notDeleted')
-                                ->andWhere('ru.isContact = :contact')
-                                ->andWhere('r.deleter IS NULL')
-                                ->andWhere('r.deletionDate IS NULL')
-                                ->andWhere('r.type = :type')
-                                ->setParameter('notDeleted', true)
-                                ->setParameter('type', 'project')
-                                ->setParameter('contact', true);
-                            break;
-
+                        10 => $qb
+                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
+                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
+                            ->andWhere('ru.isNotDeleted = :notDeleted')
+                            ->andWhere('ru.isContact = :contact')
+                            ->andWhere('r.deleter IS NULL')
+                            ->andWhere('r.deletionDate IS NULL')
+                            ->andWhere('r.type = :type')
+                            ->setParameter('notDeleted', true)
+                            ->setParameter('type', 'project')
+                            ->setParameter('contact', true),
                         // moderator of any workspace
-                        case 11:
-                            $qb
-                                ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                                ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
-                                ->andWhere('ru.status = :status')
-                                ->andWhere('ru.isNotDeleted = :notDeleted')
-                                ->andWhere('r.deleter IS NULL')
-                                ->andWhere('r.deletionDate IS NULL')
-                                ->setParameter('notDeleted', true)
-                                ->setParameter('status', 3);
-                            break;
-
+                        11 => $qb
+                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
+                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
+                            ->andWhere('ru.status = :status')
+                            ->andWhere('ru.isNotDeleted = :notDeleted')
+                            ->andWhere('r.deleter IS NULL')
+                            ->andWhere('r.deletionDate IS NULL')
+                            ->setParameter('notDeleted', true)
+                            ->setParameter('status', 3),
                         // contact of any workspace
-                        case 12:
-                            $qb
-                                ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                                ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
-                                ->andWhere('ru.isContact = :contact')
-                                ->andWhere('ru.isNotDeleted = :notDeleted')
-                                ->andWhere('r.deleter IS NULL')
-                                ->andWhere('r.deletionDate IS NULL')
-                                ->setParameter('notDeleted', true)
-                                ->setParameter('contact', true);
-                            break;
-
+                        12 => $qb
+                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
+                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
+                            ->andWhere('ru.isContact = :contact')
+                            ->andWhere('ru.isNotDeleted = :notDeleted')
+                            ->andWhere('r.deleter IS NULL')
+                            ->andWhere('r.deletionDate IS NULL')
+                            ->setParameter('notDeleted', true)
+                            ->setParameter('contact', true),
                         // no workspace membership
-                        case 13:
-                            $qb
-                                ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                                ->leftJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
-                                ->andWhere('ru.isNotDeleted = :notDeleted')
-                                ->groupBy('ru.userId')
-                                ->having('COUNT(ru.userId) = 2')
-                                ->setParameter('notDeleted', true);
-                            break;
-                    }
+                        13 => $qb
+                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
+                            ->leftJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
+                            ->andWhere('ru.isNotDeleted = :notDeleted')
+                            ->groupBy('ru.userId')
+                            ->having('COUNT(ru.userId) = 2')
+                            ->setParameter('notDeleted', true),
+                        default => $qb,
+                    };
 
                     return $qb;
                 },
             ])
             ->add('authSource', EntityFilterType::class, [
                 'class' => AuthSource::class,
-                'query_builder' => function (EntityRepository $er): QueryBuilder {
-                    return $er->createQueryBuilder('a')
-                        ->where('a.portal = :portalId')
-                        ->setParameter('portalId', 1);
-                },
+                'query_builder' => fn(EntityRepository $er): QueryBuilder => $er->createQueryBuilder('a')
+                    ->where('a.portal = :portalId')
+                    ->setParameter('portalId', 1),
                 'choice_label' => 'title',
                 'label' => 'authSource',
                 'translation_domain' => 'portal',

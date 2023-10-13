@@ -21,7 +21,7 @@ use Symfony\Component\Security\Http\SecurityRequestAttributes;
 
 abstract class AbstractCommsyAuthenticator extends AbstractAuthenticator
 {
-    public const LAST_SOURCE = '_security.last_source';
+    final public const LAST_SOURCE = '_security.last_source';
 
     public function __construct(
         protected UrlGeneratorInterface $urlGenerator,
