@@ -1,6 +1,6 @@
 {% set searchAllRooms = 'Search in all my rooms'|trans({}, 'search') %}
 {% set searchCurrentRoom = 'Search in this room'|trans({}, 'search') ~ ' ' ~ originalRoomTitle %}
-{%- verbatim -%}
+{% verbatim %}
 <ul class="uk-nav uk-nav-search uk-autocomplete-results">\
     {{#msgResultsHeader}}<li class="uk-nav-header uk-skip">{{msgResultsHeader}}</li>{{/msgResultsHeader}}\
     {{#items && items.length}}\
@@ -17,15 +17,15 @@
         {{/items}}\
         {{#msgMoreResults}}\
             <li class="uk-nav-header uk-skip">{{msgMoreResults}}</li>\
-            <li class="uk-search-moreresults" data-moreresults="true"><a href="#" onclick="jQuery(this).closest(\'form\').submit()">{%- endverbatim -%}{{ searchAllRooms }}{%- verbatim -%}</a></li>\
-            {%- endverbatim -%}{% if originalRoomId is not same as 1 %}{%- verbatim -%}<li class="uk-search-moreresults" data-moreresults="true" data-url="{%- endverbatim -%}{{ path('app_search_results', { 'roomId': roomId, 'originalContext': originalRoomId }) }}\
-                {%- verbatim -%}&search%5Bphrase%5D={{#items && items.length}}{{#$item.searchPhrase}}{{{$item.searchPhrase}}}{{/$item.searchPhrase}}{{/items}}">\
-                    <a href="#">{%- endverbatim -%}{{ searchCurrentRoom }}{%- verbatim -%}</a>\
-            </li>\{%- endverbatim -%}{% endif %}{%- verbatim -%}
+            <li class="uk-search-moreresults" data-moreresults="true"><a href="#" onclick="jQuery(this).closest(\'form\').submit()">{% endverbatim %}{{ searchAllRooms }}{% verbatim %}</a></li>\
+            {% endverbatim %}{% if originalRoomId is not same as 1 %}{% verbatim %}<li class="uk-search-moreresults" data-moreresults="true" data-url="{% endverbatim %}{{ path('app_search_results', { 'roomId': roomId, 'originalContext': originalRoomId }) }}\
+                {% verbatim %}&search%5Bphrase%5D={{#items && items.length}}{{#$item.searchPhrase}}{{{$item.searchPhrase}}}{{/$item.searchPhrase}}{{/items}}">\
+                    <a href="#">{% endverbatim %}{{ searchCurrentRoom }}{% verbatim %}</a>\
+            </li>\{% endverbatim %}{% endif %}{% verbatim %}
         {{/msgMoreResults}}\
     {{/end}}\
     {{^items.length}}\
       {{#msgNoResults}}<li class="uk-skip"><a>{{msgNoResults}}</a></li>{{/msgNoResults}}\
     {{/end}}\
 </ul>
-{%- endverbatim -%}
+{% endverbatim %}
