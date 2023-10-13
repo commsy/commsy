@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,28 +21,25 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'tag_portfolio')]
-#[ORM\Index(name: 'row', columns: ['row', 'column'])]
+#[ORM\Index(columns: ['row', 'column'], name: 'row')]
 class TagPortfolio
 {
-    #[ORM\Column(name: 'p_id', type: 'integer')]
+    #[ORM\Column(name: 'p_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private int $pId;
 
-    #[ORM\Column(name: 't_id', type: 'integer')]
+    #[ORM\Column(name: 't_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private int $tId;
 
-    #[ORM\Column(name: 'row', type: 'integer', nullable: true)]
+    #[ORM\Column(name: 'row', type: Types::INTEGER, nullable: true)]
     private int $row;
 
-    #[ORM\Column(name: 'column', type: 'integer', nullable: true)]
+    #[ORM\Column(name: 'column', type: Types::INTEGER, nullable: true)]
     private int $column;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'description', type: 'text', length: 65535, nullable: true)]
-    private $description;
+    #[ORM\Column(name: 'description', type: Types::TEXT, length: 65535, nullable: true)]
+    private ?string $description = null;
 }

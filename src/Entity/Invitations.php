@@ -24,35 +24,26 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'invitations')]
 class Invitations
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?int $id = null;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'hash', type: Types::STRING)]
     private ?string $hash = null;
-    /**
-     * @var string
-     */
+
     #[ORM\Column(name: 'email', type: Types::STRING)]
     private ?string $email = null;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'authsource_id', type: Types::INTEGER)]
     private ?int $authSourceId = null;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
     private ?int $contextId = null;
+
     #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
     private DateTime $creationDate;
+
     #[ORM\Column(name: 'expiration_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     private DateTime $expirationDate;
 

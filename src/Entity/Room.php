@@ -21,6 +21,7 @@ use App\Repository\RoomRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -51,68 +52,92 @@ class Room
     public final const ACTIVITY_IDLE = 'idle';
     public final const ACTIVITY_IDLE_NOTIFIED = 'idle_notified';
     public final const ACTIVITY_ABANDONED = 'abandoned';
+
     #[ApiProperty(description: 'The unique identifier')]
-    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[Groups(['api'])]
     private int $itemId;
-    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
+
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
+
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id', nullable: true)]
     private ?User $creator = null;
+
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id', nullable: true)]
     private ?User $modifier = null;
+
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id', nullable: true)]
     private ?User $deleter = null;
-    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
+
+    #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE, nullable: false)]
     #[Groups(['api'])]
     private DateTime $creationDate;
-    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
+
+    #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: false)]
     #[Groups(['api'])]
     private DateTime $modificationDate;
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
+
+    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTime $deletionDate = null;
+
     #[ApiProperty(openapiContext: ['type' => 'string', 'maxLength' => 255])]
-    #[ORM\Column(name: 'title', type: 'string', length: 255)]
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 255)]
     #[Groups(['api'])]
     private string $title;
-    #[ORM\Column(name: 'extras', type: 'array', nullable: true)]
+
+    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
     private ?array $extras = null;
-    #[ORM\Column(name: 'status', type: 'string', length: 20)]
+
+    #[ORM\Column(name: 'status', type: Types::STRING, length: 20)]
     private string $status;
-    #[ORM\Column(name: 'archived', type: 'boolean', nullable: false, options: ['default' => 0])]
+
+    #[ORM\Column(name: 'archived', type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
     private bool $archived;
-    #[ORM\Column(name: 'activity', type: 'integer', options: ['default' => 0])]
+
+    #[ORM\Column(name: 'activity', type: Types::INTEGER, options: ['default' => 0])]
     private int $activity = 0;
+
     #[ApiProperty(description: 'Either project or community')]
-    #[ORM\Column(name: 'type', type: 'string', length: 20)]
+    #[ORM\Column(name: 'type', type: Types::STRING, length: 20)]
     #[Groups(['api'])]
     private string $type = 'project';
-    #[ORM\Column(name: 'public', type: 'boolean', options: ['default' => 0])]
+
+    #[ORM\Column(name: 'public', type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $public = false;
-    #[ORM\Column(name: 'is_open_for_guests', type: 'boolean', options: ['default' => 0])]
+
+    #[ORM\Column(name: 'is_open_for_guests', type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $openForGuests = false;
-    #[ORM\Column(name: 'continuous', type: 'smallint', options: ['default' => -1])]
+
+    #[ORM\Column(name: 'continuous', type: Types::SMALLINT, options: ['default' => -1])]
     private int $continuous = -1;
-    #[ORM\Column(name: 'template', type: 'smallint', options: ['default' => -1])]
+
+    #[ORM\Column(name: 'template', type: Types::SMALLINT, options: ['default' => -1])]
     private int $template = -1;
-    #[ORM\Column(name: 'contact_persons', type: 'string', length: 255, nullable: true)]
+
+    #[ORM\Column(name: 'contact_persons', type: Types::STRING, length: 255, nullable: true)]
     private ?string $contactPersons = null;
+
     #[ApiProperty(openapiContext: ['type' => 'string', 'nullable' => true])]
-    #[ORM\Column(name: 'room_description', type: 'string', length: 10000, nullable: true)]
+    #[ORM\Column(name: 'room_description', type: Types::STRING, length: 10000, nullable: true)]
     #[Groups(['api'])]
     private ?string $roomDescription = null;
-    #[ORM\Column(name: 'lastlogin', type: 'datetime', nullable: true)]
+
+    #[ORM\Column(name: 'lastlogin', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTime $lastlogin = null;
-    #[ORM\Column(name: 'activity_state', type: 'string', length: 15, options: ['default' => 'active'])]
+
+    #[ORM\Column(name: 'activity_state', type: Types::STRING, length: 15, options: ['default' => 'active'])]
     private string $activityState;
+
     #[ORM\OneToMany(mappedBy: 'room', targetEntity: RoomSlug::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $slugs;
-    #[ORM\Column(name: 'activity_state_updated', type: 'datetime', nullable: true)]
+
+    #[ORM\Column(name: 'activity_state_updated', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTime $activityStateUpdated = null;
 
     public function __construct()
@@ -131,10 +156,7 @@ class Room
     public function getLanguage()
     {
         $extras = $this->getExtras();
-        if (isset($extras['LANGUAGE'])) {
-            return $extras['LANGUAGE'];
-        }
-        return 'user';
+        return $extras['LANGUAGE'] ?? 'user';
     }
 
     public function setLanguage($language): Room

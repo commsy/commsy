@@ -22,10 +22,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'assessments')]
-#[ORM\Index(name: 'item_link_id', columns: ['item_link_id'])]
-#[ORM\Index(name: 'context_id', columns: ['context_id'])]
-#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
-#[ORM\Index(name: 'deleter_id', columns: ['deleter_id'])]
+#[ORM\Index(columns: ['item_link_id'], name: 'item_link_id')]
+#[ORM\Index(columns: ['context_id'], name: 'context_id')]
+#[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
+#[ORM\Index(columns: ['deleter_id'], name: 'deleter_id')]
 class Assessments
 {
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
@@ -48,11 +48,11 @@ class Assessments
     #[ORM\Column(name: 'assessment', type: Types::INTEGER)]
     private ?int $assessment = null;
 
-    #[ORM\Column(name: 'creation_date', type: 'datetime')]
+    #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
     private DateTime $creationDate;
 
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private ?DateTime $deletionDate;
+    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTime $deletionDate = null;
 
     #[ORM\PrePersist]
     public function setInitialDateValues(): void

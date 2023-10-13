@@ -21,34 +21,22 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'annotation_portfolio')]
-#[ORM\Index(name: 'row', columns: ['row', 'column'])]
+#[ORM\Index(columns: ['row', 'column'], name: 'row')]
 class AnnotationPortfolio
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'p_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $pId = 0;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'a_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $aId = 0;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'row', type: Types::INTEGER)]
     private ?int $row = 0;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'column', type: Types::INTEGER)]
     private ?int $column = 0;
 }

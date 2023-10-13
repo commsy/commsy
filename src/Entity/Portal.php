@@ -26,6 +26,7 @@ use cs_list;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Serializable;
 use Symfony\Component\HttpFoundation\File\File;
@@ -94,94 +95,123 @@ class Portal implements Serializable
 {
     #[ApiProperty(description: 'The unique identifier.')]
     #[ORM\Id]
-    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\GeneratedValue]
     #[Groups(['api'])]
-    private $id;
+    private ?int $id = null;
+
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id', nullable: true)]
     private ?User $deleter = null;
-    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
+
+    #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE, nullable: false)]
     #[Groups(['api'])]
     private ?DateTime $creationDate = null;
-    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
+
+    #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: false)]
     #[Groups(['api'])]
     private ?DateTime $modificationDate = null;
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
+
+    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTime $deletionDate = null;
+
     #[ApiProperty(openapiContext: ['type' => 'string', 'maxLength' => 255])]
-    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
     #[Groups(['api'])]
     private string $title;
+
     #[ApiProperty(openapiContext: ['type' => 'string'])]
-    #[ORM\Column(name: 'description_de', type: 'text')]
+    #[ORM\Column(name: 'description_de', type: Types::TEXT)]
     #[Groups(['api'])]
     private ?string $descriptionGerman = null;
+
     #[ApiProperty(openapiContext: ['type' => 'string'])]
-    #[ORM\Column(name: 'description_en', type: 'text')]
+    #[ORM\Column(name: 'description_en', type: Types::TEXT)]
     #[Groups(['api'])]
     private ?string $descriptionEnglish = null;
-    #[ORM\Column(name: 'terms_de', type: 'text')]
+
+    #[ORM\Column(name: 'terms_de', type: Types::TEXT)]
     private ?string $termsGerman = null;
-    #[ORM\Column(name: 'terms_en', type: 'text')]
+
+    #[ORM\Column(name: 'terms_en', type: Types::TEXT)]
     private ?string $termsEnglish = null;
-    #[ORM\Column(name: 'extras', type: 'array', nullable: true)]
+
+    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
     private ?array $extras = null;
-    #[ORM\Column(name: 'status', type: 'string', length: 20, nullable: false)]
+
+    #[ORM\Column(name: 'status', type: Types::STRING, length: 20, nullable: false)]
     private string $status;
-    #[ORM\Column(name: 'activity', type: 'integer', nullable: false)]
+
+    #[ORM\Column(name: 'activity', type: Types::INTEGER, nullable: false)]
     private int $activity = 0;
-    /**
-     */
+
     #[ORM\OneToMany(targetEntity: AuthSource::class, mappedBy: 'portal')]
     private Collection $authSources;
+
     // NOTE: This is not a mapped field of entity metadata, just a simple property.
     #[Vich\UploadableField(mapping: 'portal_logo', fileNameProperty: 'logoFilename')]
     private ?File $logoFile = null;
-    #[ORM\Column(name: 'logo_filename', type: 'string', length: 255, nullable: true)]
+
+    #[ORM\Column(name: 'logo_filename', type: Types::STRING, length: 255, nullable: true)]
     private ?string $logoFilename = null;
-    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $defaultFilterHideTemplates = false;
-    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $defaultFilterHideArchived = false;
-    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $authMembershipEnabled = false;
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+
+    #[ORM\Column(type: Types::STRING, length: 100, nullable: true)]
     #[Assert\NotBlank(message: 'The request identifier must not be empty.', groups: ['authMembershipValidation'])]
     #[Assert\Length(max: 100, maxMessage: 'The request identifier must not exceed {{ limit }} characters.', groups: ['Default', 'authMembershipValidation'])]
     #[Assert\Regex(pattern: '/^[[:alnum:]~._-]+$/', message: 'The request identifier may only contain lowercase English letters, digits or any of these special characters: -._~', groups: ['authMembershipValidation'])]
     private ?string $authMembershipIdentifier = null;
-    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $clearInactiveAccountsFeatureEnabled = false;
-    #[ORM\Column(type: 'smallint', options: ['default' => 180])]
+
+    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 180])]
     #[Assert\Positive(message: 'This value should be positive.')]
     private int $clearInactiveAccountsNotifyLockDays = 180;
-    #[ORM\Column(type: 'smallint', options: ['default' => 30])]
+
+    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 30])]
     #[Assert\Positive(message: 'This value should be positive.')]
     private int $clearInactiveAccountsLockDays = 30;
-    #[ORM\Column(type: 'smallint', options: ['default' => 180])]
+
+    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 180])]
     #[Assert\Positive(message: 'This value should be positive.')]
     private int $clearInactiveAccountsNotifyDeleteDays = 180;
-    #[ORM\Column(type: 'smallint', options: ['default' => 30])]
+
+    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 30])]
     #[Assert\Positive(message: 'This value should be positive.')]
     private int $clearInactiveAccountsDeleteDays = 30;
-    #[ORM\Column(type: 'boolean', options: ['default' => 0])]
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $clearInactiveRoomsFeatureEnabled = false;
-    #[ORM\Column(type: 'smallint', options: ['default' => 180])]
+
+    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 180])]
     #[Assert\Positive(message: 'This value should be positive.')]
     private int $clearInactiveRoomsNotifyLockDays = 180;
-    #[ORM\Column(type: 'smallint', options: ['default' => 30])]
+
+    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 30])]
     #[Assert\Positive(message: 'This value should be positive.')]
     private int $clearInactiveRoomsLockDays = 30;
-    #[ORM\Column(type: 'smallint', options: ['default' => 180])]
+
+    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 180])]
     #[Assert\Positive(message: 'This value should be positive.')]
     private int $clearInactiveRoomsNotifyDeleteDays = 180;
-    #[ORM\Column(type: 'smallint', options: ['default' => 30])]
+
+    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 30])]
     #[Assert\Positive(message: 'This value should be positive.')]
     private int $clearInactiveRoomsDeleteDays = 30;
-    #[ORM\Column(type: 'boolean', options: ['default' => 1])]
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 1])]
     private bool $projectShowDeactivatedEntriesTitle = true;
-    #[ORM\Column(type: 'boolean', options: ['default' => 1])]
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 1])]
     private bool $communityShowDeactivatedEntriesTitle = true;
 
     public function __construct()

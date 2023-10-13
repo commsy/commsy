@@ -21,6 +21,7 @@ use App\Dto\LocalLoginInputRequest;
 use App\Repository\AccountsRepository;
 use App\Validator\Constraints\EmailRegex;
 use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -86,57 +87,71 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
     public final const ACTIVITY_IDLE = 'idle';
     public final const ACTIVITY_IDLE_NOTIFIED = 'idle_notified';
     public final const ACTIVITY_ABANDONED = 'abandoned';
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[Groups(['api', 'api_check_local_login'])]
     private ?int $id = null;
-    #[ORM\Column(type: 'integer')]
+
+    #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['api_check_local_login'])]
     private int $contextId;
-    #[ORM\Column(type: 'string', length: 100)]
+
+    #[ORM\Column(type: Types::STRING, length: 100)]
     #[Assert\NotBlank]
-    #[Assert\Regex(pattern: '/^(root|guest)$/i', match: false, message: '{{ value }} is a reserved name')]
+    #[Assert\Regex(pattern: '/^(root|guest)$/i', message: '{{ value }} is a reserved name', match: false)]
     #[Groups(['api', 'api_check_local_login'])]
     private string $username;
+
     #[Assert\NotBlank]
     #[Assert\NotCompromisedPassword]
-    #[Assert\Length(max: 4096, min: 8, minMessage: 'Your password must be at least {{ limit }} characters long.')]
+    #[Assert\Length(min: 8, max: 4096, minMessage: 'Your password must be at least {{ limit }} characters long.')]
     #[Assert\Regex(pattern: '/(*UTF8)[\\p{Ll}\\p{Lm}\\p{Lo}]/', message: 'Your password must contain at least one lowercase character.')]
     #[Assert\Regex(pattern: '/(*UTF8)[\\p{Lu}\\p{Lt}]/', message: 'Your password must contain at least one uppercase character.')]
     #[Assert\Regex(pattern: '/[[:punct:]]/', message: 'Your password must contain at least one special character.')]
     #[Assert\Regex(pattern: '/\\p{Nd}/', message: 'Your password must contain at least one numeric character.')]
     private ?string $plainPassword = null;
-    #[ORM\Column(type: 'string', length: 32, nullable: true)]
+
+    #[ORM\Column(type: Types::STRING, length: 32, nullable: true)]
     private ?string $passwordMd5;
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Groups(['api_check_local_login'])]
     private ?string $password;
-    #[ORM\Column(type: 'string', length: 50)]
+
+    #[ORM\Column(type: Types::STRING, length: 50)]
     #[Assert\NotBlank]
     #[Groups(['api'])]
     private string $firstname;
-    #[ORM\Column(type: 'string', length: 50)]
+
+    #[ORM\Column(type: Types::STRING, length: 50)]
     #[Assert\NotBlank]
     #[Groups(['api'])]
     private string $lastname;
-    #[ORM\Column(name: 'email', type: 'string', length: 100)]
+
+    #[ORM\Column(name: 'email', type: Types::STRING, length: 100)]
     #[Assert\Email]
     #[Groups(['api'])]
     private string $email;
-    #[ORM\Column(name: 'language', type: 'string', length: 10)]
+
+    #[ORM\Column(name: 'language', type: Types::STRING, length: 10)]
     private string $language;
+
     #[ORM\ManyToOne(targetEntity: AuthSource::class)]
     #[ORM\JoinColumn]
     private AuthSource $authSource;
-    #[ORM\Column(name: 'locked', type: 'boolean')]
+
+    #[ORM\Column(name: 'locked', type: Types::BOOLEAN)]
     #[Groups(['api'])]
     private bool $locked = false;
-    #[ORM\Column(name: 'last_login', type: 'datetime', nullable: true)]
+
+    #[ORM\Column(name: 'last_login', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTime $lastLogin;
-    #[ORM\Column(name: 'activity_state', type: 'string', length: 15, options: ['default' => 'active'])]
+
+    #[ORM\Column(name: 'activity_state', type: Types::STRING, length: 15, options: ['default' => 'active'])]
     private string $activityState;
-    #[ORM\Column(name: 'activity_state_updated', type: 'datetime', nullable: true)]
+
+    #[ORM\Column(name: 'activity_state_updated', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTime $activityStateUpdated = null;
 
     public function __construct()

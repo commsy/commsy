@@ -17,28 +17,26 @@ use App\Repository\LabelRepository;
 use App\Utils\EntityDatesTrait;
 use App\Validator\Constraints as CommsyAssert;
 use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LabelRepository::class)]
 #[ORM\Table(name: 'labels')]
-#[ORM\Index(name: 'context_id', columns: ['context_id'])]
-#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
-#[ORM\Index(name: 'type', columns: ['type'])]
+#[ORM\Index(columns: ['context_id'], name: 'context_id')]
+#[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
+#[ORM\Index(columns: ['type'], name: 'type')]
 #[CommsyAssert\UniqueLabelName]
 class Labels
 {
     use EntityDatesTrait;
 
-    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $itemId;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'context_id', type: 'integer', nullable: false)]
-    private $contextId;
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: false)]
+    private int $contextId;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
@@ -52,31 +50,22 @@ class Labels
     #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id')]
     private ?User $deleter = null;
 
-    #[ORM\Column(name: 'activation_date', type: 'datetime')]
+    #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
     private ?DateTime $activationDate = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'name', type: 'string', length: 255, nullable: false)]
-    private $name;
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 255, nullable: false)]
+    private string $name;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'description', type: 'text', length: 16_777_215, nullable: true)]
-    private $description;
+    #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
+    private ?string $description = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'type', type: 'string', length: 15, nullable: false)]
-    private $type;
+    #[ORM\Column(name: 'type', type: Types::STRING, length: 15, nullable: false)]
+    private string $type;
 
-    #[ORM\Column(name: 'extras', type: 'array', nullable: true)]
+    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
     private $extras;
 
-    #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
+    #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
     private string $public = '0';
 
     public function __construct()

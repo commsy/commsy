@@ -14,6 +14,7 @@
 namespace App\Entity;
 
 use App\Repository\TranslationRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -23,21 +24,21 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'translation')]
 class Translation
 {
-    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     private int $id;
 
-    #[ORM\Column(name: 'context_id', type: 'integer')]
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
     private int $contextId;
 
-    #[ORM\Column(name: 'translation_key', type: 'string', length: 255)]
+    #[ORM\Column(name: 'translation_key', type: Types::STRING, length: 255)]
     private string $translationKey;
 
-    #[ORM\Column(name: 'translation_de', type: 'string', length: 2000)]
+    #[ORM\Column(name: 'translation_de', type: Types::STRING, length: 2000)]
     private string $translationDe;
 
-    #[ORM\Column(name: 'translation_en', type: 'string', length: 2000)]
+    #[ORM\Column(name: 'translation_en', type: Types::STRING, length: 2000)]
     private string $translationEn;
 
     /**

@@ -15,7 +15,7 @@ namespace App\Entity;
 
 class AccountIndex
 {
-    private ?string $indexViewAction;
+    private ?string $indexViewAction = null;
 
     private array $ids = [];
 

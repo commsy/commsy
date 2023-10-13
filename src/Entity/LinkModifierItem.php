@@ -23,17 +23,11 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'link_modifier_item')]
 class LinkModifierItem
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $itemId = 0;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'modifier_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]

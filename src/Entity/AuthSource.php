@@ -81,35 +81,47 @@ abstract class AuthSource
     #[ORM\GeneratedValue]
     #[Groups(['api'])]
     private int $id;
+
     #[ApiProperty(openapiContext: ['type' => 'string', 'maxLength' => 255])]
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Groups(['api'])]
     private ?string $title = null;
+
     #[ApiProperty(openapiContext: ['type' => 'string', 'maxLength' => 255])]
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Groups(['api'])]
     private ?string $description = null;
+
     #[ORM\ManyToOne(targetEntity: Portal::class, inversedBy: 'authSources')]
     #[ORM\JoinColumn(name: 'portal_id')]
     private ?Portal $portal = null;
+
     #[ApiProperty(openapiContext: ['type' => 'boolean'])]
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['api'])]
     private ?bool $enabled = null;
+
     #[ORM\Column(name: '`default`', type: Types::BOOLEAN)]
     private ?bool $default = null;
+
     #[ORM\Column(type: Types::STRING, length: 10, columnDefinition: "ENUM('yes', 'no', 'invitation')")]
     protected string $addAccount;
+
     #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $changeUsername;
+
     #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $deleteAccount;
+
     #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $changeUserdata;
+
     #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $changePassword;
+
     #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $createRoom = true;
+
     #[ApiProperty(openapiContext: ['type' => 'string'])]
     #[Groups(['api'])]
     protected string $type = '';
