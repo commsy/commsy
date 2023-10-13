@@ -6,12 +6,12 @@ use App\Entity\Files;
 use DateTimeImmutable;
 use Doctrine\Persistence\ManagerRegistry;
 
-final class FileLockManager
+final readonly class FileLockManager
 {
     public const LOCK_DURATION_MINUTES = 30;
 
     public function __construct(
-        private readonly ManagerRegistry $managerRegistry
+        private ManagerRegistry $managerRegistry
     ) {
     }
 

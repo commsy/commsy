@@ -263,11 +263,8 @@ class DateService
         $this->datesManager->setWithoutDateModeLimit();
         $this->datesManager->select();
         $dateList = $this->datesManager->get();
-        if (isset($dateList->to_array()[0])) {
-            return $dateList->to_array()[0];
-        }
 
-        return false;
+        return $dateList->to_array()[0] ?? false;
     }
 
     /**

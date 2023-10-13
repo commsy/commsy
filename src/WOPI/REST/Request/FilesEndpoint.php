@@ -29,7 +29,7 @@ use App\WOPI\REST\CheckFileInfoResponse;
         new GetCollection(),
     ]
 )]
-final class FilesEndpoint
+final readonly class FilesEndpoint
 {
     #[ApiProperty(identifier: true)]
     private string $fileId;

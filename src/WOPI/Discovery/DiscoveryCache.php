@@ -6,7 +6,7 @@ use App\WOPI\Discovery\Response\WOPIDiscovery;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\ApcuAdapter;
 
-final class DiscoveryCache
+final readonly class DiscoveryCache
 {
     public const CACHE_EXPIRES = 86400;
 
@@ -51,7 +51,7 @@ final class DiscoveryCache
     {
         try {
             $this->cache->delete($this->getCacheKey($discoveryBaseUrl));
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException) {
         }
     }
 

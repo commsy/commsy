@@ -9,7 +9,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 class PermissionResolver
 {
     public function __construct(
-        private Security $security
+        private readonly Security $security
     ) {
     }
 

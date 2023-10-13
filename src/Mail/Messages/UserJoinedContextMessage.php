@@ -19,18 +19,17 @@ use App\Mail\Message;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_user_item;
-use DateTimeImmutable;
 
 class UserJoinedContextMessage extends Message
 {
-    private cs_environment $legacyEnvironment;
+    private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private Portal $portal,
-        private Room $room,
-        private cs_user_item $newUser,
-        private ?string $comment
+        private readonly Portal $portal,
+        private readonly Room $room,
+        private readonly cs_user_item $newUser,
+        private readonly ?string $comment
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
