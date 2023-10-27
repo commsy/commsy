@@ -19,6 +19,7 @@ use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
 use cs_annotations_manager;
+use cs_context_item;
 use cs_dates_manager;
 use cs_environment;
 use cs_list;
@@ -125,6 +126,7 @@ class CronNewsletter implements CronTaskInterface
             $translator->setRubricTranslationArray($privateRoom->getRubricTranslationArray());
 
             foreach ($roomList as $roomItem) {
+                /** @var cs_context_item $roomItem */
                 $rubrics = [];
 
                 $conf = $roomItem->getHomeConf();
