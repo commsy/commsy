@@ -101,7 +101,7 @@ class User
     private ?\DateTimeInterface $expireDate = null;
 
     #[ORM\Column(name: 'use_portal_email', type: Types::BOOLEAN)]
-    private false $usePortalEmail = false;
+    private bool $usePortalEmail = false;
 
     /**
      * Set contextId.
