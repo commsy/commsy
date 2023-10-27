@@ -18,6 +18,7 @@ use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_room_item;
+use DateInterval;
 use DateTimeImmutable;
 
 class CronPageImpressionAndUserActivity implements CronTaskInterface
@@ -43,42 +44,35 @@ class CronPageImpressionAndUserActivity implements CronTaskInterface
                 /** @var cs_room_item $room */
 
                 // get latest timestamp of page impressions and user actitivty
-                // from extra field PIUA_LAST
-                $piuaLast = $room->getPageImpressionAndUserActivityLast();
+                // from extra field PIUA_LAST or fallback to creation date
+                $oldestDate = $room->getPageImpressionAndUserActivityLast() ?:
+                    (new DateTimeImmutable($room->getCreationDate()))->format('Ymd');
+                $today = (new DateTimeImmutable())->format('Ymd');
+                $dayDiff = getDifference($oldestDate, $today);
 
-                if (!empty($piuaLast)) {
-                    $oldestDate = $piuaLast;
-                } else {
-                    // if there is no entry take creationDate
-                    $creationDate = $room->getCreationDate();
-                    $oldestDate = getYearFromDateTime($creationDate).
-                        getMonthFromDateTime($creationDate).
-                        getDayFromDateTime($creationDate);
-                }
-
-                $currentDate = getCurrentDate();
-                $dayDiff = getDifference($oldestDate, $currentDate);
                 $piArray = $room->getPageImpressionArray();
                 $uaArray = $room->getUserActivityArray();
                 $piInput = [];
                 $uaInput = [];
 
                 // for each day, get page impressions and user activity
-                for ($i = 1; $i < $dayDiff; ++$i) {
+                for ($i = 0; $i < $dayDiff; $i++) {
                     $logManager->resetLimits();
                     $logManager->setContextLimit($room->getItemID());
                     $logManager->setRequestLimit('/room/');
-                    $older_limit_stamp = datetime2Timestamp(date('Y-m-d 00:00:00')) - ($i - 1) * 86400;
-                    $older_limit = date('Y-m-d', $older_limit_stamp);
-                    $logManager->setTimestampOlderLimit($older_limit);
-                    $logManager->setTimestampNotOlderLimit($i);
+                    $olderLimit = (new DateTimeImmutable())
+                        ->setTime(0, 0, 0)
+                        ->sub(new DateInterval('P' . $i . 'D'))
+                        ->format('Y-m-d');
+                    $logManager->setTimestampOlderLimit($olderLimit);
+                    $logManager->setTimestampNotOlderLimit($i+1);
 
                     $piInput[] = $logManager->getCountAll();
                     $uaInput[] = $logManager->countWithUserDistinction();
                 }
 
                 // put actual date in extra field PIUA_LAST
-                $room->setPageImpressionAndUserActivityLast($currentDate);
+                $room->setPageImpressionAndUserActivityLast($today);
                 $room->setPageImpressionArray(array_merge($piInput, $piArray));
                 $room->setUserActivityArray(array_merge($uaInput, $uaArray));
                 $room->saveWithoutChangingModificationInformation();
