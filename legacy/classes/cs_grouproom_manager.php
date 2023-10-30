@@ -11,6 +11,9 @@
  * file that was distributed with this source code.
  */
 
+use App\Entity\Portal;
+use Doctrine\ORM\EntityManagerInterface;
+
 /** class for database connection to the database table "room" type "group"
  * this class implements a database manager for the table "room" type "group".
  */
@@ -325,11 +328,10 @@ class cs_grouproom_manager extends cs_room2_manager
           parent::saveActivityPoints($item);
 
           global $symfonyContainer;
-          /** @var \Doctrine\ORM\EntityManagerInterface $entityManager */
-          /** @noinspection MissingService */
+          /** @var EntityManagerInterface $entityManager */
           $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
 
-          $portal = $entityManager->getRepository(\App\Entity\Portal::class)->find($item->getContextId());
+          $portal = $entityManager->getRepository(Portal::class)->find($item->getContextId());
           $extras = $portal->getExtras();
           if (isset($extras['MAX_ROOM_ACTIVITY'])) {
               if ($item->getActivityPoints() > $extras['MAX_ROOM_ACTIVITY']) {

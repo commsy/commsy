@@ -14,29 +14,31 @@
 namespace App\Cron\Tasks;
 
 use App\Helper\PortalHelper;
+use App\Repository\LogRepository;
 use App\Repository\PortalRepository;
-use App\Services\LegacyEnvironment;
-use cs_environment;
 use cs_room_item;
 use DateInterval;
 use DateTimeImmutable;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Exception;
 
-class CronPageImpressionAndUserActivity implements CronTaskInterface
+readonly class CronPageImpressionAndUserActivity implements CronTaskInterface
 {
-    private readonly cs_environment $legacyEnvironment;
-
     public function __construct(
-        LegacyEnvironment $legacyEnvironment,
-        private readonly PortalRepository $portalRepository,
-        private readonly PortalHelper $portalHelper
+        private PortalRepository $portalRepository,
+        private PortalHelper $portalHelper,
+        private LogRepository $logRepository
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
+    /**
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     * @throws Exception
+     */
     public function run(?DateTimeImmutable $lastRun): void
     {
-        $logManager = $this->legacyEnvironment->getLogManager();
-
         $portals = $this->portalRepository->findActivePortals();
         foreach ($portals as $portal) {
             $roomList = $this->portalHelper->getRoomList($portal);
@@ -57,18 +59,15 @@ class CronPageImpressionAndUserActivity implements CronTaskInterface
 
                 // for each day, get page impressions and user activity
                 for ($i = 0; $i < $dayDiff; $i++) {
-                    $logManager->resetLimits();
-                    $logManager->setContextLimit($room->getItemID());
-                    $logManager->setRequestLimit('/room/');
-                    $olderLimit = (new DateTimeImmutable())
+                    $upper = (new DateTimeImmutable())
                         ->setTime(0, 0, 0)
-                        ->sub(new DateInterval('P' . $i . 'D'))
-                        ->format('Y-m-d');
-                    $logManager->setTimestampOlderLimit($olderLimit);
-                    $logManager->setTimestampNotOlderLimit($i+1);
+                        ->sub(new DateInterval('P' . $i . 'D'));
+                    $lower = $upper->sub(new DateInterval('P1D'));
 
-                    $piInput[] = $logManager->getCountAll();
-                    $uaInput[] = $logManager->countWithUserDistinction();
+                    $data = $this->logRepository->getCountByContextAndDateSpan($room->getItemID(), $lower, $upper);
+
+                    $piInput[] = $data['count'];
+                    $uaArray[] = $data['distinctUserCount'];
                 }
 
                 // put actual date in extra field PIUA_LAST

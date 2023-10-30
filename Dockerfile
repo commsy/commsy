@@ -44,6 +44,7 @@ RUN set -eux; \
         ldap \
         opcache \
         pdo_mysql \
+    	sysvsem \
         zip \
     ;
 
