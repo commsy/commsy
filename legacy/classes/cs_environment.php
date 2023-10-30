@@ -63,19 +63,12 @@ class cs_environment
      */
     public $current_function;
 
-    /**
-     * string - current parameter of the page.
-     */
-    public $_current_parameter_string = null;
-
     public $_current_parameter_array = null;
 
     /**
      * string - selected language of the current user.
      */
     public $_selected_language = '';
-
-    public $_plugin_class_array = null;
 
     private ?db_mysql_connector $_db_mysql_connector = null;
     private bool $_cache_on = true;
@@ -321,27 +314,6 @@ class cs_environment
     public function getCurrentFunction()
     {
         return $this->current_function;
-    }
-
-    /** get string of the current parameter of the page
-     * returns the current function.
-     *
-     * @return string current parameter
-     *
-     * @author CommSy Development Group
-     */
-    public function getCurrentParameterString()
-    {
-        if (!isset($this->_current_parameter_string)) {
-            $array = $this->_getCurrentParameterArray();
-            if (!empty($array)) {
-                $this->_current_parameter_string = implode('&', $array);
-            } else {
-                $this->_current_parameter_string = '';
-            }
-        }
-
-        return $this->_current_parameter_string;
     }
 
     public function getValueOfParameter($parameter)
@@ -611,18 +583,6 @@ class cs_environment
         return $this->_getInstance('cs_userroom_manager');
     }
 
-    public function getLogManager(): cs_log_manager
-    {
-        /* @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->_getInstance('cs_log_manager');
-    }
-
-    public function getLogArchiveManager(): cs_log_archive_manager
-    {
-        /* @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->_getInstance('cs_log_archive_manager');
-    }
-
     public function getProjectManager(): cs_project_manager
     {
         /* @noinspection PhpIncompatibleReturnTypeInspection */
@@ -792,10 +752,6 @@ class cs_environment
             return $this->getSectionManager();
         } elseif ('label' == $type) {
             return $this->getLabelManager();
-        } elseif ('log' == $type) {
-            return $this->getLogManager();
-        } elseif ('log_archive' == $type) {
-            return $this->getLogArchiveManager();
         } elseif (CS_PROJECT_TYPE == $type) {
             return $this->getProjectManager();
         } elseif (CS_STEP_TYPE == $type) {

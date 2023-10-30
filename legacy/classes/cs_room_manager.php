@@ -46,11 +46,6 @@ class cs_room_manager extends cs_context_manager
 
     public $_deleted_limit = null;
 
-    /**
-     * @var mixed[]|string[]|null
-     */
-    private ?array $_logarchive_limit = null;
-
     private bool $_limit_with_grouproom = false;
 
     private bool $_limit_only_grouproom = false;
@@ -82,7 +77,6 @@ class cs_room_manager extends cs_context_manager
         $this->_time_limit = null;
         $this->_continuous_limit = null;
         $this->_template_limit = null;
-        $this->_logarchive_limit = null;
         $this->_limit_with_grouproom = false;
         $this->_limit_only_grouproom = false;
     }
@@ -181,13 +175,6 @@ class cs_room_manager extends cs_context_manager
         $this->_template_limit = null;
     }
 
-    public function setLogArchiveLimit()
-    {
-        $this->_logarchive_limit = [];
-        $this->_logarchive_limit[] = 'LOGARCHIVE";i:1';
-        $this->_logarchive_limit[] = 'LOGARCHIVE";s:1';
-    }
-
     /** set order limit
      * this method sets an order limit for the select statement.
      *
@@ -246,10 +233,7 @@ class cs_room_manager extends cs_context_manager
         // FLAG: group room
         // ##################################
         if ((empty($this->_room_type) or CS_GROUPROOM_TYPE != $this->_room_type) && !$this->_limit_only_grouproom) {
-            if (!isset($this->_logarchive_limit)
-                and !isset($this->_id_array_limit)
-                and !$this->_limit_with_grouproom
-            ) {
+            if (!isset($this->_id_array_limit) && !$this->_limit_with_grouproom) {
                 $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type != "'.CS_GROUPROOM_TYPE.'"';
             }
         } elseif ($this->_limit_only_grouproom) {
@@ -298,27 +282,6 @@ class cs_room_manager extends cs_context_manager
         // template
         if (isset($this->_template_limit)) {
             $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "'.encode(AS_DB, $this->_template_limit).'"';
-        }
-        if (!isset($this->_logarchive_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type != "privateroom"';
-        }
-
-        // log archive
-        if (!empty($this->_logarchive_limit)
-            and (is_countable($this->_logarchive_limit) ? count($this->_logarchive_limit) : 0) > 0
-        ) {
-            $query .= ' AND (';
-            $first = true;
-            foreach ($this->_logarchive_limit as $log_arg_limit) {
-                if ($first) {
-                    $first = false;
-                } else {
-                    $query .= ' OR ';
-                }
-                $query .= $this->addDatabasePrefix($this->_db_table).'.extras LIKE "%'.encode(AS_DB, $log_arg_limit).'%"';
-            }
-//         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.extras LIKE "%'.encode(AS_DB,$this->_logarchive_limit).'%"';
-            $query .= ')';
         }
 
         if ('count' != $mode) {
