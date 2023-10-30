@@ -479,30 +479,31 @@ class cs_file_manager extends cs_manager
         $retour = true;
         $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
 
-        $query = 'SELECT ' . $this->addDatabasePrefix($this->_db_table) . '.files_id, ' . $this->addDatabasePrefix($this->_db_table) . '.context_id, ' . $this->addDatabasePrefix($this->_db_table) . '.filename FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE deletion_date IS NOT NULL and deletion_date < "' . $timestamp . '";';
+        $query = 'SELECT ' .
+            $this->addDatabasePrefix($this->_db_table) . '.files_id, ' .
+            $this->addDatabasePrefix($this->_db_table) . '.portal_id, ' .
+            $this->addDatabasePrefix($this->_db_table) . '.context_id, ' .
+            $this->addDatabasePrefix($this->_db_table) . '.filename
+            FROM ' . $this->addDatabasePrefix($this->_db_table) . '
+            WHERE deletion_date IS NOT NULL and deletion_date < "' . $timestamp . '";';
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problem selecting items from query: "' . $query . '"', E_USER_ERROR);
-            $retour = false;
         } else {
-            $retour = $retour and parent::deleteReallyOlderThan($days);
+            // foreign key constraint
+            foreach ($result as $file) {
+                $linkItemFileManager = $this->_environment->getLinkItemFileManager();
+                $linkItemFileManager->deleteByFileReally($file['files_id']);
+            }
+
+            $retour = parent::deleteReallyOlderThan($days);
             foreach ($result as $query_result) {
-                $query2 = 'SELECT context_id as portal_id FROM ' . $this->addDatabasePrefix('room') . ' WHERE item_id="' . $query_result['context_id'] . '"';
-                $result2 = $this->_db_connector->performQuery($query2);
-                if (!isset($result2)) {
-                    trigger_error('Problem selecting items from query: "' . $query . '"', E_USER_ERROR);
-                    $retour = false;
-                } elseif (!empty($result2[0])) {
-                    $query_result2 = $result2[0];
-                    if (!empty($query_result2['portal_id'])) {
-                        $filename = 'cid' . $query_result['context_id'] . '_' . $query_result['files_id'] . '_' . $query_result['filename'];
-                        $disc_manager->setPortalID($query_result2['portal_id']);
-                        $disc_manager->setContextID($query_result['context_id']);
-                        if ($disc_manager->existsFile($filename)) {
-                            $retour = $retour and $disc_manager->unlinkFile($filename);
-                        }
-                    }
+                $filename = 'cid' . $query_result['context_id'] . '_' . $query_result['files_id'] . '_' . $query_result['filename'];
+                $disc_manager->setPortalID($query_result['portal_id']);
+                $disc_manager->setContextID($query_result['context_id']);
+                if ($disc_manager->existsFile($filename)) {
+                    $retour = $retour && $disc_manager->unlinkFile($filename);
                 }
             }
         }
