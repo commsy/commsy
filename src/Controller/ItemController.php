@@ -21,10 +21,9 @@ use App\Form\Type\ItemCatsBuzzType;
 use App\Form\Type\ItemDescriptionType;
 use App\Form\Type\ItemLinksType;
 use App\Form\Type\ItemWorkflowType;
-use App\Form\Type\SendListType;
 use App\Form\Type\SendType;
 use App\Mail\Mailer;
-use App\Mail\RecipientFactory;
+use App\Services\EtherpadService;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
 use App\Utils\DateService;
@@ -33,17 +32,19 @@ use App\Utils\LabelService;
 use App\Utils\MailAssistant;
 use App\Utils\MaterialService;
 use App\Utils\RoomService;
-use App\Utils\UserService;
 use cs_dates_item;
 use cs_file_item;
 use cs_item;
 use cs_label_item;
 use cs_labels_manager;
 use cs_manager;
-use Exception;
+use cs_material_item;
+use cs_section_item;
+use cs_step_item;
 use LogicException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,7 +52,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use UnexpectedValueException;
 
@@ -61,21 +61,6 @@ use UnexpectedValueException;
 #[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class ItemController extends AbstractController
 {
-    private TransformerManager $transformerManager;
-
-    /**
-     * @param mixed $transformerManager
-     */
-    #[Required]
-    public function setTransformerManager(TransformerManager $transformerManager): void
-    {
-        $this->transformerManager = $transformerManager;
-    }
-
-    public function __construct(private LabelService $labelService)
-    {
-    }
-
     #[Route(path: '/room/{roomId}/item/{itemId}/editdescription/{draft}')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function editDescriptionAction(
@@ -83,6 +68,10 @@ class ItemController extends AbstractController
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
         LegacyEnvironment $environment,
+        TransformerManager $transformerManager,
+        ParameterBagInterface $parameterBag,
+        MaterialService $materialService,
+        EtherpadService $etherpadService,
         Request $request,
         int $roomId,
         int $itemId,
@@ -91,7 +80,7 @@ class ItemController extends AbstractController
         /** @var cs_item $item */
         $item = $itemService->getTypedItem($itemId);
 
-        $transformer = $this->transformerManager->getConverter($item->getItemType());
+        $transformer = $transformerManager->getConverter($item->getItemType());
 
         $itemType = $item->getItemType();
 
@@ -140,6 +129,13 @@ class ItemController extends AbstractController
 
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
 
+        $useEtherpad = false;
+        if ($parameterBag->get('commsy.etherpad.enabled')) {
+            /** @var cs_material_item $materialItem */
+            $materialItem = $materialService->getMaterial($itemId);
+            $useEtherpad = $materialItem && $materialItem->getEtherpadEditor();
+        }
+
         $form = $this->createForm(ItemDescriptionType::class, $formData, $formOptions);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -148,8 +144,24 @@ class ItemController extends AbstractController
             if ('save' == $saveType || 'saveThisDate' == $saveType) {
                 $item = $transformer->applyTransformation($item, $form->getData());
                 $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                if ($item->getItemType() == CS_MATERIAL_TYPE) {
+                    /** @var $item cs_material_item */
+                    if ($item->getEtherpadEditor() && $item->getEtherpadEditorID()) {
+                        // get description text from etherpad
+                        $client = $etherpadService->getClient();
+
+                        // get pad and get text from pad
+                        $textObject = $client->getHTML($item->getEtherpadEditorID());
+
+                        // save etherpad text to material description
+                        $item->setDescription(nl2br($textObject->html));
+                    }
+                }
+
                 $item->save();
                 if ((CS_SECTION_TYPE == $item->getItemType()) || (CS_STEP_TYPE == $item->getItemType())) {
+                    /** @var $item cs_section_item|cs_step_item */
                     $linkedItem = $itemService->getTypedItem($item->getlinkedItemID());
                     $linkedItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                     $linkedItem->save();
@@ -175,7 +187,7 @@ class ItemController extends AbstractController
         }
 
         return $this->render('item/edit_description.html.twig', [
-            'isMaterial' => $itemType == 'material',
+            'useEtherpad' => $useEtherpad,
             'itemId' => $itemId,
             'roomId' => $roomId,
             'form' => $form->createView(),
@@ -971,7 +983,9 @@ class ItemController extends AbstractController
         ItemService $itemService,
         CategoryService $categoryService,
         LegacyEnvironment $environment,
-        int $roomId, int $itemId
+        LabelService $labelService,
+        int $roomId,
+        int $itemId
     ): Response {
         $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -982,7 +996,7 @@ class ItemController extends AbstractController
         if ($current_context->withTags()) {
             $roomCategories = $categoryService->getTags($roomId);
             $itemCategories = $item->getTagsArray();
-            $categories = $this->labelService->getTagDetailArray($roomCategories, $itemCategories);
+            $categories = $labelService->getTagDetailArray($roomCategories, $itemCategories);
         }
 
         $roomItem = $roomService->getRoomItem($roomId);

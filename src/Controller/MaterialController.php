@@ -982,7 +982,16 @@ class MaterialController extends BaseController
             }
         }
 
-        return $this->render('material/edit.html.twig', ['isSaved' => $isSaved, 'isDraft' => $isDraft, 'isMaterial' => $isMaterial, 'form' => $form->createView(), 'currentUser' => $this->legacyEnvironment->getCurrentUserItem(), 'material' => $typedItem, 'licenses' => $licenses, 'licensesContent' => $licensesContent]);
+        return $this->render('material/edit.html.twig', [
+            'isSaved' => $isSaved,
+            'isDraft' => $isDraft,
+            'isMaterial' => $isMaterial,
+            'form' => $form->createView(),
+            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
+            'material' => $typedItem,
+            'licenses' => $licenses,
+            'licensesContent' => $licensesContent],
+        );
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/save')]
