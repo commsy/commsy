@@ -10,9 +10,9 @@
                 <source>Search in room...</source>
                 <target>Search in workspace...</target>
             </trans-unit>
-            <trans-unit id="search-form-placeholder-all-rooms">
-                <source>All my workspaces...</source>
-                <target>All my workspaces...</target>
+            <trans-unit id="search_input_placeholder">
+                <source>search.input.placeholder</source>
+                <target>Search my workspaces</target>
             </trans-unit>
             <trans-unit id="search-no-results-room">
                 <source>no rooms found</source>
@@ -25,10 +25,6 @@
             <trans-unit id="search-more-results-header">
                 <source>more results</source>
                 <target>More Results</target>
-            </trans-unit>
-            <trans-unit id="search-more-results-all-rooms">
-                <source>Search in all my rooms</source>
-                <target>Search in all my workspaces</target>
             </trans-unit>
             <trans-unit id="search-more-results-current-room">
                 <source>Search in this room</source>
