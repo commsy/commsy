@@ -331,10 +331,13 @@ class UploadController extends AbstractController
     #[Route(path: '/room/{roomId}/ckupload/{itemId}/')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function ckupload(
+        // Do not remove $roomId even if it is unused, @IsGranted() relies on this argument
+        /* @noinspection PhpUnusedParameterInspection */
+        int $roomId,
+        int $itemId,
         Request $request,
         ItemService $itemService,
-        LegacyEnvironment $environment,
-        int $itemId
+        LegacyEnvironment $environment
     ): Response {
         $legacyEnvironment = $environment->getEnvironment();
         $item = $itemService->getTypedItem($itemId);
