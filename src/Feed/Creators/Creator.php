@@ -13,6 +13,7 @@
 
 namespace App\Feed\Creators;
 
+use cs_item;
 use DateTime;
 use FeedIo\Feed\Item;
 use misc_text_converter;
@@ -67,7 +68,7 @@ abstract class Creator implements CreatorInterface
         $this->router = $router;
     }
 
-    private function generateAuthor($item)
+    private function generateAuthor(cs_item $item): bool
     {
         $contextItem = $item->getContextItem();
         $modifierItem = $item->getModificatorItem();

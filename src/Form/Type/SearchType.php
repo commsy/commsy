@@ -33,7 +33,7 @@ class SearchType extends AbstractType
         $builder
             ->add('phrase', Types\SearchType::class, [
                 'attr' => [
-                    'placeholder' => 'All my workspaces...',
+                    'placeholder' => 'search.input.placeholder',
                     'class' => 'uk-search-field',
                 ],
                 'required' => false,
