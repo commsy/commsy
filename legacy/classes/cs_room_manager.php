@@ -11,6 +11,8 @@
  * file that was distributed with this source code.
  */
 
+use App\Hash\HashManager;
+
 /** class for database connection to the database table "community"
  * this class implements a database manager for the table "community".
  */
@@ -562,6 +564,8 @@ class cs_room_manager extends cs_context_manager
 
     public function deleteReallyOlderThan($days)
     {
+        global $symfonyContainer;
+
         $retour = false;
 
         $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
@@ -586,8 +590,9 @@ class cs_room_manager extends cs_context_manager
             $disc_manager->removeRoomDir($portal_id, $iid);
 
             // managers need data from other tables
-            $hash_manager = $this->_environment->getHashManager();
-            $hash_manager->deleteFromDb($iid);
+            /** @var HashManager $hashManager */
+            $hashManager = $symfonyContainer->get(HashManager::class);
+            $hashManager->deleteHashesInContext($iid);
 
             $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
             $link_modifier_item_manager->deleteFromDb($iid);

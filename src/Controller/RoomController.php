@@ -18,6 +18,7 @@ use App\Event\UserJoinedRoomEvent;
 use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
+use App\Hash\HashManager;
 use App\Repository\PortalRepository;
 use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
@@ -62,6 +63,7 @@ class RoomController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         ThemeRepositoryInterface $themeRepository,
         UserRepository $userRepository,
+        HashManager $hashManager,
         int $roomId
     ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -157,11 +159,11 @@ class RoomController extends AbstractController
 
             if (!$roomItem->isOpenForGuests()) {
                 if ($currentUserItem->isUser()) {
-                    $hashManager = $legacyEnvironment->getHashManager();
+                    $hash = $hashManager->getUserHashes($currentUserItem->getItemID());
 
                     $rss['url'] = $this->generateUrl('app_rss', [
                         'contextId' => $roomId,
-                        'hid' => $hashManager->getRSSHashForUser($currentUserItem->getItemID()),
+                        'hid' => $hash->getRss(),
                     ]);
                 }
             }

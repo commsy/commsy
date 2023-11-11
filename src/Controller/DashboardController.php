@@ -14,6 +14,7 @@
 namespace App\Controller;
 
 use App\Form\Type\MyViewsType;
+use App\Hash\HashManager;
 use App\Model\SearchData;
 use App\Repository\CalendarsRepository;
 use App\Repository\PortalRepository;
@@ -49,6 +50,7 @@ class DashboardController extends AbstractController
          PortalRepository $portalRepository,
          ServerRepository $serverRepository,
          CalendarsRepository $calendarsRepository,
+         HashManager $hashManager,
          int $roomId
      ): Response {
         $legacyEnvironment = $environment->getEnvironment();
@@ -84,17 +86,16 @@ class DashboardController extends AbstractController
             if ($currentUserItem->isUser()) {
                 $iCal['show'] = true;
 
-                $hashManager = $legacyEnvironment->getHashManager();
-                $iCalHash = $hashManager->getICalHashForUser($currentUserItem->getItemID());
+                $hash = $hashManager->getUserHashes($currentUserItem->getItemID());
 
                 $iCal['aboUrl'] = $this->generateUrl('app_ical_getcontent', [
                     'contextId' => $roomId,
-                    'hid' => $iCalHash,
+                    'hid' => $hash->getIcal(),
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
 
                 $iCal['exportUrl'] = $this->generateUrl('app_ical_getcontent', [
                     'contextId' => $roomId,
-                    'hid' => $iCalHash,
+                    'hid' => $hash->getIcal(),
                     'export' => true,
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
             }

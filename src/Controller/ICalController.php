@@ -13,6 +13,8 @@
 
 namespace App\Controller;
 
+use App\Hash\HashManager;
+use App\Repository\HashRepository;
 use App\Services\LegacyEnvironment;
 use cs_dates_item;
 use cs_environment;
@@ -73,6 +75,8 @@ class ICalController extends AbstractController
     public function getContent(
         Request $request,
         LegacyEnvironment $environment,
+        HashManager $hashManager,
+        HashRepository $hashRepository,
         int $contextId
     ): Response {
         $legacyEnvironment = $environment->getEnvironment();
@@ -89,7 +93,6 @@ class ICalController extends AbstractController
                     if ($request->query->has('hid')) {
                         $hash = $request->query->get('hid');
 
-                        $hashManager = $legacyEnvironment->getHashManager();
                         if ($hashManager->isICalHashValid($hash, $currentContextItem)) {
                             $granted = true;
                         }
@@ -103,10 +106,9 @@ class ICalController extends AbstractController
         }
 
         if ($request->query->has('hid')) {
-            $hash = $request->query->get('hid');
-            $hashManager = $legacyEnvironment->getHashManager();
-            $userItem = $hashManager->getUserByICalHash($hash);
-            $legacyEnvironment->setCurrentUserItem($userItem);
+            $hash = $hashRepository->findByICalHash($request->query->get('hid'));
+            $userManager = $legacyEnvironment->getUserManager();
+            $legacyEnvironment->setCurrentUserItem($userManager->getItem($hash->getUserId()));
         }
 
         // export

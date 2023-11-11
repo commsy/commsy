@@ -13,6 +13,7 @@
 
 namespace App\Feed;
 
+use App\Hash\HashManager;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_manager;
@@ -32,7 +33,8 @@ class CommsyFeedContentProvider implements FeedProviderInterface
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private readonly TranslatorInterface $translator,
-        private readonly FeedCreatorFactory $feedCreatorFactory
+        private readonly FeedCreatorFactory $feedCreatorFactory,
+        private readonly HashManager $hashManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -49,8 +51,6 @@ class CommsyFeedContentProvider implements FeedProviderInterface
         if ($this->isGranted($currentContextItem, $request)) {
             $isGuestAccess = true;
             if ($request->query->has('hid')) {
-                $hash = $request->query->get('hid');
-                $currentContextItem->getUserByRSSHash($hash);
                 $isGuestAccess = false;
             }
 
@@ -88,8 +88,7 @@ class CommsyFeedContentProvider implements FeedProviderInterface
                 if ($request->query->has('hid')) {
                     $hash = $request->query->get('hid');
 
-                    $hashManager = $this->legacyEnvironment->getHashManager();
-                    if ($hashManager->isRSSHashValid($hash, $currentContextItem)) {
+                    if ($this->hashManager->isRSSHashValid($hash, $currentContextItem)) {
                         return true;
                     }
                 }

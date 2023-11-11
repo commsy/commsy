@@ -11,6 +11,7 @@
  * file that was distributed with this source code.
  */
 
+use App\Repository\HashRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for database connection to the database table "user"
@@ -1226,6 +1227,8 @@ class cs_user_manager extends cs_manager
      */
     public function delete(int $itemId): void
     {
+        global $symfonyContainer;
+
         $user_item = $this->getItem($itemId);
         if ($this->_environment->inPortal()) {
             if (isset($user_item)
@@ -1233,8 +1236,6 @@ class cs_user_manager extends cs_manager
                  and $user_item->getContextID() == $this->_environment->getCurrentContextID()
             ) {
                 // fire an AccountDeletedEvent (which will e.g. trigger deletion of the user's saved searches)
-                global $symfonyContainer;
-
                 /** @var EventDispatcher $eventDispatcher */
                 $eventDispatcher = $symfonyContainer->get('event_dispatcher');
 
@@ -1322,9 +1323,10 @@ class cs_user_manager extends cs_manager
         }
 
         // delete hash values
-        $hash_manager = $this->_environment->getHashManager();
-        $hash_manager->deleteHashesForUser($itemId);
-        unset($hash_manager);
+        /** @var HashRepository $hashRepository */
+        $hashRepository = $symfonyContainer->get(HashRepository::class);
+        $hash = $hashRepository->findByUserId($itemId);
+        $hashRepository->deleteHash($hash);
 
         // delete all related items
         $user_item->deleteAllEntriesOfUser();

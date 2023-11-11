@@ -29,6 +29,7 @@ use App\Form\DataTransformer\DateTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\DateImportType;
 use App\Form\Type\DateType;
+use App\Hash\HashManager;
 use App\Repository\CalendarsRepository;
 use App\Security\Authorization\Voter\DateVoter;
 use App\Security\Authorization\Voter\ItemVoter;
@@ -142,7 +143,8 @@ class DateController extends BaseController
     public function list(
         Request $request,
         int $roomId,
-        CalendarsRepository $calendarsRepository
+        CalendarsRepository $calendarsRepository,
+        HashManager $hashManager
     ): Response {
         $roomItem = $this->getRoom($roomId);
 
@@ -190,17 +192,16 @@ class DateController extends BaseController
             if ($currentUserItem->isUser()) {
                 $iCal['show'] = true;
 
-                $hashManager = $this->legacyEnvironment->getHashManager();
-                $iCalHash = $hashManager->getICalHashForUser($currentUserItem->getItemID());
+                $hash = $hashManager->getUserHashes($currentUserItem->getItemID());
 
                 $iCal['aboUrl'] = $this->generateUrl('app_ical_getcontent', [
                     'contextId' => $roomId,
-                    'hid' => $iCalHash,
+                    'hid' => $hash->getIcal(),
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
 
                 $iCal['exportUrl'] = $this->generateUrl('app_ical_getcontent', [
                     'contextId' => $roomId,
-                    'hid' => $iCalHash,
+                    'hid' => $hash->getIcal(),
                     'export' => true,
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
             }
@@ -277,7 +278,8 @@ class DateController extends BaseController
     public function calendar(
         Request $request,
         int $roomId,
-        CalendarsRepository $calendarsRepository
+        CalendarsRepository $calendarsRepository,
+        HashManager $hashManager
     ): Response {
         $roomItem = $this->getRoom($roomId);
         $filterForm = $this->createFilterForm($roomItem, false, true);
@@ -318,17 +320,16 @@ class DateController extends BaseController
             if ($currentUserItem->isUser()) {
                 $iCal['show'] = true;
 
-                $hashManager = $this->legacyEnvironment->getHashManager();
-                $iCalHash = $hashManager->getICalHashForUser($currentUserItem->getItemID());
+                $hash = $hashManager->getUserHashes($currentUserItem->getItemID());
 
                 $iCal['aboUrl'] = $this->generateUrl('app_ical_getcontent', [
                     'contextId' => $roomId,
-                    'hid' => $iCalHash,
+                    'hid' => $hash->getIcal(),
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
 
                 $iCal['exportUrl'] = $this->generateUrl('app_ical_getcontent', [
                     'contextId' => $roomId,
-                    'hid' => $iCalHash,
+                    'hid' => $hash->getIcal(),
                     'export' => true,
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
             }
