@@ -28,21 +28,44 @@ class Hash
     #[ORM\Column(name: 'user_item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private ?int $userItemId = null;
+    private int $userId;
 
-    #[ORM\Column(name: 'rss', type: Types::STRING, length: 32, nullable: true)]
-    private ?string $rss = null;
+    #[ORM\Column(name: 'rss', type: Types::STRING, length: 32)]
+    private string $rss;
 
-    #[ORM\Column(name: 'ical', type: Types::STRING, length: 32, nullable: true)]
-    private ?string $ical = null;
+    #[ORM\Column(name: 'ical', type: Types::STRING, length: 32)]
+    private string $ical;
 
-    /**
-     * Get iCal.
-     *
-     * @return string
-     */
-    public function getICal()
+    public function getUserId(): int
     {
-        return $this->iCal;
+        return $this->userId;
+    }
+
+    public function setUserId(int $userId): Hash
+    {
+        $this->userId = $userId;
+        return $this;
+    }
+
+    public function getRss(): string
+    {
+        return $this->rss;
+    }
+
+    public function setRss(string $rss): Hash
+    {
+        $this->rss = $rss;
+        return $this;
+    }
+
+    public function getIcal(): string
+    {
+        return $this->ical;
+    }
+
+    public function setIcal(string $ical): Hash
+    {
+        $this->ical = $ical;
+        return $this;
     }
 }

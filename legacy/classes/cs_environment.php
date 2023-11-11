@@ -661,12 +661,6 @@ class cs_environment
         return $this->_getInstance('cs_portal_manager');
     }
 
-    public function getHashManager(): cs_hash_manager
-    {
-        /* @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->_getInstance('cs_hash_manager');
-    }
-
     public function getEntryManager(): cs_entry_manager
     {
         /* @noinspection PhpIncompatibleReturnTypeInspection */
