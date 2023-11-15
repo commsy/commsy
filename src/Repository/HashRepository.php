@@ -39,7 +39,7 @@ class HashRepository extends ServiceEntityRepository
     {
         $query = $this->getEntityManager()
             ->createQuery("
-                SELECT FROM App\Entity\Hash h where h.userItemId = :userId
+                SELECT h FROM App\Entity\Hash h where h.userId = :userId
             ")
             ->setParameter('userId', $userId);
 
@@ -54,7 +54,7 @@ class HashRepository extends ServiceEntityRepository
     {
         $query = $this->getEntityManager()
             ->createQuery("
-                SELECT FROM App\Entity\Hash h where h.rss = :rss
+                SELECT h FROM App\Entity\Hash h where h.rss = :rss
             ")
             ->setParameter('rss', $rssHash);
 
@@ -69,7 +69,7 @@ class HashRepository extends ServiceEntityRepository
     {
         $query = $this->getEntityManager()
             ->createQuery("
-                SELECT FROM App\Entity\Hash h where h.ical = :ical
+                SELECT h FROM App\Entity\Hash h where h.ical = :ical
             ")
             ->setParameter('ical', $icalHash);
 
