@@ -613,12 +613,6 @@ class cs_environment
         return $this->_getInstance('cs_reader_manager');
     }
 
-    public function getNoticedManager(): cs_noticed_manager
-    {
-        /* @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->_getInstance('cs_noticed_manager');
-    }
-
     public function getRoomManager(): cs_room_manager
     {
         /* @noinspection PhpIncompatibleReturnTypeInspection */
@@ -675,7 +669,7 @@ class cs_environment
      *
      * @param string $name name of the class to be instantiated
      */
-    private function _getInstance(string $name): cs_manager|cs_noticed_manager|cs_reader_manager
+    private function _getInstance(string $name): cs_manager|cs_reader_manager
     {
         if (!isset($this->instance[$name])) {
             $this->instance[$name] = new $name($this);
@@ -710,7 +704,7 @@ class cs_environment
      *
      * @param string $type The item type
      */
-    public function getManager(string $type): ?cs_manager
+    public function getManager(string $type): cs_manager|cs_reader_manager|null
     {
         if (empty($type)) {
             return null;
@@ -778,8 +772,6 @@ class cs_environment
             return $this->getItemManager();
         } elseif (CS_READER_TYPE == $type) {
             return $this->getReaderManager();
-        } elseif (CS_NOTICED_TYPE == $type) {
-            return $this->getNoticedManager();
         } elseif (CS_TIME_TYPE == $type) {
             return $this->getTimeManager();
         } elseif (CS_TAG_TYPE == $type) {

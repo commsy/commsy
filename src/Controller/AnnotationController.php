@@ -124,13 +124,11 @@ class AnnotationController extends AbstractController
             if ($form->get('save')->isClicked()) {
                 $legacyEnvironment = $environment->getEnvironment();
                 $readerManager = $legacyEnvironment->getReaderManager();
-                $noticedManager = $legacyEnvironment->getNoticedManager();
 
                 $item = $transformer->applyTransformation($item, $form->getData());
                 $item->save();
 
                 $readerManager->markRead($itemId, 0);
-                $noticedManager->markNoticed($itemId, 0);
             }
 
             return $this->redirectToRoute('app_annotation_success', [

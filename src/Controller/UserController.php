@@ -493,12 +493,10 @@ class UserController extends BaseController
                     }
 
                     $readerManager = $this->legacyEnvironment->getReaderManager();
-                    $noticedManager = $this->legacyEnvironment->getNoticedManager();
                     foreach ($users as $user) {
                         $itemId = $user->getItemID();
                         $versionId = $user->getVersionID();
                         $readerManager->markRead($itemId, $versionId);
-                        $noticedManager->markNoticed($itemId, $versionId);
 
                         if ($user->isDeleted()) {
                             $event = new UserLeftRoomEvent($user, $room);
@@ -635,12 +633,6 @@ class UserController extends BaseController
         $reader = $reader_manager->getLatestReader($item->getItemID());
         if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
-
-        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
-            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();

@@ -19,7 +19,6 @@ use cs_list;
 use cs_manager;
 use cs_material_item;
 use cs_material_manager;
-use cs_noticed_manager;
 use cs_reader_manager;
 use cs_section_item;
 use cs_section_manager;
@@ -33,8 +32,6 @@ class MaterialService
 
     private readonly cs_section_manager $sectionManager;
 
-    private readonly cs_noticed_manager $noticedManager;
-
     private readonly cs_reader_manager $readerManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
@@ -47,7 +44,6 @@ class MaterialService
         $this->sectionManager = $this->legacyEnvironment->getSectionManager();
         $this->sectionManager->reset();
 
-        $this->noticedManager = $this->legacyEnvironment->getNoticedManager();
         $this->readerManager = $this->legacyEnvironment->getReaderManager();
     }
 
@@ -193,7 +189,6 @@ class MaterialService
         // material item
         $item = $this->getMaterial($itemId);
         $versionId = $item->getVersionID();
-        $this->noticedManager->markNoticed($itemId, $versionId);
         $this->readerManager->markRead($itemId, $versionId);
 
         // sections
@@ -203,7 +198,6 @@ class MaterialService
                 $sectionItem = $sectionList->getFirst();
                 while ($sectionItem) {
                     $sectionItemID = $sectionItem->getItemID();
-                    $this->noticedManager->markNoticed($sectionItemID, $versionId);
                     $this->readerManager->markRead($sectionItemID, $versionId);
                     $sectionItem = $sectionList->getNext();
                 }
@@ -217,7 +211,6 @@ class MaterialService
                 $annotationItem = $annotationList->getFirst();
                 while ($annotationItem) {
                     $annotationItemID = $annotationItem->getItemID();
-                    $this->noticedManager->markNoticed($annotationItemID, $versionId);
                     $this->readerManager->markRead($annotationItemID, $versionId);
                     $annotationItem = $annotationList->getNext();
                 }

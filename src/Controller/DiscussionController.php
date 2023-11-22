@@ -322,17 +322,11 @@ class DiscussionController extends BaseController
         $articleList = $discussion->getAllArticles();
 
         $readerManager = $this->legacyEnvironment->getReaderManager();
-        $noticedManager = $this->legacyEnvironment->getNoticedManager();
 
         // mark discussion as read / noticed
         $latestReader = $readerManager->getLatestReader($discussion->getItemID());
         if (empty($latestReader) || $latestReader['read_date'] < $discussion->getModificationDate()) {
             $readerManager->markRead($discussion->getItemID(), $discussion->getVersionID());
-        }
-
-        $latestNoticed = $noticedManager->getLatestNoticed($discussion->getItemID());
-        if (empty($latestNoticed) || $latestNoticed['read_date'] < $discussion->getModificationDate()) {
-            $noticedManager->markNoticed($discussion->getItemID(), $discussion->getVersionID());
         }
 
         // mark discussion articles as read / noticed
@@ -341,11 +335,6 @@ class DiscussionController extends BaseController
             $latestReader = $readerManager->getLatestReader($article->getItemID());
             if (empty($latestReader) || $latestReader['read_date'] < $article->getModificationDate()) {
                 $readerManager->markRead($article->getItemID(), 0);
-            }
-
-            $latestNoticed = $noticedManager->getLatestNoticed($article->getItemID());
-            if (empty($latestNoticed) || $latestNoticed['read_date'] < $article->getModificationDate()) {
-                $noticedManager->markNoticed($article->getItemID(), 0);
             }
 
             $legacyMarkup->addFiles($this->itemService->getItemFileList($article->getItemID()));
@@ -448,17 +437,11 @@ class DiscussionController extends BaseController
         }
 
         $reader_manager = $this->legacyEnvironment->getReaderManager();
-        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
 
         $item = $discussion;
         $reader = $reader_manager->getLatestReader($item->getItemID());
         if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
-
-        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
-            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
         $categories = [];

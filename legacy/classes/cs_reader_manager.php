@@ -16,26 +16,15 @@
  */
 class cs_reader_manager
 {
-    /**
-     * object cs_user_item - containing the current user.
-     */
-    public $_current_user;
-    public $_current_user_id;
-    public $_db_connector;
+    private int $_current_user_id;
+    private db_mysql_connector $_db_connector;
+    private array $_rubric_id_array = [];
+    private array $_reader_id_array = [];
+    private bool $_cache_on = true;
 
-    public $_rubric_id_array = [];
-    public $_reader_id_array = [];
-    public $_cache_on = true;
-
-    /** constructor: cs_reader_manager
-     * the only available constructor, initial values for internal variables.
-     *
-     * @param cs_environment the environment
-     */
     public function __construct(private readonly cs_environment $_environment)
     {
-        $this->_current_user = $this->_environment->getCurrentUser();
-        $this->_current_user_id = $this->_current_user->getItemID();
+        $this->_current_user_id = $this->_environment->getCurrentUser()->getItemID();
         $this->_db_connector = $this->_environment->getDBConnector();
     }
 
@@ -50,7 +39,6 @@ class cs_reader_manager
 
     public function resetData()
     {
-        $this->_noticed_id_array = [];
         $this->_reader_id_array = [];
     }
 

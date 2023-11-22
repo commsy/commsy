@@ -202,11 +202,9 @@ class ItemService
      */
     public function markRead($items, $withAnnotations = true)
     {
-        $noticedManager = $this->legacyEnvironment->getNoticedManager();
         $readerManager = $this->legacyEnvironment->getReaderManager();
 
         foreach ($items as $item) {
-            $noticedManager->markNoticed($item->getItemID(), $item->getVersionID());
             $readerManager->markRead($item->getItemID(), $item->getVersionID());
 
             // annotations
@@ -217,7 +215,6 @@ class ItemService
                     $annotationItem = $annotations->getFirst();
 
                     while ($annotationItem) {
-                        $noticedManager->markNoticed($annotationItem->getItemID(), '0');
                         $readerManager->markRead($annotationItem->getItemId(), '0');
 
                         $annotationItem = $annotations->getNext();
