@@ -27,7 +27,7 @@ class Hash
 {
     #[ORM\Column(name: 'user_item_id', type: Types::INTEGER)]
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     private int $userId;
 
     #[ORM\Column(name: 'rss', type: Types::STRING, length: 32)]
