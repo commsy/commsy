@@ -38,8 +38,7 @@ class HashManager
         try {
             return $this->hashRepository->findByUserId($userId);
         } catch (NoResultException $e) {
-            $this->hashRepository->createHash($userId);
-            return $this->hashRepository->findByUserId($userId);
+            return $this->hashRepository->createHash($userId);
         }
     }
 

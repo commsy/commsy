@@ -76,7 +76,7 @@ class HashRepository extends ServiceEntityRepository
         return $query->getSingleResult();
     }
 
-    public function createHash(int $userId): void
+    public function createHash(int $userId): Hash
     {
         $hash = new Hash();
         $hash->setUserId($userId);
@@ -86,6 +86,8 @@ class HashRepository extends ServiceEntityRepository
         $em = $this->getEntityManager();
         $em->persist($hash);
         $em->flush();
+
+        return $hash;
     }
 
     public function deleteHash(Hash $hash): void
