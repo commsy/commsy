@@ -71,8 +71,6 @@ class InsertAction
                     if (empty($copy->getErrorArray())) {
                         $readerManager = $this->legacyEnvironment->getReaderManager();
                         $readerManager->markRead($copy->getItemID(), $copy->getVersionID());
-                        $noticedManager = $this->legacyEnvironment->getNoticedManager();
-                        $noticedManager->markNoticed($copy->getItemID(), $copy->getVersionID());
                     }
                 }
             }
@@ -85,8 +83,6 @@ class InsertAction
                 if (empty($copy->getErrorArray())) {
                     $readerManager = $this->legacyEnvironment->getReaderManager();
                     $readerManager->markRead($copy->getItemID(), $copy->getVersionID());
-                    $noticedManager = $this->legacyEnvironment->getNoticedManager();
-                    $noticedManager->markNoticed($copy->getItemID(), $copy->getVersionID());
                 }
             }
         }

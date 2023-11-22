@@ -52,7 +52,6 @@ class AnnotationService
     public function addAnnotation($roomId, $itemId, $description)
     {
         $readerManager = $this->legacyEnvironment->getReaderManager();
-        $noticedManager = $this->legacyEnvironment->getNoticedManager();
 
         $user = $this->legacyEnvironment->getCurrentUser();
         // create new annotation
@@ -77,35 +76,23 @@ class AnnotationService
             $readerManager->markRead($annotationItem->getItemID(), 0);
         }
 
-        $noticed = $noticedManager->getLatestNoticed($annotationItem->getItemID());
-        if (empty($noticed) || $noticed['read_date'] < $annotationItem->getModificationDate()) {
-            $noticedManager->markNoticed($annotationItem->getItemID(), 0);
-        }
-
         return $annotationItem->getItemID();
     }
 
     public function markAnnotationsReadedAndNoticed(cs_list $annotationList)
     {
         $readerManager = $this->legacyEnvironment->getReaderManager();
-        $noticedManager = $this->legacyEnvironment->getNoticedManager();
 
         // collect an array of all ids and precache
         $idArray = $annotationList->getIDArray();
 
         $readerManager->getLatestReaderByIDArray($idArray);
-        $noticedManager->getLatestNoticedByIDArray($idArray);
 
         // mark if needed
         foreach ($annotationList as $annotation) {
             $reader = $readerManager->getLatestReader($annotation->getItemID());
             if (empty($reader) || $reader['read_date'] < $annotation->getModificationDate()) {
                 $readerManager->markRead($annotation->getItemID(), 0);
-            }
-
-            $noticed = $noticedManager->getLatestNoticed($annotation->getItemID());
-            if (empty($noticed) || $noticed['read_date'] < $annotation->getModificationDate()) {
-                $noticedManager->markNoticed($annotation->getItemID(), 0);
             }
         }
     }

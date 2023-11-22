@@ -405,13 +405,6 @@ class GroupController extends BaseController
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
-        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        // when group is newly created, "modificationDate" is equal to "noticed['read_date']", so operator "<=" instead of "<" should be used here
-        if (empty($noticed) || $noticed['read_date'] <= $item->getModificationDate()) {
-            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
-        }
-
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
         $roomManager = $this->legacyEnvironment->getRoomManager();

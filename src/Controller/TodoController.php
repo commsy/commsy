@@ -222,12 +222,6 @@ class TodoController extends BaseController
             $reader_manager->markRead($todo->getItemID(), $todo->getVersionID());
         }
 
-        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-        $noticed = $noticed_manager->getLatestNoticed($todo->getItemID());
-        if (empty($noticed) || $noticed['read_date'] < $todo->getModificationDate()) {
-            $noticed_manager->markNoticed($todo->getItemID(), $todo->getVersionID());
-        }
-
         $stepList = $todo->getStepItemList();
 
         $stepItem = $stepList->getFirst();
@@ -235,11 +229,6 @@ class TodoController extends BaseController
             $reader = $reader_manager->getLatestReader($stepItem->getItemID());
             if (empty($reader) || $reader['read_date'] < $stepItem->getModificationDate()) {
                 $reader_manager->markRead($stepItem->getItemID(), 0);
-            }
-
-            $noticed = $noticed_manager->getLatestNoticed($stepItem->getItemID());
-            if (empty($noticed) || $noticed['read_date'] < $stepItem->getModificationDate()) {
-                $noticed_manager->markNoticed($stepItem->getItemID(), 0);
             }
 
             $stepItem = $stepList->getNext();
@@ -1053,12 +1042,6 @@ class TodoController extends BaseController
         $reader = $reader_manager->getLatestReader($item->getItemID());
         if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
-
-        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
-            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
         $itemArray = [$todo];

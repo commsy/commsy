@@ -379,12 +379,6 @@ class DateController extends BaseController
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
-        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
-            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
-        }
-
         $itemArray = [$date];
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
@@ -1071,9 +1065,6 @@ class DateController extends BaseController
                             // mark as read and noticed by creator
                             $reader_manager = $this->legacyEnvironment->getReaderManager();
                             $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
-
-                            $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-                            $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
                         }
                     }
                 }
@@ -1403,9 +1394,6 @@ class DateController extends BaseController
                 // mark as read and noticed by creator
                 $reader_manager = $this->legacyEnvironment->getReaderManager();
                 $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
-
-                $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-                $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
             }
             $dateItem->setRecurrenceId($dateItem->getItemID());
             $dateItem->setRecurrencePattern($recurringPatternArray);
@@ -1444,9 +1432,6 @@ class DateController extends BaseController
                 $reader_manager = $this->legacyEnvironment->getReaderManager();
                 $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
 
-                $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-                $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
-
                 // $tempDate->save();
                 $tempDate = $datesList->getNext();
             }
@@ -1466,12 +1451,6 @@ class DateController extends BaseController
         $reader = $reader_manager->getLatestReader($item->getItemID());
         if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
-
-        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
-            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
         $itemArray = [$date];

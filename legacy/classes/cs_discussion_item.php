@@ -261,28 +261,6 @@ class cs_discussion_item extends cs_item
        return $number_of_unread;
    }
 
-   public function getAllAndUnreadArticles()
-   {
-       $noticed_manager = $this->_environment->getNoticedManager();
-       $list = $this->getAllArticles();
-       $count = $list->getCount();
-       $discussionarticle_item = $list->getFirst();
-       $number_of_unread = 0;
-       while ($discussionarticle_item) {
-           // Mark item as read, if we read it for the first time
-           $noticed = $noticed_manager->getLatestNoticed($discussionarticle_item->getItemID());
-           if ((empty($noticed)) || ($noticed['version_id'] < $discussionarticle_item->getVersionID()) || ($noticed['read_date'] < $discussionarticle_item->getModificationDate())) {
-               $number_of_unread = $number_of_unread + 1;
-           }
-           $discussionarticle_item = $list->getNext();
-       }
-       $retour = [];
-       $retour['count'] = $count;
-       $retour['unread'] = $number_of_unread;
-
-       return $retour;
-   }
-
    /**
    save TBD
     */

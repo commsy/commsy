@@ -600,9 +600,6 @@ class cs_room_manager extends cs_context_manager
             $link_item_file_manager = $this->_environment->getLinkItemFileManager();
             $link_item_file_manager->deleteFromDb($iid);
 
-            $noticed_manager = $this->_environment->getNoticedManager();
-            $noticed_manager->deleteFromDb($iid);
-
             $reader_manager = $this->_environment->getReaderManager();
             $reader_manager->deleteFromDb($iid);
 
