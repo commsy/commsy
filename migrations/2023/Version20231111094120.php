@@ -20,6 +20,8 @@ final class Version20231111094120 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql('DROP INDEX caldav ON hash');
+        $this->addSql('DELETE h FROM hash AS h LEFT JOIN user AS u ON h.user_item_id = u.item_id WHERE u.item_id IS NULL;');
+        $this->addSql('DELETE h FROM hash AS h WHERE h.rss IS NULL OR h.ical IS NULL');
         $this->addSql('ALTER TABLE hash DROP caldav, CHANGE user_item_id user_item_id INT AUTO_INCREMENT NOT NULL, CHANGE rss rss VARCHAR(32) NOT NULL, CHANGE ical ical VARCHAR(32) NOT NULL');
     }
 
