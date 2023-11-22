@@ -32,17 +32,17 @@ final class AccountMiddleware implements MiddlewareInterface
     {
         $message = $envelope->getMessage();
 
-        // root-Account
-        if ($message->getUsername() === 'root') {
-            throw new UnrecoverableMessageHandlingException('Root account cannot be deleted');
-        }
+        if ($message instanceof Account) {
+            // root-Account
+            if ($message->getUsername() === 'root') {
+                throw new UnrecoverableMessageHandlingException('Root account cannot be deleted');
+            }
 
-        // When a DELETE operation occurs, API Platform automatically adds a
-        // ApiPlatform\Symfony\Messenger\RemoveStamp “stamp” instance to the “envelope”.
-        if ($message instanceof Account &&
-            !empty($envelope->all(RemoveStamp::class))
-        ) {
-            $this->accountManager->delete($message);
+            // When a DELETE operation occurs, API Platform automatically adds a
+            // ApiPlatform\Symfony\Messenger\RemoveStamp “stamp” instance to the “envelope”.
+            if (!empty($envelope->all(RemoveStamp::class))) {
+                $this->accountManager->delete($message);
+            }
         }
 
         return $stack->next()->handle($envelope, $stack);
