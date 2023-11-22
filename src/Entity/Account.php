@@ -14,6 +14,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Api\GetAccountsWorkspaces;
@@ -74,6 +75,11 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => ['api_check_local_login']],
             input: LocalLoginInputRequest::class,
             messenger: 'input'
+        ),
+        new Delete(
+            security: "is_granted('ROLE_API_WRITE')",
+            output: false,
+            messenger: true
         )
     ],
     normalizationContext: ['groups' => ['api']],

@@ -1,5 +1,10 @@
 framework:
     messenger:
+        buses:
+            messenger.bus.default:
+                middleware:
+                    - 'App\Middleware\AccountMiddleware'
+            
         failure_transport: failed
 
         # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
