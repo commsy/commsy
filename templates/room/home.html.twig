@@ -63,7 +63,7 @@
             {% if roomItem.usageInfoTextForRubric('home') is not empty %}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-clearfix">
+                    <div class="uk-clearfix">x
                         <div class="uk-float-right">
                             <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-notice'}">
                                 <i class="uk-icon-chevron-up"></i>
@@ -78,7 +78,7 @@
                         </div>
                     </div>
                 </div>
-                <ul id="user-notice" class="uk-list uk-list-striped uk-hidden-small">
+                <ul id="user-notice" class="uk-block uk-padding-remove uk-hidden-small">
                     {{ roomItem.usageInfoTextForRubric('home')|raw }}
                 </ul>
             </div>
