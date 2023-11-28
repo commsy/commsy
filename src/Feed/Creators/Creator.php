@@ -73,6 +73,10 @@ abstract class Creator implements CreatorInterface
         $contextItem = $item->getContextItem();
         $modifierItem = $item->getModificatorItem();
 
+        if (!$modifierItem) {
+            return false;
+        }
+
         if ($contextItem->isCommunityRoom()) {
             if ($this->isGuestAccess) {
                 return $modifierItem->isVisibleForAll();
