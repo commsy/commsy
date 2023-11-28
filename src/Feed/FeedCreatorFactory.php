@@ -13,7 +13,6 @@
 
 namespace App\Feed;
 
-use App\Feed\Creators\Creator;
 use App\Feed\Creators\CreatorInterface;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;

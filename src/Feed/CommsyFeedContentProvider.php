@@ -18,6 +18,7 @@ use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_manager;
 use cs_privateroom_item;
+use DateInterval;
 use DateTime;
 use Debril\RssAtomBundle\Exception\FeedException\FeedNotFoundException;
 use Debril\RssAtomBundle\Provider\FeedProviderInterface;
@@ -26,15 +27,15 @@ use FeedIo\FeedInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class CommsyFeedContentProvider implements FeedProviderInterface
+readonly class CommsyFeedContentProvider implements FeedProviderInterface
 {
-    private readonly cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private readonly TranslatorInterface $translator,
-        private readonly FeedCreatorFactory $feedCreatorFactory,
-        private readonly HashManager $hashManager
+        private TranslatorInterface $translator,
+        private FeedCreatorFactory $feedCreatorFactory,
+        private HashManager $hashManager
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -57,12 +58,12 @@ class CommsyFeedContentProvider implements FeedProviderInterface
             $this->feedCreatorFactory->setGuestAccess($isGuestAccess);
 
             $feed = new Feed();
-            $feed->setLastModified($this->getLastModified());
             $feed->setTitle($this->getTitle($currentContextItem));
             $feed->setDescription($this->getDescription($currentContextItem));
             $feed->setLink($request->getSchemeAndHttpHost().$request->getBaseUrl());
 
             $items = $this->getItems($currentContextItem);
+            $feed->setLastModified($this->getLastModified($items));
 
             foreach ($items as $item) {
                 $feedItem = $this->feedCreatorFactory->createItem($item);
@@ -88,7 +89,7 @@ class CommsyFeedContentProvider implements FeedProviderInterface
                 if ($request->query->has('hid')) {
                     $hash = $request->query->get('hid');
 
-                    if ($this->hashManager->isRSSHashValid($hash, $currentContextItem)) {
+                    if ($this->hashManager->isRssHashValid($hash, $currentContextItem)) {
                         return true;
                     }
                 }
@@ -98,17 +99,18 @@ class CommsyFeedContentProvider implements FeedProviderInterface
         return false;
     }
 
-    private function getLastModified(): DateTime
+    private function getLastModified(array $items): DateTime
     {
-        $itemManager = $this->legacyEnvironment->getItemManager();
+        if (!$items) {
+            return new DateTime();
+        }
 
-        $itemManager->setIntervalLimit(1);
-        $itemManager->setDeleteLimit(true);
+        // sort items by modification date
+        usort($items, fn (array $a, array $b) =>
+            $a['modification_date'] > $b['modification_date'] ? -1 : 1
+        );
 
-        $result = $itemManager->_performQuery();
-        $modificationDate = $result[0]['modification_date'];
-
-        return new DateTime($modificationDate);
+        return new DateTime($items[0]['modification_date']);
     }
 
     private function getTitle($currentContextItem): string
@@ -181,7 +183,8 @@ class CommsyFeedContentProvider implements FeedProviderInterface
         $itemManager = $this->legacyEnvironment->getItemManager();
         $itemManager->resetLimits();
 
-        $itemManager->setIntervalLimit(10);
+        $itemManager->setModificationNewerThenLimit((new DateTime())->sub(new DateInterval('P6M')));
+        $itemManager->setNoIntervalLimit();
 
         // Using the activated entries filter here seems not sufficient, since future modification dates
         // are only stored in their corresponding type tables.
