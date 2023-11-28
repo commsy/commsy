@@ -15,6 +15,7 @@ namespace App\Form\Type;
 
 use App\Form\DataTransformer\RoomSlugCollectionToStringTransformer;
 use App\Services\LegacyEnvironment;
+use cs_community_item;
 use cs_environment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -207,28 +208,21 @@ class GeneralSettingsType extends AbstractType
         return $timeChoices;
     }
 
-    private function getAssignableCommunityRoom()
+    private function getAssignableCommunityRoom(): array
     {
         $results = [$this->translator->trans('Select some options') => ''];
 
         $currentPortal = $this->legacyEnvironment->getCurrentPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
-        $communityList = $currentPortal->getCommunityList();
-        if ($communityList->isNotEmpty()) {
-            $communityItem = $communityList->getFirst();
-            while ($communityItem) {
-                if ($communityItem->isAssignmentOnlyOpenForRoomMembers()) {
-                    if (!$communityItem->isUser($currentUser)) {
-                        $communityItem = $communityList->getNext();
-                        continue;
-                    }
-                }
+        $assignableRooms = array_filter(
+            iterator_to_array($currentPortal->getCommunityList()),
+            fn(cs_community_item $communityRoom) => !$communityRoom->isAssignmentOnlyOpenForRoomMembers() ||
+                $communityRoom->isUser($currentUser)
+        );
 
-                $results[$communityItem->getTitle()] = $communityItem->getItemId();
-
-                $communityItem = $communityList->getNext();
-            }
+        foreach ($assignableRooms as $assignableRoom) {
+            $results[$assignableRoom->getTitle()] = $assignableRoom->getItemId();
         }
 
         return $results;

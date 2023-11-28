@@ -19,7 +19,9 @@ use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
+use cs_community_item;
 use cs_environment;
+use cs_project_item;
 use cs_room_item;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -171,14 +173,14 @@ class GeneralSettingsTransformer extends AbstractTransformer
         $em->flush();
 
         // assignment
-        if ($roomObject->isProjectRoom() && isset($roomData['community_rooms'])) {
+        if ($roomObject instanceof cs_project_item && isset($roomData['community_rooms'])) {
             /*
              * if assignment is mandatory, the array must not be empty
              */
             if ('mandatory' !== $this->legacyEnvironment->getCurrentPortalItem()->getProjectRoomLinkStatus() || sizeof($roomData['community_rooms']) > 0) {
                 $roomObject->setCommunityListByID(array_values($roomData['community_rooms']));
             }
-        } elseif ($roomObject->isCommunityRoom()) {
+        } elseif ($roomObject instanceof cs_community_item) {
             if (isset($roomData['assignment_restricted'])) {
                 if ($roomData['assignment_restricted']) {
                     $roomObject->setAssignmentOnlyOpenForRoomMembers();

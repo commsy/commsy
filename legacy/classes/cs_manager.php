@@ -89,10 +89,7 @@ class cs_manager
      */
     protected $modificationOlderThenLimit;
 
-    /**
-     * @var \DateTime
-     */
-    protected $modificationNewerThenLimit;
+    protected ?DateTime $modificationNewerThenLimit;
 
     /**
      * @var int[]
@@ -281,8 +278,7 @@ class cs_manager
                }
            }
        }
-       $id_array = array_merge($id_array, $first_element);
-       return $id_array;
+       return array_merge($id_array, $first_element);
    }
 
    public function _getTagIDArrayByTagID($id)
