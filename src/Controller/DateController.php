@@ -652,7 +652,11 @@ class DateController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/eventsdashboard')]
-    public function eventsdashboard(): Response
+    public function eventsdashboard(
+        // Do not remove $roomId even if it is unused, @IsGranted() relies on this argument
+        /* @noinspection PhpUnusedParameterInspection */
+        int $roomId,
+    ): Response
     {
         $user = $this->legacyEnvironment->getCurrentUserItem();
         $userList = $user->getRelatedUserList()->to_array();
