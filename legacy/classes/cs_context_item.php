@@ -115,24 +115,19 @@ class cs_context_item extends cs_item
         }
     }
 
-    public function setMaterialOpenForGuests()
+    public function setMaterialOpenForGuests(): void
     {
         $this->_addExtra('MATERIAL_GUESTS', 1);
     }
 
-    public function setMaterialClosedForGuests()
+    public function setMaterialClosedForGuests(): void
     {
         $this->_addExtra('MATERIAL_GUESTS', 0);
     }
 
-    public function isAssignmentOnlyOpenForRoomMembers()
+    public function isAssignmentOnlyOpenForRoomMembers(): bool
     {
-        $retour = false;
-        if ($this->_issetExtra('ROOMASSOCIATION') and 'onlymembers' == $this->_getExtra('ROOMASSOCIATION')) {
-            $retour = true;
-        }
-
-        return $retour;
+        return $this->_issetExtra('ROOMASSOCIATION') && $this->_getExtra('ROOMASSOCIATION') === 'onlymembers';
     }
 
     public function setAssignmentOpenForAnybody()
@@ -140,7 +135,7 @@ class cs_context_item extends cs_item
         $this->_addExtra('ROOMASSOCIATION', 'forall');
     }
 
-    public function setAssignmentOnlyOpenForRoomMembers()
+    public function setAssignmentOnlyOpenForRoomMembers(): void
     {
         $this->_addExtra('ROOMASSOCIATION', 'onlymembers');
     }

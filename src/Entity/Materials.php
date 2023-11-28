@@ -39,7 +39,9 @@ class Materials
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $itemId = null;
 
+    #[ORM\Id]
     #[ORM\Column(name: 'version_id', type: Types::INTEGER)]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $versionId = null;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
@@ -96,7 +98,7 @@ class Materials
     #[ORM\Column(name: 'workflow_validity_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTimeInterface $workflowValidityDate = null;
 
-    #[ORM\OneToMany(targetEntity: 'Section', mappedBy: 'material')]
+    #[ORM\OneToMany(mappedBy: 'material', targetEntity: 'Section')]
     private Collection $sections;
 
     public function __construct()
