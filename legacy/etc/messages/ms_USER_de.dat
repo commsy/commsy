@@ -72,14 +72,6 @@ $message["USER_EXPIRED_PASSWORD"]["de"] = "Passwort abgelaufen";
 $message["USER_EXPORT_ITEM_ZIP"]["de"] = "Person";
 $message["USER_FIRSTNAME"]["de"] = "Vorname";
 $message["USER_FULLNAME"]["de"] = "Name";
-$message["USER_GET_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] angemeldet.
-
-Die Informationen im einzelnen:
-Name: %1
-Kennung: %2
-E-Mail Adresse: %3
-Sprache: %4";
-$message["USER_GET_MAIL_SUBJECT"]["de"] = "Neue Kennung beantragt: [%1]";
 $message["USER_HEADER"]["de"] = "Personen";
 $message["USER_HOMEPAGE"]["de"] = "Homepage";
 $message["USER_ICQ"]["de"] = "ICQ";

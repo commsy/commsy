@@ -44,21 +44,21 @@ class CalendarController extends AbstractController
      */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private CalendarsService $calendarsService,
-        private TranslatorInterface $translator,
-        private RoomService $roomService,
-        private EventDispatcherInterface $eventDispatcher
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     #[Route(path: '/room/{roomId}/calendar/edit/{calendarId}')]
     #[IsGranted('CALENDARS_EDIT')]
-    public function editAction(
+    public function edit(
         Request $request,
-        int $roomId,
         CalendarsRepository $calendarsRepository,
         ManagerRegistry $doctrine,
+        CalendarsService $calendarsService,
+        TranslatorInterface $translator,
+        RoomService $roomService,
+        EventDispatcherInterface $eventDispatcher,
+        int $roomId,
         int $calendarId = null
     ): Response {
         $roomManager = $this->legacyEnvironment->getRoomManager();
@@ -79,9 +79,9 @@ class CalendarController extends AbstractController
 
         $editForm = $this->createForm(CalendarEditType::class, $calendar, [
             'editExternalUrl' => ($roomItem->usersCanSetExternalCalendarsUrl() || $this->legacyEnvironment->getCurrentUser()->isModerator()),
-            'confirm-delete' => $this->translator->trans('confirm-delete', [], 'calendar'),
-            'confirm-delete-cancel' => $this->translator->trans('confirm-delete-cancel', [], 'calendar'),
-            'confirm-delete-confirm' => $this->translator->trans('confirm-delete-confirm', [], 'calendar'),
+            'confirm-delete' => $translator->trans('confirm-delete', [], 'calendar'),
+            'confirm-delete-cancel' => $translator->trans('confirm-delete-cancel', [], 'calendar'),
+            'confirm-delete-confirm' => $translator->trans('confirm-delete-confirm', [], 'calendar'),
         ]);
 
         $editForm->handleRequest($request);
@@ -93,7 +93,7 @@ class CalendarController extends AbstractController
             }
 
             if ('delete' == $editForm->getClickedButton()->getName()) {
-                $this->calendarsService->removeCalendar($this->roomService, $calendar);
+                $calendarsService->removeCalendar($roomService, $calendar);
             } else {
                 $doctrine->getManager()->persist($calendar);
             }
@@ -108,7 +108,7 @@ class CalendarController extends AbstractController
 
         $calendars = $calendarsRepository->findBy(['context_id' => $roomId]);
 
-        $this->eventDispatcher->dispatch(new CommsyEditEvent($calendar), CommsyEditEvent::EDIT);
+        $eventDispatcher->dispatch(new CommsyEditEvent($calendar), CommsyEditEvent::EDIT);
 
         return $this->render('calendar/edit.html.twig', [
             'editForm' => $editForm,

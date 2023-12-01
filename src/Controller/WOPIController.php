@@ -12,7 +12,6 @@ use App\WOPI\REST\WOPIFileId;
 use App\WOPI\REST\WOPISrc;
 use DateTimeImmutable;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

@@ -14,10 +14,10 @@ jobs:
             APP_ENV: prod
         steps:
             -   name: actions/checkout
-                uses: actions/checkout@v2
+                uses: actions/checkout@v4
 
             -   name: Setup node
-                uses: actions/setup-node@v2
+                uses: actions/setup-node@v3
 
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2

@@ -11,7 +11,7 @@ use Symfony\Component\Mime\Email;
 class MailerSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private ParameterBagInterface $parameterBag
+        private readonly ParameterBagInterface $parameterBag
     ) {
     }
 
@@ -40,7 +40,9 @@ class MailerSubscriber implements EventSubscriberInterface
         if (!empty($cert) && !empty($key)) {
             if (file_exists($cert) && file_exists($key)) {
                 $signer = new SMimeSigner($cert, $key);
-                $signer->sign($message);
+                $signedMail = $signer->sign($message);
+
+                $event->setMessage($signedMail);
             }
         }
     }

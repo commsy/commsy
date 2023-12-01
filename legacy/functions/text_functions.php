@@ -70,7 +70,7 @@ function chunkText($text, $length)
  *
  * @return text for replacement in preg_replace_function
  */
-function spezial_chunkURL($text)
+function spezial_chunkURL(array $text): string
 {
     // ------------------
     // --->UTF8 - OK<----
@@ -91,7 +91,7 @@ function spezial_chunkURL($text)
  *
  * Our extended implementation translates correct without respect to 'locale'
  */
-function cs_strtoupper($value)
+function cs_strtoupper($value): string
 {
     return mb_strtoupper(strtr($value, LC_CHARS, UC_CHARS), 'UTF-8');
 }
@@ -106,168 +106,7 @@ function cs_strtoupper($value)
  *
  * Our extended implementation translates correct without respect to 'locale'
  */
-function cs_strtolower($value)
+function cs_strtolower($value): string
 {
     return mb_strtolower(strtr($value, UC_CHARS, LC_CHARS), 'UTF-8');
-}
-
-function mb_unserialize($serial_str)
-{
-    $retour = @unserialize($serial_str);
-    if (empty($retour)) {
-        $serial_str = preg_replace_callback('/s:(\d+):"(.*?)";/s', function ($match) {
-            $length = strlen($match[2]);
-            $data = $match[2];
-
-            return "s:$length:\"$data\";";
-        }, (string) $serial_str);
-
-        $retour = @unserialize($serial_str);
-        if (empty($retour)) {
-            $retour = @unserialize(_correct_a($serial_str));
-        }
-    }
-
-    return $retour;
-}
-
-function _correct_a($value)
-{
-    $retour = $value;
-
-    $found = [];
-    preg_match_all('~a:([0-9]*):~', (string) $value, $found);
-    if (!empty($found[1][0])) {
-        $begin = substr((string) $value, 0, strpos((string) $value, '{') + 1);
-        $middle = substr((string) $value, strpos((string) $value, '{') + 1, strrpos((string) $value, '}') - strpos((string) $value, '{') - 1);
-        $end = substr((string) $value, strrpos((string) $value, '}'));
-        if ((is_countable($found[1]) ? count($found[1]) : 0) > 1) {
-            $middle = _correct_a($middle);
-        }
-        $count_sem = 0;
-        $count_klam = 0;
-        for ($i = 0; $i < strlen((string) $middle); ++$i) {
-            if (0 == $count_klam
-                 and ';' == $middle[$i]
-            ) {
-                $count_sem = $count_sem + 0.5;
-            }
-            if ('{' == $middle[$i]) {
-                ++$count_klam;
-            } elseif ('}' == $middle[$i]) {
-                --$count_klam;
-            }
-        }
-        if ($count_sem == round($count_sem, 0)
-             and $count_sem != $found[1][0]
-        ) {
-            $begin = str_replace($found[1][0], $count_sem, $begin);
-            $retour = $begin.$middle.$end;
-        }
-    }
-
-    return $retour;
-}
-
-function cs_ucfirst($text)
-{
-    $return_text = mb_strtoupper(mb_substr((string) $text, 0, 1, 'UTF-8'), 'UTF-8');
-
-    return $return_text.mb_substr((string) $text, 1, mb_strlen((string) $text, 'UTF-8'), 'UTF-8');
-}
-
-// von http://de3.php.net/sprintf
-if (!function_exists('mb_sprintf')) {
-    function mb_sprintf($format)
-    {
-        $argv = func_get_args();
-        array_shift($argv);
-
-        return mb_vsprintf($format, $argv);
-    }
-}
-if (!function_exists('mb_vsprintf')) {
-    /**
-     * Works with all encodings in format and arguments.
-     * Supported: Sign, padding, alignment, width and precision.
-     * Not supported: Argument swapping.
-     */
-    function mb_vsprintf($format, $argv, $encoding = null)
-    {
-        if (is_null($encoding)) {
-            $encoding = mb_internal_encoding();
-        }
-
-        // Use UTF-8 in the format so we can use the u flag in preg_split
-        $format = mb_convert_encoding((string) $format, 'UTF-8', $encoding);
-
-        $newformat = ''; // build a new format in UTF-8
-        $newargv = []; // unhandled args in unchanged encoding
-
-        while ('' !== $format) {
-            // Split the format in two parts: $pre and $post by the first %-directive
-            // We get also the matched groups
-            [$pre, $sign, $filler, $align, $size, $precision, $type, $post] =
-                preg_split("!\%(\+?)('.|[0 ]|)(-?)([1-9][0-9]*|)(\.[1-9][0-9]*|)([%a-zA-Z])!u",
-                    $format, 2, PREG_SPLIT_DELIM_CAPTURE);
-
-            $newformat .= mb_convert_encoding($pre, $encoding, 'UTF-8');
-
-            if ('' == $type) {
-                // didn't match. do nothing. this is the last iteration.
-            } elseif ('%' == $type) {
-                // an escaped %
-                $newformat .= '%%';
-            } elseif ('s' == $type) {
-                $arg = array_shift($argv);
-                $arg = mb_convert_encoding((string) $arg, 'UTF-8', $encoding);
-                $padding_pre = '';
-                $padding_post = '';
-
-                // truncate $arg
-                if ('' !== $precision) {
-                    $precision = intval(substr($precision, 1));
-                    if ($precision > 0 && mb_strlen($arg, $encoding) > $precision) {
-                        $arg = mb_substr($precision, 0, $precision, $encoding);
-                    }
-                }
-
-                // define padding
-                if ($size > 0) {
-                    $arglen = mb_strlen($arg, $encoding);
-                    if ($arglen < $size) {
-                        if ('' === $filler) {
-                            $filler = ' ';
-                        }
-                        if ('-' == $align) {
-                            $padding_post = str_repeat($filler, $size - $arglen);
-                        } else {
-                            $padding_pre = str_repeat($filler, $size - $arglen);
-                        }
-                    }
-                }
-
-                // escape % and pass it forward
-                $newformat .= $padding_pre.str_replace('%', '%%', $arg).$padding_post;
-            } else {
-                // another type, pass forward
-                $newformat .= "%$sign$filler$align$size$precision$type";
-                $newargv[] = array_shift($argv);
-            }
-            $format = strval($post);
-        }
-        // Convert new format back from UTF-8 to the original encoding
-        $newformat = mb_convert_encoding($newformat, $encoding, 'UTF-8');
-
-        return vsprintf($newformat, $newargv);
-    }
-}
-
-function cs_utf8_encode($value)
-{
-    if (mb_check_encoding($value, 'UTF-8')) {
-        return $value;
-    } elseif (mb_check_encoding($value, 'ISO-8859-1')) {
-        return mb_convert_encoding((string) $value, 'UTF-8', 'ISO-8859-1');
-    }
 }

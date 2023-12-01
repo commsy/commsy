@@ -110,7 +110,7 @@ class MaterialController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/material/feed/{start}/{sort}')]
-    public function feedAction(
+    public function feed(
         Request $request,
         ItemService $itemService,
         int $roomId,
@@ -188,7 +188,7 @@ class MaterialController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/material')]
-    public function listAction(
+    public function list(
         Request $request,
         int $roomId,
         ItemService $itemService
@@ -247,7 +247,7 @@ class MaterialController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/material/print/{sort}', defaults: ['sort' => 'none'])]
-    public function printlistAction(
+    public function printlist(
         Request $request,
         PrintService $printService,
         int $roomId,
@@ -311,7 +311,7 @@ class MaterialController extends BaseController
 
     #[Route(path: '/room/{roomId}/material/{itemId}/{versionId}', requirements: ['itemId' => '\d+', 'versionId' => '\d+'])]
     #[IsGranted('ITEM_SEE', subject: 'itemId')]
-    public function detailAction(
+    public function detail(
         Request $request,
         TopicService $topicService,
         LegacyMarkup $legacyMarkup,
@@ -403,7 +403,7 @@ class MaterialController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/{itemId}/workflow', condition: 'request.isXmlHttpRequest()')]
-    public function workflowAction(
+    public function workflow(
         Request $request,
         int $roomId,
         int $itemId
@@ -437,7 +437,7 @@ class MaterialController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/rating/{vote}')]
-    public function ratingAction(
+    public function rating(
         int $roomId,
         int $itemId,
         string $vote
@@ -658,17 +658,11 @@ class MaterialController extends BaseController
         }
 
         $reader_manager = $this->legacyEnvironment->getReaderManager();
-        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
 
         $item = $material;
         $reader = $reader_manager->getLatestReader($item->getItemID());
         if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
-
-        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
-            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
         $readsectionList = $material->getSectionList();
@@ -678,11 +672,6 @@ class MaterialController extends BaseController
             $reader = $reader_manager->getLatestReader($section->getItemID());
             if (empty($reader) || $reader['read_date'] < $section->getModificationDate()) {
                 $reader_manager->markRead($section->getItemID(), 0);
-            }
-
-            $noticed = $noticed_manager->getLatestNoticed($section->getItemID());
-            if (empty($noticed) || $noticed['read_date'] < $section->getModificationDate()) {
-                $noticed_manager->markNoticed($section->getItemID(), 0);
             }
 
             $section = $readsectionList->getNext();
@@ -844,7 +833,7 @@ class MaterialController extends BaseController
 
     #[Route(path: '/room/{roomId}/material/{itemId}/saveworkflow')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function saveWorkflowAction(
+    public function saveWorkflow(
         int $roomId,
         int $itemId
     ): Response {
@@ -875,7 +864,7 @@ class MaterialController extends BaseController
 
     #[Route(path: '/room/{roomId}/material/{itemId}/edit')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editAction(
+    public function edit(
         Request $request,
         CategoryService $categoryService,
         LabelService $labelService,
@@ -1009,12 +998,21 @@ class MaterialController extends BaseController
             }
         }
 
-        return $this->render('material/edit.html.twig', ['isSaved' => $isSaved, 'isDraft' => $isDraft, 'isMaterial' => $isMaterial, 'form' => $form, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem(), 'material' => $typedItem, 'licenses' => $licenses, 'licensesContent' => $licensesContent]);
+        return $this->render('material/edit.html.twig', [
+            'isSaved' => $isSaved,
+            'isDraft' => $isDraft,
+            'isMaterial' => $isMaterial,
+            'form' => $form,
+            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
+            'material' => $typedItem,
+            'licenses' => $licenses,
+            'licensesContent' => $licensesContent],
+        );
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/save')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function saveAction(
+    public function save(
         int $roomId,
         int $itemId
     ): Response {
@@ -1063,7 +1061,7 @@ class MaterialController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/material/{itemId}/print')]
-    public function printAction(
+    public function print(
         PrintService $printService,
         int $roomId,
         int $itemId
@@ -1111,7 +1109,7 @@ class MaterialController extends BaseController
 
     #[Route(path: '/room/{roomId}/material/create')]
     #[IsGranted('ITEM_NEW')]
-    public function createAction(
+    public function create(
         int $roomId
     ): RedirectResponse {
         $roomItem = $this->getRoom($roomId);
@@ -1134,7 +1132,7 @@ class MaterialController extends BaseController
 
     #[Route(path: '/room/{roomId}/material/{itemId}/createsection')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function createSectionAction(
+    public function createSection(
         int $roomId,
         int $itemId
     ): Response {
@@ -1159,7 +1157,7 @@ class MaterialController extends BaseController
 
     #[Route(path: '/room/{roomId}/material/{itemId}/savesection')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function saveSectionAction(
+    public function saveSection(
         Request $request,
         int $roomId,
         int $itemId
@@ -1214,7 +1212,7 @@ class MaterialController extends BaseController
 
     #[Route(path: '/room/{roomId}/material/{itemId}/sortsections')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function sortSectionsAction(
+    public function sortSections(
         Request $request,
         int $itemId
     ): Response {
@@ -1239,7 +1237,7 @@ class MaterialController extends BaseController
 
     #[Route(path: '/room/{roomId}/material/{itemId}/editsections')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editSectionsAction(
+    public function editSections(
         Request $request,
         int $roomId,
         int $itemId
@@ -1285,7 +1283,7 @@ class MaterialController extends BaseController
 
     #[Route(path: '/room/{roomId}/material/{itemId}/savesections')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function savesectionsAction(
+    public function savesections(
         int $roomId,
         int $itemId
     ): Response {
@@ -1302,7 +1300,7 @@ class MaterialController extends BaseController
 
     #[Route(path: '/room/{roomId}/material/{itemId}/{versionId}/createversion/')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function createVersionAction(
+    public function createVersion(
         int $roomId,
         int $itemId,
         int $versionId
@@ -1330,7 +1328,7 @@ class MaterialController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/download')]
-    public function downloadAction(
+    public function download(
         Request $request,
         DownloadAction $action,
         int $roomId
@@ -1348,7 +1346,7 @@ class MaterialController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/xhr/markread', condition: 'request.isXmlHttpRequest()')]
-    public function xhrMarkReadAction(
+    public function xhrMarkRead(
         Request $request,
         MarkReadAction $markReadAction,
         MarkReadMaterial $markReadMaterial,
@@ -1395,7 +1393,7 @@ class MaterialController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/xhr/mark', condition: 'request.isXmlHttpRequest()')]
-    public function xhrMarkAction(
+    public function xhrMark(
         Request $request,
         MarkAction $action,
         int $roomId
@@ -1412,7 +1410,7 @@ class MaterialController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
-    public function xhrCategorizeAction(
+    public function xhrCategorize(
         Request $request,
         CategorizeAction $action,
         int $roomId
@@ -1426,7 +1424,7 @@ class MaterialController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
-    public function xhrHashtagAction(
+    public function xhrHashtag(
         Request $request,
         HashtagAction $action,
         int $roomId
@@ -1438,7 +1436,7 @@ class MaterialController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/xhr/activate', condition: 'request.isXmlHttpRequest()')]
-    public function xhrActivateAction(
+    public function xhrActivate(
         Request $request,
         ActivateAction $action,
         $roomId
@@ -1453,7 +1451,7 @@ class MaterialController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeactivateAction(
+    public function xhrDeactivate(
         Request $request,
         DeactivateAction $action,
         $roomId
@@ -1468,7 +1466,7 @@ class MaterialController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/material/xhr/delete', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeleteAction(
+    public function xhrDelete(
         Request $request,
         DeleteAction $deleteAction,
         DeleteMaterial $deleteMaterial,

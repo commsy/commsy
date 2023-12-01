@@ -7,7 +7,7 @@
 {% block feed %}
     <ul id="room-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'App\\Controller\\RoomController::feedAllAction', {
+            'App\\Controller\\RoomController::feedAll', {
                 'roomId': roomId,
                 'roomFilter': app.request.query.all('room_filter')
             }

@@ -14,8 +14,8 @@
 namespace App\Entity;
 
 use App\Repository\SavedSearchRepository;
-use DateTime;
 use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -23,33 +23,27 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity(repositoryClass: SavedSearchRepository::class)]
 #[ORM\Table(name: 'saved_searches')]
-#[ORM\Index(name: 'account_id', columns: ['account_id'])]
+#[ORM\Index(columns: ['account_id'], name: 'account_id')]
 class SavedSearch
 {
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Column(name: 'id', type: Types::INTEGER, nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $id;
+    private int $id;
 
-    #[ORM\Column(name: 'account_id', type: 'integer', nullable: false)]
+    #[ORM\Column(name: 'account_id', type: Types::INTEGER, nullable: false)]
     private ?int $accountId = null;
 
-    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
+    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private ?int $deleterId = null;
 
-    /**
-     * @var DateTime|null
-     */
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTimeInterface $deletionDate = null;
 
-    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
     private ?string $title = null;
 
-    #[ORM\Column(name: 'search_url', type: 'string', length: 3000, nullable: false)]
+    #[ORM\Column(name: 'search_url', type: Types::STRING, length: 3000, nullable: false)]
     private ?string $searchUrl = null;
 
     public function getId(): ?int

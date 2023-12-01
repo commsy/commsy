@@ -9,7 +9,7 @@ use InvalidArgumentException;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 
-final class ContactFormHelper
+final readonly class ContactFormHelper
 {
     public function __construct(
         private MailAssistant $mailAssistant,

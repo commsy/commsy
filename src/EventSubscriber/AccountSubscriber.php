@@ -13,15 +13,30 @@
 
 namespace App\EventSubscriber;
 
+use App\Entity\AuthSourceLocal;
+use App\Entity\Portal;
 use App\Entity\SavedSearch;
+use App\Event\AccountCreatedEvent;
 use App\Event\AccountDeletedEvent;
+use App\Mail\Mailer;
+use App\Mail\Messages\AccountCreatedModerationMessage;
+use App\Mail\RecipientFactory;
+use App\Services\LegacyEnvironment;
+use cs_environment;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class AccountSubscriber implements EventSubscriberInterface
+readonly class AccountSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
+    private cs_environment $legacyEnvironment;
+
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private Mailer $mailer,
+        LegacyEnvironment $legacyEnvironment
+    )
     {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public static function getSubscribedEvents(): array
@@ -29,18 +44,33 @@ class AccountSubscriber implements EventSubscriberInterface
         // NOTE: there's also an AccountChangedEvent which currently only UserRoomSubscriber subscribes to
         return [
             AccountDeletedEvent::class => 'onAccountDeleted',
+            AccountCreatedEvent::class => 'onAccountCreated'
         ];
     }
 
-    public function onAccountDeleted(AccountDeletedEvent $event)
+    public function onAccountDeleted(AccountDeletedEvent $event): void
     {
         $portalUser = $event->getPortalUser();
 
-        if (!$portalUser) {
+        $repository = $this->entityManager->getRepository(SavedSearch::class);
+        $repository->removeSavedSearchesByAccountId($portalUser->getItemID());
+    }
+
+    public function onAccountCreated(AccountCreatedEvent $event): void
+    {
+        $account = $event->getAccount();
+        if (!$account->getAuthSource() instanceof AuthSourceLocal) {
             return;
         }
 
-        $repository = $this->entityManager->getRepository(SavedSearch::class);
-        $repository->removeSavedSearchesByAccountId($portalUser->getItemID());
+        $portalRepository = $this->entityManager->getRepository(Portal::class);
+
+        /** @var Portal $portal */
+        $portal = $portalRepository->find($account->getContextId());
+        $portalModerators = $portal->getModeratorList($this->legacyEnvironment);
+        $recipients = iterator_to_array(RecipientFactory::createRecipients(...$portalModerators));
+
+        $message = new AccountCreatedModerationMessage($account);
+        $this->mailer->sendMultiple($message, $recipients);
     }
 }

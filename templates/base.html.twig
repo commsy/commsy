@@ -78,7 +78,7 @@
                                 #}
                                 {% if is_granted('ITEM_ENTER', requestContextId) %}
                                     {{ render(controller(
-                                        'App\\Controller\\SearchController::searchFormAction', {
+                                        'App\\Controller\\SearchController::searchForm', {
                                             'roomId': requestContextId,
                                         'requestData': app.request.query.all('search') ?? app.request.query.all('search_filter')
                                         }
@@ -91,7 +91,7 @@
                     {# global actions #}
                     {% if requestContextId is not same as 99 %}
                         {{ render(controller(
-                            'App\\Controller\\UserController::globalNavbarAction',
+                            'App\\Controller\\UserController::globalNavbar',
                             { 'contextId': requestContextId }
                         )) }}
                     {% endif %}
@@ -121,7 +121,7 @@
                     <ul class="uk-navbar-nav">
                         {# All Rooms #}
                         {{ render(controller(
-                            'App\\Controller\\UserController::allRoomsNavbarAction'
+                            'App\\Controller\\UserController::allRoomsNavbar'
                         ))}}
 
                         {# room navigation #}
@@ -142,7 +142,7 @@
                                     <div class="uk-text-center">{{ 'Top 50 matches'|trans({}, 'search') }}</div>
 
                                     <script type="text/autocomplete">
-                                        {%- verbatim -%}
+                                        {% verbatim %}
                                         <ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">
                                             {{#items && items.length}}
                                                 {{~items}}
@@ -163,7 +163,7 @@
                                                 {{#msgNoResults}}<li class="uk-skip"><a>{{msgNoResults}}</a></li>{{/msgNoResults}}
                                             {{/end}}
                                         </ul>
-                                        {%- endverbatim -%}
+                                        {% endverbatim %}
                                     </script>
                                 </div>
 

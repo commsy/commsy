@@ -3,7 +3,7 @@
 {% block feed %}
     <ul id="materials-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'App\\Controller\\MaterialController::feedAction', {
+            'App\\Controller\\MaterialController::feed', {
                 'roomId': roomId,
                 'materialFilter': app.request.query.all('material_filter')
             }

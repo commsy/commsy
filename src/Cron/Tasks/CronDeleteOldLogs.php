@@ -13,30 +13,18 @@
 
 namespace App\Cron\Tasks;
 
-use App\Services\LegacyEnvironment;
-use cs_environment;
+use App\Repository\LogRepository;
 use DateTimeImmutable;
 
-class CronDeleteOldLogs implements CronTaskInterface
+readonly class CronDeleteOldLogs implements CronTaskInterface
 {
-    private readonly cs_environment $legacyEnvironment;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-    }
+    public function __construct(
+        private LogRepository $logRepository
+    ) {}
 
     public function run(?DateTimeImmutable $lastRun): void
     {
-        $logArchiveManager = $this->legacyEnvironment->getLogArchiveManager();
-        $roomManager = $this->legacyEnvironment->getRoomManager();
-
-        $logArchiveManager->resetLimits();
-        $roomManager->setContextLimit('');
-        $roomManager->setLogArchiveLimit();
-        $roomIds = $roomManager->getIDs();
-
-        $logArchiveManager->deleteByContextArray($roomIds);
+        $this->logRepository->deleteOlderThen(50);
     }
 
     public function getSummary(): string

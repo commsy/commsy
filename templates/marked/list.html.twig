@@ -4,7 +4,7 @@
 {% block feed %}
     <ul id="mark-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'App\\Controller\\MarkedController::feedAction', {
+            'App\\Controller\\MarkedController::feed', {
                 'roomId': roomId,
                 'markFilter': app.request.query.all('marked_filter')
             }

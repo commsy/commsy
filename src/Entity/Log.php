@@ -13,101 +13,148 @@
 
 namespace App\Entity;
 
-use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Log.
- */
 #[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: 'log')]
-#[ORM\Index(name: 'timestamp', columns: ['timestamp'])]
-#[ORM\Index(name: 'cid', columns: ['cid'])]
+#[ORM\Index(columns: ['cid', 'timestamp'], name: 'cid_timestamp_idx')]
 class Log
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private ?int $id = null;
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'ip', type: Types::STRING, length: 15, nullable: true)]
-    private ?string $ip = null;
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'agent', type: Types::STRING, length: 250, nullable: true)]
-    private ?string $agent = null;
-    #[ORM\Column(name: 'timestamp', type: Types::DATETIME_MUTABLE)]
-    private DateTime $timestamp;
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'request', type: Types::STRING, length: 250, nullable: true)]
-    private ?string $request = null;
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'post_content', type: Types::TEXT, length: 16_777_215, nullable: true)]
+    private int $id;
+
+    #[ORM\Column(name: 'ip', type: Types::STRING, length: 15)]
+    private string $ip;
+
+    #[ORM\Column(name: 'agent', type: Types::STRING, length: 250)]
+    private string $agent;
+
+    #[ORM\Column(name: 'timestamp', type: Types::DATETIME_IMMUTABLE)]
+    private DateTimeInterface $timestamp;
+
+    #[ORM\Column(name: 'request', type: Types::STRING, length: 2500)]
+    private string $request;
+
+    #[ORM\Column(name: 'post_content', type: Types::STRING, length: 2500, nullable: true)]
     private ?string $postContent = null;
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'method', type: Types::STRING, length: 10, nullable: true)]
-    private ?string $method = null;
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'uid', type: Types::INTEGER, nullable: true)]
-    private ?int $uid = null;
-    /**
-     * @var string
-     */
+
+    #[ORM\Column(name: 'method', type: Types::STRING, length: 10)]
+    private string $method;
+
     #[ORM\Column(name: 'ulogin', type: Types::STRING, length: 250, nullable: true)]
     private ?string $ulogin = null;
-    /**
-     * @var int
-     */
+
     #[ORM\Column(name: 'cid', type: Types::INTEGER, nullable: true)]
     private ?int $cid = null;
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'module', type: Types::STRING, length: 250, nullable: true)]
-    private ?string $module = null;
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'fct', type: Types::STRING, length: 250, nullable: true)]
-    private ?string $fct = null;
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'param', type: Types::STRING, length: 250, nullable: true)]
-    private ?string $param = null;
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'iid', type: Types::INTEGER, nullable: true)]
-    private ?int $iid = null;
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'queries', type: Types::SMALLINT, nullable: true)]
-    private ?int $queries = null;
-    /**
-     * @var float
-     */
-    #[ORM\Column(name: 'time', type: Types::FLOAT, precision: 10, nullable: true)]
-    private ?float $time = null;
 
-    public function __construct()
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
     {
-        $this->timestamp = new DateTime('CURRENT_TIMESTAMP');
+        $this->timestamp = new DateTimeImmutable();
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): Log
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    public function getIp(): string
+    {
+        return $this->ip;
+    }
+
+    public function setIp(string $ip): Log
+    {
+        $this->ip = $ip;
+        return $this;
+    }
+
+    public function getAgent(): string
+    {
+        return $this->agent;
+    }
+
+    public function setAgent(string $agent): Log
+    {
+        $this->agent = $agent;
+        return $this;
+    }
+
+    public function getTimestamp(): DateTimeInterface
+    {
+        return $this->timestamp;
+    }
+
+    public function setTimestamp(DateTimeInterface $timestamp): Log
+    {
+        $this->timestamp = $timestamp;
+        return $this;
+    }
+
+    public function getRequest(): string
+    {
+        return $this->request;
+    }
+
+    public function setRequest(string $request): Log
+    {
+        $this->request = $request;
+        return $this;
+    }
+
+    public function getPostContent(): ?string
+    {
+        return $this->postContent;
+    }
+
+    public function setPostContent(?string $postContent): Log
+    {
+        $this->postContent = $postContent;
+        return $this;
+    }
+
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+    public function setMethod(string $method): Log
+    {
+        $this->method = $method;
+        return $this;
+    }
+
+    public function getUlogin(): ?string
+    {
+        return $this->ulogin;
+    }
+
+    public function setUlogin(?string $ulogin): Log
+    {
+        $this->ulogin = $ulogin;
+        return $this;
+    }
+
+    public function getCid(): ?int
+    {
+        return $this->cid;
+    }
+
+    public function setCid(?int $cid): Log
+    {
+        $this->cid = $cid;
+        return $this;
     }
 }

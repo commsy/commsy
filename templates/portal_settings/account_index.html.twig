@@ -1,6 +1,7 @@
 {% extends 'layout.html.twig' %}
 
 {% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme filterForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
 
 {% block sidebar_left %}
     {% include 'components/context_navigation.html.twig' with {'menu_name': 'portal_settings'} only %}
@@ -19,65 +20,73 @@
                     {{ 'Performed action'|trans({},'portal') }}.
                 </div>
             {% endif %}
-            {{ form_start(form) }}
-            {{ form_row(form.accountIndexSearchString) }}
-            {{ form_row(form.userIndexFilterChoice) }}
-            {{ form_row(form.search) }}
 
-            {% if not userList is empty %}
-                <div class="uk-overflow-auto">
-                    <table class="uk-table uk-table-striped uk-table-hover uk-table-small">
-                        <thead>
-                            <tr>
-                                <th class="uk-table-shrink"></th>
-                                <th>{{ knp_pagination_sortable(pagination, 'Name (user id)'|trans({},"portal"), 'userid') }}</th>
-                                <th{% if pagination.isSorted('email') %} class="sorted"{% endif %}>
-                                    {{ knp_pagination_sortable(pagination, 'Mail'|trans({},"portal"), 'email') }}
-                                </th>
-                                <th class="uk-table-shrink uk-text-nowrap{% if pagination.isSorted('lastlogin') %} sorted{% endif %}">
-                                    {{ knp_pagination_sortable(pagination, 'Last login'|trans({},"portal"), 'lastlogin') }}
-                                </th>
-                                <th>{{'Status'|trans({},'portal') }}</th>
-                                <th class="uk-table-shrink">{{'authSource'|trans({}, 'portal') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for user in pagination %}
+            {{ form(filterForm) }}
+
+            {% if not pagination is empty %}
+                {{ form_start(form) }}
+                    <div class="uk-overflow-auto">
+                        <table class="uk-table uk-table-striped uk-table-hover uk-table-small">
+                            <thead>
                                 <tr>
-                                    <td>{{ form_widget(form.ids[user.itemId]) }}</td>
-                                    <td>
-                                        <a href="{{ path('app_portalsettings_accountindexdetail', {
-                                            'portalId': portal.id,
-                                            'userId': user.itemId
-                                        }) }}" uk-tooltip="title: {{ 'created'|trans({}, 'user') }} {{ user.creationDate|craue_datetime|default('Never'|trans({}, 'portal')) }}">
-                                            {{ user.firstname }} {{ user.lastname }}
-                                        </a> ({{ user.userid }})
-                                    </td>
-                                    <td>
-                                        <a href="{{ path('app_user_sendmailviacontactform', {
-                                            'roomId': portal.id,
-                                            'itemId': user.itemId,
-                                            'originPath': 'app_portalsettings_accountindex'
-                                        }) }}">
-                                            {{ user.email }}
-                                        </a>
-                                    </td>
-                                    <td class="uk-text-nowrap">{{ user.lastLogin|craue_datetime|default('Never'|trans({}, 'portal')) }}</td>
-                                    <td>{{ macros.userStatus(user.status) }}</td>
-                                    <td>{{ authSources|filter(source => source.id == user.authSource)|first.title }}</td>
+                                    <th class="uk-table-shrink"><input class="uk-checkbox" type="checkbox" onclick="form.querySelectorAll('td input[type=\'checkbox\']').forEach((e) => e.checked = this.checked)"></th>
+                                    <th>
+                                        {{ knp_pagination_sortable(pagination, 'Name (user id)'|trans({},"portal"), 'a.username') }}
+                                    </th>
+                                    <th>
+                                        {{ knp_pagination_sortable(pagination, 'Mail'|trans({},"portal"), 'a.email') }}
+                                    </th>
+                                    <th class="uk-table-shrink uk-text-nowrap">
+                                        {{ knp_pagination_sortable(pagination, 'Last login'|trans({},"portal"), 'a.lastLogin') }}
+                                    </th>
+                                    <th>{{'Status'|trans({},'portal') }}</th>
+                                    <th class="uk-table-shrink">{{'authSource'|trans({}, 'portal') }}</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {{ 'Found users'|trans({},"portal") }}: {{ pagination.getTotalItemCount }}<br />
-                    {{ knp_pagination_render(pagination) }}
-                </div>
-            {% endif %}
+                            </thead>
+                            <tbody>
+                                {% for account in pagination %}
+                                    {% set portalUser = portalUsersForAccounts[loop.index0] %}
+                                    <tr>
+                                        <td>{{ form_widget(form.ids[portalUser.itemId]) }}</td>
+                                        <td>
+                                            <a href="{{ path('app_portalsettings_accountindexdetail', {
+                                                'portalId': portal.id,
+                                                'userId': portalUser.itemId
+                                            }) }}" uk-tooltip="title: {{ 'created'|trans({}, 'user') }} {{ portalUser.creationDate|craue_datetime|default('Never'|trans({}, 'portal')) }}">
+                                                {{ account.firstname }} {{ account.lastname }}
+                                            </a> ({{ account.username }})
+                                        </td>
+                                        <td>
+                                            <a href="{{ path('app_user_sendmailviacontactform', {
+                                                'roomId': portal.id,
+                                                'itemId': portalUser.itemId,
+                                                'originPath': 'app_portalsettings_accountindex'
+                                            }) }}">
+                                                {{ account.email }}
+                                            </a>
+                                        </td>
+                                        <td class="uk-text-nowrap">{{ account.lastLogin|craue_datetime|default('Never'|trans({}, 'portal')) }}</td>
+                                        <td>{{ macros.userStatus(portalUser.status) }}</td>
+                                        <td>{{ account.authSource.title }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
 
-            {{ form_row(form.indexViewAction) }}
-            {{ form_row(form.execute) }}
-            {% do form.ids.setRendered %}
-            {{ form_end(form) }}
+                        {{ 'Found users'|trans({},"portal") }}: {{ pagination.getTotalItemCount }}<br />
+                        {% if pagination.count < pagination.totalItemCount %}
+                            <a href="{{ path('app_portalsettings_accountindex', app.request.query.all|merge({
+                                'portalId': portal.id,
+                                'limit': pagination.totalItemCount,
+                                'page': 1
+                            })) }}">{{ 'messages.load_all'|trans() }}</a><br />
+                        {% endif %}
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                {{ form_end(form) }}
+            {% else %}
+                {{ 'No results found'|trans({}, 'search') }}
+            {% endif %}
         {% endblock %}
     {% endembed %}
 {% endblock %}

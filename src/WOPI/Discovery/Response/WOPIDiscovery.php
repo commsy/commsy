@@ -16,7 +16,7 @@ final class WOPIDiscovery
     private array $netZones;
 
     #[SerializedName('proof-key')]
-    private ?ProofKey $proofKey;
+    private ?ProofKey $proofKey = null;
 
     /**
      * @return NetZone[]

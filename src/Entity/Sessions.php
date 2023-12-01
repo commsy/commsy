@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,29 +23,17 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'sessions')]
 class Sessions
 {
-    /**
-     * @var binary
-     */
-    #[ORM\Column(name: 'sess_id', type: 'binary')]
+    #[ORM\Column(name: 'sess_id', type: Types::BINARY)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $sessId;
+    private ?string $sessId = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'sess_data', type: 'blob', length: 65535, nullable: false)]
-    private $sessData;
+    #[ORM\Column(name: 'sess_data', type: Types::BLOB, length: 65535, nullable: false)]
+    private string $sessData;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'sess_lifetime', type: 'integer', nullable: false)]
-    private $sessLifetime;
+    #[ORM\Column(name: 'sess_lifetime', type: Types::INTEGER, nullable: false)]
+    private int $sessLifetime;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'sess_time', type: 'integer', nullable: false)]
-    private $sessTime;
+    #[ORM\Column(name: 'sess_time', type: Types::INTEGER, nullable: false)]
+    private int $sessTime;
 }

@@ -60,7 +60,7 @@ class PortfolioController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/portfolio/')]
-    public function indexAction(
+    public function index(
         Request $request,
         int $roomId
     ): Response {
@@ -75,15 +75,13 @@ class PortfolioController extends AbstractController
         ]);
     }
 
-    /**
-     * @return array
-     */
     #[Route(path: '/room/{roomId}/portfolio/{portfolioId}', requirements: ['portfolioId' => '\d+'])]
-    public function portfolioAction(
+    public function portfolio(
         int $roomId,
         Security $security,
         int $portfolioId = null
-    ) {
+    ): Response
+    {
         $portfolio = $this->portfolioService->getPortfolio($portfolioId);
         $linkItemIds = [];
         foreach ($portfolio['links'] as $linkArray) {
@@ -152,7 +150,7 @@ class PortfolioController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/portfolio/portfoliosource/{source}')]
-    public function tabsAction(
+    public function tabs(
         int $roomId,
         string $source = null
     ): Response {
@@ -171,7 +169,7 @@ class PortfolioController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/portfolio/{portfolioId}/detail/{firstTagId}/{secondTagId}')]
-    public function detailAction(
+    public function detail(
         int $roomId,
         int $portfolioId,
         int $firstTagId,
@@ -228,7 +226,7 @@ class PortfolioController extends AbstractController
      * Create new portfolios and edit existing ones.
      */
     #[Route(path: '/room/{roomId}/portfolio/{portfolioId}/edit')]
-    public function editAction(
+    public function edit(
         Request $request,
         int $roomId,
         string $portfolioId
@@ -299,7 +297,7 @@ class PortfolioController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/portfolio/{portfolioId}/editcategory/{position}/{categoryTerm}/')]
-    public function editcategoryAction(
+    public function editcategory(
         Request $request,
         int $roomId,
         int $portfolioId,
@@ -417,14 +415,12 @@ class PortfolioController extends AbstractController
         ]);
     }
 
-    /**
-     * @return RedirectResponse
-     */
     #[Route(path: '/room/{roomId}/portfolio/{portfolioId}/stopActivation')]
     public function stopActivation(
         int $roomId,
         int $portfolioId
-    ) {
+    ): RedirectResponse
+    {
         $portfolioManager = $this->legacyEnvironment->getPortfolioManager();
 
         $portfolio = $portfolioManager->getItem($portfolioId);

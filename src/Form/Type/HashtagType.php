@@ -13,7 +13,7 @@
 
 namespace App\Form\Type;
 
-use Lexik\Bundle\FormFilterBundle\Filter\Form\Type\EntityFilterType;
+use Spiriit\Bundle\FormFilterBundle\Filter\Form\Type\EntityFilterType;
 use Symfony\Component\Form\AbstractType;
 
 class HashtagType extends AbstractType

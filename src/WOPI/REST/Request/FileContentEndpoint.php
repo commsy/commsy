@@ -30,7 +30,7 @@ use App\Controller\Api\WOPI\PostPutFile;
         new GetCollection(),
     ]
 )]
-final class FileContentEndpoint
+final readonly class FileContentEndpoint
 {
     #[ApiProperty(identifier: true)]
     private string $fileId;

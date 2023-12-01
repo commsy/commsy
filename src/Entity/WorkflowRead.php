@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,16 +21,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'workflow_read')]
-#[ORM\Index(name: 'item_id', columns: ['item_id'])]
-#[ORM\Index(name: 'user_id', columns: ['user_id'])]
+#[ORM\Index(columns: ['item_id'], name: 'item_id')]
+#[ORM\Index(columns: ['user_id'], name: 'user_id')]
 class WorkflowRead
 {
-    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private int $itemId;
 
-    #[ORM\Column(name: 'user_id', type: 'integer')]
+    #[ORM\Column(name: 'user_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private int $userId;

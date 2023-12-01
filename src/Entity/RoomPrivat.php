@@ -15,6 +15,7 @@ namespace App\Entity;
 
 use App\Repository\RoomPrivateRepository;
 use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -28,87 +29,67 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(columns: ['lastlogin'], name: 'lastlogin')]
 class RoomPrivat
 {
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'item_id', type: 'integer')]
+
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $itemId = '0';
+    private ?int $itemId = 0;
 
-    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
-    private $creatorId = '0';
+    #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: false)]
+    private int $creatorId = 0;
 
-    #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: true)]
+    #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
     private ?int $modifierId = null;
 
-    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
+    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private ?int $deleterId = null;
 
-    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
+    #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE, nullable: false)]
     private DateTime $creationDate;
 
-    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
+    #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: false)]
     private DateTime $modificationDate;
 
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTime $deletionDate = null;
 
-    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
     private ?string $title = null;
 
-    #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
+    #[ORM\Column(name: 'extras', type: Types::TEXT, length: 65535, nullable: true)]
     private ?string $extras = null;
 
-    #[ORM\Column(name: 'status', type: 'string', length: 20, nullable: false)]
+    #[ORM\Column(name: 'status', type: Types::STRING, length: 20, nullable: false)]
     private ?string $status = null;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'activity', type: 'integer', nullable: false)]
-    private $activity = '0';
+    #[ORM\Column(name: 'activity', type: Types::INTEGER, nullable: false)]
+    private int $activity = 0;
 
-    #[ORM\Column(name: 'type', type: 'string', length: 20, nullable: false)]
+    #[ORM\Column(name: 'type', type: Types::STRING, length: 20, nullable: false)]
     private string $type = 'privateroom';
 
-    /**
-     * @var bool
-     */
-    #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
-    private $public = '0';
+    #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
+    private bool $public = false;
 
-    /**
-     * @var bool
-     */
-    #[ORM\Column(name: 'is_open_for_guests', type: 'boolean', nullable: false)]
-    private $isOpenForGuests = '0';
+    #[ORM\Column(name: 'is_open_for_guests', type: Types::BOOLEAN, nullable: false)]
+    private bool $isOpenForGuests = false;
 
-    /**
-     * @var bool
-     */
-    #[ORM\Column(name: 'continuous', type: 'boolean', nullable: false)]
-    private $continuous = '-1';
+    #[ORM\Column(name: 'continuous', type: Types::BOOLEAN, nullable: false)]
+    private bool $continuous = false;
 
-    /**
-     * @var bool
-     */
-    #[ORM\Column(name: 'template', type: 'boolean', nullable: false)]
-    private $template = '-1';
+    #[ORM\Column(name: 'template', type: Types::BOOLEAN, nullable: false)]
+    private bool $template = false;
 
-    #[ORM\Column(name: 'contact_persons', type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(name: 'contact_persons', type: Types::STRING, length: 255, nullable: true)]
     private ?string $contactPersons = null;
 
-    #[ORM\Column(name: 'description', type: 'text', length: 65535, nullable: true)]
+    #[ORM\Column(name: 'description', type: Types::TEXT, length: 65535, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(name: 'lastlogin', type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'lastlogin', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTime $lastlogin = null;
 
     public function __construct()

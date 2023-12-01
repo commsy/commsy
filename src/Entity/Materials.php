@@ -16,8 +16,10 @@ namespace App\Entity;
 use App\Repository\MaterialsRepository;
 use App\Utils\EntityDatesTrait;
 use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,26 +27,25 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity(repositoryClass: MaterialsRepository::class)]
 #[ORM\Table(name: 'materials')]
-#[ORM\Index(name: 'context_id', columns: ['context_id'])]
-#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
-#[ORM\Index(name: 'modifier_id', columns: ['modifier_id'])]
+#[ORM\Index(columns: ['context_id'], name: 'context_id')]
+#[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
+#[ORM\Index(columns: ['modifier_id'], name: 'modifier_id')]
 class Materials
 {
     use EntityDatesTrait;
 
     #[ORM\Id]
-    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'NONE')]
-    private $itemId;
+    private ?int $itemId = null;
 
-    #[ORM\Column(name: 'version_id', type: 'integer')]
-    private $versionId;
+    #[ORM\Id]
+    #[ORM\Column(name: 'version_id', type: Types::INTEGER)]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    private ?int $versionId = null;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
-    private $contextId;
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
+    private ?int $contextId = null;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
@@ -58,70 +59,46 @@ class Materials
     #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
     private ?User $modifier = null;
 
-    #[ORM\Column(name: 'activation_date', type: 'datetime')]
+    #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
     private ?DateTime $activationDate = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
-    private $title;
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
+    private string $title;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'description', type: 'text', length: 16_777_215, nullable: true)]
-    private $description;
+    #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
+    private ?string $description = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'author', type: 'string', length: 200, nullable: true)]
-    private $author;
+    #[ORM\Column(name: 'author', type: Types::STRING, length: 200, nullable: true)]
+    private ?string $author = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'publishing_date', type: 'string', length: 20, nullable: true)]
-    private $publishingDate;
+    #[ORM\Column(name: 'publishing_date', type: Types::STRING, length: 20, nullable: true)]
+    private ?string $publishingDate = null;
 
-    #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
+    #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
     private string $public = '0';
 
-    #[ORM\Column(name: 'world_public', type: 'smallint', nullable: false)]
+    #[ORM\Column(name: 'world_public', type: Types::SMALLINT, nullable: false)]
     private string $worldPublic = '0';
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'extras', type: 'array', nullable: true)]
+    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
     private $extras;
 
-    #[ORM\Column(name: 'new_hack', type: 'boolean', nullable: false)]
+    #[ORM\Column(name: 'new_hack', type: Types::BOOLEAN, nullable: false)]
     private string $newHack = '0';
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'copy_of', type: 'integer', nullable: true)]
-    private $copyOf;
+    #[ORM\Column(name: 'copy_of', type: Types::INTEGER, nullable: true)]
+    private ?int $copyOf = null;
 
-    #[ORM\Column(name: 'workflow_status', type: 'string', length: 255, nullable: false)]
+    #[ORM\Column(name: 'workflow_status', type: Types::STRING, length: 255, nullable: false)]
     private string $workflowStatus = '3_none';
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'workflow_resubmission_date', type: 'datetime', nullable: true)]
-    private $workflowResubmissionDate;
+    #[ORM\Column(name: 'workflow_resubmission_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $workflowResubmissionDate = null;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'workflow_validity_date', type: 'datetime', nullable: true)]
-    private $workflowValidityDate;
+    #[ORM\Column(name: 'workflow_validity_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $workflowValidityDate = null;
 
-    #[ORM\OneToMany(targetEntity: 'Section', mappedBy: 'material')]
+    #[ORM\OneToMany(mappedBy: 'material', targetEntity: 'Section')]
     private Collection $sections;
 
     public function __construct()

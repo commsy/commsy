@@ -509,13 +509,11 @@ class cs_item
         return $this->_setValue('context_id', $value);
     }
 
-     /** get creator
-      * this method returns the modificator of the item
-      * By default the creator is returned.
-      *
-      * @return cs_user_item creator of the item
-      */
-     public function getModificatorItem()
+    /** get creator
+     * this method returns the modificator of the item
+     * By default the creator is returned.
+     */
+     public function getModificatorItem(): ?cs_user_item
      {
          $retour = $this->_getUserItem('modifier');
          if (!isset($retour)) {

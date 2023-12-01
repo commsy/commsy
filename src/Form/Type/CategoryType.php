@@ -13,7 +13,7 @@
 
 namespace App\Form\Type;
 
-use Lexik\Bundle\FormFilterBundle\Filter\Form\Type\ChoiceFilterType;
+use Spiriit\Bundle\FormFilterBundle\Filter\Form\Type\ChoiceFilterType;
 use Symfony\Component\Form\AbstractType;
 
 class CategoryType extends AbstractType

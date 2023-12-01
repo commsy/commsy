@@ -22,7 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'user_portfolio')]
 class UserPortfolio
 {
-    #[ORM\Column(name: 'p_id', type: 'integer')]
+    #[ORM\Column(name: 'p_id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private int $pId;
@@ -30,8 +30,8 @@ class UserPortfolio
     /**
      * @var string
      */
-    #[ORM\Column(name: 'u_id', type: 'string', length: 32)]
+    #[ORM\Column(name: 'u_id', type: \Doctrine\DBAL\Types\Types::STRING, length: 32)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
-    private $uId;
+    private ?string $uId = null;
 }

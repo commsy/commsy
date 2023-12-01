@@ -16,7 +16,7 @@ final class ItemFilesComponent
     public bool $simple = false;
 
     public function __construct(
-        private DiscoveryService $discoveryService,
+        private readonly DiscoveryService $discoveryService,
     ) {
     }
 

@@ -45,7 +45,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ProjectController extends AbstractController
 {
     #[Route(path: '/room/{roomId}/project/feed/{start}/{sort}')]
-    public function feedAction(
+    public function feed(
         Request $request,
         ProjectService $projectService,
         ReaderService $readerService,
@@ -92,7 +92,7 @@ class ProjectController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/project')]
-    public function listAction(
+    public function list(
         Request $request,
         ProjectService $projectService,
         LegacyEnvironment $environment,
@@ -127,7 +127,7 @@ class ProjectController extends AbstractController
 
     #[Route(path: '/room/{roomId}/project/{itemId}', requirements: ['itemId' => '\d+'])]
     #[IsGranted('ITEM_SEE', subject: 'itemId')]
-    public function detailAction(
+    public function detail(
         ItemService $itemService,
         RoomService $roomService,
         UserService $userService,
@@ -166,7 +166,7 @@ class ProjectController extends AbstractController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/project/create', requirements: ['itemId' => '\d+'])]
-    public function createAction(
+    public function create(
         Request $request,
         CalendarsService $calendarsService,
         RoomCategoriesService $roomCategoriesService,
@@ -305,12 +305,12 @@ class ProjectController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/project/{itemId}/edit', requirements: ['itemId' => '\d+'])]
-    public function editAction()
+    public function edit()
     {
     }
 
     #[Route(path: '/room/{roomId}/project/{itemId}/delete', requirements: ['itemId' => '\d+'])]
-    public function deleteAction(
+    public function delete(
         Request $request,
         RoomService $roomService,
         TranslatorInterface $translator,

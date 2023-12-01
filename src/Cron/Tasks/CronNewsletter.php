@@ -19,6 +19,7 @@ use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
 use cs_annotations_manager;
+use cs_context_item;
 use cs_dates_manager;
 use cs_environment;
 use cs_list;
@@ -125,6 +126,7 @@ class CronNewsletter implements CronTaskInterface
             $translator->setRubricTranslationArray($privateRoom->getRubricTranslationArray());
 
             foreach ($roomList as $roomItem) {
+                /** @var cs_context_item $roomItem */
                 $rubrics = [];
 
                 $conf = $roomItem->getHomeConf();
@@ -206,7 +208,6 @@ class CronNewsletter implements CronTaskInterface
                         $rubric_manager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
                         $rubric_manager->select();
                         $rubric_list = $rubric_manager->get();
-                        $rubric_item = $rubric_list->getFirst();
 
                         $user_manager = $this->legacyEnvironment->getUserManager();
                         $user_manager->resetLimits();
@@ -221,9 +222,10 @@ class CronNewsletter implements CronTaskInterface
                             $ref_user = $user_list->getFirst();
                             if (isset($ref_user) && $ref_user->getItemID() > 0) {
                                 $temp_body = '';
-                                while ($rubric_item) {
-                                    $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-                                    $noticed = $noticed_manager->getLatestNoticedForUserByID($rubric_item->getItemID(),
+
+                                $readerManager = $this->legacyEnvironment->getReaderManager();
+                                foreach ($rubric_list as $rubric_item) {
+                                    $noticed = $readerManager->getLatestReaderForUserByID($rubric_item->getItemID(),
                                         $ref_user->getItemID());
                                     if (empty($noticed)) {
                                         $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_NEW').']</span>';
@@ -232,11 +234,14 @@ class CronNewsletter implements CronTaskInterface
                                     } else {
                                         $info_text = '';
                                     }
-                                    $annotation_item = $annotation_list->getFirst();
+
                                     $annotation_count = 0;
-                                    while ($annotation_item) {
-                                        $annotation_noticed = $noticed_manager->getLatestNoticedForUserByID($annotation_item->getItemID(),
-                                            $ref_user->getItemID());
+                                    foreach ($annotation_list as $annotation_item) {
+                                        $annotation_noticed = $readerManager->getLatestReaderForUserByID(
+                                            $annotation_item->getItemID(),
+                                            $ref_user->getItemID()
+                                        );
+
                                         if (empty($annotation_noticed)) {
                                             $linked_item = $annotation_item->getLinkedItem();
                                             if ($linked_item->getItemID() == $rubric_item->getItemID()) {
@@ -244,8 +249,8 @@ class CronNewsletter implements CronTaskInterface
                                                 $annotationsInNewsletter[] = $annotation_item;
                                             }
                                         }
-                                        $annotation_item = $annotation_list->getNext();
                                     }
+
                                     if (1 == $annotation_count) {
                                         $info_text .= ' <span class="changed">['.$translator->getMessage('COMMON_NEW_ANNOTATION').']</span>';
                                     } else {
@@ -288,8 +293,6 @@ class CronNewsletter implements CronTaskInterface
 
                                         $temp_body .= BR.'&nbsp;&nbsp;- '.$ahref_curl;
                                     }
-
-                                    $rubric_item = $rubric_list->getNext();
                                 }
                             }
                         }

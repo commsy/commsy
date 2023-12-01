@@ -34,7 +34,7 @@
                         <div class="uk-panel uk-panel-box cs-cover-grid-opacity" style="padding-bottom: 0px; padding-top: 0px;">
                             <ul id="announcements-feed" class="uk-comment-list" data-uk-observe>
                                 {{ render(controller(
-                                    'App\\Controller\\AnnouncementController::shortfeedAction',
+                                    'App\\Controller\\AnnouncementController::shortfeed',
                                     { 'roomId': roomItem.itemId }
                                 ))}}
                             </ul>
@@ -45,7 +45,7 @@
                         <div class="uk-panel uk-panel-box cs-cover-grid-opacity">
                             <ul id="announcements-feed" class="uk-comment-list" data-uk-observe>
                                 {{ render(controller(
-                                    'App\\Controller\\AnnouncementController::shortfeedAction',
+                                    'App\\Controller\\AnnouncementController::shortfeed',
                                     { 'roomId': roomItem.itemId }
                                 ))}}
                             </ul>
@@ -81,7 +81,7 @@
             {% if roomItem.usageInfoTextForRubric('home') is not empty %}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-clearfix">
+                    <div class="uk-clearfix">x
                         <div class="uk-float-right">
                             <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-notice'}">
                                 <i class="uk-icon-chevron-up"></i>
@@ -96,7 +96,7 @@
                         </div>
                     </div>
                 </div>
-                <ul id="user-notice" class="uk-list uk-list-striped uk-hidden-small">
+                <ul id="user-notice" class="uk-block uk-padding-remove uk-hidden-small">
                     {{ roomItem.usageInfoTextForRubric('home')|raw }}
                 </ul>
             </div>
@@ -235,7 +235,7 @@
                 <div class="feed uk-margin-top">
                     <ul id="room-feed" class="uk-comment-list">
                         {{ render(controller(
-                            'App\\Controller\\RoomController::feedAction',
+                            'App\\Controller\\RoomController::feed',
                             { 'roomId': roomItem.itemId }
                         ))}}
                     </ul>

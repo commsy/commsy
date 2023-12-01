@@ -22,7 +22,7 @@
         {% if useEtherpad is defined %}
             {% if useEtherpad %}
                 {{ render(controller(
-                    'App\\Controller\\EtherpadController::indexAction',
+                    'App\\Controller\\EtherpadController::index',
                     { 'materialId': itemId, 'roomId': roomId }
                 )) }}
                 <!-- {{ form_widget(form.description, {'id': 'descriptionedit' ~ itemId}) }} -->

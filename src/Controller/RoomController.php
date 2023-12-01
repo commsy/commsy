@@ -18,9 +18,7 @@ use App\Event\UserJoinedRoomEvent;
 use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
-use App\Form\Type\ModerationSupportType;
-use App\Mail\Mailer;
-use App\Mail\RecipientFactory;
+use App\Hash\HashManager;
 use App\Repository\PortalRepository;
 use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
@@ -39,7 +37,7 @@ use cs_user_item;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Exception;
-use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
+use Spiriit\Bundle\FormFilterBundle\Filter\FilterBuilderUpdater;
 use Sylius\Bundle\ThemeBundle\Repository\ThemeRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,7 +45,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use UnexpectedValueException;
 
 /**
  * Class RoomController.
@@ -56,7 +54,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class RoomController extends AbstractController
 {
     #[Route(path: '/room/{roomId}', requirements: ['roomId' => '\d+'])]
-    public function homeAction(
+    public function home(
         Request $request,
         ItemService $itemService,
         RoomService $roomService,
@@ -65,6 +63,7 @@ class RoomController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         ThemeRepositoryInterface $themeRepository,
         UserRepository $userRepository,
+        HashManager $hashManager,
         int $roomId
     ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -160,11 +159,11 @@ class RoomController extends AbstractController
 
             if (!$roomItem->isOpenForGuests()) {
                 if ($currentUserItem->isUser()) {
-                    $hashManager = $legacyEnvironment->getHashManager();
+                    $hash = $hashManager->getUserHashes($currentUserItem->getItemID());
 
                     $rss['url'] = $this->generateUrl('app_rss', [
                         'contextId' => $roomId,
-                        'hid' => $hashManager->getRSSHashForUser($currentUserItem->getItemID()),
+                        'hid' => $hash->getRss(),
                     ]);
                 }
             }
@@ -215,7 +214,7 @@ class RoomController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/feed/{start}/{sort}', requirements: ['roomId' => '\d+'])]
-    public function feedAction(
+    public function feed(
         Request $request,
         ReaderService $readerService,
         RoomFeedGenerator $roomFeedGenerator,
@@ -260,42 +259,6 @@ class RoomController extends AbstractController
         return $this->render('room/list.html.twig', ['feedList' => $feedList, 'readerList' => $readerList, 'showRating' => $current_context->isAssessmentActive()]);
     }
 
-    #[Route(path: '/room/{roomId}/moderationsupport', requirements: ['roomId' => '\d+'])]
-    public function moderationsupportAction(
-        Request $request,
-        TranslatorInterface $translator,
-        LegacyEnvironment $environment,
-        Mailer $mailer,
-        int $roomId
-    ): Response {
-        $moderationsupportData = [];
-        $form = $this->createForm(ModerationSupportType::class, $moderationsupportData, ['action' => $this->generateUrl('app_room_moderationsupport', ['roomId' => $roomId])]);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            $legacyEnvironment = $environment->getEnvironment();
-            $currentUser = $legacyEnvironment->getCurrentUser();
-            $roomManager = $legacyEnvironment->getRoomManager();
-            $roomItem = $roomManager->getItem($roomId);
-
-            $moderationRecipients = RecipientFactory::createModerationRecipients($roomItem);
-
-            $mailer->sendMultipleRaw(
-                $data['subject'],
-                $data['message'],
-                $moderationRecipients,
-                $currentUser->getFullName(),
-                [$currentUser->getEmail()]
-            );
-
-            return $this->render('room/moderationsupport.html.twig');
-        }
-
-        return $this->render('room/moderationsupport.html.twig', ['form' => $form]);
-    }
-
     /**
      * @param Request $request [description]
      *
@@ -303,7 +266,7 @@ class RoomController extends AbstractController
      * @throws NonUniqueResultException
      */
     #[Route(path: '/room/{roomId}/all', requirements: ['roomId' => '\d+'])]
-    public function listAllAction(
+    public function listAll(
         Request $request,
         RoomService $roomService,
         FilterBuilderUpdater $filterBuilderUpdater,
@@ -376,7 +339,7 @@ class RoomController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/all/feed/{start}/{sort}')]
-    public function feedAllAction(
+    public function feedAll(
         Request $request,
         RoomService $roomService,
         FilterBuilderUpdater $filterBuilderUpdater,
@@ -470,7 +433,7 @@ class RoomController extends AbstractController
      */
     #[Route(path: '/room/{roomId}/all/create', requirements: ['itemId' => '\d+'])]
     #[IsGranted('ITEM_NEW')]
-    public function createAction(
+    public function create(
         Request $request,
         RoomService $roomService,
         UserService $userService,
@@ -487,9 +450,7 @@ class RoomController extends AbstractController
         $type = '';
         $context = $request->get('context');
         if ($context) {
-            if (isset($context['type_select'])) {
-                $type = $context['type_select'];
-            }
+            $type = $context['type_select'] ?? '';
         }
 
         // NOTE: `getDefault...TemplateID()` may also return '-1' (if no default template is defined)
@@ -548,13 +509,6 @@ class RoomController extends AbstractController
         $templates['*'.$msg] = '-1';
 
         // re-sort array by elements
-        foreach ($templates as $index => $entry) {
-            if (!('No template' == $index)) {
-                unset($templates[$index]);
-                $templates[$index] = $entry;
-            }
-        }
-
         uasort($templates, fn ($a, $b) => $a <=> $b);
 
         $formData = [];
@@ -570,10 +524,9 @@ class RoomController extends AbstractController
         ]);
 
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
-            if ($form->get('save')->isClicked() && isset($formData['type_select'])) {
+            if ($form->get('save')->isClicked()) {
                 if ('project' == $formData['type_select']) {
                     $roomManager = $legacyEnvironment->getProjectManager();
                 } elseif ('community' == $formData['type_select']) {
@@ -656,7 +609,9 @@ class RoomController extends AbstractController
                     'portalId' => $legacyEnvironment->getCurrentPortalID(),
                     'itemId' => $legacyRoom->getItemId(),
                 ]);
-            } else {
+            }
+
+            if ($form->get('cancel')->isClicked()) {
                 return $this->redirectToRoute('app_room_listall', [
                     'roomId' => $roomId,
                 ]);

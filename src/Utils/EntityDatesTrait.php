@@ -14,17 +14,18 @@
 namespace App\Utils;
 
 use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 trait EntityDatesTrait
 {
-    #[ORM\Column(name: 'creation_date', type: 'datetime')]
+    #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
     private DateTime $creationDate;
 
-    #[ORM\Column(name: 'modification_date', type: 'datetime')]
+    #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE)]
     private DateTime $modificationDate;
 
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTime $deletionDate;
 
     #[ORM\PrePersist]

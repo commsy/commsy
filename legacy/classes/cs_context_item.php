@@ -11,6 +11,8 @@
  * file that was distributed with this source code.
  */
 
+use App\Repository\LogRepository;
+
 /** class for a context
  * this class implements a context item.
  */
@@ -33,6 +35,8 @@ class cs_context_item extends cs_item
     public array $_rubric_support = [];
 
     public array $_cache_may_enter = [];
+
+    private array $cachePageImpressions = [];
 
     private ?int $countItems = null;
 
@@ -111,24 +115,19 @@ class cs_context_item extends cs_item
         }
     }
 
-    public function setMaterialOpenForGuests()
+    public function setMaterialOpenForGuests(): void
     {
         $this->_addExtra('MATERIAL_GUESTS', 1);
     }
 
-    public function setMaterialClosedForGuests()
+    public function setMaterialClosedForGuests(): void
     {
         $this->_addExtra('MATERIAL_GUESTS', 0);
     }
 
-    public function isAssignmentOnlyOpenForRoomMembers()
+    public function isAssignmentOnlyOpenForRoomMembers(): bool
     {
-        $retour = false;
-        if ($this->_issetExtra('ROOMASSOCIATION') and 'onlymembers' == $this->_getExtra('ROOMASSOCIATION')) {
-            $retour = true;
-        }
-
-        return $retour;
+        return $this->_issetExtra('ROOMASSOCIATION') && $this->_getExtra('ROOMASSOCIATION') === 'onlymembers';
     }
 
     public function setAssignmentOpenForAnybody()
@@ -136,7 +135,7 @@ class cs_context_item extends cs_item
         $this->_addExtra('ROOMASSOCIATION', 'forall');
     }
 
-    public function setAssignmentOnlyOpenForRoomMembers()
+    public function setAssignmentOnlyOpenForRoomMembers(): void
     {
         $this->_addExtra('ROOMASSOCIATION', 'onlymembers');
     }
@@ -1023,16 +1022,13 @@ class cs_context_item extends cs_item
         } else {
             $user_manager = $this->_environment->getUserManager();
             $user_in_room = $user_manager->getItem($user_item_id);
-            if ($user_in_room->isUser()
-                 and $user_in_room->getContextID() == $this->getItemID()
+            if ($user_in_room->isUser() && $user_in_room->getContextID() == $this->getItemID()
             ) {
                 $retour = true;
                 $this->_cache_may_enter[$user_item_id] = true;
             } else {
                 $this->_cache_may_enter[$user_item_id] = false;
             }
-            unset($user_in_room);
-            unset($user_manager);
         }
 
         return $retour;
@@ -2754,17 +2750,11 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function getPageImpressions($external_timespread = 0, $db_page_impressions = 0)
+    public function getPageImpressions($external_timespread = 0, $db_page_impressions = 0): int
     {
-        $retour = 0;
-        if (isset($this->_page_impression_array[$external_timespread])) {
-            $retour = $this->_page_impression_array[$external_timespread];
-        } else {
-            if (0 != $external_timespread) {
-                $timespread = $external_timespread;
-            } else {
-                $timespread = $this->getTimeSpread();
-            }
+        if (!isset($this->cachePageImpressions[$external_timespread])) {
+            $timespread = ($external_timespread != 0) ? $external_timespread : $this->getTimeSpread();
+
             $count = 0;
             $pi_array = $this->getPageImpressionArray();
             for ($i = 0; $i < $timespread; ++$i) {
@@ -2772,20 +2762,20 @@ class cs_context_item extends cs_item
                     $count = $count + $pi_array[$i];
                 }
             }
-            if (0 == $db_page_impressions) {
-                $log_manager = $this->_environment->getLogManager();
-                $log_manager->resetLimits();
-                $log_manager->setContextLimit($this->getItemID());
-                $page_impressions = $log_manager->getCountAll();
-                unset($log_manager);
+
+            if ($db_page_impressions == 0) {
+                global $symfonyContainer;
+                /** @var LogRepository $logRepository */
+                $logRepository = $symfonyContainer->get(LogRepository::class);
+                $pageImpressions = $logRepository->getCountForContext($this->getItemID());
             } else {
-                $page_impressions = $db_page_impressions;
+                $pageImpressions = $db_page_impressions;
             }
-            $this->_page_impression_array[$external_timespread] = $count + $page_impressions;
-            $retour = $this->_page_impression_array[$external_timespread];
+
+            $this->cachePageImpressions[$external_timespread] = $count + $pageImpressions;
         }
 
-        return $retour;
+        return $this->cachePageImpressions[$external_timespread];
     }
 
     public function isActiveDuringLast99Days()
@@ -2878,11 +2868,10 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function getPageImpressionsForNewsletter($external_timespread = 0)
+    public function getPageImpressionsForNewsletter($external_timespread = 0): int
     {
-        $retour = 0;
-        if (isset($this->_page_impression_array[$external_timespread])) {
-            $retour = $this->_page_impression_array[$external_timespread];
+        if (isset($this->cachePageImpressions[$external_timespread])) {
+            return $this->cachePageImpressions[$external_timespread];
         } else {
             if (0 != $external_timespread) {
                 $timespread = $external_timespread;
@@ -2897,10 +2886,8 @@ class cs_context_item extends cs_item
                     $count += $pi_array[$i];
                 }
             }
-            $retour = $count;
+            return $count;
         }
-
-        return $retour;
     }
 
     public function getAllUsers()

@@ -90,7 +90,7 @@ class GroupController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/group')]
-    public function listAction(
+    public function list(
         Request $request,
         int $roomId,
         ItemService $itemService
@@ -145,7 +145,7 @@ class GroupController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/group/print/{sort}', defaults: ['sort' => 'none'])]
-    public function printlistAction(
+    public function printlist(
         Request $request,
         PrintService $printService,
         int $roomId,
@@ -198,7 +198,7 @@ class GroupController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/group/feed/{start}/{sort}')]
-    public function feedAction(
+    public function feed(
         Request $request,
         UserService $userService,
         int $roomId,
@@ -366,7 +366,7 @@ class GroupController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/group/{itemId}/print')]
-    public function printAction(
+    public function print(
         AnnotationService $annotationService,
         CategoryService $categoryService,
         PrintService $printService,
@@ -425,13 +425,6 @@ class GroupController extends BaseController
         // when group is newly created, "modificationDate" is equal to "reader['read_date']", so operator "<=" instead of "<" should be used here
         if (empty($reader) || $reader['read_date'] <= $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
-
-        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        // when group is newly created, "modificationDate" is equal to "noticed['read_date']", so operator "<=" instead of "<" should be used here
-        if (empty($noticed) || $noticed['read_date'] <= $item->getModificationDate()) {
-            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
@@ -611,7 +604,7 @@ class GroupController extends BaseController
 
     #[Route(path: '/room/{roomId}/group/create')]
     #[IsGranted('ITEM_NEW')]
-    public function createAction(
+    public function create(
         int $roomId
     ): RedirectResponse {
         // create new group item
@@ -628,7 +621,7 @@ class GroupController extends BaseController
 
     #[Route(path: '/room/{roomId}/group/{itemId}/edit')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editAction(
+    public function edit(
         Request $request,
         CategoryService $categoryService,
         LabelService $labelService,
@@ -730,7 +723,7 @@ class GroupController extends BaseController
 
     #[Route(path: '/room/{roomId}/group/{itemId}/save')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function saveAction(
+    public function save(
         int $roomId,
         int $itemId
     ): Response {
@@ -879,7 +872,7 @@ class GroupController extends BaseController
 
     #[Route(path: '/room/{roomId}/group/{itemId}/members', requirements: ['itemId' => '\d+'])]
     #[IsGranted('ITEM_SEE', subject: 'itemId')]
-    public function membersAction(
+    public function members(
         int $itemId
     ): Response {
         $group = $this->groupService->getGroup($itemId);
@@ -896,7 +889,7 @@ class GroupController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/group/sendMultiple')]
-    public function sendMultipleAction(
+    public function sendMultiple(
         Request $request,
         MailAssistant $mailAssistant,
         int $roomId
@@ -1039,7 +1032,7 @@ class GroupController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/group/sendMultiple/success')]
-    public function sendMultipleSuccessAction(
+    public function sendMultipleSuccess(
         int $roomId
     ): Response {
         return $this->render('group/send_multiple_success.html.twig', [
@@ -1050,7 +1043,7 @@ class GroupController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/group/{itemId}/send')]
-    public function sendAction(
+    public function send(
         Request $request,
         MailAssistant $mailAssistant,
         int $roomId,
@@ -1165,7 +1158,7 @@ class GroupController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/group/download')]
-    public function downloadAction(
+    public function download(
         Request $request,
         DownloadAction $action,
         int $roomId
@@ -1203,7 +1196,7 @@ class GroupController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/group/xhr/markread', condition: 'request.isXmlHttpRequest()')]
-    public function xhrMarkReadAction(
+    public function xhrMarkRead(
         Request $request,
         MarkReadAction $markReadAction,
         int $roomId
@@ -1250,7 +1243,7 @@ class GroupController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/group/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
-    public function xhrCategorizeAction(
+    public function xhrCategorize(
         Request $request,
         CategorizeAction $action,
         int $roomId
@@ -1264,7 +1257,7 @@ class GroupController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/group/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
-    public function xhrHashtagAction(
+    public function xhrHashtag(
         Request $request,
         HashtagAction $action,
         int $roomId
@@ -1276,7 +1269,7 @@ class GroupController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/group/xhr/delete', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeleteAction(
+    public function xhrDelete(
         Request $request,
         DeleteAction $action,
         int $roomId

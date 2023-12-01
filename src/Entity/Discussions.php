@@ -17,6 +17,7 @@ use App\Utils\EntityDatesTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,22 +25,19 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'discussions')]
-#[ORM\Index(name: 'context_id', columns: ['context_id'])]
-#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
+#[ORM\Index(columns: ['context_id'], name: 'context_id')]
+#[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
 class Discussions
 {
     use EntityDatesTrait;
 
-    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $itemId;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
-    private $contextId;
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
+    private ?int $contextId = null;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
@@ -49,50 +47,47 @@ class Discussions
     #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
     private ?User $modifier = null;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
-    private $deleterId;
+    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
+    private ?int $deleterId = null;
 
-    #[ORM\Column(name: 'activation_date', type: 'datetime')]
+    #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
     private ?DateTime $activationDate = null;
 
     /**
      * @var string
      */
-    #[ORM\Column(name: 'title', type: 'string', length: 200, nullable: false)]
-    private $title;
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 200, nullable: false)]
+    private string $title;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private string $description;
 
     /**
      * @var int
      */
-    #[ORM\Column(name: 'latest_article_item_id', type: 'integer', nullable: true)]
-    private $latestArticleItemId;
+    #[ORM\Column(name: 'latest_article_item_id', type: Types::INTEGER, nullable: true)]
+    private ?int $latestArticleItemId = null;
 
     /**
-     * @var DateTime
+     * @var \DateTimeInterface
      */
-    #[ORM\Column(name: 'latest_article_modification_date', type: 'datetime', nullable: true)]
-    private $latestArticleModificationDate;
+    #[ORM\Column(name: 'latest_article_modification_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $latestArticleModificationDate = null;
 
-    #[ORM\Column(name: 'status', type: 'integer', nullable: false)]
+    #[ORM\Column(name: 'status', type: Types::INTEGER, nullable: false)]
     private string $status = '1';
 
-    #[ORM\Column(name: 'discussion_type', type: 'string', length: 10, nullable: false)]
+    #[ORM\Column(name: 'discussion_type', type: Types::STRING, length: 10, nullable: false)]
     private string $discussionType = 'simple';
 
-    #[ORM\Column(name: 'public', type: 'boolean', nullable: false)]
+    #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
     private string $public = '0';
 
     /**
      * @var string
      */
-    #[ORM\Column(name: 'extras', type: 'text', length: 65535, nullable: true)]
-    private $extras;
+    #[ORM\Column(name: 'extras', type: Types::TEXT, length: 65535, nullable: true)]
+    private ?string $extras = null;
 
     /**
      * @var Discussionarticles[]|null

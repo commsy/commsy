@@ -22,6 +22,7 @@ use App\Repository\ServerRepository;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -68,54 +69,61 @@ class Server
 {
     #[ApiProperty(description: 'The unique identifier.')]
     #[ORM\Id]
-    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\GeneratedValue]
     #[Groups(['api'])]
     private int $id;
 
-    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private int $contextId;
-    #[ORM\Column(name: 'creator_id', type: 'integer', nullable: false)]
+
+    #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: false)]
     private ?int $creatorId = 0;
-    #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: true)]
+
+    #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
     private int $modifierId;
-    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
+
+    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private int $deleterId;
-    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
+
+    #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE, nullable: false)]
     private DateTime $creationDate;
-    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
+
+    #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: false)]
     private ?DateTimeInterface $modificationDate = null;
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
+
+    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTime $deletionDate = null;
-    #[ORM\Column(name: 'title', type: 'string', length: 255, nullable: false)]
+
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
     private string $title;
 
-    #[ORM\Column(name: 'extras', type: 'array', nullable: true)]
-    private ?array $extras;
+    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
+    private ?array $extras = null;
 
-    #[ORM\Column(name: 'status', type: 'string', length: 20, nullable: false)]
+    #[ORM\Column(name: 'status', type: Types::STRING, length: 20, nullable: false)]
     private string $status;
 
-    #[ORM\Column(name: 'activity', type: 'integer', nullable: false)]
+    #[ORM\Column(name: 'activity', type: Types::INTEGER, nullable: false)]
     private int $activity = 0;
 
-    #[ORM\Column(name: 'type', type: 'string', length: 10, nullable: false)]
+    #[ORM\Column(name: 'type', type: Types::STRING, length: 10, nullable: false)]
     private string $type = 'server';
 
-    #[ORM\Column(name: 'is_open_for_guests', type: 'boolean', nullable: false)]
+    #[ORM\Column(name: 'is_open_for_guests', type: Types::BOOLEAN, nullable: false)]
     private bool $isOpenForGuests = true;
 
-    #[ORM\Column(name: 'url', type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(name: 'url', type: Types::STRING, length: 255, nullable: true)]
     private ?string $url = null;
 
     // NOTE: This is not a mapped field of entity metadata, just a simple property.
     #[Vich\UploadableField(mapping: 'server_logo', fileNameProperty: 'logoImageName')]
     private ?File $logoImageFile = null;
 
-    #[ORM\Column(name: 'logo_image_name', type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(name: 'logo_image_name', type: Types::STRING, length: 255, nullable: true)]
     private ?string $logoImageName = null;
 
-    #[ORM\Column(name: 'commsy_icon_link', type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(name: 'commsy_icon_link', type: Types::STRING, length: 255, nullable: true)]
     private ?string $commsyIconLink = null;
 
     public function __construct()

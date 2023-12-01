@@ -14,11 +14,11 @@
 namespace App\EventSubscriber;
 
 use App\Utils\RoomService;
-use Lexik\Bundle\FormFilterBundle\Event\GetFilterConditionEvent;
+use Spiriit\Bundle\FormFilterBundle\Event\GetFilterConditionEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * EventListener for use with LexikFormFilterBundle, which customizes
+ * EventListener for use with SpiriitFormFilterBundle, which customizes
  * the doctrine conditions for the room time pulses filter.
  */
 class RoomTimePulsesFilterConditionSubscriber implements EventSubscriberInterface
