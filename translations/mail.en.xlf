@@ -250,6 +250,14 @@
                 <source>mail.user_joined_approve_link_desc</source>
                 <target>To approve membership for this person/account, please click the following link:</target>
             </trans-unit>
+            <trans-unit id="mail_account_registration_subject">
+                <source>mail.account_registration.subject</source>
+                <target>Account request "%username%"</target>
+            </trans-unit>
+            <trans-unit id="mail_account_registration_intro">
+                <source>mail.account_registration.intro</source>
+                <target>%fullname% registered a new account with username "%username%":</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

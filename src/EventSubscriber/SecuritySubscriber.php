@@ -17,12 +17,12 @@ use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use App\Utils\RequestContext;
 use cs_environment;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 readonly class SecuritySubscriber implements EventSubscriberInterface

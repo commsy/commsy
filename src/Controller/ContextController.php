@@ -25,15 +25,14 @@ use App\Utils\GroupService;
 use App\Utils\UserService;
 use cs_user_item;
 use DateTimeImmutable;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * Class ContextController.
@@ -41,14 +40,6 @@ use Symfony\Contracts\Service\Attribute\Required;
 #[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class ContextController extends AbstractController
 {
-    private Mailer $mailer;
-
-    #[Required]
-    public function setMailer(Mailer $mailer)
-    {
-        $this->mailer = $mailer;
-    }
-
     #[Route(path: '/room/{roomId}/context/{itemId}/request', requirements: ['itemId' => '\d+'])]
     public function requestAction(
         Request $request,
@@ -59,6 +50,7 @@ class ContextController extends AbstractController
         GroupService $groupService,
         RoomMessageFactory $roomMessageFactory,
         RoomRepository $roomRepository,
+        Mailer $mailer,
         int $roomId,
         int $itemId
     ): Response {
@@ -185,7 +177,7 @@ class ContextController extends AbstractController
                         $newUser,
                         $form->has('description') ? $formData['description'] : null
                     );
-                    $this->mailer->sendMultiple($message, $moderatorRecipients);
+                    $mailer->sendMultiple($message, $moderatorRecipients);
                 }
 
                 // inform user if request required no authorization
@@ -251,7 +243,7 @@ class ContextController extends AbstractController
                         $replyTo[] = new Address($modEmail, $modFullName);
                     }
 
-                    $this->mailer->sendRaw(
+                    $mailer->sendRaw(
                         $subject,
                         nl2br($body),
                         RecipientFactory::createRecipient($newUser),

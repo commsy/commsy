@@ -23,7 +23,7 @@ class FixContext extends GeneralCheck
     public function resolve(SymfonyStyle $io): bool
     {
         $tablesWithContext = ['annotations', 'announcement', 'assessments', 'calendars', 'dates',
-            'discussionarticles', 'discussions', 'files', 'invitations', 'labels', 'licenses', 'link_items',
+            'discussionarticles', 'discussions', 'invitations', 'labels', 'licenses', 'link_items',
             'links', 'materials', 'room', 'room_privat', 'section', 'step', 'tag', 'tag2tag', 'tasks',
             'terms', 'todos', 'translation',  'user'];
 
@@ -39,6 +39,32 @@ class FixContext extends GeneralCheck
             ";
             $this->executeSQL($sql, $io);
         }
+
+        // file links (foreign key)
+        $sql = '
+            DELETE ilf FROM files AS f
+            LEFT JOIN item_link_file AS ilf ON f.files_id = ilf.file_id
+            LEFT JOIN room AS c1 ON f.context_id = c1.item_id
+            LEFT JOIN room_privat AS c3 ON f.context_id = c3.item_id
+            LEFT JOIN portal AS c4 ON f.context_id = c4.id
+            LEFT JOIN server AS c5 ON f.context_id = c5.item_id
+            WHERE f.context_id IS NOT NULL
+            AND c1.item_id IS NULL AND c3.item_id IS NULL AND c4.id IS NULL AND c5.item_id IS NULL;
+        ';
+        $this->executeSQL($sql, $io);
+
+        // files
+        $sql = '
+            DELETE f FROM files AS f
+            LEFT JOIN item_link_file AS ilf ON f.files_id = ilf.file_id
+            LEFT JOIN room AS c1 ON f.context_id = c1.item_id
+            LEFT JOIN room_privat AS c3 ON f.context_id = c3.item_id
+            LEFT JOIN portal AS c4 ON f.context_id = c4.id
+            LEFT JOIN server AS c5 ON f.context_id = c5.item_id
+            WHERE f.context_id IS NOT NULL
+            AND c1.item_id IS NULL AND c3.item_id IS NULL AND c4.id IS NULL AND c5.item_id IS NULL;
+        ';
+        $this->executeSQL($sql, $io);
 
         $sql = "
             DELETE t FROM items AS t

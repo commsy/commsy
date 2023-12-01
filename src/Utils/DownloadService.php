@@ -353,17 +353,11 @@ class DownloadService
         }
 
         $reader_manager = $this->legacyEnvironment->getReaderManager();
-        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
 
         // $item = $material;
         $reader = $reader_manager->getLatestReader($item->getItemID());
         if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
-
-        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
-            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
         // mark annotations as read
@@ -378,11 +372,6 @@ class DownloadService
                 $reader = $reader_manager->getLatestReader($section->getItemID());
                 if (empty($reader) || $reader['read_date'] < $section->getModificationDate()) {
                     $reader_manager->markRead($section->getItemID(), 0);
-                }
-
-                $noticed = $noticed_manager->getLatestNoticed($section->getItemID());
-                if (empty($noticed) || $noticed['read_date'] < $section->getModificationDate()) {
-                    $noticed_manager->markNoticed($section->getItemID(), 0);
                 }
 
                 $section = $readsectionList->getNext();

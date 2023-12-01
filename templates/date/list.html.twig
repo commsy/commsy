@@ -4,7 +4,7 @@
 {% block feed %}
     <ul id="dates-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'App\\Controller\\DateController::feedAction', {
+            'App\\Controller\\DateController::feed', {
                 'roomId': roomId,
                 'dateFilter': app.request.query.all('date_filter')
             }

@@ -38,6 +38,13 @@ class RecipientFactory
         return $recipients;
     }
 
+    public static function createRecipients(cs_user_item ...$users): iterable
+    {
+        foreach ($users as $user) {
+            yield self::createRecipient($user);
+        }
+    }
+
     public static function createRecipient(cs_user_item $user): Recipient
     {
         $recipient = new Recipient();

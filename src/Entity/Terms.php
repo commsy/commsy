@@ -14,6 +14,7 @@
 namespace App\Entity;
 
 use App\Repository\TermsRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -23,37 +24,22 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'terms')]
 class Terms
 {
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var contextId
-     */
-    #[ORM\Column(name: 'context_id', type: 'integer')]
-    private $contextId;
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
+    private ?int $contextId = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'title', type: 'string', length: 255)]
-    private $title;
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 255)]
+    private ?string $title = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'content_de', type: 'text')]
-    private $contentDe;
+    #[ORM\Column(name: 'content_de', type: Types::TEXT)]
+    private ?string $contentDe = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'content_en', type: 'text')]
-    private $contentEn;
+    #[ORM\Column(name: 'content_en', type: Types::TEXT)]
+    private ?string $contentEn = null;
 
     /**
      * Get id.

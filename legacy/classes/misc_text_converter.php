@@ -17,7 +17,6 @@ class misc_text_converter
     private array $_file_array = [];
     private ?HTMLPurifier $_HTMLPurifier = null;
     private ?HTMLPurifier $_FullHTMLPurifier = null;
-    private bool $_processMath = false;
 
     public function __construct($params)
     {
@@ -25,7 +24,7 @@ class misc_text_converter
             $this->_environment = $params['environment'];
             $this->_constructHTMLPurifier();
         } else {
-            trigger_error('no environment defined '.__FILE__.' '.__LINE__, E_USER_ERROR);
+            trigger_error('no environment defined ' . __FILE__ . ' ' . __LINE__, E_USER_ERROR);
         }
     }
 
@@ -58,7 +57,7 @@ class misc_text_converter
         $search[] = '~<([/]{0,1}[i|I][f|F][r|R][a|A][m|M][e|E])~u';
         $replace[] = '&lt;$1';
 
-        $text = preg_replace($search, $replace, (string) $text);
+        $text = preg_replace($search, $replace, (string)$text);
 
         return $text;
     }
@@ -77,13 +76,13 @@ class misc_text_converter
     {
         // preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u',$text,$values);
         // security KFC
-        preg_match('~<!-- KFC TEXT [a-z0-9]* -->[\S|\s]*<!-- KFC TEXT [a-z0-9]* -->~u', (string) $text, $values);
+        preg_match('~<!-- KFC TEXT [a-z0-9]* -->[\S|\s]*<!-- KFC TEXT [a-z0-9]* -->~u', (string)$text, $values);
         foreach ($values as $key => $value) {
-            $text = str_replace($value, 'COMMSY_FCKEDITOR'.$key, (string) $text);
+            $text = str_replace($value, 'COMMSY_FCKEDITOR' . $key, (string)$text);
         }
         $text = $this->_text_as_html_long1($text, $htmlTextArea);
         foreach ($values as $key => $value) {
-            $text = str_replace('COMMSY_FCKEDITOR'.$key, $this->_text_as_html_long2($value), (string) $text);
+            $text = str_replace('COMMSY_FCKEDITOR' . $key, $this->_text_as_html_long2($value), (string)$text);
         }
 
         return $text;
@@ -93,7 +92,7 @@ class misc_text_converter
     public function _text_as_html_long1($text, $htmlTextArea = false)
     {
         $text = $this->_cs_htmlspecialchars($text);
-        $text = nl2br((string) $text);
+        $text = nl2br((string)$text);
         $text = $this->_decode_backslashes_1($text);
         $text = $this->_preserve_whitespaces($text);
         $text = $this->_newFormating($text);
@@ -119,7 +118,7 @@ class misc_text_converter
         $text = $this->_activate_urls($text);
         $text = $this->_parseText2ID($text);
         // html bug of fckeditor
-        $text = str_replace('<br type="_moz" />', '<br />', (string) $text);
+        $text = str_replace('<br type="_moz" />', '<br />', (string)$text);
 
         return $text;
     }
@@ -134,14 +133,14 @@ class misc_text_converter
     public function text_as_form($text)
     {
         $text = $this->_cs_htmlspecialchars($text);
-        return str_replace('"', '&quot;', (string) $text);
+        return str_replace('"', '&quot;', (string)$text);
     }
 
     // private function _decode_backslashes ($text) {
     public function _decode_backslashes($text)
     {
         $retour = $text;
-        $retour = str_replace("\*", '&ast;', (string) $retour);
+        $retour = str_replace("\*", '&ast;', (string)$retour);
         $retour = str_replace("\_", '&lowbar;', $retour);
         $retour = str_replace("\!", '&excl;', $retour);
         $retour = str_replace("\-", '&macr;', $retour);
@@ -154,16 +153,16 @@ class misc_text_converter
     {
         // bold
         // $text = preg_replace('/(^|\n|\t|\s|[ >\/_[{(])\*([^*]+)\*($|\n|\t|[ <\/_.)\]},!?;])/', '$1<span style="font-weight:bold;">$2</span>$3', $text);
-        $text = preg_replace('~\*([^*]+)\*~uU', '<span style="font-weight:bold;">$1</span>', (string) $text);
+        $text = preg_replace('~\*([^*]+)\*~uU', '<span style="font-weight:bold;">$1</span>', (string)$text);
 
         // italic
         preg_match('~<!-- DNC -->.*<!-- DNC -->~us', $text, $values);
         foreach ($values as $key => $value) {
-            $text = str_replace($value, 'COMMSY_DNC'.$key.' ', $text);
+            $text = str_replace($value, 'COMMSY_DNC' . $key . ' ', $text);
         }
         $text = preg_replace('~(^|\n|\t|\s|[ >\/[{(])_([^_]+)_($|\n|\t|:|[ <\/.)\]},!?;])~uU', '$1<span style="font-style:italic;">$2</span>$3', $text);
         foreach ($values as $key => $value) {
-            $text = str_replace('COMMSY_DNC'.$key.' ', $value, $text);
+            $text = str_replace('COMMSY_DNC' . $key . ' ', $value, $text);
         }
 
         // search (with yellow background)
@@ -183,15 +182,15 @@ class misc_text_converter
     // private function _activate_urls ($text) {
     public function _activate_urls($text)
     {
-        preg_match('~<!-- KFC TEXT [a-z0-9]* -->~u', (string) $text, $values);
+        preg_match('~<!-- KFC TEXT [a-z0-9]* -->~u', (string)$text, $values);
         foreach ($values as $key => $value) {
-            $text = str_replace($value, 'COMMSY_FCKEDITOR'.$key.' ', (string) $text);
+            $text = str_replace($value, 'COMMSY_FCKEDITOR' . $key . ' ', (string)$text);
         }
-        $text = ' '.$text;
+        $text = ' ' . $text;
         $url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; // everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
-      // $url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
-        $url_string .= '(['.RFC1738_CHARS.']+?))'; // All characters allowed for FTP an HTTP URL's by RFC 1738 (non-greedy because of potential trailing punctuation marks)
-      // separating Links from COMMSY_FCKEDITOR tag
+        // $url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
+        $url_string .= '([' . RFC1738_CHARS . ']+?))'; // All characters allowed for FTP an HTTP URL's by RFC 1738 (non-greedy because of potential trailing punctuation marks)
+        // separating Links from COMMSY_FCKEDITOR tag
         $url_string .= '(?=([\.\?:\),;!]*($|\s|<|&quot;|&nbsp;|COMMSY_FCKEDITOR)))'; // behind the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
         $url_string .= '(?![\s\w\d]*</a>)^u'; // if there's a </a>-tag behind the link, it is assumed that there's already a complete <a href="">link</a> contruct comming from the editor. These links are omitted.
 
@@ -200,10 +199,10 @@ class misc_text_converter
         $text = preg_replace_callback('~">(.[^"]+)</a>~u', 'spezial_chunkURL', $text);
         $text = preg_replace('~<a href="www~u', '<a href="http://www', $text); // add "http://" to links that were activated with www in front only
         // mailto. A space or a linebreak has to be in front of everymail link. No links in bigger words (especially in urls) will be activated
-        $text = preg_replace('^( |\^|>|\n)(mailto:)?((['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*)@(['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*\.([A-z]{2,})))^u', '$1<a href="mailto:$3">$3</a>', $text);
+        $text = preg_replace('^( |\^|>|\n)(mailto:)?(([' . RFC2822_CHARS . ']+(\.[' . RFC2822_CHARS . ']+)*)@([' . RFC2822_CHARS . ']+(\.[' . RFC2822_CHARS . ']+)*\.([A-z]{2,})))^u', '$1<a href="mailto:$3">$3</a>', $text);
         $text = substr($text, 1, strlen($text));
         foreach ($values as $key => $value) {
-            $text = str_replace('COMMSY_FCKEDITOR'.$key.' ', $value, $text);
+            $text = str_replace('COMMSY_FCKEDITOR' . $key . ' ', $value, $text);
         }
 
         return $text;
@@ -214,11 +213,11 @@ class misc_text_converter
     {
         $matches = [];
 
-        while (preg_match('~(^|\n)(\s*)(!+)(\s*)(.*)~u', (string) $text, $matches)) {
+        while (preg_match('~(^|\n)(\s*)(!+)(\s*)(.*)~u', (string)$text, $matches)) {
             $bang_number = mb_strlen($matches[3]);
             $head_level = max(5 - $bang_number, 1); // normal (one '!') is h4, biggest is h1; The more '!', the bigger the heading
-            $heading = '<h'.$head_level.'>'."\n   ".$matches[5]."\n".'</h'.$head_level.'>'."\n";
-            $text = preg_replace('~(^|\n)(\s*)(!+)(\s*)(.*)~u', $heading, (string) $text, 1);
+            $heading = '<h' . $head_level . '>' . "\n   " . $matches[5] . "\n" . '</h' . $head_level . '>' . "\n";
+            $text = preg_replace('~(^|\n)(\s*)(!+)(\s*)(.*)~u', $heading, (string)$text, 1);
         }
 
         return $text;
@@ -233,22 +232,20 @@ class misc_text_converter
         $list_open = false;
 
         // split up paragraphs in lines
-        $lines = preg_split('~\s*\n~uU', (string) $text);
+        $lines = preg_split('~\s*\n~uU', (string)$text);
         foreach ($lines as $line) {
             $line_html = '';
             $hr_line = false;
             // find horizontal rulers
-            if (preg_match('~^--(-+)\s*($|\n|<)~u', (string) $line)) {
+            if (preg_match('~^--(-+)\s*($|\n|<)~u', (string)$line)) {
                 if ($list_open) {
                     $line_html .= $this->_close_list($last_list_type);
                     $list_open = false;
                 }
-                $line_html .= LF.'<hr/>'.LF;
+                $line_html .= LF . '<hr/>' . LF;
                 $hr_line = true;
-            }
-
-            // process lists
-            elseif (!$hr_line and preg_match('~^(-|#)(\s*)(.*)~su', (string) $line, $matches)) {
+            } // process lists
+            elseif (!$hr_line and preg_match('~^(-|#)(\s*)(.*)~su', (string)$line, $matches)) {
                 $list_type = $matches[1];
 
                 if (!$list_open) {
@@ -264,10 +261,8 @@ class misc_text_converter
                         $last_list_type = $list_type;
                     }
                 }
-                $line_html .= '<li>'.$matches[3].'</li>'.LF;
-            }
-
-            // All other lines without anything special
+                $line_html .= '<li>' . $matches[3] . '</li>' . LF;
+            } // All other lines without anything special
             else {
                 if ($list_open) {
                     $line_html .= $this->_close_list($last_list_type);
@@ -275,7 +270,7 @@ class misc_text_converter
                 }
                 $line_html .= $line;
             }
-            $html .= $line_html."\r\n";
+            $html .= $line_html . "\r\n";
         }
         if ($list_open) {
             $html .= $this->_close_list($last_list_type);
@@ -288,13 +283,13 @@ class misc_text_converter
     private function _decode_backslashes_1_fck($text)
     {
         $retour = $text;
-        return str_replace("\(:", "\WIKIBEGIN", (string) $retour);
+        return str_replace("\(:", "\WIKIBEGIN", (string)$retour);
     }
 
     private function _decode_backslashes_2_fck($text)
     {
         $retour = $text;
-        return str_replace("\WIKIBEGIN", '(:', (string) $retour);
+        return str_replace("\WIKIBEGIN", '(:', (string)$retour);
     }
 
     /**
@@ -304,9 +299,9 @@ class misc_text_converter
     {
         $html = '';
         if ('#' == $list_type) {
-            $html .= '<ol>'."\n";
+            $html .= '<ol>' . "\n";
         } elseif ('-' == $list_type) {
-            $html .= '<ul>'."\n";
+            $html .= '<ul>' . "\n";
         }
 
         return $html;
@@ -319,9 +314,9 @@ class misc_text_converter
     {
         $html = '';
         if ('#' == $list_type) {
-            $html .= '</ol>'."\n";
+            $html .= '</ol>' . "\n";
         } elseif ('-' == $list_type) {
-            $html .= '</ul>'."\n";
+            $html .= '</ul>' . "\n";
         }
 
         return $html;
@@ -330,7 +325,7 @@ class misc_text_converter
     // private function _br_with_nl ($text) {
     public function _br_with_nl($text)
     {
-        $text = str_replace('<br />', '<br />'.LF, (string) $text);
+        $text = str_replace('<br />', '<br />' . LF, (string)$text);
 
         return $text;
     }
@@ -341,7 +336,7 @@ class misc_text_converter
         $matches_with_text = [];
 
         // ids with text: <text>[<number>] becomes a link under <text> to the commsy-object with id <number>
-        preg_match_all('~([\w.'.SPECIAL_CHARS.'&;-]+)\[(\d+)\]~iu', (string) $text, $matches_with_text);
+        preg_match_all('~([\w.' . SPECIAL_CHARS . '&;-]+)\[(\d+)\]~iu', (string)$text, $matches_with_text);
         if ((is_countable($matches_with_text[0]) ? count($matches_with_text[0]) : 0) > 0) {
             $result = $text;
             $word_part = $matches_with_text[1];
@@ -353,21 +348,21 @@ class misc_text_converter
                     if ('discussion' == $this->_environment->getCurrentModule()) {
                         $params = [];
                         $params['iid'] = $this->_environment->getValueOfParameter('iid');
-                        $result = preg_replace('~'.$word.'\['.$reference.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, $word, $word, '', 'anchor'.$reference), (string) $result);
+                        $result = preg_replace('~' . $word . '\[' . $reference . '\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, $word, $word, '', 'anchor' . $reference), (string)$result);
                         unset($params);
                     }
                 } else {
                     $params = [];
                     $params['iid'] = $reference;
-                    $result = preg_replace('~'.$word.'\['.$reference.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', '', ''), (string) $result);
+                    $result = preg_replace('~' . $word . '\[' . $reference . '\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', '', ''), (string)$result);
                     unset($params);
                 }
             }
             $text = $result;
         }
 
-      // urls with text: <text>[<url>] becomes a link under <text> to the url <url>
-        preg_match_all('^([.\w'.SPECIAL_CHARS.'-]+)\[(https?:\/\/['.RFC1738_CHARS.']*)\]^iu', (string) $text, $matches_with_urls); // preg_match_all('/(\S+)(\[http:\/\/\S*\])[.:,;-?!]*($|\n|\t|<| )/', $text, $matches_with_urls);
+        // urls with text: <text>[<url>] becomes a link under <text> to the url <url>
+        preg_match_all('^([.\w' . SPECIAL_CHARS . '-]+)\[(https?:\/\/[' . RFC1738_CHARS . ']*)\]^iu', (string)$text, $matches_with_urls); // preg_match_all('/(\S+)(\[http:\/\/\S*\])[.:,;-?!]*($|\n|\t|<| )/', $text, $matches_with_urls);
         if ((is_countable($matches_with_urls[0]) ? count($matches_with_urls[0]) : 0) > 0) {
             $result = $text;
             $word_part = $matches_with_urls[1];
@@ -376,11 +371,11 @@ class misc_text_converter
                 $word = $word_part[$i];
                 $http = $http_part[$i];
                 if (!empty($word)) {
-                    if (!mb_stristr((string) $word, '|')) {
-                        $result = preg_replace('~'.$word.'\['.$http.'\]~u', '<a href="'.$http.'" target="_blank">'.$word.'</a>', (string) $result);
+                    if (!mb_stristr((string)$word, '|')) {
+                        $result = preg_replace('~' . $word . '\[' . $http . '\]~u', '<a href="' . $http . '" target="_blank">' . $word . '</a>', (string)$result);
                     }
                 } else {
-                    $result = preg_replace('~'.$word.'\['.$http.'\]~u', '<a href="'.$http.'" target="_blank">'.$http_part[$i].'</a>', (string) $result);
+                    $result = preg_replace('~' . $word . '\[' . $http . '\]~u', '<a href="' . $http . '" target="_blank">' . $http_part[$i] . '</a>', (string)$result);
                 }
             }
             $text = $result;
@@ -388,7 +383,7 @@ class misc_text_converter
 
         // long urls: [<url>|<sentence with spaces>|<flag>] becomes a link to <url> under <sentence with spaces>
         // <flag> cann be "internal" or "_blank". Internal opens <url> in this browser window, _blank uses another
-        preg_match_all('^\[(http?://['.RFC1738_CHARS.']*)\|([\w'.SPECIAL_CHARS.' \)?!&;-]+)\|(\w+)\]^u', (string) $text, $matches_with_long_urls);
+        preg_match_all('^\[(http?://[' . RFC1738_CHARS . ']*)\|([\w' . SPECIAL_CHARS . ' \)?!&;-]+)\|(\w+)\]^u', (string)$text, $matches_with_long_urls);
         if ((is_countable($matches_with_long_urls[0]) ? count($matches_with_long_urls[0]) : 0) > 0) {
             $result = $text;
             $http_part = $matches_with_long_urls[1];
@@ -399,19 +394,19 @@ class misc_text_converter
                 $word = $word_part[$i];
                 $flag = $flag_part[$i];
                 if (!empty($word) and !empty($http) and !empty($flag)) {
-                    $search = '['.$http.'|'.$word.'|'.$flag.']';
-                    $replace = '<a href="'.$http.'" target="_blank">'.$word.'</a>';
+                    $search = '[' . $http . '|' . $word . '|' . $flag . ']';
+                    $replace = '<a href="' . $http . '" target="_blank">' . $word . '</a>';
                     if ('internal' == $flag) {
-                        $replace = '<a href="'.$http.'">'.$word.'</a>';
+                        $replace = '<a href="' . $http . '">' . $word . '</a>';
                     }
-                    $result = str_replace($search, $replace, (string) $result);
+                    $result = str_replace($search, $replace, (string)$result);
                 }
             }
             $text = $result;
         }
 
         // long urls: [ITEM_ID|<sentence with spaces>] becomes a link to <url> under <sentence with spaces>
-        preg_match_all('^\[([0-9]*)\|([\w'.SPECIAL_CHARS.' \)?!&;-]+)\]^u', (string) $text, $matches_with_long_urls);
+        preg_match_all('^\[([0-9]*)\|([\w' . SPECIAL_CHARS . ' \)?!&;-]+)\]^u', (string)$text, $matches_with_long_urls);
         // preg_match_all('§\[([0-9]*)\|([\w'.SPECIAL_CHARS.' -]+)\]§', $text, $matches_with_long_urls);
         if ((is_countable($matches_with_long_urls[0]) ? count($matches_with_long_urls[0]) : 0) > 0) {
             $result = $text;
@@ -421,18 +416,18 @@ class misc_text_converter
                 $http = $http_part[$i];
                 $word = $word_part[$i];
                 if (!empty($word) and !empty($http)) {
-                    $search = '['.$http.'|'.$word.']';
+                    $search = '[' . $http . '|' . $word . ']';
                     $params = [];
                     $params['iid'] = $http;
                     $replace = ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word);
-                    $result = str_replace($search, $replace, (string) $result);
+                    $result = str_replace($search, $replace, (string)$result);
                 }
             }
             $text = $result;
         }
 
-      // ids without text: [<number>] becomes a link under [<number>] to the commsy-object with id <number>
-        preg_match_all('~\[(\d+)\]~u', (string) $text, $matches_stand_alone); // (^| |\n|>|\t)\[(\d+)\][.:,;-?!]*(<| |$)
+        // ids without text: [<number>] becomes a link under [<number>] to the commsy-object with id <number>
+        preg_match_all('~\[(\d+)\]~u', (string)$text, $matches_stand_alone); // (^| |\n|>|\t)\[(\d+)\][.:,;-?!]*(<| |$)
         $matches_stand_alone = array_unique($matches_stand_alone[1]);
         if (!empty($matches_stand_alone)) {
             $result = $text;
@@ -441,13 +436,13 @@ class misc_text_converter
                     if ('discussion' == $this->_environment->getCurrentModule()) {
                         $params = [];
                         $params['iid'] = $this->_environment->getValueOfParameter('iid');
-                        $result = preg_replace('~\['.$item.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, '['.$item.']', '['.$item.']', '', 'anchor'.$item), (string) $result);
+                        $result = preg_replace('~\[' . $item . '\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, '[' . $item . ']', '[' . $item . ']', '', 'anchor' . $item), (string)$result);
                         unset($params);
                     }
                 } else {
                     $params = [];
                     $params['iid'] = $item;
-                    $result = preg_replace('~\['.$item.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, '['.$item.']', '', '', ''), (string) $result);
+                    $result = preg_replace('~\[' . $item . '\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, '[' . $item . ']', '', '', ''), (string)$result);
                     unset($params);
                 }
             }
@@ -460,7 +455,7 @@ class misc_text_converter
     private function _decode_backslashes_2($text)
     {
         $retour = $text;
-        $retour = str_replace("\STERN", '*', (string) $retour);
+        $retour = str_replace("\STERN", '*', (string)$retour);
         $retour = str_replace("\STRICH", '_', $retour);
         $retour = str_replace("\AUSRUFEZEICHEN", '!', $retour);
         $retour = str_replace("\MINUS", '-', $retour);
@@ -472,7 +467,7 @@ class misc_text_converter
 
     public function _delete_unnecassary_br($text)
     {
-        $text = preg_replace('~<br( /)?>(</h\d>)~u', '$2', (string) $text);
+        $text = preg_replace('~<br( /)?>(</h\d>)~u', '$2', (string)$text);
         return preg_replace('~<br( /)?>(</li>)~u', '</li>', $text);
     }
 
@@ -485,15 +480,15 @@ class misc_text_converter
      */
     public function _preserve_whitespaces($text)
     {
-        preg_match_all('~ {2,}~u', (string) $text, $matches);
+        preg_match_all('~ {2,}~u', (string)$text, $matches);
         $matches = array_unique($matches[0]);
         rsort($matches);
         foreach ($matches as $match) {
             $replacement = ' ';
-            for ($x = 1; $x < mb_strlen((string) $match); ++$x) {
+            for ($x = 1; $x < mb_strlen((string)$match); ++$x) {
                 $replacement .= '&nbsp;';
             }
-            $text = str_replace($match, $replacement, (string) $text);
+            $text = str_replace($match, $replacement, (string)$text);
         }
 
         return $text;
@@ -502,7 +497,7 @@ class misc_text_converter
     private function _decode_backslashes_1($text)
     {
         $retour = $text;
-        $retour = str_replace("\*", "\STERN", (string) $retour);
+        $retour = str_replace("\*", "\STERN", (string)$retour);
         $retour = str_replace("\_", "\STRICH", $retour);
         $retour = str_replace("\!", "\AUSRUFEZEICHEN", $retour);
         $retour = str_replace("\-", "\MINUS", $retour);
@@ -514,10 +509,10 @@ class misc_text_converter
     {
         $variable_array = [];
         $matches = [];
-        $found = preg_match_all($reg_exp, (string) $data, $matches);
+        preg_match_all($reg_exp, (string)$data, $matches);
         $j = 0;
         while (isset($matches[$j][0])) {
-            $variable_array[$j] = trim((string) $matches[$j][0]);
+            $variable_array[$j] = trim((string)$matches[$j][0]);
             ++$j;
         }
 
@@ -526,13 +521,13 @@ class misc_text_converter
 
     public function _getArgs2($data, $reg_exp)
     {
-        $reg_exp = str_replace('?)?', ')', (string) $reg_exp);
+        $reg_exp = str_replace('?)?', ')', (string)$reg_exp);
         $variable_array = [];
         $matches = [];
-        $found = preg_match_all($reg_exp, (string) $data, $matches);
+        $found = preg_match_all($reg_exp, (string)$data, $matches);
         $j = 0;
         while (isset($matches[$j][0])) {
-            $variable_array[$j] = trim((string) $matches[$j][0]);
+            $variable_array[$j] = trim((string)$matches[$j][0]);
             ++$j;
         }
         $last_element = array_pop($variable_array);
@@ -545,25 +540,25 @@ class misc_text_converter
                     if (!$komma) {
                         $variable_array[] = $value;
                     } else {
-                        $cache .= ' '.$value;
+                        $cache .= ' ' . $value;
                     }
                 }
                 if (strstr($value, "'")) {
                     if (!$komma) {
                         if (1 == substr_count($value, "'") % 2) {
                             $komma = true;
-                            $cache .= ' '.$value;
+                            $cache .= ' ' . $value;
                         } else {
                             $result_array[] = $value;
                         }
                     } else {
                         if (1 == substr_count($value, "'") % 2) {
                             $komma = false;
-                            $cache .= ' '.$value;
+                            $cache .= ' ' . $value;
                             $variable_array[] = trim($cache);
                             $cache = '';
                         } else {
-                            $cache .= ' '.$value;
+                            $cache .= ' ' . $value;
                         }
                     }
                 }
@@ -576,7 +571,7 @@ class misc_text_converter
     public function _parseArgs($x)
     {
         $z = [];
-        $x = str_replace('&#39;', "'", (string) $x);
+        $x = str_replace('&#39;', "'", (string)$x);
         $x = str_replace('&quot;', '"', $x);
         preg_match_all('~([-+]|(?>(\\w+)[:=]{0,1}))?("[^"]*"|\'[^\']*\'|\\S+)~u', $x, $terms, PREG_SET_ORDER);
         foreach ($terms as $t) {
@@ -584,8 +579,7 @@ class misc_text_converter
             if ($t[2]) {
                 $z['#'][] = $t[2];
                 $z[$t[2]] = $v;
-            }
-            // bugfix since php 5.4.9
+            } // bugfix since php 5.4.9
             elseif (empty($t[2])) {
                 $z[$t[0]][] = $v;
             } else {
@@ -609,52 +603,52 @@ class misc_text_converter
         $retour = [];
         foreach ($array as $key => $value) {
             if ('float' == $key
-                 and 'left' != $value
-                 and 'right' != $value
+                and 'left' != $value
+                and 'right' != $value
             ) {
             } elseif ('text' == $key
-                       or 'alt' == $key
-                       or 'gallery' == $key
-                       or 'image' == $key
-                       or 'server' == $key
+                or 'alt' == $key
+                or 'gallery' == $key
+                or 'image' == $key
+                or 'server' == $key
             ) {
                 $retour[$key] = $this->_htmlentities_small($value);
             } elseif ('width' == $key
-                       and !is_numeric($value)
+                and !is_numeric($value)
             ) {
             } elseif ('height' == $key
-                       and !is_numeric($value)
+                and !is_numeric($value)
             ) {
             } elseif ('width' == $key
-                       and $value > 1000
+                and $value > 1000
             ) {
             } elseif ('height' == $key
-                       and $value > 1000
+                and $value > 1000
             ) {
             } elseif ('icon' == $key
-                       and 'true' != $value
-                       and 'false' != $value
+                and 'true' != $value
+                and 'false' != $value
             ) {
             } elseif ('size' == $key
-                       and 'true' != $value
-                       and 'false' != $value
+                and 'true' != $value
+                and 'false' != $value
             ) {
             } elseif ('play' == $key
-                       and 'true' != $value
-                       and 'false' != $value
+                and 'true' != $value
+                and 'false' != $value
             ) {
             } elseif ('navigation' == $key
-                       and 'true' != $value
-                       and 'false' != $value
+                and 'true' != $value
+                and 'false' != $value
             ) {
             } elseif ('orientation' == $key
-                       and 'portrait' != $value
-                       and 'landscape' != $value
+                and 'portrait' != $value
+                and 'landscape' != $value
             ) {
             } elseif ('target' == $key
-                       and '_blank' != $value
-                       and '_top' != $value
-                       and '_parent' != $value
+                and '_blank' != $value
+                and '_top' != $value
+                and '_parent' != $value
             ) {
             } else {
                 $retour[$key] = $value;
@@ -674,7 +668,7 @@ class misc_text_converter
 
     private function _htmlentities_small($value)
     {
-        $value = str_replace('<', '&lt;', (string) $value);
+        $value = str_replace('<', '&lt;', (string)$value);
         $value = str_replace('>', '&gt;', $value);
         $value = str_replace('"', '&quot;', $value);
         $value = str_replace('\'', '&#039;', $value);
@@ -682,41 +676,17 @@ class misc_text_converter
         return $value;
     }
 
-    private function _htmlentities_smaller($value)
-    {
-        $value = str_replace('<', '&lt;', (string) $value);
-        $value = str_replace('>', '&gt;', $value);
-        $value = str_replace('"', '&quot;', $value);
-
-        return $value;
-    }
-
-    /**
-     * Extended implementation of the standard PHP-Function.
-     *
-     * Needed to ensure proper searching in CommSy with standard PHP settings
-     * When the 'locale' setting of PHP is not set properly, the search for language specific characters
-     * like 'ä', 'ü', 'ö', 'á' etc doesn't work correct, because the standard PHP strtolower doesn't translate
-     * them (http://de3.php.net/manual/en/function.strtolower.php)
-     *
-     * Our extended implementation translates correct without respect to 'locale'
-     */
-    private function _cs_strtolower($value)
-    {
-        return mb_strtolower(strtr($value, UC_CHARS, LC_CHARS), 'UTF-8');
-    }
-
     private function _getSubText($text, $search)
     {
         $retour = '';
-        $pos = strpos((string) $text, (string) $search);
+        $pos = strpos((string)$text, (string)$search);
         $run = true;
         $komma_closed = false;
         $end_tag_begin = false;
-        for ($i = $pos + strlen((string) $search); $i < strlen((string) $text); ++$i) {
+        for ($i = $pos + strlen((string)$search); $i < strlen((string)$text); ++$i) {
             if ($end_tag_begin
-                 and ')' == $text[$i]
-                 and $komma_closed) {
+                and ')' == $text[$i]
+                and $komma_closed) {
                 break;
             }
             if ("'" == $text[$i]) {
@@ -729,37 +699,127 @@ class misc_text_converter
             }
         }
         if ($end_tag_begin) {
-            $retour = substr((string) $text, $pos, $i - $pos + 1);
+            $retour = substr((string)$text, $pos, $i - $pos + 1);
         }
 
         return $retour;
     }
 
-    /**
-     * Encodes the following chars in all given attributes: ':', '(' and ')'.
-     *
-     * @param $attr_array - Array von Attributen
-     * @param $text - text
-     *
-     * @return encoded text
-     */
-    private function _encode_attr($attr_array, $text)
+    // private function _newFormating ( $text ) {
+    public function _newFormating($text)
     {
-        // loop through all tags
-        foreach ($attr_array as $attr) {
-            // find tags and content
-            $reg_exp = "~$attr='(.*?)'~eu";
-            $found = preg_match_all($reg_exp, (string) $text, $matches);
+        $reg_exp_image = [];
+        $file_array = $this->_getFileArray();
 
+        $reg_exp_father_array = [];
+        $reg_exp_father_array[] = '~\\(:(.*?):\\)~u';
+        $reg_exp_father_array[] = '~\[(.*?)\]~u';
+
+        $reg_exp_array = [];
+
+        // reference
+        // $reg_exp_array['[']         = '~\\[[0-9]+\|[\w]+\]~u';
+        $reg_exp_array['(:image'] = '~\\(:image\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~u';
+        $reg_exp_array['(:item'] = '~\\(:item\\s([0-9]*?)(\\s.*?)?\\s*?:\\)~u';
+        $reg_exp_array['(:link'] = '~\\(:link\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~u';
+        $reg_exp_array['(:file'] = '~\\(:file\\s(.*?)(\\s.*?)?\\s*?:\\)~u';
+
+        // Test auf erforderliche Software; Windows-Server?
+        // $reg_exp_array['(:pdf']       = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
+
+        // Lightbox für Bilder die über den CkEditor in das Beschreibungsfeld eingefügt wurden
+        $reg_exp_image['<img'] = '~\\<img(.*?)\\>~u'; // \<img.*?\>
+        // $reg_exp_image['link']      = '~<a(.*?)><img(.*?)></a>~u'; // \<img.*?\>
+
+        // is there wiki syntax ?
+        if (!empty($reg_exp_array)) {
+            $reg_exp_keys = array_keys($reg_exp_array);
+            $clean_text = false;
+            foreach ($reg_exp_keys as $key) {
+                if (mb_stristr((string)$text, $key)) {
+                    $clean_text = true;
+                    break;
+                }
+            }
+        }
+
+        // ########### lightbox images ckEditor ###############
+        $matchesImages = [];
+        preg_match_all('~<a.*?>(<img.*?>)</a>~u', (string)$text, $matchesLink);
+        foreach ($reg_exp_image as $key => $exp) {
+            $found = preg_match_all($exp, (string)$text, $matchesImages);
             if ($found > 0) {
-                // eleminate duplicates
-                $matches[1] = array_unique($matches[1]);
+                foreach ($matchesImages[0] as $value) {
+                    // found an <a> tag dont use lightbox
+                    if (!in_array($value, $matchesLink[1])) {
+                        // found an image tag
+                        $args_array = $this->_getArgs($value, $exp);
+                        // search for src attribute
+                        $src = $this->_getArgs($args_array[1], '~src\=\"(.*?)\\"~u');
+                        $value_new = $value;
+                        if ('<img' == $key and mb_stristr((string)$value_new, '<img')) {
+                            $params = $this->_environment->getCurrentParameterArray();
+                            if (isset($params['iid'])) {
+                                $value_new = $this->_formatImageLightboxCkEditor($text, $args_array[0], $src[1],
+                                    $params['iid']);
+                                $text = str_replace($value, $value_new, (string)$text);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-                // replace chars
-                foreach ($matches[1] as $string) {
-                    // $new_tag_content = htmlentities($string);
-                    $new_tag_content = $this->_decode_tag_chars($string);
-                    $text = str_replace("$attr='$string'", "$attr='$new_tag_content'", (string) $text);
+        // ########### lightbox images ckEditor ###############
+
+        // clean wikistyle text from HTML-Code (via fckeditor)
+        // and replace wikisyntax
+        if ($clean_text) {
+            $matches = [];
+            foreach ($reg_exp_father_array as $exp) {
+                $found = preg_match_all($exp, (string)$text, $matches);
+                if ($found > 0) {
+                    $matches[0] = array_unique($matches[0]); // doppelte einsparen
+                    foreach ($matches[0] as $value) {
+                        // delete HTML-tags and string conversion #########
+                        $value_new = strip_tags((string)$value);
+                        $value_new = str_replace('&nbsp;', ' ', $value_new);
+                        // #################################################
+
+                        foreach ($reg_exp_array as $key => $reg_exp) {
+                            $check = false;
+                            $args_array = $this->_getArgs($value_new, $reg_exp);
+                            foreach ($args_array as $arg_value) {
+                                if (strstr((string)$arg_value, "'")
+                                    and (substr_count((string)$arg_value, "'") % 2) == 1
+                                ) {
+                                    $check = true;
+                                    break;
+                                }
+                            }
+                            if ($check) {
+                                $value = $this->_getSubText($text, $value);
+                                // delete HTML-tags and string conversion #########
+                                $value_new = strip_tags((string)$value);
+                                $value_new = str_replace('&nbsp;', ' ', $value_new);
+                                // #################################################
+                                $args_array = $this->_getArgs2($value_new, $reg_exp);
+                            }
+
+                            if ('(:item' == $key and mb_stristr($value_new, '(:item')) {
+                                $value_new = $this->_formatItem($value_new, $args_array);
+                                break;
+                            } elseif ('(:link' == $key and mb_stristr($value_new, '(:link')) {
+                                $value_new = $this->_formatLink($value_new, $args_array);
+                                break;
+                            } elseif ('(:file' == $key and mb_stristr($value_new, '(:file')) {
+                                $value_new = $this->_formatFile($value_new, $args_array, $file_array);
+                                break;
+                            }
+                        }
+
+                        $text = str_replace($value, $value_new, (string)$text);
+                    }
                 }
             }
         }
@@ -767,178 +827,13 @@ class misc_text_converter
         return $text;
     }
 
-    private function _decode_tag_chars($text)
-    {
-        $text = str_replace('(', '&#040;', (string) $text);
-        $text = str_replace(')', '&#041;', $text);
-        return str_replace(':', '&#058;', $text);
-    }
-
-    /**
-     * Encodes file names.
-     *
-     * @param $text - text
-     *
-     * @return encoded text
-     */
-    private function _encode_file_names($text)
-    {
-        $reg_exp = '~\\(:.*? (.*?)\\.([a-zA-Z0-9]*)~eu';
-        $found = preg_match_all($reg_exp, (string) $text, $matches);
-
-        if ($found > 0) {
-            for ($i = 0; $i < $found; ++$i) {
-                $new_file_name = $this->_decode_tag_chars($matches[1][$i]);
-                $new_file_extension = $this->_decode_tag_chars($matches[2][$i]);
-                $text = str_replace($matches[1][$i].'.'.$matches[2][$i], "$new_file_name.$new_file_extension", (string) $text);
-            }
-        }
-
-        return $text;
-    }
-
-     // private function _newFormating ( $text ) {
-     public function _newFormating($text)
-     {
-         $reg_exp_image = [];
-         $file_array = $this->_getFileArray();
-
-         $reg_exp_father_array = [];
-         $reg_exp_father_array[] = '~\\(:(.*?):\\)~eu';
-         $reg_exp_father_array[] = '~\[(.*?)\]~eu';
-
-         $reg_exp_array = [];
-
-         // reference
-         // $reg_exp_array['[']         = '~\\[[0-9]+\|[\w]+\]~eu';
-         $reg_exp_array['(:image'] = '~\\(:image\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-         $reg_exp_array['(:item'] = '~\\(:item\\s([0-9]*?)(\\s.*?)?\\s*?:\\)~eu';
-         $reg_exp_array['(:link'] = '~\\(:link\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-         $reg_exp_array['(:file'] = '~\\(:file\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
-
-         // Test auf erforderliche Software; Windows-Server?
-         // $reg_exp_array['(:pdf']       = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
-
-        // Lightbox für Bilder die über den CkEditor in das Beschreibungsfeld eingefügt wurden
-         $reg_exp_image['<img'] = '~\\<img(.*?)\\>~u'; // \<img.*?\>
-        // $reg_exp_image['link']      = '~<a(.*?)><img(.*?)></a>~eu'; // \<img.*?\>
-
-         // jsMath for latex math fonts
-         // see http://www.math.union.edu/~dpvc/jsMath/
-         global $c_jsmath_enable;
-         if (isset($c_jsmath_enable)
-             and $c_jsmath_enable
-         ) {
-             $reg_exp_father_array[] = '~\\{\\$[\\$]{0,1}(.*?)\\$[\\$]{0,1}\\}~eu';
-             $reg_exp_array['{$$'] = '~\\{\\$\\$(.*?)\\$\$\\}~eu'; // must be before next one
-             $reg_exp_array['{$'] = '~\\{\\$(.*?)\\$\\}~eu';
-         }
-
-         // is there wiki syntax ?
-         if (!empty($reg_exp_array)) {
-             $reg_exp_keys = array_keys($reg_exp_array);
-             $clean_text = false;
-             foreach ($reg_exp_keys as $key) {
-                 if (mb_stristr((string) $text, $key)) {
-                     $clean_text = true;
-                     break;
-                 }
-             }
-         }
-         // ########### lightbox images ckEditor ###############
-         $matchesImages = [];
-         preg_match_all('~<a.*?>(<img.*?>)</a>~u', (string) $text, $matchesLink);
-         foreach ($reg_exp_image as $key => $exp) {
-             $found = preg_match_all($exp, (string) $text, $matchesImages);
-             if ($found > 0) {
-                 foreach ($matchesImages[0] as $value) {
-                     // found an <a> tag dont use lightbox
-                     if (!in_array($value, $matchesLink[1])) {
-                         // found an image tag
-                         $args_array = $this->_getArgs($value, $exp);
-                         // search for src attribute
-                         $src = $this->_getArgs($args_array[1], '~src\=\"(.*?)\\"~eu');
-                         $value_new = $value;
-                         if ('<img' == $key and mb_stristr((string) $value_new, '<img')) {
-                             $params = $this->_environment->getCurrentParameterArray();
-
-                             $value_new = $this->_formatImageLightboxCkEditor($text, $args_array[0], $src[1],
-                                 $params['iid']);
-                             $text = str_replace($value, $value_new, (string) $text);
-                             unset($value_new);
-                         }
-                     }
-                 }
-             }
-         }
-
-         // ########### lightbox images ckEditor ###############
-
-         // clean wikistyle text from HTML-Code (via fckeditor)
-         // and replace wikisyntax
-         if ($clean_text) {
-             $matches = [];
-             foreach ($reg_exp_father_array as $exp) {
-                 $found = preg_match_all($exp, (string) $text, $matches);
-                 if ($found > 0) {
-                     $matches[0] = array_unique($matches[0]); // doppelte einsparen
-                     foreach ($matches[0] as $value) {
-                         // delete HTML-tags and string conversion #########
-                         $value_new = strip_tags((string) $value);
-                         $value_new = str_replace('&nbsp;', ' ', $value_new);
-                         // #################################################
-
-                         foreach ($reg_exp_array as $key => $reg_exp) {
-                             $check = false;
-                             $args_array = $this->_getArgs($value_new, $reg_exp);
-                             foreach ($args_array as $arg_value) {
-                                 if (strstr((string) $arg_value, "'")
-                                     and (substr_count((string) $arg_value, "'") % 2) == 1
-                                 ) {
-                                     $check = true;
-                                     break;
-                                 }
-                             }
-                             if ($check) {
-                                 $value = $this->_getSubText($text, $value);
-                                 // delete HTML-tags and string conversion #########
-                                 $value_new = strip_tags((string) $value);
-                                 $value_new = str_replace('&nbsp;', ' ', $value_new);
-                                 // #################################################
-                                 $args_array = $this->_getArgs2($value_new, $reg_exp);
-                             }
-
-                             if ('(:item' == $key and mb_stristr($value_new, '(:item')) {
-                                 $value_new = $this->_formatItem($value_new, $args_array);
-                                 break;
-                             } elseif ('(:link' == $key and mb_stristr($value_new, '(:link')) {
-                                 $value_new = $this->_formatLink($value_new, $args_array);
-                                 break;
-                             } elseif ('(:file' == $key and mb_stristr($value_new, '(:file')) {
-                                 $value_new = $this->_formatFile($value_new, $args_array, $file_array);
-                                 break;
-                             }
-                         }
-
-                         $text = str_replace($value, $value_new, (string) $text);
-                     }
-                 }
-             }
-             if ($this->_processMath) {
-                 $text .= '<script type="text/javascript">jsMath.Process();</script>'.LF;
-             }
-         }
-
-         return $text;
-     }
-
     private function _formatFile($text, $array, $file_name_array)
     {
         $image_text = '';
         if (!empty($array[1])
-             and !empty($file_name_array)
+            and !empty($file_name_array)
         ) {
-            $temp_file_name = htmlentities((string) $array[1], ENT_NOQUOTES, 'UTF-8');
+            $temp_file_name = htmlentities((string)$array[1], ENT_NOQUOTES, 'UTF-8');
             if (!empty($file_name_array[$temp_file_name])) {
                 $file = $file_name_array[$temp_file_name];
             } elseif (!empty($file_name_array[html_entity_decode($temp_file_name, ENT_COMPAT, 'UTF-8')])) {
@@ -954,11 +849,11 @@ class misc_text_converter
                 $icon = '';
 
                 if (empty($args['size'])
-                     or (!empty($args['size'])
-                          and 'true' == $args['size']
-                     )
+                    or (!empty($args['size'])
+                        and 'true' == $args['size']
+                    )
                 ) {
-                    $kb = ' ('.$file->getFileSize().' KB)';
+                    $kb = ' (' . $file->getFileSize() . ' KB)';
                 } else {
                     $kb = '';
                 }
@@ -969,7 +864,7 @@ class misc_text_converter
                 }
 
                 if (!empty($args['target'])) {
-                    $target = ' target="'.$args['target'].'"';
+                    $target = ' target="' . $args['target'] . '"';
                 } elseif (!empty($args['newwin'])) {
                     $target = ' target=_blank;';
                 } else {
@@ -977,15 +872,15 @@ class misc_text_converter
                 }
                 $source = $file->getUrl();
                 if (('jpg' == $file->getExtension()) or ('gif' == $file->getExtension()) or ('png' == $file->getExtension())) {
-                    $image_text = '<a href="'.$source.'"'.$target.' rel="lightbox">'.$icon.$name.'</a>'.$kb;
+                    $image_text = '<a href="' . $source . '"' . $target . ' rel="lightbox">' . $icon . $name . '</a>' . $kb;
                 } else {
-                    $image_text = '<a href="'.$source.'"'.$target.'>'.$icon.$name.'</a>'.$kb;
+                    $image_text = '<a href="' . $source . '"' . $target . '>' . $icon . $name . '</a>' . $kb;
                 }
             }
         }
 
         if (!empty($image_text)) {
-            $text = str_replace($array[0], $image_text, (string) $text);
+            $text = str_replace($array[0], $image_text, (string)$text);
         }
 
         return $text;
@@ -995,7 +890,7 @@ class misc_text_converter
     {
         $image_text = null;
         $retour = '';
-        $image_text .= '<a class="lightbox_'.$fileID.'" href="'.$link.'" target="blank">';
+        $image_text .= '<a class="lightbox_' . $fileID . '" href="' . $link . '" target="blank">';
         $image_text .= $imgTag;
         $image_text .= '</a>';
 
@@ -1043,12 +938,12 @@ class misc_text_converter
             unset($item_manager);
 
             if (CS_ROOM_TYPE == $type ||
-                  CS_COMMUNITY_TYPE == $type ||
-                  CS_PRIVATEROOM_TYPE == $type ||
-                  CS_GROUPROOM_TYPE == $type ||
-                  CS_MYROOM_TYPE == $type ||
-                  CS_PROJECT_TYPE == $type ||
-                  CS_PORTAL_TYPE == $type/* ||
+                CS_COMMUNITY_TYPE == $type ||
+                CS_PRIVATEROOM_TYPE == $type ||
+                CS_GROUPROOM_TYPE == $type ||
+                CS_MYROOM_TYPE == $type ||
+                CS_PROJECT_TYPE == $type ||
+                CS_PORTAL_TYPE == $type/* ||
                 $type == CS_SERVER_TYPE*/) {
                 $image_text = ahref_curl($word, 'home', 'index', '', $word);
             } else {
@@ -1056,7 +951,7 @@ class misc_text_converter
             }
         }
         if (!empty($image_text)) {
-            $text = str_replace($array[0], $image_text, (string) $text);
+            $text = str_replace($array[0], $image_text, (string)$text);
         }
 
         $retour = $text;
@@ -1081,7 +976,7 @@ class misc_text_converter
         }
 
         if (!empty($args['target'])) {
-            $target = ' target="'.$args['target'].'"';
+            $target = ' target="' . $args['target'] . '"';
         } elseif (!empty($args['newwin'])) {
             $target = ' target=_blank;';
         } else {
@@ -1089,19 +984,19 @@ class misc_text_converter
         }
 
         if (empty($array[1])) {
-            $source = 'http://'.$array[2];
+            $source = 'http://' . $array[2];
         } else {
-            $source = $array[1].$array[2];
+            $source = $array[1] . $array[2];
         }
 
         if (!empty($source)) {
             if (empty($word)) {
                 $word = $source;
             }
-            $image_text = '<a href="'.$source.'"'.$target.'>'.$word.'</a>';
+            $image_text = '<a href="' . $source . '"' . $target . '>' . $word . '</a>';
         }
         if (!empty($image_text)) {
-            $text = str_replace($array[0], $image_text, (string) $text);
+            $text = str_replace($array[0], $image_text, (string)$text);
         }
 
         $retour = $text;
@@ -1152,8 +1047,8 @@ class misc_text_converter
         $fck_array = [];
         foreach ($array as $key => $value) {
             if (is_string($value)
-                 and strstr($value, '<!-- KFC TEXT')
-                 and !stristr((string) $key, '_fck_hidden')
+                and strstr($value, '<!-- KFC TEXT')
+                and !stristr((string)$key, '_fck_hidden')
             ) {
                 $fck_array[$key] = $value;
             } else {
@@ -1162,29 +1057,29 @@ class misc_text_converter
         }
         if (!empty($fck_array)) {
             foreach ($fck_array as $key => $value) {
-                if (isset($retour[$key.'_fck_hidden'])) {
+                if (isset($retour[$key . '_fck_hidden'])) {
                     $values = [];
                     preg_match('~<!-- KFC TEXT ([a-z0-9]*) -->~u', $value, $values);
                     if (!empty($values[1])) {
                         $hash = $values[1];
-                        $temp_text = str_replace('<!-- KFC TEXT '.$hash.' -->', '', $value);
+                        $temp_text = str_replace('<!-- KFC TEXT ' . $hash . ' -->', '', $value);
 
                         // html bug of fckeditor
                         $temp_text = str_replace('<br type="_moz" />', '<br />', $temp_text);
                         // ist dies das unmotivierte br ??? cs_view.php Zeile 283
 
-                        $hidden_value = str_replace('COMMSY_AMPERSEND', '&', (string) $retour[$key.'_fck_hidden']);
+                        $hidden_value = str_replace('COMMSY_AMPERSEND', '&', (string)$retour[$key . '_fck_hidden']);
                         $hidden_value = str_replace('COMMSY_QUOT', '"', $hidden_value);
 
                         $hidden_values = [];
                         preg_match('~<!-- KFC TEXT ([a-z0-9]*) -->~u', $hidden_value, $hidden_values);
                         if (!empty($hidden_values[1])) {
                             $hidden_hash = $hidden_values[1];
-                            $hidden_value = str_replace('<!-- KFC TEXT '.$hidden_hash.' -->', '', $hidden_value);
+                            $hidden_value = str_replace('<!-- KFC TEXT ' . $hidden_hash . ' -->', '', $hidden_value);
                         }
 
                         $new_hash = getSecurityHash($temp_text);
-                        $retour[$key] = '<!-- KFC TEXT '.$new_hash.' -->'.$temp_text.'<!-- KFC TEXT '.$new_hash.' -->';
+                        $retour[$key] = '<!-- KFC TEXT ' . $new_hash . ' -->' . $temp_text . '<!-- KFC TEXT ' . $new_hash . ' -->';
                     } else {
                         $retour[$key] = $value;
                     }
@@ -1200,32 +1095,31 @@ class misc_text_converter
     private function _text_encode($text, $mode)
     {
         switch ($mode) {
+            case FROM_DB:
             case NONE:
                 return $text;
             case AS_HTML_LONG:
-                return $this->text_as_html_long($text); // nein
+                return $this->text_as_html_long($text);
             case AS_HTML_SHORT:
-                return $this->text_as_html_short($text); // nein
+                return $this->text_as_html_short($text);
             case AS_MAIL:
-                return $this->_text_php2mail($text); // ja
+                return $this->_text_php2mail($text);
             case AS_RSS:
-                return $this->_text_php2rss($text); // ja
+                return $this->_text_php2rss($text);
             case AS_FORM:
-                return $this->text_as_form($text); // nein
+                return $this->text_as_form($text);
             case AS_DB:
-                return $this->_text_php2db($text); // ja
+                return $this->_text_php2db($text);
             case AS_FILE:
-                return $this->_text_php2file($text); // ja
+                return $this->_text_php2file($text);
             case HELP_AS_HTML_LONG:
-                return $this->_help_as_html_long($text); // ja
+                return $this->_help_as_html_long($text);
             case FROM_FORM:
-                return $this->_text_form2php($text); // ja
-            case FROM_DB:
-                return $this->_text_db2php($text); // ja
+                return $this->_text_form2php($text);
             case FROM_FILE:
-                return $this->_text_file2php($text); // ja
+                return $this->_text_file2php($text);
             case FROM_GET:
-                return $this->_text_get2php($text); // ja
+                return $this->_text_get2php($text);
         }
         trigger_error('You need to specify a mode for text translation.', E_USER_WARNING);
     }
@@ -1236,46 +1130,9 @@ class misc_text_converter
         return $db_connection->text_php2db($text);
     }
 
-    private function _text_db2php($text)
-    {
-        // jsMath for latex math fonts
-        // see http://www.math.union.edu/~dpvc/jsMath/
-        global $c_jsmath_enable;
-        if (isset($c_jsmath_enable)
-             and $c_jsmath_enable
-        ) {
-            if (strstr((string) $text, '{$')) {
-                $matches = [];
-                $exp = '~\\{\\$(.*?)\\$\\}~eu';
-                $found = preg_match_all($exp, (string) $text, $matches);
-                if ($found > 0) {
-                    foreach ($matches[0] as $key => $value) {
-                        $value_new = 'COMMSYMATH'.$key;
-                        $text = str_replace($value, $value_new, (string) $text);
-                    }
-                }
-            }
-        }
-
-        // $text = preg_replace('~\\\(?!\*|_|!|-|#|\(:|n)~u', '', $text);
-
-        // jsMath for latex math fonts
-        // see http://www.math.union.edu/~dpvc/jsMath/
-        if (!empty($found)
-             and $found > 0
-        ) {
-            foreach ($matches[0] as $key => $value) {
-                $value_new = 'COMMSYMATH'.$key;
-                $text = str_replace($value_new, $value, (string) $text);
-            }
-        }
-
-        return $text;
-    }
-
     private function _text_get2php($text)
     {
-        $text = rawurldecode((string) $text);
+        $text = rawurldecode((string)$text);
         if (strstr($text, '<')) {
             $text = $this->_cleanBadCode($text);
         }
@@ -1285,12 +1142,12 @@ class misc_text_converter
 
     private function _text_file2php($text)
     {
-        return str_replace('&quot;', '"', (string) $text);
+        return str_replace('&quot;', '"', (string)$text);
     }
 
     private function _help_as_html_long($text)
     {
-        $text = nl2br((string) $text);
+        $text = nl2br((string)$text);
         $text = $this->_emphasize_text($text);
         $text = $this->_activate_urls($text);
         $text = $this->_display_headers($text);
@@ -1310,7 +1167,7 @@ class misc_text_converter
     private function _text_php2rss($text)
     {
         $text = $this->_text_objectTag2rss($text);
-        $text = str_replace('&', '&amp;', (string) $text);
+        $text = str_replace('&', '&amp;', (string)$text);
         $text = str_replace('<', '&lt;', $text);
 
         return $text;
@@ -1321,14 +1178,14 @@ class misc_text_converter
         // find object tags and replace them with a hint and a link
         $translator = $this->_environment->getTranslationObject();
         $translation = $translator->getMessage('RSS_OBJECT_TAG_REPLACE');
-        $replace = '<a href="\\1">['.$translation.']</a>';
+        $replace = '<a href="\\1">[' . $translation . ']</a>';
 
-        return preg_replace('/<object.*>.*value="(.*)".*<\/object>/U', $replace, (string) $text);
+        return preg_replace('/<object.*>.*value="(.*)".*<\/object>/U', $replace, (string)$text);
     }
 
     private function _text_php2file($text)
     {
-        $text = str_replace('"', '&quot;', (string) $text);
+        $text = str_replace('"', '&quot;', (string)$text);
         $text = str_replace('&lt;', '<', $text);
         $text = str_replace('&gt;', '>', $text);
 
@@ -1338,7 +1195,7 @@ class misc_text_converter
     private function _text_form2php($text)
     {
         // Fix up line feed characters from different clients (Windows, Mac => Unix)
-        $text = mb_ereg_replace('~\r\n?~u', "\n", (string) $text);
+        $text = mb_ereg_replace('~\r\n?~u', "\n", (string)$text);
         $text = trim($text);
 
         // clean text from word
@@ -1351,10 +1208,10 @@ class misc_text_converter
     {
         $retour = $value;
         if ($force
-             or stristr((string) $value, '<w:WordDocument>')
-             or stristr((string) $value, 'class="Mso')
+            or stristr((string)$value, '<w:WordDocument>')
+            or stristr((string)$value, 'class="Mso')
         ) {
-            $retour = str_replace('<o:p></o:p>', '', (string) $retour);
+            $retour = str_replace('<o:p></o:p>', '', (string)$retour);
             $retour = mb_eregi_replace(' class="[A-Za-z0-9-]*"', '', $retour);
             $retour = mb_eregi_replace(' lang="[A-Za-z0-9-]*"', '', $retour);
             $retour = mb_eregi_replace('<[/]{0,1}u[0-9]{1}:[^>]*>', '', $retour);
@@ -1369,7 +1226,7 @@ class misc_text_converter
             while (stristr($retour, '<![endif]-->')) {
                 $pos1 = strpos($retour, '<!--[');
                 $pos2 = strpos($retour, '<![endif]-->');
-                $len = (int) ($pos2 - $pos1) + strlen('<![endif]-->');
+                $len = (int)($pos2 - $pos1) + strlen('<![endif]-->');
                 $sub = substr($retour, $pos1, $len);
                 $retour = str_replace($sub, '', $retour);
             }
@@ -1380,7 +1237,7 @@ class misc_text_converter
             while (stristr($retour, '</style>') and stristr($retour, '<style')) {
                 $pos1 = strpos($retour, '<style');
                 $pos2 = strpos($retour, '</style>');
-                $len = (int) ($pos2 - $pos1) + strlen('</style>');
+                $len = (int)($pos2 - $pos1) + strlen('</style>');
                 $sub = substr($retour, $pos1, $len);
                 $retour = str_replace($sub, '', $retour);
             }
@@ -1399,7 +1256,7 @@ class misc_text_converter
 
     public function convertPercent($text, $empty = true, $urlencode = false)
     {
-        if (strstr((string) $text, '%')) {
+        if (strstr((string)$text, '%')) {
             $current_user = $this->_environment->getCurrentUserItem();
             if (isset($current_user)) {
                 $user_id = $current_user->getUserID();
@@ -1407,42 +1264,42 @@ class misc_text_converter
                     $user_id = rawurlencode($user_id);
                 }
                 if (!empty($user_id)) {
-                    $text = str_replace('%USERID%', $user_id, (string) $text);
+                    $text = str_replace('%USERID%', $user_id, (string)$text);
                 } elseif ($empty) {
-                    $text = str_replace('%USERID%', '', (string) $text);
+                    $text = str_replace('%USERID%', '', (string)$text);
                 }
                 $firstname = $current_user->getFirstName();
                 if ($urlencode) {
                     $firstname = rawurlencode($firstname);
                 }
                 if (!empty($firstname)) {
-                    $text = str_replace('%FIRSTNAME%', $firstname, (string) $text);
+                    $text = str_replace('%FIRSTNAME%', $firstname, (string)$text);
                 } elseif ($empty) {
-                    $text = str_replace('%FIRSTNAME%', '', (string) $text);
+                    $text = str_replace('%FIRSTNAME%', '', (string)$text);
                 }
                 $lastname = $current_user->getLastName();
                 if ($urlencode) {
                     $lastname = rawurlencode($lastname);
                 }
                 if (!empty($lastname)
-                     and 'GUEST' != $lastname
+                    and 'GUEST' != $lastname
                 ) {
-                    $text = str_replace('%LASTNAME%', $lastname, (string) $text);
+                    $text = str_replace('%LASTNAME%', $lastname, (string)$text);
                 } elseif ($empty) {
-                    $text = str_replace('%LASTNAME%', '', (string) $text);
+                    $text = str_replace('%LASTNAME%', '', (string)$text);
                 }
                 $email = $current_user->getEMail();
                 if ($urlencode) {
                     $email = rawurlencode($email);
                 }
                 if (!empty($email)) {
-                    $text = str_replace('%EMAIL%', $email, (string) $text);
+                    $text = str_replace('%EMAIL%', $email, (string)$text);
                 } elseif ($empty) {
-                    $text = str_replace('%EMAIL%', '', (string) $text);
+                    $text = str_replace('%EMAIL%', '', (string)$text);
                 }
                 unset($current_user);
             } elseif ($empty) {
-                $text = str_replace('%USERID%', '', (string) $text);
+                $text = str_replace('%USERID%', '', (string)$text);
                 $text = str_replace('%FIRSTNAME%', '', $text);
                 $text = str_replace('%LASTNAME%', '', $text);
                 $text = str_replace('%EMAIL%', '', $text);
@@ -1455,13 +1312,13 @@ class misc_text_converter
                     $title = rawurlencode($title);
                 }
                 if (!empty($title)) {
-                    $text = str_replace('%TITLE%', $title, (string) $text);
+                    $text = str_replace('%TITLE%', $title, (string)$text);
                 } elseif ($empty) {
-                    $text = str_replace('%TITLE%', '', (string) $text);
+                    $text = str_replace('%TITLE%', '', (string)$text);
                 }
                 unset($current_context);
             } elseif ($empty) {
-                $text = str_replace('%TITLE%', '', (string) $text);
+                $text = str_replace('%TITLE%', '', (string)$text);
             }
 
             $current_portal = $this->_environment->getCurrentPortalItem();
@@ -1471,119 +1328,103 @@ class misc_text_converter
                     $title = rawurlencode($title);
                 }
                 if (!empty($title)) {
-                    $text = str_replace('%PORTAL%', $title, (string) $text);
+                    $text = str_replace('%PORTAL%', $title, (string)$text);
                 } elseif ($empty) {
-                    $text = str_replace('%PORTAL%', '', (string) $text);
+                    $text = str_replace('%PORTAL%', '', (string)$text);
                 }
                 unset($current_portal);
             } elseif ($empty) {
-                $text = str_replace('%PORTAL%', '', (string) $text);
+                $text = str_replace('%PORTAL%', '', (string)$text);
             }
         }
 
         return $text;
     }
 
-     private function _constructHTMLPurifier()
-     {
-         global $symfonyContainer;
-         $projectDir = $symfonyContainer->getParameter('kernel.project_dir');
-         require_once $projectDir.'/vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
+    private function _constructHTMLPurifier()
+    {
+        global $symfonyContainer;
+        $projectDir = $symfonyContainer->getParameter('kernel.project_dir');
+        require_once $projectDir . '/vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
 
-         // Allow Full HTML
-         $configFullHTML = $this->_getFullHTMLPurifierConfig();
-         $this->_FullHTMLPurifier = new HTMLPurifier($configFullHTML);
+        // Allow Full HTML
+        $configFullHTML = $this->_getFullHTMLPurifierConfig();
+        $this->_FullHTMLPurifier = new HTMLPurifier($configFullHTML);
 
-         // Do not allow HTML
-         $configHTML = $this->_getHTMLPurifierConfig();
-         $this->_HTMLPurifier = new HTMLPurifier($configHTML);
-     }
+        // Do not allow HTML
+        $configHTML = $this->_getHTMLPurifierConfig();
+        $this->_HTMLPurifier = new HTMLPurifier($configHTML);
+    }
 
-     private function _getHTMLPurifierConfig()
-     {
-         $config = HTMLPurifier_Config::createDefault();
+    private function _getHTMLPurifierConfig()
+    {
+        $config = HTMLPurifier_Config::createDefault();
 
-         global $symfonyContainer;
-         $projectDir = $symfonyContainer->getParameter('kernel.project_dir');
+        global $symfonyContainer;
+        $projectDir = $symfonyContainer->getParameter('kernel.project_dir');
 
-         $config->set('Cache.SerializerPath', $projectDir.'/var/cache/htmlpurifier');
+        $config->set('Cache.SerializerPath', $projectDir . '/var/cache/htmlpurifier');
 
-         $config->set('HTML.Allowed', '');
+        $config->set('HTML.Allowed', '');
 
-         return $config;
-     }
+        return $config;
+    }
 
-     private function _getFullHTMLPurifierConfig()
-     {
-         $config = HTMLPurifier_Config::createDefault();
+    private function _getFullHTMLPurifierConfig()
+    {
+        $config = HTMLPurifier_Config::createDefault();
 
-         global $symfonyContainer;
-         $projectDir = $symfonyContainer->getParameter('kernel.project_dir');
+        global $symfonyContainer;
+        $projectDir = $symfonyContainer->getParameter('kernel.project_dir');
 
-         $config->set('Cache.SerializerPath', $projectDir.'/var/cache/htmlpurifier');
+        $config->set('Cache.SerializerPath', $projectDir . '/var/cache/htmlpurifier');
 
-         $config->set('HTML.Allowed', null);
+        $config->set('HTML.Allowed', null);
 
-         $config->set('HTML.SafeIframe', true);
-         $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www\.youtube(?:-nocookie)?\.com/embed/|www\.podcampus\.de/nodes/|www\.slideshare\.net/slideshow/embed_code/|lecture2go\.uni-hamburg\.de/lecture2go-portlet/player/iframe/)%');
+        $config->set('HTML.SafeIframe', true);
+        $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www\.youtube(?:-nocookie)?\.com/embed/|www\.podcampus\.de/nodes/|www\.slideshare\.net/slideshow/embed_code/|lecture2go\.uni-hamburg\.de/lecture2go-portlet/player/iframe/)%');
 
-         // allow target=
-         $config->set('Attr.AllowedFrameTargets', '_blank,_self,_top,_parent');
+        // allow target=
+        $config->set('Attr.AllowedFrameTargets', '_blank,_self,_top,_parent');
 
-         $def = $config->getHTMLDefinition(true);
+        $def = $config->getHTMLDefinition(true);
 
-         // <div/>-Definition
-         $def->addAttribute('div', 'data-type', 'Text');
+        // <div/>-Definition
+        $def->addAttribute('div', 'data-type', 'Text');
 
-         // Attribute for object
-         $def->addAttribute('object', 'autoplay', 'Enum#true,false');
-         $def->addAttribute('object', 'classid', 'Text');
-         $def->addAttribute('object', 'codebase', 'Text');
-         $def->addAttribute('object', 'standby', 'Text');
-         $def->addAttribute('object', 'commsytype', 'Text');
+        // Attribute for object
+        $def->addAttribute('object', 'autoplay', 'Enum#true,false');
+        $def->addAttribute('object', 'classid', 'Text');
+        $def->addAttribute('object', 'codebase', 'Text');
+        $def->addAttribute('object', 'standby', 'Text');
+        $def->addAttribute('object', 'commsytype', 'Text');
 
-         // Attribute for enlarging iFrames
-         $def->addAttribute('iframe', 'allowfullscreen', 'Text');
+        // Attribute for enlarging iFrames
+        $def->addAttribute('iframe', 'allowfullscreen', 'Text');
 
-         // Attribute for param
-         $def->addAttribute('param', 'bgcolor', 'Text');
-//
-//        // Attribute for embed
-//        $def->addAttribute('embed', 'autoplay', 'Enum#true,false');
-//        $def->addAttribute('embed', 'bgcolor', 'Text');
-//        $def->addAttribute('embed', 'controller', 'Text');
-//        $def->addAttribute('embed', 'devicefont', 'Text');
-//        $def->addAttribute('embed', 'loop', 'Text');
-//        $def->addAttribute('embed', 'pluginspage', 'Text');
-//        $def->addAttribute('embed', 'quality', 'Text');
-//        $def->addAttribute('embed', 'scale', 'Text');
-//        $def->addAttribute('embed', 'type', 'Text');
-//        $def->addAttribute('embed', 'autostart', 'Text');
-//        $def->addAttribute('embed', 'showcontrols', 'Text');
-//        $def->addAttribute('embed', 'showstatusbar', 'Text');
-//        $def->addAttribute('embed', 'standby', 'Text');
-//        $def->addAttribute('embed', 'commsytype', 'Text');
+        // Attribute for param
+        $def->addAttribute('param', 'bgcolor', 'Text');
 
-         // <video/>-Definition
-         $def->addElement('video', 'Block', 'Flow', 'Common', []);
-         $def->addAttribute('video', 'width', 'Text');
-         $def->addAttribute('video', 'height', 'Text');
-         $def->addAttribute('video', 'controls', 'Bool');
-         $def->addAttribute('video', 'src', 'URI');
+        // <video/>-Definition
+        $def->addElement('video', 'Block', 'Flow', 'Common', []);
+        $def->addAttribute('video', 'width', 'Text');
+        $def->addAttribute('video', 'height', 'Text');
+        $def->addAttribute('video', 'controls', 'Bool');
+        $def->addAttribute('video', 'src', 'URI');
 
-         // <audio/>-Definition
-         $def->addElement('audio', 'Block', 'Flow', 'Common', []);
-         $def->addAttribute('audio', 'width', 'Text');
-         $def->addAttribute('audio', 'height', 'Text');
-         $def->addAttribute('audio', 'controls', 'Bool');
-         $def->addAttribute('audio', 'src', 'URI');
+        // <audio/>-Definition
+        $def->addElement('audio', 'Block', 'Flow', 'Common', []);
+        $def->addAttribute('audio', 'width', 'Text');
+        $def->addAttribute('audio', 'height', 'Text');
+        $def->addAttribute('audio', 'controls', 'Bool');
+        $def->addAttribute('audio', 'src', 'URI');
 
-         $def->addElement('source', 'Block', 'Flow', 'Common', []);
-         $def->addAttribute('source', 'src', 'URI');
-         $def->addAttribute('source', 'type', 'Text');
+        $def->addElement('source', 'Block', 'Flow', 'Common', []);
+        $def->addAttribute('source', 'src', 'URI');
+        $def->addAttribute('source', 'type', 'Text');
 
-         return $config;
-     }
+        return $config;
+    }
 
     public function sanitizeHTML($text)
     {
@@ -1604,7 +1445,7 @@ class misc_text_converter
     public function emphasizeFilename($text)
     {
         // search (with yellow background)
-        $text = preg_replace('~\(:mainsearch_text_yellow:\)(.+)\(:mainsearch_text_yellow_end:\)~uU', '<span class="searched_text_yellow">$1</span>', (string) $text);
+        $text = preg_replace('~\(:mainsearch_text_yellow:\)(.+)\(:mainsearch_text_yellow_end:\)~uU', '<span class="searched_text_yellow">$1</span>', (string)$text);
 
         // search (with green background)
         $text = preg_replace('~\(:mainsearch_text_green:\)(.+)\(:mainsearch_text_green_end:\)~uU', '<span class="searched_text_green">$1</span>', $text);
@@ -1645,21 +1486,6 @@ class misc_text_converter
         // activate url which is not added by the
         $text = $this->_activate_urls($text);
 
-        // $text = $this->sanitize($text);
-
-//       $text = $this->_cs_htmlspecialchars($text,$htmlTextArea);
-//       $text = nl2br($text);
-//       $text = $this->_decode_backslashes_1($text); ?
-//       $text = $this->_preserve_whitespaces($text); ?
-//       $text = $this->_newFormating($text);         -
-//       $text = $this->_emphasize_text($text);       -
-//       $text = $this->_activate_urls($text);        -
-//       $text = $this->_display_headers($text);         -
-//       $text = $this->_format_html_long($text);     ?
-//       $text = $this->_parseText2ID($text);         -
-//       $text = $this->_decode_backslashes_2($text); ?
-//       $text = $this->_delete_unnecassary_br($text);   ?
-//       $text = $this->_br_with_nl($text);           ?
         return $text;
     }
 

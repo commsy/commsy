@@ -26,7 +26,7 @@ class GotoController extends AbstractController
      * @throws Exception
      */
     #[Route(path: '/goto/{itemId}')]
-    public function gotoAction(
+    public function goto(
         EntityManagerInterface $entityManager,
         int $itemId
     ): RedirectResponse {

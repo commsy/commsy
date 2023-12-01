@@ -14,28 +14,31 @@
 namespace App\Cron\Tasks;
 
 use App\Helper\PortalHelper;
+use App\Repository\LogRepository;
 use App\Repository\PortalRepository;
-use App\Services\LegacyEnvironment;
-use cs_environment;
 use cs_room_item;
+use DateInterval;
 use DateTimeImmutable;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Exception;
 
-class CronPageImpressionAndUserActivity implements CronTaskInterface
+readonly class CronPageImpressionAndUserActivity implements CronTaskInterface
 {
-    private readonly cs_environment $legacyEnvironment;
-
     public function __construct(
-        LegacyEnvironment $legacyEnvironment,
-        private readonly PortalRepository $portalRepository,
-        private readonly PortalHelper $portalHelper
+        private PortalRepository $portalRepository,
+        private PortalHelper $portalHelper,
+        private LogRepository $logRepository
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
+    /**
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     * @throws Exception
+     */
     public function run(?DateTimeImmutable $lastRun): void
     {
-        $logManager = $this->legacyEnvironment->getLogManager();
-
         $portals = $this->portalRepository->findActivePortals();
         foreach ($portals as $portal) {
             $roomList = $this->portalHelper->getRoomList($portal);
@@ -43,42 +46,32 @@ class CronPageImpressionAndUserActivity implements CronTaskInterface
                 /** @var cs_room_item $room */
 
                 // get latest timestamp of page impressions and user actitivty
-                // from extra field PIUA_LAST
-                $piuaLast = $room->getPageImpressionAndUserActivityLast();
+                // from extra field PIUA_LAST or fallback to creation date
+                $oldestDate = $room->getPageImpressionAndUserActivityLast() ?:
+                    (new DateTimeImmutable($room->getCreationDate()))->format('Ymd');
+                $today = (new DateTimeImmutable())->format('Ymd');
+                $dayDiff = getDifference($oldestDate, $today);
 
-                if (!empty($piuaLast)) {
-                    $oldestDate = $piuaLast;
-                } else {
-                    // if there is no entry take creationDate
-                    $creationDate = $room->getCreationDate();
-                    $oldestDate = getYearFromDateTime($creationDate).
-                        getMonthFromDateTime($creationDate).
-                        getDayFromDateTime($creationDate);
-                }
-
-                $currentDate = getCurrentDate();
-                $dayDiff = getDifference($oldestDate, $currentDate);
                 $piArray = $room->getPageImpressionArray();
                 $uaArray = $room->getUserActivityArray();
                 $piInput = [];
                 $uaInput = [];
 
                 // for each day, get page impressions and user activity
-                for ($i = 1; $i < $dayDiff; ++$i) {
-                    $logManager->resetLimits();
-                    $logManager->setContextLimit($room->getItemID());
-                    $logManager->setRequestLimit('/room/');
-                    $older_limit_stamp = datetime2Timestamp(date('Y-m-d 00:00:00')) - ($i - 1) * 86400;
-                    $older_limit = date('Y-m-d', $older_limit_stamp);
-                    $logManager->setTimestampOlderLimit($older_limit);
-                    $logManager->setTimestampNotOlderLimit($i);
+                for ($i = 0; $i < $dayDiff; $i++) {
+                    $upper = (new DateTimeImmutable())
+                        ->setTime(0, 0, 0)
+                        ->sub(new DateInterval('P' . $i . 'D'));
+                    $lower = $upper->sub(new DateInterval('P1D'));
 
-                    $piInput[] = $logManager->getCountAll();
-                    $uaInput[] = $logManager->countWithUserDistinction();
+                    $data = $this->logRepository->getCountByContextAndDateSpan($room->getItemID(), $lower, $upper);
+
+                    $piInput[] = $data['count'];
+                    $uaArray[] = $data['distinctUserCount'];
                 }
 
                 // put actual date in extra field PIUA_LAST
-                $room->setPageImpressionAndUserActivityLast($currentDate);
+                $room->setPageImpressionAndUserActivityLast($today);
                 $room->setPageImpressionArray(array_merge($piInput, $piArray));
                 $room->setUserActivityArray(array_merge($uaInput, $uaArray));
                 $room->saveWithoutChangingModificationInformation();

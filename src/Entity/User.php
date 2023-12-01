@@ -17,6 +17,7 @@ use ApiPlatform\Metadata\ApiProperty;
 use App\Repository\UserRepository;
 use App\Utils\EntityDatesTrait;
 use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -34,14 +35,14 @@ class User
     use EntityDatesTrait;
 
     #[ApiProperty(description: 'The unique identifier.')]
-    #[ORM\Column(name: 'item_id', type: 'integer')]
+    #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[Groups(['api_read'])]
     public int $itemId;
 
-    #[ORM\Column(name: 'context_id', type: 'integer', nullable: true)]
-    private $contextId;
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
+    private ?int $contextId = null;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
@@ -51,56 +52,56 @@ class User
     #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
     private ?User $modifier = null;
 
-    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
-    private $deleterId;
+    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
+    private ?int $deleterId = null;
 
-    #[ORM\Column(name: 'not_deleted', type: 'boolean', insertable: false, updatable: false, generated: 'ALWAYS', columnDefinition: 'TINYINT(1) AS (IF (deleter_id IS NULL AND deletion_date IS NULL, 1, NULL)) PERSISTENT AFTER deletion_date')]
-    private $isNotDeleted;
+    #[ORM\Column(name: 'not_deleted', type: Types::BOOLEAN, insertable: false, updatable: false, generated: 'ALWAYS', columnDefinition: 'TINYINT(1) AS (IF (deleter_id IS NULL AND deletion_date IS NULL, 1, NULL)) PERSISTENT AFTER deletion_date')]
+    private ?bool $isNotDeleted = null;
 
-    #[ORM\Column(name: 'user_id', type: 'string', length: 100, nullable: false)]
+    #[ORM\Column(name: 'user_id', type: Types::STRING, length: 100, nullable: false)]
     #[Groups(['api_read'])]
-    public $userId;
+    public string $userId;
 
-    #[ORM\Column(name: 'status', type: 'smallint', nullable: false)]
+    #[ORM\Column(name: 'status', type: Types::SMALLINT, nullable: false)]
     #[Groups(['api_read'])]
-    private $status = '0';
+    private int $status = 0;
 
-    #[ORM\Column(name: 'is_contact', type: 'boolean', nullable: false)]
+    #[ORM\Column(name: 'is_contact', type: Types::BOOLEAN, nullable: false)]
     private string $isContact = '0';
 
-    #[ORM\Column(name: 'firstname', type: 'string', length: 50, nullable: false)]
+    #[ORM\Column(name: 'firstname', type: Types::STRING, length: 50, nullable: false)]
     #[Groups(['api_read'])]
-    private $firstname;
+    private string $firstname;
 
-    #[ORM\Column(name: 'lastname', type: 'string', length: 100, nullable: false)]
+    #[ORM\Column(name: 'lastname', type: Types::STRING, length: 100, nullable: false)]
     #[Groups(['api_read'])]
-    private $lastname;
+    private string $lastname;
 
-    #[ORM\Column(name: 'email', type: 'string', length: 100, nullable: false)]
-    private $email;
+    #[ORM\Column(name: 'email', type: Types::STRING, length: 100, nullable: false)]
+    private string $email;
 
-    #[ORM\Column(name: 'city', type: 'string', length: 100, nullable: false)]
-    private $city;
+    #[ORM\Column(name: 'city', type: Types::STRING, length: 100, nullable: false)]
+    private string $city;
 
-    #[ORM\Column(name: 'lastlogin', type: 'datetime', nullable: true)]
-    private $lastlogin;
-    #[ORM\Column(name: 'visible', type: 'boolean', nullable: false)]
+    #[ORM\Column(name: 'lastlogin', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $lastlogin = null;
+    #[ORM\Column(name: 'visible', type: Types::BOOLEAN, nullable: false)]
     private string $visible = '1';
 
-    #[ORM\Column(name: 'extras', type: 'text', length: 16_777_215, nullable: true)]
-    private $extras;
+    #[ORM\Column(name: 'extras', type: Types::TEXT, length: 16_777_215, nullable: true)]
+    private ?string $extras = null;
 
-    #[ORM\Column(name: 'auth_source', type: 'integer', nullable: true)]
-    private $authSource;
+    #[ORM\Column(name: 'auth_source', type: Types::INTEGER, nullable: true)]
+    private ?int $authSource = null;
 
-    #[ORM\Column(name: 'description', type: 'text', length: 65535, nullable: true)]
-    private $description;
+    #[ORM\Column(name: 'description', type: Types::TEXT, length: 65535, nullable: true)]
+    private ?string $description = null;
 
-    #[ORM\Column(name: 'expire_date', type: 'datetime', nullable: true)]
-    private $expireDate;
+    #[ORM\Column(name: 'expire_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $expireDate = null;
 
-    #[ORM\Column(name: 'use_portal_email', type: 'boolean')]
-    private false $usePortalEmail = false;
+    #[ORM\Column(name: 'use_portal_email', type: Types::BOOLEAN)]
+    private bool $usePortalEmail = false;
 
     /**
      * Set contextId.

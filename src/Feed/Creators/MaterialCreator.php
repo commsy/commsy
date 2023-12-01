@@ -31,7 +31,7 @@ class MaterialCreator extends Creator
     {
         if ($this->isGuestAccess) {
             if (!$item->isWorldPublic()) {
-                return $this->translator('Not visible', [], 'rss');
+                return $this->translator->trans('Not visible', [], 'rss');
             }
         }
 

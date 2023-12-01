@@ -4,7 +4,7 @@
 {% block feed %}
     <div id="group-feed" class="uk-grid">
         {{ render(controller(
-            'App\\Controller\\GroupController::feedAction', {
+            'App\\Controller\\GroupController::feed', {
                 'roomId': roomId,
                 'groupFilter': app.request.query.all('group_filter')
              }

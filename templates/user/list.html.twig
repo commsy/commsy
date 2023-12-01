@@ -5,7 +5,7 @@
     {% if view == 'feedView' %}
         <ul id="user-feed" class="uk-comment-list">
             {{ render(controller(
-                'App\\Controller\\UserController::feedAction', {
+                'App\\Controller\\UserController::feed', {
                     'roomId': roomId,
                     'userFilter': app.request.query.all('user_filter')
                 }
@@ -18,7 +18,7 @@
     {% elseif view == 'gridView' %}
         <div id="user-feed" class="uk-grid">
             {{ render(controller(
-                'App\\Controller\\UserController::gridAction', {
+                'App\\Controller\\UserController::grid', {
                     'roomId': roomId,
                     'userFilter': app.request.query.all('user_filter')
                 }

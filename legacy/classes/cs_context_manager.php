@@ -165,10 +165,10 @@ class cs_context_manager extends cs_manager
            return null;
        }
        if (isset($db_array['extras'])) {
-           $db_array['extras'] = mb_unserialize($db_array['extras']);
+           $db_array['extras'] = unserialize($db_array['extras']);
        }
        if (isset($db_array['description'])) {
-           $db_array['description'] = mb_unserialize($db_array['description']);
+           $db_array['description'] = unserialize($db_array['description']);
        }
        $item = $this->_getNewRoomItem($db_array['type']);
        $item->_setItemData(encode(FROM_DB, $db_array));
@@ -500,7 +500,7 @@ class cs_context_manager extends cs_manager
             and is_numeric($item_id)
        ) {
            if (isset($this->extrasCache[$item_id])) {
-               $retour = mb_unserialize($this->extrasCache[$item_id]);
+               $retour = unserialize($this->extrasCache[$item_id]);
            } else {
                $query = 'SELECT extras FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).".item_id='".encode(AS_DB, $item_id)."'";
                $result = $this->_db_connector->performQuery($query);
@@ -510,7 +510,7 @@ class cs_context_manager extends cs_manager
                } elseif (!empty($result[0])) {
                    $data_array = $result[0];
                    if (!empty($data_array['extras'])) {
-                       $retour = mb_unserialize($data_array['extras']);
+                       $retour = unserialize($data_array['extras']);
                    }
                    unset($data_array);
                    unset($result);

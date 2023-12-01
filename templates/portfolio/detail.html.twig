@@ -154,7 +154,7 @@
                         </article>
 
                     {{ render(controller(
-                        'App\\Controller\\AnnotationController::feedAction',
+                        'App\\Controller\\AnnotationController::feed',
                         { 'roomId': roomId, 'linkedItemId': portfolioId, 'firstTagId': firstTag.itemId, 'secondTagId': secondTag.itemId }
                     ))}}
 

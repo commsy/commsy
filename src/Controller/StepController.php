@@ -46,7 +46,7 @@ class StepController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/step/xhr/delete', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeleteAction(
+    public function xhrDelete(
         Request $request,
         DeleteAction $action,
         DeleteStep $deleteStep,
@@ -65,7 +65,7 @@ class StepController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/step/xhr/changestatus/{itemId}', condition: 'request.isXmlHttpRequest()')]
-    public function xhrChangeStatusAction($roomId, $itemId, Request $request, TodoService $todoService): Response
+    public function xhrChangeStatus($roomId, $itemId, Request $request, TodoService $todoService): Response
     {
         $items = null;
         $room = $this->getRoom($roomId);

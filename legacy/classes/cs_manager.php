@@ -89,10 +89,7 @@ class cs_manager
      */
     protected $modificationOlderThenLimit;
 
-    /**
-     * @var \DateTime
-     */
-    protected $modificationNewerThenLimit;
+    protected ?DateTime $modificationNewerThenLimit;
 
     /**
      * @var int[]
@@ -281,8 +278,7 @@ class cs_manager
                }
            }
        }
-       $id_array = array_merge($id_array, $first_element);
-       return $id_array;
+       return array_merge($id_array, $first_element);
    }
 
    public function _getTagIDArrayByTagID($id)
@@ -913,7 +909,7 @@ class cs_manager
                    trigger_error('Problems getting data "'.$this->_db_table.'".', E_USER_WARNING);
                } else {
                    foreach ($sql_result as $sql_row) {
-                       $extra_array = mb_unserialize($sql_row['extras']);
+                       $extra_array = unserialize($sql_row['extras']);
                        $current_data_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$item_id];
                    }
                }
@@ -1127,7 +1123,7 @@ class cs_manager
                        elseif ('extras' == $key
                                 and !empty($old_item_id)
                        ) {
-                           $extra_array = mb_unserialize($value);
+                           $extra_array = unserialize($value);
                            $extra_array['COPY']['ITEM_ID'] = $old_item_id;
                            $extra_array['COPY']['COPYING_DATE'] = $current_date;
                            $value = serialize($extra_array);

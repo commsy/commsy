@@ -17,7 +17,7 @@ use App\Entity\SavedSearch;
 use App\EventSubscriber\ChosenRubricSubscriber;
 use App\Model\SearchData;
 use App\Utils\ReaderService;
-use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
+use Spiriit\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;

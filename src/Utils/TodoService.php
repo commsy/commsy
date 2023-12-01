@@ -16,7 +16,6 @@ namespace App\Utils;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_manager;
-use cs_noticed_manager;
 use cs_reader_manager;
 use cs_step_item;
 use cs_step_manager;
@@ -32,8 +31,6 @@ class TodoService
 
     private readonly cs_step_manager $stepManager;
 
-    private readonly cs_noticed_manager $noticedManager;
-
     private readonly cs_reader_manager $readerManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
@@ -46,7 +43,6 @@ class TodoService
         $this->stepManager = $this->legacyEnvironment->getStepManager();
         $this->stepManager->reset();
 
-        $this->noticedManager = $this->legacyEnvironment->getNoticedManager();
         $this->readerManager = $this->legacyEnvironment->getReaderManager();
     }
 
@@ -216,7 +212,6 @@ class TodoService
         // todo item
         $item = $this->getTodo($itemId);
         $versionId = $item->getVersionID();
-        $this->noticedManager->markNoticed($itemId, $versionId);
         $this->readerManager->markRead($itemId, $versionId);
 
         // steps
@@ -226,7 +221,6 @@ class TodoService
                 $stepItem = $stepList->getFirst();
                 while ($stepItem) {
                     $stepItemID = $stepItem->getItemID();
-                    $this->noticedManager->markNoticed($stepItemID, $versionId);
                     $this->readerManager->markRead($stepItemID, $versionId);
                     $stepItem = $stepList->getNext();
                 }
@@ -240,7 +234,6 @@ class TodoService
                 $annotationItem = $annotationList->getFirst();
                 while ($annotationItem) {
                     $annotationItemID = $annotationItem->getItemID();
-                    $this->noticedManager->markNoticed($annotationItemID, $versionId);
                     $this->readerManager->markRead($annotationItemID, $versionId);
                     $annotationItem = $annotationList->getNext();
                 }

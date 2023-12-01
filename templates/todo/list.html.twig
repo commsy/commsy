@@ -3,7 +3,7 @@
 {% block feed %}
     <ul id="todos-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'App\\Controller\\TodoController::feedAction', {
+            'App\\Controller\\TodoController::feed', {
                 'roomId': roomId,
                 'todoFilter': app.request.query.all('todo_filter')
             }

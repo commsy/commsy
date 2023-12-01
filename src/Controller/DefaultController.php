@@ -23,7 +23,7 @@ class DefaultController extends AbstractController
      * @return RedirectResponse
      */
     #[Route(path: '/')]
-    public function indexAction()
+    public function index(): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->redirectToRoute('app_server_show');
     }

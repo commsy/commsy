@@ -31,6 +31,7 @@ use App\Form\DataTransformer\DateTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\DateImportType;
 use App\Form\Type\DateType;
+use App\Hash\HashManager;
 use App\Repository\CalendarsRepository;
 use App\Security\Authorization\Voter\DateVoter;
 use App\Security\Authorization\Voter\ItemVoter;
@@ -79,7 +80,7 @@ class DateController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/date/feed/{start}/{sort}')]
-    public function feedAction(
+    public function feed(
         Request $request,
         ItemService $itemService,
         int $roomId,
@@ -141,11 +142,12 @@ class DateController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/date')]
-    public function listAction(
+    public function list(
         Request $request,
         int $roomId,
         CalendarsRepository $calendarsRepository,
-        ItemService $itemService
+        ItemService $itemService,
+        HashManager $hashManager
     ): Response {
         $roomItem = $this->getRoom($roomId);
 
@@ -193,17 +195,16 @@ class DateController extends BaseController
             if ($currentUserItem->isUser()) {
                 $iCal['show'] = true;
 
-                $hashManager = $this->legacyEnvironment->getHashManager();
-                $iCalHash = $hashManager->getICalHashForUser($currentUserItem->getItemID());
+                $hash = $hashManager->getUserHashes($currentUserItem->getItemID());
 
                 $iCal['aboUrl'] = $this->generateUrl('app_ical_getcontent', [
                     'contextId' => $roomId,
-                    'hid' => $iCalHash,
+                    'hid' => $hash->getIcal(),
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
 
                 $iCal['exportUrl'] = $this->generateUrl('app_ical_getcontent', [
                     'contextId' => $roomId,
-                    'hid' => $iCalHash,
+                    'hid' => $hash->getIcal(),
                     'export' => true,
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
             }
@@ -232,7 +233,7 @@ class DateController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/date/print/{sort}', defaults: ['sort' => 'none'])]
-    public function printlistAction(
+    public function printlist(
         Request $request,
         PrintService $printService,
         int $roomId,
@@ -281,11 +282,12 @@ class DateController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/date/calendar')]
-    public function calendarAction(
+    public function calendar(
         Request $request,
         int $roomId,
         CalendarsRepository $calendarsRepository,
-        ItemService $itemService
+        ItemService $itemService,
+        HashManager $hashManager
     ): Response {
         $roomItem = $this->getRoom($roomId);
         $filterForm = $this->createFilterForm($roomItem, false, true);
@@ -326,17 +328,16 @@ class DateController extends BaseController
             if ($currentUserItem->isUser()) {
                 $iCal['show'] = true;
 
-                $hashManager = $this->legacyEnvironment->getHashManager();
-                $iCalHash = $hashManager->getICalHashForUser($currentUserItem->getItemID());
+                $hash = $hashManager->getUserHashes($currentUserItem->getItemID());
 
                 $iCal['aboUrl'] = $this->generateUrl('app_ical_getcontent', [
                     'contextId' => $roomId,
-                    'hid' => $iCalHash,
+                    'hid' => $hash->getIcal(),
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
 
                 $iCal['exportUrl'] = $this->generateUrl('app_ical_getcontent', [
                     'contextId' => $roomId,
-                    'hid' => $iCalHash,
+                    'hid' => $hash->getIcal(),
                     'export' => true,
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
             }
@@ -361,7 +362,7 @@ class DateController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/date/calendardashboard')]
-    public function calendardashboardAction(
+    public function calendardashboard(
         int $roomId
     ): Response {
         return $this->render('date/calendardashboard.html.twig', [
@@ -372,7 +373,7 @@ class DateController extends BaseController
 
     #[Route(path: '/room/{roomId}/date/{itemId}', requirements: ['itemId' => '\d+'])]
     #[IsGranted('ITEM_SEE', subject: 'itemId')]
-    public function detailAction(
+    public function detail(
         Request $request,
         AnnotationService $annotationService,
         CategoryService $categoryService,
@@ -388,12 +389,6 @@ class DateController extends BaseController
         $reader = $reader_manager->getLatestReader($item->getItemID());
         if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
-
-        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
-            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
         $itemArray = [$date];
@@ -510,7 +505,7 @@ class DateController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/events')]
-    public function eventsAction(
+    public function events(
         Request $request,
         int $roomId
     ): Response {
@@ -670,7 +665,11 @@ class DateController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/eventsdashboard')]
-    public function eventsdashboardAction(): Response
+    public function eventsdashboard(
+        // Do not remove $roomId even if it is unused, @IsGranted() relies on this argument
+        /* @noinspection PhpUnusedParameterInspection */
+        int $roomId,
+    ): Response
     {
         $user = $this->legacyEnvironment->getCurrentUserItem();
         $userList = $user->getRelatedUserList()->to_array();
@@ -810,7 +809,7 @@ class DateController extends BaseController
 
     #[Route(path: '/room/{roomId}/date/create/{dateDescription}')]
     #[IsGranted('ITEM_NEW')]
-    public function createAction(
+    public function create(
         int $roomId,
         $dateDescription = ''
     ): RedirectResponse {
@@ -873,7 +872,7 @@ class DateController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/{itemId}/calendaredit')]
-    public function calendareditAction(
+    public function calendaredit(
         Request $request,
         int $itemId,
         ParameterBagInterface $parameterBag
@@ -918,7 +917,7 @@ class DateController extends BaseController
 
     #[Route(path: '/room/{roomId}/date/{itemId}/edit')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editAction(
+    public function edit(
         Request $request,
         CategoryService $categoryService,
         LabelService $labelService,
@@ -1083,9 +1082,6 @@ class DateController extends BaseController
                             // mark as read and noticed by creator
                             $reader_manager = $this->legacyEnvironment->getReaderManager();
                             $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
-
-                            $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-                            $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
                         }
                     }
                 }
@@ -1138,7 +1134,7 @@ class DateController extends BaseController
 
     #[Route(path: '/room/{roomId}/date/{itemId}/save')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function saveAction(
+    public function save(
         int $roomId,
         int $itemId
     ): Response {
@@ -1415,9 +1411,6 @@ class DateController extends BaseController
                 // mark as read and noticed by creator
                 $reader_manager = $this->legacyEnvironment->getReaderManager();
                 $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
-
-                $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-                $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
             }
             $dateItem->setRecurrenceId($dateItem->getItemID());
             $dateItem->setRecurrencePattern($recurringPatternArray);
@@ -1456,9 +1449,6 @@ class DateController extends BaseController
                 $reader_manager = $this->legacyEnvironment->getReaderManager();
                 $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
 
-                $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-                $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
-
                 // $tempDate->save();
                 $tempDate = $datesList->getNext();
             }
@@ -1466,7 +1456,7 @@ class DateController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/date/{itemId}/print')]
-    public function printAction(
+    public function print(
         CategoryService $categoryService,
         PrintService $printService,
         int $roomId,
@@ -1478,12 +1468,6 @@ class DateController extends BaseController
         $reader = $reader_manager->getLatestReader($item->getItemID());
         if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
-
-        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
-            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
         $itemArray = [$date];
@@ -1573,7 +1557,7 @@ class DateController extends BaseController
 
     #[Route(path: '/room/{roomId}/date/{itemId}/participate')]
     #[IsGranted('ITEM_PARTICIPATE', subject: 'itemId')]
-    public function participateAction(
+    public function participate(
         int $roomId,
         int $itemId
     ): RedirectResponse {
@@ -1591,7 +1575,7 @@ class DateController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/date/import')]
-    public function importAction(
+    public function import(
         Request $request,
         CalendarsService $calendarsService,
         CalendarsRepository $calendarsRepository,
@@ -1692,7 +1676,7 @@ class DateController extends BaseController
      * @return JsonResponse
      */
     #[Route(path: '/room/{roomId}/date/importupload')]
-    public function importUploadAction(
+    public function importUpload(
         Request $request,
         int $roomId
     ): Response {
@@ -1721,7 +1705,7 @@ class DateController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/download')]
-    public function downloadAction(
+    public function download(
         Request $request,
         DownloadAction $action,
         int $roomId
@@ -1739,7 +1723,7 @@ class DateController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/xhr/markread', condition: 'request.isXmlHttpRequest()')]
-    public function xhrMarkReadAction(
+    public function xhrMarkRead(
         Request $request,
         MarkReadAction $markReadAction,
         int $roomId
@@ -1784,7 +1768,7 @@ class DateController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/xhr/mark', condition: 'request.isXmlHttpRequest()')]
-    public function xhrMarkAction(
+    public function xhrMark(
         Request $request,
         MarkAction $action,
         int $roomId
@@ -1801,7 +1785,7 @@ class DateController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/xhr/categorize', condition: 'request.isXmlHttpRequest()')]
-    public function xhrCategorizeAction(
+    public function xhrCategorize(
         Request $request,
         CategorizeAction $action,
         int $roomId
@@ -1815,7 +1799,7 @@ class DateController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/xhr/hashtag', condition: 'request.isXmlHttpRequest()')]
-    public function xhrHashtagAction(
+    public function xhrHashtag(
         Request $request,
         HashtagAction $action,
         int $roomId
@@ -1827,7 +1811,7 @@ class DateController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/xhr/activate', condition: 'request.isXmlHttpRequest()')]
-    public function xhrActivateAction(
+    public function xhrActivate(
         Request $request,
         ActivateAction $action,
         $roomId
@@ -1842,7 +1826,7 @@ class DateController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/xhr/deactivate', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeactivateAction(
+    public function xhrDeactivate(
         Request $request,
         DeactivateAction $action,
         $roomId
@@ -1857,7 +1841,7 @@ class DateController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/xhr/delete', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeleteAction(
+    public function xhrDelete(
         Request $request,
         DeleteAction $action,
         DeleteDate $deleteDate,

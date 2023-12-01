@@ -21,56 +21,32 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'calendars')]
-#[ORM\Index(name: 'id', columns: ['id'])]
+#[ORM\Index(columns: ['id'], name: 'id')]
 class Calendars
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private ?int $id = 0;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
     private ?int $context_id = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255)]
     private ?string $title = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'color', type: Types::STRING, length: 255)]
     private ?string $color = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'external_url', type: Types::STRING, length: 255, nullable: true)]
     private ?string $external_url = null;
 
-    /**
-     * @var bool
-     */
     #[ORM\Column(name: 'default_calendar', type: Types::BOOLEAN)]
     private ?bool $default_calendar = false;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: true)]
     private ?int $creator_id = null;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'synctoken', type: Types::INTEGER, nullable: true)]
     private ?int $synctoken = null;
 

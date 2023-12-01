@@ -35,6 +35,7 @@ use App\Entity\Terms;
 use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
 use App\Facade\UserCreatorFacade;
+use App\Filter\AccountFilterType;
 use App\Form\Type\CsvImportType;
 use App\Form\Type\Portal\AccessibilityType;
 use App\Form\Type\Portal\AccountInactiveType;
@@ -78,17 +79,16 @@ use App\Form\Type\Portal\TimePulseTemplateType;
 use App\Form\Type\TermType;
 use App\Form\Type\TranslationType;
 use App\Mail\Helper\ContactFormHelper;
-use App\Mail\Mailer;
 use App\Model\TimePulseTemplate;
+use App\Repository\AccountsRepository;
 use App\Repository\AuthSourceRepository;
+use App\Repository\UserRepository;
 use App\Room\RoomManager;
 use App\Security\Authorization\Voter\RootVoter;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
 use App\User\UserListBuilder;
 use App\Utils\AccountMail;
-use App\Utils\ItemService;
-use App\Utils\MailAssistant;
 use App\Utils\RoomService;
 use App\Utils\TimePulsesService;
 use App\Utils\UserService;
@@ -98,9 +98,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Spiriit\Bundle\FormFilterBundle\Filter\FilterBuilderUpdaterInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -109,6 +110,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -535,7 +537,7 @@ class PortalSettingsController extends AbstractController
 
     #[Route(path: '/portal/{portalId}/settings/csvimport')]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function csvImportAction(
+    public function csvImport(
         Request $request,
         UserCreatorFacade $userCreator,
         #[MapEntity(id: 'portalId')]
@@ -1270,7 +1272,7 @@ class PortalSettingsController extends AbstractController
 
     #[Route(path: '/portal/{portalId}/settings/accountindex/{userIds}/performUserAction/{action}')]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
-    public function accountIndexPerformUserAction(
+    public function accountIndexPerformUser(
         $portalId,
         $userIds,
         $action,
@@ -1447,218 +1449,135 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         UserService $userService,
         Request $request,
-        LegacyEnvironment $environment,
         PaginatorInterface $paginator,
-        AuthSourceRepository $authSourceRepository
+        AccountsRepository $accountsRepository,
+        UserRepository $userRepository,
+        FilterBuilderUpdaterInterface $filterBuilderUpdater
     ): Response {
-        // moderation is true to avoid limit of status=2 being set, which would exclude e.g. locked users
-        $portalUsers = $userService->getListUsers($portal->getId(), null, null, true);
-        $authSources = $authSourceRepository->findByPortal($portalId);
-        $userList = [];
-        $alreadyIncludedUserIDs = [];
-        foreach ($portalUsers as $portalUser) {
-            if (!in_array($portalUser->getUserID(),
-                $alreadyIncludedUserIDs) and $portalUser->getContextID() == $portalId) {
-                $userList[] = $portalUser;
-                $alreadyIncludedUserIDs[] = $portalUser->getUserID();
-            }
+        $queryBuilder = $accountsRepository->createQueryBuilder('a')
+            ->select('a')
+            ->andWhere('a.contextId = :contextId')
+            ->setParameter('contextId', $portal->getId());
+
+        $filterForm = $this->createForm(AccountFilterType::class, null, [
+            'portalId' => $portal->getId(),
+        ]);
+
+        if ($request->query->has($filterForm->getName())) {
+            $filterForm->submit($request->query->all($filterForm->getName()));
+
+            $filterBuilderUpdater->addFilterConditions($filterForm, $queryBuilder);
         }
-        unset($alreadyIncludedUserIDs);
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 20)
+        );
+
+        $portalUsersForAccounts = array_map(fn(Account $account) =>
+            $userRepository->findPortalUser($account), iterator_to_array($pagination));
 
         $accountIndex = new AccountIndex();
-
-        $accountIndexUserList = [];
         $accountIndexUserIds = [];
-
-        foreach ($userList as $singleUser) {
-            $singleAccountIndexUser = new AccountIndexUser();
-            $singleAccountIndexUser->setName($singleUser->getFullName());
-            $singleAccountIndexUser->setChecked(false);
-            $singleAccountIndexUser->setItemId($singleUser->getItemID());
-            $singleAccountIndexUser->setMail($singleUser->getEmail());
-            $singleAccountIndexUser->setUserId($singleUser->getUserID());
-            $accountIndexUserList[] = $singleAccountIndexUser;
+        foreach ($pagination as $key => $singleUser) {
+            $singleUser = $portalUsersForAccounts[$key];
             $accountIndexUserIds[$singleUser->getItemID()] = false;
         }
-
-        $accountIndex->setAccountIndexUsers($accountIndexUserList);
         $accountIndex->setIds($accountIndexUserIds);
+
         $form = $this->createForm(AccountIndexType::class, $accountIndex);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            if ($form->get('search')->isClicked()) {
-                // moderation is true to avoid limit of status=2 being set, which would exclude e.g. locked users
-                $portalUsers = $userService->getListUsers($portal->getId(), null, null, true);
-                $tempUserList = [];
-                $userList = [];
-                foreach ($portalUsers as $portalUser) {
-                    $tempUserList[] = $portalUser;
-                }
-                $searchParam = $data->getAccountIndexSearchString();
+            if ($form->get('execute')->isClicked()) {
+                $userIdsForAction = array_keys(array_filter($accountIndex->getIds(), fn ($key) => $key));
 
-                if (empty($searchParam)) {
-                    foreach ($tempUserList as $singleUser) {
-                        if ($this->meetsFilterChoiceCriteria($data->getUserIndexFilterChoice(), $singleUser, $portal,
-                            $environment)) {
-                            $userList[] = $singleUser; // remove users not fitting the search string
-                        }
-                    }
-                } else {
-                    foreach ($tempUserList as $singleUser) {
-                        $machtesUserIdLowercased = str_contains(strtolower($singleUser->getUserID()),
-                            strtolower((string) $searchParam));
-                        $machtesUserNameLowercased = str_contains(strtolower($singleUser->getFullName()),
-                            strtolower((string) $searchParam));
-                        $matchesFirstNameLowercased = str_contains(strtolower($singleUser->getFirstName()),
-                            strtolower((string) $searchParam));
-                        $matchesLastNameLowercased = str_contains(strtolower($singleUser->getLastName()),
-                            strtolower((string) $searchParam));
-                        $matchMailLowercased = str_contains(strtolower($singleUser->getEmail()),
-                            strtolower((string) $searchParam));
-
-                        if (($matchesLastNameLowercased
-                                or $machtesUserIdLowercased
-                                or $matchesFirstNameLowercased
-                                or $machtesUserNameLowercased
-                                or $matchMailLowercased) and $this->meetsFilterChoiceCriteria($data->getUserIndexFilterChoice(),
-                                    $singleUser, $portal, $environment)) {
-                            $userList[] = $singleUser; // remove users not fitting the search string
-                        }
-                    }
-                }
-
-                $accountIndex = new AccountIndex();
-                $accountIndex->setUserIndexFilterChoice($data->getUserIndexFilterChoice());
-                $accountIndexUserList = [];
-                $accountIndexUserIds = [];
-
-                foreach ($userList as $singleUser) {
-                    $singleAccountIndexUser = new AccountIndexUser();
-                    $singleAccountIndexUser->setName($singleUser->getFullName());
-                    $singleAccountIndexUser->setChecked(false);
-                    $singleAccountIndexUser->setItemId($singleUser->getItemID());
-                    $singleAccountIndexUser->setMail($singleUser->getEmail());
-                    $singleAccountIndexUser->setUserId($singleUser->getUserID());
-                    $accountIndexUserList[] = $singleAccountIndexUser;
-                    $accountIndexUserIds[$singleUser->getItemID()] = false;
-                }
-
-                $accountIndex->setAccountIndexUsers($accountIndexUserList);
-                $accountIndex->setIds($accountIndexUserIds);
-                $form = $this->createForm(AccountIndexType::class, $accountIndex);
-            } elseif ($form->get('execute')->isClicked()) {
-                $data = $form->getData();
-                $ids = $data->getIds();
-                $userIds = [];
-
-                foreach ($ids as $id => $checked) {
-                    if ($checked) {
-                        $userIds[] = $id;
-                    }
-                }
-
-                switch ($data->getIndexViewAction()) {
-                    case 0:
-                        break;
+                switch ($accountIndex->getIndexViewAction()) {
                     case 1: // user-delete
                         return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
                             'portalId' => $portalId,
-                            'userIds' => implode(', ', $userIds),
+                            'userIds' => implode(', ', $userIdsForAction),
                             'action' => 'user-delete',
                         ]);
                     case 2: // user-block
                         return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
                             'portalId' => $portalId,
-                            'userIds' => implode(', ', $userIds),
+                            'userIds' => implode(', ', $userIdsForAction),
                             'action' => 'user-block',
                         ]);
 
                     case 3: // user-confirm
                         return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
                             'portalId' => $portalId,
-                            'userIds' => implode(', ', $userIds),
+                            'userIds' => implode(', ', $userIdsForAction),
                             'action' => 'user-confirm',
                         ]);
 
                     case 4: // change user mail the next time he/she logs in
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                $user = $userService->getUser($id);
-                                $user->setHasToChangeEmail();
-                                $user->save();
-                            }
+                        foreach ($userIdsForAction as $id) {
+                            $user = $userService->getUser($id);
+                            $user->setHasToChangeEmail();
+                            $user->save();
                         }
                         break;
                     case 'user-status-reading-user':
                         return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
                             'portalId' => $portalId,
-                            'userIds' => implode(', ', $userIds),
+                            'userIds' => implode(', ', $userIdsForAction),
                             'action' => 'user-status-reading-user',
                         ]);
 
                     case 5: // 'user-status-user
                         return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
                             'portalId' => $portalId,
-                            'userIds' => implode(', ', $userIds),
+                            'userIds' => implode(', ', $userIdsForAction),
                             'action' => 'user-status-user',
                         ]);
 
                     case 6: // user-status-moderator
                         return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
                             'portalId' => $portalId,
-                            'userIds' => implode(', ', $userIds),
+                            'userIds' => implode(', ', $userIdsForAction),
                             'action' => 'user-status-moderator',
                         ]);
                     case 7: // user-contact
                         return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
                             'portalId' => $portalId,
-                            'userIds' => implode(', ', $userIds),
+                            'userIds' => implode(', ', $userIdsForAction),
                             'action' => 'user-contact',
                         ]);
                     case 8: // user-contact-remove
                         return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
                             'portalId' => $portalId,
-                            'userIds' => implode(', ', $userIds),
+                            'userIds' => implode(', ', $userIdsForAction),
                             'action' => 'user-contact-remove',
                         ]);
                     case 9: // send mail
-                        $IdsMailRecipients = [];
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                array_push($IdsMailRecipients, $id);
-                            }
-                        }
-
                         return $this->redirectToRoute('app_portalsettings_accountindexsendmail', [
                             'portalId' => $portalId,
-                            'recipients' => implode(', ', $IdsMailRecipients),
+                            'recipients' => implode(', ', $userIdsForAction),
                         ]);
                     case 13: // hide mail everywhere
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                $user = $userService->getUser($id);
-                                $user->setEmailNotVisible();
-                                $user->save();
-                                $allRelatedUsers = $user->getRelatedUserList(true);
-                                foreach ($allRelatedUsers as $relatedUser) {
-                                    $relatedUser->setEmailNotVisible();
-                                    $relatedUser->save();
-                                }
+                        foreach ($userIdsForAction as $id) {
+                            $user = $userService->getUser($id);
+                            $user->setEmailNotVisible();
+                            $user->save();
+                            $allRelatedUsers = $user->getRelatedUserList(true);
+                            foreach ($allRelatedUsers as $relatedUser) {
+                                $relatedUser->setEmailNotVisible();
+                                $relatedUser->save();
                             }
                         }
                         break;
                     case 15: // show mail everywhere
-                        foreach ($ids as $id => $checked) {
-                            if ($checked) {
-                                $user = $userService->getUser($id);
-                                $user->setEmailVisible();
-                                $user->save();
-                                $allRelatedUsers = $user->getRelatedUserList(true);
-                                foreach ($allRelatedUsers as $relatedUser) {
-                                    $relatedUser->setEmailVisible();
-                                    $relatedUser->save();
-                                }
+                        foreach ($userIdsForAction as $id) {
+                            $user = $userService->getUser($id);
+                            $user->setEmailVisible();
+                            $user->save();
+                            $allRelatedUsers = $user->getRelatedUserList(true);
+                            foreach ($allRelatedUsers as $relatedUser) {
+                                $relatedUser->setEmailVisible();
+                                $relatedUser->save();
                             }
                         }
                         break;
@@ -1668,7 +1587,7 @@ class PortalSettingsController extends AbstractController
                     'portalId' => $portal->getId(),
                 ]);
 
-                if (0 != $data->getIndexViewAction()) {
+                if (0 != $accountIndex->getIndexViewAction()) {
                     $this->addFlash('performedSuccessfully', $returnUrl);
 
                     return $this->redirectToRoute('app_portalsettings_accountindex', [
@@ -1677,155 +1596,24 @@ class PortalSettingsController extends AbstractController
                 }
             }
         }
-        $pagination = $paginator->paginate(
-            $userList,
-            $request->query->getInt('page', 1),
-            20
-        );
 
         return $this->render('portal_settings/account_index.html.twig', [
             'form' => $form,
-            'userList' => $userList,
-            'portal' => $portal,
+            'filterForm' => $filterForm,
             'pagination' => $pagination,
-            'authSources' => $authSources,
+            'portalUsersForAccounts' => $portalUsersForAccounts,
+            'portal' => $portal,
         ]);
-    }
-
-    private function meetsFilterChoiceCriteria($filterChoice, $userInQuestion, $portal, LegacyEnvironment $environment)
-    {
-        $meetsCriteria = false;
-        switch ($filterChoice) {
-            case 0: // no selection
-                $meetsCriteria = true;
-                break;
-            case 1: // Members
-                if ($userInQuestion->isRoomMember()) {
-                    $meetsCriteria = true;
-                }
-                break;
-            case 2: // locked // ->isLocked() only exhibits the extra flag 'LOCKED', not the set status
-                if ('0' == $userInQuestion->getStatus()) {
-                    $meetsCriteria = true;
-                }
-                break;
-            case 3: // In activation
-                if ($userInQuestion->isRequested()) {
-                    $meetsCriteria = true;
-                }
-                break;
-            case 4: // User
-                if ($userInQuestion->isUser()) {
-                    $meetsCriteria = true;
-                }
-                break;
-            case 5: // Moderator
-                if ($userInQuestion->isModerator()) {
-                    $meetsCriteria = true;
-                }
-                break;
-            case 6: // Contact
-                if ($userInQuestion->isContact()) {
-                    $meetsCriteria = true;
-                }
-                break;
-            case 7: // Community workspace moderator
-                $continuousWorkspaces = $this->getContinuousRoomList($environment, $portal);
-
-                foreach ($continuousWorkspaces as $continuousWorkspace) {
-                    if ($continuousWorkspace->getItemID() === $userInQuestion->getContextItem()->getItemID()
-                        and $userInQuestion->isModerator()
-                        and 'community' === $continuousWorkspace->getType()) {
-                        $meetsCriteria = true;
-                    }
-                }
-                break;
-            case 8: // Community workspace contact
-                $continuousWorkspaces = $this->getContinuousRoomList($environment, $portal);
-
-                foreach ($continuousWorkspaces as $continuousWorkspace) {
-                    if ($continuousWorkspace->getItemID() === $userInQuestion->getContextItem()->getItemID()
-                        and $userInQuestion->isContact()
-                        and 'community' === $continuousWorkspace->getType()) {
-                        $meetsCriteria = true;
-                    }
-                }
-                break;
-            case 9: // Project workspace moderator
-                $continuousWorkspaces = $this->getContinuousRoomList($environment, $portal);
-
-                foreach ($continuousWorkspaces as $continuousWorkspace) {
-                    if ($continuousWorkspace->getItemID() === $userInQuestion->getContextItem()->getItemID()
-                        and $userInQuestion->isModerator()
-                        and 'project' === $continuousWorkspace->getType()) {
-                        $meetsCriteria = true;
-                    }
-                }
-                break;
-            case 10: // project workspace contact
-                $continuousWorkspaces = $this->getContinuousRoomList($environment, $portal);
-
-                foreach ($continuousWorkspaces as $continuousWorkspace) {
-                    if ($continuousWorkspace->getItemID() === $userInQuestion->getContextItem()->getItemID()
-                        and $userInQuestion->isContact
-                        and 'project' === $continuousWorkspace->getType()) {
-                        $meetsCriteria = true;
-                    }
-                }
-                break;
-            case 11: // moderator of any workspace
-                $continuousWorkspaces = $this->getContinuousRoomList($environment, $portal);
-                foreach ($continuousWorkspaces as $continuousWorkspace) {
-                    if ($continuousWorkspace->getItemID() === $userInQuestion->getContextItem()->getItemID()
-                        and $userInQuestion->isModerator()) {
-                        $meetsCriteria = true;
-                    }
-                }
-                break;
-            case 12: // contact of any workspace
-                $continuousWorkspaces = $this->getContinuousRoomList($environment, $portal);
-
-                foreach ($continuousWorkspaces as $continuousWorkspace) {
-                    if ($continuousWorkspace->getItemID() === $userInQuestion->getContextItem()->getItemID()
-                        and $userInQuestion->isCOntact) {
-                        $meetsCriteria = true;
-                    }
-                }
-                break;
-            case 13: // no workspace membership
-                if (!$userInQuestion->isRoomMember()) {
-                    $meetsCriteria = true;
-                }
-                break;
-        }
-
-        return $meetsCriteria;
-    }
-
-    private function getContinuousRoomList($environment, $portal)
-    {
-        $manager = $environment->getEnvironment()->getRoomManager();
-        $manager->reset();
-        $manager->resetLimits();
-        $manager->setContextLimit($portal->getId());
-        $manager->setContinuousLimit();
-        $manager->select();
-
-        return $manager->get();
     }
 
     #[Route(path: '/portal/{portalId}/settings/accountindex/sendmail/{recipients}/{action}', defaults: ['action' => 'user-account_send_mail'])]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function accountIndexSendMail(
-        $portalId,
         $recipients,
         $action,
         Request $request,
         LegacyEnvironment $legacyEnvironment,
-        MailAssistant $mailAssistant,
         UserService $userService,
-        ItemService $itemService,
-        Mailer $mailer,
         #[MapEntity(id: 'portalId')]
         Portal $portal,
         RouterInterface $router,

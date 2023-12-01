@@ -193,8 +193,6 @@ class cs_discussionarticle_item extends cs_item
         // set and noticed reader manager
         $reader_manager = $this->_environment->getReaderManager();
         $reader_manager->markRead($this->getItemID(), 0);
-        $noticed_manager = $this->_environment->getNoticedManager();
-        $noticed_manager->markNoticed($this->getItemID(), 0);
     }
 
      /**

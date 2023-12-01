@@ -62,7 +62,7 @@ class SettingsController extends AbstractController
 {
     #[Route(path: '/room/{roomId}/settings/general')]
     #[IsGranted('MODERATOR')]
-    public function generalAction(
+    public function general(
         Request $request,
         RoomCategoriesService $roomCategoriesService,
         RoomService $roomService,
@@ -121,7 +121,7 @@ class SettingsController extends AbstractController
 
     #[Route(path: '/room/{roomId}/settings/moderation')]
     #[IsGranted('MODERATOR')]
-    public function moderationAction(
+    public function moderation(
         Request $request,
         RoomService $roomService,
         ModerationSettingsTransformer $transformer,
@@ -158,7 +158,7 @@ class SettingsController extends AbstractController
 
     #[Route(path: '/room/{roomId}/settings/additional')]
     #[IsGranted('MODERATOR')]
-    public function additionalAction(
+    public function additional(
         Request $request,
         RoomService $roomService,
         AdditionalSettingsTransformer $transformer,
@@ -217,7 +217,7 @@ class SettingsController extends AbstractController
 
     #[Route(path: '/room/{roomId}/settings/appearance')]
     #[IsGranted('MODERATOR')]
-    public function appearanceAction(
+    public function appearance(
         Request $request,
         RoomService $roomService,
         AppearanceSettingsTransformer $transformer,
@@ -353,7 +353,7 @@ class SettingsController extends AbstractController
 
     #[Route(path: '/room/{roomId}/settings/extensions')]
     #[IsGranted('MODERATOR')]
-    public function extensionsAction(
+    public function extensions(
         Request $request,
         RoomService $roomService,
         ExtensionSettingsTransformer $extensionSettingsTransformer,
@@ -421,7 +421,7 @@ class SettingsController extends AbstractController
     #[Route(path: '/room/{roomId}/settings/deleteuserrooms')]
     #[IsGranted('MODERATOR')]
     #[IsGranted('ITEM_DELETE', subject: 'roomId')]
-    public function deleteUserRoomsAction(
+    public function deleteUserRooms(
         $roomId,
         Request $request,
         RoomService $roomService,
@@ -453,7 +453,7 @@ class SettingsController extends AbstractController
     #[Route(path: '/room/{roomId}/settings/delete/')]
     #[IsGranted('MODERATOR')]
     #[IsGranted('ITEM_DELETE', subject: 'roomId')]
-    public function deleteAction(
+    public function delete(
         int $roomId,
         Request $request,
         RoomService $roomService,
@@ -518,7 +518,7 @@ class SettingsController extends AbstractController
 
     #[Route(path: '/room/{roomId}/settings/invitations')]
     #[IsGranted('MODERATOR')]
-    public function invitationsAction(
+    public function invitations(
         Request $request,
         InvitationsService $invitationsService,
         RoomService $roomService,

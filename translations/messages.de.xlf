@@ -471,6 +471,10 @@
                   <source>messages.datasecurity</source>
                   <target>aus Datenschutzgründen verborgen</target>
              </trans-unit>
+            <trans-unit id="messages_load_all">
+                <source>messages.load_all</source>
+                <target>Alle Datensätze laden</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

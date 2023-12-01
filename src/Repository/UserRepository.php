@@ -13,6 +13,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Account;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -106,5 +107,20 @@ class UserRepository extends ServiceEntityRepository
             ->setParameter('contextId', $contextId)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function findPortalUser(Account $account): User
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.contextId = :contextId')
+            ->andWhere('u.authSource = :authSourceId')
+            ->andWhere('u.userId = :username')
+            ->andWhere('u.deletionDate IS NULL')
+            ->andWhere('u.deleterId IS NULL')
+            ->setParameter('contextId', $account->getContextId())
+            ->setParameter('authSourceId', $account->getAuthSource()->getId())
+            ->setParameter('username', $account->getUsername())
+            ->getQuery()
+            ->getSingleResult();
     }
 }

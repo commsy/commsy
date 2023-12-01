@@ -77,7 +77,7 @@ class UserController extends BaseController
     #[Route(path: '/room/{roomId}/user/feed/{start}/{sort}')]
     #[IsGranted('ITEM_ENTER', subject: 'roomId')]
     #[IsGranted('RUBRIC_USER')]
-    public function feedAction(
+    public function feed(
         Request $request,
         int $roomId,
         int $max = 10,
@@ -92,7 +92,7 @@ class UserController extends BaseController
     #[Route(path: '/room/{roomId}/user/grid/{start}/{sort}')]
     #[IsGranted('ITEM_ENTER', subject: 'roomId')]
     #[IsGranted('RUBRIC_USER')]
-    public function gridAction(
+    public function grid(
         Request $request,
         int $roomId,
         int $max = 10,
@@ -163,7 +163,7 @@ class UserController extends BaseController
             $formData = $form->getData();
 
             $recipients = [$item];
-            $moderators = explode(', ', $moderatorIds);
+            $moderators = explode(', ', (string) $moderatorIds);
             foreach ($moderators as $moderatorId) {
                 $recipients[] = $this->userService->getUser($moderatorId);
             }
@@ -198,12 +198,12 @@ class UserController extends BaseController
     #[Route(path: '/room/{roomId}/user/{view}', defaults: ['view' => 'feedView'], requirements: ['view' => 'feedView|gridView'])]
     #[IsGranted('ITEM_ENTER', subject: 'roomId')]
     #[IsGranted('RUBRIC_USER')]
-    public function listAction(
+    public function list(
         Request $request,
         UserRepository $userRepository,
         int $roomId,
         ItemService $itemService,
-        $view
+        string $view
     ): Response {
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
@@ -285,7 +285,7 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/sendmail')]
-    public function sendMailAction(
+    public function sendMail(
         Request $request
     ): Response {
         $userItems = [];
@@ -313,7 +313,7 @@ class UserController extends BaseController
     #[Route(path: '/room/{roomId}/user/print/{sort}', defaults: ['sort' => 'none'])]
     #[IsGranted('ITEM_ENTER', subject: 'roomId')]
     #[IsGranted('RUBRIC_USER')]
-    public function printlistAction(
+    public function printlist(
         Request $request,
         PrintService $printService,
         int $roomId,
@@ -372,7 +372,7 @@ class UserController extends BaseController
      */
     #[Route(path: '/room/{roomId}/user/changeStatus')]
     #[IsGranted('MODERATOR')]
-    public function changeStatusAction(
+    public function changeStatus(
         Request $request,
         EventDispatcherInterface $eventDispatcher,
         Mailer $mailer,
@@ -501,12 +501,10 @@ class UserController extends BaseController
                     }
 
                     $readerManager = $this->legacyEnvironment->getReaderManager();
-                    $noticedManager = $this->legacyEnvironment->getNoticedManager();
                     foreach ($users as $user) {
                         $itemId = $user->getItemID();
                         $versionId = $user->getVersionID();
                         $readerManager->markRead($itemId, $versionId);
-                        $noticedManager->markNoticed($itemId, $versionId);
 
                         if ($user->isDeleted()) {
                             $event = new UserLeftRoomEvent($user, $room);
@@ -554,7 +552,7 @@ class UserController extends BaseController
     #[Route(path: '/room/{roomId}/user/{itemId}', requirements: ['itemId' => '\d+'])]
     #[IsGranted('ITEM_SEE', subject: 'itemId')]
     #[IsGranted('RUBRIC_USER')]
-    public function detailAction(
+    public function detail(
         Request $request,
         TopicService $topicService,
         LegacyMarkup $legacyMarkup,
@@ -644,12 +642,6 @@ class UserController extends BaseController
         $reader = $reader_manager->getLatestReader($item->getItemID());
         if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
-
-        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
-        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if (empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
-            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
@@ -778,7 +770,7 @@ class UserController extends BaseController
     #[Route(path: '/room/{roomId}/user/{itemId}/send')]
     #[IsGranted('ITEM_SEE', subject: 'itemId')]
     #[IsGranted('RUBRIC_USER')]
-    public function sendAction(
+    public function send(
         Request $request,
         TranslatorInterface $translator,
         MailAssistant $mailAssistant,
@@ -871,7 +863,7 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/send/success')]
-    public function sendSuccessAction(
+    public function sendSuccess(
         int $roomId,
         int $itemId
     ): Response {
@@ -891,7 +883,7 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/send/success/contact/{originPath}')]
-    public function sendSuccessContactAction($roomId, $itemId, $originPath): Response
+    public function sendSuccessContact($roomId, $itemId, $originPath): Response
     {
         // get item
         $item = $this->itemService->getTypedItem($itemId);
@@ -911,7 +903,7 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/user/guestimage')]
-    public function guestimageAction(
+    public function guestimage(
         AvatarService $avatarService
     ): Response {
         $response = new Response($avatarService->getUnknownUserImage(), Response::HTTP_OK,
@@ -924,7 +916,7 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/initials')]
-    public function initialsAction(
+    public function initials(
         AvatarService $avatarService,
         int $itemId
     ): Response {
@@ -938,7 +930,7 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/image')]
-    public function imageAction(
+    public function image(
         AvatarService $avatarService,
         DataManager $dataManager,
         FilterManager $filterManager,
@@ -984,7 +976,7 @@ class UserController extends BaseController
      * Displays the global user actions in top navbar.
      * This is an embedded controller action.
      */
-    public function globalNavbarAction(
+    public function globalNavbar(
         $contextId,
         SessionInterface $session,
         EntityManagerInterface $entityManager,
@@ -1031,7 +1023,7 @@ class UserController extends BaseController
      * Displays the all room link in top navbar.
      * This is an embedded controller action.
      */
-    public function allRoomsNavbarAction(
+    public function allRoomsNavbar(
         LegacyEnvironment $legacyEnvironment,
         bool $uikit3 = false
     ): Response {
@@ -1052,7 +1044,7 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/print')]
-    public function printAction(
+    public function print(
         PrintService $printService,
         int $roomId,
         int $itemId
@@ -1179,7 +1171,7 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/insertUserroom')]
-    public function insertUserroomAction(
+    public function insertUserroom(
         $roomId,
         InsertUserroomAction $action,
         Request $request
@@ -1194,7 +1186,7 @@ class UserController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/user/sendMultiple')]
-    public function sendMultipleAction(
+    public function sendMultiple(
         Request $request,
         TranslatorInterface $translator,
         MailAssistant $mailAssistant,
@@ -1342,7 +1334,7 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/sendMultiple/success')]
-    public function sendMultipleSuccessAction(
+    public function sendMultipleSuccess(
         int $roomId
     ): Response {
         return $this->render('user/send_multiple_success.html.twig', [
@@ -1359,7 +1351,7 @@ class UserController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/user/xhr/markread', condition: 'request.isXmlHttpRequest()')]
-    public function xhrMarkReadAction(
+    public function xhrMarkRead(
         Request $request,
         MarkReadAction $markReadAction,
         int $roomId

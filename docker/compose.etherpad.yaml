@@ -1,0 +1,9 @@
+services:
+  etherpad:
+    image: etherpad/etherpad
+    ports:
+      - "82:9001"
+
+  php:
+    depends_on:
+      - etherpad

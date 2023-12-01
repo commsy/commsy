@@ -17,7 +17,7 @@
                                 <h3 class="uk-panel-title">{{ 'annotations'|trans({})|capitalize }}</h3>
                             </div>
                             {{ render(controller(
-                                'App\\Controller\\AnnotationController::feedAction',
+                                'App\\Controller\\AnnotationController::feed',
                                 { 'roomId': roomId, 'linkedItemId': item.itemId }
                             ))}}
                         </div>

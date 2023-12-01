@@ -379,7 +379,7 @@ class cs_file_manager extends cs_manager
                 trigger_error('Problems getting data "' . $this->_db_table . '".', E_USER_WARNING);
             } else {
                 foreach ($sql_result as $sql_row) {
-                    $extra_array = mb_unserialize($sql_row['extras']);
+                    $extra_array = unserialize($sql_row['extras']);
                     $current_data_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$item_id];
                     // $current_copy_date_array[$extra_array['COPY']['ITEM_ID']] = $extra_array['COPY']['DATETIME'];
                     // $current_mod_date_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$modification_date];
@@ -423,7 +423,7 @@ class cs_file_manager extends cs_manager
                         elseif ('extras' == $key
                             and !empty($old_item_id)
                         ) {
-                            $extra_array = mb_unserialize($value);
+                            $extra_array = unserialize($value);
                             $extra_array['COPY']['ITEM_ID'] = $old_item_id;
                             $extra_array['COPY']['COPYING_DATE'] = $current_date;
                             $value = serialize($extra_array);
@@ -479,30 +479,31 @@ class cs_file_manager extends cs_manager
         $retour = true;
         $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
 
-        $query = 'SELECT ' . $this->addDatabasePrefix($this->_db_table) . '.files_id, ' . $this->addDatabasePrefix($this->_db_table) . '.context_id, ' . $this->addDatabasePrefix($this->_db_table) . '.filename FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE deletion_date IS NOT NULL and deletion_date < "' . $timestamp . '";';
+        $query = 'SELECT ' .
+            $this->addDatabasePrefix($this->_db_table) . '.files_id, ' .
+            $this->addDatabasePrefix($this->_db_table) . '.portal_id, ' .
+            $this->addDatabasePrefix($this->_db_table) . '.context_id, ' .
+            $this->addDatabasePrefix($this->_db_table) . '.filename
+            FROM ' . $this->addDatabasePrefix($this->_db_table) . '
+            WHERE deletion_date IS NOT NULL and deletion_date < "' . $timestamp . '";';
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problem selecting items from query: "' . $query . '"', E_USER_ERROR);
-            $retour = false;
         } else {
-            $retour = $retour and parent::deleteReallyOlderThan($days);
+            // foreign key constraint
+            foreach ($result as $file) {
+                $linkItemFileManager = $this->_environment->getLinkItemFileManager();
+                $linkItemFileManager->deleteByFileReally($file['files_id']);
+            }
+
+            $retour = parent::deleteReallyOlderThan($days);
             foreach ($result as $query_result) {
-                $query2 = 'SELECT context_id as portal_id FROM ' . $this->addDatabasePrefix('room') . ' WHERE item_id="' . $query_result['context_id'] . '"';
-                $result2 = $this->_db_connector->performQuery($query2);
-                if (!isset($result2)) {
-                    trigger_error('Problem selecting items from query: "' . $query . '"', E_USER_ERROR);
-                    $retour = false;
-                } elseif (!empty($result2[0])) {
-                    $query_result2 = $result2[0];
-                    if (!empty($query_result2['portal_id'])) {
-                        $filename = 'cid' . $query_result['context_id'] . '_' . $query_result['files_id'] . '_' . $query_result['filename'];
-                        $disc_manager->setPortalID($query_result2['portal_id']);
-                        $disc_manager->setContextID($query_result['context_id']);
-                        if ($disc_manager->existsFile($filename)) {
-                            $retour = $retour and $disc_manager->unlinkFile($filename);
-                        }
-                    }
+                $filename = 'cid' . $query_result['context_id'] . '_' . $query_result['files_id'] . '_' . $query_result['filename'];
+                $disc_manager->setPortalID($query_result['portal_id']);
+                $disc_manager->setContextID($query_result['context_id']);
+                if ($disc_manager->existsFile($filename)) {
+                    $retour = $retour && $disc_manager->unlinkFile($filename);
                 }
             }
         }
@@ -614,7 +615,7 @@ class cs_file_manager extends cs_manager
      */
     public function _buildItem($db_array)
     {
-        $db_array['extras'] = mb_unserialize($db_array['extras']);
+        $db_array['extras'] = unserialize($db_array['extras']);
 
         return parent::_buildItem($db_array);
     }

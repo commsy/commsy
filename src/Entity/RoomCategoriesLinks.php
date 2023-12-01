@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,25 +21,19 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'room_categories_links')]
-#[ORM\Index(name: 'id', columns: ['id'])]
+#[ORM\Index(columns: ['id'], name: 'id')]
 class RoomCategoriesLinks
 {
-    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     private int $id;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'context_id', type: 'integer', nullable: false)]
-    private $context_id;
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: false)]
+    private int $context_id;
 
-    /**
-     * @var mixed|null
-     */
-    #[ORM\Column(name: 'category_id', type: 'integer', nullable: false)]
-    private $category_id;
+    #[ORM\Column(name: 'category_id', type: Types::INTEGER, nullable: false)]
+    private int $category_id;
 
     public function getId(): int
     {

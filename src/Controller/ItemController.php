@@ -23,6 +23,7 @@ use App\Form\Type\ItemLinksType;
 use App\Form\Type\ItemWorkflowType;
 use App\Form\Type\SendType;
 use App\Mail\Mailer;
+use App\Services\EtherpadService;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
 use App\Utils\DateService;
@@ -37,8 +38,12 @@ use cs_item;
 use cs_label_item;
 use cs_labels_manager;
 use cs_manager;
+use cs_material_item;
+use cs_section_item;
+use cs_step_item;
 use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,7 +52,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use UnexpectedValueException;
 
@@ -57,24 +61,17 @@ use UnexpectedValueException;
 #[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class ItemController extends AbstractController
 {
-    private TransformerManager $transformerManager;
-
-    /**
-     * @param mixed $transformerManager
-     */
-    #[Required]
-    public function setTransformerManager(TransformerManager $transformerManager): void
-    {
-        $this->transformerManager = $transformerManager;
-    }
-
     #[Route(path: '/room/{roomId}/item/{itemId}/editdescription/{draft}')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editDescriptionAction(
+    public function editDescription(
         DateService $dateService,
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
         LegacyEnvironment $environment,
+        TransformerManager $transformerManager,
+        ParameterBagInterface $parameterBag,
+        MaterialService $materialService,
+        EtherpadService $etherpadService,
         Request $request,
         int $roomId,
         int $itemId,
@@ -83,7 +80,7 @@ class ItemController extends AbstractController
         /** @var cs_item $item */
         $item = $itemService->getTypedItem($itemId);
 
-        $transformer = $this->transformerManager->getConverter($item->getItemType());
+        $transformer = $transformerManager->getConverter($item->getItemType());
 
         $itemType = $item->getItemType();
 
@@ -132,6 +129,13 @@ class ItemController extends AbstractController
 
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
 
+        $useEtherpad = false;
+        if ($parameterBag->get('commsy.etherpad.enabled')) {
+            /** @var cs_material_item $materialItem */
+            $materialItem = $materialService->getMaterial($itemId);
+            $useEtherpad = $materialItem && $materialItem->getEtherpadEditor();
+        }
+
         $form = $this->createForm(ItemDescriptionType::class, $formData, $formOptions);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -140,8 +144,24 @@ class ItemController extends AbstractController
             if ('save' == $saveType || 'saveThisDate' == $saveType) {
                 $item = $transformer->applyTransformation($item, $form->getData());
                 $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                if ($item->getItemType() == CS_MATERIAL_TYPE) {
+                    /** @var $item cs_material_item */
+                    if ($item->getEtherpadEditor() && $item->getEtherpadEditorID()) {
+                        // get description text from etherpad
+                        $client = $etherpadService->getClient();
+
+                        // get pad and get text from pad
+                        $textObject = $client->getHTML($item->getEtherpadEditorID());
+
+                        // save etherpad text to material description
+                        $item->setDescription(nl2br($textObject->html));
+                    }
+                }
+
                 $item->save();
                 if ((CS_SECTION_TYPE == $item->getItemType()) || (CS_STEP_TYPE == $item->getItemType())) {
+                    /** @var $item cs_section_item|cs_step_item */
                     $linkedItem = $itemService->getTypedItem($item->getlinkedItemID());
                     $linkedItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                     $linkedItem->save();
@@ -167,7 +187,7 @@ class ItemController extends AbstractController
         }
 
         return $this->render('item/edit_description.html.twig', [
-            'isMaterial' => $itemType == 'material',
+            'useEtherpad' => $useEtherpad,
             'itemId' => $itemId,
             'roomId' => $roomId,
             'form' => $form,
@@ -177,7 +197,7 @@ class ItemController extends AbstractController
 
     #[Route(path: '/room/{roomId}/item/{itemId}/savedescription')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function saveDescriptionAction(
+    public function saveDescription(
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
         int $roomId,
@@ -205,7 +225,7 @@ class ItemController extends AbstractController
 
     #[Route(path: '/room/{roomId}/item/{itemId}/editworkflow')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editWorkflowAction(
+    public function editWorkflow(
         RoomService $roomService,
         ItemService $itemService,
         MaterialService $materialService,
@@ -256,7 +276,7 @@ class ItemController extends AbstractController
 
     #[Route(path: '/room/{roomId}/item/{itemId}/editlinks/{feedAmount}', defaults: ['feedAmount' => 20])]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editLinksAction(
+    public function editLinks(
         LabelService $labelService,
         RoomService $roomService,
         ItemService $itemService,
@@ -438,7 +458,7 @@ class ItemController extends AbstractController
 
     #[Route(path: '/room/{roomId}/item/{itemId}/editCatsBuzz/{feedAmount}', defaults: ['feedAmount' => 20])]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editCatsBuzzAction(
+    public function editCatsBuzz(
         CategoryService $categoryService,
         LabelService $labelService,
         RoomService $roomService,
@@ -619,7 +639,7 @@ class ItemController extends AbstractController
 
     #[Route(path: '/room/{roomId}/item/{itemId}/savelinks')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function saveLinksAction(
+    public function saveLinks(
         RoomService $roomService,
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
@@ -642,7 +662,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/{itemId}/send')]
-    public function sendAction(
+    public function send(
         Request $request,
         ItemService $itemService,
         MailAssistant $mailAssistant,
@@ -722,7 +742,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/{itemId}/send/success')]
-    public function sendSuccessAction(
+    public function sendSuccess(
         ItemService $itemService,
         int $roomId, int $itemId
     ): Response {
@@ -752,7 +772,7 @@ class ItemController extends AbstractController
      */
     #[Route(path: '/room/{roomId}/item/{itemId}/autocomplete/{feedAmount}', defaults: ['feedAmount' => 20])]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function autocompleteAction(
+    public function autocomplete(
         RoomService $roomService,
         ItemService $itemService,
         LegacyEnvironment $legacyEnvironment,
@@ -823,7 +843,7 @@ class ItemController extends AbstractController
      * @return JsonResponse
      */
     #[Route(path: '/room/{roomId}/item/{itemId}/filelist')]
-    public function filelistAction($roomId, $itemId, ItemService $itemService): Response
+    public function filelist($roomId, $itemId, ItemService $itemService): Response
     {
         /** @var cs_item $item */
         $item = $itemService->getItem($itemId);
@@ -844,7 +864,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/stepper')]
-    public function stepperAction($roomId, $itemId, ItemService $itemService, LegacyEnvironment $legacyEnvironment): Response
+    public function stepper($roomId, $itemId, ItemService $itemService, LegacyEnvironment $legacyEnvironment): Response
     {
         $environment = $legacyEnvironment->getEnvironment();
 
@@ -941,7 +961,7 @@ class ItemController extends AbstractController
 
     #[Route(path: '/room/{roomId}/item/{itemId}/get', condition: 'request.isXmlHttpRequest()')]
     #[IsGranted('ITEM_SEE', subject: 'itemId')]
-    public function singleArticleAction(
+    public function singleArticle(
         ItemService $itemService,
         int $itemId
     ): Response {
@@ -958,7 +978,7 @@ class ItemController extends AbstractController
 
     #[Route(path: '/room/{roomId}/item/{itemId}/links')]
     #[IsGranted('ITEM_SEE', subject: 'itemId')]
-    public function linksAction(
+    public function links(
         RoomService $roomService,
         ItemService $itemService,
         CategoryService $categoryService,
@@ -990,7 +1010,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/canceledit')]
-    public function cancelEditAction(
+    public function cancelEdit(
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
         int $roomId,

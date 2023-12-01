@@ -305,9 +305,6 @@
     "league/factory-muffin-faker": {
         "version": "v2.3.0"
     },
-    "lexik/form-filter-bundle": {
-        "version": "v5.0.10"
-    },
     "lexik/jwt-authentication-bundle": {
         "version": "2.18",
         "recipe": {
@@ -544,6 +541,9 @@
     },
     "softcreatr/jsonpath": {
         "version": "0.7.5"
+    },
+    "spiriitlabs/form-filter-bundle": {
+        "version": "v9.0.2"
     },
     "sylius/theme-bundle": {
         "version": "v2.2.0"

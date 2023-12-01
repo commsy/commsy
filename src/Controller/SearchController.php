@@ -77,7 +77,7 @@ class SearchController extends BaseController
      * Request data needs to be passed directly, since we can not handle data
      * from the main request here.
      */
-    public function searchFormAction(
+    public function searchForm(
         int $roomId,
         $requestData,
         RoomService $roomService
@@ -113,7 +113,7 @@ class SearchController extends BaseController
     /**
      * @param $roomId int The id of the containing context
      */
-    public function itemSearchFormAction(
+    public function itemSearchForm(
         int $roomId
     ): Response {
         $form = $this->createForm(SearchItemType::class, [], [
@@ -128,17 +128,14 @@ class SearchController extends BaseController
         ]);
     }
 
-    /**
-     * @return JsonResponse
-     */
     #[Route(path: '/room/{roomId}/search/itemresults')]
-    public function itemSearchResultsAction(
+    public function itemSearchResults(
         Request $request,
         SearchManager $searchManager,
         ReaderService $readerService,
         CalendarsService $calendarsService,
         int $roomId
-    ): Response {
+    ): JsonResponse {
         $query = $request->get('search', '');
 
         // query conditions
@@ -163,20 +160,15 @@ class SearchController extends BaseController
         return $response;
     }
 
-    /**
-     * @param $roomId int The context id
-     *
-     * @return JsonResponse
-     */
     #[Route(path: '/room/{roomId}/search/instantresults')]
-    public function instantResultsAction(
+    public function instantResults(
         Request $request,
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
         ReaderService $readerService,
         CalendarsService $calendarsService,
         int $roomId
-    ): Response {
+    ): JsonResponse {
         $query = $request->get('search', '');
 
         // query conditions
@@ -206,7 +198,7 @@ class SearchController extends BaseController
      * Displays search results.
      */
     #[Route(path: '/room/{roomId}/search/results')]
-    public function resultsAction(
+    public function results(
         Request $request,
         RoomService $roomService,
         SearchManager $searchManager,
@@ -421,7 +413,7 @@ class SearchController extends BaseController
      * Returns more search results.
      */
     #[Route(path: '/room/{roomId}/searchmore/{start}/{sort}')]
-    public function moreResultsAction(
+    public function moreResults(
         Request $request,
         SearchManager $searchManager,
         MultipleContextFilterCondition $multipleContextFilterCondition,
@@ -560,7 +552,7 @@ class SearchController extends BaseController
         // contexts parameter
         $searchData->setSelectedContext($searchParams['selectedContext'] ?? 'all');
 
-        // appearing in parameter (based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\ChoiceFilterType)
+        // appearing in parameter (based on Spiriit\Bundle\FormFilterBundle\Filter\Form\Type\ChoiceFilterType)
         $searchData->setAppearsIn($searchParams['appears_in'] ?? []);
 
         // read status parameter
@@ -581,7 +573,7 @@ class SearchController extends BaseController
         // todostatus parameter
         $searchData->setSelectedTodoStatus($searchParams['selectedTodoStatus'] ?? 0);
 
-        // date ranges based on Lexik\Bundle\FormFilterBundle\Filter\Form\Type\DateRangeFilterType in combination with the UIKit datepicker
+        // date ranges based on Spiriit\Bundle\FormFilterBundle\Filter\Form\Type\DateRangeFilterType in combination with the UIKit datepicker
         // creation_date_range parameter
         if (!empty($searchParams['creation_date_range'])) {
             $creationDateRange = [];
@@ -753,16 +745,17 @@ class SearchController extends BaseController
 
     /**
      * Generates JSON results for the room navigation search-as-you-type form.
-     *
-     * @return JsonResponse The JSON result
      */
     #[Route(path: '/room/{roomId}/search/rooms')]
-    public function roomNavigationAction(
+    public function roomNavigation(
+        // Do not remove $roomId even if it is unused, @IsGranted() relies on this argument
+        /* @noinspection PhpUnusedParameterInspection */
+        int $roomId,
         Request $request,
         SearchManager $searchManager,
         RouterInterface $router,
         TranslatorInterface $translator
-    ): Response {
+    ): JsonResponse {
         $results = [];
 
         $query = $request->get('search', '');
@@ -839,7 +832,7 @@ class SearchController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/search/xhr/mark', condition: 'request.isXmlHttpRequest()')]
-    public function xhrMarkAction(
+    public function xhrMark(
         Request $request,
         MarkAction $markAction,
         int $roomId
@@ -854,7 +847,7 @@ class SearchController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/search/xhr/delete', condition: 'request.isXmlHttpRequest()')]
-    public function xhrDeleteAction(
+    public function xhrDelete(
         Request $request,
         DeleteAction $deleteAction,
         int $roomId

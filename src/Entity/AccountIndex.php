@@ -15,93 +15,29 @@ namespace App\Entity;
 
 class AccountIndex
 {
-    /**
-     * @var mixed|null
-     */
-    private $accountIndexSearchString;
+    private ?string $indexViewAction = null;
 
-    /**
-     * @var mixed|null
-     */
-    private $userIndexFilterChoice;
+    private array $ids = [];
 
-    /**
-     * @var mixed|null
-     */
-    private $indexViewAction;
-
-    /**
-     * @var mixed|null
-     */
-    private $accountIndexUsers;
-
-    /**
-     * @var mixed|null
-     */
-    private $ids;
-
-    /**
-     * @return mixed
-     */
-    public function getAccountIndexSearchString()
-    {
-        return $this->accountIndexSearchString;
-    }
-
-    public function setAccountIndexSearchString(mixed $accountIndexSearchString): void
-    {
-        $this->accountIndexSearchString = $accountIndexSearchString;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUserIndexFilterChoice()
-    {
-        return $this->userIndexFilterChoice;
-    }
-
-    public function setUserIndexFilterChoice(mixed $userIndexFilterChoice): void
-    {
-        $this->userIndexFilterChoice = $userIndexFilterChoice;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIndexViewAction()
+    public function getIndexViewAction(): ?string
     {
         return $this->indexViewAction;
     }
 
-    public function setIndexViewAction(mixed $indexViewAction): void
+    public function setIndexViewAction(string $indexViewAction): self
     {
         $this->indexViewAction = $indexViewAction;
+        return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getAccountIndexUsers()
-    {
-        return $this->accountIndexUsers;
-    }
-
-    public function setAccountIndexUsers(mixed $accountIndexUsers): void
-    {
-        $this->accountIndexUsers = $accountIndexUsers;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIds()
+    public function getIds(): array
     {
         return $this->ids;
     }
 
-    public function setIds(mixed $ids): void
+    public function setIds(mixed $ids): self
     {
         $this->ids = $ids;
+        return $this;
     }
 }

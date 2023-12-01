@@ -59,9 +59,6 @@ class AuthSourceLdap extends AuthSource
         $this->changePassword = false;
     }
 
-    /**
-     * @return string
-     */
     public function getServerUrl(): ?string
     {
         return $this->serverUrl;
@@ -74,9 +71,6 @@ class AuthSourceLdap extends AuthSource
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getUidKey(): ?string
     {
         return $this->uidKey;
@@ -89,9 +83,6 @@ class AuthSourceLdap extends AuthSource
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getBaseDn(): ?string
     {
         return $this->baseDn;
@@ -104,9 +95,6 @@ class AuthSourceLdap extends AuthSource
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSearchDn(): ?string
     {
         return $this->searchDn;
@@ -119,9 +107,6 @@ class AuthSourceLdap extends AuthSource
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSearchPassword(): ?string
     {
         return $this->searchPassword;
@@ -134,9 +119,6 @@ class AuthSourceLdap extends AuthSource
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAuthDn(): ?string
     {
         return $this->authDn;
@@ -149,9 +131,6 @@ class AuthSourceLdap extends AuthSource
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAuthQuery(): ?string
     {
         return $this->authQuery;

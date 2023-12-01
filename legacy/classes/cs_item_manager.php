@@ -163,7 +163,6 @@ class cs_item_manager extends cs_manager
          }
 
          if (isset($this->_tag_limit)) {
-             $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
              $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('items').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
              $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('items').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
          }
@@ -274,6 +273,11 @@ class cs_item_manager extends cs_manager
          if (!empty($this->_room_array_limit)) {
              $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id IN ('.implode(', ', encode(AS_DB, $this->_room_array_limit)).')';
          }
+
+         if ($this->modificationNewerThenLimit) {
+             $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.modification_date >= "'.$this->modificationNewerThenLimit->format('Y-m-d H:i:s').'"';
+         }
+
          $query .= ' ORDER BY '.$this->addDatabasePrefix('items').'.modification_date DESC';
          if (!isset($this->_id_array_limit)) {
              if ('select' == $mode and !(isset($this->_user_sincelastlogin_limit) and $this->_user_sincelastlogin_limit)

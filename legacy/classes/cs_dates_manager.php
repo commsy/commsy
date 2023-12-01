@@ -493,16 +493,16 @@ class cs_dates_manager extends cs_manager
        }
 
        if (isset($this->_month_limit) and isset($this->_year_limit)) {
-           $string_start_day = $this->_year_limit.'-'.mb_sprintf('%02d', $this->_month_limit).'-01';
-           $string_end_day = $this->_year_limit.'-'.mb_sprintf('%02d', $this->_month_limit).'-'.daysInMonth($this->_month_limit, $this->_year_limit);
+           $string_start_day = $this->_year_limit.'-'.sprintf('%02d', $this->_month_limit).'-01';
+           $string_end_day = $this->_year_limit.'-'.sprintf('%02d', $this->_month_limit).'-'.daysInMonth($this->_month_limit, $this->_year_limit);
            $query .= ' AND ( '.
                   ' ('.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_start_day).'" AND "'.encode(AS_DB, $string_end_day).'" <= '.$this->addDatabasePrefix('dates').'.end_day AND ('.$this->addDatabasePrefix('dates').'.end_day IS NOT NULL OR '.$this->addDatabasePrefix('dates').'.end_day !=""))'.
                             ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.start_day AND '.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_end_day).'")'.
                             ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.end_day AND '.$this->addDatabasePrefix('dates').'.end_day <="'.encode(AS_DB, $string_end_day).'")'.
                      ')';
        } elseif (isset($this->_month_limit2) and isset($this->_year_limit)) {
-           $string_start_day = $this->_year_limit.'-'.mb_sprintf('%02d', $this->_month_limit2).'-01';
-           $string_end_day = $this->_year_limit.'-'.mb_sprintf('%02d', $this->_month_limit2).'-'.daysInMonth($this->_month_limit2, $this->_year_limit);
+           $string_start_day = $this->_year_limit.'-'.sprintf('%02d', $this->_month_limit2).'-01';
+           $string_end_day = $this->_year_limit.'-'.sprintf('%02d', $this->_month_limit2).'-'.daysInMonth($this->_month_limit2, $this->_year_limit);
            $query .= ' AND ( '.
                    ' ('.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_start_day).'" AND "'.encode(AS_DB, $string_end_day).'" <= '.$this->addDatabasePrefix('dates').'.end_day AND ('.$this->addDatabasePrefix('dates').'.end_day IS NOT NULL OR '.$this->addDatabasePrefix('dates').'.end_day !=""))'.
                              ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.start_day AND '.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_end_day).'")'.
@@ -510,15 +510,15 @@ class cs_dates_manager extends cs_manager
                       '';
            if (1 == $this->_month_limit2) {
                $year = $this->_year_limit - 1;
-               $string_start_day = $year.'-'.mb_sprintf('%02d', 12).'-01';
-               $string_end_day = $year.'-'.mb_sprintf('%02d', 12).'-'.daysInMonth(12, $year);
+               $string_start_day = $year.'-'.sprintf('%02d', 12).'-01';
+               $string_end_day = $year.'-'.sprintf('%02d', 12).'-'.daysInMonth(12, $year);
                $query .= ' OR ( '.
                    ' ('.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_start_day).'" AND "'.encode(AS_DB, $string_end_day).'" <= '.$this->addDatabasePrefix('dates').'.end_day AND ('.$this->addDatabasePrefix('dates').'.end_day IS NOT NULL OR '.$this->addDatabasePrefix('dates').'.end_day !=""))'.
                              ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.start_day AND '.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_end_day).'")'.
                              ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.end_day AND '.$this->addDatabasePrefix('dates').'.end_day <="'.encode(AS_DB, $string_end_day).'")'.
                       ')';
-               $string_start_day = $this->_year_limit.'-'.mb_sprintf('%02d', 2).'-01';
-               $string_end_day = $this->_year_limit.'-'.mb_sprintf('%02d', 2).'-'.daysInMonth(2, $this->_year_limit);
+               $string_start_day = $this->_year_limit.'-'.sprintf('%02d', 2).'-01';
+               $string_end_day = $this->_year_limit.'-'.sprintf('%02d', 2).'-'.daysInMonth(2, $this->_year_limit);
                $query .= ' OR ( '.
                    ' ('.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_start_day).'" AND "'.encode(AS_DB, $string_end_day).'" <= '.$this->addDatabasePrefix('dates').'.end_day AND ('.$this->addDatabasePrefix('dates').'.end_day IS NOT NULL OR '.$this->addDatabasePrefix('dates').'.end_day !=""))'.
                              ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.start_day AND '.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_end_day).'")'.
@@ -526,15 +526,15 @@ class cs_dates_manager extends cs_manager
                       ')';
            } elseif (12 == $this->_month_limit2) {
                $year = $this->_year_limit + 1;
-               $string_start_day = $year.'-'.mb_sprintf('%02d', 1).'-01';
-               $string_end_day = $year.'-'.mb_sprintf('%02d', 1).'-'.daysInMonth(1, $year);
+               $string_start_day = $year.'-'.sprintf('%02d', 1).'-01';
+               $string_end_day = $year.'-'.sprintf('%02d', 1).'-'.daysInMonth(1, $year);
                $query .= ' OR ( '.
                    ' ('.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_start_day).'" AND "'.encode(AS_DB, $string_end_day).'" <= '.$this->addDatabasePrefix('dates').'.end_day AND ('.$this->addDatabasePrefix('dates').'.end_day IS NOT NULL OR '.$this->addDatabasePrefix('dates').'.end_day !=""))'.
                              ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.start_day AND '.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_end_day).'")'.
                              ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.end_day AND '.$this->addDatabasePrefix('dates').'.end_day <="'.encode(AS_DB, $string_end_day).'")'.
                       ')';
-               $string_start_day = $this->_year_limit.'-'.mb_sprintf('%02d', 11).'-01';
-               $string_end_day = $this->_year_limit.'-'.mb_sprintf('%02d', 11).'-'.daysInMonth(11, $this->_year_limit);
+               $string_start_day = $this->_year_limit.'-'.sprintf('%02d', 11).'-01';
+               $string_end_day = $this->_year_limit.'-'.sprintf('%02d', 11).'-'.daysInMonth(11, $this->_year_limit);
                $query .= ' OR ( '.
                    ' ('.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_start_day).'" AND "'.encode(AS_DB, $string_end_day).'" <= '.$this->addDatabasePrefix('dates').'.end_day AND ('.$this->addDatabasePrefix('dates').'.end_day IS NOT NULL OR '.$this->addDatabasePrefix('dates').'.end_day !=""))'.
                              ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.start_day AND '.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_end_day).'")'.
@@ -542,16 +542,16 @@ class cs_dates_manager extends cs_manager
                       ')';
            } else {
                $month = $this->_month_limit2 - 1;
-               $string_start_day = $this->_year_limit.'-'.mb_sprintf('%02d', $month).'-01';
-               $string_end_day = $this->_year_limit.'-'.mb_sprintf('%02d', $month).'-'.daysInMonth($this->_month_limit2, $this->_year_limit);
+               $string_start_day = $this->_year_limit.'-'.sprintf('%02d', $month).'-01';
+               $string_end_day = $this->_year_limit.'-'.sprintf('%02d', $month).'-'.daysInMonth($this->_month_limit2, $this->_year_limit);
                $query .= ' OR ( '.
                    ' ('.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_start_day).'" AND "'.encode(AS_DB, $string_end_day).'" <= '.$this->addDatabasePrefix('dates').'.end_day AND ('.$this->addDatabasePrefix('dates').'.end_day IS NOT NULL OR '.$this->addDatabasePrefix('dates').'.end_day !=""))'.
                              ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.start_day AND '.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_end_day).'")'.
                              ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.end_day AND '.$this->addDatabasePrefix('dates').'.end_day <="'.encode(AS_DB, $string_end_day).'")'.
                       ')';
                $month = $this->_month_limit2 + 1;
-               $string_start_day = $this->_year_limit.'-'.mb_sprintf('%02d', $month).'-01';
-               $string_end_day = $this->_year_limit.'-'.mb_sprintf('%02d', $month).'-'.daysInMonth($month, $this->_year_limit);
+               $string_start_day = $this->_year_limit.'-'.sprintf('%02d', $month).'-01';
+               $string_end_day = $this->_year_limit.'-'.sprintf('%02d', $month).'-'.daysInMonth($month, $this->_year_limit);
                $query .= ' OR ( '.
                    ' ('.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_start_day).'" AND "'.encode(AS_DB, $string_end_day).'" <= '.$this->addDatabasePrefix('dates').'.end_day AND ('.$this->addDatabasePrefix('dates').'.end_day IS NOT NULL OR '.$this->addDatabasePrefix('dates').'.end_day !=""))'.
                              ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.start_day AND '.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_end_day).'")'.
@@ -700,7 +700,7 @@ class cs_dates_manager extends cs_manager
     */
    public function _buildItem($db_array)
    {
-       $db_array['recurrence_pattern'] = mb_unserialize($db_array['recurrence_pattern']);
+       $db_array['recurrence_pattern'] = unserialize($db_array['recurrence_pattern']);
 
        return parent::_buildItem($db_array);
    }

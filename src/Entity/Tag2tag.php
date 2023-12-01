@@ -14,6 +14,8 @@
 namespace App\Entity;
 
 use DateTime;
+use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -21,62 +23,44 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'tag2tag')]
-#[ORM\Index(name: 'from_item_id', columns: ['from_item_id'])]
-#[ORM\Index(name: 'context_id', columns: ['context_id'])]
-#[ORM\Index(name: 'deletion_date', columns: ['deletion_date'])]
-#[ORM\Index(name: 'deleter_id', columns: ['deleter_id'])]
+#[ORM\Index(columns: ['from_item_id'], name: 'from_item_id')]
+#[ORM\Index(columns: ['context_id'], name: 'context_id')]
+#[ORM\Index(columns: ['deletion_date'], name: 'deletion_date')]
+#[ORM\Index(columns: ['deleter_id'], name: 'deleter_id')]
 class Tag2tag
 {
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'link_id', type: 'integer')]
+    #[ORM\Column(name: 'link_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private $linkId;
+    private ?int $linkId = null;
 
-    #[ORM\Column(name: 'from_item_id', type: 'integer')]
+    #[ORM\Column(name: 'from_item_id', type: Types::INTEGER)]
     private int $fromItemId;
 
-    #[ORM\Column(name: 'to_item_id', type: 'integer')]
+    #[ORM\Column(name: 'to_item_id', type: Types::INTEGER)]
     private int $toItemId;
 
-    #[ORM\Column(name: 'context_id', type: 'integer')]
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
     private int $contextId;
 
-    #[ORM\Column(name: 'creator_id', type: 'integer')]
+    #[ORM\Column(name: 'creator_id', type: Types::INTEGER)]
     private int $creatorId;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'creation_date', type: 'datetime', nullable: false)]
-    private string $creationDate = '0000-00-00 00:00:00';
+    #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE, nullable: false)]
+    private ?DateTime $creationDate = null;
 
-    #[ORM\Column(name: 'modifier_id', type: 'integer', nullable: false)]
+    #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: false)]
     private string $modifierId = '0';
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'modification_date', type: 'datetime', nullable: false)]
-    private string $modificationDate = '0000-00-00 00:00:00';
+    #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: false)]
+    private ?DateTime $modificationDate = null;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'deleter_id', type: 'integer', nullable: true)]
-    private $deleterId;
+    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
+    private ?int $deleterId = null;
 
-    /**
-     * @var DateTime
-     */
-    #[ORM\Column(name: 'deletion_date', type: 'datetime', nullable: true)]
-    private $deletionDate;
+    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $deletionDate = null;
 
-    /**
-     * @var bool
-     */
-    #[ORM\Column(name: 'sorting_place', type: 'boolean', nullable: true)]
-    private $sortingPlace;
+    #[ORM\Column(name: 'sorting_place', type: Types::BOOLEAN, nullable: true)]
+    private ?bool $sortingPlace = null;
 }

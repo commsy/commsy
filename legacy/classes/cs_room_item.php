@@ -905,20 +905,6 @@ class cs_room_item extends cs_context_item
         $this->_addExtra('USAGE_INFO_FORM_HEADER', $value_array);
     }
 
-    // ##################
-    // RSS HASH
-    // ##################
-
-    public function getUserByRSSHash($rss_hash)
-    {
-        $retour = null;
-        $hash_manager = $this->_environment->getHashManager();
-        $retour = $hash_manager->getUserByRSSHash($rss_hash);
-        unset($hash_manager);
-
-        return $retour;
-    }
-
     public function initTagRootItem()
     {
         $tag_manager = $this->_environment->getTagManager();

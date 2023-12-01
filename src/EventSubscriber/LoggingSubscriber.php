@@ -13,91 +13,50 @@
 
 namespace App\EventSubscriber;
 
-use App\Services\LegacyEnvironment;
-use App\Utils\RoomService;
+use App\Repository\LogRepository;
+use App\Utils\RequestContext;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpKernel\Event\TerminateEvent;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Serializer;
 
-class LoggingSubscriber implements EventSubscriberInterface
+readonly class LoggingSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private readonly RoomService $roomService, private readonly LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        private LogRepository $logRepository,
+        private Security $security,
+        private RequestContext $requestContext
+    ) {
     }
 
     public function onTerminateEvent(TerminateEvent $event)
     {
-        $array = [];
-        if ($event->isMainRequest()) {
-            $request = $event->getRequest();
-
-            /*
-               restrict logging to the following requests:
-               "/room/<id>"
-               "/room/<id>/<rubric>"
-               "/room/<id>/<rubric>/<id>"
-               "/dashboard/<id>"
-            */
-            $logRequest = false;
-            if (preg_match('~\/room\/(\d)+$~', $request->getUri())) {
-                $logRequest = true;
-            } elseif (preg_match('~\/room\/(\d)+\/([a-z])+$~', $request->getUri())) {
-                $logRequest = true;
-            } elseif (preg_match('~\/room\/(\d)+\/([a-z])+\/(\d)+$~', $request->getUri())) {
-                $logRequest = true;
-            } elseif (preg_match('~\/dashboard\/(\d)+$~', $request->getUri())) {
-                $logRequest = true;
-            }
-
-            if ($logRequest) {
-                $environment = $this->legacyEnvironment->getEnvironment();
-                $l_current_user = $environment->getCurrentUserItem();
-
-                $array['user_agent'] = $request->headers->get('User-Agent', 'No Info');
-
-                if (isset($_POST)) {
-                    $post_content = array2XML($_POST);
-                } else {
-                    $post_content = '';
-                }
-                $current_context = $environment->getCurrentContextItem();
-                $server_item = $environment->getServerItem();
-
-                // Datenschutz
-                if ($request->server->has('REMOTE_ADDR')) {
-                    $remoteAddress = $request->server->get('REMOTE_ADDR');
-                    $array['remote_addr'] = $remoteAddress;
-                }
-
-                $array['script_name'] = $request->getScriptName();
-                $array['query_string'] = str_ireplace($request->getScriptName(), '', $request->getRequestUri());
-                $array['request_method'] = $request->getMethod();
-                $array['post_content'] = $post_content;
-                if (!empty($l_current_user)) {
-                    $array['user_item_id'] = $l_current_user->getItemID();
-                    $array['user_user_id'] = $l_current_user->getUserID();
-                }
-                $array['context_id'] = $environment->getCurrentContextID();
-                $array['module'] = $environment->getCurrentModule();
-                $array['function'] = $environment->getCurrentFunction();
-                $array['parameter_string'] = $environment->getCurrentParameterString();
-
-                $db_connector = $environment->getDBConnector();
-                $sql_query_array = $db_connector->getQueryArray();
-                $all = is_countable($sql_query_array) ? count($sql_query_array) : 0;
-                $array['queries'] = $all;
-
-                if (isset($time_start)) {
-                    $time_end = getmicrotime();
-                    $time = round($time_end - $time_start, 3);
-                    $array['time'] = $time;
-                } else {
-                    $array['time'] = 0;
-                }
-
-                $log_manager = $environment->getLogManager();
-                $log_manager->saveArray($array);
-            }
+        if (!$event->isMainRequest()) {
+            return;
         }
+
+        $request = $event->getRequest();
+        $serializer = new Serializer([], [new JsonEncoder()]);
+
+        $userAgent = $request->headers->get('User-Agent', 'No Info');
+        $postAsJson = $serializer->encode($request->request->all(), 'json');
+        $anonymousIp = IpUtils::anonymize($request->server->get('REMOTE_ADDR'), '');
+        $requestUri = $request->getRequestUri();
+        $method = $request->getMethod();
+        $username = $this->security->getUser() ? $this->security->getUser()->getUserIdentifier() : null;
+        $contextId = $this->requestContext->fetchContextId($request);
+
+        $this->logRepository->addLog(
+            $anonymousIp,
+            $userAgent,
+            $requestUri,
+            $postAsJson,
+            $method,
+            $username,
+            $contextId
+        );
     }
 
     public static function getSubscribedEvents(): array

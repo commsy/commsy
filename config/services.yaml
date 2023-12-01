@@ -26,7 +26,7 @@ parameters:
     # E-Mail
     commsy.email.from: '%env(EMAIL_FROM)%'
     commsy.email.smime.cert: '%env(MAILER_SMIME_CERT)%'
-    commsy.email.smime.key: '%env(MAILER_SMIME_KEY)'
+    commsy.email.smime.key: '%env(MAILER_SMIME_KEY)%'
 
     # E-Mail Upload
     commsy.upload.enabled: '%env(bool:EMAIL_UPLOAD_ENABLED)%'

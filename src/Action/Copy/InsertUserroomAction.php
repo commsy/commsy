@@ -56,7 +56,6 @@ class InsertUserroomAction
         }
 
         $readerManager = $this->legacyEnvironment->getReaderManager();
-        $noticedManager = $this->legacyEnvironment->getNoticedManager();
         $userRoomIds = [];
         $versionIdsByCopyIds = [];
 
@@ -90,7 +89,6 @@ class InsertUserroomAction
                     $versionIdsByCopyIds[$copyId] = $versionId;
 
                     $readerManager->markRead($copyId, $versionId);
-                    $noticedManager->markNoticed($copyId, $versionId);
                 }
             }
         }
@@ -110,9 +108,8 @@ class InsertUserroomAction
                 $relatedUserIds = array_map(fn (cs_user_item $user) => $user->getItemID(), $relatedUsers);
 
                 foreach ($versionIdsByCopyIds as $copyId => $versionId) {
-                    // TODO: allowing markItemsAsRead() & markItemsAsNoticed() to accept a matching array of version IDs would avoid this foreach loop
+                    // TODO: allowing markItemsAsRead() to accept a matching array of version IDs would avoid this foreach loop
                     $readerManager->markItemsAsRead([$copyId], $versionId, $relatedUserIds);
-                    $noticedManager->markItemsAsNoticed([$copyId], $versionId, $relatedUserIds);
                 }
             }
         }

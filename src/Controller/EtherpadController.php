@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EtherpadController extends AbstractController
 {
-    public function indexAction(
+    public function index(
         int $materialId,
         int $roomId,
         Request $request,

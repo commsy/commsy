@@ -46,7 +46,7 @@ class UploadController extends AbstractController
      * @return JsonResponse
      */
     #[Route(path: '/room/{roomId}/upload/{itemId}')]
-    public function uploadAction(
+    public function upload(
         Request $request,
         DiscService $discService,
         FileService $fileService,
@@ -164,7 +164,7 @@ class UploadController extends AbstractController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/upload/{itemId}/form/{versionId}', requirements: ['itemId' => '\d+', 'versionId' => '\d+'], defaults: ['versionId' => -1])]
-    public function uploadFormAction(
+    public function uploadForm(
         Request $request,
         ItemService $itemService,
         FileService $fileService,
@@ -276,7 +276,7 @@ class UploadController extends AbstractController
 
     #[Route(path: '/room/{roomId}/upload/{itemId}/saveupload')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function uploadSaveAction(
+    public function uploadSave(
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
         LegacyEnvironment $environment,
@@ -297,7 +297,7 @@ class UploadController extends AbstractController
      * @return JsonResponse
      */
     #[Route(path: '/room/{roomId}/base64upload/')]
-    public function base64UploadAction(
+    public function base64Upload(
         Request $request
     ): Response {
         $files = $request->files->all();
@@ -330,11 +330,14 @@ class UploadController extends AbstractController
 
     #[Route(path: '/room/{roomId}/ckupload/{itemId}/')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function ckuploadAction(
+    public function ckupload(
+        // Do not remove $roomId even if it is unused, @IsGranted() relies on this argument
+        /* @noinspection PhpUnusedParameterInspection */
+        int $roomId,
+        int $itemId,
         Request $request,
         ItemService $itemService,
-        LegacyEnvironment $environment,
-        int $itemId
+        LegacyEnvironment $environment
     ): Response {
         $legacyEnvironment = $environment->getEnvironment();
         $item = $itemService->getTypedItem($itemId);
