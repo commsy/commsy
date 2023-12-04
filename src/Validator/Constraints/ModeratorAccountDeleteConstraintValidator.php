@@ -32,7 +32,7 @@ class ModeratorAccountDeleteConstraintValidator extends ConstraintValidator
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function validate($roomId, Constraint $constraint)
+    public function validate($roomId, Constraint $constraint): void
     {
         $currentUser = $this->userService->getCurrentUserItem();
         $rooms = $this->getRoomsOnlyModeratedByUser($currentUser);

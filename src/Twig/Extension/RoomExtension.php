@@ -24,14 +24,14 @@ class RoomExtension extends AbstractExtension
     {
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('roomTitle', $this->roomTitle(...)),
         ];
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('roomExpandedHashtags', $this->roomExpandedHashtags(...)),

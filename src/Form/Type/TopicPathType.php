@@ -22,7 +22,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TopicPathType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('path', ChoiceType::class, ['choices' => $options['pathElements'], 'choice_attr' => $options['pathElementsAttr'], 'label' => 'Path', 'required' => true, 'expanded' => true, 'multiple' => true])
@@ -37,7 +37,7 @@ class TopicPathType extends AbstractType
      *
      * @param OptionsResolver $resolver The resolver for the options
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired(['pathElements', 'pathElementsAttr'])

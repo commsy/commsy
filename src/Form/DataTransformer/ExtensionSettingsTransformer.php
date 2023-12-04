@@ -30,10 +30,8 @@ class ExtensionSettingsTransformer extends AbstractTransformer
      * Transforms a cs_room_item object to an array.
      *
      * @param cs_room_item $roomItem
-     *
-     * @return array
      */
-    public function transform($roomItem)
+    public function transform($roomItem): array
     {
         $roomData = [];
 

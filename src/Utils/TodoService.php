@@ -54,7 +54,7 @@ class TodoService
      *
      * @return cs_todo_item[]
      */
-    public function getListTodos($roomId, $max = null, $start = null, $sort = null)
+    public function getListTodos($roomId, $max = null, $start = null, $sort = null): array
     {
         $this->todoManager->setContextLimit($roomId);
         if (null !== $max && null !== $start) {
@@ -77,7 +77,7 @@ class TodoService
      *
      * @return cs_todo_item[]
      */
-    public function getTodosById($roomId, $idArray)
+    public function getTodosById($roomId, $idArray): array
     {
         $this->todoManager->setContextLimit($roomId);
         $this->todoManager->setIDArrayLimit($idArray);
@@ -159,10 +159,8 @@ class TodoService
 
     /**
      * @param int $itemId
-     *
-     * @return cs_todo_item
      */
-    public function getTodo($itemId)
+    public function getTodo($itemId): cs_todo_item
     {
         return $this->todoManager->getItem($itemId);
     }
@@ -172,18 +170,12 @@ class TodoService
         return $this->stepManager->getItem($itemId);
     }
 
-    /**
-     * @return cs_todo_item
-     */
-    public function getNewTodo()
+    public function getNewTodo(): cs_todo_item
     {
         return $this->todoManager->getNewItem();
     }
 
-    /**
-     * @return cs_step_item
-     */
-    public function getNewStep()
+    public function getNewStep(): cs_step_item
     {
         return $this->stepManager->getNewItem();
     }

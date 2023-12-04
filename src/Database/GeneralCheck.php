@@ -23,10 +23,7 @@ abstract class GeneralCheck implements DatabaseCheck
     {
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getPriority()
+    public function getPriority(): int
     {
         return 999;
     }

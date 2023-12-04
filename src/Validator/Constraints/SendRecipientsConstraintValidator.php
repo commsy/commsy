@@ -28,7 +28,7 @@ class SendRecipientsConstraintValidator extends ConstraintValidator
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function validate($additional_recipients, Constraint $constraint)
+    public function validate($additional_recipients, Constraint $constraint): void
     {
         $values = $this->context->getRoot()->getData();
         $foundRecipient = false;

@@ -63,10 +63,10 @@ class Labels
     private string $type;
 
     #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
-    private $extras;
+    private ?array $extras = null;
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
-    private string $public = '0';
+    private bool $public = false;
 
     public function __construct()
     {
@@ -90,240 +90,127 @@ class Labels
         return $this->itemId;
     }
 
-    /**
-     * Set contextId.
-     *
-     * @param int $contextId
-     *
-     * @return Labels
-     */
-    public function setContextId($contextId)
+    public function setContextId(int $contextId): static
     {
         $this->contextId = $contextId;
 
         return $this;
     }
 
-    /**
-     * Get contextId.
-     *
-     * @return int
-     */
-    public function getContextId()
+    public function getContextId(): int
     {
         return $this->contextId;
     }
 
-    /**
-     * Set activationDate.
-     */
-    public function setActivationDate(DateTime $activationDate): self
+    public function setActivationDate(?DateTime $activationDate): self
     {
         $this->activationDate = $activationDate;
 
         return $this;
     }
 
-    /**
-     * Get activationDate.
-     */
     public function getActivationDate(): ?DateTime
     {
         return $this->activationDate;
     }
 
-    /**
-     * Set name.
-     *
-     * @param string $name
-     *
-     * @return Labels
-     */
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * Set description.
-     *
-     * @param string $description
-     *
-     * @return Labels
-     */
-    public function setDescription($description)
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    /**
-     * Get description.
-     *
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * Set type.
-     *
-     * @param string $type
-     *
-     * @return Labels
-     */
-    public function setType($type)
+    public function setType(string $type): static
     {
         $this->type = $type;
 
         return $this;
     }
 
-    /**
-     * Get type.
-     *
-     * @return string
-     */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * Set extras.
-     *
-     * @param array $extras
-     *
-     * @return Labels
-     */
-    public function setExtras($extras)
+    public function setExtras(?array $extras): static
     {
         $this->extras = $extras;
 
         return $this;
     }
 
-    /**
-     * Get extras.
-     *
-     * @return array
-     */
-    public function getExtras()
+    public function getExtras(): ?array
     {
         return $this->extras;
     }
 
-    /**
-     * Set public.
-     *
-     * @param bool $public
-     *
-     * @return Labels
-     */
-    public function setPublic($public)
+    public function setPublic(bool $public): static
     {
         $this->public = $public;
 
         return $this;
     }
 
-    /**
-     * Get public.
-     *
-     * @return bool
-     */
-    public function getPublic()
+    public function getPublic(): bool
     {
         return $this->public;
     }
 
-    /**
-     * Set creator.
-     *
-     * @return Labels
-     */
-    public function setCreator(User $creator = null)
+    public function setCreator(?User $creator): static
     {
         $this->creator = $creator;
 
         return $this;
     }
 
-    /**
-     * Get creator.
-     *
-     * @return User
-     */
-    public function getCreator()
+    public function getCreator(): ?User
     {
         return $this->creator;
     }
 
-    /**
-     * Set modifier.
-     *
-     * @return Labels
-     */
-    public function setModifier(User $modifier = null)
+    public function setModifier(?User $modifier): static
     {
         $this->modifier = $modifier;
 
         return $this;
     }
 
-    /**
-     * Get modifier.
-     *
-     * @return User
-     */
-    public function getModifier()
+    public function getModifier(): ?User
     {
         return $this->modifier;
     }
 
-    /**
-     * Set deleter.
-     *
-     * @return Labels
-     */
-    public function setDeleter(User $deleter = null)
+    public function setDeleter(?User $deleter): static
     {
         $this->deleter = $deleter;
 
         return $this;
     }
 
-    /**
-     * Get deleter.
-     *
-     * @return User
-     */
-    public function getDeleter()
+    public function getDeleter(): ?User
     {
         return $this->deleter;
     }
 
-    /**
-     * Get title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->getName();
     }

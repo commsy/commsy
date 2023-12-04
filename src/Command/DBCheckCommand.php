@@ -28,7 +28,7 @@ class DBCheckCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->addOption('limit', 'l', InputOption::VALUE_REQUIRED, 'Limit the checks to run');
     }

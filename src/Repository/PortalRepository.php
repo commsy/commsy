@@ -35,11 +35,9 @@ class PortalRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return mixed
-     *
      * @throws NonUniqueResultException
      */
-    public function findActivePortal(int $portalId): ?Portal
+    public function findActivePortal(int $portalId): mixed
     {
         return $this->createQueryBuilder('p')
             ->where('p.deleter IS NULL')

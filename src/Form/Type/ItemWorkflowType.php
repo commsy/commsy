@@ -32,7 +32,7 @@ class ItemWorkflowType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('workflowTrafficLight', ChoiceType::class, ['placeholder' => false, 'choices' => ['3_none' => '3_none', '0_green' => '0_green', '1_yellow' => '1_yellow', '2_red' => '2_red'], 'label' => 'workflowStatus', 'translation_domain' => 'item', 'required' => false, 'expanded' => true, 'multiple' => false])
@@ -56,7 +56,7 @@ class ItemWorkflowType extends AbstractType
      *
      * @param OptionsResolver $resolver The resolver for the options
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired([])

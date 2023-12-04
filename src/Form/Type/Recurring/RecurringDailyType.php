@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class RecurringDailyType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('recurrenceDay', NumberType::class, ['constraints' => [new NotBlank()], 'label' => 'recurrenceDay', 'attr' => ['class' => 'cs-form-input-inline', 'style' => 'margin: 0px 3px;', 'size' => '2'], 'translation_domain' => 'date'])
@@ -35,7 +35,7 @@ class RecurringDailyType extends AbstractType
      *
      * @param OptionsResolver $resolver The resolver for the options
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired([])

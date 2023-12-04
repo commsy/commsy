@@ -44,10 +44,8 @@ class MaterialsRepository extends ServiceEntityRepository
     /**
      * Used by Elastic when populating the index. The join will ensure only the latest version of a material
      * is index. Check the answer at StackOverflow for details on the greatest-n-per-group query.
-     *
-     * @return QueryBuilder
      */
-    public function createSearchQueryBuilder()
+    public function createSearchQueryBuilder(): QueryBuilder
     {
         // @see: https://stackoverflow.com/a/7745635
         return $this->createQueryBuilder('m')
@@ -62,10 +60,8 @@ class MaterialsRepository extends ServiceEntityRepository
     /**
      * Used by Elastica to transform results to model. We use the join to ensure only the latest version of a material
      * is in the result set.
-     *
-     * @return QueryBuilder
      */
-    public function createSearchHydrationQueryBuilder(string $entityAlias)
+    public function createSearchHydrationQueryBuilder(string $entityAlias): QueryBuilder
     {
         return $this->createQueryBuilder($entityAlias)
             ->leftJoin(

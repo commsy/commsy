@@ -54,7 +54,7 @@ class MarkedService
      *
      * @return cs_item[]
      */
-    public function getListEntries($max = null, $start = null, $sort = null)
+    public function getListEntries($max = null, $start = null, $sort = null): array
     {
         $currentClipboardIds = $this->requestStack->getSession()->get('clipboard_ids', []);
 
@@ -89,7 +89,7 @@ class MarkedService
      *
      * @return cs_item[]
      */
-    public function getMarkedItemsById($ids)
+    public function getMarkedItemsById($ids): array
     {
         $allMarkedItems = $this->getListEntries();
 

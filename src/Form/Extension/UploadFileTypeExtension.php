@@ -22,8 +22,6 @@ class UploadFileTypeExtension extends AbstractTypeExtension
 {
     /**
      * Returns the class of the type being extended.
-     *
-     * @return string the class of the type being extended
      */
     public static function getExtendedTypes(): iterable
     {
@@ -33,7 +31,7 @@ class UploadFileTypeExtension extends AbstractTypeExtension
     /**
      * Pass the currently defined maximum file upload size to the view.
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $maxUploadFileSize = $this->getMaxUploadSizeInMegabytes();
 

@@ -32,7 +32,7 @@ class UniqueUserIdValidator extends ConstraintValidator
      * @param mixed      $userId     The user ID that should be validated
      * @param Constraint $constraint The constraint for the validation
      */
-    public function validate($userId, Constraint $constraint)
+    public function validate($userId, Constraint $constraint): void
     {
         if (!$constraint instanceof UniqueUserId) {
             throw new UnexpectedTypeException($constraint, UniqueUserId::class);

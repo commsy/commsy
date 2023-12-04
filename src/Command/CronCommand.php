@@ -34,7 +34,7 @@ class CronCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->addArgument('contextId', InputArgument::OPTIONAL, 'Context ID (Portal / Server) to be processed in this run')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force run and ignore if already run')

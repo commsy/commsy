@@ -43,26 +43,17 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getObjectClass(): string
     {
         return implode(',', array_map(fn (ElasticaToModelTransformerInterface $transformer) => $transformer->getObjectClass(), $this->transformers));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getIdentifierField(): string
     {
         return array_map(fn (ElasticaToModelTransformerInterface $transformer) => $transformer->getIdentifierField(), $this->transformers)[0];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function transform(array $elasticaObjects)
+    public function transform(array $elasticaObjects): array
     {
         $sorted = [];
         foreach ($elasticaObjects as $object) {
@@ -92,10 +83,7 @@ class ElasticaToModelTransformerCollection implements ElasticaToModelTransformer
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function hybridTransform(array $elasticaObjects)
+    public function hybridTransform(array $elasticaObjects): array
     {
         $objects = $this->transform($elasticaObjects);
 

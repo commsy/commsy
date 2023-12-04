@@ -40,50 +40,26 @@ class RoomCategoriesLinks
         return $this->id;
     }
 
-    /**
-     * Set contextId.
-     *
-     * @param int $contextId
-     *
-     * @return RoomCategoriesLinks
-     */
-    public function setContextId($contextId)
+    public function setContextId(int $contextId): static
     {
         $this->context_id = $contextId;
 
         return $this;
     }
 
-    /**
-     * Get contextId.
-     *
-     * @return int
-     */
-    public function getContextId()
+    public function getContextId(): int
     {
         return $this->context_id;
     }
 
-    /**
-     * Set categoryId.
-     *
-     * @param int $ccategoryId
-     *
-     * @return RoomcategoriesLinks
-     */
-    public function setCategoryId($categoryId)
+    public function setCategoryId(int $categoryId): static
     {
         $this->category_id = $categoryId;
 
         return $this;
     }
 
-    /**
-     * Get categoryId.
-     *
-     * @return int
-     */
-    public function getCategoryId()
+    public function getCategoryId(): int
     {
         return $this->category_id;
     }

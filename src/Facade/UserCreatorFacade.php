@@ -99,7 +99,7 @@ class UserCreatorFacade
      *
      * @throws Exception
      */
-    private function generatePassword(): string
+    private function generatePassword(): bool|string
     {
         return substr(sha1(random_bytes(10)), 0, 10);
     }

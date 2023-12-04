@@ -23,10 +23,8 @@ class UserroomTransformer extends AbstractTransformer
      * Transforms a cs_userroom_item object to an array.
      *
      * @param cs_userroom_item $userroom
-     *
-     * @return array
      */
-    public function transform($userroom)
+    public function transform($userroom): array
     {
         $projectData = [];
 

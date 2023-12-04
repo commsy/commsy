@@ -124,10 +124,7 @@ class RoomRepository extends ServiceEntityRepository
         return array_column($query->getResult(), 'itemId');
     }
 
-    /**
-     * @return int|mixed|string
-     */
-    public function updateActivity(string $oldState, string $newState)
+    public function updateActivity(string $oldState, string $newState): mixed
     {
         return $this->createQueryBuilder('r')
             ->update()

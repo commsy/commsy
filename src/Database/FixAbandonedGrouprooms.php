@@ -29,7 +29,7 @@ class FixAbandonedGrouprooms implements DatabaseCheck
     ) {
     }
 
-    public function getPriority()
+    public function getPriority(): int
     {
         return 200;
     }

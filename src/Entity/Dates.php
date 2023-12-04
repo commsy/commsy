@@ -79,13 +79,13 @@ class Dates
     private DateTime $datetimeEnd;
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
-    private string $public = '0';
+    private bool $public = false;
 
     #[ORM\Column(name: 'date_mode', type: Types::BOOLEAN, nullable: false)]
-    private string $dateMode = '0';
+    private bool $dateMode = false;
 
-    #[ORM\Column(name: 'extras', type: Types::TEXT, length: 65535, nullable: true)]
-    private ?string $extras = null;
+    #[ORM\Column(name: 'extras', type: Types::ARRAY, length: 65535, nullable: true)]
+    private ?array $extras = null;
 
     #[ORM\Column(name: 'color', type: Types::STRING, length: 255, nullable: true)]
     private ?string $color = null;
@@ -97,10 +97,10 @@ class Dates
     private ?string $recurrencePattern = null;
 
     #[ORM\Column(name: 'external', type: Types::BOOLEAN, nullable: false)]
-    private string $external = '0';
+    private bool $external = false;
 
     #[ORM\Column(name: 'whole_day', type: Types::BOOLEAN, nullable: false)]
-    private string $wholeDay = '0';
+    private bool $wholeDay = false;
 
     #[ORM\Column(name: 'uid', type: Types::STRING, length: 255, nullable: true)]
     private ?string $uid = null;
@@ -118,568 +118,290 @@ class Dates
         return $this->itemId;
     }
 
-    /**
-     * Set contextId.
-     *
-     * @param int $contextId
-     *
-     * @return Dates
-     */
-    public function setContextId($contextId)
+    public function setContextId(?int $contextId): static
     {
         $this->contextId = $contextId;
 
         return $this;
     }
 
-    /**
-     * Get contextId.
-     *
-     * @return int
-     */
-    public function getContextId()
+    public function getContextId(): ?int
     {
         return $this->contextId;
     }
 
-    /**
-     * Set deleterId.
-     *
-     * @param int $deleterId
-     *
-     * @return Dates
-     */
-    public function setDeleterId($deleterId)
+    public function setDeleterId(?int $deleterId): static
     {
         $this->deleterId = $deleterId;
 
         return $this;
     }
 
-    /**
-     * Get deleterId.
-     *
-     * @return int
-     */
-    public function getDeleterId()
+    public function getDeleterId(): ?int
     {
         return $this->deleterId;
     }
 
-    /**
-     * Set activationDate.
-     */
-    public function setActivationDate(DateTime $activationDate): self
+    public function setActivationDate(?DateTime $activationDate): static
     {
         $this->activationDate = $activationDate;
 
         return $this;
     }
 
-    /**
-     * Get activationDate.
-     */
     public function getActivationDate(): ?DateTime
     {
         return $this->activationDate;
     }
 
-    /**
-     * Set title.
-     *
-     * @param string $title
-     *
-     * @return Dates
-     */
-    public function setTitle($title)
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * Get title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * Set description.
-     *
-     * @param string $description
-     *
-     * @return Dates
-     */
-    public function setDescription($description)
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    /**
-     * Get description.
-     *
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * Set startTime.
-     *
-     * @param string $startTime
-     *
-     * @return Dates
-     */
-    public function setStartTime($startTime)
+    public function setStartTime(?string $startTime): static
     {
         $this->startTime = $startTime;
 
         return $this;
     }
 
-    /**
-     * Get startTime.
-     *
-     * @return string
-     */
-    public function getStartTime()
+    public function getStartTime(): ?string
     {
         return $this->startTime;
     }
 
-    /**
-     * Set endTime.
-     *
-     * @param string $endTime
-     *
-     * @return Dates
-     */
-    public function setEndTime($endTime)
+    public function setEndTime(?string $endTime): static
     {
         $this->endTime = $endTime;
 
         return $this;
     }
 
-    /**
-     * Get endTime.
-     *
-     * @return string
-     */
-    public function getEndTime()
+    public function getEndTime(): ?string
     {
         return $this->endTime;
     }
 
-    /**
-     * Set startDay.
-     *
-     * @param string $startDay
-     *
-     * @return Dates
-     */
-    public function setStartDay($startDay)
+    public function setStartDay(string $startDay): static
     {
         $this->startDay = $startDay;
 
         return $this;
     }
 
-    /**
-     * Get startDay.
-     *
-     * @return string
-     */
-    public function getStartDay()
+    public function getStartDay(): string
     {
         return $this->startDay;
     }
 
-    /**
-     * Set endDay.
-     *
-     * @param string $endDay
-     *
-     * @return Dates
-     */
-    public function setEndDay($endDay)
+    public function setEndDay(?string $endDay): static
     {
         $this->endDay = $endDay;
 
         return $this;
     }
 
-    /**
-     * Get endDay.
-     *
-     * @return string
-     */
-    public function getEndDay()
+    public function getEndDay(): ?string
     {
         return $this->endDay;
     }
 
-    /**
-     * Set place.
-     *
-     * @param string $place
-     *
-     * @return Dates
-     */
-    public function setPlace($place)
+    public function setPlace(?string $place): static
     {
         $this->place = $place;
 
         return $this;
     }
 
-    /**
-     * Get place.
-     *
-     * @return string
-     */
-    public function getPlace()
+    public function getPlace(): ?string
     {
         return $this->place;
     }
 
-    /**
-     * Set datetimeStart.
-     *
-     * @param DateTime $datetimeStart
-     *
-     * @return Dates
-     */
-    public function setDatetimeStart($datetimeStart)
+    public function setDatetimeStart(DateTime $datetimeStart): static
     {
         $this->datetimeStart = $datetimeStart;
 
         return $this;
     }
 
-    /**
-     * Get datetimeStart.
-     *
-     * @return DateTime
-     */
-    public function getDatetimeStart()
+    public function getDatetimeStart(): DateTime
     {
         return $this->datetimeStart;
     }
 
-    /**
-     * Set datetimeEnd.
-     *
-     * @param DateTime $datetimeEnd
-     *
-     * @return Dates
-     */
-    public function setDatetimeEnd($datetimeEnd)
+    public function setDatetimeEnd(DateTime $datetimeEnd): static
     {
         $this->datetimeEnd = $datetimeEnd;
 
         return $this;
     }
 
-    /**
-     * Get datetimeEnd.
-     *
-     * @return DateTime
-     */
-    public function getDatetimeEnd()
+    public function getDatetimeEnd(): DateTime
     {
         return $this->datetimeEnd;
     }
 
-    /**
-     * Set public.
-     *
-     * @param bool $public
-     *
-     * @return Dates
-     */
-    public function setPublic($public)
+    public function setPublic(bool $public): static
     {
         $this->public = $public;
 
         return $this;
     }
 
-    /**
-     * Get public.
-     *
-     * @return bool
-     */
-    public function getPublic()
+    public function getPublic(): bool
     {
         return $this->public;
     }
 
-    /**
-     * Set dateMode.
-     *
-     * @param bool $dateMode
-     *
-     * @return Dates
-     */
-    public function setDateMode($dateMode)
+    public function setDateMode(bool $dateMode): static
     {
         $this->dateMode = $dateMode;
 
         return $this;
     }
 
-    /**
-     * Get dateMode.
-     *
-     * @return bool
-     */
-    public function getDateMode()
+    public function getDateMode(): bool
     {
         return $this->dateMode;
     }
 
-    /**
-     * Set extras.
-     *
-     * @param string $extras
-     *
-     * @return Dates
-     */
-    public function setExtras($extras)
+    public function setExtras(?array $extras): static
     {
         $this->extras = $extras;
 
         return $this;
     }
 
-    /**
-     * Get extras.
-     *
-     * @return string
-     */
-    public function getExtras()
+    public function getExtras(): ?array
     {
         return $this->extras;
     }
 
-    /**
-     * Set color.
-     *
-     * @param string $color
-     *
-     * @return Dates
-     */
-    public function setColor($color)
+    public function setColor(?string $color): static
     {
         $this->color = $color;
 
         return $this;
     }
 
-    /**
-     * Get color.
-     *
-     * @return string
-     */
-    public function getColor()
+    public function getColor(): ?string
     {
         return $this->color;
     }
 
-    /**
-     * Set recurrenceId.
-     *
-     * @param int $recurrenceId
-     *
-     * @return Dates
-     */
-    public function setRecurrenceId($recurrenceId)
+    public function setRecurrenceId(?int $recurrenceId): static
     {
         $this->recurrenceId = $recurrenceId;
 
         return $this;
     }
 
-    /**
-     * Get recurrenceId.
-     *
-     * @return int
-     */
-    public function getRecurrenceId()
+    public function getRecurrenceId(): ?int
     {
         return $this->recurrenceId;
     }
 
-    /**
-     * Set recurrencePattern.
-     *
-     * @param string $recurrencePattern
-     *
-     * @return Dates
-     */
-    public function setRecurrencePattern($recurrencePattern)
+    public function setRecurrencePattern(?string $recurrencePattern): static
     {
         $this->recurrencePattern = $recurrencePattern;
 
         return $this;
     }
 
-    /**
-     * Get recurrencePattern.
-     *
-     * @return string
-     */
-    public function getRecurrencePattern()
+    public function getRecurrencePattern(): ?string
     {
         return $this->recurrencePattern;
     }
 
-    /**
-     * Set creator.
-     *
-     * @return Dates
-     */
-    public function setCreator(User $creator = null)
+    public function setCreator(?User $creator): static
     {
         $this->creator = $creator;
 
         return $this;
     }
 
-    /**
-     * Get creator.
-     *
-     * @return User
-     */
-    public function getCreator()
+    public function getCreator(): ?User
     {
         return $this->creator;
     }
 
-    /**
-     * Set modifier.
-     *
-     * @return Dates
-     */
-    public function setModifier(User $modifier = null)
+    public function setModifier(?User $modifier): static
     {
         $this->modifier = $modifier;
 
         return $this;
     }
 
-    /**
-     * Get modifier.
-     *
-     * @return User
-     */
-    public function getModifier()
+    public function getModifier(): ?User
     {
         return $this->modifier;
     }
 
-    /**
-     * Set calendarId.
-     *
-     * @param int $calendarId
-     *
-     * @return Dates
-     */
-    public function setCalendarId($calendarId)
+    public function setCalendarId(?int $calendarId): static
     {
         $this->calendarId = $calendarId;
 
         return $this;
     }
 
-    /**
-     * Get calendarId.
-     *
-     * @return int
-     */
-    public function getCalendarId()
+    public function getCalendarId(): ?int
     {
         return $this->calendarId;
     }
 
-    /**
-     * Set external.
-     *
-     * @param bool $external
-     *
-     * @return Dates
-     */
-    public function setExternal($external)
+    public function setExternal(bool $external): static
     {
         $this->external = $external;
 
         return $this;
     }
 
-    /**
-     * Get external.
-     *
-     * @return bool
-     */
-    public function getExternal()
+    public function getExternal(): bool
     {
         return $this->external;
     }
 
-    /**
-     * Set uid.
-     *
-     * @param string $uid
-     *
-     * @return Dates
-     */
-    public function setUid($uid)
+    public function setUid(?string $uid): static
     {
         $this->uid = $uid;
 
         return $this;
     }
 
-    /**
-     * Get uid.
-     *
-     * @return string
-     */
-    public function getUid()
+    public function getUid(): ?string
     {
         return $this->uid;
     }
 
-    /**
-     * Set whole day.
-     *
-     * @param bool $wholeDay
-     *
-     * @return Dates
-     */
-    public function setWholeDay($wholeDay)
+    public function setWholeDay(bool $wholeDay): static
     {
         $this->wholeDay = $wholeDay;
 
         return $this;
     }
 
-    /**
-     * Get whole day.
-     *
-     * @return bool
-     */
-    public function getWholeDay()
+    public function getWholeDay(): bool
     {
         return $this->wholeDay;
     }

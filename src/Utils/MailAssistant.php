@@ -297,7 +297,7 @@ class MailAssistant
      *
      *   @return array with label name as key and id as value
      */
-    private function getChoicesByLabelType($type)
+    private function getChoicesByLabelType($type): array
     {
         $labelManager = $this->legacyEnvironment->getLabelManager();
         $labelManager->resetLimits();

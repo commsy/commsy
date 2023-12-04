@@ -25,10 +25,8 @@ class InstitutionTransformer extends AbstractTransformer
      * Transforms a cs_group_item object to an array.
      *
      * @param cs_label_item $labelItem
-     *
-     * @return array
      */
-    public function transform($labelItem)
+    public function transform($labelItem): array
     {
         $labelData = [];
 

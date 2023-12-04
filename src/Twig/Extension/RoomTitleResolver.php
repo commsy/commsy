@@ -32,7 +32,7 @@ class RoomTitleResolver extends AbstractExtension
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('roomtitle', $this->resolveRoomTitle(...)),

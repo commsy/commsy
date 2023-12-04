@@ -40,50 +40,26 @@ class RoomCategories
         return $this->id;
     }
 
-    /**
-     * Set contextId.
-     *
-     * @param int $contextId
-     *
-     * @return RoomCategories
-     */
-    public function setContextId($contextId)
+    public function setContextId(int $contextId): static
     {
         $this->context_id = $contextId;
 
         return $this;
     }
 
-    /**
-     * Get contextId.
-     *
-     * @return int
-     */
-    public function getContextId()
+    public function getContextId(): int
     {
         return $this->context_id;
     }
 
-    /**
-     * Set title.
-     *
-     * @param string $title
-     *
-     * @return RoomCategories
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): static
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * Get title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }

@@ -50,7 +50,7 @@ class AccountIndexSendMail extends AbstractType
     /**
      * @return mixed
      */
-    public function getRecipients()
+    public function getRecipients(): mixed
     {
         return $this->recipients;
     }
@@ -60,10 +60,7 @@ class AccountIndexSendMail extends AbstractType
         $this->recipients = $recipients;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSender()
+    public function getSender(): mixed
     {
         return $this->sender;
     }
@@ -73,10 +70,7 @@ class AccountIndexSendMail extends AbstractType
         $this->sender = $sender;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCopyToSender()
+    public function getCopyToSender(): mixed
     {
         return $this->copyToSender;
     }
@@ -86,10 +80,7 @@ class AccountIndexSendMail extends AbstractType
         $this->copyToSender = $copyToSender;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSubject()
+    public function getSubject(): mixed
     {
         return $this->subject;
     }
@@ -99,10 +90,7 @@ class AccountIndexSendMail extends AbstractType
         $this->subject = $subject;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getMessage()
+    public function getMessage(): mixed
     {
         return $this->message;
     }
@@ -112,10 +100,7 @@ class AccountIndexSendMail extends AbstractType
         $this->message = $message;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getNames()
+    public function getNames(): mixed
     {
         return $this->names;
     }

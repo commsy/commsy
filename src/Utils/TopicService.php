@@ -60,7 +60,7 @@ class TopicService
      *
      * @return cs_topic_item[]
      */
-    public function getListTopics($roomId, $max = null, $start = null)
+    public function getListTopics($roomId, $max = null, $start = null): array
     {
         $this->topicManager->setContextLimit($roomId);
         if (null !== $max && null !== $start) {
@@ -79,7 +79,7 @@ class TopicService
      *
      * @return cs_topic_item[]
      */
-    public function getTopicsById($roomId, $ids)
+    public function getTopicsById($roomId, $ids): array
     {
         $this->topicManager->setContextLimit($roomId);
         $this->topicManager->setIDArrayLimit($ids);

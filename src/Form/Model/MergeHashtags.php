@@ -23,9 +23,6 @@ class MergeHashtags
     #[Assert\NotIdenticalTo(propertyPath: 'first', message: 'Your selection must differ.')]
     private ?Labels $second = null;
 
-    /**
-     * @return Labels
-     */
     public function getFirst(): ?Labels
     {
         return $this->first;
@@ -38,9 +35,6 @@ class MergeHashtags
         return $this;
     }
 
-    /**
-     * @return Labels
-     */
     public function getSecond(): ?Labels
     {
         return $this->second;

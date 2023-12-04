@@ -32,7 +32,7 @@ class FixGroupAll implements DatabaseCheck
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function getPriority()
+    public function getPriority(): int
     {
         return 200;
     }

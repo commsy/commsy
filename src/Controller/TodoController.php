@@ -1025,10 +1025,8 @@ class TodoController extends BaseController
 
     /**
      * @param cs_room_item $room
-     *
-     * @return FormInterface
      */
-    private function createFilterForm($room)
+    private function createFilterForm($room): FormInterface
     {
         // setup filter form default values
         $defaultFilterValues = [

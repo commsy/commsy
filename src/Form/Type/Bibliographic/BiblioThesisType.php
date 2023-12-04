@@ -37,7 +37,7 @@ class BiblioThesisType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $translationDomain = 'form';
         $language = $this->legacyEnvironment->getSelectedLanguage();

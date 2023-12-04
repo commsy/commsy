@@ -140,7 +140,7 @@ class MarkupExtension extends AbstractExtension
      *
      * @return string the processed string
      */
-    private function commsyMarkupHeadings($text)
+    private function commsyMarkupHeadings($text): string
     {
         $matches = [];
 
@@ -164,7 +164,7 @@ class MarkupExtension extends AbstractExtension
      *
      * @return string the processed string
      */
-    private function commsyMarkupLists($text)
+    private function commsyMarkupLists($text): string
     {
         $html = '';
         $matches = [];
@@ -227,7 +227,7 @@ class MarkupExtension extends AbstractExtension
      *
      * @return string
      */
-    private function commsyMarkupEscapes($text)
+    private function commsyMarkupEscapes($text): string
     {
         $text = str_replace("\*", '&ast;', (string) $text);
         $text = str_replace("\_", '&lowbar;', $text);

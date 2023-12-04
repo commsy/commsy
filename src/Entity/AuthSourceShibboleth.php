@@ -65,9 +65,6 @@ class AuthSourceShibboleth extends AuthSource
         $this->identityProviders = new ArrayCollection();
     }
 
-    /**
-     * @return string
-     */
     public function getLoginUrl(): ?string
     {
         return $this->loginUrl;
@@ -80,9 +77,6 @@ class AuthSourceShibboleth extends AuthSource
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getLogoutUrl(): ?string
     {
         return $this->logoutUrl;
@@ -95,9 +89,6 @@ class AuthSourceShibboleth extends AuthSource
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPasswordResetUrl(): ?string
     {
         return $this->passwordResetUrl;
@@ -110,9 +101,6 @@ class AuthSourceShibboleth extends AuthSource
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getMappingUsername(): ?string
     {
         return $this->mappingUsername;
@@ -125,9 +113,6 @@ class AuthSourceShibboleth extends AuthSource
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getMappingFirstname(): ?string
     {
         return $this->mappingFirstname;
@@ -140,9 +125,6 @@ class AuthSourceShibboleth extends AuthSource
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getMappingLastname(): ?string
     {
         return $this->mappingLastname;
@@ -155,9 +137,6 @@ class AuthSourceShibboleth extends AuthSource
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getMappingEmail(): ?string
     {
         return $this->mappingEmail;
@@ -169,10 +148,6 @@ class AuthSourceShibboleth extends AuthSource
 
         return $this;
     }
-
-    /**
-     * @return Collection|ShibbolethIdentityProvider[]|null
-     */
     public function getIdentityProviders(): ?Collection
     {
         return $this->identityProviders;

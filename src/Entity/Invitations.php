@@ -27,7 +27,7 @@ class Invitations
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(name: 'hash', type: Types::STRING)]
     private ?string $hash = null;
@@ -53,156 +53,79 @@ class Invitations
         $this->expirationDate = new DateTime('0000-00-00 00:00:00');
     }
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set hash.
-     *
-     * @param string $hash
-     *
-     * @return Invitations
-     */
-    public function setHash($hash)
+    public function setHash(?string $hash): static
     {
         $this->hash = $hash;
 
         return $this;
     }
 
-    /**
-     * Get hash.
-     *
-     * @return string
-     */
-    public function getHash()
+    public function getHash(): ?string
     {
         return $this->hash;
     }
 
-    /**
-     * Set email.
-     *
-     * @param string $email
-     *
-     * @return Invitations
-     */
-    public function setEmail($email)
+    public function setEmail(?string $email): static
     {
         $this->email = $email;
 
         return $this;
     }
 
-    /**
-     * Get email.
-     *
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * Set authSourceId.
-     *
-     * @param int $authSourceId
-     *
-     * @return Invitations
-     */
-    public function setAuthSourceId($authSourceId)
+    public function setAuthSourceId(?int $authSourceId): static
     {
         $this->authSourceId = $authSourceId;
 
         return $this;
     }
 
-    /**
-     * Get authSourceId.
-     *
-     * @return int
-     */
-    public function getAuthSourceId()
+    public function getAuthSourceId(): ?int
     {
         return $this->authSourceId;
     }
 
-    /**
-     * Set contextId.
-     *
-     * @param int $contextId
-     *
-     * @return Invitations
-     */
-    public function setContextId($contextId)
+    public function setContextId(?int $contextId): static
     {
         $this->contextId = $contextId;
 
         return $this;
     }
 
-    /**
-     * Get contextId.
-     *
-     * @return int
-     */
-    public function getContextId()
+    public function getContextId(): ?int
     {
         return $this->contextId;
     }
 
-    /**
-     * Set creationDate.
-     *
-     * @param DateTime $creationDate
-     *
-     * @return Invitations
-     */
-    public function setCreationDate($creationDate)
+    public function setCreationDate(DateTime $creationDate): static
     {
         $this->creationDate = $creationDate;
 
         return $this;
     }
 
-    /**
-     * Get creationDate.
-     *
-     * @return DateTime
-     */
-    public function getCreationDate()
+    public function getCreationDate(): DateTime
     {
         return $this->creationDate;
     }
 
-    /**
-     * Set expirationDate.
-     *
-     * @param DateTime $expirationDate
-     *
-     * @return Invitations
-     */
-    public function setExpirationDate($expirationDate)
+    public function setExpirationDate(DateTime $expirationDate): static
     {
         $this->expirationDate = $expirationDate;
 
         return $this;
     }
 
-    /**
-     * Get expirationDate.
-     *
-     * @return DateTime
-     */
-    public function getExpirationDate()
+    public function getExpirationDate(): DateTime
     {
         return $this->expirationDate;
     }

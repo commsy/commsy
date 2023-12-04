@@ -62,10 +62,10 @@ class Announcement
     private DateTime $enddate;
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
-    private string $public = '0';
+    private bool $public = false;
 
-    #[ORM\Column(name: 'extras', type: Types::TEXT, length: 65535, nullable: true)]
-    private ?string $extras = null;
+    #[ORM\Column(name: 'extras', type: Types::ARRAY, length: 65535, nullable: true)]
+    private ?array $extras = null;
 
     public function __construct()
     {
@@ -84,19 +84,14 @@ class Announcement
      *
      * @return Announcement
      */
-    public function setContextId($contextId)
+    public function setContextId($contextId): Announcement
     {
         $this->contextId = $contextId;
 
         return $this;
     }
 
-    /**
-     * Get contextId.
-     *
-     * @return int
-     */
-    public function getContextId()
+    public function getContextId(): ?int
     {
         return $this->contextId;
     }
@@ -124,50 +119,26 @@ class Announcement
         return $this->activationDate;
     }
 
-    /**
-     * Set title.
-     *
-     * @param string $title
-     *
-     * @return Announcement
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): Announcement
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * Get title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * Set description.
-     *
-     * @param string $description
-     *
-     * @return Announcement
-     */
-    public function setDescription($description)
+    public function setDescription($description): Announcement
     {
         $this->description = $description;
 
         return $this;
     }
 
-    /**
-     * Get description.
-     *
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -184,116 +155,62 @@ class Announcement
         return $this->enddate;
     }
 
-    /**
-     * Set public.
-     *
-     * @param bool $public
-     *
-     * @return Announcement
-     */
-    public function setPublic($public)
+    public function setPublic(bool $public): Announcement
     {
         $this->public = $public;
 
         return $this;
     }
 
-    /**
-     * Get public.
-     *
-     * @return bool
-     */
-    public function getPublic()
+    public function getPublic(): bool
     {
         return $this->public;
     }
 
-    /**
-     * Set extras.
-     *
-     * @param string $extras
-     *
-     * @return Announcement
-     */
-    public function setExtras($extras)
+    public function setExtras(array $extras): Announcement
     {
         $this->extras = $extras;
 
         return $this;
     }
 
-    /**
-     * Get extras.
-     *
-     * @return string
-     */
-    public function getExtras()
+    public function getExtras(): ?array
     {
         return $this->extras;
     }
 
-    /**
-     * Set creator.
-     *
-     * @return Announcement
-     */
-    public function setCreator(User $creator = null)
+    public function setCreator(User $creator = null): Announcement
     {
         $this->creator = $creator;
 
         return $this;
     }
 
-    /**
-     * Get creator.
-     *
-     * @return User
-     */
-    public function getCreator()
+    public function getCreator(): ?User
     {
         return $this->creator;
     }
 
-    /**
-     * Set modifier.
-     *
-     * @return Announcement
-     */
-    public function setModifier(User $modifier = null)
+    public function setModifier(User $modifier = null): Announcement
     {
         $this->modifier = $modifier;
 
         return $this;
     }
 
-    /**
-     * Get modifier.
-     *
-     * @return User
-     */
-    public function getModifier()
+    public function getModifier(): ?User
     {
         return $this->modifier;
     }
 
-    /**
-     * Set deleter.
-     *
-     * @return Announcement
-     */
-    public function setDeleter(User $deleter = null)
+    public function setDeleter(User $deleter = null): Announcement
     {
         $this->deleter = $deleter;
 
         return $this;
     }
 
-    /**
-     * Get deleter.
-     *
-     * @return User
-     */
-    public function getDeleter()
+    public function getDeleter(): ?User
     {
         return $this->deleter;
     }

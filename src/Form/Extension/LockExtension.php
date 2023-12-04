@@ -35,7 +35,7 @@ class LockExtension extends AbstractTypeExtension
     ) {
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if (!$options['lock_protection']) {
             return;
@@ -45,7 +45,7 @@ class LockExtension extends AbstractTypeExtension
             ->addEventSubscriber($this->lockValidationSubscriber);
     }
 
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         if ($options['lock_protection'] && !$view->parent && $options['compound']) {
             $factory = $form->getConfig()->getFormFactory();
@@ -71,7 +71,7 @@ class LockExtension extends AbstractTypeExtension
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'lock_protection' => false,

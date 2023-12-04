@@ -18,10 +18,6 @@ namespace App\Entity;
  */
 class PortalUserEdit
 {
-    public $itemId = '0';
-
-    private $contextId;
-
     private $firstName;
 
     private $lastName;
@@ -61,414 +57,195 @@ class PortalUserEdit
 
     private $description;
 
-//    private $picture;
-
     private $mayCreateContext;
 
-    private $mayUseCaldav;
-
-    /**
-     * @var mixed|null
-     */
-    private $uploadUrl;
-
-    private ?bool $changeMailEverywhere = null;
-
-    public function getItemId(): string
+    public function getFirstName(): ?string
     {
-        return $this->itemId;
+        return $this->firstName;
     }
 
-        public function setItemId(string $itemId): void
-        {
-            $this->itemId = $itemId;
-        }
+    public function setFirstName(?string $firstName): void
+    {
+        $this->firstName = $firstName;
+    }
 
-        /**
-         * @return string
-         */
-        public function getContextId()
-        {
-            return $this->contextId;
-        }
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
 
-        /**
-         * @param string $contextId
-         */
-        public function setContextId($contextId): void
-        {
-            $this->contextId = $contextId;
-        }
+    public function setLastName(?string $lastName): void
+    {
+        $this->lastName = $lastName;
+    }
 
-        /**
-         * @return string
-         */
-        public function getFirstName()
-        {
-            return $this->firstName;
-        }
+    public function getAcademicDegree(): ?string
+    {
+        return $this->academicDegree;
+    }
 
-        /**
-         * @param string $firstName
-         */
-        public function setFirstName($firstName): void
-        {
-            $this->firstName = $firstName;
-        }
+    public function setAcademicDegree(?string $academicDegree): void
+    {
+        $this->academicDegree = $academicDegree;
+    }
 
-        /**
-         * @return string
-         */
-        public function getLastName()
-        {
-            return $this->lastName;
-        }
+    public function getBirthday(): ?string
+    {
+        return $this->birthday;
+    }
 
-        /**
-         * @param string $lastName
-         */
-        public function setLastName($lastName): void
-        {
-            $this->lastName = $lastName;
-        }
+    public function setBirthday(?string $birthday): void
+    {
+        $this->birthday = $birthday;
+    }
 
-        /**
-         * @return string
-         */
-        public function getAcademicDegree()
-        {
-            return $this->academicDegree;
-        }
+    public function getStreet(): ?string
+    {
+        return $this->street;
+    }
 
-        /**
-         * @param string $academicDegree
-         */
-        public function setAcademicDegree($academicDegree): void
-        {
-            $this->academicDegree = $academicDegree;
-        }
+    public function setStreet($street): void
+    {
+        $this->street = $street;
+    }
 
-        /**
-         * @return string
-         */
-        public function getBirthday()
-        {
-            return $this->birthday;
-        }
+    public function getCity(): mixed
+    {
+        return $this->city;
+    }
 
-        /**
-         * @param string $birthday
-         */
-        public function setBirthday($birthday): void
-        {
-            $this->birthday = $birthday;
-        }
+    public function setCity(mixed $city): void
+    {
+        $this->city = $city;
+    }
 
-        /**
-         * @return string
-         */
-        public function getStreet()
-        {
-            return $this->street;
-        }
+    public function getZip(): ?string
+    {
+        return $this->zip;
+    }
 
-        /**
-         * @param string $street
-         */
-        public function setStreet($street): void
-        {
-            $this->street = $street;
-        }
+    public function setZip(?string $zip): void
+    {
+        $this->zip = $zip;
+    }
 
-        /**
-         * @return mixed
-         */
-        public function getCity()
-        {
-            return $this->city;
-        }
+    public function getWorkspace(): ?string
+    {
+        return $this->workspace;
+    }
 
-        public function setCity(mixed $city): void
-        {
-            $this->city = $city;
-        }
+    public function setWorkspace(?string $workspace): void
+    {
+        $this->workspace = $workspace;
+    }
 
-        /**
-         * @return string
-         */
-        public function getZip()
-        {
-            return $this->zip;
-        }
+    public function getTelephone(): ?string
+    {
+        return $this->telephone;
+    }
 
-        /**
-         * @param string $zip
-         */
-        public function setZip($zip): void
-        {
-            $this->zip = $zip;
-        }
+    public function setTelephone(?string $telephone): void
+    {
+        $this->telephone = $telephone;
+    }
 
-        /**
-         * @return string
-         */
-        public function getWorkspace()
-        {
-            return $this->workspace;
-        }
+    public function getSecondTelephone(): ?string
+    {
+        return $this->secondTelephone;
+    }
 
-        /**
-         * @param string $workspace
-         */
-        public function setWorkspace($workspace): void
-        {
-            $this->workspace = $workspace;
-        }
+    public function setSecondTelephone(?string $secondTelephone): void
+    {
+        $this->secondTelephone = $secondTelephone;
+    }
 
-        /**
-         * @return string
-         */
-        public function getTelephone()
-        {
-            return $this->telephone;
-        }
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
 
-        /**
-         * @param string $telephone
-         */
-        public function setTelephone($telephone): void
-        {
-            $this->telephone = $telephone;
-        }
+    public function setEmail(?string $email): void
+    {
+        $this->email = $email;
+    }
 
-        /**
-         * @return string
-         */
-        public function getSecondTelephone()
-        {
-            return $this->secondTelephone;
-        }
+    public function getEmailChangeAll(): ?bool
+    {
+        return $this->emailChangeAll;
+    }
 
-        /**
-         * @param string $secondTelephone
-         */
-        public function setSecondTelephone($secondTelephone): void
-        {
-            $this->secondTelephone = $secondTelephone;
-        }
+    public function setEmailChangeAll(?bool $emailChangeAll): void
+    {
+        $this->emailChangeAll = $emailChangeAll;
+    }
 
-        /**
-         * @return string
-         */
-        public function getEmail()
-        {
-            return $this->email;
-        }
+    public function getIcq(): ?string
+    {
+        return $this->icq;
+    }
 
-        /**
-         * @param string $email
-         */
-        public function setEmail($email): void
-        {
-            $this->email = $email;
-        }
+    public function setIcq(?string $icq): void
+    {
+        $this->icq = $icq;
+    }
 
-        /**
-         * @return bool
-         */
-        public function getEmailChangeAll()
-        {
-            return $this->emailChangeAll;
-        }
+    public function getMsn(): ?string
+    {
+        return $this->msn;
+    }
 
-        /**
-         * @param bool $emailChangeAll
-         */
-        public function setEmailChangeAll($emailChangeAll): void
-        {
-            $this->emailChangeAll = $emailChangeAll;
-        }
+    public function setMsn(?string $msn): void
+    {
+        $this->msn = $msn;
+    }
 
-        /**
-         * @return string
-         */
-        public function getIcq()
-        {
-            return $this->icq;
-        }
+    public function getSkype(): ?string
+    {
+        return $this->skype;
+    }
 
-        /**
-         * @param string $icq
-         */
-        public function setIcq($icq): void
-        {
-            $this->icq = $icq;
-        }
+    public function setSkype(?string $skype): void
+    {
+        $this->skype = $skype;
+    }
 
-        /**
-         * @return string
-         */
-        public function getMsn()
-        {
-            return $this->msn;
-        }
+    public function getYahoo(): ?string
+    {
+        return $this->yahoo;
+    }
 
-        /**
-         * @param string $msn
-         */
-        public function setMsn($msn): void
-        {
-            $this->msn = $msn;
-        }
+    public function setYahoo(?string $yahoo): void
+    {
+        $this->yahoo = $yahoo;
+    }
 
-        /**
-         * @return string
-         */
-        public function getSkype()
-        {
-            return $this->skype;
-        }
+    public function getHomepage(): ?string
+    {
+        return $this->homepage;
+    }
 
-        /**
-         * @param string $skype
-         */
-        public function setSkype($skype): void
-        {
-            $this->skype = $skype;
-        }
+    public function setHomepage(?string $homepage): void
+    {
+        $this->homepage = $homepage;
+    }
 
-        /**
-         * @return string
-         */
-        public function getYahoo()
-        {
-            return $this->yahoo;
-        }
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
 
-        /**
-         * @param string $yahoo
-         */
-        public function setYahoo($yahoo): void
-        {
-            $this->yahoo = $yahoo;
-        }
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
 
-        /**
-         * @return string
-         */
-        public function getHomepage()
-        {
-            return $this->homepage;
-        }
+    public function getMayCreateContext(): ?string
+    {
+        return $this->mayCreateContext;
+    }
 
-        /**
-         * @param string $homepage
-         */
-        public function setHomepage($homepage): void
-        {
-            $this->homepage = $homepage;
-        }
-
-        /**
-         * @return string
-         */
-        public function getDescription()
-        {
-            return $this->description;
-        }
-
-        /**
-         * @param string $description
-         */
-        public function setDescription($description): void
-        {
-            $this->description = $description;
-        }
-
-//    /**
-//     * @return string
-//     */
-//    public function getPicture()
-//    {
-//        return $this->picture;
-//    }
-//
-//    /**
-//     * @param string $picture
-//     */
-//    public function setPicture($picture): void
-//    {
-//        $this->picture = $picture;
-//    }
-
-        /**
-         * @return string
-         */
-        public function getMayCreateContext()
-        {
-            return $this->mayCreateContext;
-        }
-
-        /**
-         * @param string $mayCreateContext
-         */
-        public function setMayCreateContext($mayCreateContext): void
-        {
-            $this->mayCreateContext = $mayCreateContext;
-        }
-
-        /**
-         * @return string
-         */
-        public function getMayUseCaldav()
-        {
-            return $this->mayUseCaldav;
-        }
-
-        /**
-         * @param string $mayUseCaldav
-         */
-        public function setMayUseCaldav($mayUseCaldav): void
-        {
-            $this->mayUseCaldav = $mayUseCaldav;
-        }
-
-        public function isChangeMailEverywhere(): bool
-        {
-            return $this->changeMailEverywhere;
-        }
-
-        public function setChangeMailEverywhere(bool $changeMailEverywhere): void
-        {
-            $this->changeMailEverywhere = $changeMailEverywhere;
-        }
-
-//    /**
-//     * @return bool
-//     */
-//    public function isOverrideExistingPicture(): bool
-//    {
-//        return $this->overrideExistingPicture ?? 0;
-//    }
-//
-//    /**
-//     * @param bool $overrideExistingPicture
-//     */
-//    public function setOverrideExistingPicture(bool $overrideExistingPicture): void
-//    {
-//        $this->overrideExistingPicture = $overrideExistingPicture;
-//    }
-
-        /**
-         * @return mixed
-         */
-        public function getUploadUrl()
-        {
-            return $this->uploadUrl;
-        }
-
-        public function setUploadUrl(mixed $uploadUrl): void
-        {
-            $this->uploadUrl = $uploadUrl;
-        }
+    public function setMayCreateContext(?string $mayCreateContext): void
+    {
+        $this->mayCreateContext = $mayCreateContext;
+    }
 }

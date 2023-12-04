@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Constraints;
 
 class ContextRequestType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('request', SubmitType::class, [
@@ -107,7 +107,7 @@ class ContextRequestType extends AbstractType
      *
      * @param OptionsResolver $resolver The resolver for the options
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired(['checkNewMembersWithCode', 'withAGB', 'CheckNewMembersNever'])

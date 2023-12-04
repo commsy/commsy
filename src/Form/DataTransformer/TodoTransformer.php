@@ -32,11 +32,9 @@ class TodoTransformer extends AbstractTransformer
     /**
      * Transforms a cs_todo_item object to an array.
      *
-     * @param cs_todo_item $dateItem
-     *
-     * @return array
+     * @param cs_todo_item $todoItem
      */
-    public function transform($todoItem)
+    public function transform($todoItem): array
     {
         $todoData = [];
 

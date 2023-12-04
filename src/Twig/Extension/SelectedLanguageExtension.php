@@ -30,7 +30,7 @@ class SelectedLanguageExtension extends AbstractExtension
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('selectedLanguage', $this->selectedLanguage(...)),

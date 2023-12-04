@@ -30,7 +30,7 @@ class FormatDateTimeRangeExtension extends AbstractExtension
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('formatDateTimeRange', $this->formatDateTimeRange(...)),
@@ -53,7 +53,7 @@ class FormatDateTimeRangeExtension extends AbstractExtension
      *
      * @return string formatted date & time range description
      */
-    public function formatDateTimeRange(bool $wholeDay, DateTime $dateTimeStart, ?DateTime $dateTimeEnd, bool $extendedFormat = false)
+    public function formatDateTimeRange(bool $wholeDay, DateTime $dateTimeStart, ?DateTime $dateTimeEnd, bool $extendedFormat = false): string
     {
         global $symfonyContainer;
         $locale = $this->legacyEnvironment->getSelectedLanguage();
@@ -127,7 +127,7 @@ class FormatDateTimeRangeExtension extends AbstractExtension
      *
      * @return float
      */
-    public function daysTouchedByDateRange(DateTime $startDate, DateTime $endDate)
+    public function daysTouchedByDateRange(DateTime $startDate, DateTime $endDate): float
     {
         $startDate->setTime(0, 0, 0);
         $endDate->setTime(23, 59, 59);

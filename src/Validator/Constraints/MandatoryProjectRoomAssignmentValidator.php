@@ -33,7 +33,7 @@ class MandatoryProjectRoomAssignmentValidator extends ConstraintValidator
     /**
      * @param object $unused
      */
-    public function validate($unused, Constraint $constraint)
+    public function validate($unused, Constraint $constraint): void
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         if ('mandatory' !== $portalItem->getProjectRoomLinkStatus()) {

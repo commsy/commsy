@@ -241,8 +241,6 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @return void
-     *
      * @throws Exception
      */
     private function datePassedDays(DateTime $compare, int $numDays): bool

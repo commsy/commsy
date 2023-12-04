@@ -23,10 +23,7 @@ class Recipient
 
     private ?string $language = null;
 
-    /**
-     * @return mixed
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -41,10 +38,7 @@ class Recipient
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getFirstname()
+    public function getFirstname(): ?string
     {
         return $this->firstname;
     }
@@ -59,10 +53,7 @@ class Recipient
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getLastname()
+    public function getLastname(): ?string
     {
         return $this->lastname;
     }
@@ -77,10 +68,7 @@ class Recipient
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getLanguage()
+    public function getLanguage(): ?string
     {
         return $this->language;
     }

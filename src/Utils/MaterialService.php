@@ -70,7 +70,7 @@ class MaterialService
      *
      * @return cs_material_item[]
      */
-    public function getMaterialsById($roomId, $ids)
+    public function getMaterialsById($roomId, $ids): array
     {
         $this->materialManager->setContextLimit($roomId);
         $this->materialManager->setIDArrayLimit($ids);

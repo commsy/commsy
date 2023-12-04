@@ -43,10 +43,7 @@ class RoomManager
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    /**
-     * @return Room|null
-     */
-    public function getRoom(int $roomId): ?object
+    public function getRoom(int $roomId): ?Room
     {
         $roomRepository = $this->entityManager->getRepository(Room::class);
         $room = $roomRepository->findOneBy(['itemId' => $roomId]);

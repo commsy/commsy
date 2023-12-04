@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class RecurringMonthlyType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('recurrenceMonth', TextType::class, ['constraints' => [new NotBlank()], 'label' => 'recurrenceMonth', 'attr' => ['style' => 'margin: 0px 3px;', 'size' => '2'], 'translation_domain' => 'date'])
@@ -38,7 +38,7 @@ class RecurringMonthlyType extends AbstractType
      *
      * @param OptionsResolver $resolver The resolver for the options
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired([])

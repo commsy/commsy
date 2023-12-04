@@ -371,9 +371,6 @@ class Room
         return $this;
     }
 
-    /**
-     * Get activity.
-     */
     public function getActivity(): int
     {
         return $this->activity;
@@ -385,9 +382,6 @@ class Room
         return $this;
     }
 
-    /**
-     * Get type.
-     */
     public function getType(): string
     {
         return $this->type;
@@ -399,9 +393,6 @@ class Room
         return $this;
     }
 
-    /**
-     * Get public.
-     */
     public function getPublic(): bool
     {
         return $this->public;
@@ -424,9 +415,6 @@ class Room
         return $this;
     }
 
-    /**
-     * Get openForGuests.
-     */
     public function getOpenForGuests(): bool
     {
         return $this->openForGuests;
@@ -438,26 +426,17 @@ class Room
         return $this;
     }
 
-    /**
-     * Get continuous.
-     */
     public function getContinuous(): int
     {
         return $this->continuous;
     }
 
-    /**
-     * Set template.
-     */
     public function setTemplate(bool $template): Room
     {
         $this->template = $template ? 1 : -1;
         return $this;
     }
 
-    /**
-     * Get template.
-     */
     public function getTemplate(): bool
     {
         return 1 == $this->template;
@@ -508,10 +487,8 @@ class Room
 
     /**
      * Add a slug (a unique textual identifier for this room).
-     *
-     * @return $this
      */
-    public function addSlug(RoomSlug $slug): self
+    public function addSlug(RoomSlug $slug): static
     {
         if (!$this->slugs->contains($slug)) {
             $this->slugs->add($slug);
@@ -520,12 +497,7 @@ class Room
         return $this;
     }
 
-    /**
-     * Removes a slug
-     *
-     * @return $this
-     */
-    public function removeSlug(RoomSlug $slug): self
+    public function removeSlug(RoomSlug $slug): static
     {
         if ($this->slugs->removeElement($slug)) {
             // set the owning side to null (unless already changed)
@@ -536,9 +508,6 @@ class Room
         return $this;
     }
 
-    /**
-     * Set creator.
-     */
     public function setCreator(User $creator = null): Room
     {
         $this->creator = $creator;

@@ -13,6 +13,8 @@
 
 namespace App\Form\DataTransformer;
 
+use cs_discussionarticle_item;
+
 class DiscussionarticleTransformer extends AbstractTransformer
 {
     protected $entity = 'discarticle';
@@ -20,11 +22,9 @@ class DiscussionarticleTransformer extends AbstractTransformer
     /**
      * Transforms a cs_discussion_item object to an array.
      *
-     * @param \cs_discussionarticle_item $discussionarticleItem
-     *
-     * @return array
+     * @param cs_discussionarticle_item $discussionarticleItem
      */
-    public function transform($discussionarticleItem)
+    public function transform($discussionarticleItem): array
     {
         $discussionarticleData = [];
 
@@ -38,12 +38,10 @@ class DiscussionarticleTransformer extends AbstractTransformer
     /**
      * Applies an array of data to an existing object.
      *
-     * @param \cs_discussionarticle_item $discussionArticle
+     * @param cs_discussionarticle_item $discussionArticle
      * @param array                      $data
-     *
-     * @return \cs_discussionarticle_item
      */
-    public function applyTransformation($discussionArticle, $data)
+    public function applyTransformation($discussionArticle, $data): cs_discussionarticle_item
     {
         $discussionArticle->setDescription($data['description']);
 

@@ -85,10 +85,7 @@ class Send
      */
     private $files;
 
-    /**
-     * @return mixed
-     */
-    public function getSubject()
+    public function getSubject(): mixed
     {
         return $this->subject;
     }
@@ -98,10 +95,7 @@ class Send
         $this->subject = $subject;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getMessage()
+    public function getMessage(): mixed
     {
         return $this->message;
     }
@@ -111,10 +105,7 @@ class Send
         $this->message = $message;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSendToAttendees()
+    public function getSendToAttendees(): mixed
     {
         return $this->sendToAttendees;
     }
@@ -124,10 +115,7 @@ class Send
         $this->sendToAttendees = $sendToAttendees;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSendToAssigned()
+    public function getSendToAssigned(): mixed
     {
         return $this->sendToAssigned;
     }
@@ -137,10 +125,7 @@ class Send
         $this->sendToAssigned = $sendToAssigned;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSendToGroupAll()
+    public function getSendToGroupAll(): mixed
     {
         return $this->sendToGroupAll;
     }
@@ -150,10 +135,7 @@ class Send
         $this->sendToGroupAll = $sendToGroupAll;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSendToGroups()
+    public function getSendToGroups(): mixed
     {
         return $this->sendToGroups;
     }
@@ -163,10 +145,7 @@ class Send
         $this->sendToGroups = $sendToGroups;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSendToInstitutions()
+    public function getSendToInstitutions(): mixed
     {
         return $this->sendToInstitutions;
     }
@@ -176,10 +155,7 @@ class Send
         $this->sendToInstitutions = $sendToInstitutions;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSendToAll()
+    public function getSendToAll(): mixed
     {
         return $this->sendToAll;
     }
@@ -189,10 +165,7 @@ class Send
         $this->sendToAll = $sendToAll;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSendToSelected()
+    public function getSendToSelected(): mixed
     {
         return $this->sendToSelected;
     }
@@ -202,10 +175,7 @@ class Send
         $this->sendToSelected = $sendToSelected;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSendToCreator()
+    public function getSendToCreator(): mixed
     {
         return $this->sendToCreator;
     }
@@ -215,10 +185,7 @@ class Send
         $this->sendToCreator = $sendToCreator;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCopyToSender()
+    public function getCopyToSender(): mixed
     {
         return $this->copyToSender;
     }
@@ -228,10 +195,7 @@ class Send
         $this->copyToSender = $copyToSender;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getAdditionalRecipients()
+    public function getAdditionalRecipients(): mixed
     {
         return $this->additionalRecipients;
     }
@@ -241,10 +205,7 @@ class Send
         $this->additionalRecipients = $additionalRecipients;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getUpload()
+    public function getUpload(): mixed
     {
         return $this->upload;
     }
@@ -254,10 +215,7 @@ class Send
         $this->upload = $upload;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getFiles()
+    public function getFiles(): mixed
     {
         return $this->files;
     }

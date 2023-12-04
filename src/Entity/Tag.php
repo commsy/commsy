@@ -36,7 +36,7 @@ class Tag
     private ?int $contextId = null;
 
     #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: false)]
-    private string $creatorId = '0';
+    private ?int $creatorId = null;
 
     #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
     private ?int $modifierId = null;
@@ -53,26 +53,14 @@ class Tag
         return $this->itemId;
     }
 
-    /**
-     * Set contextId.
-     *
-     * @param int $contextId
-     *
-     * @return Tag
-     */
-    public function setContextId($contextId)
+    public function setContextId(?int $contextId): static
     {
         $this->contextId = $contextId;
 
         return $this;
     }
 
-    /**
-     * Get contextId.
-     *
-     * @return int
-     */
-    public function getContextId()
+    public function getContextId(): ?int
     {
         return $this->contextId;
     }
@@ -81,92 +69,51 @@ class Tag
      * Set creatorId.
      *
      * @param int $creatorId
-     *
-     * @return Tag
      */
-    public function setCreatorId($creatorId)
+    public function setCreatorId($creatorId): static
     {
         $this->creatorId = $creatorId;
 
         return $this;
     }
 
-    /**
-     * Get creatorId.
-     *
-     * @return int
-     */
-    public function getCreatorId()
+    public function getCreatorId(): ?int
     {
         return $this->creatorId;
     }
 
-    /**
-     * Set modifierId.
-     *
-     * @param int $modifierId
-     *
-     * @return Tag
-     */
-    public function setModifierId($modifierId)
+    public function setModifierId(?int $modifierId): static
     {
         $this->modifierId = $modifierId;
 
         return $this;
     }
 
-    /**
-     * Get modifierId.
-     *
-     * @return int
-     */
-    public function getModifierId()
+    public function getModifierId(): ?int
     {
         return $this->modifierId;
     }
 
-    /**
-     * Set deleter.
-     *
-     * @return Labels
-     */
-    public function setDeleter(User $deleter = null)
+    public function setDeleter(User $deleter = null): static
     {
         $this->deleter = $deleter;
 
         return $this;
     }
 
-    /**
-     * Get deleter.
-     *
-     * @return User
-     */
-    public function getDeleter()
+    public function getDeleter(): ?User
     {
         return $this->deleter;
     }
 
-    /**
-     * Set title.
-     *
-     * @param string $title
-     *
-     * @return Tag
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): static
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * Get title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }

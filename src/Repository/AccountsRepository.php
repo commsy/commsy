@@ -34,11 +34,9 @@ class AccountsRepository extends ServiceEntityRepository
      *
      * @param array $fields associative array of account credentials with keys: `username`, `contextId`, `authSource`
      *
-     * @return Account|mixed
-     *
      * @throws NonUniqueResultException
      */
-    public function findOneByCredentialsArray(array $fields)
+    public function findOneByCredentialsArray(array $fields): ?Account
     {
         return $this->findOneByCredentials($fields['username'], $fields['contextId'], $fields['authSource']);
     }
@@ -83,12 +81,9 @@ class AccountsRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @return int|mixed|string
-     */
-    public function updateActivity(string $oldState, string $newState)
+    public function updateActivity(string $oldState, string $newState): void
     {
-        return $this->createQueryBuilder('a')
+        $this->createQueryBuilder('a')
             ->update()
             ->set('a.activityState', ':newState')
             ->where('a.activityState = :oldState')

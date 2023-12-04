@@ -18,7 +18,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class RecurringNoneType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
     }
 }

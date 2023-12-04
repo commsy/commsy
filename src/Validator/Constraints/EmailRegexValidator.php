@@ -31,11 +31,9 @@ class EmailRegexValidator extends ConstraintValidator
     /**
      * @param Account $account
      *
-     * @return void
-     *
      * @throws NonUniqueResultException
      */
-    public function validate($account, Constraint $constraint)
+    public function validate($account, Constraint $constraint): void
     {
         if (!$account instanceof Account) {
             throw new UnexpectedTypeException($constraint, Account::class);

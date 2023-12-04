@@ -82,12 +82,7 @@ class Files
         $this->creationDate = new DateTime('0000-00-00 00:00:00');
     }
 
-    /**
-     * Get file content base64 encoded.
-     *
-     * @return string (base64)
-     */
-    public function getContent()
+    public function getContent(): string|bool|null
     {
         $filePath = $this->getFilepath();
 

@@ -42,10 +42,7 @@ class UserRepository extends ServiceEntityRepository
             ]);
     }
 
-    /**
-     * @return mixed
-     */
-    public function getModeratorsByRoomId(int $roomId)
+    public function getModeratorsByRoomId(int $roomId): mixed
     {
         return $this->createQueryBuilder('u')
             ->where('u.status = 3')
@@ -56,10 +53,7 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @return mixed
-     */
-    public function getContactsByRoomId(int $roomId)
+    public function getContactsByRoomId(int $roomId): mixed
     {
         return $this->createQueryBuilder('u')
             ->where('u.isContact = 1')
@@ -70,10 +64,7 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @return mixed
-     */
-    public function findActiveUsers(int $contextId)
+    public function findActiveUsers(int $contextId): mixed
     {
         return $this->createQueryBuilder('u')
             ->where('u.contextId = :contextId')
@@ -84,10 +75,7 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @return mixed
-     */
-    public function findActiveUsersAsQuery(int $contextId)
+    public function findActiveUsersAsQuery(int $contextId): mixed
     {
         return $this->createQueryBuilder('u')
             ->where('u.contextId = :contextId')

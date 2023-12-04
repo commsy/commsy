@@ -26,7 +26,7 @@ class FlatPickrType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addViewTransformer(new DateTimeToStringTransformer(
             null,
@@ -38,7 +38,7 @@ class FlatPickrType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $flatPickrOptions = [];
         $flatPickrOptions['enableTime'] = ('datetime' === $options['input'] || 'time' === $options['input']);
@@ -50,7 +50,7 @@ class FlatPickrType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'input' => 'datetime',
