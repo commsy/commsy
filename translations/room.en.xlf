@@ -78,6 +78,10 @@
                 <source>moderation support</source>
                 <target>E-mail to moderator/s</target>
             </trans-unit>
+            <trans-unit id="pinned-entries">
+                <source>Pinned entries</source>
+                <target>Pinned entries</target>
+            </trans-unit>
             <trans-unit id="usage-notes">
                 <source>Usage notes</source>
                 <target>Usage notes</target>

@@ -186,6 +186,8 @@ class RoomController extends AbstractController
 
         $userTasks = $userRepository->getConfirmableUserByContextId($roomId)->getQuery()->getResult();
 
+        $pinnedItems = $itemService->getPinnedItems($roomId);
+
         return $this->render('room/home.html.twig', [
             'homeInformationEntry' => $homeInformationEntry,
             'form' => $filterForm,
@@ -207,6 +209,7 @@ class RoomController extends AbstractController
             'userTasks' => $userTasks,
             'deletesRoomIfUnused' => $portalItem->isActivatedDeletingUnusedRooms(),
             'daysUnusedBeforeRoomDeletion' => $portalItem->getDaysUnusedBeforeDeletingRooms(),
+            'pinnedItemsCount' => count($pinnedItems)
         ]);
     }
 

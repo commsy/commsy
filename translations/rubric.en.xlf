@@ -73,35 +73,35 @@
              <trans-unit id="17">
                 <source>find rooms</source>
                 <target>Search workspaces</target>
-            </trans-unit>            
+            </trans-unit>
              <trans-unit id="18">
                 <source>days</source>
                 <target>days</target>
-            </trans-unit>            
+            </trans-unit>
              <trans-unit id="19">
                 <source>new Entries</source>
                 <target>New entries</target>
-            </trans-unit>            
+            </trans-unit>
              <trans-unit id="20">
                 <source>dashboard description text</source>
                 <target>Your own dashboard with many functions and widgets.</target>
-            </trans-unit>            
+            </trans-unit>
              <trans-unit id="21">
                 <source>own rooms</source>
                 <target>My own workspaces</target>
-            </trans-unit>            
+            </trans-unit>
              <trans-unit id="22">
                 <source>room search text</source>
                 <target>Search for name, description, moderators,... </target>
-            </trans-unit>           
+            </trans-unit>
              <trans-unit id="23">
                 <source>dashboard</source>
                 <target>Dashboard</target>
-            </trans-unit>           
+            </trans-unit>
              <trans-unit id="24">
                 <source>Home</source>
                 <target>Home</target>
-            </trans-unit>           
+            </trans-unit>
              <trans-unit id="25">
                 <source>settings</source>
                 <target>Settings</target>
@@ -141,6 +141,14 @@
             <trans-unit id="action_remove_marked">
                 <source>remove marked</source>
                 <target>Remove from 'Marked entries'</target>
+            </trans-unit>
+            <trans-unit id="action_add_to_pinned">
+                <source>add to pinned entries</source>
+                <target>Pin</target>
+            </trans-unit>
+            <trans-unit id="action_remove_pinned">
+                <source>remove from pinned entries</source>
+                <target>Unpin</target>
             </trans-unit>
             <trans-unit id="31">
                 <source>mark read</source>

@@ -66,6 +66,14 @@
                 <source>Entry marked|%count% entries marked</source>
                 <target>Entry marked|%count% entries marked</target>
             </trans-unit>
+            <trans-unit id="pinSuccess">
+                <source>Entry pinned|%count% entries pinned</source>
+                <target>Entry pinned|%count% entries pinned</target>
+            </trans-unit>
+            <trans-unit id="unpinSuccess">
+                <source>Entry unpinned|%count% entries unpinned</source>
+                <target>Entry unpinned|%count% entries unpinned</target>
+            </trans-unit>
             <trans-unit id="exportToWordpress">
                 <source>Export to Wordpress</source>
                 <target>Export to Wordpress</target>

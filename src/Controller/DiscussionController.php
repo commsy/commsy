@@ -21,6 +21,8 @@ use App\Action\Mark\CategorizeAction;
 use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
 use App\Action\MarkRead\MarkReadAction;
+use App\Action\Pin\PinAction;
+use App\Action\Pin\UnpinAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\DiscussionFilterType;
 use App\Form\DataTransformer\DiscussionarticleTransformer;
@@ -134,7 +136,8 @@ class DiscussionController extends BaseController
     #[Route(path: '/room/{roomId}/discussion')]
     public function list(
         Request $request,
-        int $roomId
+        int $roomId,
+        ItemService $itemService
     ): Response {
         $roomItem = $this->getRoom($roomId);
 
@@ -159,6 +162,8 @@ class DiscussionController extends BaseController
         // get discussion list from manager service
         $itemsCountArray = $this->discussionService->getCountArray($roomId);
 
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_DISCUSSION_TYPE, CS_DISCARTICLE_TYPE ]);
+
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('discussion')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('discussion');
@@ -168,7 +173,8 @@ class DiscussionController extends BaseController
         return $this->render('discussion/list.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm,
-            'module' => 'discussion',
+            'module' => CS_DISCUSSION_TYPE,
+            'relatedModule' => CS_DISCARTICLE_TYPE,
             'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),
             'showWorkflow' => $roomItem->withWorkflow(),
@@ -181,6 +187,7 @@ class DiscussionController extends BaseController
             'isArchived' => $roomItem->getArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'sort' => $sort,
+            'pinnedItemsCount' => count($pinnedItems)
         ]);
     }
 
@@ -295,6 +302,7 @@ class DiscussionController extends BaseController
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'userCount' => $infoArray['userCount'],
             'draft' => $infoArray['draft'],
+            'pinned' => $infoArray['pinned'],
             'showRating' => $infoArray['showRating'],
             'showHashtags' => $infoArray['showHashtags'],
             'showAssociations' => $infoArray['showAssociations'],
@@ -469,6 +477,7 @@ class DiscussionController extends BaseController
         $infoArray['readSinceModificationCount'] = $read_since_modification_count;
         $infoArray['userCount'] = $all_user_count;
         $infoArray['draft'] = $this->itemService->getItem($itemId)->isDraft();
+        $infoArray['pinned'] = $this->itemService->getItem($itemId)->isPinned();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['user'] = $this->legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
@@ -964,6 +973,36 @@ class DiscussionController extends BaseController
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $markReadAction->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/discussion/xhr/pin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrPinAction(
+        Request $request,
+        PinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/discussion/xhr/unpin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrUnpinAction(
+        Request $request,
+        UnpinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
     }
 
     /**
