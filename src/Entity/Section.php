@@ -43,7 +43,7 @@ class Section
     private int $contextId;
 
     #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: false)]
-    private string $creatorId = '0';
+    private ?int $creatorId = null;
 
     #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
     private ?int $modifierId = null;
@@ -58,18 +58,18 @@ class Section
     private ?string $description = null;
 
     #[ORM\Column(name: 'number', type: Types::SMALLINT, nullable: false)]
-    private string $number = '0';
+    private int $number = 0;
 
     #[ORM\ManyToOne(targetEntity: 'Materials', inversedBy: 'sections')]
     #[ORM\JoinColumn(name: 'material_item_id', referencedColumnName: 'item_id')]
     #[ORM\JoinColumn(name: 'version_id', referencedColumnName: 'version_id')]
     private ?Materials $material = null;
 
-    #[ORM\Column(name: 'extras', type: Types::TEXT, length: 65535, nullable: true)]
-    private ?string $extras = null;
+    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
+    private ?array $extras = null;
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
-    private string $public = '0';
+    private bool $public = false;
 
     public function setItemId(int $itemId)
     {
@@ -107,216 +107,110 @@ class Section
         return $this->contextId;
     }
 
-    /**
-     * Set creatorId.
-     *
-     * @param int $creatorId
-     *
-     * @return Section
-     */
-    public function setCreatorId($creatorId)
+    public function setCreatorId(?int $creatorId): static
     {
         $this->creatorId = $creatorId;
 
         return $this;
     }
 
-    /**
-     * Get creatorId.
-     *
-     * @return int
-     */
-    public function getCreatorId()
+    public function getCreatorId(): ?int
     {
         return $this->creatorId;
     }
 
-    /**
-     * Set modifierId.
-     *
-     * @param int $modifierId
-     *
-     * @return Section
-     */
-    public function setModifierId($modifierId)
+    public function setModifierId(?int $modifierId): static
     {
         $this->modifierId = $modifierId;
 
         return $this;
     }
 
-    /**
-     * Get modifierId.
-     *
-     * @return int
-     */
-    public function getModifierId()
+    public function getModifierId(): ?int
     {
         return $this->modifierId;
     }
 
-    /**
-     * Set deleterId.
-     *
-     * @param int $deleterId
-     *
-     * @return Section
-     */
-    public function setDeleterId($deleterId)
+    public function setDeleterId(?int $deleterId): static
     {
         $this->deleterId = $deleterId;
 
         return $this;
     }
 
-    /**
-     * Get deleterId.
-     *
-     * @return int
-     */
-    public function getDeleterId()
+    public function getDeleterId(): ?int
     {
         return $this->deleterId;
     }
 
-    /**
-     * Set title.
-     *
-     * @param string $title
-     *
-     * @return Section
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): static
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * Get title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * Set description.
-     *
-     * @param string $description
-     *
-     * @return Section
-     */
-    public function setDescription($description)
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    /**
-     * Get description.
-     *
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * Set number.
-     *
-     * @param int $number
-     *
-     * @return Section
-     */
-    public function setNumber($number)
+    public function setNumber(int $number): static
     {
         $this->number = $number;
 
         return $this;
     }
 
-    /**
-     * Get number.
-     *
-     * @return int
-     */
-    public function getNumber()
+    public function getNumber(): int
     {
         return $this->number;
     }
 
-    /**
-     * Set extras.
-     *
-     * @param string $extras
-     *
-     * @return Section
-     */
-    public function setExtras($extras)
+    public function setExtras(?array $extras): static
     {
         $this->extras = $extras;
 
         return $this;
     }
 
-    /**
-     * Get extras.
-     *
-     * @return string
-     */
-    public function getExtras()
+    public function getExtras(): ?array
     {
         return $this->extras;
     }
 
-    /**
-     * Set public.
-     *
-     * @param bool $public
-     *
-     * @return Section
-     */
-    public function setPublic($public)
+    public function setPublic(bool $public): static
     {
         $this->public = $public;
 
         return $this;
     }
 
-    /**
-     * Get public.
-     *
-     * @return bool
-     */
-    public function getPublic()
+    public function getPublic(): bool
     {
         return $this->public;
     }
 
-    /**
-     * Set material.
-     *
-     * @return Section
-     */
-    public function setMaterial(Materials $material = null)
+    public function setMaterial(?Materials $material): static
     {
         $this->material = $material;
 
         return $this;
     }
 
-    /**
-     * Get material.
-     *
-     * @return Materials
-     */
-    public function getMaterial()
+    public function getMaterial(): ?Materials
     {
         return $this->material;
     }

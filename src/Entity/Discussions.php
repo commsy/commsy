@@ -15,6 +15,7 @@ namespace App\Entity;
 
 use App\Utils\EntityDatesTrait;
 use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -53,41 +54,29 @@ class Discussions
     #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
     private ?DateTime $activationDate = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 200, nullable: false)]
     private string $title;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private string $description;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'latest_article_item_id', type: Types::INTEGER, nullable: true)]
     private ?int $latestArticleItemId = null;
 
-    /**
-     * @var \DateTimeInterface
-     */
     #[ORM\Column(name: 'latest_article_modification_date', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $latestArticleModificationDate = null;
+    private ?DateTimeInterface $latestArticleModificationDate = null;
 
     #[ORM\Column(name: 'status', type: Types::INTEGER, nullable: false)]
-    private string $status = '1';
+    private int $status = 1;
 
     #[ORM\Column(name: 'discussion_type', type: Types::STRING, length: 10, nullable: false)]
     private string $discussionType = 'simple';
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
-    private string $public = '0';
+    private bool $public = false;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'extras', type: Types::TEXT, length: 65535, nullable: true)]
-    private ?string $extras = null;
+    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
+    private ?array $extras = null;
 
     /**
      * @var Discussionarticles[]|null
@@ -110,92 +99,50 @@ class Discussions
         return $this->itemId;
     }
 
-    /**
-     * Set contextId.
-     *
-     * @param int $contextId
-     *
-     * @return Discussions
-     */
-    public function setContextId($contextId)
+    public function setContextId(?int $contextId): static
     {
         $this->contextId = $contextId;
 
         return $this;
     }
 
-    /**
-     * Get contextId.
-     *
-     * @return int
-     */
-    public function getContextId()
+    public function getContextId(): ?int
     {
         return $this->contextId;
     }
 
-    /**
-     * Set deleterId.
-     *
-     * @param int $deleterId
-     *
-     * @return Discussions
-     */
-    public function setDeleterId($deleterId)
+    public function setDeleterId(?int $deleterId): static
     {
         $this->deleterId = $deleterId;
 
         return $this;
     }
 
-    /**
-     * Get deleterId.
-     *
-     * @return int
-     */
-    public function getDeleterId()
+    public function getDeleterId(): ?int
     {
         return $this->deleterId;
     }
 
-    /**
-     * Set activationDate.
-     */
-    public function setActivationDate(DateTime $activationDate): self
+    public function setActivationDate(DateTime $activationDate): static
     {
         $this->activationDate = $activationDate;
 
         return $this;
     }
 
-    /**
-     * Get activationDate.
-     */
     public function getActivationDate(): ?DateTime
     {
         return $this->activationDate;
     }
 
-    /**
-     * Set title.
-     *
-     * @param string $title
-     *
-     * @return Discussions
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): static
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * Get title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -205,227 +152,122 @@ class Discussions
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    /**
-     * Set latestArticleItemId.
-     *
-     * @param int $latestArticleItemId
-     *
-     * @return Discussions
-     */
-    public function setLatestArticleItemId($latestArticleItemId)
+    public function setLatestArticleItemId(?int $latestArticleItemId): static
     {
         $this->latestArticleItemId = $latestArticleItemId;
 
         return $this;
     }
 
-    /**
-     * Get latestArticleItemId.
-     *
-     * @return int
-     */
-    public function getLatestArticleItemId()
+    public function getLatestArticleItemId(): ?int
     {
         return $this->latestArticleItemId;
     }
 
-    /**
-     * Set latestArticleModificationDate.
-     *
-     * @param DateTime $latestArticleModificationDate
-     *
-     * @return Discussions
-     */
-    public function setLatestArticleModificationDate($latestArticleModificationDate)
+    public function setLatestArticleModificationDate(?DateTime $latestArticleModificationDate): static
     {
         $this->latestArticleModificationDate = $latestArticleModificationDate;
 
         return $this;
     }
 
-    /**
-     * Get latestArticleModificationDate.
-     *
-     * @return DateTime
-     */
-    public function getLatestArticleModificationDate()
+    public function getLatestArticleModificationDate(): ?DateTime
     {
         return $this->latestArticleModificationDate;
     }
 
-    /**
-     * Set status.
-     *
-     * @param int $status
-     *
-     * @return Discussions
-     */
-    public function setStatus($status)
+    public function setStatus(int $status): static
     {
         $this->status = $status;
 
         return $this;
     }
 
-    /**
-     * Get status.
-     *
-     * @return int
-     */
-    public function getStatus()
+    public function getStatus(): int
     {
         return $this->status;
     }
 
-    /**
-     * Set discussionType.
-     *
-     * @param string $discussionType
-     *
-     * @return Discussions
-     */
-    public function setDiscussionType($discussionType)
+    public function setDiscussionType(string $discussionType): static
     {
         $this->discussionType = $discussionType;
 
         return $this;
     }
 
-    /**
-     * Get discussionType.
-     *
-     * @return string
-     */
-    public function getDiscussionType()
+    public function getDiscussionType(): string
     {
         return $this->discussionType;
     }
 
-    /**
-     * Set public.
-     *
-     * @param bool $public
-     *
-     * @return Discussions
-     */
-    public function setPublic($public)
+    public function setPublic(bool $public): static
     {
         $this->public = $public;
 
         return $this;
     }
 
-    /**
-     * Get public.
-     *
-     * @return bool
-     */
-    public function getPublic()
+    public function getPublic(): bool
     {
         return $this->public;
     }
 
-    /**
-     * Set extras.
-     *
-     * @param string $extras
-     *
-     * @return Discussions
-     */
-    public function setExtras($extras)
+    public function setExtras(?array $extras): static
     {
         $this->extras = $extras;
 
         return $this;
     }
 
-    /**
-     * Get extras.
-     *
-     * @return string
-     */
-    public function getExtras()
+    public function getExtras(): ?array
     {
         return $this->extras;
     }
 
-    /**
-     * Set creator.
-     *
-     * @return Discussions
-     */
-    public function setCreator(User $creator = null)
+    public function setCreator(?User $creator): static
     {
         $this->creator = $creator;
 
         return $this;
     }
 
-    /**
-     * Get creator.
-     *
-     * @return User
-     */
-    public function getCreator()
+    public function getCreator(): ?User
     {
         return $this->creator;
     }
 
-    /**
-     * Set modifier.
-     *
-     * @return Discussions
-     */
-    public function setModifier(User $modifier = null)
+    public function setModifier(?User $modifier): static
     {
         $this->modifier = $modifier;
 
         return $this;
     }
 
-    /**
-     * Get modifier.
-     *
-     * @return User
-     */
-    public function getModifier()
+    public function getModifier(): ?User
     {
         return $this->modifier;
     }
 
-    /**
-     * Add discussionarticle.
-     *
-     * @return Materials
-     */
-    public function addDiscussionarticle(Discussionarticles $discussionarticle)
+    public function addDiscussionarticle(Discussionarticles $discussionarticle): Materials
     {
         $this->discussionarticles[] = $discussionarticle;
 
         return $this;
     }
 
-    /**
-     * Remove discussionarticle.
-     */
     public function removeDiscussionarticle(Discussionarticles $discussionarticle)
     {
         $this->discussionarticles->removeElement($discussionarticle);
     }
 
-    /**
-     * Get discussionarticles.
-     *
-     * @return Collection
-     */
-    public function getDiscussionarticles()
+    public function getDiscussionarticles(): Collection
     {
         return $this->discussionarticles;
     }

@@ -18,84 +18,57 @@ namespace App\Entity;
  */
 class PortalUserAssignWorkspace
 {
-    private $name;
+    private ?string $name;
 
-    private $userID;
+    private ?string $userID;
 
-    private $searchForWorkspace;
+    private ?string $searchForWorkspace;
 
-    private $descriptionOfParticipation;
+    private ?string $descriptionOfParticipation;
 
-    /**
-     * @var mixed|null
-     */
-    private $workspaceSelection;
+    private ?string $workspaceSelection;
 
-    /**
-     * @return mixed
-     */
-    public function getWorkspaceSelection()
+    public function getWorkspaceSelection(): ?string
     {
         return $this->workspaceSelection;
     }
 
-    public function setWorkspaceSelection(mixed $workspaceSelection): void
+    public function setWorkspaceSelection(?string $workspaceSelection): void
     {
         $this->workspaceSelection = $workspaceSelection;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName($name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getUserID()
+    public function getUserID(): ?string
     {
         return $this->userID;
     }
 
-    /**
-     * @param string $userID
-     */
-    public function setUserID($userID): void
+    public function setUserID(?string $userID): void
     {
         $this->userID = $userID;
     }
 
-    /**
-     * @return string
-     */
-    public function getSearchForWorkspace()
+    public function getSearchForWorkspace(): ?string
     {
         return $this->searchForWorkspace;
     }
 
-    /**
-     * @param string $searchForWorkspace
-     */
     public function setSearchForWorkspace($searchForWorkspace): void
     {
         $this->searchForWorkspace = $searchForWorkspace;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescriptionOfParticipation()
+    public function getDescriptionOfParticipation(): ?string
     {
         return $this->descriptionOfParticipation;
     }

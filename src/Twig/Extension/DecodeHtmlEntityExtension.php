@@ -23,7 +23,7 @@ use Twig\TwigFilter;
  */
 class DecodeHtmlEntityExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('decodeHtmlEntity', $this->decodeHtmlEntity(...)),

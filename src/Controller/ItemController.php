@@ -839,11 +839,8 @@ class ItemController extends AbstractController
         ]);
     }
 
-    /**
-     * @return JsonResponse
-     */
     #[Route(path: '/room/{roomId}/item/{itemId}/filelist')]
-    public function filelist($roomId, $itemId, ItemService $itemService): Response
+    public function filelist($roomId, $itemId, ItemService $itemService): JsonResponse
     {
         /** @var cs_item $item */
         $item = $itemService->getItem($itemId);

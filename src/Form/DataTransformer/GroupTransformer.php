@@ -24,10 +24,8 @@ class GroupTransformer extends AbstractTransformer
      * Transforms a cs_group_item object to an array.
      *
      * @param cs_group_item $groupItem
-     *
-     * @return array
      */
-    public function transform($groupItem)
+    public function transform($groupItem): array
     {
         $groupData = [];
 

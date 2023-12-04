@@ -107,11 +107,7 @@ class PortalUserChangeStatus
 
         return $this;
     }
-
-    /**
-     * @return string
-     */
-    public function getLoginIsDeactivated()
+    public function getLoginIsDeactivated(): ?bool
     {
         return $this->loginIsDeactivated;
     }

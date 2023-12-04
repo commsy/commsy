@@ -40,7 +40,7 @@ class CategoryFilterType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // extract room id from request and build filter accordingly
         $currentRequest = $this->requestStack->getCurrentRequest();
@@ -68,7 +68,7 @@ class CategoryFilterType extends AbstractType
      *
      * @param OptionsResolver $resolver The resolver for the options
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['csrf_protection' => false, 'validation_groups' => ['filtering']]);
     }
@@ -90,7 +90,7 @@ class CategoryFilterType extends AbstractType
         return $array;
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $showExpanded = false;
         $currentRequest = $this->requestStack->getCurrentRequest();

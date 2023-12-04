@@ -39,10 +39,8 @@ class FileToUserImportTransformer implements DataTransformerInterface
      * Transforms into a file.
      *
      * @param mixed $value
-     *
-     * @return null
      */
-    public function transform($value)
+    public function transform($value): null
     {
         // We are only using this transformer to transform an uploaded file into an array of
         // CsvUserDataset objects

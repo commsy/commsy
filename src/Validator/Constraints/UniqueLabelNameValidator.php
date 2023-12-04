@@ -24,7 +24,7 @@ class UniqueLabelNameValidator extends ConstraintValidator
     {
     }
 
-    public function validate($entity, Constraint $constraint)
+    public function validate($entity, Constraint $constraint): void
     {
         // entity must have a context id to be validated
         if (!$entity->getContextId()) {

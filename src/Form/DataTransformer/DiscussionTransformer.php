@@ -32,10 +32,8 @@ class DiscussionTransformer extends AbstractTransformer
      * Transforms a cs_discussion_item object to an array.
      *
      * @param cs_discussion_item $discussionItem
-     *
-     * @return array
      */
-    public function transform($discussionItem)
+    public function transform($discussionItem): array
     {
         $discussionData = [];
 

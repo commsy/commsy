@@ -48,10 +48,8 @@ class RoomFeedGenerator
     /**
      * @param int $size   Number of items to get
      * @param int $lastId The item id of the last received article item
-     *
-     * @return array List of items
      */
-    public function getDashboardFeedList($size, $lastId)
+    public function getDashboardFeedList($size, $lastId): array
     {
         $currentUser = $this->legacyEnvironment->getCurrentUser();
         $contextIds = $this->getAllUserRelatedContexts($currentUser);
@@ -63,10 +61,8 @@ class RoomFeedGenerator
      * @param int $roomId The room id
      * @param int $size   Number of items to get
      * @param int $lastId The item id of the last received article item
-     *
-     * @return array List of items
      */
-    public function getRoomFeedList($roomId, $size, $lastId)
+    public function getRoomFeedList($roomId, $size, $lastId): array
     {
         return $this->getFeedList([$roomId], $size, $lastId);
     }
@@ -75,10 +71,8 @@ class RoomFeedGenerator
      * @param int[] $contextIds The context ids
      * @param int   $size       Number of items to get
      * @param int   $lastId     The item id of the last received article item
-     *
-     * @return array List of items
      */
-    private function getFeedList($contextIds, $size, $lastId)
+    private function getFeedList($contextIds, $size, $lastId): array
     {
         /**
          * Because each room has a different rubric configuration group context ids by rubric. That way we only
@@ -163,9 +157,7 @@ class RoomFeedGenerator
 
         usort($feedList, $this->sortByModificationDate(...));
 
-        $feedList = array_slice($feedList, 0, $size);
-
-        return $feedList;
+        return array_slice($feedList, 0, $size);
     }
 
     /**
@@ -204,7 +196,7 @@ class RoomFeedGenerator
      *
      * @return int compare result
      */
-    private function sortByModificationDate(cs_item $a, cs_item $b)
+    private function sortByModificationDate(cs_item $a, cs_item $b): int
     {
         $isUserA = CS_USER_TYPE === $a->getItemType();
         $isUserB = CS_USER_TYPE === $a->getItemType();
@@ -222,7 +214,7 @@ class RoomFeedGenerator
      *
      * @return int[] Context ids
      */
-    private function getAllUserRelatedContexts(cs_user_item $currentUser)
+    private function getAllUserRelatedContexts(cs_user_item $currentUser): array
     {
         $roomIds = [];
 

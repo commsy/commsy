@@ -67,7 +67,7 @@ class User
     private int $status = 0;
 
     #[ORM\Column(name: 'is_contact', type: Types::BOOLEAN, nullable: false)]
-    private string $isContact = '0';
+    private bool $isContact = false;
 
     #[ORM\Column(name: 'firstname', type: Types::STRING, length: 50, nullable: false)]
     #[Groups(['api_read'])]
@@ -85,11 +85,12 @@ class User
 
     #[ORM\Column(name: 'lastlogin', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $lastlogin = null;
-    #[ORM\Column(name: 'visible', type: Types::BOOLEAN, nullable: false)]
-    private string $visible = '1';
 
-    #[ORM\Column(name: 'extras', type: Types::TEXT, length: 16_777_215, nullable: true)]
-    private ?string $extras = null;
+    #[ORM\Column(name: 'visible', type: Types::BOOLEAN, nullable: false)]
+    private bool $visible = true;
+
+    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
+    private ?array $extras = null;
 
     #[ORM\Column(name: 'auth_source', type: Types::INTEGER, nullable: true)]
     private ?int $authSource = null;
@@ -107,10 +108,8 @@ class User
      * Set contextId.
      *
      * @param int $contextId
-     *
-     * @return User
      */
-    public function setContextId($contextId)
+    public function setContextId($contextId): static
     {
         $this->contextId = $contextId;
 
@@ -119,10 +118,8 @@ class User
 
     /**
      * Get contextId.
-     *
-     * @return int
      */
-    public function getContextId()
+    public function getContextId(): ?int
     {
         return $this->contextId;
     }
@@ -130,45 +127,28 @@ class User
     /**
      * Set creator.
      *
-     * @param User $modifier
-     *
-     * @return User
+     * @param User|null $creator
      */
-    public function setCreator(User $creator = null)
+    public function setCreator(User $creator = null): static
     {
         $this->creator = $creator;
 
         return $this;
     }
 
-    /**
-     * Get creator.
-     *
-     * @return User
-     */
-    public function getCreator()
+    public function getCreator(): static
     {
         return $this->creator;
     }
 
-    /**
-     * Set modifier.
-     *
-     * @return User
-     */
-    public function setModifier(User $modifier = null)
+    public function setModifier(User $modifier = null): static
     {
         $this->modifier = $modifier;
 
         return $this;
     }
 
-    /**
-     * Get modifier.
-     *
-     * @return User
-     */
-    public function getModifier()
+    public function getModifier(): static
     {
         return $this->modifier;
     }
@@ -177,29 +157,19 @@ class User
      * Set deleterId.
      *
      * @param int $deleterId
-     *
-     * @return User
      */
-    public function setDeleterId($deleterId)
+    public function setDeleterId($deleterId): static
     {
         $this->deleterId = $deleterId;
 
         return $this;
     }
 
-    /**
-     * Get deleterId.
-     *
-     * @return int
-     */
-    public function getDeleterId()
+    public function getDeleterId(): ?int
     {
         return $this->deleterId;
     }
 
-    /**
-     * isDeleted.
-     */
     public function isDeleted(): bool
     {
         return null !== $this->deleterId && null !== $this->deletionDate;
@@ -209,39 +179,26 @@ class User
      * Set userId.
      *
      * @param string $userId
-     *
-     * @return User
      */
-    public function setUserId($userId)
+    public function setUserId($userId): static
     {
         $this->userId = $userId;
 
         return $this;
     }
 
-    /**
-     * Get userId.
-     *
-     * @return string
-     */
-    public function getUserId()
+    public function getUserId(): string
     {
         return $this->userId;
     }
 
-    /**
-     * Set status.
-     */
-    public function setStatus(int $status): self
+    public function setStatus(int $status): static
     {
         $this->status = $status;
 
         return $this;
     }
 
-    /**
-     * Get status.
-     */
     public function getStatus(): int
     {
         return $this->status;
@@ -251,22 +208,15 @@ class User
      * Set isContact.
      *
      * @param bool $isContact
-     *
-     * @return User
      */
-    public function setIsContact($isContact)
+    public function setIsContact($isContact): static
     {
         $this->isContact = $isContact;
 
         return $this;
     }
 
-    /**
-     * Get isContact.
-     *
-     * @return bool
-     */
-    public function getIsContact()
+    public function getIsContact(): bool
     {
         return $this->isContact;
     }
@@ -275,10 +225,8 @@ class User
      * Set firstname.
      *
      * @param string $firstname
-     *
-     * @return User
      */
-    public function setFirstname($firstname)
+    public function setFirstname($firstname): static
     {
         $this->firstname = $firstname;
 
@@ -290,7 +238,7 @@ class User
      *
      * @return string
      */
-    public function getFirstname()
+    public function getFirstname(): string
     {
         return $this->firstname;
     }
@@ -299,10 +247,8 @@ class User
      * Set lastname.
      *
      * @param string $lastname
-     *
-     * @return User
      */
-    public function setLastname($lastname)
+    public function setLastname($lastname): static
     {
         $this->lastname = $lastname;
 
@@ -314,7 +260,7 @@ class User
      *
      * @return string
      */
-    public function getLastname()
+    public function getLastname(): string
     {
         return $this->lastname;
     }
@@ -323,10 +269,8 @@ class User
      * Set email.
      *
      * @param string $email
-     *
-     * @return User
      */
-    public function setEmail($email)
+    public function setEmail($email): static
     {
         $this->email = $email;
 
@@ -338,7 +282,7 @@ class User
      *
      * @return string
      */
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -347,10 +291,8 @@ class User
      * Set city.
      *
      * @param string $city
-     *
-     * @return User
      */
-    public function setCity($city)
+    public function setCity($city): static
     {
         $this->city = $city;
 
@@ -362,7 +304,7 @@ class User
      *
      * @return string
      */
-    public function getCity()
+    public function getCity(): string
     {
         return $this->city;
     }
@@ -371,10 +313,8 @@ class User
      * Set lastlogin.
      *
      * @param DateTime $lastlogin
-     *
-     * @return User
      */
-    public function setLastlogin($lastlogin)
+    public function setLastlogin($lastlogin): static
     {
         $this->lastlogin = $lastlogin;
 
@@ -383,10 +323,8 @@ class User
 
     /**
      * Get lastlogin.
-     *
-     * @return DateTime
      */
-    public function getLastlogin()
+    public function getLastlogin(): ?DateTime
     {
         return $this->lastlogin;
     }
@@ -395,10 +333,8 @@ class User
      * Set visible.
      *
      * @param bool $visible
-     *
-     * @return User
      */
-    public function setVisible($visible)
+    public function setVisible($visible): static
     {
         $this->visible = $visible;
 
@@ -407,34 +343,20 @@ class User
 
     /**
      * Get visible.
-     *
-     * @return bool
      */
-    public function getVisible()
+    public function getVisible(): bool
     {
         return $this->visible;
     }
 
-    /**
-     * Set extras.
-     *
-     * @param string $extras
-     *
-     * @return User
-     */
-    public function setExtras($extras)
+    public function setExtras(array $extras): static
     {
         $this->extras = $extras;
 
         return $this;
     }
 
-    /**
-     * Get extras.
-     *
-     * @return string
-     */
-    public function getExtras()
+    public function getExtras(): ?array
     {
         return $this->extras;
     }
@@ -443,10 +365,8 @@ class User
      * Set authSource.
      *
      * @param int $authSource
-     *
-     * @return User
      */
-    public function setAuthSource($authSource)
+    public function setAuthSource($authSource): static
     {
         $this->authSource = $authSource;
 
@@ -455,10 +375,8 @@ class User
 
     /**
      * Get authSource.
-     *
-     * @return int
      */
-    public function getAuthSource()
+    public function getAuthSource(): ?int
     {
         return $this->authSource;
     }
@@ -467,10 +385,8 @@ class User
      * Set description.
      *
      * @param string $description
-     *
-     * @return User
      */
-    public function setDescription($description)
+    public function setDescription($description): static
     {
         $this->description = $description;
 
@@ -479,10 +395,8 @@ class User
 
     /**
      * Get description.
-     *
-     * @return string
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -491,10 +405,8 @@ class User
      * Set expireDate.
      *
      * @param DateTime $expireDate
-     *
-     * @return User
      */
-    public function setExpireDate($expireDate)
+    public function setExpireDate($expireDate): static
     {
         $this->expireDate = $expireDate;
 
@@ -503,10 +415,8 @@ class User
 
     /**
      * Get expireDate.
-     *
-     * @return DateTime
      */
-    public function getExpireDate()
+    public function getExpireDate(): ?DateTime
     {
         return $this->expireDate;
     }

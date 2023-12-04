@@ -1870,10 +1870,8 @@ class DateController extends BaseController
      * @param bool          $hidePastDates  Default state for hide past dates filter
      * @param bool          $viewAsCalendar Wheter the form's action should point to the calendar view (true),
      *                                      or else to list view(false): defaults to else
-     *
-     * @return FormInterface
      */
-    private function createFilterForm($room, $hidePastDates = true, $viewAsCalendar = false)
+    private function createFilterForm($room, $hidePastDates = true, $viewAsCalendar = false): FormInterface
     {
         // setup filter form default values
         $defaultFilterValues = [

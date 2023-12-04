@@ -24,10 +24,8 @@ class AnnotationTransformer extends AbstractTransformer
      * Transforms a \cs_item object to an array.
      *
      * @param cs_item $annotationItem
-     *
-     * @return array
      */
-    public function transform($annotationItem)
+    public function transform($annotationItem): array
     {
         $annotationData = [];
 

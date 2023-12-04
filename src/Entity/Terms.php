@@ -41,12 +41,7 @@ class Terms
     #[ORM\Column(name: 'content_en', type: Types::TEXT)]
     private ?string $contentEn = null;
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -55,94 +50,51 @@ class Terms
      * Set contextId.
      *
      * @param string $contextId
-     *
-     * @return Term
      */
-    public function setContextId($contextId)
+    public function setContextId($contextId): static
     {
         $this->contextId = $contextId;
 
         return $this;
     }
 
-    /**
-     * Get contextId.
-     *
-     * @return string
-     */
-    public function getContextId()
+    public function getContextId(): ?string
     {
         return $this->contextId;
     }
 
-    /**
-     * Set title.
-     *
-     * @param string $title
-     *
-     * @return Term
-     */
-    public function setTitle($title)
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * Get title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * Set contentDe.
-     *
-     * @param string $contentDe
-     *
-     * @return Term
-     */
-    public function setContentDe($contentDe)
+    public function setContentDe(?string $contentDe): static
     {
         $this->contentDe = $contentDe;
 
         return $this;
     }
 
-    /**
-     * Get contentDe.
-     *
-     * @return string
-     */
-    public function getContentDe()
+    public function getContentDe(): ?string
     {
         return $this->contentDe;
     }
 
-    /**
-     * Set contentEn.
-     *
-     * @param string $contentEn
-     *
-     * @return Term
-     */
-    public function setContentEn($contentEn)
+    public function setContentEn(?string $contentEn): static
     {
         $this->contentEn = $contentEn;
 
         return $this;
     }
 
-    /**
-     * Get contentEn.
-     *
-     * @return string
-     */
-    public function getContentEn()
+    public function getContentEn(): ?string
     {
         return $this->contentEn;
     }

@@ -1870,14 +1870,6 @@ class PortalSettingsController extends AbstractController
         $userEdit->setHomepage($user->getHomepage());
         $userEdit->setDescription($user->getDescription());
         $userEdit->setMayCreateContext($user->getIsAllowedToCreateContext());
-//        $userEdit->setPicture($user->getPicture());
-
-//        $uploadUrl = $this->generateUrl('app_upload_upload', array(
-//            'roomId' => $portal->getId(),
-//            'itemId' => $user->getItemID(),
-//        ));
-
-//        $userEdit->setUploadUrl($uploadUrl);
 
         $form = $this->createForm(AccountIndexDetailEditType::class, $userEdit);
         $form->handleRequest($request);

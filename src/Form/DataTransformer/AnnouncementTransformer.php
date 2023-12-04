@@ -24,10 +24,8 @@ class AnnouncementTransformer extends AbstractTransformer
      * Transforms a cs_material_item object to an array.
      *
      * @param cs_announcement_item $announcementItem
-     *
-     * @return array
      */
-    public function transform($announcementItem)
+    public function transform($announcementItem): array
     {
         $announcementData = [];
 

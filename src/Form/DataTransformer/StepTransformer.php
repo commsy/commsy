@@ -13,6 +13,8 @@
 
 namespace App\Form\DataTransformer;
 
+use cs_step_item;
+
 class StepTransformer extends AbstractTransformer
 {
     protected $entity = 'step';
@@ -21,10 +23,8 @@ class StepTransformer extends AbstractTransformer
      * Transforms a cs_step_item object to an array.
      *
      * @param cs_step_item $stepItem
-     *
-     * @return array
      */
-    public function transform($stepItem)
+    public function transform($stepItem): array
     {
         $stepData = [];
 

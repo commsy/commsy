@@ -38,7 +38,7 @@ class Step
     private ?int $contextId = null;
 
     #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: false)]
-    private string $creatorId = '0';
+    private ?int $creatorId = null;
 
     #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
     private ?int $modifierId = null;
@@ -53,19 +53,19 @@ class Step
     private ?string $description = null;
 
     #[ORM\Column(name: 'minutes', type: Types::FLOAT, precision: 10, scale: 0, nullable: false)]
-    private string $minutes = '0';
+    private float $minutes = 0.0;
 
     #[ORM\Column(name: 'time_type', type: Types::SMALLINT, nullable: false)]
-    private string $timeType = '1';
+    private ?int $timeType = 1;
 
     #[ORM\Column(name: 'todo_item_id', type: Types::INTEGER, nullable: false)]
     private int $todoItemId;
 
-    #[ORM\Column(name: 'extras', type: Types::TEXT, length: 65535, nullable: true)]
-    private ?string $extras = null;
+    #[ORM\Column(name: 'extras', type: Types::ARRAY, length: 65535, nullable: true)]
+    private ?array $extras = null;
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
-    private string $public = '0';
+    private bool $public = false;
 
     #[ORM\ManyToOne(targetEntity: 'Todos', inversedBy: 'steps')]
     #[ORM\JoinColumn(name: 'todo_item_id', referencedColumnName: 'item_id')]
@@ -76,288 +76,145 @@ class Step
         return $this->itemId;
     }
 
-    /**
-     * Set contextId.
-     *
-     * @param int $contextId
-     *
-     * @return Step
-     */
-    public function setContextId($contextId)
+    public function setContextId(?int $contextId): static
     {
         $this->contextId = $contextId;
 
         return $this;
     }
 
-    /**
-     * Get contextId.
-     *
-     * @return int
-     */
-    public function getContextId()
+    public function getContextId(): ?int
     {
         return $this->contextId;
     }
 
-    /**
-     * Set creatorId.
-     *
-     * @param int $creatorId
-     *
-     * @return Step
-     */
-    public function setCreatorId($creatorId)
+    public function setCreatorId(?int $creatorId): static
     {
         $this->creatorId = $creatorId;
 
         return $this;
     }
 
-    /**
-     * Get creatorId.
-     *
-     * @return int
-     */
-    public function getCreatorId()
+    public function getCreatorId(): ?int
     {
         return $this->creatorId;
     }
 
-    /**
-     * Set modifierId.
-     *
-     * @param int $modifierId
-     *
-     * @return Step
-     */
-    public function setModifierId($modifierId)
+    public function setModifierId(?int $modifierId): static
     {
         $this->modifierId = $modifierId;
 
         return $this;
     }
 
-    /**
-     * Get modifierId.
-     *
-     * @return int
-     */
-    public function getModifierId()
+    public function getModifierId(): ?int
     {
         return $this->modifierId;
     }
 
-    /**
-     * Set deleterId.
-     *
-     * @param int $deleterId
-     *
-     * @return Step
-     */
-    public function setDeleterId($deleterId)
+    public function setDeleterId(?int $deleterId): static
     {
         $this->deleterId = $deleterId;
 
         return $this;
     }
 
-    /**
-     * Get deleterId.
-     *
-     * @return int
-     */
-    public function getDeleterId()
+    public function getDeleterId(): ?int
     {
         return $this->deleterId;
     }
 
-    /**
-     * Set title.
-     *
-     * @param string $title
-     *
-     * @return Step
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): static
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * Get title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * Set description.
-     *
-     * @param string $description
-     *
-     * @return Step
-     */
-    public function setDescription($description)
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    /**
-     * Get description.
-     *
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * Set minutes.
-     *
-     * @param float $minutes
-     *
-     * @return Step
-     */
-    public function setMinutes($minutes)
+    public function setMinutes(float $minutes): static
     {
         $this->minutes = $minutes;
 
         return $this;
     }
 
-    /**
-     * Get minutes.
-     *
-     * @return float
-     */
-    public function getMinutes()
+    public function getMinutes(): float
     {
         return $this->minutes;
     }
 
-    /**
-     * Set timeType.
-     *
-     * @param int $timeType
-     *
-     * @return Step
-     */
-    public function setTimeType($timeType)
+    public function setTimeType(?int $timeType): static
     {
         $this->timeType = $timeType;
 
         return $this;
     }
 
-    /**
-     * Get timeType.
-     *
-     * @return int
-     */
-    public function getTimeType()
+    public function getTimeType(): ?int
     {
         return $this->timeType;
     }
 
-    /**
-     * Set todoItemId.
-     *
-     * @param int $todoItemId
-     *
-     * @return Step
-     */
-    public function setTodoItemId($todoItemId)
+    public function setTodoItemId(int $todoItemId): static
     {
         $this->todoItemId = $todoItemId;
 
         return $this;
     }
 
-    /**
-     * Get todoItemId.
-     *
-     * @return int
-     */
-    public function getTodoItemId()
+    public function getTodoItemId(): int
     {
         return $this->todoItemId;
     }
 
-    /**
-     * Set extras.
-     *
-     * @param string $extras
-     *
-     * @return Step
-     */
-    public function setExtras($extras)
+    public function setExtras(?array $extras): static
     {
         $this->extras = $extras;
 
         return $this;
     }
 
-    /**
-     * Get extras.
-     *
-     * @return string
-     */
-    public function getExtras()
+    public function getExtras(): ?array
     {
         return $this->extras;
     }
 
-    /**
-     * Set public.
-     *
-     * @param bool $public
-     *
-     * @return Step
-     */
-    public function setPublic($public)
+    public function setPublic(bool $public): static
     {
         $this->public = $public;
 
         return $this;
     }
 
-    /**
-     * Get public.
-     *
-     * @return bool
-     */
-    public function getPublic()
+    public function getPublic(): bool
     {
         return $this->public;
     }
-
-    /**
-     * Set todo.
-     *
-     * @return Section
-     */
-    public function setTodo(Todos $todo = null)
+    public function setTodo(?Todos $todo): static
     {
         $this->todo = $todo;
 
         return $this;
     }
 
-    /**
-     * Get todo.
-     *
-     * @return Todos
-     */
-    public function getTodo()
+    public function getTodo(): ?Todos
     {
         return $this->todo;
     }

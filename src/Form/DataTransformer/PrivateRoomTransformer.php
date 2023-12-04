@@ -23,10 +23,8 @@ class PrivateRoomTransformer extends AbstractTransformer
      * Transforms a cs_room_item object to an array.
      *
      * @param cs_privateroom_item $privateRoomItem
-     *
-     * @return array
      */
-    public function transform($privateRoomItem)
+    public function transform($privateRoomItem): array
     {
         $privateRoomData = [];
         if ($privateRoomItem) {

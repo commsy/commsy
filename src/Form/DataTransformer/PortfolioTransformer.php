@@ -32,11 +32,9 @@ class PortfolioTransformer extends AbstractTransformer
     /**
      * Transforms a cs_portfolio_item object to an array.
      *
-     * @param cs_portfolio_item $groupItem
-     *
-     * @return array
+     * @param cs_portfolio_item $portfolioItem
      */
-    public function transform($portfolioItem)
+    public function transform($portfolioItem): array
     {
         $portfolioData = [];
 

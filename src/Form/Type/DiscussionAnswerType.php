@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class DiscussionAnswerType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('description', CKEditorType::class, [
@@ -59,7 +59,7 @@ class DiscussionAnswerType extends AbstractType
      *
      * @param OptionsResolver $resolver The resolver for the options
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults(['translation_domain' => 'form']);

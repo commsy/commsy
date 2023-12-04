@@ -35,9 +35,6 @@ class AuthSourceLocal extends AuthSource
         $this->changePassword = true;
     }
 
-    /**
-     * @return string
-     */
     public function getMailRegex(): ?string
     {
         return $this->mailRegex;

@@ -31,11 +31,9 @@ class TranslationRepository extends ServiceEntityRepository
     /**
      * Returns a single translation by context and translation key.
      *
-     * @return Translation
-     *
      * @throws NonUniqueResultException
      */
-    public function findOneByContextAndKey(int $contextId, string $key)
+    public function findOneByContextAndKey(int $contextId, string $key): ?Translation
     {
         return $this->createQueryBuilder('translation')
             ->select()

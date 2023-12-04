@@ -143,7 +143,7 @@ class TimePulseTemplate
      *
      * @return int compare result
      */
-    public static function compare(TimePulseTemplate $a, TimePulseTemplate $b)
+    public static function compare(TimePulseTemplate $a, TimePulseTemplate $b): int
     {
         $cmp = $a->getStartMonth() <=> $b->getStartMonth();
         if (0 !== $cmp) {

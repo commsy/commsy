@@ -18,7 +18,7 @@ use Twig\TwigFilter;
 
 class LogarithmExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('log', $this->logarithmFilter(...)),

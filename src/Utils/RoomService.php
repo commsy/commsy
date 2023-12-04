@@ -148,7 +148,7 @@ class RoomService
      *
      * @return array Array with legacy user items
      */
-    public function getUserList($roomId)
+    public function getUserList($roomId): array
     {
         // get person list
         $roomItem = $this->getRoomItem($roomId);
@@ -166,7 +166,7 @@ class RoomService
      *
      * @return cs_user_item[] An array of users who are contact persons or moderators of the room with the given room ID
      */
-    public function getContactModeratorItems($roomId)
+    public function getContactModeratorItems($roomId): array
     {
         $roomItem = $this->getRoomItem($roomId);
         $contactModeratorList = $roomItem->getContactModeratorList();
@@ -302,10 +302,8 @@ class RoomService
      *
      * @param bool $reverseOrder whether the list of time pulses shall be returned in reverse
      *                           order (true) or not (false); defaults to false
-     *
-     * @return array list of time pulses
      */
-    public function getTimePulses($reverseOrder = false)
+    public function getTimePulses($reverseOrder = false): array
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         if (!$portalItem->showTime()) {
@@ -370,10 +368,8 @@ class RoomService
 
     /**
      * Returns the service email address specified for the current portal or server.
-     *
-     * @return string service email address
      */
-    public function getServiceEmail()
+    public function getServiceEmail(): string
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         $serviceEmail = '';

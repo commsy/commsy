@@ -45,54 +45,36 @@ class NewPassword
      */
     private $passwordConfirm;
 
-    /**
-     * @return mixed
-     */
-    public function getCurrentPassword()
+    public function getCurrentPassword(): mixed
     {
         return $this->currentPassword;
     }
 
-    /**
-     * @return NewPassword
-     */
-    public function setCurrentPassword(mixed $currentPassword)
+    public function setCurrentPassword(mixed $currentPassword): NewPassword
     {
         $this->currentPassword = $currentPassword;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPassword()
+    public function getPassword(): mixed
     {
         return $this->password;
     }
 
-    /**
-     * @return NewPassword
-     */
-    public function setPassword(mixed $password)
+    public function setPassword(mixed $password): NewPassword
     {
         $this->password = $password;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPasswordConfirm()
+    public function getPasswordConfirm(): mixed
     {
         return $this->passwordConfirm;
     }
 
-    /**
-     * @return NewPassword
-     */
-    public function setPasswordConfirm(mixed $passwordConfirm)
+    public function setPasswordConfirm(mixed $passwordConfirm): NewPassword
     {
         $this->passwordConfirm = $passwordConfirm;
 

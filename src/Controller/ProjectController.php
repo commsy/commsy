@@ -431,10 +431,8 @@ class ProjectController extends AbstractController
 
     /**
      * @param string $type
-     *
-     * @return array
      */
-    private function getAvailableTemplates(cs_environment $legacyEnvironment, $type = 'project')
+    private function getAvailableTemplates(cs_environment $legacyEnvironment, $type = 'project'): array
     {
         $templates = [];
 

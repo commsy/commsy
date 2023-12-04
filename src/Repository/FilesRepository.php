@@ -27,12 +27,9 @@ class FilesRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return array
-     *
-     * @throws NoResultException
      * @throws NonUniqueResultException
      */
-    public function getNumFiles(int $fileId, int $contextId): int
+    public function getNumFiles(int $fileId, int $contextId): bool|float|int|string
     {
         $query = $this->getEntityManager()->createQuery('
             SELECT COUNT(f.filesId) FROM App\Entity\Files f

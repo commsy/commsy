@@ -33,11 +33,9 @@ class ServerController extends AbstractController
     /**
      * Calls the external website URL defined for this installation, or,
      * if no URL was defined, displays the list of active portals.
-     *
-     * @return RedirectResponse
      */
     #[Route(path: '/portal/linkout')]
-    public function linkout(EntityManagerInterface $entityManager): Response
+    public function linkout(EntityManagerInterface $entityManager): RedirectResponse
     {
         $server = $entityManager->getRepository(Server::class)->getServer();
         $url = $server->getCommsyIconLink();

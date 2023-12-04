@@ -24,10 +24,8 @@ class ItemTransformer extends AbstractTransformer
      * Transforms fields of a cs_item object to an array.
      *
      * @param cs_material_item $materialItem
-     *
-     * @return array
      */
-    public function transform($item)
+    public function transform($item): array
     {
         $itemData = [];
 
@@ -66,10 +64,8 @@ class ItemTransformer extends AbstractTransformer
      *
      * @param object $materialObject
      * @param array  $materialData
-     *
-     * @return cs_item
      */
-    public function applyTransformation($item, $itemData)
+    public function applyTransformation($item, $itemData): cs_item
     {
         // workflow resubmission
         $item->setWorkflowTrafficLight($itemData['workflowTrafficLight']);

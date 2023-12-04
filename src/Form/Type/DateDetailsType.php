@@ -25,7 +25,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DateDetailsType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('start', DateTimeSelectType::class, ['constraints' => [], 'label' => 'startdate', 'attr' => ['placeholder' => 'startdate', 'class' => 'uk-form-width-medium']])
@@ -58,7 +58,7 @@ class DateDetailsType extends AbstractType
      *
      * @param OptionsResolver $resolver The resolver for the options
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired([])

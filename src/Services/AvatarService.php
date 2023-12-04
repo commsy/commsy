@@ -38,13 +38,9 @@ class AvatarService
     }
 
     /**
-     * Returns a new guest session id.
-     *
-     * @return string session id
-     *
      * @throws InvalidColorException
      */
-    public function getAvatar($itemId, int $type = 0, int $colorScheme = 0)
+    public function getAvatar($itemId, int $type = 0, int $colorScheme = 0): bool|string
     {
         $this->user = $this->userService->getUser($itemId);
         $this->type = $type;

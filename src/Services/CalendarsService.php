@@ -26,7 +26,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
 use Exception;
 use Sabre\VObject;
-use Symfony\Component\HttpFoundation\Response;
+use Sabre\VObject\Component\VEvent;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CalendarsService
@@ -119,12 +119,8 @@ class CalendarsService
 
     /**
      * Deletes all date entries from the given calendar.
-     *
-     * @return Response|void
-     *
-     * @var Calendars
      */
-    public function removeAllCalendarDates(RoomService $roomService, $calendar)
+    public function removeAllCalendarDates(RoomService $roomService, $calendar): void
     {
         $dates = $this->dateService->getDatesByCalendarId($calendar->getId());
         if (empty($dates)) {
@@ -138,7 +134,7 @@ class CalendarsService
         // this performs additional cleanup like removing any date items from the clipboard
         $action = $this->deleteAction;
 
-        return $action->execute($roomItem, $dates);
+        $action->execute($roomItem, $dates);
     }
 
     public function updateSynctoken($calendarId)
@@ -418,12 +414,8 @@ class CalendarsService
     /**
      * Returns true if the given ICALENDAR VEVENT is an all-day event (which may span multiple days),
      * otherwise returns false.
-     *
-     * @var Sabre\VObject\Component\VEvent
-     *
-     * @return bool
      */
-    public function isAllDayEvent($event)
+    public function isAllDayEvent(VEvent $event): bool
     {
         // 1. proprietary value defined
         if ($event->{'X-MICROSOFT-CDO-ALLDAYEVENT'}) {

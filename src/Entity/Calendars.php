@@ -27,7 +27,7 @@ class Calendars
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    private ?int $id = 0;
+    private int $id;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
     private ?int $context_id = null;
@@ -42,7 +42,7 @@ class Calendars
     private ?string $external_url = null;
 
     #[ORM\Column(name: 'default_calendar', type: Types::BOOLEAN)]
-    private ?bool $default_calendar = false;
+    private bool $default_calendar = false;
 
     #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: true)]
     private ?int $creator_id = null;
@@ -50,12 +50,7 @@ class Calendars
     #[ORM\Column(name: 'synctoken', type: Types::INTEGER, nullable: true)]
     private ?int $synctoken = null;
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -64,46 +59,27 @@ class Calendars
      * Set contextId.
      *
      * @param int $contextId
-     *
-     * @return Calendars
      */
-    public function setContextId($contextId)
+    public function setContextId($contextId): Calendars
     {
         $this->context_id = $contextId;
 
         return $this;
     }
 
-    /**
-     * Get contextId.
-     *
-     * @return int
-     */
-    public function getContextId()
+    public function getContextId(): ?int
     {
         return $this->context_id;
     }
 
-    /**
-     * Set title.
-     *
-     * @param string $title
-     *
-     * @return Calendars
-     */
-    public function setTitle($title)
+    public function setTitle($title): Calendars
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * Get title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -112,22 +88,15 @@ class Calendars
      * Set color.
      *
      * @param string $color
-     *
-     * @return Calendars
      */
-    public function setColor($color)
+    public function setColor($color): Calendars
     {
         $this->color = $color;
 
         return $this;
     }
 
-    /**
-     * Get title.
-     *
-     * @return string
-     */
-    public function getColor()
+    public function getColor(): ?string
     {
         return $this->color;
     }
@@ -136,46 +105,27 @@ class Calendars
      * Set external_url.
      *
      * @param string $external_url
-     *
-     * @return Calendars
      */
-    public function setExternalUrl($external_url)
+    public function setExternalUrl($external_url): Calendars
     {
         $this->external_url = $external_url;
 
         return $this;
     }
 
-    /**
-     * Get external_url.
-     *
-     * @return string
-     */
-    public function getExternalUrl()
+    public function getExternalUrl(): ?string
     {
         return $this->external_url;
     }
 
-    /**
-     * Set default.
-     *
-     * @param bool $default_calendar
-     *
-     * @return Calendars
-     */
-    public function setDefaultCalendar($default_calendar)
+    public function setDefaultCalendar(bool $default_calendar): Calendars
     {
         $this->default_calendar = $default_calendar;
 
         return $this;
     }
 
-    /**
-     * Get default.
-     *
-     * @return bool
-     */
-    public function getDefaultCalendar()
+    public function getDefaultCalendar(): bool
     {
         return $this->default_calendar;
     }
@@ -184,22 +134,15 @@ class Calendars
      * Set creatorId.
      *
      * @param int $creatorId
-     *
-     * @return Calendars
      */
-    public function setCreatorId($creatorId)
+    public function setCreatorId($creatorId): Calendars
     {
         $this->creator_id = $creatorId;
 
         return $this;
     }
 
-    /**
-     * Get creatorId.
-     *
-     * @return int
-     */
-    public function getCreatorId()
+    public function getCreatorId(): ?int
     {
         return $this->creator_id;
     }
@@ -229,22 +172,15 @@ class Calendars
      * Set synctoken.
      *
      * @param int $synctoken
-     *
-     * @return Calendars
      */
-    public function setSynctoken($synctoken)
+    public function setSynctoken($synctoken): Calendars
     {
         $this->synctoken = $synctoken;
 
         return $this;
     }
 
-    /**
-     * Get synctoken.
-     *
-     * @return int
-     */
-    public function getSynctoken()
+    public function getSynctoken(): ?int
     {
         return $this->synctoken;
     }

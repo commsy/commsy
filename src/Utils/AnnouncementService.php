@@ -56,7 +56,7 @@ class AnnouncementService
      *
      * @return cs_announcement_item[]
      */
-    public function getListAnnouncements($roomId, $max = null, $start = null, $sort = null)
+    public function getListAnnouncements($roomId, $max = null, $start = null, $sort = null): array
     {
         $this->announcementManager->setContextLimit($roomId);
         if (null !== $max && null !== $start) {
@@ -78,7 +78,7 @@ class AnnouncementService
      *
      * @return cs_announcement_item[]
      */
-    public function getAnnouncementsById($roomId, $idArray)
+    public function getAnnouncementsById($roomId, $idArray): array
     {
         $this->announcementManager->setContextLimit($roomId);
         $this->announcementManager->setIDArrayLimit($idArray);

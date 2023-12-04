@@ -20,10 +20,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 interface DatabaseCheck
 {
-    /**
-     * @return int
-     */
-    public function getPriority();
+    public function getPriority(): int;
 
     public function resolve(SymfonyStyle $io): bool;
 }

@@ -46,7 +46,7 @@ class DiscussionService
      *
      * @return \cs_discussion_item[]
      */
-    public function getListDiscussions($roomId, $max = null, $start = null, $sort = null)
+    public function getListDiscussions($roomId, $max = null, $start = null, $sort = null): array
     {
         $this->discussionManager->setContextLimit($roomId);
         if (null !== $max && null !== $start) {
@@ -69,7 +69,7 @@ class DiscussionService
      *
      * @return \cs_discussion_item[]
      */
-    public function getDiscussionsById($roomId, $ids)
+    public function getDiscussionsById($roomId, $ids): array
     {
         $this->discussionManager->setContextLimit($roomId);
         $this->discussionManager->setIDArrayLimit($ids);

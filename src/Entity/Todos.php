@@ -72,10 +72,10 @@ class Todos
     private ?string $description = null;
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
-    private string $public = '0';
+    private bool $public = false;
 
-    #[ORM\Column(name: 'extras', type: Types::TEXT, length: 65535, nullable: true)]
-    private ?string $extras = null;
+    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
+    private ?array $extras = null;
 
     #[ORM\OneToMany(targetEntity: 'Step', mappedBy: 'todo')]
     private Collection $steps;
@@ -87,30 +87,20 @@ class Todos
 
     /**
      * Add steps.
-     *
-     * @return Materials
      */
-    public function addSteps(Step $step)
+    public function addSteps(Step $step): static
     {
         $this->steps[] = $step;
 
         return $this;
     }
 
-    /**
-     * Remove steps.
-     */
     public function removeSteps(Step $step)
     {
-        $this->stepss->removeElement($step);
+        $this->steps->removeElement($step);
     }
 
-    /**
-     * Get stepss.
-     *
-     * @return Collection
-     */
-    public function getSteps()
+    public function getSteps(): Collection
     {
         return $this->steps;
     }
@@ -129,22 +119,15 @@ class Todos
      * Set contextId.
      *
      * @param int $contextId
-     *
-     * @return Todos
      */
-    public function setContextId($contextId)
+    public function setContextId($contextId): static
     {
         $this->contextId = $contextId;
 
         return $this;
     }
 
-    /**
-     * Get contextId.
-     *
-     * @return int
-     */
-    public function getContextId()
+    public function getContextId(): ?int
     {
         return $this->contextId;
     }
@@ -153,22 +136,15 @@ class Todos
      * Set deleterId.
      *
      * @param int $deleterId
-     *
-     * @return Todos
      */
-    public function setDeleterId($deleterId)
+    public function setDeleterId($deleterId): static
     {
         $this->deleterId = $deleterId;
 
         return $this;
     }
 
-    /**
-     * Get deleterId.
-     *
-     * @return int
-     */
-    public function getDeleterId()
+    public function getDeleterId(): ?int
     {
         return $this->deleterId;
     }
@@ -176,16 +152,13 @@ class Todos
     /**
      * Set activationDate.
      */
-    public function setActivationDate(DateTime $activationDate): self
+    public function setActivationDate(DateTime $activationDate): static
     {
         $this->activationDate = $activationDate;
 
         return $this;
     }
 
-    /**
-     * Get activationDate.
-     */
     public function getActivationDate(): ?DateTime
     {
         return $this->activationDate;
@@ -195,10 +168,8 @@ class Todos
      * Set title.
      *
      * @param string $title
-     *
-     * @return Todos
      */
-    public function setTitle($title)
+    public function setTitle($title): static
     {
         $this->title = $title;
 
@@ -210,7 +181,7 @@ class Todos
      *
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -219,22 +190,15 @@ class Todos
      * Set date.
      *
      * @param DateTime $date
-     *
-     * @return Todos
      */
-    public function setDate($date)
+    public function setDate($date): static
     {
         $this->date = $date;
 
         return $this;
     }
 
-    /**
-     * Get date.
-     *
-     * @return DateTime
-     */
-    public function getDate()
+    public function getDate(): ?DateTime
     {
         return $this->date;
     }
@@ -242,16 +206,13 @@ class Todos
     /**
      * Set status.
      */
-    public function setStatus(int $status): self
+    public function setStatus(int $status): static
     {
         $this->status = $status;
 
         return $this;
     }
 
-    /**
-     * Get status.
-     */
     public function getStatus(): int
     {
         return $this->status;
@@ -261,22 +222,15 @@ class Todos
      * Set minutes.
      *
      * @param float $minutes
-     *
-     * @return Todos
      */
-    public function setMinutes($minutes)
+    public function setMinutes($minutes): static
     {
         $this->minutes = $minutes;
 
         return $this;
     }
 
-    /**
-     * Get minutes.
-     *
-     * @return float
-     */
-    public function getMinutes()
+    public function getMinutes(): ?float
     {
         return $this->minutes;
     }
@@ -285,22 +239,15 @@ class Todos
      * Set timeType.
      *
      * @param int $timeType
-     *
-     * @return Todos
      */
-    public function setTimeType($timeType)
+    public function setTimeType($timeType): static
     {
         $this->timeType = $timeType;
 
         return $this;
     }
 
-    /**
-     * Get timeType.
-     *
-     * @return int
-     */
-    public function getTimeType()
+    public function getTimeType(): int
     {
         return $this->timeType;
     }
@@ -309,114 +256,63 @@ class Todos
      * Set description.
      *
      * @param string $description
-     *
-     * @return Todos
      */
-    public function setDescription($description)
+    public function setDescription($description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    /**
-     * Get description.
-     *
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * Set public.
-     *
-     * @param bool $public
-     *
-     * @return Todos
-     */
-    public function setPublic($public)
+    public function setPublic(bool $public): static
     {
         $this->public = $public;
 
         return $this;
     }
 
-    /**
-     * Get public.
-     *
-     * @return bool
-     */
-    public function getPublic()
+    public function getPublic(): bool
     {
         return $this->public;
     }
 
-    /**
-     * Set extras.
-     *
-     * @param string $extras
-     *
-     * @return Todos
-     */
-    public function setExtras($extras)
+    public function setExtras(array $extras): static
     {
         $this->extras = $extras;
 
         return $this;
     }
 
-    /**
-     * Get extras.
-     *
-     * @return string
-     */
-    public function getExtras()
+    public function getExtras(): ?array
     {
         return $this->extras;
     }
 
-    /**
-     * Set creator.
-     *
-     * @return Todos
-     */
-    public function setCreator(User $creator = null)
+    public function setCreator(User $creator = null): static
     {
         $this->creator = $creator;
 
         return $this;
     }
 
-    /**
-     * Get creator.
-     *
-     * @return User
-     */
-    public function getCreator()
+    public function getCreator(): ?User
     {
         return $this->creator;
     }
 
-    /**
-     * Set modifier.
-     *
-     * @return Todos
-     */
-    public function setModifier(User $modifier = null)
+    public function setModifier(User $modifier = null): static
     {
         $this->modifier = $modifier;
 
         return $this;
     }
 
-    /**
-     * Get modifier.
-     *
-     * @return User
-     */
-    public function getModifier()
+    public function getModifier(): ?User
     {
         return $this->modifier;
     }

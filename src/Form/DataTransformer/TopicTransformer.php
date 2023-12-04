@@ -24,11 +24,9 @@ class TopicTransformer extends AbstractTransformer
     /**
      * Transforms a cs_topic_item object to an array.
      *
-     * @param cs_topic_item $dateItem
-     *
-     * @return array
+     * @param cs_topic_item $topicItem
      */
-    public function transform($topicItem)
+    public function transform($topicItem): array
     {
         $topicData = [];
 

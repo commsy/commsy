@@ -177,12 +177,10 @@ class FileController extends AbstractController
     }
 
     /**
-     * @return StreamedResponse
-     *
      * @throws NonUniqueResultException
      */
     #[Route(path: '/logo/server')]
-    public function serverLogo(EntityManagerInterface $entityManager, DownloadHandler $downloadHandler): Response
+    public function serverLogo(EntityManagerInterface $entityManager, DownloadHandler $downloadHandler): StreamedResponse
     {
         $server = $entityManager->getRepository(Server::class)->getServer();
         if (!$server->getLogoImageFile()) {

@@ -28,7 +28,7 @@ class LocalAccountValidator extends ConstraintValidator
     {
     }
 
-    public function validate($localAccount, Constraint $constraint)
+    public function validate($localAccount, Constraint $constraint): void
     {
         if (!$constraint instanceof LocalAccount) {
             throw new UnexpectedTypeException($constraint, LocalAccount::class);

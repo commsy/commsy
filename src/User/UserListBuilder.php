@@ -64,10 +64,7 @@ class UserListBuilder
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function withProjectRoomUser(): self
+    public function withProjectRoomUser(): static
     {
         if (!$this->account) {
             throw new LogicException('You must provide an account object.');
@@ -84,10 +81,7 @@ class UserListBuilder
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function withCommunityRoomUser(): self
+    public function withCommunityRoomUser(): static
     {
         if (!$this->account) {
             throw new LogicException('You must provide an account object.');

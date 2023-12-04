@@ -42,7 +42,7 @@ class ItemCatsBuzzType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('categories', TreeChoiceType::class, ['placeholder' => false, 'choices' => $options['categories'], 'choice_label' => function ($choice, $key, $value) {
@@ -65,7 +65,7 @@ class ItemCatsBuzzType extends AbstractType
      *
      * @param OptionsResolver $resolver The resolver for the options
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([

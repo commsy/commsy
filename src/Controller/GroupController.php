@@ -1281,11 +1281,9 @@ class GroupController extends BaseController
     }
 
     /**
-     * @return mixed
-     *
      * @throws Exception
      */
-    private function copySettings($masterRoom, $targetRoom, LegacyCopy $legacyCopy)
+    private function copySettings($masterRoom, $targetRoom, LegacyCopy $legacyCopy): mixed
     {
         $user_manager = $this->legacyEnvironment->getUserManager();
         $creator_item = $user_manager->getItem($targetRoom->getCreatorID());
@@ -1320,10 +1318,7 @@ class GroupController extends BaseController
         return $targetRoom;
     }
 
-    /**
-     * @return array
-     */
-    private function getAvailableTemplates()
+    private function getAvailableTemplates(): array
     {
         $templates = [];
 
@@ -1396,7 +1391,7 @@ class GroupController extends BaseController
      *
      * @return cs_group_item[]
      */
-    public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
+    public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = []): array
     {
         // get the user service
         if ($selectAll) {

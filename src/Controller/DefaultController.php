@@ -19,11 +19,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends AbstractController
 {
-    /**
-     * @return RedirectResponse
-     */
     #[Route(path: '/')]
-    public function index(): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function index(): RedirectResponse
     {
         return $this->redirectToRoute('app_server_show');
     }

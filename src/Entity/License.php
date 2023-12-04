@@ -41,108 +41,55 @@ class License
     #[ORM\Column(name: 'position', type: Types::INTEGER)]
     private ?int $position = null;
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set contextId.
-     *
-     * @param string $contextId
-     *
-     * @return License
-     */
-    public function setContextId($contextId)
+    public function setContextId(?int $contextId): static
     {
         $this->contextId = $contextId;
 
         return $this;
     }
 
-    /**
-     * Get contextId.
-     *
-     * @return string
-     */
-    public function getContextId()
+    public function getContextId(): ?int
     {
         return $this->contextId;
     }
 
-    /**
-     * Set title.
-     *
-     * @param string $title
-     *
-     * @return License
-     */
-    public function setTitle($title)
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * Get title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * Set content.
-     *
-     * @param string $content
-     *
-     * @return License
-     */
-    public function setContent($content)
+    public function setContent(?string $content): static
     {
         $this->content = $content;
 
         return $this;
     }
 
-    /**
-     * Get content.
-     *
-     * @return string
-     */
-    public function getContent()
+    public function getContent(): ?string
     {
         return $this->content;
     }
 
-    /**
-     * Set position.
-     *
-     * @param int $position
-     *
-     * @return License
-     */
-    public function setPosition($position)
+    public function setPosition(?int $position): static
     {
         $this->position = $position;
 
         return $this;
     }
 
-    /**
-     * Get position.
-     *
-     * @return int
-     */
-    public function getPosition()
+    public function getPosition(): ?int
     {
         return $this->position;
     }

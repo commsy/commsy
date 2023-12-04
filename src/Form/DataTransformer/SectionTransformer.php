@@ -23,10 +23,8 @@ class SectionTransformer extends AbstractTransformer
      * Transforms a cs_material_item object to an array.
      *
      * @param cs_section_item $sectionItem
-     *
-     * @return array
      */
-    public function transform($sectionItem)
+    public function transform($sectionItem): array
     {
         $sectionData = [];
 

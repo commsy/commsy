@@ -183,10 +183,8 @@ class SearchManager
     /**
      * Creates a Terms or Range Filter to restrict the search to contexts, the
      * user is allowed to access.
-     *
-     * @return Queries\BoolQuery
      */
-    private function createContextFilter()
+    private function createContextFilter(): Queries\BoolQuery
     {
         $boolQuery = new Queries\BoolQuery();
 
@@ -211,10 +209,8 @@ class SearchManager
     /**
      * Creates & returns a function score query for the context based on the registered query conditions,
      * or if there are no query conditions, returns a query that matches everything.
-     *
-     * @return Queries\FunctionScore|Queries\MatchAll
      */
-    private function createContextQuery()
+    private function createContextQuery(): Queries\FunctionScore|Queries\MatchAll
     {
         if (empty($this->queryConditions)) {
             return new Queries\MatchAll();

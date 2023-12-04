@@ -33,10 +33,8 @@ class DateTransformer extends AbstractTransformer
      * Transforms a cs_date_item object to an array.
      *
      * @param cs_dates_item $dateItem
-     *
-     * @return array
      */
-    public function transform($dateItem)
+    public function transform($dateItem): array
     {
         $dateData = [];
 
@@ -94,7 +92,7 @@ class DateTransformer extends AbstractTransformer
      *
      * @return cs_dates_item
      */
-    public function applyTransformation($dateObject, $dateData)
+    public function applyTransformation($dateObject, $dateData): cs_dates_item
     {
         $dateObject->setTitle($dateData['title']);
         $dateObject->setDescription($dateData['description']);

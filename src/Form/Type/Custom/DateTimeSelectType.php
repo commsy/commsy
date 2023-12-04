@@ -29,7 +29,7 @@ class DateTimeSelectType extends AbstractType
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $language = $this->legacyEnvironment->getSelectedLanguage();
         if ('en' == $language) {

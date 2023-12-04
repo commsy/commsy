@@ -26,7 +26,7 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
     {
     }
 
-    public function validate($submittedDeleteString, Constraint $constraint)
+    public function validate($submittedDeleteString, Constraint $constraint): void
     {
         if (!in_array($constraint->newUserStatus, ['user-delete', 'user-block', 'user-status-reading-user', 'user-status-user', 'user-confirm'])) {
             return;

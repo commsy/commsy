@@ -41,10 +41,8 @@ class UserTransformer extends AbstractTransformer
      * Transforms a cs_room_item object to an array.
      *
      * @param cs_user_item $userItem
-     *
-     * @return array
      */
-    public function transform($userItem)
+    public function transform($userItem): array
     {
         // get portal user if in room context
         if (!$this->legacyEnvironment->inPortal()) {

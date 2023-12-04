@@ -257,7 +257,7 @@ class UserService
      *
      * @return cs_user_item[]
      */
-    public function getUsersById($roomId, $ids)
+    public function getUsersById($roomId, $ids): array
     {
         $this->resetLimits();
         $this->userManager->setContextLimit($roomId);
@@ -410,7 +410,7 @@ class UserService
      *
      * @return cs_user_item The current user object
      */
-    public function getCurrentUserItem()
+    public function getCurrentUserItem(): cs_user_item
     {
         return $this->legacyEnvironment->getCurrentUserItem();
     }
@@ -420,7 +420,7 @@ class UserService
      *
      * @return array of searchable room items, may be empty
      */
-    public function getSearchableRooms(cs_user_item $userItem)
+    public function getSearchableRooms(cs_user_item $userItem): array
     {
         // project rooms
         $projectRoomList = $userItem->getUserRelatedProjectList();
@@ -700,10 +700,8 @@ class UserService
     /**
      * @param cs_context_item $room
      * @param cs_user_item    $currentUser
-     *
-     * @return string
      */
-    public function getMemberStatus($room, $currentUser)
+    public function getMemberStatus($room, $currentUser): string
     {
         /*
          * States: enter, join, locked, request, requested, rejected, forbidden
@@ -802,7 +800,7 @@ class UserService
      *
      * @return cs_user_item[] An array of users belonging to the group(s) with the given group ID(s)
      */
-    public function getUsersByGroupIds($roomId, mixed $groupIds, $excludeRejectedAndRegisteredUsers = false)
+    public function getUsersByGroupIds($roomId, mixed $groupIds, $excludeRejectedAndRegisteredUsers = false): array
     {
         $this->userManager->resetLimits();
 
@@ -921,10 +919,7 @@ class UserService
         }
     }
 
-    /**
-     * @return cs_user_item|null
-     */
-    public function getUserModeratorsInContext(int $contextId): ?cs_list
+    public function getUserModeratorsInContext(int $contextId): cs_list
     {
         $this->userManager->resetLimits();
         $this->userManager->setContextLimit($contextId);

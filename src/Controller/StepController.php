@@ -100,7 +100,7 @@ class StepController extends BaseController
      *
      * @return cs_step_item[]
      */
-    protected function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
+    protected function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = []): array
     {
         if (1 == count($itemIds)) {
             return [$this->todoService->getStep($itemIds[0])];

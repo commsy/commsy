@@ -84,7 +84,7 @@ class GroupService
      *
      * @return cs_group_item[]
      */
-    public function getGroupsById($roomId, $ids)
+    public function getGroupsById($roomId, $ids): array
     {
         $this->groupManager->setContextLimit($roomId);
         $this->groupManager->setIDArrayLimit($ids);

@@ -35,7 +35,7 @@ class PortfolioEditCategoryType extends AbstractType
     {
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $choices = $this->buildChoices($options['categories']);
 
@@ -122,7 +122,7 @@ class PortfolioEditCategoryType extends AbstractType
      *
      * @param OptionsResolver $resolver The resolver for the options
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired(['categories', 'categoryId', 'portfolioId'])

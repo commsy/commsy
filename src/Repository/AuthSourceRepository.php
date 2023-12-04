@@ -24,10 +24,7 @@ class AuthSourceRepository extends ServiceEntityRepository
         parent::__construct($registry, AuthSource::class);
     }
 
-    /**
-     * @return int|mixed|string
-     */
-    public function findByPortal(int $portalId)
+    public function findByPortal(int $portalId): mixed
     {
         return $this->createQueryBuilder('a')
             ->where('a.portal = :portalId')

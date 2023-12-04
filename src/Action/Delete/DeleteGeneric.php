@@ -35,11 +35,7 @@ class DeleteGeneric implements DeleteInterface
 
         $this->markedService->removeItemFromClipboard($item->getItemId());
     }
-
-    /**
-     * @return string
-     */
-    public function getRedirectRoute(cs_item $item)
+    public function getRedirectRoute(cs_item $item): ?string
     {
         return null;
     }

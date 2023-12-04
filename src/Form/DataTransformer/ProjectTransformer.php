@@ -23,10 +23,8 @@ class ProjectTransformer extends AbstractTransformer
      * Transforms a cs_project_item object to an array.
      *
      * @param cs_project_item $projectItem
-     *
-     * @return array
      */
-    public function transform($projectItem)
+    public function transform($projectItem): array
     {
         $projectData = [];
 

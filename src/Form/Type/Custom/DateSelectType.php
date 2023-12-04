@@ -20,7 +20,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class DateSelectType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('date', DateTimeType::class, ['input' => 'datetime', 'label' => false, 'widget' => 'single_text', 'format' => 'dd.MM.yyyy', 'html5' => false, 'required' => false, 'attr' => ['data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}', 'autocomplete' => 'off']]);

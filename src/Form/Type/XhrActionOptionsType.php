@@ -34,7 +34,7 @@ class XhrActionOptionsType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $choices = [$this->translator->trans('Select some options') => ''] + $options['choices'];
 
@@ -57,7 +57,7 @@ class XhrActionOptionsType extends AbstractType
      *
      * @param OptionsResolver $resolver The resolver for the options
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setRequired(['label', 'choices'])

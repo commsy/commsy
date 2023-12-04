@@ -25,7 +25,7 @@ class HomeNoticeConstraintValidator extends ConstraintValidator
         private readonly ItemService $itemService
     ) {}
 
-    public function validate($homeNoticeItemId, Constraint $constraint)
+    public function validate($homeNoticeItemId, Constraint $constraint): void
     {
         if ($homeNoticeItemId) {
             if (is_numeric($homeNoticeItemId)) {
