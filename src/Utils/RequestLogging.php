@@ -11,22 +11,14 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Metrics;
+namespace App\Utils;
 
-readonly class PrometheusCollector
+interface RequestLogging
 {
-    /**
-     * @param MetricInterface[] $metrics
-     */
-    public function __construct(
-        private iterable $metrics
-    ) {
-    }
-
-    public function updateMetrics(): void
-    {
-        foreach ($this->metrics as $metric) {
-            $metric->update();
-        }
-    }
+    public const ROOM_CONTEXT_IGNORE_REGEX_ARRAY = [
+        '~\/room\/(\d)+\/user\/(\d)+\/image~',
+        '~\/room\/(\d)+\/theme\/background~',
+        '~\/room\/(\d)+\/logo~',
+        '~\/_wdt~',
+    ];
 }
