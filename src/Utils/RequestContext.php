@@ -19,12 +19,12 @@ use App\Repository\PortalRepository;
 use App\Repository\RoomRepository;
 use Symfony\Component\HttpFoundation\Request;
 
-class RequestContext
+final readonly class RequestContext
 {
     public function __construct(
-        private readonly PortalRepository $portalRepository,
-        private readonly RoomRepository $roomRepository,
-        private readonly ItemService $itemService
+        private PortalRepository $portalRepository,
+        private RoomRepository $roomRepository,
+        private ItemService $itemService
     ) {
     }
 

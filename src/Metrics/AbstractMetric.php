@@ -13,15 +13,17 @@
 
 namespace App\Metrics;
 
+use App\Metrics\Adapter\WipeableAPC;
 use Prometheus\CollectorRegistry;
 use Prometheus\RegistryInterface;
-use Prometheus\Storage\APC;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractMetric
 {
     private string $cacheKey;
+
+    private ?WipeableAPC $adapter = null;
 
     #[Required]
     public function setCacheKey(ParameterBagInterface $params)
@@ -34,8 +36,17 @@ abstract class AbstractMetric
         return 'commsy';
     }
 
+    public function getAdapter(): WipeableAPC
+    {
+        if ($this->adapter == null) {
+            $this->adapter = new WipeableAPC($this->cacheKey);
+        }
+
+        return $this->adapter;
+    }
+
     public function getCollectorRegistry(): RegistryInterface
     {
-        return new CollectorRegistry(new APC($this->cacheKey));
+        return new CollectorRegistry($this->getAdapter());
     }
 }

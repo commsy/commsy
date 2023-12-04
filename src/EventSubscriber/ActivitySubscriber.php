@@ -16,6 +16,7 @@ namespace App\EventSubscriber;
 use App\Entity\Portal;
 use App\Room\RoomManager;
 use App\Services\LegacyEnvironment;
+use App\Utils\RequestLogging;
 use cs_environment;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -46,40 +47,35 @@ class ActivitySubscriber implements EventSubscriberInterface
         if ($event->isMainRequest()) {
             $request = $event->getRequest();
             if (!$request->isXmlHttpRequest()) {
-                $countRequest = true;
-                if (preg_match('~\/room\/(\d)+\/user\/(\d)+\/image~', $request->getUri())) {
-                    $countRequest = false;
-                } elseif (preg_match('~\/room\/(\d)+\/theme\/background~', $request->getUri())) {
-                    $countRequest = false;
-                } elseif (preg_match('~\/room\/(\d)+\/logo~', $request->getUri())) {
-                    $countRequest = false;
+                foreach (RequestLogging::ROOM_CONTEXT_IGNORE_REGEX_ARRAY as $regex) {
+                    if (preg_match($regex, $request->getUri())) {
+                        return;
+                    }
                 }
 
-                if ($countRequest) {
-                    $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+                $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
 
-                    if ($currentContextItem) {
-                        if ($currentContextItem->isPortal()) {
-                            $this->updatePortalActivity($currentContextItem->getItemID());
+                if ($currentContextItem) {
+                    if ($currentContextItem->isPortal()) {
+                        $this->updatePortalActivity($currentContextItem->getItemID());
+                    }
+
+                    if (
+                        $currentContextItem->isProjectRoom() ||
+                        $currentContextItem->isCommunityRoom() ||
+                        $currentContextItem->isPrivateRoom() ||
+                        $currentContextItem->isGroupRoom()
+                    ) {
+                        $currentContextItem->saveLastLogin();
+                        $currentContextItem->saveActivityPoints(1);
+
+                        $room = $this->roomManager->getRoom($currentContextItem->getItemId());
+                        if ($room) {
+                            $this->roomManager->resetInactivity($room, false, true, true);
                         }
 
-                        if (
-                            $currentContextItem->isProjectRoom() ||
-                            $currentContextItem->isCommunityRoom() ||
-                            $currentContextItem->isPrivateRoom() ||
-                            $currentContextItem->isGroupRoom()
-                        ) {
-                            $currentContextItem->saveLastLogin();
-                            $currentContextItem->saveActivityPoints(1);
-
-                            $room = $this->roomManager->getRoom($currentContextItem->getItemId());
-                            if ($room) {
-                                $this->roomManager->resetInactivity($room, false, true, true);
-                            }
-
-                            $portalId = $currentContextItem->getContextID();
-                            $this->updatePortalActivity($portalId);
-                        }
+                        $portalId = $currentContextItem->getContextID();
+                        $this->updatePortalActivity($portalId);
                     }
                 }
             }
