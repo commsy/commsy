@@ -49,10 +49,29 @@
 
         {# content #}
         {% if not fileArray is empty %}
+            {% for file in fileArray %}
+                {% if this.supportsOnlineOffice(file) and is_granted('ITEM_EDIT_LOCK', item.itemId) %}
+                    <div {{ stimulus_controller('wopi_modal', {
+                        'url': path('app_wopi_host', {
+                            'roomId': item.contextId,
+                            'itemId': item.itemId,
+                            'fileId': file.fileId
+                        })
+                    }) }}>
+                        <div id="modal_wopi_{{ item.itemId }}" class="uk-modal" {{ stimulus_target('wopi_modal', 'modal') }}>
+                            <div class="uk-modal-dialog uk-modal-dialog-blank">
+                                <a class="uk-modal-close uk-close uk-margin-right"></a>
+                                <div class="uk-height-viewport" {{ stimulus_target('wopi_modal', 'content') }}></div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
             <div class="uk-width-9-10">
-                    <div class="uk-slidenav-position uk-margin-top uk-margin-bottom" data-uk-slider="{infinite: false}">
-                        <div class="uk-slider-container">
-                            <ul class="uk-slider uk-grid uk-grid-width-1-3 uk-grid-width-medium-1-6">
+                <div class="uk-slidenav-position uk-margin-top uk-margin-bottom" data-uk-slider="{infinite: false}">
+                    <div class="uk-slider-container">
+                        <ul class="uk-slider uk-grid uk-grid-width-1-3 uk-grid-width-medium-1-6">
 
                             {% for file in fileArray %}
                                 <li>
@@ -78,11 +97,8 @@
 
                                                 {% if this.supportsOnlineOffice(file) and is_granted('ITEM_EDIT_LOCK', item.itemId) %}
                                                     <div class="uk-margin-bottom-remove">
-                                                        <a target="_blank" href="{{ path('app_wopi_host', {
-                                                            'roomId': item.contextId,
-                                                            'itemId': item.itemId,
-                                                            'fileId': file.fileId
-                                                        }) }}"><i class="uk-icon-edit"></i> {{ 'item.file.live_edit'|trans({}, 'item') }}</a>
+                                                        <a href="#modal_wopi_{{ item.itemId }}" data-uk-modal
+                                                        ><i class="uk-icon-edit"></i> {{ 'item.file.live_edit'|trans({}, 'item') }}</a>
                                                     </div>
                                                 {% endif %}
                                             {% endif %}
