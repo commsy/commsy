@@ -1,0 +1,21 @@
+{% component 'v2:list' with { elements: this.pinnedItems, striped: false } %}
+    {% import 'utils/macros.html.twig' as macros %}
+
+    {% block element %}
+
+            {% set item = element.linkedItem is defined ? element.linkedItem : element %}
+            {% set subitemAnchor = element.linkedItem is defined ? '#' ~ element.itemType ~ element.itemId : '' %}
+            {% set title = element.title is defined and element.title is not empty
+                ? element.title|decodeHtmlEntity|u.truncate(55, '...')
+                : element.fullName is defined and element.fullName is not empty
+                    ? element.fullName|decodeHtmlEntity|u.truncate(55, '...')
+                    : element.description|decodeHtmlEntity|striptags('<br><p>')|replace({'<br>': ' ', '<p>': ' ', '</p>': ' '})|u.truncate(55, '...')
+            %}
+            <div class="cs-pinned-item">
+                <a class="uk-text-middle" href="{{ path('app_' ~ item.itemType ~ '_detail', {'roomId': item.contextId, 'itemId': item.itemId}) ~ subitemAnchor }}">
+                    <i class="{{- macros.iconClassForItemType(item.itemType) -}} uk-icon uk-margin-small-right uk-icon-justify"></i>
+                    {{ title }}
+                </a>
+            </div>
+    {% endblock %}
+{% endcomponent %}

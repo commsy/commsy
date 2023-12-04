@@ -22,6 +22,8 @@ use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Action\MarkRead\MarkReadTodo;
+use App\Action\Pin\PinAction;
+use App\Action\Pin\UnpinAction;
 use App\Action\TodoStatus\TodoStatusAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\TodoFilterType;
@@ -35,6 +37,7 @@ use App\Services\PrintService;
 use App\Utils\AnnotationService;
 use App\Utils\AssessmentService;
 use App\Utils\CategoryService;
+use App\Utils\ItemService;
 use App\Utils\LabelService;
 use App\Utils\TodoService;
 use App\Utils\TopicService;
@@ -70,7 +73,8 @@ class TodoController extends BaseController
     #[Route(path: '/room/{roomId}/todo')]
     public function list(
         Request $request,
-        int $roomId
+        int $roomId,
+        ItemService $itemService
     ): Response {
         $roomItem = $this->roomService->getRoomItem($roomId);
 
@@ -95,13 +99,32 @@ class TodoController extends BaseController
         // get todo list from manager service
         $itemsCountArray = $this->todoService->getCountArray($roomId);
 
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_TODO_TYPE, CS_STEP_TYPE ]);
+
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('todo')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('todo');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('todo');
         }
 
-        return $this->render('todo/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'todo', 'itemsCountArray' => $itemsCountArray, 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => $roomItem->withAssociations(), 'showCategories' => $roomItem->withTags(), 'statusList' => $roomItem->getExtraToDoStatusArray(), 'usageInfo' => $usageInfo, 'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(), 'catzExpanded' => $roomItem->isTagsShowExpanded(), 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'sort' => $sort]);
+        return $this->render('todo/list.html.twig', [
+            'roomId' => $roomId,
+            'form' => $filterForm,
+            'module' => CS_TODO_TYPE,
+            'relatedModule' => CS_STEP_TYPE,
+            'itemsCountArray' => $itemsCountArray,
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showAssociations' => $roomItem->withAssociations(),
+            'showCategories' => $roomItem->withTags(),
+            'statusList' => $roomItem->getExtraToDoStatusArray(),
+            'usageInfo' => $usageInfo,
+            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
+            'catzExpanded' => $roomItem->isTagsShowExpanded(),
+            'isArchived' => $roomItem->getArchived(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'sort' => $sort,
+            'pinnedItemsCount' => count($pinnedItems)
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/todo/create')]
@@ -335,6 +358,7 @@ class TodoController extends BaseController
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
             'draft' => $this->itemService->getItem($itemId)->isDraft(),
+            'pinned' => $this->itemService->getItem($itemId)->isPinned(),
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
             'showAssociations' => $current_context->withAssociations(),
@@ -798,6 +822,36 @@ class TodoController extends BaseController
         $markReadAction->setMarkReadStrategy($markReadTodo);
 
         return $markReadAction->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/todo/xhr/pin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrPinAction(
+        Request $request,
+        PinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/todo/xhr/unpin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrUnpinAction(
+        Request $request,
+        UnpinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
     }
 
     /**

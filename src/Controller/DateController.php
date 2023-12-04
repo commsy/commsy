@@ -22,6 +22,8 @@ use App\Action\Mark\CategorizeAction;
 use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
 use App\Action\MarkRead\MarkReadAction;
+use App\Action\Pin\PinAction;
+use App\Action\Pin\UnpinAction;
 use App\Entity\Calendars;
 use App\Event\CommsyEditEvent;
 use App\Filter\DateFilterType;
@@ -144,6 +146,7 @@ class DateController extends BaseController
         Request $request,
         int $roomId,
         CalendarsRepository $calendarsRepository,
+        ItemService $itemService,
         HashManager $hashManager
     ): Response {
         $roomItem = $this->getRoom($roomId);
@@ -209,10 +212,13 @@ class DateController extends BaseController
 
         $calendars = $calendarsRepository->findBy(['context_id' => $roomId, 'external_url' => ['', null]]);
 
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_DATE_TYPE ]);
+
         return $this->render('date/list.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm,
-            'module' => 'date',
+            'module' => CS_DATE_TYPE,
+            'relatedModule' => null,
             'itemsCountArray' => $itemsCountArray,
             'usageInfo' => $usageInfo,
             'iCal' => $iCal,
@@ -222,6 +228,7 @@ class DateController extends BaseController
             'sort' => $sort,
             'showHashTags' => $roomItem->withBuzzwords(),
             'showCategories' => $roomItem->withTags(),
+            'pinnedItemsCount' => count($pinnedItems)
         ]);
     }
 
@@ -279,6 +286,7 @@ class DateController extends BaseController
         Request $request,
         int $roomId,
         CalendarsRepository $calendarsRepository,
+        ItemService $itemService,
         HashManager $hashManager
     ): Response {
         $roomItem = $this->getRoom($roomId);
@@ -337,15 +345,19 @@ class DateController extends BaseController
 
         $calendars = $calendarsRepository->findBy(['context_id' => $roomId, 'external_url' => ['', null]]);
 
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_DATE_TYPE ]);
+
         return $this->render('date/calendar.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm,
-            'module' => 'date',
+            'module' => CS_DATE_TYPE,
+            'relatedModule' => null,
             'usageInfo' => $usageInfo,
             'iCal' => $iCal,
             'calendars' => $calendars,
             'isArchived' => $roomItem->getArchived(),
             'defaultView' => ('calendar' === $roomItem->getDatesPresentationStatus()) ? 'timeGridWeek' : 'dayGridMonth',
+            'pinnedItemsCount' => count($pinnedItems)
         ]);
     }
 
@@ -472,6 +484,7 @@ class DateController extends BaseController
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
             'draft' => $this->itemService->getItem($itemId)->isDraft(),
+            'pinned' => $this->itemService->getItem($itemId)->isPinned(),
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
             'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
@@ -1719,6 +1732,36 @@ class DateController extends BaseController
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $markReadAction->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/date/xhr/pin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrPinAction(
+        Request $request,
+        PinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/date/xhr/unpin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrUnpinAction(
+        Request $request,
+        UnpinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
     }
 
     /**

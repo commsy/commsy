@@ -23,6 +23,8 @@ use App\Action\Mark\HashtagAction;
 use App\Action\Mark\MarkAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Action\MarkRead\MarkReadMaterial;
+use App\Action\Pin\PinAction;
+use App\Action\Pin\UnpinAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\MaterialFilterType;
 use App\Form\DataTransformer\MaterialTransformer;
@@ -188,7 +190,8 @@ class MaterialController extends BaseController
     #[Route(path: '/room/{roomId}/material')]
     public function list(
         Request $request,
-        int $roomId
+        int $roomId,
+        ItemService $itemService
     ): Response {
         $roomItem = $this->getRoom($roomId);
 
@@ -212,13 +215,35 @@ class MaterialController extends BaseController
         // get material list from manager service
         $itemsCountArray = $this->materialService->getCountArray($roomId);
 
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_MATERIAL_TYPE, CS_SECTION_TYPE ]);
+
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('material')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('material');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('material');
         }
 
-        return $this->render('material/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'material', 'itemsCountArray' => $itemsCountArray, 'showRating' => $roomItem->isAssessmentActive(), 'showAssociations' => $roomItem->withAssociations(), 'showWorkflow' => $roomItem->withWorkflow(), 'showHashTags' => $roomItem->withBuzzwords(), 'showCategories' => $roomItem->withTags(), 'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(), 'catzExpanded' => $roomItem->isTagsShowExpanded(), 'material_filter' => $filterForm, 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'isMaterialOpenForGuests' => $roomItem->isMaterialOpenForGuests(), 'sort' => $sort]);
+        return $this->render('material/list.html.twig', [
+            'roomId' => $roomId,
+            'form' => $filterForm,
+            'module' => CS_MATERIAL_TYPE,
+            'relatedModule' => CS_SECTION_TYPE,
+            'itemsCountArray' => $itemsCountArray,
+            'showRating' => $roomItem->isAssessmentActive(),
+            'showAssociations' => $roomItem->withAssociations(),
+            'showWorkflow' => $roomItem->withWorkflow(),
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showCategories' => $roomItem->withTags(),
+            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
+            'catzExpanded' => $roomItem->isTagsShowExpanded(),
+            'material_filter' => $filterForm,
+            'usageInfo' => $usageInfo,
+            'isArchived' => $roomItem->getArchived(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'isMaterialOpenForGuests' => $roomItem->isMaterialOpenForGuests(),
+            'sort' => $sort,
+            'pinnedItemsCount' => count($pinnedItems)
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/material/print/{sort}', defaults: ['sort' => 'none'])]
@@ -343,6 +368,7 @@ class MaterialController extends BaseController
             'workflowUnread' => $infoArray['workflowUnread'],
             'workflowRead' => $infoArray['workflowRead'],
             'draft' => $infoArray['draft'],
+            'pinned' => $infoArray['pinned'],
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
             'withTrafficLight' => $roomItem->withWorkflowTrafficLight(),
@@ -747,6 +773,7 @@ class MaterialController extends BaseController
         $infoArray['workflowUnread'] = $workflowUnread;
         $infoArray['workflowRead'] = $workflowRead;
         $infoArray['draft'] = $this->itemService->getItem($itemId)->isDraft();
+        $infoArray['pinned'] = $this->itemService->getItem($itemId)->isPinned();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['showWorkflow'] = $current_context->withWorkflow();
         $infoArray['user'] = $this->legacyEnvironment->getCurrentUserItem();
@@ -1330,6 +1357,36 @@ class MaterialController extends BaseController
         $markReadAction->setMarkReadStrategy($markReadMaterial);
 
         return $markReadAction->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/material/xhr/pin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrPinAction(
+        Request $request,
+        PinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/material/xhr/unpin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrUnpinAction(
+        Request $request,
+        UnpinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
     }
 
     /**

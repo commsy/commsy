@@ -20,6 +20,8 @@ use App\Action\Download\DownloadAction;
 use App\Action\Mark\CategorizeAction;
 use App\Action\Mark\HashtagAction;
 use App\Action\MarkRead\MarkReadAction;
+use App\Action\Pin\PinAction;
+use App\Action\Pin\UnpinAction;
 use App\Event\CommsyEditEvent;
 use App\Filter\TopicFilterType;
 use App\Form\DataTransformer\TopicTransformer;
@@ -67,7 +69,8 @@ class TopicController extends BaseController
     #[Route(path: '/room/{roomId}/topic')]
     public function list(
         Request $request,
-        int $roomId
+        int $roomId,
+        ItemService $itemService
     ): Response {
         $roomItem = $this->getRoom($roomId);
         if (!$roomItem) {
@@ -86,13 +89,32 @@ class TopicController extends BaseController
         // get topic list from manager service
         $itemsCountArray = $this->topicService->getCountArray($roomId);
 
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_TOPIC_TYPE, CS_LABEL_TYPE ]);
+
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('topic')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('topic');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('topic');
         }
 
-        return $this->render('topic/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'topic', 'itemsCountArray' => $itemsCountArray, 'showRating' => false, 'showHashTags' => $roomItem->withBuzzwords(), 'showAssociations' => false, 'showCategories' => $roomItem->withTags(), 'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(), 'catzExpanded' => $roomItem->isTagsShowExpanded(), 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('topic/list.html.twig', [
+            'roomId' => $roomId,
+            'form' => $filterForm,
+            'module' => CS_TOPIC_TYPE,
+            'relatedModule' => CS_LABEL_TYPE,
+            'itemsCountArray' => $itemsCountArray,
+            'showRating' => false,
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showAssociations' => false,
+            'showCategories' => $roomItem->withTags(),
+            'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
+            'catzExpanded' => $roomItem->isTagsShowExpanded(),
+            'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
+            'usageInfo' => $usageInfo,
+            'isArchived' => $roomItem->getArchived(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'pinnedItemsCount' => count($pinnedItems)
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/topic/feed/{start}/{sort}')]
@@ -196,6 +218,7 @@ class TopicController extends BaseController
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'userCount' => $infoArray['userCount'],
             'draft' => $infoArray['draft'],
+            'pinned' => $infoArray['pinned'],
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
             'buzzExpanded' => $infoArray['buzzExpanded'],
@@ -332,6 +355,7 @@ class TopicController extends BaseController
         $infoArray['readSinceModificationCount'] = $read_since_modification_count;
         $infoArray['userCount'] = $all_user_count;
         $infoArray['draft'] = $this->itemService->getItem($itemId)->isDraft();
+        $infoArray['pinned'] = $this->itemService->getItem($itemId)->isPinned();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['showWorkflow'] = $current_context->withWorkflow();
         $infoArray['user'] = $this->legacyEnvironment->getCurrentUserItem();
@@ -755,6 +779,36 @@ class TopicController extends BaseController
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $markReadAction->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/topic/xhr/pin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrPinAction(
+        Request $request,
+        PinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/topic/xhr/unpin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrUnpinAction(
+        Request $request,
+        UnpinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
     }
 
     /**

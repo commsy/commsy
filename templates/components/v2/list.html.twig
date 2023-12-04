@@ -1,0 +1,9 @@
+
+    <ul class="uk-list{% if striped %} uk-list-striped{% endif %}">
+        {% for element in elements -%}
+            <li>
+                {%- block element -%}{%- endblock %}
+            </li>
+        {% endfor -%}
+    </ul>
+

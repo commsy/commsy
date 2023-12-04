@@ -18,6 +18,8 @@ use App\Action\Download\DownloadAction;
 use App\Action\Mark\CategorizeAction;
 use App\Action\Mark\HashtagAction;
 use App\Action\MarkRead\MarkReadAction;
+use App\Action\Pin\PinAction;
+use App\Action\Pin\UnpinAction;
 use App\Entity\Account;
 use App\Event\CommsyEditEvent;
 use App\Facade\MembershipManager;
@@ -35,6 +37,7 @@ use App\Services\PrintService;
 use App\Utils\AnnotationService;
 use App\Utils\CategoryService;
 use App\Utils\GroupService;
+use App\Utils\ItemService;
 use App\Utils\LabelService;
 use App\Utils\MailAssistant;
 use App\Utils\TopicService;
@@ -89,7 +92,8 @@ class GroupController extends BaseController
     #[Route(path: '/room/{roomId}/group')]
     public function list(
         Request $request,
-        int $roomId
+        int $roomId,
+        ItemService $itemService
     ): Response {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -114,13 +118,30 @@ class GroupController extends BaseController
         // get group list from manager service
         $itemsCountArray = $this->groupService->getCountArray($roomId);
 
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_GROUP_TYPE, CS_LABEL_TYPE ]);
+
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('group')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('group');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('group');
         }
 
-        return $this->render('group/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'group', 'itemsCountArray' => $itemsCountArray, 'showRating' => false, 'showHashTags' => $roomItem->withBuzzwords(), 'showCategories' => $roomItem->withTags(), 'showAssociations' => false, 'usageInfo' => $usageInfo, 'isArchived' => $roomItem->getArchived(), 'user' => $this->legacyEnvironment->getCurrentUserItem(), 'sort' => $sort]);
+        return $this->render('group/list.html.twig', [
+            'roomId' => $roomId,
+            'form' => $filterForm,
+            'module' => CS_GROUP_TYPE,
+            'relatedModule' => CS_LABEL_TYPE,
+            'itemsCountArray' => $itemsCountArray,
+            'showRating' => false,
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showCategories' => $roomItem->withTags(),
+            'showAssociations' => false,
+            'usageInfo' => $usageInfo,
+            'isArchived' => $roomItem->getArchived(),
+            'user' => $this->legacyEnvironment->getCurrentUserItem(),
+            'sort' => $sort,
+            'pinnedItemsCount' => count($pinnedItems)
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/group/print/{sort}', defaults: ['sort' => 'none'])]
@@ -322,6 +343,7 @@ class GroupController extends BaseController
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'userCount' => $infoArray['userCount'],
             'draft' => $infoArray['draft'],
+            'pinned' => $infoArray['pinned'],
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
             'showHashtags' => $infoArray['showHashtags'],
@@ -526,6 +548,7 @@ class GroupController extends BaseController
         $infoArray['readSinceModificationCount'] = $read_since_modification_count;
         $infoArray['userCount'] = $all_user_count;
         $infoArray['draft'] = $this->itemService->getItem($itemId)->isDraft();
+        $infoArray['pinned'] = $this->itemService->getItem($itemId)->isPinned();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['showWorkflow'] = $current_context->withWorkflow();
         $infoArray['user'] = $this->legacyEnvironment->getCurrentUserItem();
@@ -1182,6 +1205,36 @@ class GroupController extends BaseController
         $items = $this->getItemsForActionRequest($room, $request);
 
         return $markReadAction->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/group/xhr/pin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrPinAction(
+        Request $request,
+        PinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route(path: '/room/{roomId}/group/xhr/unpin', condition: 'request.isXmlHttpRequest()')]
+    public function xhrUnpinAction(
+        Request $request,
+        UnpinAction $action,
+        int $roomId
+    ): Response {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        return $action->execute($room, $items);
     }
 
     /**
