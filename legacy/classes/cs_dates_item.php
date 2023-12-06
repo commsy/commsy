@@ -34,7 +34,7 @@ class cs_dates_item extends cs_item
 
     /** Checks and sets the data of the item.
      *
-     * @param $data_array Is the prepared array from "_buildItemArray($db_array)"
+     * @param $data_array
      *
      * @author CommSy Development Group
      */

@@ -378,7 +378,7 @@ class cs_todo_item extends cs_item
 
     /** Checks and sets the data of the todo_item.
      *
-     * @param $data_array Is the prepared array from "_buildItemArray($db_array)"
+     * @param $data_array
      */
     public function _setItemData($data_array)
     {
