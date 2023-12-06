@@ -57,7 +57,7 @@
                                 {% endif %}
 
                                 {# delete #}
-                                {% if is_granted('ITEM_EDIT', article.itemId) and is_granted('ITEM_FILE_LOCK', item.itemId) %}
+                                {% if is_granted('ITEM_EDIT', article.itemId) and is_granted('ITEM_FILE_LOCK', article.itemId) %}
                                     <li>
                                         <a href="#" data-cs-action="{{ {
                                             'url': path('app_discussionarticle_xhrdelete', {'roomId': roomId}),

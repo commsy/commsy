@@ -201,7 +201,10 @@
                         'editUrl': path('app_upload_uploadform', {'roomId': discussion.contextId, 'itemId': discussion.itemId}),
                         'cancelEditUrl': path('app_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId})
                     }|json_encode|e('html_attr') }}">
-                        {{ macrosItem.files(discussion, draft) }}
+                        {{ component('item_files', {
+                            item: discussion,
+                            draft: draft
+                        }) }}
                     </div>
 
                     {% if not draft %}
