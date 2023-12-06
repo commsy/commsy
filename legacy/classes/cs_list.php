@@ -294,13 +294,8 @@ class cs_list implements IteratorAggregate
      * Retrieve an external iterator.
      *
      * @see https://php.net/manual/en/iteratoraggregate.getiterator.php
-     *
-     * @return Traversable An instance of an object implementing <b>Iterator</b> or
-     *                     <b>Traversable</b>
-     *
-     * @since 5.0.0
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->to_array());
     }

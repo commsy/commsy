@@ -41,7 +41,7 @@ class cs_guide_item extends cs_context_item
         $this->_addExtra('LANGUAGE_AVAILABLE', $value);
     }
 
-    public function getAvailableLanguageArray()
+    public function getAvailableLanguageArray(): array
     {
         $retour = [];
         if ($this->_issetExtra('LANGUAGE_AVAILABLE')) {

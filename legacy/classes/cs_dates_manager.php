@@ -101,7 +101,6 @@ class cs_dates_manager extends cs_manager
        $this->_future_limit = false;
        $this->_from_limit = null;
        $this->_interval_limit = null;
-       $this->_order = null;
        $this->_group_limit = null;
        $this->_topic_limit = null;
        $this->_sort_order = null;

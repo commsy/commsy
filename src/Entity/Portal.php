@@ -91,7 +91,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     denormalizationContext: ['groups' => ['api']],
     security: "is_granted('ROLE_API_READ')"
 )]
-class Portal implements Serializable
+class Portal
 {
     #[ApiProperty(description: 'The unique identifier.')]
     #[ORM\Id]
@@ -956,7 +956,7 @@ class Portal implements Serializable
     }
 
     // Serializable
-    public function serialize()
+    public function __serialize()
     {
         $serializableData = get_object_vars($this);
         // exclude from serialization
@@ -964,7 +964,7 @@ class Portal implements Serializable
         return serialize($serializableData);
     }
 
-    public function unserialize($serialized)
+    public function __unserialize(array $serialized)
     {
         $unserializedData = unserialize($serialized);
         foreach ($unserializedData as $key => $value) {
