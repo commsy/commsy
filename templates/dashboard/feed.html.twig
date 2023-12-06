@@ -58,9 +58,9 @@
                                 {{ 'today'|trans({})|capitalize }}, {{ feedItemDate|date("H:i") }}
                             {% else %}
                                 {% if '9999-00-00' not in feedItemDate %}
-                                    {{ feedItemDate|craue_date }}
+                                    {{ feedItemDate|format_date }}
                                 {% else %}
-                                    {{ feedItem.creationDate|craue_date }}
+                                    {{ feedItem.creationDate|format_date }}
                                 {% endif %}
                             {% endif %}
                         </span>
@@ -91,7 +91,7 @@
                             {% if feedItem.author != '' %}
                                     <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.author|decodeHtmlEntity|raw}} ({{feedItem.publishingdate|decodeHtmlEntity|raw}})</div>
                                 {% else %}
-                                    <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: <a href="{{ path('app_user_sendmailviacontactform', {'roomId': currentContextId, 'itemId': feedItem.creator.itemId, 'originPath': 'app_dashboard_overview'}) }}">{{ macros.userFullname(feedItem.creator) }}</a>({{ feedItem.creationDate|craue_date }})</div>
+                                    <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: <a href="{{ path('app_user_sendmailviacontactform', {'roomId': currentContextId, 'itemId': feedItem.creator.itemId, 'originPath': 'app_dashboard_overview'}) }}">{{ macros.userFullname(feedItem.creator) }}</a>({{ feedItem.creationDate|format_date }})</div>
                             {% endif %}
                         </div>
                     {% elseif feedItem.itemType is same as('discussion') %}

@@ -43,7 +43,7 @@
                                     <div class="uk-width-4-10">{{ 'lastname'|trans({},'profile')|capitalize }}:</div>
                                     <div class="uk-width-6-10">{% if not accountData.lastName is empty %}{{ accountData.lastName }}{% else %}&nbsp;{% endif %}</div>
                                     <div class="uk-width-4-10">{{ 'dateOfBirth'|trans({},'profile')|capitalize }}:</div>
-                                    <div class="uk-width-6-10">{% if not accountData.birthdate|craue_date is empty %}{{ accountData.birthdate|craue_date }}{% else %}&nbsp;{% endif %}</div>
+                                    <div class="uk-width-6-10">{% if not accountData.birthdate|format_date is empty %}{{ accountData.birthdate|format_date }}{% else %}&nbsp;{% endif %}</div>
                                     <div class="uk-width-4-10">{{ 'email'|trans({},'user') }}:</div>
                                     <div class="uk-width-6-10">{% if not accountData.email is empty %}{{ accountData.email }}{% else %}&nbsp;{% endif %}</div>
                                 </div>
@@ -51,9 +51,9 @@
                             <div class="uk-width-1-2">
                                 <div class="uk-grid">
                                     <div class="uk-width-3-10">{{ 'created'|trans({},'user')|capitalize }}:</div>
-                                    <div class="uk-width-7-10">{{ accountData.creationDate|craue_datetime }}</div>
+                                    <div class="uk-width-7-10">{{ accountData.creationDate|format_datetime }}</div>
                                     <div class="uk-width-3-10">{{ 'last login'|trans({},'user')|capitalize }}:</div>
-                                    <div class="uk-width-7-10">{{ accountData.lastLoginDate|craue_datetime }}</div>
+                                    <div class="uk-width-7-10">{{ accountData.lastLoginDate|format_datetime }}</div>
                                     <div class="uk-width-3-10">{{ 'language'|trans({},'user') }}:</div>
                                     <div class="uk-width-7-10">{{ accountData.language|trans({},'profile') }}</div>
                                     <div class="uk-width-3-10">{{ 'newsletter'|trans({},'profile') }}:</div>
@@ -156,7 +156,7 @@
                         <div class="uk-width-3-10">{{ 'User item ID'|trans({},'user') }}:</div>
                         <div class="uk-width-7-10">{{ roomProfileData.itemID }}</div>
                         <div class="uk-width-3-10">{{ 'created'|trans({},'user')|capitalize }}:</div>
-                        <div class="uk-width-7-10">{{ roomProfileData.creationDate|craue_datetime }}</div>
+                        <div class="uk-width-7-10">{{ roomProfileData.creationDate|format_datetime }}</div>
                     </div>
                     {% if not ((roomProfileData.phoneNumber is empty) and (roomProfileData.cellphoneNumber is empty) and (roomProfileData.skypeID is empty) and (roomProfileData.homepage is empty)) %}
                         <div class="uk-grid uk-margin-top">

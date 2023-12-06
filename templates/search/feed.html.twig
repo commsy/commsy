@@ -63,7 +63,7 @@
                         {% if entity.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                             {{ 'today'|trans({})|capitalize }}, {{ entity.modificationDate|date("H:i") }}
                         {% else %}
-                            {{ entity.modificationDate|craue_date }}
+                            {{ entity.modificationDate|format_date }}
                         {% endif %}
                     </span>
                 </div>
@@ -108,7 +108,7 @@
                         {{ 'by'|trans({})|capitalize }}: {{ entity.author }} ({{ entity.publishingDate }})
                     {% else %}
                         {% if entity.creator is defined and entity.creator is not empty %}
-                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(entity.creator) }} ({{ entity.creationDate|craue_date }})
+                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(entity.creator) }} ({{ entity.creationDate|format_date }})
                         {% endif %}
                     {% endif %}
                 </div>

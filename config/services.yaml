@@ -65,8 +65,6 @@ parameters:
 
     # Dates
     commsy.dates.timezone: '%env(TIMEZONE)%'
-    craue_twig_extensions.formatDateTime.datetype: medium
-    craue_twig_extensions.formatDateTime.timetype: short
     
     # Online Office
     commsy.online_office.base_url: '%env(ONLINE_OFFICE_BASE_URL)%'
@@ -436,10 +434,6 @@ services:
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
             - '%env(DATABASE_URL)%'
-
-    # FormatDateTimeExtension
-    Craue\TwigExtensionsBundle\Twig\Extension\FormatDateTimeExtension:
-        alias: twig.extension.craue_formatDateTime
     
     # Doctrine
     Doctrine\Migrations\Version\DbalMigrationFactory: ~

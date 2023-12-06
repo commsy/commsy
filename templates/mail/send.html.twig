@@ -35,12 +35,12 @@
 {% elseif item.type == 'discussion' or item.type == 'discussions' %}
     {{ 'discussion'|trans({'%count%':0}, 'rubric')|capitalize }}: {{ item.title|decodeHtmlEntity }}
     {{ 'Number of entries'|trans({}, 'discussion') }}: {{ item.allArticlesCount }}
-    {{ 'Last entry'|trans({}, 'discussion') }}: {{ item.latestArticleModificationDate|craue_date }}
+    {{ 'Last entry'|trans({}, 'discussion') }}: {{ item.latestArticleModificationDate|format_date }}
 {% elseif item.type == 'date' %}
-    {{ item.startingDay|craue_date }}
+    {{ item.startingDay|format_date }}
     {{ item.startingTime }}
     -
-    {{ item.endingDay|craue_date }}
+    {{ item.endingDay|format_date }}
     {{ item.endingTime }}
 {% endif %}
 

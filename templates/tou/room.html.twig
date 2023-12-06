@@ -21,7 +21,7 @@
 
                 <div>
                     <div>{{ 'tou.explanation'|trans({}, 'tou') }}</div>
-                    <div>{{ 'last changed'|trans()|capitalize }}: {{ context.aGBChangeDate|craue_datetime }}</div>
+                    <div>{{ 'last changed'|trans()|capitalize }}: {{ context.aGBChangeDate|format_datetime }}</div>
                     <blockquote>{{ touText|raw }}</blockquote>
 
                     {{ form_start(form) }}

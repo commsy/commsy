@@ -66,9 +66,9 @@
                                                 {{ 'today'|trans({})|capitalize }}, {{ feedItem.modificationDate|date("H:i") }}
                                             {% else %}
                                                 {% if '9999-00-00' not in feedItem.modificationDate %}
-                                                    {{ feedItem.modificationDate|craue_date }}
+                                                    {{ feedItem.modificationDate|format_date }}
                                                 {% else %}
-                                                    {{ feedItem.creationDate|craue_date }}
+                                                    {{ feedItem.creationDate|format_date }}
                                                 {% endif %}
                                             {% endif %}
                                         </span>
@@ -99,7 +99,7 @@
                                             {% if feedItem.author != '' %}
                                                 {{ 'by'|trans({})|capitalize }}: {{feedItem.author}} ({{feedItem.publishingdate}})
                                             {% else %}
-                                                {{ 'by'|trans({})|capitalize }}: {{feedItem.creator.fullname}} ({{ feedItem.creationDate|craue_date }})
+                                                {{ 'by'|trans({})|capitalize }}: {{feedItem.creator.fullname}} ({{ feedItem.creationDate|format_date }})
                                             {% endif %}
                                         </div>
                                     {% elseif feedItem.itemType is same as('discussion') %}

@@ -56,9 +56,9 @@
                                             </div>
                                             <div class="uk-margin-right">
                                                 {% if '9999-00-00' not in item.getModificationDate %}
-                                                    {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
+                                                    {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|format_date }} {{ item.modificationDate|format_time }}<br/>
                                                 {% else %}
-                                                    {{ 'last changed'|trans({})|capitalize }}: {{ item.creationDate|craue_date }} {{ item.creationDate|craue_time }}<br/>
+                                                    {{ 'last changed'|trans({})|capitalize }}: {{ item.creationDate|format_date }} {{ item.creationDate|format_time }}<br/>
                                                 {% endif %}
                                                 {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}
                                             </div>
@@ -80,7 +80,7 @@
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
-                                                {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
+                                                {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|format_date }} {{ item.modificationDate|format_time }}<br/>
                                                 {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}<br/>
                                                 {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
                                             </div>
@@ -204,7 +204,7 @@
                                         <strong>{{ "due date"|trans({},'todo') }}:</strong>
                                     </td>
                                     <td class="uk-text-top">
-                                        {{ item.date|craue_date }} {{ item.date|craue_time }}
+                                        {{ item.date|format_date }} {{ item.date|format_time }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -282,7 +282,7 @@
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
-                                                {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
+                                                {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|format_date }} {{ item.modificationDate|format_time }}<br/>
                                                 {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}
                                             </div>
                                         </div>
@@ -303,7 +303,7 @@
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
-                                                {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
+                                                {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|format_date }} {{ item.modificationDate|format_time }}<br/>
                                                 {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}<br/>
                                                 {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
                                             </div>
@@ -408,7 +408,7 @@
                                             <strong>{{ "due date"|trans({},'todo') }}:</strong>
                                         </td>
                                         <td class="uk-text-top">
-                                            {{ item.date|craue_date }} {{ item.date|craue_time }}
+                                            {{ item.date|format_date }} {{ item.date|format_time }}
                                         </td>
                                     </tr>
                                     <tr>

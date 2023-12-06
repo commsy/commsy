@@ -44,9 +44,9 @@
                                     {{ 'today'|trans({})|capitalize }}, {{ room.modificationDate|date("H:i") }}
                                 {% else %}
                                     {% if '9999-00-00' not in room.modificationDate %}
-                                        {{ room.modificationDate|craue_date }}
+                                        {{ room.modificationDate|format_date }}
                                     {% else %}
-                                        {{ room.creationDate|craue_date }}
+                                        {{ room.creationDate|format_date }}
                                     {% endif %}
                                 {% endif %}
                             </span>

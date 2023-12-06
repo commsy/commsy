@@ -52,7 +52,7 @@
                                             <a href="{{ path('app_portalsettings_accountindexdetail', {
                                                 'portalId': portal.id,
                                                 'userId': portalUser.itemId
-                                            }) }}" uk-tooltip="title: {{ 'created'|trans({}, 'user') }} {{ portalUser.creationDate|craue_datetime|default('Never'|trans({}, 'portal')) }}">
+                                            }) }}" uk-tooltip="title: {{ 'created'|trans({}, 'user') }} {{ portalUser.creationDate|format_datetime|default('Never'|trans({}, 'portal')) }}">
                                                 {{ account.firstname }} {{ account.lastname }}
                                             </a> ({{ account.username }})
                                         </td>
@@ -65,7 +65,7 @@
                                                 {{ account.email }}
                                             </a>
                                         </td>
-                                        <td class="uk-text-nowrap">{{ account.lastLogin|craue_datetime|default('Never'|trans({}, 'portal')) }}</td>
+                                        <td class="uk-text-nowrap">{{ account.lastLogin|format_datetime|default('Never'|trans({}, 'portal')) }}</td>
                                         <td>{{ macros.userStatus(portalUser.status) }}</td>
                                         <td>{{ account.authSource.title }}</td>
                                     </tr>

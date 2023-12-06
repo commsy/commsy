@@ -25,7 +25,7 @@
                         {{ form_widget(file.fileId) }}
 
                         <label class="uk-form-label" for="{{ file.vars.id }}">
-                            {{- file.vars.value.filename }} ({{ file.vars.value.creationDate|craue_datetime }})
+                            {{- file.vars.value.filename }} ({{ file.vars.value.creationDate|format_datetime }})
                         </label>
                     {% endfor %}
                 </div>

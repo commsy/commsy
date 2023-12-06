@@ -121,7 +121,7 @@
                 <div class="uk-width-1-3">
                     <div class="uk-margin-bottom">
                         <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
-                        {{ workflowValidityDate|craue_date }}
+                        {{ workflowValidityDate|format_date }}
                     </div>
                 </div>
             {% endif %}
@@ -129,7 +129,7 @@
                  <div class="uk-width-1-3">
                     <div class="uk-margin-bottom">
                         <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/>
-                        {{ workflowResubmissionDate|craue_date }}
+                        {{ workflowResubmissionDate|format_date }}
                     </div>
                 </div>
            {% endif %}
@@ -149,7 +149,7 @@
             {% if workflowValidityDate != '0000-00-00 00:00:00' %}
                 <div class="uk-margin-bottom">
                     <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
-                    {{ workflowValidityDate|craue_date }}
+                    {{ workflowValidityDate|format_date }}
                 </div>
             {% endif %}
         </div>
@@ -157,7 +157,7 @@
             {% if workflowResubmissionDate != '0000-00-00 00:00:00' %}
                 <div class="uk-margin-bottom">
                     <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/>
-                    {{ workflowResubmissionDate|craue_date }}
+                    {{ workflowResubmissionDate|format_date }}
                 </div>
            {% endif %}
         </div>
@@ -348,7 +348,7 @@
                                         <div class="uk-flex">
                                             {{ 'last changed'|trans({})|capitalize }}
                                             <div>
-                                                {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
+                                                {{ item.modificationDate|format_date }} {{ item.modificationDate|format_time }}<br/>
                                                 {{ utilsMacros.userFullname(item.modificatorItem) }}<br/>
                                             </div>
                                         </div>
@@ -573,7 +573,7 @@
                             {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(item.creator) }}
                         </div>
                         <div class="uk-comment-meta uk-margin-bottom">
-                            {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}
+                            {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|format_date }} {{ item.modificationDate|format_time }}
                         </div>
                     </div>
 
@@ -757,7 +757,7 @@
                                     <div class="uk-width-1-1">
                                         <div class="uk-flex">
                                             <div >
-                                              {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
+                                              {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|format_date }} {{ item.modificationDate|format_time }}<br/>
                                               {{ 'changed by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(item.modificatorItem) }}
                                             </div>
                                         </div>

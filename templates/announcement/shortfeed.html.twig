@@ -14,7 +14,7 @@
                             <span class="uk-text-bold">
                         {% endif %}
 
-                        {{ 'valid until'|trans({})}}: {{ announcement.secondDateTime|craue_date }}
+                        {{ 'valid until'|trans({})}}: {{ announcement.secondDateTime|format_date }}
 
                         {% if "now"|date("U") <= announcement.secondDateTime|date("U") %}
                             </span>

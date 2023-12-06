@@ -44,7 +44,7 @@
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
-                                                {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
+                                                {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|format_date }} {{ item.modificationDate|format_time }}<br/>
                                                 {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}<br/>
                                                 {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
                                             </div>
@@ -169,7 +169,7 @@
                                             {% endif %}
                                         </div>
                                         <div class="uk-margin-right">
-                                            {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
+                                            {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|format_date }} {{ item.modificationDate|format_time }}<br/>
                                             {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}
                                         </div>
                                     </div>
@@ -190,7 +190,7 @@
                                             {% endif %}
                                         </div>
                                         <div class="uk-margin-right">
-                                            {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|craue_date }} {{ item.modificationDate|craue_time }}<br/>
+                                            {{ 'last changed'|trans({})|capitalize }}: {{ item.modificationDate|format_date }} {{ item.modificationDate|format_time }}<br/>
                                             {{ 'changed by'|trans({})|capitalize }}: {{ macros.userFullname(item.modificatorItem) }}<br/>
                                             {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
                                         </div>

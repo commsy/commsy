@@ -22,9 +22,9 @@
                                 {{ 'today'|trans({})|capitalize }}, {{ project.modificationDate|date("H:i") }}
                             {% else %}
                                 {% if '9999-00-00' not in project.modificationDate %}
-                                    {{ project.modificationDate|craue_date }}
+                                    {{ project.modificationDate|format_date }}
                                 {% else %}
-                                    {{ project.creationDate|craue_date }}
+                                    {{ project.creationDate|format_date }}
                                 {% endif %}
                             {% endif %}
                         </span>
