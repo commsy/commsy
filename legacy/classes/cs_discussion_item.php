@@ -306,7 +306,7 @@ class cs_discussion_item extends cs_item
 
    /** Checks and sets the data of the discussion_item.
     *
-    * @param $data_array Is the prepared array from "_buildItemArray($db_array)"
+    * @param $data_array
     *
     * @author CommSy Development Group
     */
