@@ -73,6 +73,7 @@ class cs_environment
     private ?db_mysql_connector $_db_mysql_connector = null;
     private bool $_cache_on = true;
     private ?misc_text_converter $_misc_text_converter = null;
+    private ?array $_available_languages = null;
 
     /**
      * get the current user
@@ -1022,7 +1023,7 @@ class cs_environment
         return $language;
     }
 
-    public function getAvailableLanguageArray()
+    public function getAvailableLanguageArray(): array
     {
         if (!isset($this->_available_languages)) {
             if ($this->inServer()) {

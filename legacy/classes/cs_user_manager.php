@@ -127,6 +127,8 @@ class cs_user_manager extends cs_manager
 
     private bool $_only_from_portal = false;
 
+    private ?array $_group_array_limit = null;
+
     /**
      * @var mixed|null
      */
@@ -164,7 +166,6 @@ class cs_user_manager extends cs_manager
     public function resetLimits()
     {
         parent::resetLimits();
-        $this->_user_id_limit = null;
         $this->_user_limit = null;
         $this->_age_limit = null;
         $this->_from_limit = null;
