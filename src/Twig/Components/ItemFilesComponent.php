@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Components;
+namespace App\Twig\Components;
 
 use App\WOPI\Discovery\DiscoveryService;
 use App\WOPI\Permission\WOPIPermission;

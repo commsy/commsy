@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Components;
+namespace App\Twig\Components;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;

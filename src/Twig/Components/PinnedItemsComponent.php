@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Components;
+namespace App\Twig\Components;
 
 use App\Utils\ItemService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
