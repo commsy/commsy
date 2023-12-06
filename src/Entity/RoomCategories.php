@@ -27,7 +27,7 @@ class RoomCategories
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    private int $id;
+    private ?int $id = null;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: false)]
     private int $context_id;
@@ -35,7 +35,7 @@ class RoomCategories
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
     private string $title;
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
