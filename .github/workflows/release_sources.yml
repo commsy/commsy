@@ -56,7 +56,7 @@ jobs:
                 uses: thedoctor0/zip-release@master
                 with:
                     filename: commsy-${{ steps.tag.outputs.tag }}.zip
-                    exclusions: '*.git* /assets/* /docker/* /*node_modules/* /tests/* .dockerignore .editorconfig .env.test .php-cs-fixer.dist.php .travis.yml codeception.yml composer.lock composer.phar docker-compose* Dockerfile Makefile package.json php* rector.php symfony.lock tsconfig.json webpack.config.js yarn.lock'
+                    exclusions: '*.git* /assets/* /docker/* /*node_modules/* /tests/* .dockerignore .editorconfig .env.test .php-cs-fixer.dist.php .travis.yml codeception.yml composer.lock composer.phar compose.* Dockerfile Makefile package.json php* rector.php symfony.lock tsconfig.json webpack.config.js yarn.lock'
 
             -   name: Release
                 uses: softprops/action-gh-release@v1
