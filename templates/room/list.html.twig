@@ -51,7 +51,7 @@
                             {% if feedItemDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                                 {{ 'today'|trans({})|capitalize }}, {{ feedItemDate|date("H:i") }}
                             {% else %}
-                                {{ feedItemDate|craue_date }}
+                                {{ feedItemDate|format_date }}
                             {% endif %}
                         </span>
                     </div>
@@ -79,7 +79,7 @@
                             {% if feedItem.author != '' %}
                                     {{ 'by'|trans({})|capitalize }}: {{feedItem.author|decodeHtmlEntity|raw}} ({{feedItem.publishingdate|decodeHtmlEntity|raw}})
                                 {% else %}
-                                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }} ({{ feedItem.creationDate|craue_date }})
+                                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(feedItem.modificatorItem) }} ({{ feedItem.creationDate|format_date }})
                             {% endif %}
                         </div>
                     {% elseif feedItem.itemType is same as('discussion') %}

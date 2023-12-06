@@ -81,9 +81,6 @@
     "composer/package-versions-deprecated": {
         "version": "1.11.99.1"
     },
-    "craue/twigextensions-bundle": {
-        "version": "2.7.0"
-    },
     "debril/feed-io": {
         "version": "v4.7.8"
     },

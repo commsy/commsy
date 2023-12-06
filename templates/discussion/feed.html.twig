@@ -30,9 +30,9 @@
                             {{ 'today'|trans({})|capitalize }}, {{ discussion.modificationDate|date("H:i") }}
                         {% else %}
                             {% if '9999-00-00' not in discussion.modificationDate %}
-                                {{ discussion.modificationDate|craue_date }}
+                                {{ discussion.modificationDate|format_date }}
                             {% else %}
-                                {{ discussion.creationDate|craue_date }}
+                                {{ discussion.creationDate|format_date }}
                             {% endif %}
                         {% endif %}
                     </span>
@@ -52,7 +52,7 @@
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(discussion.modificatorItem) }} ({{ discussion.creationDate|craue_date }})
+                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(discussion.modificatorItem) }} ({{ discussion.creationDate|format_date }})
                 </div>
 
                 <div class="uk-comment-meta">

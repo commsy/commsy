@@ -19,7 +19,7 @@
                 {{ macros.userFullname(article.modificatorItem) }}
             </h4>
             <div class="uk-comment-meta">
-                {{ article.modificationDate|craue_date }} {{ article.modificationDate|craue_time }} | {{ macrosDiscussion.anchorLinks(loop, count) }}
+                {{ article.modificationDate|format_date }} {{ article.modificationDate|format_time }} | {{ macrosDiscussion.anchorLinks(loop, count) }}
             </div>
         </div>
 

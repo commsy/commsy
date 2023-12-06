@@ -52,7 +52,7 @@
                                         {% if discussion.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                                             {{ 'today'|trans({})|capitalize }}, {{ discussion.modificationDate|date("H:i") }}
                                         {% else %}
-                                            {{ discussion.modificationDate|craue_date }}
+                                            {{ discussion.modificationDate|format_date }}
                                         {% endif %}
                                     </span>
                                 </div>
@@ -66,7 +66,7 @@
 
                                 <div class="uk-comment-meta">
 
-                                        {{ 'by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(discussion.modificatorItem) }} ({{ discussion.creationDate|craue_date }})
+                                        {{ 'by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(discussion.modificatorItem) }} ({{ discussion.creationDate|format_date }})
 
                                 </div>
 

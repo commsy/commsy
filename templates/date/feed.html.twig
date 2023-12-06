@@ -37,9 +37,9 @@
                                 {{ 'today'|trans({})|capitalize }}, {{ date.modificationDate|date("H:i") }}
                             {% else %}
                                 {% if '9999-00-00' not in date.modificationDate %}
-                                    {{ date.modificationDate|craue_date }}
+                                    {{ date.modificationDate|format_date }}
                                 {% else %}
-                                    {{ date.creationDate|craue_date }}
+                                    {{ date.creationDate|format_date }}
                                 {% endif %}
                             {% endif %}
                         </span>

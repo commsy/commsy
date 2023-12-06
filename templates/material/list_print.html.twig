@@ -52,7 +52,7 @@
                                         {% if material.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                                             {{ 'today'|trans({})|capitalize }}, {{ material.modificationDate|date("H:i") }}
                                         {% else %}
-                                            {{ material.modificationDate|craue_date }}
+                                            {{ material.modificationDate|format_date }}
                                         {% endif %}
                                     </span>
                                 </div>
@@ -68,7 +68,7 @@
                                     {% if material.author != '' %}
                                         {{ 'by'|trans({})|capitalize }}: {{material.author}} ({{material.publishingdate}})
                                     {% else %}
-                                        {{ 'by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(material.modificatorItem) }} ({{ material.creationDate|craue_date }})
+                                        {{ 'by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(material.modificatorItem) }} ({{ material.creationDate|format_date }})
                                     {% endif %}
                                 </div>
 

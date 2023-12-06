@@ -16,13 +16,13 @@
                     {% else %}
                         <div>
                             {{ 'tou.explanation_accepted'|trans({
-                                '%datetime%': portalUser.aGBAcceptanceDate|craue_datetime
+                                '%datetime%': portalUser.aGBAcceptanceDate|format_datetime
                             }, 'tou') }}
                         </div>
                     {% endif %}
                 {% endif %}
 
-                <div>{{ 'last changed'|trans()|capitalize }}: {{ portal.aGBChangeDate|craue_datetime }}</div>
+                <div>{{ 'last changed'|trans()|capitalize }}: {{ portal.aGBChangeDate|format_datetime }}</div>
 
                 <blockquote>
                     <header class="uk-text-small">{{ 'Translation german'|trans({}, 'translation') }}</header>

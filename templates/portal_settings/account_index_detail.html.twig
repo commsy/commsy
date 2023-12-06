@@ -106,7 +106,7 @@
                     {% if not user.canImpersonateAnotherUser %}
                         {{'No'|trans({}, 'portal') }}
                     {% elseif user.impersonateExpiryDate is not null %}
-                        {{ user.impersonateExpiryDate|craue_date }}
+                        {{ user.impersonateExpiryDate|format_date }}
                     {% else %}
                         {{'Yes'|trans({}, 'portal') }}
                     {% endif %}
@@ -115,7 +115,7 @@
                 <dt>{{ 'Agreed to the terms of service on the...' | trans({}, 'portal') }}</dt>
                 <dd>
                     {% if user.getAGBAcceptanceDate() %}
-                        {{ user.getAGBAcceptanceDate()|craue_date }}
+                        {{ user.getAGBAcceptanceDate()|format_date }}
                     {% else %}
                         {{ 'Never' | trans({}, 'portal') }}
                     {% endif %}

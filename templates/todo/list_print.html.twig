@@ -52,7 +52,7 @@
                                             {% if todo.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                                                 {{ 'today'|trans({})|capitalize }}, {{ todo.modificationDate|date("H:i") }}
                                             {% else %}
-                                                {{ todo.modificationDate|craue_date }}
+                                                {{ todo.modificationDate|format_date }}
                                             {% endif %}
                                         </span>
                                     </div>
@@ -66,7 +66,7 @@
 
                                     <div class="uk-comment-meta">
 
-                                        {{ 'by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(todo.modificatorItem) }} ({{ todo.creationDate|craue_date }})
+                                        {{ 'by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(todo.modificatorItem) }} ({{ todo.creationDate|format_date }})
 
                                     </div>
 

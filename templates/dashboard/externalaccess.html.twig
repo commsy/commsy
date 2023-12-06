@@ -37,7 +37,7 @@
                                     {% if releaseItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                                         {{ 'today'|trans({})|capitalize }}, {{ releaseItem.modificationDate|date("H:i") }}
                                     {% else %}
-                                        {{ releaseItem.modificationDate|craue_date }}
+                                        {{ releaseItem.modificationDate|format_date }}
                                     {% endif %}
                                 </span>
                             </div>
@@ -62,7 +62,7 @@
                                     {% if releaseItem.author != '' %}
                                             {{ 'by'|trans({})|capitalize }}: {{releaseItem.author}} ({{releaseItem.publishingdate}})
                                         {% else %}
-                                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }} ({{ releaseItem.creationDate|craue_date }})
+                                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(releaseItem.creator) }} ({{ releaseItem.creationDate|format_date }})
                                     {% endif %}
                                 </div>
                             {% elseif releaseItem.itemType is same as('discussion') %}
@@ -115,7 +115,7 @@
                                     {% if viewableItem.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                                         {{ 'today'|trans({})|capitalize }}, {{ viewableItem.modificationDate|date("H:i") }}
                                     {% else %}
-                                        {{ viewableItem.modificationDate|craue_date }}
+                                        {{ viewableItem.modificationDate|format_date }}
                                     {% endif %}
                                 </span>
                             </div>
@@ -140,7 +140,7 @@
                                     {% if viewableItem.author != '' %}
                                             {{ 'by'|trans({})|capitalize }}: {{viewableItem.author}} ({{viewableItem.publishingdate}})
                                         {% else %}
-                                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }} ({{ viewableItem.creationDate|craue_date }})
+                                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(viewableItem.creator) }} ({{ viewableItem.creationDate|format_date }})
                                     {% endif %}
                                 </div>
                             {% elseif viewableItem.itemType is same as('discussion') %}
