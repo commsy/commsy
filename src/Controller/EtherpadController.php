@@ -52,6 +52,11 @@ class EtherpadController extends AbstractController
 
                 $material->setEtherpadEditorID($pad->padID);
                 $material->save();
+
+                // Set content
+                if (!empty($material->getDescription())) {
+                    $client->setHTML($material->getEtherpadEditorID(), $material->getDescription());
+                }
             }
         }
 
