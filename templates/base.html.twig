@@ -80,7 +80,7 @@
                                     {{ render(controller(
                                         'App\\Controller\\SearchController::searchForm', {
                                             'roomId': requestContextId,
-                                        'requestData': app.request.query.all('search') ?? app.request.query.all('search_filter')
+                                            'requestData': app.request.query.all('search') is not empty ? app.request.query.all('search') : app.request.query.all('search_filter')
                                         }
                                     )) }}
                                 {% endif %}
