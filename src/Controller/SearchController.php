@@ -1015,7 +1015,7 @@ class SearchController extends BaseController
      *
      * @param string      $subParamKey the key of the sub-parameter to be set or removed
      * @param string|null $subParamVal the value of the sub-parameter to be set; may be null in which case it will be removed
-     * @param string      $paramKey    the query parameter key having the parameter with `$subParamKey` be set or reomoved
+     * @param string      $paramKey    the query parameter key having the parameter with `$subParamKey` be set or removed
      * @param Request     $request     the Request object whose query params shall be modified
      *
      * @return Request the modified Request object
@@ -1029,7 +1029,7 @@ class SearchController extends BaseController
         $queryBag = $request->query;
 
         /** @var array $subParams */
-        $subParams = $queryBag->get($paramKey);
+        $subParams = $queryBag->all($paramKey);
         if (!$subParams) {
             return $request;
         }
