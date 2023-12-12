@@ -43,7 +43,7 @@ class cs_portal_item extends cs_guide_item
         $this->defaultHomeConf[CS_PROJECT_TYPE] = 'show';
     }
 
-    public function isPortal()
+    public function isPortal(): bool
     {
         return true;
     }

@@ -13,8 +13,10 @@
 
 namespace App\Command;
 
+use App\Entity\Portal;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
+use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use PhpImap\Mailbox;
@@ -40,6 +42,7 @@ class EmailUploadCommand extends Command
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private readonly Mailer $mailer,
+        private readonly PortalRepository $portalRepository,
         private $projectDir,
         private $uploadEnabled,
         private $uploadServer,
@@ -165,21 +168,20 @@ class EmailUploadCommand extends Command
 
         $nonMetaBody = implode('<br/>', $nonMetaLines);
 
-        $serverItem = $this->legacyEnvironment->getServerItem();
-        $portalIds = $serverItem->getPortalIDArray();
+        $portals = $this->portalRepository->findAll();
 
-        foreach ($portalIds as $portalId) {
-            $this->legacyEnvironment->setCurrentPortalID($portalId);
+        foreach ($portals as $portal) {
+            /** @var Portal $portal */
+            $this->legacyEnvironment->setCurrentPortalID($portal->getId());
 
             $userManager = $this->legacyEnvironment->getUserManager();
-            $userManager->setContextArrayLimit($portalId);
+            $userManager->setContextArrayLimit($portal->getId());
             $userManager->setEMailLimit($mail->fromAddress);
             $userManager->select();
             $userList = $userManager->get();
 
             $matchedUsers = [];
-            $user = $userList->getFirst();
-            while ($user) {
+            foreach ($userList as $user) {
                 if (!empty($account)) {
                     if ($account == $user->getUserID()) {
                         $matchedUsers[] = $user;
@@ -187,8 +189,6 @@ class EmailUploadCommand extends Command
                 } else {
                     $matchedUsers[] = $user;
                 }
-
-                $user = $userList->getNext();
             }
 
             foreach ($matchedUsers as $matchedUser) {

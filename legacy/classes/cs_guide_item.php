@@ -26,16 +26,6 @@ class cs_guide_item extends cs_context_item
         parent::__construct($environment);
     }
 
-    public function isServer()
-    {
-        return false;
-    }
-
-    public function isPortal()
-    {
-        return false;
-    }
-
     public function setAvailableLanguageArray($value)
     {
         $this->_addExtra('LANGUAGE_AVAILABLE', $value);

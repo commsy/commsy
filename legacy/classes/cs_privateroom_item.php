@@ -778,42 +778,6 @@ class cs_privateroom_item extends cs_room_item
         $this->_addExtra('CS_BAR_SHOW_PORTFOLIO', $i);
     }
 
-    public function getCSBarShowConnection()
-    {
-        $retour = '-1';
-        if ($this->_issetExtra('CS_BAR_SHOW_CONNECTION')) {
-            $retour = $this->_getExtra('CS_BAR_SHOW_CONNECTION');
-        }
-
-        return $retour;
-    }
-
-    public function setCSBarShowConnection($i)
-    {
-        $this->_addExtra('CS_BAR_SHOW_CONNECTION', $i);
-    }
-
-    public function showCSBarConnection()
-    {
-        $retour = false;
-        $setCSBarConnection = $this->getCSBarShowConnection();
-        if (!empty($setCSBarConnection)
-            and '-1' != $setCSBarConnection
-        ) {
-            $server_item = $this->_environment->getServerItem();
-            if ($server_item->isServerConnectionAvailable()) {
-                $retour = true;
-            }
-        }
-
-        return $retour;
-    }
-
-    public function switchOnCSBarConnection()
-    {
-        $this->setCSBarShowConnection('1');
-    }
-
     public function getPortletShowActiveRoomList()
     {
         $retour = true;
