@@ -21,8 +21,8 @@ class FixExtras extends GeneralCheck
                     $identifier = 'item_id';
                 }
 
-                // empty extras or "b:0;" to null
-                $this->executeSQL("UPDATE {$table->getName()} SET extras = null WHERE extras = '' OR extras = '0' OR extras = 'b:0;'", $io);
+                // empty extras or "b:0;" or 's:0:"";' to null
+                $this->executeSQL("UPDATE {$table->getName()} SET extras = null WHERE extras = '' OR extras = '0' OR extras = 'b:0;' OR extras = 's:0:\"\";'", $io);
 
                 $stmt = $this->executeSQL("SELECT $identifier, extras FROM {$table->getName()} WHERE extras IS NOT NULL", $io);
                 $extras = $stmt->fetchAllKeyValue();
