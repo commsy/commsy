@@ -165,12 +165,12 @@ class cs_context_item extends cs_item
         return false;
     }
 
-    public function isPortal()
+    public function isPortal(): bool
     {
         return false;
     }
 
-    public function isServer()
+    public function isServer(): bool
     {
         return false;
     }
@@ -243,7 +243,7 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function getMaxUploadSizeInBytes()
+    public function getMaxUploadSizeInBytes(): int
     {
         $val = ini_get('upload_max_filesize');
         $val = trim($val);
@@ -382,10 +382,6 @@ class cs_context_item extends cs_item
             $retour = $this->getDescriptionByLanguage($current_portal->getLanguage());
         }
         if (empty($retour)) {
-            $server = $this->_environment->getServerItem();
-            $retour = $this->getDescriptionByLanguage($server->getLanguage());
-        }
-        if (empty($retour)) {
             $desc_array = $this->getDescriptionArray();
             if (!empty($desc_array)) {
                 foreach ($desc_array as $desc) {
@@ -402,22 +398,14 @@ class cs_context_item extends cs_item
 
     /** get language
      * this method returns the language.
-     *
-     * @return string language
      */
-    public function getLanguage()
+    public function getLanguage(): string
     {
-        if ($this->isServer()) {
-            $retour = 'user';
-        } else {
-            $server = $this->_environment->getServerItem();
-            $retour = $server->getLanguage();
-        }
         if ($this->_issetExtra('LANGUAGE')) {
-            $retour = $this->_getExtra('LANGUAGE');
+            return $this->_getExtra('LANGUAGE');
         }
 
-        return $retour;
+        return 'user';
     }
 
     /** set language

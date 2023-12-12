@@ -748,7 +748,7 @@ class cs_community_item extends cs_room_item
            // send email
            $from = $translator->getMessage(
                'SYSTEM_MAIL_MESSAGE',
-               isset($current_portal) ? $current_portal->getTitle() : $this->_environment->getServerItem()->getTitle()
+               isset($current_portal) ? $current_portal->getTitle() : $room_item->getTitle()
            );
 
            $replyTo = new Address($current_user->getEmail(), $current_user->getFullName());
