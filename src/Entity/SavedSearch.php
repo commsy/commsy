@@ -20,6 +20,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * SavedSearch.
+ *
+ * NOTE: Typed properties have been purposefully made nullable with a null default
+ *       value, so they can be accessed w/o error before having been set explicitly.
+ *       See https://github.com/doctrine/orm/issues/7944
  */
 #[ORM\Entity(repositoryClass: SavedSearchRepository::class)]
 #[ORM\Table(name: 'saved_searches')]
@@ -29,7 +33,7 @@ class SavedSearch
     #[ORM\Column(name: 'id', type: Types::INTEGER, nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private int $id;
+    private ?int $id = null;
 
     #[ORM\Column(name: 'account_id', type: Types::INTEGER, nullable: false)]
     private ?int $accountId = null;

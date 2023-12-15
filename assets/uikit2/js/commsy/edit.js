@@ -168,18 +168,17 @@
           data: formData
         }).promise()
           .then((res) => {
-              let $result = $(res);
-
               // Replace the dom content with the response from the request
-              article.html($result);
+              article.html($(res));
+            },
+            (failed) => {
+              // Replace the dom content with the response from the error response
+              article.html($(failed.responseText));
 
-              // If the response contains any form errors, prepare re-handling
-              if ($result.find('ul.form-errors').length) {
-                registerDraftFormButtonEvents();
-                $this.handleFormSubmit(article);
+              registerDraftFormButtonEvents();
+              $this.handleFormSubmit(article);
 
-                throw new Error("Form invalid");
-              }
+              throw new Error("Form invalid");
             }
           );
 
@@ -246,8 +245,8 @@
         // Do final reload to refresh the page
         window.location.reload();
       })
-      .catch((error) => {
-        console.error(error.message);
+      .catch((reason) => {
+        console.error(reason);
       });
   }
 
