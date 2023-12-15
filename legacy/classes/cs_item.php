@@ -1456,13 +1456,17 @@ class cs_item
 
     public function mayEdit(cs_user_item $user_item)
     {
+        $user = ($user_item->getContextID() !== $this->getContextID())
+            ? ($user_item->getRelatedUserItemInContext($this->getContextID()) ?? $user_item)
+            : $user_item;
+
         $access = false;
-        if (!$user_item->isOnlyReadUser()) {
-            if ($user_item->isRoot() or
-                 ($user_item->getContextID() == $this->getContextID()
-                  and ($user_item->isModerator()
-                       or ($user_item->isUser()
-                           and ($user_item->getItemID() == $this->getCreatorID()
+        if (!$user->isOnlyReadUser()) {
+            if ($user->isRoot() or
+                 ($user->getContextID() == $this->getContextID()
+                  and ($user->isModerator()
+                       or ($user->isUser()
+                           and ($user->getItemID() == $this->getCreatorID()
                                 or !$this->isPrivateEditing()))))
             ) {
                 $access = true;
