@@ -1,7 +1,7 @@
 {% extends 'base_portal.html.twig' %}
 
 {% block top_navigation %}
-    <nav class="uk-navbar-container" uk-navbar>
+    <nav class="uk-navbar-container" aria-label="{{ 'Portal'|trans({}, 'portal') }}" uk-navbar>
         <div class="uk-navbar-left">
             <a id="commsy_logo" class="uk-navbar-item uk-logo" href="{{ path('app_server_linkout') }}">
                 <img class="uk-responsive-height" src="{{ asset('build/commsy_logo_120.png') }}"/>
