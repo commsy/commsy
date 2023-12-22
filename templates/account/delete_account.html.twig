@@ -1,7 +1,9 @@
 {% extends 'base/profile.html.twig' %}
 
 {% block side_navigation %}
+    <nav aria-label="{{ 'Account'|trans({}, 'profile') }}">
     {{ knp_menu_render('account') }}
+    </nav>
 {% endblock %}
 
 {% block content %}

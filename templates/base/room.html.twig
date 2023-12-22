@@ -1,7 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block side_navigation %}
+    <nav aria-label="{{ 'Workspace'|trans({}, 'room') }}">
     {{ knp_menu_render('main') }}
+    </nav>
 {% endblock %}
 
 {% block breadcrumb %}
