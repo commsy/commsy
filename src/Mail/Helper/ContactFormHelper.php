@@ -66,7 +66,9 @@ final class ContactFormHelper
 
         $recipientCount += count($message->getTo()) + count($message->getCc());
 
-        $this->mailer->sendEmailObject($message, $from);
+        if (!$this->mailer->sendEmailObject($message, $from)) {
+            return 0;
+        }
 
         return $recipientCount;
     }

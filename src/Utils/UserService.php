@@ -346,7 +346,7 @@ class UserService
 
     public function getUser($userId): ?cs_user_item
     {
-        $user = $this->userManager->getItem($userId);
+        $user = $this->userManager->getItem((int) $userId);
         // hotfix for birthday strings not containing valid date strings
         if (!is_null($user) && !strtotime($user->getBirthday())) {
             $user->setBirthday('');

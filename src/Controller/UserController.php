@@ -167,7 +167,7 @@ class UserController extends BaseController
             $formData = $form->getData();
 
             $recipients = [$item];
-            $moderators = explode(', ', $moderatorIds);
+            $moderators = $moderatorIds === null ? [] : explode(', ', $moderatorIds);
             foreach ($moderators as $moderatorId) {
                 $recipients[] = $this->userService->getUser($moderatorId);
             }
@@ -180,10 +180,11 @@ class UserController extends BaseController
                 $this->legacyEnvironment->getCurrentUserItem(),
                 $formData['files'],
                 $recipients,
-                $formData['additional_recipient'],
+                $formData['additional_recipient'] ?? '',
                 $formData['copy_to_sender']
             );
 
+            $this->addFlash('mailSend', $recipientCount > 0);
             $this->addFlash('recipientCount', $recipientCount);
 
             // redirect to success page
