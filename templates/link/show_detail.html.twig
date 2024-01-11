@@ -3,7 +3,7 @@
 
 <div class="">
 
-    <div id="user-sub" class="uk-overflow-container">
+    <div id="user-sub" class="uk-overflow-auto">
        {% if not linkedItemsByRubric is empty %}
             <div class="uk-accordion" data-uk-accordion="{collapse: false}">
                 {% for type,rubric in linkedItemsByRubric %}
@@ -11,7 +11,7 @@
                     <i class="{{ macros.iconClassForItemType(type) }}"></i> {{ type|capitalize|trans({'%count%':1},"rubric") }} ({{ rubric|length }})</a>
                     </div>
                     <div class="uk-accordion-content uk-padding-remove">
-                        <ul class="uk-list uk-margin-bottom-remove">
+                        <ul class="uk-list uk-margin-remove-bottom">
                         {% for linkedItem in rubric [0:10] %}
                             <li><a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ linkedItem.itemType }}/{{ linkedItem.itemID }}">{{ linkedItem.title|decodeHtmlEntity|u.truncate(30) }}</a></li>
                         {% endfor %}

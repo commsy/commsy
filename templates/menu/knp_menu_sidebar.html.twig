@@ -11,7 +11,7 @@
 {% block list %}
 {% if item.hasChildren and options.depth is not same as(0) and item.displayChildren %}
     {% import _self as knp_menu %}
-    <ul id="commsy_fields" class="uk-nav uk-nav-side uk-nav-parent-icon"{{ knp_menu.attributes(listAttributes) }}>
+    <ul id="commsy_fields" class="uk-nav uk-nav-default uk-nav-parent-icon"{{ knp_menu.attributes(listAttributes) }}>
         {{ block('children') }}
     </ul>
 {% endif %}

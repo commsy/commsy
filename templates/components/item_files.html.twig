@@ -80,7 +80,7 @@
 
                                             {% if file.extension|lower == 'jpg' or file.extension|lower == 'jpeg' or file.extension|lower == 'png' or file.extension|lower == 'gif' %}
                                                 <a href="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" data-uk-lightbox="{group:{{ item.itemId }}}" data-lightbox-type="image">
-                                                    <img class="uk-margin-bottom-remove" style="height:28px;" src="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" />
+                                                    <img class="uk-margin-remove-bottom" style="height:28px;" src="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" />
                                                 </a>
                                             {% else %}
                                                 {% set disposition = 'attachment' %}
@@ -88,7 +88,7 @@
                                                     {% set disposition = 'inline' %}
                                                 {% endif %}
 
-                                                <div class="uk-margin-bottom-remove">
+                                                <div class="uk-margin-remove-bottom">
                                                     <a href="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': disposition }) }}" target="_blank">
                                                         <i class="uk-icon-medium {{ macrosUtils.iconClassForFileType(file.extension) }}"></i><br>
                                                         <span>{{ file.filename|u.truncate(40, '...') }}</span>
@@ -96,7 +96,7 @@
                                                 </div>
 
                                                 {% if this.supportsOnlineOffice(file) and is_granted('ITEM_EDIT_LOCK', item.itemId) %}
-                                                    <div class="uk-margin-bottom-remove">
+                                                    <div class="uk-margin-remove-bottom">
                                                         <a href="#modal_wopi_{{ item.itemId }}" data-uk-modal
                                                         ><i class="uk-icon-edit"></i> {{ 'item.file.live_edit'|trans({}, 'item') }}</a>
                                                     </div>

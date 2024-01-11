@@ -36,7 +36,7 @@
                         {% endblock %}
 
                         {% block editbox %}
-                            {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+                            {% component 'v3:dropdown' with { icon: 'triangle-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
                                 {% import 'utils/macros.html.twig' as macros %}
 
                                 {% block dropdown %}
@@ -160,8 +160,8 @@
 
                 {% component 'v2:panel' with { title: 'Pinned entries'|trans({}, "room") } %}
                     {% block teaser_right %}
-                        <a href="#" class="button-toggle uk-button-mini uk-button-secondary" data-uk-toggle="{target: '#pinned-items'}">
-                            <i class="uk-icon-chevron-up"></i>
+                        <a href="#" class="button-toggle uk-button-small uk-button-secondary" data-uk-toggle="{target: '#pinned-items'}">
+                            <span uk-icon="icon: chevron-up"></span>
                         </a>
                     {% endblock %}
 
@@ -178,7 +178,7 @@
                 {% component 'v2:panel' with { title: usageInfo.title } %}
                     {% block teaser_right %}
                         <a href="#" class="button-toggle uk-button-small uk-button-secondary" uk-toggle="{target: '#usage-info', animation: 'uk-animation-fade'}">
-                            <i class="uk-icon-chevron-up"></i>
+                            <span uk-icon="icon: chevron-up"></span>
                         </a>
                     {% endblock %}
 
@@ -192,8 +192,8 @@
 
             {% component 'v2:panel' with { title: 'list filter'|trans({},"room") } %}
                 {% block teaser_right %}
-                    <a href="#" class="button-toggle uk-button-small uk-button-secondary uk-margin-small-left" uk-toggle="{target: '.cs-toggleable'}" style="padding-top: 1px; padding-bottom: 1px">
-                        <i class="uk-icon-chevron-up"></i>
+                    <a href="#" class="button-toggle uk-button-small uk-button-secondary uk-margin-small-left" uk-toggle="target: .cs-toggleable" style="padding-top: 1px; padding-bottom: 1px">
+                        <span uk-icon="icon: chevron-up"></span>
                     </a>
                 {% endblock %}
 

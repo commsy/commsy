@@ -17,7 +17,7 @@
                         <div class="uk-clearfix">
                             <div class="uk-float-right">
                                 <a href="#" class="button-toggle uk-button-small uk-button-secondary" uk-toggle="{target: '#manage-my-views'}">
-                                    <i class="uk-icon-chevron-up"></i>
+                                    <span uk-icon="icon: chevron-up"></span>
                                 </a>
                             </div>
                             <div class="uk-text-large uk-float-left">
@@ -47,8 +47,8 @@
                                     {{ 'Filter results'|trans({}, 'search')}}
                                 </div>
                                 <div class="uk-flex-right uk-flex-inline uk-flex-middle">
-                                    <a href="#" class="button-toggle uk-button-small uk-button-secondary uk-margin-small-left" uk-toggle="{target: '.cs-toggleable'}" style="padding-top: 1px; padding-bottom: 1px">
-                                        <i class="uk-icon-chevron-up"></i>
+                                    <a href="#" class="button-toggle uk-button-small uk-button-secondary uk-margin-small-left" uk-toggle="target: .cs-toggleable" style="padding-top: 1px; padding-bottom: 1px">
+                                        <span uk-icon="icon: chevron-up"></span>
                                     </a>
                                 </div>
                             </div>
@@ -101,7 +101,7 @@
                             <div>
                                 {% block sortbox %}
                                     {# sort dropdown #}
-                                    {% component 'v2:dropdown' with { icon: 'caret-down', title: 'list sort'|trans({},'rubric')|capitalize } %}
+                                    {% component 'v3:dropdown' with { icon: 'triangle-down', title: 'list sort'|trans({},'rubric')|capitalize } %}
                                         {% import 'utils/macros.html.twig' as utilsMacros %}
 
                                         {% block dropdown %}
@@ -119,7 +119,7 @@
 
                                 {% block editbox %}
                                     {% if not user.isReallyGuest -%}
-                                        {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+                                        {% component 'v3:dropdown' with { icon: 'triangle-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
                                             {% block dropdown %}
                                                 <ul class="uk-nav uk-dropdown-nav uk-list-striped">
 

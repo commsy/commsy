@@ -5,3 +5,9 @@
 {# Widgets #}
 
 {# Rows #}
+
+{# Misc #}
+{% block form_start -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' uk-form-stacked')|trim}) %}
+    {{- parent() -}}
+{%- endblock form_start %}

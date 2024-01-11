@@ -46,10 +46,10 @@ class RoomFeedGenerator
     }
 
     /**
-     * @param int $size   Number of items to get
-     * @param int $lastId The item id of the last received article item
+     * @param int $size Number of items to get
+     * @param int|null $lastId The item id of the last received article item
      */
-    public function getDashboardFeedList($size, $lastId): array
+    public function getDashboardFeedList(int $size, ?int $lastId): array
     {
         $currentUser = $this->legacyEnvironment->getCurrentUser();
         $contextIds = $this->getAllUserRelatedContexts($currentUser);

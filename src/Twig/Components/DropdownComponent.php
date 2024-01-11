@@ -6,12 +6,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PreMount;
 
-#[AsTwigComponent('v2:dropdown')]
+#[AsTwigComponent('v3:dropdown')]
 final class DropdownComponent
 {
     public string $buttonSize = 'mini';
 
-    public string $icon = 'ellipsis-v';
+    public string $buttonStyle = 'secondary';
+
+    public string $icon = 'more-vertical';
 
     public string $title = '';
 
@@ -23,14 +25,15 @@ final class DropdownComponent
         $resolver = new OptionsResolver();
 
         $resolver->setDefaults([
-            'class' => 'uk-dropdown',
-            'buttonSize' => 'mini',
+            'buttonSize' => 'small',
+            'buttonStyle' => 'secondary',
             'icon' => 'ellipsis-v',
             'title' => '',
             'toggleType' => 'button',
         ]);
 
-        $resolver->setAllowedValues('buttonSize', ['', 'mini', 'small', 'large']);
+        $resolver->setAllowedValues('buttonSize', ['', 'small', 'large']);
+        $resolver->setAllowedValues('buttonStyle', ['default', 'primary', 'secondary', 'danger', 'text', 'link']);
         $resolver->setAllowedValues('toggleType', ['button', 'link']);
 
         return $resolver->resolve($data);

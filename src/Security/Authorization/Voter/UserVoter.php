@@ -25,6 +25,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class UserVoter extends Voter
 {
+    final public const USER = 'USER';
     final public const MODERATOR = 'MODERATOR';
     final public const ROOM_MODERATOR = 'ROOM_MODERATOR';
     final public const PARENT_ROOM_MODERATOR = 'PARENT_ROOM_MODERATOR';
@@ -41,7 +42,7 @@ class UserVoter extends Voter
 
     protected function supports($attribute, $subject): bool
     {
-        return in_array($attribute, [self::MODERATOR, self::ROOM_MODERATOR, self::PARENT_ROOM_MODERATOR]);
+        return in_array($attribute, [self::USER, self::MODERATOR, self::ROOM_MODERATOR, self::PARENT_ROOM_MODERATOR]);
     }
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
@@ -53,19 +54,12 @@ class UserVoter extends Voter
         $room = $this->roomService->getRoomItem($roomId);
 
         return match ($attribute) {
-            self::MODERATOR => $this->isModerator($currentUser),
+            self::USER => $currentUser->isUser(),
+            self::MODERATOR => $currentUser->isModerator(),
             self::ROOM_MODERATOR => $this->isModeratorForRoom($currentUser, $room),
             self::PARENT_ROOM_MODERATOR => $this->isParentModeratorForRoom($currentUser, $room),
             default => throw new LogicException('This code should not be reached!'),
         };
-    }
-
-    /**
-     * Checks whether the given user is a moderator in the user's context.
-     */
-    private function isModerator(cs_user_item $user): bool
-    {
-        return $user->isModerator();
     }
 
     /**

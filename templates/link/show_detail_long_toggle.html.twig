@@ -2,9 +2,9 @@
 {% import 'utils/macros.html.twig' as macros %}
 
 <div class="">
- 
-    <div class="uk-overflow-container uk-width-9-10">
-       {% if not linkedItemsByRubric is empty %} 
+
+    <div class="uk-overflow-auto uk-width-9-10">
+       {% if not linkedItemsByRubric is empty %}
             <div id="detail_toggle_long">
                 {% for type,rubric in linkedItemsByRubric %}
                     <div class="uk-accordion-title cs-accordion-detail uk-margin-remove">

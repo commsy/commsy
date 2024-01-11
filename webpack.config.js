@@ -92,7 +92,7 @@ Encore
         options.lessOptions = {
             paths: [
                 'node_modules/uikit/src/less',
-                'node_modules/uikit3/src/less',
+                //'node_modules/uikit3/src/less',
                 'assets/uikit2/css'
             ]
         };

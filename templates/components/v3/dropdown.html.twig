@@ -1,0 +1,16 @@
+{# element, toggling the dropdown #}
+{% if toggleType == 'button' %}
+    <button class="uk-button uk-button-{{ buttonStyle }}{% if buttonSize %} uk-button-{{ buttonSize }}{% endif %}">
+        {% if title %}{{ title }}{% endif %}
+        <span uk-icon="icon: {{ icon }}"></span>
+    </button>
+{% elseif toggleType == 'link' %}
+    <a href="" class="uk-icon-link" uk-icon="icon: {{ icon }}">
+        {% if title %}{{ title }}{% endif %}
+    </a>
+{% endif %}
+
+{# dropdown #}
+<div{{ attributes }} uk-dropdown>
+    {% block dropdown %}{% endblock %}
+</div>

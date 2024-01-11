@@ -11,7 +11,7 @@
                     <i class="{{ macros.iconClassForItemType(type) }}"></i> {{ type|trans({'%count%':1},"rubric")|capitalize }} ({{ rubric|length }})
                     </div>
                     <div>
-                        <ul class="uk-list uk-margin-bottom-remove">
+                        <ul class="uk-list uk-margin-remove-bottom">
                         {% for linkedItem in rubric [0:10] %}
                             <li>{{ linkedItem.title|raw }}
                         {% endfor %}

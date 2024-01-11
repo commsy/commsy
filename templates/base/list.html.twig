@@ -1,6 +1,6 @@
 {% extends 'base/room.html.twig' %}
 
-{% form_theme form 'form/uikit_horizontal_dynamic_layout.html.twig' %}
+{% form_theme form 'form/uikit3/uikit_stacked_layout.html.twig' %}
 
 {% block main %}
     <div class="uk-grid" uk-grid>
@@ -14,8 +14,8 @@
 
                     {% component 'v2:panel' with { title: 'Pinned entries'|trans({}, "room") } %}
                         {% block teaser_right %}
-                            <a href="#" class="button-toggle uk-button-mini uk-button-secondary" data-uk-toggle="{target: '#pinned-items'}">
-                                <i class="uk-icon-chevron-up"></i>
+                            <a href="#" class="button-toggle uk-button uk-button-small uk-button-secondary" data-uk-toggle="{target: '#pinned-items'}">
+                                <span uk-icon="icon: chevron-up"></span>
                             </a>
                         {% endblock %}
 
@@ -27,12 +27,13 @@
                     {% endcomponent %}
                 {% endif %}
 
+                {# usage info #}
                 {% if usageInfo is defined and usageInfo is not empty %}
 
                     {% component 'v3:card' with { title: usageInfo.title } %}
                         {% block teaser_right %}
-                            <a href="#" class="button-toggle uk-button-small uk-button-secondary" uk-toggle="{target: '#usage-info'}">
-                                <i class="uk-icon-chevron-up"></i>
+                            <a href="#" class="button-toggle uk-button uk-button-small uk-button-secondary" uk-toggle="{target: '#usage-info'}">
+                                <span uk-icon="icon: chevron-up"></span>
                             </a>
                         {% endblock %}
 
@@ -44,25 +45,34 @@
                     {% endcomponent %}
                 {% endif %}
 
+                {# list filter #}
                 {% component 'v3:card' with { title: 'list filter'|trans({},"room") } %}
                     {% block teaser_right %}
-                        <a href="#" class="button-toggle uk-button-small uk-button-secondary" uk-toggle="{target: '.cs-toggleable'}">
-                            <i class="uk-icon-chevron-up"></i>
+                        {# hide on screens larger than medium #}
+                        <a href="#" class="list-filter-toggle-target uk-button uk-button-small uk-button-secondary" uk-toggle="target: .list-filter-toggle-target">
+                            <span uk-icon="icon: chevron-up"></span>
+                        </a>
+                        <a href="#" class="list-filter-toggle-target uk-button uk-button-small uk-button-secondary" hidden uk-toggle="target: .list-filter-toggle-target">
+                            <span uk-icon="icon: chevron-down"></span>
                         </a>
                     {% endblock %}
 
                     {% block content %}
-                        <div class="cs-toggleable uk-hidden-small">
+                        <div class="list-filter-toggle-target">
                             {{ form_start(form) }}
-                            <div class="uk-section uk-section-default uk-padding-remove" uk-sticky="{boundary: true}">
-                                <div class="uk-margin-top uk-margin-small-bottom uk-text-right">
-                                    {{ form_widget(form.submit) }}
-                                </div>
-                            </div>
-                            <div id="list-filter" class="uk-margin-top">
-                                {{ form_rest(form) }}
 
-                            </div>
+                                <div id="list-filter" class="uk-margin-top">
+                                    {# render all fields except submit #}
+                                    {% for child in form|filter(f => f.vars.name != 'submit') %}
+                                        {{ form_row(child) }}
+                                    {% endfor %}
+                                </div>
+                                <div class="uk-section uk-section-default uk-padding-remove" uk-sticky="position: bottom; end: true">
+                                    <div class="uk-margin-top uk-text-right">
+                                        {{ form_widget(form.submit) }}
+                                    </div>
+                                </div>
+                                {{ form_rest(form) }}
                             {{ form_end(form) }}
                         </div>
                     {% endblock %}
@@ -111,14 +121,14 @@
 
                             {# change selection #}
                             <div class="cs-list-select-buttons uk-width-2-4 uk-margin-remove uk-margin-top uk-padding-bottom uk-padding-top">
-                                <button id="commsy-select-actions-select-all" class="uk-button" type="button" data-uk-button>{{ 'select all entries'|trans({},'rubric')}}</button>
-                                <button id="commsy-select-actions-unselect" class="uk-button" type="button" data-uk-button>{{ 'unselect entries'|trans({},'rubric')}}</button>
+                                <button id="commsy-select-actions-select-all" class="uk-button uk-button-default" type="button">{{ 'select all entries'|trans({},'rubric')}}</button>
+                                <button id="commsy-select-actions-unselect" class="uk-button uk-button-default" type="button">{{ 'unselect entries'|trans({},'rubric')}}</button>
                             </div>
 
                             {# selection actions old code #}
                             <div class="cs-list-select-buttons uk-text-right uk-width-2-4 uk-margin-remove uk-margin-top uk-padding-bottom">
-                                <button id="commsy-select-actions-ok" class="uk-button">{{ 'execute'|trans({},'rubric')}}</button>
-                                <button id="commsy-select-actions-cancel" class="uk-button" type="button" data-uk-button>{{ 'cancel'|trans({},'rubric')}}</button>
+                                <button id="commsy-select-actions-ok" class="uk-button uk-button-default">{{ 'execute'|trans({},'rubric')}}</button>
+                                <button id="commsy-select-actions-cancel" class="uk-button uk-button-default" type="button">{{ 'cancel'|trans({},'rubric')}}</button>
                             </div>
 
                         </div>

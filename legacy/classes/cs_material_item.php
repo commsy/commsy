@@ -543,7 +543,7 @@ class cs_material_item extends cs_item
          return (int) $this->_getValue('version_id');
      }
 
-    public function isCurrentVersion()
+    public function isCurrentVersion(): bool
     {
         $material_manager = $this->_environment->getMaterialManager();
         $version_list = $material_manager->getVersionList($this->getItemId())->to_array();

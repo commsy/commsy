@@ -38,6 +38,9 @@ logs: ## Show live logs
 sh: ## Connect to the PHP FPM container
 	@$(PHP_CONT) sh
 
+debug:
+	@XDEBUG_MODE=debug $(DOCKER_COMP) up
+
 debug-mailhog:
 	@$(DOCKER_COMP) -f compose.yaml -f compose.override.yaml -f docker/compose.mailhog.yaml up
 

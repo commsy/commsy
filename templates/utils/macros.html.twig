@@ -1,35 +1,37 @@
 {% macro iconClassForItemType(type, status = 0) %}
+{% apply spaceless %}
     {% if type is same as('announcement') %}
-        uk-icon-comment-o
+        comment
     {% elseif type is same as('date') %}
-        uk-icon-calendar
+        calendar
     {% elseif type is same as('material') %}
-        uk-icon-file-o
+        file
     {% elseif type is same as('section') %}
-        uk-icon-file-o
+        file
     {% elseif type is same as('discussion') %}
-        uk-icon-comments-o
+        comments
     {% elseif type is same as('user') %}
-        uk-icon-user
+        user
     {% elseif type is same as('group') %}
-        uk-icon-group
+        users
     {% elseif type is same as('todo') %}
         {% if status == 1 %}
-            uk-icon-circle-o todo
+            plus-circle
         {% elseif status == 2 %}
-            uk-icon-dot-circle-o inProgress
+            play-circle
         {% elseif status == 3 %}
-            uk-icon-check-circle-o done
+            check
         {% else %}
-            uk-icon-check-square-o
+            check
         {% endif %}
     {% elseif type is same as('task') %}
-        uk-icon-home
+        home
     {% elseif type is same as('topic') %}
-        uk-icon-book
+        tag
     {% elseif type is same as('room') %}
-        uk-icon-sitemap
+        social
     {% endif %}
+{% endapply %}
 {% endmacro %}
 
 {% macro lastModified(item) %}
@@ -251,7 +253,7 @@
     {% endif %}
 
     {% if not classList %}
-        {% set classes = ['uk-thumbnail', 'uk-border-circle']|merge(additionalClasses|default([])) %}
+        {% set classes = ['uk-border-circle']|merge(additionalClasses|default([])) %}
     {% else %}
         {% set classes = classList %}
     {% endif %}
@@ -522,27 +524,35 @@
 {% endmacro %}
 
 {% macro contextLink(roomId, context, contextMemberStatus, memberInGroup) %}
-
     {% if memberInGroup is defined and memberInGroup is same as(false) %}
         <span data-uk-tooltip title="{{'join group before grouproom'|trans({},'group') }}">
-            <a class='uk-button uk-button-secondary uk-text-bold uk-text-muted' style="pointer-events: none;" href=""><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
+            <a class='uk-button uk-button-secondary uk-button-small uk-text-bold uk-text-muted' style="pointer-events: none;" href="">
+                <span uk-icon="icon: plus-circle"></span> {{ 'become member'|trans({}, 'room') }}
+            </a>
         </span>
     {% else %}
-
         {% if 'enter' in contextMemberStatus %}
             {% if 'archived' in contextMemberStatus %}
-                {{ 'Archived room'|trans({}, 'room') }} (<a href="{{ path('app_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>)
+                {{ 'Archived room'|trans({}, 'room') }} (<a href="{{ path('app_room_home', {'roomId': context.itemId}) }}">
+                    <span uk-icon="icon: sign-in"></span> {{ 'enter room'|trans({}, 'room') }}
+                </a>)
             {% else %}
-                <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('app_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>
+                <a class='uk-button uk-button-primary uk-button-small uk-text-bold' href="{{ path('app_room_home', {'roomId': context.itemId}) }}">
+                    <span uk-icon="icon: sign-in"></span> {{ 'enter room'|trans({}, 'room') }}
+                </a>
             {% endif %}
         {% else %}
             {% if contextMemberStatus is same as('join') %}
-                <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
+                <a class='uk-button uk-button-primary uk-button-small uk-text-bold' href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}">
+                    <span uk-icon="icon: plus-circle"></span> {{ 'become member'|trans({}, 'room') }}
+                </a>
             {% elseif contextMemberStatus is same as('locked') %}
                 {{ 'This room is currently locked.'|trans({}, 'room') }}
             {% elseif contextMemberStatus is same as('requested') %}
                 <span data-uk-tooltip title="{{ 'Your request has not been processed yet.'|trans({}, 'room') }}">
-                    <a class='uk-button uk-button-secondary uk-text-bold uk-text-muted' style="pointer-events: none;" href=""><i class="uk-icon-sign-in uk-icon"></i> {{ 'Membership request in process'|trans({}, 'room') }}</a>
+                    <a class='uk-button uk-button-secondary uk-button-small uk-text-bold uk-text-muted' style="pointer-events: none;" href="">
+                        <span uk-icon="icon: sign-in"></span> {{ 'Membership request in process'|trans({}, 'room') }}
+                    </a>
                 </span>
             {% elseif contextMemberStatus is same as('rejected') %}
                 {{ 'Your request has been rejected.'|trans({}, 'room') }}
@@ -551,29 +561,36 @@
             {% elseif contextMemberStatus is same as('forbidden') %}
                 {{ 'Guests are not allowed to request for membership.'|trans({}, 'room') }}
             {% else %}
-                <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
+                <a class='uk-button uk-button-primary uk-button-small uk-text-bold' href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}">
+                    <span uk-icon="icon: plus-circle"></span> {{ 'become member'|trans({}, 'room') }}
+                </a>
             {% endif %}
         {% endif %}
-
     {% endif %}
 {% endmacro %}
 
 {% macro contextLinkIcon(roomId, context, contextMemberStatus) %}
     {% if contextMemberStatus is same as('enter') %}
-        <a href="{{ path('app_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon-medium" style="width:24px; height:24px;" title="{{ 'enter room'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i></a>
+        <a href="{{ path('app_room_home', {'roomId': context.itemId}) }}">
+            <span uk-icon="icon: sign-in; ratio: 2" title="{{ 'enter room'|trans({}, 'room') }}" uk-tooltip="pos: top-left"></span>
+        </a>
     {% else %}
         {% if contextMemberStatus is same as('join') %}
-            <a href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon-user-plus uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'become member'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i></a>
+            <a href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}">
+                <span class="uk-text-muted" uk-icon="icon: plus-circle; ratio: 2" title="{{ 'become member'|trans({}, 'room') }}" uk-tooltip="pos: top-left"></span>
+            </a>
         {% elseif contextMemberStatus is same as('locked') %}
-            <i class="uk-icon-lock uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'This room is currently locked.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
+            <span class="uk-text-muted" uk-icon="icon: lock; ratio: 2" title="{{ 'This room is currently locked.'|trans({}, 'room') }}" uk-tooltip="pos: top-left"></span>
         {% elseif contextMemberStatus is same as('requested') %}
-            <i class="uk-icon-spinner uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'Your request has not been processed yet.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
+            <span class="uk-text-muted" uk-icon="icon: refresh; ratio: 2" title="{{ 'Your request has not been processed yet.'|trans({}, 'room') }}" uk-tooltip="pos: top-left"></span>
         {% elseif contextMemberStatus is same as('rejected') %}
-            <i class="uk-icon-lock uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'Your request has been rejected.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
+            <span class="uk-text-muted" uk-icon="icon: lock; ratio: 2" title="{{ 'Your request has been rejected.'|trans({}, 'room') }}" uk-tooltip="pos: top-left"></span>
         {% elseif 'archived' in contextMemberStatus %}
-            <i class="uk-icon-file-archive-o uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'Archived room'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
+            <span class="uk-text-muted" uk-icon="icon: history; ratio: 2" title="{{ 'Archived room'|trans({}, 'room') }}" uk-tooltip="pos: top-left"></span>
         {% else %}
-            <a href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon-user-plus uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'become member'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i></a>
+            <a href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}">
+                <span class="uk-text-muted" uk-icon="icon: plus-circle; ratio: 2" title="{{ 'become member'|trans({}, 'room') }}" uk-tooltip="pos: top-left"></span>
+            </a>
         {% endif %}
     {% endif %}
 {% endmacro %}
@@ -701,12 +718,12 @@
 {% endmacro %}
 
 {% macro sortActor(identifier, translationKey, translationDomain, sortAsc, sortDesc, initialState) %}
-    {%- set sortingClass = initialState is not empty ? (initialState is same as('asc') ? 'uk-icon-sort-asc' : 'uk-icon-sort-desc' ) : '' %}
+    {%- set icon = initialState is not empty ? (initialState is same as('asc') ? 'triangle-up' : 'triangle-down' ) : '' %}
     <li>
         <a href="#" id="commsy-sort-{{ identifier }}" class="cs-sort-actor uk-clearfix{% if initialState is not empty %} cs-sort-active cs-sort-active-{{ initialState }}{% endif %}" data-sort-order='{"asc": "{{ sortAsc }}", "desc": "{{ sortDesc }}"}'>
             <span class="uk-float-left">{{ translationKey|trans({}, translationDomain)|capitalize }}</span>
             <span class="uk-float-right">
-                <i id="commsy-sort-{{ identifier }}-chevron" class="{{ sortingClass }}"></i>
+                <span id="commsy-sort-{{ identifier }}-chevron" uk-icon="icon: {{ icon }}"></span>
             </span>
         </a>
     </li>

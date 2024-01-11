@@ -1,0 +1,192 @@
+{% macro create(createUrl) %}
+    <li>
+        {% if is_granted('ITEM_NEW') %}<a href="{{ createUrl }}" id="newEntry">{% else %}<span class="uk-text-muted">{% endif %}
+            <span uk-icon="icon: plus"></span> {{ 'new'|trans({}) }}
+        {% if is_granted('ITEM_NEW') %}</a>{% else %}</span>{% endif %}
+    </li>
+{% endmacro %}
+
+{% macro print(printUrl) %}
+    <li>
+        <a href="{{ printUrl }}" target="_blank" id="print">
+            <span uk-icon="icon: print"></span> {{ 'print'|trans({})|capitalize }}
+        </a>
+    </li>
+{% endmacro %}
+
+{% macro save(saveUrl, itemId) %}
+    <li>
+        <a href="#" data-cs-action="{{ {
+            'url': saveUrl,
+            'action': 'save',
+            'itemId': itemId,
+            'errorMessage': '<span uk-icon="icon: info"></span>' ~ 'action error'|trans,
+            'mode': 'click',
+        }|json_encode|e('html_attr') }}">
+            <span uk-icon="icon: download"></span> {{ 'save'|trans({})|capitalize }}
+        </a>
+    </li>
+{% endmacro %}
+
+{% macro pin(pinUrl, unpinUrl, itemId, isPinned) %}
+    {% if not isPinned %}
+        <li>
+            {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', itemId) %}
+                <a href="#" data-cs-action="{{ {
+                    'url': pinUrl,
+                    'action': 'pin',
+                    'itemId': itemId,
+                    'errorMessage': '<span uk-icon="icon: info"></span>' ~ 'action error'|trans,
+                    'mode': 'click',
+                    'successMessage': '<span uk-icon="icon: location"></span>' ~ 'Entry pinned|%count% entries pinned'|trans({'%count%':1}, 'item')
+                }|json_encode|e('html_attr') }}">
+                    <span uk-icon="icon: location"></span> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                </a>
+            {% else %}
+                <span class="uk-text-muted">
+                    <span uk-icon="icon: location"></span> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                </span>
+            {% endif %}
+        </li>
+    {% endif %}
+
+    {% if isPinned %}
+        <li>
+            {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', itemId) %}
+                <a href="#" data-cs-action="{{ {
+                    'url': unpinUrl,
+                    'action': 'unpin',
+                    'itemId': itemId,
+                    'errorMessage': '<span uk-icon="icon: info"></span>' ~ 'action error'|trans,
+                    'mode': 'click',
+                    'successMessage': '<span uk-icon="icon: location"></span>' ~ 'Entry unpinned|%count% entries unpinned'|trans({'%count%':1}, 'item')
+                }|json_encode|e('html_attr') }}">
+                    <span uk-icon="icon: location"></span> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                </a>
+            {% else %}
+                <span class="uk-text-muted">
+                    <span uk-icon="icon: location"></span> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                </span>
+            {% endif %}
+        </li>
+    {% endif %}
+{% endmacro %}
+
+{% macro mark(markUrl, itemId) %}
+    <li>
+        {% if is_granted('USER') %}
+            <a href="#" data-cs-action="{{ {
+                'url': markUrl,
+                'action': 'mark',
+                'itemId': itemId,
+                'errorMessage': '<span uk-icon="icon: info"></span>' ~ 'action error'|trans,
+                'mode': 'click',
+                'successMessage': '<span uk-icon="icon: bookmark"></span>' ~ 'Entry marked|%count% entries marked'|trans({'%count%':1}, 'item')
+            }|json_encode|e('html_attr') }}">
+                <span uk-icon="icon: bookmark"></span> {{ 'add to marked'|trans({}, 'rubric') }}
+            </a>
+        {% else %}
+            <span class="uk-text-muted">
+                <span uk-icon="icon: bookmark"></span> {{ 'add to marked'|trans({}, 'rubric') }}
+            </span>
+        {% endif %}
+    </li>
+{% endmacro %}
+
+{% macro send(sendUrl, itemId) %}
+    <li>
+        {% if is_granted('USER') %}<a href="{{ sendUrl }}">{% else %}<span class="uk-text-muted">{% endif %}
+            <span uk-icon="icon: mail"></span> {{ 'send email'|trans({},'user') }}
+        {% if is_granted('USER') %}</a>{% else %}</span>{% endif %}
+    </li>
+{% endmacro %}
+
+{% macro delete(deleteUrl, returnUrl, permissionItemId, deleteItemId, type) %}
+    <li>
+        {% if is_granted('ITEM_EDIT', permissionItemId) and is_granted('ITEM_FILE_LOCK', permissionItemId) %}
+            <a  href="#" data-cs-action="{{ {
+                'url': deleteUrl,
+                'action': 'delete',
+                'itemId': deleteItemId,
+                'errorMessage': '<span uk-icon="icon: info"></span>' ~ 'action error'|trans,
+                'mode': 'click',
+                'itemType': type,
+                'title': 'list choice'|trans({},'rubric')|capitalize,
+                'confirmQuestion': 'confirm delete'|trans({},'rubric'),
+                'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
+                'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
+                'returnUrl': returnUrl
+            }|json_encode|e('html_attr') }}">
+                <span uk-icon="icon: trash"></span> {{ 'trash'|trans({})|capitalize }}
+            </a>
+        {% else %}
+            <span class="uk-text-muted">
+                <span uk-icon="icon: trash"></span> {{ 'trash'|trans({})|capitalize }}
+            </span>
+        {% endif %}
+    </li>
+{% endmacro %}
+
+{% macro workflow(workflowUrl, itemId, workflowRead, workflowUnread) %}
+    {% if workflowRead or workflowUnread %}
+        <li class="uk-nav-divider"></li>
+    {% endif %}
+
+    <li class="cs-workflow-action{% if not workflowRead %} uk-hidden{% endif %}">
+        <a href="#" data-cs-action="{{ {
+            'url': workflowUrl,
+            'action': 'workflow',
+            'itemId': itemId,
+            'errorMessage': '<span uk-icon="icon: info"></span>' ~ 'action error'|trans,
+            'mode': 'click',
+            'successMessage': '<span uk-icon="icon: eye"></span>' ~ 'marked as read'|trans({}, 'material'),
+            'read': true
+        }|json_encode|e('html_attr') }}">
+            <span uk-icon="icon: eye"></span> {{ 'Mark as read'|trans({}, 'material')|capitalize }}
+        </a>
+    </li>
+
+    <li class="cs-workflow-action{% if not workflowUnread %} uk-hidden{% endif %}">
+        <a href="#" data-cs-action="{{ {
+            'url': workflowUrl,
+            'action': 'workflow',
+            'itemId': itemId,
+            'errorMessage': '<span uk-icon="icon: info"></span>' ~ 'action error'|trans,
+            'mode': 'click',
+            'successMessage': '<span uk-icon="icon: eye-slash"></span>' ~ 'marked as not read'|trans({}, 'material'),
+            'read': false
+        }|json_encode|e('html_attr') }}">
+            <span uk-icon="icon: eye-slash"></span> {{ 'Mark as not read'|trans({}, 'material')|capitalize }}
+        </a>
+    </li>
+{% endmacro %}
+
+{% macro createSection(createSectionUrl, itemId) %}
+    <li>
+        {% if is_granted('ITEM_EDIT', itemId) %}
+            <a class="newSection" href="#" id="newSection" data-section-url="{{ createSectionUrl }}">
+                <span uk-icon="icon: plus"></span> {{ 'new section'|trans({}) }}
+            </a>
+        {% else %}
+            <span class="uk-text-muted">
+                <span uk-icon="icon: plus"></span> {{ 'new section'|trans({}) }}
+            </span>
+        {% endif %}
+    </li>
+{% endmacro %}
+
+{% macro createVersion(createVersionUrl, itemId, isCurrentVersion) %}
+    {% if isCurrentVersion %}
+        <li>
+            {% if is_granted('ITEM_EDIT', itemId) %}
+                <a class="newVersion" href="{{ createVersionUrl }}" id="newVersion">
+                    <span uk-icon="icon: plus"></span> {{ 'new version'|trans({}) }}
+                </a>
+            {% else %}
+                <span class="uk-text-muted">
+                    <span uk-icon="icon: plus"></span> {{ 'new version'|trans({}) }}
+                </span>
+            {% endif %}
+        </li>
+    {% endif %}
+{% endmacro %}

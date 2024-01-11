@@ -10,7 +10,7 @@
 
 {% block main %}
     {% block alert %}
-        {% if commsy.room.isArchived() %}
+        {% if commsy.room is not null and commsy.room.isArchived() %}
             <div class="uk-width-expand">
                 <div class="uk-alert uk-alert-warning" style="border: 1px solid rgba(226,131,39,.3)" data-uk-alert>
                     <h2><i class="uk-icon-archive uk-icon-justify uk-margin-small-right"></i>{{ 'Archived room'|trans({}, "room") }}</h2>

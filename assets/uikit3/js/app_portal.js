@@ -36,5 +36,11 @@ FormCollection.bootstrap();
 import {handleShibIdPSelect} from "./commsy/Login";
 handleShibIdPSelect();
 
+import feed from "./commsy/feed"
+feed();
+
+import toggle from "./commsy/toggle";
+toggle();
+
 // start the Stimulus application
 import '../../bootstrap';

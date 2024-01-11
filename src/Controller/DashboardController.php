@@ -156,10 +156,8 @@ class DashboardController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         int $max = 10
     ): Response {
-        $lastId = null;
-        if ($request->query->has('lastId')) {
-            $lastId = $request->query->get('lastId');
-        }
+        $lastId = $request->query->getInt('lastId');
+        $lastId = $lastId === 0 ? null : $lastId;
 
         $environment = $legacyEnvironment->getEnvironment();
 
@@ -183,16 +181,13 @@ class DashboardController extends AbstractController
         ]);
     }
 
-    /**
-     * @return JsonResponse
-     */
     #[Route(path: '/dashboard/{roomId}/edit')]
     public function edit(
         Request $request,
         TranslatorInterface $translator,
         LegacyEnvironment $environment,
         int $roomId
-    ): Response {
+    ): JsonResponse {
         $requestContent = json_decode($request->getContent(), null, 512, JSON_THROW_ON_ERROR);
 
         $legacyEnvironment = $environment->getEnvironment();
@@ -207,13 +202,6 @@ class DashboardController extends AbstractController
         $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->trans('dashboard changed', [], 'messages');
 
         return new JsonResponse(['message' => $message, 'timeout' => '5550', 'layout' => 'cs-notify-message', 'data' => []]);
-    }
-
-    #[Route(path: '/dashboard/{roomId}/rss')]
-    public function rss(
-        int $roomId
-    ): Response {
-        return $this->render('dashboard/rss.html.twig');
     }
 
     #[Route(path: '/dashboard/{roomId}/myviews')]

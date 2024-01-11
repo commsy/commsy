@@ -49,75 +49,14 @@
 
 @nav-dropdown-hover-background: @base-link-color;
 
-@nav-default-item-color: #CFCFCF;
-@nav-default-item-active-color: #FF404B;
-@nav-default-sublist-item-active-color: @nav-default-item-active-color;
+//@nav-default-item-color: #CFCFCF;
+//@nav-default-item-active-color: #FF404B;
+//@nav-default-sublist-item-active-color: @nav-default-item-active-color;
 
 @nav-dividers-border: #34394A;
 
-.hook-nav-side-active {}
-
-/* Modifier `uk-nav-side`
- ========================================================================== */
-
-/*
-    Active
-    allow uk-active not only for children, but all successors
- */
-#cs-nav-quick .uk-nav-side li.uk-active > a {
-    background: @base-link-color;
-    color: white;
-    .hook-nav-side-active;
-}
-
-#cs-nav-quick .uk-nav-side li.uk-active > a:hover {
-    background: @base-link-color;
-    color: white;
-    .hook-nav-side-active;
-}
-
-#cs-nav-quick .uk-nav-side > li > a {
-    color: black;
-}
-
-#cs-nav-quick .uk-nav-side > li > a:hover {
-    color: white;
-}
-
-#cs-nav-quick .uk-nav-side > li:hover {
-    background: @base-link-color;
-    color: white;
-}
-
-#cs-nav-quick .uk-list ul {
-   background: white;
-}
-
-#cs-nav-quick .uk-list ul > li:hover{
-   background: @base-link-color;
-}
-
-#cs-nav-quick .uk-nav-side ul a {
-    color: black;
-}
-
-#cs-nav-quick .uk-nav-side ul a:hover {
-    color: white;
-}
-
-.uk-dropdown{
-    border: 1px outset grey;
-}
-
-/* Modifier `cs-nav-quick`
- ========================================================================== */
-.cs-nav-quick {
-    max-height: 340px;
-    overflow: auto;
-}
-
-.hook-nav-default {
-    > li {
-        margin: 5px;
+.hook-nav-misc() {
+    .quick-nav > li.uk-active > a {
+        border-bottom: 1px solid @global-primary-background;
     }
 }

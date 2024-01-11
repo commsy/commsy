@@ -17,7 +17,7 @@
 
 {% block sortbox %}
     {# sort dropdown #}
-    {% component 'v2:dropdown' with { icon: 'caret-down', title: 'list sort'|trans({},'rubric')|capitalize } %}
+    {% component 'v3:dropdown' with { icon: 'triangle-down', title: 'list sort'|trans({},'rubric')|capitalize } %}
         {% import 'utils/macros.html.twig' as utilsMacros %}
 
         {% block dropdown %}
@@ -36,7 +36,7 @@
 {% endblock %}
 
 {% block editbox %}
-    {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+    {% component 'v3:dropdown' with { icon: 'triangle-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
         {% block dropdown %}
             {% import 'utils/macros.html.twig' as utilsMacros %}
 

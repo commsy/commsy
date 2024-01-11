@@ -18,7 +18,7 @@
 
     {# item dropdown #}
     <div class="uk-margin-right">
-        {% component 'v2:dropdown' with { icon: 'caret-down', title: rubric|capitalize|trans({}, "rubric", null, 0) ~ counterPosition ~ '/' ~ count } %}
+        {% component 'v3:dropdown' with { icon: 'triangle-down', title: rubric|capitalize|trans({}, "rubric", null, 0) ~ counterPosition ~ '/' ~ count } %}
             {% block dropdown %}
                 <ul class="uk-nav uk-dropdown-nav uk-list-striped">
                     {% for tempItem in itemList %}

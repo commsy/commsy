@@ -6,10 +6,9 @@ services:
       - db_data:/var/lib/mysql:rw
     environment:
       - MARIADB_AUTO_UPGRADE=1
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=commsy
-      - MYSQL_USER=commsy
-      - MYSQL_PASSWORD=commsy
+      - MYSQL_DATABASE=app
+      - MYSQL_USER=app
+      - MYSQL_PASSWORD=!ChangeMe!
 
   elastic:
     build: ./docker/elasticsearch
@@ -17,28 +16,30 @@ services:
     volumes:
       - elastic_data:/usr/share/elasticsearch/data
     environment:
-      - "discovery.type=single-node"
-      - "bootstrap.memory_lock=true"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=true
     ulimits:
       memlock:
         soft: -1
         hard: -1
 
-  caddy:
-    image: commsy/caddy
-    build:
-      context: ./
-      target: commsy_caddy
+  php:
+    image: ${IMAGES_PREFIX:-}app-php
     depends_on:
-      - php
+      - db
+      - elastic
     restart: unless-stopped
     environment:
       SERVER_NAME: ${SERVER_NAME:-localhost, caddy:80}
+      TRUSTED_PROXIES: ${TRUSTED_PROXIES:-127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
+      TRUSTED_HOSTS: ^${SERVER_NAME:-example\.com|localhost}|php$$
+      DATABASE_URL: mysql://${MYSQL_USER:-app}:${MYSQL_PASSWORD:-!ChangeMe!}@db:3306/${MYSQL_DB:-app}?serverVersion=${MYSQL_VERSION:-10.11.2-MariaDB}&charset=${MYSQL_CHARSET:-utf8mb4}
     volumes:
-      - php_socket:/var/run/php
       - caddy_data:/data
       - caddy_config:/config
+      - commsy_data:/app/files
     ports:
       # HTTP
       - target: 80
@@ -48,24 +49,12 @@ services:
       - target: 443
         published: ${HTTPS_PORT:-443}
         protocol: tcp
-
-  php:
-    image: commsy/php
-    build:
-      context: .
-      target: commsy_php
-    depends_on:
-      - db
-      - elastic
-    restart: unless-stopped
-    volumes:
-      - php_socket:/var/run/php
-      - commsy_data:/var/www/html/files
-    environment:
-      DATABASE_URL: mysql://${MYSQL_USER:-commsy}:${MYSQL_PASSWORD:-commsy}@db:3306/${MYSQL_DB:-commsy}?serverVersion=${MYSQL_VERSION:-10.11.2-MariaDB}&charset=${MYSQL_CHARSET:-utf8mb4}
+      # HTTP/3
+      - target: 443
+        published: ${HTTP3_PORT:-443}
+        protocol: udp
 
 volumes:
-  php_socket:
   caddy_data:
   caddy_config:
   db_data:

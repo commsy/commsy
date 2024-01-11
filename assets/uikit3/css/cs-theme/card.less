@@ -16,8 +16,11 @@
 
 @card-secondary-hover-background:              @card-secondary-background;
 
-@card-small-header-padding-horizontal:         round((@global-margin / 2));
-@card-small-header-padding-vertical:           round((@global-margin / 3));
+@card-small-header-padding-horizontal:         @global-small-margin;
+@card-small-header-padding-vertical:           round((@global-small-margin / 1.5));
+
+@card-small-body-padding-horizontal:           @global-small-margin;
+@card-small-body-padding-vertical:             @global-small-margin;
 
 .hook-card-default-header() {
     background-color: @cs-brand-color;
@@ -177,15 +180,15 @@
     padding: 10px;
     border-bottom: 2px solid #ECF0F1;
 
-    .button-toggle {
-        padding: 6px 8px;
-        border-radius: 4px;
-        background-color: @cs-accent-color;
-
-        i {
-            color: #FFFFFF;
-        }
-    }
+    //.button-toggle {
+    //    padding: 6px 8px;
+    //    border-radius: 4px;
+    //    background-color: @cs-accent-color;
+    //
+    //    i {
+    //        color: #FFFFFF;
+    //    }
+    //}
 }
 
 .cs-panel-teaser-user {
@@ -229,15 +232,15 @@
     padding: 10px;
     border-bottom: 2px solid #ECF0F1;
 
-    .button-toggle {
-        padding: 6px 8px;
-        border-radius: 4px;
-        background-color: #444444;
-
-        i {
-            color: #FFFFFF;
-        }
-    }
+    //.button-toggle {
+    //    padding: 6px 8px;
+    //    border-radius: 4px;
+    //    background-color: #444444;
+    //
+    //    i {
+    //        color: #FFFFFF;
+    //    }
+    //}
 }
 
 // Miscellaneous

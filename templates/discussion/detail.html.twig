@@ -28,7 +28,7 @@
                         <div class="uk-flex-none">
 
                             {# additional actions #}
-                            {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+                            {% component 'v3:dropdown' with { icon: 'triangle-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
                                 {% block dropdown %}
                                     <ul class="uk-nav uk-dropdown-nav uk-list-striped">
 
@@ -263,7 +263,7 @@
                     {{ 'quick navigation'|trans({})|capitalize }}
                 </div>
                 <div id="cs-nav-quick" class="cs-nav-quick">
-                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#articles{{ discussion.itemId }}\']'}" uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
+                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-default uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#articles{{ discussion.itemId }}\']'}" uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
                         <li><a href="#description{{ discussion.itemId }}">{{ 'entry description'|trans({})}}</a></li>
                         <li><a href="#files{{ discussion.itemId }}">{{ 'files'|trans({})}}</a></li>
                         <li><a href="#links{{ discussion.itemId }}">{{ 'links'|trans({})}}</a></li>

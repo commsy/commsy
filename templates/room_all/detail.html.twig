@@ -6,7 +6,7 @@
 
 {% set project = item %}
 
-{% block content %}
+{% block main %}
     <div class="uk-grid">
 
         <div class="uk-width-4-5@m">
@@ -19,23 +19,27 @@
                 {% block teaser_right %}
                     {# actions #}
                     {% if not project.isUserroom and (is_granted('ROOM_MODERATOR', project.itemId) or is_granted('PARENT_ROOM_MODERATOR', project.itemId)) %}
-                        {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+                        {% component 'v3:dropdown' with {
+                            icon: 'triangle-down',
+                            title: 'selected entries'|trans({},'rubric')|capitalize,
+                            buttonStyle: 'danger'
+                        } %}
                             {% block dropdown %}
                                 <ul class="uk-nav uk-dropdown-nav cs-list-moderation uk-padding-remove uk-margin-remove uk-text-left">
                                     <li>
                                         {% if project.isLocked %}
                                             <a href="{{ path('app_cancellablelockanddelete_unlock', {'roomId': project.contextId, 'itemId': project.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify uk-visible-large"></i> {{ 'Unlock workspace'|trans({}, 'room') }}
+                                                <span uk-icon="icon: unlock"></span> {{ 'Unlock workspace'|trans({}, 'room') }}
                                             </a>
                                         {% else %}
                                             <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': project.contextId, 'itemId': project.itemId}) }}">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-lock uk-visible-large"></i> {{ 'Lock workspace'|trans({}, 'room') }}
+                                                <span uk-icon="icon: lock"></span> {{ 'Lock workspace'|trans({}, 'room') }}
                                             </a>
                                         {% endif %}
                                     </li>
                                     <li>
                                         <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': project.contextId, 'itemId': project.itemId}) }}">
-                                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'Delete workspace'|trans({}, 'room') }}
+                                            <span uk-icon="icon: trash"></span> {{ 'Delete workspace'|trans({}, 'room') }}
                                         </a>
                                     </li>
                                 </ul>
@@ -45,14 +49,14 @@
                 {% endblock %}
 
                 {% block content %}
-                    <article class="uk-article uk-position-relative" data-uk-observe>
+                    <article class="uk-article uk-position-relative">
                         {# title, etc. #}
-                        <div class="cs-toggle" data-uk-observe>
+                        <div class="cs-toggle">
                             {{ macrosRoom.title(project) }}
                         </div>
 
                         {# description #}
-                        <div id="description{{ project.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
+                        <div id="description{{ project.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{
                             editUrl: '{{ path('app_item_editdescription', { 'roomId': project.contextId, 'itemId': project.itemId }) }}',
                             cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': project.contextId, 'itemId': project.itemId }) }}'
                         }">
@@ -60,7 +64,7 @@
                         </div>
 
                         {# access #}
-                        <div id="description{{ project.itemId }}" class="cs-toggle" data-uk-observe>
+                        <div id="access{{ project.itemId }}">
                             <hr class="uk-width-9-10"/>
 
                             {{ macrosRoom.access(project, project.contextId, memberStatus, contactModeratorItems) }}
@@ -70,19 +74,18 @@
             {% endcomponent %}
         </div>
 
-        <div class="uk-width-1-5@m uk-hidden-small">
+        <div class="uk-width-1-5@m uk-visible@m">
             {# quick navigation #}
-            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" uk-sticky>
-                <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
-                    {{ 'quick navigation'|trans({})|capitalize }}
-                </div>
-                <div id="cs-nav-quick" class="cs-nav-quick">
-                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ project.itemId }}\']'}" uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
-                        <li><a href="#description{{ project.itemId }}">{{ 'entry description'|trans({})}}</a></li>
-                        <li><a href="#access{{ project.itemId }}">{{ 'Membership'|trans({},'room')}}</a></li>
-                    </ul>
-                </div>
-            </div>
+            {% component 'v3:card' with { title: 'quick navigation'|trans(), sticky: true } %}
+                {% block content %}
+                    <div id="cs-nav-quick">
+                        <ul class="uk-nav uk-nav-default uk-nav-parent-icon quick-nav" uk-scrollspy-nav="closest: li;  scroll: true">
+                            <li><a href="#description{{ project.itemId }}">{{ 'entry description'|trans({})}}</a></li>
+                            <li><a href="#access{{ project.itemId }}">{{ 'Membership'|trans({},'room')}}</a></li>
+                        </ul>
+                    </div>
+                {% endblock %}
+            {% endcomponent %}
         </div>
 
     </div>

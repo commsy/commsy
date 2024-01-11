@@ -64,8 +64,8 @@
 
                 {% component 'v2:panel' with { title: 'Pinned entries'|trans({}, "room") } %}
                     {% block teaser_right %}
-                        <a href="#" class="button-toggle uk-button-mini uk-button-secondary" data-uk-toggle="{target: '#pinned-items'}">
-                            <i class="uk-icon-chevron-up"></i>
+                        <a href="#" class="button-toggle uk-button-small uk-button-secondary" data-uk-toggle="{target: '#pinned-items'}">
+                            <span uk-icon="icon: chevron-up"></span>
                         </a>
                     {% endblock %}
 
@@ -84,7 +84,7 @@
                     <div class="uk-clearfix">x
                         <div class="uk-float-right">
                             <a href="#" class="button-toggle uk-button-small uk-button-primary" uk-toggle="{target: '#user-notice'}">
-                                <i class="uk-icon-chevron-up"></i>
+                                <span uk-icon="icon: chevron-up"></span>
                             </a>
                         </div>
                         <div class="uk-text-large uk-float-left">
@@ -108,7 +108,7 @@
                     <div class="uk-clearfix">
                         <div class="uk-float-right">
                             <a href="#" class="button-toggle uk-button-small uk-button-primary" uk-toggle="{target: '#room-info'}">
-                                <i class="uk-icon-chevron-up"></i>
+                                <span uk-icon="icon: chevron-up"></span>
                             </a>
                         </div>
                         <div class="uk-text-large uk-float-left">
@@ -193,8 +193,8 @@
                                     {{ 'list filter'|trans({},"room")}}
                                 </div>
                                 <div class="uk-flex-right uk-flex-inline uk-flex-middle">
-                                    <a href="#" class="button-toggle uk-button-small uk-button-primary uk-margin-small-left" uk-toggle="{target: '.cs-toggleable'}" style="padding-top: 1px; padding-bottom: 1px">
-                                        <i class="uk-icon-chevron-up"></i>
+                                    <a href="#" class="button-toggle uk-button-small uk-button-primary uk-margin-small-left" uk-toggle="target: .cs-toggleable" style="padding-top: 1px; padding-bottom: 1px">
+                                        <span uk-icon="icon: chevron-up"></span>
                                     </a>
                                 </div>
                             </div>

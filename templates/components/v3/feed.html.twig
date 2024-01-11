@@ -1,0 +1,123 @@
+{% import 'utils/macros.html.twig' as macros %}
+
+{#<div{{ attributes.defaults({ class: 'feed' }) }}>#}
+{#    <ul id="{{ id }}" class="uk-comment-list uk-list-striped">#}
+{% for item in items %}
+    <li class="uk-margin-remove-top">
+        <article class="uk-comment" data-item-id="{{ item.itemId }}">
+            <header class="uk-comment-header uk-margin-remove-bottom uk-grid-medium uk-flex-middle" uk-grid>
+                <div class="uk-width-auto">
+                    {% if item.itemType is not same as('user') %}
+                        {% if item.type is not same as('date') %}
+                            {% if not item.modificatorItem.isDeleted and item.modificatorItem.isUser %}
+                                {{ macros.userIconLink(item.modificatorItem, 40) }}
+                            {% else %}
+                                {{ macros.userIcon(item.modificatorItem, 40) }}
+                            {% endif %}
+                        {% else %}
+                            {% if not item.isExternal %}
+                                {% if not item.modificatorItem.isDeleted and item.modificatorItem.isUser %}
+                                    {{ macros.userIconLink(item.modificatorItem, 40) }}
+                                {% else %}
+                                    {{ macros.userIcon(item.modificatorItem, 40) }}
+                                {% endif %}
+                            {% else %}
+                                <div class="uk-vertical-align uk-text-center uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;" data-uk-tooltip title="{{ feedItem.calendar.title }}">
+                                    <div class="uk-vertical-align-middle" style="width:24px; height:24px;">
+                                        <i class="uk-icon-medium uk-icon-calendar" style="color:{{ feedItem.calendar.color }}; width:24px; height:24px;"></i>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        {% if not feedItem.isDeleted and feedItem.isUser %}
+                            {{ macros.userIconLink(feedItem) }}
+                        {% else %}
+                            {{ macros.userIcon(feedItem) }}
+                        {% endif %}
+                    {% endif %}
+
+                    <div class="uk-comment-meta">
+                        <span class="uk-text-nowrap">
+                            {% if item.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                {{ 'today'|trans({})|capitalize }}, {{ item.modificationDate|date("H:i") }}
+                            {% else %}
+                                {% if '9999-00-00' not in item.modificationDate %}
+                                    {{ item.modificationDate|format_date }}
+                                {% else %}
+                                    {{ item.creationDate|format_date }}
+                                {% endif %}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="uk-width-expand">
+                    <h4 class="uk-comment-title uk-margin-remove">
+                        {# badge #}
+                        {% if item.type is not same as('date') or not item.isExternal %}
+                            {% if readerList[item.itemId] is defined %}
+                                {% if readerList[item.itemId] is same as('new') %}
+                                    <span class="uk-label">{{ 'newEntry'|trans({})}}</span>
+                                {% elseif readerList[item.itemId] is same as('changed') %}
+                                    <span class="uk-label">{{ 'changedEntry'|trans({})}}</span>
+                                {% elseif readerList[item.itemId] is same as('new_annotation') %}
+                                    <span class="uk-label">{{ 'newAnnotation'|trans({})}}</span>
+                                {% elseif readerList[item.itemId] is same as('changed_annotation') %}
+                                    <span class="uk-label">{{ 'changedAnnotation'|trans({})}}</span>exclamation"></i>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                        {# endbadge #}
+
+                        {% set feedItemType = item.type %}
+                        {% if item.type is same as('label') %}
+                            {% set feedItemType = item.labelType %}
+                        {% endif %}
+
+                        <a href="{{ app.request.baseURL }}/room/{{ item.contextItem.itemId }}/{{ feedItemType }}/{{ item.itemID }}">
+                            {% if item.itemType is not same as('user') %}
+                                {{ item.title|decodeHtmlEntity }} {% if item.itemType is same as('date') and item.getRecurrencePattern != '' %} ({{ 'recurring date'|trans({}, 'date') }}) {% endif %}
+                            {% else %}
+                                {{ macros.userFullname(item) }}
+                            {% endif %}
+                        </a>
+                    </h4>
+
+                    {% if item.itemType is same as('announcement') %}
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(item.creator) }}</div>
+                    {% elseif item.itemType is same as('date') %}
+                        <div class="uk-comment-meta">{{ formatDateTimeRange(item.wholeDay, item.dateTimeObject_Start, item.dateTimeObject_End) }}{% if item.place != '' %}, {{ item.place }}{% endif %}</div>
+                    {% elseif item.itemType is same as('material') %}
+                        <div class="uk-comment-meta">
+                            {% if item.author != '' %}
+                                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{item.author|decodeHtmlEntity|raw}} ({{item.publishingdate|decodeHtmlEntity|raw}})</div>
+                            {% else %}
+                                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: <a href="{{ path('app_user_sendmailviacontactform', {'roomId': item.contextId, 'itemId': item.creator.itemId, 'originPath': 'app_dashboard_overview'}) }}">{{ macros.userFullname(item.creator) }}</a>({{ item.creationDate|format_date }})</div>
+                            {% endif %}
+                        </div>
+                    {% elseif item.itemType is same as('discussion') %}
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(item.creator) }}</div>
+                    {% elseif item.itemType is same as('group') %}
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(item.creator) }}</div>
+                    {% elseif item.itemType is same as('todo') %}
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(item.creator) }}</div>
+                    {% elseif item.itemType is same as('task') %}
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(item.creator) }}</div>
+                    {% endif %}
+                    <div class="uk-comment-meta">{{ macros.fileListShort(item) }}</div>
+                </div>
+                <div class="uk-width-auto">
+                    {% if item.type is same as('todo') %}
+                        <span uk-icon="icon: {{ macros.iconClassForItemType(item.itemType, item.internalStatus) }}" uk-tooltip="title: {{ item.status }}"></span>
+                    {% else %}
+                        <span uk-icon="icon: {{ macros.iconClassForItemType(item.itemType) }}"></span>
+                    {% endif %}
+                </div>
+            </header>
+        </article>
+    </li>
+{% else %}
+    {{ 'No more results found'|trans}}
+{% endfor %}
+{#    </ul>#}
+{#</div>#}

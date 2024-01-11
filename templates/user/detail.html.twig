@@ -37,7 +37,7 @@
 
                             {# item dropdown #}
                             <div class="uk-margin-right">
-                                {% component 'v2:dropdown' with { icon: 'caret-down', title: 'User'|trans({'%count%':0}, "rubric") ~ counterPosition ~ '/' ~ count } %}
+                                {% component 'v3:dropdown' with { icon: 'triangle-down', title: 'User'|trans({'%count%':0}, "rubric") ~ counterPosition ~ '/' ~ count } %}
                                     {% block dropdown %}
                                        <ul class="uk-nav uk-dropdown-nav uk-list-striped">
                                            {% for tempUser in userList %}
@@ -72,7 +72,7 @@
 
 
                             {# additional actions #}
-                            {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+                            {% component 'v3:dropdown' with { icon: 'triangle-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
                                 {% block dropdown %}
                                     <ul class="uk-nav uk-dropdown-nav uk-list-striped">
                                         {# print #}
@@ -135,7 +135,7 @@
                             {% endcomponent %}
 
                             {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
-                                {% component 'v2:dropdown' with { icon: 'caret-down', title: 'Manage user'|trans({},'user')|capitalize } %}
+                                {% component 'v3:dropdown' with { icon: 'triangle-down', title: 'Manage user'|trans({},'user')|capitalize } %}
                                     {% block dropdown %}
                                         <ul class="uk-nav uk-dropdown-nav uk-list-striped">
                                             {% if user.isRequested %}
@@ -401,7 +401,7 @@
                     {{ 'quick navigation'|trans({})|capitalize }}
                 </div>
                 <div id="cs-nav-quick" class="cs-nav-quick">
-                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ user.itemId }}\']'}" uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
+                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-default uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ user.itemId }}\']'}" uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
                         <li><a href="#userdata{{ user.itemId }}">{{ 'user data'|trans({})}}</a></li>
                         <li><a href="#description{{ user.itemId }}">{{ 'entry description'|trans({})}}</a></li>
                         <li><a href="#links{{ user.itemId }}">{{ 'linked groups'|trans({})}}</a></li>

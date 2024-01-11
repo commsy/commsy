@@ -1,4 +1,4 @@
-<div class="uk-card uk-card-{{ style }} uk-card-small{% if not padding %} uk-padding-remove{% endif %}">
+<div{% if id %} id="{{ id }}"{% endif %} class="uk-card uk-card-{{ style }} uk-card-small{% if not padding %} uk-padding-remove{% endif %}"{% if sticky %} uk-sticky{% endif %}>
 
     <div class="uk-card-header{% if not padding %} uk-margin-remove{% endif %}{% if severity %} cs-panel-teaser-{{ severity }}{% endif %}"{% if sticky %} uk-sticky{% endif %}>
         <div class="uk-flex">

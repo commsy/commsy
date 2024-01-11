@@ -1,6 +1,5 @@
 {% extends 'base/room.html.twig' %}
 
-{% import 'dashboard/macros.html.twig' as macros %}
 {% import 'common/announcements.html.twig' as announcements %}
 
 {% block roomTitle %}
@@ -54,13 +53,36 @@
         <div class="uk-width-1-2@m uk-flex-last@m">
             <div class="uk-flex uk-flex-column">
                 <div>
-                    {{ macros.dashboardMyViews(roomItem) }}
+                    {% component 'v3:card' with { title: 'my views'|trans({}, 'dashboard') } %}
+                        {% block content %}
+                            {{ render(controller(
+                                'App\\Controller\\DashboardController::myViews',
+                                { 'roomId': roomItem.itemId }
+                            )) }}
+                        {% endblock %}
+                    {% endcomponent %}
                 </div>
                 <div class="uk-margin-top">
-                    {{ macros.dashboardCalendar(roomItem, calendars, iCal, contextArray) }}
+                    {% import 'utils/macros.html.twig' as macros %}
+
+                    {% component 'v3:card' with { title: 'calendar'|trans({}, 'date') } %}
+                        {% block content %}
+                            {{ render(controller(
+                                'App\\Controller\\DateController::calendardashboard',
+                                { 'roomId': roomItem.itemId }
+                            )) }}
+                        {% endblock %}
+                    {% endcomponent %}
                 </div>
                 <div class="uk-margin-top">
-                    {{ macros.dashboardExternalAccess(roomItem) }}
+                    {% component 'v3:card' with { title: 'external access'|trans({}, 'dashboard') } %}
+                        {% block content %}
+                            {{ render(controller(
+                                'App\\Controller\\DashboardController::externalaccess',
+                                { 'roomId': roomItem.itemId }
+                            )) }}
+                        {% endblock %}
+                    {% endcomponent %}
                 </div>
             </div>
         </div>
@@ -69,10 +91,46 @@
         <div class="uk-width-1-2@m">
             <div class="uk-flex uk-flex-column">
                 <div>
-                    {{ macros.dashboardAllRooms(roomItem, userMayCreateContext) }}
+                    {% component 'v3:card' with { title: 'Rooms'|trans({}, 'room') } %}
+                        {% block content %}
+                            <form action="{{ path('app_room_listall', {'roomId': roomItem.itemId}) }}" class="uk-form-horizontal">
+                                <input class="uk-input" type="text" name="room_filter[title]" placeholder="{{ 'search-filter-placeholder'|trans({}, "room") }}">
+
+                                <div class="uk-margin">
+                                    <button type="submit" class="uk-button uk-button-primary">{{ 'Room search'|trans({}, "search") }}</button>
+                                </div>
+                            </form>
+
+                            <ul class="uk-list">
+                                <li>
+                                    <a class="uk-comment-title cs-link-highlight" href="{{ path('app_room_listall', {'roomId': roomItem.itemId}) }}">{{ 'List all rooms'|trans([], 'room') }}</a>
+                                </li>
+                                <li>
+                                    <a class="uk-comment-title cs-link-highlight" href="{{ path('app_room_listall', {'roomId': roomItem.itemId}|merge({'room_filter[membership]': 1})) }}">{{ 'List my rooms'|trans([], 'room') }}</a>
+                                </li>
+                                {% if userMayCreateContext and is_granted('ITEM_NEW') %}
+                                    <li>
+                                        <a class="uk-comment-title cs-link-highlight" href="{{ path('app_room_create', {'roomId': roomItem.itemId}) }}">{{ 'Create new context'|trans([], 'room') }}</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        {% endblock %}
+                    {% endcomponent %}
                 </div>
                 <div class="uk-margin-top">
-                    {{ macros.dashboardFeed(roomItem) }}
+                    {% component 'v3:card' with { title: 'latest entries from my rooms'|trans({}, 'room') } %}
+                        {% import 'common/feed.html.twig' as feed %}
+                        {% block content %}
+                            <ul id="dashboard-feed" class="uk-comment-list uk-list-striped">
+                                {{ render(controller(
+                                    'App\\Controller\\DashboardController::feed',
+                                    { 'roomId': roomItem.itemId }
+                                ))}}
+                            </ul>
+
+                            {{ feed.spinner('dashboard', app.request.baseUrl ~ '/dashboard/' ~ roomItem.itemId ~ '/feed/') }}
+                        {% endblock %}
+                    {% endcomponent %}
                 </div>
             </div>
         </div>

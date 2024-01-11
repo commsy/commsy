@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Components;
+namespace App\Twig\Components;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
@@ -19,6 +19,8 @@ final class CardComponent
 
     public string $title = '';
 
+    public string $id = '';
+
     #[PreMount]
     public function preMount(array $data): array
     {
@@ -30,6 +32,7 @@ final class CardComponent
             'sticky' => false,
             'style' => 'default',
             'title' => '',
+            'id' => '',
         ]);
 
         $resolver->setAllowedValues('padding', [true, false]);

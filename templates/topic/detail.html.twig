@@ -37,7 +37,7 @@
 
                             {# item dropdown #}
                             <div class="uk-margin-right">
-                                {% component 'v2:dropdown' with { icon: 'caret-down', title: 'Topic'|trans({'%count%':0}, "rubric") ~ counterPosition ~ '/' ~ count } %}
+                                {% component 'v3:dropdown' with { icon: 'triangle-down', title: 'Topic'|trans({'%count%':0}, "rubric") ~ counterPosition ~ '/' ~ count } %}
                                     {% block dropdown %}
                                         <ul class="uk-nav uk-dropdown-nav uk-list-striped">
                                             {% for tempTopic in topicList %}
@@ -72,7 +72,7 @@
 
 
                             {# additional actions #}
-                            {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+                            {% component 'v3:dropdown' with { icon: 'triangle-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
                                 {% block dropdown %}
                                     <ul class="uk-nav uk-dropdown-nav uk-list-striped">
 
@@ -265,7 +265,7 @@
                     {{ 'quick navigation'|trans({})|capitalize }}
                 </div>
                 <div id="cs-nav-quick" class="cs-nav-quick">
-                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ topic.itemId }}\']'}" uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
+                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-default uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ topic.itemId }}\']'}" uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
                         <li><a href="#description{{ topic.itemId }}">{{ 'entry description'|trans({})}}</a></li>
                         <li><a href="#topicpath{{ topic.itemId }}">{{ 'topic path'|trans({})}}</a></li>
                         <li><a href="#links{{ topic.itemId }}">{{ 'links'|trans({})}}</a></li>
