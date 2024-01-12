@@ -35,7 +35,7 @@ class Section
     private int $itemId;
 
     #[ORM\Column(name: 'version_id', type: Types::INTEGER)]
-    #[ORM\Id]
+    // #[ORM\Id] // commented out to allow for pinned sections on a room's home page
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private int $versionId;
 

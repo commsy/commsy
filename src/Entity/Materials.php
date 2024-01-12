@@ -39,7 +39,7 @@ class Materials
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $itemId = null;
 
-    #[ORM\Id]
+    // #[ORM\Id] // commented out to allow for pinned material items on a room's home page
     #[ORM\Column(name: 'version_id', type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $versionId = null;
