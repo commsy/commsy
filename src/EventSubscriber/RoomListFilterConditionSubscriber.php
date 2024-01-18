@@ -19,21 +19,19 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * EventListener for use with SpiriitFormFilterBundle, which customizes
- * the doctrine conditions for the room membership filter.
+ * the doctrine conditions for the room list filters.
  */
-class RoomMembershipFilterConditionSubscriber implements EventSubscriberInterface
+readonly class RoomListFilterConditionSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly UserService $userService
+        private UserService $userService
     ) {
     }
 
     /**
      * Limits the room results to those the current user is member of.
-     *
-     * @param GetFilterConditionEvent $event the event
      */
-    public function onGetFilterCondition(GetFilterConditionEvent $event)
+    public function onGetMembershipFilterCondition(GetFilterConditionEvent $event): void
     {
         $expr = $event->getFilterQuery()->getExpr();
         $values = $event->getValues();
@@ -60,10 +58,44 @@ class RoomMembershipFilterConditionSubscriber implements EventSubscriberInterfac
     }
 
     /**
-     * @return array<string, mixed>
+     * Limits the room results to those matching the time pulses.
      */
+    public function onGetTimePulsesFilterCondition(GetFilterConditionEvent $event): void
+    {
+        $expr = $event->getFilterQuery()->getExpr();
+        $values = $event->getValues();
+
+        if (!empty($values['value'])) {
+            $value = $values['value'];
+
+            if ('cont' === $value) {
+                $event->setCondition(
+                    $expr->eq('r.continuous', ':continuous'), [
+                        'continuous' => '1',
+                    ]
+                );
+            } else {
+                $roomIds = $this->roomService->getRoomsInTimePulse($values['value']);
+
+                if (!empty($roomIds)) {
+                    $event->setCondition(
+                        $expr->in('r.itemId', $roomIds),
+                        []
+                    );
+                } else {
+                    $event->setCondition(
+                        $expr->isNull('r.itemId')
+                    );
+                }
+            }
+        }
+    }
+
     public static function getSubscribedEvents(): array
     {
-        return ['lexik_form_filter.apply.orm.room_filter.membership' => 'onGetFilterCondition'];
+        return [
+            'spiriit_form_filter.apply.orm.room_filter.membership' => 'onGetMembershipFilterCondition',
+            'spiriit_form_filter.apply.orm.room_filter.timePulses' => 'onGetTimePulsesFilterCondition',
+        ];
     }
 }
