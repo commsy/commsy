@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f818b4dc86f78ae9674899fc3d153538",
+    "content-hash": "d4f7847ef0c020a92ec4a9f09659bd76",
     "packages": [
         {
             "name": "api-platform/core",
@@ -5830,34 +5830,31 @@
         },
         {
             "name": "spiriitlabs/form-filter-bundle",
-            "version": "v9.0.2",
+            "version": "v10.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SpiriitLabs/form-filter-bundle.git",
-                "reference": "d2da5950f042b443bbd0bfd89213900bfc926ba5"
+                "reference": "7a1ab5c7f8d1890562f8a3e57796bbb8f84e5be8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SpiriitLabs/form-filter-bundle/zipball/d2da5950f042b443bbd0bfd89213900bfc926ba5",
-                "reference": "d2da5950f042b443bbd0bfd89213900bfc926ba5",
+                "url": "https://api.github.com/repos/SpiriitLabs/form-filter-bundle/zipball/7a1ab5c7f8d1890562f8a3e57796bbb8f84e5be8",
+                "reference": "7a1ab5c7f8d1890562f8a3e57796bbb8f84e5be8",
                 "shasum": ""
             },
             "require": {
                 "doctrine/orm": "^2.10",
                 "php": ">=7.4",
-                "symfony/form": "^5.3|^6.0",
-                "symfony/framework-bundle": "^5.3|^6.0"
+                "symfony/form": "^5.3|^6.0|^7.0",
+                "symfony/framework-bundle": "^5.3|^6.0|^7.0"
             },
             "require-dev": {
+                "doctrine/annotations": "^2.0",
                 "doctrine/doctrine-bundle": "^1.8 || ^2.0",
-                "doctrine/mongodb-odm-bundle": "^4.4",
                 "rector/rector": "^0.17.1",
-                "symfony/phpunit-bridge": "^5.3|^6.0",
-                "symfony/var-dumper": "^5.3|^6.0",
+                "symfony/phpunit-bridge": "^5.3|^6.0|^7.0",
+                "symfony/var-dumper": "^5.3|^6.0|^7.0",
                 "symplify/easy-coding-standard": "^11.3"
-            },
-            "suggest": {
-                "alcaeus/mongo-php-adapter": "Install this package if using the PHP 7 MongoDB Driver"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -5879,9 +5876,9 @@
                 "symfony"
             ],
             "support": {
-                "source": "https://github.com/SpiriitLabs/form-filter-bundle/tree/v9.0.2"
+                "source": "https://github.com/SpiriitLabs/form-filter-bundle/tree/v10.0.0"
             },
-            "time": "2023-08-03T08:16:33+00:00"
+            "time": "2024-01-15T14:09:58+00:00"
         },
         {
             "name": "sylius/theme-bundle",
