@@ -29,6 +29,7 @@ use App\Form\DataTransformer\DiscussionarticleTransformer;
 use App\Form\DataTransformer\DiscussionTransformer;
 use App\Form\Type\DiscussionAnswerType;
 use App\Form\Type\DiscussionType;
+use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -780,7 +781,7 @@ class DiscussionController extends BaseController
                     if ($form->has('category_mapping')) {
                         $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
-                        if (isset($formData['category_mapping']['newCategory'])) {
+                        if (isset($formData['category_mapping']['newCategory']) && $this->isGranted(CategoryVoter::EDIT)) {
                             $newCategoryTitle = $formData['category_mapping']['newCategory'];
                             $newCategory = $categoryService->addTag($newCategoryTitle, $roomId);
                             $categoryIds[] = $newCategory->getItemID();
