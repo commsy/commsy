@@ -50,7 +50,6 @@ class RoomActivityLockWarningMessage extends Message
 
         return [
             'room' => $this->room,
-            'hello' => $legacyTranslator->getEmailMessage('PROJECT_MAIL_BODY_ARCHIVE_INFO'),
             'content' => $legacyTranslator->getEmailMessage('EMAIL_INACTIVITY_ROOM_LOCK_UPCOMING_BODY',
                 $this->room->getTitle(),
                 $numDaysInactive,

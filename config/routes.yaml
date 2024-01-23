@@ -4,8 +4,9 @@ controllers:
         namespace: App\Controller
     type: attribute
 
-api_login_check:
+api_login:
     path: /api/v2/login_check
+    methods: ['POST']
 
 api_doc:
     path: /api/v2/doc

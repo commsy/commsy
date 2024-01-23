@@ -30,7 +30,7 @@ class Tag
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private int $itemId;
+    private ?int $itemId = null;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
@@ -48,7 +48,7 @@ class Tag
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
     private string $title;
 
-    public function getItemId(): int
+    public function getItemId(): ?int
     {
         return $this->itemId;
     }

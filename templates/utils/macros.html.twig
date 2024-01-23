@@ -638,7 +638,9 @@
                         </div>
                         <div class="uk-margin-top uk-flex">
                             <div class="uk-margin-small-left">
-                                {{ form_widget(form.category_mapping.newCategory) }}
+                                {% if form.category_mapping.newCategory is defined %}
+                                    {{ form_widget(form.category_mapping.newCategory) }}
+                                {% endif %}
                             </div>
                             <div class="uk-margin-small-left">
                                 {{ form_widget(form.category_mapping.newCategoryAdd) }}
