@@ -1,5 +1,6 @@
 {% if wo_breadcrumbs()|length %}
     {%- apply spaceless -%}
+    <nav aria-label="{{ 'Breadcrumb'|trans({}, 'menu') }}">
         <ul id="{{ listId }}" class="{{ listClass }}" itemscope itemtype="http://schema.org/BreadcrumbList">
             {% for b in breadcrumbs %}
                 <li{% if itemClass is defined and itemClass|length %} class="{{ itemClass }} uk-display-inline"{% endif %} itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
@@ -35,5 +36,6 @@
                 </li>
             {% endfor %}
         </ul>
+    </nav>
     {%- endapply -%}
 {% endif %}
