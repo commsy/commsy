@@ -33,6 +33,7 @@ use App\Form\Type\DateImportType;
 use App\Form\Type\DateType;
 use App\Hash\HashManager;
 use App\Repository\CalendarsRepository;
+use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\DateVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\CalendarsService;
@@ -996,7 +997,7 @@ class DateController extends BaseController
                 if ($form->has('category_mapping')) {
                     $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
-                    if (isset($formData['category_mapping']['newCategory'])) {
+                    if (isset($formData['category_mapping']['newCategory']) && $this->isGranted(CategoryVoter::EDIT)) {
                         $newCategoryTitle = $formData['category_mapping']['newCategory'];
                         $newCategory = $categoryService->addTag($newCategoryTitle, $roomId);
                         $categoryIds[] = $newCategory->getItemID();

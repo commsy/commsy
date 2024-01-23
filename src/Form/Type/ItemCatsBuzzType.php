@@ -13,26 +13,23 @@
 
 namespace App\Form\Type;
 
-use App\Services\LegacyEnvironment;
-use App\Utils\ItemService;
-use App\Utils\RoomService;
-use cs_environment;
+use App\Security\Authorization\Voter\CategoryVoter;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ItemCatsBuzzType extends AbstractType
 {
-    private readonly cs_environment $environment;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly RoomService $roomService, private readonly ItemService $itemService)
-    {
-        $this->environment = $legacyEnvironment->getEnvironment();
-    }
+    public function __construct(
+        private readonly Security $security
+    ) {}
 
     /**
      * Builds the form.
@@ -45,19 +42,74 @@ class ItemCatsBuzzType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('categories', TreeChoiceType::class, ['placeholder' => false, 'choices' => $options['categories'], 'choice_label' => function ($choice, $key, $value) {
-                // remove the trailing category ID from $key (which was used in LabelService->transformTagArray() to uniquify the key)
-                $label = implode('_', explode('_', $key, -1));
+            ->add('categories', TreeChoiceType::class, [
+                'placeholder' => false,
+                'choices' => $options['categories'],
+                'choice_label' => function ($choice, $key, $value) {
+                    // remove the trailing category ID from $key (which was used in LabelService->transformTagArray() to uniquify the key)
+                    $label = implode('_', explode('_', $key, -1));
 
-                return $label;
-            }, 'required' => false, 'expanded' => true, 'multiple' => true, 'constraints' => $options['categoryConstraints']])
-            ->add('newCategory', TextType::class, ['attr' => ['placeholder' => $options['placeholderTextCategories']], 'label' => 'newCategory', 'required' => false])
-            ->add('hashtags', ChoiceType::class, ['placeholder' => false, 'choices' => $options['hashtags'], 'label' => 'hashtags', 'required' => false, 'expanded' => true, 'multiple' => true, 'constraints' => $options['hashtagConstraints']])
-            ->add('newHashtag', TextType::class, ['attr' => ['placeholder' => $options['placeholderText']], 'label' => 'newHashtag', 'required' => false])
-            ->add('newHashtagAdd', ButtonType::class, ['attr' => ['id' => 'addNewHashtag', 'data-cs-add-hashtag' => $options['hashtagEditUrl']], 'label' => 'addNewHashtag', 'translation_domain' => 'form'])
-            ->add('save', SubmitType::class, ['attr' => ['class' => 'uk-button-primary'], 'label' => 'save', 'translation_domain' => 'form'])
-            ->add('cancel', SubmitType::class, ['attr' => ['formnovalidate' => ''], 'label' => 'cancel', 'translation_domain' => 'form'])
+                    return $label;
+                },
+                'required' => false,
+                'expanded' => true,
+                'multiple' => true,
+                'constraints' => $options['categoryConstraints'],
+            ])
+            ->add('hashtags', ChoiceType::class, [
+                'placeholder' => false,
+                'choices' => $options['hashtags'],
+                'label' => 'hashtags',
+                'required' => false,
+                'expanded' => true,
+                'multiple' => true,
+                'constraints' => $options['hashtagConstraints'],
+            ])
+            ->add('newHashtag', TextType::class, [
+                'attr' => [
+                    'placeholder' => $options['placeholderText'],
+                ],
+                'label' => 'newHashtag',
+                'required' => false,
+            ])
+            ->add('newHashtagAdd', ButtonType::class, [
+                'attr' => [
+                    'id' => 'addNewHashtag',
+                    'data-cs-add-hashtag' => $options['hashtagEditUrl'],
+                ],
+                'label' => 'addNewHashtag',
+                'translation_domain' => 'form',
+            ])
+            ->add('save', SubmitType::class, [
+                'attr' => [
+                    'class' => 'uk-button-primary',
+                ],
+                'label' => 'save',
+                'translation_domain' => 'form',
+            ])
+            ->add('cancel', SubmitType::class, [
+                'attr' => [
+                    'formnovalidate' => '',
+                ],
+                'label' => 'cancel',
+                'translation_domain' => 'form',
+            ])
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
+            // Only add the form for new categories if the user is allowed to create them
+            if ($this->security->isGranted(CategoryVoter::EDIT)) {
+                $form = $event->getForm();
+
+                $form->add('newCategory', TextType::class, [
+                    'attr' => [
+                        'placeholder' => $options['placeholderTextCategories'],
+                    ],
+                    'label' => 'newCategory',
+                    'required' => false,
+                ]);
+            }
+        });
     }
 
     /**
@@ -72,11 +124,6 @@ class ItemCatsBuzzType extends AbstractType
                 'translation_domain' => 'item',
             ])
             ->setRequired([
-                'filterRubric',
-                'filterPublic',
-                'items',
-                'itemsLinked',
-                'itemsLatest',
                 'categories',
                 'categoryConstraints',
                 'hashtags',
@@ -98,86 +145,5 @@ class ItemCatsBuzzType extends AbstractType
     public function getBlockPrefix(): string
     {
         return 'itemLinks';
-    }
-
-    private function getTempData($filterData)
-    {
-        // get all items that are linked, temporary linked (i.e. already selected in the form) or can be linked
-        $optionsData = [];
-
-        if (empty($filterData['filterRubric']) || 'all' == $filterData['filterRubric']) {
-            $rubricInformation = $this->roomService->getRubricInformation($this->environment->getCurrentContextId());
-        } else {
-            $rubricInformation = [$filterData['filterRubric']];
-        }
-
-        $itemManager = $this->environment->getItemManager();
-        $itemManager->reset();
-        $itemManager->setContextLimit($this->environment->getCurrentContextId());
-        $itemManager->setTypeArrayLimit($rubricInformation);
-
-        if (isset($filterData['feedAmount'])) {
-            $itemManager->setIntervalLimit($filterData['feedAmount']);
-        }
-        $itemManager->select();
-        $itemList = $itemManager->get();
-
-        $tempItem = $itemList->getFirst();
-        while ($tempItem) {
-            $tempTypedItem = $this->itemService->getTypedItem($tempItem->getItemId());
-            if ($tempTypedItem) {
-                if ('user' != $tempTypedItem->getItemType()) {
-                    $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
-                } else {
-                    $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getFullname();
-                }
-            }
-            $tempItem = $itemList->getNext();
-        }
-
-        if (empty($optionsData['items'])) {
-            $optionsData['items'] = [];
-        }
-
-        $tempData = [];
-        if (isset($filterData['items'])) {
-            $tempData = $filterData['items'];
-        }
-
-        if (isset($filterData['itemsLinked'])) {
-            $tempData = array_merge($tempData, $filterData['itemsLinked']);
-        }
-
-        $itemManager->reset();
-        $itemLinkedList = $itemManager->getItemList($tempData);
-
-        $tempLinkedItem = $itemLinkedList->getFirst();
-        while ($tempLinkedItem) {
-            $tempTypedLinkedItem = $this->itemService->getTypedItem($tempLinkedItem->getItemId());
-            if ('user' != $tempTypedLinkedItem->getItemType()) {
-                $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getTitle();
-            } else {
-                $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getFullname();
-            }
-            $tempLinkedItem = $itemLinkedList->getNext();
-        }
-
-        $itemManager->reset();
-
-        // $optionsData['itemsLinked'] = $filterData['items'];
-        if (empty($optionsData['itemsLinked'])) {
-            $optionsData['itemsLinked'] = [];
-        }
-
-        if (isset($filterData['remove'])) {
-            if (isset($optionsData['items'][$filterData['remove']])) {
-                unset($optionsData['items'][$filterData['remove']]);
-            }
-            if (isset($optionsData['itemsLinked'][$filterData['remove']])) {
-                unset($optionsData['itemsLinked'][$filterData['remove']]);
-            }
-        }
-
-        return $optionsData;
     }
 }

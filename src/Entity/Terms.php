@@ -41,7 +41,7 @@ class Terms
     #[ORM\Column(name: 'content_en', type: Types::TEXT)]
     private ?string $contentEn = null;
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

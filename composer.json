@@ -39,7 +39,7 @@
         "phpseclib/phpseclib": "^3.0",
         "promphp/prometheus_client_php": "^2.6",
         "sabre/vobject": "^4.3",
-        "spiriitlabs/form-filter-bundle": "^9.0",
+        "spiriitlabs/form-filter-bundle": "^10.0",
         "sylius/theme-bundle": "^2.2",
         "symfony/asset": "6.4.*",
         "symfony/console": "6.4.*",
