@@ -13,10 +13,10 @@
 {% block content %}
     {% block alert %}
         {% if roomItem.getArchived() %}
-        <section aria-label="{{ 'Archived room'|trans({}, "room") }}">
+        <section aria-labelledby="archived-room-alert">
             <div class="uk-width-expand">
                 <div class="uk-alert uk-alert-warning" style="border: 1px solid rgba(226,131,39,.3)" data-uk-alert>
-                    <h2><i class="uk-icon-archive uk-icon-justify uk-margin-small-right"></i>{{ 'Archived room'|trans({}, "room") }}</h2>
+                    <h2 id="archived-room-alert"><i class="uk-icon-archive uk-icon-justify uk-margin-small-right"></i>{{ 'Archived room'|trans({}, "room") }}</h2>
                     <p>{{ 'Archived room info'|trans({}, "room") }}</p>
                 </div>
             </div>
