@@ -418,7 +418,10 @@
                 <source>trash recurring</source>
                 <target>Alle Termine der Serie löschen</target>
             </trans-unit>
-
+            <trans-unit id="quick">
+                <source>Quick</source>
+                <target>Schnell</target>
+            </trans-unit>
             <trans-unit id="join">
                 <source>join</source>
                 <target>Beitreten</target>
