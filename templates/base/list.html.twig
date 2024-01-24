@@ -8,6 +8,7 @@
         {# sidebar #}
         {% block listsidebar %}
             <div class="uk-width-medium-1-3 uk-push-2-3">
+                <aside aria-label="{{ 'Sidebar'|trans({}, "room") }}">
 
                 {# pinned items #}
                 {% if pinnedItemsCount is defined and pinnedItemsCount > 0 %}
@@ -67,6 +68,7 @@
                         </div>
                     {% endblock %}
                 {% endcomponent %}
+                </aside>
             </div>
         {% endblock %}
 
@@ -75,6 +77,7 @@
             <div class="uk-width-medium-2-3 uk-pull-1-3">
         {% endblock %}
 
+            <main>
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
 
                 <div data-uk-sticky="{boundary: true}" style="margin-top: -10px; margin-left: -10px; margin-right: -10px">
@@ -139,6 +142,7 @@
                     {% endblock%}
                 </div>
             </div>
+            </main>
         </div>
 
     </div>
