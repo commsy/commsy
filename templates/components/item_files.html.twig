@@ -58,7 +58,7 @@
                             'fileId': file.fileId
                         })
                     }) }}>
-                        <div id="modal_wopi_{{ item.itemId }}" class="uk-modal" {{ stimulus_target('wopi_modal', 'modal') }}>
+                        <div id="modal_wopi_{{ file.fileId }}" class="uk-modal" {{ stimulus_target('wopi_modal', 'modal') }}>
                             <div class="uk-modal-dialog uk-modal-dialog-blank">
                                 <a class="uk-modal-close uk-close uk-margin-right"></a>
                                 <div class="uk-height-viewport" {{ stimulus_target('wopi_modal', 'content') }}></div>
@@ -97,7 +97,7 @@
 
                                                 {% if this.supportsOnlineOffice(file) and is_granted('ITEM_EDIT_LOCK', item.itemId) %}
                                                     <div class="uk-margin-bottom-remove">
-                                                        <a href="#modal_wopi_{{ item.itemId }}" data-uk-modal
+                                                        <a href="#modal_wopi_{{ file.fileId }}" data-uk-modal
                                                         ><i class="uk-icon-edit"></i> {{ 'item.file.live_edit'|trans({}, 'item') }}</a>
                                                     </div>
                                                 {% endif %}
