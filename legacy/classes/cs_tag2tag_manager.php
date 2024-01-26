@@ -28,7 +28,7 @@ class cs_tag2tag_manager extends cs_manager
         $this->_cached_children_id_array_array = null;
     }
 
-    public function _buildItem($data_array)
+    public function _buildItem(array $data_array)
     {
         $retour = $this->getNewItem();
         $retour->setLinkID($data_array['link_id']);

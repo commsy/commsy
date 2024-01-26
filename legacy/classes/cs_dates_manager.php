@@ -693,11 +693,9 @@ class cs_dates_manager extends cs_manager
 
    /** Prepares the db_array for the item.
     *
-    * @param $db_array Contains the data from the database
-    *
-    * @return array Contains prepared data ( textfunctions applied etc. )
+    * @param array $db_array Contains the data from the database
     */
-   public function _buildItem($db_array)
+   public function _buildItem(array $db_array)
    {
        $db_array['recurrence_pattern'] = unserialize($db_array['recurrence_pattern']);
 
