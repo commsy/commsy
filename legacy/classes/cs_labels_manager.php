@@ -52,11 +52,6 @@ class cs_labels_manager extends cs_manager
     public $_interval_limit = null;
 
     /**
-     * integer - containing a id for a material.
-     */
-    public $_material_limit = null;
-
-    /**
      * integer - containing a id for a dossier.
      */
     public $_dossier_limit = null;
@@ -126,8 +121,6 @@ class cs_labels_manager extends cs_manager
       $this->_institution_limit = null;
       $this->_topic_limit = null;
       $this->_group_limit = null;
-      $this->_material_limit = null;
-      $this->_version_limit = null;
       $this->_dossier_limit = null;
       $this->_order = null;
       $this->_sort_order = null;
@@ -224,17 +217,6 @@ class cs_labels_manager extends cs_manager
   {
       $this->_interval_limit = (int) $interval;
       $this->_from_limit = (int) $from;
-  }
-
-  /** set material limit
-   * this method sets a material limit.
-   *
-   * @param int limit id of the material
-   */
-  public function setMaterialLimit($limit, $version = '')
-  {
-      $this->_material_limit = (int) $limit;
-      $this->_version_limit = (int) $version;
   }
 
     public function setTopicLimit($limit)
@@ -391,11 +373,6 @@ class cs_labels_manager extends cs_manager
           }
       }
 
-      if (!isset($this->_attribute_limit) || (isset($this->_attribute_limit) and ('all' == $this->_attribute_limit))) {
-          if (!empty($this->_material_limit)) {
-              $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' ON '.$this->addDatabasePrefix('links').'.to_item_id = '.$this->addDatabasePrefix('labels').'.item_id';
-          }
-      }
       if (!empty($this->_type_limit)) {
           $query .= ' WHERE '.$this->addDatabasePrefix('labels').'.type="'.encode(AS_DB, $this->_type_limit).'"';
       } else {
@@ -403,13 +380,6 @@ class cs_labels_manager extends cs_manager
       }
       if (!empty($this->_dossier_limit)) {
           $query .= ' AND '.$this->addDatabasePrefix('labels').'.name="'.encode(AS_DB, $this->_dossier_limit).'"';
-      }
-
-      if (!empty($this->_material_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix('links').'.link_type = "material_for_'.encode(AS_DB, $this->_type_limit).'" AND '.$this->addDatabasePrefix('links').'.from_item_id = "'.encode(AS_DB, $this->_material_limit).'"';
-          if (!empty($this->_version_limit)) {
-              $query .= ' AND '.$this->addDatabasePrefix('links').'.from_version_id = "'.encode(AS_DB, $this->_version_limit).'"';
-          }
       }
 
       // insert limits into the select statement

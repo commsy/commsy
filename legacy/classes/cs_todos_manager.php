@@ -48,6 +48,8 @@ class cs_todos_manager extends cs_manager
     public $_sort_order = null;
     private bool $_assignment_limit = false;
 
+    private ?int $_status_limit = null;
+
     /*
      * Translation Object
      */

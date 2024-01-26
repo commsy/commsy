@@ -85,7 +85,6 @@ class cs_step_manager extends cs_manager
         parent::resetLimits();
         $this->_from_limit = null;
         $this->_interval_limit = null;
-        $this->_order = null;
         $this->_todo_item_id_limit = 0;
         $this->_version_id_limit = 0;
     }

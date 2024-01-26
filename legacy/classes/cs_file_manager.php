@@ -31,7 +31,6 @@ class cs_file_manager extends cs_manager
     {
         parent::__construct($environment);
         $this->_db_table = 'files';
-        $this->_type = 'file';
     }
 
     /**
