@@ -1,0 +1,21 @@
+// "Skip to main content" link
+// ========================================================================
+
+// by default, the "Skip to main content" link is positioned off the screen
+.skip-to-content, .skip-to-content:hover {
+    position: absolute;
+    z-index: 5000;
+    background: @cs-brand-color;
+    color: #FFFFFF;
+    font-weight: 700;
+    left: 45%;
+    padding: 10px;
+    border: 1px solid white;
+    border-radius: 2px;
+    transform: translateY(-100%);
+}
+
+// show the "Skip to main content" link when focussing on it (by pressing the tab key)
+.skip-to-content:focus {
+    transform: translateY(0%);
+}
