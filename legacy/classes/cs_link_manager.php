@@ -142,13 +142,6 @@ class cs_link_manager extends cs_manager
          $this->_link_type_array_limit = $type;
      }
 
-     /** sets the rubric type limit.
-      */
-     public function setMaterialLimit()
-     {
-         $this->setTypeLimit(CS_MATERIAL_TYPE);
-     }
-
      public function setTopicLimit()
      {
          $this->setTypeLimit(CS_TOPIC_TYPE);
