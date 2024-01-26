@@ -29,11 +29,6 @@ class cs_assessments_manager extends cs_manager
         $this->_db_table = CS_ASSESSMENT_TYPE;
     }
 
-    public function _buildItem($data_array)
-    {
-        return parent::_buildItem($data_array);
-    }
-
      public function setCacheOff()
      {
          $this->_cache_on = false;

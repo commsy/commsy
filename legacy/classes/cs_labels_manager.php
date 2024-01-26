@@ -708,11 +708,9 @@ class cs_labels_manager extends cs_manager
 
   /** Prepares the db_array for the item.
    *
-   * @param $db_array Contains the data from the database
-   *
-   * @return array Contains prepared data ( textfunctions applied etc. )
+   * @param array $db_array Contains the data from the database
    */
-  public function _buildItem($db_array)
+  public function _buildItem(array $db_array)
   {
       if ('ALL' == $db_array['name']) {
           $translator = $this->_environment->getTranslationObject();
@@ -721,10 +719,12 @@ class cs_labels_manager extends cs_manager
               $db_array['description'] = $translator->getMessage('GROUP_ALL_DESC');
           }
       }
-      $db_array['extras'] = unserialize($db_array['extras']);
-      $item = parent::_buildItem($db_array);
 
-      return $item;
+      if (isset($db_array['extras'])) {
+          $db_array['extras'] = unserialize($db_array['extras']);
+      }
+
+      return parent::_buildItem($db_array);
   }
 
      /**

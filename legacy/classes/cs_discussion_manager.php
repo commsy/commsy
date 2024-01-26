@@ -130,9 +130,11 @@ class cs_discussion_manager extends cs_manager
         return $this->getIDArray();
     }
 
-    public function _buildItem($db_array)
+    public function _buildItem(array $db_array)
     {
-        $db_array['extras'] = unserialize($db_array['extras']);
+        if (isset($db_array['extras'])) {
+            $db_array['extras'] = unserialize($db_array['extras']);
+        }
 
         return parent::_buildItem($db_array);
     }
