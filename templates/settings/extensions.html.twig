@@ -6,10 +6,11 @@
     <div class="uk-grid">
 
         <div class="uk-width-medium-4-4">
+            <main id="main-content" aria-labelledby="room-settings-heading">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>{{ 'Extensions configuration'|trans({}, 'settings') }}</div>
+                        <h2 id="room-settings-heading" class="uk-panel-title">{{ 'Extensions configuration'|trans({}, 'settings') }}</h2>
                     </div>
                 </div>
 
@@ -17,7 +18,7 @@
                     {{ form_start(form) }}
                         {% if form.createUserRooms is defined and form.userroom_template is defined %}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'User room heading'|trans({}, 'settings') }}</h1>
+                            <h3>{{ 'User room heading'|trans({}, 'settings') }}</h3>
                             <div style="margin-bottom: 25px;">{{ 'User room text'|trans({}, 'settings') }}</div>
                             {{ form_row(form.createUserRooms) }}
                             {{ form_row(form.userroom_template) }}
@@ -26,13 +27,13 @@
                         {% endif %}
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Assessment'|trans({}, 'settings') }}</h1>
+                            <h3>{{ 'Assessment'|trans({}, 'settings') }}</h3>
                             <div style="margin-bottom: 25px;">{{ 'Assessment text'|trans({}, 'settings') }}</div>
                             {{ form_row(form.assessment) }}
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Workflow'|trans({}, 'settings') }}</h1> 
+                            <h3>{{ 'Workflow'|trans({}, 'settings') }}</h3>
                             <div style="margin-bottom: 25px;">{{ 'Workflow text'|trans({}, 'settings') }}</div>
 
                             {{ form_row(form.workflow.resubmission) }}
@@ -117,7 +118,8 @@
                     {{ form_end(form) }}
                 </div>
             </div>
+            </main>
         </div>
-        
+
     </div>
 {% endblock content %}

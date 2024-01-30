@@ -6,10 +6,11 @@
     <div class="uk-grid">
 
         <div class="uk-width-medium-4-4">
+            <main id="main-content" aria-labelledby="room-settings-heading">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>{{ 'Appearance configuration'|trans({}, 'settings') }}</div>
+                        <h2 id="room-settings-heading" class="uk-panel-title">{{ 'Appearance configuration'|trans({}, 'settings') }}</h2>
                     </div>
                 </div>
 
@@ -17,7 +18,7 @@
                     {{ form_start(form) }}
                         <!-- Events -->
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Configure events'|trans({}, 'settings') }}</h1>
+                            <h3>{{ 'Configure events'|trans({}, 'settings') }}</h3>
                             <div style="margin-bottom: 25px;">{{ 'Configure events text'|trans({}, 'settings') }}</div>
                             {{ form_row(form.dates_status) }}
                         </div>
@@ -25,7 +26,7 @@
                         <!-- Theme -->
                         {% if form.theme is defined %}
                             <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                                <h1 class='uk-panel-title'>{{ 'Configure color theme'|trans({}, 'settings') }}</h1>
+                                <h3>{{ 'Configure color theme'|trans({}, 'settings') }}</h3>
                                 <div style="margin-bottom: 25px;">{{ 'Configure color theme text'|trans({}, 'settings') }}</div>
                                 {{ form_row(form.theme) }}
                             </div>
@@ -33,7 +34,7 @@
 
                         <!-- Room image -->
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Room image'|trans({}, 'settings') }}</h1>
+                            <h3>{{ 'Room image'|trans({}, 'settings') }}</h3>
                             <div class="uk-margin-small-bottom">{{ 'Room image text'|trans({}, 'settings') }}</div>
                             <div style="margin-bottom: 25px;"><em>{{ 'tip'| trans({}, 'messages') }}:</em> {{ 'Room image tip'|trans({}, 'settings') }}</div>
 
@@ -71,7 +72,7 @@
 
                         <!-- Room logo -->
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Room logo'|trans({}, 'settings') }}</h1>
+                            <h3>{{ 'Room logo'|trans({}, 'settings') }}</h3>
                             <div class="uk-margin-small-bottom">{{ 'Room logo text'|trans({}, 'settings') }}</div>
                             <div style="margin-bottom: 25px;"><em>{{ 'tip'|trans({}, 'messages')}}:</em> {{ 'Room logo tip'|trans({}, 'settings') }}</div>
                             {{ form_row(form.room_logo.activate) }}
@@ -91,6 +92,7 @@
                 </div>
 
             </div>
+            </main>
         </div>
     </div>
     <script>
