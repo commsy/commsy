@@ -8,10 +8,11 @@
     <div class="uk-grid">
 
         <div class="uk-width-medium-4-4">
+            <main id="main-content" aria-labelledby="room-profile-heading">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div class="uk-text-large">{{ 'address'|trans({}, 'menu') }}</div>
+                        <h2 id="room-profile-heading" class="uk-panel-title">{{ 'address'|trans({}, 'menu') }}</h2>
                     </div>
                 </div>
                 <div class="uk-margin-left uk-margin-right">
@@ -60,6 +61,7 @@
                     {{ form_end(form, {'render_rest': false}) }}
                 </div>
             </div>
+            </main>
         </div>
     </div>
 {% endblock content %}

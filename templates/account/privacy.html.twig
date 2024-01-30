@@ -9,7 +9,9 @@
 {% endblock %}
 
 {% block content %}
-    {% component 'v2:panel' with { title: 'Self assessment'|trans({}, 'profile') } %}
+    {% set panelName = 'account-privacy' %}
+    <main id="main-content" aria-labelledby="{{ panelName }}-heading">
+    {% component 'v2:panel' with { name: panelName, title: 'Self assessment'|trans({}, 'profile') } %}
         {% block content %}
             {{ form_start(form) }}
                 {{ form_errors(form) }}
@@ -33,4 +35,5 @@
             {{ form_end(form) }}
         {% endblock %}
     {% endcomponent %}
+    </main>
 {% endblock content %}
