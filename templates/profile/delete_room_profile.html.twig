@@ -4,13 +4,12 @@
     <div class="uk-grid">
 
         <div class="uk-width-medium-4-4">
+            <main id="main-content" aria-label="{{ 'lockOrDeleteRoomMembership'|trans({}, 'profile') }}">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
 
                 <div class="uk-panel-teaser cs-panel-teaser-warning">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <span class="uk-text-uppercase uk-text-bold">
-                            {{ 'lockRoomMembership'|trans({}, 'profile') }}
-                        </span>
+                        <h2 id="room-settings-heading-lock" class="uk-panel-title uk-text-uppercase">{{ 'lockRoomMembership'|trans({}, 'profile') }}</h2>
                     </div>
                 </div>
                 <div class="uk-alert uk-alert-warning">
@@ -30,14 +29,12 @@
                         </div>
                     {{ form_end(form_lock) }}
                 </div>
+            </div>
 
-                <br/>
-
+            <div class="uk-panel uk-panel-box uk-panel-box-primary uk-margin-top">
                 <div class="uk-panel-teaser cs-panel-teaser-danger">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <span class="uk-text-uppercase uk-text-bold">
-                            {{ 'deleteRoomMembership'|trans({}, 'profile') }}
-                        </span>
+                        <h2 id="room-settings-heading-delete" class="uk-panel-title uk-text-uppercase">{{ 'deleteRoomMembership'|trans({}, 'profile') }}</h2>
                     </div>
                 </div>
                 <div class="uk-alert uk-alert-danger">
@@ -64,8 +61,8 @@
                         </div>
                     {{ form_end(form_delete) }}
                 </div>
-
             </div>
+            </main>
         </div>
     </div>
 {% endblock content %}

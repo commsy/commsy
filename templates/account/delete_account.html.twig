@@ -9,7 +9,9 @@
 {% block content %}
     <div class="uk-grid">
         <div class="uk-width-medium-1-1">
-            {% component 'v2:panel' with { severity: 'warning', title: 'lockAccount'|trans({}, 'profile') } %}
+            <main id="main-content" aria-label="{{ 'lockOrDeleteAccount'|trans({}, 'profile') }}">
+            {% set panelName = 'account-lock' %}
+            {% component 'v2:panel' with { name: panelName, severity: 'warning', title: 'lockAccount'|trans({}, 'profile') } %}
                 {% block content %}
                     <div class="uk-alert uk-alert-warning">
                         {{ form_start(form_lock) }}
@@ -39,7 +41,8 @@
                 {% endblock %}
             {% endcomponent %}
 
-            {% component 'v2:panel' with { severity: 'danger', title: 'deleteAccount'|trans({}, 'profile') } %}
+            {% set panelName = 'account-delete' %}
+            {% component 'v2:panel' with { name: panelName, severity: 'danger', title: 'deleteAccount'|trans({}, 'profile') } %}
                 {% block content %}
                     <div class="uk-alert uk-alert-danger">
                         {{ form_start(form_delete) }}
@@ -75,6 +78,7 @@
                     </div>
                 {% endblock %}
             {% endcomponent %}
+            </main>
         </div>
     </div>
 {% endblock content %}
