@@ -10,6 +10,7 @@
     <div class="uk-grid">
 
         <div class="uk-width-medium-4-5">
+            <main id="main-content">
 
             {# material content panel #}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
@@ -232,7 +233,7 @@
             </div>
 
             {% if not draft %}
-                <div data-uk-observe id="article-content" class="uk-panel uk-panel-box">
+                <div data-uk-observe id="article-content" class="uk-panel uk-panel-box uk-margin-top">
 
                     {# panel teaser #}
                     <div class="uk-panel-teaser cs-panel-teaser-primary uk-text-large">
@@ -253,6 +254,7 @@
                     {% endif %}
                 </div>
             {% endif %}
+            </main>
         </div>
 
         <div class="uk-width-medium-1-5 uk-hidden-small">
