@@ -673,7 +673,7 @@ class cs_manager
     /** build an item out of an (database) array - internal method, do not use
      * this method returns a item out of a row form the database.
      *
-     * @param array item_array array with information about the item out of the respective database table
+     * @param array $db_array information about the item out of the respective database table
      *
      * @return object cs_item an item
      */

@@ -44,7 +44,7 @@ class cs_discussion_manager extends cs_manager
     /*
      * Translation Object
      */
-    private $_translator = null;
+    private cs_translator $_translator;
 
     /** constructor
      * the only available constructor, initial values for internal variables
@@ -71,7 +71,6 @@ class cs_discussion_manager extends cs_manager
         $this->_age_limit = null;
         $this->_from_limit = null;
         $this->_interval_limit = null;
-        $this->_order = null;
         $this->_group_limit = null;
         $this->_topic_limit = null;
         $this->_institution_limit = null;
@@ -102,14 +101,6 @@ class cs_discussion_manager extends cs_manager
         $this->_from_limit = (int) $from;
     }
 
-  /** set order limit to latest article
-   * this method sets an order limit for the select statement.
-   */
-  public function setOrderToLatestArticle()
-  {
-      $this->_order = 'latest_article';
-  }
-
     public function setGroupLimit($limit)
     {
         $this->_group_limit = (int) $limit;
@@ -130,9 +121,11 @@ class cs_discussion_manager extends cs_manager
         return $this->getIDArray();
     }
 
-    public function _buildItem($db_array)
+    public function _buildItem(array $db_array)
     {
-        $db_array['extras'] = unserialize($db_array['extras']);
+        if (isset($db_array['extras'])) {
+            $db_array['extras'] = unserialize($db_array['extras']);
+        }
 
         return parent::_buildItem($db_array);
     }

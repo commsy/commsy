@@ -19,6 +19,8 @@ class cs_translator
     private array $messageArray = [];
     private array $timeMessageArray = [];
 
+    private array $availableLanguages = [];
+
     /**
      * containing the path to the message.dats.
      */
@@ -320,7 +322,7 @@ class cs_translator
      */
     public function getAvailableLanguages()
     {
-        if (!isset($this->_avialable_languages)) {
+        if (!isset($this->availableLanguages)) {
             $filename_array = [];
             $language_array = [];
             $directory = dir($this->_file_path);
@@ -336,10 +338,10 @@ class cs_translator
                 $language_array[] = $language;
             }
             sort($language_array);
-            $this->_avialable_languages = $language_array;
+            $this->availableLanguages = $language_array;
         }
 
-        return $this->_avialable_languages;
+        return $this->availableLanguages;
     }
 
     public function isLanguageAvailable($lang)
