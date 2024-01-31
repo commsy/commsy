@@ -21,8 +21,6 @@ class cs_privateroom_manager extends cs_room2_manager
      */
     public $_age_limit = null;
 
-    public $_query_cache_array = [];
-
     /**
      * integer - containing a start point for the select community.
      */
@@ -40,11 +38,13 @@ class cs_privateroom_manager extends cs_room2_manager
 
     public $_time_limit = null;
 
-    private $_room_home_cache = null;
-
     private ?int $_template_limit = null;
 
     private bool $_active_limit = false;
+
+    private ?string $_user_id_limit = null;
+
+    private array $roomArrayCache = [];
 
     /** constructor
      * the only available constructor, initial values for internal variables.
@@ -371,10 +371,10 @@ class cs_privateroom_manager extends cs_room2_manager
     public function getRelatedOwnRoomForUser(cs_user_item $user_item, int $context_id)
     {
         if (!empty($user_item)) {
-            if (isset($this->_private_room_array[$user_item->getItemID()])
-                && !empty($this->_private_room_array[$user_item->getItemID()])
+            if (isset($this->roomArrayCache[$user_item->getItemID()])
+                && !empty($this->roomArrayCache[$user_item->getItemID()])
             ) {
-                return $this->_private_room_array[$user_item->getItemID()];
+                return $this->roomArrayCache[$user_item->getItemID()];
             } else {
                 $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
@@ -403,9 +403,9 @@ class cs_privateroom_manager extends cs_room2_manager
                         $item = $this->_buildItem($result[0]);
                         if (isset($item)) {
                             $item->setType(CS_PRIVATEROOM_TYPE);
-                            $this->_private_room_array[$user_item->getItemID()] = $item;
+                            $this->roomArrayCache[$user_item->getItemID()] = $item;
 
-                            return $this->_private_room_array[$user_item->getItemID()];
+                            return $this->roomArrayCache[$user_item->getItemID()];
                         }
                     }
                 } catch (\Doctrine\DBAL\Exception) {

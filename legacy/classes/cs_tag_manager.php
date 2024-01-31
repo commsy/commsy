@@ -473,19 +473,6 @@ class cs_tag_manager extends cs_manager
          return $this->_getItemList('tag', $id_array);
      }
 
-    /** Prepares the db_array for the item.
-     *
-     * @param $db_array Contains the data from the database
-     *
-     * @return array Contains prepared data ( textfunctions applied etc. )
-     */
-    public function _buildItem($db_array)
-    {
-        $item = parent::_buildItem($db_array);
-
-        return $item;
-    }
-
     /** update a tag - internal, do not use -> use method save
      * this method updates a tag.
      *

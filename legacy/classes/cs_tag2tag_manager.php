@@ -16,6 +16,10 @@
  */
 class cs_tag2tag_manager extends cs_manager
 {
+    private array $cachedRows = [];
+    private array $cachedFatherIdArray = [];
+    private ?array $cachedChildrenIdArray = null;
+
     /** constructor: cs_tag2tag_manager
      * the only available constructor, initial values for internal variables.
      */
@@ -23,12 +27,9 @@ class cs_tag2tag_manager extends cs_manager
     {
         parent::__construct($environment);
         $this->_db_table = CS_TAG2TAG_TYPE;
-        $this->_cached_rows = [];
-        $this->_cached_father_id_array = [];
-        $this->_cached_children_id_array_array = null;
     }
 
-    public function _buildItem($data_array)
+    public function _buildItem(array $data_array)
     {
         $retour = $this->getNewItem();
         $retour->setLinkID($data_array['link_id']);
@@ -281,17 +282,17 @@ class cs_tag2tag_manager extends cs_manager
      public function getFatherItemID($item_id)
      {
          $retour = '';
-         if ((is_countable($this->_cached_father_id_array) ? count($this->_cached_father_id_array) : 0) == 0) {
-             if (empty($this->_cached_rows)) {
+         if ((is_countable($this->cachedFatherIdArray) ? count($this->cachedFatherIdArray) : 0) == 0) {
+             if (empty($this->cachedRows)) {
                  $this->_cacheAllLinkRows();
              }
-             foreach ($this->_cached_rows as $db_row) {
-                 $this->_cached_father_id_array[$db_row['to_item_id']] = $db_row['from_item_id'];
+             foreach ($this->cachedRows as $db_row) {
+                 $this->cachedFatherIdArray[$db_row['to_item_id']] = $db_row['from_item_id'];
              }
          }
 
-         if (!empty($this->_cached_father_id_array[$item_id])) {
-             $retour = $this->_cached_father_id_array[$item_id];
+         if (!empty($this->cachedFatherIdArray[$item_id])) {
+             $retour = $this->cachedFatherIdArray[$item_id];
          }
 
          return $retour;
@@ -310,8 +311,8 @@ class cs_tag2tag_manager extends cs_manager
 
      public function resetCachedFatherIdArray()
      {
-         $this->_cached_father_id_array = [];
-         $this->_cached_rows = [];
+         $this->cachedFatherIdArray = [];
+         $this->cachedRows = [];
      }
 
      public function getFatherItemIDArray($item_id)
@@ -329,26 +330,27 @@ class cs_tag2tag_manager extends cs_manager
 
      public function resetCachedChildrenIdArray()
      {
-         unset($this->_cached_children_id_array_array);
-         $this->_cached_rows = [];
+         unset($this->cachedChildrenIdArray);
+         $this->cachedRows = [];
      }
 
      public function getChildrenItemIDArray($item_id)
      {
-         $retour = [];
-         if (!isset($this->_cached_children_id_array_array)) {
-             if (empty($this->_cached_rows)) {
+         if (!isset($this->cachedChildrenIdArray)) {
+             if (empty($this->cachedRows)) {
                  $this->_cacheAllLinkRows();
              }
-             foreach ($this->_cached_rows as $db_row) {
-                 $this->_cached_children_id_array_array[$db_row['from_item_id']][] = $db_row['to_item_id'];
+             $this->cachedChildrenIdArray = [];
+             foreach ($this->cachedRows as $db_row) {
+                 $this->cachedChildrenIdArray[$db_row['from_item_id']][] = $db_row['to_item_id'];
              }
          }
-         if (!empty($this->_cached_children_id_array_array[$item_id])) {
-             $retour = $this->_cached_children_id_array_array[$item_id];
+
+         if (!empty($this->cachedChildrenIdArray[$item_id])) {
+             return $this->cachedChildrenIdArray[$item_id];
          }
 
-         return $retour;
+         return [];
      }
 
      public function getRecursiveChildrenItemIDArray($item_id)
@@ -363,63 +365,6 @@ class cs_tag2tag_manager extends cs_manager
          }
 
          return $retour;
-     }
-
-     public function sortRecursiveABC($root_id)
-     {
-         // ////////////////////////////
-         // "0." force cache reset ////
-         // ////////////////////////////
-//      $this->_cached_rows = array();
-//      $this->_cached_father_id_array = array();
-//      $this->_cached_children_id_array_array = NULL;
-         // ////////////////////////////
-         // ////////////////////////////
-         // ////////////////////////////
-
-         // 1. fetch all direct children
-         $children_array = $this->getChildrenItemIDArray($root_id);
-
-         // 2. sort children
-         if (sizeof($children_array) > 1) {
-             $temp_array = [];
-             $tag_manager = $this->_environment->getTagManager();
-             foreach ($children_array as $id) {
-                 $item = $tag_manager->getItem($id);
-                 if (isset($item)) {
-                     $item_title = $item->getTitle();
-                     array_push($temp_array, ['id' => $id, 'name' => $item_title]);
-                 }
-             }
-
-             usort($temp_array,
-                 fn ($a, $b) => strnatcasecmp((string) $a['name'], (string) $b['name']));
-
-             // 3. change sort order
-             foreach ($children_array as $id) {
-                 $item = $tag_manager->getItem($id);
-
-                 // get new position
-                 $new_sort_order = 1;
-                 foreach ($temp_array as $item_info_array) {
-                     if ($item_info_array['id'] == $id) {
-                         break;
-                     }
-                     ++$new_sort_order;
-                 }
-
-                 // change sort order and save
-                 if (isset($item)) {
-                     $item->setPosition($root_id, $new_sort_order);
-                     $item->setSavePositionWithoutChange(true);
-                     $item->save();
-                     unset($item);
-                     // 4. call recursive
-                     $this->sortRecursiveABC($id);
-                 }
-             }
-             unset($tag_manager);
-         }
      }
 
      public function countChildren($item_id)
@@ -631,7 +576,7 @@ class cs_tag2tag_manager extends cs_manager
 
      private function _cacheAllLinkRows()
      {
-         $this->_cached_rows = $this->_performQuery();
+         $this->cachedRows = $this->_performQuery();
      }
 
      public function _updateFromBackup($data_array)
@@ -694,17 +639,5 @@ class cs_tag2tag_manager extends cs_manager
          }
 
          return $success;
-     }
-
-     public function insert_with_context($item_id, $father_id, $context_id, $place = '')
-     {
-         $tag2tag_item = $this->getNewItem();
-         $tag2tag_item->setFatherItemID($father_id);
-         $tag2tag_item->setContextItemID($context_id);
-         $tag2tag_item->setChildItemID($item_id);
-         $tag2tag_item->save();
-         if (!empty($place)) {
-             $this->change($item_id, $father_id, $place);
-         }
      }
 }

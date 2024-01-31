@@ -56,22 +56,21 @@ class cs_section_manager extends cs_manager
     public $_all_section_list = null;
     public $_cached_material_item_ids = [];
 
-    /*
-     * Translation Object
-     */
+    private cs_translator $translator;
 
     /** constructor: cs_section_manager
      * the only available constructor, initial values for internal variables<br />
      * NOTE: the constructor must never be called directly, instead the cs_environment must
      * be used to access this manager.
      *
-     * @param object cs_environment the environment
+     * @param cs_environment $environment
      */
     public function __construct($environment)
     {
         parent::__construct($environment);
         $this->_db_table = CS_SECTION_TYPE;
-        $this->_translator = $environment->getTranslationObject();
+
+        $this->translator = $environment->getTranslationObject();
     }
 
     /** reset limits
@@ -84,7 +83,6 @@ class cs_section_manager extends cs_manager
         parent::resetLimits();
         $this->_from_limit = null;
         $this->_interval_limit = null;
-        $this->_order = null;
         $this->_material_item_id_limit = 0;
         $this->_version_id_limit = 0;
     }
@@ -555,8 +553,8 @@ class cs_section_manager extends cs_manager
 
                      /* disabled */
                      if ('FALSE' === $disableOverwrite) {
-                         $updateQuery .= ' title = "'.encode(AS_DB, $this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-                         $updateQuery .= ' description = "'.encode(AS_DB, $this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
+                         $updateQuery .= ' title = "'.encode(AS_DB, $this->translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
+                         $updateQuery .= ' description = "'.encode(AS_DB, $this->translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
                          $updateQuery .= ' modification_date = "'.$currentDatetime.'"';
                      }
 

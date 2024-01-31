@@ -8,6 +8,7 @@ use App\WOPI\ActionUrlBuilder;
 use App\WOPI\Auth\AccessTokenGenerator;
 use App\WOPI\Discovery\DiscoveryService;
 use App\WOPI\Permission\PermissionResolver;
+use App\WOPI\Permission\WOPIPermission;
 use App\WOPI\REST\WOPIFileId;
 use App\WOPI\REST\WOPISrc;
 use DateTimeImmutable;
@@ -39,8 +40,23 @@ class WOPIController extends AbstractController
         $permission = $permissionResolver->resolve($file);
 
         $discovery = $discoveryService->getWOPIDiscovery();
-        $app = $discoveryService->findApp($discovery, 'docx', $permission->value);
-        $action = $discoveryService->findAction($app, 'docx', $permission->value);
+        $extension = pathinfo($file->getFilepath(), PATHINFO_EXTENSION);
+        $app = $discoveryService->findApp($discovery, $extension, $permission->value);
+        if (!$app) {
+            // fallback to view permission, this might happen on non-editable files like ppt (not pptx) where
+            // we might have the permissions to edit the file but the file format only allows for viewing
+            // TODO: refactore app and action resolving
+            $permission = WOPIPermission::VIEW;
+            $app = $discoveryService->findApp($discovery, $extension, $permission->value);
+            if (!$app) {
+                throw new Exception('No matching app found.');
+            }
+        }
+
+        $action = $discoveryService->findAction($app, $extension, $permission->value);
+        if (!$action) {
+            throw new Exception('No matching action found.');
+        }
 
         $actionUrlBuilder = new ActionUrlBuilder();
         $actionUrl = $actionUrlBuilder

@@ -228,11 +228,9 @@ class cs_link_item_file_manager extends cs_link_father_manager
     /** build an item out of an (database) array - internal method, do not use
      * this method returns a item out of a row form the database.
      *
-     * @param array item_array array with information about the item out of the respective database table
-     *
-     * @return object cs_item an item
+     * @param array $db_array information about the item out of the respective database table
      */
-    public function _buildItem($db_array)
+    public function _buildItem(array $db_array)
     {
         $item = $this->getNewItem();
         $item->_setItemData(encode(FROM_DB, $db_array));
