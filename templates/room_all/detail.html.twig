@@ -10,9 +10,11 @@
     <div class="uk-grid">
 
         <div class="uk-width-medium-4-5">
+            {% set panelName = 'room-details' %}
+            <main id="main-content" aria-labelledby="{{ panelName }}-heading">
 
             {# project content panel #}
-            {% component 'v2:panel' with { title: item.type|trans([], 'room') } %}
+            {% component 'v2:panel' with { name: panelName, title: item.type|trans([], 'room') } %}
                 {% import 'item/macros.html.twig' as macrosItem %}
                 {% import 'room/macros.html.twig' as macrosRoom %}
 
@@ -68,6 +70,7 @@
                     </article>
                 {% endblock %}
             {% endcomponent %}
+            </main>
         </div>
 
         <div class="uk-width-medium-1-5 uk-hidden-small">
