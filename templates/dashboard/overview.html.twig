@@ -7,6 +7,9 @@
     {{ 'Dashboard'|trans({}, "room") }}
 {% endblock %}
 
+{% block side_navigation %}
+{% endblock %}
+
 {% block breadcrumb %}
     {{ wo_render_breadcrumbs({ viewTemplate: "breadcrumbs/breadcrumbs.html.twig" }) }}
 {% endblock %}
@@ -50,15 +53,19 @@
     <div class="uk-grid" data-uk-grid-margin>
         {# right column #}
         <div class="uk-width-medium-1-2 uk-push-1-2">
+            <aside aria-label="{{ 'Sidebar'|trans({}, "room") }}">
             {{ macros.dashboardMyViews(roomItem) }}
             {{ macros.dashboardCalendar(roomItem, calendars, iCal, contextArray) }}
             {{ macros.dashboardExternalAccess(roomItem) }}
+            </aside>
         </div>
 
         {# left column #}
         <div class="uk-width-medium-1-2 uk-pull-1-2 uk-row-first">
+            <main id="main-content">
             {{ macros.dashboardAllRooms(roomItem, userMayCreateContext) }}
             {{ macros.dashboardFeed(roomItem) }}
+            </main>
         </div>
     </div>
 {% endblock %}

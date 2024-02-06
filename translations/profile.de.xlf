@@ -353,6 +353,10 @@
             </trans-unit>
 
             <!-- delete / lock account / room profile -->
+            <trans-unit id="lock_or_delete_room_membership_title">
+                <source>lockOrDeleteRoomMembership</source>
+                <target>Raummitgliedschaft sperren oder löschen</target>
+            </trans-unit>
             <trans-unit id="lock_room_membership_title">
                 <source>lockRoomMembership</source>
                 <target>Raummitgliedschaft sperren</target>
@@ -377,6 +381,10 @@
             <trans-unit id="delete_room_membership_text_false">
                 <source>deleteRoomMembershipTextFalse</source>
                 <target>Wählen Sie diese Option, um Ihre Mitgliedschaft und sämtliche Beiträge in diesem Raum zu löschen.</target>
+            </trans-unit>
+            <trans-unit id="lock_or_delete_account_title">
+                <source>lockOrDeleteAccount</source>
+                <target>Account sperren oder löschen</target>
             </trans-unit>
             <trans-unit id="lock_account_title">
                 <source>lockAccount</source>

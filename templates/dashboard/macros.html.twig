@@ -1,8 +1,9 @@
 {% macro dashboardAllRooms(roomItem, userMayCreateContext) %}
+    <section aria-labelledby="rooms-heading">
     <div class="uk-panel uk-panel-box uk-panel-box-primary">
         <div class="uk-panel-teaser cs-panel-teaser-primary">
             <div class="uk-flex uk-flex-middle">
-                <div class="uk-text-large">{{ 'Rooms'|trans({}, "room") }}</div>
+                <h3 id="rooms-heading" class="uk-panel-title">{{ 'Rooms'|trans({}, "room") }}</h3>
              </div>
         </div>
         <form action="{{ path('app_room_listall', {'roomId': roomItem.itemId}) }}" class="uk-form-horizontal uk-form">
@@ -23,14 +24,16 @@
             {% endif %}
         </ul>
     </div>
+    </section>
 {% endmacro %}
 
 {% macro dashboardFeed(roomItem) %}
     {#<li id="dashboard-latest" class="uk-grid-margin">#}
+        <section aria-labelledby="feed-heading">
         <div class="uk-panel uk-panel-box uk-panel-box-primary">
             <div class="uk-panel-teaser cs-panel-teaser-primary">
                 <div class="uk-flex uk-flex-middle">
-                    <div class="uk-text-large">{{ 'latest entries from my rooms'|trans({}, "room") }}</div>
+                    <h3 id="feed-heading" class="uk-panel-title">{{ 'latest entries from my rooms'|trans({}, "room") }}</h3>
                  </div>
             </div>
 
@@ -48,6 +51,7 @@
             </div>
 
         </div>
+        </section>
     {#</li>#}
 {% endmacro %}
 
@@ -55,10 +59,11 @@
     {% import 'utils/macros.html.twig' as macros %}
 
     {#<li id="dashboard-calendar" class="uk-grid-margin">#}
+        <section aria-labelledby="calendar-heading">
         <div class="uk-panel uk-panel-box uk-panel-box-primary">
             <div class="uk-panel-teaser cs-panel-teaser-primary">
                 <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                    <div class="uk-text-large">{{ 'calendar'|trans({}, "date") }}</div>
+                    <h3 id="calendar-heading" class="uk-panel-title">{{ 'calendar'|trans({}, "date") }}</h3>
                  </div>
             </div>
 
@@ -67,6 +72,7 @@
             { 'roomId': roomItem.itemId }
             ))}}
         </div>
+        </section>
     {#</li>#}
 {% endmacro %}
 
@@ -89,10 +95,11 @@
 
 {% macro dashboardExternalAccess(roomItem) %}
     {#<li id="dashboard-external-access" class="uk-grid-margin">#}
+        <section aria-labelledby="external-access-heading">
         <div class="uk-panel uk-panel-box uk-panel-box-primary">
             <div class="uk-panel-teaser cs-panel-teaser-primary">
                 <div class="uk-flex uk-flex-middle">
-                    <div class="uk-text-large">{{ 'external access'|trans({}, "dashboard") }}</div>
+                    <h3 id="external-access-heading" class="uk-panel-title">{{ 'external access'|trans({}, "dashboard") }}</h3>
                  </div>
             </div>
 
@@ -101,14 +108,16 @@
             { 'roomId': roomItem.itemId }
             ))}}
         </div>
+        </section>
     {#</li>#}
 {% endmacro %}
 
 {% macro dashboardMyViews(roomItem) %}
+    <section aria-labelledby="my-views-heading">
     <div class="uk-panel uk-panel-box uk-panel-box-primary">
         <div class="uk-panel-teaser cs-panel-teaser-primary">
             <div class="uk-flex uk-flex-middle">
-                <div class="uk-text-large">{{ 'my views'|trans({}, "dashboard") }}</div>
+                <h3 id="my-views-heading" class="uk-panel-title">{{ 'my views'|trans({}, "dashboard") }}</h3>
             </div>
         </div>
         {{ render(controller(
@@ -116,4 +125,5 @@
             { 'roomId': roomItem.itemId }
         )) }}
     </div>
+    </section>
 {% endmacro %}

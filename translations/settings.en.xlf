@@ -213,7 +213,7 @@
             <trans-unit id="additional_configuration">
                 <source>Additional configuration</source>
                 <target>Additional configuration</target>
-            </trans-unit>            
+            </trans-unit>
             <trans-unit id="tags">
                 <source>Buzzwords</source>
                 <target>Hashtags</target>
@@ -241,7 +241,7 @@
             <trans-unit id="templatedescription">
                 <source>Template description</source>
                 <target>Description</target>
-            </trans-unit>            
+            </trans-unit>
             <trans-unit id="newstatus">
                 <source>Status</source>
                 <target>New status</target>
@@ -321,7 +321,7 @@
             <trans-unit id="tasks_text">
                 <source>Tasks text</source>
                 <target>For tasks, there are by default three progress status items: "not started", "in progress" and "done". Here you can add additional status items.</target>
-            </trans-unit>   
+            </trans-unit>
             <trans-unit id="template_text">
                 <source>Template text</source>
                 <target>Provide this workspace as a template for new workspaces. By choosing a template, a newly created workspace will be prepopulated with contents from the template workspace (except for user information).</target>
@@ -465,7 +465,7 @@
             <trans-unit id="arrayrubricmail">
                 <source>Array mail text rubric</source>
                 <target>Edit e-mail texts</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="showinfo">
                 <source>Show info</source>
                 <target>Show</target>
@@ -555,11 +555,11 @@
             <trans-unit id="assessment">
                 <source>Assessment</source>
                 <target>Assessments</target>
-            </trans-unit>                        
+            </trans-unit>
             <trans-unit id="workflow">
                 <source>Workflow</source>
                 <target>Workflow settings</target>
-            </trans-unit>            
+            </trans-unit>
             <trans-unit id="workflow_resubmission">
                 <source>Resubmission</source>
                 <target>Resubmission</target>
@@ -575,7 +575,7 @@
             <trans-unit id="workflow_green_text">
                 <source>Traffic light green text</source>
                 <target>Green</target>
-            </trans-unit>  
+            </trans-unit>
             <trans-unit id="workflow_yellow_text">
                 <source>Traffic light yellow text</source>
                 <target>Yellow</target>
@@ -603,7 +603,7 @@
             <trans-unit id="mods_only">
                 <source>Moderators only</source>
                 <target>Reader view only for moderators</target>
-            </trans-unit>            
+            </trans-unit>
             <trans-unit id="all_users">
                 <source>All users</source>
                 <target>Reader view for all users</target>
@@ -611,7 +611,7 @@
             <trans-unit id="wiki">
                 <source>wiki</source>
                 <target>Wiki</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="wiki_enabled">
                 <source>Wiki enabled</source>
                 <target>Enable Wiki</target>
@@ -685,6 +685,10 @@
             </trans-unit>
 
             <!-- Delete -->
+            <trans-unit id="settings_lock_or_delete_title">
+                <source>Lock or delete room</source>
+                <target>Lock or delete workspace</target>
+            </trans-unit>
             <trans-unit id="settings_delete_title">
                 <source>Delete room</source>
                 <target>Delete workspace</target>

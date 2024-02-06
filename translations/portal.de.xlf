@@ -7,6 +7,10 @@
                 <source>Portal</source>
                 <target>Portal</target>
             </trans-unit>
+            <trans-unit id="portal_overview">
+                <source>Portal overview</source>
+                <target>Portalübersicht</target>
+            </trans-unit>
             <trans-unit id="save_success">
                 <source>Save success</source>
                 <target>Erfolgreich gespeichert</target>

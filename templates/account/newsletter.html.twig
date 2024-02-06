@@ -5,11 +5,15 @@
 {% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
 {% block side_navigation %}
+    <nav aria-label="{{ 'Account'|trans({}, 'profile') }}">
     {{ knp_menu_render('account') }}
+    </nav>
 {% endblock %}
 
 {% block content %}
-    {% component 'v2:panel' with { title: 'notifications'|trans({}, 'menu') } %}
+    {% set panelName = 'account-newsletter' %}
+    <main id="main-content" aria-labelledby="{{ panelName }}-heading">
+    {% component 'v2:panel' with { name: panelName, title: 'notifications'|trans({}, 'menu') } %}
         {% block content %}
             {{ form_start(form) }}
                 {{ form_errors(form) }}
@@ -36,4 +40,5 @@
             {{ form_end(form) }}
         {% endblock %}
     {% endcomponent %}
+    </main>
 {% endblock content %}
