@@ -6,35 +6,37 @@
     <div class="uk-grid">
 
         <div class="uk-width-medium-4-4">
+            <main id="main-content" aria-labelledby="room-settings-heading">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>{{ 'Moderation support configuration'|trans({}, 'settings') }}</div>
+                        <h2 id="room-settings-heading" class="uk-panel-title">{{ 'Moderation support configuration'|trans({}, 'settings') }}</h2>
                     </div>
                 </div>
 
                 <div>
                     {{ form_start(form) }}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Homenotice'|trans({}, 'settings') }}</h1>
+                            <h3>{{ 'Homenotice'|trans({}, 'settings') }}</h3>
                             <div style="margin-bottom: 25px;">{{ 'Homenotice text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.homenotice) }}
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Usage notes'|trans({}, 'settings') }}</h1>
+                            <h3>{{ 'Usage notes'|trans({}, 'settings') }}</h3>
                             <div style="margin-bottom: 25px;">{{ 'Usage notes text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.usernotice) }}
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Email configuration'|trans({}, 'settings') }}</h1>
+                            <h3>{{ 'Email configuration'|trans({}, 'settings') }}</h3>
                             <div style="margin-bottom: 25px;">{{ 'Email configuration text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.email_configuration) }}
                         </div>
                     {{ form_end(form) }}
                 </div>
             </div>
+            </main>
         </div>
     </div>
     <script>

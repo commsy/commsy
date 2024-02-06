@@ -19,6 +19,8 @@ final class PanelComponent
 
     public string $title = '';
 
+    public string $name = '';
+
     #[PreMount]
     public function preMount(array $data): array
     {
@@ -30,6 +32,7 @@ final class PanelComponent
             'sticky' => false,
             'style' => '',
             'title' => '',
+            'name' => '',
         ]);
 
         $resolver->setAllowedValues('padding', [true, false]);

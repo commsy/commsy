@@ -7,10 +7,11 @@
     <div class="uk-grid">
 
         <div class="uk-width-medium-4-4">
+            <main id="main-content" aria-labelledby="room-settings-heading">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>{{ 'Additional configuration'|trans({}, 'settings') }}</div>
+                        <h2 id="room-settings-heading" class="uk-panel-title">{{ 'Additional configuration'|trans({}, 'settings') }}</h2>
                     </div>
                 </div>
 
@@ -18,14 +19,14 @@
                     {{ form_start(form) }}
                         {# Structural auxiliaries #}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Structural auxiliaries'|trans({}, 'settings') }}</h1>
+                            <h3>{{ 'Structural auxiliaries'|trans({}, 'settings') }}</h3>
                             <div style="margin-bottom: 25px;"></div>
                             {{ form_widget(form.structural_auxilaries) }}
                         </div>
 
                         {# tasks configuration #}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Tasks'|trans({}, 'settings') }}</h1>
+                            <h3>{{ 'Tasks'|trans({}, 'settings') }}</h3>
                             <div style="margin-bottom: 25px;">{{ 'Tasks text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.tasks.status) }}
                             {{ form_widget(form.tasks.status_option) }}
@@ -38,14 +39,14 @@
 
                         {# rss #}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'RSS feed'|trans({}, 'settings') }}</h1>
+                            <h3>{{ 'RSS feed'|trans({}, 'settings') }}</h3>
                             {{ form_widget(form.rss) }}
                         </div>
 
                         {# template #}
                         {% if form.template is defined %}
                             <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                                <h1 class='uk-panel-title'>{{ 'Template'|trans({}, 'settings') }}</h1>
+                                <h3>{{ 'Template'|trans({}, 'settings') }}</h3>
                                 <div style="margin-bottom: 25px;">{{ 'Template text'|trans({}, 'settings') }}</div>
                                 <div class='uk-form-row'>
                                     {{ form_label(form.template.status) }}
@@ -59,7 +60,7 @@
 
                         {# archived #}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Archive room'|trans({}, 'settings') }}</h1>
+                            <h3>{{ 'Archive room'|trans({}, 'settings') }}</h3>
                             {% set generalArchiveText = 'Archive text'|trans({}, 'settings') %}
                             {% if not deletesRoomIfUnused %}
                                 <div style="margin-bottom: 25px;">{{ generalArchiveText }} {{ 'Archive text permanently archived'|trans({}, 'settings') }}</div>
@@ -72,7 +73,7 @@
 
                         {# terms #}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Terms'|trans({}, 'settings') }}</h1> 
+                            <h3>{{ 'Terms'|trans({}, 'settings') }}</h3>
                             <div style="margin-bottom: 25px;">{{ 'Terms text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.terms) }}
                         </div>
@@ -82,8 +83,9 @@
                 </div>
 
             </div>
+            </main>
         </div>
-        
+
     </div>
     <script>
 
@@ -152,9 +154,9 @@
 
         var newInputCopy = newInput.cloneNode(true);
         var superfluousDiv = newInput.parentNode;
-        var containerDiv = superfluousDiv.parentNode; 
+        var containerDiv = superfluousDiv.parentNode;
 
-        containerDiv.removeChild(superfluousDiv); 
+        containerDiv.removeChild(superfluousDiv);
         containerDiv.appendChild(newInputCopy);
 
         addRemoveLink(newInputCopy);

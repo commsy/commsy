@@ -1,12 +1,15 @@
 <div id="sidebar_left" class="uk-visible@s uk-position-top">
+    <nav aria-label="{{ 'Portal configuration'|trans({}, 'portal') }}">
     {{ knp_menu_render(menu_name, {
         'template': 'menu/knp_menu_sidebar_uikit3.html.twig',
         'currentClass': 'uk-active',
         'ancestorClass': 'uk-active'
     }) }}
+    </nav>
 </div>
 
 <div id="offcanvas-navigation" uk-offcanvas>
+    <nav aria-label="{{ 'Portal configuration'|trans({}, 'portal') }}">
     <div class="uk-offcanvas-bar">
         {{ knp_menu_render(menu_name, {
             'template': 'menu/knp_menu_sidebar_uikit3_offcanvas.html.twig',
@@ -16,4 +19,5 @@
 
         <button class="uk-offcanvas-close" type="button" uk-close></button>
     </div>
+    </nav>
 </div>

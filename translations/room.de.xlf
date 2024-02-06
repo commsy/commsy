@@ -78,6 +78,10 @@
                 <source>moderation support</source>
                 <target>E-Mail an die Moderation</target>
             </trans-unit>
+            <trans-unit id="sidebar">
+                <source>Sidebar</source>
+                <target>Seitenleiste</target>
+            </trans-unit>
             <trans-unit id="pinned-entries">
                 <source>Pinned entries</source>
                 <target>Gepinnte Einträge</target>

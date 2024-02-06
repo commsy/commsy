@@ -8,10 +8,11 @@
     <div class="uk-grid">
 
         <div class="uk-width-medium-4-4">
+            <main id="main-content" aria-labelledby="room-profile-heading">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div class="uk-text-large">{{ 'contactData'|trans({}, 'profile') }}</div>
+                        <h2 id="room-profile-heading" class="uk-panel-title">{{ 'contactData'|trans({}, 'profile') }}</h2>
                     </div>
                 </div>
                 <div class="uk-margin-left uk-margin-right">
@@ -19,7 +20,7 @@
                         {{ form_errors(form) }}
                         <div class="uk-panel uk-margin-large-bottom">
                             <table class="uk-table">
-                                <h1 class='uk-panel-title'>{{ 'email'|trans({}, 'profile') }}</h1>
+                                <h3>{{ 'email'|trans({}, 'profile') }}</h3>
                                 <div style="margin-bottom: 10px;">{{ 'Email choice text'|trans({}, 'profile') }}</div>
                                 <tr>
                                     <td>
@@ -48,7 +49,7 @@
                                     <td colspan="2"><hr/></td>
                                 </tr>
                                 <tr>
-                                    <td><h1 class='uk-panel-title'>{{ 'phone'|trans({}, 'profile') }}</h1></td>
+                                    <td><h3>{{ 'phone'|trans({}, 'profile') }}</h3></td>
                                 </tr>
                                 <tr>
                                     <td>{{ form_row(form.phone) }}</td>
@@ -62,7 +63,7 @@
                                     <td colspan="2"><hr/></td>
                                 </tr>
                                 <tr>
-                                    <td><h1 class='uk-panel-title'>{{ 'Additional'|trans({}, 'menu') }}</h1></td>
+                                    <td><h3>{{ 'Additional'|trans({}, 'menu') }}</h3></td>
                                 </tr>
                                 <tr>
                                     <td>{{ form_row(form.skype) }}</td>
@@ -80,7 +81,7 @@
                                 </tr>
                             </table>
                         </div>
-                           
+
                         <div class="uk-panel uk-margin-large-bottom">
                             <table class="uk-table">
                                 <tr>
@@ -93,6 +94,7 @@
                     {{ form_end(form, {'render_rest': false}) }}
                 </div>
             </div>
+            </main>
         </div>
     </div>
 {% endblock content %}

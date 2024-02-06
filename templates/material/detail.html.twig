@@ -10,6 +10,7 @@
     <div class="uk-grid">
 
         <div class="uk-width-medium-4-5">
+            <main id="main-content">
 
             {# material content panel #}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
@@ -508,11 +509,13 @@
                 ))}}
 
             </div>
+            </main>
         </div>
 
         <div class="uk-width-medium-1-5 uk-hidden-small">
 
             {# quick navigation #}
+            <nav aria-label="{{ 'Quick'|trans({}) }}">
             <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
                 <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
                     {{ 'quick navigation'|trans({})|capitalize }}
@@ -545,6 +548,7 @@
                     </ul>
                 </div>
             </div>
+            </nav>
 
         </div>
 

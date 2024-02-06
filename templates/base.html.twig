@@ -16,12 +16,15 @@
         <link rel="icon" type="image/x-icon" href="{{ absolute_url(asset('favicon.ico')) }}" />
     </head>
     <body id="commsy" class="nav-collapsed">
+        {# "Skip to main content" link #}
+        <a class="skip-to-content" href="#main-content">Skip to main content</a>
+
         {# context navigation #}
         <div id="commsy_navigation" class="uk-hidden-small">
 
             {# CommSy Logo #}
-            <a href="{{ path('app_server_show') }}">
-                <div id="commsy_logo"></div>
+            <a href="{{ path('app_server_show') }}" aria-label="{{ 'Portal overview'|trans([], 'portal') }}">
+                <div id="commsy_logo" aria-label="CommSy logo"></div>
             </a>
 
             <div class="uk-flex uk-flex-inline uk-flex-wrap uk-flex-wrap-space-between uk-height-1-1 uk-width-1-1">
@@ -62,7 +65,7 @@
 
         <div id="content">
             {# NavBar #}
-            <nav class="uk-navbar uk-navbar-attached">
+            <nav class="uk-navbar uk-navbar-attached" aria-label="{{ 'Portal'|trans({}, 'portal') }}">
                 {# right #}
                 <div class="uk-navbar-flip">
                     <div class="uk-navbar-content">

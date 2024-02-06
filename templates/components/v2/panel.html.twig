@@ -1,12 +1,13 @@
+<section{% if title %} aria-labelledby="{{ name }}-heading"{% endif %}>
 <div class="uk-panel uk-panel-box{% if style %}-{{ style }}{% endif %}{% if not padding %} uk-padding-remove{% endif %}"{% if sticky %} data-uk-sticky{% endif %}>
 
     <div class="uk-panel-teaser{% if not padding %} uk-margin-remove{% endif %}{% if severity %} cs-panel-teaser-{{ severity }}{% endif %}">
         <div class="uk-flex">
             <div class="uk-flex-inline uk-flex-item-1">
                 {% if title %}
-                    <div class="uk-text-large">
+                    <h3 id="{{ name }}-heading" class="uk-panel-title">
                         {{ title }}
-                    </div>
+                    </h3>
                 {% endif %}
 
                 {% block teaser_left %}{% endblock %}
@@ -19,3 +20,4 @@
 
     {% block content %}{% endblock %}
 </div>
+</section>

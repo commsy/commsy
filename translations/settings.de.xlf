@@ -321,7 +321,7 @@
             <trans-unit id="tasks_text">
                 <source>Tasks text</source>
                 <target>In der Aufgabenrubrik gibt es normalerweise drei Bearbeitungsstatus: "nicht bearbeitet", "in Bearbeitung" und "erledigt". Hier können Sie bei Bedarf noch eigene zusätzliche Status definieren.</target>
-            </trans-unit>   
+            </trans-unit>
             <trans-unit id="template_text">
                 <source>Template text</source>
                 <target>Machen Sie diesen Raum als Vorlage für neue Räume verfügbar. Bei Auswahl einer Vorlage beim Eröffnen eines Raumes werden sämtliche Voreinstellungen und Inhalte der Vorlage in den neuen Raum übernommen, mit Ausnahme der Informationen zu Personen.</target>
@@ -343,7 +343,7 @@
             <trans-unit id="appearance_configuration">
                 <source>Appearance configuration</source>
                 <target>Darstellung</target>
-            </trans-unit>            
+            </trans-unit>
             <trans-unit id="configure_events">
                 <source>Configure events</source>
                 <target>Termindarstellung</target>
@@ -355,7 +355,7 @@
             <trans-unit id="listview">
                 <source>listview</source>
                 <target>Listenansicht</target>
-            </trans-unit>            
+            </trans-unit>
             <trans-unit id="weekview">
                 <source>weekview</source>
                 <target>Wochenansicht</target>
@@ -449,7 +449,7 @@
             <trans-unit id="moderation_configuration">
                 <source>Moderation support configuration</source>
                 <target>Moderationsunterstützung</target>
-            </trans-unit>            
+            </trans-unit>
             <trans-unit id="contentid">
                 <source>Content ID</source>
                 <target>Referenznummer</target>
@@ -556,11 +556,11 @@
             <trans-unit id="assessment">
                 <source>Assessment</source>
                 <target>Bewertungen</target>
-            </trans-unit>                        
+            </trans-unit>
             <trans-unit id="workflow">
                 <source>Workflow</source>
                 <target>Workflow Einstellungen</target>
-            </trans-unit>            
+            </trans-unit>
             <trans-unit id="workflow_resubmission">
                 <source>Resubmission</source>
                 <target>Wiedervorlage</target>
@@ -576,7 +576,7 @@
             <trans-unit id="workflow_green_text">
                 <source>Traffic light green text</source>
                 <target>Grün</target>
-            </trans-unit>  
+            </trans-unit>
             <trans-unit id="workflow_yellow_text">
                 <source>Traffic light yellow text</source>
                 <target>Gelb</target>
@@ -604,7 +604,7 @@
             <trans-unit id="mods_only">
                 <source>Moderators only</source>
                 <target>Leseranzeige nur für Moderatoren</target>
-            </trans-unit>            
+            </trans-unit>
             <trans-unit id="all_users">
                 <source>All users</source>
                 <target>Leseranzeige für alle Benutzer</target>
@@ -612,7 +612,7 @@
             <trans-unit id="wiki">
                 <source>wiki</source>
                 <target>Wiki</target>
-            </trans-unit>            
+            </trans-unit>
             <trans-unit id="wiki_enabled">
                 <source>Wiki enabled</source>
                 <target>Wiki aktivieren</target>
@@ -685,6 +685,10 @@
             </trans-unit>
 
             <!-- Delete -->
+            <trans-unit id="settings_lock_or_delete_title">
+                <source>Lock or delete room</source>
+                <target>Raum sperren oder löschen</target>
+            </trans-unit>
             <trans-unit id="settings_delete_title">
                 <source>Delete room</source>
                 <target>Raum löschen</target>

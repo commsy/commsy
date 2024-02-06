@@ -353,6 +353,10 @@
             </trans-unit>
 
             <!-- delete / lock account / room profile -->
+            <trans-unit id="lock_or_delete_room_membership_title">
+                <source>lockOrDeleteRoomMembership</source>
+                <target>Lock or delete workspace membership</target>
+            </trans-unit>
             <trans-unit id="lock_room_membership_title">
                 <source>lockRoomMembership</source>
                 <target>Lock workspace membership</target>
@@ -380,6 +384,10 @@
                 <target>Use this option to delete your workspace membership and all of your posts and comments in this workspace.</target>
             </trans-unit>
 
+            <trans-unit id="lock_or_delete_account_title">
+                <source>lockOrDeleteAccount</source>
+                <target>Lock or delete account</target>
+            </trans-unit>
             <trans-unit id="lock_account_title">
                 <source>lockAccount</source>
                 <target>Lock account</target>

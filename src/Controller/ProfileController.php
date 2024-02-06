@@ -298,6 +298,7 @@ class ProfileController extends AbstractController
     public function notifications(
         Request $request,
         UserService $userService,
+        int $roomId,
         int $itemId
     ): Response {
         /** @var cs_user_item $userItem */

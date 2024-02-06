@@ -74,7 +74,7 @@
             <trans-unit id="additional_settings">
                 <source>Additional</source>
                 <target>Additional</target>
-            </trans-unit>            
+            </trans-unit>
             <trans-unit id="appearance_settings">
                 <source>appearance</source>
                 <target>Appearance</target>
@@ -102,6 +102,10 @@
             </trans-unit>
 
             <!-- breadcrumb -->
+            <trans-unit id="breadcrumb">
+                <source>Breadcrumb</source>
+                <target>Breadcrumb</target>
+            </trans-unit>
             <trans-unit id="breadcrumb_portal">
                 <source>portal</source>
                 <target>Portal</target>
