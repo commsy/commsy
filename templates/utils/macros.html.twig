@@ -525,7 +525,7 @@
 
     {% if memberInGroup is defined and memberInGroup is same as(false) %}
         <span data-uk-tooltip title="{{'join group before grouproom'|trans({},'group') }}">
-            <a class='uk-button uk-button-secondary uk-text-bold uk-text-muted' style="pointer-events: none;" href=""><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
+            <a class='uk-button uk-button-secondary uk-text-bold' style="pointer-events: none;" href=""><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
         </span>
     {% else %}
 
@@ -542,7 +542,7 @@
                 {{ 'This room is currently locked.'|trans({}, 'room') }}
             {% elseif contextMemberStatus is same as('requested') %}
                 <span data-uk-tooltip title="{{ 'Your request has not been processed yet.'|trans({}, 'room') }}">
-                    <a class='uk-button uk-button-secondary uk-text-bold uk-text-muted' style="pointer-events: none;" href=""><i class="uk-icon-sign-in uk-icon"></i> {{ 'Membership request in process'|trans({}, 'room') }}</a>
+                    <a class='uk-button uk-button-secondary uk-text-bold' style="pointer-events: none;" href=""><i class="uk-icon-sign-in uk-icon"></i> {{ 'Membership request in process'|trans({}, 'room') }}</a>
                 </span>
             {% elseif contextMemberStatus is same as('rejected') %}
                 {{ 'Your request has been rejected.'|trans({}, 'room') }}
