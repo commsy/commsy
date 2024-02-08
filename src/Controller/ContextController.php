@@ -23,9 +23,11 @@ use App\Repository\RoomRepository;
 use App\Services\LegacyEnvironment;
 use App\Utils\GroupService;
 use App\Utils\UserService;
+use cs_environment;
 use cs_user_item;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
@@ -63,6 +65,14 @@ class ContextController extends AbstractController
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($itemId);
+
+        // redirect to the room's detail page if a room membership (request) already exists for this user
+        $userTestItem = $roomItem->getUserByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource());
+        if ($userTestItem) {
+            $route = $this->redirectToRoomDetailPage($legacyEnvironment, $roomId, $itemId);
+
+            return $route;
+        }
 
         // determine form options
         $formOptions = [
@@ -102,7 +112,6 @@ class ContextController extends AbstractController
 
                 // TODO: try to make use of UserService->cloneUser() instead
 
-                $currentUserItem = $legacyEnvironment->getCurrentUserItem();
                 $privateRoomUserItem = $currentUserItem->getRelatedPrivateRoomUserItem();
                 $portalUserItem = $legacyEnvironment->getPortalUserItem();
 
@@ -258,32 +267,15 @@ class ContextController extends AbstractController
                 $eventDispatcher->dispatch($event);
             }
 
-            // redirect to detail page
-            if ($roomItem->isGroupRoom()) {
-                if ($form->get('cancel')->isClicked()) {
-                    $account = $this->getUser();
-                    $group = $groupService->getGroup($roomItem->getLinkedGroupItemID());
-                    $membershipManager->leaveGroup($group, $account);
-                }
-                $route = $this->redirectToRoute('app_group_detail', [
-                    'roomId' => $roomId,
-                    'itemId' => $roomItem->getLinkedGroupItemID(),
-                ]);
-            } else {
-                if ($roomManager->getItem($roomId)) {
-                    // in community-context -> redirect to detail view in project rubric.
-                    $route = $this->redirectToRoute('app_project_detail', [
-                        'roomId' => $roomId,
-                        'itemId' => $itemId,
-                    ]);
-                } else {
-                    // in private room context -> redirect to detail view of all rooms list.
-                    $route = $this->redirectToRoute('app_roomall_detail', [
-                        'portalId' => $legacyEnvironment->getCurrentPortalID(),
-                        'itemId' => $itemId,
-                    ]);
-                }
+            // leave group in case of a cancelled group room membership request
+            if ($form->get('cancel')->isClicked() && $roomItem->isGroupRoom()) {
+                $account = $this->getUser();
+                $group = $groupService->getGroup($roomItem->getLinkedGroupItemID());
+                $membershipManager->leaveGroup($group, $account);
             }
+
+            // redirect to detail page
+            $route = $this->redirectToRoomDetailPage($legacyEnvironment, $roomId, $itemId);
 
             return $route;
         }
@@ -293,5 +285,45 @@ class ContextController extends AbstractController
             'agbText' => $agbText,
             'title' => html_entity_decode($roomItem->getTitle()),
         ]);
+    }
+
+    /**
+     * Redirects to an appropriate room detail page for the given item & room IDs.
+     *
+     * @param cs_environment $legacyEnvironment
+     * @param int $roomId ID of the context for the item with $itemId
+     * @param int $itemId ID of the (group) room whose detail page shall be displayed
+     * @return RedirectResponse
+     */
+    private function redirectToRoomDetailPage(
+        cs_environment $legacyEnvironment,
+        int $roomId,
+        int $itemId
+    ) {
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($itemId);
+
+        if ($roomItem->isGroupRoom()) {
+            $route = $this->redirectToRoute('app_group_detail', [
+                'roomId' => $roomId,
+                'itemId' => $roomItem->getLinkedGroupItemID(),
+            ]);
+        } else {
+            if ($roomManager->getItem($roomId)) {
+                // in community-context -> redirect to detail view in project rubric.
+                $route = $this->redirectToRoute('app_project_detail', [
+                    'roomId' => $roomId,
+                    'itemId' => $itemId,
+                ]);
+            } else {
+                // in private room context -> redirect to detail view of all rooms list.
+                $route = $this->redirectToRoute('app_roomall_detail', [
+                    'portalId' => $legacyEnvironment->getCurrentPortalID(),
+                    'itemId' => $itemId,
+                ]);
+            }
+        }
+
+        return $route;
     }
 }
