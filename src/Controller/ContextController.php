@@ -77,6 +77,7 @@ class ContextController extends AbstractController
         // determine form options
         $formOptions = [
             'checkNewMembersWithCode' => false,
+            'checkNewMemberCode' => null,
             'withAGB' => false,
             'CheckNewMembersNever' => false,
         ];
