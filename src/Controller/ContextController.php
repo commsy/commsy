@@ -134,7 +134,7 @@ class ContextController extends AbstractController
                 }
 
                 if ($roomItem->checkNewMembersAlways() ||
-                    ($roomItem->checkNewMembersWithCode() && $form->get('request')->isClicked())) {
+                    ($roomItem->checkNewMembersWithCode() && empty($formData['code']))) {
                     // The user either needs to ask for access or provided no code
                     $newUser->request();
                     $isRequest = true;
