@@ -50,7 +50,7 @@ class ContextRequestType extends AbstractType
                 ->add('code', TextType::class, [
                     'constraints' => [
                         new Constraints\EqualTo([
-                            'value' => $options['checkNewMembersWithCode'],
+                            'value' => $options['checkNewMemberCode'],
                             'message' => 'Your access code is invalid.',
                             'groups' => 'code'
                         ]),
@@ -110,7 +110,7 @@ class ContextRequestType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
-            ->setRequired(['checkNewMembersWithCode', 'withAGB', 'CheckNewMembersNever'])
+            ->setRequired(['checkNewMembersWithCode', 'checkNewMemberCode', 'withAGB', 'CheckNewMembersNever'])
         ;
     }
 

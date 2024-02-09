@@ -82,7 +82,8 @@ class ContextController extends AbstractController
         ];
 
         if ($roomItem->checkNewMembersWithCode()) {
-            $formOptions['checkNewMembersWithCode'] = $roomItem->getCheckNewMemberCode();
+            $formOptions['checkNewMembersWithCode'] = true;
+            $formOptions['checkNewMemberCode'] = $roomItem->getCheckNewMemberCode();
         }
 
         $agbText = '';
