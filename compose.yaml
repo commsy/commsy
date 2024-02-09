@@ -62,7 +62,7 @@ services:
       - php_socket:/var/run/php
       - commsy_data:/var/www/html/files
     environment:
-      DATABASE_URL: mysql://${MYSQL_USER:-commsy}:${MYSQL_PASSWORD:-commsy}@db:3306/${MYSQL_DB:-commsy}?serverVersion=${MYSQL_VERSION:-10.11.2-MariaDB}&charset=${MYSQL_CHARSET:-utf8mb4}
+      DATABASE_URL: mysql://${MYSQL_USER:-app}:${MYSQL_PASSWORD:-!ChangeMe!}@db:3306/${MYSQL_DB:-app}?serverVersion=${MYSQL_VERSION:-10.11.2-MariaDB}&charset=${MYSQL_CHARSET:-utf8mb4}
 
 volumes:
   php_socket:
