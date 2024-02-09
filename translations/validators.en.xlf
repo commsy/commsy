@@ -58,6 +58,10 @@
                 <source>Your access code is invalid.</source>
                 <target>Your access code is invalid.</target>
             </trans-unit>
+            <trans-unit id="validators_room_code_please_remove">
+                <source>Your access code is invalid, please remove</source>
+                <target>Your access code is invalid. To request a room membership without code, please remove the invalid code.</target>
+            </trans-unit>
             <trans-unit id="validators_room_code_filled">
                 <source>Please enter an access code.</source>
                 <target>Please enter an access code.</target>
