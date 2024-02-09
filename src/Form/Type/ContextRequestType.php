@@ -49,6 +49,9 @@ class ContextRequestType extends AbstractType
             $builder
                 ->add('code', TextType::class, [
                     'constraints' => [
+                        new Constraints\NotBlank([
+                            'groups' => 'code' // avoid NotBlank() validation for code when performing 'Default' form validation
+                        ]),
                         new Constraints\EqualTo([
                             'value' => $options['checkNewMemberCode'],
                             'message' => 'Your access code is invalid.',
