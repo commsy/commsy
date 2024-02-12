@@ -17,9 +17,7 @@ use App\Account\AccountManager;
 use App\Account\AccountMerger;
 use App\Entity\Account;
 use App\Entity\AuthSource;
-use App\Entity\AuthSourceLdap;
 use App\Entity\AuthSourceLocal;
-use App\Entity\AuthSourceShibboleth;
 use App\Entity\Portal;
 use App\Event\AccountChangedEvent;
 use App\Event\AccountCreatedEvent;
@@ -35,10 +33,6 @@ use App\Form\Type\Account\PersonalInformationType;
 use App\Form\Type\Account\PrivacyType;
 use App\Form\Type\SignUpFormType;
 use App\Privacy\PersonalDataCollector;
-use App\Security\AbstractCommsyAuthenticator;
-use App\Security\LdapAuthenticator;
-use App\Security\LoginFormAuthenticator;
-use App\Security\ShibbolethAuthenticator;
 use App\Services\InvitationsService;
 use App\Services\LegacyEnvironment;
 use App\Services\PrintService;
@@ -246,9 +240,7 @@ class AccountController extends AbstractController
         Security $security,
         UserService $userService,
         EntityManagerInterface $entityManager,
-        LdapAuthenticator $ldapAuthenticator,
-        ShibbolethAuthenticator $shibbolethAuthenticator,
-        LoginFormAuthenticator $loginFormAuthenticator,
+        UserPasswordHasherInterface $passwordHasher,
         AccountMerger $accountMerger
     ): Response {
         /** @var Account $account */
@@ -284,23 +276,13 @@ class AccountController extends AbstractController
                         throw new UnexpectedValueException();
                     }
 
-                    $authSourceGuardAuthenticatorMap = [
-                        AuthSourceLocal::class => $loginFormAuthenticator,
-                        AuthSourceLdap::class => $ldapAuthenticator,
-                        AuthSourceShibboleth::class => $shibbolethAuthenticator,
-                    ];
+                    // We only support merging local accounts
+                    if (!$selectedAuthSource instanceof AuthSourceLocal) {
+                        throw new UnexpectedValueException();
+                    }
 
-                    /** @var AbstractCommsyAuthenticator $guardAuthenticator */
-                    $guardAuthenticator = $authSourceGuardAuthenticatorMap[$selectedAuthSource::class];
-
-                    $credentials = [
-                        'email' => $accountToMerge->getUsername(),
-                        'password' => $formData['combinePassword'],
-                        'context' => $accountToMerge->getContextId(),
-                    ];
-
-                    if (!$guardAuthenticator->checkCredentials($credentials, $accountToMerge)) {
-                        $form->get('combineUserId')->addError(new FormError('Authentication error'));
+                    if (!$passwordHasher->isPasswordValid($accountToMerge, $formData['combinePassword'])) {
+                        $form->get('combineUserId')->addError(new FormError('Invalid credentials.'));
                     }
 
                     if ($form->isSubmitted() && $form->isValid()) {
