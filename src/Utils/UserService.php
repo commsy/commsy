@@ -582,7 +582,7 @@ class UserService
     /**
      * Checks whether the given (or otherwise the current) user is among the moderators of the given room.
      *
-     * @param int                $room The room for which this method will check whether the given user is among its moderators
+     * @param cs_room_item $room The room for which this method will check whether the given user is among its moderators
      * @param cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is among the
      *                                 specified room's moderators (defaults to the current user if not given)
      *
@@ -601,9 +601,7 @@ class UserService
         // also check the given/current user's own item ID
         $userIds[] = $user->getItemID();
 
-        $userIsModerator = (count(array_intersect($userIds, $roomModeratorIds)) > 0);
-
-        return $userIsModerator;
+        return count(array_intersect($userIds, $roomModeratorIds)) > 0;
     }
 
     /**
