@@ -1046,10 +1046,11 @@ class cs_context_item extends cs_item
         }
     }
 
-    /** get flag for checking always new members
-     * this method returns a boolean for checking always new members.
+    /**
+     * Returns true if new members will always be checked,
+     * otherwise returns false.
      *
-     * @return int the flag
+     * @return bool
      */
     public function checkNewMembersAlways()
     {
@@ -1064,10 +1065,11 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    /** get flag for checking always new members
-     * this method returns a boolean for checking always new members.
+    /**
+     * Returns true if new members will sometimes be checked,
+     * otherwise returns false.
      *
-     * @return int the flag
+     * @return bool
      */
     public function checkNewMembersSometimes()
     {
@@ -1079,10 +1081,11 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    /** get flag for checking always new members
-     * this method returns a boolean for checking always new members.
+    /**
+     * Returns true if new members providing the correct access code
+     * are allowed to enter instantly, otherwise returns false.
      *
-     * @return int the flag
+     * @return bool
      */
     public function checkNewMembersWithCode()
     {
@@ -1109,10 +1112,11 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    /** get flag for checking never new members
-     * this method returns a boolean for checking never new members.
+    /**
+     * Returns true if new members will never be checked and
+     * are allowed to enter instantly, otherwise returns false.
      *
-     * @return int the flag
+     * @return bool
      */
     public function checkNewMembersNever()
     {
@@ -1132,6 +1136,7 @@ class cs_context_item extends cs_item
      *             2, moderator must activate new members,
      *             - room: if account is new
      *             - portal: if account with room membership
+     *             3, new members can enter instantly if they provide the correct access code
      */
     public function _getCheckNewMembers()
     {

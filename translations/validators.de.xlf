@@ -58,6 +58,10 @@
                 <source>Your access code is invalid.</source>
                 <target>Ihr Zugangscode ist inkorrekt.</target>
             </trans-unit>
+            <trans-unit id="validators_room_code_please_remove">
+                <source>Your access code is invalid, please remove</source>
+                <target>Ihr Zugangscode ist inkorrekt. Löschen Sie bitte den inkorrekten Zugangscode und beantragen Sie eine Raummitgliedschaft ohne Zugangscode.</target>
+            </trans-unit>
             <trans-unit id="validators_room_code_filled">
                 <source>Please enter an access code.</source>
                 <target>Bitte geben Sie einen Zugangscode an.</target>
