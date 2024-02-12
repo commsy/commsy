@@ -24,7 +24,8 @@ final readonly class RequestContext
     public function __construct(
         private PortalRepository $portalRepository,
         private RoomRepository $roomRepository,
-        private ItemService $itemService
+        private ItemService $itemService,
+        private FileService $fileService
     ) {
     }
 
@@ -104,6 +105,12 @@ final readonly class RequestContext
         $portalId = $request->attributes->get('portalId');
         if (null !== $portalId) {
             return $portalId;
+        }
+
+        $fileId = $request->attributes->get('fileId');
+        if (null !== $fileId) {
+            $file = $this->fileService->getFile($fileId);
+            return $file?->getContextID();
         }
 
         return null;
