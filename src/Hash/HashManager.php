@@ -35,11 +35,9 @@ class HashManager
 
     public function getUserHashes(int $userId): Hash
     {
-        try {
-            return $this->hashRepository->findByUserId($userId);
-        } catch (NoResultException $e) {
-            return $this->hashRepository->createHash($userId);
-        }
+        $hash = $this->hashRepository->findByUserId($userId);
+
+        return $hash ?? $this->hashRepository->createHash($userId);
     }
 
     public function isRssHashValid(string $hash, cs_context_item $context): bool
