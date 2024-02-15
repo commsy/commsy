@@ -25,9 +25,9 @@ E-Mail: {{ newUser.email }}
 <br/><br/>
 
 {% if newUser.isRequested %}
-    {{ 'mail.user_joined_approved_system'|trans({}, 'mail') }}
-{% else %}
     {{ 'mail.user_joined_approved_manual'|trans({}, 'mail') }}
+{% else %}
+    {{ 'mail.user_joined_approved_system'|trans({}, 'mail') }}
 {% endif %}
 
 {% if comment is not null %}
