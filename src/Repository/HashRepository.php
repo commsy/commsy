@@ -33,9 +33,8 @@ class HashRepository extends ServiceEntityRepository
 
     /**
      * @throws NonUniqueResultException
-     * @throws NoResultException
      */
-    public function findByUserId(int $userId): Hash
+    public function findByUserId(int $userId): ?Hash
     {
         $query = $this->getEntityManager()
             ->createQuery("
@@ -43,7 +42,7 @@ class HashRepository extends ServiceEntityRepository
             ")
             ->setParameter('userId', $userId);
 
-        return $query->getSingleResult();
+        return $query->getOneOrNullResult();
     }
 
     /**
