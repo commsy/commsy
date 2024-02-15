@@ -1327,7 +1327,9 @@ class cs_user_manager extends cs_manager
         /** @var HashRepository $hashRepository */
         $hashRepository = $symfonyContainer->get(HashRepository::class);
         $hash = $hashRepository->findByUserId($itemId);
-        $hashRepository->deleteHash($hash);
+        if (!empty($hash)) {
+            $hashRepository->deleteHash($hash);
+        }
 
         // delete all related items
         $user_item->deleteAllEntriesOfUser();
