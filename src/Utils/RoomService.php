@@ -372,7 +372,7 @@ class RoomService
     public function getServiceEmail(): string
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
-        $serviceEmail = '';
+        $serviceEmail = null;
 
         if ($portalItem) {
             $serviceEmail = $portalItem->getServiceEmail();
@@ -383,7 +383,7 @@ class RoomService
             $serviceEmail = $serverItem->getServiceEmail();
         }
 
-        return $serviceEmail;
+        return $serviceEmail ?? '';
     }
 
     /**
