@@ -397,7 +397,7 @@ class UserController extends BaseController
 
                 $formData['userIds'] = $userIds;
             } else {
-                $postData = $request->request->get('user_status');
+                $postData = $request->request->all('user_status');
                 $formData['status'] = $postData['status'];
                 $formData['userIds'] = $postData['userIds'];
             }
