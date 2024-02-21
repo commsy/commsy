@@ -17,6 +17,7 @@ use ApiPlatform\Metadata\ApiProperty;
 use App\Repository\UserRepository;
 use App\Utils\EntityDatesTrait;
 use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -84,7 +85,7 @@ class User
     private string $city;
 
     #[ORM\Column(name: 'lastlogin', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $lastlogin = null;
+    private ?DateTimeInterface $lastlogin = null;
 
     #[ORM\Column(name: 'visible', type: Types::BOOLEAN, nullable: false)]
     private bool $visible = true;
@@ -99,7 +100,7 @@ class User
     private ?string $description = null;
 
     #[ORM\Column(name: 'expire_date', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $expireDate = null;
+    private ?DateTimeInterface $expireDate = null;
 
     #[ORM\Column(name: 'use_portal_email', type: Types::BOOLEAN)]
     private bool $usePortalEmail = false;
@@ -136,7 +137,7 @@ class User
         return $this;
     }
 
-    public function getCreator(): static
+    public function getCreator(): ?User
     {
         return $this->creator;
     }
@@ -148,7 +149,7 @@ class User
         return $this;
     }
 
-    public function getModifier(): static
+    public function getModifier(): ?User
     {
         return $this->modifier;
     }
