@@ -1613,7 +1613,7 @@ class PortalSettingsController extends AbstractController
         $userList = $userService->getListUsers($portal->getId());
         $form = $this->createForm(AccountIndexDetailType::class, $portal);
         $form->handleRequest($request);
-        $user = $userService->getUser($request->get('userId'));
+        $user = $userService->getUser(intval($request->get('userId')));
 
         $communityArchivedListNames = [];
         $communityListNames = [];
@@ -1770,7 +1770,7 @@ class PortalSettingsController extends AbstractController
     ): Response {
         $environment = $legacyEnvironment->getEnvironment();
 
-        $user = $userService->getUser($request->get('userId'));
+        $user = $userService->getUser(intval($request->get('userId')));
         $userEdit = new PortalUserEdit();
         $userEdit->setFirstName($user->getFirstname());
         $userEdit->setLastName($user->getLastName());
@@ -1890,7 +1890,7 @@ class PortalSettingsController extends AbstractController
         TranslatorInterface $translator,
         AccountManager $accountManager
     ): Response {
-        $user = $userService->getUser($request->get('userId'));
+        $user = $userService->getUser(intval($request->get('userId')));
         $userChangeStatus = new PortalUserChangeStatus();
         $userChangeStatus->setName($user->getFullName());
         $userChangeStatus->setUserID($user->getUserID());
@@ -1918,7 +1918,7 @@ class PortalSettingsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $userService->getUser($request->get('userId'));
+            $user = $userService->getUser(intval($request->get('userId')));
 
             $account = $accountManager->getAccount($user, $portal->getId());
 
@@ -1978,7 +1978,7 @@ class PortalSettingsController extends AbstractController
         Request $request,
         UserService $userService
     ): RedirectResponse {
-        $user = $userService->getUser($request->get('userId'));
+        $user = $userService->getUser(intval($request->get('userId')));
         $user->setEmailNotVisible();
         $user->save();
 
@@ -2008,7 +2008,7 @@ class PortalSettingsController extends AbstractController
         Request $request,
         UserService $userService
     ): RedirectResponse {
-        $user = $userService->getUser($request->get('userId'));
+        $user = $userService->getUser(intval($request->get('userId')));
         $user->setEmailVisible();
         $user->save();
 
@@ -2062,7 +2062,7 @@ class PortalSettingsController extends AbstractController
         AccountManager $accountManager,
         ManagerRegistry $managerRegistry
     ): Response {
-        $user = $userService->getUser($request->get('userId'));
+        $user = $userService->getUser(intval($request->get('userId')));
         $userAssignWorkspace = new PortalUserAssignWorkspace();
         $userAssignWorkspace->setUserID($user->getUserID());
         $userAssignWorkspace->setName($user->getFullName());
@@ -2075,7 +2075,7 @@ class PortalSettingsController extends AbstractController
             if ($form->get('save')->isClicked()) {
                 $assignFlag = true;
                 $choiceWorkspaceId = $form->get('workspaceSelection')->getViewData();
-                $user = $userService->getUser($request->get('userId'));
+                $user = $userService->getUser(intval($request->get('userId')));
                 $relatedUsers = $user->getRelatedUserList();
                 foreach ($relatedUsers as $relatedUser) {
                     if ($relatedUser->getContextID() == $choiceWorkspaceId) {
@@ -2113,7 +2113,7 @@ class PortalSettingsController extends AbstractController
 
                 $this->addFlash('unsuccessful', 'Already assigned');
             } elseif ($form->get('search')->isClicked()) {
-                $user = $userService->getUser($request->get('userId'));
+                $user = $userService->getUser(intval($request->get('userId')));
                 $userAssignWorkspace = new PortalUserAssignWorkspace();
                 $userAssignWorkspace->setUserID($user->getUserID());
                 $userAssignWorkspace->setName($user->getFullName());
