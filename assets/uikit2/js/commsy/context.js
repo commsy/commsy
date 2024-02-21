@@ -8,6 +8,7 @@
 
         const data = {};
         data[$(this).attr('name')] = $(this).val();
+        data['context[_token]'] = $form.find('#context__token').val();
 
         // Submit data via AJAX to the form's action path.
         $.ajax({
