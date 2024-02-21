@@ -97,7 +97,7 @@ class UserRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function findPortalUser(Account $account): User
+    public function findPortalUser(Account $account): ?User
     {
         return $this->createQueryBuilder('u')
             ->where('u.contextId = :contextId')
@@ -109,6 +109,6 @@ class UserRepository extends ServiceEntityRepository
             ->setParameter('authSourceId', $account->getAuthSource()->getId())
             ->setParameter('username', $account->getUsername())
             ->getQuery()
-            ->getSingleResult();
+            ->getOneOrNullResult();
     }
 }

@@ -45,18 +45,27 @@
                             </thead>
                             <tbody>
                                 {% for account in pagination %}
-                                    {% set portalUser = portalUsersForAccounts[loop.index0] %}
+                                    {% set portalUser = (portalUsersForAccounts[loop.index0] is defined) ? portalUsersForAccounts[loop.index0] : null %}
                                     <tr>
-                                        <td>{{ form_widget(form.ids[portalUser.itemId]) }}</td>
                                         <td>
+                                            {% if portalUser is not null %}
+                                                {{ form_widget(form.ids[portalUser.itemId]) }}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if portalUser is not null %}
                                             <a href="{{ path('app_portalsettings_accountindexdetail', {
                                                 'portalId': portal.id,
                                                 'userId': portalUser.itemId
                                             }) }}" uk-tooltip="title: {{ 'created'|trans({}, 'user') }} {{ portalUser.creationDate|format_datetime|default('Never'|trans({}, 'portal')) }}">
                                                 {{ account.firstname }} {{ account.lastname }}
                                             </a> ({{ account.username }})
+                                            {% else %}
+                                                {{ account.firstname }} {{ account.lastname }} ({{ account.username }})
+                                            {% endif %}
                                         </td>
                                         <td>
+                                            {% if portalUser is not null %}
                                             <a href="{{ path('app_user_sendmailviacontactform', {
                                                 'roomId': portal.id,
                                                 'itemId': portalUser.itemId,
@@ -64,9 +73,16 @@
                                             }) }}">
                                                 {{ account.email }}
                                             </a>
+                                            {% else %}
+                                                {{ account.email }}
+                                            {% endif %}
                                         </td>
                                         <td class="uk-text-nowrap">{{ account.lastLogin|format_datetime|default('Never'|trans({}, 'portal')) }}</td>
-                                        <td>{{ macros.userStatus(portalUser.status) }}</td>
+                                        <td>
+                                            {% if portalUser is not null %}
+                                                {{ macros.userStatus(portalUser.status) }}
+                                            {% endif %}
+                                        </td>
                                         <td>{{ account.authSource.title }}</td>
                                     </tr>
                                 {% endfor %}
