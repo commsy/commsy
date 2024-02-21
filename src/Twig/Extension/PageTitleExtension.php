@@ -48,7 +48,7 @@ class PageTitleExtension extends AbstractExtension
         $pageTitleElements = [];
 
         // room title
-        $room = $this->roomService->getRoomItem($roomId);
+        $room = $this->roomService->getRoomItem(intval($roomId));
         if ($room) {
             if ($room->isPrivateRoom()) {
                 $pageTitleElements[] = $this->translator->trans('dashboard', [], 'menu');
