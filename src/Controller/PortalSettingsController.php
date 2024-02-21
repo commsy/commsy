@@ -1394,14 +1394,16 @@ class PortalSettingsController extends AbstractController
             $request->query->getInt('limit', 20)
         );
 
-        $portalUsersForAccounts = array_map(fn(Account $account) =>
-            $userRepository->findPortalUser($account), iterator_to_array($pagination));
+        $portalUsersForAccounts = array_filter(array_map(fn(Account $account) =>
+            $userRepository->findPortalUser($account), iterator_to_array($pagination)));
 
         $accountIndex = new AccountIndex();
         $accountIndexUserIds = [];
         foreach ($pagination as $key => $singleUser) {
-            $singleUser = $portalUsersForAccounts[$key];
-            $accountIndexUserIds[$singleUser->getItemID()] = false;
+            $singleUser = array_key_exists($key, $portalUsersForAccounts) ? $portalUsersForAccounts[$key] : null;
+            if ($singleUser) {
+                $accountIndexUserIds[$singleUser->getItemID()] = false;
+            }
         }
         $accountIndex->setIds($accountIndexUserIds);
 
