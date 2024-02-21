@@ -118,7 +118,7 @@ class UserController extends BaseController
     ): Response {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
-        $item = $this->userService->getUser($itemId);
+        $item = $this->userService->getUser(intval($itemId));
         $formData = null;
         if (!is_null($item->getLinkedUserroomItem())) {
             $recipients = [];
@@ -163,9 +163,11 @@ class UserController extends BaseController
             $formData = $form->getData();
 
             $recipients = [$item];
-            $moderators = explode(', ', (string) $moderatorIds);
-            foreach ($moderators as $moderatorId) {
-                $recipients[] = $this->userService->getUser($moderatorId);
+            if (!empty($moderatorIds)) {
+                $moderators = explode(', ', (string) $moderatorIds);
+                foreach ($moderators as $moderatorId) {
+                    $recipients[] = $this->userService->getUser($moderatorId);
+                }
             }
 
             // send mail
@@ -176,7 +178,7 @@ class UserController extends BaseController
                 $this->legacyEnvironment->getCurrentUserItem(),
                 $formData['files'],
                 $recipients,
-                $formData['additional_recipient'],
+                $formData['additional_recipient'] ?: '',
                 $formData['copy_to_sender']
             );
 
