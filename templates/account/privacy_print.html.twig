@@ -85,7 +85,7 @@
                         </header>
                         <div class="uk-grid uk-grid-divider">
                             <div class="uk-width-1-1">
-                                {% if serviceEmail in serviceLink %}
+                                {% if serviceEmail is not empty and serviceEmail in serviceLink %}
                                     {{ 'contact text with service email'|trans({},'profile')|format(serviceLink, serviceEmail)|raw }}
                                 {% else %}
                                     {{ 'contact text with service link'|trans({},'profile')|format(serviceLink)|raw }}
