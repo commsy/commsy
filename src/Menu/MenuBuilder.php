@@ -245,7 +245,7 @@ class MenuBuilder
         // get room Id
         $currentStack = $requestStack->getCurrentRequest();
         $roomId = $currentStack->attributes->get('roomId');
-        $room = $this->roomService->getRoomItem($roomId);
+        $room = $this->roomService->getRoomItem(intval($roomId));
 
         $portalItem = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
         $portalId = $portalItem->getItemId();
@@ -284,7 +284,7 @@ class MenuBuilder
             }
 
             // delete
-            if ('userroom' !== $this->roomService->getRoomItem($roomId)->getType()) {
+            if ('userroom' !== $this->roomService->getRoomItem(intval($roomId))->getType()) {
                 $menu->addChild('Delete', [
                     'label' => 'delete',
                     'route' => 'app_settings_delete',
@@ -581,7 +581,7 @@ class MenuBuilder
             foreach ($rubrics as $value) {
                 $route = 'app_'.$value.'_list';
                 if ('date' == $value) {
-                    $room = $this->roomService->getRoomItem($roomId);
+                    $room = $this->roomService->getRoomItem(intval($roomId));
                     if (0 != $room->getDatesPresentationStatus()) {
                         $route = 'app_date_calendar';
                     }

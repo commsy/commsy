@@ -50,7 +50,7 @@ class UserVoter extends Voter
 
         $roomId = $subject;
         /** @var cs_room_item $room */
-        $room = $this->roomService->getRoomItem($roomId);
+        $room = $this->roomService->getRoomItem(intval($roomId));
 
         return match ($attribute) {
             self::MODERATOR => $this->isModerator($currentUser),

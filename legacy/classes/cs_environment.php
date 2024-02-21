@@ -143,7 +143,7 @@ class cs_environment
      */
     public function getCurrentContextID()
     {
-        return $this->current_context_id;
+        return intval($this->current_context_id);
     }
 
     /** set id of the current room
