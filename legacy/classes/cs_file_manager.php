@@ -427,7 +427,7 @@ class cs_file_manager extends cs_manager
                             $extra_array['COPY']['COPYING_DATE'] = $current_date;
                             $value = serialize($extra_array);
                             $after = $key . '="' . encode(AS_DB, $value) . '"';
-                        } else {
+                        } elseif (!empty($value)) {
                             $after = $key . '="' . encode(AS_DB, $value) . '"';
                         }
 
