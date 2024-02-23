@@ -14,6 +14,10 @@ framework:
         cookie_samesite: lax
         storage_factory_id: session.storage.factory.native
         gc_maxlifetime: 21600
+    
+    set_locale_from_accept_language: false
+    set_content_language_from_locale: true
+    enabled_locales: [ 'de', 'en' ]
 
     #esi: true
     #fragments: true

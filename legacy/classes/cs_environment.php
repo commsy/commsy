@@ -16,6 +16,7 @@ use App\Helper\LocaleHelper;
 use App\Proxy\PortalProxy;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /** This class returns an instance of a cs_mananger subclass on request.
  *It also contains often needed environment variables.
@@ -124,7 +125,6 @@ class cs_environment
     public function setCurrentUserItem($current_user)
     {
         $this->current_user = $current_user;
-        $this->unsetSelectedLanguage();
     }
 
     public function getCurrentUserID()
@@ -940,131 +940,24 @@ class cs_environment
         return $this->instance['translation_object'];
     }
 
-    /** getSelectedLanguage
-     * get selected language, form user, room or browser.
-     *
-     * @return string selected language
-     */
-    public function getSelectedLanguage()
+    public function getSelectedLanguage(): string
     {
-        if (empty($this->_selected_language)) {
-            $contextItem = $this->getCurrentContextItem();
+        return $this->getUserLanguage();
+    }
 
-            if (PortalProxy::class == $contextItem::class) {
-                // If in portal context we have to use the session value to set the current language.
-                // See https://symfony.com/doc/4.4/session/locale_sticky_session.html
-                global $symfonyContainer;
+    public function getUserLanguage(): string
+    {
+        /** @var ContainerInterface $symfonyContainer */
+        global $symfonyContainer;
 
-                /** @var LocaleHelper $localHelper */
-                $localHelper = $symfonyContainer->get(LocaleHelper::class);
-                $this->_selected_language = $localHelper->getLocale();
-            } else {
-                // If in room context (and the room will fall back to the user's choice), we'll
-                // get the language from cs_environment::getUserLanguage. This method returns the
-                // language extra from the user table. All user table entries + session value get updated
-                // when the user changes the account language.
-                // TODO: Only rely on account + session value and get rid of the profile languages.
-                $this->_selected_language = $contextItem->getLanguage();
-                if ('user' === $this->_selected_language) {
-                    $this->_selected_language = $this->getUserLanguage();
-                }
-            }
+        /** @var RequestStack $requestStack */
+        $requestStack = $symfonyContainer->get('request_stack');
+        $request = $requestStack->getCurrentRequest();
+        if ($request) {
+            return $request->getLocale();
         }
 
-        return $this->_selected_language;
-    }
-
-    public function unsetSelectedLanguage()
-    {
-        $this->_selected_language = null;
-    }
-
-    public function setSelectedLanguage($value)
-    {
-        $this->_selected_language = $value;
-    }
-
-    public function getUserLanguage()
-    {
-        $current_user = $this->getCurrentUserItem();
-
-        if ($current_user && $current_user->isUser()) {
-            $retour = $current_user->getLanguage();
-            if ('browser' == $retour) {
-                $retour = $this->getBrowserLanguage();
-            }
-        } else {
-            $retour = $this->getBrowserLanguage();
-        }
-
-        return $retour;
-    }
-
-    public function getBrowserLanguage()
-    {
-        $browser_languages = $this->parseAcceptLanguage();
-        $available_languages = $this->getAvailableLanguageArray();
-        // there is no central default language yet, so this needs to be hardcoded
-        $language = 'de'; // default language
-        if (!empty($browser_languages)
-            and is_array($browser_languages)
-        ) {
-            foreach ($browser_languages as $lang) {
-                if ('ro' == $lang) {
-                    $lang = 'ru';
-                }
-                if (in_array($lang, $available_languages)) {
-                    $language = $lang;
-                    break;
-                }
-            }
-        }
-
-        return $language;
-    }
-
-    public function getAvailableLanguageArray(): array
-    {
-        if (!isset($this->_available_languages)) {
-            if ($this->inServer()) {
-                $context_item = $this->getServerItem();
-            } else {
-                $context_item = $this->getCurrentPortalItem();
-            }
-            $this->_available_languages = $context_item->getAvailableLanguageArray();
-        }
-
-        return $this->_available_languages;
-    }
-
-    /**
-     * Taken from http://www.shredzone.de/articles/php/snippets/acceptlang/?SID=uf4h8rf736v35afbi90844qsc0.
-     *
-     * Parse the Accept-Language HTTP header sent by the browser. It
-     * will return an array with the languages the user accepts, sorted
-     * from most preferred to least preferred.
-     *
-     * @return  array: key is the importance, value is the language code
-     */
-    private function parseAcceptLanguage()
-    {
-        $ayLang = [];
-        $aySeen = [];
-        if ('' != getenv('HTTP_ACCEPT_LANGUAGE')) {
-            foreach (explode(',', getenv('HTTP_ACCEPT_LANGUAGE')) as $llang) {
-                preg_match("~^(.*?)([-_].*?)?(;q=(.*))?$~iu", $llang, $ayM);
-                $q = $ayM[4] ?? '1.0';
-                $lang = mb_strtolower(trim($ayM[1]));
-                if (!in_array($lang, $aySeen)) {
-                    $ayLang[$q] = $lang;
-                    $aySeen[] = $lang;
-                }
-            }
-
-            uksort($ayLang, fn($a, $b) => ($a > $b) ? -1 : 1);
-        }
-
-        return $ayLang;
+        return 'de';
     }
 
     public function getRootUserItem()
