@@ -18,13 +18,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 /**
- * Class UserLocaleSubscriber.
+ * Stores the locale of the user in the session after the
+ * login. This can be used by the LocaleSubscriber afterwards.
  */
 class UserLocaleSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @return string[]
-     */
     public static function getSubscribedEvents(): array
     {
         return [

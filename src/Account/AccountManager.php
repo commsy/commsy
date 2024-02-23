@@ -22,24 +22,19 @@ use cs_environment;
 use cs_list;
 use cs_room_item;
 use cs_user_item;
-use cs_user_manager;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class AccountManager
+final readonly class AccountManager
 {
-    private readonly cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
-    /**
-     * AccountManager constructor.
-     */
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
+        private EntityManagerInterface $entityManager,
         LegacyEnvironment $legacyEnvironment,
-        private readonly UserService $userService,
-        private readonly RequestStack $requestStack
+        private UserService $userService,
+        private RequestStack $requestStack
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -50,7 +45,6 @@ class AccountManager
         $this->entityManager->persist($account);
         $this->entityManager->flush();
 
-        /** @var cs_user_manager $userManager */
         $userManager = $this->legacyEnvironment->getUserManager();
 
         return $userManager->changeUserID($username, $user);
@@ -134,7 +128,7 @@ class AccountManager
         return $portalRepository->find($account->getContextId());
     }
 
-    public function delete(Account $account)
+    public function delete(Account $account): void
     {
         // NOTE: normally, we'd fire an `AccountDeletedEvent` here; however, this is actually done in the legacy code:
         // `cs_user_manager->delete()` will fire an `AccountDeletedEvent` for each user object
@@ -154,7 +148,7 @@ class AccountManager
         }
     }
 
-    public function lock(Account $account)
+    public function lock(Account $account): void
     {
         $portalUser = $this->userService->getPortalUser($account);
 
@@ -168,7 +162,7 @@ class AccountManager
         $this->entityManager->flush();
     }
 
-    public function unlock(Account $account)
+    public function unlock(Account $account): void
     {
         $account->setLocked(false);
         $account->setActivityState(Account::ACTIVITY_ACTIVE);
@@ -184,7 +178,7 @@ class AccountManager
         $this->entityManager->flush();
 
         // Update the user's session here too (normally done on login)
-        // This will affect the translation language in cs_environment::getSelectedLanguage.
+        // This will affect the LocaleSubscriber decision
         $this->requestStack->getSession()->set('_locale', $account->getLanguage());
     }
 
