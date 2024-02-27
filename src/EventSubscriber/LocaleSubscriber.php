@@ -35,30 +35,25 @@ final readonly class LocaleSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // try to see if the locale has been set as a _locale routing parameter
-        if ($locale = $request->attributes->get('_locale')) {
-            $request->getSession()->set('_locale', $locale);
-        } else {
-            // If no explicit locale has been set on this request, use one from the session.
-            // The value in the session is the user's preference from the account table.
-            $resolvedLocale = $request->getSession()->get('_locale', $this->parameterBag->get('locale'));
+        // If no explicit locale has been set on this request, use one from the session.
+        // The value in the session is the user's preference from the account table.
+        $resolvedLocale = $request->getSession()->get('_locale', $this->parameterBag->get('locale'));
 
-            // The locale might be enforced by a workspace
-            $contextItem = $this->legacyEnvironment->getEnvironment()->getCurrentContextItem();
-            if (!$contextItem instanceof PortalProxy) {
-                if ($contextItem->getLanguage() !== 'user') {
-                    $resolvedLocale = $contextItem->getLanguage();
-                }
+        // The locale might be enforced by a workspace
+        $contextItem = $this->legacyEnvironment->getEnvironment()->getCurrentContextItem();
+        if (!$contextItem instanceof PortalProxy) {
+            if ($contextItem->getLanguage() !== 'user') {
+                $resolvedLocale = $contextItem->getLanguage();
             }
-
-            // Locale might be 'browser'. In this case we try to get preferred languages from the Accept-Language header.
-            if ($resolvedLocale === 'browser') {
-                $enabledLocales = $this->parameterBag->get('kernel.enabled_locales');
-                $resolvedLocale = $request->getPreferredLanguage($enabledLocales);
-            }
-
-            $request->setLocale($resolvedLocale);
         }
+
+        // Locale might be 'browser'. In this case we try to get preferred languages from the Accept-Language header.
+        if ($resolvedLocale === 'browser') {
+            $enabledLocales = $this->parameterBag->get('kernel.enabled_locales');
+            $resolvedLocale = $request->getPreferredLanguage($enabledLocales);
+        }
+
+        $request->setLocale($resolvedLocale);
     }
 
     public static function getSubscribedEvents(): array
