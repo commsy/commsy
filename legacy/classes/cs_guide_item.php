@@ -31,22 +31,6 @@ class cs_guide_item extends cs_context_item
         $this->_addExtra('LANGUAGE_AVAILABLE', $value);
     }
 
-    public function getAvailableLanguageArray(): array
-    {
-        $retour = [];
-        if ($this->_issetExtra('LANGUAGE_AVAILABLE')) {
-            $retour = $this->_getExtra('LANGUAGE_AVAILABLE');
-        } elseif ($this->isServer()) {
-            $translator = $this->_environment->getTranslationObject();
-            $retour = $translator->getAvailableLanguages();
-        } elseif ($this->isPortal()) {
-            $server_item = $this->_environment->getServerItem();
-            $retour = $server_item->getAvailableLanguageArray();
-        }
-
-        return $retour;
-    }
-
     /** get url of a portal/server
      * this method returns the url of the portal/server
      * - without http(s)://

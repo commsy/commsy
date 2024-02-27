@@ -17,6 +17,7 @@ use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_room_item;
 use DateTimeImmutable;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class AdditionalSettingsTransformer extends AbstractTransformer
 {
@@ -24,8 +25,10 @@ class AdditionalSettingsTransformer extends AbstractTransformer
 
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private readonly ParameterBagInterface $parameterBag
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -83,8 +86,8 @@ class AdditionalSettingsTransformer extends AbstractTransformer
             }
 
             $agb_text_array = $roomItem->getAGBTextArray();
-            $languages = $this->legacyEnvironment->getAvailableLanguageArray();
-            foreach ($languages as $language) {
+            $enabledLocales = $this->parameterBag->get('kernel.enabled_locales');
+            foreach ($enabledLocales as $language) {
                 if (!empty($agb_text_array[cs_strtoupper($language)])) {
                     $roomData['terms']['agb_text_'.$language] = $agb_text_array[cs_strtoupper($language)];
                 } else {
@@ -107,6 +110,7 @@ class AdditionalSettingsTransformer extends AbstractTransformer
     public function applyTransformation($roomObject, $roomData): cs_room_item
     {
         $agbtext_array = [];
+
         /********* save buzzword and tag options ******/
         $associations = $roomData['structural_auxilaries']['associations'];
         $buzzwords = $roomData['structural_auxilaries']['buzzwords'];
@@ -224,9 +228,9 @@ class AdditionalSettingsTransformer extends AbstractTransformer
         }
 
         /***************** save AGB *************/
-        $languages = $this->legacyEnvironment->getAvailableLanguageArray();
+        $enabledLocales = $this->parameterBag->get('kernel.enabled_locales');
         $current_user = $this->legacyEnvironment->getCurrentUserItem();
-        foreach ($languages as $language) {
+        foreach ($enabledLocales as $language) {
             if (!empty($roomData['terms']['agb_text_'.mb_strtolower((string) $language, 'UTF-8')])) {
                 $agbtext_array[mb_strtoupper((string) $language, 'UTF-8')] = $roomData['terms']['agb_text_'.mb_strtolower((string) $language, 'UTF-8')];
             } else {
