@@ -83,11 +83,6 @@ class PortalProxy
         return true;
     }
 
-    public function getAvailableLanguageArray(): array
-    {
-        return ['de', 'en'];
-    }
-
     public function withGroupRoomFunctions(): bool
     {
         return true;

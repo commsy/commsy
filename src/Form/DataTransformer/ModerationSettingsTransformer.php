@@ -14,9 +14,9 @@
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
-use App\Utils\RoomService;
 use cs_environment;
 use cs_room_item;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class ModerationSettingsTransformer extends AbstractTransformer
 {
@@ -24,8 +24,10 @@ class ModerationSettingsTransformer extends AbstractTransformer
 
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly RoomService $roomService)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private readonly ParameterBagInterface $parameterBag
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->emailTexts = [
             'Select e-mail text' => '-1',
@@ -162,14 +164,13 @@ class ModerationSettingsTransformer extends AbstractTransformer
         // Mail
         if (isset($roomData['email_configuration'])) {
             $store = [];
-            $languages = $this->legacyEnvironment->getAvailableLanguageArray();
-
+            $enabledLocales = $this->parameterBag->get('kernel.enabled_locales');
             foreach ($roomData['email_configuration'] as $name => $value) {
                 if (str_starts_with((string) $name, 'mail_body')) {
                     $fieldName = strtoupper(substr((string) $name, 0, -3));
                     $lang = substr((string) $name, -2);
 
-                    if (in_array($lang, $languages)) {
+                    if (in_array($lang, $enabledLocales)) {
                         $store[$fieldName][$lang] = $value;
                     }
                 }
