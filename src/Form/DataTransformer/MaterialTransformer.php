@@ -16,6 +16,7 @@ namespace App\Form\DataTransformer;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_material_item;
+use cs_section_item;
 use DateTime;
 
 class MaterialTransformer extends AbstractTransformer
@@ -119,12 +120,12 @@ class MaterialTransformer extends AbstractTransformer
     /**
      * Applies an array of data to an existing object.
      *
-     * @param object $materialObject
-     * @param array  $materialData
+     * @param cs_material_item|cs_section_item $materialObject
+     * @param array                            $materialData
      *
      * @throws TransformationFailedException if room item is not found
      */
-    public function applyTransformation($materialObject, $materialData): cs_material_item
+    public function applyTransformation($materialObject, $materialData)
     {
         $materialObject->setTitle($materialData['title']);
         $materialObject->setDescription($materialData['description']);
