@@ -148,7 +148,7 @@
                                                         {% if (user.isUser and not user.isReadOnlyUser) and not isArchived -%}
                                                             {% set returnUrlParams = {
                                                                 'roomId': roomId,
-                                                                'search_filter[selectedSavedSearch]': searchData.selectedSavedSearchId,
+                                                                'search_filter[selectedSavedSearch]': searchData.selectedSavedSearchId > 0 ? searchData.selectedSavedSearchId : '',
                                                                 'search_filter[selectedSavedSearchTitle]': searchData.selectedSavedSearchTitle ?? '',
                                                                 'search_filter[phrase]': searchData.phrase,
                                                                 'search_filter[appears_in][0]': searchData.appearsInTitle ? 'title' : '',
@@ -238,7 +238,7 @@
                             "url": "{{ app.request.baseURL }}/room/{{ roomId }}/searchmore/",
                             "target": "#search-feed",
                             "query": {
-                            "search_filter[selectedSavedSearch]": "{{ searchData.selectedSavedSearchId }}",
+                            "search_filter[selectedSavedSearch]": "{{ searchData.selectedSavedSearchId > 0 ? searchData.selectedSavedSearchId : '' }}",
                             "search_filter[selectedSavedSearchTitle]": "{{ searchData.selectedSavedSearchTitle ?? '' }}",
                             "search_filter[phrase]": "{{ searchData.phrase }}",
                             "search_filter[appears_in][0]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
