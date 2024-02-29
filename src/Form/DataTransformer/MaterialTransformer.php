@@ -121,11 +121,9 @@ class MaterialTransformer extends AbstractTransformer
      * Applies an array of data to an existing object.
      *
      * @param cs_material_item|cs_section_item $materialObject
-     * @param array                            $materialData
-     *
-     * @throws TransformationFailedException if room item is not found
+     * @param array $materialData
      */
-    public function applyTransformation($materialObject, $materialData)
+    public function applyTransformation($materialObject, $materialData): cs_material_item|cs_section_item
     {
         $materialObject->setTitle($materialData['title']);
         $materialObject->setDescription($materialData['description']);
