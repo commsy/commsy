@@ -17,6 +17,7 @@ use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\Portal;
 use App\Services\LegacyEnvironment;
+use App\User\UserListBuilder;
 use App\Utils\UserService;
 use cs_environment;
 use cs_list;
@@ -35,7 +36,8 @@ final readonly class AccountManager
         private EntityManagerInterface $entityManager,
         LegacyEnvironment $legacyEnvironment,
         private UserService $userService,
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
+        private UserListBuilder $userListBuilder
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -136,18 +138,21 @@ final readonly class AccountManager
         // `cs_user_manager->delete()` will fire an `AccountDeletedEvent` for each user object
         $portalUser = $this->userService->getPortalUser($account);
 
-        if ($portalUser) {
-            $userList = $portalUser->getRelatedUserList();
-            foreach ($userList as $user) {
-                /* @var $user cs_user_item */
-                $user->delete();
-            }
+        $userList = $this->userListBuilder
+            ->fromAccount($account)
+            ->withProjectRoomUser()
+            ->withCommunityRoomUser()
+            ->withUserRoomUser()
+            ->withPrivateRoomUser()
+            ->getList();
 
-            $this->entityManager->remove($account);
-            $this->entityManager->flush();
+        $users = iterator_to_array($userList);
+        array_walk($users, fn(cs_user_item $user) => $user->delete());
 
-            $portalUser->delete();
-        }
+        $this->entityManager->remove($account);
+        $this->entityManager->flush();
+
+        $portalUser->delete();
     }
 
     public function lock(Account $account): void
