@@ -259,7 +259,7 @@ class SearchFilterType extends AbstractType
             ->setRequired(['contextId', 'userIsReallyGuest'])
             ->setDefaults([
                 'csrf_protection' => false,
-                'validation_groups' => ['filtering', 'save'], // avoid NotBlank() constraint-related message
+                'validation_groups' => ['filtering'], // avoid NotBlank() constraint-related message
                 'method' => 'get',
                 'translation_domain' => 'search',
             ]);
