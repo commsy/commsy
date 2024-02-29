@@ -24,6 +24,7 @@ use cs_room_item;
 use cs_user_item;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 final readonly class AccountManager
@@ -89,8 +90,8 @@ final readonly class AccountManager
         $projectManager = $this->legacyEnvironment->getProjectManager();
         $communityManager = $this->legacyEnvironment->getCommunityManager();
 
-        $portalUser = $this->userService->getPortalUser($account);
-        if ($portalUser) {
+        try {
+            $portalUser = $this->userService->getPortalUser($account);
             $roomList = new cs_list();
             $roomList->addList($projectManager->getRelatedProjectRooms($portalUser, $portalUser->getContextID()));
             $roomList->addList($communityManager->getRelatedCommunityRooms($portalUser, $portalUser->getContextID()));
@@ -100,6 +101,7 @@ final readonly class AccountManager
                     return true;
                 }
             }
+        } catch (Exception) {
         }
 
         return false;
