@@ -24,9 +24,9 @@ use Doctrine\Persistence\ManagerRegistry;
 class HashRepository extends ServiceEntityRepository
 {
     public function __construct(
-        private ManagerRegistry $registry,
-        private RssHashGenerator $rssHashGenerator,
-        private ICalHashGenerator $iCalHashGenerator
+        ManagerRegistry $registry,
+        private readonly RssHashGenerator $rssHashGenerator,
+        private readonly ICalHashGenerator $iCalHashGenerator
     ) {
         parent::__construct($registry, Hash::class);
     }
@@ -98,14 +98,9 @@ class HashRepository extends ServiceEntityRepository
 
     public function deleteHashesByUserIds(array $userIds): void
     {
-        $qb = $this->createQueryBuilder('h');
-
-        $qb
-            ->delete(Hash::class)
-            ->where(
-                $qb->expr()->in('h.userId', $userIds)
-            )
-            ->getQuery()
-            ->execute();
+        $query = $this->getEntityManager()->createQuery(
+            'DELETE FROM App\Entity\Hash h WHERE h.userId IN (:userIds)'
+        )->setParameter('userIds', $userIds);
+        $query->execute();
     }
 }
