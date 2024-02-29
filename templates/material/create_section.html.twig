@@ -21,7 +21,7 @@
         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{{ {
             'editUrl': path('app_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}),
             'cancelEditUrl': path('app_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId})
-        |json_encode|e('html_attr') }}">
+        }|json_encode|e('html_attr') }}">
             {{ component('item_files', {
                 item: section,
                 draft: section.draft
