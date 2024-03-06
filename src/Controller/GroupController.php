@@ -905,7 +905,7 @@ class GroupController extends BaseController
                 $groupIds[] = $user->getItemId();
             }
         } else {
-            $postData = $request->request->get('group_send');
+            $postData = $request->request->all('group_send');
             $groupIds = $postData['groups'];
         }
 
