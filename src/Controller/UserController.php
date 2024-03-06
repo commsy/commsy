@@ -1205,7 +1205,7 @@ class UserController extends BaseController
                 $userIds[] = $user->getItemId();
             }
         } else {
-            $postData = $request->request->get('user_send');
+            $postData = $request->request->all('user_send');
             $userIds = $postData['users'];
         }
 
@@ -1312,7 +1312,7 @@ class UserController extends BaseController
                     $mailSend = $mailSend && $send;
                 }
 
-                $this->addFlash('recipientCount', $recipients);
+                $this->addFlash('recipientCount', count($recipients));
 
                 // send mail
                 $mailSend = $mailSend && empty($failedUsers);
