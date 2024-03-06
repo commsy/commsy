@@ -1565,7 +1565,7 @@ class PortalSettingsController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $recipientCount = $contactFormHelper->handleContactFormSending(
+                $sendStatus = $contactFormHelper->handleContactFormSending(
                     $sendMail->getSubject(),
                     $sendMail->getMessage(),
                     $portal->getTitle(),
@@ -1576,7 +1576,7 @@ class PortalSettingsController extends AbstractController
                     $sendMail->getCopyToSender()
                 );
 
-                $this->addFlash('recipientCount', $recipientCount);
+                $this->addFlash('recipientCount', $sendStatus->getNumRecipients());
 
                 $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
                     'portalId' => $portal->getId(),

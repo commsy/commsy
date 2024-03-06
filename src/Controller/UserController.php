@@ -107,9 +107,7 @@ class UserController extends BaseController
     #[Route(path: '/room/{roomId}/user/{itemId}/contactForm/{originPath}/{moderatorIds}')]
     public function sendMailViaContactForm(
         Request $request,
-        MailAssistant $mailAssistant,
         ContactFormHelper $contactFormHelper,
-        Mailer $mailer,
         TranslatorInterface $translator,
         $roomId,
         $itemId,
@@ -171,7 +169,7 @@ class UserController extends BaseController
             }
 
             // send mail
-            $recipientCount = $contactFormHelper->handleContactFormSending(
+            $sendStatus = $contactFormHelper->handleContactFormSending(
                 $formData['subject'],
                 $formData['message'] ?: '',
                 $portalItem->getTitle(),
@@ -182,7 +180,8 @@ class UserController extends BaseController
                 $formData['copy_to_sender']
             );
 
-            $this->addFlash('recipientCount', $recipientCount);
+            $this->addFlash('mailSend', $sendStatus->isSuccess());
+            $this->addFlash('recipientCount', $sendStatus->getNumRecipients());
 
             // redirect to success page
             return $this->redirectToRoute('app_user_sendsuccesscontact', [
