@@ -17,6 +17,7 @@ use App\Services\LegacyEnvironment;
 use App\Services\MarkedService;
 use cs_environment;
 use cs_item;
+use cs_material_item;
 
 class DeleteGeneric implements DeleteInterface
 {
@@ -31,7 +32,12 @@ class DeleteGeneric implements DeleteInterface
 
     public function delete(cs_item $item): void
     {
-        $item->delete();
+        if ($item->getItemType() === 'material') {
+            /** @var cs_material_item $item */
+            $item->deleteAllVersions();
+        } else {
+            $item->delete();
+        }
 
         $this->markedService->removeItemFromClipboard($item->getItemId());
     }
