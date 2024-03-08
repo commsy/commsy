@@ -16,9 +16,6 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Invitations.
- */
 #[ORM\Entity]
 #[ORM\Table(name: 'calendars')]
 #[ORM\Index(columns: ['id'], name: 'id')]
@@ -27,7 +24,7 @@ class Calendars
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    private int $id;
+    private ?int $id = null;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
     private ?int $context_id = null;
@@ -50,7 +47,7 @@ class Calendars
     #[ORM\Column(name: 'synctoken', type: Types::INTEGER, nullable: true)]
     private ?int $synctoken = null;
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
