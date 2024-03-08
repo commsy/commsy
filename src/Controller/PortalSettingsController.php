@@ -92,6 +92,7 @@ use App\Utils\AccountMail;
 use App\Utils\RoomService;
 use App\Utils\TimePulsesService;
 use App\Utils\UserService;
+use DateTime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -1009,7 +1010,7 @@ class PortalSettingsController extends AbstractController
         $termsForm->handleRequest($request);
         if ($termsForm->isSubmitted() && $termsForm->isValid()) {
             if ('save' === $termsForm->getClickedButton()->getName()) {
-                $portal->setAGBChangeDate(new DateTimeImmutable());
+                $portal->setAGBChangeDate(new DateTime());
                 $entityManager->persist($portal);
                 $entityManager->flush();
 
