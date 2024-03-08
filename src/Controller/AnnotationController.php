@@ -212,15 +212,14 @@ class AnnotationController extends AbstractController
         return $this->redirectToRoute('app_'.$itemType.'_detail', ['roomId' => $roomId, 'itemId' => $itemId]);
     }
 
-    /**
-     * @return JsonResponse
-     */
     #[Route(path: '/room/{roomId}/annotation/{itemId}/delete', methods: ['GET'])]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function delete(
         ItemService $itemService,
-        int $itemId
-    ): Response {
+        int $itemId,
+        /** @noinspection PhpUnusedParameterInspection */
+        int $roomId
+    ): JsonResponse {
         $item = $itemService->getTypedItem($itemId);
         $item->delete();
         $response = new JsonResponse();
