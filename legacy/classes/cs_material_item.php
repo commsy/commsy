@@ -981,11 +981,11 @@ class cs_material_item extends cs_item
      {
          global $symfonyContainer;
 
-         /** @var EventDispatcher $eventDispatcer */
-         $eventDispatcer = $symfonyContainer->get('event_dispatcher');
+         /** @var EventDispatcher $eventDispatcher */
+         $eventDispatcher = $symfonyContainer->get('event_dispatcher');
 
          $itemDeletedEvent = new ItemDeletedEvent($this);
-         $eventDispatcer->dispatch($itemDeletedEvent, ItemDeletedEvent::NAME);
+         $eventDispatcher->dispatch($itemDeletedEvent, ItemDeletedEvent::NAME);
 
          // delete associated tasks
          $task_list = $this->_getTaskList();

@@ -15,6 +15,8 @@
  */
 
 use App\Entity\Dates;
+use App\Event\ItemDeletedEvent;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for a dates
  * this class implements a dates item.
@@ -566,11 +568,11 @@ class cs_dates_item extends cs_item
      {
          global $symfonyContainer;
 
-         /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcer */
-         $eventDispatcer = $symfonyContainer->get('event_dispatcher');
+         /** @var EventDispatcher $eventDispatcher */
+         $eventDispatcher = $symfonyContainer->get('event_dispatcher');
 
-         $itemDeletedEvent = new \App\Event\ItemDeletedEvent($this);
-         $eventDispatcer->dispatch($itemDeletedEvent, \App\Event\ItemDeletedEvent::NAME);
+         $itemDeletedEvent = new ItemDeletedEvent($this);
+         $eventDispatcher->dispatch($itemDeletedEvent, ItemDeletedEvent::NAME);
 
          $date_manager = $this->_environment->getDatesManager();
          $this->_delete($date_manager);
