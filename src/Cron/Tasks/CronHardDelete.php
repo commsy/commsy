@@ -35,8 +35,8 @@ readonly class CronHardDelete implements CronTaskInterface
         $itemTypes[] = CS_ANNOTATION_TYPE;
         $itemTypes[] = CS_ANNOUNCEMENT_TYPE;
         $itemTypes[] = CS_DATE_TYPE;
+        $itemTypes[] = CS_DISCARTICLE_TYPE;
         $itemTypes[] = CS_DISCUSSION_TYPE;
-        // $itemTypes[] = CS_DISCARTICLE_TYPE; // NO NO NO -> because of closed discussions
         $itemTypes[] = CS_LINKITEMFILE_TYPE;
         $itemTypes[] = CS_FILE_TYPE;
         $itemTypes[] = CS_ITEM_TYPE;
