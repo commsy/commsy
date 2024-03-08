@@ -563,7 +563,7 @@ class cs_room_manager extends cs_context_manager
         $this->_db_connector->performQuery($query);
     }
 
-    public function deleteReallyOlderThan($days): void
+    public function deleteReallyOlderThan(int $days): void
     {
         $symfonyContainer = $this->_environment->getSymfonyContainer();
 
@@ -618,8 +618,8 @@ class cs_room_manager extends cs_context_manager
             $annotation_manager->deleteFromDb($itemId);
             $announcement_manager->deleteFromDb($itemId);
             $dates_manager->deleteFromDb($itemId);
-            $discussion_manager->deleteFromDb($itemId);
             $discussionarticles_manager->deleteFromDb($itemId);
+            $discussion_manager->deleteFromDb($itemId);
             $file_manager->deleteFromDb($itemId);
             $item_manager->deleteFromDb($itemId);
             $labels_manager->deleteFromDb($itemId);

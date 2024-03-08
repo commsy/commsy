@@ -50,7 +50,6 @@ class LegacyCopy implements CopyStrategy
         $copy_array['todostatus'] = true;
         $copy_array['usageinfo'] = true;
         $copy_array['tag'] = true;
-        $copy_array['discussionstatus'] = true;
         $copy_array['datespresentationstatus'] = true;
         $copy_array['htmltextareastatus'] = true;
         $copy_array['buzzword'] = true;
@@ -157,9 +156,6 @@ class LegacyCopy implements CopyStrategy
             }
         }
 
-        if ($copy_array['discussionstatus']) {
-            $target->setDiscussionStatus($source->getDiscussionStatus());
-        }
         if ($copy_array['datespresentationstatus']) {
             $target->setDatesPresentationStatus($source->getDatesPresentationStatus());
         }

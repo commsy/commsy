@@ -472,10 +472,9 @@ class cs_file_manager extends cs_manager
         return $retour;
     }
 
-    public function deleteReallyOlderThan($days)
+    public function deleteReallyOlderThan(int $days): void
     {
         $disc_manager = $this->_environment->getDiscManager();
-        $retour = true;
         $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
 
         $query = 'SELECT ' .
@@ -496,18 +495,16 @@ class cs_file_manager extends cs_manager
                 $linkItemFileManager->deleteByFileReally($file['files_id']);
             }
 
-            $retour = parent::deleteReallyOlderThan($days);
+            parent::deleteReallyOlderThan($days);
             foreach ($result as $query_result) {
                 $filename = 'cid' . $query_result['context_id'] . '_' . $query_result['files_id'] . '_' . $query_result['filename'];
                 $disc_manager->setPortalID($query_result['portal_id']);
                 $disc_manager->setContextID($query_result['context_id']);
                 if ($disc_manager->existsFile($filename)) {
-                    $retour = $retour && $disc_manager->unlinkFile($filename);
+                    $disc_manager->unlinkFile($filename);
                 }
             }
         }
-
-        return $retour;
     }
 
     public function deleteUnneededFiles($context_id, $portal_id = '')

@@ -1256,20 +1256,14 @@ class cs_manager
        return $retour;
    }
 
-   public function deleteReallyOlderThan($days)
+   public function deleteReallyOlderThan(int $days): void
    {
-       $retour = false;
        $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
        $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'"';
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result) or !$result) {
            trigger_error('Problem deleting items.', E_USER_ERROR);
-       } else {
-           unset($result);
-           $retour = true;
        }
-
-       return $retour;
    }
 
    public function getLastQuery()

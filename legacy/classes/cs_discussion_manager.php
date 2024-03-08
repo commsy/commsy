@@ -461,65 +461,61 @@ class cs_discussion_manager extends cs_manager
          }
      }
 
-  /** store a new discussion item to the database - internal, do not use -> use method save
-   * this method stores a newly created discussion item to the database.
-   */
-  public function _newDiscussion(cs_discussion_item $item)
-  {
-      $currentDateTime = getCurrentDateTimeInMySQL();
-
-      $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
-
-      $queryBuilder
-          ->insert($this->addDatabasePrefix('discussions'))
-          ->setValue('item_id', ':itemId')
-          ->setValue('context_id', ':contextId')
-          ->setValue('creator_id', ':creatorId')
-          ->setValue('creation_date', ':creationDate')
-          ->setValue('modifier_id', ':modifierId')
-          ->setValue('modification_date', ':modificationDate')
-          ->setValue('activation_date', ':activationDate')
-          ->setValue('title', ':title')
-          ->setValue('description', ':description')
-          ->setValue('discussion_type', ':discussionType')
-          ->setValue('public', ':public')
-          ->setParameter('itemId', $item->getItemID())
-          ->setParameter('contextId', $item->getContextID())
-          ->setParameter('creatorId', $item->getCreatorItem()->getItemID())
-          ->setParameter('creationDate', $currentDateTime)
-          ->setParameter('modifierId', $item->getModificatorItem()->getItemID())
-          ->setParameter('modificationDate', $currentDateTime)
-          ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
-          ->setParameter('title', $item->getTitle())
-          ->setParameter('description', $item->getDescription())
-          ->setParameter('discussionType', $item->getDiscussionType() ?: 'simple')
-          ->setParameter('public', $item->isPublic() ? 1 : 0);
-
-      $articleId = $item->getLatestArticleID();
-      if (!empty($articleId)) {
-          $queryBuilder
-              ->setValue('latest_article_item_id', ':latestArticleItemId')
-              ->setParameter('latestArticleItemId', $articleId);
-      }
-
-      $articleModificationDate = $item->getLatestArticleModificationDate();
-      if (!empty($articleModificationDate)) {
-          $queryBuilder
-              ->setValue('latest_article_modification_date', ':latestArticleModificationDate')
-              ->setParameter('latestArticleModificationDate', $articleModificationDate);
-      }
-
-      try {
-          $queryBuilder->executeStatement();
-      } catch (\Doctrine\DBAL\Exception) {
-          trigger_error('Problems creating dates.', E_USER_WARNING);
-      }
-  }
-
-    /**  delete a discussion item.
-     *
-     * @param cs_discussion_item the discussion item to be deleted
+    /** store a new discussion item to the database - internal, do not use -> use method save
+     * this method stores a newly created discussion item to the database.
      */
+    public function _newDiscussion(cs_discussion_item $item)
+    {
+        $currentDateTime = getCurrentDateTimeInMySQL();
+
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $queryBuilder
+            ->insert($this->addDatabasePrefix('discussions'))
+            ->setValue('item_id', ':itemId')
+            ->setValue('context_id', ':contextId')
+            ->setValue('creator_id', ':creatorId')
+            ->setValue('creation_date', ':creationDate')
+            ->setValue('modifier_id', ':modifierId')
+            ->setValue('modification_date', ':modificationDate')
+            ->setValue('activation_date', ':activationDate')
+            ->setValue('title', ':title')
+            ->setValue('description', ':description')
+            ->setValue('discussion_type', ':discussionType')
+            ->setValue('public', ':public')
+            ->setParameter('itemId', $item->getItemID())
+            ->setParameter('contextId', $item->getContextID())
+            ->setParameter('creatorId', $item->getCreatorItem()->getItemID())
+            ->setParameter('creationDate', $currentDateTime)
+            ->setParameter('modifierId', $item->getModificatorItem()->getItemID())
+            ->setParameter('modificationDate', $currentDateTime)
+            ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
+            ->setParameter('title', $item->getTitle())
+            ->setParameter('description', $item->getDescription())
+            ->setParameter('discussionType', $item->getDiscussionType() ?: 'simple')
+            ->setParameter('public', $item->isPublic() ? 1 : 0);
+
+        $articleId = $item->getLatestArticleID();
+        if (!empty($articleId)) {
+            $queryBuilder
+                ->setValue('latest_article_item_id', ':latestArticleItemId')
+                ->setParameter('latestArticleItemId', $articleId);
+        }
+
+        $articleModificationDate = $item->getLatestArticleModificationDate();
+        if (!empty($articleModificationDate)) {
+            $queryBuilder
+                ->setValue('latest_article_modification_date', ':latestArticleModificationDate')
+                ->setParameter('latestArticleModificationDate', $articleModificationDate);
+        }
+
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception) {
+            trigger_error('Problems creating dates.', E_USER_WARNING);
+        }
+    }
+
     public function delete(int $itemId): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
@@ -533,8 +529,6 @@ class cs_discussion_manager extends cs_manager
         if (!isset($result) or !$result) {
             trigger_error('Problems deleting discussion.', E_USER_WARNING);
         } else {
-            $link_manager = $this->_environment->getLinkManager();
-            $link_manager->deleteLinksBecauseItemIsDeleted($itemId);
             parent::delete($itemId);
         }
     }
