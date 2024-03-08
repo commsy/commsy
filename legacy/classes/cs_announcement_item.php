@@ -15,6 +15,8 @@
  */
 
 use App\Entity\Announcement;
+use App\Event\ItemDeletedEvent;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for a announcement
  * this class implements a announcement item.
@@ -184,11 +186,11 @@ class cs_announcement_item extends cs_item
      {
          global $symfonyContainer;
 
-         /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcer */
-         $eventDispatcer = $symfonyContainer->get('event_dispatcher');
+         /** @var EventDispatcher $eventDispatcher */
+         $eventDispatcher = $symfonyContainer->get('event_dispatcher');
 
-         $itemDeletedEvent = new \App\Event\ItemDeletedEvent($this);
-         $eventDispatcer->dispatch($itemDeletedEvent, \App\Event\ItemDeletedEvent::NAME);
+         $itemDeletedEvent = new ItemDeletedEvent($this);
+         $eventDispatcher->dispatch($itemDeletedEvent, ItemDeletedEvent::NAME);
 
          $manager = $this->_environment->getAnnouncementManager();
          $this->_delete($manager);

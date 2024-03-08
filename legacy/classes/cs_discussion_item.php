@@ -236,7 +236,7 @@ class cs_discussion_item extends cs_item
     {
         $symfonyContainer = $this->_environment->getSymfonyContainer();
 
-        /** @var EventDispatcher $eventDispatcer */
+        /** @var EventDispatcher $eventDispatcher */
         $eventDispatcher = $symfonyContainer->get('event_dispatcher');
 
         $itemDeletedEvent = new ItemDeletedEvent($this);
