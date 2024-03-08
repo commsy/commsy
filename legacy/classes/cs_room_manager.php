@@ -12,6 +12,7 @@
  */
 
 use App\Hash\HashManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 /** class for database connection to the database table "community"
  * this class implements a database manager for the table "community".
@@ -562,107 +563,78 @@ class cs_room_manager extends cs_context_manager
         $this->_db_connector->performQuery($query);
     }
 
-    public function deleteReallyOlderThan($days)
+    public function deleteReallyOlderThan($days): void
     {
-        global $symfonyContainer;
+        $symfonyContainer = $this->_environment->getSymfonyContainer();
 
-        $retour = false;
+        /** @var HashManager $hashManager */
+        $hashManager = $symfonyContainer->get(HashManager::class);
+        $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
+        $link_item_file_manager = $this->_environment->getLinkItemFileManager();
+        $reader_manager = $this->_environment->getReaderManager();
+        $annotation_manager = $this->_environment->getAnnotationManager();
+        $announcement_manager = $this->_environment->getAnnouncementManager();
+        $dates_manager = $this->_environment->getDatesManager();
+        $discussion_manager = $this->_environment->getDiscussionManager();
+        $discussionarticles_manager = $this->_environment->getDiscussionarticlesManager();
+        $file_manager = $this->_environment->getFileManager();
+        $item_manager = $this->_environment->getItemManager();
+        $labels_manager = $this->_environment->getLabelManager();
+        $links_manager = $this->_environment->getLinkManager();
+        $link_item_manager = $this->_environment->getLinkItemManager();
+        $material_manager = $this->_environment->getMaterialManager();
+        $section_manager = $this->_environment->getSectionManager();
+        $step_manager = $this->_environment->getStepManager();
+        $tag_manager = $this->_environment->getTagManager();
+        $tag2tag_manager = $this->_environment->getTag2TagManager();
+        $task_manager = $this->_environment->getTaskManager();
+        $todo_manager = $this->_environment->getTodosManager();
+        $user_manager = $this->_environment->getUserManager();
+        $room_manager = $this->_environment->getRoomManager();
 
-        $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
+        /** @var EntityManagerInterface $em */
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+        $query = $em->createQuery('
+            SELECT r.itemId, r.contextId
+            FROM App\Entity\Room r
+            WHERE DATE_DIFF(CURRENT_DATE(), r.deletionDate) > :diff
+        ');
+        $query->setParameter('diff', $days);
+        $rooms = $query->getResult();
 
-        $id_array = [];
-        $query = 'SELECT item_id, context_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'"';
-        $result = $this->_db_connector->performQuery($query);
-        if ($result) {
-            foreach ($result as $rs) {
-                $temp_array['item_id'] = $rs['item_id'];
-                $temp_array['portal_id'] = $rs['context_id'];
-                $id_array[] = $temp_array;
-            }
-        }
-
-        foreach ($id_array as $room_array) {
-            $iid = $room_array['item_id'];
-            $portal_id = $room_array['portal_id'];
+        foreach ($rooms as $room) {
+            $contextId = $room['contextId'];
+            $itemId = $room['itemId'];
 
             // delete files
             $disc_manager = $this->_environment->getDiscManager();
-            $disc_manager->removeRoomDir($portal_id, $iid);
+            $disc_manager->removeRoomDir($contextId, $itemId);
 
-            // managers need data from other tables
-            /** @var HashManager $hashManager */
-            $hashManager = $symfonyContainer->get(HashManager::class);
-            $hashManager->deleteHashesInContext($iid);
-
-            $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
-            $link_modifier_item_manager->deleteFromDb($iid);
-
-            $link_item_file_manager = $this->_environment->getLinkItemFileManager();
-            $link_item_file_manager->deleteFromDb($iid);
-
-            $reader_manager = $this->_environment->getReaderManager();
-            $reader_manager->deleteFromDb($iid);
-
-            // plain deletion of the rest
-            $annotation_manager = $this->_environment->getAnnotationManager();
-            $annotation_manager->deleteFromDb($iid);
-
-            $announcement_manager = $this->_environment->getAnnouncementManager();
-            $announcement_manager->deleteFromDb($iid);
-
-            $dates_manager = $this->_environment->getDatesManager();
-            $dates_manager->deleteFromDb($iid);
-
-            $discussion_manager = $this->_environment->getDiscussionManager();
-            $discussion_manager->deleteFromDb($iid);
-
-            $discussionarticles_manager = $this->_environment->getDiscussionarticlesManager();
-            $discussionarticles_manager->deleteFromDb($iid);
-
-            $file_manager = $this->_environment->getFileManager();
-            $file_manager->deleteFromDb($iid);
-
-            $item_manager = $this->_environment->getItemManager();
-            $item_manager->deleteFromDb($iid);
-
-            $labels_manager = $this->_environment->getLabelManager();
-            $labels_manager->deleteFromDb($iid);
-
-            $links_manager = $this->_environment->getLinkManager();
-            $links_manager->deleteFromDb($iid);
-
-            $link_item_manager = $this->_environment->getLinkItemManager();
-            $link_item_manager->deleteFromDb($iid);
-
-            $material_manager = $this->_environment->getMaterialManager();
-            $material_manager->deleteFromDb($iid);
-
-            $section_manager = $this->_environment->getSectionManager();
-            $section_manager->deleteFromDb($iid);
-
-            $step_manager = $this->_environment->getStepManager();
-            $step_manager->deleteFromDb($iid);
-
-            $tag_manager = $this->_environment->getTagManager();
-            $tag_manager->deleteFromDb($iid);
-
-            $tag2tag_manager = $this->_environment->getTag2TagManager();
-            $tag2tag_manager->deleteFromDb($iid);
-
-            $task_manager = $this->_environment->getTaskManager();
-            $task_manager->deleteFromDb($iid);
-
-            $todo_manager = $this->_environment->getTodosManager();
-            $todo_manager->deleteFromDb($iid);
-
-            $user_manager = $this->_environment->getUserManager();
-            $user_manager->deleteFromDb($iid);
-
-            $room_manager = $this->_environment->getRoomManager();
-            $room_manager->deleteFromDb($iid);
+            // managers
+            $hashManager->deleteHashesInContext($itemId);
+            $link_modifier_item_manager->deleteFromDb($itemId);
+            $link_item_file_manager->deleteFromDb($itemId);
+            $reader_manager->deleteFromDb($itemId);
+            $annotation_manager->deleteFromDb($itemId);
+            $announcement_manager->deleteFromDb($itemId);
+            $dates_manager->deleteFromDb($itemId);
+            $discussion_manager->deleteFromDb($itemId);
+            $discussionarticles_manager->deleteFromDb($itemId);
+            $file_manager->deleteFromDb($itemId);
+            $item_manager->deleteFromDb($itemId);
+            $labels_manager->deleteFromDb($itemId);
+            $links_manager->deleteFromDb($itemId);
+            $link_item_manager->deleteFromDb($itemId);
+            $material_manager->deleteFromDb($itemId);
+            $section_manager->deleteFromDb($itemId);
+            $step_manager->deleteFromDb($itemId);
+            $tag_manager->deleteFromDb($itemId);
+            $tag2tag_manager->deleteFromDb($itemId);
+            $task_manager->deleteFromDb($itemId);
+            $todo_manager->deleteFromDb($itemId);
+            $user_manager->deleteFromDb($itemId);
+            $room_manager->deleteFromDb($itemId);
         }
-
-        return $retour;
     }
 
     public function getUserRoomsUserIsMemberOf(cs_user_item $user, bool $withExtras = true): cs_list
