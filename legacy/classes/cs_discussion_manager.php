@@ -348,11 +348,13 @@ class cs_discussion_manager extends cs_manager
          } elseif (array_key_exists($item_id, $this->_cached_items)) {
              return $this->_buildItem($this->_cached_items[$item_id]);
          } elseif (!empty($item_id)) {
-             $query = 'SELECT * FROM '.$this->addDatabasePrefix('discussions').' WHERE '.$this->addDatabasePrefix('discussions').".item_id = '".encode(AS_DB,
-                 $item_id)."'";
+             $query = 'SELECT ' . $this->addDatabasePrefix('discussions') . '.*, ' . $this->addDatabasePrefix('items') . '.pinned';
+             $query .= ' FROM ' . $this->addDatabasePrefix('discussions');
+             $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON ' . $this->addDatabasePrefix('items') . '.item_id = ' . $this->addDatabasePrefix('discussions') . '.item_id';
+             $query .= ' WHERE ' . $this->addDatabasePrefix('discussions') . ".item_id = '" . encode(AS_DB, $item_id) . "'";
              $result = $this->_db_connector->performQuery($query);
              if (!isset($result)) {
-                 trigger_error('Problems selecting one discussions item ('.$item_id.').', E_USER_WARNING);
+                 trigger_error('Problems selecting one discussions item (' . $item_id . ').', E_USER_WARNING);
              } elseif (!empty($result[0])) {
                  $discussion = $this->_buildItem($result[0]);
                  if ($this->_cache_on) {

@@ -384,10 +384,13 @@ class cs_todos_manager extends cs_manager
         } elseif (array_key_exists($item_id, $this->_cached_items)) {
             return $this->_buildItem($this->_cached_items[$item_id]);
         } else {
-            $query = 'SELECT * FROM '.$this->addDatabasePrefix('todos').' WHERE '.$this->addDatabasePrefix('todos').".item_id = '".encode(AS_DB, $item_id)."'";
+            $query = 'SELECT ' . $this->addDatabasePrefix('todos') . '.*, ' . $this->addDatabasePrefix('items') . '.pinned';
+            $query .= ' FROM ' . $this->addDatabasePrefix('todos');
+            $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON ' . $this->addDatabasePrefix('items') . '.item_id = ' . $this->addDatabasePrefix('todos') . '.item_id';
+            $query .= ' WHERE ' . $this->addDatabasePrefix('todos') . ".item_id = '" . encode(AS_DB, $item_id) . "'";
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result) or empty($result[0])) {
-                trigger_error('Problems selecting one todos item from query: "'.$query.'"', E_USER_WARNING);
+                trigger_error('Problems selecting one todos item from query: "' . $query . '"', E_USER_WARNING);
             } else {
                 if (isset($result[0]['date'])) {
                     $result[0]['end_date'] = $result[0]['date'];

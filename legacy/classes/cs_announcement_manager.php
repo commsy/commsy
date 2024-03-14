@@ -356,7 +356,10 @@ class cs_announcement_manager extends cs_manager
              } elseif (array_key_exists($item_id, $this->_cached_items)) {
                  return $this->_buildItem($this->_cached_items[$item_id]);
              } else {
-                 $query = 'SELECT * FROM '.$this->addDatabasePrefix('announcement').' WHERE '.$this->addDatabasePrefix('announcement').".item_id = '".encode(AS_DB, $item_id)."'";
+                 $query = 'SELECT ' . $this->addDatabasePrefix('announcement') . '.*, ' . $this->addDatabasePrefix('items') . '.pinned';
+                 $query .= ' FROM ' . $this->addDatabasePrefix('announcement');
+                 $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON ' . $this->addDatabasePrefix('items') . '.item_id = ' . $this->addDatabasePrefix('announcement') . '.item_id';
+                 $query .= ' WHERE ' . $this->addDatabasePrefix('announcement') . ".item_id = '" . encode(AS_DB, $item_id) . "'";
                  $result = $this->_db_connector->performQuery($query);
                  if (!isset($result)) {
                      trigger_error('Problems selecting one announcement item.', E_USER_WARNING);
@@ -367,7 +370,7 @@ class cs_announcement_manager extends cs_manager
                      $announcement = $this->_buildItem($result[0]);
                      unset($result);
                  } else {
-                     trigger_error('Problems selecting announcement item ['.$item_id.'].', E_USER_WARNING);
+                     trigger_error('Problems selecting announcement item [' . $item_id . '].', E_USER_WARNING);
                  }
              }
          }

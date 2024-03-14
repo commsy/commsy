@@ -296,14 +296,17 @@ class cs_material_manager extends cs_manager
         } elseif (array_key_exists($item_id, $this->_cached_items)) {
             return $this->_buildItem($this->_cached_items[$item_id]);
         } else {
-            $query = 'SELECT * FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').".item_id = '".encode(AS_DB, $item_id)."'";
+            $query = 'SELECT ' . $this->addDatabasePrefix('materials') . '.*, ' . $this->addDatabasePrefix('items') . '.pinned';
+            $query .= ' FROM ' . $this->addDatabasePrefix('materials');
+            $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON ' . $this->addDatabasePrefix('items') . '.item_id = ' . $this->addDatabasePrefix('materials') . '.item_id';
+            $query .= ' WHERE ' . $this->addDatabasePrefix('materials') . ".item_id = '" . encode(AS_DB, $item_id) . "'";
             if (true == $this->_delete_limit) {
-                $query .= ' AND '.$this->addDatabasePrefix('materials').'.deleter_id IS NULL';
+                $query .= ' AND ' . $this->addDatabasePrefix('materials') . '.deleter_id IS NULL';
             }
-            $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.version_id DESC';
+            $query .= ' ORDER BY ' . $this->addDatabasePrefix('materials') . '.version_id DESC';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
-                trigger_error('Problems selecting one material item from query: "'.$query.'"', E_USER_WARNING);
+                trigger_error('Problems selecting one material item from query: "' . $query . '"', E_USER_WARNING);
             } elseif (!empty($result[0])) {
                 $material = $this->_buildItem($result[0]);
                 if ($this->_cache_on) {
