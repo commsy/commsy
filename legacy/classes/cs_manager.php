@@ -17,8 +17,7 @@
  * @author CommSy Development Group
  */
 
-use App\Lock\LockManager;
-use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\ParameterType;
 
 class cs_manager
 {
@@ -1256,14 +1255,17 @@ class cs_manager
        return $retour;
    }
 
-   public function deleteReallyOlderThan(int $days): void
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function deleteReallyOlderThan(int $days): void
    {
-       $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
-       $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'"';
-       $result = $this->_db_connector->performQuery($query);
-       if (!isset($result) or !$result) {
-           trigger_error('Problem deleting items.', E_USER_ERROR);
-       }
+       $qb = $this->_db_connector->getConnection()->createQueryBuilder();
+       $qb
+           ->delete($this->_db_table)
+           ->where('deletion_date < DATE_SUB(CURRENT_DATE(), INTERVAL :days DAY)')
+           ->setParameter('days', $days, ParameterType::INTEGER)
+           ->executeStatement();
    }
 
    public function getLastQuery()

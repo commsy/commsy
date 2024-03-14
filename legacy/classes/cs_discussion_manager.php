@@ -11,6 +11,8 @@
  * file that was distributed with this source code.
  */
 
+use Doctrine\DBAL\ArrayParameterType;
+
 /** class for database connection to the database table "discussion"
  * this class implements a database manager for the table "discussion".
  */
@@ -531,6 +533,31 @@ class cs_discussion_manager extends cs_manager
         } else {
             parent::delete($itemId);
         }
+    }
+
+    public function deleteReallyOlderThan(int $days): void
+    {
+        $conn = $this->_db_connector->getConnection();
+
+        // It's possible that there are discussion articles that are not yet deleted, even if the discussion itself
+        // is already deleted. It would be preferred to enforce this on database level in the future.
+        $qb = $conn->createQueryBuilder();
+        $qb
+            ->select('item_id')
+            ->from($this->_db_table, 't')
+            ->where('t.deletion_date < DATE_SUB(CURRENT_DATE, INTERVAL :days DAY)')
+            ->setParameter('days', $days)
+            ->executeQuery();
+        $results = $qb->fetchAllAssociative();
+        $discussionIds = array_map(fn ($result) => $result['item_id'], $results);
+
+        $conn->executeStatement('DELETE FROM discussionarticles WHERE discussion_id IN (?)',
+            [$discussionIds],
+            [ArrayParameterType::INTEGER]
+        );
+
+        // call parent implementation to delete discussions
+        parent::deleteReallyOlderThan($days);
     }
 
     // #######################################################
