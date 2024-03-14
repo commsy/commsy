@@ -674,14 +674,17 @@ class cs_dates_manager extends cs_manager
            if (!empty($this->_cache_object[$item_id])) {
                $dates = $this->_cache_object[$item_id];
            } else {
-               $query = 'SELECT * FROM '.$this->addDatabasePrefix('dates').' WHERE '.$this->addDatabasePrefix('dates').".item_id = '".encode(AS_DB, $item_id)."'";
+               $query = 'SELECT ' . $this->addDatabasePrefix('dates') . '.*, ' . $this->addDatabasePrefix('items') . '.pinned';
+               $query .= ' FROM ' . $this->addDatabasePrefix('dates');
+               $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON ' . $this->addDatabasePrefix('items') . '.item_id = ' . $this->addDatabasePrefix('dates') . '.item_id';
+               $query .= ' WHERE ' . $this->addDatabasePrefix('dates') . ".item_id = '" . encode(AS_DB, $item_id) . "'";
                $result = $this->_db_connector->performQuery($query);
                if (!isset($result)) {
                    trigger_error('Problems selecting one dates item.', E_USER_WARNING);
                } elseif (!empty($result[0])) {
                    $dates = $this->_buildItem($result[0]);
                } else {
-                   trigger_error('Dates item ['.$item_id.'] does not exists.', E_USER_WARNING);
+                   trigger_error('Dates item [' . $item_id . '] does not exist.', E_USER_WARNING);
                }
            }
        } else {
