@@ -43,6 +43,7 @@ class RoomPrivateRepository extends ServiceEntityRepository
             ->andWhere('a.authSource = :authSource')
             ->andWhere('a.contextId = :portalId')
             ->andWhere('a.username = :username')
+            ->orderBy('rp.creationDate', 'DESC')
             ->setParameters([
                 'portalId' => $portalId,
                 'username' => $account->getUsername(),
