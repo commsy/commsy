@@ -212,8 +212,10 @@ class AccountFilterType extends AbstractType
                 'class' => AuthSource::class,
                 'query_builder' => fn(EntityRepository $er): QueryBuilder => $er->createQueryBuilder('a')
                     ->where('a.portal = :portalId')
-                    ->setParameter('portalId', 1),
-                'choice_label' => 'title',
+                    ->andWhere('a.enabled = true')
+                    ->setParameter('portalId', $options['portalId']),
+                'choice_label' => fn (AuthSource $authSource): string =>
+                    "{$authSource->getTitle()} ({$authSource->getType()})",
                 'label' => 'authSource',
                 'translation_domain' => 'portal',
                 'placeholder' => 'All',
