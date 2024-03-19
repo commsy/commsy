@@ -460,10 +460,11 @@ class cs_dates_manager extends cs_manager
            $queryBuilder->orderBy('d.datetime_start', 'DESC');
        }
 
-       if (isset($this->_date_limit)) {
-           $queryBuilder->andWhere('a.creation_date <= :dateLimit');
-           $queryBuilder->andWhere('a.enddate >= :dateLimit');
-           $queryBuilder->setParameter('dateLimit', $this->_date_limit);
+       if ('select' == $mode) {
+           if (isset($this->_interval_limit) && isset($this->_from_limit)) {
+               $queryBuilder->setFirstResult($this->_from_limit);
+               $queryBuilder->setMaxResults($this->_interval_limit);
+           }
        }
 
        return $queryBuilder->fetchAllAssociative();
