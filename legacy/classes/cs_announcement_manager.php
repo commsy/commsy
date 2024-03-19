@@ -173,7 +173,7 @@ class cs_announcement_manager extends cs_manager
 
         if (isset($this->_sort_order) && in_array($this->_sort_order, ['assessment', 'assessment_rev'])) {
             $queryBuilder->addSelect('AVG(as.assessment) AS assessments_avg');
-            $queryBuilder->leftJoin('a', 'assessments', 'as', 'a.item_id = as.item_link_id AND as.deletion_date IS NULL');
+            $queryBuilder->leftJoin('a', 'assessments', '`as`', 'a.item_id = as.item_link_id AND as.deletion_date IS NULL');
             $queryBuilder->addGroupBy('a.item_id');
         }
 
@@ -234,6 +234,8 @@ class cs_announcement_manager extends cs_manager
                 $queryBuilder->setMaxResults($this->_interval_limit);
             }
         }
+
+        $test = $queryBuilder->getSQL();
 
         return $queryBuilder->fetchAllAssociative();
     }
