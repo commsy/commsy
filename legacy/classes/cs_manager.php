@@ -261,8 +261,10 @@ class cs_manager
        $this->_tag_limit = $limit;
    }
 
-   public function _getTagIDArrayByTagIDArray($array)
+   public function _getTagIDArrayByTagIDArray(?array $array): ?array
    {
+       if (!$array) return null;
+
        $id_array = [];
        $first_element = [];
        $tag2tag_manager = $this->_environment->getTag2TagManager();
