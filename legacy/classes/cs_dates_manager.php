@@ -661,34 +661,35 @@ class cs_dates_manager extends cs_manager
        }
    }
 
-   /** get a dates in newest version.
+   /** Returns the dates item of the given item ID.
     *
-    * @param int item_id id of the item
-    *
-    * @return \cs_dates_item a label
+    * @param int|null itemId ID of the item
     */
-   public function getItem($item_id = null)
+   public function getItem(?int $itemId): cs_dates_item
    {
+       if (empty($itemId)) {
+           return $this->getNewItem();
+       } elseif (!empty($this->_cache_object[$itemId])) {
+           return $this->_cache_object[$itemId];
+       }
+
+       $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+       $queryBuilder
+           ->select('d.*', 'i.pinned')
+           ->from($this->addDatabasePrefix($this->_db_table), 'd')
+           ->innerJoin('d', 'items', 'i', 'i.item_id = d.item_id')
+           ->where('d.item_id = :itemId')
+           ->setParameter('itemId', $itemId);
+
+       try {
+           $result = $queryBuilder->executeQuery()->fetchAllAssociative();
+       } catch (\Doctrine\DBAL\Exception $e) {
+           trigger_error('Problems selecting dates item (' . $itemId . '): ' . $e->getMessage(), E_USER_WARNING);
+       }
+
        $dates = null;
-       if (!is_null($item_id)) {
-           if (!empty($this->_cache_object[$item_id])) {
-               $dates = $this->_cache_object[$item_id];
-           } else {
-               $query = 'SELECT ' . $this->addDatabasePrefix('dates') . '.*, ' . $this->addDatabasePrefix('items') . '.pinned';
-               $query .= ' FROM ' . $this->addDatabasePrefix('dates');
-               $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON ' . $this->addDatabasePrefix('items') . '.item_id = ' . $this->addDatabasePrefix('dates') . '.item_id';
-               $query .= ' WHERE ' . $this->addDatabasePrefix('dates') . ".item_id = '" . encode(AS_DB, $item_id) . "'";
-               $result = $this->_db_connector->performQuery($query);
-               if (!isset($result)) {
-                   trigger_error('Problems selecting one dates item.', E_USER_WARNING);
-               } elseif (!empty($result[0])) {
-                   $dates = $this->_buildItem($result[0]);
-               } else {
-                   trigger_error('Dates item [' . $item_id . '] does not exist.', E_USER_WARNING);
-               }
-           }
-       } else {
-           $dates = $this->getNewItem();
+       if (!empty($result[0])) {
+           $dates = $this->_buildItem($result[0]);
        }
 
        return $dates;

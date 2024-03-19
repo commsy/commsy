@@ -833,28 +833,37 @@ class cs_user_manager extends cs_manager
         return new cs_user_item($this->_environment);
     }
 
-    /** get a user in newest version.
+    /** Returns the user item of the given item ID.
      *
-     * @param int item_id id of the item
+     * @param int|null itemId ID of the item
      */
-    public function getItem(?int $item_id): ?cs_user_item
+    public function getItem(?int $itemId): ?cs_user_item
     {
+        if (empty($itemId)) {
+            return null;
+        } elseif (!empty($this->_cache[$itemId])) {
+            return $this->_cache[$itemId];
+        }
+
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+        $queryBuilder
+            ->select('u.*', 'i.pinned')
+            ->from($this->addDatabasePrefix($this->_db_table), 'u')
+            ->innerJoin('u', 'items', 'i', 'i.item_id = u.item_id')
+            ->where('u.item_id = :itemId')
+            ->setParameter('itemId', $itemId);
+
+        try {
+            $result = $queryBuilder->executeQuery()->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            trigger_error('Problems selecting user item (' . $itemId . '): ' . $e->getMessage(), E_USER_WARNING);
+        }
+
         $user = null;
-        if (isset($this->_cache[$item_id])) {
-            $user = $this->_cache[$item_id];
-        } elseif (!empty($item_id)) {
-            $query = 'SELECT * FROM '.$this->addDatabasePrefix('user').' WHERE '.$this->addDatabasePrefix('user').".item_id = '".encode(AS_DB, $item_id)."'";
-            $result = $this->_db_connector->performQuery($query);
-            if (!isset($result)) {
-                trigger_error('Problems selecting one user item.', E_USER_WARNING);
-            } elseif (!empty($result[0])) {
-                $user = $this->_buildItem($result[0]);
-                unset($result);
-                if ($this->_cache_on
-                     and !array_key_exists($item_id, $this->_cache)
-                ) {
-                    $this->_cache[$item_id] = $user;
-                }
+        if (!empty($result[0])) {
+            $user = $this->_buildItem($result[0]);
+            if ($this->_cache_on) {
+                $this->_cache[$itemId] = $user;
             }
         }
 

@@ -330,42 +330,43 @@ class cs_discussion_manager extends cs_manager
         return new cs_discussion_item($this->_environment);
     }
 
-     /** get a discussion in newest version.
+     /** Returns the discussion item of the given item ID.
       *
-      * @param int item_id id of the item
-      *
-      * @return cs_discussion_item|null cs_item a label
-      *
-      * @throws \Doctrine\DBAL\Exception
+      * @param int|null itemId ID of the item
       */
-     public function getItem(?int $item_id): ?cs_discussion_item
+     public function getItem(?int $itemId): ?cs_discussion_item
      {
-         $discussion = null;
-         if (!empty($item_id)
-             and !empty($this->_cache_object[$item_id])
-         ) {
-             return $this->_cache_object[$item_id];
-         } elseif (array_key_exists($item_id, $this->_cached_items)) {
-             return $this->_buildItem($this->_cached_items[$item_id]);
-         } elseif (!empty($item_id)) {
-             $query = 'SELECT ' . $this->addDatabasePrefix('discussions') . '.*, ' . $this->addDatabasePrefix('items') . '.pinned';
-             $query .= ' FROM ' . $this->addDatabasePrefix('discussions');
-             $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON ' . $this->addDatabasePrefix('items') . '.item_id = ' . $this->addDatabasePrefix('discussions') . '.item_id';
-             $query .= ' WHERE ' . $this->addDatabasePrefix('discussions') . ".item_id = '" . encode(AS_DB, $item_id) . "'";
-             $result = $this->_db_connector->performQuery($query);
-             if (!isset($result)) {
-                 trigger_error('Problems selecting one discussions item (' . $item_id . ').', E_USER_WARNING);
-             } elseif (!empty($result[0])) {
-                 $discussion = $this->_buildItem($result[0]);
-                 if ($this->_cache_on) {
-                     $this->_cached_items[$item_id] = $result[0];
-                 }
-             }
-
-             return $discussion;
-         } else {
+         if (empty($itemId)) {
              return null;
+         } elseif (!empty($this->_cache_object[$itemId])) {
+             return $this->_cache_object[$itemId];
+         } elseif (array_key_exists($itemId, $this->_cached_items)) {
+             return $this->_buildItem($this->_cached_items[$itemId]);
          }
+
+         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+         $queryBuilder
+             ->select('d.*', 'i.pinned')
+             ->from($this->addDatabasePrefix($this->_db_table), 'd')
+             ->innerJoin('d', 'items', 'i', 'i.item_id = d.item_id')
+             ->where('d.item_id = :itemId')
+             ->setParameter('itemId', $itemId);
+
+         try {
+             $result = $queryBuilder->executeQuery()->fetchAllAssociative();
+         } catch (\Doctrine\DBAL\Exception $e) {
+             trigger_error('Problems selecting discussions item (' . $itemId . '): ' . $e->getMessage(), E_USER_WARNING);
+         }
+
+         $discussion = null;
+         if (!empty($result[0])) {
+             $discussion = $this->_buildItem($result[0]);
+             if ($this->_cache_on) {
+                 $this->_cached_items[$itemId] = $result[0];
+             }
+         }
+
+         return $discussion;
      }
 
     public function getItemList(array $id_array)
