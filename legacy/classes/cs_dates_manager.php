@@ -11,11 +11,16 @@
  * file that was distributed with this source code.
  */
 
+use App\Utils\DbalQueryBuilderTrait;
+use Doctrine\DBAL\ArrayParameterType;
+
 /** class for database connection to the database table "dates"
  * this class implements a database manager for the table "dates".
  */
 class cs_dates_manager extends cs_manager
 {
+    use DbalQueryBuilderTrait;
+
     /**
      * integer - containing the age of dates as a limit.
      */
@@ -40,9 +45,6 @@ class cs_dates_manager extends cs_manager
     public $_calendar_limit = null;
     public $_uid_limit = null;
     public $_recurrence_limit = null;
-
-    public $_month_limit = null;
-    public $_month_limit2 = null;
     public $_day_limit = null;
     public $_day_limit2 = null;
     public $_year_limit = null;
@@ -104,8 +106,6 @@ class cs_dates_manager extends cs_manager
        $this->_group_limit = null;
        $this->_topic_limit = null;
        $this->_sort_order = null;
-       $this->_month_limit = null;
-       $this->_month_limit2 = null;
        $this->_day_limit = null;
        $this->_day_limit2 = null;
        $this->_year_limit = null;
@@ -216,31 +216,6 @@ class cs_dates_manager extends cs_manager
        $this->_sort_order = (string) $order;
    }
 
-   public function setMonthLimit($month)
-   {
-       $this->_month_limit = $month;
-   }
-
-   public function setMonthLimit2($month)
-   {
-       $this->_month_limit2 = $month;
-   }
-
-   public function setDayLimit($day)
-   {
-       $this->_day_limit = $day;
-   }
-
-   public function setDayLimit2($day)
-   {
-       $this->_day_limit2 = $day;
-   }
-
-   public function setYearLimit($year)
-   {
-       $this->_year_limit = $year;
-   }
-
    public function setDateModeLimit($value)
    {
        if (3 == $value) {
@@ -278,387 +253,220 @@ class cs_dates_manager extends cs_manager
        $this->hideRecurringEntriesLimit = $hideRecurringEntriesLimit;
    }
 
-   public function _performQuery($mode = 'select')
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function _performQuery($mode = 'select')
    {
-       if ('count' == $mode) {
-           $query = 'SELECT count('.$this->addDatabasePrefix('dates').'.item_id) AS count';
-       } elseif ('id_array' == $mode) {
-           $query = 'SELECT '.$this->addDatabasePrefix('dates').'.item_id';
-       } elseif ('distinct' == $mode) {
-           $query = 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.*';
-       } else {
-           $query = 'SELECT '.$this->addDatabasePrefix('dates').'.*,
-         				(
-         					SELECT
-         						COUNT('.$this->addDatabasePrefix('annotations').'.item_id)
-         					FROM
-         						'.$this->addDatabasePrefix('annotations').'
-         					WHERE
-         						'.$this->addDatabasePrefix('annotations').'.linked_item_id = '.$this->addDatabasePrefix('dates').'.item_id
-         				) as count_annotations
-         ';
+       $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+       $queryBuilder->from('dates', 'd');
+
+       switch ($mode) {
+           case 'count':
+               $queryBuilder->select('COUNT(d.item_id) AS count');
+               break;
+           case 'id_array':
+               $queryBuilder->select('d.item_id');
+               break;
+           case 'distinct':
+               $queryBuilder->select('d.*');
+               $queryBuilder->distinct();
+               break;
+           default:
+               $queryBuilder->select('d.*');
        }
 
-       $query .= ' FROM '.$this->addDatabasePrefix('dates');
-       $query .= ' INNER JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('dates').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
+       $queryBuilder->innerJoin('d', 'items', 'i', 'i.item_id = d.item_id');
+       $queryBuilder->andWhere('i.draft != 1');
 
-       // dates restricted by topics
-       if (isset($this->_topic_limit)) {
-           if (-1 == $this->_topic_limit) {
-               $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON';
-               $query .= ' l21.deletion_date IS NULL';
-               if (isset($this->_room_limit)) {
-                   $query .= ' AND l21.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
-               }
-               $query .= ' AND (l21.first_item_type = "'.CS_TOPIC_TYPE.'" OR l21.second_item_TYPE = "'.CS_TOPIC_TYPE.'")';
-               $query .= ' AND (l21.first_item_id='.$this->addDatabasePrefix('dates').'.item_id OR l21.second_item_id='.$this->addDatabasePrefix('dates').'.item_id)';
-           // second part in where clause
-           } else {
-               $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON';
-               $query .= ' (l21.first_item_id = "'.encode(AS_DB, $this->_topic_limit).'" OR l21.second_item_id = "'.encode(AS_DB, $this->_topic_limit).'")';
-               $query .= ' AND l21.deletion_date IS NULL AND (l21.first_item_id='.$this->addDatabasePrefix('dates').'.item_id OR l21.second_item_id='.$this->addDatabasePrefix('dates').'.item_id)';
-           }
-       }
+       $this->addTopicLimit($queryBuilder, 'd', $this->_topic_limit);
+       $this->addGroupLimit($queryBuilder, 'd', $this->_group_limit);
+       $this->addTagLimit($queryBuilder, 'd', $this->_tag_limit);
+       $this->addBuzzwordLimit($queryBuilder, 'd', $this->_buzzword_limit);
+       $this->addRefIdLimit($queryBuilder, 'd', $this->_ref_id_limit);
+       $this->addInactiveEntriesLimit($queryBuilder, 'd', $this->inactiveEntriesLimit);
+       $this->addContextLimit($queryBuilder, 'd', $this->_room_array_limit ?? $this->_room_limit);
+       $this->addDeleteLimit($queryBuilder, 'd', $this->_delete_limit);
+       $this->addCreatorLimit($queryBuilder, 'd', $this->_ref_user_limit);
+       $this->addModifiedWithinLimit($queryBuilder, 'd', $this->_age_limit);
+       $this->addModifiedAfterLimit($queryBuilder, 'd', $this->modificationNewerThenLimit);
+       $this->addCreatedWithinLimit($queryBuilder, 'd', $this->_existence_limit);
+       $this->addIdLimit($queryBuilder, 'd', $this->_id_array_limit);
+       $this->addNotIdLimit($queryBuilder, 'd', $this->excludedIdsLimit);
 
        if (isset($this->_user_limit)) {
-           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS user_limit1 ON ( user_limit1.deletion_date IS NULL AND ((user_limit1.first_item_id='.$this->addDatabasePrefix('dates').'.item_id AND user_limit1.second_item_type="'.CS_USER_TYPE.'"))) ';
-           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS user_limit2 ON ( user_limit2.deletion_date IS NULL AND ((user_limit2.second_item_id='.$this->addDatabasePrefix('dates').'.item_id AND user_limit2.first_item_type="'.CS_USER_TYPE.'"))) ';
-       }
-       if (isset($this->_assignment_limit) and isset($this->_related_user_limit)) {
-           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS related_user_limit1 ON ( related_user_limit1.deletion_date IS NULL AND ((related_user_limit1.first_item_id='.$this->addDatabasePrefix('dates').'.item_id AND related_user_limit1.second_item_type="'.CS_USER_TYPE.'"))) ';
-           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS related_user_limit2 ON ( related_user_limit2.deletion_date IS NULL AND ((related_user_limit2.second_item_id='.$this->addDatabasePrefix('dates').'.item_id AND related_user_limit2.first_item_type="'.CS_USER_TYPE.'"))) ';
-       }
-       if (isset($this->_tag_limit)) {
-           $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
-           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('dates').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
-           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('dates').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
-       }
-       if (isset($this->_participant_limit)) {
-           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS participant_limit1 ON ( participant_limit1.deletion_date IS NULL AND ((participant_limit1.first_item_id='.$this->addDatabasePrefix('dates').'.item_id AND participant_limit1.second_item_type="'.CS_USER_TYPE.'"))) ';
-           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS participant_limit2 ON ( participant_limit2.deletion_date IS NULL AND ((participant_limit2.second_item_id='.$this->addDatabasePrefix('dates').'.item_id AND participant_limit2.first_item_type="'.CS_USER_TYPE.'"))) ';
-       }
+           $queryBuilder->leftJoin('d', 'link_items', 'user_limit1', 'user_limit1.deletion_date IS NULL AND user_limit1.first_item_id = d.item_id AND user_limit1.second_item_type = "user"');
+           $queryBuilder->leftJoin('d', 'link_items', 'user_limit2', 'user_limit2.deletion_date IS NULL AND user_limit2.second_item_id = d.item_id AND user_limit2.first_item_type = "user"');
 
-       // restrict dates by buzzword (la4)
-       if (isset($this->_buzzword_limit)) {
-           if (-1 == $this->_buzzword_limit) {
-               $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS l6 ON l6.from_item_id='.$this->addDatabasePrefix('dates').'.item_id AND l6.link_type="buzzword_for"';
-               $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
-           } else {
-               $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS l6 ON l6.from_item_id='.$this->addDatabasePrefix('dates').'.item_id AND l6.link_type="buzzword_for"';
-               $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
-           }
-       }
-
-       // dates restricted by groups
-       if (isset($this->_group_limit)) {
-           if (-1 == $this->_group_limit) {
-               $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON';
-               $query .= ' l31.deletion_date IS NULL';
-               if (isset($this->_room_limit)) {
-                   $query .= ' AND l31.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
-               }
-               $query .= ' AND (l31.first_item_type = "'.CS_GROUP_TYPE.'" OR l31.second_item_TYPE = "'.CS_GROUP_TYPE.'")';
-               $query .= ' AND (l31.first_item_id='.$this->addDatabasePrefix('dates').'.item_id OR l31.second_item_id='.$this->addDatabasePrefix('dates').'.item_id)';
-           // second part in where clause
-           } else {
-               $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON';
-               $query .= ' (l31.first_item_id = "'.encode(AS_DB, $this->_group_limit).'" OR l31.second_item_id = "'.encode(AS_DB, $this->_group_limit).'")';
-               $query .= ' AND l31.deletion_date IS NULL AND (l31.first_item_id='.$this->addDatabasePrefix('dates').'.item_id OR l31.second_item_id='.$this->addDatabasePrefix('dates').'.item_id)';
-           }
-       }
-
-       if (isset($this->_ref_id_limit)) {
-           $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS l5 ON ( (l5.first_item_id='.$this->addDatabasePrefix('dates').'.item_id AND l5.second_item_id="'.encode(AS_DB, $this->_ref_id_limit).'")
-                     OR(l5.second_item_id='.$this->addDatabasePrefix('dates').'.item_id AND l5.first_item_id="'.encode(AS_DB, $this->_ref_id_limit).'") AND l5.deleter_id IS NULL)';
-       }
-
-       $query .= ' WHERE 1';
-
-       switch ($this->inactiveEntriesLimit) {
-           case self::SHOW_ENTRIES_ONLY_ACTIVATED:
-               $query .= ' AND ('.$this->addDatabasePrefix('dates').'.activation_date IS NULL OR '.$this->addDatabasePrefix('dates').'.activation_date <= "'.getCurrentDateTimeInMySQL().'")';
-               break;
-           case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
-               $query .= ' AND ('.$this->addDatabasePrefix('dates').'.activation_date IS NOT NULL AND '.$this->addDatabasePrefix('dates').'.activation_date > "'.getCurrentDateTimeInMySQL().'")';
-               break;
-       }
-
-       // fifth, insert limits into the select statement
-       if ($this->_future_limit) {
-           // $query .= ' AND (dates.datetime_end > NOW() OR dates.datetime_start > NOW())'; // this will not get all dates today
-           $date = date('Y-m-d').' 00:00:00';
-           $query .= ' AND ('.$this->addDatabasePrefix('dates').'.datetime_end >= "'.encode(AS_DB, $date).'" OR ('.$this->addDatabasePrefix('dates').'.datetime_end="0000-00-00 00:00:00" AND '.$this->addDatabasePrefix('dates').'.datetime_start >= "'.encode(AS_DB, $date).'") )';
-       }
-
-       if (isset($this->_room_array_limit) and !empty($this->_room_array_limit)) {
-           $query .= ' AND '.$this->addDatabasePrefix('dates').'.context_id IN ('.implode(', ', $this->_room_array_limit).')';
-       } elseif (isset($this->_room_limit)) {
-           $query .= ' AND '.$this->addDatabasePrefix('dates').'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
-       }
-
-       if (true == $this->_delete_limit) {
-           $query .= ' AND '.$this->addDatabasePrefix('dates').'.deleter_id IS NULL';
-       }
-       if (isset($this->_ref_user_limit)) {
-           $query .= ' AND '.$this->addDatabasePrefix('dates').'.creator_id = "'.encode(AS_DB, $this->_ref_user_limit).'"';
-       }
-       if (isset($this->_age_limit)) {
-           $query .= ' AND '.$this->addDatabasePrefix('dates').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_age_limit).' day)';
-       }
-       if (isset($this->_color_limit)) {
-           $query .= ' AND '.$this->addDatabasePrefix('dates').'.color = "'.encode(AS_DB, $this->_color_limit).'"';
-       }
-       if (isset($this->_calendar_limit)) {
-           $query .= ' AND '.$this->addDatabasePrefix('dates').'.calendar_id IN ('.implode(', ', $this->_calendar_limit).')';
-       }
-       if (isset($this->_uid_limit)) {
-           $query .= ' AND '.$this->addDatabasePrefix('dates').'.uid IN ('.implode(', ', $this->_uid_limit).')';
-       }
-       if (isset($this->_recurrence_limit)) {
-           $query .= ' AND '.$this->addDatabasePrefix('dates').'.recurrence_id = "'.encode(AS_DB, $this->_recurrence_limit).'"';
-       }
-       if (isset($this->_existence_limit)) {
-           $query .= ' AND '.$this->addDatabasePrefix('dates').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_existence_limit).' day)';
-       }
-
-       // dates restricted by topics, second part
-       if (isset($this->_topic_limit) and -1 == $this->_topic_limit) {
-           $query .= ' AND l21.first_item_id IS NULL AND l21.second_item_id IS NULL';
-       }
-
-       if (isset($this->_institution_limit)) {
-           if (-1 == $this->_institution_limit) {
-               $query .= ' AND (l121.first_item_id IS NULL AND l121.second_item_id IS NULL)';
-               $query .= ' AND (l122.first_item_id IS NULL AND l122.second_item_id IS NULL)';
-           } else {
-               $query .= ' AND ((l121.first_item_id = "'.encode(AS_DB, $this->_institution_limit).'" OR l121.second_item_id = "'.encode(AS_DB, $this->_institution_limit).'")';
-               $query .= ' OR (l122.second_item_id = "'.encode(AS_DB, $this->_institution_limit).'" OR l122.first_item_id = "'.encode(AS_DB, $this->_institution_limit).'"))';
-           }
-       }
-       if (isset($this->_user_limit)) {
            if (-1 == $this->_user_limit) {
-               $query .= ' AND (user_limit1.first_item_id IS NULL AND user_limit1.second_item_id IS NULL)';
-               $query .= ' AND (user_limit2.first_item_id IS NULL AND user_limit2.second_item_id IS NULL)';
+               $queryBuilder->andWhere('user_limit1.first_item_id IS NULL AND user_limit1.second_item_id IS NULL');
+               $queryBuilder->andWhere('user_limit2.first_item_id IS NULL AND user_limit2.second_item_id IS NULL');
            } else {
-               $query .= ' AND ((user_limit1.first_item_id = "'.encode(AS_DB, $this->_user_limit).'" OR user_limit1.second_item_id = "'.encode(AS_DB, $this->_user_limit).'")';
-               $query .= ' OR (user_limit2.first_item_id = "'.encode(AS_DB, $this->_user_limit).'" OR user_limit2.second_item_id = "'.encode(AS_DB, $this->_user_limit).'"))';
+               $queryBuilder->andWhere(
+                   $queryBuilder->expr()->or(
+                       'user_limit1.first_item_id = :userLimit OR user_limit1.second_item_id = :userLimit',
+                       'user_limit2.first_item_id = :userLimit OR user_limit2.second_item_id = :userLimit'
+                   )
+               );
+               $queryBuilder->setParameter('userLimit', $this->_user_limit);
            }
        }
 
-       if (isset($this->_assignment_limit) and isset($this->_related_user_limit)) {
-           $query .= ' AND ( (related_user_limit1.first_item_id IN ('.implode(', ', $this->_related_user_limit).') OR related_user_limit1.second_item_id IN ('.implode(', ', $this->_related_user_limit).') )';
-           $query .= ' OR  (related_user_limit2.first_item_id IN ('.implode(', ', $this->_related_user_limit).') OR related_user_limit2.second_item_id IN ('.implode(', ', $this->_related_user_limit).') ))';
-       }
+       if (isset($this->_assignment_limit) && isset($this->_related_user_limit)) {
+           $queryBuilder->leftJoin('d', 'link_items', 'related_user_limit1', 'related_user_limit1.deletion_date IS NULL AND related_user_limit1.first_item_id = d.item_id AND related_user_limit1.second_item_type = "user"');
+           $queryBuilder->leftJoin('d', 'link_items', 'related_user_limit2', 'related_user_limit2.deletion_date IS NULL AND related_user_limit2.second_item_id = d.item_id AND related_user_limit2.first_item_type = "user"');
 
-       // dates restricted by groups, second part
-       if (isset($this->_group_limit) and -1 == $this->_group_limit) {
-           $query .= ' AND l31.first_item_id IS NULL AND l31.second_item_id IS NULL';
-       }
-
-       if (isset($this->_tag_limit)) {
-           $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
-           $id_string = implode(', ', $tag_id_array);
-           if (isset($tag_id_array[0]) and -1 == $tag_id_array[0]) {
-               $query .= ' AND (l41.first_item_id IS NULL AND l41.second_item_id IS NULL)';
-               $query .= ' AND (l42.first_item_id IS NULL AND l42.second_item_id IS NULL)';
-           } else {
-               $query .= ' AND ( (l41.first_item_id IN ('.encode(AS_DB, $id_string).') OR l41.second_item_id IN ('.encode(AS_DB, $id_string).') )';
-               $query .= ' OR (l42.first_item_id IN ('.encode(AS_DB, $id_string).') OR l42.second_item_id IN ('.encode(AS_DB, $id_string).') ))';
-           }
-       }
-
-       if (isset($this->_buzzword_limit)) {
-           if (-1 == $this->_buzzword_limit) {
-               $query .= ' AND (l6.to_item_id IS NULL OR l6.deletion_date IS NOT NULL)';
-           } else {
-               $query .= ' AND buzzwords.item_id="'.encode(AS_DB, $this->_buzzword_limit).'"';
-           }
+           $queryBuilder->andWhere(
+               $queryBuilder->expr()->or(
+                   $queryBuilder->expr()->or(
+                       $queryBuilder->expr()->in('related_user_limit1.first_item_id', ':relatedUserLimit'),
+                       $queryBuilder->expr()->in('related_user_limit1.second_item_id', ':relatedUserLimit')
+                   ),
+                   $queryBuilder->expr()->or(
+                       $queryBuilder->expr()->in('related_user_limit2.first_item_id', ':relatedUserLimit'),
+                       $queryBuilder->expr()->in('related_user_limit2.second_item_id', ':relatedUserLimit')
+                   )
+               )
+           );
+           $queryBuilder->setParameter('relatedUserLimit', $this->_related_user_limit, ArrayParameterType::INTEGER);
        }
 
        if (isset($this->_participant_limit)) {
-           $id_string = implode(', ', $this->_participant_limit);
+           $queryBuilder->leftJoin('d', 'link_items', 'participant_limit1', 'participant_limit1.deletion_date IS NULL AND participant_limit1.first_item_id = d.item_id AND participant_limit1.second_item_type = "user"');
+           $queryBuilder->leftJoin('d', 'link_items', 'participant_limit2', 'participant_limit2.deletion_date IS NULL AND participant_limit2.second_item_id = d.item_id AND participant_limit2.first_item_type = "user"');
 
            if (-1 == $this->_participant_limit) {
-               $query .= ' AND (participant_limit1.first_item_id IS NULL AND participant_limit1.second_item_id IS NULL)';
-               $query .= ' AND (participant_limit2.first_item_id IS NULL AND participant_limit2.second_item_id IS NULL)';
+               $queryBuilder->andWhere('participant_limit1.first_item_id IS NULL AND participant_limit1.second_item_id IS NULL');
+               $queryBuilder->andWhere('participant_limit2.first_item_id IS NULL AND participant_limit2.second_item_id IS NULL');
            } else {
-               $query .= ' AND ( (participant_limit1.first_item_id IN ('.encode(AS_DB, $id_string).') OR participant_limit1.second_item_id IN ('.encode(AS_DB, $id_string).') )';
-               $query .= ' OR (participant_limit2.first_item_id IN ('.encode(AS_DB, $id_string).') OR participant_limit2.second_item_id IN ('.encode(AS_DB, $id_string).') ))';
+               $queryBuilder->andWhere(
+                   $queryBuilder->expr()->or(
+                       $queryBuilder->expr()->in('participant_limit1.first_item_id', ':participantLimit'),
+                       $queryBuilder->expr()->in('participant_limit1.second_item_id', ':participantLimit'),
+                       $queryBuilder->expr()->in('participant_limit2.first_item_id', ':participantLimit'),
+                       $queryBuilder->expr()->in('participant_limit2.second_item_id', ':participantLimit'),
+                   )
+               );
+               $queryBuilder->setParameter('participantLimit', $this->_participant_limit, ArrayParameterType::INTEGER);
            }
+       }
+
+       if ($this->_future_limit) {
+           $queryBuilder->andWhere(
+               $queryBuilder->expr()->or(
+                   $queryBuilder->expr()->gte('d.datetime_end', 'CURRENT_DATE()'),
+                   $queryBuilder->expr()->and(
+                       $queryBuilder->expr()->eq('d.datetime_end', ':zeroDate'),
+                       $queryBuilder->expr()->gte('d.datetime_start', 'CURRENT_DATE()')
+                   )
+               )
+           );
+           $queryBuilder->setParameter('zeroDate', '0000-00-00 00:00:00');
+       }
+
+       if (isset($this->_color_limit)) {
+           $queryBuilder->andWhere('d.color = :colorLimit');
+           $queryBuilder->setParameter('colorLimit', $this->_color_limit);
+       }
+
+       if (isset($this->_calendar_limit)) {
+           $queryBuilder->andWhere($queryBuilder->expr()->in('d.calendar_id', ':calendarLimit'));
+           $queryBuilder->setParameter('calendarLimit', $this->_calendar_limit, ArrayParameterType::INTEGER);
+       }
+
+       if (isset($this->_uid_limit)) {
+           $queryBuilder->andWhere($queryBuilder->expr()->in('d.uid', ':uidLimit'));
+           $queryBuilder->setParameter('uidLimit', $this->_uid_limit, ArrayParameterType::STRING);
+       }
+
+       if (isset($this->_recurrence_limit)) {
+           $queryBuilder->andWhere('d.recurrence_id = :recurrenceLimit');
+           $queryBuilder->setParameter('recurrenceLimit', $this->_recurrence_limit);
        }
 
        if (isset($this->_day_limit)) {
-           $query .= ' AND DAYOFMONTH('.$this->addDatabasePrefix('dates').'.start_day) = "'.encode(AS_DB, $this->_day_limit).'"';
+           $queryBuilder->andWhere('DAYOFMONTH(d.start_day) = :dayLimit');
+           $queryBuilder->setParameter('dayLimit', $this->_day_limit);
        }
 
-       if (isset($this->_month_limit) and isset($this->_year_limit)) {
-           $string_start_day = $this->_year_limit.'-'.sprintf('%02d', $this->_month_limit).'-01';
-           $string_end_day = $this->_year_limit.'-'.sprintf('%02d', $this->_month_limit).'-'.daysInMonth($this->_month_limit, $this->_year_limit);
-           $query .= ' AND ( '.
-                  ' ('.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_start_day).'" AND "'.encode(AS_DB, $string_end_day).'" <= '.$this->addDatabasePrefix('dates').'.end_day AND ('.$this->addDatabasePrefix('dates').'.end_day IS NOT NULL OR '.$this->addDatabasePrefix('dates').'.end_day !=""))'.
-                            ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.start_day AND '.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_end_day).'")'.
-                            ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.end_day AND '.$this->addDatabasePrefix('dates').'.end_day <="'.encode(AS_DB, $string_end_day).'")'.
-                     ')';
-       } elseif (isset($this->_month_limit2) and isset($this->_year_limit)) {
-           $string_start_day = $this->_year_limit.'-'.sprintf('%02d', $this->_month_limit2).'-01';
-           $string_end_day = $this->_year_limit.'-'.sprintf('%02d', $this->_month_limit2).'-'.daysInMonth($this->_month_limit2, $this->_year_limit);
-           $query .= ' AND ( '.
-                   ' ('.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_start_day).'" AND "'.encode(AS_DB, $string_end_day).'" <= '.$this->addDatabasePrefix('dates').'.end_day AND ('.$this->addDatabasePrefix('dates').'.end_day IS NOT NULL OR '.$this->addDatabasePrefix('dates').'.end_day !=""))'.
-                             ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.start_day AND '.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_end_day).'")'.
-                             ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.end_day AND '.$this->addDatabasePrefix('dates').'.end_day <="'.encode(AS_DB, $string_end_day).'")'.
-                      '';
-           if (1 == $this->_month_limit2) {
-               $year = $this->_year_limit - 1;
-               $string_start_day = $year.'-'.sprintf('%02d', 12).'-01';
-               $string_end_day = $year.'-'.sprintf('%02d', 12).'-'.daysInMonth(12, $year);
-               $query .= ' OR ( '.
-                   ' ('.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_start_day).'" AND "'.encode(AS_DB, $string_end_day).'" <= '.$this->addDatabasePrefix('dates').'.end_day AND ('.$this->addDatabasePrefix('dates').'.end_day IS NOT NULL OR '.$this->addDatabasePrefix('dates').'.end_day !=""))'.
-                             ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.start_day AND '.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_end_day).'")'.
-                             ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.end_day AND '.$this->addDatabasePrefix('dates').'.end_day <="'.encode(AS_DB, $string_end_day).'")'.
-                      ')';
-               $string_start_day = $this->_year_limit.'-'.sprintf('%02d', 2).'-01';
-               $string_end_day = $this->_year_limit.'-'.sprintf('%02d', 2).'-'.daysInMonth(2, $this->_year_limit);
-               $query .= ' OR ( '.
-                   ' ('.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_start_day).'" AND "'.encode(AS_DB, $string_end_day).'" <= '.$this->addDatabasePrefix('dates').'.end_day AND ('.$this->addDatabasePrefix('dates').'.end_day IS NOT NULL OR '.$this->addDatabasePrefix('dates').'.end_day !=""))'.
-                             ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.start_day AND '.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_end_day).'")'.
-                             ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.end_day AND '.$this->addDatabasePrefix('dates').'.end_day <="'.encode(AS_DB, $string_end_day).'")'.
-                      ')';
-           } elseif (12 == $this->_month_limit2) {
-               $year = $this->_year_limit + 1;
-               $string_start_day = $year.'-'.sprintf('%02d', 1).'-01';
-               $string_end_day = $year.'-'.sprintf('%02d', 1).'-'.daysInMonth(1, $year);
-               $query .= ' OR ( '.
-                   ' ('.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_start_day).'" AND "'.encode(AS_DB, $string_end_day).'" <= '.$this->addDatabasePrefix('dates').'.end_day AND ('.$this->addDatabasePrefix('dates').'.end_day IS NOT NULL OR '.$this->addDatabasePrefix('dates').'.end_day !=""))'.
-                             ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.start_day AND '.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_end_day).'")'.
-                             ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.end_day AND '.$this->addDatabasePrefix('dates').'.end_day <="'.encode(AS_DB, $string_end_day).'")'.
-                      ')';
-               $string_start_day = $this->_year_limit.'-'.sprintf('%02d', 11).'-01';
-               $string_end_day = $this->_year_limit.'-'.sprintf('%02d', 11).'-'.daysInMonth(11, $this->_year_limit);
-               $query .= ' OR ( '.
-                   ' ('.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_start_day).'" AND "'.encode(AS_DB, $string_end_day).'" <= '.$this->addDatabasePrefix('dates').'.end_day AND ('.$this->addDatabasePrefix('dates').'.end_day IS NOT NULL OR '.$this->addDatabasePrefix('dates').'.end_day !=""))'.
-                             ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.start_day AND '.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_end_day).'")'.
-                             ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.end_day AND '.$this->addDatabasePrefix('dates').'.end_day <="'.encode(AS_DB, $string_end_day).'")'.
-                      ')';
-           } else {
-               $month = $this->_month_limit2 - 1;
-               $string_start_day = $this->_year_limit.'-'.sprintf('%02d', $month).'-01';
-               $string_end_day = $this->_year_limit.'-'.sprintf('%02d', $month).'-'.daysInMonth($this->_month_limit2, $this->_year_limit);
-               $query .= ' OR ( '.
-                   ' ('.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_start_day).'" AND "'.encode(AS_DB, $string_end_day).'" <= '.$this->addDatabasePrefix('dates').'.end_day AND ('.$this->addDatabasePrefix('dates').'.end_day IS NOT NULL OR '.$this->addDatabasePrefix('dates').'.end_day !=""))'.
-                             ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.start_day AND '.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_end_day).'")'.
-                             ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.end_day AND '.$this->addDatabasePrefix('dates').'.end_day <="'.encode(AS_DB, $string_end_day).'")'.
-                      ')';
-               $month = $this->_month_limit2 + 1;
-               $string_start_day = $this->_year_limit.'-'.sprintf('%02d', $month).'-01';
-               $string_end_day = $this->_year_limit.'-'.sprintf('%02d', $month).'-'.daysInMonth($month, $this->_year_limit);
-               $query .= ' OR ( '.
-                   ' ('.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_start_day).'" AND "'.encode(AS_DB, $string_end_day).'" <= '.$this->addDatabasePrefix('dates').'.end_day AND ('.$this->addDatabasePrefix('dates').'.end_day IS NOT NULL OR '.$this->addDatabasePrefix('dates').'.end_day !=""))'.
-                             ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.start_day AND '.$this->addDatabasePrefix('dates').'.start_day <="'.encode(AS_DB, $string_end_day).'")'.
-                             ' OR ("'.encode(AS_DB, $string_start_day).'"<= '.$this->addDatabasePrefix('dates').'.end_day AND '.$this->addDatabasePrefix('dates').'.end_day <="'.encode(AS_DB, $string_end_day).'")'.
-                      ')';
-           }
-           $query .= ' )';
+       if (isset($this->_date_mode_limit) && $this->_date_mode_limit != 2 && empty($this->_id_array_limit)) {
+           $queryBuilder->andWhere('d.date_mode = :dateModeLimit');
+           $queryBuilder->setParameter('dateModeLimit', $this->_date_mode_limit);
        }
 
-       if (isset($this->_date_mode_limit)
-            and 2 != $this->_date_mode_limit
-            and empty($this->_id_array_limit)
-       ) {
-           $query .= ' AND '.$this->addDatabasePrefix('dates').'.date_mode="'.encode(AS_DB, $this->_date_mode_limit).'"';
-       }
-
-       if (!empty($this->_id_array_limit)) {
-           $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', encode(AS_DB, $this->_id_array_limit)).')';
-       }
-
-       // $this->_not_older_than_limit
        if (isset($this->_not_older_than_limit)) {
-           $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.datetime_start > "'.$this->_not_older_than_limit.'"';
+           $queryBuilder->andWhere('d.datetime_start > :startLimit');
+           $queryBuilder->setParameter('startLimit', $this->_not_older_than_limit);
        }
 
-       if (isset($this->_between_limit) && !empty($this->_between_limit)) {
-           $query .= '
-      			AND
-      			(
-      				(
-      					'.$this->addDatabasePrefix($this->_db_table).".datetime_start <= '".$this->_between_limit['start']."' AND
-      					".$this->addDatabasePrefix($this->_db_table).".datetime_end >= '".$this->_between_limit['end']."'
-      				)
-      				OR
-      				(
-      					".$this->addDatabasePrefix($this->_db_table).".datetime_start <= '".$this->_between_limit['end']."' AND
-      					".$this->addDatabasePrefix($this->_db_table).".datetime_end >= '".$this->_between_limit['end']."'
-      				)
-      				OR
-      				(
-      					".$this->addDatabasePrefix($this->_db_table).".datetime_start <= '".$this->_between_limit['start']."' AND
-      					".$this->addDatabasePrefix($this->_db_table).".datetime_end >= '".$this->_between_limit['start']."'
-      				)
-      				OR
-      				(
-      					".$this->addDatabasePrefix($this->_db_table).".datetime_start >= '".$this->_between_limit['start']."' AND
-      					".$this->addDatabasePrefix($this->_db_table).".datetime_end <= '".$this->_between_limit['end']."'
-      				)
-      			)
-      		";
-       } elseif (isset($this->_from_date_limit) && !empty($this->_from_date_limit)) {
-           $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).".datetime_start >= '".$this->_from_date_limit."'";
-       } elseif (isset($this->_until_date_limit) && !empty($this->_until_date_limit)) {
-           $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).".datetime_end <= '".$this->_until_date_limit."'";
+       if (!empty($this->_between_limit)) {
+           $queryBuilder->andWhere(
+               $queryBuilder->expr()->or(
+                   $queryBuilder->expr()->and(
+                       $queryBuilder->expr()->lte('d.datetime_start', ':startLimit'),
+                       $queryBuilder->expr()->gte('d.datetime_end', ':endLimit')
+                   ),
+                   $queryBuilder->expr()->and(
+                       $queryBuilder->expr()->lte('d.datetime_start', ':endLimit'),
+                       $queryBuilder->expr()->gte('d.datetime_end', ':endLimit')
+                   ),
+                   $queryBuilder->expr()->and(
+                       $queryBuilder->expr()->lte('d.datetime_start', ':startLimit'),
+                       $queryBuilder->expr()->gte('d.datetime_end', ':startLimit')
+                   ),
+                   $queryBuilder->expr()->and(
+                       $queryBuilder->expr()->gte('d.datetime_start', ':startLimit'),
+                       $queryBuilder->expr()->lte('d.datetime_end', ':endLimit')
+                   )
+               )
+           );
+           $queryBuilder->setParameter('startLimit', $this->_between_limit['start']);
+           $queryBuilder->setParameter('endLimit', $this->_between_limit['end']);
+       } elseif (!empty($this->_from_date_limit)) {
+           $queryBuilder->andWhere('d.datetime_start >= :dateLimit');
+           $queryBuilder->setParameter('dateLimit', $this->_from_date_limit);
+       } elseif (!empty($this->_until_date_limit)) {
+           $queryBuilder->andWhere('d.datetime_end <= :dateLimit');
+           $queryBuilder->setParameter('dateLimit', $this->_until_date_limit);
        }
 
        if (!$this->externalLimit) {
-           $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.external = "0"';
+           $queryBuilder->andWhere('d.external = 0');
        }
 
        if ($this->hideRecurringEntriesLimit) {
-           $databasePrefix = $this->addDatabasePrefix($this->_db_table);
-           $query .= ' AND ('.$databasePrefix.'.recurrence_id IS NULL OR '.$databasePrefix.'.recurrence_id = '.$databasePrefix.'.item_id)';
-       }
-
-       if ($this->modificationNewerThenLimit) {
-           $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.modification_date >= "'.$this->modificationNewerThenLimit->format('Y-m-d H:i:s').'"';
-       }
-
-       if ($this->excludedIdsLimit) {
-           $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id NOT IN ('.implode(', ', encode(AS_DB, $this->excludedIdsLimit)).')';
+           $queryBuilder->andWhere('d.recurrence_id IS NULL OR d.recurrence_id = d.item_id');
        }
 
        if (isset($this->_sort_order)) {
            if ('place' == $this->_sort_order) {
-               $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.place ASC';
+               $queryBuilder->orderBy('d.place');
            } elseif ('place_rev' == $this->_sort_order) {
-               $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.place DESC';
+               $queryBuilder->orderBy('d.place', 'DESC');
            } elseif ('time' == $this->_sort_order) {
-               $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.datetime_start ASC';
+               $queryBuilder->orderBy('d.datetime_start');
            } elseif ('time_rev' == $this->_sort_order) {
-               $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.datetime_start DESC';
+               $queryBuilder->orderBy('d.datetime_start', 'DESC');
            } elseif ('title' == $this->_sort_order) {
-               $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.title ASC';
+               $queryBuilder->orderBy('d.title');
            } elseif ('title_rev' == $this->_sort_order) {
-               $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.title DESC';
+               $queryBuilder->orderBy('d.title', 'DESC');
            } elseif ('date' == $this->_sort_order) {
-               $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.modification_date DESC';
+               $queryBuilder->orderBy('d.modification_date', 'DESC');
            }
        } elseif ($this->_future_limit) {
-           $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.datetime_start ASC';
+           $queryBuilder->orderBy('d.datetime_start');
        } else {
-           $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.datetime_start DESC';
+           $queryBuilder->orderBy('d.datetime_start', 'DESC');
        }
 
-       if ('select' == $mode) {
-           if (isset($this->_interval_limit) and isset($this->_from_limit)) {
-               $query .= ' LIMIT '.encode(AS_DB, $this->_from_limit).', '.encode(AS_DB, $this->_interval_limit);
-           }
+       if (isset($this->_date_limit)) {
+           $queryBuilder->andWhere('a.creation_date <= :dateLimit');
+           $queryBuilder->andWhere('a.enddate >= :dateLimit');
+           $queryBuilder->setParameter('dateLimit', $this->_date_limit);
        }
 
-       // perform query
-       $result = $this->_db_connector->performQuery($query);
-       if (!isset($result)) {
-           trigger_error('Problems selecting dates.', E_USER_WARNING);
-       } else {
-           return $result;
-       }
+       return $queryBuilder->fetchAllAssociative();
    }
 
    /** Returns the dates item of the given item ID.

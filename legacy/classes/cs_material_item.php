@@ -15,6 +15,8 @@
  */
 
 use App\Entity\Materials;
+use App\Event\ItemDeletedEvent;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for a material
  * this class implements a material item.
@@ -979,11 +981,11 @@ class cs_material_item extends cs_item
      {
          global $symfonyContainer;
 
-         /** @var EventDispatcher $eventDispatcer */
-         $eventDispatcer = $symfonyContainer->get('event_dispatcher');
+         /** @var EventDispatcher $eventDispatcher */
+         $eventDispatcher = $symfonyContainer->get('event_dispatcher');
 
-         $itemDeletedEvent = new \App\Event\ItemDeletedEvent($this);
-         $eventDispatcer->dispatch($itemDeletedEvent, \App\Event\ItemDeletedEvent::NAME);
+         $itemDeletedEvent = new ItemDeletedEvent($this);
+         $eventDispatcher->dispatch($itemDeletedEvent, ItemDeletedEvent::NAME);
 
          // delete associated tasks
          $task_list = $this->_getTaskList();

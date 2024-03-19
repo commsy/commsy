@@ -21,9 +21,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Discussions.
- */
 #[ORM\Entity]
 #[ORM\Table(name: 'discussions')]
 #[ORM\Index(columns: ['context_id'], name: 'context_id')]
