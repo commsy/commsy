@@ -31,12 +31,16 @@
 //
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
+use App\Utils\DbalQueryBuilderTrait;
+use Doctrine\DBAL\ArrayParameterType;
 
 /** class for database connection to the database table "todo"
  * this class implements a database manager for the table "todo".
  */
 class cs_todos_manager extends cs_manager
 {
+    use DbalQueryBuilderTrait;
+
     public $_age_limit = null;
     public $_future_limit = null;
     public $_from_limit = null;
@@ -146,216 +150,148 @@ class cs_todos_manager extends cs_manager
         $this->_sort_order = (string) $order;
     }
 
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
     public function _performQuery($mode = 'select')
     {
-        if ('count' == $mode) {
-            $query = 'SELECT count('.$this->addDatabasePrefix('todos').'.item_id) AS count';
-        } elseif ('id_array' == $mode) {
-            $query = 'SELECT '.$this->addDatabasePrefix('todos').'.item_id';
-        } elseif ('distinct' == $mode) {
-            $query = 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.*';
-        } else {
-            $query = 'SELECT '.$this->addDatabasePrefix('todos').'.*';
-        }
-        $query .= ' FROM '.$this->addDatabasePrefix('todos');
-        $query .= ' INNER JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('todos').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+        $queryBuilder->from('todos', 't');
 
-        if (isset($this->_topic_limit)) {
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
+        switch ($mode) {
+            case 'count':
+                $queryBuilder->select('COUNT(t.item_id) AS count');
+                break;
+            case 'id_array':
+                $queryBuilder->select('t.item_id');
+                break;
+            case 'distinct':
+                $queryBuilder->select('t.*');
+                $queryBuilder->distinct();
+                break;
+            default:
+                $queryBuilder->select('t.*');
         }
-        if (isset($this->_group_limit)) {
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l31.second_item_type="'.CS_GROUP_TYPE.'"))) ';
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
+
+        $queryBuilder->innerJoin('t', 'items', 'i', 'i.item_id = t.item_id');
+        $queryBuilder->andWhere('i.draft != 1');
+
+        if (isset($this->_sort_order) && in_array($this->_sort_order, ['creator', 'creator_rev', 'modificator', 'modificator_rev'])) {
+            $queryBuilder->innerJoin('t', 'user', 'creator', 't.creator_id = creator.item_id');
+            $queryBuilder->innerJoin('t', 'user', 'modificator', 't.modifier_id = modificator.item_id');
         }
+
+        $this->addTopicLimit($queryBuilder, 't', $this->_topic_limit);
+        $this->addGroupLimit($queryBuilder, 't', $this->_group_limit);
+        $this->addTagLimit($queryBuilder, 't', $this->_getTagIDArrayByTagIDArray($this->_tag_limit));
+        $this->addBuzzwordLimit($queryBuilder, 't', $this->_buzzword_limit);
+        $this->addRefIdLimit($queryBuilder, 't', $this->_ref_id_limit);
+        $this->addInactiveEntriesLimit($queryBuilder, 't', $this->inactiveEntriesLimit);
+        $this->addContextLimit($queryBuilder, 't', $this->_room_array_limit ?? $this->_room_limit);
+        $this->addDeleteLimit($queryBuilder, 't', $this->_delete_limit);
+        $this->addCreatorLimit($queryBuilder, 't', $this->_ref_user_limit);
+        $this->addModifiedWithinLimit($queryBuilder, 't', $this->_age_limit);
+        $this->addModifiedAfterLimit($queryBuilder, 't', $this->modificationNewerThenLimit);
+        $this->addCreatedWithinLimit($queryBuilder, 't', $this->_existence_limit);
+        $this->addIdLimit($queryBuilder, 't', $this->_id_array_limit);
+        $this->addNotIdLimit($queryBuilder, 't', $this->excludedIdsLimit);
 
         if (isset($this->_user_limit)) {
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS user_limit1 ON ( user_limit1.deletion_date IS NULL AND ((user_limit1.first_item_id='.$this->addDatabasePrefix('todos').'.item_id AND user_limit1.second_item_type="'.CS_USER_TYPE.'"))) ';
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS user_limit2 ON ( user_limit2.deletion_date IS NULL AND ((user_limit2.second_item_id='.$this->addDatabasePrefix('todos').'.item_id AND user_limit2.first_item_type="'.CS_USER_TYPE.'"))) ';
-        }
+            $queryBuilder->leftJoin('t', 'link_items', 'user_limit1', 'user_limit1.deletion_date IS NULL AND user_limit1.first_item_id = t.item_id AND user_limit1.second_item_type = "user"');
+            $queryBuilder->leftJoin('t', 'link_items', 'user_limit2', 'user_limit2.deletion_date IS NULL AND user_limit2.second_item_id = t.item_id AND user_limit2.first_item_type = "user"');
 
-        if (isset($this->_assignment_limit) and isset($this->_related_user_limit)) {
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS related_user_limit1 ON ( related_user_limit1.deletion_date IS NULL AND ((related_user_limit1.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND related_user_limit1.second_item_type="'.CS_USER_TYPE.'"))) ';
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS related_user_limit2 ON ( related_user_limit2.deletion_date IS NULL AND ((related_user_limit2.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND related_user_limit2.first_item_type="'.CS_USER_TYPE.'"))) ';
-        }
-
-        if (isset($this->_tag_limit)) {
-            $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
-        }
-
-        // restrict todos by buzzword (la4)
-        if (isset($this->_buzzword_limit)) {
-            if (-1 == $this->_buzzword_limit) {
-                $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS l6 ON l6.from_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l6.link_type="buzzword_for"';
-                $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+            if (-1 == $this->_user_limit) {
+                $queryBuilder->andWhere('user_limit1.first_item_id IS NULL AND user_limit1.second_item_id IS NULL');
+                $queryBuilder->andWhere('user_limit2.first_item_id IS NULL AND user_limit2.second_item_id IS NULL');
             } else {
-                $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS l6 ON l6.from_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l6.link_type="buzzword_for"';
-                $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+                $queryBuilder->andWhere(
+                    $queryBuilder->expr()->or(
+                        'user_limit1.first_item_id = :userLimit OR user_limit1.second_item_id = :userLimit',
+                        'user_limit2.first_item_id = :userLimit OR user_limit2.second_item_id = :userLimit'
+                    )
+                );
+                $queryBuilder->setParameter('userLimit', $this->_user_limit);
             }
         }
 
-        if (isset($this->_ref_id_limit)) {
-            $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS l5 ON ( (l5.first_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l5.second_item_id="'.encode(AS_DB, $this->_ref_id_limit).'")
-                     OR(l5.second_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l5.first_item_id="'.encode(AS_DB, $this->_ref_id_limit).'") AND l5.deleter_id IS NULL)';
+        if (isset($this->_assignment_limit) && isset($this->_related_user_limit)) {
+            $queryBuilder->leftJoin('t', 'link_items', 'related_user_limit1', 'related_user_limit1.deletion_date IS NULL AND related_user_limit1.first_item_id = t.item_id AND related_user_limit1.second_item_type = "user"');
+            $queryBuilder->leftJoin('t', 'link_items', 'related_user_limit2', 'related_user_limit2.deletion_date IS NULL AND related_user_limit2.second_item_id = t.item_id AND related_user_limit2.first_item_type = "user"');
+
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->or(
+                    $queryBuilder->expr()->or(
+                        $queryBuilder->expr()->in('related_user_limit1.first_item_id', ':relatedUserLimit'),
+                        $queryBuilder->expr()->in('related_user_limit1.second_item_id', ':relatedUserLimit')
+                    ),
+                    $queryBuilder->expr()->or(
+                        $queryBuilder->expr()->in('related_user_limit2.first_item_id', ':relatedUserLimit'),
+                        $queryBuilder->expr()->in('related_user_limit2.second_item_id', ':relatedUserLimit')
+                    )
+                )
+            );
+            $queryBuilder->setParameter('relatedUserLimit', $this->_related_user_limit, ArrayParameterType::INTEGER);
         }
 
-        $query .= ' WHERE 1';
-        if (isset($this->_room_array_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('todos').'.context_id IN ('.implode(', ', $this->_room_array_limit).')';
-        } elseif (isset($this->_room_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('todos').'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
-        }
-
-        switch ($this->inactiveEntriesLimit) {
-            case self::SHOW_ENTRIES_ONLY_ACTIVATED:
-                $query .= ' AND ('.$this->addDatabasePrefix('todos').'.activation_date  IS NULL OR '.$this->addDatabasePrefix('todos').'.activation_date  <= "'.getCurrentDateTimeInMySQL().'")';
-                break;
-            case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
-                $query .= ' AND ('.$this->addDatabasePrefix('todos').'.activation_date  IS NOT NULL AND '.$this->addDatabasePrefix('todos').'.activation_date  > "'.getCurrentDateTimeInMySQL().'")';
-                break;
-        }
-
-//      if ( $this->_future_limit ) {
-//         $date = date("Y-m-d").' 00:00:00';
-//         $query .= ' AND todos.date >= "'.$date.'"';
-//      }
-        if (true == $this->_delete_limit) {
-            $query .= ' AND '.$this->addDatabasePrefix('todos').'.deleter_id IS NULL';
-        }
-        if (isset($this->_ref_user_limit)) {
-            $query .= ' AND ('.$this->addDatabasePrefix('todos').'.creator_id = "'.encode(AS_DB, $this->_ref_user_limit).'" )';
-        }
         if (isset($this->_status_limit)) {
             if (4 == $this->_status_limit) {
-                $query .= ' AND ('.$this->addDatabasePrefix('todos').'.status != "3")';
+                $queryBuilder->andWhere('t.status != 3');
             } else {
-                $query .= ' AND ('.$this->addDatabasePrefix('todos').'.status = "'.encode(AS_DB, $this->_status_limit).'" )';
+                $queryBuilder->andWhere('t.status = :statusLimit');
+                $queryBuilder->setParameter('statusLimit', $this->_status_limit);
             }
-        }
-        if (isset($this->_age_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('todos').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_age_limit).' day)';
-        }
-        if (isset($this->_existence_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('todos').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_existence_limit).' day)';
-        }
-        if (!empty($this->_id_array_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('todos').'.item_id IN ('.implode(', ', encode(AS_DB, $this->_id_array_limit)).')';
-        }
-        if (isset($this->_topic_limit)) {
-            if (-1 == $this->_topic_limit) {
-                $query .= ' AND (l21.first_item_id IS NULL AND l21.second_item_id IS NULL)';
-                $query .= ' AND (l22.first_item_id IS NULL AND l22.second_item_id IS NULL)';
-            } else {
-                $query .= ' AND ((l21.first_item_id = "'.encode(AS_DB, $this->_topic_limit).'" OR l21.second_item_id = "'.encode(AS_DB, $this->_topic_limit).'")';
-                $query .= ' OR (l22.first_item_id = "'.encode(AS_DB, $this->_topic_limit).'" OR l22.second_item_id = "'.encode(AS_DB, $this->_topic_limit).'"))';
-            }
-        }
-        if (isset($this->_group_limit)) {
-            if (-1 == $this->_group_limit) {
-                $query .= ' AND (l31.first_item_id IS NULL AND l31.second_item_id IS NULL)';
-                $query .= ' AND (l32.first_item_id IS NULL AND l32.second_item_id IS NULL)';
-            } else {
-                $query .= ' AND ((l31.first_item_id = "'.encode(AS_DB, $this->_group_limit).'" OR l31.second_item_id = "'.encode(AS_DB, $this->_group_limit).'")';
-                $query .= ' OR (l32.first_item_id = "'.encode(AS_DB, $this->_group_limit).'" OR l32.second_item_id = "'.encode(AS_DB, $this->_group_limit).'"))';
-            }
-        }
-        if (isset($this->_user_limit)) {
-            if (-1 == $this->_user_limit) {
-                $query .= ' AND (user_limit1.first_item_id IS NULL AND user_limit1.second_item_id IS NULL)';
-                $query .= ' AND (user_limit2.first_item_id IS NULL AND user_limit2.second_item_id IS NULL)';
-            } else {
-                $query .= ' AND ((user_limit1.first_item_id = "'.encode(AS_DB, $this->_user_limit).'" OR user_limit1.second_item_id = "'.encode(AS_DB, $this->_user_limit).'")';
-                $query .= ' OR (user_limit2.first_item_id = "'.encode(AS_DB, $this->_user_limit).'" OR user_limit2.second_item_id = "'.encode(AS_DB, $this->_user_limit).'"))';
-            }
-        }
-
-        if (isset($this->_assignment_limit) and isset($this->_related_user_limit)) {
-            $query .= ' AND ( (related_user_limit1.first_item_id IN ('.implode(', ', $this->_related_user_limit).') OR related_user_limit1.second_item_id IN ('.implode(', ', $this->_related_user_limit).') )';
-            $query .= ' OR  (related_user_limit2.first_item_id IN ('.implode(', ', $this->_related_user_limit).') OR related_user_limit2.second_item_id IN ('.implode(', ', $this->_related_user_limit).') ))';
-        }
-
-        if (isset($this->_tag_limit)) {
-            $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
-            $id_string = implode(', ', $tag_id_array);
-            if (isset($tag_id_array[0]) and -1 == $tag_id_array[0]) {
-                $query .= ' AND (l41.first_item_id IS NULL AND l41.second_item_id IS NULL)';
-                $query .= ' AND (l42.first_item_id IS NULL AND l42.second_item_id IS NULL)';
-            } else {
-                $query .= ' AND ( (l41.first_item_id IN ('.encode(AS_DB, $id_string).') OR l41.second_item_id IN ('.encode(AS_DB, $id_string).') )';
-                $query .= ' OR (l42.first_item_id IN ('.encode(AS_DB, $id_string).') OR l42.second_item_id IN ('.encode(AS_DB, $id_string).') ))';
-            }
-        }
-        if (isset($this->_buzzword_limit)) {
-            if (-1 == $this->_buzzword_limit) {
-                $query .= ' AND (l6.to_item_id IS NULL OR l6.deletion_date IS NOT NULL)';
-            } else {
-                $query .= ' AND buzzwords.item_id="'.encode(AS_DB, $this->_buzzword_limit).'"';
-            }
-        }
-
-        if ($this->modificationNewerThenLimit) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.modification_date >= "'.$this->modificationNewerThenLimit->format('Y-m-d H:i:s').'"';
-        }
-
-        if ($this->excludedIdsLimit) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id NOT IN ('.implode(', ', encode(AS_DB, $this->excludedIdsLimit)).')';
         }
 
         // order
         if (isset($this->_sort_order)) {
             if ('date' == $this->_sort_order) {
-                $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.modification_date DESC';
+                $queryBuilder->orderBy('t.modification_date', 'DESC');
             } elseif ('date_rev' == $this->_sort_order) {
-                $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.modification_date';
+                $queryBuilder->orderBy('t.modification_date');
             } elseif ('duedate' == $this->_sort_order) {
-                $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.date DESC';
+                $queryBuilder->orderBy('t.date', 'DESC');
             } elseif ('duedate_rev' == $this->_sort_order) {
-                $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.date';
+                $queryBuilder->orderBy('t.date');
             } elseif ('title' == $this->_sort_order) {
-                $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.title';
+                $queryBuilder->orderBy('t.title');
             } elseif ('title_rev' == $this->_sort_order) {
-                $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.title DESC';
+                $queryBuilder->orderBy('t.title', 'DESC');
             } elseif ('status' == $this->_sort_order) {
-                $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.status';
+                $queryBuilder->orderBy('t.status');
             } elseif ('status_rev' == $this->_sort_order) {
-                $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.status DESC';
+                $queryBuilder->orderBy('t.status', 'DESC');
             } elseif ('creator' == $this->_sort_order) {
-                $query .= ' ORDER BY creator.lastname';
+                $queryBuilder->orderBy('creator.lastname');
             } elseif ('creator_rev' == $this->_sort_order) {
-                $query .= ' ORDER BY creator.lastname DESC';
+                $queryBuilder->orderBy('creator.lastname', 'DESC');
             } elseif ('modificator' == $this->_sort_order) {
-                $query .= ' ORDER BY modificator.lastname';
+                $queryBuilder->orderBy('modificator.lastname');
             } elseif ('modificator_rev' == $this->_sort_order) {
-                $query .= ' ORDER BY modificator.lastname DESC';
+                $queryBuilder->orderBy('modificator.lastname', 'DESC');
             }
         } else {
-            $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.date DESC';
+            $queryBuilder->orderBy('t.date', 'DESC');
         }
 
         if ('select' == $mode) {
-            if (isset($this->_interval_limit) and isset($this->_from_limit)) {
-                $query .= ' LIMIT '.$this->_from_limit.', '.$this->_interval_limit;
+            if (isset($this->_interval_limit) && isset($this->_from_limit)) {
+                $queryBuilder->setFirstResult($this->_from_limit);
+                $queryBuilder->setMaxResults($this->_interval_limit);
             }
         }
 
-        // perform query
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result)) {
-            trigger_error('Problems selecting todos from query: "'.$query.'"', E_USER_WARNING);
-        } else {
-            $i = 0;
-            while (isset($result[$i])) {
-                if (isset($result[$i]['date'])) {
-                    $result[$i]['end_date'] = $result[$i]['date'];
-                    unset($result[$i]['date']);
-                }
-                ++$i;
-            }
+        $result = $queryBuilder->fetchAllAssociative();
 
-            return $result;
-        }
+        // TODO: ???
+        // This looks like a former 'date' column now expected to be 'end_date'
+        array_walk($result, function(&$item) {
+            if (isset($item['date'])) {
+                $item['end_date'] = $item['date'];
+                unset($item['date']);
+            }
+        });
+
+        return $result;
     }
 
     /** build a new todo item

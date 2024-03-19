@@ -112,14 +112,18 @@ window.onload = function(){
     }
 }
 var $biblio = $('#material_biblio_select');
-// When sport gets selected ...
+// When an item from the 'biblio_select' dropdown gets selected ...
 $biblio.change(function() {
     // ... retrieve the corresponding form.
     var $form = $(this).closest('form');
-    // Simulate form data, but only include the selected sport value.
+    // Simulate form data, but only include the selected value.
     var data = {};
 
     data[$(this).attr('name')] = $(this).val();
+    // We also have to include the lock & CSRF tokens.
+    data['material[_lock]'] = $form.find('#material__lock').val();
+    data['material[_token]'] = $form.find('#material__token').val();
+
     // Submit data via AJAX to the form's action path.
     $.ajax({
         url : $form.attr('action'),

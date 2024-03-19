@@ -15,6 +15,8 @@
  */
 
 use App\Entity\Discussions;
+use App\Event\ItemDeletedEvent;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for a discussion
  * this class implements a discussion item.
@@ -24,7 +26,7 @@ class cs_discussion_item extends cs_item
     /** constructor
      * the only available constructor, initial values for internal variables.
      *
-     * @param object  environment            environment of the commsy
+     * @param cs_environment $environment of the commsy
      */
     public function __construct($environment)
     {
@@ -53,7 +55,7 @@ class cs_discussion_item extends cs_item
    /** set title of a discussion
     * this method sets the title of the discussion.
     *
-    * @param string value title of the discussion
+    * @param string $title title of the discussion
     *
     * @author CommSy Development Group
     */
@@ -114,18 +116,6 @@ class cs_discussion_item extends cs_item
        $this->_setValue('latest_article_modification_date', $value);
    }
 
-   /** set status of a discussion
-    * this method returns the status of the discussion.
-    *
-    * @param int value status of a discussion
-    *
-    * @author CommSy Development Group
-    */
-   public function setDiscussionStatus($value)
-   {
-       $this->_setValue('status', $value);
-   }
-
    /** get status of a discussion
     * this method returns the status of the discussion.
     *
@@ -162,44 +152,9 @@ class cs_discussion_item extends cs_item
        return $this->_getValue('discussion_type');
    }
 
-   /** close a discussion
-    * this method sets the status of the discussion to closed.
-    *
-    * @author CommSy Development Group
-    */
-   public function close()
+   public function isOpen(): bool
    {
-       $this->setDiscussionStatus(2);
-   }
-
-   /** is room a normal open ?
-    * this method returns a boolean explaining if a discussion is open.
-    *
-    * @return bool true, if a discussion is open
-    *                 false, if a discussion is not open
-    *
-    * @author CommSy Development Group
-    */
-   public function isOpen()
-   {
-       return $this->setDiscussionStatus(1);
-   }
-
-   /** is a discussion  closed ?
-    * this method returns a boolean explaining if a discussion is open or not.
-    *
-    * @return bool true, if a discussion is closed
-    *                 false, if a discussion is not closed
-    *
-    * @author CommSy Development Group
-    */
-   public function isClosed()
-   {
-       if (2 == $this->getDiscussionStatus()) {
-           return true;
-       } else {
-           return false;
-       }
+       return $this->getDiscussionStatus() == 1;
    }
 
    /** get number of articles of a discussion
@@ -214,19 +169,15 @@ class cs_discussion_item extends cs_item
        $discussionarticles_manager = $this->_environment->getDiscussionArticlesManager();
        $discussionarticles_manager->setDiscussionLimit($this->getItemID());
        $discussionarticles_manager->select();
-       $all_articles = $discussionarticles_manager->getCountAll();
-
-       return $all_articles;
+       return $discussionarticles_manager->getCountAll();
    }
 
     /** get all articles of discussion
      * this method returns all articles of the discussion.
      *
      * @param bool show_all If true, all articles of a closed discussion are selected. Default false.
-     *
-     * @return cs_list
      */
-    public function getAllArticles(bool $showAll = false)
+    public function getAllArticles(bool $showAll = false): ?cs_list
     {
         $discussionarticles_manager = $this->_environment->getDiscussionArticlesManager();
 
@@ -261,9 +212,6 @@ class cs_discussion_item extends cs_item
        return $number_of_unread;
    }
 
-   /**
-   save TBD
-    */
    public function save()
    {
        $discussion_manager = $this->_environment->getDiscussionManager();
@@ -284,15 +232,22 @@ class cs_discussion_item extends cs_item
         $this->replaceElasticItem($objectPersister, $repository);
     }
 
-    public function delete()
+    public function delete(): void
     {
-        global $symfonyContainer;
+        $symfonyContainer = $this->_environment->getSymfonyContainer();
 
-        /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcer */
-        $eventDispatcer = $symfonyContainer->get('event_dispatcher');
+        /** @var EventDispatcher $eventDispatcher */
+        $eventDispatcher = $symfonyContainer->get('event_dispatcher');
 
-        $itemDeletedEvent = new \App\Event\ItemDeletedEvent($this);
-        $eventDispatcer->dispatch($itemDeletedEvent, \App\Event\ItemDeletedEvent::NAME);
+        $itemDeletedEvent = new ItemDeletedEvent($this);
+        $eventDispatcher->dispatch($itemDeletedEvent, ItemDeletedEvent::NAME);
+
+        // delete all discussion articles
+        $articles = $this->getAllArticles() ?? new cs_list();
+        foreach ($articles as $article) {
+            /** @var cs_discussionarticle_item $article */
+            $article->delete();
+        }
 
         $discussion_manager = $this->_environment->getDiscussionManager();
         $this->_delete($discussion_manager);
@@ -418,10 +373,6 @@ class cs_discussion_item extends cs_item
                $arcticle_copy->delete();
            }
            $article = $article_list->getNext();
-       }
-       if ($this->isClosed()) {
-           $copy->close();
-           $copy->save();
        }
 
        return $copy;

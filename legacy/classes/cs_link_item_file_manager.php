@@ -11,6 +11,9 @@
  * file that was distributed with this source code.
  */
 
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query;
+
 /** class for database connection to the database table "link_material_file"
  * this class implements a database manager for the table "link_material_file",
  * in which we store the links between materials and files.
@@ -193,22 +196,22 @@ class cs_link_item_file_manager extends cs_link_father_manager
          }
      }
 
-  /** delete link , but it is just an update
-   * this method deletes all links from an item, but only as an update to restore it later and for evaluation.
-   *
-   * @param int file_id       id of the file item
-   */
-  public function deleteByFileID($file_id)
-  {
-      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
-               'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
-               'deleter_id="'.encode(AS_DB, $this->_current_user->getItemID()).'"'.
-               ' WHERE file_id="'.encode(AS_DB, $file_id).'";';
-      $result = $this->_db_connector->performQuery($query);
-      if (!isset($result) or !$result) {
-          trigger_error('Problems deleting (updating) links of an item from query: "'.$query.'". - '.__FILE__.' - '.__LINE__, E_USER_WARNING);
-      }
-  }
+    /** delete link , but it is just an update
+     * this method deletes all links from an item, but only as an update to restore it later and for evaluation.
+     *
+     * @param int $file_id id of the file item
+     */
+    public function deleteByFileID($file_id)
+    {
+        $query = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET ' .
+            'deletion_date="' . getCurrentDateTimeInMySQL() . '",' .
+            'deleter_id="' . encode(AS_DB, $this->_current_user->getItemID()) . '"' .
+            ' WHERE file_id="' . encode(AS_DB, $file_id) . '";';
+        $result = $this->_db_connector->performQuery($query);
+        if (!isset($result) or !$result) {
+            trigger_error('Problems deleting (updating) links of an item from query: "' . $query . '". - ' . __FILE__ . ' - ' . __LINE__, E_USER_WARNING);
+        }
+    }
 
     public function deleteByFileReally($file_id)
     {
@@ -218,11 +221,6 @@ class cs_link_item_file_manager extends cs_link_father_manager
         if (!isset($result)) {
             trigger_error('Problems deleting links of a file item from query: "'.$query.'"', E_USER_WARNING);
         }
-    }
-
-    public function _updateFromBackup($data_array)
-    {
-        return $this->_updateFromBackup2($data_array);
     }
 
     /** build an item out of an (database) array - internal method, do not use
@@ -240,44 +238,25 @@ class cs_link_item_file_manager extends cs_link_father_manager
 
     /** build a new material item
      * this method returns a new EMTPY material item.
-     *
-     * @return object cs_item a new EMPTY material
-     *
-     * @author CommSy Development Group
      */
-    public function getNewItem()
+    public function getNewItem(): cs_link_item_file
     {
         return new cs_link_item_file($this->_environment);
     }
 
-     public function deleteFromDb($context_id)
-     {
-         $id_array = [];
-
-         $item_manager = $this->_environment->getItemManager();
-         $item_manager->setContextLimit($context_id);
-         $item_manager->setNoIntervalLimit();
-         $item_manager->select();
-         $item_list = $item_manager->get();
-         $temp_item = $item_list->getFirst();
-         while ($temp_item) {
-             $id_array[] = $temp_item->getItemID();
-             $temp_item = $item_list->getNext();
-         }
-
-         if (!empty($id_array)) {
-             $query = 'DELETE FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.item_iid IN ('.implode(',', $id_array).')';
-             $this->_db_connector->performQuery($query);
-         }
-     }
-
-    // used for ex- and import
-    public function insertDirectly($item_id, $version_id, $file_id)
+    public function deleteFromDb($context_id): void
     {
-        $query = 'INSERT INTO '.$this->_db_table.' (item_iid, item_vid, file_id) VALUES ('.$item_id.', '.$version_id.', '.$file_id.')';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result)) {
-            trigger_error('Problems while inserting directly: '.$query, E_USER_WARNING);
-        }
+        /** @var EntityManagerInterface $em */
+        $em = $this->_environment->getSymfonyContainer()->get('doctrine.orm.entity_manager');
+
+        // grab all file ids for the given context
+        $query = $em->createQuery('SELECT f.filesId FROM App\Entity\Files f WHERE f.contextId = :contextId');
+        $query->setParameter('contextId', $context_id);
+        $fileIds = $query->getResult(Query::HYDRATE_SCALAR_COLUMN);
+
+        // delete the file links
+        $deleteQuery = $em->createQuery('DELETE App\Entity\ItemLinkFile ilf WHERE ilf.file IN (:fileIds)');
+        $deleteQuery->setParameter('fileIds', $fileIds);
+        $deleteQuery->execute();
     }
 }

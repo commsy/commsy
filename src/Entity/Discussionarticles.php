@@ -37,8 +37,8 @@ class Discussionarticles
     private int $discussionId;
 
     #[ORM\ManyToOne(targetEntity: 'Discussions', inversedBy: 'discussionarticles')]
-    #[ORM\JoinColumn(name: 'discussion_id', referencedColumnName: 'item_id')]
-    private ?Discussions $discussion = null;
+    #[ORM\JoinColumn(name: 'discussion_id', referencedColumnName: 'item_id', nullable: false)]
+    private Discussions $discussion;
 
     #[ORM\Column(name: 'creator_id', type: Types::INTEGER)]
     private ?int $creatorId = null;
@@ -75,14 +75,14 @@ class Discussionarticles
         $this->creationDate = new DateTime('0000-00-00 00:00:00');
     }
 
-    public function setDiscussion(Discussions $discussion = null)
+    public function setDiscussion(Discussions $discussion): static
     {
         $this->discussion = $discussion;
 
         return $this;
     }
 
-    public function getDiscussion()
+    public function getDiscussion(): Discussions
     {
         return $this->discussion;
     }

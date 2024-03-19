@@ -11,11 +11,16 @@
  * file that was distributed with this source code.
  */
 
+use App\Utils\DbalQueryBuilderTrait;
+use Doctrine\DBAL\ArrayParameterType;
+
 /** class for database connection to the database table "discussion"
  * this class implements a database manager for the table "discussion".
  */
 class cs_discussion_manager extends cs_manager
 {
+    use DbalQueryBuilderTrait;
+
     /**
      * integer - containing the age of discussion as a limit.
      */
@@ -38,7 +43,6 @@ class cs_discussion_manager extends cs_manager
 
     public $_group_limit = null;
     public $_topic_limit = null;
-    public $_institution_limit = null;
     public $_sort_order = null;
 
     /*
@@ -73,7 +77,6 @@ class cs_discussion_manager extends cs_manager
         $this->_interval_limit = null;
         $this->_group_limit = null;
         $this->_topic_limit = null;
-        $this->_institution_limit = null;
         $this->_sort_order = null;
     }
 
@@ -130,192 +133,102 @@ class cs_discussion_manager extends cs_manager
         return parent::_buildItem($db_array);
     }
 
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
     public function _performQuery($mode = 'select')
     {
-        if ('count' == $mode) {
-            $query = 'SELECT count(DISTINCT '.$this->addDatabasePrefix('discussions').'.item_id) AS count';
-        } elseif ('id_array' == $mode) {
-            $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('discussions').'.item_id';
-        } elseif ('distinct' == $mode) {
-            $query = 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.*';
-        } else {
-            $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('discussions').'.*';
-        }
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+        $queryBuilder->from('discussions', 'd');
 
-        if (isset($this->_sort_order) && ('assessment' == $this->_sort_order || 'assessment_rev' == $this->_sort_order)) {
-            $query .= ', AVG(assessments.assessment) AS assessments_avg';
-        }
-
-        $query .= ' FROM '.$this->addDatabasePrefix('discussions');
-        $query .= ' INNER JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('discussions').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
-
-        if (isset($this->_topic_limit)) {
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
-        }
-
-        if (isset($this->_group_limit)) {
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l31.second_item_type="'.CS_GROUP_TYPE.'"))) ';
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
-        }
-
-        if (isset($this->_tag_limit)) {
-            $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
-        }
-
-        // restrict discussions by buzzword (la4)
-        if (isset($this->_buzzword_limit)) {
-            if (-1 == $this->_buzzword_limit) {
-                $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS l6 ON l6.from_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l6.link_type="buzzword_for"';
-                $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
-            } else {
-                $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS l6 ON l6.from_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l6.link_type="buzzword_for"';
-                $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
-            }
-        }
-
-        // restrict material by discusson
-        if (isset($this->_ref_id_limit)) {
-            $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS l5 ON ( (l5.first_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l5.second_item_id="'.encode(AS_DB, $this->_ref_id_limit).'")
-                     OR(l5.second_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l5.first_item_id="'.encode(AS_DB, $this->_ref_id_limit).'") AND l5.deleter_id IS NULL)';
-        }
-
-        if (isset($this->_sort_order) && ('assessment' == $this->_sort_order || 'assessment_rev' == $this->_sort_order)) {
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('assessments').' ON '.$this->addDatabasePrefix('discussions').'.item_id=assessments.item_link_id AND assessments.deletion_date IS NULL';
-        }
-
-        $query .= ' WHERE 1';
-
-        switch ($this->inactiveEntriesLimit) {
-            case self::SHOW_ENTRIES_ONLY_ACTIVATED:
-                $query .= ' AND ('.$this->addDatabasePrefix('discussions').'.activation_date  IS NULL OR '.$this->addDatabasePrefix('discussions').'.activation_date  <= "'.getCurrentDateTimeInMySQL().'")';
+        switch ($mode) {
+            case 'count':
+                $queryBuilder->select('COUNT(DISTINCT d.item_id) AS count');
                 break;
-            case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
-                $query .= ' AND ('.$this->addDatabasePrefix('discussions').'.activation_date  IS NOT NULL AND '.$this->addDatabasePrefix('discussions').'.activation_date  > "'.getCurrentDateTimeInMySQL().'")';
+            case 'id_array':
+                $queryBuilder->select('d.item_id');
+                $queryBuilder->distinct();
                 break;
+            case 'distinct':
+                $queryBuilder->select('d.*');
+                $queryBuilder->distinct();
+                break;
+            default:
+                $queryBuilder->select('d.*');
+                $queryBuilder->distinct();
         }
 
-        // fifth, insert limits into the select statement
-        if (!empty($this->_room_array_limit)
-             and is_array($this->_room_array_limit)
-        ) {
-            $query .= ' AND '.$this->addDatabasePrefix('discussions').'.context_id IN ('.encode(AS_DB, implode(',', $this->_room_array_limit)).')';
+        if (isset($this->_sort_order) && in_array($this->_sort_order, ['assessment', 'assessment_rev'])) {
+            $queryBuilder->addSelect('AVG(a.assessment) AS assessments_avg');
+            $queryBuilder->leftJoin('d', 'assessments', 'a', 'd.item_id = a.item_link_id AND a.deletion_date IS NULL');
+            $queryBuilder->addGroupBy('d.item_id');
+        }
+
+        $queryBuilder->innerJoin('d', 'items', 'i', 'i.item_id = d.item_id');
+        $queryBuilder->andWhere('i.draft != 1');
+
+        if (isset($this->_sort_order)) {
+            $queryBuilder->leftJoin('d', 'user', 'people', 'people.item_id = d.creator_id');
+        }
+
+        $this->addTopicLimit($queryBuilder, 'd', $this->_topic_limit);
+        $this->addGroupLimit($queryBuilder, 'd', $this->_group_limit);
+        $this->addTagLimit($queryBuilder, 'd', $this->_getTagIDArrayByTagIDArray($this->_tag_limit));
+        $this->addBuzzwordLimit($queryBuilder, 'd', $this->_buzzword_limit);
+        $this->addRefIdLimit($queryBuilder, 'd', $this->_ref_id_limit);
+        $this->addInactiveEntriesLimit($queryBuilder, 'd', $this->inactiveEntriesLimit);
+        $this->addDeleteLimit($queryBuilder, 'd', $this->_delete_limit);
+        $this->addCreatorLimit($queryBuilder, 'd', $this->_ref_user_limit);
+        $this->addModifiedWithinLimit($queryBuilder, 'd', $this->_age_limit);
+        $this->addModifiedAfterLimit($queryBuilder, 'd', $this->modificationNewerThenLimit);
+        $this->addCreatedWithinLimit($queryBuilder, 'd', $this->_existence_limit);
+        $this->addIdLimit($queryBuilder, 'd', $this->_id_array_limit);
+        $this->addNotIdLimit($queryBuilder, 'd', $this->excludedIdsLimit);
+
+        // room limit
+        if (!empty($this->_room_array_limit) && is_array($this->_room_array_limit)) {
+            $queryBuilder->andWhere($queryBuilder->expr()->in('d.context_id', ':roomArrayLimit'));
+            $queryBuilder->setParameter('roomArrayLimit', $this->_room_array_limit, ArrayParameterType::INTEGER);
         } elseif (isset($this->_room_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('discussions').'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+            $queryBuilder->andWhere('d.context_id = :roomLimit');
+            $queryBuilder->setParameter('roomLimit', $this->_room_limit);
         } else {
-            $query .= ' AND '.$this->addDatabasePrefix('discussions').'.context_id = "'.encode(AS_DB, $this->_environment->getCurrentContextID()).'"';
-        }
-        if (true == $this->_delete_limit) {
-            $query .= ' AND '.$this->addDatabasePrefix('discussions').'.deleter_id IS NULL';
-        }
-        if (isset($this->_ref_user_limit)) {
-            $query .= ' AND ('.$this->addDatabasePrefix('discussions').'.creator_id = "'.encode(AS_DB, $this->_ref_user_limit).'" )';
-        }
-        if (isset($this->_age_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('discussions').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_age_limit).' day)';
-        }
-        if (isset($this->_existence_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('discussions').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_existence_limit).' day)';
-        }
-        if (!empty($this->_id_array_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('discussions').'.item_id IN ('.implode(', ', encode(AS_DB, $this->_id_array_limit)).')';
-        }
-
-        if (isset($this->_topic_limit)) {
-            if (-1 == $this->_topic_limit) {
-                $query .= ' AND (l21.first_item_id IS NULL AND l21.second_item_id IS NULL)';
-                $query .= ' AND (l22.first_item_id IS NULL AND l22.second_item_id IS NULL)';
-            } else {
-                $query .= ' AND ((l21.first_item_id = "'.encode(AS_DB, $this->_topic_limit).'" OR l21.second_item_id = "'.encode(AS_DB, $this->_topic_limit).'")';
-                $query .= ' OR (l22.first_item_id = "'.encode(AS_DB, $this->_topic_limit).'" OR l22.second_item_id = "'.encode(AS_DB, $this->_topic_limit).'"))';
-            }
-        }
-        if (isset($this->_institution_limit)) {
-            if (-1 == $this->_institution_limit) {
-                $query .= ' AND (l41.first_item_id IS NULL AND l41.second_item_id IS NULL)';
-                $query .= ' AND (l42.first_item_id IS NULL AND l42.second_item_id IS NULL)';
-            } else {
-                $query .= ' AND ((l41.first_item_id = "_institution_limit" OR l41.second_item_id = "'.encode(AS_DB, $this->_institution_limit).'")';
-                $query .= ' OR (l42.first_item_id = "_institution_limit" OR l42.second_item_id = "'.encode(AS_DB, $this->_institution_limit).'"))';
-            }
-        }
-        if (isset($this->_group_limit)) {
-            if (-1 == $this->_group_limit) {
-                $query .= ' AND (l31.first_item_id IS NULL AND l31.second_item_id IS NULL)';
-                $query .= ' AND (l32.first_item_id IS NULL AND l32.second_item_id IS NULL)';
-            } else {
-                $query .= ' AND ((l31.first_item_id = "'.encode(AS_DB, $this->_group_limit).'" OR l31.second_item_id = "'.encode(AS_DB, $this->_group_limit).'")';
-                $query .= ' OR (l32.first_item_id = "'.encode(AS_DB, $this->_group_limit).'" OR l32.second_item_id = "'.encode(AS_DB, $this->_group_limit).'"))';
-            }
-        }
-
-        if (isset($this->_tag_limit)) {
-            $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
-            $id_string = implode(', ', $tag_id_array);
-            if (isset($tag_id_array[0]) and -1 == $tag_id_array[0]) {
-                $query .= ' AND (l41.first_item_id IS NULL AND l41.second_item_id IS NULL)';
-                $query .= ' AND (l42.first_item_id IS NULL AND l42.second_item_id IS NULL)';
-            } else {
-                $query .= ' AND ( (l41.first_item_id IN ('.encode(AS_DB, $id_string).') OR l41.second_item_id IN ('.encode(AS_DB, $id_string).') )';
-                $query .= ' OR (l42.first_item_id IN ('.encode(AS_DB, $id_string).') OR l42.second_item_id IN ('.encode(AS_DB, $id_string).') ))';
-            }
-        }
-        if (isset($this->_buzzword_limit)) {
-            if (-1 == $this->_buzzword_limit) {
-                $query .= ' AND (l6.to_item_id IS NULL OR l6.deletion_date IS NOT NULL)';
-            } else {
-                $query .= ' AND buzzwords.item_id="'.encode(AS_DB, $this->_buzzword_limit).'"';
-            }
-        }
-
-        if ($this->modificationNewerThenLimit) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.modification_date >= "'.$this->modificationNewerThenLimit->format('Y-m-d H:i:s').'"';
-        }
-
-        if ($this->excludedIdsLimit) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id NOT IN ('.implode(', ', encode(AS_DB, $this->excludedIdsLimit)).')';
-        }
-
-        if (isset($this->_sort_order) && ('assessment' == $this->_sort_order || 'assessment_rev' == $this->_sort_order)) {
-            $query .= ' GROUP BY '.$this->addDatabasePrefix('discussions').'.item_id';
+            $queryBuilder->andWhere('d.context_id = :roomLimit');
+            $queryBuilder->setParameter('roomLimit', $this->_environment->getCurrentContextID());
         }
 
         if (isset($this->_sort_order)) {
             if ('latest' == $this->_sort_order) {
-                $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.modification_date DESC';
+                $queryBuilder->orderBy('d.modification_date', 'DESC');
             } elseif ('latest_rev' == $this->_sort_order) {
-                $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.latest_article_modification_date, '.$this->addDatabasePrefix('discussions').'.modification_date';
+                $queryBuilder->orderBy('d.latest_article_modification_date');
+                $queryBuilder->addOrderBy('d.modification_date');
             } elseif ('title' == $this->_sort_order) {
-                $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.title';
+                $queryBuilder->orderBy('d.title');
             } elseif ('title_rev' == $this->_sort_order) {
-                $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.title DESC';
+                $queryBuilder->orderBy('d.title', 'DESC');
             } elseif ('assessment' == $this->_sort_order) {
-                $query .= ' ORDER BY assessments_avg DESC';
+                $queryBuilder->orderBy('assessments_avg', 'DESC');
             } elseif ('assessment_rev' == $this->_sort_order) {
-                $query .= ' ORDER BY assessments_avg ASC';
+                $queryBuilder->orderBy('assessments_avg');
             } elseif ('creator' == $this->_sort_order) {
-                $query .= ' ORDER BY people.lastname';
+                $queryBuilder->orderBy('people.lastname');
             } elseif ('creator_rev' == $this->_sort_order) {
-                $query .= ' ORDER BY people.lastname DESC';
+                $queryBuilder->orderBy('people.lastname', 'DESC');
             }
         } else {
-            $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.modification_date DESC, '.$this->addDatabasePrefix('discussions').'.title DESC';
+            $queryBuilder->orderBy('d.modification_date', 'DESC');
+            $queryBuilder->addOrderBy('d.title', 'DESC');
         }
+
         if ('select' == $mode) {
-            if (isset($this->_interval_limit) and isset($this->_from_limit)) {
-                $query .= ' LIMIT '.encode(AS_DB, $this->_from_limit).', '.encode(AS_DB, $this->_interval_limit);
+            if (isset($this->_interval_limit) && isset($this->_from_limit)) {
+                $queryBuilder->setFirstResult($this->_from_limit);
+                $queryBuilder->setMaxResults($this->_interval_limit);
             }
         }
 
-        // perform query
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result)) {
-            trigger_error('Problems selecting discussion.     ', E_USER_WARNING);
-        } else {
-            return $result;
-        }
+        return $queryBuilder->fetchAllAssociative();
     }
 
     /** build a new material item
@@ -464,65 +377,61 @@ class cs_discussion_manager extends cs_manager
          }
      }
 
-  /** store a new discussion item to the database - internal, do not use -> use method save
-   * this method stores a newly created discussion item to the database.
-   */
-  public function _newDiscussion(cs_discussion_item $item)
-  {
-      $currentDateTime = getCurrentDateTimeInMySQL();
-
-      $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
-
-      $queryBuilder
-          ->insert($this->addDatabasePrefix('discussions'))
-          ->setValue('item_id', ':itemId')
-          ->setValue('context_id', ':contextId')
-          ->setValue('creator_id', ':creatorId')
-          ->setValue('creation_date', ':creationDate')
-          ->setValue('modifier_id', ':modifierId')
-          ->setValue('modification_date', ':modificationDate')
-          ->setValue('activation_date', ':activationDate')
-          ->setValue('title', ':title')
-          ->setValue('description', ':description')
-          ->setValue('discussion_type', ':discussionType')
-          ->setValue('public', ':public')
-          ->setParameter('itemId', $item->getItemID())
-          ->setParameter('contextId', $item->getContextID())
-          ->setParameter('creatorId', $item->getCreatorItem()->getItemID())
-          ->setParameter('creationDate', $currentDateTime)
-          ->setParameter('modifierId', $item->getModificatorItem()->getItemID())
-          ->setParameter('modificationDate', $currentDateTime)
-          ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
-          ->setParameter('title', $item->getTitle())
-          ->setParameter('description', $item->getDescription())
-          ->setParameter('discussionType', $item->getDiscussionType() ?: 'simple')
-          ->setParameter('public', $item->isPublic() ? 1 : 0);
-
-      $articleId = $item->getLatestArticleID();
-      if (!empty($articleId)) {
-          $queryBuilder
-              ->setValue('latest_article_item_id', ':latestArticleItemId')
-              ->setParameter('latestArticleItemId', $articleId);
-      }
-
-      $articleModificationDate = $item->getLatestArticleModificationDate();
-      if (!empty($articleModificationDate)) {
-          $queryBuilder
-              ->setValue('latest_article_modification_date', ':latestArticleModificationDate')
-              ->setParameter('latestArticleModificationDate', $articleModificationDate);
-      }
-
-      try {
-          $queryBuilder->executeStatement();
-      } catch (\Doctrine\DBAL\Exception) {
-          trigger_error('Problems creating dates.', E_USER_WARNING);
-      }
-  }
-
-    /**  delete a discussion item.
-     *
-     * @param cs_discussion_item the discussion item to be deleted
+    /** store a new discussion item to the database - internal, do not use -> use method save
+     * this method stores a newly created discussion item to the database.
      */
+    public function _newDiscussion(cs_discussion_item $item)
+    {
+        $currentDateTime = getCurrentDateTimeInMySQL();
+
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $queryBuilder
+            ->insert($this->addDatabasePrefix('discussions'))
+            ->setValue('item_id', ':itemId')
+            ->setValue('context_id', ':contextId')
+            ->setValue('creator_id', ':creatorId')
+            ->setValue('creation_date', ':creationDate')
+            ->setValue('modifier_id', ':modifierId')
+            ->setValue('modification_date', ':modificationDate')
+            ->setValue('activation_date', ':activationDate')
+            ->setValue('title', ':title')
+            ->setValue('description', ':description')
+            ->setValue('discussion_type', ':discussionType')
+            ->setValue('public', ':public')
+            ->setParameter('itemId', $item->getItemID())
+            ->setParameter('contextId', $item->getContextID())
+            ->setParameter('creatorId', $item->getCreatorItem()->getItemID())
+            ->setParameter('creationDate', $currentDateTime)
+            ->setParameter('modifierId', $item->getModificatorItem()->getItemID())
+            ->setParameter('modificationDate', $currentDateTime)
+            ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
+            ->setParameter('title', $item->getTitle())
+            ->setParameter('description', $item->getDescription())
+            ->setParameter('discussionType', $item->getDiscussionType() ?: 'simple')
+            ->setParameter('public', $item->isPublic() ? 1 : 0);
+
+        $articleId = $item->getLatestArticleID();
+        if (!empty($articleId)) {
+            $queryBuilder
+                ->setValue('latest_article_item_id', ':latestArticleItemId')
+                ->setParameter('latestArticleItemId', $articleId);
+        }
+
+        $articleModificationDate = $item->getLatestArticleModificationDate();
+        if (!empty($articleModificationDate)) {
+            $queryBuilder
+                ->setValue('latest_article_modification_date', ':latestArticleModificationDate')
+                ->setParameter('latestArticleModificationDate', $articleModificationDate);
+        }
+
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception) {
+            trigger_error('Problems creating dates.', E_USER_WARNING);
+        }
+    }
+
     public function delete(int $itemId): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
@@ -536,10 +445,33 @@ class cs_discussion_manager extends cs_manager
         if (!isset($result) or !$result) {
             trigger_error('Problems deleting discussion.', E_USER_WARNING);
         } else {
-            $link_manager = $this->_environment->getLinkManager();
-            $link_manager->deleteLinksBecauseItemIsDeleted($itemId);
             parent::delete($itemId);
         }
+    }
+
+    public function deleteReallyOlderThan(int $days): void
+    {
+        $conn = $this->_db_connector->getConnection();
+
+        // It's possible that there are discussion articles that are not yet deleted, even if the discussion itself
+        // is already deleted. It would be preferred to enforce this on database level in the future.
+        $qb = $conn->createQueryBuilder();
+        $qb
+            ->select('item_id')
+            ->from($this->_db_table, 't')
+            ->where('t.deletion_date < DATE_SUB(CURRENT_DATE, INTERVAL :days DAY)')
+            ->setParameter('days', $days)
+            ->executeQuery();
+        $results = $qb->fetchAllAssociative();
+        $discussionIds = array_map(fn ($result) => $result['item_id'], $results);
+
+        $conn->executeStatement('DELETE FROM discussionarticles WHERE discussion_id IN (?)',
+            [$discussionIds],
+            [ArrayParameterType::INTEGER]
+        );
+
+        // call parent implementation to delete discussions
+        parent::deleteReallyOlderThan($days);
     }
 
     // #######################################################
