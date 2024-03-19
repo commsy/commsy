@@ -182,7 +182,7 @@ trait DbalQueryBuilderTrait
     {
         if (!$ids) return;
 
-        $queryBuilder->andWhere($queryBuilder->expr()->in("$alias.item_id", 'idArrayLimit'));
+        $queryBuilder->andWhere($queryBuilder->expr()->in("$alias.item_id", ':idArrayLimit'));
         $queryBuilder->setParameter('idArrayLimit', $ids, ArrayParameterType::INTEGER);
     }
 
@@ -190,7 +190,7 @@ trait DbalQueryBuilderTrait
     {
         if (!$ids) return;
 
-        $queryBuilder->andWhere($queryBuilder->expr()->notIn("$alias.item_id", 'idArrayLimit'));
+        $queryBuilder->andWhere($queryBuilder->expr()->notIn("$alias.item_id", ':idArrayLimit'));
         $queryBuilder->setParameter('idArrayLimit', $ids, ArrayParameterType::INTEGER);
     }
 }
