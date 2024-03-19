@@ -339,39 +339,42 @@ class cs_announcement_manager extends cs_manager
          }
      }
 
-     /** get an announcement in latest version.
+     /** Returns the announcement item of the given item ID.
       *
-      * @param int item_id id of the item
-      *
-      * @return object cs_item a label
+      * @param int|null itemId ID of the item
       */
-     public function getItem(?int $item_id)
+     public function getItem(?int $itemId): ?cs_announcement_item
      {
-         $announcement = null;
-
-         if (!empty($item_id)) {
+         if (empty($itemId)) {
+             return null;
+         } else {
              $this->_with_material = true;
-             if (!empty($this->_cache_object[$item_id])) {
-                 return $this->_cache_object[$item_id];
-             } elseif (array_key_exists($item_id, $this->_cached_items)) {
-                 return $this->_buildItem($this->_cached_items[$item_id]);
-             } else {
-                 $query = 'SELECT ' . $this->addDatabasePrefix('announcement') . '.*, ' . $this->addDatabasePrefix('items') . '.pinned';
-                 $query .= ' FROM ' . $this->addDatabasePrefix('announcement');
-                 $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON ' . $this->addDatabasePrefix('items') . '.item_id = ' . $this->addDatabasePrefix('announcement') . '.item_id';
-                 $query .= ' WHERE ' . $this->addDatabasePrefix('announcement') . ".item_id = '" . encode(AS_DB, $item_id) . "'";
-                 $result = $this->_db_connector->performQuery($query);
-                 if (!isset($result)) {
-                     trigger_error('Problems selecting one announcement item.', E_USER_WARNING);
-                 } elseif (!empty($result[0])) {
-                     if ($this->_cache_on) {
-                         $this->_cached_items[$result[0]['item_id']] = $result[0];
-                     }
-                     $announcement = $this->_buildItem($result[0]);
-                     unset($result);
-                 } else {
-                     trigger_error('Problems selecting announcement item [' . $item_id . '].', E_USER_WARNING);
-                 }
+             if (!empty($this->_cache_object[$itemId])) {
+                 return $this->_cache_object[$itemId];
+             } elseif (array_key_exists($itemId, $this->_cached_items)) {
+                 return $this->_buildItem($this->_cached_items[$itemId]);
+             }
+         }
+
+         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+         $queryBuilder
+             ->select('a.*', 'i.pinned')
+             ->from($this->addDatabasePrefix($this->_db_table), 'a')
+             ->innerJoin('a', 'items', 'i', 'i.item_id = a.item_id')
+             ->where('a.item_id = :itemId')
+             ->setParameter('itemId', $itemId);
+
+         try {
+             $result = $queryBuilder->executeQuery()->fetchAllAssociative();
+         } catch (\Doctrine\DBAL\Exception $e) {
+             trigger_error('Problems selecting announcement item (' . $itemId . '): ' . $e->getMessage(), E_USER_WARNING);
+         }
+
+         $announcement = null;
+         if (!empty($result[0])) {
+             $announcement = $this->_buildItem($result[0]);
+             if ($this->_cache_on) {
+                 $this->_cached_items[$result[0]['item_id']] = $result[0];
              }
          }
 

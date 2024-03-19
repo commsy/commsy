@@ -368,42 +368,47 @@ class cs_todos_manager extends cs_manager
         return new cs_todo_item($this->_environment);
     }
 
-    /** get a todo.
+    /** Returns the todo item of the given item ID.
      *
-     * @param int item_id id of the item
-     *
-     * @return \cs_todo_item a todo
+     * @param int|null itemId ID of the item
      */
-    public function getItem(?int $item_id)
+    public function getItem(?int $itemId): ?cs_todo_item
     {
-        $todo = null;
-        if (!empty($item_id)
-             and !empty($this->_cache_object[$item_id])
-        ) {
-            return $this->_cache_object[$item_id];
-        } elseif (array_key_exists($item_id, $this->_cached_items)) {
-            return $this->_buildItem($this->_cached_items[$item_id]);
-        } else {
-            $query = 'SELECT ' . $this->addDatabasePrefix('todos') . '.*, ' . $this->addDatabasePrefix('items') . '.pinned';
-            $query .= ' FROM ' . $this->addDatabasePrefix('todos');
-            $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON ' . $this->addDatabasePrefix('items') . '.item_id = ' . $this->addDatabasePrefix('todos') . '.item_id';
-            $query .= ' WHERE ' . $this->addDatabasePrefix('todos') . ".item_id = '" . encode(AS_DB, $item_id) . "'";
-            $result = $this->_db_connector->performQuery($query);
-            if (!isset($result) or empty($result[0])) {
-                trigger_error('Problems selecting one todos item from query: "' . $query . '"', E_USER_WARNING);
-            } else {
-                if (isset($result[0]['date'])) {
-                    $result[0]['end_date'] = $result[0]['date'];
-                    unset($result[0]['date']);
-                }
-                $todo = $this->_buildItem($result[0]);
-                if ($this->_cache_on) {
-                    $this->_cached_items[$result[0]['item_id']] = $result[0];
-                }
-            }
-
-            return $todo;
+        if (empty($itemId)) {
+            return null;
+        } elseif (!empty($this->_cache_object[$itemId])) {
+            return $this->_cache_object[$itemId];
+        } elseif (array_key_exists($itemId, $this->_cached_items)) {
+            return $this->_buildItem($this->_cached_items[$itemId]);
         }
+
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+        $queryBuilder
+            ->select('t.*', 'i.pinned')
+            ->from($this->addDatabasePrefix($this->_db_table), 't')
+            ->innerJoin('t', 'items', 'i', 'i.item_id = t.item_id')
+            ->where('t.item_id = :itemId')
+            ->setParameter('itemId', $itemId);
+
+        try {
+            $result = $queryBuilder->executeQuery()->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            trigger_error('Problems selecting todos item (' . $itemId . '): ' . $e->getMessage(), E_USER_WARNING);
+        }
+
+        $todo = null;
+        if (!empty($result[0])) {
+            if (isset($result[0]['date'])) {
+                $result[0]['end_date'] = $result[0]['date'];
+                unset($result[0]['date']);
+            }
+            $todo = $this->_buildItem($result[0]);
+            if ($this->_cache_on) {
+                $this->_cached_items[$result[0]['item_id']] = $result[0];
+            }
+        }
+
+        return $todo;
     }
 
     /** get a list of todo in newest version.
