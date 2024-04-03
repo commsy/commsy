@@ -89,7 +89,7 @@
                                     <div class="uk-margin-left">
                                         {% for weekDay in form.recurring_sub.recurrenceDaysOfWeek.iterator %}
                                             <div>
-                                                <input type="checkbox" value="{{ weekDay.vars['value'] }}" name="date[recurring_sub][recurrenceDaysOfWeek][]" style="vertical-align: baseline;">
+                                                <input type="checkbox" value="{{ field_value(weekDay) }}" name="{{ field_name(weekDay) }}" style="vertical-align: baseline;">
                                                 <label>{{weekDay.vars['value']|trans({}, 'date')}}</label>
                                             </div>
                                         {% endfor %}
@@ -223,38 +223,26 @@ if ($('#date_whole_day').length > 0) {
     }
 }
 
-var $recurring = $('#date_recurring_select');
-// When sport gets selected ...
-$recurring.change(function() {
-    // ... retrieve the corresponding form.
-    var $form = $(this).closest('form');
-    // Simulate form data, but only include the selected sport value.
-    var data = {};
+const $recurring = $('#date_recurring_select');
+$recurring.on('change', function() {
+    const $form = $(this).closest('form');
+    const data = {};
 
     data[$(this).attr('name')] = $(this).val();
+    data['date[_token]'] = $form.find('#date__token').val();
+
     // Submit data via AJAX to the form's action path.
     $.ajax({
-        url : $form.attr('action'),
+        url: $form.attr('action'),
         type: $form.attr('method'),
-        data : data,
-        success: function(html) {
-            // Replace current position field ...
-            // add field
-            if (!$('#date_recurring_sub').length) {
-                $('#date_recurring_select').after(
-                // ... with the returned one from the AJAX response.
-                $(html).find('#date_recurring_sub')
-                // html
-                );
-            } else {
-                $('#date_recurring_sub').replaceWith(
-                // ... with the returned one from the AJAX response.
-                $(html).find('#date_recurring_sub')
-                // html
-                );
-            }
-            // console.log(html);
-            // Position field now displays the appropriate positions.
+        data: data
+    }).always(function (response) {
+        let html = response.responseText;
+
+        if (!$('#date_recurring_sub').length) {console.log('after');
+            $('#date_recurring_select').after($(html).find('#date_recurring_sub'));
+        } else {console.log('replace');
+            $('#date_recurring_sub').replaceWith($(html).find('#date_recurring_sub'));
         }
     });
 });
