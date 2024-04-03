@@ -18,8 +18,14 @@
         </div>
 
         {# files #}
-        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_upload_uploadform', {'roomId': step.contextId, 'itemId': step.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': step.contextId, 'itemId': step.itemId}) }}' }">
-            {{ macrosItem.files(step, step.draft) }}
+        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{{ {
+            'editUrl': path('app_upload_uploadform', {'roomId': step.contextId, 'itemId': step.itemId}),
+            'cancelEditUrl': path('app_item_canceledit', {'roomId': step.contextId, 'itemId': step.itemId})
+        }|json_encode|e('html_attr') }}">
+            {{ component('item_files', {
+                item: step,
+                draft: step.draft
+            }) }}
         </div>
 
         {{ macros.draftButtons(step.contextId, step.itemId) }}
