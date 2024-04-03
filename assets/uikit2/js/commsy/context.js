@@ -14,20 +14,22 @@
         $.ajax({
             url : $form.attr('action'),
             type: $form.attr('method'),
-            data : data,
-            success: function(html) {
-                // replace with content from ajax response
-                if (!$('#context_type_sub').length) {
-                    $('#context_type_select').after(
-                        $(html).find('#context_type_sub')
-                    );
-                } else {
-                    $('#context_type_sub').replaceWith(
-                        $(html).find('#context_type_sub')
-                    );
-                }
+            data : data
+        })
+          .always(function(response) {
+            let html = response.responseText;
+
+            // replace with content from ajax response
+            if (!$('#context_type_sub').length) {
+              $('#context_type_select').after(
+                $(html).find('#context_type_sub')
+              );
+            } else {
+              $('#context_type_sub').replaceWith(
+                $(html).find('#context_type_sub')
+              );
             }
-        });
+          });
     });
 
 })(UIkit);
