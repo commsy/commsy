@@ -875,8 +875,8 @@ class DateController extends BaseController
     #[Route(path: '/room/{roomId}/date/{itemId}/calendaredit')]
     public function calendaredit(
         Request $request,
+        int $roomId,
         int $itemId,
-        ParameterBagInterface $parameterBag
     ): Response {
         $date = $this->dateService->getDate($itemId);
 
