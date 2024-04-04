@@ -26,6 +26,16 @@ export function setup(locales, id: string, editable: boolean = true): void {
         locales: locales,
         locale: calendarEl.dataset.locale === 'de' ? 'de' : 'en-gb',
         timeZone: 'UTC',
+        views: {
+          dayGridMonth: {
+            eventTimeFormat: {
+              hour: '2-digit',
+              minute: '2-digit',
+              omitZeroMinute: false,
+              meridiem: false
+            }
+          }
+        },
         dateClick(info) {
           if (editable) {
             const createEl = document.getElementById('create-date');
