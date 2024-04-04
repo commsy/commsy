@@ -17,7 +17,9 @@ use App\Form\Type\Custom\CategoryMappingType;
 use App\Form\Type\Custom\DateTimeSelectType;
 use App\Form\Type\Custom\HashtagMappingType;
 use App\Form\Type\Event\AddRecurringFieldListener;
+use App\Services\LegacyEnvironment;
 use cs_context_item;
+use cs_environment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -31,18 +33,35 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DateType extends AbstractType
 {
+    private readonly cs_environment $legacyEnvironment;
+
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment
+    ) {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $formData = $builder->getData();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+
         $builder
             ->add('title', TextType::class, ['constraints' => [new NotBlank()], 'label' => 'title', 'attr' => ['placeholder' => $options['placeholderText'], 'class' => 'uk-form-width-medium cs-form-title'], 'translation_domain' => 'material'])
             ->add('start', DateTimeSelectType::class, ['constraints' => [], 'label' => 'startdate', 'attr' => ['placeholder' => 'startdate', 'class' => 'uk-form-width-medium']])
             ->add('end', DateTimeSelectType::class, ['constraints' => [], 'label' => 'enddate', 'attr' => ['placeholder' => 'enddate', 'class' => 'uk-form-width-medium'], 'required' => false])
             ->add('whole_day', CheckboxType::class, ['required' => false, 'label_attr' => ['class' => 'uk-form-label'], 'value' => 'yes'])
             ->add('place', TextType::class, ['label' => 'place', 'attr' => ['placeholder' => 'place', 'class' => 'uk-form-width-medium'], 'required' => false])
-            ->add('calendar', ChoiceType::class, ['placeholder' => false, 'choices' => $options['calendars'], 'choice_attr' => $options['calendarsAttr'], 'label' => 'calendar', 'required' => true, 'expanded' => true, 'multiple' => false])
-            ->add('permission', CheckboxType::class, ['label' => 'permission', 'label_attr' => ['class' => 'uk-form-label'], 'required' => false, 'translation_domain' => 'form'])
-            ->add('hidden', CheckboxType::class, ['label' => 'hidden', 'label_attr' => ['class' => 'uk-form-label'], 'required' => false, 'translation_domain' => 'form'])
-            ->add('hiddendate', DateTimeSelectType::class, ['label' => 'hidden until', 'label_attr' => ['class' => 'uk-form-label'], 'translation_domain' => 'form'])
+            ->add('calendar', ChoiceType::class, ['placeholder' => false, 'choices' => $options['calendars'], 'choice_attr' => $options['calendarsAttr'], 'label' => 'calendar', 'required' => true, 'expanded' => true, 'multiple' => false]);
+
+        if ($formData['creatorId'] === $currentUser->getItemID() || $currentUser->isModerator()) {
+            $builder
+                ->add('permission', CheckboxType::class, ['label' => 'permission', 'label_attr' => ['class' => 'uk-form-label'], 'required' => false, 'translation_domain' => 'form'])
+                ->add('hidden', CheckboxType::class, ['label' => 'hidden', 'label_attr' => ['class' => 'uk-form-label'], 'required' => false, 'translation_domain' => 'form'])
+                ->add('hiddendate', DateTimeSelectType::class, ['label' => 'hidden until', 'label_attr' => ['class' => 'uk-form-label'], 'translation_domain' => 'form']);
+        }
+
+        $builder
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $date = $event->getData();
                 $form = $event->getForm();
