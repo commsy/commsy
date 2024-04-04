@@ -239,9 +239,9 @@ $recurring.on('change', function() {
     }).always(function (response) {
         let html = response.responseText;
 
-        if (!$('#date_recurring_sub').length) {console.log('after');
+        if (!$('#date_recurring_sub').length) {
             $('#date_recurring_select').after($(html).find('#date_recurring_sub'));
-        } else {console.log('replace');
+        } else {
             $('#date_recurring_sub').replaceWith($(html).find('#date_recurring_sub'));
         }
     });
