@@ -948,6 +948,7 @@ class DateController extends BaseController
         $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
         $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
         $formData['draft'] = $isDraft;
+        $formData['creatorId'] = $dateItem->getCreatorID();
 
         $calendars = $calendarsRepository->findBy(['context_id' => $roomId]);
         $calendarsOptions = [];
