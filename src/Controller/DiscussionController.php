@@ -757,6 +757,7 @@ class DiscussionController extends BaseController
             $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
             $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
             $formData['draft'] = $isDraft;
+            $formData['creatorId'] = $discussionItem->getCreatorID();
             $form = $this->createForm(DiscussionType::class, $formData, ['action' => $this->generateUrl('app_discussion_edit', ['roomId' => $roomId, 'itemId' => $itemId]), 'placeholderText' => '[' . $this->translator->trans('insert title') . ']', 'categoryMappingOptions' => [
                 'categories' => $labelService->getCategories($roomId),
                 'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),

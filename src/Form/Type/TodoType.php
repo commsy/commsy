@@ -16,7 +16,9 @@ namespace App\Form\Type;
 use App\Form\Type\Custom\CategoryMappingType;
 use App\Form\Type\Custom\DateTimeSelectType;
 use App\Form\Type\Custom\HashtagMappingType;
+use App\Services\LegacyEnvironment;
 use cs_context_item;
+use cs_environment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -30,17 +32,34 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class TodoType extends AbstractType
 {
+    private readonly cs_environment $legacyEnvironment;
+
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment
+    ) {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $formData = $builder->getData();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+
         $builder
             ->add('title', TextType::class, ['constraints' => [new NotBlank()], 'label' => 'title', 'attr' => ['placeholder' => $options['placeholderText'], 'class' => 'uk-form-width-medium cs-form-title'], 'translation_domain' => 'material'])
             ->add('due_date', DateTimeSelectType::class, ['constraints' => [], 'label' => 'due date', 'attr' => ['placeholder' => 'due date', 'class' => 'uk-form-width-medium'], 'translation_domain' => 'todo', 'required' => false])
             ->add('time_planned', TextType::class, ['constraints' => [], 'label' => 'time planned', 'attr' => [], 'translation_domain' => 'todo', 'required' => false])
             ->add('time_type', ChoiceType::class, ['choices' => ['minutes' => '1', 'hours' => '2', 'days' => '3'], 'constraints' => [], 'label' => 'time type', 'attr' => [], 'translation_domain' => 'todo'])
-            ->add('status', ChoiceType::class, ['choices' => $options['statusChoices'], 'constraints' => [], 'label' => 'status', 'attr' => [], 'translation_domain' => 'todo'])
-            ->add('permission', CheckboxType::class, ['label' => 'permission', 'required' => false])
-            ->add('hidden', CheckboxType::class, ['label' => 'hidden', 'required' => false])
-            ->add('hiddendate', DateTimeSelectType::class, ['label' => 'hidden until'])
+            ->add('status', ChoiceType::class, ['choices' => $options['statusChoices'], 'constraints' => [], 'label' => 'status', 'attr' => [], 'translation_domain' => 'todo']);
+
+        if ($formData['creatorId'] === $currentUser->getItemID() || $currentUser->isModerator()) {
+            $builder
+                ->add('permission', CheckboxType::class, ['label' => 'permission', 'required' => false])
+                ->add('hidden', CheckboxType::class, ['label' => 'hidden', 'required' => false])
+                ->add('hiddendate', DateTimeSelectType::class, ['label' => 'hidden until']);
+        }
+
+        $builder
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $todo = $event->getData();
                 $form = $event->getForm();

@@ -506,6 +506,7 @@ class AnnouncementController extends BaseController
             $formData = $transformer->transform($announcementItem);
             $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
             $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
+            $formData['creatorId'] = $announcementItem->getCreatorID();
             $form = $this->createForm(AnnouncementType::class, $formData, ['action' => $this->generateUrl('app_announcement_edit', ['roomId' => $roomId, 'itemId' => $itemId]), 'placeholderText' => '['.$this->translator->trans('insert title').']', 'categoryMappingOptions' => [
                 'categories' => $labelService->getCategories($roomId),
                 'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),

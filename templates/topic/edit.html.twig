@@ -11,7 +11,7 @@
             </div>
         </div>
 
-            {% if topic.creator.itemId == currentUser.itemId or currentUser.isModerator %}
+            {% if form.permission is defined %}
             <div class="uk-margin-small-left uk-flex">
                 <label class="uk-form-label">
                     <span data-uk-tooltip title="{{ macros.userFullname(topic.creator) }}">{{ 'permission'|trans({}, "form") }}</span>
@@ -22,12 +22,18 @@
                     <i class="uk-hidden-small uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': macros.userFullname(topic.creator) }, 'form') }}"></i>
                 </div>
             </div>
+            {% endif %}
+
+            {% if form.hidden is defined %}
             <div class="uk-margin-small-left uk-flex">
                 <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
                 <div>
                     {{ form_widget(form.hidden) }}
                 </div>
             </div>
+            {% endif %}
+
+            {% if form.hiddendate is defined %}
             <div class="uk-margin-small-left uk-flex">
                 <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
                 <div class="uk-margin-small-top">
@@ -48,7 +54,6 @@
                     {{ form_row(form.cancel) }}
                 </div>
             </div>
-        {{ form_row(form._token) }}
-        {{ form_end(form, {'render_rest': false}) }}
+        {{ form_end(form) }}
     </div>
 </div>

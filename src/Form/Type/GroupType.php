@@ -51,7 +51,6 @@ class GroupType extends AbstractType
                 'label' => 'template for group workspace',
                 'translation_domain' => 'group',
             ])
-            ->add('permission', CheckboxType::class, ['label' => 'permission', 'required' => false])
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $group = $event->getData();
                 $form = $event->getForm();
