@@ -905,6 +905,7 @@ class MaterialController extends BaseController
             $formData = $this->materialTransformer->transform($materialItem);
             $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
             $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
+            $formData['creatorId'] = $materialItem->getCreatorID();
 
             $availableLicenses = $licenseRepository->findByContextOrderByPosition($this->legacyEnvironment->getCurrentPortalId());
             foreach ($availableLicenses as $availableLicense) {

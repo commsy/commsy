@@ -18,7 +18,9 @@ use App\Form\Type\Custom\DateTimeSelectType;
 use App\Form\Type\Custom\HashtagMappingType;
 use App\Form\Type\Event\AddBibliographicFieldListener;
 use App\Form\Type\Event\AddEtherpadFormListener;
+use App\Services\LegacyEnvironment;
 use cs_context_item;
+use cs_environment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -32,13 +34,20 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class MaterialType extends AbstractType
 {
+    private readonly cs_environment $legacyEnvironment;
+
     public function __construct(
+        LegacyEnvironment $legacyEnvironment,
         private readonly AddEtherpadFormListener $etherpadFormListener
     ) {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $formData = $builder->getData();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+
         $builder
             ->add('title', TextType::class, [
                 'constraints' => [new NotBlank()],
@@ -48,19 +57,25 @@ class MaterialType extends AbstractType
                     'class' => 'uk-form-width-medium cs-form-title',
                 ],
                 'translation_domain' => 'material',
-            ])
-            ->add('permission', CheckboxType::class, [
-                'label' => 'permission',
-                'required' => false,
-                'label_attr' => ['class' => 'uk-form-label'],
-            ])
-            ->add('hidden', CheckboxType::class, [
-                'label' => 'hidden',
-                'required' => false,
-            ])
-            ->add('hiddendate', DateTimeSelectType::class, [
-                'label' => 'hidden until',
-            ])
+            ]);
+
+        if ($formData['creatorId'] === $currentUser->getItemID() || $currentUser->isModerator()) {
+            $builder
+                ->add('permission', CheckboxType::class, [
+                    'label' => 'permission',
+                    'required' => false,
+                    'label_attr' => ['class' => 'uk-form-label'],
+                ])
+                ->add('hidden', CheckboxType::class, [
+                    'label' => 'hidden',
+                    'required' => false,
+                ])
+                ->add('hiddendate', DateTimeSelectType::class, [
+                    'label' => 'hidden until',
+                ]);
+        }
+
+        $builder
             ->add('biblio_select', ChoiceType::class, [
                 'choices' => [
                     'plain' => 'BiblioPlainType',

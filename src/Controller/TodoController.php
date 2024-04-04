@@ -511,6 +511,7 @@ class TodoController extends BaseController
         $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
         $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
         $formData['draft'] = $isDraft;
+        $formData['creatorId'] = $todoItem->getCreatorID();
 
         $form = $this->createForm(TodoType::class, $formData, $formOptions);
 

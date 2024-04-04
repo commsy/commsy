@@ -409,6 +409,7 @@ class TopicController extends BaseController
         $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
         $formData['language'] = $this->legacyEnvironment->getCurrentContextItem()->getLanguage();
         $formData['draft'] = $isDraft;
+        $formData['creatorId'] = $topicItem->getCreatorID();
         $form = $this->createForm(TopicType::class, $formData, ['action' => $this->generateUrl('app_date_edit', ['roomId' => $roomId, 'itemId' => $itemId]), 'placeholderText' => '['.$this->translator->trans('insert title').']', 'categoryMappingOptions' => [
             'categories' => $labelService->getCategories($roomId),
             'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
