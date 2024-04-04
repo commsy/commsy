@@ -875,8 +875,8 @@ class DateController extends BaseController
     #[Route(path: '/room/{roomId}/date/{itemId}/calendaredit')]
     public function calendaredit(
         Request $request,
+        int $roomId,
         int $itemId,
-        ParameterBagInterface $parameterBag
     ): Response {
         $date = $this->dateService->getDate($itemId);
 
@@ -884,8 +884,12 @@ class DateController extends BaseController
 
         $start = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $requestContent->start);
         $start->setTimezone(new DateTimeZone('UTC'));
-        $end = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $requestContent->end);
-        $end->setTimezone(new DateTimeZone('UTC'));
+        if (!empty($requestContent->end)) {
+            $end = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $requestContent->end);
+            $end->setTimezone(new DateTimeZone('UTC'));
+        } else {
+            $end = $start;
+        }
 
         $date->setStartingDay($start->format('Y-m-d'));
         $date->setStartingTime($start->format('H:i:s'));
