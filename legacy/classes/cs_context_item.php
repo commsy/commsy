@@ -857,7 +857,7 @@ class cs_context_item extends cs_item
 
     /** get dates status.
      *
-     * @return string dates status "normal" or "calendar"
+     * @return string one mode of either normal, calendar or calendar_month
      */
     public function getDatesPresentationStatus(): string
     {
@@ -871,16 +871,14 @@ class cs_context_item extends cs_item
             $retour = 'calendar_month';
         }
 
-        return $retour;
+        return in_array($retour, ['normal', 'calendar', 'calendar_month']) ? $retour : 'normal';
     }
 
-    /** set agb status.
-     *
-     * @param array value dates status
-     */
-    public function setDatesPresentationStatus($value): void
+    public function setDatesPresentationStatus(string $value): void
     {
-        $this->_addExtra('DATEPRESENTATIONSTATUS', (string) $value);
+        $value = in_array($value, ['normal', 'calendar', 'calendar_month']) ? $value : 'normal';
+
+        $this->_addExtra('DATEPRESENTATIONSTATUS', $value);
     }
 
     /** returns a boolean, if the the user can enter the context
