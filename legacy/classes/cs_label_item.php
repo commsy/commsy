@@ -71,15 +71,13 @@ class cs_label_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         $translator = $this->_environment->getTranslationObject();
         $this->_data = $data_array;
         if (!empty($this->_data['name']) and $this->_data['name'] == $translator->getMessage('ALL_MEMBERS')) {
             $this->_is_system_label = true;
         }
-
-        return $this->isValid();
     }
 
     /** Checks and returns the data of the item.
@@ -259,7 +257,7 @@ class cs_label_item extends cs_item
      *
      * @param string value title of the item
      */
-    public function setTitle(string $value)
+    public function setTitle(string $value): void
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();
@@ -273,7 +271,7 @@ class cs_label_item extends cs_item
      *
      * @return string name of the label
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         if ('-1' == $this->getPublic()) {
             $translator = $this->_environment->getTranslationObject();
@@ -369,7 +367,7 @@ class cs_label_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function isSystemLabel()
+    public function isSystemLabel(): bool
     {
         $retour = false;
         if ($this->_issetExtra('SYSTEM_LABEL')) {
@@ -402,7 +400,7 @@ class cs_label_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function save()
+    public function save(): void
     {
         $label_manager = $this->_environment->getLabelManager();
         $this->_save($label_manager);
@@ -515,7 +513,7 @@ class cs_label_item extends cs_item
      *
      * @param value
      */
-    public function isPublic()
+    public function isPublic(): bool
     {
         if (1 == $this->_getValue('public')) {
             return true;
@@ -528,7 +526,7 @@ class cs_label_item extends cs_item
      *
      * @param value
      */
-    public function setPublic($value)
+    public function setPublic($value): void
     {
         $this->_setValue('public', $value);
     }

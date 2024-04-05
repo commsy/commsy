@@ -510,12 +510,13 @@ class cs_dates_manager extends cs_manager
     */
    public function _buildItem(array $db_array)
    {
-       $db_array['recurrence_pattern'] = unserialize($db_array['recurrence_pattern']);
+       $db_array['recurrence_pattern'] = $db_array['recurrence_pattern'] != null ?
+           unserialize($db_array['recurrence_pattern']) : null;
 
        return parent::_buildItem($db_array);
    }
 
-   public function getColorArray()
+   public function getColorArray(): array
    {
        $color_array = [];
        $query = 'SELECT DISTINCT color FROM '.$this->addDatabasePrefix('dates').' WHERE 1';

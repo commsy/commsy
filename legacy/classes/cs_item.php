@@ -131,14 +131,10 @@ class cs_item
     /** Sets the data of the item.
      *
      * @param $data_array Is the prepared array from "_buildItem($db_array)"
-     *
-     * @return bool TRUE if data is valid FALSE otherwise
      */
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         $this->_data = $data_array;
-
-        return $this->isValid();
     }
 
     /** Gets the data of the item.
@@ -682,7 +678,7 @@ class cs_item
         return $this->_type;
     }
 
-    public function getTitle()              // TBD: In Zukunft sollten alle Titel auch Titel sein!!!
+    public function getTitle(): string
     {
         $title = $this->_getValue('title');
         if (!empty($title)) {
@@ -1444,7 +1440,7 @@ class cs_item
          return false;
      }
 
-     public function isPublic()
+     public function isPublic(): bool
      {
          return false;
      }
@@ -1814,11 +1810,9 @@ class cs_item
         return $id_array;
     }
 
-    public function isSystemLabel()
+    public function isSystemLabel(): bool
     {
-        $retour = false;
-
-        return $retour;
+        return false;
     }
 
     public function getLinkedItemIDArray($type)
@@ -2216,7 +2210,7 @@ class cs_item
     /** save item
      * this methode save the item into the database.
      */
-    public function save()
+    public function save(): void
     {
         $manager = $this->_environment->getManager($this->getItemType());
         $this->_save($manager);

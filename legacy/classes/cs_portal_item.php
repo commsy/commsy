@@ -559,9 +559,8 @@ class cs_portal_item extends cs_guide_item
         return $retour;
     }
 
-    public function save()
+    public function save(): void
     {
-        $item_id = $this->getItemID();
         parent::save();
         $this->_time_list = null;
     }

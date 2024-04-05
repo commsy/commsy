@@ -64,7 +64,7 @@ class cs_file_item extends cs_item
         return $this->_getValue('files_id');
     }
 
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->getFileName();
     }
@@ -175,10 +175,10 @@ class cs_file_item extends cs_item
         return $discManager->getCurrentFileName($this->getFileID(), $this->getExtension());
     }
 
-    public function save()
+    public function save(): void
     {
         $manager = $this->_environment->getFileManager();
-        return $this->_save($manager);
+        $this->_save($manager);
     }
 
     public function update()

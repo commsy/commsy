@@ -187,7 +187,7 @@ class cs_annotation_item extends cs_item
     /**
      * save.
      */
-    public function save()
+    public function save(): void
     {
         $annotation_manager = $this->_environment->getAnnotationManager();
         $this->_save($annotation_manager);

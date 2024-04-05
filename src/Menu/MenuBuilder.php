@@ -28,19 +28,19 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class MenuBuilder
+final readonly class MenuBuilder
 {
-    private readonly cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
-        private readonly FactoryInterface $factory,
-        private readonly RoomService $roomService,
+        private FactoryInterface $factory,
+        private RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
-        private readonly AuthorizationCheckerInterface $authorizationChecker,
-        private readonly InvitationsService $invitationsService,
-        private readonly PortalRepository $portalRepository,
-        private readonly Security $security,
-        private readonly RouterInterface $router
+        private AuthorizationCheckerInterface $authorizationChecker,
+        private InvitationsService $invitationsService,
+        private PortalRepository $portalRepository,
+        private Security $security,
+        private RouterInterface $router
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -582,7 +582,7 @@ class MenuBuilder
                 $route = 'app_'.$value.'_list';
                 if ('date' == $value) {
                     $room = $this->roomService->getRoomItem(intval($roomId));
-                    if (0 != $room->getDatesPresentationStatus()) {
+                    if ($room->getDatesPresentationStatus() !== 'normal') {
                         $route = 'app_date_calendar';
                     }
                 }

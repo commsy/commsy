@@ -40,7 +40,7 @@ class cs_dates_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         $this->_data = $data_array;
     }
@@ -52,7 +52,7 @@ class cs_dates_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         if ('-1' == $this->getPublic()) {
             $translator = $this->_environment->getTranslationObject();
@@ -70,7 +70,7 @@ class cs_dates_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function setTitle(string $value)
+    public function setTitle(string $value): void
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();
@@ -544,7 +544,7 @@ class cs_dates_item extends cs_item
                  and !empty($start_day);
     }
 
-    public function save()
+    public function save(): void
     {
         $dates_mananger = $this->_environment->getDatesManager();
         $this->_save($dates_mananger);
@@ -593,7 +593,7 @@ class cs_dates_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function isPublic()
+    public function isPublic(): bool
     {
         if (1 == $this->_getValue('public')) {
             return true;
@@ -608,7 +608,7 @@ class cs_dates_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function setPublic($value)
+    public function setPublic($value): void
     {
         $this->_setValue('public', $value);
     }
