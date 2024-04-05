@@ -318,11 +318,22 @@ class cs_context_item extends cs_item
         return $contactModeratorList ?? new cs_list();
     }
 
+    /** Before removing, check if not used in any template! */
+    /** @noinspection PhpUnused */
     public function getContactModeratorListString(): string
     {
         $list = $this->getContactModeratorList();
 
         return implode(', ', array_map(fn ($contact): string => $contact->getFullname(), $list->to_array()));
+    }
+
+    /** Before removing, check if not used in any template! */
+    /** @noinspection PhpUnused */
+    public function getModeratorListString(): string
+    {
+        $list = $this->getModeratorList();
+
+        return implode(', ', array_map(fn ($moderator): string => $moderator->getFullname(), $list->to_array()));
     }
 
     /** get description of a context
