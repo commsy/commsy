@@ -37,7 +37,7 @@ class cs_privateroom_item extends cs_room_item
         $this->defaultHomeConf[CS_ENTRY_TYPE] = 'show';
     }
 
-    public function isPrivateRoom()
+    public function isPrivateRoom(): bool
     {
         return true;
     }
@@ -191,11 +191,10 @@ class cs_privateroom_item extends cs_room_item
     /** save private room
      * this method save the private room.
      */
-    public function save()
+    public function save(): void
     {
         $item_id = $this->getItemID();
         $manager = $this->_environment->getPrivateRoomManager();
-        $current_user = $this->_environment->getCurrentUserItem();
 
         if (empty($item_id)) {
             $this->setContinuous();
@@ -469,7 +468,7 @@ class cs_privateroom_item extends cs_room_item
      *
      * @return bool if room is shown on home
      */
-    public function isShownInPrivateRoomHome($user_id)
+    public function isShownInPrivateRoomHome($user_id): bool
     {
         return false;
     }
@@ -617,7 +616,7 @@ class cs_privateroom_item extends cs_room_item
         return $retour;
     }
 
-    public function getTitle()
+    public function getTitle(): string
     {
         $retour = '';
         $title = parent::getTitle();
@@ -1341,7 +1340,7 @@ class cs_privateroom_item extends cs_room_item
         return $retour;
     }
 
-    public function usersCanSetExternalCalendarsUrl()
+    public function usersCanSetExternalCalendarsUrl(): bool
     {
         return true;
     }

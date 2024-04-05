@@ -270,7 +270,7 @@ class cs_room_item extends cs_context_item
     /** close a room
      * this method sets the status of the room to closed.
      */
-    public function close()
+    public function close(): void
     {
         $this->setClosureDate(getCurrentDateTimeInMySQL());
         parent::close();
@@ -498,15 +498,13 @@ class cs_room_item extends cs_context_item
      *
      * @return bool TRUE if data is valid FALSE otherwise
      */
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         $this->_data = $data_array;
         $retour = $this->isValid();
         if ($retour) {
             $this->_old_status = $this->getStatus();
         }
-
-        return $retour;
     }
 
     // ###############################################################
@@ -938,7 +936,7 @@ class cs_room_item extends cs_context_item
      *
      * @return array description text in different languages
      */
-    public function getDescriptionArray()
+    public function getDescriptionArray(): array
     {
         $retour = $this->_getValue('description');
         if (empty($retour)) {
@@ -967,9 +965,9 @@ class cs_room_item extends cs_context_item
      *
      * @param array value description text in different languages
      */
-    public function setDescriptionArray($value)
+    public function setDescriptionArray(array $value): void
     {
-        $this->_setValue('description', (array) $value);
+        $this->_setValue('description', $value);
     }
 
      /**
@@ -1083,7 +1081,7 @@ class cs_room_item extends cs_context_item
          return $this->_getValue('lastlogin');
      }
 
-     public function isActiveDuringLast99Days()
+     public function isActiveDuringLast99Days(): bool
      {
          return $this->getLastLogin() >= getCurrentDateTimeMinusDaysInMySQL(99);
      }

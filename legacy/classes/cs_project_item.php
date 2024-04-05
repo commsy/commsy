@@ -79,12 +79,12 @@ class cs_project_item extends cs_room_item
         $this->defaultHomeConf[CS_TOPIC_TYPE] = 'show';
     }
 
-    public function isProjectRoom()
+    public function isProjectRoom(): bool
     {
         return true;
     }
 
-    public function isOpenForGuests()
+    public function isOpenForGuests(): bool
     {
         return false;
     }
@@ -239,7 +239,7 @@ class cs_project_item extends cs_room_item
     /** save project
      * this method save the project.
      */
-    public function save()
+    public function save(): void
     {
         $item_id = $this->getItemID();
 
@@ -344,7 +344,7 @@ class cs_project_item extends cs_room_item
      /**
       * Locks the project room as well as any group rooms belonging to groups of this room.
       */
-     public function lock()
+     public function lock(): void
      {
          parent::lock();
 
@@ -359,7 +359,7 @@ class cs_project_item extends cs_room_item
      /**
       * Unlocks the project room as well as any group rooms belonging to groups of this room.
       */
-     public function unlock()
+     public function unlock(): void
      {
          parent::unlock();
 

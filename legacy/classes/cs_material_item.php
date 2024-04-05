@@ -69,7 +69,7 @@ class cs_material_item extends cs_item
      *
      * @param string value title of the material
      */
-    public function setTitle(string $value)
+    public function setTitle(string $value): void
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();
@@ -569,7 +569,7 @@ class cs_material_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         if ('-1' == $this->getPublic()) {
             $translator = $this->_environment->getTranslationObject();
@@ -818,7 +818,7 @@ class cs_material_item extends cs_item
 
 // ############### SAVING
 
-    public function save($mode = '')
+    public function save($mode = ''): void
     {
         $this->_saveLabel();
         $this->_saveSections($mode);
@@ -1559,7 +1559,7 @@ public function _copySectionList($copy_id)
      *
      * @author CommSy Development Group
      */
-    public function isPublic()
+    public function isPublic(): bool
     {
         if (1 == $this->_getValue('public')) {
             return true;
@@ -1572,7 +1572,7 @@ public function _copySectionList($copy_id)
      *
      * @param value
      */
-    public function setPublic($value)
+    public function setPublic($value): void
     {
         $this->_setValue('public', $value);
     }
@@ -1692,7 +1692,7 @@ public function _copySectionList($copy_id)
     // ------------- study.log ------------------
     // ------------------------------------------
 
-    public function isLocked()
+    public function isLocked(): bool
     {
         if ($this->getEtherpadEditor()) {
             return false;

@@ -53,12 +53,12 @@ class cs_grouproom_item extends cs_room_item
         $this->defaultHomeConf[CS_TOPIC_TYPE] = 'show';
     }
 
-    public function isGroupRoom()
+    public function isGroupRoom(): bool
     {
         return true;
     }
 
-    public function isOpenForGuests()
+    public function isOpenForGuests(): bool
     {
         return false;
     }
@@ -98,7 +98,7 @@ class cs_grouproom_item extends cs_room_item
     /** save group room
      * this method save the group room.
      */
-    public function save($save_other = true)
+    public function save($save_other = true): void
     {
         $item_id = $this->getItemID();
 
@@ -953,7 +953,7 @@ class cs_grouproom_item extends cs_room_item
     // ######################################################
     // linking calls for extras to the parent project room #
     // ######################################################
-    public function withAds()
+    public function withAds(): bool
     {
         // point to linked project item
         $linked_project_item = $this->getLinkedProjectItem();
@@ -962,13 +962,13 @@ class cs_grouproom_item extends cs_room_item
         }
     }
 
-    public function withGrouproomFunctions()
+    public function withGrouproomFunctions(): bool
     {
         // grouprooms can not have grouprooms
         return false;
     }
 
-    public function withLogArchive()
+    public function withLogArchive(): bool
     {
         // point to linked project item
         $linked_project_item = $this->getLinkedProjectItem();

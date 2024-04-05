@@ -41,7 +41,7 @@ class cs_discussion_item extends cs_item
     *
     * @author CommSy Development Group
     */
-   public function getTitle()
+   public function getTitle(): string
    {
        if ('-1' == $this->getPublic()) {
            $translator = $this->_environment->getTranslationObject();
@@ -123,9 +123,9 @@ class cs_discussion_item extends cs_item
     *
     * @author CommSy Development Group
     */
-   public function getDiscussionStatus()
+   public function getDiscussionStatus(): int
    {
-       return $this->_getValue('status');
+       return intval($this->_getValue('status'));
    }
 
    /** set type of a discussion
@@ -212,7 +212,7 @@ class cs_discussion_item extends cs_item
        return $number_of_unread;
    }
 
-   public function save()
+   public function save(): void
    {
        $discussion_manager = $this->_environment->getDiscussionManager();
        $this->_save($discussion_manager);
@@ -265,7 +265,7 @@ class cs_discussion_item extends cs_item
     *
     * @author CommSy Development Group
     */
-   public function _setItemData($data_array)
+   public function _setItemData($data_array): void
    {
        // TBD: check data before setting
        $this->_data = $data_array;
@@ -285,7 +285,7 @@ class cs_discussion_item extends cs_item
     *
     * @author CommSy Development Group
     */
-   public function isPublic()
+   public function isPublic(): bool
    {
        if (1 == $this->_getValue('public')) {
            return true;
@@ -300,7 +300,7 @@ class cs_discussion_item extends cs_item
     *
     * @author CommSy Development Group
     */
-   public function setPublic($value)
+   public function setPublic($value): void
    {
        $this->_setValue('public', $value);
    }
