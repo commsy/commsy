@@ -905,7 +905,6 @@ class MaterialController extends BaseController
             $formData = $this->materialTransformer->transform($materialItem);
             $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
             $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
-            $formData['creatorId'] = $materialItem->getCreatorID();
 
             $availableLicenses = $licenseRepository->findByContextOrderByPosition($this->legacyEnvironment->getCurrentPortalId());
             foreach ($availableLicenses as $availableLicense) {
@@ -930,6 +929,7 @@ class MaterialController extends BaseController
                 ],
                 'licenses' => $licenses,
                 'room' => $current_context,
+                'itemId' => $itemId
             ]);
 
             $this->eventDispatcher->dispatch(new CommsyEditEvent($materialItem), CommsyEditEvent::EDIT);
@@ -1005,7 +1005,6 @@ class MaterialController extends BaseController
             'isDraft' => $isDraft,
             'isMaterial' => $isMaterial,
             'form' => $form,
-            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
             'material' => $typedItem,
             'licenses' => $licenses,
             'licensesContent' => $licensesContent],

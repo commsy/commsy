@@ -948,7 +948,6 @@ class DateController extends BaseController
         $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
         $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
         $formData['draft'] = $isDraft;
-        $formData['creatorId'] = $dateItem->getCreatorID();
 
         $calendars = $calendarsRepository->findBy(['context_id' => $roomId]);
         $calendarsOptions = [];
@@ -974,7 +973,8 @@ class DateController extends BaseController
             'hashtags' => $labelService->getHashtags($roomId),
             'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
             'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-        ], 'room' => $current_context];
+        ], 'room' => $current_context,
+           'itemId' => $itemId];
         if ('' != $dateItem->getRecurrencePattern()) {
             $formOptions['attr']['unsetRecurrence'] = true;
         }
@@ -1098,7 +1098,7 @@ class DateController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($dateItem), CommsyEditEvent::EDIT);
 
-        return $this->render('date/edit.html.twig', ['form' => $form, 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'currentUser' => $this->legacyEnvironment->getCurrentUserItem(), 'withRecurrence' => '' != $dateItem->getRecurrencePattern(), 'date' => $dateItem]);
+        return $this->render('date/edit.html.twig', ['form' => $form, 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'withRecurrence' => '' != $dateItem->getRecurrencePattern(), 'date' => $dateItem]);
     }
 
     private function getTagDetailArray($baseCategories, $itemCategories)
