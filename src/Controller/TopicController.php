@@ -409,7 +409,6 @@ class TopicController extends BaseController
         $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
         $formData['language'] = $this->legacyEnvironment->getCurrentContextItem()->getLanguage();
         $formData['draft'] = $isDraft;
-        $formData['creatorId'] = $topicItem->getCreatorID();
         $form = $this->createForm(TopicType::class, $formData, ['action' => $this->generateUrl('app_date_edit', ['roomId' => $roomId, 'itemId' => $itemId]), 'placeholderText' => '['.$this->translator->trans('insert title').']', 'categoryMappingOptions' => [
             'categories' => $labelService->getCategories($roomId),
             'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
@@ -418,7 +417,8 @@ class TopicController extends BaseController
             'hashtags' => $labelService->getHashtags($roomId),
             'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
             'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-        ], 'room' => $current_context]);
+        ], 'room' => $current_context,
+           'itemId' => $itemId]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -465,7 +465,7 @@ class TopicController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($topicItem), CommsyEditEvent::EDIT);
 
-        return $this->render('topic/edit.html.twig', ['form' => $form, 'topic' => $topicItem, 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('topic/edit.html.twig', ['form' => $form, 'topic' => $topicItem, 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage()]);
     }
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/save')]

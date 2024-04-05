@@ -757,7 +757,6 @@ class DiscussionController extends BaseController
             $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
             $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
             $formData['draft'] = $isDraft;
-            $formData['creatorId'] = $discussionItem->getCreatorID();
             $form = $this->createForm(DiscussionType::class, $formData, ['action' => $this->generateUrl('app_discussion_edit', ['roomId' => $roomId, 'itemId' => $itemId]), 'placeholderText' => '[' . $this->translator->trans('insert title') . ']', 'categoryMappingOptions' => [
                 'categories' => $labelService->getCategories($roomId),
                 'categoryPlaceholderText' => $this->translator->trans('New category', [], 'category'),
@@ -766,7 +765,8 @@ class DiscussionController extends BaseController
                 'hashtags' => $labelService->getHashtags($roomId),
                 'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-            ], 'room' => $current_context]);
+            ], 'room' => $current_context,
+               'itemId' => $itemId]);
         }
 
         $form->handleRequest($request);
@@ -827,7 +827,7 @@ class DiscussionController extends BaseController
             $this->eventDispatcher->dispatch(new CommsyEditEvent($discussionItem), CommsyEditEvent::EDIT);
         }
 
-        return $this->render('discussion/edit.html.twig', ['form' => $form, 'discussion' => $discussionItem, 'discussionArticle' => $discussionArticleItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('discussion/edit.html.twig', ['form' => $form, 'discussion' => $discussionItem, 'discussionArticle' => $discussionArticleItem, 'isDraft' => $isDraft]);
     }
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/save')]

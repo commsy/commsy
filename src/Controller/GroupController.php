@@ -718,7 +718,6 @@ class GroupController extends BaseController
             'form' => $form,
             'group' => $groupItem,
             'isDraft' => $isDraft,
-            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
         ]);
     }
 
