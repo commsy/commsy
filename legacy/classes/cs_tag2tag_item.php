@@ -249,7 +249,7 @@ class cs_tag2tag_item
         return $value;
     }
 
-    public function save()
+    public function save(): void
     {
         $manager = $this->_environment->getManager($this->_type);
         $manager->saveItem($this);

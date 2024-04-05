@@ -38,8 +38,6 @@ class cs_context_item extends cs_item
 
     private array $cachePageImpressions = [];
 
-    private ?int $countItems = null;
-
     /** constructor: cs_context_item
      * the only available constructor, initial values for internal variables.
      *
@@ -87,7 +85,7 @@ class cs_context_item extends cs_item
         $this->userList = new cs_list();
     }
 
-    public function isOpenForGuests()
+    public function isOpenForGuests(): bool
     {
         if (1 == $this->_getValue('is_open_for_guests')) {
             return true;
@@ -96,17 +94,17 @@ class cs_context_item extends cs_item
         }
     }
 
-    public function setOpenForGuests()
+    public function setOpenForGuests(): void
     {
-        $this->_setValue('is_open_for_guests', 1, true);
+        $this->_setValue('is_open_for_guests', 1);
     }
 
-    public function setClosedForGuests()
+    public function setClosedForGuests(): void
     {
-        $this->_setValue('is_open_for_guests', 0, true);
+        $this->_setValue('is_open_for_guests', 0);
     }
 
-    public function isMaterialOpenForGuests()
+    public function isMaterialOpenForGuests(): bool
     {
         if ($this->_issetExtra('MATERIAL_GUESTS') and 1 == $this->_getExtra('MATERIAL_GUESTS')) {
             return true;
@@ -130,7 +128,7 @@ class cs_context_item extends cs_item
         return $this->_issetExtra('ROOMASSOCIATION') && $this->_getExtra('ROOMASSOCIATION') === 'onlymembers';
     }
 
-    public function setAssignmentOpenForAnybody()
+    public function setAssignmentOpenForAnybody(): void
     {
         $this->_addExtra('ROOMASSOCIATION', 'forall');
     }
@@ -140,27 +138,27 @@ class cs_context_item extends cs_item
         $this->_addExtra('ROOMASSOCIATION', 'onlymembers');
     }
 
-    public function isCommunityRoom()
+    public function isCommunityRoom(): bool
     {
         return false;
     }
 
-    public function isPrivateRoom()
+    public function isPrivateRoom(): bool
     {
         return false;
     }
 
-    public function isGroupRoom()
+    public function isGroupRoom(): bool
     {
         return false;
     }
 
-    public function isUserroom()
+    public function isUserroom(): bool
     {
         return false;
     }
 
-    public function isProjectRoom()
+    public function isProjectRoom(): bool
     {
         return false;
     }
@@ -179,7 +177,7 @@ class cs_context_item extends cs_item
      *
      * @param $data_array
      */
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         // not yet implemented
         $this->_data = $data_array;
@@ -187,20 +185,16 @@ class cs_context_item extends cs_item
 
     /** get title of a context
      * this method returns the title of the context.
-     *
-     * @return string title of a context
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->_getValue('title');
     }
 
     /** set title of a context
      * this method sets the title of the context.
-     *
-     * @param string value title of the context
      */
-    public function setTitle(string $value)
+    public function setTitle(string $value): void
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();
@@ -211,20 +205,16 @@ class cs_context_item extends cs_item
 
     /** get room type of a context
      * this method returns the room type of the context.
-     *
-     * @return string room type of a context
      */
-    public function getRoomType()
+    public function getRoomType(): string
     {
         return $this->_getValue('type');
     }
 
     /** set room type of a context
      * this method sets the room type of the context.
-     *
-     * @param string value room type of the context
      */
-    public function setRoomType($value)
+    public function setRoomType(string $value): void
     {
         $this->_setValue('type', $value, true);
     }
@@ -233,7 +223,7 @@ class cs_context_item extends cs_item
      *
      * @return array description text in different languages
      */
-    public function getDescriptionArray()
+    public function getDescriptionArray(): array
     {
         $retour = [];
         if ($this->_issetExtra('DESCRIPTION')) {
@@ -250,21 +240,21 @@ class cs_context_item extends cs_item
 
         $last = $val[mb_strlen($val) - 1];
         $numericVal = (int) substr($val, 0, -1);
-        match ($last) {
-            'k', 'K' => $numericVal *= 1024,
-            'm', 'M' => $numericVal *= 1_048_576,
+        return match ($last) {
+            'k', 'K' => $numericVal * 1024,
+            'm', 'M' => $numericVal * 1_048_576,
             default => $numericVal,
         };
     }
 
-    public function setNotShownInPrivateRoomHome($user_id)
+    public function setNotShownInPrivateRoomHome($user_id): void
     {
         $current_user = $this->_environment->getCurrentUserItem();
         $tag = $current_user->getItemID();
         $this->_addExtra('IS_SHOW_ON_HOME_'.$tag, 'NO');
     }
 
-    public function setShownInPrivateRoomHome($user_id)
+    public function setShownInPrivateRoomHome($user_id): void
     {
         $current_user = $this->_environment->getCurrentUserItem();
         $tag = $current_user->getItemID();
@@ -275,44 +265,41 @@ class cs_context_item extends cs_item
      *
      * @return bool if room is shown on home
      */
-    public function isShownInPrivateRoomHome($user_id)
+    public function isShownInPrivateRoomHome($user_id): bool
     {
-        $retour = 'true';
         $current_user = $this->_environment->getCurrentUserItem();
         $tag = $current_user->getItemID();
         if ($this->_issetExtra('IS_SHOW_ON_HOME_'.$tag)) {
             if ('NO' == $this->_getExtra('IS_SHOW_ON_HOME_'.$tag)) {
-                $retour = false;
+                return false;
             }
         }
-        unset($current_user);
 
-        return $retour;
+        return true;
     }
 
     /** get shown option.
      *
      * @return bool if room is shown on home
      */
-    public function isShownInPrivateRoomHomeByItemID($item_id)
+    public function isShownInPrivateRoomHomeByItemID($item_id): bool
     {
-        $retour = 'true';
         if ($this->_issetExtra('IS_SHOW_ON_HOME_'.$item_id)) {
             if ('NO' == $this->_getExtra('IS_SHOW_ON_HOME_'.$item_id)) {
-                $retour = false;
+                return false;
             }
         }
 
-        return $retour;
+        return true;
     }
 
     /** set description array.
      *
-     * @param array value description text in different languages
+     * @param array $value description text in different languages
      */
-    public function setDescriptionArray($value)
+    public function setDescriptionArray(array $value): void
     {
-        $this->_addExtra('DESCRIPTION', (array) $value);
+        $this->_addExtra('DESCRIPTION', $value);
     }
 
     /** get contact moderators of a room
@@ -322,19 +309,13 @@ class cs_context_item extends cs_item
      */
     public function getContactModeratorList(): cs_list
     {
-        if (!isset($this->_contact_moderator_list)) {
-            $user_manager = $this->_environment->getUserManager();
-            $user_manager->setContextLimit($this->getItemID());
-            $user_manager->setContactModeratorLimit();
-            $user_manager->select();
-            $this->_contact_moderator_list = $user_manager->get();
+        $user_manager = $this->_environment->getUserManager();
+        $user_manager->setContextLimit($this->getItemID());
+        $user_manager->setContactModeratorLimit();
+        $user_manager->select();
+        $contactModeratorList = $user_manager->get();
 
-            if ($this->_contact_moderator_list->isEmpty()) {
-                $this->_contact_moderator_list = $this->getModeratorList();
-            }
-        }
-
-        return $this->_contact_moderator_list;
+        return $contactModeratorList ?? new cs_list();
     }
 
     public function getContactModeratorListString(): string
@@ -344,34 +325,25 @@ class cs_context_item extends cs_item
         return implode(', ', array_map(fn ($contact): string => $contact->getFullname(), $list->to_array()));
     }
 
-      public function getModeratorListString(): string
-      {
-          $list = $this->getModeratorList();
-
-          return implode(', ', array_map(fn ($moderator): string => $moderator->getFullname(), $list->to_array()));
-      }
-
     /** get description of a context
      * this method returns the description of the context.
      *
      * @return string description of a context
      */
-    public function getDescriptionByLanguage($language)
+    public function getDescriptionByLanguage($language): string
     {
-        $retour = '';
         $desc_array = $this->getDescriptionArray();
         if (!empty($desc_array[cs_strtoupper($language)])) {
-            $retour = $desc_array[cs_strtoupper($language)];
+            return $desc_array[cs_strtoupper($language)];
         }
 
-        return $retour;
+        return '';
     }
 
     public function getDescription()
     {
         $retour = $this->getDescriptionByLanguage($this->_environment->getSelectedLanguage());
         if (empty($retour)) {
-            $current_user = $this->_environment->getCurrentUserItem();
             $retour = $this->getDescriptionByLanguage($this->_environment->getUserLanguage());
         }
         if (empty($retour)) {
@@ -413,7 +385,7 @@ class cs_context_item extends cs_item
      *
      * @param string value language
      */
-    public function setLanguage($value)
+    public function setLanguage($value): void
     {
         $this->_addExtra('LANGUAGE', (string) $value);
     }
@@ -424,7 +396,7 @@ class cs_context_item extends cs_item
      * @param string value description of the context
      * @param string value lanugage of the description
      */
-    public function setDescriptionByLanguage($value, $language)
+    public function setDescriptionByLanguage($value, $language): void
     {
         $desc_array = $this->getDescriptionArray();
         $desc_array[mb_strtoupper((string) $language, 'UTF-8')] = $value;
@@ -435,7 +407,7 @@ class cs_context_item extends cs_item
      *
      * @return array agb text in different languages
      */
-    public function getAGBTextArray()
+    public function getAGBTextArray(): array
     {
         $retour = [];
         if ($this->_issetExtra('AGBTEXTARRAY')) {
@@ -449,7 +421,7 @@ class cs_context_item extends cs_item
      *
      * @param array value agb in different languages
      */
-    public function setAGBTextArray($value)
+    public function setAGBTextArray($value): void
     {
         $this->_addExtra('AGBTEXTARRAY', (array) $value);
     }
@@ -458,36 +430,29 @@ class cs_context_item extends cs_item
      *
      * @return int agb status 1 = yes, 2 = no
      */
-    public function getAGBStatus()
+    public function getAGBStatus(): int
     {
         $retour = '2';
         if ($this->_issetExtra('AGBSTATUS')) {
             $retour = $this->_getExtra('AGBSTATUS');
         }
 
-        return $retour;
+        return intval($retour);
     }
 
     /** set agb status.
      *
-     * @param array value agb status
+     * @param int $value agb status
      */
-    public function setAGBStatus($value)
+    public function setAGBStatus($value): void
     {
         $this->_addExtra('AGBSTATUS', (int) $value);
     }
 
     // @return boolean true = with AGB, false = without AGB
-    public function withAGB()
+    public function withAGB(): bool
     {
-        $agb_status = $this->getAGBStatus();
-        if (1 == $agb_status) {
-            $retour = true;
-        } else {
-            $retour = false;
-        }
-
-        return $retour;
+        return $this->getAGBStatus() == 1;
     }
 
       public function getAGBChangeDate(): ?DateTimeImmutable
@@ -513,47 +478,45 @@ class cs_context_item extends cs_item
           return $this;
       }
 
-    public function withAssociations()
+    public function withAssociations(): bool
     {
-        $retour = false;
         if ($this->_issetExtra('WITHASSOCIATIONS')) {
             $re = $this->_getExtra('WITHASSOCIATIONS');
             if (2 == $re) {
-                $retour = true;
+                return true;
             }
         } else {
-            $retour = true;
+            return true;
         }
 
-        return $retour;
+        return false;
     }
 
-    public function setWithBuzzwords()
+    public function setWithBuzzwords(): void
     {
         $this->_addExtra('WITHBUZZWORDS', 2);
     }
 
-    public function setWithoutBuzzwords()
+    public function setWithoutBuzzwords(): void
     {
         $this->_addExtra('WITHBUZZWORDS', 1);
     }
 
-    public function withBuzzwords()
+    public function withBuzzwords(): bool
     {
-        $retour = false;
         if ($this->_issetExtra('WITHBUZZWORDS')) {
             $re = $this->_getExtra('WITHBUZZWORDS');
             if (2 == $re) {
-                $retour = true;
+                return true;
             }
         } else {
-            $retour = true;
+            return true;
         }
 
-        return $retour;
+        return false;
     }
 
-    public function isBuzzwordMandatory()
+    public function isBuzzwordMandatory(): bool
     {
         $retour = false;
         if ($this->_issetExtra('BUZZWORDMANDATORY')) {
@@ -566,108 +529,105 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setBuzzwordMandatory()
+    public function setBuzzwordMandatory(): void
     {
         $this->_addExtra('BUZZWORDMANDATORY', 1);
     }
 
-    public function unsetBuzzwordMandatory()
+    public function unsetBuzzwordMandatory(): void
     {
         $this->_addExtra('BUZZWORDMANDATORY', 0);
     }
 
-      public function isAssociationShowExpanded()
-      {
-          if ($this->_issetExtra('ASSOCIATIONSHOWEXPANDED')) {
-              $value = $this->_getExtra('ASSOCIATIONSHOWEXPANDED');
-              if (1 == $value) {
-                  return true;
-              }
-          }
-
-          return false;
-      }
-
-      public function setAssociationShowExpanded()
-      {
-          $this->_addExtra('ASSOCIATIONSHOWEXPANDED', 1);
-      }
-
-      public function unsetAssociationShowExpanded()
-      {
-          $this->_addExtra('ASSOCIATIONSHOWEXPANDED', 0);
-      }
-
-    public function isBuzzwordShowExpanded()
+    public function isAssociationShowExpanded(): bool
     {
-        $retour = true;
-        if ($this->_issetExtra('BUZZWORDSHOWEXPANDED')) {
-            $value = $this->_getExtra('BUZZWORDSHOWEXPANDED');
-            if (0 == $value) {
-                $retour = false;
+        if ($this->_issetExtra('ASSOCIATIONSHOWEXPANDED')) {
+            $value = $this->_getExtra('ASSOCIATIONSHOWEXPANDED');
+            if (1 == $value) {
+                return true;
             }
         }
 
-        return $retour;
+        return false;
     }
 
-    public function setBuzzwordShowExpanded()
+    public function setAssociationShowExpanded(): void
+    {
+        $this->_addExtra('ASSOCIATIONSHOWEXPANDED', 1);
+    }
+
+    public function unsetAssociationShowExpanded(): void
+    {
+        $this->_addExtra('ASSOCIATIONSHOWEXPANDED', 0);
+    }
+
+    public function isBuzzwordShowExpanded(): bool
+    {
+        if ($this->_issetExtra('BUZZWORDSHOWEXPANDED')) {
+            $value = $this->_getExtra('BUZZWORDSHOWEXPANDED');
+            if (0 == $value) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function setBuzzwordShowExpanded(): void
     {
         $this->_addExtra('BUZZWORDSHOWEXPANDED', 1);
     }
 
-    public function unsetBuzzwordShowExpanded()
+    public function unsetBuzzwordShowExpanded(): void
     {
         $this->_addExtra('BUZZWORDSHOWEXPANDED', 0);
     }
 
-    public function setWithWorkflow()
+    public function setWithWorkflow(): void
     {
         $this->_addExtra('WITHWORKFLOW', 2);
     }
 
-    public function setWithoutWorkflow()
+    public function setWithoutWorkflow(): void
     {
         $this->_addExtra('WITHWORKFLOW', 1);
     }
 
-    public function withWorkflow()
+    public function withWorkflow(): bool
     {
-        $retour = false;
         if ($this->_issetExtra('WITHWORKFLOW')) {
             $re = $this->_getExtra('WITHWORKFLOW');
             if (2 == $re) {
-                $retour = true;
+                return true;
             }
         }
 
-        return $retour;
+        return false;
     }
 
-    public function setWithWorkflowTrafficLight()
+    public function setWithWorkflowTrafficLight(): void
     {
         $this->_addExtra('WITHWORKFLOWTRAFFICLIGHT', 2);
     }
 
-    public function setWithoutWorkflowTrafficLight()
+    public function setWithoutWorkflowTrafficLight(): void
     {
         $this->_addExtra('WITHWORKFLOWTRAFFICLIGHT', 1);
     }
 
-    public function withWorkflowTrafficLight()
+    public function withWorkflowTrafficLight(): bool
     {
-        $retour = false;
         if ($this->_issetExtra('WITHWORKFLOWTRAFFICLIGHT')) {
             $re = $this->_getExtra('WITHWORKFLOWTRAFFICLIGHT');
             if (2 == $re) {
-                $retour = true;
+                return true;
             }
         }
 
-        return $retour;
+        return false;
     }
 
-    public function setWorkflowTrafficLightDefault($value)
+    public function setWorkflowTrafficLightDefault($value): void
     {
         $this->_addExtra('WORKFLOWTRAFFICLIGHTDEFAULT', $value);
     }
@@ -682,7 +642,7 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setWorkflowTrafficLightTextGreen($value)
+    public function setWorkflowTrafficLightTextGreen($value): void
     {
         $this->_addExtra('WORKFLOWTRAFFICLIGHTTEXTGREEN', $value);
     }
@@ -697,7 +657,7 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setWorkflowTrafficLightTextYellow($value)
+    public function setWorkflowTrafficLightTextYellow($value): void
     {
         $this->_addExtra('WORKFLOWTRAFFICLIGHTTEXTYELLOW', $value);
     }
@@ -712,7 +672,7 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setWorkflowTrafficLightTextRed($value)
+    public function setWorkflowTrafficLightTextRed($value): void
     {
         $this->_addExtra('WORKFLOWTRAFFICLIGHTTEXTRED', $value);
     }
@@ -727,62 +687,56 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setWithWorkflowResubmission()
+    public function setWithWorkflowResubmission(): void
     {
         $this->_addExtra('WITHWORKFLOWRESUBMISSION', 2);
     }
 
-    public function setWithoutWorkflowResubmission()
+    public function setWithoutWorkflowResubmission(): void
     {
         $this->_addExtra('WITHWORKFLOWRESUBMISSION', 1);
     }
 
-    public function withWorkflowResubmission()
+    public function withWorkflowResubmission(): bool
     {
-        $retour = false;
         if ($this->_issetExtra('WITHWORKFLOWRESUBMISSION')) {
             $re = $this->_getExtra('WITHWORKFLOWRESUBMISSION');
             if (2 == $re) {
-                $retour = true;
+                return true;
             }
         }
-        // else {
-        //  $retour = true;
-        // }
-        return $retour;
+
+        return false;
     }
 
-    public function setWithWorkflowReader()
+    public function setWithWorkflowReader(): void
     {
         $this->_addExtra('WITHWORKFLOWREADER', 2);
     }
 
-    public function setWithoutWorkflowReader()
+    public function setWithoutWorkflowReader(): void
     {
         $this->_addExtra('WITHWORKFLOWREADER', 1);
     }
 
-    public function withWorkflowReader()
+    public function withWorkflowReader(): bool
     {
-        $retour = false;
         if ($this->_issetExtra('WITHWORKFLOWREADER')) {
             $re = $this->_getExtra('WITHWORKFLOWREADER');
             if (2 == $re) {
-                $retour = true;
+                return true;
             }
         }
-        // else {
-        //  $retour = true;
-        // }
-        return $retour;
+
+        return false;
     }
 
-    public function setWithWorkflowReaderGroup()
+    public function setWithWorkflowReaderGroup(): void
     {
         $this->_addExtra('WORKFLOWREADERGROUP', '1');
     }
 
-    public function setWithoutWorkflowReaderGroup()
+    public function setWithoutWorkflowReaderGroup(): void
     {
         $this->_addExtra('WORKFLOWREADERGROUP', '0');
     }
@@ -797,12 +751,12 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setWithWorkflowReaderPerson()
+    public function setWithWorkflowReaderPerson(): void
     {
         $this->_addExtra('WORKFLOWREADERPERSON', '1');
     }
 
-    public function setWithoutWorkflowReaderPerson()
+    public function setWithoutWorkflowReaderPerson(): void
     {
         $this->_addExtra('WORKFLOWREADERPERSON', '0');
     }
@@ -817,7 +771,7 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setWorkflowReaderShowTo($value)
+    public function setWorkflowReaderShowTo($value): void
     {
         $this->_addExtra('WORKFLOWREADERSHOWTO', $value);
     }
@@ -832,81 +786,73 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setWithWorkflowValidity()
+    public function setWithWorkflowValidity(): void
     {
         $this->_addExtra('WITHWORKFLOWVALIDITY', 2);
     }
 
-    public function setWithoutWorkflowValidity()
+    public function setWithoutWorkflowValidity(): void
     {
         $this->_addExtra('WITHWORKFLOWVALIDITY', 1);
     }
 
-    public function withWorkflowValidity()
+    public function withWorkflowValidity(): bool
     {
-        $retour = false;
         if ($this->_issetExtra('WITHWORKFLOWVALIDITY')) {
             $re = $this->_getExtra('WITHWORKFLOWVALIDITY');
             if (2 == $re) {
-                $retour = true;
+                return true;
             }
         }
 
-        return $retour;
+        return false;
     }
 
     /** get htmltextarea status.
      *
      * @return int discussion status 1 = simple, 2 = threaded,  3 = both
      */
-    public function getDiscussionStatus()
+    public function getDiscussionStatus(): int
     {
         $retour = 1;
         if ($this->_issetExtra('DISCUSSIONSTATUS')) {
             $retour = $this->_getExtra('DISCUSSIONSTATUS');
         }
 
-        return $retour;
+        return intval($retour);
     }
 
     /** set agb status.
      *
      * @param array value discussion status
      */
-    public function setDiscussionStatus($value)
+    public function setDiscussionStatus($value): void
     {
         $this->_addExtra('DISCUSSIONSTATUS', (int) $value);
     }
 
-      /** get htmltextarea status.
-       *
-       * @return int htmltextarea status 1 = yes, 2 = yes, but minimum, 3 = no
-       */
-      public function getHtmlTextAreaStatus()
-      {
-          return 3;
-      }
+    /** get htmltextarea status.
+     *
+     * @return int htmltextarea status 1 = yes, 2 = yes, but minimum, 3 = no
+     */
+    public function getHtmlTextAreaStatus(): int
+    {
+        return 3;
+    }
 
     /** set agb status.
      *
      * @param array value HTMLTextArea status
      */
-    public function setHtmlTextAreaStatus($value)
+    public function setHtmlTextAreaStatus($value): void
     {
         $this->_addExtra('HTMLTEXTAREASTATUS', (int) $value);
     }
 
     // @return boolean true = with HTMLTextArea, false = without HTMLTextArea
-    public function withHtmlTextArea()
+    public function withHtmlTextArea(): bool
     {
-        $htmltextarea = $this->getHtmlTextAreaStatus();
-        if (3 != $htmltextarea) {
-            $retour = true;
-        } else {
-            $retour = false;
-        }
-
-        return $retour;
+        return $this->getHtmlTextAreaStatus() != 3;
     }
 
     /** get dates status.
@@ -932,7 +878,7 @@ class cs_context_item extends cs_item
      *
      * @param array value dates status
      */
-    public function setDatesPresentationStatus($value)
+    public function setDatesPresentationStatus($value): void
     {
         $this->_addExtra('DATEPRESENTATIONSTATUS', (string) $value);
     }
@@ -943,7 +889,7 @@ class cs_context_item extends cs_item
      *
      * @param object user item this user wants to enter the project
      */
-    public function mayEnter($user_item)
+    public function mayEnter($user_item): bool
     {
         return $this->mayEnterByUserID($user_item->getUserID(), $user_item->getAuthSource());
     }
@@ -985,44 +931,42 @@ class cs_context_item extends cs_item
         return false;
     }
 
-     public function isSystemLabel()
-     {
-         $retour = false;
-         if ($this->_issetExtra('SYSTEM_LABEL')) {
-             $value = $this->_getExtra('SYSTEM_LABEL');
-             if (1 == $value) {
-                 $retour = true;
-             }
-         }
-
-         return $retour;
-     }
-
-    public function mayEnterByUserItemID($user_item_id)
+    public function isSystemLabel(): bool
     {
-        $retour = false;
+        if ($this->_issetExtra('SYSTEM_LABEL')) {
+            $value = $this->_getExtra('SYSTEM_LABEL');
+            if (1 == $value) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function mayEnterByUserItemID($user_item_id): bool
+    {
         if ($this->isLocked()) {
-            $retour = false;
+            return false;
         } elseif (isset($this->_cache_may_enter[$user_item_id])) {
-            $retour = $this->_cache_may_enter[$user_item_id];
+            return $this->_cache_may_enter[$user_item_id];
         } elseif ($this->isOpenForGuests()) {
-            $retour = true;
+            return true;
         } else {
             $user_manager = $this->_environment->getUserManager();
             $user_in_room = $user_manager->getItem($user_item_id);
             if ($user_in_room->isUser() && $user_in_room->getContextID() == $this->getItemID()
             ) {
-                $retour = true;
                 $this->_cache_may_enter[$user_item_id] = true;
+                return true;
             } else {
                 $this->_cache_may_enter[$user_item_id] = false;
             }
         }
 
-        return $retour;
+        return false;
     }
 
-    public function getColorArray()
+    public function getColorArray(): array
     {
         $retour = $this->_default_colors;
         if ($this->_issetExtra('COLOR')) {
@@ -1039,7 +983,7 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setColorArray($array)
+    public function setColorArray($array): void
     {
         if (is_array($array)) {
             $this->_addExtra('COLOR', $array);
@@ -1052,17 +996,16 @@ class cs_context_item extends cs_item
      *
      * @return bool
      */
-    public function checkNewMembersAlways()
+    public function checkNewMembersAlways(): bool
     {
-        $retour = true;
         if ($this->checkNewMembersSometimes()
                 or $this->checkNewMembersNever()
                 or $this->checkNewMembersWithCode()
         ) {
-            $retour = false;
+            return false;
         }
 
-        return $retour;
+        return true;
     }
 
     /**
@@ -1071,14 +1014,9 @@ class cs_context_item extends cs_item
      *
      * @return bool
      */
-    public function checkNewMembersSometimes()
+    public function checkNewMembersSometimes(): bool
     {
-        $retour = false;
-        if (2 == $this->_getCheckNewMembers()) {
-            $retour = true;
-        }
-
-        return $retour;
+        return $this->_getCheckNewMembers() == 2;
     }
 
     /**
@@ -1087,17 +1025,12 @@ class cs_context_item extends cs_item
      *
      * @return bool
      */
-    public function checkNewMembersWithCode()
+    public function checkNewMembersWithCode(): bool
     {
-        $retour = false;
-        if (3 == $this->_getCheckNewMembers()) {
-            $retour = true;
-        }
-
-        return $retour;
+        return $this->_getCheckNewMembers() == 3;
     }
 
-    public function setCheckNewMemberCode($value)
+    public function setCheckNewMemberCode($value): void
     {
         $this->_addExtra('CHECKNEWMEMBERS_CODE', $value);
     }
@@ -1118,14 +1051,9 @@ class cs_context_item extends cs_item
      *
      * @return bool
      */
-    public function checkNewMembersNever()
+    public function checkNewMembersNever(): bool
     {
-        $retour = false;
-        if (-1 == $this->_getCheckNewMembers()) {
-            $retour = true;
-        }
-
-        return $retour;
+        return $this->_getCheckNewMembers() == -1;
     }
 
     /** get flag for checking new members, INTERNAL -> use checkNewMember()
@@ -1166,7 +1094,7 @@ class cs_context_item extends cs_item
     /*
      * set value to room asociation
      */
-    public function _setRoomAssociation($value)
+    public function _setRoomAssociation($value): void
     {
         $this->_addExtra('ROOMASSOCIATION', $value);
     }
@@ -1176,7 +1104,7 @@ class cs_context_item extends cs_item
      *
      * @param bool value flag for checking new members
      */
-    public function _setCheckNewMember($value)
+    public function _setCheckNewMember($value): void
     {
         $this->_addExtra('CHECKNEWMEMBERS', $value);
     }
@@ -1186,7 +1114,7 @@ class cs_context_item extends cs_item
      *
      * @param bool value flag for checking new members
      */
-    public function setCheckNewMemberAlways()
+    public function setCheckNewMemberAlways(): void
     {
         $this->_setCheckNewMember(1);
     }
@@ -1196,7 +1124,7 @@ class cs_context_item extends cs_item
      *
      * @param bool value flag for checking new members
      */
-    public function setCheckNewMemberSometimes()
+    public function setCheckNewMemberSometimes(): void
     {
         $this->_setCheckNewMember(2);
     }
@@ -1206,7 +1134,7 @@ class cs_context_item extends cs_item
      *
      * @param bool value flag for checking new members
      */
-    public function setCheckNewMemberWithCode()
+    public function setCheckNewMemberWithCode(): void
     {
         $this->_setCheckNewMember(3);
     }
@@ -1216,7 +1144,7 @@ class cs_context_item extends cs_item
      *
      * @param bool value flag for checking new members
      */
-    public function setCheckNewMemberNever()
+    public function setCheckNewMemberNever(): void
     {
         $this->_setCheckNewMember(-1);
     }
@@ -1225,7 +1153,7 @@ class cs_context_item extends cs_item
      *
      * @return string filename of logo
      */
-    public function getLogoFilename()
+    public function getLogoFilename(): string
     {
         $retour = '';
         if ($this->_issetExtra('LOGOFILENAME')) {
@@ -1239,7 +1167,7 @@ class cs_context_item extends cs_item
      *
      * @param string filename of logo
      */
-    public function setLogoFilename($value)
+    public function setLogoFilename($value): void
     {
         $this->_addExtra('LOGOFILENAME', (string) $value);
     }
@@ -1258,7 +1186,7 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setEmailText($message_tag, $array)
+    public function setEmailText($message_tag, $array): void
     {
         $mail_text_array = [];
         if ($this->_issetExtra('MAIL_TEXT_ARRAY')) {
@@ -1272,7 +1200,7 @@ class cs_context_item extends cs_item
         $this->_addExtra('MAIL_TEXT_ARRAY', $mail_text_array);
     }
 
-    public function setEmailTextArray($array)
+    public function setEmailTextArray($array): void
     {
         if (!empty($array)) {
             $this->_addExtra('MAIL_TEXT_ARRAY', $array);
@@ -1283,7 +1211,7 @@ class cs_context_item extends cs_item
     // rubric translation methods
     // ##################################################
 
-    public function getRubricTranslationArray()
+    public function getRubricTranslationArray(): array
     {
         $retour = [];
         $rubric_array = [];
@@ -1304,7 +1232,7 @@ class cs_context_item extends cs_item
      *
      * @param array value name cases
      */
-    public function setRubricArray($rubric, $array)
+    public function setRubricArray($rubric, $array): void
     {
         $rubric_translation_array = $this->_getExtra('RUBRIC_TRANSLATION_ARRAY');
         $rubric_translation_array[cs_strtoupper($rubric)] = $array;
@@ -1316,7 +1244,7 @@ class cs_context_item extends cs_item
      *
      * @return array value name cases
      */
-    public function _getRubricArray($rubric)
+    public function _getRubricArray($rubric): array
     {
         $retour = [];
         if ($this->_issetExtra('RUBRIC_TRANSLATION_ARRAY')) {
@@ -1468,21 +1396,21 @@ class cs_context_item extends cs_item
      * @param int show title: -1 = not
      *                             1 = yes
      */
-    public function _setShowTitle($value)
+    public function _setShowTitle($value): void
     {
         $this->_addExtra('SHOWTITLE', (int) $value);
     }
 
     /** set show title.
      */
-    public function setShowTitle()
+    public function setShowTitle(): void
     {
         $this->_setShowTitle(1);
     }
 
     /** set not show title.
      */
-    public function setNotShowTitle()
+    public function setNotShowTitle(): void
     {
         $this->_setShowTitle(-1);
     }
@@ -1493,17 +1421,16 @@ class cs_context_item extends cs_item
      *
      * @return bool
      */
-    public function showTitle()
+    public function showTitle(): bool
     {
-        $retour = true;
         $show_int = $this->_getShowTitle();
         if (isset($show_int) and !empty($show_int)) {
             if (-1 == $show_int) {
-                $retour = false;
+                return false;
             }
         }
 
-        return $retour;
+        return true;
     }
 
     /** get moderators of the context
@@ -1588,8 +1515,8 @@ class cs_context_item extends cs_item
             $extra_config_array = $this->_getExtra('EXTRA_CONFIG');
             if ('whole' == $type) {
                 $retour = $extra_config_array;
-            } elseif (isset($extra_config_array[mb_strtoupper((string) $type, 'UTF-8')])) {
-                $retour = $extra_config_array[mb_strtoupper((string) $type, 'UTF-8')];
+            } elseif (isset($extra_config_array[mb_strtoupper($type, 'UTF-8')])) {
+                $retour = $extra_config_array[mb_strtoupper($type, 'UTF-8')];
             }
         }
 
@@ -1602,7 +1529,7 @@ class cs_context_item extends cs_item
      *                     whole for the whole array
      * @param array
      */
-    public function _setExtraConfig($type, $value)
+    public function _setExtraConfig($type, $value): void
     {
         if ('whole' == $type) {
             $this->_addExtra('EXTRA_CONFIG', $value);
@@ -1618,85 +1545,63 @@ class cs_context_item extends cs_item
         return $this->_getExtraConfig('whole');
     }
 
-    public function setExtraConfig($value)
+    public function setExtraConfig($value): void
     {
         $this->_setExtraConfig('whole', $value);
     }
 
-    // #########################################
-    // log-archive flag
-    // #########################################
-
-    public function withLogArchive()
+    public function withLogArchive(): bool
     {
-        $retour = false;
         $value = $this->_getExtraConfig('LOGARCHIVE');
         if (1 == $value) {
-            $retour = true;
+            return true;
         }
 
-        return $retour;
+        return false;
     }
 
-    // #########################################
-    // assessment flag
-    // #########################################
-
-    public function setAssessmentActive()
+    public function setAssessmentActive(): void
     {
-        $this->_addExtra('ASSESSMENT', (int) 1);
+        $this->_addExtra('ASSESSMENT', 1);
     }
 
-    public function setAssessmentInactive()
+    public function setAssessmentInactive(): void
     {
-        $this->_addExtra('ASSESSMENT', (int) -1);
+        $this->_addExtra('ASSESSMENT', -1);
     }
 
-    public function isAssessmentActive()
+    public function isAssessmentActive(): bool
     {
-        $retour = false;
         if ($this->_issetExtra('ASSESSMENT')) {
             $active = $this->_getExtra('ASSESSMENT');
             if (1 == $active) {
-                $retour = true;
+                return true;
             }
         }
 
-        return $retour;
+        return false;
     }
 
-    // #########################################
-    // grouproom flag
-    // #########################################
-
-    public function withGrouproomFunctions()
+    public function withGrouproomFunctions(): bool
     {
         return true;
     }
 
-    public function showGrouproomConfig()
+    public function showGrouproomConfig(): bool
     {
-        $retour = false;
         if ($this->withGrouproomFunctions()) {
-            $retour = true;
-        } elseif ($this->isProjectRoom()
-                or $this->isCommunityRoom()
-        ) {
+            return true;
+        } elseif ($this->isProjectRoom() || $this->isCommunityRoom()) {
             $portal = $this->getContextItem();
-            $retour = $portal->withGrouproomFunctions();
+            return $portal->withGrouproomFunctions();
         }
 
-        return $retour;
+        return false;
     }
 
-    public function showGrouproomFunctions()
+    public function showGrouproomFunctions(): bool
     {
-        $retour = false;
-        if ($this->showGrouproomConfig() and $this->isGrouproomActive()) {
-            $retour = true;
-        }
-
-        return $retour;
+        return $this->showGrouproomConfig() && $this->isGrouproomActive();
     }
 
     /** is group room active ?
@@ -1707,7 +1612,7 @@ class cs_context_item extends cs_item
      *
      * @return bool
      */
-    public function isGrouproomActive()
+    public function isGrouproomActive(): bool
     {
         return true;
     }
@@ -1717,43 +1622,34 @@ class cs_context_item extends cs_item
      * @param int value: -1 = not
      *                        1 = yes
      */
-    public function _setGrouproomActivity($value)
+    public function _setGrouproomActivity($value): void
     {
         $this->_addExtra('GROUPROOM', (int) $value);
     }
 
     /** set group room active.
      */
-    public function setGrouproomActive()
+    public function setGrouproomActive(): void
     {
         $this->_setGrouproomActivity(1);
     }
 
     /** set group room inactive.
      */
-    public function setGrouproomInactive()
+    public function setGrouproomInactive(): void
     {
         $this->_setGrouproomActivity(-1);
     }
 
-    // #########################################
-    // service link
-    // #########################################
-
-    public function showServiceLink()
+    public function showServiceLink(): bool
     {
-        $retour = false;
-        if ($this->isServiceLinkActive()) {
-            $retour = true;
-        }
-
-        return $retour;
+        return $this->isServiceLinkActive();
     }
 
     /**
      *  set service email adress.
      */
-    public function setServiceEmail($email)
+    public function setServiceEmail($email): void
     {
         $this->_addExtra('SERVICEEMAIL', (string) $email);
     }
@@ -1769,7 +1665,7 @@ class cs_context_item extends cs_item
     /**
      *  set external service link.
      */
-    public function setServiceLinkExternal($email)
+    public function setServiceLinkExternal($email): void
     {
         $this->_addExtra('SERVICELINKEXTERNAL', (string) $email);
     }
@@ -1790,17 +1686,16 @@ class cs_context_item extends cs_item
      *
      * @return bool
      */
-    public function isServiceLinkActive()
+    public function isServiceLinkActive(): bool
     {
-        $retour = false;
         if ($this->_issetExtra('SERVICELINK')) {
             $active = $this->_getExtra('SERVICELINK');
             if (1 == $active) {
-                $retour = true;
+                return true;
             }
         }
 
-        return $retour;
+        return false;
     }
 
     /** set activity of the service link, INTERNAL.
@@ -1808,7 +1703,7 @@ class cs_context_item extends cs_item
      * @param int value: -1 = not
      *                        1 = yes
      */
-    public function _setServiceLinkActivity($value)
+    public function _setServiceLinkActivity($value): void
     {
         if ($this->_issetExtra('SERVICELINK')) {
             $this->_setExtra('SERVICELINK', (int) $value);
@@ -1819,14 +1714,14 @@ class cs_context_item extends cs_item
 
     /** set service link active.
      */
-    public function setServiceLinkActive()
+    public function setServiceLinkActive(): void
     {
         $this->_setServiceLinkActivity(1);
     }
 
     /** set service link inactive.
      */
-    public function setServiceLinkInactive()
+    public function setServiceLinkInactive(): void
     {
         $this->_setServiceLinkActivity(0);
     }
@@ -1841,18 +1736,16 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setExtraToDoStatusArray($array)
+    public function setExtraToDoStatusArray($array): void
     {
         if (!$this->_issetExtra('TODOEXTRASTATUSARRAY')) {
             $this->_addExtra('TODOEXTRASTATUSARRAY', $array);
         } else {
             $this->_setExtra('TODOEXTRASTATUSARRAY', $array);
         }
-
-        return;
     }
 
-    public function setTemplateAvailability($value)
+    public function setTemplateAvailability($value): void
     {
         if (!$this->_issetExtra('TEMPLATE_AVAILABILITY')) {
             $this->_addExtra('TEMPLATE_AVAILABILITY', (int) $value);
@@ -1871,7 +1764,7 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setCommunityTemplateAvailability($value)
+    public function setCommunityTemplateAvailability($value): void
     {
         if (!$this->_issetExtra('TEMPLATE_COMMUNITY_AVAILABILITY')) {
             $this->_addExtra('TEMPLATE_COMMUNITY_AVAILABILITY', (int) $value);
@@ -1894,14 +1787,13 @@ class cs_context_item extends cs_item
     // Pfad
     // #########################################
 
-    public function withPath()
+    public function withPath(): bool
     {
         return true;
     }
 
-    public function InformationBoxWithExistingObject()
+    public function InformationBoxWithExistingObject(): bool
     {
-        $retour = false;
         $id = $this->getInformationBoxEntryID();
         $manager = $this->_environment->getItemManager();
         $item = $manager->getItem($id);
@@ -1909,26 +1801,25 @@ class cs_context_item extends cs_item
             $entry_manager = $this->_environment->getManager($item->getItemType());
             $entry = $entry_manager->getItem($id);
             if (is_object($entry) and !$entry->isDeleted()) {
-                $retour = true;
+                return true;
             }
         }
 
-        return $retour;
+        return false;
     }
 
-    public function withInformationBox()
+    public function withInformationBox(): bool
     {
-        $retour = false;
         if ($this->_issetExtra('WITHINFORMATIONBOX')) {
             if ('yes' == $this->_getExtra('WITHINFORMATIONBOX') and $this->InformationBoxWithExistingObject()) {
-                $retour = true;
+                return true;
             }
         }
 
-        return $retour;
+        return false;
     }
 
-    public function setwithInformationBox($value)
+    public function setwithInformationBox($value): void
     {
         $this->_addExtra('WITHINFORMATIONBOX', (string) $value);
     }
@@ -1943,7 +1834,7 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setDefaultProjectTemplateID($value)
+    public function setDefaultProjectTemplateID($value): void
     {
         $this->_addExtra('DEFAULTPROJECTTEMPLATEID', (string) $value);
     }
@@ -1958,7 +1849,7 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setDefaultCommunityTemplateID($value)
+    public function setDefaultCommunityTemplateID($value): void
     {
         $this->_addExtra('DEFAULTCOMMUNITYTEMPLATEID', (string) $value);
     }
@@ -1973,7 +1864,7 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setTemplateDescription($value)
+    public function setTemplateDescription($value): void
     {
         $this->_addExtra('TEMPLATEDESCRIPTION', (string) $value);
     }
@@ -1987,7 +1878,7 @@ class cs_context_item extends cs_item
         return '';
     }
 
-    public function setInformationBoxEntryID($value)
+    public function setInformationBoxEntryID($value): void
     {
         $this->_addExtra('INFORMATIONBOXENTRYID', (string) $value);
     }
@@ -1996,43 +1887,41 @@ class cs_context_item extends cs_item
     // Tags
     // #########################################
 
-    public function isTagMandatory()
+    public function isTagMandatory(): bool
     {
-        $retour = false;
         if ($this->_issetExtra('TAGMANDATORY')) {
             $value = $this->_getExtra('TAGMANDATORY');
             if (1 == $value) {
-                $retour = true;
+                return true;
             }
         }
 
-        return $retour;
+        return false;
     }
 
-    public function setTagMandatory()
+    public function setTagMandatory(): void
     {
         $this->_addExtra('TAGMANDATORY', 1);
     }
 
-    public function unsetTagMandatory()
+    public function unsetTagMandatory(): void
     {
         $this->_addExtra('TAGMANDATORY', 0);
     }
 
-    public function isTagEditedByAll()
+    public function isTagEditedByAll(): bool
     {
-        $retour = true;
         if ($this->_issetExtra('TAGEDITEDBY')) {
             $value = $this->_getExtra('TAGEDITEDBY');
             if (2 == $value) {
-                $retour = false;
+                return false;
             }
         }
 
-        return $retour;
+        return true;
     }
 
-    public function setBGImageFilename($name)
+    public function setBGImageFilename($name): void
     {
         $this->_addExtra('BGIMAGEFILENAME', $name);
     }
@@ -2047,68 +1936,66 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setTagEditedByModerator()
+    public function setTagEditedByModerator(): void
     {
         $this->_addExtra('TAGEDITEDBY', 2);
     }
 
-    public function setTagEditedByAll()
+    public function setTagEditedByAll(): void
     {
         $this->_addExtra('TAGEDITEDBY', 1);
     }
 
-    public function setWithTags()
+    public function setWithTags(): void
     {
         $this->_addExtra('WITHTAGS', 2);
     }
 
-    public function setWithoutTags()
+    public function setWithoutTags(): void
     {
         $this->_addExtra('WITHTAGS', 1);
     }
 
-    public function withTags()
+    public function withTags(): bool
     {
-        $retour = false;
         if ($this->_issetExtra('WITHTAGS')) {
             $re = $this->_getExtra('WITHTAGS');
             if (2 == $re) {
-                $retour = true;
+                return true;
             }
         } else {
             if ($this->_environment->inPrivateRoom()) {
-                $retour = true;
+                return true;
             }
 
             if ($this instanceof \cs_privateroom_item) {
-                $retour = true;
+                return true;
             }
         }
 
-        return $retour;
+        return false;
     }
 
-    public function setTagsShowExpanded()
+    public function setTagsShowExpanded(): void
     {
         $this->_addExtra('TAGSSHOWEXPANDED', 1);
     }
 
-    public function unsetTagsShowExpanded()
+    public function unsetTagsShowExpanded(): void
     {
         $this->_addExtra('TAGSSHOWEXPANDED', 0);
     }
 
-    public function isTagsShowExpanded()
+    public function isTagsShowExpanded(): bool
     {
-        $retour = true;
         if ($this->_issetExtra('TAGSSHOWEXPANDED')) {
             $value = $this->_getExtra('TAGSSHOWEXPANDED');
             if (0 == $value) {
-                $retour = false;
+                return false;
             }
         }
 
-        return $retour;
+        return true;
     }
 
     // ########################################
@@ -2130,11 +2017,11 @@ class cs_context_item extends cs_item
         return $this->_rubric_support[$rubric_type];
     }
 
-    public function getAvailableRubrics()
+    public function getAvailableRubrics(): array
     {
         $current_room_modules = $this->getHomeConf();
         if (!empty($current_room_modules)) {
-            $tokens = explode(',', (string) $current_room_modules);
+            $tokens = explode(',', $current_room_modules);
             $pointer = 0;
             foreach ($tokens as $module) {
                 [$rubric, $view] = explode('_', $module);
@@ -2175,17 +2062,17 @@ class cs_context_item extends cs_item
          return '';
      }
 
-     public function _setRSSStatus($value)
+     public function _setRSSStatus($value): void
      {
          $this->_addExtra('RSS_STATUS', $value);
      }
 
-     public function turnRSSOn()
+     public function turnRSSOn(): void
      {
          $this->_setRSSStatus(1);
      }
 
-     public function turnRSSOff()
+     public function turnRSSOff(): void
      {
          $this->_setRSSStatus(-1);
      }
@@ -2202,19 +2089,18 @@ class cs_context_item extends cs_item
      *
      * @return bool
      */
-    public function withAds()
+    public function withAds(): bool
     {
-        $retour = false;
         if ($this->isServer()) {
-            $retour = true;
+            return true;
         } else {
             $value = $this->_getExtraConfig('ADS');
             if (1 == $value) {
-                $retour = true;
+                return true;
             }
         }
 
-        return $retour;
+        return false;
     }
 
     // ############## BEGIN ####################
@@ -2236,53 +2122,44 @@ class cs_context_item extends cs_item
      *
      * @param string value title of the context
      */
-    public function setActivityPoints($value)
+    public function setActivityPoints($value): void
     {
-        $this->_setValue('activity', $value, true);
+        $this->_setValue('activity', $value);
     }
 
-      public function saveActivityPoints($points)
-      {
-          $this->setActivityPoints($points + $this->getActivityPoints());
-          if ($this->isProjectRoom()) {
-              $manager = $this->_environment->getProjectManager();
-          } elseif ($this->isGroupRoom()) {
-              $manager = $this->_environment->getGrouproomManager();
-          } elseif ($this->isUserroom()) {
-              $manager = $this->_environment->getUserRoomManager();
-          } elseif ($this->isCommunityRoom()) {
-              $manager = $this->_environment->getCommunityManager();
-          } elseif ($this->isPortal()) {
-              $manager = $this->_environment->getPortalManager();
-          } elseif ($this->isServer()) {
-              $manager = $this->_environment->getServerManager();
-          }
-          if (isset($manager)) {
-              $manager->saveActivityPoints($this);
-          }
-      }
-
-    // #########################################
-    // activity points
-    // ################ END ####################
-
-    // ############## BEGIN ####################
-    // status of the room
-    // #########################################
+    public function saveActivityPoints($points): void
+    {
+        $this->setActivityPoints($points + $this->getActivityPoints());
+        if ($this->isProjectRoom()) {
+            $manager = $this->_environment->getProjectManager();
+        } elseif ($this->isGroupRoom()) {
+            $manager = $this->_environment->getGrouproomManager();
+        } elseif ($this->isUserroom()) {
+            $manager = $this->_environment->getUserRoomManager();
+        } elseif ($this->isCommunityRoom()) {
+            $manager = $this->_environment->getCommunityManager();
+        } elseif ($this->isPortal()) {
+            $manager = $this->_environment->getPortalManager();
+        } elseif ($this->isServer()) {
+            $manager = $this->_environment->getServerManager();
+        }
+        if (isset($manager)) {
+            $manager->saveActivityPoints($this);
+        }
+    }
 
     /** get last status
      * this method returns the last status before blocking the room.
      *
      * @return int the status of the room before it was blocked
      */
-    public function getLastStatus()
+    public function getLastStatus(): false|int
     {
-        $retour = false;
         if ($this->_issetExtra('LASTSTATUS')) {
-            $retour = $this->_getExtra('LASTSTATUS');
+            return intval($this->_getExtra('LASTSTATUS'));
         }
 
-        return $retour;
+        return false;
     }
 
     /** set last status
@@ -2290,7 +2167,7 @@ class cs_context_item extends cs_item
      *
      * @param int value status of the room
      */
-    public function setLastStatus($value)
+    public function setLastStatus($value): void
     {
         $this->_addExtra('LASTSTATUS', (int) $value);
     }
@@ -2298,19 +2175,19 @@ class cs_context_item extends cs_item
     /** set status of a room
      * this method returns the status of the room.
      *
-     * @param int value status of a room
+     * @param int $value status of a room
      */
-    public function setStatus($value)
+    public function setStatus($value): void
     {
-        $this->_setValue('status', (int) $value, true);
+        $this->_setValue('status', (int) $value);
     }
 
     /** get status of a room
      * this method returns the status of the room.
      *
-     * @return int status of a room
+     * @return int|string status of a room
      */
-    public function getStatus()
+    public function getStatus(): int|string
     {
         return $this->_getValue('status');
     }
@@ -2318,7 +2195,7 @@ class cs_context_item extends cs_item
     /** open the room for usage
      * this method sets the status of the room to open.
      */
-    public function open()
+    public function open(): void
     {
         $this->_data['status'] = CS_ROOM_OPEN;
     }
@@ -2326,7 +2203,7 @@ class cs_context_item extends cs_item
     /** close a room
      * this method sets the status of the room to closed.
      */
-    public function close()
+    public function close(): void
     {
         $this->_data['status'] = CS_ROOM_CLOSED;
     }
@@ -2334,7 +2211,7 @@ class cs_context_item extends cs_item
     /** lock a room
      * this method sets the status of the room to locked.
      */
-    public function lock()
+    public function lock(): void
     {
         $this->setLastStatus($this->getStatus());
         $this->_data['status'] = CS_ROOM_LOCK;
@@ -2343,7 +2220,7 @@ class cs_context_item extends cs_item
     /** lock a room
      * this method sets the status of the room to locked.
      */
-    public function unlock()
+    public function unlock(): void
     {
         $temp = $this->getLastStatus();
         $this->setLastStatus($this->getStatus());
@@ -2356,16 +2233,15 @@ class cs_context_item extends cs_item
      * @return bool true, if a room is open
      *              false, if a room is not open
      */
-    public function isOpen()
+    public function isOpen(): bool
     {
-        $retour = false;
         if (!empty($this->_data['status'])
                 and CS_ROOM_OPEN == $this->_data['status']
         ) {
-            $retour = true;
+            return true;
         }
 
-        return $retour;
+        return false;
     }
 
     /** is a room closed ?
@@ -2374,16 +2250,15 @@ class cs_context_item extends cs_item
      * @return bool true, if a room is closed
      *              false, if a room is not closed
      */
-    public function isClosed()
+    public function isClosed(): bool
     {
-        $retour = false;
         if (!empty($this->_data['status'])
                 and CS_ROOM_CLOSED == $this->_data['status']
         ) {
-            $retour = true;
+            return true;
         }
 
-        return $retour;
+        return false;
     }
 
     /** is a room locked?
@@ -2392,41 +2267,39 @@ class cs_context_item extends cs_item
      * @return bool true, if a room is locked
      *              false, if a room is not locked
      */
-    public function isLocked()
+    public function isLocked(): bool
     {
-        $retour = false;
         if (!empty($this->_data['status'])
                 and CS_ROOM_LOCK == $this->_data['status']
         ) {
-            $retour = true;
+            return true;
         }
 
-        return $retour;
+        return false;
     }
 
-    public function lockForMoveWithLinkedRooms()
+    public function lockForMoveWithLinkedRooms(): void
     {
         $this->_addExtra('MOVE', '2');
     }
 
-    public function lockForMove()
+    public function lockForMove(): void
     {
         $this->_addExtra('MOVE', '1');
     }
 
-    public function moveWithLinkedRooms()
+    public function moveWithLinkedRooms(): bool
     {
-        $retour = false;
         if ($this->_issetExtra('MOVE')) {
             if (2 == $this->_getExtra('MOVE')) {
-                $retour = true;
+                return true;
             }
         }
 
-        return $retour;
+        return false;
     }
 
-    public function unlockForMove()
+    public function unlockForMove(): void
     {
         $this->_unsetExtra('MOVE');
     }
@@ -2437,16 +2310,15 @@ class cs_context_item extends cs_item
      * @return bool true, if a room is locked
      *              false, if a room is not locked
      */
-    public function isLockedForMove()
+    public function isLockedForMove(): bool
     {
-        $retour = false;
         if ($this->_issetExtra('MOVE')) {
             if (1 == $this->_getExtra('MOVE') or 2 == $this->_getExtra('MOVE')) {
-                $retour = true;
+                return true;
             }
         }
 
-        return $retour;
+        return false;
     }
 
     // #########################################
@@ -2456,24 +2328,21 @@ class cs_context_item extends cs_item
     /** save context
      * this method save the context.
      */
-    public function save()
+    public function save(): void
     {
         $manager = $this->_environment->getManager($this->_type);
         $this->_save($manager);
-        $this->_changes = [];
     }
 
-    public function saveWithoutChangingModificationInformation()
+    public function saveWithoutChangingModificationInformation(): void
     {
         $manager = $this->_environment->getManager($this->_type);
         $manager->saveWithoutChangingModificationInformation();
         $this->_save($manager);
-        $this->_changes = [];
     }
 
-    public function mayEdit(cs_user_item $user)
+    public function mayEdit(cs_user_item $user): bool
     {
-        $value = false;
         if (!empty($user)) {
             if (!$user->isOnlyReadUser()) {
                 if ($user->isRoot()
@@ -2488,17 +2357,16 @@ class cs_context_item extends cs_item
                                 )
                         )
                 ) {
-                    $value = true;
+                    return true;
                 }
             }
         }
 
-        return $value;
+        return false;
     }
 
-    public function mayEditRegular($user)
+    public function mayEditRegular($user): bool
     {
-        $value = false;
         if (!empty($user)) {
             if (!$user->isOnlyReadUser()) {
                 if ($user->isUser()
@@ -2507,46 +2375,41 @@ class cs_context_item extends cs_item
                                 or $this->isModeratorByUserID($user->getUserID(), $user->getAuthSource())
                         )
                 ) {
-                    $value = true;
+                    return true;
                 }
             }
         }
 
-        return $value;
+        return false;
     }
 
-    public function isModeratorByUserID($user_id, $auth_source)
+    public function isModeratorByUserID($user_id, $auth_source): bool
     {
-        $retour = false;
         $mod_list = $this->getModeratorList();
         if ($mod_list->isNotEmpty()) {
             $mod = $mod_list->getFirst();
             while ($mod) {
                 if ($mod->getUserID() == $user_id and $mod->getAuthSource() == $auth_source) {
-                    $retour = true;
-                    break;
+                    return true;
                 }
                 $mod = $mod_list->getNext();
             }
         }
 
-        return $retour;
+        return false;
     }
 
-    public function isLastModeratorByUserID($user_id, $auth_source)
+    public function isLastModeratorByUserID($user_id, $auth_source): bool
     {
-        $retour = false;
         $mod_list = $this->getModeratorList();
         if (1 == $mod_list->getCount()) {
             $mod = $mod_list->getFirst();
-            if ($mod->getUserID() == $user_id
-                    and $mod->getAuthSource() == $auth_source
-            ) {
-                $retour = true;
+            if ($mod->getUserID() == $user_id && $mod->getAuthSource() == $auth_source) {
+                return true;
             }
         }
 
-        return $retour;
+        return false;
     }
 
     /** get users of the context
@@ -2568,20 +2431,20 @@ class cs_context_item extends cs_item
         return $this->userList;
     }
 
-    public function resetUserList()
+    public function resetUserList(): void
     {
         $userManager = $this->_environment->getUserManager();
         $userManager->setCacheOff();
         $this->userList->reset();
     }
 
-    public function isUser($user)
+    public function isUser($user): bool
     {
         $user_manager = $this->_environment->getUserManager();
         return $user_manager->isUserInContext($user->getUserID(), $this->getItemID(), $user->getAuthSource());
     }
 
-    public function getUserByUserID($user_id, $auth_source)
+    public function getUserByUserID($user_id, $auth_source): cs_user_item|null
     {
         $retour = null;
         $user_manager = $this->_environment->getUserManager();
@@ -2598,10 +2461,8 @@ class cs_context_item extends cs_item
     }
 
     /** asks if item is editable by everybody or just creator.
-     *
-     * @param value
      */
-    public function isPublic()
+    public function isPublic(): bool
     {
         if (1 == $this->_getValue('public')) {
             return true;
@@ -2612,18 +2473,14 @@ class cs_context_item extends cs_item
 
     /** sets if announcement is editable by everybody or just creator.
      *
-     * @param value
-     *
      * @author CommSy Development Group
      */
-    public function setPublic($value)
+    public function setPublic($value): void
     {
         $this->_setValue('public', $value);
     }
 
     /** sets if announcement is editable by everybody or just creator.
-     *
-     * @param value
      *
      * @author CommSy Development Group
      */
@@ -2636,41 +2493,34 @@ class cs_context_item extends cs_item
     // statistic functions
     // #####################################################################
 
-    public function getCountItems($start, $end)
+    public function getCountItems($start, $end): int
     {
-        if (!isset($this->countItems)) {
-            $manager = $this->_environment->getItemManager();
-            $manager->resetLimits();
-            $manager->setContextLimit($this->getItemID());
-            $this->countItems = (int) $manager->getCountItems($start, $end);
-        }
-        return $this->countItems;
+        $manager = $this->_environment->getItemManager();
+        $manager->resetLimits();
+        $manager->setContextLimit($this->getItemID());
+        return $manager->getCountItems($start, $end);
     }
 
-    public function getCountProjects($start, $end)
+    public function getCountProjects($start, $end): int
     {
-        if (!isset($this->_count_projects)) {
-            $manager = $this->_environment->getProjectManager();
-            $manager->resetLimits();
-            if ($this->isCommunityRoom()) {
-                $manager->setContextLimit($this->getContextID());
-                global $c_cache_cr_pr;
-                if (!isset($c_cache_cr_pr) or !$c_cache_cr_pr) {
-                    $manager->setCommunityRoomLimit($this->getItemID());
-                } else {
-                    /*
-                     * use redundant infos in community room
-                     */
-                    $manager->setIDArrayLimit($this->getInternalProjectIDArray());
-                }
+        $manager = $this->_environment->getProjectManager();
+        $manager->resetLimits();
+        if ($this->isCommunityRoom()) {
+            $manager->setContextLimit($this->getContextID());
+            global $c_cache_cr_pr;
+            if (!isset($c_cache_cr_pr) or !$c_cache_cr_pr) {
+                $manager->setCommunityRoomLimit($this->getItemID());
             } else {
-                $manager->setContextLimit($this->getItemID());
+                /*
+                 * use redundant infos in community room
+                 */
+                $manager->setIDArrayLimit($this->getInternalProjectIDArray());
             }
-            $this->_count_projects = $manager->getCountProjects($start, $end);
+        } else {
+            $manager->setContextLimit($this->getItemID());
         }
-        $retour = $this->_count_projects;
 
-        return $retour;
+        return $manager->getCountProjects($start, $end);
     }
 
     /** get time spread for items on home
@@ -2694,7 +2544,7 @@ class cs_context_item extends cs_item
      *
      * @param array value page impression
      */
-    public function setPageImpressionArray($value)
+    public function setPageImpressionArray($value): void
     {
         // only save for 365 days
         if (is_array($value)) {
@@ -2720,7 +2570,7 @@ class cs_context_item extends cs_item
     /*
       * set user activity array
     */
-    public function setUserActivityArray($value)
+    public function setUserActivityArray($value): void
     {
         if (is_array($value)) {
             while (count($value) > 365) {
@@ -2771,12 +2621,12 @@ class cs_context_item extends cs_item
         return $this->cachePageImpressions[$external_timespread];
     }
 
-    public function isActiveDuringLast99Days()
+    public function isActiveDuringLast99Days(): bool
     {
         return $this->getPageImpressions() > 0;
     }
 
-    public function getNewEntries($external_timespread = 0)
+    public function getNewEntries($external_timespread = 0): int
     {
         if (0 != $external_timespread) {
             $timespread = $external_timespread;
@@ -2786,7 +2636,7 @@ class cs_context_item extends cs_item
         $conf = $this->getHomeConf();
         $rubrics = [];
         if (!empty($conf)) {
-            $rubrics = explode(',', (string) $conf);
+            $rubrics = explode(',', $conf);
         }
         $check_managers = [];
         foreach ($rubrics as $rubric) {
@@ -2809,13 +2659,10 @@ class cs_context_item extends cs_item
         $item_manager->setTypeArrayLimit($check_managers);
         $item_manager->resetData();
         $new_entries = $item_manager->getIDArray();
-        $count_total = $new_entries ? count($new_entries) : 0;
-        unset($item_manager);
-
-        return $count_total;
+        return $new_entries ? count($new_entries) : 0;
     }
 
-    public function getActiveMembers($external_timespread = 0)
+    public function getActiveMembers($external_timespread = 0): int
     {
         if (0 != $external_timespread) {
             $timespread = $external_timespread;
@@ -2828,16 +2675,12 @@ class cs_context_item extends cs_item
         $user_manager->setUserLimit();
         $user_manager->setLastLoginLimit($timespread);
         $ids = $user_manager->getIDArray();
-        $active = !empty($ids) ? count($ids) : 0;
-        unset($user_manager);
-
-        return $active;
+        return !empty($ids) ? count($ids) : 0;
     }
 
     public function getActiveMembersForNewsletter($external_timespread = 0)
     {
         // take it from UserActivity extras field
-        $retour = 0;
         if (isset($this->_user_activity_array[$external_timespread])) {
             $retour = $this->_user_activity_array[$external_timespread];
         } else {
@@ -2883,7 +2726,7 @@ class cs_context_item extends cs_item
         }
     }
 
-    public function getAllUsers()
+    public function getAllUsers(): int
     {
         $user_manager = $this->_environment->getUserManager();
         $user_manager->reset();
@@ -2907,7 +2750,7 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function setPageImpressionAndUserActivityLast($value)
+    public function setPageImpressionAndUserActivityLast($value): void
     {
         $this->_addExtra('PIUA_LAST', $value);
     }
@@ -2916,57 +2759,55 @@ class cs_context_item extends cs_item
     // Workflow
     // #################################
 
-    public function withWorkflowFunctions()
+    public function withWorkflowFunctions(): bool
     {
-        $retour = false;
         $value = $this->_getExtraConfig('WORKFLOW');
         if (1 == $value) {
-            $retour = true;
+            return true;
         } elseif ($this->isProjectRoom()
-        or $this->isCommunityRoom()
-        or $this->isGroupRoom()
-        or $this->isPrivateRoom()
+            or $this->isCommunityRoom()
+            or $this->isGroupRoom()
+            or $this->isPrivateRoom()
         ) {
             $portal_room = $this->getContextItem();
             if ($portal_room->withWorkflowFunctions()) {
-                $retour = true;
+                return true;
             }
         }
 
-        return $retour;
+        return false;
     }
 
-    public function setWithWorkflowFunctions()
+    public function setWithWorkflowFunctions(): void
     {
         $this->_setExtraConfig('WORKFLOW', 1);
     }
 
-    public function setWithoutWorkflowFunctions()
+    public function setWithoutWorkflowFunctions(): void
     {
         $this->_setExtraConfig('WORKFLOW', 0);
     }
 
-    public function setHideAccountname()
+    public function setHideAccountname(): void
     {
         $this->_setExtraConfig('HIDE_ACCOUNTNAME', '1');
     }
 
-    public function unsetHideAccountname()
+    public function unsetHideAccountname(): void
     {
         $this->_setExtraConfig('HIDE_ACCOUNTNAME', '2');
     }
 
-    public function getHideAccountname()
+    public function getHideAccountname(): bool
     {
-        $retour = false;
         $value = $this->_getExtraConfig('HIDE_ACCOUNTNAME');
         if (2 == $value) {
-            $retour = false;
+            return false;
         } elseif (1 == $value) {
-            $retour = true;
+            return true;
         }
 
-        return $retour;
+        return false;
     }
 
     public function getDefaultCalendarId()
@@ -2980,49 +2821,47 @@ class cs_context_item extends cs_item
         return $calendarsService->getDefaultCalendar($this->getItemId())[0]->getId();
     }
 
-      public function setUsersCanEditCalendars()
+      public function setUsersCanEditCalendars(): void
       {
           $this->_addExtra('USERSCANEDITCALENDARS', 1);
       }
 
-      public function unsetUsersCanEditCalendars()
+      public function unsetUsersCanEditCalendars(): void
       {
           $this->_addExtra('USERSCANEDITCALENDARS', 0);
       }
 
-      public function usersCanEditCalendars()
+      public function usersCanEditCalendars(): bool
       {
-          $retour = false;
           if ($this->_issetExtra('USERSCANEDITCALENDARS')) {
               $re = $this->_getExtra('USERSCANEDITCALENDARS');
               if (1 == $re) {
-                  $retour = true;
+                  return true;
               }
           }
 
-          return $retour;
+          return false;
       }
 
-      public function setUsersCanSetExternalCalendarsUrl()
+      public function setUsersCanSetExternalCalendarsUrl(): void
       {
           $this->_addExtra('USERSCANSETEXTERNALCALENDARSURL', 1);
       }
 
-      public function unsetUsersCanSetExternalCalendarsUrl()
+      public function unsetUsersCanSetExternalCalendarsUrl(): void
       {
           $this->_addExtra('USERSCANSETEXTERNALCALENDARSURL', 0);
       }
 
-      public function usersCanSetExternalCalendarsUrl()
+      public function usersCanSetExternalCalendarsUrl(): bool
       {
-          $retour = false;
           if ($this->_issetExtra('USERSCANSETEXTERNALCALENDARSURL')) {
               $re = $this->_getExtra('USERSCANSETEXTERNALCALENDARSURL');
               if (1 == $re) {
-                  $retour = true;
+                  return true;
               }
           }
 
-          return $retour;
+          return false;
       }
 }

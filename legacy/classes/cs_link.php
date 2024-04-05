@@ -84,7 +84,7 @@ class cs_link
      *
      * @author CommSy Development Group
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->_getValue('title');
     }

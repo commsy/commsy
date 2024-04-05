@@ -405,73 +405,68 @@ class RoomService
         $roomManager->select();
 
         $templateList = $roomManager->get();
-        if ($templateList->isNotEmpty()) {
-            $template = $templateList->getFirst();
-            while ($template) {
-                $availability = $template->getTemplateAvailability(); // $roomType === 'project'
-                if ('community' === $roomType) {
-                    $availability = $template->getCommunityTemplateAvailability();
-                }
+        foreach ($templateList as $template) {
+            $availability = $template->getTemplateAvailability(); // $roomType === 'project'
+            if ('community' === $roomType) {
+                $availability = $template->getCommunityTemplateAvailability();
+            }
 
-                $add = false;
+            $add = false;
 
-                // free for all?
-                if (!$add && '0' == $availability) {
-                    $add = true;
-                }
+            // free for all?
+            if (!$add && '0' == $availability) {
+                $add = true;
+            }
 
-                // only in community rooms
-                if (!$add && $this->legacyEnvironment->inCommunityRoom() && '3' == $availability) {
-                    $add = true;
-                }
+            // only in community rooms
+            if (!$add && $this->legacyEnvironment->inCommunityRoom() && '3' == $availability) {
+                $add = true;
+            }
 
-                // same as above, but from portal context
-                if (!$add && $this->legacyEnvironment->inPortal() && '3' == $availability) {
-                    // check if user is member in one of the templates community rooms
-                    $communityList = $template->getCommunityList();
-                    if ($communityList->isNotEmpty()) {
-                        $userCommunityList = $currentUserItem->getRelatedCommunityList();
-                        if ($userCommunityList->isNotEmpty()) {
-                            $communityItem = $communityList->getFirst();
-                            while ($communityItem) {
-                                $userCommunityItem = $userCommunityList->getFirst();
-                                while ($userCommunityItem) {
-                                    if ($userCommunityItem->getItemID() == $communityItem->getItemID()) {
-                                        $add = true;
-                                        break;
-                                    }
-
-                                    $userCommunityItem = $userCommunityList->getNext();
+            // same as above, but from portal context
+            if (!$add && $this->legacyEnvironment->inPortal() && '3' == $availability) {
+                // check if user is member in one of the templates community rooms
+                $communityList = $template->getCommunityList();
+                if ($communityList->isNotEmpty()) {
+                    $userCommunityList = $currentUserItem->getRelatedCommunityList();
+                    if ($userCommunityList->isNotEmpty()) {
+                        $communityItem = $communityList->getFirst();
+                        while ($communityItem) {
+                            $userCommunityItem = $userCommunityList->getFirst();
+                            while ($userCommunityItem) {
+                                if ($userCommunityItem->getItemID() == $communityItem->getItemID()) {
+                                    $add = true;
+                                    break;
                                 }
 
-                                $communityItem = $communityList->getNext();
+                                $userCommunityItem = $userCommunityList->getNext();
                             }
+
+                            $communityItem = $communityList->getNext();
                         }
                     }
                 }
+            }
 
-                // only for members
-                if (!$add && '1' == $availability && $template->mayEnter($currentUserItem)) {
+            // only for members
+            if (!$add && '1' == $availability && $template->mayEnter($currentUserItem)) {
+                $add = true;
+            }
+
+            // only mods
+            if (!$add && '2' == $availability && $template->mayEnter($currentUserItem)) {
+                if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
                     $add = true;
                 }
+            }
 
-                // only mods
-                if (!$add && '2' == $availability && $template->mayEnter($currentUserItem)) {
-                    if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
-                        $add = true;
-                    }
-                }
+            if ($roomType != $template->getItemType()) {
+                $add = false;
+            }
 
-                if ($roomType != $template->getItemType()) {
-                    $add = false;
-                }
-
-                if ($add) {
-                    $label = $template->getTitle().' (ID: '.$template->getItemID().')';
-                    $templates[$label] = $template->getItemID();
-                }
-
-                $template = $templateList->getNext();
+            if ($add) {
+                $label = $template->getTitle().' (ID: '.$template->getItemID().')';
+                $templates[$label] = $template->getItemID();
             }
         }
 

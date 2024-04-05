@@ -55,7 +55,7 @@ class cs_link_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         $this->_data = $data_array;
     }
@@ -333,7 +333,7 @@ class cs_link_item extends cs_item
     /** save link item
      * this methode save the link item into the database.
      */
-    public function save()
+    public function save(): void
     {
         $first_item = $this->getFirstLinkedItem();
         $second_item = $this->getSecondLinkedItem();

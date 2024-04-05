@@ -76,7 +76,7 @@ class cs_topic_item extends cs_label_item
         return $retour;
     }
 
-    public function save()
+    public function save(): void
     {
         $topic_manager = $this->_environment->getTopicManager();
         $this->_save($topic_manager);

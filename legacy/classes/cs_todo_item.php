@@ -55,7 +55,7 @@ class cs_todo_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         if ('-1' == $this->getPublic()) {
             $translator = $this->_environment->getTranslationObject();
@@ -140,9 +140,9 @@ class cs_todo_item extends cs_item
     /** get status of a todo
      * this method returns the status of the todo.
      *
-     * @return statustime status of a todo
+     * @return int|string status of a todo
      */
-    public function getStatus()
+    public function getStatus(): int|string
     {
         $translator = $this->_environment->getTranslationObject();
         $value = $this->_getValue('status');
@@ -328,7 +328,7 @@ class cs_todo_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function save()
+    public function save(): void
     {
         $todo_manager = $this->_environment->getTodosManager();
         $this->_save($todo_manager);
@@ -380,7 +380,7 @@ class cs_todo_item extends cs_item
      *
      * @param $data_array
      */
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         // TBD: check data before setting
         $this->_data = $data_array;
@@ -392,7 +392,7 @@ class cs_todo_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function isPublic()
+    public function isPublic(): bool
     {
         if (1 == $this->_getValue('public')) {
             return true;
@@ -407,7 +407,7 @@ class cs_todo_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function setPublic($value)
+    public function setPublic($value): void
     {
         $this->_setValue('public', $value);
     }

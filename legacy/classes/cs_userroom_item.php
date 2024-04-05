@@ -62,12 +62,12 @@ class cs_userroom_item extends cs_room_item
         $this->defaultHomeConf[CS_USER_TYPE] = 'show';
     }
 
-    public function isUserroom()
+    public function isUserroom(): bool
     {
         return true;
     }
 
-    public function save($saveOther = true)
+    public function save($saveOther = true): void
     {
         $itemId = $this->getItemID();
         $manager = $this->_environment->getUserRoomManager();
@@ -136,7 +136,7 @@ class cs_userroom_item extends cs_room_item
 
     // access rights
 
-    public function isOpenForGuests()
+    public function isOpenForGuests(): bool
     {
         return false;
     }

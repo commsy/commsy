@@ -374,7 +374,7 @@ class cs_manager
        $this->excludedIdsLimit = $ids;
    }
 
-  public function saveWithoutChangingModificationInformation()
+  public function saveWithoutChangingModificationInformation(): void
   {
       $this->_update_with_changing_modification_information = false;
   }
@@ -850,11 +850,7 @@ class cs_manager
            trigger_error('Problems getting data "'.$this->_db_table.'".', E_USER_WARNING);
        } else {
            $current_data_array = [];
-           $current_copy_date_array = [];
-           $current_mod_date_array = [];
-           if (CS_LABEL_TYPE == DBTable2Type($this->_db_table)
-                or CS_TAG_TYPE == DBTable2Type($this->_db_table)
-           ) {
+           if (CS_LABEL_TYPE == DBTable2Type($this->_db_table) || CS_TAG_TYPE == DBTable2Type($this->_db_table)) {
                $title_field = 'title';
                $type_field = '';
                if (CS_LABEL_TYPE == DBTable2Type($this->_db_table)) {
@@ -937,6 +933,7 @@ class cs_manager
                    }
                }
            }
+
            foreach ($result as $query_result) {
                $do_it = true;
 
@@ -1002,6 +999,7 @@ class cs_manager
                ) {
                    $new_item_id = $this->_createItemInItemTable($new_id, DBTable2Type($this->_db_table), $current_date);
                }
+
                if ($do_it) {
                    $insert_query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET';
                    $first = true;
@@ -1087,8 +1085,7 @@ class cs_manager
                        }
 
                        // special for TAG2TAG
-                       elseif ('link_id' == $key
-                                and CS_TAG2TAG_TYPE == DBTable2Type($this->_db_table)
+                       elseif ('link_id' == $key && CS_TAG2TAG_TYPE == DBTable2Type($this->_db_table)
                        ) {
                            // link_id is primary key so don't insert it
                        }
@@ -1105,25 +1102,17 @@ class cs_manager
                        }
 
                        // special for MATERIAL
-                       elseif ('copy_of' == $key
-                                and empty($value)
-                                and CS_MATERIAL_TYPE == DBTable2Type($this->_db_table)
-                       ) {
+                       elseif ('copy_of' == $key && empty($value) && CS_MATERIAL_TYPE == DBTable2Type($this->_db_table)) {
                            $insert_query .= $before.$key.'=NULL';
                        }
 
                        // special for labels
-                       elseif ('name' == $key
-                                and empty($value)
-                                and CS_LABEL_TYPE == DBTable2Type($this->_db_table)
-                       ) {
+                       elseif ('name' == $key && empty($value) && CS_LABEL_TYPE == DBTable2Type($this->_db_table)) {
                            $insert_query .= $before.$key.'=" "';
                        }
 
                        // extra
-                       elseif ('extras' == $key
-                                and !empty($old_item_id)
-                       ) {
+                       elseif ('extras' == $key && !empty($old_item_id)) {
                            $extra_array = unserialize($value);
                            $extra_array['COPY']['ITEM_ID'] = $old_item_id;
                            $extra_array['COPY']['COPYING_DATE'] = $current_date;
@@ -1137,9 +1126,8 @@ class cs_manager
                        }
                    }
                }
-               if (!$do_it) {
-                   $do_it = true;
-               } else {
+
+               if ($do_it) {
                    $insert_query = str_replace('SET,', 'SET ', (string) $insert_query);
                    $result_insert = $this->_db_connector->performQuery($insert_query);
                    if (!isset($result_insert)) {

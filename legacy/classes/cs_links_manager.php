@@ -536,7 +536,7 @@ class cs_links_manager extends cs_manager
       *
       * @param array
       */
-     public function save($link_array)
+     public function save($link_array): void
      {
          $this->_create($link_array);
          if (isset($this->_data[$link_array['link_type']])) {
