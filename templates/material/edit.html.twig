@@ -105,18 +105,15 @@
 </div>
 
 <script>
-window.onload = function(){
+window.onload = function() {
     var linkLabels = document.querySelectorAll('#mandatoryLinksForm .uk-form-label');
     for (i = 0; i < linkLabels.length; i++) {
         linkLabels[i].classList.add('uk-text-truncate');
     }
 }
 var $biblio = $('#material_biblio_select');
-// When an item from the 'biblio_select' dropdown gets selected ...
-$biblio.change(function() {
-    // ... retrieve the corresponding form.
+$biblio.on('change', function() {
     var $form = $(this).closest('form');
-    // Simulate form data, but only include the selected value.
     var data = {};
 
     data[$(this).attr('name')] = $(this).val();
@@ -128,25 +125,14 @@ $biblio.change(function() {
     $.ajax({
         url : $form.attr('action'),
         type: $form.attr('method'),
-        data : data,
-        success: function(html) {
-            // Replace current position field ...
-            // add field
-            if (!$('#material_biblio_sub').length) {
-                $('#material_biblio_select').after(
-                // ... with the returned one from the AJAX response.
-                $(html).find('#material_biblio_sub')
-                // html
-                );
-            } else {
-                $('#material_biblio_sub').replaceWith(
-                // ... with the returned one from the AJAX response.
-                $(html).find('#material_biblio_sub')
-                // html
-                );
-            }
-            // console.log(html);
-            // Position field now displays the appropriate positions.
+        data : data
+    }).always(function(response) {
+        let html = response.responseText;
+
+        if (!$('#material_biblio_sub').length) {
+            $('#material_biblio_select').after($(html).find('#material_biblio_sub'));
+        } else {
+            $('#material_biblio_sub').replaceWith($(html).find('#material_biblio_sub'));
         }
     });
 });
