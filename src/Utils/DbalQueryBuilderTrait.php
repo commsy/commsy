@@ -13,7 +13,7 @@
 
 namespace App\Utils;
 
-use DateTimeImmutable;
+use DateTime;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 
@@ -162,7 +162,7 @@ trait DbalQueryBuilderTrait
         $queryBuilder->setParameter('ageLimit', $numDays);
     }
 
-    protected function addModifiedAfterLimit(QueryBuilder $queryBuilder, string $alias, ?DateTimeImmutable $date): void
+    protected function addModifiedAfterLimit(QueryBuilder $queryBuilder, string $alias, ?DateTime $date): void
     {
         if (!$date) return;
 
