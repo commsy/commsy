@@ -38,7 +38,7 @@ class cs_task_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         // not yet implemented
         $this->_data = $data_array;
@@ -51,7 +51,7 @@ class cs_task_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->_getValue('title');
     }
@@ -63,7 +63,7 @@ class cs_task_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function setTitle(string $value)
+    public function setTitle(string $value): void
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();
@@ -75,11 +75,11 @@ class cs_task_item extends cs_item
     /** get status of a task
      * this method returns the status of the task.
      *
-     * @return string status of a task
+     * @return int|string status of a task
      *
      * @author CommSy Development Group
      */
-    public function getStatus()
+    public function getStatus(): int|string
     {
         return $this->_getValue('status');
     }
@@ -91,7 +91,7 @@ class cs_task_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function setStatus($value)
+    public function setStatus($value): void
     {
         $this->_setValue('status', $value);
     }
@@ -165,10 +165,9 @@ class cs_task_item extends cs_item
     /** save task
      * this method save the task.
      */
-    public function save()
+    public function save(): void
     {
         $task_manager = $this->_environment->getTaskManager();
-        $title = $this->getTitle();
         $this->_save($task_manager);
     }
 

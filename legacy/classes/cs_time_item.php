@@ -39,15 +39,13 @@ class cs_time_item extends cs_label_item
      *
      * @author CommSy Development Group
      */
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         // not yet implemented
         $this->_data = $data_array;
         if (isset($data_array['name'])) {
             $this->_data['sorting'] = $data_array['name'];
         }
-
-        return $this->isValid();
     }
 
     /** get sorting field content

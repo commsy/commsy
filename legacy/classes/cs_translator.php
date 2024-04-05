@@ -922,7 +922,7 @@ class cs_translator
      *
      * @return array value name cases
      */
-    public function _getRubricArray($rubric)
+    public function _getRubricArray($rubric): array
     {
         $rubric_array = [];
         if (!empty($this->_rubric_translation_array)

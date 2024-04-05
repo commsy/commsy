@@ -31,7 +31,7 @@ class cs_discussionarticle_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         // not yet implemented
         $this->_data = $data_array;
@@ -164,7 +164,7 @@ class cs_discussionarticle_item extends cs_item
     /** save discussion article
      * this methode saves the discussion article.
      */
-    public function save()
+    public function save(): void
     {
         $discussion_manager = $this->_environment->getDiscussionArticlesManager();
         $this->_save($discussion_manager);
@@ -223,12 +223,11 @@ class cs_discussionarticle_item extends cs_item
         }
     }
 
-    public function saveWithoutChangingModificationInformation()
+    public function saveWithoutChangingModificationInformation(): void
     {
         $manager = $this->_environment->getManager($this->_type);
         $manager->saveWithoutChangingModificationInformation();
         $this->_save($manager);
-        $this->_changes = [];
     }
 
      /**

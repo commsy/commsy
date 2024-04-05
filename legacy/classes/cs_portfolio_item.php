@@ -22,18 +22,18 @@ class cs_portfolio_item extends cs_item
         $this->_type = CS_PORTFOLIO_TYPE;
     }
 
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         // not yet implemented
         $this->_data = $data_array;
     }
 
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->_getValue('title');
     }
 
-    public function setTitle(string $value)
+    public function setTitle(string $value): void
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();
@@ -55,7 +55,7 @@ class cs_portfolio_item extends cs_item
         $this->_setValue('description', $value);
     }
 
-    public function save()
+    public function save(): void
     {
         $portfolio_manager = $this->_environment->getPortfolioManager();
         $this->_save($portfolio_manager);

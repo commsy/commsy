@@ -50,7 +50,7 @@ class cs_community_item extends cs_room_item
         $this->defaultHomeConf[CS_TODO_TYPE] = 'show';
     }
 
-   public function isCommunityRoom()
+   public function isCommunityRoom(): bool
    {
        return true;
    }
@@ -172,7 +172,7 @@ class cs_community_item extends cs_room_item
    /** save community
     * this method save the community.
     */
-   public function save()
+   public function save(): void
    {
        $item_id = $this->getItemID();
        $manager = $this->_environment->getCommunityManager();

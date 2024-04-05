@@ -55,7 +55,7 @@ class cs_link_item_file extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         $this->_data = $data_array;
     }

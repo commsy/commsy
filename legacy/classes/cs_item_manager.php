@@ -427,7 +427,7 @@ class cs_item_manager extends cs_manager
     // statistic functions
     // #######################################################
 
-    public function getCountItems($start, $end)
+    public function getCountItems($start, $end): int
     {
         $retour = 0;
 
@@ -442,7 +442,7 @@ class cs_item_manager extends cs_manager
             unset($result);
         }
 
-        return $retour;
+        return intval($retour);
     }
 
     public function isItemMarkedAsWorkflowRead($item_id, $user_id)

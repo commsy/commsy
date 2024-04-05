@@ -38,7 +38,7 @@ class cs_tag_item extends cs_item
     /** sets the data of the item.
      *
      */
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         $this->_data = $data_array;
 
@@ -49,8 +49,6 @@ class cs_tag_item extends cs_item
             $this->_setOldPosition($manager->getFatherItemID($this->getItemID()));
             unset($manager);
         }
-
-        return $this->isValid();
     }
 
     /** Checks and returns the data of the item.
@@ -157,7 +155,7 @@ class cs_tag_item extends cs_item
      *
      * @return string title of the tag
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         if ('-1' == $this->getPublic()) {
             $translator = $this->_environment->getTranslationObject();
@@ -173,7 +171,7 @@ class cs_tag_item extends cs_item
      *
      * @param string value title of the tag
      */
-    public function setTitle(string $value)
+    public function setTitle(string $value): void
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();
@@ -202,7 +200,7 @@ class cs_tag_item extends cs_item
         return $retour;
     }
 
-    public function save()
+    public function save(): void
     {
         parent::save();
 

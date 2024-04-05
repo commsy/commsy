@@ -204,7 +204,7 @@ class cs_assessments_item extends cs_item
         return $value;
     }
 
-    public function save()
+    public function save(): void
     {
         $manager = $this->_environment->getManager($this->_type);
         $manager->saveItem($this);
