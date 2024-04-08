@@ -942,6 +942,22 @@
                 <source>Hide email address by default</source>
                 <target>Hide email address by default</target>
             </trans-unit>
+            <trans-unit id="portal.settings.privacy.cascading_user_deletion_strategy.label">
+                <source>portal.settings.privacy.cascading_user_deletion_strategy.label</source>
+                <target>Delete user entries</target>
+            </trans-unit>
+            <trans-unit id="portal.settings.privacy.cascading_user_deletion_strategy.help">
+                <source>portal.settings.privacy.cascading_user_deletion_strategy.help</source>
+                <target>If an account is deleted, also delete all entries?</target>
+            </trans-unit>
+            <trans-unit id="portal.settings.privacy.allow_user_defined_deletion_strategy.label">
+                <source>portal.settings.privacy.allow_user_defined_deletion_strategy.label</source>
+                <target>Users-based Configuration</target>
+            </trans-unit>
+            <trans-unit id="portal.settings.privacy.allow_user_defined_deletion_strategy.help">
+                <source>portal.settings.privacy.allow_user_defined_deletion_strategy.help</source>
+                <target>Are users allowed to configure the deletion behaviour themselves?</target>
+            </trans-unit>
 
             <!-- inactive -->
             <trans-unit id="deprovisioning">

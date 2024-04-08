@@ -214,6 +214,12 @@ class Portal
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 1])]
     private bool $communityShowDeactivatedEntriesTitle = true;
 
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 1])]
+    private bool $cascadingUserDeletionStrategy = true;
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 1])]
+    private bool $allowUserDefinedDeletionStrategy = true;
+
     public function __construct()
     {
         $this->authSources = new ArrayCollection();
@@ -1163,6 +1169,28 @@ class Portal
     public function setAuthMembershipIdentifier(?string $authMembershipIdentifier): self
     {
         $this->authMembershipIdentifier = $authMembershipIdentifier;
+        return $this;
+    }
+
+    public function isCascadingUserDeletionStrategy(): bool
+    {
+        return $this->cascadingUserDeletionStrategy;
+    }
+
+    public function setCascadingUserDeletionStrategy(bool $cascadingUserDeletionStrategy): self
+    {
+        $this->cascadingUserDeletionStrategy = $cascadingUserDeletionStrategy;
+        return $this;
+    }
+
+    public function isAllowUserDefinedDeletionStrategy(): bool
+    {
+        return $this->allowUserDefinedDeletionStrategy;
+    }
+
+    public function setAllowUserDefinedDeletionStrategy(bool $allowUserDefinedDeletionStrategy): self
+    {
+        $this->allowUserDefinedDeletionStrategy = $allowUserDefinedDeletionStrategy;
         return $this;
     }
 }

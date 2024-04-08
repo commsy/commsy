@@ -874,6 +874,22 @@
                 <source>Hide email address by default</source>
                 <target>E-Mail Adresse standardmäßig verbergen</target>
             </trans-unit>
+            <trans-unit id="portal.settings.privacy.cascading_user_deletion_strategy.label">
+                <source>portal.settings.privacy.cascading_user_deletion_strategy.label</source>
+                <target>Einträge von Benutzern löschen</target>
+            </trans-unit>
+            <trans-unit id="portal.settings.privacy.cascading_user_deletion_strategy.help">
+                <source>portal.settings.privacy.cascading_user_deletion_strategy.help</source>
+                <target>Sollen bei Löschung eines Accounts auch alle Einträge des Nutzers gelöscht werden?</target>
+            </trans-unit>
+            <trans-unit id="portal.settings.privacy.allow_user_defined_deletion_strategy.label">
+                <source>portal.settings.privacy.allow_user_defined_deletion_strategy.label</source>
+                <target>Benutzerbasierte Konfiguration</target>
+            </trans-unit>
+            <trans-unit id="portal.settings.privacy.allow_user_defined_deletion_strategy.help">
+                <source>portal.settings.privacy.allow_user_defined_deletion_strategy.help</source>
+                <target>Können Nutzer das Löschverhalten selbst konfigurieren?</target>
+            </trans-unit>
 
             <!-- inactive -->
             <trans-unit id="deprovisioning">
