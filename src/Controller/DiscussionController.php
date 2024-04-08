@@ -765,7 +765,8 @@ class DiscussionController extends BaseController
                 'hashtags' => $labelService->getHashtags($roomId),
                 'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-            ], 'room' => $current_context]);
+            ], 'room' => $current_context,
+               'itemId' => $itemId]);
         }
 
         $form->handleRequest($request);
@@ -826,7 +827,7 @@ class DiscussionController extends BaseController
             $this->eventDispatcher->dispatch(new CommsyEditEvent($discussionItem), CommsyEditEvent::EDIT);
         }
 
-        return $this->render('discussion/edit.html.twig', ['form' => $form, 'discussion' => $discussionItem, 'discussionArticle' => $discussionArticleItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('discussion/edit.html.twig', ['form' => $form, 'discussion' => $discussionItem, 'discussionArticle' => $discussionArticleItem, 'isDraft' => $isDraft]);
     }
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/save')]

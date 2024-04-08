@@ -17,7 +17,9 @@ use App\Form\Type\Custom\CategoryMappingType;
 use App\Form\Type\Custom\DateTimeSelectType;
 use App\Form\Type\Custom\HashtagMappingType;
 use App\Form\Type\Event\AddRecurringFieldListener;
+use App\Security\Authorization\Voter\ItemVoter;
 use cs_context_item;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -31,6 +33,10 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DateType extends AbstractType
 {
+    public function __construct(private readonly Security $security)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -39,14 +45,20 @@ class DateType extends AbstractType
             ->add('end', DateTimeSelectType::class, ['constraints' => [], 'label' => 'enddate', 'attr' => ['placeholder' => 'enddate', 'class' => 'uk-form-width-medium'], 'required' => false])
             ->add('whole_day', CheckboxType::class, ['required' => false, 'label_attr' => ['class' => 'uk-form-label'], 'value' => 'yes'])
             ->add('place', TextType::class, ['label' => 'place', 'attr' => ['placeholder' => 'place', 'class' => 'uk-form-width-medium'], 'required' => false])
-            ->add('calendar', ChoiceType::class, ['placeholder' => false, 'choices' => $options['calendars'], 'choice_attr' => $options['calendarsAttr'], 'label' => 'calendar', 'required' => true, 'expanded' => true, 'multiple' => false])
-            ->add('permission', CheckboxType::class, ['label' => 'permission', 'label_attr' => ['class' => 'uk-form-label'], 'required' => false, 'translation_domain' => 'form'])
-            ->add('hidden', CheckboxType::class, ['label' => 'hidden', 'label_attr' => ['class' => 'uk-form-label'], 'required' => false, 'translation_domain' => 'form'])
-            ->add('hiddendate', DateTimeSelectType::class, ['label' => 'hidden until', 'label_attr' => ['class' => 'uk-form-label'], 'translation_domain' => 'form'])
+            ->add('calendar', ChoiceType::class, ['placeholder' => false, 'choices' => $options['calendars'], 'choice_attr' => $options['calendarsAttr'], 'label' => 'calendar', 'required' => true, 'expanded' => true, 'multiple' => false]);
+
+        $builder
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $date = $event->getData();
                 $form = $event->getForm();
                 $formOptions = $form->getConfig()->getOptions();
+
+                if ($this->security->isGranted(ItemVoter::OWN, $formOptions['itemId']) || $this->security->isGranted(ItemVoter::MODERATE)) {
+                    $form
+                        ->add('permission', CheckboxType::class, ['label' => 'permission', 'label_attr' => ['class' => 'uk-form-label'], 'required' => false, 'translation_domain' => 'form'])
+                        ->add('hidden', CheckboxType::class, ['label' => 'hidden', 'label_attr' => ['class' => 'uk-form-label'], 'required' => false, 'translation_domain' => 'form'])
+                        ->add('hiddendate', DateTimeSelectType::class, ['label' => 'hidden until', 'label_attr' => ['class' => 'uk-form-label'], 'translation_domain' => 'form']);
+                }
 
                 if ($date['external_viewer_enabled']) {
                     $form->add('external_viewer', TextType::class, [
@@ -108,6 +120,7 @@ class DateType extends AbstractType
                 'hashtagMappingOptions',
                 'categoryMappingOptions',
                 'room',
+                'itemId',
             ])
             ->setDefaults([
                 'translation_domain' => 'date',

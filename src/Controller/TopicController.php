@@ -417,7 +417,8 @@ class TopicController extends BaseController
             'hashtags' => $labelService->getHashtags($roomId),
             'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
             'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-        ], 'room' => $current_context]);
+        ], 'room' => $current_context,
+           'itemId' => $itemId]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -464,7 +465,7 @@ class TopicController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($topicItem), CommsyEditEvent::EDIT);
 
-        return $this->render('topic/edit.html.twig', ['form' => $form, 'topic' => $topicItem, 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('topic/edit.html.twig', ['form' => $form, 'topic' => $topicItem, 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage()]);
     }
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/save')]

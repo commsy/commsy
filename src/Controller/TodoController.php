@@ -500,7 +500,8 @@ class TodoController extends BaseController
             'hashtags' => $labelService->getHashtags($roomId),
             'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
             'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-        ], 'room' => $current_context];
+        ], 'room' => $current_context,
+           'itemId' => $itemId];
 
         $todoItem = $this->todoService->getTodo($itemId);
         if (!$todoItem) {
@@ -559,7 +560,7 @@ class TodoController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($todoItem), CommsyEditEvent::EDIT);
 
-        return $this->render('todo/edit.html.twig', ['form' => $form, 'todo' => $todoItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('todo/edit.html.twig', ['form' => $form, 'todo' => $todoItem, 'isDraft' => $isDraft]);
     }
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/save')]

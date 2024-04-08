@@ -514,7 +514,8 @@ class AnnouncementController extends BaseController
                 'hashtags' => $labelService->getHashtags($roomId),
                 'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-            ], 'room' => $current_context]);
+            ], 'room' => $current_context,
+               'itemId' => $itemId]);
         }
 
         $form->handleRequest($request);
@@ -564,7 +565,7 @@ class AnnouncementController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($announcementItem), CommsyEditEvent::EDIT);
 
-        return $this->render('announcement/edit.html.twig', ['form' => $form, 'announcement' => $announcementItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('announcement/edit.html.twig', ['form' => $form, 'announcement' => $announcementItem, 'isDraft' => $isDraft]);
     }
 
     #[Route(path: '/room/{roomId}/announcement/{itemId}/save')]
