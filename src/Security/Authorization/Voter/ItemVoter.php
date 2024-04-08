@@ -42,6 +42,7 @@ class ItemVoter extends Voter
     final public const ANNOTATE = 'ITEM_ANNOTATE';
     final public const PARTICIPATE = 'ITEM_PARTICIPATE';
     final public const MODERATE = 'ITEM_MODERATE';
+    final public const OWN = 'ITEM_OWN';
     final public const ENTER = 'ITEM_ENTER';
     final public const USERROOM = 'ITEM_USERROOM';
     final public const DELETE = 'ITEM_DELETE';
@@ -73,6 +74,7 @@ class ItemVoter extends Voter
             self::ANNOTATE,
             self::PARTICIPATE,
             self::MODERATE,
+            self::OWN,
             self::ENTER,
             self::USERROOM,
             self::DELETE,
@@ -125,6 +127,9 @@ class ItemVoter extends Voter
 
                 case self::MODERATE:
                     return $this->canModerate($item, $currentUser);
+
+                case self::OWN:
+                    return $this->isOwner($item, $currentUser);
 
                 case self::ENTER:
                     return $this->canEnter($item, $currentUser, $user);
@@ -240,6 +245,15 @@ class ItemVoter extends Voter
     private function canModerate(cs_item $item, cs_user_item $currentUser)
     {
         if (3 == $currentUser->getStatus()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function isOwner(cs_item $item, cs_user_item $currentUser)
+    {
+        if ($item->getCreatorID() === $currentUser->getItemID()) {
             return true;
         }
 
