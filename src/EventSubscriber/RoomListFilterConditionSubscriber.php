@@ -13,6 +13,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Utils\RoomService;
 use App\Utils\UserService;
 use Spiriit\Bundle\FormFilterBundle\Event\GetFilterConditionEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -24,7 +25,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 readonly class RoomListFilterConditionSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private UserService $userService
+        private UserService $userService,
+        private RoomService $roomService
     ) {
     }
 
