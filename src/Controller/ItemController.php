@@ -926,11 +926,29 @@ class ItemController extends AbstractController
 
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::CANCEL);
 
+        $itemType = $item->getType();
+
+        $itemId = match ($itemType) {
+            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE => $item->getLinkedItem()->getItemID(),
+            default => $item->getItemID(),
+        };
+
+        $viewType = match ($itemType) {
+            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE => 'detail',
+            default => ($item->isDraft() ? 'list' : 'detail'),
+        };
+
+        $itemType = match ($itemType) {
+            CS_LABEL_TYPE => $item->getLabelType(),
+            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE => $item->getLinkedItem()->getType(),
+            default => $itemType,
+        };
+
         // cancel editing a NEW entry => return to list view
         // cancel editing an EXISTING entry => return to detail view of the entry
-        $redirectUrl = $this->generateUrl("app_{$item->getType()}_" . ($item->isDraft() ? 'list' : 'detail'), [
+        $redirectUrl = $this->generateUrl("app_{$itemType}_" . $viewType, [
             'roomId' => $roomId,
-            'itemId' => $item->getItemID(),
+            'itemId' => $itemId,
         ]);
 
         return $this->json([
