@@ -934,6 +934,7 @@ class ItemController extends AbstractController
         };
 
         $viewType = match ($itemType) {
+            // NOTE: edit.js currently handles redirects for cancelled newly created steps, sections or discarticles
             CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE => 'detail',
             default => ($item->isDraft() ? 'list' : 'detail'),
         };
@@ -944,7 +945,7 @@ class ItemController extends AbstractController
             default => $itemType,
         };
 
-        // cancel editing a NEW entry => return to list view
+        // cancel editing a NEW main entry => return to list view
         // cancel editing an EXISTING entry => return to detail view of the entry
         $redirectUrl = $this->generateUrl("app_{$itemType}_" . $viewType, [
             'roomId' => $roomId,
