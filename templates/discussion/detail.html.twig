@@ -227,7 +227,7 @@
                     {% endif %}
 
                     {% if draft %}
-                        {{ macros.draftButtons(roomId, discussion.itemId) }}
+                        {{ macros.draftButtons(roomId, discussion.itemId, discussion.type) }}
                     {% endif %}
                 </article>
             </div>
