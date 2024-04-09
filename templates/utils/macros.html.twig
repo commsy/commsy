@@ -759,8 +759,8 @@
     {% endif %}
 {% endmacro %}
 
-{% macro draftButtons(roomId, itemId) %}
-    <div id="draft-buttons-wrapper">
+{% macro draftButtons(roomId, itemId, itemType) %}
+    <div id="draft-buttons-wrapper" data-item-type="{{ itemType }}">
         <a href="#" class="uk-button uk-button-primary" data-draft-save="{{ {
             'undraftUrl': path('app_item_undraft', { 'roomId': roomId, 'itemId': itemId })
         }|json_encode|e('html_attr') }}">
