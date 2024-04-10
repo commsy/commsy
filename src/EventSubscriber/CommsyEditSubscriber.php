@@ -13,6 +13,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Enum\EditableSection;
 use App\Event\CommsyEditEvent;
 use App\Lock\LockManager;
 use App\Services\CalendarsService;
@@ -21,41 +22,39 @@ use cs_item;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class CommsyEditSubscriber implements EventSubscriberInterface
+final readonly class CommsyEditSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly ReaderService $readerService,
-        private readonly CalendarsService $calendarsService,
-        private readonly LockManager $lockManager,
-        private readonly RequestStack $requestStack
+        private ReaderService $readerService,
+        private CalendarsService $calendarsService,
+        private LockManager $lockManager,
+        private RequestStack $requestStack
     ) {
     }
 
-    public function onCommsyEdit(CommsyEditEvent $event)
+    public function onCommsyEdit(CommsyEditEvent $event): void
     {
-        if (!$event->getItem() instanceof cs_item) {
-            return;
-        }
-
         $request = $this->requestStack->getCurrentRequest();
         if (!$request || !$request->isMethod('GET')) {
             return;
         }
 
-        /** @var cs_item $item */
         $item = $event->getItem();
+
+        if ($item->getItemType() === 'material' &&
+            $event->getEditableSection() === EditableSection::DESCRIPTION &&
+            $event->getExtras()['etherpad'] ?? false
+        ) {
+            return;
+        }
+
         if ($this->lockManager->supportsLocking($item->getItemID())) {
             $this->lockManager->lockEntry($this->lockManager->getItemIdForLock($item->getItemID()));
         }
     }
 
-    public function onCommsySave(CommsyEditEvent $event)
+    public function onCommsySave(CommsyEditEvent $event): void
     {
-        if (!$event->getItem() instanceof cs_item) {
-            return;
-        }
-
-        /** @var cs_item $item */
         $item = $event->getItem();
         if ($this->lockManager->supportsLocking($item->getItemID())) {
             $this->lockManager->unlockEntry($this->lockManager->getItemIdForLock($item->getItemID()));
@@ -70,13 +69,8 @@ class CommsyEditSubscriber implements EventSubscriberInterface
         $this->updateSearchIndex($item);
     }
 
-    public function onCommsyCancel(CommsyEditEvent $event)
+    public function onCommsyCancel(CommsyEditEvent $event): void
     {
-        if (!$event->getItem() instanceof cs_item) {
-            return;
-        }
-
-        /** @var cs_item $item */
         $item = $event->getItem();
         if ($this->lockManager->supportsLocking($item->getItemID())) {
             $this->lockManager->unlockEntry($this->lockManager->getItemIdForLock($item->getItemID()));
@@ -97,7 +91,7 @@ class CommsyEditSubscriber implements EventSubscriberInterface
      *
      * @param cs_item $item the item whose search index entry shall be updated
      */
-    private function updateSearchIndex(cs_item $item)
+    private function updateSearchIndex(cs_item $item): void
     {
         if (method_exists($item, 'updateElastic')) {
             $item->updateElastic();

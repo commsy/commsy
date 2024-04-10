@@ -4,8 +4,53 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d4f7847ef0c020a92ec4a9f09659bd76",
+    "content-hash": "bdfedce9dafce04c1754a21a2ff5e31d",
     "packages": [
+        {
+            "name": "0x46616c6b/etherpad-lite-client",
+            "version": "v0.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/0x46616c6b/etherpad-lite-client.git",
+                "reference": "e5006c2d19943f83dda3653fcd18744ff7b36632"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/0x46616c6b/etherpad-lite-client/zipball/e5006c2d19943f83dda3653fcd18744ff7b36632",
+                "reference": "e5006c2d19943f83dda3653fcd18744ff7b36632",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "~7.2",
+                "php": "^7.3|^7.4|^8.0"
+            },
+            "require-dev": {
+                "behat/behat": "^3.8",
+                "phpunit/phpunit": "~8.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Louis Miller",
+                    "email": "louis@systemli.org"
+                }
+            ],
+            "description": "PHP Client for Etherpad Lite",
+            "support": {
+                "issues": "https://github.com/0x46616c6b/etherpad-lite-client/issues",
+                "source": "https://github.com/0x46616c6b/etherpad-lite-client/tree/v0.7.0"
+            },
+            "time": "2021-02-23T19:17:50+00:00"
+        },
         {
             "name": "api-platform/core",
             "version": "v3.2.11",
@@ -11867,41 +11912,6 @@
                 }
             ],
             "time": "2023-11-06T11:00:25+00:00"
-        },
-        {
-            "name": "tomnomnom/etherpad-lite-client",
-            "version": "0.1.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TomNomNom/etherpad-lite-client.git",
-                "reference": "932ac4903d7982038d5d04c03f8f9c809a5356bd"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TomNomNom/etherpad-lite-client/zipball/932ac4903d7982038d5d04c03f8f9c809a5356bd",
-                "reference": "932ac4903d7982038d5d04c03f8f9c809a5356bd",
-                "shasum": ""
-            },
-            "require-dev": {
-                "phpunit/phpunit": "3.7.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "EtherpadLite\\": "EtherpadLite/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache"
-            ],
-            "description": "Etherpad Lite client for PHP",
-            "homepage": "https://github.com/TomNomNom/etherpad-lite-client/",
-            "support": {
-                "issues": "https://github.com/TomNomNom/etherpad-lite-client/issues",
-                "source": "https://github.com/TomNomNom/etherpad-lite-client/tree/master"
-            },
-            "time": "2016-02-09T14:27:44+00:00"
         },
         {
             "name": "twig/extra-bundle",
