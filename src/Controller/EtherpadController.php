@@ -37,20 +37,21 @@ class EtherpadController extends AbstractController
 
         // Init etherpad
         $client = $etherpadService->getClient();
-        $author = $client->createAuthorIfNotExistsFor($currentUser->getItemId(), $currentUser->getFullname());
+        $authorId = $client->createAuthorIfNotExistsFor($currentUser->getItemId(), $currentUser->getFullname())
+            ->getData('authorID');
 
-        $group = $client->createGroupIfNotExistsFor($roomId);
+        $groupId = $client->createGroupIfNotExistsFor($roomId)->getData('groupID');
 
         // id lookup
-        $pads = $client->listPads($group->groupID);
+        $padIds = $client->listPads($groupId)->getData('padIDs');
 
         // If a pad for the current material does not exist, create one
         if (null !== $material) {
-            if (!$material->getEtherpadEditorID() || !in_array($material->getEtherpadEditorID(), $pads->padIDs)) {
+            if (!$material->getEtherpadEditorID() || !in_array($material->getEtherpadEditorID(), $padIds)) {
                 // plain material id vs. material id + random string?
-                $pad = $client->createGroupPad($group->groupID, $materialId, '');
+                $padId = $client->createGroupPad($groupId, $materialId, '')->getData('padID');
 
-                $material->setEtherpadEditorID($pad->padID);
+                $material->setEtherpadEditorID($padId);
                 $material->save();
 
                 // Set content
@@ -62,14 +63,17 @@ class EtherpadController extends AbstractController
 
         // create etherpad session with author and group
         $timestamp = time() + (60 * 60 * 24);
-        $session = $client->createSession($group->groupID, $author->authorID, $timestamp);
-        setcookie('sessionID', (string) $session->sessionID, ['expires' => $timestamp, 'path' => '/', 'domain' => '.'.$request->getHost()]);
+        $sessionId = $client->createSession($groupId, $authorId, $timestamp)->getData('sessionID');
+        setcookie('sessionID', (string) $sessionId, [
+            'expires' => $timestamp,
+            'path' => '/', 'domain' => '.' . $request->getHost(),
+        ]);
 
         $fs = new Filesystem();
         $baseUrl = $etherpadService->getBaseUrl();
 
         if (!$fs->isAbsolutePath($baseUrl)) {
-            $baseUrl = $request->getBaseUrl().'/'.$baseUrl;
+            $baseUrl = $request->getBaseUrl() . '/' . $baseUrl;
         }
 
         return $this->render('etherpad/index.html.twig', [

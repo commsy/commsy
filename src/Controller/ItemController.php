@@ -13,6 +13,7 @@
 
 namespace App\Controller;
 
+use App\Enum\EditableSection;
 use App\Event\CommsyEditEvent;
 use App\Form\DataTransformer\ItemTransformer;
 use App\Form\DataTransformer\TransformerManager;
@@ -108,6 +109,13 @@ class ItemController extends AbstractController
         ]);
 
         $formData = $transformer->transform($item);
+
+        $useEtherpad = false;
+        if ($parameterBag->get('commsy.etherpad.enabled')) {
+            $materialItem = $materialService->getMaterial($itemId);
+            $useEtherpad = $materialItem && $materialItem->getEtherpadEditor();
+        }
+
         $formOptions = [
             'itemId' => $itemId,
             'configName' => $configName,
@@ -116,7 +124,7 @@ class ItemController extends AbstractController
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             ]),
-            'lock_protection' => !$draft,
+            'lock_protection' => !$draft && !$useEtherpad,
         ];
 
         $withRecurrence = false;
@@ -128,14 +136,11 @@ class ItemController extends AbstractController
             }
         }
 
-        $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
-
-        $useEtherpad = false;
-        if ($parameterBag->get('commsy.etherpad.enabled')) {
-            /** @var cs_material_item $materialItem */
-            $materialItem = $materialService->getMaterial($itemId);
-            $useEtherpad = $materialItem && $materialItem->getEtherpadEditor();
-        }
+        $eventDispatcher->dispatch(new CommsyEditEvent(
+            $item,
+            EditableSection::DESCRIPTION,
+            ['etherpad' => $useEtherpad]
+        ), CommsyEditEvent::EDIT);
 
         $form = $this->createForm(ItemDescriptionType::class, $formData, $formOptions);
         $form->handleRequest($request);
@@ -153,10 +158,10 @@ class ItemController extends AbstractController
                         $client = $etherpadService->getClient();
 
                         // get pad and get text from pad
-                        $textObject = $client->getHTML($item->getEtherpadEditorID());
+                        $html = $client->getHTML($item->getEtherpadEditorID())->getData('html');
 
                         // save etherpad text to material description
-                        $item->setDescription(nl2br($textObject->html));
+                        $item->setDescription(nl2br($html));
                     }
                 }
 
