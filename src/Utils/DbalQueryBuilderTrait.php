@@ -158,7 +158,7 @@ trait DbalQueryBuilderTrait
     {
         if (!$numDays) return;
 
-        $queryBuilder->andWhere("$alias.modification_date >= DATE_SUB(CURRENT_DATE, INTERVAL :ageLimit DAY");
+        $queryBuilder->andWhere("$alias.modification_date >= DATE_SUB(CURRENT_DATE, INTERVAL :ageLimit DAY)");
         $queryBuilder->setParameter('ageLimit', $numDays);
     }
 
@@ -174,7 +174,7 @@ trait DbalQueryBuilderTrait
     {
         if (!$numDays) return;
 
-        $queryBuilder->andWhere("$alias.creation_date >= DATE_SUB(CURRENT_DATE, INTERVAL :existenceLimit DAY");
+        $queryBuilder->andWhere("$alias.creation_date >= DATE_SUB(CURRENT_DATE, INTERVAL :existenceLimit DAY)");
         $queryBuilder->setParameter('existenceLimit', $numDays);
     }
 
