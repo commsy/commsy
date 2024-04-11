@@ -2084,7 +2084,7 @@ class cs_item
     public function setFileList($value)
     {
         $this->_data['file_list'] = $value;
-        $this->_data['file_id_array'] = '';
+        $this->_data['file_id_array'] = [];
         $this->_filelist_changed = true;
     }
 
@@ -2096,7 +2096,7 @@ class cs_item
             }
             $link_manager = $this->_environment->getLinkManager();
             $file_id_array = $this->getFileIDArray();
-            if ('' === $file_id_array or $this->_filelist_changed_empty) {
+            if (empty($file_id_array) || $this->_filelist_changed_empty) {
                 $link_manager->deleteFileLinks($this);
             } else {
                 $current_file_links = $link_manager->getFileLinks($this);
