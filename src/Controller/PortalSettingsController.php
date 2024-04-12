@@ -1124,8 +1124,6 @@ class PortalSettingsController extends AbstractController
         /** @noinspection PhpUndefinedMethodInspection */
         $terms = $repository->findByContextId($portal->getId());
 
-        $dispatcher->dispatch(new CommsyEditEvent(null), 'commsy.edit');
-
         return $this->render('portal_settings/room_terms_templates.html.twig', [
             'form' => $form,
             'portalId' => $portal->getId(),
