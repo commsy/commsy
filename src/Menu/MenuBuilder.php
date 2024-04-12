@@ -534,7 +534,7 @@ final readonly class MenuBuilder
         if (!$userIsRoot && !$currentUser->isGuest()) {
             $privateRoom = $currentUser->getOwnRoom();
 
-            if ($roomId == $privateRoom->getItemId()) {
+            if ($privateRoom && $roomId == $privateRoom->getItemId()) {
                 $inPrivateRoom = true;
             }
         }
