@@ -218,11 +218,11 @@ class AdditionalSettingsTransformer extends AbstractTransformer
         if (isset($archived['active']) && method_exists($roomObject, 'getArchived')) {
             if ($archived['active']) {
                 if (!$roomObject->getArchived()) {
-                    $roomObject->setArchived(true);
+                    $roomObject->archive();
                 }
             } else {
                 if ($roomObject->getArchived()) {
-                    $roomObject->setArchived(false);
+                    $roomObject->unarchive();
                 }
             }
         }
