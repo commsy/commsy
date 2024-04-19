@@ -210,6 +210,10 @@
                 <source>E-Mail to support</source>
                 <target>E-Mail an Support</target>
             </trans-unit>
+            <trans-unit id="room_locked_archived">
+                <source>This archived room is currently locked.</source>
+                <target>Dieser archivierte Raum ist derzeit gesperrt.</target>
+            </trans-unit>
             <trans-unit id="room_locked">
                 <source>This room is currently locked.</source>
                 <target>Dieser Raum ist derzeit gesperrt.</target>

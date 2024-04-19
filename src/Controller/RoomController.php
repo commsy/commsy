@@ -636,14 +636,6 @@ class RoomController extends AbstractController
             $filteredUserArray = array_filter($relatedUserArray, fn (cs_user_item $user) => $user->getContextId() == $item->getItemId());
             $roomUser = array_values($filteredUserArray)[0] ?? null;
 
-            if ($item->getArchived()) {
-                if ($currentUser->isRoot() || (!empty($roomUser) && $item->mayEnter($roomUser))) {
-                    return 'enter_archived';
-                }
-
-                return 'archived';
-            }
-
             $mayEnter = false;
             if ($currentUser->isRoot()) {
                 $mayEnter = true;
@@ -656,7 +648,15 @@ class RoomController extends AbstractController
                 }
             }
 
-            if ($mayEnter) {
+            if ($item->getArchived()) {
+                if ($item->isLocked()) {
+                    return 'locked_archived';
+                } elseif (!empty($roomUser) && $mayEnter) {
+                    return 'enter_archived';
+                } else {
+                    return 'archived';
+                }
+            } elseif ($mayEnter) {
                 if ($item->isOpen()) {
                     return 'enter';
                 } else {
