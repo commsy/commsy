@@ -29,7 +29,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class GeneralSettingsType extends AbstractType
@@ -58,7 +59,7 @@ class GeneralSettingsType extends AbstractType
         $roomItem = $roomManager->getItem($options['roomId']);
 
         $builder
-            ->add('title', TextType::class, ['constraints' => [new NotBlank()], 'attr' => ['style' => 'width: 250px;']])
+            ->add('title', TextType::class, ['constraints' => [new Assert\NotBlank()], 'attr' => ['style' => 'width: 250px;']])
             ->add('language', ChoiceType::class, ['choices' => ['User preferences' => 'user', 'German' => 'de', 'English' => 'en'], 'empty_data' => 'user', 'attr' => ['style' => 'width: 250px;'], 'help' => 'Room language tip'])
             ->add('access_check', ChoiceType::class, ['required' => false, 'choices' => ['Never' => 'never', 'Always' => 'always', 'Code' => 'withcode']])
             ->add('access_code', TextType::class, ['required' => false, 'attr' => ['style' => 'display: none;'], 'label' => false])
@@ -148,6 +149,9 @@ class GeneralSettingsType extends AbstractType
                         'required' => false,
                         'choices' => $this->getTimeChoices(),
                         'multiple' => true,
+                        'constraints' => [
+                            new Assert\Callback($this->validateTimePulses(...)),
+                        ],
                     ])
                 ;
             }
@@ -226,5 +230,14 @@ class GeneralSettingsType extends AbstractType
         }
 
         return $results;
+    }
+
+    public function validateTimePulses(array $selectedTimePulses, ExecutionContextInterface $context): void
+    {
+        if (count($selectedTimePulses) > 1 && in_array('cont', $selectedTimePulses)) {
+            $context->buildViolation('Continuous can only be specified without any other time pulse choices.')
+                ->atPath('time_pulses')
+                ->addViolation();
+        }
     }
 }
