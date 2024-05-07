@@ -21,7 +21,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ProjectType extends AbstractType
@@ -92,6 +93,9 @@ class ProjectType extends AbstractType
                 'multiple' => true,
                 'label' => $options['timesDisplay'],
                 'translation_domain' => 'room',
+                'constraints' => [
+                    new Assert\Callback($this->validateTimePulses(...)),
+                ],
             ]);
         }
         $builder->add('language', ChoiceType::class, ['placeholder' => false, 'choices' => ['User preferences' => 'user', 'German' => 'de', 'English' => 'en'], 'label' => 'language', 'required' => true, 'expanded' => false, 'multiple' => false, 'translation_domain' => 'room', 'choice_translation_domain' => 'settings'])
@@ -107,7 +111,7 @@ class ProjectType extends AbstractType
 
         $constraints = [];
         if (isset($options['linkRoomCategoriesMandatory']) && $options['linkRoomCategoriesMandatory']) {
-            $constraints[] = new Count(['min' => 1, 'minMessage' => 'Please select at least one category']);
+            $constraints[] = new Assert\Count(['min' => 1, 'minMessage' => 'Please select at least one category']);
         }
 
         $roomCategories = $options['roomCategories'];
@@ -145,5 +149,14 @@ class ProjectType extends AbstractType
             ->setDefaults([
                 'translation_domain' => 'project',
             ]);
+    }
+
+    public function validateTimePulses(array $selectedTimePulses, ExecutionContextInterface $context): void
+    {
+        if (count($selectedTimePulses) > 1 && in_array('cont', $selectedTimePulses)) {
+            $context->buildViolation('Continuous can only be specified without any other time pulse choices.')
+                ->atPath('time_interval')
+                ->addViolation();
+        }
     }
 }
