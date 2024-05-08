@@ -104,16 +104,16 @@ class GeneralSettingsTransformer extends AbstractTransformer
             if ($roomItem->isProjectRoom() || $roomItem->isGroupRoom()) {
                 if ($roomItem->isContinuous()) {
                     $roomData['time_pulses'][] = 'cont';
-                }
+                } else {
+                    $roomTimeList = $roomItem->getTimeList();
 
-                $roomTimeList = $roomItem->getTimeList();
+                    if (!$roomTimeList->isEmpty()) {
+                        $roomTimeItem = $roomTimeList->getFirst();
+                        while ($roomTimeItem) {
+                            $roomData['time_pulses'][] = $roomTimeItem->getItemID();
 
-                if (!$roomTimeList->isEmpty()) {
-                    $roomTimeItem = $roomTimeList->getFirst();
-                    while ($roomTimeItem) {
-                        $roomData['time_pulses'][] = $roomTimeItem->getItemID();
-
-                        $roomTimeItem = $roomTimeList->getNext();
+                            $roomTimeItem = $roomTimeList->getNext();
+                        }
                     }
                 }
             }
