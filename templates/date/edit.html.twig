@@ -242,8 +242,8 @@ $recurring.on('change', function() {
         url: $form.attr('action'),
         type: $form.attr('method'),
         data: data
-    }).always(function (response) {
-        let html = response.responseText;
+    }).always(function(data, textStatus, jqXHR) {
+        let html = data.responseText ?? jqXHR.responseText;
 
         if (!$('#date_recurring_sub').length) {
             $('#date_recurring_select').after($(html).find('#date_recurring_sub'));

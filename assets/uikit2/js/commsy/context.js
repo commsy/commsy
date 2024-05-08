@@ -17,7 +17,7 @@
             data : data
         })
           .always(function(data, textStatus, jqXHR) {
-            let html = jqXHR.responseText;
+            let html = data.responseText ?? jqXHR.responseText;
 
             // replace with content from ajax response
             if (!$('#context_type_sub').length) {
