@@ -988,6 +988,26 @@ class cs_room_item extends cs_context_item
          $this->_setValue('slug', $slug);
      }
 
+     /**
+      * Archives a room (which puts it into read-only mode).
+      *
+      * Subclass implementations of this method may also archive related rooms.
+      */
+     public function archive(): void
+     {
+         $this->setArchived(true);
+     }
+
+     /**
+      * Unarchives a room (which removes the read-only mode restrictions).
+      *
+      * Subclass implementations of this method may also unarchive related rooms.
+      */
+     public function unarchive(): void
+     {
+         $this->setArchived(false);
+     }
+
      public function getArchived(): bool
      {
          return '1' == $this->_getValue('archived');

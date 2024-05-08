@@ -342,6 +342,64 @@ class cs_project_item extends cs_room_item
      }
 
      /**
+      * Archives a room (which puts it into read-only mode).
+      *
+      * This also archives any group rooms belonging to groups of this room as well as any
+      * user rooms belonging to users of this room.
+      */
+     public function archive(): void
+     {
+         parent::archive();
+
+         // archive related group rooms
+         foreach ($this->getGroupRoomList() as $groupRoom) {
+             /* @var \cs_grouproom_item $groupRoom */
+             if (!$groupRoom->getArchived()) {
+                 $groupRoom->archive();
+                 $groupRoom->save();
+             }
+         }
+
+         // archive related user rooms
+         foreach ($this->getUserRoomList() as $userRoom) {
+             /* @var \cs_userroom_item $userRoom */
+             if (!$userRoom->getArchived()) {
+                 $userRoom->archive();
+                 $userRoom->save();
+             }
+         }
+     }
+
+     /**
+      * Unarchives a room (which removes the read-only mode restrictions).
+      *
+      * This also unarchives any group rooms belonging to groups of this room as well as any
+      * user rooms belonging to users of this room.
+      */
+     public function unarchive(): void
+     {
+         parent::unarchive();
+
+         // archive related group rooms
+         foreach ($this->getGroupRoomList() as $groupRoom) {
+             /* @var \cs_grouproom_item $groupRoom */
+             if ($groupRoom->getArchived()) {
+                 $groupRoom->unarchive();
+                 $groupRoom->save();
+             }
+         }
+
+         // archive related user rooms
+         foreach ($this->getUserRoomList() as $userRoom) {
+             /* @var \cs_userroom_item $userRoom */
+             if ($userRoom->getArchived()) {
+                 $userRoom->unarchive();
+                 $userRoom->save();
+             }
+         }
+     }
+
+     /**
       * Locks the project room as well as any group rooms belonging to groups of this room.
       */
      public function lock(): void
@@ -1036,6 +1094,24 @@ class cs_project_item extends cs_room_item
             $grouproom_manager->select();
 
             return $grouproom_manager->get();
+        } else {
+            return new cs_list();
+        }
+    }
+
+    /**
+     * Returns a list of related userrooms.
+     */
+    public function getUserRoomList(): cs_list
+    {
+        if ($this->getItemID()) {
+            $userroom_manager = $this->_environment->getUserRoomManager();
+            // userrooms have the hosting project room's ID as their context ID
+            $userroom_manager->setContextLimit($this->getItemID());
+            $userroom_manager->setProjectRoomLimit($this->getItemID());
+            $userroom_manager->select();
+
+            return $userroom_manager->get();
         } else {
             return new cs_list();
         }
