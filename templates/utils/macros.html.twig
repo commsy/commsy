@@ -529,7 +529,13 @@
         </span>
     {% else %}
 
-        {% if 'enter' in contextMemberStatus %}
+        {% if 'locked' in contextMemberStatus %}
+            {% if 'archived' in contextMemberStatus %}
+                {{ 'This archived room is currently locked.'|trans({}, 'room') }}
+            {% else %}
+                {{ 'This room is currently locked.'|trans({}, 'room') }}
+            {% endif %}
+        {% elseif 'enter' in contextMemberStatus %}
             {% if 'archived' in contextMemberStatus %}
                 {{ 'Archived room'|trans({}, 'room') }} (<a href="{{ path('app_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>)
             {% else %}
@@ -538,8 +544,6 @@
         {% else %}
             {% if contextMemberStatus is same as('join') %}
                 <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
-            {% elseif contextMemberStatus is same as('locked') %}
-                {{ 'This room is currently locked.'|trans({}, 'room') }}
             {% elseif contextMemberStatus is same as('requested') %}
                 <span data-uk-tooltip title="{{ 'Your request has not been processed yet.'|trans({}, 'room') }}">
                     <a class='uk-button uk-button-secondary uk-text-bold' style="pointer-events: none;" href=""><i class="uk-icon-sign-in uk-icon"></i> {{ 'Membership request in process'|trans({}, 'room') }}</a>
@@ -564,7 +568,7 @@
     {% else %}
         {% if contextMemberStatus is same as('join') %}
             <a href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon-user-plus uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'become member'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i></a>
-        {% elseif contextMemberStatus is same as('locked') %}
+        {% elseif 'locked' in contextMemberStatus %}
             <i class="uk-icon-lock uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'This room is currently locked.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
         {% elseif contextMemberStatus is same as('requested') %}
             <i class="uk-icon-spinner uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'Your request has not been processed yet.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
