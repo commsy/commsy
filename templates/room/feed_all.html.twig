@@ -54,10 +54,16 @@
                     </div>
                     <div>
                         <h4 class="uk-comment-title">
-                            {% if 'archived' not in projectsMemberStatus[room.itemId] %}
-                                <a href="{{ path('app_roomall_detail', { 'portalId': commsy.portal.id, 'itemId': room.itemId}) }}">{{ room.title|decodeHtmlEntity }}</a>
+                            {% if 'archived' in projectsMemberStatus[room.itemId] %}
+                                <span class="uk-text-muted">
+                                {% if (is_granted('ROOM_MODERATOR', room.itemId) or is_granted('PARENT_ROOM_MODERATOR', room.itemId)) %}
+                                        <a href="{{ path('app_roomall_detail', { 'portalId': commsy.portal.id, 'itemId': room.itemId}) }}">{{ room.title|decodeHtmlEntity }}</a>
+                                {% else %}
+                                    {{ room.title|decodeHtmlEntity }}
+                                {% endif %}
+                                </span>
                             {% else %}
-                                <span class="uk-text-muted">{{ room.title|decodeHtmlEntity }}</span>
+                                <a href="{{ path('app_roomall_detail', { 'portalId': commsy.portal.id, 'itemId': room.itemId}) }}">{{ room.title|decodeHtmlEntity }}</a>
                             {% endif %}
                             {% if room.template == 1 %}<span class="uk-text-muted"> &ndash; {{ 'Template'|trans({}, 'room') }}</span>{% endif %}
                         </h4>
