@@ -25,6 +25,8 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ProjectType extends AbstractType
@@ -72,6 +74,9 @@ class ProjectType extends AbstractType
                 'multiple' => true,
                 'label' => $options['timesDisplay'],
                 'translation_domain' => 'room',
+                'constraints' => [
+                    new Assert\Callback($this->validateTimePulses(...)),
+                ],
             ]);
         }
         $builder->add('community_rooms', ChoiceType::class, [
@@ -135,5 +140,14 @@ class ProjectType extends AbstractType
             ->setRequired(['types', 'templates', 'preferredChoices', 'timesDisplay', 'times', 'linkCommunitiesMandantory', 'roomCategories', 'linkRoomCategoriesMandatory'])
             ->setDefaults(['translation_domain' => 'form'])
         ;
+    }
+
+    public function validateTimePulses(array $selectedTimePulses, ExecutionContextInterface $context): void
+    {
+        if (count($selectedTimePulses) > 1 && in_array('cont', $selectedTimePulses)) {
+            $context->buildViolation('Continuous can only be specified without any other time pulse choices.')
+                ->atPath('time_interval')
+                ->addViolation();
+        }
     }
 }

@@ -225,6 +225,12 @@
                 <target>Your selection must differ.</target>
             </trans-unit>
 
+            <!-- room settings -->
+            <trans-unit id="violation_room_settings_general_time_pulses">
+                <source>Continuous can only be specified without any other time pulse choices.</source>
+                <target>The "continuous" option can only be specified without any other time pulse choices.</target>
+            </trans-unit>
+
             <!-- signup -->
             <trans-unit id="signup-regex-mail">
                 <source>signup-regex-mail</source>
