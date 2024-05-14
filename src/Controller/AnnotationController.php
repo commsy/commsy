@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -68,6 +68,7 @@ class AnnotationController extends AbstractController
         foreach ($annotations as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
         }
+
         /**
          * For first show annotations no read and after mark read.
          */
@@ -147,6 +148,8 @@ class AnnotationController extends AbstractController
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function success(
         ItemService $itemService,
+        /** @noinspection PhpUnusedParameterInspection This argument is used as a subject for the #[IsGranted] attribute */
+        int $roomId,
         int $itemId
     ): Response {
         $item = $itemService->getTypedItem($itemId);
