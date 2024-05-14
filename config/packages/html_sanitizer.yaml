@@ -1,0 +1,4 @@
+framework:
+    html_sanitizer:
+        sanitizers:
+            app.drop_all_sanitizer:

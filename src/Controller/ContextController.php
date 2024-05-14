@@ -43,7 +43,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class ContextController extends AbstractController
 {
     #[Route(path: '/room/{roomId}/context/{itemId}/request', requirements: ['itemId' => '\d+'])]
-    public function requestAction(
+    public function request(
         Request $request,
         LegacyEnvironment $environment,
         UserService $userService,

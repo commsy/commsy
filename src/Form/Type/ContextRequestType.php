@@ -105,6 +105,8 @@ class ContextRequestType extends AbstractType
                     ],
                     'translation_domain' => 'room',
                     'required' => false,
+                    'sanitize_html' => true,
+                    'sanitizer' => 'app.drop_all_sanitizer',
                 ])
             ;
         }
