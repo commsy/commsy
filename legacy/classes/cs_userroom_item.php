@@ -90,28 +90,6 @@ class cs_userroom_item extends cs_room_item
         $this->deleteFromElastic();
     }
 
-    // Elastic index
-
-    public function updateElastic()
-    {
-        global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
-        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository(Room::class);
-
-        $this->replaceElasticItem($objectPersister, $repository);
-    }
-
-    public function deleteFromElastic()
-    {
-        global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
-        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository(Room::class);
-
-        $this->deleteElasticItem($objectPersister, $repository);
-    }
-
     // time spread
 
     /** Returns the time spread for items on home.

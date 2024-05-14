@@ -15,6 +15,7 @@
  */
 
 use App\Entity\Room;
+use Doctrine\ORM\EntityManagerInterface;
 
 /** father class for a rooms (project or community)
  * this class implements an abstract room item.
@@ -755,22 +756,22 @@ class cs_room_item extends cs_context_item
         }
     }
 
-  public function getUsageInfoFormHeaderArray()
-  {
-      $retour = null;
-      if ($this->_issetExtra('USAGE_INFO_FORM_HEADER')) {
-          $retour = $this->_getExtra('USAGE_INFO_FORM_HEADER');
-          if (empty($retour)) {
-              $retour = [];
-          } elseif (!is_array($retour)) {
-              $retour = XML2Array($retour);
-          }
-      } else {
-          $retour = [];
-      }
+    public function getUsageInfoFormHeaderArray()
+    {
+        $retour = null;
+        if ($this->_issetExtra('USAGE_INFO_FORM_HEADER')) {
+            $retour = $this->_getExtra('USAGE_INFO_FORM_HEADER');
+            if (empty($retour)) {
+                $retour = [];
+            } elseif (!is_array($retour)) {
+                $retour = XML2Array($retour);
+            }
+        } else {
+            $retour = [];
+        }
 
-      return $retour;
-  }
+        return $retour;
+    }
 
     public function setUsageInfoFormHeaderArray($value_array)
     {
@@ -840,8 +841,8 @@ class cs_room_item extends cs_context_item
         } else {
             $retour = [];
         }
-        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
-            $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
+        if (isset($retour[mb_strtoupper((string)$rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string)$rubric, 'UTF-8')])) {
+            $retour = $retour[mb_strtoupper((string)$rubric, 'UTF-8')];
         } else {
             $retour = $translator->getMessage('USAGE_INFO_HEADER');
         }
@@ -861,7 +862,7 @@ class cs_room_item extends cs_context_item
         } else {
             $value_array = [];
         }
-        $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
+        $value_array[mb_strtoupper((string)$rubric, 'UTF-8')] = $string;
         $this->_addExtra('USAGE_INFO_HEADER', $value_array);
     }
 
@@ -878,8 +879,8 @@ class cs_room_item extends cs_context_item
         } else {
             $retour = [];
         }
-        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
-            $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
+        if (isset($retour[mb_strtoupper((string)$rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string)$rubric, 'UTF-8')])) {
+            $retour = $retour[mb_strtoupper((string)$rubric, 'UTF-8')];
         } else {
             $retour = $translator->getMessage('USAGE_INFO_HEADER');
         }
@@ -899,7 +900,7 @@ class cs_room_item extends cs_context_item
         } else {
             $value_array = [];
         }
-        $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
+        $value_array[mb_strtoupper((string)$rubric, 'UTF-8')] = $string;
         $this->_addExtra('USAGE_INFO_FORM_HEADER', $value_array);
     }
 
@@ -911,7 +912,7 @@ class cs_room_item extends cs_context_item
             $tag_root_item_id = $tag_root_item->getItemID();
         }
         if (!isset($tag_root_item)
-             or empty($tag_root_item_id)
+            or empty($tag_root_item_id)
         ) {
             $tag_manager->createRootTagItemFor($this->getItemID());
         }
@@ -970,53 +971,78 @@ class cs_room_item extends cs_context_item
         $this->_setValue('description', $value);
     }
 
-     /**
-      * Get the room's slug (a unique textual identifier for this room).
-      */
-     public function getSlug(): ?string
-     {
-         return $this->_getValue('slug') ?: null;
-     }
+    /**
+     * Get the room's slug (a unique textual identifier for this room).
+     */
+    public function getSlug(): ?string
+    {
+        return $this->_getValue('slug') ?: null;
+    }
 
-     /**
-      * Set the room's slug (a unique textual identifier for this room).
-      */
-     public function setSlug(?string $slug): void
-     {
-         $slug = !empty($slug) ? strtolower($slug) : null;
+    /**
+     * Set the room's slug (a unique textual identifier for this room).
+     */
+    public function setSlug(?string $slug): void
+    {
+        $slug = !empty($slug) ? strtolower($slug) : null;
 
-         $this->_setValue('slug', $slug);
-     }
+        $this->_setValue('slug', $slug);
+    }
 
-     /**
-      * Archives a room (which puts it into read-only mode).
-      *
-      * Subclass implementations of this method may also archive related rooms.
-      */
-     public function archive(): void
-     {
-         $this->setArchived(true);
-     }
+    /**
+     * Archives a room (which puts it into read-only mode).
+     *
+     * Subclass implementations of this method may also archive related rooms.
+     */
+    public function archive(): void
+    {
+        $this->setArchived(true);
 
-     /**
-      * Unarchives a room (which removes the read-only mode restrictions).
-      *
-      * Subclass implementations of this method may also unarchive related rooms.
-      */
-     public function unarchive(): void
-     {
-         $this->setArchived(false);
-     }
+        // remove room from elastic index
+        $container = $this->_environment->getSymfonyContainer();
+        $objectPersister = $container->get('app.elastica.object_persister.commsy_room');
 
-     public function getArchived(): bool
-     {
-         return '1' == $this->_getValue('archived');
-     }
+        /** @var EntityManagerInterface $em */
+        $em = $container->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository(Room::class);
 
-     public function setArchived(bool $archived): void
-     {
-         $this->_setValue('archived', $archived ? 1 : 0);
-     }
+        $this->deleteElasticItem($objectPersister, $repository);
+    }
+
+    /**
+     * Unarchives a room (which removes the read-only mode restrictions).
+     *
+     * Subclass implementations of this method may also unarchive related rooms.
+     */
+    public function unarchive(): void
+    {
+        $this->setArchived(false);
+
+        /**
+         * We mirror the archived flag to the doctrine entity here for now, otherwise the indexable check will prevent
+         * the room from being indexed
+         * @see Room::isIndexable()
+         */
+        $container = $this->_environment->getSymfonyContainer();
+
+        /** @var EntityManagerInterface $em */
+        $em = $container->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository(Room::class);
+
+        /** @var Room $room */
+        $room = $repository->findOneByItemId($this->getItemID());
+        $room->setArchived(false);
+    }
+
+    public function getArchived(): bool
+    {
+        return '1' == $this->_getValue('archived');
+    }
+
+    public function setArchived(bool $archived): void
+    {
+        $this->_setValue('archived', $archived ? 1 : 0);
+    }
 
     public function isUsed($start_date, $end_date)
     {
@@ -1027,8 +1053,8 @@ class cs_room_item extends cs_context_item
         $count = $user_manager->getCountUsedAccounts($start_date, $end_date);
         unset($user_manager);
         if (!empty($count)
-             and is_numeric($count)
-             and $count > 0
+            and is_numeric($count)
+            and $count > 0
         ) {
             $retour = true;
         } else {
@@ -1036,8 +1062,8 @@ class cs_room_item extends cs_context_item
             $item_manager->setContextLimit($this->getItemID());
             $count = $item_manager->getCountItems($start_date, $end_date);
             if (!empty($count)
-                 and is_numeric($count)
-                 and $count > 0
+                and is_numeric($count)
+                and $count > 0
             ) {
                 $retour = true;
             }
@@ -1047,62 +1073,50 @@ class cs_room_item extends cs_context_item
         return $retour;
     }
 
-     public function moveToArchive()
-     {
-         // group rooms in project room
-         $type = $this->getRoomType();
-         if (CS_PROJECT_TYPE == $type) {
-             $this->moveGrouproomsToArchive();
-         }
-         unset($type);
+    protected function updateElastic(): void
+    {
+        if ($this->getArchived()) {
+            return;
+        }
 
-         // set lastlogin to now
-         // cause than the deleting prozess will start now
-         // and not at the original last login date
-         $this->saveLastlogin();
+        $container = $this->_environment->getSymfonyContainer();
+        $objectPersister = $container->get('app.elastica.object_persister.commsy_room');
+        $em = $container->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository(Room::class);
 
-         $this->close();
-         $this->saveWithoutChangingModificationInformation();
+        $this->replaceElasticItem($objectPersister, $repository);
+    }
 
-         // remove room from elastic index
-         global $symfonyContainer;
-         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
-         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-         $repository = $em->getRepository(Room::class);
+    protected function deleteFromElastic(): void
+    {
+        $container = $this->_environment->getSymfonyContainer();
+        $objectPersister = $container->get('app.elastica.object_persister.commsy_room');
+        $em = $container->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository(Room::class);
 
-         $this->deleteElasticItem($objectPersister, $repository);
-     }
+        $this->deleteElasticItem($objectPersister, $repository);
+    }
 
-     public function updateElastic()
-     {
-         global $symfonyContainer;
-         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
-         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-         $repository = $em->getRepository(Room::class);
+    public function saveLastlogin()
+    {
+        $manager = $this->_environment->getManager($this->getType());
+        if ($manager) {
+            return $manager->saveLastLogin($this);
+        }
+    }
 
-         $this->replaceElasticItem($objectPersister, $repository);
-     }
+    /** get lastlogin of a context
+     * this method returns the last login date of the context.
+     *
+     * @return string lastlogin of a context
+     */
+    public function getLastLogin()
+    {
+        return $this->_getValue('lastlogin');
+    }
 
-     public function saveLastlogin()
-     {
-         $manager = $this->_environment->getManager($this->getType());
-         if ($manager) {
-             return $manager->saveLastLogin($this);
-         }
-     }
-
-     /** get lastlogin of a context
-      * this method returns the last login date of the context.
-      *
-      * @return string lastlogin of a context
-      */
-     public function getLastLogin()
-     {
-         return $this->_getValue('lastlogin');
-     }
-
-     public function isActiveDuringLast99Days(): bool
-     {
-         return $this->getLastLogin() >= getCurrentDateTimeMinusDaysInMySQL(99);
-     }
+    public function isActiveDuringLast99Days(): bool
+    {
+        return $this->getLastLogin() >= getCurrentDateTimeMinusDaysInMySQL(99);
+    }
 }

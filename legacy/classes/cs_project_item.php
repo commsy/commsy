@@ -331,164 +331,154 @@ class cs_project_item extends cs_room_item
         $this->updateElastic();
     }
 
-     public function updateElastic()
-     {
-         global $symfonyContainer;
-         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
-         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-         $repository = $em->getRepository(Room::class);
+    /**
+     * Archives a room (which puts it into read-only mode).
+     *
+     * This also archives any group rooms belonging to groups of this room as well as any
+     * user rooms belonging to users of this room.
+     */
+    public function archive(): void
+    {
+        parent::archive();
 
-         $this->replaceElasticItem($objectPersister, $repository);
-     }
+        // archive related group rooms
+        foreach ($this->getGroupRoomList() as $groupRoom) {
+            /* @var \cs_grouproom_item $groupRoom */
+            if (!$groupRoom->getArchived()) {
+                $groupRoom->archive();
+                $groupRoom->save();
+            }
+        }
 
-     /**
-      * Archives a room (which puts it into read-only mode).
-      *
-      * This also archives any group rooms belonging to groups of this room as well as any
-      * user rooms belonging to users of this room.
-      */
-     public function archive(): void
-     {
-         parent::archive();
+        // archive related user rooms
+        foreach ($this->getUserRoomList() as $userRoom) {
+            /* @var \cs_userroom_item $userRoom */
+            if (!$userRoom->getArchived()) {
+                $userRoom->archive();
+                $userRoom->save();
+            }
+        }
+    }
 
-         // archive related group rooms
-         foreach ($this->getGroupRoomList() as $groupRoom) {
-             /* @var \cs_grouproom_item $groupRoom */
-             if (!$groupRoom->getArchived()) {
-                 $groupRoom->archive();
-                 $groupRoom->save();
-             }
-         }
+    /**
+     * Unarchives a room (which removes the read-only mode restrictions).
+     *
+     * This also unarchives any group rooms belonging to groups of this room as well as any
+     * user rooms belonging to users of this room.
+     */
+    public function unarchive(): void
+    {
+        parent::unarchive();
 
-         // archive related user rooms
-         foreach ($this->getUserRoomList() as $userRoom) {
-             /* @var \cs_userroom_item $userRoom */
-             if (!$userRoom->getArchived()) {
-                 $userRoom->archive();
-                 $userRoom->save();
-             }
-         }
-     }
+        // archive related group rooms
+        foreach ($this->getGroupRoomList() as $groupRoom) {
+            /* @var \cs_grouproom_item $groupRoom */
+            if ($groupRoom->getArchived()) {
+                $groupRoom->unarchive();
+                $groupRoom->save();
+            }
+        }
 
-     /**
-      * Unarchives a room (which removes the read-only mode restrictions).
-      *
-      * This also unarchives any group rooms belonging to groups of this room as well as any
-      * user rooms belonging to users of this room.
-      */
-     public function unarchive(): void
-     {
-         parent::unarchive();
+        // archive related user rooms
+        foreach ($this->getUserRoomList() as $userRoom) {
+            /* @var \cs_userroom_item $userRoom */
+            if ($userRoom->getArchived()) {
+                $userRoom->unarchive();
+                $userRoom->save();
+            }
+        }
+    }
 
-         // archive related group rooms
-         foreach ($this->getGroupRoomList() as $groupRoom) {
-             /* @var \cs_grouproom_item $groupRoom */
-             if ($groupRoom->getArchived()) {
-                 $groupRoom->unarchive();
-                 $groupRoom->save();
-             }
-         }
+    /**
+     * Locks the project room as well as any group rooms belonging to groups of this room.
+     */
+    public function lock(): void
+    {
+        parent::lock();
 
-         // archive related user rooms
-         foreach ($this->getUserRoomList() as $userRoom) {
-             /* @var \cs_userroom_item $userRoom */
-             if ($userRoom->getArchived()) {
-                 $userRoom->unarchive();
-                 $userRoom->save();
-             }
-         }
-     }
+        // lock related group rooms
+        foreach ($this->getGroupRoomList() as $groupRoom) {
+            /* @var \cs_grouproom_item $groupRoom */
+            $groupRoom->lock();
+            $groupRoom->save();
+        }
+    }
 
-     /**
-      * Locks the project room as well as any group rooms belonging to groups of this room.
-      */
-     public function lock(): void
-     {
-         parent::lock();
+    /**
+     * Unlocks the project room as well as any group rooms belonging to groups of this room.
+     */
+    public function unlock(): void
+    {
+        parent::unlock();
 
-         // lock related group rooms
-         foreach ($this->getGroupRoomList() as $groupRoom) {
-             /* @var \cs_grouproom_item $groupRoom */
-             $groupRoom->lock();
-             $groupRoom->save();
-         }
-     }
+        // unlock related group rooms
+        foreach ($this->getGroupRoomList() as $groupRoom) {
+            /* @var \cs_grouproom_item $groupRoom */
+            $groupRoom->unlock();
+            $groupRoom->save();
+        }
+    }
 
-     /**
-      * Unlocks the project room as well as any group rooms belonging to groups of this room.
-      */
-     public function unlock(): void
-     {
-         parent::unlock();
+    /**
+     * Deletes the project room.
+     */
+    public function delete()
+    {
+        parent::delete();
 
-         // unlock related group rooms
-         foreach ($this->getGroupRoomList() as $groupRoom) {
-             /* @var \cs_grouproom_item $groupRoom */
-             $groupRoom->unlock();
-             $groupRoom->save();
-         }
-     }
+        // delete related group rooms
+        foreach ($this->getGroupRoomList() as $groupRoom) {
+            /* @var \cs_grouproom_item $groupRoom */
+            $groupRoom->delete();
+            $groupRoom->save();
+        }
 
-     /**
-      * Deletes the project room.
-      */
-     public function delete()
-     {
-         parent::delete();
+        // delete all project room users which will also delete any associated user rooms
+        foreach ($this->getUserList() as $user) {
+            /* @var \cs_user_item $user */
+            $user->delete();
+            $user->save();
+        }
 
-         // delete related group rooms
-         foreach ($this->getGroupRoomList() as $groupRoom) {
-             /* @var \cs_grouproom_item $groupRoom */
-             $groupRoom->delete();
-             $groupRoom->save();
-         }
+        // delete in community rooms
+        $com_list = $this->getCommunityList();
+        if (isset($com_list)
+            and is_object($com_list)
+            and $com_list->isNotEmpty()
+        ) {
+            $com_item = $com_list->getFirst();
+            while ($com_item) {
+                $com_item->removeProjectID2InternalProjectIDArray($this->getItemID());
+                $com_item->saveWithoutChangingModificationInformation();
+                unset($com_item);
+                $com_item = $com_list->getNext();
+            }
+        }
+        unset($com_list);
 
-         // delete all project room users which will also delete any associated user rooms
-         foreach ($this->getUserList() as $user) {
-             /* @var \cs_user_item $user */
-             $user->delete();
-             $user->save();
-         }
+        // delete associated tasks
+        $task_list = $this->_getTaskList();
+        $current_task = $task_list->getFirst();
+        while ($current_task) {
+            $current_task->delete();
+            unset($current_task);
+            $current_task = $task_list->getNext();
+        }
+        unset($task_list);
 
-         // delete in community rooms
-         $com_list = $this->getCommunityList();
-         if (isset($com_list)
-             and is_object($com_list)
-             and $com_list->isNotEmpty()
-         ) {
-             $com_item = $com_list->getFirst();
-             while ($com_item) {
-                 $com_item->removeProjectID2InternalProjectIDArray($this->getItemID());
-                 $com_item->saveWithoutChangingModificationInformation();
-                 unset($com_item);
-                 $com_item = $com_list->getNext();
-             }
-         }
-         unset($com_list);
+        // send mail to moderation
+        $this->_sendMailRoomDelete();
 
-         // delete associated tasks
-         $task_list = $this->_getTaskList();
-         $current_task = $task_list->getFirst();
-         while ($current_task) {
-             $current_task->delete();
-             unset($current_task);
-             $current_task = $task_list->getNext();
-         }
-         unset($task_list);
+        $manager = $this->_environment->getProjectManager();
+        $this->_delete($manager);
+        unset($manager);
 
-         // send mail to moderation
-         $this->_sendMailRoomDelete();
-
-         $manager = $this->_environment->getProjectManager();
-         $this->_delete($manager);
-         unset($manager);
-
-         global $symfonyContainer;
-         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
-         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-         $repository = $em->getRepository(Room::class);
-         $this->deleteElasticItem($objectPersister, $repository);
-     }
+        global $symfonyContainer;
+        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository(Room::class);
+        $this->deleteElasticItem($objectPersister, $repository);
+    }
 
     public function undelete()
     {
@@ -1187,23 +1177,5 @@ class cs_project_item extends cs_room_item
             }
         }
         parent::_setIDLinkItems($changed_key);
-    }
-
-    public function moveGrouproomsToArchive()
-    {
-        $retour = true;
-        $group_room_manager = $this->_environment->getGroupRoomManager();
-        $group_room_manager->setContextLimit($this->getContextID());
-        $group_room_manager->setProjectroomLimit($this->getItemID());
-        $group_room_manager->select();
-        $group_room_list = $group_room_manager->get();
-        $group_room_item = $group_room_list->getFirst();
-        while ($group_room_item) {
-            $retour = $retour and $group_room_item->moveToArchive();
-            $group_room_item = $group_room_list->getNext();
-        }
-        unset($group_room_manager);
-
-        return $retour;
     }
 }
