@@ -132,8 +132,8 @@ $biblio.on('change', function() {
         url : $form.attr('action'),
         type: $form.attr('method'),
         data : data
-    }).always(function(response) {
-        let html = response.responseText;
+    }).always(function(data, textStatus, jqXHR) {
+        let html = data.responseText ?? jqXHR.responseText;
 
         if (!$('#material_biblio_sub').length) {
             $('#material_biblio_select').after($(html).find('#material_biblio_sub'));
