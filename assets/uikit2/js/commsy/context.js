@@ -16,8 +16,8 @@
             type: $form.attr('method'),
             data : data
         })
-          .always(function(response) {
-            let html = response.responseText;
+          .always(function(data, textStatus, jqXHR) {
+            let html = data.responseText ?? jqXHR.responseText;
 
             // replace with content from ajax response
             if (!$('#context_type_sub').length) {
