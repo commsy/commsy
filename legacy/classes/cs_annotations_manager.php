@@ -271,6 +271,7 @@ class cs_annotations_manager extends cs_manager
             ->setValue('description', ':description')
             ->setValue('linked_item_id', ':linkedItemId')
             ->setValue('linked_version_id', ':linkedVersionId')
+            ->setValue('public', ':public')
             ->setParameter('itemId', $annotation->getItemID())
             ->setParameter('contextId', $annotation->getContextID())
             ->setParameter('creatorId', $annotation->getCreatorItem()->getItemID())
@@ -279,7 +280,8 @@ class cs_annotations_manager extends cs_manager
             ->setParameter('modificationDate', $currentDateTime)
             ->setParameter('description', $annotation->getDescription())
             ->setParameter('linkedItemId', $annotation->getLinkedItemID())
-            ->setParameter('linkedVersionId', $annotation->getLinkedVersionID() ?: '0');
+            ->setParameter('linkedVersionId', $annotation->getLinkedVersionID() ?: '0')
+            ->setParameter('public', 0);
 
         try {
             $queryBuilder->executeStatement();
