@@ -239,16 +239,6 @@ class cs_community_item extends cs_room_item
        $this->updateElastic();
    }
 
-    public function updateElastic()
-    {
-        global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
-        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository(Room::class);
-
-        $this->replaceElasticItem($objectPersister, $repository);
-    }
-
    /** delete community
     * this method deletes the community.
     */
