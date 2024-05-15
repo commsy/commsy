@@ -13,6 +13,7 @@
 
 namespace App\Feed\Creators;
 
+use cs_item;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class UserCreator extends Creator
@@ -48,5 +49,10 @@ class UserCreator extends Creator
             'roomId' => $item->getContextId(),
             'itemId' => $item->getItemId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    protected function generateAuthor(cs_item $item): bool
+    {
+        return false;
     }
 }

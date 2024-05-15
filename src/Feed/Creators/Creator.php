@@ -53,22 +53,22 @@ abstract class Creator implements CreatorInterface
         $this->isGuestAccess = $isGuestAccess;
     }
 
-    public function setTextConverter(misc_text_converter $textConverter)
+    public function setTextConverter(misc_text_converter $textConverter): void
     {
         $this->textConverter = $textConverter;
     }
 
-    public function setTranslator(TranslatorInterface $translator)
+    public function setTranslator(TranslatorInterface $translator): void
     {
         $this->translator = $translator;
     }
 
-    public function setRouter(RouterInterface $router)
+    public function setRouter(RouterInterface $router): void
     {
         $this->router = $router;
     }
 
-    private function generateAuthor(cs_item $item): bool
+    protected function generateAuthor(cs_item $item): bool
     {
         $contextItem = $item->getContextItem();
         $modifierItem = $item->getModificatorItem();
@@ -86,12 +86,12 @@ abstract class Creator implements CreatorInterface
         return $modifierItem->isEmailVisible();
     }
 
-    public function getAuthor($item)
+    public function getAuthor($item): string
     {
         $modifierItem = $item->getModificatorItem();
         $modifierEmail = $modifierItem->getEmail();
 
-        return $modifierEmail.' ('.$modifierItem->getFullName().')';
+        return "$modifierEmail ({$modifierItem->getFullName()})";
     }
 
     abstract public function canCreate($rubric);
