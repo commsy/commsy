@@ -21,9 +21,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[AutoconfigureTag('app.feed.creator')]
 interface CreatorInterface
 {
-    public function setTextConverter(misc_text_converter $textConverter);
+    public function setTextConverter(misc_text_converter $textConverter): void;
 
-    public function setTranslator(TranslatorInterface $translator);
+    public function setTranslator(TranslatorInterface $translator): void;
 
-    public function setRouter(RouterInterface $router);
+    public function setRouter(RouterInterface $router): void;
 }

@@ -17,6 +17,7 @@ use App\Feed\Creators\CreatorInterface;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use cs_environment;
+use FeedIo\Feed\Item;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\Routing\RouterInterface;
@@ -54,19 +55,19 @@ class FeedCreatorFactory
         $this->isGuestAccess = $isGuestAccess;
     }
 
-    public function createItem($item)
+    public function createItem($item): ?Item
     {
         $type = $item['type'];
         $commsyItem = $this->itemService->getTypedItem($item['item_id']);
 
         if (!$commsyItem) {
-            return;
+            return null;
         }
 
         if ('label' === $commsyItem->getType()) {
             $type = $commsyItem->getLabelType();
             if (in_array($type, ['buzzword'])) {
-                return;
+                return null;
             }
 
             $manager = $this->legacyEnvironment->getManager($type);
