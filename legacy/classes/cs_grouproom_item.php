@@ -143,6 +143,13 @@ class cs_grouproom_item extends cs_room_item
             // send mail to moderation
             $this->_sendMailRoomOpen();
         } else {
+            // keep grouproom & group title in sync
+            $group = $this->getLinkedGroupItem();
+            if ($group && $group->getTitle() !== $this->getTitle()) {
+                $group->setTitle($this->getTitle());
+                $group->save(false);
+            }
+
             $new_status = $this->getStatus();
             if ($new_status != $this->_old_status) {
                 if (CS_ROOM_LOCK == $this->_old_status) {
