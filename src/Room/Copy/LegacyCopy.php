@@ -93,7 +93,9 @@ class LegacyCopy implements CopyStrategy
 
         // config of home
         if ($copy_array['homeconf']) {
-            $target->setHomeConf($source->getHomeConf());
+            // for user rooms, always enforce the default home configuration
+            $config = $target->isUserroom() ? $target->getDefaultHomeConf() : $source->getHomeConf();
+            $target->setHomeConf($config);
         }
 
         // time spread
