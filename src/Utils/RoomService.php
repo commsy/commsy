@@ -100,7 +100,7 @@ class RoomService
         }, $visibleRubrics);
     }
 
-    private function copySettings($masterRoom, $targetRoom)
+    public function copySettings($masterRoom, $targetRoom)
     {
         // TODO: check if the commented code is still necessary
         // (when creating a project room with user rooms, the commented code would hit the exception since the user room creator is not a room member)

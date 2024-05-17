@@ -17,6 +17,7 @@ use App\Entity\Room;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
+use App\Utils\RoomService;
 use cs_community_item;
 use cs_environment;
 use cs_list;
@@ -37,6 +38,7 @@ class RoomManager
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly ItemService $itemService,
+        private readonly RoomService $roomService,
         private readonly CalendarsService $calendarsService,
         LegacyEnvironment $legacyEnvironment)
     {
@@ -176,7 +178,7 @@ class RoomManager
         $this->calendarsService->createCalendar($newRoom, null, null, true);
 
         if ($roomTemplate) {
-            $newRoom = $this->copySettings($roomTemplate, $newRoom);
+            $newRoom = $this->roomService->copySettings($roomTemplate, $newRoom);
         }
 
         // TODO: set the room's system language (from a method parameter)
