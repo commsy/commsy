@@ -82,7 +82,7 @@ class RoomCategoriesService
         foreach ($roomCategories as $roomCategory) {
             $foundCategory = false;
             foreach ($linkedCategories as $linkedCategory) {
-                if ($linkedCategory->getId() == $roomCategory) {
+                if ($linkedCategory->getCategoryId() == $roomCategory) {
                     $foundCategory = true;
                 }
             }
