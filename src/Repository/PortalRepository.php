@@ -14,15 +14,36 @@
 namespace App\Repository;
 
 use App\Entity\Portal;
+use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\UnexpectedResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 class PortalRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly RoomRepository $roomRepository
+    ) {
         parent::__construct($registry, Portal::class);
+    }
+
+    public function getPortal(Room $room): Portal
+    {
+        /** @var Portal $portal */
+        $portal = $this->find($room->getContextId());
+        if (!$portal) {
+            // NOTE: for user rooms, the context is its parent project room (whose context is the portal)
+            $parentRoom = $this->roomRepository->find($room->getContextId());
+            $portal = $this->find($parentRoom->getContextId());
+        }
+
+        if (!$portal) {
+            throw new UnexpectedResultException(sprintf('Could not fetch portal for room with ID "%s".', $room->getItemId()));
+        }
+
+        return $portal;
     }
 
     public function findActivePortals()

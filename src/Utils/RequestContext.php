@@ -61,11 +61,13 @@ final readonly class RequestContext
 
             $room = $this->roomRepository->find($contextId);
             if (null !== $room) {
-                $portal = $this->portalRepository->find($room->getContextId());
+                $portal = $this->portalRepository->getPortal($room);
                 if ($portal) {
                     return $portal;
                 }
             }
+
+            // TODO: handle user rooms where the context is its parent project room (whose context is the portal)
 
             $item = $this->itemService->getItem($contextId);
             if (null !== $item) {

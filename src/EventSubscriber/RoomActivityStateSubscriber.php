@@ -50,7 +50,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
         // Block all transitions if the portal configuration has disabled the account activity feature
         /** @var Portal $portal */
-        $portal = $this->portalRepository->find($room->getContextId());
+        $portal = $this->portalRepository->getPortal($room);
         if (!$portal) {
             $event->setBlocked(true);
 
@@ -116,7 +116,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
         $room = $event->getSubject();
 
         /** @var Portal $portal */
-        $portal = $this->portalRepository->find($room->getContextId());
+        $portal = $this->portalRepository->getPortal($room);
         if (!$room->getActivityStateUpdated() ||
             !$this->datePassedDays($room->getActivityStateUpdated(), $portal->getClearInactiveRoomsLockDays())
         ) {
@@ -156,7 +156,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
         // Deny transition if the inactive period is not long enough
         /** @var Portal $portal */
-        $portal = $this->portalRepository->find($room->getContextId());
+        $portal = $this->portalRepository->getPortal($room);
         if (!$room->getActivityStateUpdated() ||
             !$this->datePassedDays($room->getActivityStateUpdated(), $portal->getClearInactiveRoomsDeleteDays())
         ) {
