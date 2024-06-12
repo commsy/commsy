@@ -72,6 +72,7 @@ class SettingsController extends AbstractController
         int $roomId
     ): Response {
         $legacyEnvironment = $environment->getEnvironment();
+        $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
 
         // get room from RoomService
         /** @var cs_room_item $roomItem */
@@ -89,9 +90,12 @@ class SettingsController extends AbstractController
             $roomData['categories'][] = $roomCategory->getCategoryId();
         }
 
+        $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
+
         $form = $this->createForm(GeneralSettingsType::class, $roomData, [
             'roomId' => $roomId,
             'roomCategories' => $roomCategories,
+            'linkRoomCategoriesMandatory' => $linkRoomCategoriesMandatory,
         ]);
 
         $form->handleRequest($request);
