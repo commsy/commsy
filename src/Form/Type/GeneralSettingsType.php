@@ -30,6 +30,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -98,9 +99,14 @@ class GeneralSettingsType extends AbstractType
         $builder->get('slugs')
             ->addModelTransformer($this->roomSlugToStringTransformer);
 
+        $constraints = [];
+        if (isset($options['linkRoomCategoriesMandatory']) && $options['linkRoomCategoriesMandatory']) {
+            $constraints[] = new Count(['min' => 1, 'minMessage' => 'Please select at least one category']);
+        }
+
         $roomCategories = $options['roomCategories'];
         if (isset($roomCategories) && !empty($roomCategories)) {
-            $builder->add('categories', ChoiceType::class, ['placeholder' => false, 'choices' => $roomCategories, 'label' => 'Room categories', 'required' => false, 'expanded' => true, 'multiple' => true, 'translation_domain' => 'portal']);
+            $builder->add('categories', ChoiceType::class, ['placeholder' => false, 'choices' => $roomCategories, 'label' => 'Room categories', 'required' => $options['linkRoomCategoriesMandatory'], 'expanded' => true, 'multiple' => true, 'translation_domain' => 'portal', 'constraints' => $constraints]);
         }
 
         // TODO: filter room description input (cleanCKEditor)
@@ -166,7 +172,7 @@ class GeneralSettingsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
-            ->setRequired(['roomId', 'roomCategories'])
+            ->setRequired(['roomId', 'roomCategories', 'linkRoomCategoriesMandatory'])
             ->setDefaults(['translation_domain' => 'settings'])
         ;
     }
