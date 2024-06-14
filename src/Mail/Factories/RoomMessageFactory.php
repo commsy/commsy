@@ -51,7 +51,7 @@ class RoomMessageFactory
             throw new LogicException('$room must be of type Room');
         }
 
-        $portal = $this->portalRepository->find($room->getContextId());
+        $portal = $this->portalRepository->getPortal($room);
         if ($portal) {
             return new RoomActivityDeleteWarningMessage($this->legacyEnvironment, $portal, $room);
         }
