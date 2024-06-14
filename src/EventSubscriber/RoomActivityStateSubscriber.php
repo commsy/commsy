@@ -96,7 +96,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
         $room = $event->getSubject();
 
         /** @var Portal $portal */
-        $portal = $this->portalRepository->find($room->getContextId());
+        $portal = $this->portalRepository->getPortal($room);
 
         if (!$room->getLastLogin() ||
             !$this->datePassedDays($room->getLastLogin(), $portal->getClearInactiveRoomsNotifyLockDays())
@@ -136,7 +136,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
 
         // Deny transition if the inactive period is not long enough
         /** @var Portal $portal */
-        $portal = $this->portalRepository->find($room->getContextId());
+        $portal = $this->portalRepository->getPortal($room);
         if (!$room->getActivityStateUpdated() ||
             !$this->datePassedDays($room->getActivityStateUpdated(), $portal->getClearInactiveRoomsNotifyDeleteDays())
         ) {
