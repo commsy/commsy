@@ -65,7 +65,7 @@ final class WorkspaceActivityMetric extends AbstractMetric implements MetricInte
         }
 
         /** @var Portal $portal */
-        $portal = $this->portalRepository->getPortal($room);
+        $portal = $this->portalRepository->findPortalByRoomContext($room->getContextId());
 
         $cachedActivity = $this->getCachedActivity();
 

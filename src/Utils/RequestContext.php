@@ -55,7 +55,7 @@ final readonly class RequestContext
 
         if (null !== $contextId) {
             /** @var Portal $portal */
-            $portal = $this->portalRepository->getPortalById($contextId);
+            $portal = $this->portalRepository->findPortalById($contextId);
             if ($portal) {
                 return $portal;
             }
@@ -68,7 +68,7 @@ final readonly class RequestContext
                 }
             }
             if (null !== $item) {
-                $portal = $this->portalRepository->getPortalById($item->getContextID());
+                $portal = $this->portalRepository->findPortalById($item->getContextID());
                 if ($portal) {
                     return $portal;
                 }

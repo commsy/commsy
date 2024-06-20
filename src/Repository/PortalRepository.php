@@ -32,23 +32,23 @@ class PortalRepository extends ServiceEntityRepository
     }
 
     /**
-     * Returns the portal of the given room.
+     * Returns the portal of the room with the given room ID.
      *
-     * @param Room|RoomPrivat $room room whose portal shall be returned
+     * @param int $contextId context ID of the room whose portal shall be returned
      * @throws UnexpectedResultException
      */
-    public function getPortal(Room|RoomPrivat $room): Portal
+    public function findPortalByRoomContext(int $contextId): Portal
     {
         /** @var Portal $portal */
-        $portal = $this->find($room->getContextId());
+        $portal = $this->find($contextId);
         if (!$portal) {
             // NOTE: for user rooms, the context is its parent project room (whose context is the portal)
-            $parentRoom = $this->roomRepository->find($room->getContextId());
+            $parentRoom = $this->roomRepository->find($contextId);
             $portal = $this->find($parentRoom->getContextId());
         }
 
         if (!$portal) {
-            throw new UnexpectedResultException(sprintf('Could not fetch portal for room with ID "%s".', $room->getItemId()));
+            throw new UnexpectedResultException(sprintf('Could not fetch portal for room with context ID "%s".', $contextId));
         }
 
         return $portal;
@@ -58,21 +58,16 @@ class PortalRepository extends ServiceEntityRepository
      * Returns the portal associated with (or hosting the room with) the given ID.
      *
      * @param int $id portal ID, or ID of a room whose portal shall be returned
-     * @throws UnexpectedResultException
      */
-    public function getPortalById(int $id): Portal
+    public function findPortalById(int $id): ?Portal
     {
         /** @var Portal $portal */
         $portal = $this->find($id);
         if (!$portal) {
             $room = $this->roomRepository->find($id) ?? $this->privateRoomRepository->find($id);
             if ($room) {
-                $portal = $this->getPortal($room);
+                $portal = $this->findPortalByRoomContext($room->getContextId());
             }
-        }
-
-        if (!$portal) {
-            throw new UnexpectedResultException(sprintf('Could not fetch portal for portal/room ID "%s".', $id));
         }
 
         return $portal;
