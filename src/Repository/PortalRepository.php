@@ -14,8 +14,6 @@
 namespace App\Repository;
 
 use App\Entity\Portal;
-use App\Entity\Room;
-use App\Entity\RoomPrivat;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\UnexpectedResultException;
