@@ -14,14 +14,16 @@ class DatabaseMigrationExtension extends Extension
         Events::TEST_BEFORE => 'beforeTest',
     ];
 
-    public function beforeTest(TestEvent $event)
+    public function beforeTest(TestEvent $event): void
     {
         if ($this->hasModule('Symfony')) {
             // Run all database migrations
             /** @var Symfony $symfony */
             /** @noinspection PhpUnhandledExceptionInspection */
             $symfony = $this->getModule('Symfony');
-            $symfony->runSymfonyConsoleCommand('doctrine:migrations:migrate', ['--no-interaction' => true]);
+            $symfony->runSymfonyConsoleCommand('doctrine:migrations:migrate', [
+                '--no-interaction' => true,
+            ]);
         }
 
         if ($this->hasModule('Db')) {
