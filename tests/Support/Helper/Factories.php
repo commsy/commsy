@@ -14,7 +14,7 @@ class Factories extends Module
     public function _beforeSuite($settings = [])
     {
         $factory = $this->getModule('DataFactory');
-        $em = $this->getModule('Doctrine2')->_getEntityManager();
+        $em = $this->getModule('Doctrine')->_getEntityManager();
 
         $factory->_define(Account::class, [
             'firstname' => Faker::firstName(),

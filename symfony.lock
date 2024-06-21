@@ -58,9 +58,6 @@
     "codeception/module-db": {
         "version": "1.0.1"
     },
-    "codeception/module-doctrine2": {
-        "version": "1.0.1"
-    },
     "codeception/module-phpbrowser": {
         "version": "1.0.2"
     },
