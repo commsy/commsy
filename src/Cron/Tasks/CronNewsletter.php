@@ -253,92 +253,92 @@ class CronNewsletter implements CronTaskInterface
             $annotationList = $this->getAnnotationsList($roomItem, $dayLimit);
             $annotationsInNewsletter = [];
 
+            $userList = $this->getUserList($user, $roomItem);
+            if (isset($userList) && $userList->isNotEmpty() && 1 == $userList->getCount()) {
+                $ref_user = $userList->getFirst();
+            }
+
             // rubrics
             for ($i = 0; $i < $numRubrics; ++$i) {
                 $rubricConfigArray = explode('_', $rubrics[$i]);
                 if ('none' != $rubricConfigArray[1]) {
                     $rubricItemList = $this->getRubricItemList($roomItem, $rubricConfigArray, $dayLimit);
 
-                    $userList = $this->getUserList($user, $roomItem);
-
                     $count_entries = 0;
-                    if (isset($userList) && $userList->isNotEmpty() && 1 == $userList->getCount()) {
-                        $ref_user = $userList->getFirst();
-                        if (isset($ref_user) && $ref_user->getItemID() > 0) {
-                            $temp_body = '';
+                    if (isset($ref_user) && $ref_user->getItemID() > 0) {
+                        $temp_body = '';
 
-                            $readerManager = $this->legacyEnvironment->getReaderManager();
+                        $readerManager = $this->legacyEnvironment->getReaderManager();
 
-                            // new/modified rubric items
-                            foreach ($rubricItemList as $rubric_item) {
-                                $noticed = $readerManager->getLatestReaderForUserByID($rubric_item->getItemID(),
-                                    $ref_user->getItemID());
-                                if (empty($noticed)) {
-                                    $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_NEW').']</span>';
-                                } elseif ($noticed['read_date'] < $rubric_item->getModificationDate()) {
-                                    $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_CHANGED').']</span>';
+                        // new/modified rubric items
+                        foreach ($rubricItemList as $rubric_item) {
+                            $noticed = $readerManager->getLatestReaderForUserByID($rubric_item->getItemID(),
+                                $ref_user->getItemID());
+                            if (empty($noticed)) {
+                                $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_NEW').']</span>';
+                            } elseif ($noticed['read_date'] < $rubric_item->getModificationDate()) {
+                                $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_CHANGED').']</span>';
+                            } else {
+                                $info_text = '';
+                            }
+
+                            // new/modified annotations for new/modified items
+                            $annotation_count = 0;
+                            foreach ($annotationList as $annotation_item) {
+                                $annotation_noticed = $readerManager->getLatestReaderForUserByID(
+                                    $annotation_item->getItemID(),
+                                    $ref_user->getItemID()
+                                );
+
+                                if (empty($annotation_noticed)) {
+                                    $linked_item = $annotation_item->getLinkedItem();
+                                    if ($linked_item->getItemID() == $rubric_item->getItemID()) {
+                                        ++$annotation_count;
+                                        $annotationsInNewsletter[] = $annotation_item;
+                                    }
+                                }
+                            }
+
+                            if (1 == $annotation_count) {
+                                $info_text .= ' <span class="changed">['.$translator->getMessage('COMMON_NEW_ANNOTATION').']</span>';
+                            } else {
+                                if ($annotation_count > 1) {
+                                    $info_text .= ' <span class="changed">['.$translator->getMessage('COMMON_NEW_ANNOTATIONS').']</span>';
+                                }
+                            }
+
+                            if (!empty($info_text)) {
+                                ++$count_entries;
+                                $params = [];
+                                $params['iid'] = $rubric_item->getItemID();
+                                $title = '';
+                                if ($rubric_item->isA(CS_USER_TYPE)) {
+                                    $title .= $this->legacyEnvironment->getTextConverter()->text_as_html_short($rubric_item->getFullname());
                                 } else {
-                                    $info_text = '';
+                                    $title .= $this->legacyEnvironment->getTextConverter()->text_as_html_short($rubric_item->getTitle());
                                 }
-
-                                // new/modified annotations for new/modified items
-                                $annotation_count = 0;
-                                foreach ($annotationList as $annotation_item) {
-                                    $annotation_noticed = $readerManager->getLatestReaderForUserByID(
-                                        $annotation_item->getItemID(),
-                                        $ref_user->getItemID()
-                                    );
-
-                                    if (empty($annotation_noticed)) {
-                                        $linked_item = $annotation_item->getLinkedItem();
-                                        if ($linked_item->getItemID() == $rubric_item->getItemID()) {
-                                            ++$annotation_count;
-                                            $annotationsInNewsletter[] = $annotation_item;
-                                        }
-                                    }
-                                }
-
-                                if (1 == $annotation_count) {
-                                    $info_text .= ' <span class="changed">['.$translator->getMessage('COMMON_NEW_ANNOTATION').']</span>';
+                                if ($rubric_item->isA(CS_LABEL_TYPE)) {
+                                    $mod = $rubric_item->getLabelType();
                                 } else {
-                                    if ($annotation_count > 1) {
-                                        $info_text .= ' <span class="changed">['.$translator->getMessage('COMMON_NEW_ANNOTATIONS').']</span>';
-                                    }
+                                    $mod = $rubric_item->getType();
                                 }
 
-                                if (!empty($info_text)) {
-                                    ++$count_entries;
-                                    $params = [];
-                                    $params['iid'] = $rubric_item->getItemID();
-                                    $title = '';
-                                    if ($rubric_item->isA(CS_USER_TYPE)) {
-                                        $title .= $this->legacyEnvironment->getTextConverter()->text_as_html_short($rubric_item->getFullname());
-                                    } else {
-                                        $title .= $this->legacyEnvironment->getTextConverter()->text_as_html_short($rubric_item->getTitle());
-                                    }
-                                    if ($rubric_item->isA(CS_LABEL_TYPE)) {
-                                        $mod = $rubric_item->getLabelType();
-                                    } else {
-                                        $mod = $rubric_item->getType();
-                                    }
+                                $title .= $info_text;
 
-                                    $title .= $info_text;
+                                $urlParameters = [
+                                    'roomId' => $roomItem->getItemID(),
+                                    'itemId' => $params['iid'],
+                                ];
 
-                                    $urlParameters = [
-                                        'roomId' => $roomItem->getItemID(),
-                                        'itemId' => $params['iid'],
-                                    ];
-
-                                    if ('material' == $mod) {
-                                        $urlParameters['versionId'] = 0;
-                                    }
-
-                                    $detailUrl = $this->generateAbsoluteUrl('app_'.$mod.'_detail', $urlParameters);
-
-                                    $ahref_curl = '<a href="'.$detailUrl.'">'.$title.'</a>';
-
-                                    $temp_body .= BR.'&nbsp;&nbsp;- '.$ahref_curl;
+                                if ('material' == $mod) {
+                                    $urlParameters['versionId'] = 0;
                                 }
+
+                                $detailUrl = $this->generateAbsoluteUrl('app_'.$mod.'_detail', $urlParameters);
+
+                                $ahref_curl = '<a href="'.$detailUrl.'">'.$title.'</a>';
+
+                                $temp_body .= BR.'&nbsp;&nbsp;- '.$ahref_curl;
                             }
                         }
                     }
@@ -387,8 +387,13 @@ class CronNewsletter implements CronTaskInterface
             $annotationsStillToSend = [];
             while ($annotation_item) {
                 if (!in_array($annotation_item, $annotationsInNewsletter)) {
-                    // TODO: similar to above, use $readerManager->getLatestReaderForUserByID() to skip seen annotations
-                    $annotationsStillToSend[] = $annotation_item;
+                    $annotation_noticed = $readerManager->getLatestReaderForUserByID(
+                        $annotation_item->getItemID(),
+                        $ref_user->getItemID()
+                    );
+                    if (empty($annotation_noticed)) {
+                        $annotationsStillToSend[] = $annotation_item;
+                    }
                 }
                 $annotation_item = $annotationList->getNext();
             }
