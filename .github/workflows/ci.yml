@@ -17,10 +17,10 @@ jobs:
                 php-versions: ['8.2']
         services:
             db:
-                image: mariadb:10.6
+                image: mariadb:10.11
                 env:
                     MYSQL_ROOT_PASSWORD: root
-                    MYSQL_DATABASE: commsy_test
+                    MYSQL_DATABASE: app_test
                 ports:
                     - 3306:3306
         steps:

@@ -58,8 +58,8 @@ final readonly class DiscoveryService
             return null;
         }
 
-        $netZone = array_filter($netZones, fn (NetZone $netZone) => $netZone->getName() === WOPIZone::EXTERNAL_HTTPS) ?:
-            $netZones[0];
+        $externalZones = array_values(array_filter($netZones, fn (NetZone $netZone) => $netZone->getName() === WOPIZone::EXTERNAL_HTTPS));
+        $netZone = $externalZones ? $externalZones[0] : $netZones[0];
 
         foreach ($netZone->getApps() as $app) {
             $action = $this->findAction($app, $fileExt, $name);

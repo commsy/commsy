@@ -8,7 +8,7 @@ modules:
     enabled:
         - Asserts
         - Db
-        - Doctrine2:
+        - Doctrine:
             depends: Symfony
         - Filesystem
         - Symfony

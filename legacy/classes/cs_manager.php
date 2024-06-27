@@ -481,46 +481,42 @@ class cs_manager
        return $retour;
    }
 
-   /** get a list of items
-    * this method returns a list of items.
-    *
-    * @param type name of the db-table to query
-    * @param array id_array ids of the items items
-    *
-    * @return cs_list list of cs_items
-    */
-   public function _getItemList($type, $id_array)
+    /** get a list of items
+     * this method returns a list of items.
+     *
+     * @param string $type name of the db-table to query
+     * @param array $id_array ids of the items
+     * @throws \Doctrine\DBAL\Exception
+     */
+   public function _getItemList(string $type, array $id_array): cs_list
    {
-       /** cs_list is needed for storage the commsy items.
-        */
        if (empty($id_array)) {
            return new cs_list();
-       } else {
-           if ('discussion' == $type) {
-               $type = 'discussions';
-           } elseif ('todo' == $type) {
-               $type = 'todos';
-           }
-           $query = 'SELECT * FROM '.encode(AS_DB, $this->addDatabasePrefix($type)).' WHERE '.encode(AS_DB, $this->addDatabasePrefix($type)).".item_id IN ('".implode("', '", encode(AS_DB, $id_array))."')";
-           $result = $this->_db_connector->performQuery($query);
-           if (!isset($result)) {
-               trigger_error('Problems selecting list of '.$type.' items.', E_USER_WARNING);
-           } else {
-               $list = new cs_list();
-               foreach ($result as $rs) {
-                   // special for todo
-                   if ('todos' == $type and isset($rs['date'])) {
-                       $rs['end_date'] = $rs['date'];
-                       unset($rs['date']);
-                   }
-                   $list->add($this->_buildItem($rs));
-               }
-               unset($result);
-           }
-           unset($query);
-
-           return $list;
        }
+
+       $type = match ($type) {
+           'discussion' => 'discussions',
+           'todo' => 'todos',
+           default => $type,
+       };
+
+       $list = new cs_list();
+       $query = 'SELECT * FROM '.encode(AS_DB, $this->addDatabasePrefix($type)).' WHERE '.encode(AS_DB, $this->addDatabasePrefix($type)).".item_id IN ('".implode("', '", encode(AS_DB, $id_array))."')";
+       $result = $this->_db_connector->performQuery($query);
+       if (!isset($result)) {
+           trigger_error('Problems selecting list of '.$type.' items.', E_USER_WARNING);
+       } else {
+           foreach ($result as $rs) {
+               // special for todo
+               if ('todos' == $type && isset($rs['date'])) {
+                   $rs['end_date'] = $rs['date'];
+                   unset($rs['date']);
+               }
+               $list->add($this->_buildItem($rs));
+           }
+       }
+
+       return $list;
    }
 
   /** save a commsy item
