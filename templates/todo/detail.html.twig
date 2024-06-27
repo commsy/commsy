@@ -289,12 +289,9 @@
                     </div>
 
                     {# files #}
-                    <div id="files{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{{ {
-                        'editUrl': path('app_upload_uploadform', {'roomId': todo.contextId, 'itemId': todo.itemId}),
-                        'cancelEditUrl': path('app_item_canceledit', {'roomId': todo.contextId, 'itemId': todo.itemId})
-                    }|json_encode|e('html_attr') }}">
-                        {{ component('item_files', {
-                            item: todo,
+                    <div id="files{{ todo.itemId }}">
+                        {{ component('FileList:FileList', {
+                            itemId: todo.itemId,
                             draft: draft
                         }) }}
                     </div>
@@ -471,12 +468,9 @@
                             </div>
 
                             {# files #}
-                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{{ {
-                                'editUrl': path('app_upload_uploadform', {'roomId': step.contextId, 'itemId': step.itemId}),
-                                'cancelEditUrl': path('app_item_canceledit', {'roomId': step.contextId, 'itemId': step.itemId})
-                            }|json_encode|e('html_attr') }}">
-                                {{ component('item_files', {
-                                    item: step,
+                            <div id="files{{ step.itemId }}">
+                                {{ component('FileList:FileList', {
+                                    itemId: step.itemId
                                 }) }}
                             </div>
                         </article>

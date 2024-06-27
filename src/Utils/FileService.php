@@ -18,11 +18,11 @@ use App\Services\LegacyEnvironment;
 use cs_file_item;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-class FileService
+readonly class FileService
 {
     public function __construct(
-        private readonly LegacyEnvironment $legacyEnvironment,
-        private readonly ParameterBagInterface $parameterBag
+        private LegacyEnvironment $legacyEnvironment,
+        private ParameterBagInterface $parameterBag
     ) {
     }
 
@@ -40,7 +40,7 @@ class FileService
         return $fileManager->getItem($fileId);
     }
 
-    public function getNewFile()
+    public function getNewFile(): cs_file_item
     {
         $fileManager = $this->legacyEnvironment->getEnvironment()->getFileManager();
 

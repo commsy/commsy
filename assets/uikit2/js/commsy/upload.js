@@ -108,7 +108,8 @@
 
                             let index = prototypeNode.find(':input[type="checkbox"]').length;
 
-                            for (let key in responseData['fileIds']) {
+                            if (prototype) {
+                              for (let key in responseData['fileIds']) {
 
                                 let indexedPrototype = prototype.replace(/__name__/g, index);
 
@@ -117,21 +118,28 @@
                                 prototypeInputNode.val(key);
 
                                 let labelNode = $('<label class="uk-form-label"></label>')
-                                    .attr('for', 'upload_files_' + index + '_checked')
-                                    .html(responseData['fileIds'][key]);
+                                  .attr('for', 'upload_files_' + index + '_checked')
+                                  .html(responseData['fileIds'][key]);
 
                                 index++;
 
                                 let formControlNode = $('<div class="uk-form-controls"></div>')
-                                    .append(prototypeInputNode);
+                                  .append(prototypeInputNode);
 
                                 prototypeNode
-                                    .append(formControlNode)
-                                    .append(labelNode);
+                                  .append(formControlNode)
+                                  .append(labelNode);
+                              }
                             }
 
                             if (responseData['fileIds'].length == 0) {
                                 UIkit.notify($this.options.noFileIdsMessage, 'danger');
+                            }
+
+                            // Call the "refreshFiles" live action of the hosting component
+                            let $component = $($this.element).closest('div[data-controller]');
+                            if ($component) {
+                                $component[0].__component.refreshFiles();
                             }
 
                         } else if (responseData['attachmentInfo']) {
@@ -197,7 +205,7 @@
                     setTimeout(function(){
                         $progressbar.addClass("uk-hidden");
                     }, 250);
-                    
+
                     UIkit.notify($this.options.errorMessage, 'danger');
                 }
             };

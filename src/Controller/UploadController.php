@@ -13,19 +13,13 @@
 
 namespace App\Controller;
 
-use App\Event\CommsyEditEvent;
-use App\Form\Model\File;
 use App\Form\Type\UploadType;
+use App\Services\FileUploader;
 use App\Services\LegacyEnvironment;
 use App\Utils\DiscService;
 use App\Utils\FileService;
 use App\Utils\ItemService;
 use App\Utils\UserService;
-use cs_file_item;
-use cs_link_item_file;
-use cs_list;
-use DateTime;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -34,7 +28,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class UploadController.
@@ -42,34 +35,34 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 #[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class UploadController extends AbstractController
 {
-    /**
-     * @return JsonResponse
-     */
     #[Route(path: '/room/{roomId}/upload/{itemId}')]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function upload(
         Request $request,
         DiscService $discService,
         FileService $fileService,
         ItemService $itemService,
         UserService $userService,
+        FileUploader $fileUploader,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $itemId = null
-    ): Response {
+    ): JsonResponse {
+        $environment = $legacyEnvironment->getEnvironment();
+
         $response = new JsonResponse();
         $item = $itemService->getItem($itemId);
         $files = $request->files->all();
         $fileIds = [];
         if ($item) {
             foreach ($files['files'] as $file) {
+                /** @var UploadedFile $file */
                 /*
                     check type of item:
                     user    ->  user image
                     room    ->  room icon
                     portal  ->  portal icon
                     <other> ->  attachment to item
-
-                    $file is an instance of Symfony\Component\HttpFoundation\File\UploadedFile
                 */
                 switch ($item->getItemType()) {
                     case 'user':
@@ -114,7 +107,6 @@ class UploadController extends AbstractController
                         imagedestroy($newimg);
 
                         // determ new file name
-                        $environment = $legacyEnvironment->getEnvironment();
                         $userItem = $userService->getUser($itemId);
                         $filename = 'cid'.$environment->getCurrentContextID().'_'.$userItem->getUserID().'.png';
 
@@ -132,18 +124,7 @@ class UploadController extends AbstractController
                         break;
 
                     default:
-                        $fileItem = $fileService->getNewFile();
-
-                        $fileItem->setPortalId($legacyEnvironment->getEnvironment()->getCurrentPortalID());
-                        $fileItem->setTempKey($file->getPathname());
-
-                        $fileData = [];
-                        $fileData['tmp_name'] = $file->getPathname();
-                        $fileData['name'] = $file->getClientOriginalName();
-                        $fileItem->setPostFile($fileData);
-
-                        $fileItem->save();
-                        $fileIds[] = $fileItem->getFileId();
+                        $fileIds[] = $fileUploader->upload($file, $environment->getCurrentPortalID(), $roomId);
                         break;
                 }
             }
@@ -160,138 +141,45 @@ class UploadController extends AbstractController
         ]);
     }
 
-    /**
-     * @throws Exception
-     */
-    #[Route(path: '/room/{roomId}/upload/{itemId}/form/{versionId}', requirements: ['itemId' => '\d+', 'versionId' => '\d+'], defaults: ['versionId' => -1])]
-    public function uploadForm(
-        Request $request,
-        ItemService $itemService,
-        FileService $fileService,
-        EventDispatcherInterface $eventDispatcher,
-        LegacyEnvironment $legacyEnvironment,
+    #[Route(path: '/room/{roomId}/attach/{itemId}/{versionId?}')]
+    public function attach(
         int $roomId,
         int $itemId,
-        int $versionId = null
-    ): Response {
-        /**
-         * Setting the default value of versionId to 0 does not seem to work and will always cut off the versionId from
-         * routes. Instead we default to -1.
-         */
+        ?int $versionId,
+        Request $request,
+        ItemService $itemService,
+        FileUploader $fileUploader,
+        FileService $fileService,
+        LegacyEnvironment $legacyEnvironment
+    ): JsonResponse {
+        $environment = $legacyEnvironment->getEnvironment();
 
-        // get item
-        $item = $itemService->getTypedItem($itemId, -1 === $versionId ? null : $versionId);
+        $response = new JsonResponse();
 
+        $item = $itemService->getTypedItem($itemId, $versionId);
         if (!$item) {
             throw $this->createNotFoundException('No item found for id '.$itemId);
         }
 
-        // collect currently assigned files
-        $assignedFiles = array_map(function (cs_file_item $file) {
-            // convert legacy file object into a form usable file object
-            $formFile = new File();
-            $formFile->setFileId($file->getFileID());
-            $formFile->setFilename($file->getFileName());
-            $formFile->setCreationDate(new DateTime($file->getCreationDate()));
-            $formFile->setChecked(true);
+        $files = $request->files->all();
 
-            return $formFile;
-        }, $item->getFileList()->to_array());
-
-        // Make a copy of the assigned files
-        // The variable $assignedFiles will be modified when the form submit is handled
-        $originalFiles = array_map(fn (File $file) => clone $file, $assignedFiles);
-
-        $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
-
-        $form = $this->createForm(UploadType::class, [
-            'files' => $assignedFiles,
-        ], [
-            'uploadUrl' => $this->generateUrl('app_upload_upload', [
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            ]),
-        ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('save')->isClicked()) {
-                $formData = $form->getData();
-                $files = $formData['files'];
-
-                $checkedFormFiles = array_filter($files, fn (File $file) => $file->getChecked());
-                $checkedFormFiles = array_merge($checkedFormFiles, $originalFiles);
-                $checkedFileIds = array_map(fn (File $file) => $file->getFileId(), $checkedFormFiles);
-
-                $uncheckedFormFiles = array_filter($files, fn (File $file) => $file->getFileId() !== null & !$file->getChecked());
-                $uncheckedFileIds = array_map(fn (File $file) => $file->getFileId(), $uncheckedFormFiles);
-
-                // update item
-                $legacyEnvironment = $legacyEnvironment->getEnvironment();
-                $item->setFileIDArray($checkedFileIds);
-                $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
-                $item->save();
-
-                if ((CS_SECTION_TYPE == $item->getItemType()) || (CS_STEP_TYPE == $item->getItemType())) {
-                    $linkedItem = $itemService->getTypedItem($item->getlinkedItemID());
-                    $linkedItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
-                    $linkedItem->save();
-                }
-
-                // delete unchecked files
-                $linkItemManager = $legacyEnvironment->getLinkItemFileManager();
-                foreach ($uncheckedFileIds as $uncheckedFileId) {
-                    $tempFile = $fileService->getFile($uncheckedFileId);
-
-                    // Check if the unchecked file is linked to any other item and only delete it, if this is
-                    // not the case.
-                    $linkItemManager->resetLimits();
-                    $linkItemManager->setFileIDLimit($tempFile->getFileID());
-                    $linkItemManager->select();
-
-                    /** @var cs_list $linkItemList */
-                    $linkItemList = $linkItemManager->get();
-                    $linkedItemsNotDeleted = array_filter(
-                        $linkItemList->to_array(),
-                        fn(cs_link_item_file $linkItem) => !$linkItem->isDeleted()
-                    );
-
-                    if (!empty($linkedItemsNotDeleted)) {
-                        $tempFile->delete();
-                    }
-                }
-            }
-
-            return $this->redirectToRoute('app_upload_uploadsave', [
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            ]);
+        foreach ($files['files'] as $file) {
+            /** @var UploadedFile $file */
+            $fileId = $fileUploader->upload($file, $environment->getCurrentPortalID(), $roomId);
+            $tempFile = $fileService->getFile($fileId);
+            $responseData[$fileId] = htmlentities((string) $tempFile->getFilename()).' ('.$tempFile->getCreationDate().')';
         }
 
-        return $this->render('upload/upload_form.html.twig', [
-            'form' => $form,
+        $newFileIds = array_merge($item->getFileIDArray(), array_keys($responseData));
+        $item->setFileIDArray($newFileIds);
+        $item->setModificatorItem($environment->getCurrentUserItem());
+        $item->save();
+
+        return $response->setData([
+            'fileIds' => $responseData,
         ]);
     }
 
-    #[Route(path: '/room/{roomId}/upload/{itemId}/saveupload')]
-    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function uploadSave(
-        ItemService $itemService,
-        EventDispatcherInterface $eventDispatcher,
-        LegacyEnvironment $environment,
-        int $roomId,
-        int $itemId
-    ): Response {
-        $item = $itemService->getTypedItem($itemId);
-        $legacyEnvironment = $environment->getEnvironment();
-        $tempManager = $legacyEnvironment->getManager($item->getItemType());
-        $tempItem = $tempManager->getItem($item->getItemId());
-
-        $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
-
-        return $this->render('upload/upload_save.html.twig', ['roomId' => $roomId, 'item' => $tempItem]);
-    }
 
     /**
      * @return JsonResponse

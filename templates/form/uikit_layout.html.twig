@@ -18,14 +18,15 @@
         <img src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/image"/>
     {% endif %}
 
-    <div class="uk-placeholder cs-upload-form">
+    <div class="uk-placeholder uk-text-center">
         <i class="uk-icon-cloud-upload uk-icon-medium uk-text-muted uk-margin-small-right"></i>
-        {{ 'Attach files by dropping them here or'|trans({}, 'form') }}<br/>
-        <a class="uk-form-file">{{ 'selecting one'|trans({}, 'form') }}{{ block('form_widget') }}</a>.
+        {{ 'Attach files by dropping them here or'|trans({}, 'form') }}
         {% if max_upload_size is defined and max_upload_size is not null %} {# max_upload_size gets defined by UploadFileTypeExtension #}
-            <br/><br/>
-            {{ 'Upload files up to %maxUploadSize% MB'|trans({'%maxUploadSize%': max_upload_size}, 'form') }}
+            ({{ 'form.upload_info.max_file_size'|trans({'%maxUploadSize%': max_upload_size}, 'form') }})
         {% endif %}
+        <br/>
+        <a class="uk-form-file">{{ 'selecting one'|trans({}, 'form') }}{{ block('form_widget') }}</a>.
+
     </div>
 
     <div class="uk-progress uk-hidden">

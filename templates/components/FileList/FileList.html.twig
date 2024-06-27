@@ -1,0 +1,161 @@
+{% import 'utils/macros.html.twig' as macrosUtils %}
+
+<div {{ attributes.defaults(stimulus_controller('FileList:FileList')) }}>
+    <hr class="uk-width-9-10"/>
+
+    <article class="uk-article uk-margin-left uk-margin-right">
+        <a id="files"></a>
+
+        {# title row #}
+        <div class="uk-grid uk-margin-bottom">
+            <div class="uk-width-8-10">
+                <h4 class="cs-detail-section-header">
+                    {{- "files"|trans({}) }}
+                    ({{ files|length }})
+                </h4>
+            </div>
+        </div>
+
+        {# filter #}
+        <div class="uk-width-9-10">
+            <form class="uk-form">
+                <div class="uk-flex">
+                    {# file name #}
+                    <div class="uk-width-1-5">
+                        <input type="text" placeholder="{{ 'form.file_name'|trans({}, 'form') }}" data-model="filterFileName"/>
+                    </div>
+
+                    {# file extension #}
+                    <div class="uk-width-1-5">
+                        <label class="uk-form-label">{{ 'form.file_extension'|trans({}, 'form') }}</label>
+                        <select data-model="filterFileExtensions">
+                            <option value="all">{{ 'all'|trans({}, 'form') }}</option>
+                            {% for extension in this.getAllFileExtensions %}
+                                <option value="{{ extension }}">{{ extension }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+        {# content #}
+        <div class="uk-width-9-10">
+            {# image files #}
+            {% set imageFiles = this.getFileList(true) %}
+            {% if imageFiles is not empty %}
+                <div class="uk-margin-top uk-margin-bottom uk-grid uk-grid-small uk-grid-match uk-flex-bottom">
+                    {# show the first 5 images #}
+                    {% for file in imageFiles[:5] %}
+                        {{ component('FileList:FileListItem', {
+                            itemId: itemId,
+                            file: file,
+                            isImage: true,
+                            key: file.fileId
+                        }) }}
+                    {% endfor %}
+
+                    {# show additonal images in a share more toggle #}
+                    {% if imageFiles|length > 5 %}
+                        <a class="toggle_more_images" data-uk-toggle="{target: '.toggle_more_images'}">{{ 'show all'|trans({}) }}</a>
+                        <div class="toggle_more_images uk-hidden">
+                            {% for file in imageFiles[5:] %}
+                                {{ component('FileList:FileListItem', {
+                                    itemId: itemId,
+                                    file: file,
+                                    isImage: true,
+                                    key: file.fileId
+                                }) }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {# other files #}
+            {% set otherFiles = this.getFileList(false, true) %}
+            {% if otherFiles is not empty %}
+                <div class="uk-margin-bottom uk-grid uk-grid-small">
+                    {# show the first 20 files #}
+                    {% for file in otherFiles[:20] %}
+                        {{ component('FileList:FileListItem', {
+                            itemId: itemId,
+                            file: file,
+                            key: file.fileId
+                        }) }}
+                    {% endfor %}
+
+                    {# show additonal files in a share more toggle #}
+                    {% if imageFiles|length > 20 %}
+                        <a class="toggle_more_files" data-uk-toggle="{target: '.toggle_more_files'}">{{ 'show all'|trans({}) }}</a>
+                        <div class="toggle_more_files uk-hidden">
+                            {% for file in otherFiles[20:] %}
+                                {{ component('FileList:FileListItem', {
+                                    itemId: itemId,
+                                    file: file,
+                                    key: file.fileId
+                                }) }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="uk-margin toggle_create_upload" data-uk-toggle="{target: '.toggle_create_upload'}">
+            <button class="uk-button uk-button-primary">Dateien erstellen / hochladen</button>
+        </div>
+
+        {% if is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_FILE_LOCK', itemId) %}
+            {# Actions for creating new office documents #}
+            <div class="uk-width-9-10 uk-margin toggle_create_upload uk-block uk-block-muted uk-hidden">
+                <div class="uk-container uk-flex">
+                    {# Create documents #}
+                    <div>
+                        <span>{{ 'form.create_document.text'|trans({}, 'form') }}</span>
+                        <div>
+                            <button
+                                class="uk-button uk-button-default"
+                                data-action="live#action"
+                                data-live-action-param="createOfficeFile"
+                                data-live-type-param="word"
+                                data-live-item-id-param="{{ itemId }}"
+                                data-loading="action(createOfficeFile)|addAttribute(disabled)"
+                            >
+                                <i class="uk-icon-file-word-o uk-icon-medium"></i>
+                            </button>
+                            <button
+                                class="uk-button uk-button-default"
+                                data-action="live#action"
+                                data-live-action-param="createOfficeFile"
+                                data-live-type-param="spreadsheet"
+                                data-live-item-id-param="{{ itemId }}"
+                                data-loading="action(createOfficeFile)|addAttribute(disabled)"
+                            >
+                                <i class="uk-icon-file-excel-o uk-icon-medium"></i>
+                            </button>
+                            <button
+                                class="uk-button uk-button-default"
+                                data-action="live#action"
+                                data-live-action-param="createOfficeFile"
+                                data-live-type-param="presentation"
+                                data-live-item-id-param="{{ itemId }}"
+                                data-loading="action(createOfficeFile)|addAttribute(disabled)"
+                            >
+                                <i class="uk-icon-file-powerpoint-o uk-icon-medium"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    {# File upload #}
+                    <div class="uk-flex-item-1 uk-margin-left">
+                        {{ form_start(form) }}
+                        {{ form_row(form.upload) }}
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </article>
+</div>

@@ -84,7 +84,7 @@ class cs_label_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function _getItemData()
+    public function _getItemData(): ?array
     {
         $item_array = [];
         // not yet implemented
@@ -98,6 +98,8 @@ class cs_label_item extends cs_item
         } else {
             trigger_error('cs_label_item: getItemData(): Invalid Data');
         }
+
+        return null;
     }
 
     public function getCountLinks()
