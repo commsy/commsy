@@ -3,6 +3,7 @@
 namespace App\WOPI;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Exception;
 
 final readonly class ActionUrlBuilder
 {
@@ -92,9 +93,22 @@ final readonly class ActionUrlBuilder
         return $this;
     }
 
+    /**
+     * @throws Exception
+     */
     public function build(string $urlSrc): string
     {
+        if (!$this->parts->containsKey('WOPI_SOURCE')) {
+            throw new Exception('Setting the WOPI_SOURCE parameter is mandatory');
+        }
+
         preg_match_all('/<(.+?)=(.+?)(&?)>/', $urlSrc, $matches, PREG_SET_ORDER);
+
+        // for legacy support ensure there is a WOPI_SOURCE match
+        $withSourcePart = array_search(fn (array $match) => $match[2] === 'WOPI_SOURCE', $matches);
+        if (!$withSourcePart) {
+            $matches[] = ['<wopisrc=WOPI_SOURCE&>', 'wopisrc', 'WOPI_SOURCE', '&'];
+        }
 
         $parsed = parse_url($urlSrc);
         $host = $parsed['host'];

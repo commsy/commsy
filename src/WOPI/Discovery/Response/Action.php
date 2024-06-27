@@ -19,7 +19,7 @@ final class Action
     private string $urlSrc;
 
     #[SerializedName('@ext')]
-    private string $ext;
+    private ?string $ext = null;
 
     #[SerializedName('@progid')]
     private string $progId;
@@ -80,7 +80,7 @@ final class Action
         return $this;
     }
 
-    public function getExt(): string
+    public function getExt(): ?string
     {
         return $this->ext;
     }
