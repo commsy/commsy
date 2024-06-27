@@ -23,7 +23,7 @@
         "eluceo/ical": "^2.5",
         "ezyang/htmlpurifier": "^4.1",
         "friendsofsymfony/ckeditor-bundle": "^2.0",
-        "friendsofsymfony/elastica-bundle": "^6.1",
+        "friendsofsymfony/elastica-bundle": "^6.4",
         "knplabs/knp-menu-bundle": "^3.0",
         "knplabs/knp-paginator-bundle": "^6.2",
         "knplabs/knp-snappy-bundle": "^1.7",
@@ -95,7 +95,7 @@
         "codeception/module-rest": "^3.3",
         "codeception/module-symfony": "^3.4",
         "doctrine/doctrine-fixtures-bundle": "^3.3",
-        "rector/rector": "^0.18",
+        "rector/rector": "^1.1",
         "symfony/maker-bundle": "^1.21",
         "symfony/web-profiler-bundle": "6.4.*"
     },
