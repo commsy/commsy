@@ -258,6 +258,10 @@
                 <source>mail.account_registration.intro</source>
                 <target>%fullname% hat sich mit der Kennung "%username%" angemeldet.</target>
             </trans-unit>
+            <trans-unit id="mail_newsletter_subject">
+                <source>mail.newsletter_subject</source>
+                <target>Täglicher CommSy-Newsletter: %portal%</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
