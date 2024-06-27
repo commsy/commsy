@@ -258,6 +258,10 @@
                 <source>mail.account_registration.intro</source>
                 <target>%fullname% registered a new account with username "%username%":</target>
             </trans-unit>
+            <trans-unit id="mail_newsletter_subject">
+                <source>mail.newsletter_subject</source>
+                <target>Daily CommSy newsletter: %portal%</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

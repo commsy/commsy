@@ -16,7 +16,6 @@ namespace App\Newsletter;
 use App\Account\AccountManager;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
-use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
 use cs_annotations_manager;
 use cs_context_item;
@@ -27,7 +26,6 @@ use cs_manager;
 use cs_privateroom_item;
 use cs_user_item;
 use cs_user_manager;
-use DateTimeImmutable;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -37,7 +35,6 @@ class NewsletterGenerator
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private readonly PortalRepository $portalRepository,
         private readonly RouterInterface $router,
         private readonly Mailer $mailer,
         private readonly AccountManager $accountManager
@@ -55,6 +52,8 @@ class NewsletterGenerator
 
         $portal = $privateRoom->getContextItem();
         $room_manager = $this->legacyEnvironment->getRoomManager();
+
+        // TODO: remove functionality around customized rooms (as this feature isn't supported anymore)
         $customizedRoomList = $privateRoom->getCustomizedRoomList();
         if (!isset($customizedRoomList)) {
             $customizedRoomList = $room_manager->getRelatedContextListForUserInt($user->getUserID(),
@@ -153,12 +152,23 @@ class NewsletterGenerator
         return $user_manager->get();
     }
 
-    // TODO: call sendNewsletter() from message factory
-    //       (similar to how `ContextController->request()` sends a mail to moderators)
+    /**
+     * Returns a data array with all data required to generate a newsletter message for the user
+     * of the given private room. The newsletter describes the activity during the last day or week,
+     * depending on the user's frequency setting.
+     */
+    public function getNewsletterData(cs_privateroom_item $privateRoom)
+    {
+        // TODO: generate an array of data with a logic flow similar to sendOldNewsletter() but which omits the HTML generation
+        $newsletterData = [];
+
+        return $newsletterData;
+    }
+
     /**
      * Prepare and send the newsletters. It describes the activity during the last day or week.
      */
-    public function sendNewsletter(cs_privateroom_item $privateRoom)
+    public function sendOldNewsletter(cs_privateroom_item $privateRoom)
     {
         // get user in room
         $user = $privateRoom->getOwnerUserItem();

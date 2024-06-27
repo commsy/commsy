@@ -13,6 +13,11 @@
 
 namespace App\Cron\Tasks;
 
+use App\Account\AccountManager;
+use App\Entity\Portal;
+use App\Mail\Factories\NewsletterMessageFactory;
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
 use App\Newsletter\NewsletterGenerator;
 use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
@@ -27,6 +32,9 @@ class CronNewsletter implements CronTaskInterface
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private readonly PortalRepository $portalRepository,
+        private readonly AccountManager $accountManager,
+        private readonly Mailer $mailer,
+        private readonly NewsletterMessageFactory $newsletterMessageFactory,
         private readonly NewsletterGenerator $newsletterGenerator
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -60,7 +68,10 @@ class CronNewsletter implements CronTaskInterface
                 }
 
                 if ($send) {
-                    $this->newsletterGenerator->sendNewsletter($privateRoom);
+                    $this->sendNewsletter($portal, $privateRoom);
+
+                    // TODO: remove next line & NewsletterGenerator->sendOldNewsletter() when sendNewsletter() is fully implemented
+                    $this->newsletterGenerator->sendOldNewsletter($privateRoom); // DEBUG
                 }
             }
         }
@@ -74,5 +85,36 @@ class CronNewsletter implements CronTaskInterface
     public function getPriority(): int
     {
         return self::PRIORITY_NORMAL;
+    }
+
+    /**
+     * Prepare and send the newsletters. They describe the activity during the last day or week,
+     * depending on the user's frequency setting.
+     */
+    private function sendNewsletter(Portal $portal, cs_privateroom_item $privateRoom)
+    {
+        // prepare newsletter data
+        $newsletterData = $this->newsletterGenerator->getNewsletterData($privateRoom);
+
+        // generate newsletter message
+        $message = $this->newsletterMessageFactory->createNewsletterMessage(
+            $portal,
+            $newsletterData
+        );
+
+        $user = $privateRoom->getOwnerUserItem();
+        if (!$user) {
+            return;
+        }
+
+        $account = $this->accountManager->getAccount($user, $portal->getId());
+        if (!$account) {
+            return;
+        }
+
+        $recipient = RecipientFactory::createFromAccount($account);
+
+        // send newsletter email
+        $this->mailer->send($message, $recipient);
     }
 }
