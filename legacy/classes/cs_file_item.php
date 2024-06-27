@@ -13,7 +13,6 @@
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Mime\MimeTypes;
 
 class cs_file_item extends cs_item
 {
@@ -119,36 +118,30 @@ class cs_file_item extends cs_item
         return $this->_getValue('tmp_name');
     }
 
-    public function getMime(): string
+    /**
+     * Returns the name of the file without any directory or extension information
+     */
+    public function getFilenameWithoutExtension(): string
     {
-        $fileInfo = new SplFileInfo($this->getDisplayName());
-        $mimeTypes = (new MimeTypes())->getMimeTypes($fileInfo->getExtension());
-
-        return $mimeTypes[0] ?? 'application/octetstream';
+        $fileInfo = new SplFileInfo($this->getFileName());
+        return $fileInfo->getBasename(".{$fileInfo->getExtension()}");
     }
 
-    public function getExtension()
+    public function getExtension(): ?string
     {
         $display_name = $this->getDisplayName();
         if (!empty($display_name)) {
             return cs_strtolower(mb_substr(strrchr((string) $display_name, '.'), 1));
         }
+
+        return null;
     }
 
-    public function getUrl()
-    {
-        $params = [];
-        $params['iid'] = $this->_data['files_id'];
-        global $c_single_entry_point;
-
-        return curl($this->getContextID(), 'material', 'getfile', $params, '', $this->_data['filename'], $c_single_entry_point);
-    }
-
-    public function getFileSize()
+    public function getFileSize(): float
     {
         $discManager = $this->_environment->getDiscManager();
         if (!$discManager->existsFile($this->getDiskFileNameWithoutFolder())) {
-            return 0;
+            return 0.0;
         }
 
         if (0 == $this->_getValue('size')) {
@@ -187,7 +180,7 @@ class cs_file_item extends cs_item
         $manager->updateItem($this);
     }
 
-    private function _getFileAsString()
+    private function _getFileAsString(): string
     {
         $disc_manager = $this->_environment->getDiscManager();
         $portal_id = $this->getPortalID();

@@ -957,11 +957,12 @@ class cs_grouproom_item extends cs_room_item
         if (isset($linked_project_item)) {
             return $linked_project_item->withAds();
         }
+
+        return false;
     }
 
     public function withGrouproomFunctions(): bool
     {
-        // grouprooms can not have grouprooms
         return false;
     }
 
@@ -972,23 +973,7 @@ class cs_grouproom_item extends cs_room_item
         if (isset($linked_project_item)) {
             return $linked_project_item->withLogArchive();
         }
-    }
 
-    public function withPDAView()
-    {
-        // point to linked project item
-        $linked_project_item = $this->getLinkedProjectItem();
-        if (isset($linked_project_item)) {
-            return $linked_project_item->withPDAView();
-        }
-    }
-
-    public function withWikiFunctions()
-    {
-        // point to linked project item
-        $linked_project_item = $this->getLinkedProjectItem();
-        if (isset($linked_project_item)) {
-            return $linked_project_item->withWikiFunctions();
-        }
+        return false;
     }
 }

@@ -66,9 +66,21 @@
                 <source>Select a file</source>
                 <target>Select a file</target>
             </trans-unit>
+            <trans-unit id="form-file-extension">
+                <source>form.file_extension</source>
+                <target>File extension</target>
+            </trans-unit>
+            <trans-unit id="form-file-name">
+                <source>form.file_name</source>
+                <target>File name</target>
+            </trans-unit>
             <trans-unit id="form-upload-info-maxfilesize">
-                <source>Upload files up to %maxUploadSize% MB</source>
-                <target>Upload files up to %maxUploadSize% MB.</target>
+                <source>form.upload_info.max_file_size</source>
+                <target>max. %maxUploadSize% MB</target>
+            </trans-unit>
+            <trans-unit id="form-create-document-text">
+                <source>form.create_document.text</source>
+                <target>Create document:</target>
             </trans-unit>
             <trans-unit id="form-ideal-aspect-ratio">
                 <source>ideal aspect ratio</source>
@@ -77,6 +89,10 @@
             <trans-unit id="form-edit-files">
                 <source>edit files</source>
                 <target>Edit files</target>
+            </trans-unit>
+            <trans-unit id="form-new-filename">
+                <source>form.new_filename</source>
+                <target>New file</target>
             </trans-unit>
             <trans-unit id="form-edit-description">
                 <source>edit description</source>
@@ -393,6 +409,10 @@
             <trans-unit id="form-button-edit">
                 <source>Edit</source>
                 <target>Edit</target>
+            </trans-unit>
+            <trans-unit id="form-button-rename">
+                <source>form.rename</source>
+                <target>Rename</target>
             </trans-unit>
             <trans-unit id="editor_switch">
                 <source>use etherpad</source>

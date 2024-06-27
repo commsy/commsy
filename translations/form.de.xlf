@@ -56,7 +56,7 @@
             </trans-unit>
             <trans-unit id="form-upload-1">
                 <source>Attach files by dropping them here or</source>
-                <target>Ziehen Sie die Dateien in dieses Feld (Drag&amp;Drop).</target>
+                <target>Ziehen Sie die Dateien in dieses Feld.</target>
             </trans-unit>
             <trans-unit id="form-upload-2">
                 <source>selecting one</source>
@@ -66,9 +66,21 @@
                 <source>Select a file</source>
                 <target>Datei auswählen</target>
             </trans-unit>
+            <trans-unit id="form-file-extension">
+                <source>form.file_extension</source>
+                <target>Dateiendung</target>
+            </trans-unit>
+            <trans-unit id="form-file-name">
+                <source>form.file_name</source>
+                <target>Dateiname</target>
+            </trans-unit>
             <trans-unit id="form-upload-info-maxfilesize">
-                <source>Upload files up to %maxUploadSize% MB</source>
-                <target>Sie können Dateien bis zu %maxUploadSize% MB hochladen.</target>
+                <source>form.upload_info.max_file_size</source>
+                <target>max. %maxUploadSize% MB</target>
+            </trans-unit>
+            <trans-unit id="form-create-document-text">
+                <source>form.create_document.text</source>
+                <target>Dokument erstellen:</target>
             </trans-unit>
             <trans-unit id="form-ideal-aspect-ratio">
                 <source>ideal aspect ratio</source>
@@ -77,6 +89,10 @@
             <trans-unit id="form-edit-files">
                 <source>edit files</source>
                 <target>Dateien bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="form-new-filename">
+                <source>form.new_filename</source>
+                <target>Neue Datei</target>
             </trans-unit>
             <trans-unit id="form-edit-description">
                 <source>edit description</source>
@@ -393,6 +409,10 @@
             <trans-unit id="form-button-edit">
                 <source>Edit</source>
                 <target>Bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="form-button-rename">
+                <source>form.rename</source>
+                <target>Umbenennen</target>
             </trans-unit>
             <trans-unit id="editor_switch">
                 <source>use etherpad</source>
