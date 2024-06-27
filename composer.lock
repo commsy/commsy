@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b5badf6421c0f3c869eadfc51a1a3e85",
+    "content-hash": "5fc83cf2369eebf423c7b3d2d065307b",
     "packages": [
         {
             "name": "0x46616c6b/etherpad-lite-client",
@@ -358,34 +358,34 @@
         },
         {
             "name": "debril/rss-atom-bundle",
-            "version": "v5.1.3",
+            "version": "v5.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alexdebril/rss-atom-bundle.git",
-                "reference": "92148f3b1b54a7e6dfbca3c566428e61ab35bfff"
+                "reference": "29e624c428d4284726e5da5e0d245cbc93d1f17a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alexdebril/rss-atom-bundle/zipball/92148f3b1b54a7e6dfbca3c566428e61ab35bfff",
-                "reference": "92148f3b1b54a7e6dfbca3c566428e61ab35bfff",
+                "url": "https://api.github.com/repos/alexdebril/rss-atom-bundle/zipball/29e624c428d4284726e5da5e0d245cbc93d1f17a",
+                "reference": "29e624c428d4284726e5da5e0d245cbc93d1f17a",
                 "shasum": ""
             },
             "require": {
                 "debril/feed-io": "~3.0|~4.0|~5.0",
                 "php": ">=7.1",
-                "symfony/config": "~3.4|~4.0|^5.0|^6.0",
-                "symfony/dependency-injection": "~3.4|~4.0|^5.0|^6.0",
-                "symfony/http-foundation": "~3.4|~4.0|^5.0|^6.0",
-                "symfony/http-kernel": "~3.4|~4.0|^5.0|^6.0"
+                "symfony/config": "~3.4|~4.0|^5.0|^6.0|^7.0",
+                "symfony/dependency-injection": "~3.4|~4.0|^5.0|^6.0|^7.0",
+                "symfony/http-foundation": "~3.4|~4.0|^5.0|^6.0|^7.0",
+                "symfony/http-kernel": "~3.4|~4.0|^5.0|^6.0|^7.0"
             },
             "require-dev": {
                 "doctrine/common": "~2.3",
                 "phpunit/phpunit": "~7.0",
                 "symfony/browser-kit": ">3.0",
                 "symfony/finder": ">3.0",
-                "symfony/framework-bundle": "^4.3|^5.0|^6.0",
+                "symfony/framework-bundle": "^4.3|^5.0|^6.0|^7.0",
                 "symfony/validator": ">3.0",
-                "symfony/yaml": "^4.0|^5.0|^6.0"
+                "symfony/yaml": "^4.0|^5.0|^6.0|^7.0"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -408,9 +408,9 @@
             ],
             "support": {
                 "issues": "https://github.com/alexdebril/rss-atom-bundle/issues",
-                "source": "https://github.com/alexdebril/rss-atom-bundle/tree/v5.1.3"
+                "source": "https://github.com/alexdebril/rss-atom-bundle/tree/v5.2.0"
             },
-            "time": "2022-05-13T13:05:25+00:00"
+            "time": "2024-01-30T13:37:00+00:00"
         },
         {
             "name": "doctrine/annotations",

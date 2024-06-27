@@ -15,7 +15,7 @@
         "0x46616c6b/etherpad-lite-client": "^0.7.0",
         "api-platform/core": "^3.1",
         "composer/package-versions-deprecated": "^1.8",
-        "debril/rss-atom-bundle": "^5.0",
+        "debril/rss-atom-bundle": "^5.2",
         "doctrine/annotations": "^2.0",
         "doctrine/doctrine-bundle": "^2.5",
         "doctrine/doctrine-migrations-bundle": "^3.2",
