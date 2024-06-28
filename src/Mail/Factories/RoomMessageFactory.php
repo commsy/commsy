@@ -36,7 +36,7 @@ class RoomMessageFactory
             throw new LogicException('$room must be of type Room');
         }
 
-        $portal = $this->portalRepository->find($room->getContextId());
+        $portal = $this->portalRepository->findPortalByRoomContext($room->getContextId());
         if ($portal) {
             return new RoomActivityLockWarningMessage($this->legacyEnvironment, $portal, $room);
         }
@@ -51,7 +51,7 @@ class RoomMessageFactory
             throw new LogicException('$room must be of type Room');
         }
 
-        $portal = $this->portalRepository->find($room->getContextId());
+        $portal = $this->portalRepository->findPortalByRoomContext($room->getContextId());
         if ($portal) {
             return new RoomActivityDeleteWarningMessage($this->legacyEnvironment, $portal, $room);
         }
@@ -61,7 +61,7 @@ class RoomMessageFactory
 
     public function createUserJoinedContextMessage(Room $room, cs_user_item $newUser, ?string $comment): MessageInterface
     {
-        $portal = $this->portalRepository->find($room->getContextId());
+        $portal = $this->portalRepository->findPortalByRoomContext($room->getContextId());
         return new UserJoinedContextMessage($this->legacyEnvironment, $portal, $room, $newUser, $comment);
     }
 }
