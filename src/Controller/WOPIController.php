@@ -58,9 +58,14 @@ class WOPIController extends AbstractController
             throw new Exception('No matching action found.');
         }
 
+        $language = match ($localeSwitcher->getLocale()) {
+            'en' => 'en-gb',
+            default => 'de-DE',
+        };
+
         $actionUrlBuilder = new ActionUrlBuilder();
         $actionUrl = $actionUrlBuilder
-            ->setLanguage($localeSwitcher->getLocale())
+            ->setLanguage($language)
             ->setDisableChat(true)
             ->setHostSessionId('commsy')
             ->setWOPISource($wopiSrc->getUrl(WOPIFileId::fromCommSyFile($file)))
