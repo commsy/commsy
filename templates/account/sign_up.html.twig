@@ -10,7 +10,7 @@
             <div class="uk-card uk-card-default uk-card-small">
                 {% if portal.logoFilename is not empty %}
                     <div class="uk-card-body uk-padding-remove">
-                        <img data-src="{{ path('app_file_portallogo', { 'portalId': portal.id }) }}" width="260" height="80" alt="portal logo" loading="lazy">
+                        <img data-src="{{ path('app_file_portallogo', { 'portalId': portal.id }) }}" width="410" height="160" alt="portal logo" loading="lazy" uk-img>
                     </div>
                 {% endif %}
 

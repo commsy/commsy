@@ -22,12 +22,12 @@
             <div class="uk-container uk-container-large">
                 <div class="uk-flex uk-flex-between">
                     <div>
-                        <img data-src="{{ path('app_file_serverlogo') }}" width="300" height="120" alt="server logo" loading="lazy">
+                        <img data-src="{{ path('app_file_serverlogo') }}" width="300" height="120" alt="server logo" loading="lazy" uk-img>
                     </div>
 
                     {% if portal is not null and portal.logoFilename is not empty %}
                         <div>
-                            <img data-src="{{ path('app_file_portallogo', { 'portalId': portal.id }) }}" width="260" height="80" alt="portal logo" loading="lazy">
+                            <img data-src="{{ path('app_file_portallogo', { 'portalId': portal.id }) }}" width="260" height="80" alt="portal logo" loading="lazy" uk-img>
                         </div>
                     {% endif %}
                 </div>
