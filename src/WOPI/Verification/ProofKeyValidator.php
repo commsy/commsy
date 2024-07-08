@@ -33,16 +33,20 @@ final readonly class ProofKeyValidator
     }
 
     public function isValid(
-        string $accessToken,
-        string $timeStamp,
+        ?string $accessToken,
+        ?string $timeStamp,
         string $url,
-        string $proof,
-        string $proofOld,
+        ?string $proof,
+        ?string $proofOld,
         bool $verifyTimeStampAge = true
     ): bool
     {
         if (!$this->params->get('commsy.online_office.proofkey_validation')) {
             return true;
+        }
+
+        if (!$accessToken || !$timeStamp || !$proof || !$proofOld) {
+            return false;
         }
 
         // X-WOPI-TimeStamp must not be older than 20 minutes
@@ -76,10 +80,6 @@ final readonly class ProofKeyValidator
 
         $key = $proofKey->getValue();
         $keyOld = $proofKey->getOldValue();
-
-        if (!$proof || !$proofOld) {
-            return false;
-        }
 
         return $this->verify($expected, $proof, $key) ||
             $this->verify($expected, $proofOld, $key) ||
