@@ -7,65 +7,68 @@ use DateTimeImmutable;
 use phpseclib3\Crypt\PublicKeyLoader;
 use phpseclib3\Crypt\RSA;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Request;
 use Throwable;
 
 final readonly class ProofKeyValidator
 {
-    private const MULTIPLIER = 1e7;
-    private const OFFSET = 621355968e9;
+    public const MULTIPLIER = 1e7;
+    public const OFFSET = 621355968e9;
 
     public function __construct(
         private DiscoveryService $discoveryService,
-        private RequestStack $requestStack,
         private ContainerBagInterface $params
     ) {
     }
 
-    public function isValid(): bool
+    public function isRequestValid(Request $request): bool
+    {
+        return $this->isValid(
+            $request->query->get('access_token'),
+            $request->headers->get('X-WOPI-TimeStamp'),
+            $request->getUri(),
+            $request->headers->get('X-WOPI-Proof'),
+            $request->headers->get('X-WOPI-ProofOld')
+        );
+    }
+
+    public function isValid(
+        string $accessToken,
+        string $timeStamp,
+        string $url,
+        string $proof,
+        string $proofOld,
+        bool $verifyTimeStampAge = true
+    ): bool
     {
         if (!$this->params->get('commsy.online_office.proofkey_validation')) {
             return true;
         }
 
-        $request = $this->requestStack->getCurrentRequest();
-        if (!$request) {
-            return false;
-        }
-
         // X-WOPI-TimeStamp must not be older than 20 minutes
-        $timeStamp = $request->headers->get('X-WOPI-TimeStamp');
-        if (!$timeStamp) {
-            return false;
-        }
-
-        try {
-            $date = DateTimeImmutable::createFromFormat(
-                'U',
-                (string) ((int) (((float) $timeStamp - self::OFFSET) / self::MULTIPLIER))
-            );
-            if ($date < new DateTimeImmutable('-20 minutes')) {
+        if ($verifyTimeStampAge) {
+            try {
+                $date = DateTimeImmutable::createFromFormat(
+                    'U',
+                    (string) ((int) (((float) $timeStamp - self::OFFSET) / self::MULTIPLIER))
+                );
+                if ($date < new DateTimeImmutable('-20 minutes')) {
+                    return false;
+                }
+            } catch (Throwable) {
                 return false;
             }
-        } catch (Throwable) {
-            return false;
         }
 
-        $accessToken = $request->query->get('access_token');
-        if (!$accessToken) {
-            return false;
-        }
-
-        $url = $request->getUri();
-
+        // See https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/online/scenarios/proofkeys#constructing-the-expected-proof
         $expected = sprintf(
             '%s%s%s%s%s%s',
-            pack('N', strlen($accessToken)),
+            pack('N', strlen($accessToken)), // N = unsigned long (always 32 bit, big endian byte order)
             $accessToken,
             pack('N', strlen($url)),
             strtoupper($url),
-            pack('N', 8),
-            pack('J', $timeStamp)
+            pack('N', 8), // this is 8 bytes in length of the X-WOPI-TimeStamp value
+            pack('J', $timeStamp) // J = unsigned long long (always 64 bit, big endian byte order)
         );
 
         $discovery = $this->discoveryService->getWOPIDiscovery();
@@ -73,16 +76,14 @@ final readonly class ProofKeyValidator
 
         $key = $proofKey->getValue();
         $keyOld = $proofKey->getOldValue();
-        $xWOPIProof = $request->headers->get('X-WOPI-Proof');
-        $xWOPIProofOld = $request->headers->get('X-WOPI-ProofOld');
 
-        if (!$xWOPIProof || !$xWOPIProofOld) {
+        if (!$proof || !$proofOld) {
             return false;
         }
 
-        return $this->verify($expected, $xWOPIProof, $key) ||
-            $this->verify($expected, $xWOPIProofOld, $key) ||
-            $this->verify($expected, $xWOPIProof, $keyOld);
+        return $this->verify($expected, $proof, $key) ||
+            $this->verify($expected, $proofOld, $key) ||
+            $this->verify($expected, $proof, $keyOld);
     }
 
     private function verify(string $expected, string $proof, string $key): bool
