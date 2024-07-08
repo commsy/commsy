@@ -24,7 +24,8 @@ modules:
             initial_queries:
                 - 'CREATE DATABASE IF NOT EXISTS app_test;'
                 - 'USE app_test;'
-                - 'grant ALL PRIVILEGES on app_test.* to app;'
+                - 'CREATE USER IF NOT EXISTS app IDENTIFIED BY "!ChangeMe!";'
+                - 'GRANT ALL PRIVILEGES on app_test.* to app;'
                 - 'FLUSH PRIVILEGES;'
         Symfony:
             app_path: 'src'
