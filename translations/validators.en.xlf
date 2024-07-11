@@ -225,6 +225,12 @@
                 <target>Your selection must differ.</target>
             </trans-unit>
 
+            <!-- portal settings -->
+            <trans-unit id="violation_portal_settings_time_pulse_template">
+                <source>The time pulse name must contain a year placeholder</source>
+                <target>The time pulse name must contain a year placeholder.</target>
+            </trans-unit>
+
             <!-- room settings -->
             <trans-unit id="violation_room_settings_general_time_pulses">
                 <source>Continuous can only be specified without any other time pulse choices.</source>

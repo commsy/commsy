@@ -45,6 +45,10 @@ class TimePulseTemplateType extends AbstractType
                     ->add('titleGerman', Types\TextType::class, [
                         'constraints' => [
                             new Assert\NotBlank(),
+                            new Assert\Regex([
+                                'pattern' => '/%[1-6]/',
+                                'message' => 'The time pulse name must contain a year placeholder',
+                            ]),
                         ],
                         'label' => 'New time pulse',
                         'attr' => ['placeholder' => 'de'],
@@ -52,6 +56,10 @@ class TimePulseTemplateType extends AbstractType
                     ->add('titleEnglish', Types\TextType::class, [
                         'constraints' => [
                             new Assert\NotBlank(),
+                            new Assert\Regex([
+                                'pattern' => '/%[1-6]/',
+                                'message' => 'The time pulse name must contain a year placeholder',
+                            ]),
                         ],
                         'label' => false,
                         'attr' => ['placeholder' => 'en'],
@@ -189,6 +197,10 @@ class TimePulseTemplateType extends AbstractType
                     ->add('titleGerman', Types\TextType::class, [
                         'constraints' => [
                             new Assert\NotBlank(),
+                            new Assert\Regex([
+                                'pattern' => '/%[1-6]/',
+                                'message' => 'The time pulse name must contain a year placeholder',
+                            ]),
                         ],
                         'label' => 'Time pulse',
                         'attr' => ['placeholder' => 'de'],
@@ -196,6 +208,10 @@ class TimePulseTemplateType extends AbstractType
                     ->add('titleEnglish', Types\TextType::class, [
                         'constraints' => [
                             new Assert\NotBlank(),
+                            new Assert\Regex([
+                                'pattern' => '/%[1-6]/',
+                                'message' => 'The time pulse name must contain a year placeholder',
+                            ]),
                         ],
                         'label' => false,
                         'attr' => ['placeholder' => 'en'],
