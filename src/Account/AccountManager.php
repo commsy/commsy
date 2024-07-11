@@ -26,6 +26,7 @@ use cs_user_item;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use LogicException;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 final readonly class AccountManager
@@ -134,34 +135,42 @@ final readonly class AccountManager
 
     public function delete(Account $account): void
     {
-        // NOTE: normally, we'd fire an `AccountDeletedEvent` here; however, this is actually done in the legacy code:
-        // `cs_user_manager->delete()` will fire an `AccountDeletedEvent` for each user object
-        $portalUser = $this->userService->getPortalUser($account);
+        $portalUser = null;
+        $userList = new cs_list();
 
-        $userList = $this->userListBuilder
-            ->fromAccount($account)
-            ->withProjectRoomUser()
-            ->withCommunityRoomUser()
-            ->withUserRoomUser()
-            ->withPrivateRoomUser()
-            ->getList();
+        try {
+            // NOTE: normally, we'd fire an `AccountDeletedEvent` here; however, this is actually done in the legacy code:
+            // `cs_user_manager->delete()` will fire an `AccountDeletedEvent` for each user object
+            $portalUser = $this->userService->getPortalUser($account);
 
-        $users = iterator_to_array($userList);
-        array_walk($users, fn(cs_user_item $user) => $user->delete());
+            $userList = $this->userListBuilder
+                ->fromAccount($account)
+                ->withProjectRoomUser()
+                ->withCommunityRoomUser()
+                ->withUserRoomUser()
+                ->withPrivateRoomUser()
+                ->getList();
+        } catch (LogicException) {
+            // Account without portal user
+        } finally {
+            $users = iterator_to_array($userList);
+            array_walk($users, fn(cs_user_item $user) => $user->delete());
 
-        $this->entityManager->remove($account);
-        $this->entityManager->flush();
+            $this->entityManager->remove($account);
+            $this->entityManager->flush();
 
-        $portalUser->delete();
+            $portalUser?->delete();
+        }
     }
 
     public function lock(Account $account): void
     {
-        $portalUser = $this->userService->getPortalUser($account);
-
-        if ($portalUser) {
+        try {
+            $portalUser = $this->userService->getPortalUser($account);
             $portalUser->reject();
             $portalUser->save();
+        } catch (LogicException) {
+            // Account without portal user
         }
 
         $account->setLocked(true);
