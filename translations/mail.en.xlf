@@ -122,6 +122,10 @@
                 <source>You received this email as one of the moderator/s in the workspace "%room_name%".</source>
                 <target>You received this email as one of the moderator/s in the workspace "%room_name%".</target>
             </trans-unit>
+            <trans-unit id="mail_footer_why_portal">
+                <source>mail.footer.why_portal</source>
+                <target>You received this email as one of the portal moderator/s</target>
+            </trans-unit>
             <trans-unit id="mail_footer_ask_moderation">
                 <source>If you have any questions please contact the portal moderation.</source>
                 <target>If you have any questions please contact the portal moderation.</target>
@@ -257,6 +261,94 @@
             <trans-unit id="mail_account_registration_intro">
                 <source>mail.account_registration.intro</source>
                 <target>%fullname% registered a new account with username "%username%":</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_subject_open">
+                <source>mail.room_moderation.subject.open</source>
+                <target>%room_title% opened</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_subject_reopen">
+                <source>mail.room_moderation.subject.reopen</source>
+                <target>%room_title% reopened</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_subject_deleted">
+                <source>mail.room_moderation.subject.deleted</source>
+                <target>%room_title% deleted</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_subject_undeleted">
+                <source>mail.room_moderation.subject.undeleted</source>
+                <target>%room_title% undeleted</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_subject_archived">
+                <source>mail.room_moderation.subject.archived</source>
+                <target>%room_title% archived</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_subject_linked">
+                <source>mail.room_moderation.subject.linked</source>
+                <target>%room_title% linked</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_subject_locked">
+                <source>mail.room_moderation.subject.locked</source>
+                <target>%room_title% locked</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_subject_unlocked">
+                <source>mail.room_moderation.subject.unlocked</source>
+                <target>%room_title% unlocked</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_body_opened">
+                <source>mail.room_moderation.body.opened</source>
+                <target>Opening of a project workspace</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_body_reopened">
+                <source>mail.room_moderation.body.reopened</source>
+                <target>Reopening of a project workspace</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_body_deleted">
+                <source>mail.room_moderation.body.deleted</source>
+                <target>Deletion of a project workspace</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_body_undeleted">
+                <source>mail.room_moderation.body.undeleted</source>
+                <target>Undeletion of a project workspace</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_body_archived">
+                <source>mail.room_moderation.body.archived</source>
+                <target>Archiving of a project workspace</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_body_linked">
+                <source>mail.room_moderation.body.linked</source>
+                <target>Changing links</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_body_locked">
+                <source>mail.room_moderation.body.locked</source>
+                <target>Locking of a project workspace</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_body_unlocked">
+                <source>mail.room_moderation.body.unlocked</source>
+                <target>Unlocking of a project workspace</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_body_details">
+                <source>mail.room_moderation.body.details</source>
+                <target>Further details</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_body_details_name">
+                <source>mail.room_moderation.body.details.name</source>
+                <target>Room name</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_body_details_editor">
+                <source>mail.room_moderation.body.details.editor</source>
+                <target>Editor</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_body_linked_community_rooms">
+                <source>mail.room_moderation.body.linked_community_rooms</source>
+                <target>The following community workspaces are linked with this project workspace</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_body_unlinked_community_rooms">
+                <source>mail.room_moderation.body.unlinked_community_rooms</source>
+                <target>The following community workspaces are no longer linked with this project workspace</target>
+            </trans-unit>
+            <trans-unit id="mail_room_moderation_body_linked_community_rooms_none">
+                <source>mail.room_moderation.body.linked_community_rooms.none</source>
+                <target>None</target>
             </trans-unit>
         </body>
     </file>
