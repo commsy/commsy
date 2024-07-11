@@ -352,6 +352,7 @@ class TimePulseTemplateType extends AbstractType
                     ->add('cancel', Types\SubmitType::class, [
                         'attr' => ['class' => 'uk-button-secondary'],
                         'label' => 'Cancel',
+                        'validation_groups' => false,   // disable validation
                     ]);
             }
         });
