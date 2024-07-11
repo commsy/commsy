@@ -45,6 +45,7 @@ final readonly class MenuBuilder
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
+    /** @noinspection PhpUnused */
     public function createAccountMenu(): ItemInterface
     {
         // create profile
@@ -52,7 +53,7 @@ final readonly class MenuBuilder
 
         /** @var Account $account */
         $account = $this->security->getUser();
-        $authSource = null !== $account ? $account->getAuthSource() : null;
+        $authSource = $account?->getAuthSource();
 
         $userIsRoot = $this->security->isGranted('ROLE_ROOT');
 
@@ -110,20 +111,18 @@ final readonly class MenuBuilder
                 ])
                 ->setExtra('translation_domain', 'menu');
 
-                if (!$userIsRoot) {
-                    $menu->addChild('privacy', [
-                        'label' => 'Privacy',
-                        'route' => 'app_account_privacy',
-                        'routeParameters' => [
-                            'portalId' => $account->getContextId(),
-                        ],
-                        'extras' => [
-                            'icon' => 'uk-icon-user-secret uk-icon-small uk-icon-justify',
-                            'user' => $currentUser,
-                        ],
-                    ])
-                    ->setExtra('translation_domain', 'profile');
-                }
+                $menu->addChild('privacy', [
+                    'label' => 'Privacy',
+                    'route' => 'app_account_privacy',
+                    'routeParameters' => [
+                        'portalId' => $account->getContextId(),
+                    ],
+                    'extras' => [
+                        'icon' => 'uk-icon-user-secret uk-icon-small uk-icon-justify',
+                        'user' => $currentUser,
+                    ],
+                ])
+                ->setExtra('translation_domain', 'profile');
 
                 $menu->addChild('additional', [
                     'route' => 'app_account_additional',
@@ -157,6 +156,7 @@ final readonly class MenuBuilder
         return $menu;
     }
 
+    /** @noinspection PhpUnused */
     public function createProfileMenu(RequestStack $requestStack): ItemInterface
     {
         // create profile
@@ -240,12 +240,12 @@ final readonly class MenuBuilder
         return $menu;
     }
 
+    /** @noinspection PhpUnused */
     public function createSettingsMenu(RequestStack $requestStack, LegacyEnvironment $legacyEnvironment): ItemInterface
     {
-        // get room Id
+        // get room id
         $currentStack = $requestStack->getCurrentRequest();
         $roomId = $currentStack->attributes->get('roomId');
-        $room = $this->roomService->getRoomItem(intval($roomId));
 
         $portalItem = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
         $portalId = $portalItem->getItemId();
@@ -309,6 +309,7 @@ final readonly class MenuBuilder
         return $menu;
     }
 
+    /** @noinspection PhpUnused */
     public function createPortalSettingsMenu(RequestStack $requestStack): ItemInterface
     {
         $menu = $this->factory->createItem('root');
@@ -506,6 +507,7 @@ final readonly class MenuBuilder
         return $menu;
     }
 
+    /** @noinspection PhpUnused */
     public function createMainMenu(RequestStack $requestStack): ItemInterface
     {
         // get room id
@@ -565,11 +567,10 @@ final readonly class MenuBuilder
             $route = 'app_dashboard_overview';
         }
 
-        [$bundle, $controller, $action] = explode('_', (string) $currentRequest->attributes->get('_route'));
+        [, $controller, $action] = explode('_', (string) $currentRequest->attributes->get('_route'));
 
         // NOTE: hide dashboard menu in dashboard overview and room list!
-        if (!$userIsRoot &&
-            (!$inPrivateRoom || ('overview' != $action && 'listall' != $action)) &&
+        if ((!$inPrivateRoom || ('overview' != $action && 'listall' != $action)) &&
             ('marked' != $controller || 'list' != $action) &&
             ('room' != $controller || 'detail' != $action)
         ) {
@@ -605,8 +606,7 @@ final readonly class MenuBuilder
         }
 
         if (!$inPrivateRoom) {
-            if (!$userIsRoot &&
-                $currentUser && !$currentUser->isGuest()) {
+            if (!$userIsRoot && !$currentUser->isGuest()) {
                 $menu->addChild('', ['uri' => '#']);
                 $menu->addChild('room_profile', [
                     'label' => 'Room profile',
@@ -636,7 +636,7 @@ final readonly class MenuBuilder
      */
     private function getRubricIcon(string $rubric): string
     {
-        $class = match ($rubric) {
+        return match ($rubric) {
             'announcement' => 'uk-icon-justify uk-icon-comment-o uk-icon-small',
             'date' => 'uk-icon-justify uk-icon-calendar uk-icon-small',
             'material' => 'uk-icon-justify uk-icon-file-o uk-icon-small',
@@ -649,7 +649,5 @@ final readonly class MenuBuilder
             'institution' => 'uk-icon-justify uk-icon-institution uk-icon-small',
             default => 'uk-icon-justify uk-icon-home uk-icon-small',
         };
-
-        return $class;
     }
 }
