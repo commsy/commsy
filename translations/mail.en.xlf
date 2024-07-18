@@ -258,9 +258,29 @@
                 <source>mail.account_registration.intro</source>
                 <target>%fullname% registered a new account with username "%username%":</target>
             </trans-unit>
-            <trans-unit id="mail_newsletter_subject">
-                <source>mail.newsletter_subject</source>
+            <trans-unit id="mail_newsletter_subject_daily">
+                <source>mail.newsletter_subject_daily</source>
                 <target>Daily CommSy newsletter: %portal%</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_subject_weekly">
+                <source>mail.newsletter_subject_weekly</source>
+                <target>Weekly CommSy newsletter: %portal%</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_intro">
+                <source>mail.newsletter_body_intro</source>
+                <target>This newsletter is sent %mailSequence% by "%portal%". It includes information about unread items of all rooms you are member of.</target>
+            </trans-unit>
+            <trans-unit id="daily">
+                <source>daily</source>
+                <target>daily</target>
+            </trans-unit>
+            <trans-unit id="weekly">
+                <source>weekly</source>
+                <target>weekly</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_outro">
+                <source>mail.newsletter_body_outro</source>
+                <target>You can unsubscribe from this newsletter by switching off the according feature in your profile.</target>
             </trans-unit>
         </body>
     </file>

@@ -1,4 +1,11 @@
-[... TODO ...]
-<br/>
-{{ 'regards'|trans({}, 'email') }}<br/>
-{{ senderName }}
+{% set mailSequence = newsletterData.mailSequence|trans({}, 'mail') %}
+{{ 'mail.newsletter_body_intro'|trans({'%mailSequence%': mailSequence, '%portal%': portal.title}, 'mail') }}
+{%~ for id, roomData in newsletterData.rooms ~%}
+    <br/><br/>
+    {%- set room = roomData.roomItem -%}
+    <a href="{{ roomData.homeUrl }}">{{ room.title }}</a>{# {{ url('app_room_home', { 'roomId': id }) }} #}
+{%- endfor ~%}
+<br/><br/>
+--
+<br/><br/>
+{{ 'mail.newsletter_body_outro'|trans({}, 'mail') }}
