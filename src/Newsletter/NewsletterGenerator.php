@@ -157,10 +157,144 @@ class NewsletterGenerator
      * of the given private room. The newsletter describes the activity during the last day or week,
      * depending on the user's frequency setting.
      */
-    public function getNewsletterData(cs_privateroom_item $privateRoom)
+    public function getNewsletterData(cs_privateroom_item $privateRoom): array
     {
-        // TODO: generate an array of data with a logic flow similar to sendOldNewsletter() but which omits the HTML generation
+        // get user in room
+        $user = $privateRoom->getOwnerUserItem();
+        if (!$user) {
+            return [];
+        }
+
         $newsletterData = [];
+        $roomsData = [];
+
+        $translator = $this->legacyEnvironment->getTranslationObject();
+
+        $mailSequence = $privateRoom->getPrivateRoomNewsletterActivity();
+        $newsletterData['mailSequence'] = $mailSequence;
+
+        $roomList = $this->getRoomListForUserWithPrivatRoom($privateRoom);
+        $translator->setRubricTranslationArray($privateRoom->getRubricTranslationArray());
+
+        // rooms
+        foreach ($roomList as $roomItem) {
+            $roomData['roomItem'] = $roomItem;
+
+            $roomData['homeUrl'] = $this->generateAbsoluteUrl('app_room_home', [
+                'roomId' => $roomItem->getItemID(),
+            ]);
+
+            $dayLimit = 'daily' === $mailSequence ? 1 : 7;
+            $roomData['pageImpressionsCount'] = $roomItem->getPageImpressionsForNewsletter($dayLimit);
+            $roomData['activeMembersCount'] = $roomItem->getActiveMembersForNewsletter($dayLimit);
+
+            $userList = $this->getUserList($user, $roomItem);
+            if (isset($userList) && $userList->isNotEmpty() && 1 == $userList->getCount()) {
+                $refUser = $userList->getFirst();
+            }
+            if (!isset($refUser) || !($refUser->getItemID() > 0)) {
+                continue;
+            }
+
+            $annotationList = $this->getAnnotationsList($roomItem, $dayLimit);
+            $annotationsInNewsletter = [];
+
+            // rubrics
+            $rubrics = $this->rubricsForRoom($roomItem);
+            $numRubrics = count($rubrics);
+            $rubricsData = [];
+
+            for ($i = 0; $i < $numRubrics; ++$i) {
+                $rubricConfigArray = explode('_', $rubrics[$i]);
+                $rubricSpecifier = $rubricConfigArray[0];
+                $rubricDisplayStatus = $rubricConfigArray[1];
+                if ('none' === $rubricDisplayStatus) {
+                    continue;
+                }
+
+                $rubricItemList = $this->getRubricItemList($roomItem, $rubricConfigArray, $dayLimit);
+
+                $countEntries = 0;
+                $rubricData = [];
+
+                $readerManager = $this->legacyEnvironment->getReaderManager();
+
+                // new/modified rubric items
+                $rubricItemsData = [];
+                foreach ($rubricItemList as $rubricItem) {
+                    $rubricItemID = $rubricItem->getItemID();
+
+                    // is the item new or modified?
+                    $noticed = $readerManager->getLatestReaderForUserByID($rubricItemID, $refUser->getItemID());
+                    $itemNoticedStatus = empty($noticed)
+                        ? 'new'
+                        : ($noticed['read_date'] < $rubricItem->getModificationDate()
+                            ? 'changed'
+                            : 'seen'
+                        );
+
+                    // are there any new annotations for the new or modified items?
+                    $annotationCount = 0;
+                    foreach ($annotationList as $annotationItem) {
+                        $annotationNoticed = $readerManager->getLatestReaderForUserByID(
+                            $annotationItem->getItemID(),
+                            $refUser->getItemID()
+                        );
+
+                        if (empty($annotationNoticed)) {
+                            $linkedItem = $annotationItem->getLinkedItem();
+                            if ($linkedItem->getItemID() == $rubricItemID) {
+                                ++$annotationCount;
+                                $annotationsInNewsletter[] = $annotationItem;
+                            }
+                        }
+                    }
+
+                    if ($itemNoticedStatus !== 'seen' || $annotationCount > 0) {
+                        ++$countEntries;
+                        $rubricItemData['item'] = $rubricItem;
+                        $rubricItemData['itemNoticedStatus'] = $itemNoticedStatus;
+                        $rubricItemData['newAnnotationsCount'] = $annotationCount;
+                        $rubricItemsData[$rubricItemID] = $rubricItemData;
+                    }
+                }
+
+                if ($countEntries > 0) {
+                    $rubricData['itemsCount'] = $countEntries;
+                    $rubricData['items'] = $rubricItemsData;
+                }
+
+                if (!empty($rubricData)) {
+                    $rubricsData[$rubricSpecifier] = $rubricData;
+                }
+            }
+
+            $roomData['rubrics'] = $rubricsData;
+            $roomData['annotationsInNewsletter'] = $annotationsInNewsletter;
+
+            // are there any new annotations for unchanged items?
+            $annotationItem = $annotationList->getFirst();
+            $annotationsStillToSend = [];
+            while ($annotationItem) {
+                if (!in_array($annotationItem, $annotationsInNewsletter)) {
+                    $annotationNoticed = $readerManager->getLatestReaderForUserByID(
+                        $annotationItem->getItemID(),
+                        $refUser->getItemID()
+                    );
+                    if (empty($annotationNoticed)) {
+                        $annotationsStillToSend[] = $annotationItem;
+                    }
+                }
+                $annotationItem = $annotationList->getNext();
+            }
+            $roomData['annotationsStillToSend'] = $annotationsStillToSend;
+
+            if (!empty($roomData['rubrics'])) {
+                $roomsData[$roomItem->getItemID()] = $roomData;
+            }
+        }
+
+        $newsletterData['rooms'] = $roomsData;
 
         return $newsletterData;
     }

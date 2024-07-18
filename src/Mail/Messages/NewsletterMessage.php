@@ -32,12 +32,13 @@ class NewsletterMessage extends Message
 
     public function getSubject(): string
     {
-        return 'mail.newsletter_subject';
+        return $this->newsletterData['mailSequence'] === 'daily'
+            ? 'mail.newsletter_subject_daily'
+            : 'mail.newsletter_subject_weekly';
     }
 
     public function getTemplateName(): string
     {
-        // TODO: based on $newsletterData, the .twig should generate the HTML of the newsletter message
         return 'mail/newsletter.html.twig';
     }
 
@@ -46,7 +47,6 @@ class NewsletterMessage extends Message
         return [
             'portal' => $this->portal,
             'newsletterData' => $this->newsletterData,
-            'senderName' => $this->legacyEnvironment->getCurrentUserItem()->getFullName(), // DEBUG
         ];
     }
 

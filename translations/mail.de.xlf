@@ -258,9 +258,29 @@
                 <source>mail.account_registration.intro</source>
                 <target>%fullname% hat sich mit der Kennung "%username%" angemeldet.</target>
             </trans-unit>
-            <trans-unit id="mail_newsletter_subject">
-                <source>mail.newsletter_subject</source>
+            <trans-unit id="mail_newsletter_subject_daily">
+                <source>mail.newsletter_subject_daily</source>
                 <target>Täglicher CommSy-Newsletter: %portal%</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_subject_weekly">
+                <source>mail.newsletter_subject_weekly</source>
+                <target>Wöchentlicher CommSy-Newsletter: %portal%</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_intro">
+                <source>mail.newsletter_body_intro</source>
+                <target>Dieser Newsletter listet %mailSequence% neue oder geänderte Einträge in Ihren Räumen des CommSy-Portals "%portal%" auf. Berücksichtigt werden ungelesene Beiträge aus allen Räumen, in denen Sie Mitglied sind.</target>
+            </trans-unit>
+            <trans-unit id="daily">
+                <source>daily</source>
+                <target>täglich</target>
+            </trans-unit>
+            <trans-unit id="weekly">
+                <source>weekly</source>
+                <target>wöchentlich</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_outro">
+                <source>mail.newsletter_body_outro</source>
+                <target>Falls Sie den Newsletter nicht mehr erhalten möchten, bestellen Sie ihn bitte in Ihrem Profil beim Menüpunkt Newsletter ab.</target>
             </trans-unit>
         </body>
     </file>
