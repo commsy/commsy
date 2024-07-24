@@ -64,6 +64,9 @@ class CheckFileInfoResponse
     #[SerializedName('SupportsLocks')]
     private bool $supportsLocks;
 
+    #[SerializedName('SupportsUpdate')]
+    private bool $supportsUpdate;
+
     public function getBaseFileName(): string
     {
         return $this->baseFileName;
@@ -170,6 +173,17 @@ class CheckFileInfoResponse
     public function setSupportsLocks(bool $supportsLocks): self
     {
         $this->supportsLocks = $supportsLocks;
+        return $this;
+    }
+
+    public function isSupportsUpdate(): bool
+    {
+        return $this->supportsUpdate;
+    }
+
+    public function setSupportsUpdate(bool $supportsUpdate): self
+    {
+        $this->supportsUpdate = $supportsUpdate;
         return $this;
     }
 }
