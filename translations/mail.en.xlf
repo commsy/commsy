@@ -282,6 +282,10 @@
                 <source>mail.newsletter_body_outro</source>
                 <target>You can unsubscribe from this newsletter by switching off the according feature in your profile.</target>
             </trans-unit>
+            <trans-unit id="mail_newsletter_body_no_new_entries">
+                <source>mail_newsletter_body_no_new_entries</source>
+                <target>There are no new items.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

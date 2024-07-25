@@ -1,5 +1,9 @@
 {% set mailSequence = newsletterData.mailSequence|trans({}, 'mail') %}
 {{ 'mail.newsletter_body_intro'|trans({'%mailSequence%': mailSequence, '%portal%': portal.title}, 'mail') }}
+{%~ if newsletterData.rooms is empty ~%}
+<br/><br/>
+{{ 'mail_newsletter_body_no_new_entries'|trans({}, 'mail') }}
+{%~ endif ~%}
 {%~ for id, roomData in newsletterData.rooms ~%}
     <br/><br/>
     {%- set room = roomData.roomItem -%}

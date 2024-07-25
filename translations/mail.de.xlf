@@ -282,6 +282,10 @@
                 <source>mail.newsletter_body_outro</source>
                 <target>Falls Sie den Newsletter nicht mehr erhalten möchten, bestellen Sie ihn bitte in Ihrem Profil beim Menüpunkt Newsletter ab.</target>
             </trans-unit>
+            <trans-unit id="mail_newsletter_body_no_new_entries">
+                <source>mail_newsletter_body_no_new_entries</source>
+                <target>Es sind keine neuen Einträge vorhanden.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
