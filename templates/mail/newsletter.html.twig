@@ -4,10 +4,17 @@
 <br/><br/>
 {{ 'mail_newsletter_body_no_new_entries'|trans({}, 'mail') }}
 {%~ endif ~%}
-{%~ for id, roomData in newsletterData.rooms ~%}
+{%~ for id, roomData in newsletterData.rooms -%}
     <br/><br/>
     {%- set room = roomData.roomItem -%}
-    <a href="{{ roomData.homeUrl }}">{{ room.title }}</a>{# {{ url('app_room_home', { 'roomId': id }) }} #}
+    <strong><a href="{{ roomData.homeUrl }}">{{ room.title }}</a></strong>
+    {% for rubricSpecifier, rubricData in roomData.rubrics -%}
+        <br/><br/>  <a href="{{ url('app_' ~ rubricSpecifier ~ '_list', { 'roomId': id }) }}">{{ rubricSpecifier|trans({}, 'menu') }}</a> ({{ rubricData.itemsCount }}):
+        {% for itemId, itemData in rubricData.items -%}
+            {%- set item = itemData.item -%}
+            <br/>  -  <a href="{{ url('app_' ~ item.itemType ~ '_detail', { 'roomId': id, 'itemId': itemId }) }}">{{ item.title|decodeHtmlEntity }}</a>
+        {% endfor ~%}
+    {% endfor ~%}
 {%- endfor ~%}
 <br/><br/>
 --
