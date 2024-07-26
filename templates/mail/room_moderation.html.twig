@@ -1,23 +1,23 @@
-{{ '[This email was generated automatically at %time_generated%.]'|trans({ '%time_generated%': 'now'|date|format_datetime }, 'mail') }}
+{{ '[This email was generated automatically at {time_generated}.]'|trans({ 'time_generated': 'now'|date|format_datetime }, 'mail') }}
 
 <br/><br/>
 
 {% if changeType == 'open' %}
-    {{ 'mail.room_moderation.body.opened'|trans({}, 'mail') }}
+    {{ 'mail.room_moderation.body.opened'|trans({'room_type': room.type}, 'mail') }}
 {% elseif changeType == 'reopen' %}
-    {{ 'mail.room_moderation.body.reopened'|trans({}, 'mail') }}
+    {{ 'mail.room_moderation.body.reopened'|trans({'room_type': room.type}, 'mail') }}
 {% elseif changeType == 'delete' %}
-    {{ 'mail.room_moderation.body.deleted'|trans({}, 'mail') }}
+    {{ 'mail.room_moderation.body.deleted'|trans({'room_type': room.type}, 'mail') }}
 {% elseif changeType == 'undelete' %}
-    {{ 'mail.room_moderation.body.undeleted'|trans({}, 'mail') }}
+    {{ 'mail.room_moderation.body.undeleted'|trans({'room_type': room.type}, 'mail') }}
 {% elseif changeType == 'archive' %}
-    {{ 'mail.room_moderation.body.archived'|trans({}, 'mail') }}
+    {{ 'mail.room_moderation.body.archived'|trans({'room_type': room.type}, 'mail') }}
 {% elseif changeType == 'link' %}
     {{ 'mail.room_moderation.body.linked'|trans({}, 'mail') }}
 {% elseif changeType == 'lock' %}
-    {{ 'mail.room_moderation.body.locked'|trans({}, 'mail') }}
+    {{ 'mail.room_moderation.body.locked'|trans({'room_type': room.type}, 'mail') }}
 {% elseif changeType == 'unlock' %}
-    {{ 'mail.room_moderation.body.unlocked'|trans({}, 'mail') }}
+    {{ 'mail.room_moderation.body.unlocked'|trans({'room_type': room.type}, 'mail') }}
 {% endif %}
 
 <br/><br/>
@@ -34,32 +34,40 @@
 
 <br/><br/>
 
-{{ 'mail.room_moderation.body.linked_community_rooms'|trans({}, 'mail') }}:<br/>
-{% if changeType != 'link' %}
-    <ul>
-        {% for community in room.communityList %}
-            <li>{{ community.title }}</li>
-        {% else %}
-            {{ 'mail.room_moderation.body.linked_community_rooms.none'|trans({}, 'mail') }}
-        {% endfor %}
-    </ul>
-{% else %}
-    <ul>
-        {% for name in linkedCommunityRoomNames %}
-            <li>{{ name }}</li>
-        {% else %}
-            {{ 'mail.room_moderation.body.linked_community_rooms.none'|trans({}, 'mail') }}
-        {% endfor %}
-    </ul>
+{% if room.isProjectRoom %}
+    {{ 'mail.room_moderation.body.linked_community_rooms'|trans({}, 'mail') }}:<br/>
+    {% if changeType != 'link' %}
+        <ul>
+            {% for community in room.communityList %}
+                <li>{{ community.title }}</li>
+            {% else %}
+                {{ 'mail.room_moderation.body.linked_community_rooms.none'|trans({}, 'mail') }}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <ul>
+            {% for name in linkedCommunityRoomNames %}
+                <li>{{ name }}</li>
+            {% else %}
+                {{ 'mail.room_moderation.body.linked_community_rooms.none'|trans({}, 'mail') }}
+            {% endfor %}
+        </ul>
 
-    {% if unlinkedCommunityRoomNames|length %}
-        {{ 'mail.room_moderation.body.unlinked_community_rooms'|trans({}, 'mail') }}
-        {% for name in unlinkedCommunityRoomNames %}
-            <li>{{ name }}</li>
-        {% else %}
-            {{ 'mail.room_moderation.body.linked_community_rooms.none'|trans({}, 'mail') }}
-        {% endfor %}
+        {% if unlinkedCommunityRoomNames|length %}
+            {{ 'mail.room_moderation.body.unlinked_community_rooms'|trans({}, 'mail') }}
+            <ul>
+                {% for name in unlinkedCommunityRoomNames %}
+                    <li>{{ name }}</li>
+                {% else %}
+                    {{ 'mail.room_moderation.body.linked_community_rooms.none'|trans({}, 'mail') }}
+                {% endfor %}
+            </ul>
+        {% endif %}
     {% endif %}
+{% endif %}
+
+{% if room.isGroupRoom and room.getLinkedProjectItem is defined %}
+    {{ 'mail.room_moderation.body.linked_project_room'|trans({'room_name'. room.getlinkedProjectItem.title}, 'mail') }}
 {% endif %}
 
 <br/><br/>
@@ -67,5 +75,5 @@
 {% if parentContext is defined and parentContext.isPortal %}
     {{ 'mail.footer.why_portal'|trans({}, 'mail') }}
 {% else %}
-    {{ 'You received this email as one of the moderator/s in the workspace "%room_name%".'|trans({ '%room_name%': room.title }, 'mail') }}
+    {{ 'You received this email as one of the moderator/s in the workspace "{room_name}".'|trans({ 'room_name': room.title }, 'mail') }}
 {% endif %}

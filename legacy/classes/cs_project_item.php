@@ -11,11 +11,23 @@
  * file that was distributed with this source code.
  */
 
+use App\Account\AccountManager;
+use App\Account\AccountSetting;
+use App\Account\AccountSettingsManager;
 use App\Entity\Room;
+use App\Event\Workspace\WorkspaceArchivedEvent;
+use App\Event\Workspace\WorkspaceDeletedEvent;
+use App\Event\Workspace\WorkspaceLinkUpdatedEvent;
+use App\Event\Workspace\WorkspaceLockedEvent;
+use App\Event\Workspace\WorkspaceOpenedEvent;
+use App\Event\Workspace\WorkspaceUnarchivedEvent;
+use App\Event\Workspace\WorkspaceUndeletedEvent;
+use App\Event\Workspace\WorkspaceUnlockedEvent;
 use App\Mail\Factories\ModerationMessageFactory;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use App\Proxy\PortalProxy;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** father class for a rooms (project or community)
  * this class implements an abstract room item.
@@ -237,6 +249,11 @@ class cs_project_item extends cs_room_item
         }
         $this->_save($manager);
 
+        $symfonyContainer = $this->_environment->getSymfonyContainer();
+
+        /** @var EventDispatcher $eventDispatcher */
+        $eventDispatcher = $symfonyContainer->get('event_dispatcher');
+
         if (empty($item_id)) {
             // create first moderator
             $new_room_user = $current_user->cloneData();
@@ -279,33 +296,33 @@ class cs_project_item extends cs_room_item
             $new_room_user->setChangeModificationOnSave(false);
             $new_room_user->save();
 
-            // send mail to moderation
-            $this->_sendMailRoomOpen();
+            // dispatch event (sending mail to moderation is handled by an event subscriber)
+            $eventDispatcher->dispatch(new WorkspaceOpenedEvent($this));
+
             if ($this->_changed_room_link) {
-                $this->_sendMailRoomLink();
+                $eventDispatcher->dispatch(new WorkspaceLinkUpdatedEvent($this));
                 $this->_changed_room_link = false;
             }
         } else {
             $new_status = $this->getStatus();
             $creation_date = $this->getCreationDate();
             $timestamp = strtotime($creation_date);
-            $show_time = true;
-            if (($timestamp + 60) <= time()) {
-                $show_time = false;
-            }
+            $show_time = !(($timestamp + 60) <= time());
+
+            // dispatch event (sending mail to moderation is handled by an event subscriber)
             if ($new_status != $this->_old_status) {
                 if (CS_ROOM_LOCK == $this->_old_status) {
-                    $this->_sendMailRoomUnlock();
+                    $eventDispatcher->dispatch(new WorkspaceUnlockedEvent($this));
                 } elseif (CS_ROOM_CLOSED == $new_status) {
-                    $this->_sendMailRoomArchive();
+                    $eventDispatcher->dispatch(new WorkspaceArchivedEvent($this));
                 } elseif (CS_ROOM_OPEN == $new_status and !$show_time) {
-                    $this->_sendMailRoomReOpen();
+                    $eventDispatcher->dispatch(new WorkspaceUnarchivedEvent($this));
                 } elseif (CS_ROOM_LOCK == $new_status) {
-                    $this->_sendMailRoomLock();
+                    $eventDispatcher->dispatch(new WorkspaceLockedEvent($this));
                 }
             }
             if ($this->_changed_room_link) {
-                $this->_sendMailRoomLink();
+                $eventDispatcher->dispatch(new WorkspaceLinkUpdatedEvent($this));
                 $this->_changed_room_link = false;
             }
         }
@@ -444,16 +461,16 @@ class cs_project_item extends cs_room_item
 
         // delete associated tasks
         $task_list = $this->_getTaskList();
-        $current_task = $task_list->getFirst();
-        while ($current_task) {
-            $current_task->delete();
-            unset($current_task);
-            $current_task = $task_list->getNext();
+        foreach ($task_list as $task) {
+            $task->delete();
         }
-        unset($task_list);
 
-        // send mail to moderation
-        $this->_sendMailRoomDelete();
+        // dispatch delete event (sending mail to moderation is handled by an event subscriber)
+        $symfonyContainer = $this->_environment->getSymfonyContainer();
+
+        /** @var EventDispatcher $eventDispatcher */
+        $eventDispatcher = $symfonyContainer->get('event_dispatcher');
+        $eventDispatcher->dispatch(new WorkspaceDeletedEvent($this));
 
         $manager = $this->_environment->getProjectManager();
         $this->_delete($manager);
@@ -471,8 +488,12 @@ class cs_project_item extends cs_room_item
         $manager = $this->_environment->getProjectManager();
         $this->_undelete($manager);
 
-        // send mail to moderation
-        $this->_sendMailRoomUnDelete();
+        // dispatch undelete event (sending mail to moderation is handled by an event subscriber)
+        $symfonyContainer = $this->_environment->getSymfonyContainer();
+
+        /** @var EventDispatcher $eventDispatcher */
+        $eventDispatcher = $symfonyContainer->get('event_dispatcher');
+        $eventDispatcher->dispatch(new WorkspaceUndeletedEvent($this));
 
         // re-insert internal community room links
         $com_list = $this->getCommunityList();
@@ -702,76 +723,9 @@ class cs_project_item extends cs_room_item
          $this->_setExtra('USERROOM_TEMPLATE_ITEM_ID', (int) $roomId);
      }
 
-    // ###############################################################
-    // mail to moderation, if the project room status changed
-    // - delete
-    // - undelete
-    // - open
-    // - archive
-    // - template (not implemented yet because flagged function)
-    // - untemplate (not implemented yet because flagged function)
-    // - reopen
-    // - link to and unlink from community room
-    // ###############################################################
-
-    public function _sendMailRoomDelete(): void
-    {
-        $this->_sendMailRoomDeleteToProjectModeration();
-        $this->_sendMailRoomDeleteToCommunityModeration();
-        $this->_sendMailRoomDeleteToPortalModeration();
-    }
-
-    public function _sendMailRoomUnDelete(): void
-    {
-        $this->_sendMailRoomUnDeleteToProjectModeration();
-        $this->_sendMailRoomUnDeleteToCommunityModeration();
-        $this->_sendMailRoomUnDeleteToPortalModeration();
-    }
-
-    public function _sendMailRoomOpen(): void
-    {
-        $this->_sendMailRoomOpenToProjectModeration();
-        $this->_sendMailRoomOpenToCommunityModeration();
-        $this->_sendMailRoomOpenToPortalModeration();
-    }
-
-    public function _sendMailRoomArchive(): void
-    {
-        $this->_sendMailRoomArchiveToProjectModeration();
-        $this->_sendMailRoomArchiveToCommunityModeration();
-        $this->_sendMailRoomArchiveToPortalModeration();
-    }
-
-    public function _sendMailRoomReOpen(): void
-    {
-        $this->_sendMailRoomReOpenToProjectModeration();
-        $this->_sendMailRoomReOpenToCommunityModeration();
-        $this->_sendMailRoomReOpenToPortalModeration();
-    }
-
-    public function _sendMailRoomLink(): void
-    {
-        $this->_sendMailRoomLinkToProjectModeration();
-        $this->_sendMailRoomLinkToCommunityModeration();
-        $this->_sendMailRoomLinkToPortalModeration();
-    }
-
-    public function _sendMailRoomLock(): void
-    {
-        $this->_sendMailRoomLockToProjectModeration();
-        $this->_sendMailRoomLockToCommunityModeration();
-        $this->_sendMailRoomLockToPortalModeration();
-    }
-
-    public function _sendMailRoomUnlock(): void
-    {
-        $this->_sendMailRoomUnlockToProjectModeration();
-        $this->_sendMailRoomUnlockToCommunityModeration();
-        $this->_sendMailRoomUnlockToPortalModeration();
-    }
-
     public function _sendMailToModeration($room_moderation, $room_change): void
     {
+        // $room_moderation is one of 'portal', 'project', 'community', 'group'
         if ('portal' == $room_moderation) {
             $this->_sendMailToModeration2($this->getContextItem(), $room_change);
         } elseif ('project' == $room_moderation) {
@@ -809,12 +763,33 @@ class cs_project_item extends cs_room_item
 
      public function _sendMailToModeration2($room_item, $room_change): void
      {
-         /** @var ContainerInterface $symfonyContainer */
-         global $symfonyContainer;
+         $symfonyContainer = $this->_environment->getSymfonyContainer();
 
-         $recipients = RecipientFactory::createModerationRecipients($room_item, fn (cs_user_item $user) =>
-            $user->getOpenRoomWantMail()
-         );
+         if ($room_item instanceof PortalProxy) {
+             /** @var AccountManager $accountManager */
+             $accountManager = $symfonyContainer->get(AccountManager::class);
+
+             /** @var AccountSettingsManager $settingsManager */
+             $settingsManager = $symfonyContainer->get(AccountSettingsManager::class);
+
+             $portalModeratorAccounts = $accountManager->getAccounts($room_item->getId(), ...$room_item->getModeratorList());
+             $filteredModeratorAccounts = array_filter(
+                 iterator_to_array($portalModeratorAccounts),
+                 function ($account) use ($settingsManager): bool {
+                    $setting = $settingsManager->getSetting(
+                        $account,
+                        AccountSetting::NOTIFY_PORTAL_MOD_ON_WORKSPACE_CHANGE);
+
+                    return $setting['enabled'] === true;
+                 }
+             );
+
+             $recipients = iterator_to_array(RecipientFactory::createFromAccounts(...$filteredModeratorAccounts));
+         } else {
+             $recipients = RecipientFactory::createModerationRecipients($room_item, fn (cs_user_item $user) =>
+                $user->getOpenRoomWantMail()
+             );
+         }
 
          /** @var Mailer $mailer */
          $mailer = $symfonyContainer->get(Mailer::class);

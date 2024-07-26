@@ -126,6 +126,13 @@ final readonly class AccountManager
         return $accountRepository->findOneByCredentials($user->getUserID(), $portalId, $authSource);
     }
 
+    public function getAccounts(int $portalId, cs_user_item ...$users): iterable
+    {
+        foreach ($users as $user) {
+            yield $this->getAccount($user, $portalId);
+        }
+    }
+
     public function getPortal(Account $account): ?Portal
     {
         $portalRepository = $this->entityManager->getRepository(Portal::class);

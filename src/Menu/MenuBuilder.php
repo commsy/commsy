@@ -136,6 +136,20 @@ final readonly class MenuBuilder
                 ])
                 ->setExtra('translation_domain', 'menu');
 
+                $portalUser = $currentUser->getRelatedPortalUserItem();
+                if ($portalUser && $portalUser->isModerator()) {
+                    $menu->addChild('notifications', [
+                        'route' => 'app_account_notifications',
+                        'routeParameters' => [
+                            'portalId' => $account->getContextId(),
+                        ],
+                        'extras' => [
+                            'icon' => 'uk-icon-bell uk-icon-small uk-icon-justify',
+                        ],
+                    ])
+                    ->setExtra('translation_domain', 'menu');
+                }
+
                 $menu->addChild('deleteAccount', [
                     'route' => 'app_account_deleteaccount',
                     'routeParameters' => [

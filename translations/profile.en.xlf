@@ -476,6 +476,10 @@
                 <source>send mail</source>
                 <target>send mail</target>
             </trans-unit>
+            <trans-unit id="profile_portal_moderation">
+                <source>profile.portal_moderation</source>
+                <target>Portal Moderation</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>
