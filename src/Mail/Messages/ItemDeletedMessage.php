@@ -25,7 +25,7 @@ class ItemDeletedMessage extends Message
 
     public function getSubject(): string
     {
-        return 'Deleted entry (%room_name%)';
+        return 'Deleted entry ({room_name})';
     }
 
     public function getTemplateName(): string
@@ -44,7 +44,7 @@ class ItemDeletedMessage extends Message
     public function getTranslationParameters(): array
     {
         return [
-            '%room_name%' => $this->item->getContextItem()->getTitle(),
+            'room_name' => $this->item->getContextItem()->getTitle(),
         ];
     }
 }

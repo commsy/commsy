@@ -84,7 +84,7 @@ class RoomModerationMessage extends Message
     public function getTranslationParameters(): array
     {
         return [
-            '%room_title%' => $this->room->getTitle(),
+            'room_title' => $this->room->getTitle(),
         ];
     }
 }

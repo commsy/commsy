@@ -1,12 +1,5 @@
 <?php
 $message["COMMUNITY_ACCESS_NOT_GRANTED"]["de"] = "Sie dürfen %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG <span style=&quot;font-weight:bold;&quot;>%1</span> nicht betreten, da Sie dort kein Mitglied sind. Sie können hier die %2.";
 $message["COMMUNITY_INDEX"]["de"] = "%_COMMUNITY_SUB_NOMPL_BIG";
-$message["COMMUNITY_MAIL_BODY_ARCHIVE"]["de"] = "Archivierung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
-$message["COMMUNITY_MAIL_BODY_DELETE"]["de"] = "Löschung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
-$message["COMMUNITY_MAIL_BODY_LOCK"]["de"] = "Sperrung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
-$message["COMMUNITY_MAIL_BODY_OPEN"]["de"] = "Eröffnung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
-$message["COMMUNITY_MAIL_BODY_REOPEN"]["de"] = "Wiedereröffnung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
-$message["COMMUNITY_MAIL_BODY_UNDELETE"]["de"] = "Wiederherstellung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
-$message["COMMUNITY_MAIL_BODY_UNLOCK"]["de"] = "Entsperrung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
 $message["COMMUNITY_SHORT_DESCRIPTION"]["de"] = "die aktivsten";
 ?>

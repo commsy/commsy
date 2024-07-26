@@ -33,7 +33,7 @@ class RoomActivityDeleteWarningMessage extends Message
 
     public function getSubject(): string
     {
-        return '%portal_name%: Workspace will be deleted in %num_days% days';
+        return '{portal_name}: Workspace will be deleted in {num_days} days';
     }
 
     public function getTemplateName(): string
@@ -61,8 +61,8 @@ class RoomActivityDeleteWarningMessage extends Message
     public function getTranslationParameters(): array
     {
         return [
-            '%portal_name%' => $this->portal->getTitle(),
-            '%num_days%' => $this->portal->getClearInactiveRoomsDeleteDays(),
+            'portal_name' => $this->portal->getTitle(),
+            'num_days' => $this->portal->getClearInactiveRoomsDeleteDays(),
         ];
     }
 }

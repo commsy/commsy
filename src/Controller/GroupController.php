@@ -924,9 +924,9 @@ class GroupController extends BaseController
                     $defaultBodyMessage .= $this->translator->trans(
                         'This email has been sent to all users of this group',
                         [
-                            '%sender_name%' => $currentUser->getFullName(),
-                            '%group_name%' => $group->getName(),
-                            '%room_name%' => $room->getTitle(),
+                            'sender_name' => $currentUser->getFullName(),
+                            'group_name' => $group->getName(),
+                            'room_name' => $room->getTitle(),
                         ],
                         'mail'
                     );
@@ -935,9 +935,9 @@ class GroupController extends BaseController
                 $defaultBodyMessage .= $this->translator->trans(
                     'This email has been sent to multiple users of this room',
                     [
-                        '%sender_name%' => $currentUser->getFullName(),
-                        '%user_count%' => count($users),
-                        '%room_name%' => $room->getTitle(),
+                        'sender_name' => $currentUser->getFullName(),
+                        'user_count' => count($users),
+                        'room_name' => $room->getTitle(),
                     ],
                     'mail'
                 );
@@ -1061,9 +1061,9 @@ class GroupController extends BaseController
         $defaultBodyMessage = '<br/><br/><br/>--<br/>'.$this->translator->trans(
             'This email has been sent to all users of this group',
             [
-                '%sender_name%' => $currentUser->getFullName(),
-                '%group_name%' => $item->getName(),
-                '%room_name%' => $room->getTitle(),
+                'sender_name' => $currentUser->getFullName(),
+                'group_name' => $item->getName(),
+                'room_name' => $room->getTitle(),
             ],
             'mail'
         );

@@ -1,4 +1,4 @@
-{{ '[This email was generated automatically at %time_generated%.]'|trans({ '%time_generated%': 'now'|date|format_datetime }, 'mail') }}
+{{ '[This email was generated automatically at {time_generated}.]'|trans({ 'time_generated': 'now'|date|format_datetime }, 'mail') }}
 
 <br/><br/>
 
@@ -19,14 +19,14 @@
 
     {% if communityRoomTitles is not empty %}
         <br/><br/>
-        {{ 'This project workspace is linked to the following community workspaces: %community_workspaces%'|trans({ 'community_workspaces': communityRoomTitles }, 'mail') }}
+        {{ 'This project workspace is linked to the following community workspaces: {community_workspaces}'|trans({ 'community_workspaces': communityRoomTitles }, 'mail') }}
     {% endif %}
 {% endif %}
 
 <br/><br/>
 
-{{ 'This email was send to: %recipients%'|trans({ '%recipients%': 'TODO'}, 'mail') }}
+{{ 'This email was send to: {recipients}'|trans({ 'recipients': 'TODO'}, 'mail') }}
 
 <br/><br/>
 
-{{ 'You received this email as one of the moderator/s in the workspace "%room_name%".'|trans({ '%room_name%': room.title }, 'mail') }}
+{{ 'You received this email as one of the moderator/s in the workspace "{room_name}".'|trans({ 'room_name': room.title }, 'mail') }}

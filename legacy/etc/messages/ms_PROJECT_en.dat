@@ -1,16 +1,9 @@
 <?php
 $message["PROJECT_HEADER_IN_COMMUNITY_ROOM"]["en"] = "%_PROJECT_SUB_NOMPL_BIG of the %1";
 $message["PROJECT_INDEX"]["en"] = "%_PROJECT_SUB_NOMPL_BIG";
-$message["PROJECT_MAIL_BODY_ACTION_ARCHIVE"]["en"] = "Storage";
 $message["PROJECT_MAIL_BODY_ACTION_ARCHIVE_INFO"]["en"] = "Announcement of Storage";
-$message["PROJECT_MAIL_BODY_ACTION_DELETE"]["en"] = "Deletion";
 $message["PROJECT_MAIL_BODY_ACTION_DELETE_INFO"]["en"] = "Announcement of Deletion";
 $message["PROJECT_MAIL_BODY_ACTION_LINK"]["en"] = "Changing links";
-$message["PROJECT_MAIL_BODY_ACTION_LOCK"]["en"] = "Blocking";
-$message["PROJECT_MAIL_BODY_ACTION_OPEN"]["en"] = "Opening";
-$message["PROJECT_MAIL_BODY_ACTION_REOPEN"]["en"] = "Reopening";
-$message["PROJECT_MAIL_BODY_ACTION_UNDELETE"]["en"] = "Undeletion";
-$message["PROJECT_MAIL_BODY_ACTION_UNLOCK"]["en"] = "Unblocking";
 $message["PROJECT_MAIL_BODY_ARCHIVE"]["en"] = "Storage of a %_PROJECT_SUB_NOMS_LOW.";
 $message["PROJECT_MAIL_BODY_COMMUNITIY_ROOMS"]["en"] = "The %_PROJECT_SUB_NOMS_LOW is linked to the following %_COMMUNITY_SUB_NOMPL_LOW:";
 $message["PROJECT_MAIL_BODY_COMMUNITIY_ROOMS_EMPTY"]["en"] = "*no %_COMMUNITY_SUB_NOMPL_LOW";
@@ -26,15 +19,7 @@ $message["PROJECT_MAIL_BODY_OPEN"]["en"] = "Opening of a %_PROJECT_SUB_NOMS_LOW.
 $message["PROJECT_MAIL_BODY_REOPEN"]["en"] = "Reopening of a %_PROJECT_SUB_GENS_BIG.";
 $message["PROJECT_MAIL_BODY_UNDELETE"]["en"] = "Undeletion of a %_PROJECT_SUB_NOMS_LOW.";
 $message["PROJECT_MAIL_BODY_UNLOCK"]["en"] = "Unblocking of a %_PROJECT_SUB_NOMS_LOW.";
-$message["PROJECT_MAIL_SUBJECT_ARCHIVE"]["en"] = "%1 stored";
-$message["PROJECT_MAIL_SUBJECT_DELETE"]["en"] = "%1 deleted";
 $message["PROJECT_MAIL_SUBJECT_DELETE_INFO"]["en"] = "%1 will be deleted in %2 days";
-$message["PROJECT_MAIL_SUBJECT_LINK"]["en"] = "%1 linked";
-$message["PROJECT_MAIL_SUBJECT_LOCK"]["en"] = "%1 locked";
-$message["PROJECT_MAIL_SUBJECT_OPEN"]["en"] = "%1 opened";
-$message["PROJECT_MAIL_SUBJECT_REOPEN"]["en"] = "%1 reopened";
-$message["PROJECT_MAIL_SUBJECT_UNDELETE"]["en"] = "%1 undeleted";
-$message["PROJECT_MAIL_SUBJECT_UNLOCK"]["en"] = "%1 unlocked";
 $message["PROJECT_ROOM_IS_CLOSED"]["en"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_LOW &quot;%1&quot; has been closed. No changes can be made at the moment.";
 $message["PROJECT_SHORT_DESCRIPTION"]["en"] = "The most active %1 workspaces";
 ?>

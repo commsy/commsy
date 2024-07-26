@@ -8,11 +8,11 @@
 <br><br>--<br>
 
 {% if contextItem.isProjectRoom %}
-    {{ 'This email has been sent by ... from project room ...'|trans({'%sender_name%': currentUser.getFullName, '%room_name%': contextItem.title|decodeHtmlEntity}, 'mail') }}
+    {{ 'This email has been sent by ... from project room ...'|trans({'sender_name': currentUser.getFullName, 'room_name': contextItem.title|decodeHtmlEntity}, 'mail') }}
 {% elseif contextItem.isGroupRoom %}
-    {{ 'This email has been sent by ... from group room ...'|trans({'%sender_name%': currentUser.getFullName, '%room_name%': contextItem.title|decodeHtmlEntity}, 'mail') }}
+    {{ 'This email has been sent by ... from group room ...'|trans({'sender_name': currentUser.getFullName, 'room_name': contextItem.title|decodeHtmlEntity}, 'mail') }}
 {% else %}
-    {{ 'This email has been sent by ... from community room ...'|trans({'%sender_name%': currentUser.getFullName, '%room_name%': contextItem.title|decodeHtmlEntity}, 'mail') }}
+    {{ 'This email has been sent by ... from community room ...'|trans({'sender_name': currentUser.getFullName, 'room_name': contextItem.title|decodeHtmlEntity}, 'mail') }}
 {% endif %}
 
 <br>

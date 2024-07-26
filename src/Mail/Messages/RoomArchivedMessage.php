@@ -24,7 +24,7 @@ class RoomArchivedMessage extends Message
 
     public function getSubject(): string
     {
-        return '%room_name% will be archived in %num_days% days.';
+        return '{room_name} will be archived in {num_days} days.';
     }
 
     public function getTemplateName(): string
@@ -35,8 +35,8 @@ class RoomArchivedMessage extends Message
     public function getTranslationParameters(): array
     {
         return [
-            '%room_name%' => $this->room->getTitle(),
-            '%num_days%' => $this->numDays,
+            'room_name' => $this->room->getTitle(),
+            'num_days' => $this->numDays,
         ];
     }
 
