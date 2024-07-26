@@ -1073,7 +1073,7 @@ class cs_room_item extends cs_context_item
         return $retour;
     }
 
-    protected function updateElastic(): void
+    public function updateElastic(): void
     {
         if ($this->getArchived()) {
             return;
