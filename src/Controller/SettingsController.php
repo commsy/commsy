@@ -36,6 +36,7 @@ use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
 use App\Repository\TermsRepository;
+use App\Room\RoomStatus;
 use App\Services\InvitationsService;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
@@ -462,7 +463,8 @@ class SettingsController extends AbstractController
         Request $request,
         RoomService $roomService,
         TranslatorInterface $translator,
-        LegacyEnvironment $legacyEnvironment
+        LegacyEnvironment $legacyEnvironment,
+        PortalRepository $portalRepository
     ): Response {
         $portalItem = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
         $portalId = $portalItem->getItemId();
@@ -503,7 +505,11 @@ class SettingsController extends AbstractController
         $lockForm->handleRequest($request);
         if ($lockForm->isSubmitted() && $lockForm->isValid()) {
             if ($lockForm->get('lock')->isClicked()) {
-                $roomItem->lock();
+                $portal = $portalRepository->find($portalId);
+                $status = $this->isGranted('PORTAL_MODERATOR', $portal) ?
+                    RoomStatus::LOCKED_PORTAL_MOD : RoomStatus::LOCKED;
+
+                $roomItem->lock($status);
                 $roomItem->save();
 
                 // redirect back to all rooms

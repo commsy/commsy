@@ -15,10 +15,6 @@
 
 define('CS_LIST_INTERVAL', 20);
 
-define('CS_NO_ROOM', 0);
-define('CS_ROOM_OPEN', 1);
-define('CS_ROOM_CLOSED', 2);
-define('CS_ROOM_LOCK', 3);
 define('CS_ALL', 'all');
 
 define('CS_ITEM_TYPE', 'item');

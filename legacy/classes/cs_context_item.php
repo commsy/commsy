@@ -12,6 +12,7 @@
  */
 
 use App\Repository\LogRepository;
+use App\Room\RoomStatus;
 
 /** class for a context
  * this class implements a context item.
@@ -466,28 +467,28 @@ class cs_context_item extends cs_item
         return $this->getAGBStatus() == 1;
     }
 
-      public function getAGBChangeDate(): ?DateTimeImmutable
-      {
-          if ($this->_issetExtra('AGB_CHANGE_DATE')) {
-              $agbChangeDate = $this->_getExtra('AGB_CHANGE_DATE') ?? '';
+    public function getAGBChangeDate(): ?DateTimeImmutable
+    {
+        if ($this->_issetExtra('AGB_CHANGE_DATE')) {
+            $agbChangeDate = $this->_getExtra('AGB_CHANGE_DATE') ?? '';
 
-              return !empty($agbChangeDate) ?
-                  DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $agbChangeDate) :
-                  null;
-          }
+            return !empty($agbChangeDate) ?
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $agbChangeDate) :
+                null;
+        }
 
-          return null;
-      }
+        return null;
+    }
 
-      public function setAGBChangeDate(?DateTimeImmutable $agbChangeDate): self
-      {
-          $this->_addExtra(
-              'AGB_CHANGE_DATE',
-              $agbChangeDate ? $agbChangeDate->format('Y-m-d H:i:s') : ''
-          );
+    public function setAGBChangeDate(?DateTimeImmutable $agbChangeDate): self
+    {
+        $this->_addExtra(
+            'AGB_CHANGE_DATE',
+            $agbChangeDate ? $agbChangeDate->format('Y-m-d H:i:s') : ''
+        );
 
-          return $this;
-      }
+        return $this;
+    }
 
     public function withAssociations(): bool
     {
@@ -912,8 +913,8 @@ class cs_context_item extends cs_item
      */
     public function mayEnterByUserID($user_id, $auth_source): bool
     {
-        if (isset($this->_cache_may_enter[$user_id.'_'.$auth_source])) {
-            return $this->_cache_may_enter[$user_id.'_'.$auth_source];
+        if (isset($this->_cache_may_enter[$user_id . '_' . $auth_source])) {
+            return $this->_cache_may_enter[$user_id . '_' . $auth_source];
         }
 
         if ('root' == $user_id) {
@@ -930,11 +931,11 @@ class cs_context_item extends cs_item
 
         $user_manager = $this->_environment->getUserManager();
         if ($user_manager->isUserInContext($user_id, $this->getItemID(), $auth_source)) {
-            $this->_cache_may_enter[$user_id.'_'.$auth_source] = true;
+            $this->_cache_may_enter[$user_id . '_' . $auth_source] = true;
 
             return true;
         } else {
-            $this->_cache_may_enter[$user_id.'_'.$auth_source] = false;
+            $this->_cache_may_enter[$user_id . '_' . $auth_source] = false;
         }
 
         return false;
@@ -1008,8 +1009,8 @@ class cs_context_item extends cs_item
     public function checkNewMembersAlways(): bool
     {
         if ($this->checkNewMembersSometimes()
-                or $this->checkNewMembersNever()
-                or $this->checkNewMembersWithCode()
+            or $this->checkNewMembersNever()
+            or $this->checkNewMembersWithCode()
         ) {
             return false;
         }
@@ -2048,39 +2049,39 @@ class cs_context_item extends cs_item
         return $this->_default_rubrics_array;
     }
 
-     public function isRSSOn(): bool
-     {
-         $value = $this->getRSSStatus();
-         if (!empty($value) && -1 == $value) {
-             return false;
-         }
+    public function isRSSOn(): bool
+    {
+        $value = $this->getRSSStatus();
+        if (!empty($value) && -1 == $value) {
+            return false;
+        }
 
-         return true;
-     }
+        return true;
+    }
 
-     public function getRSSStatus()
-     {
-         if ($this->_issetExtra('RSS_STATUS')) {
-             return $this->_getExtra('RSS_STATUS');
-         }
+    public function getRSSStatus()
+    {
+        if ($this->_issetExtra('RSS_STATUS')) {
+            return $this->_getExtra('RSS_STATUS');
+        }
 
-         return '';
-     }
+        return '';
+    }
 
-     public function _setRSSStatus($value): void
-     {
-         $this->_addExtra('RSS_STATUS', $value);
-     }
+    public function _setRSSStatus($value): void
+    {
+        $this->_addExtra('RSS_STATUS', $value);
+    }
 
-     public function turnRSSOn(): void
-     {
-         $this->_setRSSStatus(1);
-     }
+    public function turnRSSOn(): void
+    {
+        $this->_setRSSStatus(1);
+    }
 
-     public function turnRSSOff(): void
-     {
-         $this->_setRSSStatus(-1);
-     }
+    public function turnRSSOff(): void
+    {
+        $this->_setRSSStatus(-1);
+    }
 
     // #########################################
     // ads
@@ -2194,7 +2195,7 @@ class cs_context_item extends cs_item
      */
     public function open(): void
     {
-        $this->_data['status'] = CS_ROOM_OPEN;
+        $this->_data['status'] = RoomStatus::OPEN->value;
     }
 
     /** close a room
@@ -2202,16 +2203,20 @@ class cs_context_item extends cs_item
      */
     public function close(): void
     {
-        $this->_data['status'] = CS_ROOM_CLOSED;
+        $this->_data['status'] = RoomStatus::CLOSED->value;
     }
 
     /** lock a room
      * this method sets the status of the room to locked.
      */
-    public function lock(): void
+    public function lock($status = RoomStatus::LOCKED): void
     {
+        if (!in_array($status, [RoomStatus::LOCKED, RoomStatus::LOCKED_PORTAL_MOD])) {
+            throw new InvalidArgumentException();
+        }
+
         $this->setLastStatus($this->getStatus());
-        $this->_data['status'] = CS_ROOM_LOCK;
+        $this->_data['status'] = $status->value;
     }
 
     /** lock a room
@@ -2219,9 +2224,12 @@ class cs_context_item extends cs_item
      */
     public function unlock(): void
     {
-        $temp = $this->getLastStatus();
+        $newStatus = $this->getLastStatus();
         $this->setLastStatus($this->getStatus());
-        $this->_data['status'] = $temp;
+
+        $newStatus = $newStatus === RoomStatus::LOCKED->value ? RoomStatus::OPEN->value : $newStatus;
+        $newStatus = $newStatus === RoomStatus::LOCKED_PORTAL_MOD->value ? RoomStatus::OPEN->value : $newStatus;
+        $this->_data['status'] = $newStatus;
     }
 
     /** is room a normal open ?
@@ -2232,9 +2240,7 @@ class cs_context_item extends cs_item
      */
     public function isOpen(): bool
     {
-        if (!empty($this->_data['status'])
-                and CS_ROOM_OPEN == $this->_data['status']
-        ) {
+        if (!empty($this->_data['status']) && RoomStatus::OPEN->value == $this->_data['status']) {
             return true;
         }
 
@@ -2249,9 +2255,7 @@ class cs_context_item extends cs_item
      */
     public function isClosed(): bool
     {
-        if (!empty($this->_data['status'])
-                and CS_ROOM_CLOSED == $this->_data['status']
-        ) {
+        if (!empty($this->_data['status']) && RoomStatus::CLOSED->value == $this->_data['status']) {
             return true;
         }
 
@@ -2266,8 +2270,10 @@ class cs_context_item extends cs_item
      */
     public function isLocked(): bool
     {
-        if (!empty($this->_data['status'])
-                and CS_ROOM_LOCK == $this->_data['status']
+        if (!empty($this->_data['status']) && in_array($this->_data['status'], [
+                RoomStatus::LOCKED->value,
+                RoomStatus::LOCKED_PORTAL_MOD->value
+            ])
         ) {
             return true;
         }
@@ -2275,47 +2281,9 @@ class cs_context_item extends cs_item
         return false;
     }
 
-    public function lockForMoveWithLinkedRooms(): void
+    public function isLockedByModerator(): bool
     {
-        $this->_addExtra('MOVE', '2');
-    }
-
-    public function lockForMove(): void
-    {
-        $this->_addExtra('MOVE', '1');
-    }
-
-    public function moveWithLinkedRooms(): bool
-    {
-        if ($this->_issetExtra('MOVE')) {
-            if (2 == $this->_getExtra('MOVE')) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function unlockForMove(): void
-    {
-        $this->_unsetExtra('MOVE');
-    }
-
-    /** is a room locked for movement between portals?
-     * this method returns a boolean explaining if a room is locked for movement between portals.
-     *
-     * @return bool true, if a room is locked
-     *              false, if a room is not locked
-     */
-    public function isLockedForMove(): bool
-    {
-        if ($this->_issetExtra('MOVE')) {
-            if (1 == $this->_getExtra('MOVE') or 2 == $this->_getExtra('MOVE')) {
-                return true;
-            }
-        }
-
-        return false;
+        return !empty($this->_data['status']) && intval($this->_data['status']) === RoomStatus::LOCKED_PORTAL_MOD->value;
     }
 
     // #########################################
