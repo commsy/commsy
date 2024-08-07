@@ -207,9 +207,6 @@
     "fakerphp/faker": {
         "version": "v1.16.0"
     },
-    "friendsofphp/proxy-manager-lts": {
-        "version": "v1.0.3"
-    },
     "friendsofsymfony/ckeditor-bundle": {
         "version": "2.4",
         "recipe": {
@@ -278,9 +275,6 @@
         "files": [
             "config/packages/knp_snappy.yaml"
         ]
-    },
-    "laminas/laminas-code": {
-        "version": "3.4.1"
     },
     "laminas/laminas-eventmanager": {
         "version": "3.3.1"
@@ -762,9 +756,6 @@
     },
     "symfony/property-info": {
         "version": "v4.4.9"
-    },
-    "symfony/proxy-manager-bridge": {
-        "version": "v4.4.39"
     },
     "symfony/routing": {
         "version": "6.2",
