@@ -1,7 +1,7 @@
 #syntax=docker/dockerfile:1.4
 
 # Versions
-FROM php:8.2-fpm-alpine AS php_upstream
+FROM php:8.3-fpm-alpine AS php_upstream
 FROM mlocati/php-extension-installer:2 AS php_extension_installer_upstream
 FROM composer/composer:2-bin AS composer_upstream
 FROM caddy:2-alpine AS caddy_upstream
@@ -130,9 +130,10 @@ FROM commsy_php AS commsy_php_dev
 
 ENV APP_ENV=dev
 
-ARG XDEBUG_VERSION=^3.2
 RUN set -eux; \
-	install-php-extensions xdebug-$XDEBUG_VERSION
+	install-php-extensions \
+		xdebug \
+	;
 
 RUN rm $PHP_INI_DIR/conf.d/commsy.prod.ini; \
 	mv "$PHP_INI_DIR/php.ini" "$PHP_INI_DIR/php.ini-production"; \
