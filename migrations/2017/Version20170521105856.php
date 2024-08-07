@@ -33,7 +33,7 @@ final class Version20170521105856 extends AbstractMigration
      */
     private function removeIndex($indexName, $tableName)
     {
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
         $tableIndexes = $schemaManager->listTableIndexes($tableName);
 
         $filteredIndexes = array_filter($tableIndexes, fn($index) => $index->getName() === $indexName);

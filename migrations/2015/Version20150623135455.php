@@ -17,7 +17,7 @@ final class Version20150623135455 extends AbstractMigration
      */
     public function up(Schema $schema) : void
     {
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
 
         $tables = [
             'annotations',
@@ -116,7 +116,7 @@ final class Version20150623135455 extends AbstractMigration
     private function fixAssociations($tableName, $columnName, $archived = false) {
         $userTable = $archived ? 'zzz_user' : 'user';
 
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
         $roomColumns = $schemaManager->listTableColumns($tableName);
 
         if (array_filter($roomColumns, fn($column) => $column->getName() === $columnName)) {

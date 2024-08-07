@@ -36,7 +36,7 @@ final class Version20150623133246 extends AbstractMigration
     }
 
     private function dropIndexes($tableName) {
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
 
         $indexes = $schemaManager->listTableIndexes($tableName);
         foreach ($indexes as $index) {
