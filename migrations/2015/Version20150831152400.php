@@ -15,9 +15,6 @@ final class Version20150831152400 extends AbstractMigration
      */
     public function up(Schema $schema) : void
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
         $this->addSql('ALTER TABLE items ADD draft TINYINT NOT NULL DEFAULT 0');
         $this->addSql('ALTER TABLE zzz_items ADD draft TINYINT NOT NULL DEFAULT 0');
     }
@@ -27,9 +24,6 @@ final class Version20150831152400 extends AbstractMigration
      */
     public function down(Schema $schema) : void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
         $this->addSql('ALTER TABLE items DROP COLUMN draft');
         $this->addSql('ALTER TABLE zzz_items DROP COLUMN draft');
     }

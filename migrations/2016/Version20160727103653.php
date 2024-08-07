@@ -15,9 +15,6 @@ final class Version20160727103653 extends AbstractMigration
      */
     public function up(Schema $schema) : void
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
         $this->addSql('DROP TABLE IF EXISTS search_index');
         $this->addSql('DROP TABLE IF EXISTS search_time');
         $this->addSql('DROP TABLE IF EXISTS search_word');
@@ -28,9 +25,6 @@ final class Version20160727103653 extends AbstractMigration
      */
     public function down(Schema $schema) : void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
         $this->addSql('
             CREATE TABLE search_index (
                 si_id mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
