@@ -17,8 +17,6 @@ final class Version20160719021757 extends AbstractMigration
      */
     public function up(Schema $schema) : void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
         $this->write("updating workflow states in materials");
         $this->updateWorkflowStates("materials");
 
@@ -38,7 +36,7 @@ final class Version20160719021757 extends AbstractMigration
     private function updateWorkflowStates($table)
     {
         $queryBuilder = $this->connection->createQueryBuilder();
-        
+
         $qb = $queryBuilder
             ->select('m.item_id', 'm.version_id', 'm.extras')
             ->from($table, 'm');

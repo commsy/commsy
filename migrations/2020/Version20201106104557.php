@@ -19,8 +19,6 @@ final class Version20201106104557 extends AbstractMigration
 
     public function up(Schema $schema) : void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
         $this->addSql('
             CREATE TABLE saved_searches (
                 id int(11) NOT NULL AUTO_INCREMENT,
@@ -37,8 +35,6 @@ final class Version20201106104557 extends AbstractMigration
 
     public function down(Schema $schema) : void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
         $this->addSql('DROP TABLE IF EXISTS saved_searches');
     }
 }

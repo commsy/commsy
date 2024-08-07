@@ -19,8 +19,6 @@ final class Version20210329134856 extends AbstractMigration
 
     public function up(Schema $schema) : void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
         $this->addSql('DELETE user FROM user LEFT JOIN auth_source ON user.auth_source = auth_source.id WHERE auth_source.id IS NULL;');
     }
 
