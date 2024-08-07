@@ -15,16 +15,18 @@ declare(strict_types=1);
 
 namespace App\Migrations\Factory;
 
+use App\Contract\ParameterBagAwareInterface;
 use Doctrine\Migrations\AbstractMigration;
 use Doctrine\Migrations\Version\MigrationFactory;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-class MigrationFactoryDecorator implements MigrationFactory
+#[AsDecorator('doctrine.migrations.migrations_factory')]
+readonly class MigrationFactoryDecorator implements MigrationFactory
 {
     public function __construct(
-        private readonly MigrationFactory $migrationFactory,
-        private readonly ContainerInterface $container
+        private MigrationFactory $migrationFactory,
+        private ParameterBagInterface $parameterBag
     ) {
     }
 
@@ -32,8 +34,8 @@ class MigrationFactoryDecorator implements MigrationFactory
     {
         $instance = $this->migrationFactory->createVersion($migrationClassName);
 
-        if ($instance instanceof ContainerAwareInterface) {
-            $instance->setContainer($this->container);
+        if ($instance instanceof ParameterBagAwareInterface) {
+            $instance->setParameterBag($this->parameterBag);
         }
 
         return $instance;
