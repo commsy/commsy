@@ -435,12 +435,6 @@ services:
         arguments:
             - '%env(DATABASE_URL)%'
     
-    # Doctrine
-    Doctrine\Migrations\Version\DbalMigrationFactory: ~
-    App\Migrations\Factory\MigrationFactoryDecorator:
-        decorates: Doctrine\Migrations\Version\DbalMigrationFactory
-        arguments: [ '@App\Migrations\Factory\MigrationFactoryDecorator.inner', '@service_container' ]
-    
     # Public alias for Security
     app.security:
         alias: Symfony\Bundle\SecurityBundle\Security
