@@ -22,12 +22,11 @@ api_platform:
         extra_properties:
             standard_put: true
             # Todo: Setting rfc_7807_compliant_errors to 'true' is desirable,
-            # but lead into strange behaviour, cuasing all API test after one,
+            # but lead into strange behaviour, causing all API test after one,
             # that is expecting a 404 response to fail
             # This is related to the 'application/problem+json'
             #rfc_7807_compliant_errors: true
             rfc_7807_compliant_errors: false
-    event_listeners_backward_compatibility_layer: false
     keep_legacy_inflector: false
     use_symfony_listeners: true
     mapping:
