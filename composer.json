@@ -22,7 +22,7 @@
         "doctrine/orm": "^2.11",
         "eluceo/ical": "^2.5",
         "ezyang/htmlpurifier": "^4.1",
-        "friendsofsymfony/ckeditor-bundle": "^2.0",
+        "friendsofsymfony/ckeditor-bundle": "^2.5",
         "friendsofsymfony/elastica-bundle": "^6.4",
         "knplabs/knp-menu-bundle": "^3.0",
         "knplabs/knp-paginator-bundle": "^6.2",
