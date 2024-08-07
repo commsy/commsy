@@ -16,6 +16,8 @@ namespace App\Repository;
 use App\Entity\Account;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
 class UserRepository extends ServiceEntityRepository
@@ -36,10 +38,10 @@ class UserRepository extends ServiceEntityRepository
                 $qb->expr()->isNull('r.deletionDate'),
                 $qb->expr()->isNull('r.deleterId')
             ))
-            ->setParameters([
-                'contextId' => $contextId,
-                'status' => 1,
-            ]);
+            ->setParameters(new ArrayCollection([
+                new Parameter('contextId', $contextId),
+                new Parameter('status', 1),
+            ]));
     }
 
     public function getModeratorsByRoomId(int $roomId): mixed

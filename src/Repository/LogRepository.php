@@ -16,8 +16,10 @@ namespace App\Repository;
 use App\Entity\Log;
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
 class LogRepository extends ServiceEntityRepository
@@ -87,11 +89,11 @@ class LogRepository extends ServiceEntityRepository
             l.timestamp >= :lower AND
             l.timestamp < :upper AND
             l.request LIKE '%/room/%'
-        ")->setParameters([
-            'contextId' => $contextId,
-            'lower' => $lower,
-            'upper' => $upper
-        ]);
+        ")->setParameters(new ArrayCollection([
+            new Parameter('contextId', $contextId),
+            new Parameter('lower', $lower),
+            new Parameter('upper', $upper),
+        ]));
 
         return $query->getSingleResult();
     }
