@@ -29,6 +29,7 @@ api_platform:
             rfc_7807_compliant_errors: false
     event_listeners_backward_compatibility_layer: false
     keep_legacy_inflector: false
+    use_symfony_listeners: true
     mapping:
         paths:
             - '%kernel.project_dir%/src/Entity'
