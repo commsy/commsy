@@ -2,27 +2,21 @@
 framework:
     secret: '%env(APP_SECRET)%'
     #csrf_protection: true
-    annotations: false
-    http_method_override: false
-    handle_all_throwables: true
-
+    
     # Enables session support. Note that the session will ONLY be started if you read or write from it.
     # Remove or comment this section to explicitly disable session support.
     session:
         handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
         cookie_secure: auto
-        cookie_samesite: lax
-        storage_factory_id: session.storage.factory.native
+        cookie_samesite: strict
         gc_maxlifetime: 21600
-    
+
     set_locale_from_accept_language: false
     set_content_language_from_locale: true
     enabled_locales: [ 'de', 'en' ]
 
     #esi: true
     #fragments: true
-    php_errors:
-        log: true
 
 when@test:
     framework:
