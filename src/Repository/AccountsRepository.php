@@ -17,8 +17,10 @@ use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\Portal;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
 class AccountsRepository extends ServiceEntityRepository
@@ -50,11 +52,11 @@ class AccountsRepository extends ServiceEntityRepository
             ->where('a.username = :username')
             ->andWhere('a.authSource = :authSource')
             ->andWhere('a.contextId = :contextId')
-            ->setParameters([
-                'username' => $username,
-                'contextId' => $context,
-                'authSource' => $authSource,
-            ])
+            ->setParameters(new ArrayCollection([
+                new Parameter('username', $username),
+                new Parameter('contextId', $context),
+                new Parameter('authSource', $authSource),
+            ]))
             ->getQuery()
             ->getOneOrNullResult();
     }
@@ -64,10 +66,10 @@ class AccountsRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->where('a.email = :email')
             ->andWhere('a.contextId = :contextId')
-            ->setParameters([
-                'email' => $email,
-                'contextId' => $portalId,
-            ])
+            ->setParameters(new ArrayCollection([
+                new Parameter('email', $email),
+                new Parameter('contextId', $portalId),
+            ]))
             ->getQuery()
             ->getResult();
     }

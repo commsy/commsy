@@ -17,8 +17,10 @@ use App\Entity\Account;
 use App\Entity\RoomPrivat;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
 class RoomPrivateRepository extends ServiceEntityRepository
@@ -44,11 +46,11 @@ class RoomPrivateRepository extends ServiceEntityRepository
             ->andWhere('a.contextId = :portalId')
             ->andWhere('a.username = :username')
             ->orderBy('rp.creationDate', 'DESC')
-            ->setParameters([
-                'portalId' => $portalId,
-                'username' => $account->getUsername(),
-                'authSource' => $account->getAuthSource(),
-            ])
+            ->setParameters(new ArrayCollection([
+                new Parameter('portalId', $portalId),
+                new Parameter('username', $account->getUsername()),
+                new Parameter('authSource', $account->getAuthSource()),
+            ]))
             ->getQuery()
             ->setMaxResults(1)
             ->getOneOrNullResult();
