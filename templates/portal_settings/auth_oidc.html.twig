@@ -1,0 +1,33 @@
+{% extends 'layout.html.twig' %}
+
+{% form_theme form 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+
+{% block sidebar_left %}
+    {% include 'components/context_navigation.html.twig' with {'menu_name': 'portal_settings'} only %}
+{% endblock %}
+
+{% block main %}
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'Auth'|trans({}, "portal") }}{% endblock %}
+        {% block body %}
+            {{ form_start(form) }}
+            {{ form_row(form.typeChoice) }}
+            {{ form_row(form.type) }}
+            <hr />
+            {% include 'portal_settings/auth_preselect_info.html.twig' %}
+            {{ form_row(form.enabled) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.default) }}
+            <hr />
+            {{ form_row(form.issuer) }}
+            {{ form_row(form.clientIdentifier) }}
+            {{ form_row(form.clientSecret) }}
+            <hr />
+            {{ form_row(form.createRoom) }}
+
+            <hr />
+            {{ form_end(form) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
