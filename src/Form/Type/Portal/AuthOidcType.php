@@ -17,14 +17,13 @@ use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AuthShibbolethType extends AbstractType
+class AuthOidcType extends AbstractType
 {
     /**
      * Builds the form.
@@ -34,8 +33,6 @@ class AuthShibbolethType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-//        $idpOptions = $options['idps_options_array'];
-        $idpOptions = [];
         $builder
             ->add('typeChoice', ChoiceType::class, [
                 'choices' => [
@@ -48,7 +45,7 @@ class AuthShibbolethType extends AbstractType
                 'required' => true,
                 'label' => 'Source',
                 'mapped' => false,
-                'data' => 'shib',
+                'data' => 'oidc',
             ])
             ->add('type', SubmitType::class, [
                 'attr' => [
@@ -76,49 +73,21 @@ class AuthShibbolethType extends AbstractType
                 'label' => 'Available',
                 'required' => false,
             ])
-            ->add('loginUrl', UrlType::class, [
-                'label' => 'Login URL',
-                'help' => 'https://sp.example.org/Shibboleth.sso/Login',
+            ->add('issuer', UrlType::class, [
+                'label' => 'Auth Provider Issuer URL',
+                'help' => 'https://auth.provider',
             ])
-            ->add('logoutUrl', UrlType::class, [
-                'label' => 'Logout URL',
-                'help' => 'https://sp.example.org/Shibboleth.sso/Logout',
-                'required' => false,
+            ->add('clientIdentifier', TextType::class, [
+                'label' => 'Client Identifier',
+                'help' => 'identifier',
             ])
-            ->add('passwordResetURL', UrlType::class, [
-                'label' => 'Password reset URL',
-                'required' => false,
-            ])
-            ->add('mappingUsername', TextType::class, [
-                'label' => 'Mapping: Username',
-                'help' => 'eppn',
-            ])
-            ->add('mappingFirstname', TextType::class, [
-                'label' => 'Mapping: Firstname',
-                'help' => 'givenName',
-            ])
-            ->add('mappingLastname', TextType::class, [
-                'label' => 'Mapping: Lastname',
-                'help' => 'sn',
-            ])
-            ->add('mappingEmail', TextType::class, [
-                'label' => 'Mapping: Email',
-                'help' => 'mail',
+            ->add('clientSecret', TextType::class, [
+                'label' => 'Client Secret',
+                'help' => 'secret',
             ])
             ->add('createRoom', CheckboxType::class, [
                 'label' => 'Users may create rooms',
                 'required' => false,
-            ])
-            ->add('identityProviders', CollectionType::class, [
-                'entry_type' => ShibbolethIdentityProviderType::class,
-                'entry_options' => [
-                    'label' => false,
-                ],
-                'label' => 'Available idps',
-                'allow_add' => true,
-                'allow_delete' => true,
-                'prototype' => true,
-//                'by_reference' => false,
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Save',
