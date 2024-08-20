@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Security\Oidc\Discovery\MetadataReader;
 use Codeception\Test\Unit;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Tests\Support\UnitTester;
 
 class MetadataReaderTest extends Unit
@@ -121,7 +122,7 @@ class MetadataReaderTest extends Unit
 }
 EOF;
 
-        $metadataReader = new MetadataReader();
+        $metadataReader = new MetadataReader($this->makeEmpty(HttpClientInterface::class));
         $metadata = $metadataReader->deserialize($json);
 
         $this->assertEquals('https://server.example.com', $metadata->getIssuer());
