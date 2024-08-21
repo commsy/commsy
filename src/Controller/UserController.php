@@ -125,9 +125,9 @@ class UserController extends BaseController
                 $recipients[$moderator->getFullName()] = $moderator->getFullName();
             }
             $message = $translator->trans('This email has been sent by ... from userroom ...', [
-                '%sender_name%' => $this->legacyEnvironment->getCurrentUserItem()->getFullName(),
-                '%room_name%' => $item->getLinkedUserroomItem()->getTitle(),
-                '%recipients%' => implode(', ', $recipients),
+                'sender_name' => $this->legacyEnvironment->getCurrentUserItem()->getFullName(),
+                'room_name' => $item->getLinkedUserroomItem()->getTitle(),
+                'recipients' => implode(', ', $recipients),
             ], 'mail');
             $message = '<br><br>--<br>'.$message;
             $search = ', ';
@@ -789,7 +789,7 @@ class UserController extends BaseController
 
         $defaultBodyMessage = '<br/><br/><br/>--<br/>'.$translator->trans(
             'This email has been sent by sender to recipient',
-            ['%sender_name%' => $currentUser->getFullName(), '%recipient_name%' => $item->getFullName()],
+            ['sender_name' => $currentUser->getFullName(), 'recipient_name' => $item->getFullName()],
             'mail'
         );
 
@@ -1220,7 +1220,7 @@ class UserController extends BaseController
                 if ($user) {
                     $defaultBodyMessage .= $translator->trans(
                         'This email has been sent by sender to recipient',
-                        ['%sender_name%' => $currentUser->getFullName(), '%recipient_name%' => $user->getFullName()],
+                        ['sender_name' => $currentUser->getFullName(), 'recipient_name' => $user->getFullName()],
                         'mail'
                     );
                 }
@@ -1228,9 +1228,9 @@ class UserController extends BaseController
                 $defaultBodyMessage .= $translator->trans(
                     'This email has been sent to multiple users of this room',
                     [
-                        '%sender_name%' => $currentUser->getFullName(),
-                        '%user_count%' => is_countable($userIds) ? count($userIds) : 0,
-                        '%room_name%' => $room->getTitle(),
+                        'sender_name' => $currentUser->getFullName(),
+                        'user_count' => is_countable($userIds) ? count($userIds) : 0,
+                        'room_name' => $room->getTitle(),
                     ],
                     'mail'
                 );

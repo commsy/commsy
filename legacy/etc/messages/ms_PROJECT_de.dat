@@ -1,16 +1,9 @@
 <?php
 $message["PROJECT_HEADER_IN_COMMUNITY_ROOM"]["de"] = "%_PROJECT_SUB_NOMPL_BIG im %1";
 $message["PROJECT_INDEX"]["de"] = "%_PROJECT_SUB_NOMPL_BIG";
-$message["PROJECT_MAIL_BODY_ACTION_ARCHIVE"]["de"] = "Archivierung";
 $message["PROJECT_MAIL_BODY_ACTION_ARCHIVE_INFO"]["de"] = "Archivierungsankündigung";
-$message["PROJECT_MAIL_BODY_ACTION_DELETE"]["de"] = "Löschung";
 $message["PROJECT_MAIL_BODY_ACTION_DELETE_INFO"]["de"] = "Löschungsankündigung";
 $message["PROJECT_MAIL_BODY_ACTION_LINK"]["de"] = "Änderung in der Verlinkung";
-$message["PROJECT_MAIL_BODY_ACTION_LOCK"]["de"] = "Sperrung";
-$message["PROJECT_MAIL_BODY_ACTION_OPEN"]["de"] = "Eröffnung";
-$message["PROJECT_MAIL_BODY_ACTION_REOPEN"]["de"] = "Wiedereröffnung";
-$message["PROJECT_MAIL_BODY_ACTION_UNDELETE"]["de"] = "Wiederherstellung";
-$message["PROJECT_MAIL_BODY_ACTION_UNLOCK"]["de"] = "Entsperrung";
 $message["PROJECT_MAIL_BODY_ARCHIVE"]["de"] = "Archivierung %_PROJECT_ART_UNDEF_GENS_LOW %_PROJECT_SUB_GENS_BIG.";
 $message["PROJECT_MAIL_BODY_COMMUNITIY_ROOMS"]["de"] = "%_COMMUNITY_ART_DEF_NOMPL_BIG folgenden %_COMMUNITY_SUB_NOMPL_BIG sind mit %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_AKKS_BIG verknüpft:";
 $message["PROJECT_MAIL_BODY_COMMUNITIY_ROOMS_EMPTY"]["de"] = "*keine %_COMMUNITY_SUB_NOMPL_BIG";
@@ -26,15 +19,7 @@ $message["PROJECT_MAIL_BODY_OPEN"]["de"] = "Eröffnung %_PROJECT_ART_UNDEF_GENS_
 $message["PROJECT_MAIL_BODY_REOPEN"]["de"] = "Wiedereröffnung %_PROJECT_ART_UNDEF_GENS_LOW %_PROJECT_SUB_GENS_BIG.";
 $message["PROJECT_MAIL_BODY_UNDELETE"]["de"] = "Wiederherstellung %_PROJECT_ART_UNDEF_GENS_LOW %_PROJECT_SUB_GENS_BIG.";
 $message["PROJECT_MAIL_BODY_UNLOCK"]["de"] = "Entsperrung %_PROJECT_ART_UNDEF_GENS_LOW %_PROJECT_SUB_GENS_BIG.";
-$message["PROJECT_MAIL_SUBJECT_ARCHIVE"]["de"] = "%1 archiviert";
-$message["PROJECT_MAIL_SUBJECT_DELETE"]["de"] = "%1 gelöscht";
 $message["PROJECT_MAIL_SUBJECT_DELETE_INFO"]["de"] = "%1 wird in %2 Tagen gelöscht";
-$message["PROJECT_MAIL_SUBJECT_LINK"]["de"] = "%1 verlinkt";
-$message["PROJECT_MAIL_SUBJECT_LOCK"]["de"] = "%1 gesperrt";
-$message["PROJECT_MAIL_SUBJECT_OPEN"]["de"] = "%1 eröffnet";
-$message["PROJECT_MAIL_SUBJECT_REOPEN"]["de"] = "%1 wieder eröffnet";
-$message["PROJECT_MAIL_SUBJECT_UNDELETE"]["de"] = "%1 wieder hergestellt";
-$message["PROJECT_MAIL_SUBJECT_UNLOCK"]["de"] = "%1 entsperrt";
 $message["PROJECT_ROOM_IS_CLOSED"]["de"] = "%_PROJECT_ART_DEF_NOMS_LOW %_PROJECT_SUB_NOMS_BIG &quot;%1&quot; ist geschlossen. Sie können keine Änderungen mehr in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG vornehmen.";
 $message["PROJECT_SHORT_DESCRIPTION"]["de"] = "die aktivsten %1 Räume";
 ?>

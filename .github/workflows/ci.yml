@@ -10,7 +10,7 @@ jobs:
         name: Run Tests
         env:
             APP_ENV: test
-            DATABASE_URL: mysql://root:root@127.0.0.1:3306/commsy
+            DATABASE_URL: mysql://root:root@127.0.0.1:3306/app
         runs-on: ubuntu-latest
         strategy:
             matrix:
@@ -51,7 +51,7 @@ jobs:
                 run: yarn build
 
             -   name: Run Unit tests
-                run: vendor/bin/codecept run Unit --env github
+                run: vendor/bin/codecept run Unit --env github --debug
 
             -   name: Run Acceptance tests
                 run: vendor/bin/codecept run Acceptance --env github

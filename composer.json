@@ -92,6 +92,7 @@
         "codeception/module-phpbrowser": "^3.0",
         "codeception/module-rest": "^3.3",
         "codeception/module-symfony": "^3.4",
+        "dg/bypass-finals": "^1.8",
         "doctrine/doctrine-fixtures-bundle": "^3.3",
         "rector/rector": "^1.1",
         "symfony/maker-bundle": "^1.21",

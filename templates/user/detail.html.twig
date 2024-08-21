@@ -292,7 +292,7 @@
                                                                <a href="{{ path('app_group_detail', {'roomId': roomId, 'itemId': group.itemId}) }}">{{ group.title|decodeHtmlEntity }} </a>
                                                            </span>
                                                         </div>
-                                                        {% if group.isGroupRoomActivated %}
+                                                        {% if group.isGroupRoomActivated and group.groupRoomItemID is not empty %}
                                                             <div class="uk-width-1-3 uk-text-right">
                                                                 <a href="{{ path('app_room_home', {'roomId': group.groupRoomItemID}) }}" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
                                                             </div>

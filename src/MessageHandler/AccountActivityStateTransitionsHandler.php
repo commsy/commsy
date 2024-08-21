@@ -33,6 +33,9 @@ class AccountActivityStateTransitionsHandler
 
         foreach ($ids as $id) {
             $accountActivityObject = $this->accountRepository->find($id);
+            if (!$accountActivityObject) {
+                continue;
+            }
 
             $transitions = $this->accountActivityStateMachine->getEnabledTransitions($accountActivityObject);
             foreach ($transitions as $transition) {
