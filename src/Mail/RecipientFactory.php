@@ -14,16 +14,20 @@
 namespace App\Mail;
 
 use App\Entity\Account;
+use App\Proxy\PortalProxy;
 use cs_room_item;
 use cs_user_item;
 
 class RecipientFactory
 {
-    public static function createModerationRecipients(cs_room_item $room, callable $callback = null): array
+    public static function createModerationRecipients(
+        cs_room_item|PortalProxy $context,
+        callable $callback = null
+    ): array
     {
         $recipients = [];
 
-        $moderators = $room->getModeratorList();
+        $moderators = $context->getModeratorList();
         foreach ($moderators as $moderator) {
             /* @var cs_user_item $moderator */
             if ($callback) {
@@ -93,5 +97,12 @@ class RecipientFactory
         $recipient->setLanguage($account->getLanguage());
 
         return $recipient;
+    }
+
+    public static function createFromAccounts(Account ...$accounts): iterable
+    {
+        foreach ($accounts as $account) {
+            yield self::createFromAccount($account);
+        }
     }
 }

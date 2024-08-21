@@ -269,6 +269,9 @@ class UserService
         return $userList->to_array();
     }
 
+    /**
+     * @throws LogicException
+     */
     public function getPortalUser(Account $account): cs_user_item
     {
         $this->userManager->resetLimits();

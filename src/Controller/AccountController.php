@@ -29,6 +29,7 @@ use App\Form\Type\Account\ChangePasswordType;
 use App\Form\Type\Account\DeleteType;
 use App\Form\Type\Account\MergeAccountsType;
 use App\Form\Type\Account\NewsletterType;
+use App\Form\Type\Account\NotificationType;
 use App\Form\Type\Account\PersonalInformationType;
 use App\Form\Type\Account\PrivacyType;
 use App\Form\Type\SignUpFormType;
@@ -448,6 +449,32 @@ class AccountController extends AbstractController
             'form' => $form,
             'uploadEmail' => $this->getParameter('commsy.upload.account'),
             'portalEmail' => $portalUser->getRoomEmail(),
+        ]);
+    }
+
+    #[Route(path: '/portal/{portalId}/account/notifications')]
+    #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
+    public function notifications(
+        /** @noinspection PhpUnusedParameterInspection */
+        #[MapEntity(id: 'portalId')]
+        Portal $portal,
+        Request $request,
+        Security $security,
+        EntityManagerInterface $entityManager
+    ): Response {
+        /** @var Account $account */
+        $account = $security->getUser();
+
+        $form = $this->createForm(NotificationType::class, $account);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($account);
+            $entityManager->flush();
+        }
+
+        return $this->render('account/notifications.html.twig', [
+            'form' => $form,
         ]);
     }
 

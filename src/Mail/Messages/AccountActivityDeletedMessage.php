@@ -36,7 +36,7 @@ class AccountActivityDeletedMessage extends Message
 
     public function getSubject(): string
     {
-        return '%portal_name%: Your account has been deleted';
+        return '{portal_name}: Your account has been deleted';
     }
 
     public function getTemplateName(): string
@@ -78,7 +78,7 @@ class AccountActivityDeletedMessage extends Message
     public function getTranslationParameters(): array
     {
         return [
-            '%portal_name%' => $this->portal->getTitle(),
+            'portal_name' => $this->portal->getTitle(),
         ];
     }
 }

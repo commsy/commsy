@@ -1,4 +1,4 @@
-{{ '[This email was generated automatically at %time_generated%.]'|trans({ '%time_generated%': 'now'|date|format_datetime }, 'mail') }}
+{{ '[This email was generated automatically at {time_generated}.]'|trans({ 'time_generated': 'now'|date|format_datetime }, 'mail') }}
 
 <br/><br/>
 

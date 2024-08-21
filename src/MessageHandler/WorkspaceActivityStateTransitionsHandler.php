@@ -33,6 +33,9 @@ class WorkspaceActivityStateTransitionsHandler
 
         foreach ($ids as $id) {
             $roomActivityObject = $this->roomRepository->find($id);
+            if (!$roomActivityObject) {
+                continue;
+            }
 
             $transitions = $this->roomActivityStateMachine->getEnabledTransitions($roomActivityObject);
             foreach ($transitions as $transition) {

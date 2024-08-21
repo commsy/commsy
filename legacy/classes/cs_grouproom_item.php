@@ -11,11 +11,20 @@
  * file that was distributed with this source code.
  */
 
+use App\Account\AccountManager;
+use App\Account\AccountSetting;
+use App\Account\AccountSettingsManager;
 use App\Entity\Room;
+use App\Event\Workspace\WorkspaceArchivedEvent;
+use App\Event\Workspace\WorkspaceLockedEvent;
+use App\Event\Workspace\WorkspaceOpenedEvent;
+use App\Event\Workspace\WorkspaceUnarchivedEvent;
+use App\Event\Workspace\WorkspaceUnlockedEvent;
+use App\Mail\Factories\ModerationMessageFactory;
 use App\Mail\Mailer;
-use Symfony\Component\Mime\Address;
-use Symfony\Component\Mime\Email;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Mail\RecipientFactory;
+use App\Proxy\PortalProxy;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** group room
  * this class implements a group room item.
@@ -109,6 +118,11 @@ class cs_grouproom_item extends cs_room_item
         }
         $this->_save($manager);
 
+        $symfonyContainer = $this->_environment->getSymfonyContainer();
+
+        /** @var EventDispatcher $eventDispatcher */
+        $eventDispatcher = $symfonyContainer->get('event_dispatcher');
+
         if (empty($item_id)) {
             // create first moderator
             $current_user = $this->_environment->getCurrentUser();
@@ -140,8 +154,8 @@ class cs_grouproom_item extends cs_room_item
             $this->setServiceLinkActive();
             $this->_save($manager);
 
-            // send mail to moderation
-            $this->_sendMailRoomOpen();
+            // dispatch event (sending mail to moderation is handled by an event subscriber)
+            $eventDispatcher->dispatch(new WorkspaceOpenedEvent($this));
         } else {
             // keep grouproom & group title in sync
             $group = $this->getLinkedGroupItem();
@@ -153,13 +167,13 @@ class cs_grouproom_item extends cs_room_item
             $new_status = $this->getStatus();
             if ($new_status != $this->_old_status) {
                 if (CS_ROOM_LOCK == $this->_old_status) {
-                    $this->_sendMailRoomUnlock();
+                    $eventDispatcher->dispatch(new WorkspaceUnlockedEvent($this));
                 } elseif (CS_ROOM_CLOSED == $new_status) {
-                    $this->_sendMailRoomArchive();
+                    $eventDispatcher->dispatch(new WorkspaceArchivedEvent($this));
                 } elseif (CS_ROOM_OPEN == $new_status) {
-                    $this->_sendMailRoomReOpen();
+                    $eventDispatcher->dispatch(new WorkspaceUnarchivedEvent($this));
                 } elseif (CS_ROOM_LOCK == $new_status) {
-                    $this->_sendMailRoomLock();
+                    $eventDispatcher->dispatch(new WorkspaceLockedEvent($this));
                 }
             }
         }
@@ -412,17 +426,14 @@ class cs_grouproom_item extends cs_room_item
 
     public function getUsageInfoFormHeaderArray()
     {
-        $retour = null;
         if ($this->_issetExtra('USAGE_INFO_FORM_HEADER')) {
             $retour = $this->_getExtra('USAGE_INFO_FORM_HEADER');
-            if (empty($retour)) {
-                $retour = [];
+            if (!empty($retour)) {
+                return $retour;
             }
-        } else {
-            $retour = [];
         }
 
-        return $retour;
+        return [];
     }
 
     public function setUsageInfoFormHeaderArray($value_array)
@@ -434,17 +445,14 @@ class cs_grouproom_item extends cs_room_item
 
     public function getUsageInfoTextArray()
     {
-        $retour = null;
         if ($this->_issetExtra('USAGE_INFO_TEXT')) {
             $retour = $this->_getExtra('USAGE_INFO_TEXT');
-            if (empty($retour)) {
-                $retour = [];
+            if (!empty($retour)) {
+                return $retour;
             }
-        } else {
-            $retour = [];
         }
 
-        return $retour;
+        return [];
     }
 
     public function setUsageInfoTextArray($value_array)
@@ -456,17 +464,14 @@ class cs_grouproom_item extends cs_room_item
 
     public function getUsageInfoFormTextArray()
     {
-        $retour = null;
         if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
             $retour = $this->_getExtra('USAGE_INFO_FORM_TEXT');
-            if (empty($retour)) {
-                $retour = [];
+            if (!empty($retour)) {
+                return $retour;
             }
-        } else {
-            $retour = [];
         }
 
-        return $retour;
+        return [];
     }
 
     public function setUsageInfoFormTextArray($value_array)
@@ -606,7 +611,6 @@ class cs_grouproom_item extends cs_room_item
 
     public function getUsageInfoTextForRubricForm($rubric)
     {
-        $funct = $this->_environment->getCurrentFunction();
         if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
             $retour = $this->_getExtra('USAGE_INFO_FORM_TEXT');
             if (empty($retour)) {
@@ -626,7 +630,6 @@ class cs_grouproom_item extends cs_room_item
 
     public function getUsageInfoTextForRubricInForm($rubric)
     {
-        $funct = $this->_environment->getCurrentFunction();
         if ($this->_issetExtra('USAGE_INFO_TEXT')) {
             $retour = $this->_getExtra('USAGE_INFO_TEXT');
             if (empty($retour)) {
@@ -699,62 +702,27 @@ class cs_grouproom_item extends cs_room_item
         $this->_sendMailToModeration('group', 'undelete');
     }
 
-    private function _sendMailRoomOpen(): void
-    {
-        $this->_sendMailRoomOpenToGroupModeration();
-        $this->_sendMailRoomOpenToProjectModeration();
-        $this->_sendMailRoomOpenToPortalModeration();
-    }
-
-    private function _sendMailRoomOpenToGroupModeration(): void
+    public function _sendMailRoomOpenToGroupModeration(): void
     {
         $this->_sendMailToModeration('group', 'open');
     }
 
-    private function _sendMailRoomArchive(): void
-    {
-        $this->_sendMailRoomArchiveToGroupModeration();
-        $this->_sendMailRoomArchiveToProjectModeration();
-        $this->_sendMailRoomArchiveToPortalModeration();
-    }
-
-    private function _sendMailRoomArchiveToGroupModeration(): void
+    public function _sendMailRoomArchiveToGroupModeration(): void
     {
         $this->_sendMailToModeration('group', 'archive');
     }
 
-    private function _sendMailRoomReOpen(): void
-    {
-        $this->_sendMailRoomReOpenToGroupModeration();
-        $this->_sendMailRoomReOpenToProjectModeration();
-        $this->_sendMailRoomReOpenToPortalModeration();
-    }
-
-    private function _sendMailRoomReOpenToGroupModeration(): void
+    public function _sendMailRoomReOpenToGroupModeration(): void
     {
         $this->_sendMailToModeration('group', 'reopen');
     }
 
-    private function _sendMailRoomLock(): void
-    {
-        $this->_sendMailRoomLockToGroupModeration();
-        $this->_sendMailRoomLockToProjectModeration();
-        $this->_sendMailRoomLockToPortalModeration();
-    }
-
-    private function _sendMailRoomLockToGroupModeration(): void
+    public function _sendMailRoomLockToGroupModeration(): void
     {
         $this->_sendMailToModeration('group', 'lock');
     }
 
-    private function _sendMailRoomUnlock(): void
-    {
-        $this->_sendMailRoomUnlockToGroupModeration();
-        $this->_sendMailRoomUnlockToProjectModeration();
-        $this->_sendMailRoomUnlockToPortalModeration();
-    }
-
-    private function _sendMailRoomUnlockToGroupModeration()
+    public function _sendMailRoomUnlockToGroupModeration()
     {
         $this->_sendMailToModeration('group', 'unlock');
     }
@@ -781,199 +749,49 @@ class cs_grouproom_item extends cs_room_item
 
     private function _sendMailToModeration2($room_item, $room_change): void
     {
-        $translator = $this->_environment->getTranslationObject();
-        $default_language = 'de';
+        $symfonyContainer = $this->_environment->getSymfonyContainer();
 
-        $current_portal = $this->_environment->getCurrentPortalItem();
-        if (!$current_portal) {
-            $current_portal = $this->getContextItem();
-            if (!empty($current_portal) && $current_portal->isProjectRoom()) {
-                $current_portal = $current_portal->getContextItem();
-            }
-        }
+        if ($room_item instanceof PortalProxy) {
+            /** @var AccountManager $accountManager */
+            $accountManager = $symfonyContainer->get(AccountManager::class);
 
-        $current_user = $this->_environment->getCurrentUserItem();
-        $moderator_list = $room_item->getModeratorList();
+            /** @var AccountSettingsManager $settingsManager */
+            $settingsManager = $symfonyContainer->get(AccountSettingsManager::class);
 
-        // get moderators
-        $receiver_array = [];
-        $moderator_name_array = [];
+            $portalModeratorAccounts = $accountManager->getAccounts($room_item->getId(), ...$room_item->getModeratorList());
+            $filteredModeratorAccounts = array_filter(
+                iterator_to_array($portalModeratorAccounts),
+                function ($account) use ($settingsManager): bool {
+                    $setting = $settingsManager->getSetting(
+                        $account,
+                        AccountSetting::NOTIFY_PORTAL_MOD_ON_WORKSPACE_CHANGE);
 
-        foreach ($moderator_list as $mod_item) {
-            if ('yes' == $mod_item->getOpenRoomWantMail()) {
-                $language = $room_item->getLanguage();
-                if ('user' == $language) {
-                    $language = $mod_item->getLanguage();
-                    if ('browser' == $language) {
-                        $language = $default_language;
-                    }
+                    return $setting['enabled'] === true;
                 }
-                $receiver_array[$language][] = $mod_item->getEmail();
-                $moderator_name_array[] = $mod_item->getFullname();
-            }
-        }
-
-        // now email information
-        foreach ($receiver_array as $key => $value) {
-            $save_language = $translator->getSelectedLanguage();
-            $translator->setSelectedLanguage($key);
-            $project_room = $this->getLinkedProjectItem();
-
-            $title = html_entity_decode($this->getTitle());
-
-            if ('open' == $room_change) {
-                $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_OPEN', $title);
-            } elseif ('reopen' == $room_change) {
-                $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_REOPEN', $title);
-            } elseif ('delete' == $room_change) {
-                $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_DELETE', $title);
-            } elseif ('undelete' == $room_change) {
-                $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_UNDELETE', $title);
-            } elseif ('archive' == $room_change) {
-                $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_ARCHIVE', $title);
-            } elseif ('link' == $room_change) {
-                $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_LINK', $title);
-            } elseif ('lock' == $room_change) {
-                $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_LOCK', $title);
-            } elseif ('unlock' == $room_change) {
-                $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_UNLOCK', $title);
-            }
-            $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-            $body .= LF.LF;
-            if ('open' == $room_change) {
-                $body .= $translator->getMessage('GROUPROOM_MAIL_BODY_OPEN');
-                $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_OPEN');
-            } elseif ('reopen' == $room_change) {
-                $body .= $translator->getMessage('GROUPROOM_MAIL_BODY_REOPEN');
-                $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_REOPEN');
-            } elseif ('delete' == $room_change) {
-                $body .= $translator->getMessage('GROUPROOM_MAIL_BODY_DELETE');
-                $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_DELETE');
-            } elseif ('undelete' == $room_change) {
-                $body .= $translator->getMessage('GROUPROOM_MAIL_BODY_UNDELETE');
-                $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_UNDELETE');
-            } elseif ('archive' == $room_change) {
-                $body .= $translator->getMessage('GROUPROOM_MAIL_BODY_ARCHIVE');
-                $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_ARCHIVE');
-            } elseif ('lock' == $room_change) {
-                $body .= $translator->getMessage('GROUPROOM_MAIL_BODY_LOCK');
-                $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_LOCK');
-            } elseif ('unlock' == $room_change) {
-                $body .= $translator->getMessage('GROUPROOM_MAIL_BODY_UNLOCK');
-                $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_UNLOCK');
-            }
-            $body .= LF.LF;
-
-            $editorFullName = !empty($current_user->getFullname()) ? $current_user->getFullname() : '-';
-            $body .= $translator->getMessage(
-                'PROJECT_MAIL_BODY_INFORMATION',
-                $title,
-                $editorFullName,
-                $room_change_action
             );
 
-            global $symfonyContainer;
-
-            if ('delete' != $room_change) {
-                $router = $symfonyContainer->get('router');
-
-                $group_item = $this->getLinkedGroupItem();
-                if (isset($project_room) and !empty($project_room) and !$room_item->isPortal()) {
-                    if (isset($group_item) and !empty($group_item)) {
-                        $url = $router->generate(
-                            'app_group_detail', [
-                               'roomId' => $project_room->getItemID(),
-                               'itemId' => $group_item->getItemID(),
-                            ], UrlGeneratorInterface::ABSOLUTE_URL);
-                    } else {
-                        $url = $router->generate(
-                            'app_room_home', [
-                               'roomId' => $project_room->getItemID(),
-                            ], UrlGeneratorInterface::ABSOLUTE_URL);
-                    }
-                } else {
-                    $url = $router->generate(
-                        'app_room_home', [
-                           'roomId' => $this->getItemID(),
-                        ], UrlGeneratorInterface::ABSOLUTE_URL);
-                }
-
-                $body .= LF.$url;
-            }
-
-            $body .= LF.LF;
-            $body .= $translator->getMessage('GROUPROOM_MAIL_BODY_PROJECT_ROOM').LF;
-
-            if (isset($project_room) and !empty($project_room)) {
-                $body .= html_entity_decode((string) $project_room->getTitle());
-            } else {
-                $body .= $translator->getMessage('GROUPROOM_MAIL_BODY_PROJECT_ROOMS_EMPTY');
-            }
-
-            $body .= LF.LF;
-            $body .= $translator->getMessage('MAIL_SEND_TO', implode(LF, $moderator_name_array));
-            $body .= LF.LF;
-            if ($room_item->isPortal()) {
-                $body .= $translator->getMessage('MAIL_SEND_WHY_PORTAL', html_entity_decode((string) $room_item->getTitle()));
-            } elseif ($room_item->isCommunityRoom()) {
-                $body .= $translator->getMessage('MAIL_SEND_WHY_COMMUNITY', html_entity_decode((string) $room_item->getTitle()));
-            } elseif ($room_item->isProjectRoom()) {
-                $body .= $translator->getMessage('MAIL_SEND_WHY_PROJECT', html_entity_decode((string) $room_item->getTitle()));
-            } else {
-                $body .= $translator->getMessage('GROUPROOM_MAIL_SEND_WHY_GROUP', html_entity_decode((string) $room_item->getTitle()));
-            }
-
-            // send email
-            $fromName = $translator->getMessage('SYSTEM_MAIL_MESSAGE', $current_portal->getTitle());
-
-            $message = (new Email())
-                ->subject($subject)
-                ->html(nl2br($body))
-                ->to(...$value);
-
-            if ($current_user) {
-                $email = $current_user->getEmail();
-                if (!empty($email)) {
-                    $message->replyTo(new Address($email, $current_user->getFullName()));
-                }
-            }
-
-            /** @var Mailer $mailer */
-            $mailer = $symfonyContainer->get(Mailer::class);
-            $mailer->sendEmailObject($message, $fromName);
-
-            $translator->setSelectedLanguage($save_language);
-            unset($save_language);
-        }
-    }
-
-    // ######################################################
-    // linking calls for extras to the parent project room #
-    // ######################################################
-    public function withAds(): bool
-    {
-        // point to linked project item
-        $linked_project_item = $this->getLinkedProjectItem();
-        if (isset($linked_project_item)) {
-            return $linked_project_item->withAds();
+            $recipients = iterator_to_array(RecipientFactory::createFromAccounts(...$filteredModeratorAccounts));
+        } else {
+            $recipients = RecipientFactory::createModerationRecipients($room_item, fn (cs_user_item $user) =>
+                $user->getOpenRoomWantMail()
+            );
         }
 
-        return false;
+        /** @var Mailer $mailer */
+        $mailer = $symfonyContainer->get(Mailer::class);
+
+        /** @var ModerationMessageFactory $moderationMessageFactory */
+        $moderationMessageFactory = $symfonyContainer->get(ModerationMessageFactory::class);
+        $message = $moderationMessageFactory->createRoomModerationMessage(
+            $this,
+            $room_item,
+            $room_change
+        );
+        $mailer->sendMultiple($message, $recipients);
     }
 
     public function withGrouproomFunctions(): bool
     {
-        return false;
-    }
-
-    public function withLogArchive(): bool
-    {
-        // point to linked project item
-        $linked_project_item = $this->getLinkedProjectItem();
-        if (isset($linked_project_item)) {
-            return $linked_project_item->withLogArchive();
-        }
-
         return false;
     }
 }

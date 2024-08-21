@@ -11,12 +11,22 @@
  * file that was distributed with this source code.
  */
 
+use App\Account\AccountManager;
+use App\Account\AccountSetting;
+use App\Account\AccountSettingsManager;
 use App\Entity\Room;
+use App\Event\Workspace\WorkspaceArchivedEvent;
+use App\Event\Workspace\WorkspaceDeletedEvent;
+use App\Event\Workspace\WorkspaceLockedEvent;
+use App\Event\Workspace\WorkspaceOpenedEvent;
+use App\Event\Workspace\WorkspaceUnarchivedEvent;
+use App\Event\Workspace\WorkspaceUndeletedEvent;
+use App\Event\Workspace\WorkspaceUnlockedEvent;
+use App\Mail\Factories\ModerationMessageFactory;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Mime\Address;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Proxy\PortalProxy;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for a community
  * this class implements a community item.
@@ -184,7 +194,11 @@ class cs_community_item extends cs_room_item
        }
 
        $this->_save($manager);
-       unset($manager);
+
+       $symfonyContainer = $this->_environment->getSymfonyContainer();
+
+       /** @var EventDispatcher $eventDispatcher */
+       $eventDispatcher = $symfonyContainer->get('event_dispatcher');
 
        if (empty($item_id)) {
            // create first moderator
@@ -211,24 +225,22 @@ class cs_community_item extends cs_room_item
                $new_room_user->setPicture($new_picture_name);
                $new_room_user->save();
            }
-           unset($new_room_user);
-           unset($current_user);
 
-           // send mail to moderation
-           $this->_sendMailRoomOpen();
+           // dispatch event (sending mail to moderation is handled by an event subscriber)
+           $eventDispatcher->dispatch(new WorkspaceOpenedEvent($this));
        } else {
            $new_status = $this->getStatus();
            if (!empty($this->_old_status)
                 and !empty($new_status)
                 and $new_status != $this->_old_status) {
                if (CS_ROOM_LOCK == $this->_old_status) {
-                   $this->_sendMailRoomUnlock();
+                   $eventDispatcher->dispatch(new WorkspaceUnlockedEvent($this));
                } elseif (CS_ROOM_CLOSED == $new_status) {
-                   $this->_sendMailRoomArchive();
+                   $eventDispatcher->dispatch(new WorkspaceArchivedEvent($this));
                } elseif (CS_ROOM_OPEN == $new_status) {
-                   $this->_sendMailRoomReOpen();
+                   $eventDispatcher->dispatch(new WorkspaceUnarchivedEvent($this));
                } elseif (CS_ROOM_LOCK == $new_status) {
-                   $this->_sendMailRoomLock();
+                   $eventDispatcher->dispatch(new WorkspaceLockedEvent($this));
                }
            }
        }
@@ -246,8 +258,12 @@ class cs_community_item extends cs_room_item
    {
        parent::delete();
 
-       // send mail to moderation
-       $this->_sendMailRoomDelete();
+       // dispatch delete event (sending mail to moderation is handled by an event subscriber)
+       $symfonyContainer = $this->_environment->getSymfonyContainer();
+
+       /** @var EventDispatcher $eventDispatcher */
+       $eventDispatcher = $symfonyContainer->get('event_dispatcher');
+       $eventDispatcher->dispatch(new WorkspaceDeletedEvent($this));
 
        $manager = $this->_environment->getCommunityManager();
        $this->_delete($manager);
@@ -265,8 +281,12 @@ class cs_community_item extends cs_room_item
        $manager = $this->_environment->getCommunityManager();
        $this->_undelete($manager);
 
-       // send mail to moderation
-       $this->_sendMailRoomUnDelete();
+       // dispatch undelete event (sending mail to moderation is handled by an event subscriber)
+       $symfonyContainer = $this->_environment->getSymfonyContainer();
+
+       /** @var EventDispatcher $eventDispatcher */
+       $eventDispatcher = $symfonyContainer->get('event_dispatcher');
+       $eventDispatcher->dispatch(new WorkspaceUndeletedEvent($this));
    }
 
    public function getTimeSpread()
@@ -542,60 +562,7 @@ class cs_community_item extends cs_room_item
         }
     }
 
-   // ###############################################################
-   // mail to moderation, if the community room status changed
-   // - delete
-   // - undelete
-   // - open
-   // - archive
-   // - template (not implemented yet because flagged function)
-   // - untemplate (not implemented yet because flagged function)
-   // - reopen
-   // ###############################################################
-
-   public function _sendMailRoomDelete()
-   {
-       $this->_sendMailRoomDeleteToCommunityModeration();
-       $this->_sendMailRoomDeleteToPortalModeration();
-   }
-
-   public function _sendMailRoomUnDelete()
-   {
-       $this->_sendMailRoomUnDeleteToCommunityModeration();
-       $this->_sendMailRoomUnDeleteToPortalModeration();
-   }
-
-   public function _sendMailRoomOpen()
-   {
-       $this->_sendMailRoomOpenToCommunityModeration();
-       $this->_sendMailRoomOpenToPortalModeration();
-   }
-
-   public function _sendMailRoomArchive()
-   {
-       $this->_sendMailRoomArchiveToCommunityModeration();
-       $this->_sendMailRoomArchiveToPortalModeration();
-   }
-
-   public function _sendMailRoomReOpen()
-   {
-       $this->_sendMailRoomReOpenToCommunityModeration();
-       $this->_sendMailRoomReOpenToPortalModeration();
-   }
-
-   public function _sendMailRoomLock()
-   {
-       $this->_sendMailRoomLockToCommunityModeration();
-       $this->_sendMailRoomLockToPortalModeration();
-   }
-
-   public function _sendMailRoomUnlock()
-   {
-       $this->_sendMailRoomUnlockToCommunityModeration();
-       $this->_sendMailRoomUnlockToPortalModeration();
-   }
-
-   public function _sendMailToModeration($room_moderation, $room_change)
+   public function _sendMailToModeration($room_moderation, $room_change): void
    {
        if ('portal' == $room_moderation) {
            $this->_sendMailToModeration2($this->getContextItem(), $room_change);
@@ -606,149 +573,47 @@ class cs_community_item extends cs_room_item
        }
    }
 
-   public function _sendMailToModeration2($room_item, $room_change)
+   public function _sendMailToModeration2($room_item, $room_change): void
    {
-       $translator = $this->_environment->getTranslationObject();
-       $default_language = 'de';
+       $symfonyContainer = $this->_environment->getSymfonyContainer();
 
-       /** @var ContainerInterface $symfonyContainer */
-       global $symfonyContainer;
-       $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
-       $default_sender_address = $emailFrom;
+       if ($room_item instanceof PortalProxy) {
+           /** @var AccountManager $accountManager */
+           $accountManager = $symfonyContainer->get(AccountManager::class);
 
-       $current_portal = $this->_environment->getCurrentPortalItem();
-       if (empty($current_portal)
-            or !$current_portal->isPortal()
-       ) {
-           $current_portal = $this->getContextItem();
-       }
-       $current_user = $this->_environment->getCurrentUserItem();
-       $fullname = $current_user->getFullname();
-       if (empty($fullname)) {
-           $current_user = $this->_environment->getRootUserItem();
-           $email = $current_user->getEmail();
-           if (empty($email)
-                and !empty($default_sender_address)
-                and '@' != $default_sender_address
-           ) {
-               $current_user->setEmail($default_sender_address);
-           }
-       }
+           /** @var AccountSettingsManager $settingsManager */
+           $settingsManager = $symfonyContainer->get(AccountSettingsManager::class);
 
-       $moderator_list = $room_item->getModeratorList();
+           $portalModeratorAccounts = $accountManager->getAccounts($room_item->getId(), ...$room_item->getModeratorList());
+           $filteredModeratorAccounts = array_filter(
+               iterator_to_array($portalModeratorAccounts),
+               function ($account) use ($settingsManager): bool {
+                   $setting = $settingsManager->getSetting(
+                       $account,
+                       AccountSetting::NOTIFY_PORTAL_MOD_ON_WORKSPACE_CHANGE);
 
-       // get moderators
-       $receiver_array = [];
-       $moderator_name_array = [];
-
-       foreach ($moderator_list as $mod_item) {
-           if ('yes' == $mod_item->getOpenRoomWantMail()) {
-               $language = $room_item->getLanguage();
-               if ('user' == $language) {
-                   $language = $mod_item->getLanguage();
-                   if ('browser' == $language) {
-                       $language = $default_language;
-                   }
+                   return $setting['enabled'] === true;
                }
-               $receiver_array[$language] = $mod_item->getEmail();
-               $moderator_name_array[] = $mod_item->getFullname();
-           }
-       }
-
-       // now email information
-       foreach ($receiver_array as $lang => $email) {
-           $subject = '';
-           if ($room_item->isPortal()) {
-               $subject .= $room_item->getTitle().': ';
-           }
-           $save_language = $translator->getSelectedLanguage();
-           $translator->setSelectedLanguage($lang);
-           $title = str_ireplace('&amp;', '&', $this->getTitle());
-           if ('open' == $room_change) {
-               $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_OPEN', $title);
-           } elseif ('reopen' == $room_change) {
-               $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_REOPEN', $title);
-           } elseif ('delete' == $room_change) {
-               $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_DELETE', $title);
-           } elseif ('undelete' == $room_change) {
-               $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_UNDELETE', $title);
-           } elseif ('archive' == $room_change) {
-               $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_ARCHIVE', $title);
-           } elseif ('link' == $room_change) {
-               $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_LINK', $title);
-           } elseif ('lock' == $room_change) {
-               $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_LOCK', $title);
-           } elseif ('unlock' == $room_change) {
-               $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_UNLOCK', $title);
-           }
-           $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-           $body .= LF.LF;
-           if ('open' == $room_change) {
-               $body .= $translator->getMessage('COMMUNITY_MAIL_BODY_OPEN');
-               $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_OPEN');
-           } elseif ('reopen' == $room_change) {
-               $body .= $translator->getMessage('COMMUNITY_MAIL_BODY_REOPEN');
-               $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_REOPEN');
-           } elseif ('delete' == $room_change) {
-               $body .= $translator->getMessage('COMMUNITY_MAIL_BODY_DELETE');
-               $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_DELETE');
-           } elseif ('undelete' == $room_change) {
-               $body .= $translator->getMessage('COMMUNITY_MAIL_BODY_UNDELETE');
-               $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_UNDELETE');
-           } elseif ('archive' == $room_change) {
-               $body .= $translator->getMessage('COMMUNITY_MAIL_BODY_ARCHIVE');
-               $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_ARCHIVE');
-           } elseif ('lock' == $room_change) {
-               $body .= $translator->getMessage('COMMUNITY_MAIL_BODY_LOCK');
-               $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_LOCK');
-           } elseif ('unlock' == $room_change) {
-               $body .= $translator->getMessage('COMMUNITY_MAIL_BODY_UNLOCK');
-               $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_UNLOCK');
-           }
-           $body .= LF.LF;
-
-           $editorFullName = !empty($current_user->getFullname()) ? $current_user->getFullname() : '-';
-           $body .= $translator->getMessage(
-               'PROJECT_MAIL_BODY_INFORMATION',
-               str_ireplace('&amp;', '&', $this->getTitle()),
-               $editorFullName,
-               $room_change_action
            );
 
-           if ('delete' != $room_change) {
-               global $symfonyContainer;
-               $url = $symfonyContainer->get('router')->generate('app_room_home', [
-                   'roomId' => $this->getItemID(),
-               ], UrlGeneratorInterface::ABSOLUTE_URL);
-
-               $body .= LF.$url;
-           }
-
-           $body .= LF.LF;
-           $body .= $translator->getMessage('MAIL_SEND_TO', implode(LF, $moderator_name_array));
-           $body .= LF.LF;
-           if ($room_item->isPortal()) {
-               $body .= $translator->getMessage('MAIL_SEND_WHY_PORTAL', $room_item->getTitle());
-           } elseif ($room_item->isCommunityRoom()) {
-               $body .= $translator->getMessage('MAIL_SEND_WHY_COMMUNITY', $room_item->getTitle());
-           } else {
-               $body .= $translator->getMessage('MAIL_SEND_WHY_PROJECT', $room_item->getTitle());
-           }
-
-           // send email
-           $from = $translator->getMessage(
-               'SYSTEM_MAIL_MESSAGE',
-               isset($current_portal) ? $current_portal->getTitle() : $room_item->getTitle()
+           $recipients = iterator_to_array(RecipientFactory::createFromAccounts(...$filteredModeratorAccounts));
+       } else {
+           $recipients = RecipientFactory::createModerationRecipients($room_item, fn (cs_user_item $user) =>
+               $user->getOpenRoomWantMail()
            );
-
-           $replyTo = new Address($current_user->getEmail(), $current_user->getFullName());
-
-           /** @var Mailer $mailer */
-           $mailer = $symfonyContainer->get(Mailer::class);
-           $mailer->sendRaw($subject, $body, RecipientFactory::createFromRaw($email), $from, [$replyTo]);
-
-           $translator->setSelectedLanguage($save_language);
        }
+
+       /** @var Mailer $mailer */
+       $mailer = $symfonyContainer->get(Mailer::class);
+
+       /** @var ModerationMessageFactory $moderationMessageFactory */
+       $moderationMessageFactory = $symfonyContainer->get(ModerationMessageFactory::class);
+       $message = $moderationMessageFactory->createRoomModerationMessage(
+           $this,
+           $room_item,
+           $room_change
+       );
+       $mailer->sendMultiple($message, $recipients);
    }
 
    public function getCountUsedAccounts($start, $end)

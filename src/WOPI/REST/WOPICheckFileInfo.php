@@ -46,6 +46,7 @@ final readonly class WOPICheckFileInfo
             ->setUserFriendlyName($account->getUsername())
             ->setReadOnly(!$writeable)
             ->setUserCanWrite($writeable)
-            ->setSupportsLocks(true);
+            ->setSupportsLocks(true)
+            ->setSupportsUpdate(true);
     }
 }

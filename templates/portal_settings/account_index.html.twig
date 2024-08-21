@@ -54,12 +54,12 @@
                                         </td>
                                         <td>
                                             {% if portalUser is not null %}
-                                            <a href="{{ path('app_portalsettings_accountindexdetail', {
-                                                'portalId': portal.id,
-                                                'userId': portalUser.itemId
-                                            }) }}" uk-tooltip="title: {{ 'created'|trans({}, 'user') }} {{ portalUser.creationDate|format_datetime|default('Never'|trans({}, 'portal')) }}">
-                                                {{ account.firstname }} {{ account.lastname }}
-                                            </a> ({{ account.username }})
+                                                <a href="{{ path('app_portalsettings_accountindexdetail', {
+                                                    'portalId': portal.id,
+                                                    'userId': portalUser.itemId
+                                                }) }}" uk-tooltip="title: {{ 'created'|trans({}, 'user') }} {{ portalUser.creationDate|format_datetime|default('Never'|trans({}, 'portal')) }}">
+                                                    {{ account.firstname }} {{ account.lastname }}
+                                                </a> ({{ account.username }})
                                             {% else %}
                                                 {{ account.firstname }} {{ account.lastname }} ({{ account.username }})
                                             {% endif %}
@@ -77,7 +77,7 @@
                                                 {{ account.email }}
                                             {% endif %}
                                         </td>
-                                        <td class="uk-text-nowrap">{{ account.lastLogin|format_datetime|default('Never'|trans({}, 'portal')) }}</td>
+                                        <td class="uk-text-nowrap">{% if account.lastLogin %}{{ account.lastLogin|format_datetime }}{% else %}{{ 'Never'|trans({}, 'portal') }}{% endif %}</td>
                                         <td>
                                             {% if portalUser is not null %}
                                                 {{ macros.userStatus(portalUser.status) }}
