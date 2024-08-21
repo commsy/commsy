@@ -36,7 +36,7 @@ class AccountActivityLockedMessage extends Message
 
     public function getSubject(): string
     {
-        return '%portal_name%: Your account is locked';
+        return '{portal_name}: Your account is locked';
     }
 
     public function getTemplateName(): string
@@ -78,7 +78,7 @@ class AccountActivityLockedMessage extends Message
     public function getTranslationParameters(): array
     {
         return [
-            '%portal_name%' => $this->portal->getTitle(),
+            'portal_name' => $this->portal->getTitle(),
         ];
     }
 }

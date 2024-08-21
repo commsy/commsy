@@ -1,14 +1,14 @@
-{{ '[This email was generated automatically at %time_generated%.]'|trans({ '%time_generated%': 'now'|date|format_datetime }, 'mail') }}
+{{ '[This email was generated automatically at {time_generated}.]'|trans({ 'time_generated': 'now'|date|format_datetime }, 'mail') }}
 
 <br/><br/>
 
 {{ content }}
 
 <br/><br/>
-{{ 'Workspace: %workspace%'|trans({ '%workspace%': room.title }, 'mail') }}<br/>
+{{ 'Workspace: {workspace}'|trans({ 'workspace': room.title }, 'mail') }}<br/>
 {% set url = url('app_room_home', { 'roomId': room.itemId }) %}
 <a href="{{ url }}">{{ url }}</a>
 
 <br/><br/>
 
-{{ 'You received this email as one of the moderator/s in the workspace "%room_name%".'|trans({ '%room_name%': room.title }, 'mail') }}
+{{ 'You received this email as one of the moderator/s in the workspace "{room_name}".'|trans({ 'room_name': room.title }, 'mail') }}
