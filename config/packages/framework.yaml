@@ -8,7 +8,7 @@ framework:
     session:
         handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
         cookie_secure: auto
-        cookie_samesite: strict
+        cookie_samesite: lax
         gc_maxlifetime: 21600
 
     set_locale_from_accept_language: false

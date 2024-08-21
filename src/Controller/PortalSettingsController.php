@@ -22,6 +22,7 @@ use App\Entity\AuthSource;
 use App\Entity\AuthSourceGuest;
 use App\Entity\AuthSourceLdap;
 use App\Entity\AuthSourceLocal;
+use App\Entity\AuthSourceOIDC;
 use App\Entity\AuthSourceShibboleth;
 use App\Entity\License;
 use App\Entity\Portal;
@@ -52,6 +53,7 @@ use App\Form\Type\Portal\AccountIndexType;
 use App\Form\Type\Portal\AuthGuestType;
 use App\Form\Type\Portal\AuthLdapType;
 use App\Form\Type\Portal\AuthLocalType;
+use App\Form\Type\Portal\AuthOidcType;
 use App\Form\Type\Portal\AuthShibbolethType;
 use App\Form\Type\Portal\AuthWorkspaceMembershipType;
 use App\Form\Type\Portal\CommunityRoomsCreationType;
@@ -679,6 +681,62 @@ class PortalSettingsController extends AbstractController
             'form' => $authShibbolethForm,
             'portal' => $portal,
             'authSource' => $shibSource,
+        ]);
+    }
+
+    #[Route(path: '/portal/{portalId}/settings/auth/oidc')]
+    #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
+    public function authOidc(
+        #[MapEntity(id: 'portalId')]
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        /*
+         * Try to find an existing shibboleth auth source or create an empty one. We assume
+         * that there is only one auth source per type.
+         */
+        $authSources = $portal->getAuthSources();
+
+        /** @var AuthSourceOIDC $shibSource */
+        $oidcSource = $authSources->filter(fn (AuthSource $authSource) => $authSource instanceof AuthSourceOIDC)->first();
+
+        if (false === $oidcSource) {
+            // TODO: This could be moved to a creational pattern
+            $oidcSource = new AuthSourceOIDC();
+            $oidcSource->setPortal($portal);
+        }
+
+        $authOidcForm = $this->createForm(AuthOidcType::class, $oidcSource);
+        $authOidcForm->handleRequest($request);
+
+        if ($authOidcForm->isSubmitted() && $authOidcForm->isValid()) {
+            // handle switch to other auth types
+            $clickedButtonName = $authOidcForm->getClickedButton()->getName();
+            if ('type' === $clickedButtonName) {
+                $typeSwitch = $authOidcForm->get('typeChoice')->getData();
+
+                return $this->generateRedirectForAuthType($typeSwitch, $portal);
+            }
+
+            if ('save' === $clickedButtonName) {
+                if ($oidcSource->isDefault()) {
+                    $authSources->map(function (AuthSource $authSource) use ($entityManager) {
+                        $authSource->setDefault(false);
+                        $entityManager->persist($authSource);
+                    });
+                    $oidcSource->setDefault(true);
+                }
+
+                $entityManager->persist($oidcSource);
+                $entityManager->flush();
+            }
+        }
+
+        return $this->render('portal_settings/auth_oidc.html.twig', [
+            'form' => $authOidcForm,
+            'portal' => $portal,
+            'authSource' => $oidcSource,
         ]);
     }
 
@@ -2255,6 +2313,10 @@ class PortalSettingsController extends AbstractController
                 ]);
             case 'shib':
                 return $this->redirectToRoute('app_portalsettings_authshibboleth', [
+                    'portalId' => $portal->getId(),
+                ]);
+            case 'oidc':
+                return $this->redirectToRoute('app_portalsettings_authoidc', [
                     'portalId' => $portal->getId(),
                 ]);
             case 'guest':
