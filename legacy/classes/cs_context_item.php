@@ -1561,11 +1561,7 @@ class cs_context_item extends cs_item
 
     public function withLogArchive(): bool
     {
-        $value = $this->_getExtraConfig('LOGARCHIVE');
-        if (1 == $value) {
-            return true;
-        }
-
+        // TODO: Remove EXTRA_CONFIG['LOGARCHIVE'] from DB
         return false;
     }
 
@@ -2100,15 +2096,7 @@ class cs_context_item extends cs_item
      */
     public function withAds(): bool
     {
-        if ($this->isServer()) {
-            return true;
-        } else {
-            $value = $this->_getExtraConfig('ADS');
-            if (1 == $value) {
-                return true;
-            }
-        }
-
+        // TODO: Remove EXTRA_CONFIG['ADS'] from DB
         return false;
     }
 

@@ -1,4 +1,4 @@
-{{ '[This email was generated automatically at %time_generated%.]'|trans({ '%time_generated%': 'now'|date|format_datetime }, 'mail') }}
+{{ '[This email was generated automatically at {time_generated}.]'|trans({ 'time_generated': 'now'|date|format_datetime }, 'mail') }}
 
 <br/><br/>
 
@@ -8,11 +8,11 @@
 {% endif %}
 
 {% if room.isGroupRoom %}
-    {{ 'mail.user_joined_grouproom'|trans({ '%room_title%': room.title, '%user_id%': newUserId, '%fullname%': newUser.fullname }, 'mail') }}
+    {{ 'mail.user_joined_grouproom'|trans({ 'room_title': room.title, 'user_id': newUserId, 'fullname': newUser.fullname }, 'mail') }}
 {% elseif room.isCommunityRoom %}
-    {{ 'mail.user_joined_community'|trans({ '%room_title%': room.title, '%user_id%': newUserId, '%fullname%': newUser.fullname }, 'mail') }}
+    {{ 'mail.user_joined_community'|trans({ 'room_title': room.title, 'user_id': newUserId, 'fullname': newUser.fullname }, 'mail') }}
 {% else %}
-    {{ 'mail.user_joined_project'|trans({ '%room_title%': room.title, '%user_id%': newUserId, '%fullname%': newUser.fullname }, 'mail') }}
+    {{ 'mail.user_joined_project'|trans({ 'room_title': room.title, 'user_id': newUserId, 'fullname': newUser.fullname }, 'mail') }}
 {% endif %}
 
 <br/><br/>
@@ -50,4 +50,4 @@ E-Mail: {{ newUser.email }}
 
 <br/><br/>
 
-{{ 'You received this email as one of the moderator/s in the workspace "%room_name%".'|trans({ '%room_name%': room.title }, 'mail') }}
+{{ 'You received this email as one of the moderator/s in the workspace "{room_name}".'|trans({ 'room_name': room.title }, 'mail') }}

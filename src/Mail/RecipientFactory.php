@@ -98,4 +98,11 @@ class RecipientFactory
 
         return $recipient;
     }
+
+    public static function createFromAccounts(Account ...$accounts): iterable
+    {
+        foreach ($accounts as $account) {
+            yield self::createFromAccount($account);
+        }
+    }
 }
