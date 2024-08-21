@@ -12,6 +12,7 @@
  */
 
 use App\Repository\HashRepository;
+use App\Room\RoomStatus;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for database connection to the database table "user"
@@ -1400,7 +1401,7 @@ class cs_user_manager extends cs_manager
               $room_item->setCreationDate(getCurrentDateTimeInMySQL());
               $room_item->setContextID($this->_environment->getCurrentPortalID());
               $room_item->setShowTitle();
-              $room_item->setStatus(CS_ROOM_OPEN);
+              $room_item->setStatus(RoomStatus::OPEN->value);
               $room_item->setTitle('PRIVATE_ROOM');
               $room_item->setCheckNewMemberAlways();
               $room_item->setClosedForGuests();

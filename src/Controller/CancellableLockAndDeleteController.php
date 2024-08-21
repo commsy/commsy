@@ -15,6 +15,9 @@ namespace App\Controller;
 
 use App\Form\Type\Room\CancellableDeleteType;
 use App\Form\Type\Room\CancellableLockType;
+use App\Repository\PortalRepository;
+use App\Room\RoomStatus;
+use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -36,6 +39,8 @@ class CancellableLockAndDeleteController extends AbstractController
         Request $request,
         RoomService $roomService,
         TranslatorInterface $translator,
+        LegacyEnvironment $legacyEnvironment,
+        PortalRepository $portalRepository,
         $itemId
     ): Response {
         $this->denyAccessUnlessGranted(new Expression(
@@ -100,7 +105,11 @@ class CancellableLockAndDeleteController extends AbstractController
             if ('cancel' === $buttonName) {
                 return $this->render('cancellable_lock_and_delete/delete_or_lock.html.twig');
             } elseif ('lock' === $buttonName) {
-                $roomItem->lock();
+                $portal = $portalRepository->find($legacyEnvironment->getEnvironment()->getCurrentPortalID());
+                $status = $this->isGranted('PORTAL_MODERATOR', $portal) ?
+                    RoomStatus::LOCKED_PORTAL_MOD : RoomStatus::LOCKED;
+
+                $roomItem->lock($status);
                 $roomItem->save();
 
                 // redirect back to hosting context/room/group
@@ -122,6 +131,8 @@ class CancellableLockAndDeleteController extends AbstractController
     public function unlock(
         $roomId,
         RoomService $roomService,
+        LegacyEnvironment $legacyEnvironment,
+        PortalRepository $portalRepository,
         $itemId
     ): Response {
         $this->denyAccessUnlessGranted(new Expression(
@@ -131,6 +142,11 @@ class CancellableLockAndDeleteController extends AbstractController
         $roomItem = $roomService->getRoomItem($itemId);
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id '.$itemId);
+        }
+
+        if ($roomItem->isLockedByModerator()) {
+            $portal = $portalRepository->find($legacyEnvironment->getEnvironment()->getCurrentPortalID());
+            $this->denyAccessUnlessGranted('PORTAL_MODERATOR', $portal);
         }
 
         $isGroupRoom = $roomItem->isGroupRoom();
