@@ -52,15 +52,13 @@ class PortalModeratorVoter extends Voter
         switch ($attribute) {
             case self::PORTAL_MODERATOR:
                 $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
-                if ($currentUserItem) {
-                    /** @var $subject Portal */
-                    if (
-                        3 === (int) $currentUserItem->getStatus() &&
-                        null === $subject->getDeletionDate() &&
-                        (int) $currentUserItem->getContextID() === $subject->getId()
-                    ) {
-                        return true;
-                    }
+                /** @var $subject Portal */
+                if (
+                    3 === (int) $currentUserItem->getStatus() &&
+                    null === $subject->getDeletionDate() &&
+                    $currentUserItem->getContextID() === $subject->getId()
+                ) {
+                    return true;
                 }
                 break;
         }

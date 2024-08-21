@@ -29,9 +29,11 @@
                                 <ul class="uk-nav uk-nav-dropdown cs-list-moderation uk-padding-remove uk-margin-remove uk-text-left">
                                     <li>
                                         {% if project.isLocked %}
-                                            <a href="{{ path('app_cancellablelockanddelete_unlock', {'roomId': project.contextId, 'itemId': project.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify uk-visible-large"></i> {{ 'Unlock workspace'|trans({}, 'room') }}
-                                            </a>
+                                            {% if not project.isLockedByModerator() or is_granted('PORTAL_MODERATOR', commsy.portal) %}
+                                                <a href="{{ path('app_cancellablelockanddelete_unlock', {'roomId': project.contextId, 'itemId': project.itemId}) }}">
+                                                    <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify uk-visible-large"></i> {{ 'Unlock workspace'|trans({}, 'room') }}
+                                                </a>
+                                            {% endif %}
                                         {% else %}
                                             <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': project.contextId, 'itemId': project.itemId}) }}">
                                                 <i class="uk-icon-justify uk-icon-small uk-icon-lock uk-visible-large"></i> {{ 'Lock workspace'|trans({}, 'room') }}

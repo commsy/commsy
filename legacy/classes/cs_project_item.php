@@ -28,6 +28,7 @@ use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Proxy\PortalProxy;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use App\Room\RoomStatus;
 
 /** father class for a rooms (project or community)
  * this class implements an abstract room item.
@@ -311,13 +312,13 @@ class cs_project_item extends cs_room_item
 
             // dispatch event (sending mail to moderation is handled by an event subscriber)
             if ($new_status != $this->_old_status) {
-                if (CS_ROOM_LOCK == $this->_old_status) {
+                if (RoomStatus::LOCKED->value == $this->_old_status) {
                     $eventDispatcher->dispatch(new WorkspaceUnlockedEvent($this));
-                } elseif (CS_ROOM_CLOSED == $new_status) {
+                } elseif (RoomStatus::CLOSED->value == $new_status) {
                     $eventDispatcher->dispatch(new WorkspaceArchivedEvent($this));
-                } elseif (CS_ROOM_OPEN == $new_status and !$show_time) {
+                } elseif (RoomStatus::OPEN->value == $new_status and !$show_time) {
                     $eventDispatcher->dispatch(new WorkspaceUnarchivedEvent($this));
-                } elseif (CS_ROOM_LOCK == $new_status) {
+                } elseif (RoomStatus::LOCKED->value == $new_status) {
                     $eventDispatcher->dispatch(new WorkspaceLockedEvent($this));
                 }
             }
@@ -395,9 +396,9 @@ class cs_project_item extends cs_room_item
     /**
      * Locks the project room as well as any group rooms belonging to groups of this room.
      */
-    public function lock(): void
+    public function lock($status = RoomStatus::LOCKED): void
     {
-        parent::lock();
+        parent::lock($status);
 
         // lock related group rooms
         foreach ($this->getGroupRoomList() as $groupRoom) {

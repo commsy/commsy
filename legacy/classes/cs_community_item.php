@@ -27,6 +27,7 @@ use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Proxy\PortalProxy;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use App\Room\RoomStatus;
 
 /** class for a community
  * this class implements a community item.
@@ -233,13 +234,13 @@ class cs_community_item extends cs_room_item
            if (!empty($this->_old_status)
                 and !empty($new_status)
                 and $new_status != $this->_old_status) {
-               if (CS_ROOM_LOCK == $this->_old_status) {
+               if (RoomStatus::LOCKED->value == $this->_old_status) {
                    $eventDispatcher->dispatch(new WorkspaceUnlockedEvent($this));
-               } elseif (CS_ROOM_CLOSED == $new_status) {
+               } elseif (RoomStatus::CLOSED->value == $new_status) {
                    $eventDispatcher->dispatch(new WorkspaceArchivedEvent($this));
-               } elseif (CS_ROOM_OPEN == $new_status) {
+               } elseif (RoomStatus::OPEN->value == $new_status) {
                    $eventDispatcher->dispatch(new WorkspaceUnarchivedEvent($this));
-               } elseif (CS_ROOM_LOCK == $new_status) {
+               } elseif (RoomStatus::LOCKED->value == $new_status) {
                    $eventDispatcher->dispatch(new WorkspaceLockedEvent($this));
                }
            }
