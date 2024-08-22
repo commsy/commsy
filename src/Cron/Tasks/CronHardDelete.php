@@ -65,9 +65,4 @@ readonly class CronHardDelete implements CronTaskInterface
     {
         return 'Finally delete soft deleted items';
     }
-
-    public function getPriority(): int
-    {
-        return self::PRIORITY_NORMAL;
-    }
 }

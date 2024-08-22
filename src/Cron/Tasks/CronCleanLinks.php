@@ -49,9 +49,4 @@ class CronCleanLinks implements CronTaskInterface
     {
         return 'Clean unneeded links';
     }
-
-    public function getPriority(): int
-    {
-        return self::PRIORITY_NORMAL;
-    }
 }

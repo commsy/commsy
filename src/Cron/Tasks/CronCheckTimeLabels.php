@@ -85,9 +85,4 @@ class CronCheckTimeLabels implements CronTaskInterface
     {
         return 'Check switching between two time labels';
     }
-
-    public function getPriority(): int
-    {
-        return self::PRIORITY_NORMAL;
-    }
 }

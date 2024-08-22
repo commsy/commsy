@@ -55,9 +55,4 @@ class CronRoomActivity implements CronTaskInterface
     {
         return 'Calculate activity points';
     }
-
-    public function getPriority(): int
-    {
-        return self::PRIORITY_NORMAL;
-    }
 }
