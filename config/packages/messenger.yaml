@@ -19,9 +19,9 @@ framework:
         routing:
             # Route your messages to the transports
             'FOS\ElasticaBundle\Message\AsyncPersistPage': async
-            'App\Message\AccountActivityStateTransitions': async
-            'App\Message\WorkspaceActivityStateTransitions': async
-
+            
+            'App\Message\*': async
+            
 when@test:
     framework:
         messenger:
