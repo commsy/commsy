@@ -176,10 +176,7 @@ class GroupController extends BaseController
         }
         $groups = $this->groupService->getListGroups($roomId, $numAllGroups, 0, $sort);
 
-        $readerList = [];
-        foreach ($groups as $item) {
-            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-        }
+        $readerList = $this->readerService->getChangeStatusForItems(...$groups);
 
         // get group list from manager service
         $itemsCountArray = $this->groupService->getCountArray($roomId);
@@ -243,10 +240,10 @@ class GroupController extends BaseController
         // contains member status of current user for each group and grouproom
         $allGroupsMemberStatus = [];
 
-        $readerList = [];
+        $readerList = $this->readerService->getChangeStatusForItems(...$groups);
+
         $allowedActions = [];
         foreach ($groups as $item) {
-            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
                 $allowedActions[$item->getItemID()] = ['markread', 'categorize', 'hashtag', 'activate', 'deactivate', 'sendmail', 'delete'];
             } else {
@@ -277,7 +274,15 @@ class GroupController extends BaseController
             $allGroupsMemberStatus[$item->getItemID()] = $groupMemberStatus;
         }
 
-        return $this->render('group/feed.html.twig', ['roomId' => $roomId, 'groups' => $groups, 'readerList' => $readerList, 'showRating' => false, 'allowedActions' => $allowedActions, 'memberStatus' => $allGroupsMemberStatus, 'isRoot' => $this->legacyEnvironment->getCurrentUser()->isRoot()]);
+        return $this->render('group/feed.html.twig', [
+            'roomId' => $roomId,
+            'groups' => $groups,
+            'readerList' => $readerList,
+            'showRating' => false,
+            'allowedActions' => $allowedActions,
+            'memberStatus' => $allGroupsMemberStatus,
+            'isRoot' => $this->legacyEnvironment->getCurrentUser()->isRoot(),
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/group/{itemId}', requirements: ['itemId' => '\d+'])]
@@ -421,61 +426,17 @@ class GroupController extends BaseController
         $group = $this->groupService->getGroup($itemId);
 
         $item = $group;
-        $reader_manager = $this->legacyEnvironment->getReaderManager();
-        $reader = $reader_manager->getLatestReader($item->getItemID());
-        // when group is newly created, "modificationDate" is equal to "reader['read_date']", so operator "<=" instead of "<" should be used here
-        if (empty($reader) || $reader['read_date'] <= $item->getModificationDate()) {
-            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
+
+        $this->readerService->markItemAsRead($group);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $roomManager = $this->legacyEnvironment->getRoomManager();
-        $readerManager = $this->legacyEnvironment->getReaderManager();
-        $roomItem = $roomManager->getItem($group->getContextId());
-        $numTotalMember = $roomItem->getAllUsers();
-
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-        $readerManager->getLatestReaderByUserIDArray($id_array, $group->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($group->getItemID(),
-                $current_user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $group->getModificationDate()) {
-                    ++$read_count;
-                    ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
-                }
-            }
-            $current_user = $user_list->getNext();
-        }
-        $read_percentage = round(($read_count / $all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count / $all_user_count) * 100);
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($group);
 
         $readerList = [];
         $modifierList = [];
-        $reader = $this->readerService->getLatestReader($group->getItemId());
-        if (empty($reader)) {
-            $readerList[$item->getItemId()] = 'new';
-        } elseif ($reader['read_date'] < $group->getModificationDate()) {
-            $readerList[$group->getItemId()] = 'changed';
-        }
+
+        $readerList[$group->getItemId()] = $this->readerService->getStatusForItem($group)->value;
 
         $modifierList[$group->getItemId()] = $this->itemService->getAdditionalEditorsForItem($group);
 
@@ -545,9 +506,9 @@ class GroupController extends BaseController
         $infoArray['prevItemId'] = $prevItemId;
         $infoArray['nextItemId'] = $nextItemId;
         $infoArray['lastItemId'] = $lastItemId;
-        $infoArray['readCount'] = $read_count;
-        $infoArray['readSinceModificationCount'] = $read_since_modification_count;
-        $infoArray['userCount'] = $all_user_count;
+        $infoArray['readCount'] = $readCountDescription->getReadTotal();
+        $infoArray['readSinceModificationCount'] = $readCountDescription->getReadSinceModification();
+        $infoArray['userCount'] = $readCountDescription->getUserTotal();
         $infoArray['draft'] = $this->itemService->getItem($itemId)->isDraft();
         $infoArray['pinned'] = $this->itemService->getItem($itemId)->isPinned();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
@@ -731,30 +692,7 @@ class GroupController extends BaseController
 
         $itemArray = [$group];
 
-        $readerManager = $this->legacyEnvironment->getReaderManager();
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        $readerManager->getLatestReaderByUserIDArray($user_list->getIDArray(), $group->getItemID());
-
-        foreach ($user_list as $current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($group->getItemID(),
-                $current_user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $group->getModificationDate()) {
-                    ++$read_count;
-                    ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
-                }
-            }
-        }
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($group);
 
         $modifierList = [];
         foreach ($itemArray as $item) {
@@ -767,9 +705,9 @@ class GroupController extends BaseController
             'roomId' => $roomId,
             'item' => $group,
             'modifierList' => $modifierList,
-            'userCount' => $all_user_count,
-            'readCount' => $read_count,
-            'readSinceModificationCount' => $read_since_modification_count,
+            'userCount' => $readCountDescription->getUserTotal(),
+            'readCount' => $readCountDescription->getReadTotal(),
+            'readSinceModificationCount' => $readCountDescription->getReadSinceModification(),
         ]);
     }
 

@@ -55,7 +55,6 @@ define('CS_LINK_TYPE', 'link');
 define('CS_LINKITEM_TYPE', 'link_item');
 define('CS_LINKMODITEM_TYPE', 'link_modifier_item');
 define('CS_LINKITEMFILE_TYPE', 'link_item_file');
-define('CS_READER_TYPE', 'reader');
 define('CS_NOTICED_TYPE', 'noticed');
 
 define('CS_TIME_TYPE', 'time');

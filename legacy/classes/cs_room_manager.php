@@ -12,6 +12,7 @@
  */
 
 use App\Hash\HashManager;
+use App\Utils\ReaderService;
 use Doctrine\ORM\EntityManagerInterface;
 
 /** class for database connection to the database table "community"
@@ -571,7 +572,6 @@ class cs_room_manager extends cs_context_manager
         $hashManager = $symfonyContainer->get(HashManager::class);
         $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
         $link_item_file_manager = $this->_environment->getLinkItemFileManager();
-        $reader_manager = $this->_environment->getReaderManager();
         $annotation_manager = $this->_environment->getAnnotationManager();
         $announcement_manager = $this->_environment->getAnnouncementManager();
         $dates_manager = $this->_environment->getDatesManager();
@@ -602,6 +602,9 @@ class cs_room_manager extends cs_context_manager
         $query->setParameter('diff', $days);
         $rooms = $query->getResult();
 
+        /** @var ReaderService $readerService */
+        $readerService = $symfonyContainer->get(ReaderService::class);
+
         foreach ($rooms as $room) {
             $contextId = $room['contextId'];
             $itemId = $room['itemId'];
@@ -610,11 +613,13 @@ class cs_room_manager extends cs_context_manager
             $disc_manager = $this->_environment->getDiscManager();
             $disc_manager->removeRoomDir($contextId, $itemId);
 
+            // reader
+            $readerService->deleteAllEntriesInWorkspace($itemId);
+
             // managers
             $hashManager->deleteHashesInContext($itemId);
             $link_modifier_item_manager->deleteFromDb($itemId);
             $link_item_file_manager->deleteFromDb($itemId);
-            $reader_manager->deleteFromDb($itemId);
             $annotation_manager->deleteFromDb($itemId);
             $announcement_manager->deleteFromDb($itemId);
             $dates_manager->deleteFromDb($itemId);

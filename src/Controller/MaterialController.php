@@ -47,6 +47,7 @@ use App\Utils\MaterialService;
 use App\Utils\TopicService;
 use cs_material_item;
 use cs_room_item;
+use cs_section_item;
 use DateTime;
 use Exception;
 use Symfony\Component\Form\FormInterface;
@@ -154,10 +155,7 @@ class MaterialController extends BaseController
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = [];
-        foreach ($materials as $item) {
-            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-        }
+        $readerList = $this->readerService->getChangeStatusForItems(...$materials);
 
         $allowedActions = $itemService->getAllowedActionsForItems($materials);
 
@@ -279,10 +277,7 @@ class MaterialController extends BaseController
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = [];
-        foreach ($materials as $item) {
-            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-        }
+        $readerList = $this->readerService->getChangeStatusForItems(...$materials);
 
         $ratingList = [];
         if ($current_context->isAssessmentActive()) {
@@ -483,40 +478,14 @@ class MaterialController extends BaseController
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerManager = $this->legacyEnvironment->getReaderManager();
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($material);
 
         $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        $id_array = $user_list->getIDArray();
-        $readerManager->getLatestReaderByUserIDArray($id_array, $material->getItemID());
-
-        foreach ($user_list as $current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($material->getItemID(), $current_user->getItemID());
-            if (!empty($current_reader)) {
-                ++$read_count;
-
-                if ($current_reader['read_date'] >= $material->getModificationDate()) {
-                    ++$read_since_modification_count;
-                }
-            }
-        }
 
         $readerList = [];
         $modifierList = [];
         foreach ($itemArray as $item) {
-            $reader = $this->readerService->getLatestReader($item->getItemId());
-            if (empty($reader)) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                $readerList[$item->getItemId()] = 'changed';
-            }
+            $readerList[$item->getItemId()] = $this->readerService->getStatusForItem($item)->value;
 
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
@@ -658,24 +627,14 @@ class MaterialController extends BaseController
             $ratingOwnDetail = $this->assessmentService->getOwnRatingDetail($material);
         }
 
-        $reader_manager = $this->legacyEnvironment->getReaderManager();
-
         $item = $material;
-        $reader = $reader_manager->getLatestReader($item->getItemID());
-        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
-            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
 
-        $readsectionList = $material->getSectionList();
+        $this->readerService->markItemAsRead($material);
 
-        $section = $readsectionList->getFirst();
-        while ($section) {
-            $reader = $reader_manager->getLatestReader($section->getItemID());
-            if (empty($reader) || $reader['read_date'] < $section->getModificationDate()) {
-                $reader_manager->markRead($section->getItemID(), 0);
-            }
-
-            $section = $readsectionList->getNext();
+        $sections = $material->getSectionList();
+        foreach ($sections as $section) {
+            /** @var cs_section_item $section */
+            $this->readerService->markItemAsRead($section);
         }
 
         $categories = [];
@@ -763,9 +722,9 @@ class MaterialController extends BaseController
         $infoArray['prevItemId'] = $prevItemId;
         $infoArray['nextItemId'] = $nextItemId;
         $infoArray['lastItemId'] = $lastItemId;
-        $infoArray['readCount'] = $read_count;
-        $infoArray['readSinceModificationCount'] = $read_since_modification_count;
-        $infoArray['userCount'] = $all_user_count;
+        $infoArray['readCount'] = $readCountDescription->getReadTotal();
+        $infoArray['readSinceModificationCount'] = $readCountDescription->getReadSinceModification();
+        $infoArray['userCount'] = $readCountDescription->getUserTotal();
         $infoArray['workflowGroupArray'] = $workflowGroupArray;
         $infoArray['workflowUserArray'] = $workflowUserArray;
         $infoArray['workflowText'] = $workflowText;

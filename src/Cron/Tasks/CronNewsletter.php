@@ -18,6 +18,7 @@ use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
 use App\Services\LegacyEnvironment;
+use App\Utils\ReaderService;
 use cs_annotations_manager;
 use cs_context_item;
 use cs_dates_manager;
@@ -25,6 +26,7 @@ use cs_environment;
 use cs_list;
 use cs_manager;
 use cs_privateroom_item;
+use cs_user_item;
 use cs_user_manager;
 use DateTimeImmutable;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -35,11 +37,11 @@ class CronNewsletter implements CronTaskInterface
     private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
-        LegacyEnvironment $legacyEnvironment,
+        LegacyEnvironment                 $legacyEnvironment,
         private readonly PortalRepository $portalRepository,
-        private readonly RouterInterface $router,
-        private readonly Mailer $mailer,
-        private readonly AccountManager $accountManager
+        private readonly RouterInterface  $router,
+        private readonly Mailer           $mailer,
+        private readonly AccountManager   $accountManager, private readonly ReaderService $readerService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -219,14 +221,13 @@ class CronNewsletter implements CronTaskInterface
 
                         $count_entries = 0;
                         if (isset($user_list) && $user_list->isNotEmpty() && 1 == $user_list->getCount()) {
+                            /** @var cs_user_item $ref_user */
                             $ref_user = $user_list->getFirst();
                             if (isset($ref_user) && $ref_user->getItemID() > 0) {
                                 $temp_body = '';
 
-                                $readerManager = $this->legacyEnvironment->getReaderManager();
                                 foreach ($rubric_list as $rubric_item) {
-                                    $noticed = $readerManager->getLatestReaderForUserByID($rubric_item->getItemID(),
-                                        $ref_user->getItemID());
+                                    $noticed = $this->readerService->cachedReadStatusForItem($rubric_item, $ref_user);
                                     if (empty($noticed)) {
                                         $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_NEW').']</span>';
                                     } elseif ($noticed['read_date'] < $rubric_item->getModificationDate()) {
@@ -237,9 +238,9 @@ class CronNewsletter implements CronTaskInterface
 
                                     $annotation_count = 0;
                                     foreach ($annotation_list as $annotation_item) {
-                                        $annotation_noticed = $readerManager->getLatestReaderForUserByID(
-                                            $annotation_item->getItemID(),
-                                            $ref_user->getItemID()
+                                        $annotation_noticed = $this->readerService->cachedReadStatusForItem(
+                                            $annotation_item,
+                                            $ref_user
                                         );
 
                                         if (empty($annotation_noticed)) {

@@ -184,34 +184,6 @@ class cs_discussion_item extends cs_item
         return $discussionarticles_manager->getAllArticlesForItem($this, $showAll);
     }
 
-   /** get unread articles of a discussion
-    * this method returns a number of unread articles of a discussion.
-    *
-    * @return int
-    *
-    * @author CommSy Development Group
-    */
-   public function getUnreadArticles()
-   {
-       $discussionarticles_manager = $this->_environment->getDiscussionArticlesManager();
-       $reader_manager = $this->_environment->getReaderManager();
-       $discussionarticles_manager->setDiscussionLimit($this->getItemID());
-       $discussionarticles_manager->select();
-       $discussionarticles_list = $discussionarticles_manager->get();
-       $discussionarticle_item = $discussionarticles_list->getFirst();
-       $number_of_unread = 0;
-       while ($discussionarticle_item) {
-           // Mark item as read, if we read it for the first time
-           $reader = $reader_manager->getLatestReader($discussionarticle_item->getItemID());
-           if ((empty($reader)) || ($reader['version_id'] < $discussionarticle_item->getVersionID()) || ($reader['read_date'] < $discussionarticle_item->getModificationDate())) {
-               $number_of_unread = $number_of_unread + 1;
-           }
-           $discussionarticle_item = $discussionarticles_list->getNext();
-       }
-
-       return $number_of_unread;
-   }
-
    public function save(): void
    {
        $discussion_manager = $this->_environment->getDiscussionManager();
