@@ -201,7 +201,7 @@ class PortfolioController extends AbstractController
             if (null != $item) {
                 $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
                 if ($relatedUser) {
-                    $readerList[$item->getItemId()] = $this->readerService->getChangeStatusForUserByID($item->getItemId(), $relatedUser->getItemId());
+                    $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item, $relatedUser);
                 }
             }
         }

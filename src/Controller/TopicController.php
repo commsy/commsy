@@ -152,10 +152,7 @@ class TopicController extends BaseController
         // get topic list from manager service
         $topics = $this->topicService->getListTopics($roomId, $max, $start);
 
-        $readerList = [];
-        foreach ($topics as $item) {
-            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-        }
+        $readerList = $this->readerService->getChangeStatusForItems(...$topics);
 
         $allowedActions = $itemService->getAllowedActionsForItems($topics);
 
@@ -245,55 +242,16 @@ class TopicController extends BaseController
         $topic = $this->topicService->getTopic($itemId);
 
         $item = $topic;
-        $reader_manager = $this->legacyEnvironment->getReaderManager();
-        $reader = $reader_manager->getLatestReader($item->getItemID());
-        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
-            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
+        $this->readerService->markItemAsRead($item);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
-        $readerManager = $this->legacyEnvironment->getReaderManager();
 
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($topic);
 
-        /** @var cs_user_item $current_user */
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-        $readerManager->getLatestReaderByUserIDArray($id_array, $topic->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($topic->getItemID(),
-                $current_user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $topic->getModificationDate()) {
-                    ++$read_count;
-                    ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
-                }
-            }
-            $current_user = $user_list->getNext();
-        }
         $readerList = [];
         $modifierList = [];
-        $reader = $this->readerService->getLatestReader($topic->getItemId());
-        if (empty($reader)) {
-            $readerList[$item->getItemId()] = 'new';
-        } elseif ($reader['read_date'] < $topic->getModificationDate()) {
-            $readerList[$topic->getItemId()] = 'changed';
-        }
 
+        $readerList[$topic->getItemId()] = $this->readerService->getStatusForItem($topic)->value;
         $modifierList[$topic->getItemId()] = $this->itemService->getAdditionalEditorsForItem($topic);
 
         $topics = $this->topicService->getListTopics($roomId);
@@ -352,9 +310,9 @@ class TopicController extends BaseController
         $infoArray['prevItemId'] = $prevItemId;
         $infoArray['nextItemId'] = $nextItemId;
         $infoArray['lastItemId'] = $lastItemId;
-        $infoArray['readCount'] = $read_count;
-        $infoArray['readSinceModificationCount'] = $read_since_modification_count;
-        $infoArray['userCount'] = $all_user_count;
+        $infoArray['readCount'] = $readCountDescription->getReadTotal();
+        $infoArray['readSinceModificationCount'] = $readCountDescription->getReadSinceModification();
+        $infoArray['userCount'] = $readCountDescription->getUserTotal();
         $infoArray['draft'] = $this->itemService->getItem($itemId)->isDraft();
         $infoArray['pinned'] = $this->itemService->getItem($itemId)->isPinned();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
@@ -482,54 +440,26 @@ class TopicController extends BaseController
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
-        $readerManager = $this->legacyEnvironment->getReaderManager();
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($topic);
 
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-        $readerManager->getLatestReaderByUserIDArray($id_array, $topic->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($topic->getItemID(),
-                $current_user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $topic->getModificationDate()) {
-                    ++$read_count;
-                    ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
-                }
-            }
-            $current_user = $user_list->getNext();
-        }
         $readerList = [];
         $modifierList = [];
         foreach ($itemArray as $item) {
-            $reader = $this->readerService->getLatestReader($item->getItemId());
-            if (empty($reader)) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                $readerList[$item->getItemId()] = 'changed';
-            }
+            $readerList[$item->getItemId()] = $this->readerService->getStatusForItem($item)->value;
 
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($topic), CommsyEditEvent::SAVE);
 
-        return $this->render('topic/save.html.twig', ['roomId' => $roomId, 'item' => $topic, 'modifierList' => $modifierList, 'userCount' => $all_user_count, 'readCount' => $read_count, 'readSinceModificationCount' => $read_since_modification_count]);
+        return $this->render('topic/save.html.twig', [
+            'roomId' => $roomId,
+            'item' => $topic,
+            'modifierList' => $modifierList,
+            'userCount' => $readCountDescription->getUserTotal(),
+            'readCount' => $readCountDescription->getReadTotal(),
+            'readSinceModificationCount' => $readCountDescription->getReadSinceModification(),
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/print')]
@@ -594,10 +524,7 @@ class TopicController extends BaseController
         $topics = $this->topicService->getListTopics($roomId);
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = [];
-        foreach ($topics as $item) {
-            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-        }
+        $readerList = $this->readerService->getChangeStatusForItems(...$topics);
 
         $ratingList = [];
         if ($current_context->isAssessmentActive()) {

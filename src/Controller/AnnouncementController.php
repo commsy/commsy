@@ -42,7 +42,6 @@ use App\Utils\TopicService;
 use cs_announcement_item;
 use cs_item;
 use cs_room_item;
-use cs_user_item;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -143,10 +142,7 @@ class AnnouncementController extends BaseController
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = [];
-        foreach ($announcements as $item) {
-            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-        }
+        $readerList = $this->readerService->getChangeStatusForItems(...$announcements);
 
         $allowedActions = $itemService->getAllowedActionsForItems($announcements);
 
@@ -199,10 +195,7 @@ class AnnouncementController extends BaseController
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = [];
-        foreach ($announcements as $item) {
-            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-        }
+        $readerList = $this->readerService->getChangeStatusForItems(...$announcements);
 
         $ratingList = [];
         if ($current_context->isAssessmentActive()) {
@@ -307,10 +300,7 @@ class AnnouncementController extends BaseController
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = [];
-        foreach ($announcements as $item) {
-            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-        }
+        $readerList = $this->readerService->getChangeStatusForItems(...$announcements);
 
         $ratingList = [];
         if ($current_context->isAssessmentActive()) {
@@ -815,66 +805,25 @@ class AnnouncementController extends BaseController
     private function getDetailInfo(
         int $roomId,
         int $itemId
-    ) {
+    ): array
+    {
         $infoArray = [];
 
         $announcement = $this->announcementService->getAnnouncement($itemId);
 
         $item = $announcement;
-        $reader_manager = $this->legacyEnvironment->getReaderManager();
-        $reader = $reader_manager->getLatestReader($item->getItemID());
-        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
-            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
+
+        $this->readerService->markItemAsRead($item);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerManager = $this->legacyEnvironment->getReaderManager();
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($announcement);
 
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        /** @var cs_user_item $current_user */
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-        $readerManager->getLatestReaderByUserIDArray($id_array, $announcement->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($announcement->getItemID(),
-                $current_user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $announcement->getModificationDate()) {
-                    ++$read_count;
-                    ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
-                }
-            }
-            $current_user = $user_list->getNext();
-        }
-
-        $readerList = [];
+        $readerList = [$announcement->getItemId() => $this->readerService->getStatusForItem($announcement)->value];
         $modifierList = [];
-        $reader = $this->readerService->getLatestReader($announcement->getItemId());
-        if (empty($reader)) {
-            $readerList[$item->getItemId()] = 'new';
-        } elseif ($reader['read_date'] < $announcement->getModificationDate()) {
-            $readerList[$announcement->getItemId()] = 'changed';
-        }
 
         $modifierList[$announcement->getItemId()] = $this->itemService->getAdditionalEditorsForItem($announcement);
 
-        /** @var cs_announcement_item[] $announcements */
         $announcements = $this->announcementService->getListAnnouncements($roomId);
         $announcementList = [];
         $counterBefore = 0;
@@ -947,9 +896,9 @@ class AnnouncementController extends BaseController
         $infoArray['prevItemId'] = $prevItemId;
         $infoArray['nextItemId'] = $nextItemId;
         $infoArray['lastItemId'] = $lastItemId;
-        $infoArray['readCount'] = $read_count;
-        $infoArray['readSinceModificationCount'] = $read_since_modification_count;
-        $infoArray['userCount'] = $all_user_count;
+        $infoArray['readCount'] = $readCountDescription->getReadTotal();
+        $infoArray['readSinceModificationCount'] = $readCountDescription->getReadSinceModification();
+        $infoArray['userCount'] = $readCountDescription->getUserTotal();
         $infoArray['draft'] = $item->isDraft();
         $infoArray['pinned'] = $item->isPinned();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
