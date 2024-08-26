@@ -67,7 +67,7 @@
 {% endif %}
 
 {% if room.isGroupRoom and room.getLinkedProjectItem is defined %}
-    {{ 'mail.room_moderation.body.linked_project_room'|trans({'room_name'. room.getlinkedProjectItem.title}, 'mail') }}
+    {{ 'mail.room_moderation.body.linked_project_room'|trans({'room_name': room.getlinkedProjectItem.title}, 'mail') }}
 {% endif %}
 
 <br/><br/>
