@@ -68,7 +68,7 @@ parameters:
     
     # Online Office
     commsy.online_office.base_url: '%env(ONLINE_OFFICE_BASE_URL)%'
-    commsy.online_office.proofkey_validation: true
+    commsy.online_office.proofkey_validation: '%env(bool:ONLINE_OFFICE_PROOFKEY_VALIDATION)%'
     
 when@test:
     parameters:
@@ -434,12 +434,6 @@ services:
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
             - '%env(DATABASE_URL)%'
-    
-    # Doctrine
-    Doctrine\Migrations\Version\DbalMigrationFactory: ~
-    App\Migrations\Factory\MigrationFactoryDecorator:
-        decorates: Doctrine\Migrations\Version\DbalMigrationFactory
-        arguments: [ '@App\Migrations\Factory\MigrationFactoryDecorator.inner', '@service_container' ]
     
     # Public alias for Security
     app.security:

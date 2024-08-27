@@ -13,6 +13,7 @@
 
 namespace App\Controller;
 
+use App\Enum\EditableSection;
 use App\Event\CommsyEditEvent;
 use App\Form\DataTransformer\ItemTransformer;
 use App\Form\DataTransformer\TransformerManager;
@@ -23,6 +24,7 @@ use App\Form\Type\ItemLinksType;
 use App\Form\Type\ItemWorkflowType;
 use App\Form\Type\SendType;
 use App\Mail\Mailer;
+use App\Security\Authorization\Voter\CategoryVoter;
 use App\Services\EtherpadService;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
@@ -107,6 +109,13 @@ class ItemController extends AbstractController
         ]);
 
         $formData = $transformer->transform($item);
+
+        $useEtherpad = false;
+        if ($parameterBag->get('commsy.etherpad.enabled')) {
+            $materialItem = $materialService->getMaterial($itemId);
+            $useEtherpad = $materialItem && $materialItem->getEtherpadEditor();
+        }
+
         $formOptions = [
             'itemId' => $itemId,
             'configName' => $configName,
@@ -115,7 +124,7 @@ class ItemController extends AbstractController
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             ]),
-            'lock_protection' => !$draft,
+            'lock_protection' => !$draft && !$useEtherpad,
         ];
 
         $withRecurrence = false;
@@ -127,14 +136,11 @@ class ItemController extends AbstractController
             }
         }
 
-        $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
-
-        $useEtherpad = false;
-        if ($parameterBag->get('commsy.etherpad.enabled')) {
-            /** @var cs_material_item $materialItem */
-            $materialItem = $materialService->getMaterial($itemId);
-            $useEtherpad = $materialItem && $materialItem->getEtherpadEditor();
-        }
+        $eventDispatcher->dispatch(new CommsyEditEvent(
+            $item,
+            EditableSection::DESCRIPTION,
+            ['etherpad' => $useEtherpad]
+        ), CommsyEditEvent::EDIT);
 
         $form = $this->createForm(ItemDescriptionType::class, $formData, $formOptions);
         $form->handleRequest($request);
@@ -152,10 +158,10 @@ class ItemController extends AbstractController
                         $client = $etherpadService->getClient();
 
                         // get pad and get text from pad
-                        $textObject = $client->getHTML($item->getEtherpadEditorID());
+                        $html = $client->getHTML($item->getEtherpadEditorID())->getData('html');
 
                         // save etherpad text to material description
-                        $item->setDescription(nl2br($textObject->html));
+                        $item->setDescription(nl2br($html));
                     }
                 }
 
@@ -480,90 +486,6 @@ class ItemController extends AbstractController
 
         $formData = [];
         $optionsData = [];
-        $items = [];
-
-        // get all items that are linked or can be linked
-        $rubricInformation = $roomService->getRubricInformation($roomId);
-        if (in_array('group', $rubricInformation)) {
-            $rubricInformation[] = 'label';
-        }
-
-        $optionsData['filterRubric']['all'] = 'all';
-        foreach ($rubricInformation as $rubric) {
-            $optionsData['filterRubric'][$rubric] = $rubric;
-        }
-
-        $optionsData['filterPublic']['public'] = 'public';
-        $optionsData['filterPublic']['all'] = 'all';
-
-        $itemManager = $legacyEnvironment->getItemManager();
-        $itemManager->reset();
-        $itemManager->setContextLimit($roomId);
-        $itemManager->setTypeArrayLimit($rubricInformation);
-
-        // get all linked items
-        $itemLinkedList = $itemManager->getItemList($item->getAllLinkedItemIDArray());
-        $tempLinkedItem = $itemLinkedList->getFirst();
-        while ($tempLinkedItem) {
-            $tempTypedLinkedItem = $itemService->getTypedItem($tempLinkedItem->getItemId());
-            if ('user' != $tempTypedLinkedItem->getItemType()) {
-                $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getTitle();
-                $items[$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem;
-            } else {
-                $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getFullname();
-                $items[$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem;
-            }
-            $tempLinkedItem = $itemLinkedList->getNext();
-        }
-        if (empty($optionsData['itemsLinked'])) {
-            $optionsData['itemsLinked'] = [];
-        }
-        // add number of linked items to feed amount
-        $countLinked = count($optionsData['itemsLinked']);
-
-        $itemManager->setIntervalLimit($feedAmount + $countLinked);
-        $itemManager->select();
-        $itemList = $itemManager->get();
-
-        // get all items except linked items
-        $optionsData['items'] = [];
-        $tempItem = $itemList->getFirst();
-        while ($tempItem) {
-            $tempTypedItem = $itemService->getTypedItem($tempItem->getItemId());
-            // skip already linked items
-            if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
-                $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
-                $items[$tempTypedItem->getItemId()] = $tempTypedItem;
-            }
-            $tempItem = $itemList->getNext();
-        }
-
-        $linkedItemIds = $item->getAllLinkedItemIDArray();
-        foreach ($linkedItemIds as $linkedId) {
-            $formData['itemsLinked'][$linkedId] = true;
-        }
-
-        // get latest edited items from current user
-        $itemManager->setContextLimit($roomId);
-        $itemManager->setUserUserIDLimit($legacyEnvironment->getCurrentUser()->getUserId());
-        $itemManager->select();
-        $latestItemList = $itemManager->get();
-
-        $i = 0;
-        $latestItem = $latestItemList->getFirst();
-        while ($latestItem && $i < 5) {
-            $tempTypedItem = $itemService->getTypedItem($latestItem->getItemId());
-            if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
-                if ('discarticle' != $tempTypedItem->getType() && 'task' != $tempTypedItem->getType() && 'link_item' != $tempTypedItem->getType() && 'tag' != $tempTypedItem->getType()) {
-                    $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
-                    ++$i;
-                }
-            }
-            $latestItem = $latestItemList->getNext();
-        }
-        if (empty($optionsData['itemsLatest'])) {
-            $optionsData['itemsLatest'] = [];
-        }
 
         // get all categories -> tree
         $optionsData['categories'] = $labelService->getCategories($roomId);
@@ -578,11 +500,6 @@ class ItemController extends AbstractController
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
 
         $form = $this->createForm(ItemCatsBuzzType::class, $formData, [
-            'filterRubric' => [],
-            'filterPublic' => [],
-            'items' => [],
-            'itemsLinked' => [],
-            'itemsLatest' => [],
             'categories' => $optionsData['categories'],
             'categoryConstraints' => $categoryConstraints,
             'hashtags' => $optionsData['hashtags'],
@@ -597,8 +514,7 @@ class ItemController extends AbstractController
             if ($form->get('save')->isClicked()) {
                 $data = $form->getData();
 
-                // $itemData = array_merge(array_keys($data['itemsLinked']), $data['itemsLatest']);
-                if ($data['newCategory']) {
+                if ($data['newCategory'] && $this->isGranted(CategoryVoter::EDIT)) {
                     $data['categories'][] = $categoryService->addTag($data['newCategory'], $roomId)->getItemID();
                 }
 
@@ -632,8 +548,6 @@ class ItemController extends AbstractController
             'form' => $form,
             'showCategories' => $roomItem->withTags(),
             'showHashtags' => $roomItem->withBuzzwords(),
-            'items' => $items,
-            'itemsLatest' => $optionsData['itemsLatest'],
         ]);
     }
 
@@ -1017,11 +931,30 @@ class ItemController extends AbstractController
 
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::CANCEL);
 
-        // cancel editing a NEW entry => return to list view
+        $itemType = $item->getType();
+
+        $itemId = match ($itemType) {
+            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE => $item->getLinkedItem()->getItemID(),
+            default => $item->getItemID(),
+        };
+
+        $viewType = match ($itemType) {
+            // NOTE: edit.js currently handles redirects for cancelled newly created steps, sections or discarticles
+            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE => 'detail',
+            default => ($item->isDraft() ? 'list' : 'detail'),
+        };
+
+        $itemType = match ($itemType) {
+            CS_LABEL_TYPE => $item->getLabelType(),
+            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE => $item->getLinkedItem()->getType(),
+            default => $itemType,
+        };
+
+        // cancel editing a NEW main entry => return to list view
         // cancel editing an EXISTING entry => return to detail view of the entry
-        $redirectUrl = $this->generateUrl("app_{$item->getType()}_" . ($item->isDraft() ? 'list' : 'detail'), [
+        $redirectUrl = $this->generateUrl("app_{$itemType}_" . $viewType, [
             'roomId' => $roomId,
-            'itemId' => $item->getItemID(),
+            'itemId' => $itemId,
         ]);
 
         return $this->json([

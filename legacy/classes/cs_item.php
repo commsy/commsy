@@ -11,11 +11,10 @@
  * file that was distributed with this source code.
  */
 
-use App\Entity\Portal;
 use App\Proxy\PortalProxy;
 use App\Repository\MaterialsRepository;
+use App\Repository\PortalRepository;
 use App\Security\Authorization\Voter\ItemVoter;
-use Doctrine\ORM\EntityManagerInterface;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
@@ -24,38 +23,40 @@ class cs_item
     /**
      * string - containing the type of the item.
      */
-    public $_type = 'item';
+    public string $_type = 'item';
 
     /**
      * array - containing the data of this item, including lists of linked items.
      */
-    public $_data = [];
+    public array $_data = [];
     /**
      * array - array of boolean values. TRUE if key is changed.
      */
-    public $_changed = [];
+    public array $_changed = [];
 
     public $_context_item;
 
     /** error array for detecting multiple errors.
      *
      */
-    public $_error_array = [];
+    public array $_error_array = [];
 
     /**
      * boolean - file list is changed, save new list.
      */
-    public $_filelist_changed = false;
-    public $_filelist_changed_empty = false;
-    public $_cache_on = true;
+    public bool $_filelist_changed = false;
+    public bool $_filelist_changed_empty = false;
+    public bool $_cache_on = true;
 
     /**
      * boolean - if true the modification_date will be updated - else not.
      */
-    public $_change_modification_on_save = true;
+    public bool $_change_modification_on_save = true;
 
-    public $_link_modifier = true;
-    public $_db_load_extras = true;
+    public bool $_link_modifier = true;
+    public bool $_db_load_extras = true;
+
+    private bool $isSetBuzzwordsByIDs = false;
 
     private array $externalViewerUsers = [];
 
@@ -76,7 +77,7 @@ class cs_item
              $contextId = $this->getContextID();
              if (!empty($contextId)) {
                  $item_manager = $this->_environment->getItemManager();
-                 $item = $item_manager->getItem($this->getContextID());
+                 $item = $item_manager->getItem($contextId);
 
                  if (isset($item) && is_object($item)) {
                      $manager = $this->_environment->getManager($item->getItemType());
@@ -86,7 +87,7 @@ class cs_item
                  }
 
                  $item_manager = $this->_environment->getItemManager(true);
-                 $item = $item_manager->getItem($this->getContextID());
+                 $item = $item_manager->getItem($contextId);
 
                  if (isset($item) && is_object($item)) {
                      $manager = $this->_environment->getManager($item->getItemType());
@@ -96,9 +97,11 @@ class cs_item
                  }
 
                  global $symfonyContainer;
-                 /** @var EntityManagerInterface $entityManager */
-                 $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
-                 $portal = $entityManager->getRepository(Portal::class)->find($contextId);
+
+                 /** @var PortalRepository $portalRepository*/
+                 $portalRepository = $symfonyContainer->get(PortalRepository::class);
+
+                 $portal = $portalRepository->findPortalByRoomContext($contextId);
 
                  if ($portal) {
                      $this->_context_item = new PortalProxy($portal, $this->_environment);
@@ -118,6 +121,24 @@ class cs_item
         }
     }
 
+    /**
+     * Returns the item's portal.
+     *
+     * This also works for a user room whose context is its parent
+     * project room (whose context, in turn, is the portal).
+     */
+    public function getPortal(): PortalProxy
+    {
+        global $symfonyContainer;
+
+        /** @var PortalRepository $portalRepository*/
+        $portalRepository = $symfonyContainer->get(PortalRepository::class);
+
+        $portal = $portalRepository->findPortalByRoomContext($this->getContextID());
+
+        return new PortalProxy($portal, $this->_environment);
+    }
+
     public function setCacheOff()
     {
         $this->_cache_on = false;
@@ -130,24 +151,16 @@ class cs_item
 
     /** Sets the data of the item.
      *
-     * @param $data_array Is the prepared array from "_buildItem($db_array)"
-     *
-     * @return bool TRUE if data is valid FALSE otherwise
+     * @param $data_array array Is the prepared array from "_buildItem($db_array)"
      */
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         $this->_data = $data_array;
-
-        return $this->isValid();
     }
 
     /** Gets the data of the item.
-     *
-     * @param $data_array Is the prepared array from "_saveItem($db_array)"
-     *
-     * @return bool TRUE if data is valid FALSE otherwise
      */
-    public function _getItemData()
+    public function _getItemData(): ?array
     {
         if ($this->isValid()) {
             return $this->_data;
@@ -155,6 +168,8 @@ class cs_item
             // TBD
             echo 'Error in cs_item_new._getItemData(). Item not valid.';
         }
+
+        return null;
     }
 
     // ##############
@@ -163,11 +178,9 @@ class cs_item
 
     /** asks if item is editable by everybody ('1') or just creator ('0').
      *
-     * @param value
-     *
      * @author CommSy Development Group
      */
-    public function isPrivateEditing()
+    public function isPrivateEditing(): bool
     {
         if (1 == $this->_getValue('public')) {
             return false;
@@ -178,9 +191,9 @@ class cs_item
 
     /** sets if item is editable by everybody ('1') or just creator ('0').
      *
-     * @param value
+     * @param $value
      */
-    public function setPrivateEditing($value)
+    public function setPrivateEditing($value): void
     {
         $this->_setValue('public', $value);
     }
@@ -242,7 +255,7 @@ class cs_item
 
     public function _saveBuzzwords()
     {
-        if (!isset($this->_setBuzzwordsByIDs)) {
+        if (!$this->isSetBuzzwordsByIDs) {
             $buzzword_array = $this->getBuzzwordArray();
             if (!empty($buzzword_array)) {
                 array_walk($buzzword_array, fn ($buzzword) => trim((string) $buzzword));
@@ -282,7 +295,7 @@ class cs_item
     public function setBuzzwordListByID($array)
     {
         $this->_setValue('buzzword_for', $array, false);
-        $this->_setBuzzwordsByIDs = true;
+        $this->isSetBuzzwordsByIDs = true;
     }
 
     /** get list of linked items
@@ -502,11 +515,11 @@ class cs_item
     /** set context id
      * this method sets the context id of the item.
      *
-     * @param int value context id of the item
+     * @param int $value context id of the item
      */
     public function setContextID($value)
     {
-        return $this->_setValue('context_id', $value);
+        $this->_setValue('context_id', $value);
     }
 
     /** get creator
@@ -682,7 +695,7 @@ class cs_item
         return $this->_type;
     }
 
-    public function getTitle()              // TBD: In Zukunft sollten alle Titel auch Titel sein!!!
+    public function getTitle(): string
     {
         $title = $this->_getValue('title');
         if (!empty($title)) {
@@ -779,9 +792,7 @@ class cs_item
     /** get an extra value
      * this method returns a value of the extra information.
      *
-     * @param string key the key (name) of the value
-     *
-     * @return * value of the extra information
+     * @param string $key the key (name) of the value
      */
     public function _getExtra($key)
     {
@@ -789,6 +800,8 @@ class cs_item
         if ($this->_issetExtra($key)) {
             return $extras[$key];
         }
+
+        return null;
     }
 
     /** get all extra keys
@@ -822,12 +835,12 @@ class cs_item
      *
      * @author CommSy Development Group
      */
-    public function setExtraInformation($value)
+    public function setExtraInformation($value): void
     {
         $this->_setValue('extras', (array) $value);
     }
 
-    public function resetExtraInformation()
+    public function resetExtraInformation(): void
     {
         $this->_setValue('extras', []);
     }
@@ -848,9 +861,9 @@ class cs_item
         return $this->_getValue('deleter_id');
     }
 
-    public function setDeleterID($value)
+    public function setDeleterID($value): void
     {
-        return $this->_setValue('deleter_id', $value);
+        $this->_setValue('deleter_id', $value);
     }
 
     public function getCreatorID(): int
@@ -858,20 +871,20 @@ class cs_item
         return (int) $this->_getValue('creator_id');
     }
 
-    public function setCreatorID($value)
+    public function setCreatorID($value): void
     {
-        return $this->_setValue('creator_id', $value);
+        $this->_setValue('creator_id', $value);
     }
 
-    public function setModifierID($value)
+    public function setModifierID($value): void
     {
-        return $this->_setValue('modifier_id', $value);
+        $this->_setValue('modifier_id', $value);
     }
 
      /** set creator of a material
       * this method sets the creator of the material.
       */
-     public function setCreatorItem(?cs_user_item $user)
+     public function setCreatorItem(?cs_user_item $user): void
      {
          $this->_setUserItem($user, 'creator');
      }
@@ -896,18 +909,11 @@ class cs_item
     /** set deleter of a material
      * this method sets the deleter of the material.
      *
-     * @param user_object deleter of a material
-     *
      * @author CommSy Development Group
      */
-    public function setDeleterItem($user)
+    public function setDeleterItem(cs_user_item $user): void
     {
         $this->_setUserItem($user, 'deleter');
-    }
-
-    public function setDeleter($user)
-    {
-        $this->setDeleterItem($user);
     }
 
     /** set modificator
@@ -925,11 +931,9 @@ class cs_item
     /** get deleter of a material
      * this method returns the deleter of the material.
      *
-     * @return user_object deleter of a material
-     *
      * @author CommSy Development Group
      */
-    public function getDeleterItem()
+    public function getDeleterItem(): ?cs_user_item
     {
         return $this->_getUserItem('deleter');
     }
@@ -1444,7 +1448,7 @@ class cs_item
          return false;
      }
 
-     public function isPublic()
+     public function isPublic(): bool
      {
          return false;
      }
@@ -1505,31 +1509,11 @@ class cs_item
         return $access;
     }
 
-    public function mayEditByUserID($user_id, $auth_source)
-    {
-        $user_manager = $this->_environment->getUserManager();
-        $user_manager->resetLimits();
-        $user_manager->setUserIDLimit($user_id);
-        $user_manager->setAuthSourceLimit($auth_source);
-        $user_manager->setContextLimit($this->getContextID());
-        $user_manager->select();
-        $user_list = $user_manager->get();
-        if (1 == $user_list->getCount()) {
-            $user_in_room = $user_list->getFirst();
-
-            return $this->mayEdit($user_in_room);
-        } elseif ($user_list->getCount() > 1) {
-            trigger_error('ambiguous user data in database table "user" for user-id "'.$user_id.'"', E_USER_WARNING);
-        } else {
-            trigger_error('can not find user data in database table "user" for user-id "'.$user_id.'", auth_source "'.$auth_source.'", context_id "'.$this->getContextID().'"', E_USER_WARNING);
-        }
-    }
-
     /** \brief	check via portfolio permission.
      *
      * This Method checks for item <=> activated portfolio - relationships
      */
-    public function mayPortfolioSee(string $username)
+    public function mayPortfolioSee(string $username): bool
     {
         $portfolioManager = $this->_environment->getPortfolioManager();
 
@@ -1814,11 +1798,9 @@ class cs_item
         return $id_array;
     }
 
-    public function isSystemLabel()
+    public function isSystemLabel(): bool
     {
-        $retour = false;
-
-        return $retour;
+        return false;
     }
 
     public function getLinkedItemIDArray($type)
@@ -1934,34 +1916,12 @@ class cs_item
     /** change creator and modificator - INTERNAL should be called from methods in subclasses
      * change creator and modificator after item was saved for the first time.
      */
-    public function _changeCreatorItemAndModificatorItemTo($user, $manager)
+    public function _changeCreatorItemAndModificatorItemTo($user, $manager): void
     {
         $this->setCreatorItem($user);
         $this->setModificatorItem($user);
         $manager->setCurrentContextID($this->getContextID());
         $manager->saveItemNew($this);
-    }
-
-    public function hasBeenClicked($user)
-    {
-        $user_array = $this->getArrayNew4User();
-        $id = $user->getItemID();
-        if (!empty($user_array) and in_array($id, $user_array)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public function HasBeenClickedSinceChanged($user)
-    {
-        $user_array = $this->getArrayChanged4User();
-        $id = $user->getItemID();
-        if (!empty($user_array) and in_array($id, $user_array)) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public function undelete()
@@ -1996,50 +1956,41 @@ class cs_item
     /** get list of files attached o this item.
        @return cs_list list of file items
      */
-    public function getFileList()
+    public function getFileList(): cs_list
     {
-        $file_list = new cs_list();
         if ('-1' == $this->getPublic() || $this->getHasOverwrittenContent()) {
-            $translator = $this->_environment->getTranslationObject();
+            return new cs_list();
+        }
 
-            return $file_list;
+        $file_list = new cs_list();
+        if (!empty($this->_data['file_list'])) {
+            $file_list = $this->_data['file_list'];
         } else {
-            if (!empty($this->_data['file_list'])) {
-                $file_list = $this->_data['file_list'];
+            if (isset($this->_data['file_id_array']) && !empty($this->_data['file_id_array'])) {
+                $file_id_array = $this->_data['file_id_array'];
             } else {
-                if (isset($this->_data['file_id_array']) and !empty($this->_data['file_id_array'])) {
-                    $file_id_array = $this->_data['file_id_array'];
-                } else {
-                    $file_id_array = [];
-                    $link_manager = $this->_environment->getLinkManager();
-                    $file_links = $link_manager->getFileLinks($this);
-                    if (!empty($file_links)) {
-                        foreach ($file_links as $link) {
-                            $file_id_array[] = $link['file_id'];
-                        }
-                    }
-                    if (isset($file_id_array)) {
-                        $this->_data['file_id_array'] = $file_id_array;
-                    }
-                }
-                if (!empty($file_id_array)) {
-                    $file_id_array = array_unique($file_id_array);
-                    $file_manager = $this->_environment->getFileManager();
-                    $file_manager->setIDArrayLimit($file_id_array);
-                    $file_manager->setContextLimit('');
-                    $file_manager->select();
-                    $file_list = $file_manager->get();
-                    if (isset($file_list)
-                         and !empty($file_list)
-                    ) {
-                        $this->_data['file_list'] = $file_list;
-                    }
+                $link_manager = $this->_environment->getLinkManager();
+                $file_links = $link_manager->getFileLinks($this);
+
+                $file_id_array = array_map(fn (array $fileData) => $fileData['file_id'], $file_links);
+                $this->_data['file_id_array'] = $file_id_array;
+            }
+
+            if (!empty($file_id_array)) {
+                $file_id_array = array_unique($file_id_array);
+                $file_manager = $this->_environment->getFileManager();
+                $file_manager->setIDArrayLimit($file_id_array);
+                $file_manager->setContextLimit('');
+                $file_manager->select();
+                $file_list = $file_manager->get();
+                if (!empty($file_list)) {
+                    $this->_data['file_list'] = $file_list;
                 }
             }
-            $file_list->sortby('filename');
-
-            return $file_list;
         }
+        $file_list->sortby('filename');
+
+        return $file_list;
     }
 
     /**get array of file ids
@@ -2090,7 +2041,7 @@ class cs_item
     public function setFileList($value)
     {
         $this->_data['file_list'] = $value;
-        $this->_data['file_id_array'] = '';
+        $this->_data['file_id_array'] = [];
         $this->_filelist_changed = true;
     }
 
@@ -2102,7 +2053,7 @@ class cs_item
             }
             $link_manager = $this->_environment->getLinkManager();
             $file_id_array = $this->getFileIDArray();
-            if ('' === $file_id_array or $this->_filelist_changed_empty) {
+            if (empty($file_id_array) || $this->_filelist_changed_empty) {
                 $link_manager->deleteFileLinks($this);
             } else {
                 $current_file_links = $link_manager->getFileLinks($this);
@@ -2156,17 +2107,6 @@ class cs_item
             }
             $this->setFileIDArray($file_id_array);
         }
-
-        global $c_indexing,$c_indexing_cron;
-        if (isset($c_indexing)
-             and !empty($c_indexing)
-             and $c_indexing
-             and isset($c_indexing_cron)
-             and !$c_indexing_cron
-        ) {
-            $ftsearch_manager = $this->_environment->getFTSearchManager();
-            $ftsearch_manager->buildFTIndex();
-        }
     }
 
     public function _copyFileList(): cs_list
@@ -2216,7 +2156,7 @@ class cs_item
     /** save item
      * this methode save the item into the database.
      */
-    public function save()
+    public function save(): void
     {
         $manager = $this->_environment->getManager($this->getItemType());
         $this->_save($manager);
@@ -2329,7 +2269,7 @@ class cs_item
     // ------------- Wordpressexport -------------
     // ------------------------------------------
 
-    public function getModifierList()
+    public function getModifierList(): ?cs_list
     {
         $retour = null;
         $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
@@ -2343,12 +2283,11 @@ class cs_item
             $retour = $user_manager->get();
             unset($user_manager);
         }
-        unset($link_modifier_item_manager);
 
         return $retour;
     }
 
-    public function setWorkflowTrafficLight($value)
+    public function setWorkflowTrafficLight($value): void
     {
         $this->_setValue('workflow_status', (string) $value);
     }
@@ -2358,29 +2297,28 @@ class cs_item
         return $this->_getValue('workflow_status');
     }
 
-    public function isReadByUser($user)
+    public function isReadByUser($user): bool
     {
         $item_manager = $this->_environment->getItemManager();
 
         return $item_manager->isItemMarkedAsWorkflowRead($this->getItemId(), $user->getItemID());
     }
 
-    public function setWorkflowResubmission($value)
+    public function setWorkflowResubmission($value): void
     {
         $this->_setExtra('WORKFLOWRESUBMISSION', (string) $value);
     }
 
     public function getWorkflowResubmission()
     {
-        $result = false;
         if ($this->_issetExtra('WORKFLOWRESUBMISSION')) {
-            $result = $this->_getExtra('WORKFLOWRESUBMISSION');
+            return $this->_getExtra('WORKFLOWRESUBMISSION');
         }
 
-        return $result;
+        return false;
     }
 
-    public function setWorkflowResubmissionDate($value)
+    public function setWorkflowResubmissionDate($value): void
     {
         $this->_setValue('workflow_resubmission_date', (string) $value);
     }
@@ -2390,7 +2328,7 @@ class cs_item
         return $this->_getValue('workflow_resubmission_date');
     }
 
-    public function setWorkflowResubmissionWho($value)
+    public function setWorkflowResubmissionWho($value): void
     {
         $this->_setExtra('WORKFLOWRESUBMISSIONWHO', (string) $value);
     }
@@ -2405,7 +2343,7 @@ class cs_item
         return $result;
     }
 
-    public function setWorkflowResubmissionWhoAdditional($value)
+    public function setWorkflowResubmissionWhoAdditional($value): void
     {
         $value = str_replace(["\t", ' '], '', (string) $value);
         $value_array = explode(',', $value);
@@ -2422,7 +2360,7 @@ class cs_item
         return $result;
     }
 
-    public function setWorkflowResubmissionTrafficLight($value)
+    public function setWorkflowResubmissionTrafficLight($value): void
     {
         $this->_setExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT', (string) $value);
     }
@@ -2437,7 +2375,7 @@ class cs_item
         return $result;
     }
 
-    public function setWorkflowValidity($value)
+    public function setWorkflowValidity($value): void
     {
         $this->_setExtra('WORKFLOWVALIDITY', (string) $value);
     }
@@ -2452,7 +2390,7 @@ class cs_item
         return $result;
     }
 
-    public function setWorkflowValidityDate($value)
+    public function setWorkflowValidityDate($value): void
     {
         $this->_setValue('workflow_validity_date', (string) $value);
     }
@@ -2462,7 +2400,7 @@ class cs_item
         return $this->_getValue('workflow_validity_date');
     }
 
-    public function setWorkflowValidityWho($value)
+    public function setWorkflowValidityWho($value): void
     {
         $this->_setExtra('WORKFLOWVALIDITYWHO', (string) $value);
     }
@@ -2477,7 +2415,7 @@ class cs_item
         return $result;
     }
 
-    public function setWorkflowValidityWhoAdditional($value)
+    public function setWorkflowValidityWhoAdditional($value): void
     {
         $value = str_replace(["\t", ' '], '', (string) $value);
         $value_array = explode(',', $value);
@@ -2494,7 +2432,7 @@ class cs_item
         return $result;
     }
 
-    public function setWorkflowValidityTrafficLight($value)
+    public function setWorkflowValidityTrafficLight($value): void
     {
         $this->_setExtra('WORKFLOWVALIDITYTRAFFICLIGHT', (string) $value);
     }
@@ -2524,7 +2462,7 @@ class cs_item
 
     /** set set draft.
      */
-    public function setDraftStatus($value)
+    public function setDraftStatus($value): void
     {
         $this->_setValue('draft', (string) $value);
     }
@@ -2536,7 +2474,7 @@ class cs_item
         return empty($isPinned) ? false : true;
     }
 
-    public function setPinned(bool $pinned)
+    public function setPinned(bool $pinned): void
     {
         $this->_setValue('pinned', $pinned ? 1 : 0);
     }

@@ -142,13 +142,6 @@ class cs_link_manager extends cs_manager
          $this->_link_type_array_limit = $type;
      }
 
-     /** sets the rubric type limit.
-      */
-     public function setMaterialLimit()
-     {
-         $this->setTypeLimit(CS_MATERIAL_TYPE);
-     }
-
      public function setTopicLimit()
      {
          $this->setTypeLimit(CS_TOPIC_TYPE);
@@ -1162,11 +1155,9 @@ class cs_link_manager extends cs_manager
 
      /** Prepares the db_array for the item.
       *
-      * @param $db_array Contains the data from the database
-      *
-      * @return array Contains prepared data ( textfunctions applied etc. )
+      * @param array $db_array Contains the data from the database
       */
-     public function _buildItem($db_array)
+     public function _buildItem(array $db_array)
      {
          if (!empty($db_array['extras'])) {
              $db_array['extras'] = unserialize($db_array['extras']);

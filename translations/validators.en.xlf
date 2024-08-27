@@ -58,6 +58,10 @@
                 <source>Your access code is invalid.</source>
                 <target>Your access code is invalid.</target>
             </trans-unit>
+            <trans-unit id="validators_room_code_please_remove">
+                <source>Your access code is invalid, please remove</source>
+                <target>Your access code is invalid. To request a room membership without code, please remove the invalid code.</target>
+            </trans-unit>
             <trans-unit id="validators_room_code_filled">
                 <source>Please enter an access code.</source>
                 <target>Please enter an access code.</target>
@@ -219,6 +223,12 @@
             <trans-unit id="violation_hashtag_merge_identical">
                 <source>Your selection must differ.</source>
                 <target>Your selection must differ.</target>
+            </trans-unit>
+
+            <!-- room settings -->
+            <trans-unit id="violation_room_settings_general_time_pulses">
+                <source>Continuous can only be specified without any other time pulse choices.</source>
+                <target>The "continuous" option can only be specified without any other time pulse choices.</target>
             </trans-unit>
 
             <!-- signup -->

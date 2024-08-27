@@ -10,6 +10,7 @@
     <div class="uk-grid">
 
         <div class="uk-width-4-5@m">
+            <main id="main-content">
 
             {# material content panel #}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
@@ -197,12 +198,9 @@
                     </div>
 
                     {# files #}
-                    <div id="files{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{{ {
-                        'editUrl': path('app_upload_uploadform', {'roomId': discussion.contextId, 'itemId': discussion.itemId}),
-                        'cancelEditUrl': path('app_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId})
-                    }|json_encode|e('html_attr') }}">
-                        {{ component('item_files', {
-                            item: discussion,
+                    <div id="files{{ discussion.itemId }}">
+                        {{ component('FileList:FileList', {
+                            itemId: discussion.itemId,
                             draft: draft
                         }) }}
                     </div>
@@ -226,13 +224,13 @@
                     {% endif %}
 
                     {% if draft %}
-                        {{ macros.draftButtons(roomId, discussion.itemId) }}
+                        {{ macros.draftButtons(roomId, discussion.itemId, discussion.type) }}
                     {% endif %}
                 </article>
             </div>
 
             {% if not draft %}
-                <div data-uk-observe id="article-content" class="uk-panel uk-panel-box">
+                <div data-uk-observe id="article-content" class="uk-panel uk-panel-box uk-margin-top">
 
                     {# panel teaser #}
                     <div class="uk-panel-teaser cs-panel-teaser-primary uk-text-large">
@@ -253,11 +251,13 @@
                     {% endif %}
                 </div>
             {% endif %}
+            </main>
         </div>
 
         <div class="uk-width-1-5@m uk-hidden-small">
 
             {# quick navigation #}
+            <nav aria-label="{{ 'Quick'|trans({}) }}">
             <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" uk-sticky>
                 <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
                     {{ 'quick navigation'|trans({})|capitalize }}
@@ -285,6 +285,7 @@
                     </ul>
                 </div>
             </div>
+            </nav>
 
         </div>
 

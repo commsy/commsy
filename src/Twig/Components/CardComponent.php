@@ -21,6 +21,8 @@ final class CardComponent
 
     public string $id = '';
 
+    public string $titleId = '';
+
     #[PreMount]
     public function preMount(array $data): array
     {
@@ -33,6 +35,7 @@ final class CardComponent
             'style' => 'default',
             'title' => '',
             'id' => '',
+            'titleId' => '',
         ]);
 
         $resolver->setAllowedValues('padding', [true, false]);

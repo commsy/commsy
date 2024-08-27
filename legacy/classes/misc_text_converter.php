@@ -72,57 +72,6 @@ class misc_text_converter
         return $this->_cleanBadCode($text);
     }
 
-    public function text_as_html_long($text, $htmlTextArea = true)
-    {
-        // preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u',$text,$values);
-        // security KFC
-        preg_match('~<!-- KFC TEXT [a-z0-9]* -->[\S|\s]*<!-- KFC TEXT [a-z0-9]* -->~u', (string)$text, $values);
-        foreach ($values as $key => $value) {
-            $text = str_replace($value, 'COMMSY_FCKEDITOR' . $key, (string)$text);
-        }
-        $text = $this->_text_as_html_long1($text, $htmlTextArea);
-        foreach ($values as $key => $value) {
-            $text = str_replace('COMMSY_FCKEDITOR' . $key, $this->_text_as_html_long2($value), (string)$text);
-        }
-
-        return $text;
-    }
-
-    // text not from FCKeditor
-    public function _text_as_html_long1($text, $htmlTextArea = false)
-    {
-        $text = $this->_cs_htmlspecialchars($text);
-        $text = nl2br((string)$text);
-        $text = $this->_decode_backslashes_1($text);
-        $text = $this->_preserve_whitespaces($text);
-        $text = $this->_newFormating($text);
-        $text = $this->_emphasize_text($text);
-        $text = $this->_activate_urls($text);
-        $text = $this->_display_headers($text);
-        $text = $this->_format_html_long($text);
-        $text = $this->_parseText2ID($text);
-        $text = $this->_decode_backslashes_2($text);
-        $text = $this->_delete_unnecassary_br($text);
-        $text = $this->_br_with_nl($text);
-
-        return $text;
-    }
-
-    // text from FCKeditor
-    public function _text_as_html_long2($text)
-    {
-        $text = $this->_cs_htmlspecialchars($text);
-        $text = $this->_decode_backslashes_1_fck($text);
-        $text = $this->_newFormating($text);
-        $text = $this->_decode_backslashes_2_fck($text);
-        $text = $this->_activate_urls($text);
-        $text = $this->_parseText2ID($text);
-        // html bug of fckeditor
-        $text = str_replace('<br type="_moz" />', '<br />', (string)$text);
-
-        return $text;
-    }
-
     public function text_as_html_short($text)
     {
         // $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
@@ -812,9 +761,6 @@ class misc_text_converter
                             } elseif ('(:link' == $key and mb_stristr($value_new, '(:link')) {
                                 $value_new = $this->_formatLink($value_new, $args_array);
                                 break;
-                            } elseif ('(:file' == $key and mb_stristr($value_new, '(:file')) {
-                                $value_new = $this->_formatFile($value_new, $args_array, $file_array);
-                                break;
                             }
                         }
 
@@ -822,65 +768,6 @@ class misc_text_converter
                     }
                 }
             }
-        }
-
-        return $text;
-    }
-
-    private function _formatFile($text, $array, $file_name_array)
-    {
-        $image_text = '';
-        if (!empty($array[1])
-            and !empty($file_name_array)
-        ) {
-            $temp_file_name = htmlentities((string)$array[1], ENT_NOQUOTES, 'UTF-8');
-            if (!empty($file_name_array[$temp_file_name])) {
-                $file = $file_name_array[$temp_file_name];
-            } elseif (!empty($file_name_array[html_entity_decode($temp_file_name, ENT_COMPAT, 'UTF-8')])) {
-                $file = $file_name_array[html_entity_decode($temp_file_name, ENT_COMPAT, 'UTF-8')];
-            }
-            if (isset($file)) {
-                if (!empty($array[2])) {
-                    $args = $this->_parseArgs($array[2]);
-                } else {
-                    $args = [];
-                }
-
-                $icon = '';
-
-                if (empty($args['size'])
-                    or (!empty($args['size'])
-                        and 'true' == $args['size']
-                    )
-                ) {
-                    $kb = ' (' . $file->getFileSize() . ' KB)';
-                } else {
-                    $kb = '';
-                }
-                if (!empty($args['text'])) {
-                    $name = $args['text'];
-                } else {
-                    $name = $file->getDisplayName();
-                }
-
-                if (!empty($args['target'])) {
-                    $target = ' target="' . $args['target'] . '"';
-                } elseif (!empty($args['newwin'])) {
-                    $target = ' target=_blank;';
-                } else {
-                    $target = '';
-                }
-                $source = $file->getUrl();
-                if (('jpg' == $file->getExtension()) or ('gif' == $file->getExtension()) or ('png' == $file->getExtension())) {
-                    $image_text = '<a href="' . $source . '"' . $target . ' rel="lightbox">' . $icon . $name . '</a>' . $kb;
-                } else {
-                    $image_text = '<a href="' . $source . '"' . $target . '>' . $icon . $name . '</a>' . $kb;
-                }
-            }
-        }
-
-        if (!empty($image_text)) {
-            $text = str_replace($array[0], $image_text, (string)$text);
         }
 
         return $text;
@@ -1098,8 +985,6 @@ class misc_text_converter
             case FROM_DB:
             case NONE:
                 return $text;
-            case AS_HTML_LONG:
-                return $this->text_as_html_long($text);
             case AS_HTML_SHORT:
                 return $this->text_as_html_short($text);
             case AS_MAIL:
@@ -1112,8 +997,6 @@ class misc_text_converter
                 return $this->_text_php2db($text);
             case AS_FILE:
                 return $this->_text_php2file($text);
-            case HELP_AS_HTML_LONG:
-                return $this->_help_as_html_long($text);
             case FROM_FORM:
                 return $this->_text_form2php($text);
             case FROM_FILE:
@@ -1143,20 +1026,6 @@ class misc_text_converter
     private function _text_file2php($text)
     {
         return str_replace('&quot;', '"', (string)$text);
-    }
-
-    private function _help_as_html_long($text)
-    {
-        $text = nl2br((string)$text);
-        $text = $this->_emphasize_text($text);
-        $text = $this->_activate_urls($text);
-        $text = $this->_display_headers($text);
-        $text = $this->_format_html_long($text);
-        $text = $this->_parseText2ID($text);
-        $text = $this->_decode_backslashes($text);
-        $text = $this->_br_with_nl($text);
-
-        return $text;
     }
 
     private function _text_php2mail($text)

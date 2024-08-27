@@ -33,6 +33,7 @@ use App\Form\Type\DateImportType;
 use App\Form\Type\DateType;
 use App\Hash\HashManager;
 use App\Repository\CalendarsRepository;
+use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\DateVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\CalendarsService;
@@ -874,8 +875,8 @@ class DateController extends BaseController
     #[Route(path: '/room/{roomId}/date/{itemId}/calendaredit')]
     public function calendaredit(
         Request $request,
+        int $roomId,
         int $itemId,
-        ParameterBagInterface $parameterBag
     ): Response {
         $date = $this->dateService->getDate($itemId);
 
@@ -883,8 +884,12 @@ class DateController extends BaseController
 
         $start = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $requestContent->start);
         $start->setTimezone(new DateTimeZone('UTC'));
-        $end = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $requestContent->end);
-        $end->setTimezone(new DateTimeZone('UTC'));
+        if (!empty($requestContent->end)) {
+            $end = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $requestContent->end);
+            $end->setTimezone(new DateTimeZone('UTC'));
+        } else {
+            $end = $start;
+        }
 
         $date->setStartingDay($start->format('Y-m-d'));
         $date->setStartingTime($start->format('H:i:s'));
@@ -968,7 +973,8 @@ class DateController extends BaseController
             'hashtags' => $labelService->getHashtags($roomId),
             'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
             'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-        ], 'room' => $current_context];
+        ], 'room' => $current_context,
+           'itemId' => $itemId];
         if ('' != $dateItem->getRecurrencePattern()) {
             $formOptions['attr']['unsetRecurrence'] = true;
         }
@@ -996,7 +1002,7 @@ class DateController extends BaseController
                 if ($form->has('category_mapping')) {
                     $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
-                    if (isset($formData['category_mapping']['newCategory'])) {
+                    if (isset($formData['category_mapping']['newCategory']) && $this->isGranted(CategoryVoter::EDIT)) {
                         $newCategoryTitle = $formData['category_mapping']['newCategory'];
                         $newCategory = $categoryService->addTag($newCategoryTitle, $roomId);
                         $categoryIds[] = $newCategory->getItemID();
@@ -1092,7 +1098,7 @@ class DateController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($dateItem), CommsyEditEvent::EDIT);
 
-        return $this->render('date/edit.html.twig', ['form' => $form, 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'currentUser' => $this->legacyEnvironment->getCurrentUserItem(), 'withRecurrence' => '' != $dateItem->getRecurrencePattern(), 'date' => $dateItem]);
+        return $this->render('date/edit.html.twig', ['form' => $form, 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'withRecurrence' => '' != $dateItem->getRecurrencePattern(), 'date' => $dateItem]);
     }
 
     private function getTagDetailArray($baseCategories, $itemCategories)

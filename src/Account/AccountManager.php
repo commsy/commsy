@@ -17,29 +17,28 @@ use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\Portal;
 use App\Services\LegacyEnvironment;
+use App\User\UserListBuilder;
 use App\Utils\UserService;
 use cs_environment;
 use cs_list;
 use cs_room_item;
 use cs_user_item;
-use cs_user_manager;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
+use LogicException;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class AccountManager
+final readonly class AccountManager
 {
-    private readonly cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
-    /**
-     * AccountManager constructor.
-     */
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
+        private EntityManagerInterface $entityManager,
         LegacyEnvironment $legacyEnvironment,
-        private readonly UserService $userService,
-        private readonly RequestStack $requestStack
+        private UserService $userService,
+        private RequestStack $requestStack,
+        private UserListBuilder $userListBuilder
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -50,7 +49,6 @@ class AccountManager
         $this->entityManager->persist($account);
         $this->entityManager->flush();
 
-        /** @var cs_user_manager $userManager */
         $userManager = $this->legacyEnvironment->getUserManager();
 
         return $userManager->changeUserID($username, $user);
@@ -95,8 +93,8 @@ class AccountManager
         $projectManager = $this->legacyEnvironment->getProjectManager();
         $communityManager = $this->legacyEnvironment->getCommunityManager();
 
-        $portalUser = $this->userService->getPortalUser($account);
-        if ($portalUser) {
+        try {
+            $portalUser = $this->userService->getPortalUser($account);
             $roomList = new cs_list();
             $roomList->addList($projectManager->getRelatedProjectRooms($portalUser, $portalUser->getContextID()));
             $roomList->addList($communityManager->getRelatedCommunityRooms($portalUser, $portalUser->getContextID()));
@@ -106,6 +104,7 @@ class AccountManager
                     return true;
                 }
             }
+        } catch (Exception) {
         }
 
         return false;
@@ -127,6 +126,13 @@ class AccountManager
         return $accountRepository->findOneByCredentials($user->getUserID(), $portalId, $authSource);
     }
 
+    public function getAccounts(int $portalId, cs_user_item ...$users): iterable
+    {
+        foreach ($users as $user) {
+            yield $this->getAccount($user, $portalId);
+        }
+    }
+
     public function getPortal(Account $account): ?Portal
     {
         $portalRepository = $this->entityManager->getRepository(Portal::class);
@@ -134,33 +140,44 @@ class AccountManager
         return $portalRepository->find($account->getContextId());
     }
 
-    public function delete(Account $account)
+    public function delete(Account $account): void
     {
-        // NOTE: normally, we'd fire an `AccountDeletedEvent` here; however, this is actually done in the legacy code:
-        // `cs_user_manager->delete()` will fire an `AccountDeletedEvent` for each user object
-        $portalUser = $this->userService->getPortalUser($account);
+        $portalUser = null;
+        $userList = new cs_list();
 
-        if ($portalUser) {
-            $userList = $portalUser->getRelatedUserList();
-            foreach ($userList as $user) {
-                /* @var $user cs_user_item */
-                $user->delete();
-            }
+        try {
+            // NOTE: normally, we'd fire an `AccountDeletedEvent` here; however, this is actually done in the legacy code:
+            // `cs_user_manager->delete()` will fire an `AccountDeletedEvent` for each user object
+            $portalUser = $this->userService->getPortalUser($account);
+
+            $userList = $this->userListBuilder
+                ->fromAccount($account)
+                ->withProjectRoomUser()
+                ->withCommunityRoomUser()
+                ->withUserRoomUser()
+                ->withPrivateRoomUser()
+                ->getList();
+        } catch (LogicException) {
+            // Account without portal user
+        } finally {
+            $users = iterator_to_array($userList);
+            array_walk($users, fn(cs_user_item $user) => $user->delete());
 
             $this->entityManager->remove($account);
             $this->entityManager->flush();
 
-            $portalUser->delete();
+            $portalUser?->delete();
         }
     }
 
-    public function lock(Account $account)
+    public function lock(Account $account): void
     {
-        $portalUser = $this->userService->getPortalUser($account);
-
-        if ($portalUser) {
+        try {
+            $portalUser = $this->userService->getPortalUser($account);
             $portalUser->reject();
             $portalUser->save();
+        } catch (LogicException) {
+            // Account without portal user
         }
 
         $account->setLocked(true);
@@ -168,7 +185,7 @@ class AccountManager
         $this->entityManager->flush();
     }
 
-    public function unlock(Account $account)
+    public function unlock(Account $account): void
     {
         $account->setLocked(false);
         $account->setActivityState(Account::ACTIVITY_ACTIVE);
@@ -184,7 +201,7 @@ class AccountManager
         $this->entityManager->flush();
 
         // Update the user's session here too (normally done on login)
-        // This will affect the translation language in cs_environment::getSelectedLanguage.
+        // This will affect the LocaleSubscriber decision
         $this->requestStack->getSession()->set('_locale', $account->getLanguage());
     }
 

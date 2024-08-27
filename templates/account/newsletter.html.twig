@@ -5,35 +5,39 @@
 {% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
 {% block side_navigation %}
+    <nav aria-label="{{ 'Account'|trans({}, 'profile') }}">
     {{ knp_menu_render('account') }}
+    </nav>
 {% endblock %}
 
 {% block content %}
-    {% component 'v3:card' with { title: 'notifications'|trans({}, 'menu') } %}
-        {% block content %}
-            {{ form_start(form) }}
-                {{ form_errors(form) }}
+    <main id="main-content" aria-labelledby="account-newsletter-heading">
+        {% component 'v3:card' with { title: 'notifications'|trans({}, 'menu'), titleId: 'account-newsletter-heading' } %}
+            {% block content %}
+                {{ form_start(form) }}
+                    {{ form_errors(form) }}
 
-                <table class="uk-table">
-                    <tr>
-                        <td>
-                            <h3 class="uk-text-primary">{{ 'newsletterStatus'|trans({},'profile') }}</h3>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>{{ 'newsletterText'|trans({},'profile')|format(portalEmail)|raw }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form_widget(form.newsletterStatus) }}</td>
-                    </tr>
-                </table>
+                    <table class="uk-table">
+                        <tr>
+                            <td>
+                                <h3 class="uk-text-primary">{{ 'newsletterStatus'|trans({},'profile') }}</h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{{ 'newsletterText'|trans({},'profile')|format(portalEmail)|raw }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form_widget(form.newsletterStatus) }}</td>
+                        </tr>
+                    </table>
 
-                <table class="uk-table">
-                    <tr>
-                        <td>{{ form_widget(form.save) }}</td>
-                    </tr>
-                </table>
-            {{ form_end(form) }}
-        {% endblock %}
-    {% endcomponent %}
+                    <table class="uk-table">
+                        <tr>
+                            <td>{{ form_widget(form.save) }}</td>
+                        </tr>
+                    </table>
+                {{ form_end(form) }}
+            {% endblock %}
+        {% endcomponent %}
+    </main>
 {% endblock content %}

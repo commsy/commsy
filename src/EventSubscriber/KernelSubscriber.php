@@ -13,11 +13,8 @@
 
 namespace App\EventSubscriber;
 
-use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
-use cs_environment;
 use cs_room_item;
-use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -32,35 +29,22 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * This allows to write new parts of the system using Symfony and every old route found
  * will be handled by the legacy application.
  */
-class KernelSubscriber implements EventSubscriberInterface
+final readonly class KernelSubscriber implements EventSubscriberInterface
 {
-    private readonly cs_environment $legacyEnvironment;
-
     public function __construct(
-        private readonly ItemService $itemService,
-        private readonly UrlGeneratorInterface $urlGenerator,
-        LegacyEnvironment $legacyEnvironment
+        private ItemService $itemService,
+        private UrlGeneratorInterface $urlGenerator
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function getSubscribedEvents(): array
     {
-        return [KernelEvents::REQUEST => [
-            'onKernelRequest',
-            512,
-        ]];
+        return [
+            KernelEvents::REQUEST => [['onKernelRequest', 512]],
+        ];
     }
 
-    /**
-     * Catches all legacy requests and hands them over to legacy kernel.
-     *
-     * @throws Exception
-     */
-    public function onKernelRequest(RequestEvent $event)
+    public function onKernelRequest(RequestEvent $event): void
     {
         // the legacy kernel only deals with master requests
         if (HttpKernelInterface::MAIN_REQUEST != $event->getRequestType()) {
@@ -86,9 +70,5 @@ class KernelSubscriber implements EventSubscriberInterface
                 }
             }
         }
-
-        // set user language
-        $currentRequest = $event->getRequest();
-        $currentRequest->setLocale($this->legacyEnvironment->getSelectedLanguage());
     }
 }

@@ -3,32 +3,36 @@
 {% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
 
 {% block side_navigation %}
+    <nav aria-label="{{ 'Account'|trans({}, 'profile') }}">
     {{ knp_menu_render('account') }}
+    </nav>
 {% endblock %}
 
 {% block content %}
-    {% component 'v3:card' with { title: 'Self assessment'|trans({}, 'profile') } %}
-        {% block content %}
-            {{ form_start(form) }}
-                {{ form_errors(form) }}
+    <main id="main-content" aria-labelledby="account-privacy-heading">
+        {% component 'v3:card' with { title: 'Self assessment'|trans({}, 'profile'), titleId: 'account-privacy-heading' } %}
+            {% block content %}
+                {{ form_start(form) }}
+                    {{ form_errors(form) }}
 
-                <table class="uk-table">
-                    <tr>
-                        <td>
-                            <h3 class="uk-text-primary">{{ 'Person-related data'|trans({},'profile') }}</h3>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>{{ 'privacy text'|trans({},'profile') }}</td>
-                    </tr>
-                </table>
+                    <table class="uk-table">
+                        <tr>
+                            <td>
+                                <h3 class="uk-text-primary">{{ 'Person-related data'|trans({},'profile') }}</h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{{ 'privacy text'|trans({},'profile') }}</td>
+                        </tr>
+                    </table>
 
-                <table class="uk-table">
-                    <tr>
-                        <td>{{ form_widget(form.download) }}</td>
-                    </tr>
-                </table>
-            {{ form_end(form) }}
-        {% endblock %}
-    {% endcomponent %}
+                    <table class="uk-table">
+                        <tr>
+                            <td>{{ form_widget(form.download) }}</td>
+                        </tr>
+                    </table>
+                {{ form_end(form) }}
+            {% endblock %}
+        {% endcomponent %}
+    </main>
 {% endblock content %}

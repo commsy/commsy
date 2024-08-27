@@ -12,6 +12,7 @@
  */
 
 use App\Repository\HashRepository;
+use App\Room\RoomStatus;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for database connection to the database table "user"
@@ -833,28 +834,37 @@ class cs_user_manager extends cs_manager
         return new cs_user_item($this->_environment);
     }
 
-    /** get a user in newest version.
+    /** Returns the user item of the given item ID.
      *
-     * @param int item_id id of the item
+     * @param int|null itemId ID of the item
      */
-    public function getItem(?int $item_id): ?cs_user_item
+    public function getItem(?int $itemId): ?cs_user_item
     {
+        if (empty($itemId)) {
+            return null;
+        } elseif (!empty($this->_cache[$itemId])) {
+            return $this->_cache[$itemId];
+        }
+
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+        $queryBuilder
+            ->select('u.*', 'i.pinned')
+            ->from($this->addDatabasePrefix($this->_db_table), 'u')
+            ->innerJoin('u', 'items', 'i', 'i.item_id = u.item_id')
+            ->where('u.item_id = :itemId')
+            ->setParameter('itemId', $itemId);
+
+        try {
+            $result = $queryBuilder->executeQuery()->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            trigger_error('Problems selecting user item (' . $itemId . '): ' . $e->getMessage(), E_USER_WARNING);
+        }
+
         $user = null;
-        if (isset($this->_cache[$item_id])) {
-            $user = $this->_cache[$item_id];
-        } elseif (!empty($item_id)) {
-            $query = 'SELECT * FROM '.$this->addDatabasePrefix('user').' WHERE '.$this->addDatabasePrefix('user').".item_id = '".encode(AS_DB, $item_id)."'";
-            $result = $this->_db_connector->performQuery($query);
-            if (!isset($result)) {
-                trigger_error('Problems selecting one user item.', E_USER_WARNING);
-            } elseif (!empty($result[0])) {
-                $user = $this->_buildItem($result[0]);
-                unset($result);
-                if ($this->_cache_on
-                     and !array_key_exists($item_id, $this->_cache)
-                ) {
-                    $this->_cache[$item_id] = $user;
-                }
+        if (!empty($result[0])) {
+            $user = $this->_buildItem($result[0]);
+            if ($this->_cache_on) {
+                $this->_cache[$itemId] = $user;
             }
         }
 
@@ -1036,13 +1046,13 @@ class cs_user_manager extends cs_manager
 
     /** Prepares the db_array for the item.
      *
-     * @param $db_array Contains the data from the database
-     *
-     * @return array Contains prepared data ( textfunctions applied etc. )
+     * @param array $db_array Contains the data from the database
      */
-    public function _buildItem($db_array)
+    public function _buildItem(array $db_array)
     {
-        $db_array['extras'] = unserialize($db_array['extras']);
+        if (isset($db_array['extras'])) {
+            $db_array['extras'] = unserialize($db_array['extras']);
+        }
 
         return parent::_buildItem($db_array);
     }
@@ -1327,7 +1337,9 @@ class cs_user_manager extends cs_manager
         /** @var HashRepository $hashRepository */
         $hashRepository = $symfonyContainer->get(HashRepository::class);
         $hash = $hashRepository->findByUserId($itemId);
-        $hashRepository->deleteHash($hash);
+        if (!empty($hash)) {
+            $hashRepository->deleteHash($hash);
+        }
 
         // delete all related items
         $user_item->deleteAllEntriesOfUser();
@@ -1389,7 +1401,7 @@ class cs_user_manager extends cs_manager
               $room_item->setCreationDate(getCurrentDateTimeInMySQL());
               $room_item->setContextID($this->_environment->getCurrentPortalID());
               $room_item->setShowTitle();
-              $room_item->setStatus(CS_ROOM_OPEN);
+              $room_item->setStatus(RoomStatus::OPEN->value);
               $room_item->setTitle('PRIVATE_ROOM');
               $room_item->setCheckNewMemberAlways();
               $room_item->setClosedForGuests();

@@ -17,8 +17,7 @@
  * @author CommSy Development Group
  */
 
-use App\Lock\LockManager;
-use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\ParameterType;
 
 class cs_manager
 {
@@ -262,8 +261,10 @@ class cs_manager
        $this->_tag_limit = $limit;
    }
 
-   public function _getTagIDArrayByTagIDArray($array)
+   public function _getTagIDArrayByTagIDArray(?array $array): ?array
    {
+       if (!$array) return null;
+
        $id_array = [];
        $first_element = [];
        $tag2tag_manager = $this->_environment->getTag2TagManager();
@@ -373,7 +374,7 @@ class cs_manager
        $this->excludedIdsLimit = $ids;
    }
 
-  public function saveWithoutChangingModificationInformation()
+  public function saveWithoutChangingModificationInformation(): void
   {
       $this->_update_with_changing_modification_information = false;
   }
@@ -480,46 +481,42 @@ class cs_manager
        return $retour;
    }
 
-   /** get a list of items
-    * this method returns a list of items.
-    *
-    * @param type name of the db-table to query
-    * @param array id_array ids of the items items
-    *
-    * @return cs_list list of cs_items
-    */
-   public function _getItemList($type, $id_array)
+    /** get a list of items
+     * this method returns a list of items.
+     *
+     * @param string $type name of the db-table to query
+     * @param array $id_array ids of the items
+     * @throws \Doctrine\DBAL\Exception
+     */
+   public function _getItemList(string $type, array $id_array): cs_list
    {
-       /** cs_list is needed for storage the commsy items.
-        */
        if (empty($id_array)) {
            return new cs_list();
-       } else {
-           if ('discussion' == $type) {
-               $type = 'discussions';
-           } elseif ('todo' == $type) {
-               $type = 'todos';
-           }
-           $query = 'SELECT * FROM '.encode(AS_DB, $this->addDatabasePrefix($type)).' WHERE '.encode(AS_DB, $this->addDatabasePrefix($type)).".item_id IN ('".implode("', '", encode(AS_DB, $id_array))."')";
-           $result = $this->_db_connector->performQuery($query);
-           if (!isset($result)) {
-               trigger_error('Problems selecting list of '.$type.' items.', E_USER_WARNING);
-           } else {
-               $list = new cs_list();
-               foreach ($result as $rs) {
-                   // special for todo
-                   if ('todos' == $type and isset($rs['date'])) {
-                       $rs['end_date'] = $rs['date'];
-                       unset($rs['date']);
-                   }
-                   $list->add($this->_buildItem($rs));
-               }
-               unset($result);
-           }
-           unset($query);
-
-           return $list;
        }
+
+       $type = match ($type) {
+           'discussion' => 'discussions',
+           'todo' => 'todos',
+           default => $type,
+       };
+
+       $list = new cs_list();
+       $query = 'SELECT * FROM '.encode(AS_DB, $this->addDatabasePrefix($type)).' WHERE '.encode(AS_DB, $this->addDatabasePrefix($type)).".item_id IN ('".implode("', '", encode(AS_DB, $id_array))."')";
+       $result = $this->_db_connector->performQuery($query);
+       if (!isset($result)) {
+           trigger_error('Problems selecting list of '.$type.' items.', E_USER_WARNING);
+       } else {
+           foreach ($result as $rs) {
+               // special for todo
+               if ('todos' == $type && isset($rs['date'])) {
+                   $rs['end_date'] = $rs['date'];
+                   unset($rs['date']);
+               }
+               $list->add($this->_buildItem($rs));
+           }
+       }
+
+       return $list;
    }
 
   /** save a commsy item
@@ -673,7 +670,7 @@ class cs_manager
     /** build an item out of an (database) array - internal method, do not use
      * this method returns a item out of a row form the database.
      *
-     * @param array item_array array with information about the item out of the respective database table
+     * @param array $db_array information about the item out of the respective database table
      *
      * @return object cs_item an item
      */
@@ -849,11 +846,7 @@ class cs_manager
            trigger_error('Problems getting data "'.$this->_db_table.'".', E_USER_WARNING);
        } else {
            $current_data_array = [];
-           $current_copy_date_array = [];
-           $current_mod_date_array = [];
-           if (CS_LABEL_TYPE == DBTable2Type($this->_db_table)
-                or CS_TAG_TYPE == DBTable2Type($this->_db_table)
-           ) {
+           if (CS_LABEL_TYPE == DBTable2Type($this->_db_table) || CS_TAG_TYPE == DBTable2Type($this->_db_table)) {
                $title_field = 'title';
                $type_field = '';
                if (CS_LABEL_TYPE == DBTable2Type($this->_db_table)) {
@@ -936,6 +929,7 @@ class cs_manager
                    }
                }
            }
+
            foreach ($result as $query_result) {
                $do_it = true;
 
@@ -1001,6 +995,7 @@ class cs_manager
                ) {
                    $new_item_id = $this->_createItemInItemTable($new_id, DBTable2Type($this->_db_table), $current_date);
                }
+
                if ($do_it) {
                    $insert_query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET';
                    $first = true;
@@ -1086,8 +1081,7 @@ class cs_manager
                        }
 
                        // special for TAG2TAG
-                       elseif ('link_id' == $key
-                                and CS_TAG2TAG_TYPE == DBTable2Type($this->_db_table)
+                       elseif ('link_id' == $key && CS_TAG2TAG_TYPE == DBTable2Type($this->_db_table)
                        ) {
                            // link_id is primary key so don't insert it
                        }
@@ -1104,25 +1098,17 @@ class cs_manager
                        }
 
                        // special for MATERIAL
-                       elseif ('copy_of' == $key
-                                and empty($value)
-                                and CS_MATERIAL_TYPE == DBTable2Type($this->_db_table)
-                       ) {
+                       elseif ('copy_of' == $key && empty($value) && CS_MATERIAL_TYPE == DBTable2Type($this->_db_table)) {
                            $insert_query .= $before.$key.'=NULL';
                        }
 
                        // special for labels
-                       elseif ('name' == $key
-                                and empty($value)
-                                and CS_LABEL_TYPE == DBTable2Type($this->_db_table)
-                       ) {
+                       elseif ('name' == $key && empty($value) && CS_LABEL_TYPE == DBTable2Type($this->_db_table)) {
                            $insert_query .= $before.$key.'=" "';
                        }
 
                        // extra
-                       elseif ('extras' == $key
-                                and !empty($old_item_id)
-                       ) {
+                       elseif ('extras' == $key && !empty($old_item_id)) {
                            $extra_array = unserialize($value);
                            $extra_array['COPY']['ITEM_ID'] = $old_item_id;
                            $extra_array['COPY']['COPYING_DATE'] = $current_date;
@@ -1136,9 +1122,8 @@ class cs_manager
                        }
                    }
                }
-               if (!$do_it) {
-                   $do_it = true;
-               } else {
+
+               if ($do_it) {
                    $insert_query = str_replace('SET,', 'SET ', (string) $insert_query);
                    $result_insert = $this->_db_connector->performQuery($insert_query);
                    if (!isset($result_insert)) {
@@ -1256,20 +1241,17 @@ class cs_manager
        return $retour;
    }
 
-   public function deleteReallyOlderThan($days)
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function deleteReallyOlderThan(int $days): void
    {
-       $retour = false;
-       $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
-       $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'"';
-       $result = $this->_db_connector->performQuery($query);
-       if (!isset($result) or !$result) {
-           trigger_error('Problem deleting items.', E_USER_ERROR);
-       } else {
-           unset($result);
-           $retour = true;
-       }
-
-       return $retour;
+       $qb = $this->_db_connector->getConnection()->createQueryBuilder();
+       $qb
+           ->delete($this->_db_table)
+           ->where('deletion_date < DATE_SUB(CURRENT_DATE(), INTERVAL :days DAY)')
+           ->setParameter('days', $days, ParameterType::INTEGER)
+           ->executeStatement();
    }
 
    public function getLastQuery()

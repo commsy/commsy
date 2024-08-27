@@ -49,10 +49,18 @@ class ContextRequestType extends AbstractType
             $builder
                 ->add('code', TextType::class, [
                     'constraints' => [
+                        new Constraints\NotBlank([
+                            'groups' => 'code' // avoid NotBlank() validation for code when performing 'Default' form validation
+                        ]),
                         new Constraints\EqualTo([
-                            'value' => $options['checkNewMembersWithCode'],
+                            'value' => $options['checkNewMemberCode'],
                             'message' => 'Your access code is invalid.',
-                            'groups' => 'code'
+                            'groups' => 'code',
+                        ]),
+                        new Constraints\EqualTo([
+                            'value' => $options['checkNewMemberCode'],
+                            'message' => 'Your access code is invalid, please remove',
+                            'groups' => 'Default', // also validate non-empty code when performing 'Default' form validation
                         ]),
                     ],
                     'label' => 'Code',
@@ -65,7 +73,7 @@ class ContextRequestType extends AbstractType
                     ],
                     'label' => 'become member code',
                     'translation_domain' => 'room',
-                    'validation_groups' => ['Default', 'code'],
+                    'validation_groups' => ['code'],
                 ])
             ;
         }
@@ -97,6 +105,8 @@ class ContextRequestType extends AbstractType
                     ],
                     'translation_domain' => 'room',
                     'required' => false,
+                    'sanitize_html' => true,
+                    'sanitizer' => 'app.drop_all_sanitizer',
                 ])
             ;
         }
@@ -110,7 +120,10 @@ class ContextRequestType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
-            ->setRequired(['checkNewMembersWithCode', 'withAGB', 'CheckNewMembersNever'])
+            ->setDefaults([
+                'validation_groups' => ['Default'],
+            ])
+            ->setRequired(['checkNewMembersWithCode', 'checkNewMemberCode', 'withAGB', 'CheckNewMembersNever'])
         ;
     }
 

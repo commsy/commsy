@@ -31,15 +31,12 @@ class cs_file_manager extends cs_manager
     {
         parent::__construct($environment);
         $this->_db_table = 'files';
-        $this->_type = 'file';
     }
 
     /**
      * get empty file item.
-     *
-     * @return cs_file_item
      */
-    public function getNewItem()
+    public function getNewItem(): cs_file_item
     {
         $item = new cs_file_item($this->_environment);
         $item->setContextID($this->_environment->getCurrentContextID());
@@ -428,7 +425,7 @@ class cs_file_manager extends cs_manager
                             $extra_array['COPY']['COPYING_DATE'] = $current_date;
                             $value = serialize($extra_array);
                             $after = $key . '="' . encode(AS_DB, $value) . '"';
-                        } else {
+                        } elseif (!empty($value)) {
                             $after = $key . '="' . encode(AS_DB, $value) . '"';
                         }
 
@@ -473,10 +470,9 @@ class cs_file_manager extends cs_manager
         return $retour;
     }
 
-    public function deleteReallyOlderThan($days)
+    public function deleteReallyOlderThan(int $days): void
     {
         $disc_manager = $this->_environment->getDiscManager();
-        $retour = true;
         $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
 
         $query = 'SELECT ' .
@@ -497,25 +493,22 @@ class cs_file_manager extends cs_manager
                 $linkItemFileManager->deleteByFileReally($file['files_id']);
             }
 
-            $retour = parent::deleteReallyOlderThan($days);
+            parent::deleteReallyOlderThan($days);
             foreach ($result as $query_result) {
                 $filename = 'cid' . $query_result['context_id'] . '_' . $query_result['files_id'] . '_' . $query_result['filename'];
                 $disc_manager->setPortalID($query_result['portal_id']);
                 $disc_manager->setContextID($query_result['context_id']);
                 if ($disc_manager->existsFile($filename)) {
-                    $retour = $retour && $disc_manager->unlinkFile($filename);
+                    $disc_manager->unlinkFile($filename);
                 }
             }
         }
-
-        return $retour;
     }
 
     public function deleteUnneededFiles($context_id, $portal_id = '')
     {
         if (!isset($context_id) or empty($context_id)) {
             trigger_error('deleteUnneededFiles: no context_id given', E_USER_ERROR);
-            $retour = false;
         } else {
             $retour = true;
 
@@ -524,7 +517,6 @@ class cs_file_manager extends cs_manager
             $result = $this->_db_connector->performQuery($sql);
             if (!isset($result)) {
                 trigger_error('Problem selecting items from query: "' . $sql . '"', E_USER_ERROR);
-                $retour = false;
             } else {
                 $file_id_array = [];
                 foreach ($result as $query_result) {
@@ -539,7 +531,6 @@ class cs_file_manager extends cs_manager
                     $result2 = $this->_db_connector->performQuery($sql2);
                     if (!isset($result2)) {
                         trigger_error('Problem selecting items from query: "' . $sql2 . '"', E_USER_ERROR);
-                        $retour = false;
                     } else {
                         $file_id_array2 = [];
                         foreach ($result2 as $query_result2) {
@@ -573,7 +564,6 @@ class cs_file_manager extends cs_manager
                             $result2 = $this->_db_connector->performQuery($query2);
                             if (!isset($result2)) {
                                 trigger_error('Problem selecting items from query: "' . $query2 . '"', E_USER_ERROR);
-                                $retour = false;
                             } elseif (!empty($result2[0])) {
                                 $query_result2 = $result2[0];
                                 if (!empty($query_result2['portal_id'])) {
@@ -609,13 +599,13 @@ class cs_file_manager extends cs_manager
 
     /** Prepares the db_array for the item.
      *
-     * @param $db_array Contains the data from the database
-     *
-     * @return array Contains prepared data ( textfunctions applied etc. )
+     * @param array $db_array Contains the data from the database
      */
-    public function _buildItem($db_array)
+    public function _buildItem(array $db_array)
     {
-        $db_array['extras'] = unserialize($db_array['extras']);
+        if (isset($db_array['extras'])) {
+            $db_array['extras'] = unserialize($db_array['extras']);
+        }
 
         return parent::_buildItem($db_array);
     }

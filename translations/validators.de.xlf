@@ -58,6 +58,10 @@
                 <source>Your access code is invalid.</source>
                 <target>Ihr Zugangscode ist inkorrekt.</target>
             </trans-unit>
+            <trans-unit id="validators_room_code_please_remove">
+                <source>Your access code is invalid, please remove</source>
+                <target>Ihr Zugangscode ist inkorrekt. Löschen Sie bitte den inkorrekten Zugangscode und beantragen Sie eine Raummitgliedschaft ohne Zugangscode.</target>
+            </trans-unit>
             <trans-unit id="validators_room_code_filled">
                 <source>Please enter an access code.</source>
                 <target>Bitte geben Sie einen Zugangscode an.</target>
@@ -219,6 +223,12 @@
             <trans-unit id="violation_hashtag_merge_identical">
                 <source>Your selection must differ.</source>
                 <target>Ihre Auswahl darf nicht identisch sein.</target>
+            </trans-unit>
+
+            <!-- room settings -->
+            <trans-unit id="violation_room_settings_general_time_pulses">
+                <source>Continuous can only be specified without any other time pulse choices.</source>
+                <target>Die Option "kontinuierlich" kann nur verwendet werden, wenn keine anderen Zeittakte angegeben wurden.</target>
             </trans-unit>
 
             <!-- signup -->

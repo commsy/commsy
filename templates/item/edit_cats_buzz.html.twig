@@ -43,7 +43,9 @@
 
                 {% if showCategories %}
                     <li>
-                        {{ form_widget(form.newCategory) }}
+                        {% if form.newCategory is defined %}
+                            {{ form_widget(form.newCategory) }}
+                        {% endif %}
                         {{ form_widget(form.categories) }}
                     </li>
                 {% else %}

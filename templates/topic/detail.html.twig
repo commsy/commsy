@@ -10,6 +10,7 @@
     <div class="uk-grid">
 
         <div class="uk-width-4-5@m">
+            <main id="main-content">
 
             {# topic content panel #}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
@@ -228,12 +229,9 @@
                     {% endif %}
 
                     {# files #}
-                    <div id="files{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{{ {
-                        'editUrl': path('app_upload_uploadform', {'roomId': topic.contextId, 'itemId': topic.itemId}),
-                        'cancelEditUrl': path('app_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId})
-                    }|json_encode|e('html_attr') }}">
-                        {{ component('item_files', {
-                            item: topic,
+                    <div id="files{{ topic.itemId }}">
+                        {{ component('FileList:FileList', {
+                            itemId: topic.itemId,
                             draft: draft
                         }) }}
                     </div>
@@ -251,15 +249,17 @@
                     {% endif %}
 
                     {% if draft %}
-                        {{ macros.draftButtons(roomId, topic.itemId) }}
+                        {{ macros.draftButtons(roomId, topic.itemId, topic.labelType) }}
                     {% endif %}
                 </article>
             </div>
-                    </div>
+            </main>
+        </div>
 
         <div class="uk-width-1-5@m uk-hidden-small">
 
             {# quick navigation #}
+            <nav aria-label="{{ 'Quick'|trans({}) }}">
             <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" uk-sticky>
                 <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
                     {{ 'quick navigation'|trans({})|capitalize }}
@@ -275,6 +275,7 @@
                     </ul>
                 </div>
             </div>
+            </nav>
 
         </div>
 

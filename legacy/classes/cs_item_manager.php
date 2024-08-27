@@ -413,27 +413,21 @@ class cs_item_manager extends cs_manager
         return array_column($result, 'item_id');
     }
 
-    public function deleteReallyOlderThan($days)
+    public function deleteReallyOlderThan(int $days): void
     {
-        $retour = false;
         $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
-        $query = 'DELETE FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE deletion_date IS NOT NULL and deletion_date < "' . $timestamp . '" AND type != "' . CS_DISCARTICLE_TYPE . '" AND type != "' . CS_USER_TYPE . '";'; // user und discarticle werden noch gebraucht
+        $query = 'DELETE FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE deletion_date IS NOT NULL and deletion_date < "' . $timestamp . '" AND type != "' . CS_USER_TYPE . '";';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problem deleting items.', E_USER_ERROR);
-        } else {
-            unset($result);
-            $retour = true;
         }
-
-        return $retour;
     }
 
     // #######################################################
     // statistic functions
     // #######################################################
 
-    public function getCountItems($start, $end)
+    public function getCountItems($start, $end): int
     {
         $retour = 0;
 
@@ -448,7 +442,7 @@ class cs_item_manager extends cs_manager
             unset($result);
         }
 
-        return $retour;
+        return intval($retour);
     }
 
     public function isItemMarkedAsWorkflowRead($item_id, $user_id)

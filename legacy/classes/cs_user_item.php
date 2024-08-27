@@ -53,7 +53,7 @@ class cs_user_item extends cs_item
      *
      * @param $data_array Is the prepared array from "_buildItem($db_array)"
      */
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         $this->_data = $data_array;
         if (isset($data_array['status']) and !empty($data_array['status'])) {
@@ -376,7 +376,7 @@ class cs_user_item extends cs_item
      *
      * @return string title of the user
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         $retour = '';
         if ($this->_issetExtra('USERTITLE')) {
@@ -742,15 +742,6 @@ class cs_user_item extends cs_item
         echo 'use getDeleterID()<br />';
     }
 
-    /** set deleter of the user - overwritting parent method - do not use.
-     *
-     * @param object cs_user_item value deleter of the user
-     */
-    public function setDeleter($value)
-    {
-        echo 'use setDeleterID( xxx )<br />';
-    }
-
     /** get user comment
      * this method returns the users comment: why he or she wants an account.
      *
@@ -931,7 +922,7 @@ class cs_user_item extends cs_item
      *
      * @param string value user language
      */
-    public function setLanguage($value)
+    public function setLanguage($value): void
     {
         $this->_addExtra('LANGUAGE', (string) $value);
     }
@@ -1107,9 +1098,9 @@ class cs_user_item extends cs_item
     /** get status of user
      * this method returns an integer value corresponding with the users status.
      *
-     * @return int status
+     * @return int|string status
      */
-    public function getStatus()
+    public function getStatus(): int|string
     {
         return $this->_getValue('status');
     }
@@ -1119,9 +1110,9 @@ class cs_user_item extends cs_item
      *
      * @return int status
      */
-    public function getLastStatus()
+    public function getLastStatus(): false|int
     {
-        return $this->_getValue('status_last');
+        return intval($this->_getValue('status_last'));
     }
 
     /** set user status last
@@ -1129,7 +1120,7 @@ class cs_user_item extends cs_item
      *
      * @param int status
      */
-    public function setLastStatus($value)
+    public function setLastStatus($value): void
     {
         $this->_setValue('status_last', (int) $value);
     }
@@ -1139,7 +1130,7 @@ class cs_user_item extends cs_item
      *
      * @param int status
      */
-    public function setStatus($value)
+    public function setStatus($value): void
     {
         $this->setLastStatus($this->getStatus());
         $this->_setValue('status', (int) $value);
@@ -1375,7 +1366,7 @@ class cs_user_item extends cs_item
         return true;
     }
 
-    public function save()
+    public function save(): void
     {
         $user_manager = $this->_environment->getUserManager();
         $this->_save($user_manager);
@@ -1516,7 +1507,7 @@ class cs_user_item extends cs_item
      *
      * @see cs_item::mayPortfolioSee()
      */
-    public function mayPortfolioSee(string $username)
+    public function mayPortfolioSee(string $username): bool
     {
         $portfolioManager = $this->_environment->getPortfolioManager();
 
@@ -2088,7 +2079,7 @@ class cs_user_item extends cs_item
         return $retour;
     }
 
-    public function isActiveDuringLast99Days()
+    public function isActiveDuringLast99Days(): bool
     {
         return $this->getLastLogin() > getCurrentDateTimeMinusDaysInMySQL(99);
     }

@@ -189,6 +189,20 @@ class WOPICest
         $I->seeHttpHeader('X-WOPI-Lock', 'lock');
     }
 
+    public function unlockAndRelockLockedFile(ApiTester $I)
+    {
+        $file = $I->haveFile($this->portal, 'lock', new DateTimeImmutable());
+        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::EDIT);
+        $I->amBearerAuthenticated($token);
+
+        $I->haveHttpHeader('X-WOPI-Override', 'LOCK');
+        $I->haveHttpHeader('X-WOPI-Oldlock', 'lock');
+        $I->haveHttpHeader('X-WOPI-Lock', 'new lock');
+        $I->sendPost("/v2/wopi/files/{$file->getFilesId()}");
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->dontSeeHttpHeader('X-WOPI-Lock');
+    }
+
     public function getFileContent(ApiTester $I)
     {
         $file = $I->haveFile($this->portal);

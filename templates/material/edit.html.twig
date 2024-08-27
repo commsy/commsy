@@ -25,7 +25,7 @@
                     </div>
                 {% endif %}
 
-                {% if material.creator.itemId == currentUser.itemId or currentUser.isModerator %}
+                {% if form.permission is defined %}
                 <div class="uk-form-row">
                     <label class="uk-form-label">
                         <span data-uk-tooltip title="{{ macros.userFullname(material.creator) }}">{{ 'permission'|trans({}, "form") }}</span>
@@ -36,12 +36,18 @@
                         <i class="uk-hidden-small uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': macros.userFullname(material.creator)}, 'form') }}"></i>
                     </div>
                 </div>
+                {% endif %}
+
+                {% if form.hidden is defined %}
                 <div class="uk-form-row">
                     <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
                     <div>
                         {{ form_widget(form.hidden) }}
                     </div>
                 </div>
+                {% endif %}
+
+                {% if form.hiddendate is defined %}
                 <div class="uk-form-row">
                     <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
                     <div class="uk-margin-small-top">
@@ -105,44 +111,34 @@
 </div>
 
 <script>
-window.onload = function(){
+window.onload = function() {
     var linkLabels = document.querySelectorAll('#mandatoryLinksForm .uk-form-label');
     for (i = 0; i < linkLabels.length; i++) {
         linkLabels[i].classList.add('uk-text-truncate');
     }
 }
 var $biblio = $('#material_biblio_select');
-// When sport gets selected ...
-$biblio.change(function() {
-    // ... retrieve the corresponding form.
+$biblio.on('change', function() {
     var $form = $(this).closest('form');
-    // Simulate form data, but only include the selected sport value.
     var data = {};
 
     data[$(this).attr('name')] = $(this).val();
+    // We also have to include the lock & CSRF tokens.
+    data['material[_lock]'] = $form.find('#material__lock').val();
+    data['material[_token]'] = $form.find('#material__token').val();
+
     // Submit data via AJAX to the form's action path.
     $.ajax({
         url : $form.attr('action'),
         type: $form.attr('method'),
-        data : data,
-        success: function(html) {
-            // Replace current position field ...
-            // add field
-            if (!$('#material_biblio_sub').length) {
-                $('#material_biblio_select').after(
-                // ... with the returned one from the AJAX response.
-                $(html).find('#material_biblio_sub')
-                // html
-                );
-            } else {
-                $('#material_biblio_sub').replaceWith(
-                // ... with the returned one from the AJAX response.
-                $(html).find('#material_biblio_sub')
-                // html
-                );
-            }
-            // console.log(html);
-            // Position field now displays the appropriate positions.
+        data : data
+    }).always(function(data, textStatus, jqXHR) {
+        let html = data.responseText ?? jqXHR.responseText;
+
+        if (!$('#material_biblio_sub').length) {
+            $('#material_biblio_select').after($(html).find('#material_biblio_sub'));
+        } else {
+            $('#material_biblio_sub').replaceWith($(html).find('#material_biblio_sub'));
         }
     });
 });

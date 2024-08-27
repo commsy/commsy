@@ -89,7 +89,7 @@
                                     <div class="uk-margin-left">
                                         {% for weekDay in form.recurring_sub.recurrenceDaysOfWeek.iterator %}
                                             <div>
-                                                <input type="checkbox" value="{{ weekDay.vars['value'] }}" name="date[recurring_sub][recurrenceDaysOfWeek][]" style="vertical-align: baseline;">
+                                                <input type="checkbox" value="{{ field_value(weekDay) }}" name="{{ field_name(weekDay) }}" style="vertical-align: baseline;">
                                                 <label>{{weekDay.vars['value']|trans({}, 'date')}}</label>
                                             </div>
                                         {% endfor %}
@@ -125,7 +125,7 @@
                 </div>
                 {% endif %}
 
-                {% if date.creator.itemId == currentUser.itemId or currentUser.isModerator %}
+                {% if form.permission is defined %}
                 <div class="uk-form-row">
                     <label class="uk-form-label">
                         <span data-uk-tooltip title="{{ macros.userFullname(date.creator) }}">{{ 'permission'|trans({}, "form") }}</span>
@@ -136,12 +136,18 @@
                         <i class="uk-hidden-small uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': macros.userFullname(date.creator)}, 'form') }}"></i>
                     </div>
                 </div>
+                {% endif %}
+
+                {% if form.hidden is defined %}
                 <div class="uk-form-row">
                     <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
                     <div>
                         {{ form_widget(form.hidden) }}
                     </div>
                 </div>
+                {% endif %}
+
+                {% if form.hiddendate is defined %}
                 <div class="uk-form-row">
                     <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
                     <div class="uk-margin-small-top">
@@ -223,38 +229,26 @@ if ($('#date_whole_day').length > 0) {
     }
 }
 
-var $recurring = $('#date_recurring_select');
-// When sport gets selected ...
-$recurring.change(function() {
-    // ... retrieve the corresponding form.
-    var $form = $(this).closest('form');
-    // Simulate form data, but only include the selected sport value.
-    var data = {};
+const $recurring = $('#date_recurring_select');
+$recurring.on('change', function() {
+    const $form = $(this).closest('form');
+    const data = {};
 
     data[$(this).attr('name')] = $(this).val();
+    data['date[_token]'] = $form.find('#date__token').val();
+
     // Submit data via AJAX to the form's action path.
     $.ajax({
-        url : $form.attr('action'),
+        url: $form.attr('action'),
         type: $form.attr('method'),
-        data : data,
-        success: function(html) {
-            // Replace current position field ...
-            // add field
-            if (!$('#date_recurring_sub').length) {
-                $('#date_recurring_select').after(
-                // ... with the returned one from the AJAX response.
-                $(html).find('#date_recurring_sub')
-                // html
-                );
-            } else {
-                $('#date_recurring_sub').replaceWith(
-                // ... with the returned one from the AJAX response.
-                $(html).find('#date_recurring_sub')
-                // html
-                );
-            }
-            // console.log(html);
-            // Position field now displays the appropriate positions.
+        data: data
+    }).always(function(data, textStatus, jqXHR) {
+        let html = data.responseText ?? jqXHR.responseText;
+
+        if (!$('#date_recurring_sub').length) {
+            $('#date_recurring_select').after($(html).find('#date_recurring_sub'));
+        } else {
+            $('#date_recurring_sub').replaceWith($(html).find('#date_recurring_sub'));
         }
     });
 });

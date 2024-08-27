@@ -8,75 +8,82 @@
         {# sidebar #}
         {% block listsidebar %}
             <div class="uk-width-1-3@m uk-flex-last@m">
+                <aside aria-label="{{ 'Sidebar'|trans({}, "room") }}">
 
-                {# pinned items #}
-                {% if pinnedItemsCount is defined and pinnedItemsCount > 0 %}
+                    {# pinned items #}
+                    {% if pinnedItemsCount is defined and pinnedItemsCount > 0 %}
 
-                    {% component 'v2:panel' with { title: 'Pinned entries'|trans({}, "room") } %}
-                        {% block teaser_right %}
-                            <a href="#" class="button-toggle uk-button uk-button-small uk-button-secondary" data-uk-toggle="{target: '#pinned-items'}">
-                                <span uk-icon="icon: chevron-up"></span>
-                            </a>
-                        {% endblock %}
+                        {% set panelName = 'pinned-items' %}
+                        {% component 'v2:panel' with { name: panelName, title: 'Pinned entries'|trans({}, "room") } %}
+                            {% block teaser_right %}
+                                <a href="#" class="button-toggle uk-button uk-button-small uk-button-secondary" data-uk-toggle="{target: '#pinned-items'}">
+                                    <span uk-icon="icon: chevron-up"></span>
+                                </a>
+                            {% endblock %}
 
-                        {% block content %}
-                            <div id="pinned-items">
-                                {{ component('pinned_items', { roomId: commsy.room.itemId, itemTypes: [module, relatedModule] }) }}
-                            </div>
-                        {% endblock %}
-                    {% endcomponent %}
-                {% endif %}
-
-                {# usage info #}
-                {% if usageInfo is defined and usageInfo is not empty %}
-
-                    {% component 'v3:card' with { title: usageInfo.title } %}
-                        {% block teaser_right %}
-                            <a href="#" class="button-toggle uk-button uk-button-small uk-button-secondary" uk-toggle="{target: '#usage-info'}">
-                                <span uk-icon="icon: chevron-up"></span>
-                            </a>
-                        {% endblock %}
-
-                        {% block content %}
-                            <div id="usage-info" class="uk-hidden-small">
-                                {{ usageInfo.text|raw }}
-                            </div>
-                        {% endblock %}
-                    {% endcomponent %}
-                {% endif %}
-
-                {# list filter #}
-                {% component 'v3:card' with { title: 'list filter'|trans({},"room") } %}
-                    {% block teaser_right %}
-                        {# hide on screens larger than medium #}
-                        <a href="#" class="list-filter-toggle-target uk-button uk-button-small uk-button-secondary" uk-toggle="target: .list-filter-toggle-target">
-                            <span uk-icon="icon: chevron-up"></span>
-                        </a>
-                        <a href="#" class="list-filter-toggle-target uk-button uk-button-small uk-button-secondary" hidden uk-toggle="target: .list-filter-toggle-target">
-                            <span uk-icon="icon: chevron-down"></span>
-                        </a>
-                    {% endblock %}
-
-                    {% block content %}
-                        <div class="list-filter-toggle-target">
-                            {{ form_start(form) }}
-
-                                <div id="list-filter" class="uk-margin-top">
-                                    {# render all fields except submit #}
-                                    {% for child in form|filter(f => f.vars.name != 'submit') %}
-                                        {{ form_row(child) }}
-                                    {% endfor %}
+                            {% block content %}
+                                <div id="{{ panelName }}">
+                                    {{ component('pinned_items', { roomId: commsy.room.itemId, itemTypes: [module, relatedModule] }) }}
                                 </div>
-                                <div class="uk-section uk-section-default uk-padding-remove" uk-sticky="position: bottom; end: true">
-                                    <div class="uk-margin-top uk-text-right">
-                                        {{ form_widget(form.submit) }}
-                                    </div>
+                            {% endblock %}
+                        {% endcomponent %}
+                    {% endif %}
+
+                    {# usage info #}
+                    {% if usageInfo is defined and usageInfo is not empty %}
+
+                        {% set panelName = 'usage-info' %}
+                        {% component 'v3:card' with { name: panelName, title: usageInfo.title } %}
+                            {% block teaser_right %}
+                                <a href="#" class="button-toggle uk-button uk-button-small uk-button-secondary" uk-toggle="{target: '#usage-info'}">
+                                    <span uk-icon="icon: chevron-up"></span>
+                                </a>
+                            {% endblock %}
+
+                            {% block content %}
+                                <div id="{{ panelName }}" class="uk-hidden-small">
+                                    {{ usageInfo.text|raw }}
                                 </div>
-                                {{ form_rest(form) }}
-                            {{ form_end(form) }}
-                        </div>
-                    {% endblock %}
-                {% endcomponent %}
+                            {% endblock %}
+                        {% endcomponent %}
+                    {% endif %}
+
+                    {# list filter #}
+                    <section aria-labelledby="list-filter-heading">
+                        {% component 'v3:card' with { title: 'list filter'|trans({},"room") } %}
+                            {% block teaser_right %}
+                                {# hide on screens larger than medium #}
+                                <a href="#" class="list-filter-toggle-target uk-button uk-button-small uk-button-secondary" uk-toggle="target: .list-filter-toggle-target">
+                                    <span uk-icon="icon: chevron-up"></span>
+                                </a>
+                                <a href="#" class="list-filter-toggle-target uk-button uk-button-small uk-button-secondary" hidden uk-toggle="target: .list-filter-toggle-target">
+                                    <span uk-icon="icon: chevron-down"></span>
+                                </a>
+                            {% endblock %}
+
+                            {% block content %}
+                                <div class="list-filter-toggle-target">
+                                    {{ form_start(form) }}
+                                        <div id="list-filter-heading">
+                                            <div id="list-filter" class="uk-margin-top">
+                                                {# render all fields except submit #}
+                                                {% for child in form|filter(f => f.vars.name != 'submit') %}
+                                                    {{ form_row(child) }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <div class="uk-section uk-section-default uk-padding-remove" uk-sticky="position: bottom; end: true">
+                                            <div class="uk-margin-top uk-text-right">
+                                                {{ form_widget(form.submit) }}
+                                            </div>
+                                        </div>
+                                        {{ form_rest(form) }}
+                                    {{ form_end(form) }}
+                                </div>
+                            {% endblock %}
+                        {% endcomponent %}
+                    </section>
+                </aside>
             </div>
         {% endblock %}
 
@@ -85,62 +92,64 @@
             <div class="uk-width-2-3@m">
         {% endblock %}
 
-            {% component 'v3:card' with { sticky: true } %}
-                {% block teaser_left %}
-                    <div class="uk-card-title">
-                        {% block listTitle %}
-                            {% if module is defined and module is not empty %}
+            <main id="main-content" aria-labelledby="commsy-list-heading">
+                {% component 'v3:card' with { sticky: true } %}
+                    {% block teaser_left %}
+                        <h3 id="commsy-list-heading" class="uk-card-title">
+                            {% block listTitle %}
+                                {% if module is defined and module is not empty %}
 
-                                {{ module|capitalize|trans({'%count%': 1}, "rubric") }}
-                            {% else %}
-                                {{ 'Rooms'|trans([], 'room') }}
-                            {% endif %}
-                        {% endblock %}
+                                    {{ module|capitalize|trans({'%count%': 1}, "rubric") }}
+                                {% else %}
+                                    {{ 'Rooms'|trans([], 'room') }}
+                                {% endif %}
+                            {% endblock %}
 
-                        <div id="commsy-list-count-display" style="display:inline;">
-                            ({{itemsCountArray.count}} {{ 'of'|trans({},'messages')}} {{itemsCountArray.countAll}})
-                        </div>
-                        <div id="commsy-list-count-edit" style="display:inline;" class="uk-hidden">
-                            (<span id="commsy-list-count-all">{{itemsCountArray.count}}</span> {{ 'of'|trans({},'messages')}} {{itemsCountArray.countAll}}, <span id="commsy-list-count-selected">0</span> {{ 'selected'|trans({},'messages')}})
-                        </div>
-                    </div>
-                {% endblock %}
-
-                {% block teaser_right %}
-                    {{ block(outerBlocks.sortbox) }}
-                    {{ block(outerBlocks.editbox) }}
-                    {{ block(outerBlocks.listAddons) }}
-                {% endblock %}
-
-                {% block content %}
-                    {# will be displayed when selection mode is active #}
-                    <div id="commsy-select-actions" class="uk-hidden" style="margin-left: -10px; margin-right: -10px; padding-left: 10px; padding-right: 10px" uk-sticky>
-                        <div class="uk-grid uk-margin-remove">
-                            {# may contain optional form controls required for the current action #}
-                            <div id="commsy-select-actions-custom-choices" class="uk-width-1-1 uk-margin-remove uk-margin-top uk-padding-remove"></div>
-
-                            {# change selection #}
-                            <div class="cs-list-select-buttons uk-width-2-4 uk-margin-remove uk-margin-top uk-padding-bottom uk-padding-top">
-                                <button id="commsy-select-actions-select-all" class="uk-button uk-button-default" type="button">{{ 'select all entries'|trans({},'rubric')}}</button>
-                                <button id="commsy-select-actions-unselect" class="uk-button uk-button-default" type="button">{{ 'unselect entries'|trans({},'rubric')}}</button>
+                            <div id="commsy-list-count-display" style="display:inline;">
+                                ({{itemsCountArray.count}} {{ 'of'|trans({},'messages')}} {{itemsCountArray.countAll}})
                             </div>
-
-                            {# selection actions old code #}
-                            <div class="cs-list-select-buttons uk-text-right uk-width-2-4 uk-margin-remove uk-margin-top uk-padding-bottom">
-                                <button id="commsy-select-actions-ok" class="uk-button uk-button-default">{{ 'execute'|trans({},'rubric')}}</button>
-                                <button id="commsy-select-actions-cancel" class="uk-button uk-button-default" type="button">{{ 'cancel'|trans({},'rubric')}}</button>
+                            <div id="commsy-list-count-edit" style="display:inline;" class="uk-hidden">
+                                (<span id="commsy-list-count-all">{{itemsCountArray.count}}</span> {{ 'of'|trans({},'messages')}} {{itemsCountArray.countAll}}, <span id="commsy-list-count-selected">0</span> {{ 'selected'|trans({},'messages')}})
                             </div>
+                        </h3>
+                    {% endblock %}
 
+                    {% block teaser_right %}
+                        {{ block(outerBlocks.sortbox) }}
+                        {{ block(outerBlocks.editbox) }}
+                        {{ block(outerBlocks.listAddons) }}
+                    {% endblock %}
+
+                    {% block content %}
+                        {# will be displayed when selection mode is active #}
+                        <div id="commsy-select-actions" class="uk-hidden" style="margin-left: -10px; margin-right: -10px; padding-left: 10px; padding-right: 10px" uk-sticky>
+                            <div class="uk-grid uk-margin-remove">
+                                {# may contain optional form controls required for the current action #}
+                                <div id="commsy-select-actions-custom-choices" class="uk-width-1-1 uk-margin-remove uk-margin-top uk-padding-remove"></div>
+
+                                {# change selection #}
+                                <div class="cs-list-select-buttons uk-width-2-4 uk-margin-remove uk-margin-top uk-padding-bottom uk-padding-top">
+                                    <button id="commsy-select-actions-select-all" class="uk-button uk-button-default" type="button">{{ 'select all entries'|trans({},'rubric')}}</button>
+                                    <button id="commsy-select-actions-unselect" class="uk-button uk-button-default" type="button">{{ 'unselect entries'|trans({},'rubric')}}</button>
+                                </div>
+
+                                {# selection actions old code #}
+                                <div class="cs-list-select-buttons uk-text-right uk-width-2-4 uk-margin-remove uk-margin-top uk-padding-bottom">
+                                    <button id="commsy-select-actions-ok" class="uk-button uk-button-default">{{ 'execute'|trans({},'rubric')}}</button>
+                                    <button id="commsy-select-actions-cancel" class="uk-button uk-button-default" type="button">{{ 'cancel'|trans({},'rubric')}}</button>
+                                </div>
+
+                            </div>
                         </div>
-                    </div>
 
-                    {{ block(outerBlocks.taskinfo) }}
+                        {{ block(outerBlocks.taskinfo) }}
 
-                    <div class="feed uk-margin-top">
-                        {{ block(outerBlocks.feed) }}
-                    </div>
-                {% endblock %}
-            {% endcomponent %}
+                        <div class="feed uk-margin-top">
+                            {{ block(outerBlocks.feed) }}
+                        </div>
+                    {% endblock %}
+                {% endcomponent %}
+            </main>
         </div>
 
     </div>

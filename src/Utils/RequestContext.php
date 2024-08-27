@@ -24,7 +24,8 @@ final readonly class RequestContext
     public function __construct(
         private PortalRepository $portalRepository,
         private RoomRepository $roomRepository,
-        private ItemService $itemService
+        private ItemService $itemService,
+        private FileService $fileService
     ) {
     }
 
@@ -53,32 +54,23 @@ final readonly class RequestContext
         $contextId = $this->fetchContextId($request);
 
         if (null !== $contextId) {
-            $portal = $this->portalRepository->find($contextId);
+            /** @var Portal $portal */
+            $portal = $this->portalRepository->findPortalById($contextId);
             if ($portal) {
                 return $portal;
             }
 
-            $room = $this->roomRepository->find($contextId);
-            if (null !== $room) {
-                $portal = $this->portalRepository->find($room->getContextId());
-                if ($portal) {
-                    return $portal;
-                }
-            }
-
             $item = $this->itemService->getItem($contextId);
-            if (null !== $item) {
-                $portal = $this->portalRepository->find($item->getContextID());
-                if ($portal) {
-                    return $portal;
+            if (null === $item) {
+                $itemId = $request->attributes->get('itemId');
+                if (null !== $itemId) {
+                    $item = $this->itemService->getItem($itemId);
                 }
             }
-
-            $itemId = $request->attributes->get('itemId');
-            if (null !== $itemId) {
-                $item = $this->itemService->getItem($itemId);
-                if (null !== $item) {
-                    return $this->portalRepository->find($item->getContextID());
+            if (null !== $item) {
+                $portal = $this->portalRepository->findPortalById($item->getContextID());
+                if ($portal) {
+                    return $portal;
                 }
             }
         }
@@ -104,6 +96,12 @@ final readonly class RequestContext
         $portalId = $request->attributes->get('portalId');
         if (null !== $portalId) {
             return $portalId;
+        }
+
+        $fileId = $request->attributes->get('fileId');
+        if (null !== $fileId) {
+            $file = $this->fileService->getFile($fileId);
+            return $file?->getContextID();
         }
 
         return null;

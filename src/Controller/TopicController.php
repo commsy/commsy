@@ -28,6 +28,7 @@ use App\Form\DataTransformer\TopicTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\TopicPathType;
 use App\Form\Type\TopicType;
+use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -416,7 +417,8 @@ class TopicController extends BaseController
             'hashtags' => $labelService->getHashtags($roomId),
             'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
             'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-        ], 'room' => $current_context]);
+        ], 'room' => $current_context,
+           'itemId' => $itemId]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -431,7 +433,7 @@ class TopicController extends BaseController
                 if ($form->has('category_mapping')) {
                     $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
-                    if (isset($formData['category_mapping']['newCategory'])) {
+                    if (isset($formData['category_mapping']['newCategory']) && $this->isGranted(CategoryVoter::EDIT)) {
                         $newCategoryTitle = $formData['category_mapping']['newCategory'];
                         $newCategory = $categoryService->addTag($newCategoryTitle, $roomId);
                         $categoryIds[] = $newCategory->getItemID();
@@ -463,7 +465,7 @@ class TopicController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($topicItem), CommsyEditEvent::EDIT);
 
-        return $this->render('topic/edit.html.twig', ['form' => $form, 'topic' => $topicItem, 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('topic/edit.html.twig', ['form' => $form, 'topic' => $topicItem, 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage()]);
     }
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/save')]

@@ -22,6 +22,7 @@ use App\Entity\AuthSource;
 use App\Entity\AuthSourceGuest;
 use App\Entity\AuthSourceLdap;
 use App\Entity\AuthSourceLocal;
+use App\Entity\AuthSourceOIDC;
 use App\Entity\AuthSourceShibboleth;
 use App\Entity\License;
 use App\Entity\Portal;
@@ -52,6 +53,7 @@ use App\Form\Type\Portal\AccountIndexType;
 use App\Form\Type\Portal\AuthGuestType;
 use App\Form\Type\Portal\AuthLdapType;
 use App\Form\Type\Portal\AuthLocalType;
+use App\Form\Type\Portal\AuthOidcType;
 use App\Form\Type\Portal\AuthShibbolethType;
 use App\Form\Type\Portal\AuthWorkspaceMembershipType;
 use App\Form\Type\Portal\CommunityRoomsCreationType;
@@ -92,6 +94,7 @@ use App\Utils\AccountMail;
 use App\Utils\RoomService;
 use App\Utils\TimePulsesService;
 use App\Utils\UserService;
+use DateTime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -368,8 +371,6 @@ class PortalSettingsController extends AbstractController
         $roomCategories = $repository->findBy([
             'context_id' => $portalId,
         ]);
-
-        $dispatcher->dispatch(new CommsyEditEvent(null), CommsyEditEvent::EDIT);
 
         // ensure that room categories aren't mandatory if there currently aren't any room categories
         if (empty($roomCategories)) {
@@ -680,6 +681,62 @@ class PortalSettingsController extends AbstractController
             'form' => $authShibbolethForm,
             'portal' => $portal,
             'authSource' => $shibSource,
+        ]);
+    }
+
+    #[Route(path: '/portal/{portalId}/settings/auth/oidc')]
+    #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
+    public function authOidc(
+        #[MapEntity(id: 'portalId')]
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        /*
+         * Try to find an existing shibboleth auth source or create an empty one. We assume
+         * that there is only one auth source per type.
+         */
+        $authSources = $portal->getAuthSources();
+
+        /** @var AuthSourceOIDC $shibSource */
+        $oidcSource = $authSources->filter(fn (AuthSource $authSource) => $authSource instanceof AuthSourceOIDC)->first();
+
+        if (false === $oidcSource) {
+            // TODO: This could be moved to a creational pattern
+            $oidcSource = new AuthSourceOIDC();
+            $oidcSource->setPortal($portal);
+        }
+
+        $authOidcForm = $this->createForm(AuthOidcType::class, $oidcSource);
+        $authOidcForm->handleRequest($request);
+
+        if ($authOidcForm->isSubmitted() && $authOidcForm->isValid()) {
+            // handle switch to other auth types
+            $clickedButtonName = $authOidcForm->getClickedButton()->getName();
+            if ('type' === $clickedButtonName) {
+                $typeSwitch = $authOidcForm->get('typeChoice')->getData();
+
+                return $this->generateRedirectForAuthType($typeSwitch, $portal);
+            }
+
+            if ('save' === $clickedButtonName) {
+                if ($oidcSource->isDefault()) {
+                    $authSources->map(function (AuthSource $authSource) use ($entityManager) {
+                        $authSource->setDefault(false);
+                        $entityManager->persist($authSource);
+                    });
+                    $oidcSource->setDefault(true);
+                }
+
+                $entityManager->persist($oidcSource);
+                $entityManager->flush();
+            }
+        }
+
+        return $this->render('portal_settings/auth_oidc.html.twig', [
+            'form' => $authOidcForm,
+            'portal' => $portal,
+            'authSource' => $oidcSource,
         ]);
     }
 
@@ -1009,7 +1066,7 @@ class PortalSettingsController extends AbstractController
         $termsForm->handleRequest($request);
         if ($termsForm->isSubmitted() && $termsForm->isValid()) {
             if ('save' === $termsForm->getClickedButton()->getName()) {
-                $portal->setAGBChangeDate(new DateTimeImmutable());
+                $portal->setAGBChangeDate(new DateTime());
                 $entityManager->persist($portal);
                 $entityManager->flush();
 
@@ -1124,8 +1181,6 @@ class PortalSettingsController extends AbstractController
 
         /** @noinspection PhpUndefinedMethodInspection */
         $terms = $repository->findByContextId($portal->getId());
-
-        $dispatcher->dispatch(new CommsyEditEvent(null), 'commsy.edit');
 
         return $this->render('portal_settings/room_terms_templates.html.twig', [
             'form' => $form,
@@ -1394,14 +1449,16 @@ class PortalSettingsController extends AbstractController
             $request->query->getInt('limit', 20)
         );
 
-        $portalUsersForAccounts = array_map(fn(Account $account) =>
-            $userRepository->findPortalUser($account), iterator_to_array($pagination));
+        $portalUsersForAccounts = array_filter(array_map(fn(Account $account) =>
+            $userRepository->findPortalUser($account), iterator_to_array($pagination)));
 
         $accountIndex = new AccountIndex();
         $accountIndexUserIds = [];
         foreach ($pagination as $key => $singleUser) {
-            $singleUser = $portalUsersForAccounts[$key];
-            $accountIndexUserIds[$singleUser->getItemID()] = false;
+            $singleUser = array_key_exists($key, $portalUsersForAccounts) ? $portalUsersForAccounts[$key] : null;
+            if ($singleUser) {
+                $accountIndexUserIds[$singleUser->getItemID()] = false;
+            }
         }
         $accountIndex->setIds($accountIndexUserIds);
 
@@ -1563,7 +1620,7 @@ class PortalSettingsController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $recipientCount = $contactFormHelper->handleContactFormSending(
+                $sendStatus = $contactFormHelper->handleContactFormSending(
                     $sendMail->getSubject(),
                     $sendMail->getMessage(),
                     $portal->getTitle(),
@@ -1574,7 +1631,7 @@ class PortalSettingsController extends AbstractController
                     $sendMail->getCopyToSender()
                 );
 
-                $this->addFlash('recipientCount', $recipientCount);
+                $this->addFlash('recipientCount', $sendStatus->getNumRecipients());
 
                 $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
                     'portalId' => $portal->getId(),
@@ -1611,7 +1668,7 @@ class PortalSettingsController extends AbstractController
         $userList = $userService->getListUsers($portal->getId());
         $form = $this->createForm(AccountIndexDetailType::class, $portal);
         $form->handleRequest($request);
-        $user = $userService->getUser($request->get('userId'));
+        $user = $userService->getUser(intval($request->get('userId')));
 
         $communityArchivedListNames = [];
         $communityListNames = [];
@@ -1768,7 +1825,7 @@ class PortalSettingsController extends AbstractController
     ): Response {
         $environment = $legacyEnvironment->getEnvironment();
 
-        $user = $userService->getUser($request->get('userId'));
+        $user = $userService->getUser(intval($request->get('userId')));
         $userEdit = new PortalUserEdit();
         $userEdit->setFirstName($user->getFirstname());
         $userEdit->setLastName($user->getLastName());
@@ -1888,7 +1945,7 @@ class PortalSettingsController extends AbstractController
         TranslatorInterface $translator,
         AccountManager $accountManager
     ): Response {
-        $user = $userService->getUser($request->get('userId'));
+        $user = $userService->getUser(intval($request->get('userId')));
         $userChangeStatus = new PortalUserChangeStatus();
         $userChangeStatus->setName($user->getFullName());
         $userChangeStatus->setUserID($user->getUserID());
@@ -1916,7 +1973,7 @@ class PortalSettingsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $userService->getUser($request->get('userId'));
+            $user = $userService->getUser(intval($request->get('userId')));
 
             $account = $accountManager->getAccount($user, $portal->getId());
 
@@ -1976,7 +2033,7 @@ class PortalSettingsController extends AbstractController
         Request $request,
         UserService $userService
     ): RedirectResponse {
-        $user = $userService->getUser($request->get('userId'));
+        $user = $userService->getUser(intval($request->get('userId')));
         $user->setEmailNotVisible();
         $user->save();
 
@@ -2006,7 +2063,7 @@ class PortalSettingsController extends AbstractController
         Request $request,
         UserService $userService
     ): RedirectResponse {
-        $user = $userService->getUser($request->get('userId'));
+        $user = $userService->getUser(intval($request->get('userId')));
         $user->setEmailVisible();
         $user->save();
 
@@ -2060,7 +2117,7 @@ class PortalSettingsController extends AbstractController
         AccountManager $accountManager,
         ManagerRegistry $managerRegistry
     ): Response {
-        $user = $userService->getUser($request->get('userId'));
+        $user = $userService->getUser(intval($request->get('userId')));
         $userAssignWorkspace = new PortalUserAssignWorkspace();
         $userAssignWorkspace->setUserID($user->getUserID());
         $userAssignWorkspace->setName($user->getFullName());
@@ -2073,7 +2130,7 @@ class PortalSettingsController extends AbstractController
             if ($form->get('save')->isClicked()) {
                 $assignFlag = true;
                 $choiceWorkspaceId = $form->get('workspaceSelection')->getViewData();
-                $user = $userService->getUser($request->get('userId'));
+                $user = $userService->getUser(intval($request->get('userId')));
                 $relatedUsers = $user->getRelatedUserList();
                 foreach ($relatedUsers as $relatedUser) {
                     if ($relatedUser->getContextID() == $choiceWorkspaceId) {
@@ -2111,7 +2168,7 @@ class PortalSettingsController extends AbstractController
 
                 $this->addFlash('unsuccessful', 'Already assigned');
             } elseif ($form->get('search')->isClicked()) {
-                $user = $userService->getUser($request->get('userId'));
+                $user = $userService->getUser(intval($request->get('userId')));
                 $userAssignWorkspace = new PortalUserAssignWorkspace();
                 $userAssignWorkspace->setUserID($user->getUserID());
                 $userAssignWorkspace->setName($user->getFullName());
@@ -2256,6 +2313,10 @@ class PortalSettingsController extends AbstractController
                 ]);
             case 'shib':
                 return $this->redirectToRoute('app_portalsettings_authshibboleth', [
+                    'portalId' => $portal->getId(),
+                ]);
+            case 'oidc':
+                return $this->redirectToRoute('app_portalsettings_authoidc', [
                     'portalId' => $portal->getId(),
                 ]);
             case 'guest':

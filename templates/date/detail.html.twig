@@ -10,6 +10,7 @@
     <div class="uk-grid">
 
         <div class="uk-width-4-5@m">
+            <main id="main-content">
 
             {# material content panel #}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
@@ -251,12 +252,9 @@
 
                     {% if not date.isExternal %}
                         {# files #}
-                        <div id="files{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{{ {
-                            'editUrl': path('app_upload_uploadform', {'roomId': date.contextId, 'itemId': date.itemId}),
-                            'cancelEditUrl': path('app_item_canceledit', {'roomId': date.contextId, 'itemId': date.itemId})
-                        }|json_encode|e('html_attr') }}">
-                            {{ component('item_files', {
-                                item: date,
+                        <div id="files{{ date.itemId }}">
+                            {{ component('FileList:FileList', {
+                                itemId: date.itemId,
                                 draft: draft
                             }) }}
                         </div>
@@ -275,7 +273,7 @@
                     {% endif %}
 
                     {% if draft %}
-                        {{ macros.draftButtons(roomId, date.itemId) }}
+                        {{ macros.draftButtons(roomId, date.itemId, date.type) }}
                     {% endif %}
                 </article>
             </div>
@@ -326,10 +324,12 @@
                 {% endif %}
 
             {% endif %}
+            </main>
         </div>
 
         <div class="uk-width-1-5@m uk-hidden-small">
             {# quick navigation #}
+            <nav aria-label="{{ 'Quick'|trans({}) }}">
             <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" uk-sticky>
                 <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
                     {{ 'quick navigation'|trans({})|capitalize }}
@@ -348,6 +348,7 @@
                     </ul>
                 </div>
             </div>
+            </nav>
         </div>
 
     </div>

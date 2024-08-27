@@ -238,7 +238,7 @@ class ProjectController extends AbstractController
                     $legacyRoom->setShouldCreateUserRooms($context['createUserRooms']);
                 }
                 if (isset($context['userroom_template'])) {
-                    $userroomTemplate = $roomService->getRoomItem($context['userroom_template']);
+                    $userroomTemplate = $roomService->getRoomItem(intval($context['userroom_template']));
                     if ($userroomTemplate) {
                         $legacyRoom->setUserRoomTemplateID($userroomTemplate->getItemID());
                     }

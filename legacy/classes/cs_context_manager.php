@@ -11,6 +11,8 @@
  * file that was distributed with this source code.
  */
 
+use App\Room\RoomStatus;
+
 /** upper class for database connection to the database table "community", "project" and "portal"
  * this upper class implements a database manager for the table "community", "project" and "portal".
  */
@@ -96,21 +98,21 @@ class cs_context_manager extends cs_manager
     */
    public function setOpenedLimit()
    {
-       $this->_status_limit = CS_ROOM_OPEN;
+       $this->_status_limit = RoomStatus::OPEN->value;
    }
 
    /** set status limit to "closed".
     */
    public function setClosedLimit()
    {
-       $this->_status_limit = CS_ROOM_CLOSED;
+       $this->_status_limit = RoomStatus::CLOSED->value;
    }
 
    /** set status limit to "locked".
     */
    public function setLockedLimit()
    {
-       $this->_status_limit = CS_ROOM_LOCK;
+       $this->_status_limit = RoomStatus::LOCKED->value;
    }
 
    /** set status limit to "not locked".
@@ -155,11 +157,9 @@ class cs_context_manager extends cs_manager
 
    /** Prepares the db_array for the item.
     *
-    * @param $db_array Contains the data from the database
-    *
-    * @return array Contains prepared data ( textfunctions applied etc. )
+    * @param array $db_array Contains the data from the database
     */
-   public function _buildItem($db_array)
+   public function _buildItem(array $db_array)
    {
        if (empty($db_array)) { // room not exists in database
            return null;

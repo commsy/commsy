@@ -36,7 +36,7 @@ class cs_section_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         if ('-1' == $this->getPublic()) {
             $translator = $this->_environment->getTranslationObject();
@@ -233,7 +233,7 @@ class cs_section_item extends cs_item
     /**
     save
      */
-    public function save()
+    public function save(): void
     {
         $section_manager = $this->_environment->getSectionManager();
         $this->_save($section_manager);
@@ -293,13 +293,13 @@ class cs_section_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         // TBD: check data before setting
         $this->_data = $data_array;
     }
 
-     public function isLocked()
+     public function isLocked(): bool
      {
          return $this->getLinkedItem()->isLocked();
      }

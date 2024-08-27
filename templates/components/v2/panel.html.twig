@@ -1,21 +1,23 @@
-<div class="uk-panel uk-panel-box{% if style %}-{{ style }}{% endif %}{% if not padding %} uk-padding-remove{% endif %}"{% if sticky %} uk-sticky{% endif %}>
+<section{% if title %} aria-labelledby="{{ name }}-heading"{% endif %}>
+    <div class="uk-panel uk-panel-box{% if style %}-{{ style }}{% endif %}{% if not padding %} uk-padding-remove{% endif %}"{% if sticky %} uk-sticky{% endif %}>
 
-    <div class="uk-panel-teaser{% if not padding %} uk-margin-remove{% endif %}{% if severity %} cs-panel-teaser-{{ severity }}{% endif %}">
-        <div class="uk-flex">
-            <div class="uk-flex-inline uk-flex-1">
-                {% if title %}
-                    <div class="uk-text-large">
-                        {{ title }}
-                    </div>
-                {% endif %}
+        <div class="uk-panel-teaser{% if not padding %} uk-margin-remove{% endif %}{% if severity %} cs-panel-teaser-{{ severity }}{% endif %}">
+            <div class="uk-flex">
+                <div class="uk-flex-inline uk-flex-1">
+                    {% if title %}
+                        <h3 id="{{ name }}-heading" class="uk-panel-title">
+                            {{ title }}
+                        </h3>
+                    {% endif %}
 
-                {% block teaser_left %}{% endblock %}
-            </div>
-            <div class="uk-flex-none">
-                {% block teaser_right %}{% endblock %}
+                    {% block teaser_left %}{% endblock %}
+                </div>
+                <div class="uk-flex-none">
+                    {% block teaser_right %}{% endblock %}
+                </div>
             </div>
         </div>
-    </div>
 
-    {% block content %}{% endblock %}
-</div>
+        {% block content %}{% endblock %}
+    </div>
+</section>

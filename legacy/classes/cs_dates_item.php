@@ -15,6 +15,8 @@
  */
 
 use App\Entity\Dates;
+use App\Event\ItemDeletedEvent;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for a dates
  * this class implements a dates item.
@@ -38,7 +40,7 @@ class cs_dates_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function _setItemData($data_array)
+    public function _setItemData($data_array): void
     {
         $this->_data = $data_array;
     }
@@ -50,7 +52,7 @@ class cs_dates_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         if ('-1' == $this->getPublic()) {
             $translator = $this->_environment->getTranslationObject();
@@ -68,7 +70,7 @@ class cs_dates_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function setTitle(string $value)
+    public function setTitle(string $value): void
     {
         // sanitize title
         $converter = $this->_environment->getTextConverter();
@@ -542,7 +544,7 @@ class cs_dates_item extends cs_item
                  and !empty($start_day);
     }
 
-    public function save()
+    public function save(): void
     {
         $dates_mananger = $this->_environment->getDatesManager();
         $this->_save($dates_mananger);
@@ -566,11 +568,11 @@ class cs_dates_item extends cs_item
      {
          global $symfonyContainer;
 
-         /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcer */
-         $eventDispatcer = $symfonyContainer->get('event_dispatcher');
+         /** @var EventDispatcher $eventDispatcher */
+         $eventDispatcher = $symfonyContainer->get('event_dispatcher');
 
-         $itemDeletedEvent = new \App\Event\ItemDeletedEvent($this);
-         $eventDispatcer->dispatch($itemDeletedEvent, \App\Event\ItemDeletedEvent::NAME);
+         $itemDeletedEvent = new ItemDeletedEvent($this);
+         $eventDispatcher->dispatch($itemDeletedEvent, ItemDeletedEvent::NAME);
 
          $date_manager = $this->_environment->getDatesManager();
          $this->_delete($date_manager);
@@ -591,7 +593,7 @@ class cs_dates_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function isPublic()
+    public function isPublic(): bool
     {
         if (1 == $this->_getValue('public')) {
             return true;
@@ -606,7 +608,7 @@ class cs_dates_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function setPublic($value)
+    public function setPublic($value): void
     {
         $this->_setValue('public', $value);
     }

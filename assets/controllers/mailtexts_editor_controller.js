@@ -24,8 +24,6 @@ export default class extends Controller {
     this.component = await getComponent(this.element);
 
     window.addEventListener('editor:get-value', () => {
-      console.log('get-value');
-      console.log(document.getElementById(this.fieldNameEnglishValue).value);
       germanEditor.setData(document.getElementById(this.fieldNameGermanValue).value);
       englishEditor.setData(document.getElementById(this.fieldNameEnglishValue).value);
     });

@@ -24,7 +24,7 @@ class CsvUserDataset
     private ?string $lastname = null;
 
     #[Assert\NotBlank(message: 'The field email must not be blank.')]
-    #[Assert\Email(message: 'The field email must be a valid email address.', strict: true)]
+    #[Assert\Email(message: 'The field email must be a valid email address.')]
     private ?string $email = null;
 
     #[Assert\NotBlank(message: 'The field identifier must not be blank.')]

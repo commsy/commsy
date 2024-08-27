@@ -20,7 +20,6 @@ use App\Repository\CalendarsRepository;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
-use cs_environment;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -37,17 +36,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('RUBRIC_DATE')]
 class CalendarController extends AbstractController
 {
-    private readonly cs_environment $legacyEnvironment;
-
-    /**
-     * CalendarController constructor.
-     */
-    public function __construct(
-        LegacyEnvironment $legacyEnvironment,
-    ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-    }
-
     #[Route(path: '/room/{roomId}/calendar/edit/{calendarId}')]
     #[IsGranted('CALENDARS_EDIT')]
     public function edit(
@@ -58,13 +46,16 @@ class CalendarController extends AbstractController
         TranslatorInterface $translator,
         RoomService $roomService,
         EventDispatcherInterface $eventDispatcher,
+        LegacyEnvironment $legacyEnvironment,
         int $roomId,
         int $calendarId = null
     ): Response {
-        $roomManager = $this->legacyEnvironment->getRoomManager();
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
         if (!$roomItem) {
-            $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
+            $privateRoomManager = $legacyEnvironment->getPrivateRoomManager();
             $roomItem = $privateRoomManager->getItem($roomId);
         }
 
@@ -73,12 +64,12 @@ class CalendarController extends AbstractController
         } else {
             $calendar = new Calendars();
             $calendar->setContextId($roomId);
-            $calendar->setCreatorId($this->legacyEnvironment->getCurrentUserId());
+            $calendar->setCreatorId($legacyEnvironment->getCurrentUserId());
             $calendar->setSynctoken(0);
         }
 
         $editForm = $this->createForm(CalendarEditType::class, $calendar, [
-            'editExternalUrl' => ($roomItem->usersCanSetExternalCalendarsUrl() || $this->legacyEnvironment->getCurrentUser()->isModerator()),
+            'editExternalUrl' => ($roomItem->usersCanSetExternalCalendarsUrl() || $legacyEnvironment->getCurrentUser()->isModerator()),
             'confirm-delete' => $translator->trans('confirm-delete', [], 'calendar'),
             'confirm-delete-cancel' => $translator->trans('confirm-delete-cancel', [], 'calendar'),
             'confirm-delete-confirm' => $translator->trans('confirm-delete-confirm', [], 'calendar'),

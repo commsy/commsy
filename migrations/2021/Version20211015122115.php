@@ -20,7 +20,7 @@ final class Version20211015122115 extends AbstractMigration
 
     public function up(Schema $schema) : void
     {
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
 
         $tables = $schemaManager->listTables();
         $tablesWithExtras = array_filter($tables, function ($table) {

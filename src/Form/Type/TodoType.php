@@ -16,7 +16,9 @@ namespace App\Form\Type;
 use App\Form\Type\Custom\CategoryMappingType;
 use App\Form\Type\Custom\DateTimeSelectType;
 use App\Form\Type\Custom\HashtagMappingType;
+use App\Security\Authorization\Voter\ItemVoter;
 use cs_context_item;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -30,6 +32,10 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class TodoType extends AbstractType
 {
+    public function __construct(private readonly Security $security)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -37,14 +43,20 @@ class TodoType extends AbstractType
             ->add('due_date', DateTimeSelectType::class, ['constraints' => [], 'label' => 'due date', 'attr' => ['placeholder' => 'due date', 'class' => 'uk-form-width-medium'], 'translation_domain' => 'todo', 'required' => false])
             ->add('time_planned', TextType::class, ['constraints' => [], 'label' => 'time planned', 'attr' => [], 'translation_domain' => 'todo', 'required' => false])
             ->add('time_type', ChoiceType::class, ['choices' => ['minutes' => '1', 'hours' => '2', 'days' => '3'], 'constraints' => [], 'label' => 'time type', 'attr' => [], 'translation_domain' => 'todo'])
-            ->add('status', ChoiceType::class, ['choices' => $options['statusChoices'], 'constraints' => [], 'label' => 'status', 'attr' => [], 'translation_domain' => 'todo'])
-            ->add('permission', CheckboxType::class, ['label' => 'permission', 'required' => false])
-            ->add('hidden', CheckboxType::class, ['label' => 'hidden', 'required' => false])
-            ->add('hiddendate', DateTimeSelectType::class, ['label' => 'hidden until'])
+            ->add('status', ChoiceType::class, ['choices' => $options['statusChoices'], 'constraints' => [], 'label' => 'status', 'attr' => [], 'translation_domain' => 'todo']);
+
+        $builder
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $todo = $event->getData();
                 $form = $event->getForm();
                 $formOptions = $form->getConfig()->getOptions();
+
+                if ($this->security->isGranted(ItemVoter::OWN, $formOptions['itemId']) || $this->security->isGranted(ItemVoter::MODERATE)) {
+                    $form
+                        ->add('permission', CheckboxType::class, ['label' => 'permission', 'required' => false])
+                        ->add('hidden', CheckboxType::class, ['label' => 'hidden', 'required' => false])
+                        ->add('hiddendate', DateTimeSelectType::class, ['label' => 'hidden until']);
+                }
 
                 if ($todo['external_viewer_enabled']) {
                     $form->add('external_viewer', TextType::class, [
@@ -90,6 +102,7 @@ class TodoType extends AbstractType
                 'hashtagMappingOptions',
                 'categoryMappingOptions',
                 'room',
+                'itemId',
             ])
             ->setDefaults([
                 'translation_domain' => 'form',

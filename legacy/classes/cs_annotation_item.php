@@ -187,7 +187,7 @@ class cs_annotation_item extends cs_item
     /**
      * save.
      */
-    public function save()
+    public function save(): void
     {
         $annotation_manager = $this->_environment->getAnnotationManager();
         $this->_save($annotation_manager);
@@ -230,7 +230,7 @@ class cs_annotation_item extends cs_item
      *
      * This Method checks for item <=> activated portfolio - relationships
      */
-    public function mayPortfolioSee(string $username)
+    public function mayPortfolioSee(string $username): bool
     {
         $portfolioManager = $this->_environment->getPortfolioManager();
 

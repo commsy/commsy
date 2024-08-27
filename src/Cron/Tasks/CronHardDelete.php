@@ -18,12 +18,14 @@ use cs_environment;
 use DateTimeImmutable;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-class CronHardDelete implements CronTaskInterface
+readonly class CronHardDelete implements CronTaskInterface
 {
-    private readonly cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly ParameterBagInterface $parameterBag)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private ParameterBagInterface $parameterBag
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -34,7 +36,6 @@ class CronHardDelete implements CronTaskInterface
         $itemTypes[] = CS_ANNOUNCEMENT_TYPE;
         $itemTypes[] = CS_DATE_TYPE;
         $itemTypes[] = CS_DISCUSSION_TYPE;
-        // $itemTypes[] = CS_DISCARTICLE_TYPE; // NO NO NO -> because of closed discussions
         $itemTypes[] = CS_LINKITEMFILE_TYPE;
         $itemTypes[] = CS_FILE_TYPE;
         $itemTypes[] = CS_ITEM_TYPE;

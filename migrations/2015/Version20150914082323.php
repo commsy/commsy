@@ -15,9 +15,6 @@ final class Version20150914082323 extends AbstractMigration
      */
     public function up(Schema $schema) : void
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
         $this->addSql('UPDATE annotations SET description = CONCAT(\'<h3>\', title, \'</h3>\', description)');
         $this->addSql('UPDATE zzz_annotations SET description = CONCAT(\'<h3>\', title, \'</h3>\', description)');
     }

@@ -6,6 +6,9 @@
     {{ 'Dashboard'|trans({}, "room") }}
 {% endblock %}
 
+{% block side_navigation %}
+{% endblock %}
+
 {% block breadcrumb %}
     {{ wo_render_breadcrumbs({ viewTemplate: "breadcrumbs/breadcrumbs.html.twig" }) }}
 {% endblock %}
@@ -51,88 +54,102 @@
     <div uk-grid>
         {# right column #}
         <div class="uk-width-1-2@m uk-flex-last@m">
-            <div class="uk-flex uk-flex-column">
-                <div>
-                    {% component 'v3:card' with { title: 'my views'|trans({}, 'dashboard') } %}
-                        {% block content %}
-                            {{ render(controller(
-                                'App\\Controller\\DashboardController::myViews',
-                                { 'roomId': roomItem.itemId }
-                            )) }}
-                        {% endblock %}
-                    {% endcomponent %}
-                </div>
-                <div class="uk-margin-top">
-                    {% import 'utils/macros.html.twig' as macros %}
+            <aside aria-label="{{ 'Sidebar'|trans({}, "room") }}">
+                <div class="uk-flex uk-flex-column">
+                    <div>
+                        <section aria-labelledby="my-views-heading">
+                            {% component 'v3:card' with { title: 'my views'|trans({}, 'dashboard'), titleId: 'my-views-heading' } %}
+                                {% block content %}
+                                    {{ render(controller(
+                                        'App\\Controller\\DashboardController::myViews',
+                                        { 'roomId': roomItem.itemId }
+                                    )) }}
+                                {% endblock %}
+                            {% endcomponent %}
+                        </section>
+                    </div>
+                    <div class="uk-margin-top">
+                        {% import 'utils/macros.html.twig' as macros %}
 
-                    {% component 'v3:card' with { title: 'calendar'|trans({}, 'date') } %}
-                        {% block content %}
-                            {{ render(controller(
-                                'App\\Controller\\DateController::calendardashboard',
-                                { 'roomId': roomItem.itemId }
-                            )) }}
-                        {% endblock %}
-                    {% endcomponent %}
+                        <section aria-labelledby="calendar-heading">
+                            {% component 'v3:card' with { title: 'calendar'|trans({}, 'date'), titleId: 'calendar-heading' } %}
+                                {% block content %}
+                                    {{ render(controller(
+                                        'App\\Controller\\DateController::calendardashboard',
+                                        { 'roomId': roomItem.itemId }
+                                    )) }}
+                                {% endblock %}
+                            {% endcomponent %}
+                        </section>
+                    </div>
+                    <div class="uk-margin-top">
+                        <section aria-labelledby="external-access-heading">
+                            {% component 'v3:card' with { title: 'external access'|trans({}, 'dashboard'), titleId: 'external-access-heading' } %}
+                                {% block content %}
+                                    {{ render(controller(
+                                        'App\\Controller\\DashboardController::externalaccess',
+                                        { 'roomId': roomItem.itemId }
+                                    )) }}
+                                {% endblock %}
+                            {% endcomponent %}
+                        </section>
+                    </div>
                 </div>
-                <div class="uk-margin-top">
-                    {% component 'v3:card' with { title: 'external access'|trans({}, 'dashboard') } %}
-                        {% block content %}
-                            {{ render(controller(
-                                'App\\Controller\\DashboardController::externalaccess',
-                                { 'roomId': roomItem.itemId }
-                            )) }}
-                        {% endblock %}
-                    {% endcomponent %}
-                </div>
-            </div>
+            </aside>
         </div>
 
         {# left column #}
         <div class="uk-width-1-2@m">
-            <div class="uk-flex uk-flex-column">
-                <div>
-                    {% component 'v3:card' with { title: 'Rooms'|trans({}, 'room') } %}
-                        {% block content %}
-                            <form action="{{ path('app_room_listall', {'roomId': roomItem.itemId}) }}" class="uk-form-horizontal">
-                                <input class="uk-input" type="text" name="room_filter[title]" placeholder="{{ 'search-filter-placeholder'|trans({}, "room") }}">
+            <main id="main-content">
+                <div class="uk-flex uk-flex-column">
+                    <div>
+                        <section aria-labelledby="rooms-heading">
+                            {% component 'v3:card' with { title: 'Rooms'|trans({}, 'room'), titleId: 'rooms-heading' } %}
+                                {% block content %}
+                                    <form action="{{ path('app_room_listall', {'roomId': roomItem.itemId}) }}" class="uk-form-horizontal">
+                                        <input class="uk-input" type="text" name="room_filter[title]" placeholder="{{ 'search-filter-placeholder'|trans({}, "room") }}">
 
-                                <div class="uk-margin">
-                                    <button type="submit" class="uk-button uk-button-primary">{{ 'Room search'|trans({}, "search") }}</button>
-                                </div>
-                            </form>
+                                        <div class="uk-margin">
+                                            <button type="submit" class="uk-button uk-button-primary">{{ 'Room search'|trans({}, "search") }}</button>
+                                        </div>
+                                    </form>
 
-                            <ul class="uk-list">
-                                <li>
-                                    <a class="uk-comment-title cs-link-highlight" href="{{ path('app_room_listall', {'roomId': roomItem.itemId}) }}">{{ 'List all rooms'|trans([], 'room') }}</a>
-                                </li>
-                                <li>
-                                    <a class="uk-comment-title cs-link-highlight" href="{{ path('app_room_listall', {'roomId': roomItem.itemId}|merge({'room_filter[membership]': 1})) }}">{{ 'List my rooms'|trans([], 'room') }}</a>
-                                </li>
-                                {% if userMayCreateContext and is_granted('ITEM_NEW') %}
-                                    <li>
-                                        <a class="uk-comment-title cs-link-highlight" href="{{ path('app_room_create', {'roomId': roomItem.itemId}) }}">{{ 'Create new context'|trans([], 'room') }}</a>
-                                    </li>
-                                {% endif %}
-                            </ul>
-                        {% endblock %}
-                    {% endcomponent %}
+                                    <ul class="uk-list">
+                                        <li>
+                                            <a class="uk-comment-title cs-link-highlight" href="{{ path('app_room_listall', {'roomId': roomItem.itemId}) }}">{{ 'List all rooms'|trans([], 'room') }}</a>
+                                        </li>
+                                        <li>
+                                            <a class="uk-comment-title cs-link-highlight" href="{{ path('app_room_listall', {'roomId': roomItem.itemId}|merge({'room_filter[membership]': 1})) }}">{{ 'List my rooms'|trans([], 'room') }}</a>
+                                        </li>
+                                        {% if userMayCreateContext and is_granted('ITEM_NEW') %}
+                                            <li>
+                                                <a class="uk-comment-title cs-link-highlight" href="{{ path('app_room_create', {'roomId': roomItem.itemId}) }}">{{ 'Create new context'|trans([], 'room') }}</a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                {% endblock %}
+                            {% endcomponent %}
+                        </section>
+                    </div>
+                    <div class="uk-margin-top">
+                        <section aria-labelledby="feed-heading">
+                            {% component 'v3:card' with { title: 'latest entries from my rooms'|trans({}, 'room'), titleId: 'feed-heading' } %}
+                                {% import 'common/feed.html.twig' as feed %}
+                                {% block content %}
+                                    <ul id="dashboard-feed" class="uk-comment-list uk-list-striped">
+                                        {{ render(controller(
+                                            'App\\Controller\\DashboardController::feed',
+                                            { 'roomId': roomItem.itemId }
+                                        ))}}
+                                    </ul>
+
+                                    {{ feed.spinner('dashboard', app.request.baseUrl ~ '/dashboard/' ~ roomItem.itemId ~ '/feed/') }}
+                                {% endblock %}
+                            {% endcomponent %}
+                        </section>
+                    </div>
                 </div>
-                <div class="uk-margin-top">
-                    {% component 'v3:card' with { title: 'latest entries from my rooms'|trans({}, 'room') } %}
-                        {% import 'common/feed.html.twig' as feed %}
-                        {% block content %}
-                            <ul id="dashboard-feed" class="uk-comment-list uk-list-striped">
-                                {{ render(controller(
-                                    'App\\Controller\\DashboardController::feed',
-                                    { 'roomId': roomItem.itemId }
-                                ))}}
-                            </ul>
-
-                            {{ feed.spinner('dashboard', app.request.baseUrl ~ '/dashboard/' ~ roomItem.itemId ~ '/feed/') }}
-                        {% endblock %}
-                    {% endcomponent %}
-                </div>
-            </div>
+            </main>
         </div>
     </div>
 {% endblock %}

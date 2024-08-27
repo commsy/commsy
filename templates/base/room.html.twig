@@ -1,7 +1,9 @@
 {% extends 'layout.html.twig' %}
 
 {% block sidebar_left %}
+    <nav aria-label="{{ 'Workspace'|trans({}, 'room') }}">
     {% include 'components/context_navigation.html.twig' with {'menu_name': 'main'} only %}
+    </nav>
 {% endblock %}
 
 {% block breadcrumb %}
@@ -10,13 +12,15 @@
 
 {% block main %}
     {% block alert %}
-        {% if commsy.room is not null and commsy.room.isArchived() %}
-            <div class="uk-width-expand">
-                <div class="uk-alert uk-alert-warning" style="border: 1px solid rgba(226,131,39,.3)" data-uk-alert>
-                    <h2><i class="uk-icon-archive uk-icon-justify uk-margin-small-right"></i>{{ 'Archived room'|trans({}, "room") }}</h2>
-                    <p>{{ 'Archived room info'|trans({}, "room") }}</p>
+        {% if commsy.room is not null and commsy.room.getArchived() %}
+            <section aria-labelledby="archived-room-alert">
+                <div class="uk-width-expand">
+                    <div class="uk-alert uk-alert-warning" style="border: 1px solid rgba(226,131,39,.3)" data-uk-alert>
+                        <h2 id="archived-room-alert"><i class="uk-icon-archive uk-icon-justify uk-margin-small-right"></i>{{ 'Archived room'|trans({}, "room") }}</h2>
+                        <p>{{ 'Archived room info'|trans({}, "room") }}</p>
+                    </div>
                 </div>
-            </div>
+            </section>
         {% endif %}
     {% endblock %}
 

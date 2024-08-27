@@ -1,5 +1,17 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
+
 namespace App\Mail\Helper;
 
 use App\Mail\Mailer;
@@ -26,7 +38,7 @@ final readonly class ContactFormHelper
         array $recipients,
         string $additionalRecipient,
         bool $copyToSender
-    ): int {
+    ): EmailSendStatus {
         $recipientCount = 0;
         $message = (new Email())
             ->subject($subject)
@@ -66,8 +78,8 @@ final readonly class ContactFormHelper
 
         $recipientCount += count($message->getTo()) + count($message->getCc());
 
-        $this->mailer->sendEmailObject($message, $from);
+        $success = $this->mailer->sendEmailObject($message, $from);
 
-        return $recipientCount;
+        return new EmailSendStatus($success, $recipientCount);
     }
 }

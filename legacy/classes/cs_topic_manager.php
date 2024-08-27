@@ -33,7 +33,6 @@ class cs_topic_manager extends cs_labels_manager
     {
         parent::resetLimits();
         $this->_type_limit = CS_TOPIC_TYPE;
-        $this->_context_limit = $this->_environment->getCurrentContextID();
     }
 
     /** get an empty time item

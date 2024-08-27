@@ -107,9 +107,7 @@ class UserController extends BaseController
     #[Route(path: '/room/{roomId}/user/{itemId}/contactForm/{originPath}/{moderatorIds}')]
     public function sendMailViaContactForm(
         Request $request,
-        MailAssistant $mailAssistant,
         ContactFormHelper $contactFormHelper,
-        Mailer $mailer,
         TranslatorInterface $translator,
         $roomId,
         $itemId,
@@ -118,7 +116,7 @@ class UserController extends BaseController
     ): Response {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
-        $item = $this->userService->getUser($itemId);
+        $item = $this->userService->getUser(intval($itemId));
         $formData = null;
         if (!is_null($item->getLinkedUserroomItem())) {
             $recipients = [];
@@ -127,9 +125,9 @@ class UserController extends BaseController
                 $recipients[$moderator->getFullName()] = $moderator->getFullName();
             }
             $message = $translator->trans('This email has been sent by ... from userroom ...', [
-                '%sender_name%' => $this->legacyEnvironment->getCurrentUserItem()->getFullName(),
-                '%room_name%' => $item->getLinkedUserroomItem()->getTitle(),
-                '%recipients%' => implode(', ', $recipients),
+                'sender_name' => $this->legacyEnvironment->getCurrentUserItem()->getFullName(),
+                'room_name' => $item->getLinkedUserroomItem()->getTitle(),
+                'recipients' => implode(', ', $recipients),
             ], 'mail');
             $message = '<br><br>--<br>'.$message;
             $search = ', ';
@@ -163,24 +161,27 @@ class UserController extends BaseController
             $formData = $form->getData();
 
             $recipients = [$item];
-            $moderators = explode(', ', (string) $moderatorIds);
-            foreach ($moderators as $moderatorId) {
-                $recipients[] = $this->userService->getUser($moderatorId);
+            if (!empty($moderatorIds)) {
+                $moderators = explode(', ', (string) $moderatorIds);
+                foreach ($moderators as $moderatorId) {
+                    $recipients[] = $this->userService->getUser($moderatorId);
+                }
             }
 
             // send mail
-            $recipientCount = $contactFormHelper->handleContactFormSending(
+            $sendStatus = $contactFormHelper->handleContactFormSending(
                 $formData['subject'],
                 $formData['message'] ?: '',
                 $portalItem->getTitle(),
                 $this->legacyEnvironment->getCurrentUserItem(),
                 $formData['files'],
                 $recipients,
-                $formData['additional_recipient'],
+                $formData['additional_recipient'] ?: '',
                 $formData['copy_to_sender']
             );
 
-            $this->addFlash('recipientCount', $recipientCount);
+            $this->addFlash('mailSend', $sendStatus->isSuccess());
+            $this->addFlash('recipientCount', $sendStatus->getNumRecipients());
 
             // redirect to success page
             return $this->redirectToRoute('app_user_sendsuccesscontact', [
@@ -397,7 +398,7 @@ class UserController extends BaseController
 
                 $formData['userIds'] = $userIds;
             } else {
-                $postData = $request->request->get('user_status');
+                $postData = $request->request->all('user_status');
                 $formData['status'] = $postData['status'];
                 $formData['userIds'] = $postData['userIds'];
             }
@@ -788,7 +789,7 @@ class UserController extends BaseController
 
         $defaultBodyMessage = '<br/><br/><br/>--<br/>'.$translator->trans(
             'This email has been sent by sender to recipient',
-            ['%sender_name%' => $currentUser->getFullName(), '%recipient_name%' => $item->getFullName()],
+            ['sender_name' => $currentUser->getFullName(), 'recipient_name' => $item->getFullName()],
             'mail'
         );
 
@@ -1203,7 +1204,7 @@ class UserController extends BaseController
                 $userIds[] = $user->getItemId();
             }
         } else {
-            $postData = $request->request->get('user_send');
+            $postData = $request->request->all('user_send');
             $userIds = $postData['users'];
         }
 
@@ -1219,7 +1220,7 @@ class UserController extends BaseController
                 if ($user) {
                     $defaultBodyMessage .= $translator->trans(
                         'This email has been sent by sender to recipient',
-                        ['%sender_name%' => $currentUser->getFullName(), '%recipient_name%' => $user->getFullName()],
+                        ['sender_name' => $currentUser->getFullName(), 'recipient_name' => $user->getFullName()],
                         'mail'
                     );
                 }
@@ -1227,9 +1228,9 @@ class UserController extends BaseController
                 $defaultBodyMessage .= $translator->trans(
                     'This email has been sent to multiple users of this room',
                     [
-                        '%sender_name%' => $currentUser->getFullName(),
-                        '%user_count%' => is_countable($userIds) ? count($userIds) : 0,
-                        '%room_name%' => $room->getTitle(),
+                        'sender_name' => $currentUser->getFullName(),
+                        'user_count' => is_countable($userIds) ? count($userIds) : 0,
+                        'room_name' => $room->getTitle(),
                     ],
                     'mail'
                 );
@@ -1310,7 +1311,7 @@ class UserController extends BaseController
                     $mailSend = $mailSend && $send;
                 }
 
-                $this->addFlash('recipientCount', $recipients);
+                $this->addFlash('recipientCount', count($recipients));
 
                 // send mail
                 $mailSend = $mailSend && empty($failedUsers);

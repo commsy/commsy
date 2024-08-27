@@ -280,39 +280,50 @@ class cs_material_manager extends cs_manager
         $this->_order = (string) $limit;
     }
 
-    /** get a material in newest version.
+    /** Returns the material item of the given item ID in its newest version.
      *
-     * @param int item_id id of the item
-     *
-     * @return \cs_material_item the material
+     * @param int|null itemId ID of the item
      */
-    public function getItem(?int $item_id)
+    public function getItem(?int $itemId): ?cs_material_item
     {
-        $material = null;
-        if (!empty($item_id)
-             and !empty($this->_cache_object[$item_id])
-        ) {
-            return $this->_cache_object[$item_id];
-        } elseif (array_key_exists($item_id, $this->_cached_items)) {
-            return $this->_buildItem($this->_cached_items[$item_id]);
-        } else {
-            $query = 'SELECT * FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').".item_id = '".encode(AS_DB, $item_id)."'";
-            if (true == $this->_delete_limit) {
-                $query .= ' AND '.$this->addDatabasePrefix('materials').'.deleter_id IS NULL';
-            }
-            $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.version_id DESC';
-            $result = $this->_db_connector->performQuery($query);
-            if (!isset($result)) {
-                trigger_error('Problems selecting one material item from query: "'.$query.'"', E_USER_WARNING);
-            } elseif (!empty($result[0])) {
-                $material = $this->_buildItem($result[0]);
-                if ($this->_cache_on) {
-                    $this->_cached_items[$result[0]['item_id']] = $result[0];
-                }
-            }
-
-            return $material;
+        if (empty($itemId)) {
+            return null;
+        } elseif (!empty($this->_cache_object[$itemId])) {
+            return $this->_cache_object[$itemId];
+        } elseif (array_key_exists($itemId, $this->_cached_items)) {
+            return $this->_buildItem($this->_cached_items[$itemId]);
         }
+
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+        $queryBuilder
+            ->select('m.*', 'i.pinned')
+            ->from($this->addDatabasePrefix($this->_db_table), 'm')
+            ->innerJoin('m', 'items', 'i', 'i.item_id = m.item_id')
+            ->where('m.item_id = :itemId');
+
+        if (true == $this->_delete_limit) {
+            $queryBuilder->andWhere('m.deleter_id IS NULL');
+        }
+
+        $queryBuilder
+            ->orderBy('m.version_id', 'DESC')
+            ->setParameter('itemId', $itemId);
+
+        try {
+            $result = $queryBuilder->executeQuery()->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            trigger_error('Problems selecting materials item (' . $itemId . '): ' . $e->getMessage(), E_USER_WARNING);
+        }
+
+        $material = null;
+        if (!empty($result[0])) {
+            $material = $this->_buildItem($result[0]);
+            if ($this->_cache_on) {
+                $this->_cached_items[$result[0]['item_id']] = $result[0];
+            }
+        }
+
+        return $material;
     }
 
     /** get a list of items (newest version)
@@ -736,13 +747,13 @@ class cs_material_manager extends cs_manager
 
     /** Prepares the db_array for the item.
      *
-     * @param $db_array Contains the data from the database
-     *
-     * @return array Contains prepared data ( textfunctions applied etc. )
+     * @param array $db_array Contains the data from the database
      */
-    public function _buildItem($db_array)
+    public function _buildItem(array $db_array)
     {
-        $db_array['extras'] = unserialize($db_array['extras']);
+        if (isset($db_array['extras'])) {
+            $db_array['extras'] = unserialize($db_array['extras']);
+        }
 
         return parent::_buildItem($db_array);
     }

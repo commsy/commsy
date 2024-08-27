@@ -428,7 +428,7 @@ class cs_project_manager extends cs_room2_manager
    // statistic functions
    // #######################################################
 
-   public function getCountProjects($start, $end)
+   public function getCountProjects($start, $end): int
    {
        $retour = 0;
 
@@ -469,7 +469,7 @@ class cs_project_manager extends cs_room2_manager
            }
        }
 
-       return $retour;
+       return intval($retour);
    }
 
     public function saveActivityPoints(cs_item $item)

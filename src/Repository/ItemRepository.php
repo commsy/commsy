@@ -15,6 +15,7 @@ namespace App\Repository;
 
 use App\Entity\Items;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository as ServiceEntityRepositoryAlias;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -37,9 +38,7 @@ class ItemRepository extends ServiceEntityRepositoryAlias
             SELECT COUNT(i.itemId) FROM App\Entity\Items i
             WHERE i.itemId = :itemId
         ');
-        $query->setParameters([
-            'itemId' => $itemId,
-        ]);
+        $query->setParameter('itemId', $itemId);
 
         return $query->getSingleScalarResult();
     }
@@ -91,8 +90,9 @@ class ItemRepository extends ServiceEntityRepositoryAlias
 
         // ensure numerical array keys starting at 1
         $params = array_combine(range(1, count($params)), array_values($params));
-
-        $query->setParameters($params);
+        array_walk($params, function ($value, $key) use ($query) {
+            $query->setParameter($key, $value);
+        });
 
         return $query->getResult();
     }

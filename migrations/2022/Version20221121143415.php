@@ -135,7 +135,7 @@ final class Version20221121143415 extends AbstractMigration
             ->orWhere('t.extras lIKE "%NOTIFY_DELETE_DATE%"')
             ->orWhere('t.extras lIKE "%ARCHIVE_SEND_MAIL_DATETIME%"')
             ->orWhere('t.extras lIKE "%DELETE_SEND_MAIL_DATETIME%"');
-        $entries = $qb->execute();
+        $entries = $qb->executeQuery();
 
         foreach ($entries as $entry) {
             $extras = DbConverter::convertToPHPValue($entry['extras']);
@@ -178,7 +178,7 @@ final class Version20221121143415 extends AbstractMigration
             ->orWhere('p.extras lIKE "%ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_DELETE%"')
             ->orWhere('p.extras lIKE "%ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE%"')
             ->orWhere('p.extras lIKE "%DELETING_ROOMS_STATUS%"');
-        $entries = $qb->execute();
+        $entries = $qb->executeQuery();
 
         foreach ($entries as $entry) {
             $extras = DbConverter::convertToPHPValue($entry['extras']);

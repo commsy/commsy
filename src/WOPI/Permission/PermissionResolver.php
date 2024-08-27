@@ -6,10 +6,10 @@ use App\Entity\Account;
 use App\Entity\Files;
 use Symfony\Bundle\SecurityBundle\Security;
 
-class PermissionResolver
+readonly class PermissionResolver
 {
     public function __construct(
-        private readonly Security $security
+        private Security $security
     ) {
     }
 

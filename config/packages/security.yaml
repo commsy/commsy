@@ -54,7 +54,7 @@ security:
             pattern: ^/api/v2/login
             stateless: true
             json_login:
-                check_path: /api/v2/login_check
+                check_path: api_login
                 provider: in_memory
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
@@ -81,6 +81,7 @@ security:
                 - App\Security\LoginFormAuthenticator
                 - App\Security\LdapAuthenticator
                 - App\Security\ShibbolethAuthenticator
+                - App\Security\OidcAuthenticator
             entry_point: App\Security\AuthenticationEntryPoint
             switch_user:
                 role: CAN_SWITCH_USER

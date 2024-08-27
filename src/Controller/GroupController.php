@@ -31,6 +31,7 @@ use App\Form\Type\GroupType;
 use App\Http\JsonDataResponse;
 use App\Mail\Mailer;
 use App\Room\Copy\LegacyCopy;
+use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -678,7 +679,7 @@ class GroupController extends BaseController
                 if ($form->has('category_mapping')) {
                     $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
-                    if (isset($formData['category_mapping']['newCategory'])) {
+                    if (isset($formData['category_mapping']['newCategory']) && $this->isGranted(CategoryVoter::EDIT)) {
                         $newCategoryTitle = $formData['category_mapping']['newCategory'];
                         $newCategory = $categoryService->addTag($newCategoryTitle, $roomId);
                         $categoryIds[] = $newCategory->getItemID();
@@ -717,7 +718,6 @@ class GroupController extends BaseController
             'form' => $form,
             'group' => $groupItem,
             'isDraft' => $isDraft,
-            'currentUser' => $this->legacyEnvironment->getCurrentUserItem(),
         ]);
     }
 
@@ -904,7 +904,7 @@ class GroupController extends BaseController
                 $groupIds[] = $user->getItemId();
             }
         } else {
-            $postData = $request->request->get('group_send');
+            $postData = $request->request->all('group_send');
             $groupIds = $postData['groups'];
         }
 
@@ -924,9 +924,9 @@ class GroupController extends BaseController
                     $defaultBodyMessage .= $this->translator->trans(
                         'This email has been sent to all users of this group',
                         [
-                            '%sender_name%' => $currentUser->getFullName(),
-                            '%group_name%' => $group->getName(),
-                            '%room_name%' => $room->getTitle(),
+                            'sender_name' => $currentUser->getFullName(),
+                            'group_name' => $group->getName(),
+                            'room_name' => $room->getTitle(),
                         ],
                         'mail'
                     );
@@ -935,9 +935,9 @@ class GroupController extends BaseController
                 $defaultBodyMessage .= $this->translator->trans(
                     'This email has been sent to multiple users of this room',
                     [
-                        '%sender_name%' => $currentUser->getFullName(),
-                        '%user_count%' => count($users),
-                        '%room_name%' => $room->getTitle(),
+                        'sender_name' => $currentUser->getFullName(),
+                        'user_count' => count($users),
+                        'room_name' => $room->getTitle(),
                     ],
                     'mail'
                 );
@@ -1061,9 +1061,9 @@ class GroupController extends BaseController
         $defaultBodyMessage = '<br/><br/><br/>--<br/>'.$this->translator->trans(
             'This email has been sent to all users of this group',
             [
-                '%sender_name%' => $currentUser->getFullName(),
-                '%group_name%' => $item->getName(),
-                '%room_name%' => $room->getTitle(),
+                'sender_name' => $currentUser->getFullName(),
+                'group_name' => $item->getName(),
+                'room_name' => $room->getTitle(),
             ],
             'mail'
         );

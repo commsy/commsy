@@ -52,11 +52,6 @@ class cs_labels_manager extends cs_manager
     public $_interval_limit = null;
 
     /**
-     * integer - containing a id for a material.
-     */
-    public $_material_limit = null;
-
-    /**
      * integer - containing a id for a dossier.
      */
     public $_dossier_limit = null;
@@ -126,8 +121,6 @@ class cs_labels_manager extends cs_manager
       $this->_institution_limit = null;
       $this->_topic_limit = null;
       $this->_group_limit = null;
-      $this->_material_limit = null;
-      $this->_version_limit = null;
       $this->_dossier_limit = null;
       $this->_order = null;
       $this->_sort_order = null;
@@ -224,17 +217,6 @@ class cs_labels_manager extends cs_manager
   {
       $this->_interval_limit = (int) $interval;
       $this->_from_limit = (int) $from;
-  }
-
-  /** set material limit
-   * this method sets a material limit.
-   *
-   * @param int limit id of the material
-   */
-  public function setMaterialLimit($limit, $version = '')
-  {
-      $this->_material_limit = (int) $limit;
-      $this->_version_limit = (int) $version;
   }
 
     public function setTopicLimit($limit)
@@ -391,11 +373,6 @@ class cs_labels_manager extends cs_manager
           }
       }
 
-      if (!isset($this->_attribute_limit) || (isset($this->_attribute_limit) and ('all' == $this->_attribute_limit))) {
-          if (!empty($this->_material_limit)) {
-              $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' ON '.$this->addDatabasePrefix('links').'.to_item_id = '.$this->addDatabasePrefix('labels').'.item_id';
-          }
-      }
       if (!empty($this->_type_limit)) {
           $query .= ' WHERE '.$this->addDatabasePrefix('labels').'.type="'.encode(AS_DB, $this->_type_limit).'"';
       } else {
@@ -403,13 +380,6 @@ class cs_labels_manager extends cs_manager
       }
       if (!empty($this->_dossier_limit)) {
           $query .= ' AND '.$this->addDatabasePrefix('labels').'.name="'.encode(AS_DB, $this->_dossier_limit).'"';
-      }
-
-      if (!empty($this->_material_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix('links').'.link_type = "material_for_'.encode(AS_DB, $this->_type_limit).'" AND '.$this->addDatabasePrefix('links').'.from_item_id = "'.encode(AS_DB, $this->_material_limit).'"';
-          if (!empty($this->_version_limit)) {
-              $query .= ' AND '.$this->addDatabasePrefix('links').'.from_version_id = "'.encode(AS_DB, $this->_version_limit).'"';
-          }
       }
 
       // insert limits into the select statement
@@ -564,52 +534,70 @@ class cs_labels_manager extends cs_manager
   }
 
     /** get all labels and save it - INTERNAL
-     * this method get all labels for the context and cache it in this class.
+     * this method gets all labels for the context and caches it in this class.
      *
-     * @param string  type       type of the label
+     * @param string type type of the label
      */
-    public function _getAllLabels($type)
+    public function _getAllLabels($type): void
     {
-        $data_array = [];
+        $data = [];
         if (isset($this->_room_limit)) {
-            $current_context = $this->_room_limit;
+            $currentContextId = $this->_room_limit;
         } else {
-            $current_context = $this->_environment->getCurrentContextID();
+            $currentContextId = $this->_environment->getCurrentContextID();
         }
         if ($this->_isAvailable()) {
-            $query = 'SELECT * FROM '.$this->addDatabasePrefix('labels');
-            $query .= ' WHERE '.$this->addDatabasePrefix('labels').'.type = "'.encode(AS_DB, $type).'"';
-            $query .= ' AND '.$this->addDatabasePrefix('labels').'.context_id = "'.encode(AS_DB, $current_context).'"';
-            $result = $this->_db_connector->performQuery($query);
-            if (!isset($result)) {
-                trigger_error('Problems selecting all labels.', E_USER_WARNING);
-            } else {
-                foreach ($result as $query_result) {
-                    $data_array[] = $query_result;
-                }
+            $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+            $queryBuilder
+                ->select('l.*', 'i.pinned')
+                ->from($this->addDatabasePrefix($this->_db_table), 'l')
+                ->innerJoin('l', 'items', 'i', 'i.item_id = l.item_id')
+                ->where('l.type = :type')
+                ->andWhere('l.context_id = :contextId')
+                ->setParameter('type', $type)
+                ->setParameter('contextId', $currentContextId);
+
+            try {
+                $result = $queryBuilder->executeQuery()->fetchAllAssociative();
+            } catch (\Doctrine\DBAL\Exception $e) {
+                trigger_error('Problems selecting all labels of type ' . $type . ' from context ' . $currentContextId . ': ' . $e->getMessage(), E_USER_WARNING);
+            }
+
+            foreach ($result as $queryResult) {
+                $data[] = $queryResult;
             }
         }
-        $data = $data_array;
-        $this->_internal_data[$current_context][$type] = $data_array;
+        $this->_internal_data[$currentContextId][$type] = $data;
     }
 
   /** get one label without type information - INTERNAL
    * this method gets one label without type information.
    *
-   * @param int  label_id  item id of the label
+   * @param int|null labelId item ID of the label
    */
-  public function _getLabelWithoutType($label_id)
+  public function _getLabelWithoutType(?int $labelId): ?cs_label_item
   {
+      if (empty($labelId)) {
+          return null;
+      }
+
+      $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+      $queryBuilder
+          ->select('l.*', 'i.pinned')
+          ->from($this->addDatabasePrefix($this->_db_table), 'l')
+          ->innerJoin('l', 'items', 'i', 'i.item_id = l.item_id')
+          ->where('l.item_id = :itemId')
+          ->setParameter('itemId', $labelId);
+
+      try {
+          $result = $queryBuilder->executeQuery()->fetchAllAssociative();
+      } catch (\Doctrine\DBAL\Exception $e) {
+          trigger_error('Problems selecting labels item (' . $labelId . '): ' . $e->getMessage(), E_USER_WARNING);
+      }
+
       $label = null;
-      if (!empty($label_id)) {
-          $query = 'SELECT * FROM '.$this->addDatabasePrefix('labels');
-          $query .= ' WHERE '.$this->addDatabasePrefix('labels').'.item_id = "'.encode(AS_DB, $label_id).'"';
-          $result = $this->_db_connector->performQuery($query);
-          if (!isset($result)) {
-              trigger_error('Problems selecting one label.', E_USER_WARNING);
-          } elseif (!empty($result[0])) {
-              $label = $this->_buildItem($result[0]);
-          }
+      if (!empty($result[0])) {
+          $label = $this->_buildItem($result[0]);
       }
 
       return $label;
@@ -708,11 +696,9 @@ class cs_labels_manager extends cs_manager
 
   /** Prepares the db_array for the item.
    *
-   * @param $db_array Contains the data from the database
-   *
-   * @return array Contains prepared data ( textfunctions applied etc. )
+   * @param array $db_array Contains the data from the database
    */
-  public function _buildItem($db_array)
+  public function _buildItem(array $db_array)
   {
       if ('ALL' == $db_array['name']) {
           $translator = $this->_environment->getTranslationObject();
@@ -721,10 +707,12 @@ class cs_labels_manager extends cs_manager
               $db_array['description'] = $translator->getMessage('GROUP_ALL_DESC');
           }
       }
-      $db_array['extras'] = unserialize($db_array['extras']);
-      $item = parent::_buildItem($db_array);
 
-      return $item;
+      if (isset($db_array['extras'])) {
+          $db_array['extras'] = unserialize($db_array['extras']);
+      }
+
+      return parent::_buildItem($db_array);
   }
 
      /**

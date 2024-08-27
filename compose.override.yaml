@@ -1,30 +1,42 @@
 # Development environment override
 services:
-  db:
+  
+  ###> symfony/mailer ###
+  mailer:
+    image: axllent/mailpit
+    ports:
+      - "1025"
+      - "8025:8025"
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+  ###< symfony/mailer ###
+  
+  db:
     ports:
       - "3106:3306"
 
   elastic:
+    environment:
+      - cluster.routing.allocation.disk.threshold_enabled=false
     ports:
       - "9200:9200"
 
   php:
     build:
-      context: .
-      target: frankenphp_dev
+      target: commsy_php_dev
     volumes:
-      - ./:/app
-      - ./docker/frankenphp/Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./docker/frankenphp/conf.d/app.dev.ini:/usr/local/etc/php/conf.d/app.dev.ini:ro
-      # If you develop on Mac or Windows you can remove the vendor/ directory
-      #  from the bind-mount for better performance by enabling the next line:
-      #- /app/vendor
-    environment:
-      # See https://xdebug.org/docs/all_settings#mode
-      XDEBUG_MODE: "${XDEBUG_MODE:-off}"
+      # The "cached" option has no effect on Linux but improves performance on Mac
+      - ./:/var/www/html:rw,cached
+      - ./docker/php/conf.d/commsy.dev.ini:/usr/local/etc/php/conf.d/commsy.dev.ini:ro
+      # If you develop on Mac you can remove the var/ directory from the bind-mount
+      # for better performance by enabling the next line
+      # - /srv/app/var
     extra_hosts:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
-    tty: true
+
+  caddy:
+    volumes:
+      - ./public:/var/www/html/public:ro,cached
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro

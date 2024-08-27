@@ -4,7 +4,10 @@
 
 {% block main %}
     <div class="uk-grid">
+
         <div class="uk-width-4-5@m">
+            <main id="main-content">
+
             {# material content panel #}
             {% component 'v3:card' %}
                 {% import 'material/macros.html.twig' as macrosMaterial %}
@@ -112,12 +115,10 @@
                         </div>
 
                         {# files #}
-                        <div id="files{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{{ {
-                            'editUrl': path('app_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId, 'versionId': material.versionId}),
-                            'cancelEditUrl': path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId})
-                        }|json_encode|e('html_attr') }}">
-                            {{ component('item_files', {
-                                item: material,
+                    <div id="files{{ material.itemId }}">
+                        {{ component('FileList:FileList', {
+                            itemId: material.itemId,
+                            versionId: material.versionId,
                                 draft: draft
                             }) }}
                         </div>
@@ -151,7 +152,7 @@
                         {% endif %}
 
                         {% if draft %}
-                            {{ macros.draftButtons(roomId, material.itemId) }}
+                        {{ macros.draftButtons(roomId, material.itemId, material.type) }}
                         {% endif %}
                     </article>
                 {% endblock %}
@@ -218,12 +219,9 @@
                                 </div>
 
                                 {# files #}
-                                <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{{ {
-                                    'editUrl': path('app_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId, 'versionId': section.versionId}),
-                                    'cancelEditUrl': path('app_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId})
-                                }|json_encode|e('html_attr') }}">
-                                    {{ component('item_files', {
-                                        item: section
+                            <div id="files{{ section.itemId }}">
+                                {{ component('FileList:FileList', {
+                                    itemId: section.itemId
                                     }) }}
                                 </div>
                             </article>
@@ -267,41 +265,45 @@
                     {% endblock %}
                 {% endcomponent %}
             </div>
+            </main>
         </div>
 
         <div class="uk-width-1-5@m uk-visible@m">
             {# quick navigation #}
-            {% component 'v3:card' with { title: 'quick navigation'|trans(), sticky: true } %}
-                {% block content %}
-                    <div id="cs-nav-quick">
-                        <ul class="uk-nav uk-nav-default uk-nav-parent-icon quick-nav" uk-scrollspy-nav="closest: li;  scroll: true">
-                            <li><a href="#description{{ material.itemId }}">{{ 'entry description'|trans({})}}</a></li>
-                            <li><a href="#files{{ material.itemId }}">{{ 'files'|trans({})}}</a></li>
-                            <li><a href="#links{{ material.itemId }}">{{ 'links'|trans({})}}</a></li>
-                            {% if (showCategories or showHashtags) %}
-                                <li><a href="#categoriesAndBuzzwords{{ material.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
-                            {% endif %}
-                            {%if showWorkflow %}
-                                <li><a href="#workflow{{ material.itemId }}">{{ 'workflow information'|trans({})}}</a></li>
-                            {% endif %}
-                            {% if not sectionList is empty %}
-                                <li class="uk-parent">
-                                    <a href="#sections{{ material.itemId }}">{{ 'sections'|trans({})|capitalize }}</a>
-                                    <ul class="uk-nav-sub">
-                                        {% for section in sectionList %}
-                                            <li>
-                                                <a href="#section{{ section.itemId }}">{{ loop.index }}. {{ section.title|decodeHtmlEntity|u.truncate(20) }}</a>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </li>
-                            {% endif %}
+            <nav aria-label="{{ 'Quick'|trans({}) }}">
+                {% component 'v3:card' with { title: 'quick navigation'|trans(), sticky: true } %}
+                    {% block content %}
+                        <div id="cs-nav-quick">
+                            <ul class="uk-nav uk-nav-default uk-nav-parent-icon quick-nav" uk-scrollspy-nav="closest: li;  scroll: true">
+                                <li><a href="#description{{ material.itemId }}">{{ 'entry description'|trans({})}}</a></li>
+                                <li><a href="#files{{ material.itemId }}">{{ 'files'|trans({})}}</a></li>
+                                <li><a href="#links{{ material.itemId }}">{{ 'links'|trans({})}}</a></li>
+                                {% if (showCategories or showHashtags) %}
+                                    <li><a href="#categoriesAndBuzzwords{{ material.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
+                                {% endif %}
+                                {%if showWorkflow %}
+                                    <li><a href="#workflow{{ material.itemId }}">{{ 'workflow information'|trans({})}}</a></li>
+                                {% endif %}
+                                {% if not sectionList is empty %}
+                                    <li class="uk-parent">
+                                        <a href="#sections{{ material.itemId }}">{{ 'sections'|trans({})|capitalize }}</a>
+                                        <ul class="uk-nav-sub">
+                                            {% for section in sectionList %}
+                                                <li>
+                                                    <a href="#section{{ section.itemId }}">{{ loop.index }}. {{ section.title|decodeHtmlEntity|u.truncate(20) }}</a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% endif %}
 
-                            <li><a href="#annotations{{ material.itemId }}">{{ 'annotations'|trans({})|capitalize }} ({{ amountAnnotations }})</a></li>
-                        </ul>
-                    </div>
-                {% endblock %}
-            {% endcomponent %}
+                                <li><a href="#annotations{{ material.itemId }}">{{ 'annotations'|trans({})|capitalize }} ({{ amountAnnotations }})</a></li>
+                            </ul>
+                        </div>
+                    {% endblock %}
+                {% endcomponent %}
+            </nav>
         </div>
+
     </div>
 {% endblock %}

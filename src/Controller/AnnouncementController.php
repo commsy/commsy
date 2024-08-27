@@ -28,6 +28,7 @@ use App\Filter\AnnouncementFilterType;
 use App\Form\DataTransformer\AnnouncementTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\AnnouncementType;
+use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -513,7 +514,8 @@ class AnnouncementController extends BaseController
                 'hashtags' => $labelService->getHashtags($roomId),
                 'hashTagPlaceholderText' => $this->translator->trans('New hashtag', [], 'hashtag'),
                 'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-            ], 'room' => $current_context]);
+            ], 'room' => $current_context,
+               'itemId' => $itemId]);
         }
 
         $form->handleRequest($request);
@@ -531,7 +533,7 @@ class AnnouncementController extends BaseController
                 if ($form->has('category_mapping')) {
                     $categoryIds = $formData['category_mapping']['categories'] ?? [];
 
-                    if (isset($formData['category_mapping']['newCategory'])) {
+                    if (isset($formData['category_mapping']['newCategory']) && $this->isGranted(CategoryVoter::EDIT)) {
                         $newCategoryTitle = $formData['category_mapping']['newCategory'];
                         $newCategory = $categoryService->addTag($newCategoryTitle, $roomId);
                         $categoryIds[] = $newCategory->getItemID();
@@ -563,7 +565,7 @@ class AnnouncementController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($announcementItem), CommsyEditEvent::EDIT);
 
-        return $this->render('announcement/edit.html.twig', ['form' => $form, 'announcement' => $announcementItem, 'isDraft' => $isDraft, 'currentUser' => $this->legacyEnvironment->getCurrentUserItem()]);
+        return $this->render('announcement/edit.html.twig', ['form' => $form, 'announcement' => $announcementItem, 'isDraft' => $isDraft]);
     }
 
     #[Route(path: '/room/{roomId}/announcement/{itemId}/save')]

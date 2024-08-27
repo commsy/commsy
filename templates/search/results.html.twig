@@ -8,6 +8,7 @@
         {# sidebar #}
         <div class="uk-width-1-3@m uk-push-2-3">
 
+            <aside aria-label="{{ 'Sidebar'|trans({}, "room") }}">
             {{ form_start(filterForm) }}
 
             {# NOTE: the two panels in the sidebar (manage-my-views & list-filter) comprise a single form (filterForm) #}
@@ -80,12 +81,14 @@
             </div>
 
             {{ form_end(filterForm) }}
+            </aside>
 
         </div>
 
         {# search results #}
         <div class="uk-width-2-3@m uk-pull-1-3">
 
+            <main id="main-content" aria-label="{{ 'search results'|trans({}, "room") }}">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
 
                 <div uk-sticky="{boundary: true}" style="margin-top: -10px; margin-left: -10px; margin-right: -10px">
@@ -145,7 +148,7 @@
                                                         {% if (user.isUser and not user.isReadOnlyUser) and not isArchived -%}
                                                             {% set returnUrlParams = {
                                                                 'roomId': roomId,
-                                                                'search_filter[selectedSavedSearch]': searchData.selectedSavedSearchId,
+                                                                'search_filter[selectedSavedSearch]': searchData.selectedSavedSearchId > 0 ? searchData.selectedSavedSearchId : '',
                                                                 'search_filter[selectedSavedSearchTitle]': searchData.selectedSavedSearchTitle ?? '',
                                                                 'search_filter[phrase]': searchData.phrase,
                                                                 'search_filter[appears_in][0]': searchData.appearsInTitle ? 'title' : '',
@@ -233,7 +236,7 @@
                     {# setup "load more" if we do not show all results yet #}
                     {% set query %}
                         {
-                            "search_filter[selectedSavedSearch]": "{{ searchData.selectedSavedSearchId }}",
+                            "search_filter[selectedSavedSearch]": "{{ searchData.selectedSavedSearchId > 0 ? searchData.selectedSavedSearchId : '' }}",
                             "search_filter[selectedSavedSearchTitle]": "{{ searchData.selectedSavedSearchTitle ?? '' }}",
                             "search_filter[phrase]": "{{ searchData.phrase }}",
                             "search_filter[appears_in][0]": "{{ searchData.appearsInTitle ? 'title' : '' }}",
@@ -263,6 +266,7 @@
                     {{ feed.spinner('search', app.request.baseUrl ~ '/room/' ~ commsy.room.itemId ~ '/searchmore/', query) }}
                 </div>
             </div>
+            </main>
 
         </div>
 

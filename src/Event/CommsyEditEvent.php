@@ -13,20 +13,35 @@
 
 namespace App\Event;
 
+use App\Enum\EditableSection;
+use cs_item;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class CommsyEditEvent extends Event
+final class CommsyEditEvent extends Event
 {
     final public const EDIT = 'commsy.edit';
     final public const SAVE = 'commsy.save';
     final public const CANCEL = 'commsy.cancel';
 
-    public function __construct(protected $item)
-    {
+    public function __construct(
+        private readonly cs_item $item,
+        private readonly EditableSection $editableSection = EditableSection::UNKNOWN,
+        private readonly array $extras = []
+    ) {
     }
 
-    public function getItem()
+    public function getItem(): cs_item
     {
         return $this->item;
+    }
+
+    public function getEditableSection(): EditableSection
+    {
+        return $this->editableSection;
+    }
+
+    public function getExtras(): array
+    {
+        return $this->extras;
     }
 }

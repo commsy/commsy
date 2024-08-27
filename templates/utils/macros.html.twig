@@ -526,12 +526,18 @@
 {% macro contextLink(roomId, context, contextMemberStatus, memberInGroup) %}
     {% if memberInGroup is defined and memberInGroup is same as(false) %}
         <span data-uk-tooltip title="{{'join group before grouproom'|trans({},'group') }}">
-            <a class='uk-button uk-button-secondary uk-button-small uk-text-bold uk-text-muted' style="pointer-events: none;" href="">
+            <a class='uk-button uk-button-secondary uk-button-small uk-text-bold' style="pointer-events: none;" href="">
                 <span uk-icon="icon: plus-circle"></span> {{ 'become member'|trans({}, 'room') }}
             </a>
         </span>
     {% else %}
-        {% if 'enter' in contextMemberStatus %}
+        {% if 'locked' in contextMemberStatus %}
+            {% if 'archived' in contextMemberStatus %}
+                {{ 'This archived room is currently locked.'|trans({}, 'room') }}
+            {% else %}
+                {{ 'This room is currently locked.'|trans({}, 'room') }}
+            {% endif %}
+        {% elseif 'enter' in contextMemberStatus %}
             {% if 'archived' in contextMemberStatus %}
                 {{ 'Archived room'|trans({}, 'room') }} (<a href="{{ path('app_room_home', {'roomId': context.itemId}) }}">
                     <span uk-icon="icon: sign-in"></span> {{ 'enter room'|trans({}, 'room') }}
@@ -546,11 +552,9 @@
                 <a class='uk-button uk-button-primary uk-button-small uk-text-bold' href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}">
                     <span uk-icon="icon: plus-circle"></span> {{ 'become member'|trans({}, 'room') }}
                 </a>
-            {% elseif contextMemberStatus is same as('locked') %}
-                {{ 'This room is currently locked.'|trans({}, 'room') }}
             {% elseif contextMemberStatus is same as('requested') %}
                 <span data-uk-tooltip title="{{ 'Your request has not been processed yet.'|trans({}, 'room') }}">
-                    <a class='uk-button uk-button-secondary uk-button-small uk-text-bold uk-text-muted' style="pointer-events: none;" href="">
+                    <a class='uk-button uk-button-secondary uk-button-small uk-text-bold' style="pointer-events: none;" href="">
                         <span uk-icon="icon: sign-in"></span> {{ 'Membership request in process'|trans({}, 'room') }}
                     </a>
                 </span>
@@ -579,7 +583,7 @@
             <a href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}">
                 <span class="uk-text-muted" uk-icon="icon: plus-circle; ratio: 2" title="{{ 'become member'|trans({}, 'room') }}" uk-tooltip="pos: top-left"></span>
             </a>
-        {% elseif contextMemberStatus is same as('locked') %}
+        {% elseif 'locked' in contextMemberStatus %}
             <span class="uk-text-muted" uk-icon="icon: lock; ratio: 2" title="{{ 'This room is currently locked.'|trans({}, 'room') }}" uk-tooltip="pos: top-left"></span>
         {% elseif contextMemberStatus is same as('requested') %}
             <span class="uk-text-muted" uk-icon="icon: refresh; ratio: 2" title="{{ 'Your request has not been processed yet.'|trans({}, 'room') }}" uk-tooltip="pos: top-left"></span>
@@ -655,7 +659,9 @@
                         </div>
                         <div class="uk-margin-top uk-flex">
                             <div class="uk-margin-small-left">
-                                {{ form_widget(form.category_mapping.newCategory) }}
+                                {% if form.category_mapping.newCategory is defined %}
+                                    {{ form_widget(form.category_mapping.newCategory) }}
+                                {% endif %}
                             </div>
                             <div class="uk-margin-small-left">
                                 {{ form_widget(form.category_mapping.newCategoryAdd) }}
@@ -774,8 +780,8 @@
     {% endif %}
 {% endmacro %}
 
-{% macro draftButtons(roomId, itemId) %}
-    <div id="draft-buttons-wrapper">
+{% macro draftButtons(roomId, itemId, itemType) %}
+    <div id="draft-buttons-wrapper" data-item-type="{{ itemType }}">
         <a href="#" class="uk-button uk-button-primary" data-draft-save="{{ {
             'undraftUrl': path('app_item_undraft', { 'roomId': roomId, 'itemId': itemId })
         }|json_encode|e('html_attr') }}">

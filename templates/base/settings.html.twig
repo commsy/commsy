@@ -1,7 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block side_navigation %}
+    <nav aria-label="{{ 'settings'|trans({}, 'menu') }}">
     {{ knp_menu_render('settings') }}
+    </nav>
 {% endblock %}
 
 {% block breadcrumb %}

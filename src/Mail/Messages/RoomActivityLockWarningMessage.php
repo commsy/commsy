@@ -33,7 +33,7 @@ class RoomActivityLockWarningMessage extends Message
 
     public function getSubject(): string
     {
-        return '%portal_name%: Workspace will be locked in %num_days% days';
+        return '{portal_name}: Workspace will be locked in {num_days} days';
     }
 
     public function getTemplateName(): string
@@ -50,7 +50,6 @@ class RoomActivityLockWarningMessage extends Message
 
         return [
             'room' => $this->room,
-            'hello' => $legacyTranslator->getEmailMessage('PROJECT_MAIL_BODY_ARCHIVE_INFO'),
             'content' => $legacyTranslator->getEmailMessage('EMAIL_INACTIVITY_ROOM_LOCK_UPCOMING_BODY',
                 $this->room->getTitle(),
                 $numDaysInactive,
@@ -62,8 +61,8 @@ class RoomActivityLockWarningMessage extends Message
     public function getTranslationParameters(): array
     {
         return [
-            '%portal_name%' => $this->portal->getTitle(),
-            '%num_days%' => $this->portal->getClearInactiveRoomsLockDays(),
+            'portal_name' => $this->portal->getTitle(),
+            'num_days' => $this->portal->getClearInactiveRoomsLockDays(),
         ];
     }
 }
