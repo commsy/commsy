@@ -1,153 +1,123 @@
 #syntax=docker/dockerfile:1.4
 
 # Versions
-FROM php:8.3-fpm-alpine AS php_upstream
-FROM mlocati/php-extension-installer:2 AS php_extension_installer_upstream
-FROM composer/composer:2-bin AS composer_upstream
-FROM caddy:2-alpine AS caddy_upstream
+FROM dunglas/frankenphp:1-php8.3 AS frankenphp_upstream
 
-# the different stages of this Dockerfile are meant to be built into separate images
+# The different stages of this Dockerfile are meant to be built into separate images
 # https://docs.docker.com/develop/develop-images/multistage-build/#stop-at-a-specific-build-stage
 # https://docs.docker.com/compose/compose-file/#target
 
-FROM php_upstream AS commsy_php
 
-ENV APP_ENV=prod
+# Base FrankenPHP image
+FROM frankenphp_upstream AS frankenphp_base
 
-# php extensions installer: https://github.com/mlocati/docker-php-extension-installer
-COPY --from=php_extension_installer_upstream --link /usr/bin/install-php-extensions /usr/local/bin/
+WORKDIR /app
+
+VOLUME /app/var/
 
 # persistent / runtime deps
-RUN apk add --no-cache \
-		acl \
-		autoconf \
-		fcgi \
-		file \
-		fontconfig \
-		gettext \
-		git \
-		gnu-libiconv \
-		libxrender \
-        mariadb-client \
-		nodejs \
-        supervisor \
-		ttf-freefont \
-		yarn \
-	;
+# hadolint ignore=DL3008
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	acl \
+    autoconf \
+	file \
+	gettext \
+	git \
+	mariadb-client \
+	supervisor \
+    wkhtmltopdf \
+	&& rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y nodejs && \
+    corepack enable && \
+    corepack prepare yarn@stable --activate
 
 RUN set -eux; \
-    install-php-extensions \
-        apcu \
-        gd \
-        imap\
-        intl \
-        ldap \
-        opcache \
-        pdo_mysql \
-    	sysvsem \
-        zip \
-    ;
+	install-php-extensions \
+		@composer \
+		apcu \
+    	gd \
+    	imap \
+		intl \
+    	ldap \
+		opcache \
+    	pdo_mysql \
+		sysvsem \
+		zip \
+	;
+
+# wkhtmltopdf
+#COPY --from=surnet/alpine-wkhtmltopdf:3.17.0-0.12.6-full /bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
+
+# https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+ENV PHP_INI_SCAN_DIR=":$PHP_INI_DIR/app.conf.d"
 
 ###> recipes ###
 ###< recipes ###
 
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-COPY docker/php/conf.d/commsy.ini $PHP_INI_DIR/conf.d/
-COPY docker/php/conf.d/commsy.prod.ini $PHP_INI_DIR/conf.d/
+COPY --link docker/frankenphp/conf.d/10-app.ini $PHP_INI_DIR/app.conf.d/
+COPY --link --chmod=755 docker/frankenphp/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+COPY --link docker/frankenphp/Caddyfile /etc/caddy/Caddyfile
 
-COPY docker/php/php-fpm.d/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
-RUN mkdir -p /var/run/php
-
-# wkhtmltopdf
-COPY --from=surnet/alpine-wkhtmltopdf:3.17.0-0.12.6-full /bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
-
-# https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
-ENV COMPOSER_ALLOW_SUPERUSER=1
-ENV PATH="${PATH}:/root/.composer/vendor/bin"
-
-COPY --from=composer_upstream --link /composer /usr/bin/composer
-
-WORKDIR /var/www/html
-
-# build for production
-ARG APP_ENV=prod
-
-# prevent the reinstallation of vendors at every changes in the source code
-COPY composer.json composer.lock symfony.lock ./
-RUN set -eux; \
-	composer install --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress; \
-	composer clear-cache
-
-# prevent the reinstallation of node_modules at every changes in the source code
-COPY webpack.config.js tsconfig.json package.json yarn.lock ./
-COPY assets assets/
-RUN set -eux; \
-	yarn install; \
-	yarn build; \
-	rm -r assets; \
-	rm tsconfig.json
-
-# copy only specifically what we need
-COPY .env ./
-COPY VERSION ./
-COPY bin bin/
-COPY config config/
-COPY legacy legacy/
-COPY migrations migrations/
-COPY public public/
-COPY src src/
-COPY templates templates/
-COPY themes themes/
-COPY translations translations/
-
-RUN set -eux; \
-	mkdir -p var/cache var/log; \
-	composer dump-autoload --classmap-authoritative --no-dev; \
-	composer dump-env prod; \
-	composer run-script --no-dev post-install-cmd; \
-	chmod +x bin/console; sync
-
-VOLUME /var/www/html/var
-
-COPY docker/php/docker-healthcheck.sh /usr/local/bin/docker-healthcheck
-RUN chmod +x /usr/local/bin/docker-healthcheck
-
-HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ["docker-healthcheck"]
-
-COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
-RUN chmod +x /usr/local/bin/docker-entrypoint
-
-COPY docker/php/supervisord.conf /etc/supervisord.conf
-COPY docker/php/supervisor.d /etc/supervisor/conf.d/
+COPY --link docker/frankenphp/supervisord.conf /etc/supervisord.conf
+COPY --link docker/frankenphp/supervisor.d /etc/supervisor/conf.d/
 
 ENTRYPOINT ["docker-entrypoint"]
+
+HEALTHCHECK --start-period=60s CMD curl -f http://localhost:2019/metrics || exit 1
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]
 
-##############################################################################
+# Dev FrankenPHP image
+FROM frankenphp_base AS frankenphp_dev
 
-# Dockerfile
-FROM commsy_php AS commsy_php_dev
+ENV APP_ENV=dev XDEBUG_MODE=off
 
-ENV APP_ENV=dev
+RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 RUN set -eux; \
 	install-php-extensions \
 		xdebug \
 	;
 
-RUN rm $PHP_INI_DIR/conf.d/commsy.prod.ini; \
-	mv "$PHP_INI_DIR/php.ini" "$PHP_INI_DIR/php.ini-production"; \
-	mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+COPY --link docker/frankenphp/conf.d/20-app.dev.ini $PHP_INI_DIR/app.conf.d/
 
-COPY docker/php/conf.d/commsy.dev.ini $PHP_INI_DIR/conf.d/
+CMD [ "frankenphp", "run", "--config", "/etc/caddy/Caddyfile", "--watch" ]
 
-CMD ["php-fpm"]
+# Prod FrankenPHP image
+FROM frankenphp_base AS frankenphp_prod
 
-##############################################################################
+ENV APP_ENV=prod
+ENV FRANKENPHP_CONFIG="import worker.Caddyfile"
 
-FROM caddy_upstream AS commsy_caddy
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
-WORKDIR /var/www/html
+COPY --link docker/frankenphp/conf.d/20-app.prod.ini $PHP_INI_DIR/app.conf.d/
+COPY --link docker/frankenphp/worker.Caddyfile /etc/caddy/worker.Caddyfile
 
-COPY --from=commsy_php /var/www/html/public public/
-COPY docker/caddy/Caddyfile /etc/caddy/Caddyfile
+# prevent the reinstallation of vendors at every changes in the source code
+COPY --link composer.* symfony.* ./
+RUN set -eux; \
+	composer install --no-cache --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress
+
+# prevent the reinstallation of node_modules at every changes in the source code
+COPY --link webpack.config.js tsconfig.json package.json yarn.lock ./
+COPY --link assets assets/
+RUN set -eux; \
+	yarn install; \
+	yarn build; \
+	rm -r assets; \
+	rm tsconfig.json
+
+# copy sources
+COPY --link . ./
+RUN rm -Rf docker/
+
+RUN set -eux; \
+	mkdir -p var/cache var/log; \
+	composer dump-autoload --classmap-authoritative --no-dev; \
+	composer dump-env prod; \
+	composer run-script --no-dev post-install-cmd; \
+	chmod +x bin/console; sync;

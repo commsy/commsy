@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-if [ "$1" = 'supervisord' ] || "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
+if [ "$1" = 'supervisord' ] || [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 	if [ -z "$(ls -A 'vendor/' 2>/dev/null)" ]; then
 		composer install --prefer-dist --no-progress --no-interaction
 	fi
@@ -31,12 +31,12 @@ if [ "$1" = 'supervisord' ] || "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$
 		fi
 
 		if bin/console doctrine:migrations:current --no-ansi | grep -q 'No migration executed yet'; then
-                echo "Loading initial database dump"
-                bin/console dbal:run-sql --no-interaction "$(cat src/Resources/fixtures/initial.sql)"
-            fi
+			echo "Loading initial database dump"
+			bin/console dbal:run-sql --no-interaction "$(cat src/Resources/fixtures/initial.sql)"
+		fi
 
 		if [ "$( find ./migrations -iname '*.php' -print -quit )" ]; then
-			php bin/console doctrine:migrations:migrate --no-interaction
+			php bin/console doctrine:migrations:migrate --no-interaction --all-or-nothing
 		fi
 	fi
 

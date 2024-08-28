@@ -109,29 +109,6 @@ jobs:
                   tags: ${{ steps.meta_php.outputs.tags }}
                   labels: ${{ steps.meta_php.outputs.labels }}
 
-            # caddy image
-            - name: docker/metadata-action
-              uses: docker/metadata-action@v4
-              id: meta_caddy
-              with:
-                  images: |
-                      effectivewebwork/commsy
-                  tags: |
-                      type=ref,event=branch
-                      type=ref,event=pr
-                      type=semver,pattern={{major}}.{{minor}}
-                  flavor: |
-                      suffix=-caddy,onlatest=true
-
-            - name: Build caddy image and push
-              uses: docker/build-push-action@v2
-              with:
-                  context: .
-                  push: ${{ github.event_name != 'pull_request' }}
-                  target: commsy_caddy
-                  tags: ${{ steps.meta_caddy.outputs.tags }}
-                  labels: ${{ steps.meta_caddy.outputs.labels }}
-
             # elasticsearch image
             - name: docker/metadata-action
               uses: docker/metadata-action@v4
