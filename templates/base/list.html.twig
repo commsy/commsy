@@ -31,21 +31,21 @@
 
                     {# usage info #}
                     {% if usageInfo is defined and usageInfo is not empty %}
+                        <section aria-labelledby="list-filter-heading">
+                            {% component 'v3:card' with { title: usageInfo.title, titleId: 'list-filter-heading' } %}
+                                {% block teaser_right %}
+                                    <a href="#" class="button-toggle uk-button uk-button-small uk-button-secondary" uk-toggle="{target: '#usage-info'}">
+                                        <span uk-icon="icon: chevron-up"></span>
+                                    </a>
+                                {% endblock %}
 
-                        {% set panelName = 'usage-info' %}
-                        {% component 'v3:card' with { name: panelName, title: usageInfo.title } %}
-                            {% block teaser_right %}
-                                <a href="#" class="button-toggle uk-button uk-button-small uk-button-secondary" uk-toggle="{target: '#usage-info'}">
-                                    <span uk-icon="icon: chevron-up"></span>
-                                </a>
-                            {% endblock %}
-
-                            {% block content %}
-                                <div id="{{ panelName }}" class="uk-hidden-small">
-                                    {{ usageInfo.text|raw }}
-                                </div>
-                            {% endblock %}
-                        {% endcomponent %}
+                                {% block content %}
+                                    <div id="usage-info" class="uk-hidden-small">
+                                        {{ usageInfo.text|raw }}
+                                    </div>
+                                {% endblock %}
+                            {% endcomponent %}
+                        </section>
                     {% endif %}
 
                     {# list filter #}

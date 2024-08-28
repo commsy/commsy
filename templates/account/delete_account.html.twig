@@ -10,74 +10,77 @@
     <div class="uk-grid">
         <div class="uk-width-1-1@m">
             <main id="main-content" aria-label="{{ 'lockOrDeleteAccount'|trans({}, 'profile') }}">
-            {% set panelName = 'account-lock' %}
-            {% component 'v3:card' with { name: panelName, severity: 'warning', title: 'lockAccount'|trans({}, 'profile') } %}
-                {% block content %}
-                    <div class="uk-alert uk-alert-warning">
-                        {{ form_start(form_lock) }}
-                        <span>{{ 'lockAccountText'|trans({}, 'profile') }}</span>
+                <section aria-labelledby="account-lock-heading">
+                    {% component 'v3:card' with { severity: 'warning', title: 'lockAccount'|trans({}, 'profile'), titleId: 'account-lock-heading' } %}
+                        {% block content %}
+                            <div class="uk-alert uk-alert-warning">
+                                {{ form_start(form_lock) }}
+                                <span>{{ 'lockAccountText'|trans({}, 'profile') }}</span>
 
-                        <div class="uk-margin">
-                            {{ 'Delete explanation start'|trans({}, 'settings') }}
-                            <span class="uk-text-uppercase uk-text-bold">{{ 'lock'|trans({}, 'profile') }}</span>
-                            {{ 'Delete explanation end'|trans({}, 'settings') }}
-                        </div>
+                                <div class="uk-margin">
+                                    {{ 'Delete explanation start'|trans({}, 'settings') }}
+                                    <span class="uk-text-uppercase uk-text-bold">{{ 'lock'|trans({}, 'profile') }}</span>
+                                    {{ 'Delete explanation end'|trans({}, 'settings') }}
+                                </div>
 
-                        <div class="uk-form-row">
-                            {% for error in form_lock.confirm_field.vars.errors  %}
-                                {% if ' ' not in error.message %}
-                                    <br /><a href="/room/{{ error.message}}">
-                                    {{ error.message | roomtitle}}
-                                </a><br />
+                                <div class="uk-form-row">
+                                    {% for error in form_lock.confirm_field.vars.errors  %}
+                                        {% if ' ' not in error.message %}
+                                            <br /><a href="/room/{{ error.message}}">
+                                            {{ error.message | roomtitle}}
+                                        </a><br />
+                                        {% else %}
+                                            {{ error.message |trans({}, "validators")}}<br/>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {{ form_widget(form_lock.confirm_field) }}
+                                    {{ form_widget(form_lock.confirm_button) }}
+                                </div>
+                                {{ form_end(form_lock) }}
+                            </div>
+                        {% endblock %}
+
+                    {% endcomponent %}
+                </section>
+
+                <section aria-labelledby="account-delete-heading">
+                    {% component 'v3:card' with { severity: 'danger', title: 'deleteAccount'|trans({}, 'profile'), titleId: 'account-delete-heading' } %}
+                        {% block content %}
+                            <div class="uk-alert uk-alert-danger">
+                                {{ form_start(form_delete) }}
+                                {% if override == 'FALSE' %}
+                                    <span>{{ 'deleteAccountTextFalse'|trans({}, 'profile') }}</span>
+                                {% elseif override == 'FLAG' %}
+                                    <span>{{ 'deleteAccountTextFlag'|trans({}, 'profile') }}</span>
                                 {% else %}
-                                    {{ error.message |trans({}, "validators")}}<br/>
+                                    <span>{{ 'deleteAccountText'|trans({}, 'profile') }}</span>
                                 {% endif %}
-                            {% endfor %}
-                            {{ form_widget(form_lock.confirm_field) }}
-                            {{ form_widget(form_lock.confirm_button) }}
-                        </div>
-                        {{ form_end(form_lock) }}
-                    </div>
-                {% endblock %}
-            {% endcomponent %}
 
-            {% set panelName = 'account-delete' %}
-            {% component 'v3:card' with { name: panelName, severity: 'danger', title: 'deleteAccount'|trans({}, 'profile') } %}
-                {% block content %}
-                    <div class="uk-alert uk-alert-danger">
-                        {{ form_start(form_delete) }}
-                        {% if override == 'FALSE' %}
-                            <span>{{ 'deleteAccountTextFalse'|trans({}, 'profile') }}</span>
-                        {% elseif override == 'FLAG' %}
-                            <span>{{ 'deleteAccountTextFlag'|trans({}, 'profile') }}</span>
-                        {% else %}
-                            <span>{{ 'deleteAccountText'|trans({}, 'profile') }}</span>
-                        {% endif %}
+                                <div class="uk-margin">
+                                    {{ 'Delete explanation start'|trans({}, 'settings') }}
+                                    <span class="uk-text-uppercase uk-text-bold">{{ 'delete'|trans({}, 'profile') }}</span>
+                                    {{ 'Delete explanation end'|trans({}, 'settings') }}
+                                </div>
 
-                        <div class="uk-margin">
-                            {{ 'Delete explanation start'|trans({}, 'settings') }}
-                            <span class="uk-text-uppercase uk-text-bold">{{ 'delete'|trans({}, 'profile') }}</span>
-                            {{ 'Delete explanation end'|trans({}, 'settings') }}
-                        </div>
-
-                        <div class="uk-form-row">
-                            {% for error in form_delete.confirm_field.vars.errors  %}
-                                {% if ' ' not in error.message %}
-                                    <br /><a href="/room/{{ error.message}}">
-                                    {{ error.message | roomtitle}}
-                                </a><br />
-                                {% else %}
-                                    {{ error.message}}<br/>
-                                {% endif %}
-                            {% endfor %}
-                            {{ form_widget(form_delete.confirm_field) }}
-                            {{ form_widget(form_delete.confirm_button) }}
-                            <span class="uk-margin-left uk-text-uppercase uk-text-bold">{{ 'warning'|trans({}, 'menu') }}</span> {{ 'irreversibleMessage'|trans({}, 'menu') }}
-                        </div>
-                        {{ form_end(form_delete) }}
-                    </div>
-                {% endblock %}
-            {% endcomponent %}
+                                <div class="uk-form-row">
+                                    {% for error in form_delete.confirm_field.vars.errors  %}
+                                        {% if ' ' not in error.message %}
+                                            <br /><a href="/room/{{ error.message}}">
+                                            {{ error.message | roomtitle}}
+                                        </a><br />
+                                        {% else %}
+                                            {{ error.message}}<br/>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {{ form_widget(form_delete.confirm_field) }}
+                                    {{ form_widget(form_delete.confirm_button) }}
+                                    <span class="uk-margin-left uk-text-uppercase uk-text-bold">{{ 'warning'|trans({}, 'menu') }}</span> {{ 'irreversibleMessage'|trans({}, 'menu') }}
+                                </div>
+                                {{ form_end(form_delete) }}
+                            </div>
+                        {% endblock %}
+                    {% endcomponent %}
+                </section>
             </main>
         </div>
     </div>
