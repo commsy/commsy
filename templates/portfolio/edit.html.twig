@@ -25,7 +25,7 @@
 
                     <div class="uk-margin-top">
                         {% if form.from_template is defined %}
-                            <div class="uk-form-row">
+                            <div class="uk-margin-top">
                                 <label class="uk-form-label">
                                     {{ form_label(form.from_template) }}
                                 </label>
@@ -35,7 +35,7 @@
                             </div>
                         {% endif %}
 
-                        <div class="uk-form-row">
+                        <div class="uk-margin-top">
                             <label class="uk-form-label">
                                 {{ form_label(form.description) }}
                             </label>
@@ -43,7 +43,7 @@
                                 {{ form_widget(form.description) }}
                             </div>
                         </div>
-                        <div class="uk-form-row">
+                        <div class="uk-margin-top">
                             <label class="uk-form-label">
                                 {{ form_label(form.is_template) }}
                             </label>
@@ -51,7 +51,7 @@
                                 {{ form_widget(form.is_template) }}
                             </div>
                         </div>
-                        <div class="uk-form-row">
+                        <div class="uk-margin-top">
                             <label class="uk-form-label">
                                 {{ form_label(form.external_template) }}
                             </label>
@@ -59,7 +59,7 @@
                                 {{ form_widget(form.external_template) }}
                             </div>
                         </div>
-                        <div class="uk-form-row">
+                        <div class="uk-margin-top">
                             <label class="uk-form-label">
                                 {{ form_label(form.external_viewer) }}
                             </label>

@@ -39,14 +39,14 @@
 
                     {# code request #}
                     {% if form.code is defined and form.coderequest is defined %}
-                        <div class="uk-form-row">
+                        <div class="uk-margin-top">
                             <div class="uk-form-controls uk-form-controls-text">
                                 {{ 'room code description'|trans({}, 'room') }}
                             </div>
                         </div>
                         {{ form_row(form.code) }}
 
-                        <div class="uk-form-row">
+                        <div class="uk-margin-top">
                             <div class="uk-form-controls uk-button-group">
                                 {{ form_widget(form.coderequest) }}
                             </div>
@@ -55,7 +55,7 @@
 
                     {# regular request with free text #}
                     {% if form.description is defined %}
-                        <div class="uk-form-row">
+                        <div class="uk-margin-top">
                             <div class="uk-form-controls uk-form-controls-text">
                                 {{ 'room join description'|trans({}, 'room') }}
                             </div>
@@ -65,7 +65,7 @@
 
                     {# optional agb #}
                     {% if form.agb is defined %}
-                        <div class="uk-form-row">
+                        <div class="uk-margin-top">
                             {{ form_label(form.agb) }}
 
                             <div class="uk-form-controls">
@@ -73,7 +73,7 @@
                             </div>
                         </div>
 
-                        <div class="uk-form-row">
+                        <div class="uk-margin-top">
                             <div class="uk-form-controls uk-form-controls-text">
                                 {{ form_errors(form.agb) }}
                                 <input style="vertical-align: baseline;" id="{{ form.agb.vars.id }}" name="{{ form.agb.vars.full_name }}" value="{{ form.agb.vars.value }}" type="checkbox">
@@ -86,7 +86,7 @@
 
                     {# buttons #}
                     {% if form.request is defined and form.cancel is defined %}
-                        <div class="uk-form-row">
+                        <div class="uk-margin-top">
                             <div class="uk-form-controls uk-button-group">
                                 {{ form_widget(form.request) }}
 

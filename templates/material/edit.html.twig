@@ -15,7 +15,7 @@
         {% if form.vars.name != "section"  %}
             <div class="uk-margin-small-left uk-margin-small-top">
                 {% if form.editor_switch is defined %}
-                    <div class="uk-form-row">
+                    <div class="uk-margin-top">
                         {{ form_label(form.editor_switch) }}
                         <div class="uk-margin-left">
                             {{ form_widget(form.editor_switch) }}
@@ -26,7 +26,7 @@
                 {% endif %}
 
                 {% if form.permission is defined %}
-                <div class="uk-form-row">
+                <div class="uk-margin-top">
                     <label class="uk-form-label">
                         <span data-uk-tooltip title="{{ macros.userFullname(material.creator) }}">{{ 'permission'|trans({}, "form") }}</span>
                     </label>
@@ -39,7 +39,7 @@
                 {% endif %}
 
                 {% if form.hidden is defined %}
-                <div class="uk-form-row">
+                <div class="uk-margin-top">
                     <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
                     <div>
                         {{ form_widget(form.hidden) }}
@@ -48,7 +48,7 @@
                 {% endif %}
 
                 {% if form.hiddendate is defined %}
-                <div class="uk-form-row">
+                <div class="uk-margin-top">
                     <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
                     <div class="uk-margin-small-top">
                         {{ form_widget(form.hiddendate) }}
@@ -57,7 +57,7 @@
                 {% endif %}
 
                 {% if form.external_viewer is defined %}
-                    <div class="uk-form-row">
+                    <div class="uk-margin-top">
                         {{ form_row(form.external_viewer) }}
                         <i class="uk-visible-small uk-icon-question-circle uk-icon-justify uk-icon-small uk-icon-bottom" data-uk-tooltip title="{{ 'external_viewer_desc' | trans({}, 'form') }}"></i>
                         <i class="uk-hidden-small uk-icon-question-circle uk-icon-justify uk-icon-small uk-icon-bottom" data-uk-tooltip="{pos:'right'}" title="{{ 'external_viewer_desc' | trans({}, 'form') }}"></i>
@@ -68,7 +68,7 @@
                     {{ macros.mandatoryLinks(form) }}
                 {% endif %}
 
-                <div class="uk-form-row">
+                <div class="uk-margin-top">
                     {{ form_label(form.biblio_select) }}
                     {{ form_widget(form.biblio_select) }}
                 </div>
@@ -86,7 +86,7 @@
                     </div>
                 {% endif %}
 
-                <div class="uk-form-row">
+                <div class="uk-margin-top">
                     {{ form_label(form.license_id) }}
                     {{ form_widget(form.license_id) }}
                     <div id="licensesContents" class="uk-hidden">

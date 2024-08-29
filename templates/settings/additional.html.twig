@@ -32,7 +32,7 @@
                             {{ form_widget(form.tasks.status_option) }}
                             <ul style="list-style-type:none" id='additional_status_list' data-prototype="{{ form_widget(form.tasks.additional_status.vars.prototype)|e('html_attr')}}">
                                 {% for status in form.tasks.additional_status %}
-                                    <li class='uk-form-row'>{{ form_widget(status) }}</li>
+                                    <li class='uk-margin-top'>{{ form_widget(status) }}</li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -48,7 +48,7 @@
                             <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                                 <h3>{{ 'Template'|trans({}, 'settings') }}</h3>
                                 <div style="margin-bottom: 25px;">{{ 'Template text'|trans({}, 'settings') }}</div>
-                                <div class='uk-form-row'>
+                                <div class='uk-margin-top'>
                                     {{ form_label(form.template.status) }}
                                     <div class='uk-form-controls'>
                                         {{ form_widget(form.template.status) }} {{ 'Template status'|trans({}, 'settings') }}
@@ -164,7 +164,7 @@
         if(newLabel){
             newLabel.className = "uk-form-label";
         }
-        containerDiv.className = 'uk-form-row';
+        containerDiv.className = 'uk-margin-top';
 
         newListItem.innerHTML = newListItem.innerHTML.replace('<br>', '');
 

@@ -23,7 +23,7 @@
                                     {{ 'Delete explanation end'|trans({}, 'settings') }}
                                 </div>
 
-                                <div class="uk-form-row">
+                                <div class="uk-margin-top">
                                     {% for error in form_lock.confirm_field.vars.errors  %}
                                         {% if ' ' not in error.message %}
                                             <br /><a href="/room/{{ error.message}}">
@@ -62,7 +62,7 @@
                                     {{ 'Delete explanation end'|trans({}, 'settings') }}
                                 </div>
 
-                                <div class="uk-form-row">
+                                <div class="uk-margin-top">
                                     {% for error in form_delete.confirm_field.vars.errors  %}
                                         {% if ' ' not in error.message %}
                                             <br /><a href="/room/{{ error.message}}">

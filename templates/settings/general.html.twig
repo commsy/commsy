@@ -25,7 +25,7 @@
 
                             {{ form_row(form.language) }}
 
-                            <div class="uk-form-row">
+                            <div class="uk-margin-top">
                                 {{ form_label(form.access_check) }}
                                 <div class="uk-form-controls">
                                     <select id="general_settings_access_check" name="general_settings[access_check]">
@@ -61,7 +61,7 @@
                             <fieldset>
                                 <div id ="general_settings_rubrics" class="uk-sortable" data-uk-sortable="">
                                     {% for rubric in form.rubrics %}
-                                        <div class="uk-form-row">
+                                        <div class="uk-margin-top">
                                             <label class="uk-form-label" style="cursor: move;">
                                                 <i class="uk-sortable-handle uk-icon uk-icon-bars uk-margin-right"></i>{{ rubric.vars.name|capitalize|trans({'%count%':1}, 'rubric') }}
                                             </label>

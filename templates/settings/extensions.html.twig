@@ -40,7 +40,7 @@
                             {{ form_row(form.workflow.validity) }}
                             {{ form_row(form.workflow.traffic_light.status_view) }}
 
-                            <div class='uk-form-row'>
+                            <div class='uk-margin-top'>
                                 {{ form_label(form.workflow.traffic_light.default_status) }}
                                 <div class='uk-form-controls'>
                                     <span style='width: 205px; display: inline-block;'>
@@ -76,7 +76,7 @@
                                 </div>
                             </div>
 
-                            <div class='uk-form-row'>
+                            <div class='uk-margin-top'>
                                 <div class='uk-form-label'>{{ 'Status description' | trans({} , 'settings') }}</div>
                                 <div class='uk-form-controls'>
                                     <span style='width: 205px; display: inline-block;'>
@@ -102,7 +102,7 @@
                                 </div>
                             </div>
 
-                            <div class='uk-form-row'>
+                            <div class='uk-margin-top'>
                                 <div class='uk-form-label'>{{ 'Reader view' | trans({} , 'settings') }}</div>
                                 <div class='uk-form-controls'>
                                     {{ form_row(form.workflow.reader) }}

@@ -24,7 +24,7 @@
                             <fieldset>
                                 <div id="category_new">
                                     {{ form_row(newForm.title) }}
-                                    <div class="uk-form-row">
+                                    <div class="uk-margin-top">
                                         <div class="uk-form-controls">
                                         {% if newForm.new is defined %}
                                             <button id="category_new_new" class="uk-button uk-button-primary" type="submit" name="category_new[new]">{{ newForm.new.vars.label|trans({}, "category") }}</button>
