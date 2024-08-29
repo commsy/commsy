@@ -21,7 +21,9 @@
             </div>
 
             {# Left sidebar used for context navigation, if needed #}
-            {% block sidebar_left %}{% endblock %}
+            <div id="sidebar_left">
+                {% block sidebar_left %}{% endblock %}
+            </div>
 
             {# Main content area #}
             <div id="main" uk-height-viewport="expand: true">
