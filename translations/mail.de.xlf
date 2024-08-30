@@ -278,13 +278,29 @@
                 <source>weekly</source>
                 <target>wöchentlich</target>
             </trans-unit>
+            <trans-unit id="mail_newsletter_body_new">
+                <source>new</source>
+                <target>neu</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_changed">
+                <source>changed</source>
+                <target>geändert</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_new_annotations">
+                <source>mail.newsletter_body_new_annotations</source>
+                <target>{1}neue Anmerkung|]1,Inf[%count% neue Anmerkungen</target>
+            </trans-unit>
             <trans-unit id="mail_newsletter_body_outro">
                 <source>mail.newsletter_body_outro</source>
                 <target>Falls Sie den Newsletter nicht mehr erhalten möchten, bestellen Sie ihn bitte in Ihrem Profil beim Menüpunkt Newsletter ab.</target>
             </trans-unit>
             <trans-unit id="mail_newsletter_body_no_new_entries">
-                <source>mail_newsletter_body_no_new_entries</source>
+                <source>mail.newsletter_body_no_new_entries</source>
                 <target>Es sind keine neuen Einträge vorhanden.</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_new_additional_annotations">
+                <source>mail.newsletter_body_new_additional_annotations</source>
+                <target>Weitere neue Anmerkungen</target>
             </trans-unit>
         </body>
     </file>

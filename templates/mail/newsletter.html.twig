@@ -1,22 +1,53 @@
-{% set mailSequence = newsletterData.mailSequence|trans({}, 'mail') %}
+{#- Intro ~#}
+{%- set mailSequence = newsletterData.mailSequence|trans({}, 'mail') -%}
 {{ 'mail.newsletter_body_intro'|trans({'%mailSequence%': mailSequence, '%portal%': portal.title}, 'mail') }}
+
+{#- No content ~#}
 {%~ if newsletterData.rooms is empty ~%}
-<br/><br/>
-{{ 'mail_newsletter_body_no_new_entries'|trans({}, 'mail') }}
-{%~ endif ~%}
-{%~ for id, roomData in newsletterData.rooms -%}
     <br/><br/>
+    {{ 'mail.newsletter_body_no_new_entries'|trans({}, 'mail') }}
+{%~ endif ~%}
+
+{#- Rooms ~#}
+{% for id, roomData in newsletterData.rooms ~%}
+    <br/><br/><br/>
     {%- set room = roomData.roomItem -%}
-    <strong><a href="{{ roomData.homeUrl }}">{{ room.title }}</a></strong>
+    <strong style="font-size: larger"><a href="{{ roomData.homeUrl }}">{{ room.title }}</a></strong>
+
+    {#- Rubrics ~#}
     {% for rubricSpecifier, rubricData in roomData.rubrics -%}
         <br/><br/>  <a href="{{ url('app_' ~ rubricSpecifier ~ '_list', { 'roomId': id }) }}">{{ rubricSpecifier|trans({}, 'menu') }}</a> ({{ rubricData.itemsCount }}):
+
+        {#- Rubric items ~#}
         {% for itemId, itemData in rubricData.items -%}
             {%- set item = itemData.item -%}
-            <br/>  -  <a href="{{ url('app_' ~ item.itemType ~ '_detail', { 'roomId': id, 'itemId': itemId }) }}">{{ item.title|decodeHtmlEntity }}</a>
+            {%- set itemTitle = item.itemType is same as('user') ? item.fullName|decodeHtmlEntity : item.title|decodeHtmlEntity -%}
+            {%- set noticedStatusParts = [] -%}
+            {%- if itemData.itemNoticedStatus is defined -%}
+                {%- set noticedStatusParts = noticedStatusParts|merge([itemData.itemNoticedStatus|trans({}, 'mail')]) -%}
+            {%- endif -%}
+            {%- if itemData.newAnnotationsCount > 0 -%}
+                {%- set noticedStatusParts = noticedStatusParts|merge(['mail.newsletter_body_new_annotations'|trans({'%count%': itemData.newAnnotationsCount}, 'mail')]) -%}
+            {%- endif -%}
+            <br/>  -  <a href="{{ url('app_' ~ item.itemType ~ '_detail', { 'roomId': id, 'itemId': itemId }) }}">{{ itemTitle }}</a> [{{ noticedStatusParts|join(', ') }}]
         {% endfor ~%}
     {% endfor ~%}
-{%- endfor ~%}
+
+    {#- Additional annotations ~#}
+    {%- set additionalAnnotationsCount = roomData.annotationsStillToSend|length -%}
+    {%- if additionalAnnotationsCount > 0 -%}
+        <br/><br/>  {{ 'mail.newsletter_body_new_additional_annotations'|trans({}, 'mail') }} ({{ additionalAnnotationsCount }}):
+        {% for annotation in roomData.annotationsStillToSend -%}
+            {%- set linkedItem = annotation.linkedItem -%}
+            {%- set annotationTitle = annotation.description|decodeHtmlEntity|striptags|replace({"\n": " ", "\r": " ", "\t": " "})|u.truncate(25, '...', false) -%}
+            <br/>  -  <a href="{{ url('app_' ~ linkedItem.itemType ~ '_detail', { 'roomId': id, 'itemId': linkedItem.itemId }) ~ '#annotations' ~ linkedItem.itemId }}">{{ linkedItem.title|decodeHtmlEntity }}</a>: "{{ annotationTitle }}"
+        {% endfor ~%}
+    {%~ endif ~%}
+
+{%- endfor -%}
+
+{#- Outro ~#}
 <br/><br/>
---
+---
 <br/><br/>
 {{ 'mail.newsletter_body_outro'|trans({}, 'mail') }}
