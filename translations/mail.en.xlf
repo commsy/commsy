@@ -278,13 +278,29 @@
                 <source>weekly</source>
                 <target>weekly</target>
             </trans-unit>
+            <trans-unit id="mail_newsletter_body_new">
+                <source>new</source>
+                <target>new</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_changed">
+                <source>changed</source>
+                <target>changed</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_new_annotations">
+                <source>mail.newsletter_body_new_annotations</source>
+                <target>{1}new annotation|]1,Inf[%count% new annotations</target>
+            </trans-unit>
             <trans-unit id="mail_newsletter_body_outro">
                 <source>mail.newsletter_body_outro</source>
                 <target>You can unsubscribe from this newsletter by switching off the according feature in your profile.</target>
             </trans-unit>
             <trans-unit id="mail_newsletter_body_no_new_entries">
-                <source>mail_newsletter_body_no_new_entries</source>
+                <source>mail.newsletter_body_no_new_entries</source>
                 <target>There are no new items.</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_new_additional_annotations">
+                <source>mail.newsletter_body_new_additional_annotations</source>
+                <target>Additional new annotations</target>
             </trans-unit>
         </body>
     </file>
