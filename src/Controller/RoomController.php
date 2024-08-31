@@ -14,24 +14,19 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Event\UserJoinedRoomEvent;
 use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
-use App\Form\Type\ContextType;
+use App\Form\Model\ContextCreateData;
 use App\Hash\HashManager;
 use App\Repository\PortalRepository;
 use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
-use App\Room\Copy\LegacyCopy;
 use App\RoomFeed\RoomFeedGenerator;
-use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
-use App\Services\RoomCategoriesService;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
-use App\Utils\UserService;
 use cs_environment;
 use cs_user_item;
 use Doctrine\ORM\NonUniqueResultException;
@@ -44,8 +39,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use UnexpectedValueException;
 
 /**
  * Class RoomController.
@@ -434,192 +427,10 @@ class RoomController extends AbstractController
     #[Route(path: '/room/{roomId}/all/create', requirements: ['itemId' => '\d+'])]
     #[IsGranted('ITEM_NEW')]
     public function create(
-        Request $request,
-        RoomService $roomService,
-        UserService $userService,
-        RoomCategoriesService $roomCategoriesService,
-        LegacyEnvironment $environment,
-        EventDispatcherInterface $eventDispatcher,
-        CalendarsService $calendarsService,
-        LegacyCopy $legacyCopy,
         int $roomId
     ): Response {
-        $legacyEnvironment = $environment->getEnvironment();
-        $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
-
-        $type = '';
-        $context = $request->get('context');
-        if ($context) {
-            $type = $context['type_select'] ?? '';
-        }
-
-        // NOTE: `getDefault...TemplateID()` may also return '-1' (if no default template is defined)
-        $defaultId = '-1';
-        if ('project' === $type) {
-            $defaultId = $currentPortalItem->getDefaultProjectTemplateID();
-        } elseif ('community' === $type) {
-            $defaultId = $currentPortalItem->getDefaultCommunityTemplateID();
-        }
-        $defaultTemplateIDs = ('-1' === $defaultId) ? [] : [$defaultId];
-
-        $timesDisplay = ucfirst((string) $currentPortalItem->getCurrentTimeName());
-        $times = $roomService->getTimePulses(true);
-
-        $current_user = $legacyEnvironment->getCurrentUserItem();
-        $portalUser = $current_user->getRelatedPortalUserItem();
-        $types = [];
-        if ($portalUser->isModerator()) {
-            $types = ['project' => 'project', 'community' => 'community'];
-        } else {
-            $roomItem = $roomService->getRoomItem($roomId);
-
-            if ('portal' == $currentPortalItem->getProjectRoomCreationStatus()) {
-                $types['project'] = 'project';
-            } elseif (CS_COMMUNITY_TYPE == $roomItem->getType()) {
-                $types['project'] = 'project';
-            }
-
-            if ('all' == $currentPortalItem->getCommunityRoomCreationStatus()) {
-                $types['community'] = 'community';
-            }
-        }
-
-        $linkCommunitiesMandantory = true;
-        if ('optional' == $currentPortalItem->getProjectRoomLinkStatus()) {
-            $linkCommunitiesMandantory = false;
-        }
-
-        $roomCategories = [];
-        foreach ($roomCategoriesService->getListRoomCategories($currentPortalItem->getItemId()) as $roomCategory) {
-            $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
-        }
-
-        $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
-
-        if (!isset($type)) {
-            $type = 'project'; // TODO: what is supposed to happen here? Initial, type is null - with this, the next method errors
-        }
-
-        $translator = $legacyEnvironment->getTranslationObject();
-        $msg = $translator->getMessage('CONFIGURATION_TEMPLATE_NO_CHOICE');
-
-        $templates = $roomService->getAvailableTemplates($type);
-
-        // necessary, since the data field malfunctions when added via listener call (#2979)
-        $templates['*'.$msg] = '-1';
-
-        // re-sort array by elements
-        uasort($templates, fn ($a, $b) => $a <=> $b);
-
-        $formData = [];
-        $form = $this->createForm(ContextType::class, $formData, [
-            'types' => $types,
-            'templates' => $templates,
-            'preferredChoices' => $defaultTemplateIDs,
-            'timesDisplay' => $timesDisplay,
-            'times' => $times,
-            'linkCommunitiesMandantory' => $linkCommunitiesMandantory,
-            'roomCategories' => $roomCategories,
-            'linkRoomCategoriesMandatory' => $linkRoomCategoriesMandatory,
-        ]);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
-            if ($form->get('save')->isClicked()) {
-                if ('project' == $formData['type_select']) {
-                    $roomManager = $legacyEnvironment->getProjectManager();
-                } elseif ('community' == $formData['type_select']) {
-                    $roomManager = $legacyEnvironment->getCommunityManager();
-                } else {
-                    throw new UnexpectedValueException('Error Processing Request: Unrecognized room type', 1);
-                }
-
-                $legacyRoom = $roomManager->getNewItem();
-
-                $currentUser = $legacyEnvironment->getCurrentUserItem();
-                $legacyRoom->setCreatorItem($currentUser);
-                $legacyRoom->setCreationDate(getCurrentDateTimeInMySQL());
-                $legacyRoom->setModificatorItem($currentUser);
-                $legacyRoom->setContextID($legacyEnvironment->getCurrentPortalID());
-                $legacyRoom->open();
-
-                if ('project' == $formData['type_select'] && isset($context['type_sub']['community_rooms'])) {
-                    $legacyRoom->setCommunityListByID($context['type_sub']['community_rooms']);
-                }
-
-                // fill in form values from the new entity object
-                $legacyRoom->setTitle($context['title']);
-                $legacyRoom->setDescription($context['room_description']);
-
-                // user room-related options will only be set in project workspaces
-                if (isset($context['type_sub']['createUserRooms'])) {
-                    $legacyRoom->setShouldCreateUserRooms($context['type_sub']['createUserRooms']);
-                }
-                if (isset($context['type_sub']['userroom_template'])) {
-                    $userroomTemplate = $roomService->getRoomItem($context['type_sub']['userroom_template']);
-                    if ($userroomTemplate) {
-                        $legacyRoom->setUserRoomTemplateID($userroomTemplate->getItemID());
-                    }
-                }
-
-                $timeIntervals = $context['type_sub']['time_interval'] ?? [];
-                if (empty($timeIntervals) || in_array('cont', $timeIntervals)) {
-                    $legacyRoom->setContinuous();
-                    $legacyRoom->setTimeListByID([]);
-                } else {
-                    $legacyRoom->setNotContinuous();
-                    $legacyRoom->setTimeListByID($timeIntervals);
-                }
-
-                // persist with legacy code
-                $legacyRoom->save();
-
-                $calendarsService->createCalendar($legacyRoom, null, null, true);
-
-                // take values from a template?
-                if (isset($context['type_sub']['master_template'])) {
-                    $masterRoom = $roomService->getRoomItem($context['type_sub']['master_template']);
-                    if ($masterRoom) {
-                        $legacyRoom = $this->copySettings($masterRoom, $legacyRoom, $legacyEnvironment, $legacyCopy);
-                    }
-                }
-
-                // NOTE: we can only set the language after copying settings from any room template, otherwise the language
-                // would get overwritten by the room template's language setting
-                $legacyRoom->setLanguage($context['language']);
-                $legacyRoom->save();
-
-                $legacyRoomUsers = $userService->getListUsers($legacyRoom->getItemID(), null, null, true);
-                foreach ($legacyRoomUsers as $user) {
-                    $event = new UserJoinedRoomEvent($user, $legacyRoom);
-                    $eventDispatcher->dispatch($event);
-                }
-
-                // mark the room as edited
-                $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
-                $linkModifierItemManager->markEdited($legacyRoom->getItemID());
-
-                if (isset($context['categories'])) {
-                    $roomCategoriesService->setRoomCategoriesLinkedToContext($legacyRoom->getItemId(), $context['categories']);
-                }
-
-                // redirect to the project detail page
-                return $this->redirectToRoute('app_roomall_detail', [
-                    'portalId' => $legacyEnvironment->getCurrentPortalID(),
-                    'itemId' => $legacyRoom->getItemId(),
-                ]);
-            }
-
-            if ($form->get('cancel')->isClicked()) {
-                return $this->redirectToRoute('app_room_listall', [
-                    'roomId' => $roomId,
-                ]);
-            }
-        }
-
         return $this->render('room/create.html.twig', [
-            'form' => $form,
+            'roomId' => $roomId,
         ]);
     }
 
@@ -676,43 +487,5 @@ class RoomController extends AbstractController
         }
 
         return 'closed';
-    }
-
-    private function copySettings($masterRoom, $targetRoom, cs_environment $legacyEnvironment, LegacyCopy $legacyCopy)
-    {
-        $old_room = $masterRoom;
-        $new_room = $targetRoom;
-
-        $user_manager = $legacyEnvironment->getUserManager();
-        $creator_item = $user_manager->getItem($new_room->getCreatorID());
-        if ($creator_item->getContextID() != $new_room->getItemID()) {
-            $user_manager->resetLimits();
-            $user_manager->setContextLimit($new_room->getItemID());
-            $user_manager->setUserIDLimit($creator_item->getUserID());
-            $user_manager->setAuthSourceLimit($creator_item->getAuthSource());
-            $user_manager->setModeratorLimit();
-            $user_manager->select();
-            $user_list = $user_manager->get();
-            if ($user_list->isNotEmpty() and 1 == $user_list->getCount()) {
-                $creator_item = $user_list->getFirst();
-            } else {
-                throw new Exception('can not get creator of new room');
-            }
-        }
-        $creator_item->setAccountWantMail('yes');
-        $creator_item->setOpenRoomWantMail('yes');
-        $creator_item->setPublishMaterialWantMail('yes');
-        $creator_item->save();
-
-        // copy room settings
-        $legacyCopy->copySettings($old_room, $new_room);
-
-        // save new room
-        $new_room->save();
-
-        // copy data
-        $legacyCopy->copyData($old_room, $new_room, $creator_item);
-
-        return $new_room;
     }
 }

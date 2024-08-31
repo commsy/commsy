@@ -1766,7 +1766,7 @@ class cs_item
          return $link_item_manager->get();
      }
 
-    public function getLinkedItemList($type)
+    public function getLinkedItemList($type): cs_list
     {
         $link_list = $this->getLinkItemList($type);
 

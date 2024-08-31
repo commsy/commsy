@@ -13,16 +13,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Room;
-use App\Event\UserJoinedRoomEvent;
 use App\Filter\ProjectFilterType;
-use App\Form\Type\ProjectType;
 use App\Form\Type\Room\DeleteType;
 use App\Room\Copy\LegacyCopy;
-use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
-use App\Services\RoomCategoriesService;
 use App\Utils\ItemService;
 use App\Utils\ProjectService;
 use App\Utils\ReaderService;
@@ -35,7 +30,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -167,140 +161,10 @@ class ProjectController extends AbstractController
      */
     #[Route(path: '/room/{roomId}/project/create', requirements: ['itemId' => '\d+'])]
     public function create(
-        Request $request,
-        CalendarsService $calendarsService,
-        RoomCategoriesService $roomCategoriesService,
-        RoomService $roomService,
-        UserService $userService,
-        LegacyEnvironment $legacyEnvironment,
-        EventDispatcherInterface $eventDispatcher,
-        LegacyCopy $legacyCopy,
         int $roomId
     ): Response {
-        $legacyEnvironment = $legacyEnvironment->getEnvironment();
-
-        $currentUser = $legacyEnvironment->getCurrentUserItem();
-        if (!$currentUser->isAllowedToCreateContext()) {
-            throw $this->createAccessDeniedException();
-        }
-
-        $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
-
-        $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
-        $defaultTemplateIDs = ('-1' === $defaultId) ? [] : [$defaultId];
-
-        $timesDisplay = ucfirst((string) $currentPortalItem->getCurrentTimeName());
-        $times = $roomService->getTimePulses(true);
-
-        $room = new Room();
-        $templates = $this->getAvailableTemplates($legacyEnvironment);
-        $roomCategories = [];
-        foreach ($roomCategoriesService->getListRoomCategories($currentPortalItem->getItemId()) as $roomCategory) {
-            $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
-        }
-
-        $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
-
-        $form = $this->createForm(ProjectType::class, $room, [
-            'templates' => array_flip($templates['titles']),
-            'descriptions' => $templates['descriptions'],
-            'preferredChoices' => $defaultTemplateIDs,
-            'timesDisplay' => $timesDisplay,
-            'times' => $times,
-            'roomCategories' => $roomCategories,
-            'linkRoomCategoriesMandatory' => $linkRoomCategoriesMandatory,
-        ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('save')->isClicked()) {
-                // create a new room using the legacy code
-                $communityRoom = $roomService->getRoomItem($roomId);
-                $context = $request->get('project');
-                $projectManager = $legacyEnvironment->getProjectManager();
-
-                $legacyRoom = $projectManager->getNewItem();
-
-                $currentUser = $legacyEnvironment->getCurrentUserItem();
-                $legacyRoom->setCreatorItem($currentUser);
-                $legacyRoom->setCreationDate(getCurrentDateTimeInMySQL());
-                $legacyRoom->setModificatorItem($currentUser);
-                $legacyRoom->setContextID($legacyEnvironment->getCurrentPortalID());
-                $legacyRoom->open();
-                $legacyRoom->setCommunityListByID([$roomId]);
-
-                // fill in form values from the new entity object
-                $legacyRoom->setTitle($room->getTitle());
-                $legacyRoom->setDescription($room->getRoomDescription());
-
-                if (isset($context['createUserRooms'])) {
-                    $legacyRoom->setShouldCreateUserRooms($context['createUserRooms']);
-                }
-                if (isset($context['userroom_template'])) {
-                    $userroomTemplate = $roomService->getRoomItem(intval($context['userroom_template']));
-                    if ($userroomTemplate) {
-                        $legacyRoom->setUserRoomTemplateID($userroomTemplate->getItemID());
-                    }
-                }
-
-                $timeIntervals = $context['time_interval'] ?? [];
-                if (empty($timeIntervals) || in_array('cont', $timeIntervals)) {
-                    $legacyRoom->setContinuous();
-                    $legacyRoom->setTimeListByID([]);
-                } else {
-                    $legacyRoom->setNotContinuous();
-                    $legacyRoom->setTimeListByID($timeIntervals);
-                }
-
-                // persist with legacy code
-                $legacyRoom->save();
-
-                $calendarsService->createCalendar($legacyRoom, null, null, true);
-
-                // take values from a template?
-                if ($form->has('master_template')) {
-                    $masterTemplate = $form->get('master_template')->getData();
-
-                    $masterRoom = $roomService->getRoomItem($masterTemplate);
-                    if ($masterRoom) {
-                        $legacyRoom = $this->copySettings($masterRoom, $legacyRoom, $legacyCopy, $legacyEnvironment);
-                    }
-                }
-
-                // NOTE: we can only set the language after copying settings from any room template, otherwise the language
-                // would get overwritten by the room template's language setting
-                $legacyRoom->setLanguage($room->getLanguage());
-                $legacyRoom->save();
-
-                $legacyRoomUsers = $userService->getListUsers($legacyRoom->getItemID(), null, null, true);
-                foreach ($legacyRoomUsers as $user) {
-                    $event = new UserJoinedRoomEvent($user, $legacyRoom);
-                    $eventDispatcher->dispatch($event);
-                }
-
-                // mark the room as edited
-                $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
-                $linkModifierItemManager->markEdited($legacyRoom->getItemID());
-
-                if ($form->has('categories')) {
-                    $roomCategoriesService->setRoomCategoriesLinkedToContext($legacyRoom->getItemId(), $form->get('categories')->getData());
-                }
-
-                // redirect to the project detail page
-                return $this->redirectToRoute('app_project_detail', [
-                    'roomId' => $roomId,
-                    'itemId' => $legacyRoom->getItemId(),
-                ]);
-            } else {
-                return $this->redirectToRoute('app_project_list', [
-                    'roomId' => $roomId,
-                ]);
-            }
-        }
-
         return $this->render('project/create.html.twig', [
-            'form' => $form,
+            'roomId' => $roomId,
         ]);
     }
 
@@ -427,98 +291,6 @@ class ProjectController extends AbstractController
         $legacyCopy->copyData($masterRoom, $targetRoom, $creator_item);
 
         return $targetRoom;
-    }
-
-    /**
-     * @param string $type
-     */
-    private function getAvailableTemplates(cs_environment $legacyEnvironment, $type = 'project'): array
-    {
-        $templates = [];
-
-        $currentUserItem = $legacyEnvironment->getCurrentUserItem();
-
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomManager->setContextLimit($legacyEnvironment->getCurrentPortalItem()->getItemID());
-        $roomManager->setTemplateLimit();
-        $roomManager->select();
-
-        $templateList = $roomManager->get();
-
-        $titles = [];
-        $descriptions = [];
-
-        if ($templateList->isNotEmpty()) {
-            $template = $templateList->getFirst();
-            while ($template) {
-                $availability = $template->getTemplateAvailability();
-
-                $add = false;
-
-                // free for all?
-                if (!$add && '0' == $availability) {
-                    $add = true;
-                }
-
-                // only in community rooms
-                if (!$add && $legacyEnvironment->inCommunityRoom() && '3' == $availability) {
-                    $add = true;
-                }
-
-                // same as above, but from portal context
-                if (!$add && $legacyEnvironment->inPortal() && '3' == $availability) {
-                    // check if user is member in one of the templates community rooms
-                    $communityList = $template->getCommunityList();
-                    if ($communityList->isNotEmpty()) {
-                        $userCommunityList = $currentUserItem->getRelatedCommunityList();
-                        if ($userCommunityList->isNotEmpty()) {
-                            $communityItem = $communityList->getFirst();
-                            while ($communityItem) {
-                                $userCommunityItem = $userCommunityList->getFirst();
-                                while ($userCommunityItem) {
-                                    if ($userCommunityItem->getItemID() == $communityItem->getItemID()) {
-                                        $add = true;
-                                        break;
-                                    }
-
-                                    $userCommunityItem = $userCommunityList->getNext();
-                                }
-
-                                $communityItem = $communityList->getNext();
-                            }
-                        }
-                    }
-                }
-
-                // only for members
-                if (!$add && '1' == $availability && $template->mayEnter($currentUserItem)) {
-                    $add = true;
-                }
-
-                // only mods
-                if (!$add && '2' == $availability && $template->mayEnter($currentUserItem)) {
-                    if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
-                        $add = true;
-                    }
-                }
-
-                if ($type != $template->getItemType()) {
-                    $add = false;
-                }
-
-                if ($add) {
-                    $label = $template->getTitle().' (ID: '.$template->getItemID().')';
-                    $titles[$template->getItemID()] = $label;
-                    $descriptions[$template->getItemID()] = $template->getDescription();
-                }
-
-                $template = $templateList->getNext();
-            }
-        }
-        $templates['titles'] = $titles;
-        $templates['descriptions'] = $descriptions;
-
-        return $templates;
     }
 
     private function memberStatus($item, cs_environment $legacyEnvironment)

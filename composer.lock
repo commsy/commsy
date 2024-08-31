@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f809c091c7746d0829b05c1f281404e5",
+    "content-hash": "cc34543777633bc8ad7dc24eaf413a08",
     "packages": [
         {
             "name": "0x46616c6b/etherpad-lite-client",
@@ -6148,6 +6148,58 @@
                 "source": "https://github.com/ruflin/Elastica/tree/7.3.2"
             },
             "time": "2024-03-11T14:11:50+00:00"
+        },
+        {
+            "name": "runtime/frankenphp-symfony",
+            "version": "0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-runtime/frankenphp-symfony.git",
+                "reference": "56822c3631d9522a3136a4c33082d006bdfe4bad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-runtime/frankenphp-symfony/zipball/56822c3631d9522a3136a4c33082d006bdfe4bad",
+                "reference": "56822c3631d9522a3136a4c33082d006bdfe4bad",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/dependency-injection": "^5.4 || ^6.0 || ^7.0",
+                "symfony/http-kernel": "^5.4 || ^6.0 || ^7.0",
+                "symfony/runtime": "^5.4 || ^6.0 || ^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Runtime\\FrankenPhpSymfony\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kévin Dunglas",
+                    "email": "kevin@dunglas.dev"
+                }
+            ],
+            "description": "FrankenPHP runtime for Symfony",
+            "support": {
+                "issues": "https://github.com/php-runtime/frankenphp-symfony/issues",
+                "source": "https://github.com/php-runtime/frankenphp-symfony/tree/0.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/nyholm",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-12-12T12:06:11+00:00"
         },
         {
             "name": "sabre/uri",
@@ -12558,6 +12610,60 @@
                 }
             ],
             "time": "2024-05-31T14:57:53+00:00"
+        },
+        {
+            "name": "symfonycasts/dynamic-forms",
+            "version": "v0.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SymfonyCasts/dynamic-forms.git",
+                "reference": "1bfe8441e3be250b14dc2bd0ae0323dd4acbfd2c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SymfonyCasts/dynamic-forms/zipball/1bfe8441e3be250b14dc2bd0ae0323dd4acbfd2c",
+                "reference": "1bfe8441e3be250b14dc2bd0ae0323dd4acbfd2c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/form": "^5.4|^6.3|^7.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.11",
+                "symfony/framework-bundle": "^6.3|^7.0",
+                "symfony/options-resolver": "^5.4|^6.3|^7.0",
+                "symfony/phpunit-bridge": "^5.4|^6.3|^7.0",
+                "symfony/twig-bundle": "^5.4|^6.3|^7.0",
+                "twig/twig": "^2.15|^3.0",
+                "zenstruck/browser": "^1.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfonycasts\\DynamicForms\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ryan Weaver",
+                    "homepage": "https://symfonycasts.com"
+                }
+            ],
+            "description": "Add dynamic/dependent fields to Symfony forms",
+            "keywords": [
+                "Forms",
+                "symfony"
+            ],
+            "support": {
+                "issues": "https://github.com/SymfonyCasts/dynamic-forms/issues",
+                "source": "https://github.com/SymfonyCasts/dynamic-forms/tree/v0.1.2"
+            },
+            "time": "2024-02-20T11:55:15+00:00"
         },
         {
             "name": "twig/extra-bundle",

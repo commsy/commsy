@@ -152,9 +152,9 @@ class cs_project_item extends cs_room_item
     /** get communitys of a project
      * this method returns a list of communitys which are linked to the project.
      *
-     * @return object cs_list a list of communitys (cs_community_item)
+     * @return cs_list a list of communitys (cs_community_item)
      */
-    public function getCommunityList()
+    public function getCommunityList(): cs_list
     {
         return $this->getLinkedItemList(CS_COMMUNITY_TYPE);
     }
@@ -162,30 +162,17 @@ class cs_project_item extends cs_room_item
     /** set communitys of a project item by item id and version id
      * this method sets a list of community item_ids and version_ids which are linked to the project.
      *
-     * @param array of community ids, index of id must be 'iid', index of version must be 'vid'
-     * Example:
-     * array(array('iid' => id1, 'vid' => version1), array('iid' => id2, 'vid' => version2))
      */
     public function setCommunityListByID($value)
     {
-        $community_list_old = $this->getCommunityList();
-        $community_array_old = [];
-        if ($community_list_old->isNotEmpty()) {
-            $community_item = $community_list_old->getFirst();
-            while ($community_item) {
-                $community_array_old[] = $community_item->getItemID();
-                $community_item = $community_list_old->getNext();
-            }
-        }
+        $community_array_old = $this->getCommunityList()->getIDArray();
+
         $this->setLinkedItemsByID(CS_COMMUNITY_TYPE, $value);
         $this->_new_community_id_array = $value;
 
-        // send mail to moderation
         $diff_array1 = array_diff($this->_new_community_id_array, $community_array_old);
         $diff_array2 = array_diff($community_array_old, $this->_new_community_id_array);
-        if (!empty($diff_array1)
-             or !empty($diff_array2)
-        ) {
+        if (!empty($diff_array1) || !empty($diff_array2)) {
             $this->_old_community_id_array = $community_array_old;
             $item_id = $this->getItemID();
             if (!empty($item_id)) {
