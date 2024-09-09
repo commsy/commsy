@@ -934,19 +934,19 @@ class ItemController extends AbstractController
         $itemType = $item->getType();
 
         $itemId = match ($itemType) {
-            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE => $item->getLinkedItem()->getItemID(),
+            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE, CS_ANNOTATION_TYPE => $item->getLinkedItem()->getItemID(),
             default => $item->getItemID(),
         };
 
         $viewType = match ($itemType) {
             // NOTE: edit.js currently handles redirects for cancelled newly created steps, sections or discarticles
-            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE => 'detail',
+            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE, CS_ANNOTATION_TYPE => 'detail',
             default => ($item->isDraft() ? 'list' : 'detail'),
         };
 
         $itemType = match ($itemType) {
             CS_LABEL_TYPE => $item->getLabelType(),
-            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE => $item->getLinkedItem()->getType(),
+            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE, CS_ANNOTATION_TYPE => $item->getLinkedItem()->getType(),
             default => $itemType,
         };
 
