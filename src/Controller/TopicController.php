@@ -735,6 +735,9 @@ class TopicController extends BaseController
     #[Route(path: '/room/{roomId}/topic/{itemId}/savepath')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function savePath(
+        // Do not remove $roomId even if it is unused, @IsGranted() relies on this argument
+        /* @noinspection PhpUnusedParameterInspection */
+        int $roomId,
         int $itemId
     ): Response {
         $item = $this->itemService->getItem($itemId);
