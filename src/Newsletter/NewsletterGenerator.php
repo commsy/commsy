@@ -45,33 +45,21 @@ class NewsletterGenerator
     /**
      * Returns the list of rooms for the user of the given private room.
      */
-    private function getRoomListForUserWithPrivatRoom(cs_privateroom_item $privateRoom): cs_list
+    private function getRoomListForUserWithPrivatRoom(cs_privateroom_item $privateRoom): array
     {
         $user = $privateRoom->getOwnerUserItem();
-        $id = $user->getItemID();
-
         $portal = $privateRoom->getContextItem();
-        $room_manager = $this->legacyEnvironment->getRoomManager();
+        $roomManager = $this->legacyEnvironment->getRoomManager();
 
-        // TODO: remove functionality around customized rooms (as this feature isn't supported anymore)
-        $customizedRoomList = $privateRoom->getCustomizedRoomList();
-        if (!isset($customizedRoomList)) {
-            $customizedRoomList = $room_manager->getRelatedContextListForUserInt($user->getUserID(),
-                $user->getAuthSource(), $portal->getItemID(), true, true);
-        }
+        $roomList = $roomManager->getRelatedContextListForUserInt($user->getUserID(),
+            $user->getAuthSource(), $portal->getItemID(), true, true);
 
-        $roomList = new cs_list();
-        foreach ($customizedRoomList as $customizedRoomItem) {
-            if (!$customizedRoomItem->isPrivateRoom()
-                && $customizedRoomItem->isShownInPrivateRoomHomeByItemID($id)
-                && $customizedRoomItem->isOpen()
-                && $customizedRoomItem->getItemID() > 0
-            ) {
-                $roomList->add($customizedRoomItem);
-            }
-        }
-
-        return $roomList;
+        return array_filter($roomList->to_array(), function ($roomItem) {
+            return (!$roomItem->isPrivateRoom()
+                && $roomItem->isOpen()
+                && $roomItem->getItemID() > 0
+            );
+        });
     }
 
     /**
