@@ -11,6 +11,8 @@
  * file that was distributed with this source code.
  */
 
+use App\Room\RoomStatus;
+
 /** upper class for database connection to the database table "community", "project" and "portal"
  * this upper class implements a database manager for the table "community", "project" and "portal".
  */
@@ -96,21 +98,21 @@ class cs_context_manager extends cs_manager
     */
    public function setOpenedLimit()
    {
-       $this->_status_limit = CS_ROOM_OPEN;
+       $this->_status_limit = RoomStatus::OPEN->value;
    }
 
    /** set status limit to "closed".
     */
    public function setClosedLimit()
    {
-       $this->_status_limit = CS_ROOM_CLOSED;
+       $this->_status_limit = RoomStatus::CLOSED->value;
    }
 
    /** set status limit to "locked".
     */
    public function setLockedLimit()
    {
-       $this->_status_limit = CS_ROOM_LOCK;
+       $this->_status_limit = RoomStatus::LOCKED->value;
    }
 
    /** set status limit to "not locked".

@@ -13,197 +13,61 @@
 
 namespace App\Utils;
 
+use App\Entity\Reader;
+use App\Enum\ReaderStatus;
+use App\Event\ReadStatusPreChangeEvent;
+use App\ReadStatus\ReadCountDescription;
+use App\Repository\ReaderRepository;
 use App\Services\LegacyEnvironment;
+use cs_annotation_item;
 use cs_item;
-use cs_reader_manager;
 use cs_user_item;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\FilesystemTagAwareAdapter;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
-class ReaderService
+final readonly class ReaderService
 {
-    /**
-     * Read status constant that identifies a "new" item, i.e. an item that hasn't been seen before.
-     *
-     * @var string
-     */
-    final public const READ_STATUS_NEW = 'new';
+    private FilesystemTagAwareAdapter $readStatusCache;
 
-    /**
-     * Read status constant that identifies a "changed" item, i.e. an item with unread changes.
-     *
-     * @var string
-     */
-    final public const READ_STATUS_CHANGED = 'changed';
-
-    /**
-     * Read status constant that identifies an "unread" item, i.e. an item that either hasn't been
-     * seen before (`READ_STATUS_NEW`) -OR- which has unread changes (`READ_STATUS_CHANGED`).
-     *
-     * @var string
-     */
-    final public const READ_STATUS_UNREAD = 'unread';
-
-    // TODO: most CommSy code currently uses an empty string ('') instead of READ_STATUS_SEEN/'seen'
-    /**
-     * Read status constant that identifies a "seen" item, i.e. an item that has been read before.
-     *
-     * @var string
-     */
-    final public const READ_STATUS_SEEN = 'seen';
-
-    /**
-     * Read status constant that identifies an item that has a "new annotation" which hasn't been seen before.
-     *
-     * @var string
-     */
-    final public const READ_STATUS_NEW_ANNOTATION = 'new_annotation';
-
-    /**
-     * Read status constant that identifies an item that has a "changed annotation", i.e. an annotation with unread changes.
-     *
-     * @var string
-     */
-    final public const READ_STATUS_CHANGED_ANNOTATION = 'changed_annotation';
-
-    private readonly FilesystemTagAwareAdapter $readStatusCache;
-    private readonly cs_reader_manager $readerManager;
-
-    public function __construct(private readonly LegacyEnvironment $legacyEnvironment, private readonly ItemService $itemService)
-    {
-        $this->readerManager = $this->legacyEnvironment->getEnvironment()->getReaderManager();
-
+    public function __construct(
+        private LegacyEnvironment        $legacyEnvironment,
+        private ItemService              $itemService,
+        private ReaderRepository         $readerRepository,
+        private EventDispatcherInterface $eventDispatcher,
+        private EntityManagerInterface   $entityManager,
+    ) {
         $this->readStatusCache = new FilesystemTagAwareAdapter();
     }
 
-    public function getLatestReader($itemId)
+    public function getLatestReader(int $itemId): ?Reader
     {
-        $this->readerManager->resetLimits();
-
-        return $this->readerManager->getLatestReader($itemId);
+        $userId = $this->legacyEnvironment->getEnvironment()->getCurrentUser()->getItemID();
+        return $this->readerRepository->findOneByItemIdAndUserId($itemId, $userId);
     }
 
-    public function getChangeStatus($itemId)
+    public function getChangeStatusForItems(cs_item ...$items): array
     {
-        $current_user = $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
-        if ($current_user->isUser()) {
-            return $this->getChangeStatusForUserByID($itemId, $current_user->getItemID());
+        $readerList = [];
+        foreach ($items as $item) {
+            $readerList[$item->getItemId()] = $this->getChangeStatus($item);
+        }
+
+        return $readerList;
+    }
+
+    public function getChangeStatus(cs_item $item, cs_user_item $user = null): string
+    {
+        $u = $user ?? $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
+
+        if ($u && $u->isUser()) {
+            return $this->cachedReadStatusForItem($item, $u);
         }
 
         return '';
-    }
-
-    public function getChangeStatusForUserByID($itemId, $userID)
-    {
-        $itemList = null;
-        $return = '';
-
-        $item = $this->itemService->getTypedItem($itemId);
-        if (!$item) {
-            return $return;
-        }
-
-        $readerManager = $this->readerManager;
-        $reader = $readerManager->getLatestReaderForUserByID($itemId, $userID);
-        if (empty($reader)) {
-            $currentUser = $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
-            $itemIsCurrentUser = ($item instanceof cs_user_item && $item->getUserID() === $currentUser->getUserID());
-            if (!$itemIsCurrentUser) {
-                $return = self::READ_STATUS_NEW;
-            }
-        } elseif (!$item->isNotActivated() and $reader['read_date'] < $item->getModificationDate()) {
-            $return = self::READ_STATUS_CHANGED;
-        }
-
-        if ('' == $return) {
-            // annotations
-            $annotation_list = $item->getAnnotationList();
-            $anno_item = $annotation_list->getFirst();
-            $new = false;
-            $changed = false;
-            $date = '0000-00-00 00:00:00';
-            while ($anno_item) {
-                $reader = $readerManager->getLatestReaderForUserByID($anno_item->getItemID(), $userID);
-                if (empty($reader)) {
-                    if ($date < $anno_item->getModificationDate()) {
-                        $new = true;
-                        $changed = false;
-                        $date = $anno_item->getModificationDate();
-                    }
-                } elseif ($reader['read_date'] < $anno_item->getModificationDate()) {
-                    if ($date < $anno_item->getModificationDate()) {
-                        $new = false;
-                        $changed = true;
-                        $date = $anno_item->getModificationDate();
-                    }
-                }
-                $anno_item = $annotation_list->getNext();
-            }
-
-            if ($new) {
-                $return = self::READ_STATUS_NEW_ANNOTATION;
-            } elseif ($changed) {
-                $return = self::READ_STATUS_CHANGED_ANNOTATION;
-            }
-        }
-
-        $itemType = $item->getItemType();
-
-        if ('' == $return and ('material' == $itemType or 'discussion' == $itemType or 'todo' == $itemType)) {
-            // sub-items
-            if ('material' == $itemType) {
-                $materialManager = $this->legacyEnvironment->getEnvironment()->getMaterialManager();
-                $material = $materialManager->getItem($item->getItemID());
-                $itemList = $material->getSectionList();
-            }
-            if ('discussion' == $itemType) {
-                $discussionManager = $this->legacyEnvironment->getEnvironment()->getDiscussionManager();
-                $discussion = $discussionManager->getItem($item->getItemID());
-                $itemList = $discussion->getAllArticles();
-            }
-            if ('todo' == $itemType) {
-                $todoManager = $this->legacyEnvironment->getEnvironment()->getTodosManager();
-                $todo = $todoManager->getItem($item->getItemID());
-                $itemList = $todo->getStepItemList();
-            }
-
-            $readerItem = $itemList->getFirst();
-            $new = false;
-            $changed = false;
-            $date = '0000-00-00 00:00:00';
-            while ($readerItem) {
-                $reader = $readerManager->getLatestReaderForUserByID($readerItem->getItemID(), $userID);
-                if (empty($reader)) {
-                    if ($date < $readerItem->getModificationDate()) {
-                        $new = true;
-                        $changed = false;
-                        $date = $readerItem->getModificationDate();
-                    }
-                } elseif ($reader['read_date'] < $readerItem->getModificationDate()) {
-                    if ($date < $readerItem->getModificationDate()) {
-                        $new = false;
-                        $changed = true;
-                        $date = $readerItem->getModificationDate();
-                    }
-                }
-                $readerItem = $itemList->getNext();
-            }
-
-            if ($new) {
-                $return = self::READ_STATUS_CHANGED;
-            } elseif ($changed) {
-                $return = self::READ_STATUS_CHANGED;
-            }
-        }
-
-        return $return;
-    }
-
-    public function getLatestReaderForUserByID($itemId, $userId)
-    {
-        $this->readerManager->resetLimits();
-
-        return $this->readerManager->getLatestReaderForUserByID($itemId, $userId);
     }
 
     /**
@@ -231,16 +95,16 @@ class ReaderService
                 $cachedReadStatus = $this->cachedReadStatusForItem($item, $user);
 
                 // NOTES:
-                // - instead of READ_STATUS_SEEN, getChangeStatusForUserByID() currently returns an empty string ('')
-                // - READ_STATUS_UNREAD comprises all items matching either READ_STATUS_NEW or READ_STATUS_CHANGED
-                // - we treat READ_STATUS_NEW_ANNOTATION and READ_STATUS_CHANGED_ANNOTATION like READ_STATUS_CHANGED
-                if (self::READ_STATUS_NEW_ANNOTATION === $cachedReadStatus || self::READ_STATUS_CHANGED_ANNOTATION === $cachedReadStatus) {
-                    $cachedReadStatus = self::READ_STATUS_CHANGED;
+                // - instead of STATUS_SEEN, getChangeStatusForUserByID() currently returns an empty string ('')
+                // - STATUS_UNREAD comprises all items matching either STATUS_NEW or STATUS_CHANGED
+                // - we treat STATUS_NEW_ANNOTATION and STATUS_CHANGED_ANNOTATION like STATUS_CHANGED
+                if (ReaderStatus::STATUS_NEW_ANNOTATION->value === $cachedReadStatus || ReaderStatus::STATUS_CHANGED_ANNOTATION->value === $cachedReadStatus) {
+                    $cachedReadStatus = ReaderStatus::STATUS_CHANGED->value;
                 }
                 if ($cachedReadStatus === $readStatus
-                    || '' === $cachedReadStatus && self::READ_STATUS_SEEN === $readStatus
-                    || self::READ_STATUS_NEW === $cachedReadStatus && self::READ_STATUS_UNREAD === $readStatus
-                    || self::READ_STATUS_CHANGED === $cachedReadStatus && self::READ_STATUS_UNREAD === $readStatus) {
+                    || '' === $cachedReadStatus && ReaderStatus::STATUS_SEEN->value === $readStatus
+                    || ReaderStatus::STATUS_NEW->value === $cachedReadStatus && ReaderStatus::STATUS_UNREAD->value === $readStatus
+                    || ReaderStatus::STATUS_CHANGED->value === $cachedReadStatus && ReaderStatus::STATUS_UNREAD->value === $readStatus) {
                     $itemId = $item->getItemId();
                     $itemIds[] = $itemId;
                 }
@@ -258,24 +122,13 @@ class ReaderService
      * - when the item gets marked as read  (the `ReadStatusPreChangeEvent` will trigger `invalidateCachedReadStatusForItem()`)
      * - or, otherwise, after 12 hours.
      *
-     * @param cs_item      $item the item whose cached read status shall be returned
-     * @param cs_user_item $user the user whose read status shall be used (defaults to the current user if not given)
+     * @param cs_item $item the item whose cached read status shall be returned
+     * @param cs_user_item|null $user the user whose read status shall be used (defaults to the current user if not given)
+     * @throws InvalidArgumentException
      */
     public function cachedReadStatusForItem(cs_item $item, cs_user_item $user = null): string
     {
-        if (!$item) {
-            return '';
-        }
-
-        if (!$user) {
-            $currentUser = $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
-            if ($currentUser) {
-                $user = $currentUser;
-            }
-            if (!$user) {
-                return '';
-            }
-        }
+        $user = $user ?? $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
 
         $itemId = $item->getItemId();
         $userId = $user->getItemID();
@@ -289,9 +142,7 @@ class ReaderService
 
             $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
             if ($relatedUser) {
-                $itemReadStatus = $this->getChangeStatusForUserByID($itemId, $relatedUser->getItemId());
-
-                return $itemReadStatus;
+                return $this->getChangeStatusForUserByID($itemId, $relatedUser->getItemId());
             }
 
             return ''; // TODO: shouldn't we better return null here (if that's possible) since '' currently equals 'seen'
@@ -304,16 +155,314 @@ class ReaderService
      * Invalidates the cached read status for the given item.
      *
      * @param cs_item $item the item whose cached read status shall be invalidated
+     * @throws InvalidArgumentException
      */
     public function invalidateCachedReadStatusForItem(cs_item $item): void
     {
-        if (!$item) {
-            return;
-        }
-
         $itemId = $item->getItemId();
         $itemType = $item->getItemType();
 
         $this->readStatusCache->invalidateTags(['item_'.$itemType.'_'.$itemId]);
+    }
+
+    /**
+     * Marks the item with the given item ID & version ID as read by the current user.
+     *
+     * @param int $itemId Id of the item to be marked as read
+     * @param int $versionId Id of the item version to be marked as read
+     * @return void
+     */
+    public function markRead(int $itemId, int $versionId = 0): void
+    {
+        $this->markItemsAsRead([$itemId], $versionId);
+    }
+
+    /**
+     * @param cs_item[] $items array of items
+     * @param bool $withAnnotations Should related annotations also marked read?
+     */
+    public function markItemsRead(array $items, bool $withAnnotations = true): void
+    {
+        foreach ($items as $item) {
+            $this->markRead($item->getItemID(), $item->getVersionID());
+
+            // annotations
+            if ($withAnnotations) {
+                foreach ($item->getAnnotationList() as $annotation) {
+                    /** @var cs_annotation_item $annotation */
+                    $this->markRead($annotation->getItemId());
+                }
+            }
+        }
+    }
+
+    public function markItemAsRead(cs_item $item): void
+    {
+        $reader = $this->getLatestReader($item->getItemID());
+        if (!$reader || $reader->getReadDate() <= $item->getModificationDate()) {
+            $this->markRead($item->getItemID(), $item->getVersionID());
+        }
+    }
+
+    /**
+     * Marks an array of items (of the given version ID) as read by the given users
+     * (or the current user in case no user IDs were given).
+     *
+     * @param int[]      $itemIds   Array of item IDs for items to be marked as read
+     * @param int        $versionId ID of the item version (applied to all given items) to be marked as read
+     * @param int[]|null $userIds   Optional array of user IDs specifying the users for whom the given items shall
+     *                              be marked as read; defaults to null in which case given items will be marked as read for the current user
+     */
+    public function markItemsAsRead(array $itemIds, int $versionId, array $userIds = null): void
+    {
+        if (empty($itemIds)) {
+            return;
+        }
+
+        if (empty($userIds)) {
+            $userIds = [$this->legacyEnvironment->getEnvironment()->getCurrentUserID()];
+            if (empty($userIds)) {
+                return;
+            }
+        }
+
+        // Delete previous entries
+        $query = $this->entityManager->createQuery('
+            DELETE FROM App\Entity\Reader r
+            WHERE r.itemId IN (:itemIds) AND r.userId IN (:userIds)
+        ');
+        $query->setParameter('itemIds', $itemIds);
+        $query->setParameter('userIds', $userIds);
+        $query->execute();
+
+        // Insert
+        foreach ($itemIds as $itemId) {
+            foreach ($userIds as $userId) {
+                $reader = new Reader();
+                $reader->setItemId($itemId);
+                $reader->setVersionId($versionId);
+                $reader->setUserId($userId);
+
+                $this->entityManager->persist($reader);
+                $this->eventDispatcher->dispatch(new ReadStatusPreChangeEvent($userId, $itemId, ReaderStatus::STATUS_SEEN));
+            }
+        }
+
+        // Flush all
+        $this->entityManager->flush();
+    }
+
+    public function getStatusForItem(cs_item $item): ReaderStatus
+    {
+        $reader = $this->getLatestReader($item->getItemId());
+
+        return !$reader ? ReaderStatus::STATUS_NEW : ReaderStatus::STATUS_CHANGED;
+    }
+
+    public function getReadCountDescriptionForItem(cs_item $item): ReadCountDescription
+    {
+        // Find all users in the items context
+        $userManager = $this->legacyEnvironment->getEnvironment()->getUserManager();
+        $userManager->setContextLimit($item->getContextID());
+        $userManager->setUserLimit();
+        $userManager->select();
+        $userList = $userManager->get();
+
+        $readers = new ArrayCollection($this->readerRepository->findBy([
+            'itemId' => $item->getItemID(),
+        ]));
+
+        // Count depending on read status
+        $readCount = 0;
+        $readSinceModificationCount = 0;
+        foreach ($userList as $user) {
+            /** @var cs_user_item $user */
+            $reader = $readers->findFirst(fn ($key, Reader $reader) => $reader->getUserId() === $user->getItemID());
+            if ($reader) {
+                $readCount++;
+
+                if ($reader->getReadDate() >= $item->getModificationDate()) {
+                    $readSinceModificationCount++;
+                }
+            }
+        }
+
+        return new ReadCountDescription(
+            $readCount,
+            $readSinceModificationCount,
+            $userList->getCount()
+        );
+    }
+
+    public function deleteAllEntriesInWorkspace(int $workspaceId): void
+    {
+        $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
+
+        $itemManager = $legacyEnvironment->getItemManager();
+        $itemManager->setContextLimit($workspaceId);
+        $itemManager->setNoIntervalLimit();
+        $itemManager->select();
+        $itemIds = $itemManager->get()->getIDArray();
+
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($workspaceId);
+        $userManager->select();
+        $userIds = $userManager->get()->getIDArray();
+
+        $query = $this->entityManager->createQuery('
+            DELETE FROM App\Entity\Reader r
+            WHERE r.itemId IN (:itemIds) OR r.userId IN (:userIds)
+        ');
+        $query->setParameter('itemIds', $itemIds);
+        $query->setParameter('userIds', $userIds);
+        $query->execute();
+    }
+
+    public function mergeAccounts(int $newId, int $oldId): void
+    {
+        $selectOld = $this->entityManager->createQuery('
+            SELECT r FROM App\Entity\Reader r
+            WHERE r.userId = :userId
+        ');
+        $selectOld->setParameter('userId', $oldId);
+        $oldEntries = $selectOld->getResult();
+
+        foreach ($oldEntries as $oldEntry) {
+            /** @var Reader $oldEntry */
+            $selectNew = $this->entityManager->createQuery('
+                SELECT r FROM App\Entity\Reader r
+                WHERE r.userId = :userId AND r.itemId = :itemId AND r.versionId = :versionId
+            ');
+            $selectNew->setParameter('userId', $newId);
+            $selectNew->setParameter('itemId', $oldEntry->getItemId());
+            $selectNew->setParameter('versionId', $oldEntry->getVersionId());
+            $newEntry = $selectNew->getOneOrNullResult();
+
+            if (!$newEntry) {
+                // Update the old user entry
+                $update = $this->entityManager->createQuery('
+                    UPDATE App\Entity\Reader r
+                    SET r.userId = :newUserId
+                    WHERE r.userId = :oldUserId AND r.itemId = :itemId AND r.versionId = :versionId
+                ');
+                $update->setParameter('newUserId', $newId);
+                $update->setParameter('oldUserId', $oldId);
+                $update->setParameter('itemId', $oldEntry->getItemId());
+                $update->setParameter('versionId', $oldEntry->getVersionId());
+                $update->execute();
+            } else {
+                // The new user has already read this item, so just delete the old entry
+                $delete = $this->entityManager->createQuery('
+                    DELETE FROM App\Entity\Reader r
+                    WHERE r.itemId. = :itemId AND r.versionId = :versionId AND r.userId = :userId
+                ');
+                $delete->setParameter('itemId', $oldEntry->getItemId());
+                $delete->setParameter('versionId', $oldEntry->getVersionId());
+                $delete->setParameter('userId', $oldId);
+                $delete->execute();
+            }
+        }
+    }
+
+    private function getChangeStatusForUserByID($itemId, $userID): string
+    {
+        $itemList = null;
+        $return = '';
+
+        $item = $this->itemService->getTypedItem($itemId);
+        if (!$item) {
+            return $return;
+        }
+
+        $reader = $this->readerRepository->findOneByItemIdAndUserId($item->getItemID(), $userID);
+
+        if (!$reader) {
+            $currentUser = $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
+            $itemIsCurrentUser = ($item instanceof cs_user_item && $item->getUserID() === $currentUser->getUserID());
+            if (!$itemIsCurrentUser) {
+                $return = ReaderStatus::STATUS_NEW->value;
+            }
+        } elseif (!$item->isNotActivated() and $reader->getReadDate() < $item->getModificationDate()) {
+            $return = ReaderStatus::STATUS_CHANGED->value;
+        }
+
+        if ('' == $return) {
+            // annotations
+            $new = false;
+            $changed = false;
+            $date = '0000-00-00 00:00:00';
+
+            foreach ($item->getAnnotationList() as $anno_item) {
+                $reader = $this->readerRepository->findOneByItemIdAndUserId($anno_item->getItemID(), $userID);
+                if (!$reader) {
+                    if ($date < $anno_item->getModificationDate()) {
+                        $new = true;
+                        $changed = false;
+                        $date = $anno_item->getModificationDate();
+                    }
+                } elseif ($reader->getReadDate() < $anno_item->getModificationDate()) {
+                    if ($date < $anno_item->getModificationDate()) {
+                        $new = false;
+                        $changed = true;
+                        $date = $anno_item->getModificationDate();
+                    }
+                }
+            }
+
+            if ($new) {
+                $return = ReaderStatus::STATUS_NEW_ANNOTATION->value;
+            } elseif ($changed) {
+                $return = ReaderStatus::STATUS_CHANGED_ANNOTATION->value;
+            }
+        }
+
+        $itemType = $item->getItemType();
+
+        if ('' == $return and ('material' == $itemType or 'discussion' == $itemType or 'todo' == $itemType)) {
+            // sub-items
+            if ('material' == $itemType) {
+                $materialManager = $this->legacyEnvironment->getEnvironment()->getMaterialManager();
+                $material = $materialManager->getItem($item->getItemID());
+                $itemList = $material->getSectionList();
+            }
+            if ('discussion' == $itemType) {
+                $discussionManager = $this->legacyEnvironment->getEnvironment()->getDiscussionManager();
+                $discussion = $discussionManager->getItem($item->getItemID());
+                $itemList = $discussion->getAllArticles();
+            }
+            if ('todo' == $itemType) {
+                $todoManager = $this->legacyEnvironment->getEnvironment()->getTodosManager();
+                $todo = $todoManager->getItem($item->getItemID());
+                $itemList = $todo->getStepItemList();
+            }
+
+            $new = false;
+            $changed = false;
+            $date = '0000-00-00 00:00:00';
+            foreach ($itemList as $readerItem) {
+                $reader = $this->readerRepository->findOneByItemIdAndUserId($readerItem->getItemID(), $userID);
+                if (!$reader) {
+                    if ($date < $readerItem->getModificationDate()) {
+                        $new = true;
+                        $changed = false;
+                        $date = $readerItem->getModificationDate();
+                    }
+                } elseif ($reader->getReadDate() < $readerItem->getModificationDate()) {
+                    if ($date < $readerItem->getModificationDate()) {
+                        $new = false;
+                        $changed = true;
+                        $date = $readerItem->getModificationDate();
+                    }
+                }
+            }
+
+            if ($new) {
+                $return = ReaderStatus::STATUS_CHANGED->value;
+            } elseif ($changed) {
+                $return = ReaderStatus::STATUS_CHANGED->value;
+            }
+        }
+
+        return $return;
     }
 }

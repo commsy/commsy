@@ -53,9 +53,4 @@ class CronCleanLinkItems implements CronTaskInterface
     {
         return 'Clean unneeded link items';
     }
-
-    public function getPriority(): int
-    {
-        return self::PRIORITY_NORMAL;
-    }
 }

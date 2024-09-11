@@ -18,9 +18,11 @@ use App\Entity\Portal;
 use App\Entity\Room;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -70,9 +72,7 @@ class RoomRepository extends ServiceEntityRepository
             ))
             ->orderBy($orderBy, $order)
             ->addOrderBy('r.template', 'ASC')
-            ->setParameters([
-                'contextId' => $portalId,
-            ]);
+            ->setParameter('contextId', $portalId);
     }
 
     /**
@@ -116,10 +116,10 @@ class RoomRepository extends ServiceEntityRepository
             SELECT r.itemId FROM App\Entity\Room r
             WHERE (r.type = :projectType OR r.type = :userroomType)
         ');
-        $query->setParameters([
-            'projectType' => 'project',
-            'userroomType' => 'userroom',
-        ]);
+        $query->setParameters(new ArrayCollection([
+            new Parameter('projectType', 'project'),
+            new Parameter('userroomType', 'userroom'),
+        ]));
 
         return array_column($query->getResult(), 'itemId');
     }

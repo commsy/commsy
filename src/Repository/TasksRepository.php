@@ -15,6 +15,8 @@ namespace App\Repository;
 
 use App\Entity\Tasks;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
 class TasksRepository extends ServiceEntityRepository
@@ -35,9 +37,9 @@ class TasksRepository extends ServiceEntityRepository
                 $qb->expr()->isNull('r.deletionDate'),
                 $qb->expr()->isNull('r.deleterId')
             ))
-            ->setParameters([
-                'contextId' => $contextId,
-                'status' => 'REQUEST',
-            ]);
+            ->setParameters(new ArrayCollection([
+                new Parameter('contextId', $contextId),
+                new Parameter('status', 'REQUEST'),
+            ]));
     }
 }

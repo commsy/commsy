@@ -13,8 +13,7 @@
 
 namespace App\Event;
 
-use App\Utils\ReaderService;
-use InvalidArgumentException;
+use App\Enum\ReaderStatus;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -25,21 +24,11 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class ReadStatusPreChangeEvent extends Event
 {
-    private readonly string $newReadStatus;
-
-    public function __construct(private readonly int $userId, private readonly int $itemId, string $newReadStatus)
-    {
-        if (
-            ReaderService::READ_STATUS_NEW !== $newReadStatus &&
-            ReaderService::READ_STATUS_CHANGED !== $newReadStatus &&
-            ReaderService::READ_STATUS_NEW_ANNOTATION !== $newReadStatus &&
-            ReaderService::READ_STATUS_CHANGED_ANNOTATION !== $newReadStatus &&
-            ReaderService::READ_STATUS_SEEN !== $newReadStatus &&
-            !empty($newReadStatus) // most CommSy code currently uses an empty string ('') instead of READ_STATUS_SEEN
-        ) {
-            throw new InvalidArgumentException('unknown read status given');
-        }
-        $this->newReadStatus = $newReadStatus;
+    public function __construct(
+        private readonly int $userId,
+        private readonly int $itemId,
+        private readonly ReaderStatus $newReadStatus
+    ) {
     }
 
     /**
@@ -62,7 +51,7 @@ class ReadStatusPreChangeEvent extends Event
     /**
      * The new read status that will be assigned to the item.
      */
-    public function getNewReadStatus(): string
+    public function getNewReadStatus(): ReaderStatus
     {
         return $this->newReadStatus;
     }

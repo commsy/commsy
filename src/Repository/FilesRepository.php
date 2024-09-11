@@ -15,8 +15,10 @@ namespace App\Repository;
 
 use App\Entity\Files;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
 class FilesRepository extends ServiceEntityRepository
@@ -35,10 +37,10 @@ class FilesRepository extends ServiceEntityRepository
             SELECT COUNT(f.filesId) FROM App\Entity\Files f
             WHERE f.filesId = :filesId AND f.contextId = :contextId
         ');
-        $query->setParameters([
-            'filesId' => $fileId,
-            'contextId' => $contextId,
-        ]);
+        $query->setParameters(new ArrayCollection([
+            new Parameter('filesId', $fileId),
+            new Parameter('contextId', $contextId),
+        ]));
 
         return $query->getSingleScalarResult();
     }

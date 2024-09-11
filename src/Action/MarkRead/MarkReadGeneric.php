@@ -13,17 +13,18 @@
 
 namespace App\Action\MarkRead;
 
-use App\Utils\ItemService;
+use App\Utils\ReaderService;
 use cs_item;
 
 class MarkReadGeneric implements MarkReadInterface
 {
-    public function __construct(private readonly ItemService $itemService)
-    {
+    public function __construct(
+        private readonly ReaderService $readerService
+    ) {
     }
 
     public function markRead(cs_item $item): void
     {
-        $this->itemService->markRead([$item]);
+        $this->readerService->markItemsRead([$item]);
     }
 }

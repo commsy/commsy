@@ -313,10 +313,10 @@ class cs_portfolio_manager extends cs_manager
         } else {
             parent::delete($itemId);
 
-            $this->deletePortfolioTags($item_id);
-            $this->deletePortfolioAnnotations($item_id);
-            $this->deletePortfolioUsers($item_id);
-            $this->deletePortfolioTemplateUsers($item_id);
+            $this->deletePortfolioTags($itemId);
+            $this->deletePortfolioAnnotations($itemId);
+            $this->deletePortfolioUsers($itemId);
+            $this->deletePortfolioTemplateUsers($itemId);
         }
     }
 

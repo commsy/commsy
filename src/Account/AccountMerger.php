@@ -15,6 +15,7 @@ namespace App\Account;
 
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
+use App\Utils\ReaderService;
 use App\Utils\UserService;
 use cs_environment;
 use cs_room_item;
@@ -31,7 +32,8 @@ class AccountMerger
     public function __construct(
         private readonly UserService $userService,
         LegacyEnvironment $legacyEnvironment,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ReaderService $readerService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -154,7 +156,6 @@ class AccountMerger
             CS_LINKITEM_TYPE,
             CS_LINKMODITEM_TYPE,
             CS_MATERIAL_TYPE,
-            CS_READER_TYPE,
             CS_ROOM_TYPE,
             CS_SECTION_TYPE,
             CS_TASK_TYPE,
@@ -164,6 +165,8 @@ class AccountMerger
             CS_TAG2TAG_TYPE,
             CS_ITEM_TYPE,
         ];
+
+        $this->readerService->mergeAccounts($intoRoomUser->getItemID(), $fromRoomUser->getItemID());
 
         foreach ($managerList as $managerName) {
             $manager = $this->legacyEnvironment->getManager($managerName);

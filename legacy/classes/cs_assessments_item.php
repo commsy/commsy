@@ -16,15 +16,6 @@
  */
 class cs_assessments_item extends cs_item
 {
-    /**
-     * string - containing the type of the list resp. the type of the elements.
-     */
-    public $_type = null;
-
-    /**
-     * array - containing the elements of the list.
-     */
-    public $_data = [];
 
     /** constructor
      * the only available constructor, initial values for internal variables.
@@ -85,7 +76,7 @@ class cs_assessments_item extends cs_item
      *
      * @param int creator_id
      */
-    public function setCreatorID($value)
+    public function setCreatorID($value): void
     {
         $this->_data['creator_id'] = (int) $value;
     }
@@ -95,7 +86,7 @@ class cs_assessments_item extends cs_item
      *
      * @param int deleter_id
      */
-    public function setDeleterID($value)
+    public function setDeleterID($value): void
     {
         $this->_data['deleter_id'] = (int) $value;
     }

@@ -31,9 +31,4 @@ readonly class CronDeleteOldLogs implements CronTaskInterface
     {
         return 'Delete old log entries';
     }
-
-    public function getPriority(): int
-    {
-        return self::PRIORITY_NORMAL;
-    }
 }

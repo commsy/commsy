@@ -44,6 +44,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class ProjectController extends AbstractController
 {
+    public function __construct(private readonly ReaderService $readerService)
+    {
+    }
+
     #[Route(path: '/room/{roomId}/project/feed/{start}/{sort}')]
     public function feed(
         Request $request,
@@ -78,12 +82,7 @@ class ProjectController extends AbstractController
 
         $readerList = [];
         foreach ($projects as $item) {
-            $reader = $readerService->getLatestReader($item->getItemId());
-            if (empty($reader)) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                $readerList[$item->getItemId()] = 'changed';
-            }
+            $readerList[$item->getItemId()] = $this->readerService->getStatusForItem($item)->value;
         }
 
         $currentUser = $legacyEnvironment->getCurrentUser();
@@ -345,51 +344,16 @@ class ProjectController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         ItemService $itemService
     ) {
-        $readerManager = $legacyEnvironment->getEnvironment()->getReaderManager();
-
         $info = [];
 
         // modifier
         $room = $itemService->getItem($roomId);
         $info['modifierList'][$roomId] = $itemService->getAdditionalEditorsForItem($room);
 
-        // total user count
-        $userManager = $legacyEnvironment->getEnvironment()->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getEnvironment()->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $userList = $userManager->get();
-
-        $info['userCount'] = $userList->getCount();
-
-        // total and since modification reader count
-        $readerCount = 0;
-        $readSinceModificationCount = 0;
-        $currentUser = $userList->getFirst();
-
-        $userIds = [];
-        while ($currentUser) {
-            $userIds[] = $currentUser->getItemID();
-
-            $currentUser = $userList->getNext();
-        }
-
-        $readerManager->getLatestReaderByUserIDArray($userIds, $room->getItemID());
-        $currentUser = $userList->getFirst();
-        while ($currentUser) {
-            $currentReader = $readerManager->getLatestReaderForUserByID($room->getItemID(), $currentUser->getItemID());
-            if (!empty($currentReader)) {
-                if ($currentReader['read_date'] >= $room->getModificationDate()) {
-                    ++$readSinceModificationCount;
-                }
-
-                ++$readerCount;
-            }
-            $currentUser = $userList->getNext();
-        }
-
-        $info['readCount'] = $readerCount;
-        $info['readSinceModificationCount'] = $readSinceModificationCount;
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($room);
+        $info['userCount'] = $readCountDescription->getUserTotal();
+        $info['readCount'] = $readCountDescription->getReadTotal();
+        $info['readSinceModificationCount'] = $readCountDescription->getReadSinceModification();
 
         return $info;
     }

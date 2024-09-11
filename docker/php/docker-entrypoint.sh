@@ -12,7 +12,7 @@ if [ "$1" = 'supervisord' ] || [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1
     setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var files
 
     if [ "$APP_ENV" != 'prod' ]; then
-        composer install --prefer-dist --no-progress --no-suggest --no-interaction
+        composer install --prefer-dist --no-progress --no-interaction
     fi
 
     bin/console lexik:jwt:generate-keypair --skip-if-exists

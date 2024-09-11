@@ -13,8 +13,8 @@
 
 namespace App\Newsletter;
 
-use App\Account\AccountManager;
-use App\Mail\Mailer;
+use App\Enum\ReaderStatus;
+use App\Repository\ReaderRepository;
 use App\Services\LegacyEnvironment;
 use cs_annotations_manager;
 use cs_context_item;
@@ -34,7 +34,8 @@ class NewsletterGenerator
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private readonly RouterInterface $router
+        private readonly RouterInterface $router,
+        private readonly ReaderRepository $readerRepository,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -207,31 +208,29 @@ class NewsletterGenerator
                 $countEntries = 0;
                 $rubricData = [];
 
-                $readerManager = $this->legacyEnvironment->getReaderManager();
-
                 // new/modified rubric items
                 $rubricItemsData = [];
                 foreach ($rubricItemList as $rubricItem) {
                     $rubricItemID = $rubricItem->getItemID();
 
                     // is the item new or modified?
-                    $noticed = $readerManager->getLatestReaderForUserByID($rubricItemID, $refUser->getItemID());
-                    $itemNoticedStatus = empty($noticed)
-                        ? 'new'
-                        : ($noticed['read_date'] < $rubricItem->getModificationDate()
-                            ? 'changed'
-                            : 'seen'
+                    $itemReader = $this->readerRepository->findOneByItemIdAndUserId($rubricItemID, $refUser->getItemID());
+                    $itemNoticedStatus = !$itemReader
+                        ? ReaderStatus::STATUS_NEW->value
+                        : ($itemReader->getReadDate() < $rubricItem->getModificationDate()
+                            ? ReaderStatus::STATUS_CHANGED->value
+                            : ReaderStatus::STATUS_SEEN->value
                         );
 
                     // are there any new annotations for the new or modified items?
                     $annotationCount = 0;
                     foreach ($annotationList as $annotationItem) {
-                        $annotationNoticed = $readerManager->getLatestReaderForUserByID(
+                        $annotationReader = $this->readerRepository->findOneByItemIdAndUserId(
                             $annotationItem->getItemID(),
                             $refUser->getItemID()
                         );
 
-                        if (empty($annotationNoticed)) {
+                        if (!$annotationReader) {
                             $linkedItem = $annotationItem->getLinkedItem();
                             if ($linkedItem->getItemID() == $rubricItemID) {
                                 ++$annotationCount;
@@ -240,7 +239,7 @@ class NewsletterGenerator
                         }
                     }
 
-                    if ($itemNoticedStatus !== 'seen' || $annotationCount > 0) {
+                    if ($itemNoticedStatus !== ReaderStatus::STATUS_SEEN->value || $annotationCount > 0) {
                         ++$countEntries;
                         $rubricItemData['item'] = $rubricItem;
                         $rubricItemData['itemNoticedStatus'] = $itemNoticedStatus;
@@ -267,11 +266,11 @@ class NewsletterGenerator
             $annotationsStillToSend = [];
             while ($annotationItem) {
                 if (!in_array($annotationItem, $annotationsInNewsletter)) {
-                    $annotationNoticed = $readerManager->getLatestReaderForUserByID(
+                    $annotationReader = $this->readerRepository->findOneByItemIdAndUserId(
                         $annotationItem->getItemID(),
                         $refUser->getItemID()
                     );
-                    if (empty($annotationNoticed)) {
+                    if (!$annotationReader) {
                         $annotationsStillToSend[] = $annotationItem;
                     }
                 }

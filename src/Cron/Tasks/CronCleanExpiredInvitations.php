@@ -31,9 +31,4 @@ class CronCleanExpiredInvitations implements CronTaskInterface
     {
         return 'Delete expired invitations';
     }
-
-    public function getPriority(): int
-    {
-        return self::PRIORITY_NORMAL;
-    }
 }

@@ -14,8 +14,10 @@
 /* upper class of the material item
  */
 
+use App\Entity\License;
 use App\Entity\Materials;
 use App\Event\ItemDeletedEvent;
+use App\Utils\ReaderService;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for a material
@@ -1187,8 +1189,9 @@ public function copy()
     $copy->save($mode = 'copy');
     $copy_id = $copy->getItemID();
 
-    $reader_manager = $this->_environment->getReaderManager();
-    $reader_manager->markRead($copy_id, $copy->getVersionID());
+    /** @var ReaderService $readerService */
+    $readerService = $this->_environment->getSymfonyContainer()->get(ReaderService::class);
+    $readerService->markRead($copy_id, $copy->getVersionID());
 
     // Import all versions off the material
     $material_manager = $this->_environment->getMaterialManager();
@@ -1198,8 +1201,9 @@ public function copy()
     while ($import_version) {
         $version_id = $import_version->getVersionID();
         if ($version_id != $version) {
-            $copy_version = $import_version->copyVersion($copy_id);
-            $reader_manager->markRead($copy_id, $version_id);
+            $import_version->copyVersion($copy_id);
+
+            $readerService->markRead($copy_id, $version_id);
         }
         $import_version = $version_list->getNext();
     }
@@ -1456,106 +1460,7 @@ public function _copySectionList($copy_id)
         return false;
     }
 
-    /** get information in dublin core style
-     * this method returns an array with information of the material in dublin core style.
-     *
-     * @return array array with information in dublin core style
-     */
-    public function getDublinCoreArray()
-    {
-        $retour = [];
-        $retour['DC.TITLE'] = $this->getTitle();
-        $retour['DC.CREATOR.NAME'] = $this->getAuthor();
-
-        // hier sollte eigentlich nur der Verleger / Herausgeber erscheinen
-        // das ist aber im grunde genommen okay
-        $bibliographic = $this->getBibliographicValues();
-        if (!empty($bibliographic) and strstr($bibliographic, '<!-- KFC TEXT -->')) {
-            $bibliographic = str_replace('<!-- KFC TEXT -->', '', $bibliographic);
-        }
-        if (!empty($bibliographic)) {
-            $retour['DC.PUBLISHER'] = htmlentities($bibliographic, ENT_NOQUOTES, 'UTF-8');
-        }
-
-        // das Datum muss eigentlich so vorliegen jjjjmmtt
-        $retour['DC.DATE.CREATION'] = $this->getPublishingDate();
-
-        // hierfür gibt es eigentlich eine definierte Liste im Standard
-        $material_type = $this->getLabelItem();
-        if (isset($material_type)) {
-            $retour['DC.TYPE'] = $material_type->getName();
-        }
-
-        $file_list = $this->getFileList();
-        if (!$file_list->isEmpty()) {
-            $format = '';
-            $first = true;
-            $file_item = $file_list->getFirst();
-            while ($file_item) {
-                if ($first) {
-                    $first = false;
-                } else {
-                    $format .= ', ';
-                }
-                $format .= $file_item->getMime();
-                $format .= ' ('.$file_item->getFileSize().'kb)';
-                $file_item = $file_list->getNext();
-            }
-        }
-        if (empty($format)) {
-            $format = 'Text/HTML';
-        }
-        $retour['DC.FORMAT'] = '(SCHEME=IMT) '.$format;
-
-        // $retour['DC.Language'] = '';
-        // $retour['DC.Coverage.Spatial'] = ''; //Geografische Gültigkeit
-
-        $keyword_array = $this->getBuzzwordArray();
-        if (!empty($keyword_array)) {
-            $retour['DC.SUBJECT.KEYWORD'] = implode(',', $keyword_array);
-        }
-
-        $topic_list = $this->getTopicList();
-        if (!$topic_list->isEmpty()) {
-            $topic = '';
-            $first = true;
-            $topic_item = $topic_list->getFirst();
-            while ($topic_item) {
-                if ($first) {
-                    $first = false;
-                } else {
-                    $topic .= ', ';
-                }
-                $topic .= $topic_item->getName();
-                $topic_item = $topic_list->getNext();
-            }
-            $retour['DC.SUBJECT.CLASSIFICATION'] = $topic;
-        }
-
-        $description = $this->getDescription();
-        if (!empty($description)) {
-            $retour['DC.DESCRIPTION'] = strip_tags($description);
-        }
-
-        // $retour['DC.Relation'] = ''; //Angabe einer URL zu einer Ressource, die mit dem Material assiziierbar ist.
-
-        // Die folgenden Angaben beziehen sich immer auf die Quelle, in der das Material publiziert wurde.
-        // Dies könnte z.B. ein Buch sein, in dem das Material (Artikel) erschienen ist.
-        // $retour['DC.Source.Creator'] = '';
-        // $retour['DC.Source.Title'] = '';
-        // $retour['DC.Source.Volume'] = '';
-        // $retour['DC.Source.PublishingPlace'] = '';
-        // $retour['DC.Source.Date'] = '';
-        // $retour['DC.Source.PageNumber'] = '';
-
-        // $retour['DC.RIGHTS'] = ''; // Standardtext zur Nutzerinformation, dass die Urheberrechte bzw. die spezifischen Verwertungsrechte am Dokument zu beachten sind.
-
-        return $retour;
-    }
-
     /** asks if item is editable by everybody or just creator.
-     *
-     * @param value
      *
      * @author CommSy Development Group
      */
@@ -1570,7 +1475,7 @@ public function _copySectionList($copy_id)
 
     /** sets if announcement is editable by everybody or just creator.
      *
-     * @param value
+     * @param $value
      */
     public function setPublic($value): void
     {
@@ -1689,16 +1594,13 @@ public function _copySectionList($copy_id)
         $this->_addExtra('y', (int) $value);
     }
 
-    // ------------- study.log ------------------
-    // ------------------------------------------
-
     public function isLocked(): bool
     {
         if ($this->getEtherpadEditor()) {
             return false;
         }
 
-        return parent::isLocked();
+        return false;
     }
 
      public function setLicenseId($licenseId)
@@ -1711,11 +1613,11 @@ public function _copySectionList($copy_id)
          return (int) $this->_getValue('license_id');
      }
 
-     public function getLicenseTitle()
+     public function getLicenseTitle(): string
      {
          if ($this->getLicenseId() && $this->getLicenseId() > 0) {
              global $symfonyContainer;
-             $licensesRepository = $symfonyContainer->get('doctrine.orm.entity_manager')->getRepository(\App\Entity\License::class);
+             $licensesRepository = $symfonyContainer->get('doctrine.orm.entity_manager')->getRepository(License::class);
              $license = $licensesRepository->findOneById($this->getLicenseId());
 
              return $license->getTitle();

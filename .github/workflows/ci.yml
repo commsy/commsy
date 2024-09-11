@@ -14,13 +14,15 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                php-versions: ['8.2']
+                php-versions: ['8.3']
         services:
             db:
                 image: mariadb:10.11
                 env:
                     MYSQL_ROOT_PASSWORD: root
                     MYSQL_DATABASE: app_test
+                    MYSQL_USER: app
+                    MYSQL_PASSWORD: '!ChangeMe!'
                 ports:
                     - 3306:3306
         steps:
@@ -61,6 +63,13 @@ jobs:
 
             -   name: Run Api tests
                 run: vendor/bin/codecept run Api --env github
+
+            -   name: Setup tmate session
+                if: ${{ failure() }}
+                uses: mxschmitt/action-tmate@v3
+                timeout-minutes: 15
+                with:
+                  limit-access-to-actor: true
 
     release-docker:
         name: Create and push docker images

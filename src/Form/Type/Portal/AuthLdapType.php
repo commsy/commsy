@@ -39,6 +39,7 @@ class AuthLdapType extends AbstractType
                     'CommSy' => 'commsy',
                     'LDAP' => 'ldap',
                     'Shibboleth' => 'shib',
+                    'OpenID Connect' => 'oidc',
                     'Guest' => 'guest',
                 ],
                 'required' => true,

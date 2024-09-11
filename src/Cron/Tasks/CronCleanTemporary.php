@@ -49,9 +49,4 @@ class CronCleanTemporary implements CronTaskInterface
     {
         return 'Clean temporary files';
     }
-
-    public function getPriority(): int
-    {
-        return self::PRIORITY_NORMAL;
-    }
 }

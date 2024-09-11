@@ -48,7 +48,10 @@
 
                                     {# files #}
                                     <li>
-                                        <a href="#" id="edit_files_toggle_{{ article.itemId }}" class="cs-edit">
+                                        <a href="#" id="edit_files_toggle_{{ article.itemId }}" data-uk-toggle="{
+                                            target: '#files{{ article.itemId }}',
+                                            bypass: true
+                                        }">
                                             <i class="uk-icon-hover uk-icon-small uk-icon-justify uk-icon-file-o"></i>
                                             {{ "files"|trans({})|capitalize }}
                                         </a>
@@ -95,14 +98,9 @@
 
         {# files #}
         {% if not article.hasOverwrittenContent -%}
-            <div class="uk-margin-top" data-cs-edit="{{ {
-                'editUrl': path('app_upload_uploadform', {'roomId': article.contextId, 'itemId': article.itemId}),
-                'cancelEditUrl': path('app_item_canceledit', {'roomId': article.contextId, 'itemId': article.itemId}),
-                'toggleSelect': '#edit_files_toggle_' ~ article.itemId
-            }|json_encode|e('html_attr') }}">
-                {{ component('item_files', {
-                    item: article,
-                    simple: true
+            <div id="files{{ article.itemId }}" class="uk-margin-top uk-hidden">
+                {{ component('FileList:FileList', {
+                    itemId: article.itemId,
                 }) }}
             </div>
         {%- endif %}

@@ -34,6 +34,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class AnnotationController extends AbstractController
 {
+    public function __construct(private readonly ReaderService $readerService)
+    {
+    }
+
     #[Route(path: '/room/{roomId}/annotation/feed/{linkedItemId}/{start}/{firstTagId}/{secondTagId}')]
     public function feed(
         AnnotationService $annotationService,
@@ -64,10 +68,7 @@ class AnnotationController extends AbstractController
             }
         }
 
-        $readerList = [];
-        foreach ($annotations as $item) {
-            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
-        }
+        $readerList = $this->readerService->getChangeStatusForItems(...$annotations);
 
         /**
          * For first show annotations no read and after mark read.
@@ -95,10 +96,7 @@ class AnnotationController extends AbstractController
         // get annotation list from manager service
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
 
-        $readerList = [];
-        foreach ($annotations as $item) {
-            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
-        }
+        $readerList = $this->readerService->getChangeStatusForItems(...$annotations);
 
         return $this->render('annotation/feed_print.html.twig', [
             'roomId' => $roomId,
@@ -123,13 +121,10 @@ class AnnotationController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $legacyEnvironment = $environment->getEnvironment();
-                $readerManager = $legacyEnvironment->getReaderManager();
-
                 $item = $transformer->applyTransformation($item, $form->getData());
                 $item->save();
 
-                $readerManager->markRead($itemId, 0);
+                $this->readerService->markRead($itemId);
             }
 
             return $this->redirectToRoute('app_annotation_success', [

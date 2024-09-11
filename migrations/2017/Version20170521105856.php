@@ -15,8 +15,6 @@ final class Version20170521105856 extends AbstractMigration
      */
     public function up(Schema $schema) : void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
         $this->removeIndex('status_2', 'room');
         $this->removeIndex('status_2', 'zzz_room');
         $this->removeIndex('room_description', 'room');
@@ -35,7 +33,7 @@ final class Version20170521105856 extends AbstractMigration
      */
     private function removeIndex($indexName, $tableName)
     {
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
         $tableIndexes = $schemaManager->listTableIndexes($tableName);
 
         $filteredIndexes = array_filter($tableIndexes, fn($index) => $index->getName() === $indexName);
@@ -50,8 +48,6 @@ final class Version20170521105856 extends AbstractMigration
      */
     public function down(Schema $schema) : void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
         foreach ($schema->getTables() as $tableName => $table) {
             $this->addSql('ALTER TABLE ' . $tableName . ' ENGINE=MyISAM');
         }

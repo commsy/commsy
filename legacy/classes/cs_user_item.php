@@ -742,15 +742,6 @@ class cs_user_item extends cs_item
         echo 'use getDeleterID()<br />';
     }
 
-    /** set deleter of the user - overwritting parent method - do not use.
-     *
-     * @param object cs_user_item value deleter of the user
-     */
-    public function setDeleter($value)
-    {
-        echo 'use setDeleterID( xxx )<br />';
-    }
-
     /** get user comment
      * this method returns the users comment: why he or she wants an account.
      *
@@ -1516,7 +1507,7 @@ class cs_user_item extends cs_item
      *
      * @see cs_item::mayPortfolioSee()
      */
-    public function mayPortfolioSee(string $username)
+    public function mayPortfolioSee(string $username): bool
     {
         $portfolioManager = $this->_environment->getPortfolioManager();
 

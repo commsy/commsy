@@ -64,9 +64,4 @@ class CronRenewContinuousLinks implements CronTaskInterface
     {
         return 'Renew links between continuous rooms and current time label';
     }
-
-    public function getPriority(): int
-    {
-        return self::PRIORITY_NORMAL;
-    }
 }

@@ -23,7 +23,7 @@ final class Version20190924133007 extends AbstractMigration
         $this->addSql('ALTER TABLE auth modify email VARCHAR(100) NOT NULL after username;');
 
         // This will drop the primary key only if it exists
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
         $authTableIndexes = $schemaManager->listTableIndexes('auth');
         if (!empty(array_filter($authTableIndexes, fn(Index $index) => $index->isPrimary()))) {
             $this->addSql('ALTER TABLE auth DROP PRIMARY KEY;');
