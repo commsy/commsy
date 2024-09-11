@@ -15,10 +15,6 @@
 
 define('CS_LIST_INTERVAL', 20);
 
-define('CS_NO_ROOM', 0);
-define('CS_ROOM_OPEN', 1);
-define('CS_ROOM_CLOSED', 2);
-define('CS_ROOM_LOCK', 3);
 define('CS_ALL', 'all');
 
 define('CS_ITEM_TYPE', 'item');
@@ -59,7 +55,6 @@ define('CS_LINK_TYPE', 'link');
 define('CS_LINKITEM_TYPE', 'link_item');
 define('CS_LINKMODITEM_TYPE', 'link_modifier_item');
 define('CS_LINKITEMFILE_TYPE', 'link_item_file');
-define('CS_READER_TYPE', 'reader');
 define('CS_NOTICED_TYPE', 'noticed');
 
 define('CS_TIME_TYPE', 'time');
@@ -91,7 +86,6 @@ define('RFC1738_CHARS', "A-Za-z0-9\?:@&=/;_\.\+!\*'(,%\$~#-");
 define('RFC2822_CHARS', "A-Za-z0-9!#\$%&'\*\+/=\?\^_`{\|}~-");
 
 // text functions
-define('AS_HTML_LONG', 1);
 define('AS_HTML_SHORT', 2);
 define('AS_FORM', 4);
 define('AS_DB', 5);
@@ -103,4 +97,3 @@ define('FROM_FORM', 11);
 define('FROM_DB', 12);
 define('FROM_FILE', 13);
 define('FROM_GET', 14);
-define('HELP_AS_HTML_LONG', 21);

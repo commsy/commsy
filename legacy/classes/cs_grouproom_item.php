@@ -25,6 +25,7 @@ use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Proxy\PortalProxy;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use App\Room\RoomStatus;
 
 /** group room
  * this class implements a group room item.
@@ -166,13 +167,13 @@ class cs_grouproom_item extends cs_room_item
 
             $new_status = $this->getStatus();
             if ($new_status != $this->_old_status) {
-                if (CS_ROOM_LOCK == $this->_old_status) {
+                if (RoomStatus::LOCKED->value == $this->_old_status) {
                     $eventDispatcher->dispatch(new WorkspaceUnlockedEvent($this));
-                } elseif (CS_ROOM_CLOSED == $new_status) {
+                } elseif (RoomStatus::CLOSED->value == $new_status) {
                     $eventDispatcher->dispatch(new WorkspaceArchivedEvent($this));
-                } elseif (CS_ROOM_OPEN == $new_status) {
+                } elseif (RoomStatus::OPEN->value == $new_status) {
                     $eventDispatcher->dispatch(new WorkspaceUnarchivedEvent($this));
-                } elseif (CS_ROOM_LOCK == $new_status) {
+                } elseif (RoomStatus::LOCKED->value == $new_status) {
                     $eventDispatcher->dispatch(new WorkspaceLockedEvent($this));
                 }
             }
@@ -792,7 +793,6 @@ class cs_grouproom_item extends cs_room_item
 
     public function withGrouproomFunctions(): bool
     {
-        // grouprooms can not have grouprooms
         return false;
     }
 }

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
+use App\Contract\ParameterBagAwareInterface;
 use App\Utils\DbConverter;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -16,13 +16,13 @@ use Symfony\Component\Finder\SplFileInfo;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230301172618 extends AbstractMigration implements ContainerAwareInterface
+final class Version20230301172618 extends AbstractMigration implements ParameterBagAwareInterface
 {
-    private ContainerInterface $container;
+    private ParameterBagInterface $parameterBag;
 
-    public function setContainer(ContainerInterface $container = null)
+    public function setParameterBag(ParameterBagInterface $parameterBag): void
     {
-        $this->container = $container;
+        $this->parameterBag = $parameterBag;
     }
 
     public function getDescription(): string
@@ -114,7 +114,7 @@ final class Version20230301172618 extends AbstractMigration implements Container
         $exclude = $qb->executeQuery()->fetchFirstColumn();
         $exclude[] = '99';
 
-        $filesDirectory = $this->container->getParameter('files_directory');
+        $filesDirectory = $this->parameterBag->get('files_directory');
 
         $filesystem = new Filesystem();
 

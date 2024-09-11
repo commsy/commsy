@@ -19,7 +19,6 @@ use cs_list;
 use cs_manager;
 use cs_material_item;
 use cs_material_manager;
-use cs_reader_manager;
 use cs_section_item;
 use cs_section_manager;
 use Symfony\Component\Form\FormInterface;
@@ -32,10 +31,10 @@ class MaterialService
 
     private readonly cs_section_manager $sectionManager;
 
-    private readonly cs_reader_manager $readerManager;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        private readonly ReaderService $readerService,
+        LegacyEnvironment $legacyEnvironment
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $this->materialManager = $this->legacyEnvironment->getMaterialManager();
@@ -43,8 +42,6 @@ class MaterialService
 
         $this->sectionManager = $this->legacyEnvironment->getSectionManager();
         $this->sectionManager->reset();
-
-        $this->readerManager = $this->legacyEnvironment->getReaderManager();
     }
 
     public function getListMaterials($roomId, $max = null, $start = null, $sort = null)
@@ -180,7 +177,7 @@ class MaterialService
      * @param bool $markSections    whether the material item's sections should be also marked as read and noticed
      * @param bool $markAnnotations whether the materials item's annotations should be also marked as read and noticed
      */
-    public function markMaterialReadAndNoticed(int $itemId, bool $markSections = true, bool $markAnnotations = true)
+    public function markMaterialReadAndNoticed(int $itemId, bool $markSections = true, bool $markAnnotations = true): void
     {
         if (empty($itemId)) {
             return;
@@ -189,7 +186,7 @@ class MaterialService
         // material item
         $item = $this->getMaterial($itemId);
         $versionId = $item->getVersionID();
-        $this->readerManager->markRead($itemId, $versionId);
+        $this->readerService->markRead($itemId, $versionId);
 
         // sections
         if (true === $markSections) {
@@ -198,7 +195,7 @@ class MaterialService
                 $sectionItem = $sectionList->getFirst();
                 while ($sectionItem) {
                     $sectionItemID = $sectionItem->getItemID();
-                    $this->readerManager->markRead($sectionItemID, $versionId);
+                    $this->readerService->markRead($sectionItemID, $versionId);
                     $sectionItem = $sectionList->getNext();
                 }
             }
@@ -211,7 +208,7 @@ class MaterialService
                 $annotationItem = $annotationList->getFirst();
                 while ($annotationItem) {
                     $annotationItemID = $annotationItem->getItemID();
-                    $this->readerManager->markRead($annotationItemID, $versionId);
+                    $this->readerService->markRead($annotationItemID, $versionId);
                     $annotationItem = $annotationList->getNext();
                 }
             }

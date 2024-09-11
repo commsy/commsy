@@ -10,8 +10,8 @@ use App\Facade\UserCreatorFacade;
 use Codeception\Stub;
 use Codeception\Test\Unit;
 use Exception;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ServerBag;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 use Tests\Support\UnitTester;
 
@@ -45,7 +45,7 @@ class AutoRoomMembershipSubscriberTest extends Unit
         $this->assertInstanceOf(Account::class, $account);
 
         $request = $this->makeEmpty(Request::class, [
-            'server' => $this->make(ParameterBag::class, [
+            'server' => $this->make(ServerBag::class, [
                 'parameters' => [
                     'roomslugs' => join(';', $roomslugs)
                 ]

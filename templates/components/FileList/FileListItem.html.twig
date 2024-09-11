@@ -1,0 +1,145 @@
+{% import 'utils/macros.html.twig' as macrosUtils %}
+
+<div {{ attributes.defaults({class: "uk-grid-margin"}) }}>
+    {# office modal dialog #}
+    {% if this.supportsOnlineOffice(file) and is_granted('ITEM_EDIT_LOCK', itemId) %}
+        <div {{ stimulus_controller('wopi_modal', {
+            'url': path('app_wopi_host', {
+                'roomId': file.contextId,
+                'itemId': itemId,
+                'fileId': file.fileId
+            })
+        }) }}>
+            <div id="modal_wopi_{{ file.fileId }}" class="uk-modal" {{ stimulus_target('wopi_modal', 'modal') }}>
+                <div class="uk-modal-dialog uk-modal-dialog-blank">
+                    <a class="uk-modal-close uk-close uk-margin-right"></a>
+                    <div class="uk-height-viewport" {{ stimulus_target('wopi_modal', 'content') }}></div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# visible list item #}
+    {% set disposition = 'attachment' %}
+    {% if file.extension|lower == 'pdf' %}
+        {% set disposition = 'inline' %}
+    {% endif %}
+
+    <div>
+        {# Image preview #}
+        {% if isImage %}
+            <div>
+                <img class=""
+                     href="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}"
+                     data-uk-lightbox="{group:{{ itemId }}}"
+                     data-lightbox-type="image"
+                     data-uk-tooltip="{pos:'top-left'}"
+                     title="{{ file.filename }} ({{ file.fileSize }} kb)"
+                     src="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}"
+                     style="width: 160px; height: 75px; object-fit: cover" />
+            </div>
+        {% endif %}
+
+        {% if renameMode %}
+            <div class="uk-form uk-flex uk-flex-space-between" style="width: 160px">
+                <input class="uk-width-1-1" type="text" data-model="norender|file.filenameNoExt">
+                <button
+                    class="uk-button uk-button-success"
+                    title="{{ 'save'|trans({},'form')|capitalize }}"
+                    data-action="live#action"
+                    data-live-action-param="renameFile"
+                    data-live-item-id-param="{{ itemId }}"
+                    data-loading="action(renameFile)|addAttribute(disabled)"
+                >
+                    {# hide when the remove action is loading  #}
+                    <i class="uk-icon-check uk-icon-justify" data-loading="action(renameFile)|hide"></i>
+
+                    {# show only if the remove action is loading #}
+                    <i class="uk-icon-refresh uk-icon-spin uk-icon-justify" data-loading="action(renameFile)|show" style="display: none;"></i>
+                </button>
+            </div>
+        {% endif %}
+
+        {% if deleteMode %}
+            <div class="uk-form uk-flex uk-flex-space-between" style="width: 160px">
+                <input class="uk-width-1-1" type="text" data-model="norender|file.filenameNoExt" disabled>
+                <button
+                    class="uk-button uk-button-default"
+                    title="{{ 'cancel'|trans({},'form')|capitalize }}"
+                    data-action="live#action"
+                    data-live-action-param="removeFile"
+                    data-live-confirmed-param="false"
+                    data-live-item-id-param="{{ itemId }}"
+                    data-loading="action(removeFile)|addAttribute(disabled)"
+                >
+                    <i class="uk-icon-times uk-icon-justify"></i>
+                </button>
+                <button
+                    class="uk-button uk-button-danger"
+                    title="{{ 'Delete'|trans({},'form')|capitalize }}"
+                    data-action="live#action"
+                    data-live-action-param="removeFile"
+                    data-live-confirmed-param="true"
+                    data-live-item-id-param="{{ itemId }}"
+                    data-loading="action(removeFile)|addAttribute(disabled)"
+                >
+                    {# hide when the remove action is loading  #}
+                    <i class="uk-icon-trash uk-icon-justify" data-loading="action(removeFile)|hide"></i>
+
+                    {# show only if the remove action is loading #}
+                    <i class="uk-icon-refresh uk-icon-spin uk-icon-justify" data-loading="action(removeFile)|show" style="display: none;"></i>
+                </button>
+            </div>
+        {% endif %}
+
+        {% if not renameMode and not deleteMode %}
+            <div class="uk-button-group" data-uk-check-display>
+                {# Left button #}
+                <a class="uk-button uk-text-left"
+                   href="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': disposition }) }}"
+                   target="_blank"
+                   style="width: 133px"
+                   data-uk-tooltip="{pos:'top-left'}"
+                   title="{{ file.filename }} ({{ file.fileSize }} kb)"
+                >
+                    <i class="uk-icon-small {{ macrosUtils.iconClassForFileType(file.extension) }}"></i>
+                    {{ file.filename|u.truncate(20, '...') }}
+                </a>
+
+                {# Dropdown #}
+                <div data-uk-dropdown="{mode:'click'}">
+                    <button class="uk-button" style="width: 27px"><i class="uk-icon-ellipsis-v"></i></button>
+                    <div class="uk-dropdown uk-dropdown-small">
+                        <ul class="uk-nav uk-nav-dropdown">
+                            <li>
+                                {% if this.supportsOnlineOffice(file) and is_granted('ITEM_EDIT_LOCK', itemId) %}
+                                    <a href="#modal_wopi_{{ file.fileId }}" data-uk-modal>
+                                        <i class="uk-icon-edit uk-icon-justify"></i> {{ 'item.file.live_edit'|trans({}, 'item') }}
+                                    </a>
+                                {% endif %}
+                            </li>
+                            <li>
+                                <a
+                                    data-action="live#action"
+                                    data-live-action-param="renameFile"
+                                    data-live-item-id-param="{{ itemId }}"
+                                >
+                                    <i class="uk-icon-i-cursor uk-icon-justify"></i> {{ 'form.rename'|trans({}, 'form') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    data-action="live#action"
+                                    data-live-action-param="removeFile"
+                                    data-live-item-id-param="{{ itemId }}"
+                                >
+                                    <i class="uk-icon-trash uk-text-danger uk-icon-justify"></i> {{ 'Delete'|trans({}, 'form') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>

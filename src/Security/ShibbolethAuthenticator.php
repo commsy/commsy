@@ -37,12 +37,11 @@ class ShibbolethAuthenticator extends AbstractCommsyAuthenticator
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        UrlGeneratorInterface          $urlGenerator,
-        private readonly AccountCreatorFacade   $accountCreator,
-        RequestContext                 $requestContext,
-        private readonly AccountManager         $accountManager
-    )
-    {
+        UrlGeneratorInterface $urlGenerator,
+        private readonly AccountCreatorFacade $accountCreator,
+        RequestContext $requestContext,
+        private readonly AccountManager $accountManager
+    ) {
         parent::__construct($urlGenerator, $requestContext);
     }
 
@@ -69,7 +68,7 @@ class ShibbolethAuthenticator extends AbstractCommsyAuthenticator
         if ($request->attributes->has('context')) {
             $context = $request->attributes->get('context');
 
-            // Try to find an enabled authentication source of type ldap for the given context
+            // Try to find an enabled authentication source of type shibboleth for the given context
             $authSource = $this->entityManager->getRepository(AuthSourceShibboleth::class)
                 ->findOneBy([
                     'portal' => $context,
@@ -144,7 +143,7 @@ class ShibbolethAuthenticator extends AbstractCommsyAuthenticator
             ->findOneByCredentials($credentials['username'], $credentials['context'], $shibAuthSource);
 
         if (null === $account) {
-            // if we did not found an existing account, create one
+            // if we did not find an existing account, create one
             $account = new Account();
             $account->setAuthSource($shibAuthSource);
             $account->setContextId($credentials['context']);

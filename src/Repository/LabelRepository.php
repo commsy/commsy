@@ -15,6 +15,8 @@ namespace App\Repository;
 
 use App\Entity\Labels;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
 class LabelRepository extends ServiceEntityRepository
@@ -50,11 +52,11 @@ class LabelRepository extends ServiceEntityRepository
                 $qb->expr()->isNull('l.deletionDate'),
                 $qb->expr()->isNull('l.deleter')
             ))
-            ->setParameters([
-                'contextId' => $contextId,
-                'name' => $name,
-                'type' => $type,
-            ])
+            ->setParameters(new ArrayCollection([
+                new Parameter('contextId', $contextId),
+                new Parameter('name', $name),
+                new Parameter('type', $type),
+            ]))
             ->getQuery()
             ->getResult();
     }

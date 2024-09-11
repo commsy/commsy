@@ -127,10 +127,7 @@ class DateController extends BaseController
         // get material list from manager service
         $dates = $this->dateService->getListDates($roomId, $max, $start, $sort);
 
-        $readerList = [];
-        foreach ($dates as $item) {
-            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-        }
+        $readerList = $this->readerService->getChangeStatusForItems(...$dates);
 
         $allowedActions = $itemService->getAllowedActionsForItems($dates);
 
@@ -261,12 +258,7 @@ class DateController extends BaseController
 
         $readerList = [];
         foreach ($dates as $item) {
-            $reader = $this->readerService->getLatestReader($item->getItemId());
-            if (empty($reader)) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                $readerList[$item->getItemId()] = 'changed';
-            }
+            $readerList[$item->getItemId()] = $this->readerService->getStatusForItem($item)->value;
         }
 
         $itemsCountArray = $this->dateService->getCountArray($roomId);
@@ -386,59 +378,18 @@ class DateController extends BaseController
         $date = $this->dateService->getDate($itemId);
 
         $item = $date;
-        $reader_manager = $this->legacyEnvironment->getReaderManager();
-        $reader = $reader_manager->getLatestReader($item->getItemID());
-        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
-            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
+        $this->readerService->markItemAsRead($item);
 
         $itemArray = [$date];
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerManager = $this->legacyEnvironment->getReaderManager();
-
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        /** @var cs_user_item $current_user */
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-        $readerManager->getLatestReaderByUserIDArray($id_array, $date->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($date->getItemID(),
-                $current_user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $date->getModificationDate()) {
-                    ++$read_count;
-                    ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
-                }
-            }
-            $current_user = $user_list->getNext();
-        }
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($date);
 
         $readerList = [];
         $modifierList = [];
         foreach ($itemArray as $item) {
-            $reader = $this->readerService->getLatestReader($item->getItemId());
-            if (empty($reader)) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                $readerList[$item->getItemId()] = 'changed';
-            }
+            $readerList[$item->getItemId()] = $this->readerService->getStatusForItem($item)->value;
 
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
@@ -481,9 +432,9 @@ class DateController extends BaseController
             'modifierList' => $modifierList,
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'annotationForm' => $form,
-            'userCount' => $all_user_count,
-            'readCount' => $read_count,
-            'readSinceModificationCount' => $read_since_modification_count,
+            'userCount' => $readCountDescription->getUserTotal(),
+            'readCount' => $readCountDescription->getReadTotal(),
+            'readSinceModificationCount' => $readCountDescription->getReadSinceModification(),
             'draft' => $this->itemService->getItem($itemId)->isDraft(),
             'pinned' => $this->itemService->getItem($itemId)->isPinned(),
             'showCategories' => $current_context->withTags(),
@@ -1086,8 +1037,7 @@ class DateController extends BaseController
                             $tempDate->save();
 
                             // mark as read and noticed by creator
-                            $reader_manager = $this->legacyEnvironment->getReaderManager();
-                            $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
+                            $this->readerService->markRead($tempDate->getItemID(), $tempDate->getVersionID());
                         }
                     }
                 }
@@ -1152,56 +1102,24 @@ class DateController extends BaseController
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
-        $readerManager = $this->legacyEnvironment->getReaderManager();
-
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-        $readerManager->getLatestReaderByUserIDArray($id_array, $date->getItemID());
-        /** @var cs_user_item $current_user */
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($date->getItemID(),
-                $current_user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $date->getModificationDate()) {
-                    ++$read_count;
-                    ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
-                }
-            }
-            $current_user = $user_list->getNext();
-        }
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($date);
 
         $readerList = [];
         $modifierList = [];
         foreach ($itemArray as $item) {
-            $reader = $this->readerService->getLatestReader($item->getItemId());
-            if (empty($reader)) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                $readerList[$item->getItemId()] = 'changed';
-            }
-
+            $readerList[$item->getItemId()] = $this->readerService->getStatusForItem($item)->value;
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($date), CommsyEditEvent::SAVE);
 
-        return $this->render('date/save.html.twig', ['roomId' => $roomId, 'item' => $date, 'modifierList' => $modifierList, 'userCount' => $all_user_count, 'readCount' => $read_count, 'readSinceModificationCount' => $read_since_modification_count]);
+        return $this->render('date/save.html.twig', [
+            'roomId' => $roomId, 'item' => $date,
+            'modifierList' => $modifierList,
+            'userCount' => $readCountDescription->getUserTotal(),
+            'readCount' => $readCountDescription->getReadTotal(),
+            'readSinceModificationCount' => $readCountDescription->getReadSinceModification(),
+        ]);
     }
 
     public function saveRecurringDates($dateItem, $isNewRecurring, $valuesToChange, $formData)
@@ -1415,8 +1333,7 @@ class DateController extends BaseController
                 $tempDate->save();
 
                 // mark as read and noticed by creator
-                $reader_manager = $this->legacyEnvironment->getReaderManager();
-                $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
+                $this->readerService->markRead($tempDate->getItemID(), $tempDate->getVersionID());
             }
             $dateItem->setRecurrenceId($dateItem->getItemID());
             $dateItem->setRecurrencePattern($recurringPatternArray);
@@ -1452,8 +1369,7 @@ class DateController extends BaseController
                 }
 
                 // mark as read and noticed by creator
-                $reader_manager = $this->legacyEnvironment->getReaderManager();
-                $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
+                $this->readerService->markRead($tempDate->getItemID(), $tempDate->getVersionID());
 
                 // $tempDate->save();
                 $tempDate = $datesList->getNext();
@@ -1470,61 +1386,18 @@ class DateController extends BaseController
     ): Response {
         $date = $this->dateService->getDate($itemId);
         $item = $date;
-        $reader_manager = $this->legacyEnvironment->getReaderManager();
-        $reader = $reader_manager->getLatestReader($item->getItemID());
-        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
-            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
+        $this->readerService->markItemAsRead($item);
 
         $itemArray = [$date];
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerManager = $this->legacyEnvironment->getReaderManager();
-
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-        $readerManager->getLatestReaderByUserIDArray($id_array, $date->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($date->getItemID(),
-                $current_user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $date->getModificationDate()) {
-                    ++$read_count;
-                    ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
-                }
-            }
-            $current_user = $user_list->getNext();
-        }
-        $read_percentage = round(($read_count / $all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count / $all_user_count) * 100);
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($date);
 
         $readerList = [];
         $modifierList = [];
         foreach ($itemArray as $item) {
-            $reader = $this->readerService->getLatestReader($item->getItemId());
-            if (empty($reader)) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                $readerList[$item->getItemId()] = 'changed';
-            }
-
+            $readerList[$item->getItemId()] = $this->readerService->getStatusForItem($item)->value;
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
@@ -1545,9 +1418,9 @@ class DateController extends BaseController
             'modifierList' => $modifierList,
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'annotationForm' => $form->createView(),
-            'userCount' => $all_user_count,
-            'readCount' => $read_count,
-            'readSinceModificationCount' => $read_since_modification_count,
+            'userCount' => $readCountDescription->getUserTotal(),
+            'readCount' => $readCountDescription->getReadTotal(),
+            'readSinceModificationCount' => $readCountDescription->getReadSinceModification(),
             'draft' => $this->itemService->getItem($itemId)->isDraft(),
             'showCategories' => $current_context->withTags(),
             'showAssociations' => $current_context->isAssociationShowExpanded(),

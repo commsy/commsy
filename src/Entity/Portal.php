@@ -28,7 +28,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Serializable;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -956,18 +955,17 @@ class Portal
     }
 
     // Serializable
-    public function __serialize()
+    public function __serialize(): array
     {
         $serializableData = get_object_vars($this);
         // exclude from serialization
         unset($serializableData['logoFile']);
-        return serialize($serializableData);
+        return $serializableData;
     }
 
-    public function __unserialize(array $serialized)
+    public function __unserialize(array $data): void
     {
-        $unserializedData = unserialize($serialized);
-        foreach ($unserializedData as $key => $value) {
+        foreach ($data as $key => $value) {
             $this->{$key} = $value;
         }
     }

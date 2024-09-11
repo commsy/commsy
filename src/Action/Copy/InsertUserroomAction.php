@@ -14,10 +14,12 @@
 namespace App\Action\Copy;
 
 use App\Entity\Account;
+use App\Enum\ReaderStatus;
 use App\Http\JsonDataResponse;
 use App\Http\JsonErrorResponse;
 use App\Services\LegacyEnvironment;
 use App\Services\MarkedService;
+use App\Utils\ReaderService;
 use cs_environment;
 use cs_item;
 use cs_room_item;
@@ -34,7 +36,9 @@ class InsertUserroomAction
         private readonly TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
         private readonly MarkedService $markService,
-        private readonly Security $security
+        private readonly ReaderService $readerService,
+        private readonly Security $security,
+        private readonly ReaderStatus $readerStatus
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -55,7 +59,6 @@ class InsertUserroomAction
             return new JsonErrorResponse('<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i>'.$this->translator->trans('copy items as read only user is not allowed'));
         }
 
-        $readerManager = $this->legacyEnvironment->getReaderManager();
         $userRoomIds = [];
         $versionIdsByCopyIds = [];
 
@@ -88,7 +91,7 @@ class InsertUserroomAction
                     $versionId = $copy->getVersionID();
                     $versionIdsByCopyIds[$copyId] = $versionId;
 
-                    $readerManager->markRead($copyId, $versionId);
+                    $this->readerService->markRead($copyId, $versionId);
                 }
             }
         }
@@ -109,7 +112,7 @@ class InsertUserroomAction
 
                 foreach ($versionIdsByCopyIds as $copyId => $versionId) {
                     // TODO: allowing markItemsAsRead() to accept a matching array of version IDs would avoid this foreach loop
-                    $readerManager->markItemsAsRead([$copyId], $versionId, $relatedUserIds);
+                    $this->readerService->markItemsAsRead([$copyId], $versionId, $relatedUserIds);
                 }
             }
         }

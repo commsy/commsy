@@ -14,9 +14,9 @@
 namespace App\Filter;
 
 use App\Entity\SavedSearch;
+use App\Enum\ReaderStatus;
 use App\EventSubscriber\ChosenRubricSubscriber;
 use App\Model\SearchData;
-use App\Utils\ReaderService;
 use Spiriit\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -217,10 +217,10 @@ class SearchFilterType extends AbstractType
                 ->add('selectedReadStatus', Types\ChoiceType::class, [
                     'choices' => [
                         $this->translator->trans('any', [], 'form') => 'all',
-                        'New' => ReaderService::READ_STATUS_NEW,
-                        'Modified' => ReaderService::READ_STATUS_CHANGED,
-                        'Unread' => ReaderService::READ_STATUS_UNREAD,
-                        'Read' => ReaderService::READ_STATUS_SEEN,
+                        'New' => ReaderStatus::STATUS_NEW,
+                        'Modified' => ReaderStatus::STATUS_CHANGED,
+                        'Unread' => ReaderStatus::STATUS_UNREAD,
+                        'Read' => ReaderStatus::STATUS_SEEN,
                     ],
                     'label' => 'Read status',
                     'required' => false,

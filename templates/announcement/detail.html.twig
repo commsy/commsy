@@ -198,12 +198,9 @@
                     </div>
 
                     {# files #}
-                    <div id="files{{ announcement.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{{ {
-                        'editUrl': path('app_upload_uploadform', {'roomId': announcement.contextId, 'itemId': announcement.itemId}),
-                        'cancelEditUrl': path('app_item_canceledit', {'roomId': announcement.contextId, 'itemId': announcement.itemId})
-                    }|json_encode|e('html_attr') }}">
-                        {{ component('item_files', {
-                            item: announcement,
+                    <div id="files{{ announcement.itemId }}">
+                        {{ component('FileList:FileList', {
+                            itemId: announcement.itemId,
                             draft: draft
                         }) }}
                     </div>

@@ -18,10 +18,10 @@ use App\Http\JsonErrorResponse;
 use App\Services\LegacyEnvironment;
 use App\Services\MarkedService;
 use App\Utils\ItemService;
+use App\Utils\ReaderService;
 use cs_environment;
 use cs_item;
 use cs_room_item;
-use cs_user_item;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -33,6 +33,7 @@ class InsertAction
         private readonly TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
         private readonly ItemService $itemService,
+        private readonly ReaderService $readerService,
         private readonly MarkedService $markService
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -56,9 +57,6 @@ class InsertAction
             $imports = $this->markService->getListEntries(0);
 
             foreach ($items as $user) {
-                /* @var cs_user_item $user */
-                // $userRoom = $user->getLinkedUserroomItem();
-
                 foreach ($imports as $import) {
                     /** @var cs_item $import */
                     $import = $this->itemService->getTypedItem($import->getItemId());
@@ -69,8 +67,7 @@ class InsertAction
                     $this->legacyEnvironment->setCurrentContextID($oldContextId);
 
                     if (empty($copy->getErrorArray())) {
-                        $readerManager = $this->legacyEnvironment->getReaderManager();
-                        $readerManager->markRead($copy->getItemID(), $copy->getVersionID());
+                        $this->readerService->markRead($copy->getItemID(), $copy->getVersionID());
                     }
                 }
             }
@@ -81,8 +78,7 @@ class InsertAction
                 $copy = $importItem->copy();
 
                 if (empty($copy->getErrorArray())) {
-                    $readerManager = $this->legacyEnvironment->getReaderManager();
-                    $readerManager->markRead($copy->getItemID(), $copy->getVersionID());
+                    $this->readerService->markRead($copy->getItemID(), $copy->getVersionID());
                 }
             }
         }

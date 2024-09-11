@@ -53,7 +53,7 @@ class cs_tag_item extends cs_item
 
     /** Checks and returns the data of the item.
      */
-    public function _getItemData()
+    public function _getItemData(): ?array
     {
         $item_array = [];
         if ($this->isValid()) {
@@ -63,6 +63,8 @@ class cs_tag_item extends cs_item
         } else {
             trigger_error('cs_tag_item: getItemData(): Invalid Data');
         }
+
+        return null;
     }
 
     // ###############################

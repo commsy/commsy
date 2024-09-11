@@ -15,8 +15,6 @@ final class Version20170225121940 extends AbstractMigration
      */
     public function up(Schema $schema) : void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
         $this->write('updating discussion articles');
         $this->updateDiscussionArticles('discussions', 'discussionarticles');
 

@@ -81,6 +81,7 @@ security:
                 - App\Security\LoginFormAuthenticator
                 - App\Security\LdapAuthenticator
                 - App\Security\ShibbolethAuthenticator
+                - App\Security\OidcAuthenticator
             entry_point: App\Security\AuthenticationEntryPoint
             switch_user:
                 role: CAN_SWITCH_USER

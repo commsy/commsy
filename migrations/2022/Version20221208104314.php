@@ -125,8 +125,7 @@ final class Version20221208104314 extends AbstractMigration
     private function getMoveSql(string $srcTableName, string $destTableName): string
     {
         $sm = $this->connection->createSchemaManager();
-        $srcTable = $sm->listTableDetails($srcTableName);
-        $destTable = $sm->listTableDetails($destTableName);
+        $srcTable = $sm->introspectTable($srcTableName);
 
         $srcColumns = implode(', ', array_values(array_map(fn(Column $column) => "$srcTableName." . $column->getName(), $srcTable->getColumns())));
         $columns = implode(', ', array_values(array_map(fn(Column $column) => $column->getName(), $srcTable->getColumns())));

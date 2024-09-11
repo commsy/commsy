@@ -189,11 +189,10 @@ class TodoController extends BaseController
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = [];
+        $readerList = $this->readerService->getChangeStatusForItems(...$todos);
+
         $allowedActions = [];
         foreach ($todos as $item) {
-            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-
             if ($this->isGranted('ITEM_EDIT', $item->getItemID()) or
                 $this->isGranted('ITEM_ENTER', $roomId) and 'userroom' == $roomItem->getType()
                 or ('project' == $roomItem->getType() and $this->isGranted('ITEM_PARTICIPATE', $roomId))) {
@@ -240,70 +239,22 @@ class TodoController extends BaseController
         /** @var cs_step_item[] $steps */
         $steps = $todo->getStepItemList()->to_array();
 
-        $reader_manager = $this->legacyEnvironment->getReaderManager();
-        $reader = $reader_manager->getLatestReader($todo->getItemID());
-        if (empty($reader) || $reader['read_date'] < $todo->getModificationDate()) {
-            $reader_manager->markRead($todo->getItemID(), $todo->getVersionID());
-        }
+        $this->readerService->markItemAsRead($todo);
 
-        $stepList = $todo->getStepItemList();
-
-        $stepItem = $stepList->getFirst();
-        while ($stepItem) {
-            $reader = $reader_manager->getLatestReader($stepItem->getItemID());
-            if (empty($reader) || $reader['read_date'] < $stepItem->getModificationDate()) {
-                $reader_manager->markRead($stepItem->getItemID(), 0);
-            }
-
-            $stepItem = $stepList->getNext();
+        foreach ($steps as $step) {
+            $this->readerService->markItemAsRead($step);
         }
 
         $itemArray = [$todo];
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerManager = $this->legacyEnvironment->getReaderManager();
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($todo);
 
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        /** @var cs_user_item $current_user */
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-        $readerManager->getLatestReaderByUserIDArray($id_array, $todo->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($todo->getItemID(),
-                $current_user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $todo->getModificationDate()) {
-                    ++$read_count;
-                    ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
-                }
-            }
-            $current_user = $user_list->getNext();
-        }
         $readerList = [];
         $modifierList = [];
         foreach ($itemArray as $item) {
-            $reader = $this->readerService->getLatestReader($item->getItemId());
-            if (empty($reader)) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                $readerList[$item->getItemId()] = 'changed';
-            }
+            $readerList[$item->getItemId()] = $this->readerService->getStatusForItem($item)->value;
 
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
@@ -355,9 +306,9 @@ class TodoController extends BaseController
             'modifierList' => $modifierList,
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'annotationForm' => $form,
-            'userCount' => $all_user_count,
-            'readCount' => $read_count,
-            'readSinceModificationCount' => $read_since_modification_count,
+            'userCount' => $readCountDescription->getUserTotal(),
+            'readCount' => $readCountDescription->getReadTotal(),
+            'readSinceModificationCount' => $readCountDescription->getReadSinceModification(),
             'draft' => $this->itemService->getItem($itemId)->isDraft(),
             'pinned' => $this->itemService->getItem($itemId)->isPinned(),
             'showCategories' => $current_context->withTags(),
@@ -583,60 +534,24 @@ class TodoController extends BaseController
         }
 
         $itemArray = [$typedItem];
-        $modifierList = [];
-        foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
-        }
 
-        $readerManager = $this->legacyEnvironment->getReaderManager();
-
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        /** @var cs_user_item $current_user */
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-
-        $readerManager->getLatestReaderByUserIDArray($id_array, $typedItem->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($typedItem->getItemID(),
-                $current_user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $typedItem->getModificationDate()) {
-                    ++$read_count;
-                    ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
-                }
-            }
-            $current_user = $user_list->getNext();
-        }
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($typedItem);
 
         $readerList = [];
         $modifierList = [];
         foreach ($itemArray as $item) {
-            $reader = $this->readerService->getLatestReader($item->getItemId());
-            if (empty($reader)) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                $readerList[$item->getItemId()] = 'changed';
-            }
-
+            $readerList[$item->getItemId()] = $this->readerService->getStatusForItem($typedItem)->value;
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
-        return $this->render('todo/save.html.twig', ['roomId' => $roomId, 'item' => $typedItem, 'modifierList' => $modifierList, 'userCount' => $all_user_count, 'readCount' => $read_count, 'readSinceModificationCount' => $read_since_modification_count]);
+        return $this->render('todo/save.html.twig', [
+            'roomId' => $roomId,
+            'item' => $typedItem,
+            'modifierList' => $modifierList,
+            'userCount' => $readCountDescription->getUserTotal(),
+            'readCount' => $readCountDescription->getReadTotal(),
+            'readSinceModificationCount' => $readCountDescription->getReadSinceModification(),
+        ]);
     }
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/rating/{vote}')]
@@ -732,10 +647,7 @@ class TodoController extends BaseController
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = [];
-        foreach ($todos as $item) {
-            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-        }
+        $readerList = $this->readerService->getChangeStatusForItems(...$todos);
 
         $ratingList = [];
         if ($current_context->isAssessmentActive()) {
@@ -1092,58 +1004,18 @@ class TodoController extends BaseController
         $stepList = $todo->getStepItemList()->to_array();
 
         $item = $todo;
-        $reader_manager = $this->legacyEnvironment->getReaderManager();
-        $reader = $reader_manager->getLatestReader($item->getItemID());
-        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
-            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
+        $this->readerService->markItemAsRead($item);
 
         $itemArray = [$todo];
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerManager = $this->legacyEnvironment->getReaderManager();
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($todo);
 
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        /** @var cs_user_item $current_user */
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-        $readerManager->getLatestReaderByUserIDArray($id_array, $todo->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($todo->getItemID(),
-                $current_user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $todo->getModificationDate()) {
-                    ++$read_count;
-                    ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
-                }
-            }
-            $current_user = $user_list->getNext();
-        }
         $readerList = [];
         $modifierList = [];
         foreach ($itemArray as $item) {
-            $reader = $this->readerService->getLatestReader($item->getItemId());
-            if (empty($reader)) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                $readerList[$item->getItemId()] = 'changed';
-            }
+            $readerList[$item->getItemId()] = $this->readerService->getStatusForItem($item)->value;
 
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
@@ -1220,9 +1092,9 @@ class TodoController extends BaseController
             'modifierList' => $modifierList,
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
             'annotationForm' => $form->createView(),
-            'userCount' => $all_user_count,
-            'readCount' => $read_count,
-            'readSinceModificationCount' => $read_since_modification_count,
+            'userCount' => $readCountDescription->getUserTotal(),
+            'readCount' => $readCountDescription->getReadTotal(),
+            'readSinceModificationCount' => $readCountDescription->getReadSinceModification(),
             'draft' => $this->itemService->getItem($itemId)->isDraft(),
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),

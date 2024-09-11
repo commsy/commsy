@@ -35,10 +35,8 @@ class cs_file_manager extends cs_manager
 
     /**
      * get empty file item.
-     *
-     * @return cs_file_item
      */
-    public function getNewItem()
+    public function getNewItem(): cs_file_item
     {
         $item = new cs_file_item($this->_environment);
         $item->setContextID($this->_environment->getCurrentContextID());
@@ -511,7 +509,6 @@ class cs_file_manager extends cs_manager
     {
         if (!isset($context_id) or empty($context_id)) {
             trigger_error('deleteUnneededFiles: no context_id given', E_USER_ERROR);
-            $retour = false;
         } else {
             $retour = true;
 
@@ -520,7 +517,6 @@ class cs_file_manager extends cs_manager
             $result = $this->_db_connector->performQuery($sql);
             if (!isset($result)) {
                 trigger_error('Problem selecting items from query: "' . $sql . '"', E_USER_ERROR);
-                $retour = false;
             } else {
                 $file_id_array = [];
                 foreach ($result as $query_result) {
@@ -535,7 +531,6 @@ class cs_file_manager extends cs_manager
                     $result2 = $this->_db_connector->performQuery($sql2);
                     if (!isset($result2)) {
                         trigger_error('Problem selecting items from query: "' . $sql2 . '"', E_USER_ERROR);
-                        $retour = false;
                     } else {
                         $file_id_array2 = [];
                         foreach ($result2 as $query_result2) {
@@ -569,7 +564,6 @@ class cs_file_manager extends cs_manager
                             $result2 = $this->_db_connector->performQuery($query2);
                             if (!isset($result2)) {
                                 trigger_error('Problem selecting items from query: "' . $query2 . '"', E_USER_ERROR);
-                                $retour = false;
                             } elseif (!empty($result2[0])) {
                                 $query_result2 = $result2[0];
                                 if (!empty($query_result2['portal_id'])) {

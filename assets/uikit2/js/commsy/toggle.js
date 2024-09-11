@@ -13,6 +13,13 @@
         UI.components.toggle.prototype.toggle = function() {
             var ret = toggleRef.apply(this, arguments);
 
+            // If the bypass options is set, ignore all the custom code
+            // This is hacky, but allows for the default uk-toggle behaviour
+            const bypass = this.options.bypass || false;
+            if (bypass) {
+              return ret;
+            }
+
             this.element.first().find('i').each(function() {
                 if ($(this).hasClass('uk-icon-chevron-up')) {
                     $(this).parent('a').attr('title', $(this).parent('a').data('unhide-title'));
