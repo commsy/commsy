@@ -387,15 +387,15 @@
             </trans-unit>
             <trans-unit id="mail_newsletter_subject_daily">
                 <source>mail.newsletter_subject_daily</source>
-                <target>Daily CommSy newsletter: %portal%</target>
+                <target>Daily CommSy newsletter: {portal}</target>
             </trans-unit>
             <trans-unit id="mail_newsletter_subject_weekly">
                 <source>mail.newsletter_subject_weekly</source>
-                <target>Weekly CommSy newsletter: %portal%</target>
+                <target>Weekly CommSy newsletter: {portal}</target>
             </trans-unit>
             <trans-unit id="mail_newsletter_body_intro">
                 <source>mail.newsletter_body_intro</source>
-                <target>This newsletter is sent %mailSequence% by "%portal%". It includes information about unread items of all rooms you are member of.</target>
+                <target>This newsletter is sent {mailSequence} by "{portal}". It includes information about unread items of all rooms you are member of.</target>
             </trans-unit>
             <trans-unit id="daily">
                 <source>daily</source>
@@ -415,7 +415,7 @@
             </trans-unit>
             <trans-unit id="mail_newsletter_body_new_annotations">
                 <source>mail.newsletter_body_new_annotations</source>
-                <target>{1}new annotation|]1,Inf[%count% new annotations</target>
+                <target>{count, plural, =1 {new annotation} other {# new annotations}}</target>
             </trans-unit>
             <trans-unit id="mail_newsletter_body_outro">
                 <source>mail.newsletter_body_outro</source>
