@@ -69,9 +69,6 @@ class CronNewsletter implements CronTaskInterface
 
                 if ($send) {
                     $this->sendNewsletter($portal, $privateRoom);
-
-                    // TODO: remove next line & NewsletterGenerator->sendOldNewsletter() when sendNewsletter() is fully implemented
-                    $this->newsletterGenerator->sendOldNewsletter($privateRoom); // DEBUG
                 }
             }
         }
