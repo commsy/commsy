@@ -50,11 +50,16 @@ class NewsletterGenerator
         $user = $privateRoom->getOwnerUserItem();
         $portal = $privateRoom->getContextItem();
         $roomManager = $this->legacyEnvironment->getRoomManager();
+        $userroomManager = $this->legacyEnvironment->getUserRoomManager();
 
         $roomList = $roomManager->getRelatedContextListForUserInt($user->getUserID(),
             $user->getAuthSource(), $portal->getItemID(), true, true);
 
-        return array_filter($roomList->to_array(), function ($roomItem) {
+        $userroomList = $userroomManager->getRelatedUserroomListForUser($user);
+
+        $rooms = array_merge($roomList->to_array(), $userroomList->to_array());
+
+        return array_filter($rooms, function ($roomItem) {
             return (!$roomItem->isPrivateRoom()
                 && $roomItem->isOpen()
                 && $roomItem->getItemID() > 0
