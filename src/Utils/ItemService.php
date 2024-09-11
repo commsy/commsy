@@ -16,7 +16,6 @@ namespace App\Utils;
 use App\Repository\ItemRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyEnvironment;
-use cs_annotation_item;
 use cs_environment;
 use cs_item;
 use cs_item_manager;
@@ -236,34 +235,6 @@ class ItemService
         }
 
         return $typedItems;
-    }
-
-    /**
-     * @param cs_item[] cs_item array
-     * @param bool $withAnnotations Should related annotations also marked read?
-     */
-    public function markRead($items, $withAnnotations = true)
-    {
-        $readerManager = $this->legacyEnvironment->getReaderManager();
-
-        foreach ($items as $item) {
-            $readerManager->markRead($item->getItemID(), $item->getVersionID());
-
-            // annotations
-            if ($withAnnotations) {
-                $annotations = $item->getAnnotationList();
-                if (!empty($annotations)) {
-                    /** @var cs_annotation_item $annotationItem */
-                    $annotationItem = $annotations->getFirst();
-
-                    while ($annotationItem) {
-                        $readerManager->markRead($annotationItem->getItemId(), '0');
-
-                        $annotationItem = $annotations->getNext();
-                    }
-                }
-            }
-        }
     }
 
     public function getAllowedActionsForItems(array $items): array

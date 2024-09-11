@@ -172,7 +172,7 @@ class DashboardController extends AbstractController
             if (null != $item) {
                 $feedItems[] = $item;
                 $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
-                $readerList[$item->getItemId()] = $readerService->getChangeStatusForUserByID($item->getItemId(), $relatedUser->getItemId());
+                $readerList[$item->getItemId()] = $readerService->getChangeStatus($item, $relatedUser);
             }
         }
 

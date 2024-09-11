@@ -19,10 +19,12 @@ use App\Utils\ReaderService;
 use cs_annotation_item;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class ReadStatusSubscriber implements EventSubscriberInterface
+readonly class ReadStatusSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private readonly ItemService $itemService, private readonly ReaderService $readerService)
-    {
+    public function __construct(
+        private ItemService $itemService,
+        private ReaderService $readerService
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -32,7 +34,7 @@ class ReadStatusSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onReadStatusPreChange(ReadStatusPreChangeEvent $event)
+    public function onReadStatusPreChange(ReadStatusPreChangeEvent $event): void
     {
         $itemId = $event->getItemId();
 

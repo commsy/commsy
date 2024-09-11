@@ -14,9 +14,9 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_annotation_item;
 use cs_environment;
 use cs_manager;
-use cs_reader_manager;
 use cs_step_item;
 use cs_step_manager;
 use cs_todo_item;
@@ -31,10 +31,10 @@ class TodoService
 
     private readonly cs_step_manager $stepManager;
 
-    private readonly cs_reader_manager $readerManager;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        private readonly ReaderService $readerService,
+        LegacyEnvironment $legacyEnvironment
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $this->todoManager = $this->legacyEnvironment->getTodosManager();
@@ -42,8 +42,6 @@ class TodoService
 
         $this->stepManager = $this->legacyEnvironment->getStepManager();
         $this->stepManager->reset();
-
-        $this->readerManager = $this->legacyEnvironment->getReaderManager();
     }
 
     /**
@@ -191,11 +189,11 @@ class TodoService
     }
 
     /** Marks the Todo item with the given ID as read and noticed.
-     * @param int  $itemId          the identifier of the Todo item to be marked as read and noticed
+     * @param int $itemId          the identifier of the Todo item to be marked as read and noticed
      * @param bool $markSteps       whether the Todo item's Todo steps should be also marked as read and noticed
      * @param bool $markAnnotations whether the Todo item's annotations should be also marked as read and noticed
      */
-    public function markTodoReadAndNoticed($itemId, $markSteps = true, $markAnnotations = true)
+    public function markTodoReadAndNoticed(int $itemId, bool $markSteps = true, bool $markAnnotations = true): void
     {
         if (empty($itemId)) {
             return;
@@ -204,31 +202,23 @@ class TodoService
         // todo item
         $item = $this->getTodo($itemId);
         $versionId = $item->getVersionID();
-        $this->readerManager->markRead($itemId, $versionId);
+        $this->readerService->markRead($itemId, $versionId);
 
         // steps
         if (true === $markSteps) {
-            $stepList = $item->getStepItemList();
-            if (!empty($stepList)) {
-                $stepItem = $stepList->getFirst();
-                while ($stepItem) {
-                    $stepItemID = $stepItem->getItemID();
-                    $this->readerManager->markRead($stepItemID, $versionId);
-                    $stepItem = $stepList->getNext();
-                }
+            $steps = $item->getStepItemList();
+            foreach ($steps as $step) {
+                /** @var cs_step_item $step */
+                $this->readerService->markRead($step->getItemId(), $versionId);
             }
         }
 
         // annotations
         if (true === $markAnnotations) {
-            $annotationList = $item->getAnnotationList();
-            if (!empty($annotationList)) {
-                $annotationItem = $annotationList->getFirst();
-                while ($annotationItem) {
-                    $annotationItemID = $annotationItem->getItemID();
-                    $this->readerManager->markRead($annotationItemID, $versionId);
-                    $annotationItem = $annotationList->getNext();
-                }
+            $annotations = $item->getAnnotationList();
+            foreach ($annotations as $annotation) {
+                /** @var cs_annotation_item $annotation */
+                $this->readerService->markRead($annotation->getItemId(), $versionId);
             }
         }
     }

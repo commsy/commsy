@@ -18,6 +18,7 @@ use App\Action\MarkRead\MarkReadAction;
 use App\Action\Pin\PinAction;
 use App\Action\Pin\UnpinAction;
 use App\Entity\Portal;
+use App\Enum\ReaderStatus;
 use App\Event\UserLeftRoomEvent;
 use App\Event\UserStatusChangedEvent;
 use App\Filter\UserFilterType;
@@ -346,10 +347,7 @@ class UserController extends BaseController
         }
         $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, $sort);
 
-        $readerList = [];
-        foreach ($users as $item) {
-            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-        }
+        $readerList = $this->readerService->getChangeStatusForItems(...$users);
 
         // get user list from manager service
         $itemsCountArray = $this->userService->getCountArray($roomId);
@@ -501,11 +499,10 @@ class UserController extends BaseController
                         $this->userService->updateAllGroupStatus($user, $roomId);
                     }
 
-                    $readerManager = $this->legacyEnvironment->getReaderManager();
                     foreach ($users as $user) {
                         $itemId = $user->getItemID();
                         $versionId = $user->getVersionID();
-                        $readerManager->markRead($itemId, $versionId);
+                        $this->readerService->markRead($itemId, $versionId);
 
                         if ($user->isDeleted()) {
                             $event = new UserLeftRoomEvent($user, $room);
@@ -639,53 +636,16 @@ class UserController extends BaseController
         $user = $this->userService->getUser($itemId);
 
         $item = $user;
-        $reader_manager = $this->legacyEnvironment->getReaderManager();
-        $reader = $reader_manager->getLatestReader($item->getItemID());
-        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
-            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
+        $this->readerService->markItemAsRead($item);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
-        $readerManager = $this->legacyEnvironment->getReaderManager();
 
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($user);
 
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-        $readerManager->getLatestReaderByUserIDArray($id_array, $user->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($user->getItemID(),
-                $current_user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $user->getModificationDate()) {
-                    ++$read_count;
-                    ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
-                }
-            }
-            $current_user = $user_list->getNext();
-        }
         $readerList = [];
         $modifierList = [];
-        $reader = $this->readerService->getLatestReader($user->getItemId());
-        if (empty($reader)) {
-            $readerList[$item->getItemId()] = 'new';
-        } elseif ($reader['read_date'] < $user->getModificationDate()) {
-            $readerList[$user->getItemId()] = 'changed';
-        }
+
+        $readerList[$user->getItemId()] = $this->readerService->getStatusForItem($user)->value;
 
         $modifierList[$user->getItemId()] = $this->itemService->getAdditionalEditorsForItem($user);
 
@@ -752,9 +712,9 @@ class UserController extends BaseController
         $infoArray['prevItemId'] = $prevItemId;
         $infoArray['nextItemId'] = $nextItemId;
         $infoArray['lastItemId'] = $lastItemId;
-        $infoArray['readCount'] = $read_count;
-        $infoArray['readSinceModificationCount'] = $read_since_modification_count;
-        $infoArray['userCount'] = $all_user_count;
+        $infoArray['readCount'] = $readCountDescription->getReadTotal();
+        $infoArray['readSinceModificationCount'] = $readCountDescription->getReadSinceModification();
+        $infoArray['userCount'] = $readCountDescription->getUserTotal();
         $infoArray['draft'] = $this->itemService->getItem($itemId)->isDraft();
         $infoArray['pinned'] = $this->itemService->getItem($itemId)->isPinned();
         $infoArray['showRating'] = false;
@@ -1129,11 +1089,11 @@ class UserController extends BaseController
         // get user list from manager service
         $users = $this->userService->getListUsers($roomId, $max, $start, $currentUser->isModerator(), $sort, false);
 
-        $readerList = [];
+        $readerList = $this->readerService->getChangeStatusForItems(...$users);
+
         $allowedActions = [];
         $linkedUserRooms = [];
         foreach ($users as $item) {
-            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
             if ($currentUser->isModerator()) {
                 $allowedActions[$item->getItemID()] = [
                     'markread',

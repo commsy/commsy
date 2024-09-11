@@ -18,8 +18,8 @@ use App\Services\LegacyEnvironment;
 use App\Services\PrintService;
 use cs_environment;
 use cs_item;
+use cs_section_item;
 use Exception;
-use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
@@ -171,47 +171,12 @@ class DownloadService
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerManager = $this->legacyEnvironment->getReaderManager();
-
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-        $readerManager->getLatestReaderByUserIDArray($id_array, $item->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($item->getItemID(), $current_user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $item->getModificationDate()) {
-                    ++$read_count;
-                    ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
-                }
-            }
-            $current_user = $user_list->getNext();
-        }
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($item);
 
         $readerList = [];
         $modifierList = [];
         foreach ($itemArray as $tempItem) {
-            $reader = $this->readerService->getLatestReader($tempItem->getItemId());
-            if (empty($reader)) {
-                $readerList[$tempItem->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $tempItem->getModificationDate()) {
-                $readerList[$tempItem->getItemId()] = 'changed';
-            }
+            $readerList[$tempItem->getItemId()] = $this->readerService->getStatusForItem($item)->value;
             $modifierList[$tempItem->getItemId()] = $itemService->getAdditionalEditorsForItem($tempItem);
         }
 
@@ -266,6 +231,8 @@ class DownloadService
         $workflowUserArray = [];
         $workflowRead = false;
         $workflowUnread = false;
+
+        $userManager = $this->legacyEnvironment->getUserManager();
 
         if ($current_context->withWorkflowReader()) {
             $itemManager = $this->legacyEnvironment->getItemManager();
@@ -352,29 +319,18 @@ class DownloadService
             $ratingOwnDetail = $this->assessmentService->getOwnRatingDetail($item);
         }
 
-        $reader_manager = $this->legacyEnvironment->getReaderManager();
-
         // $item = $material;
-        $reader = $reader_manager->getLatestReader($item->getItemID());
-        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
-            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
+        $this->readerService->markItemAsRead($item);
 
         // mark annotations as read
         $annotationList = $item->getAnnotationList();
         $this->annotationService->markAnnotationsReadedAndNoticed($annotationList);
 
         if ('material' == $item->getItemType()) {
-            $readsectionList = $item->getSectionList();
-
-            $section = $readsectionList->getFirst();
-            while ($section) {
-                $reader = $reader_manager->getLatestReader($section->getItemID());
-                if (empty($reader) || $reader['read_date'] < $section->getModificationDate()) {
-                    $reader_manager->markRead($section->getItemID(), 0);
-                }
-
-                $section = $readsectionList->getNext();
+            $sections = $item->getSectionList();
+            foreach ($sections as $section) {
+                /** @var cs_section_item $section */
+                $this->readerService->markItemAsRead($section);
             }
         }
 
@@ -404,9 +360,9 @@ class DownloadService
         $infoArray['prevItemId'] = $prevItemId;
         $infoArray['nextItemId'] = $nextItemId;
         $infoArray['lastItemId'] = $lastItemId;
-        $infoArray['readCount'] = $read_count;
-        $infoArray['readSinceModificationCount'] = $read_since_modification_count;
-        $infoArray['userCount'] = $all_user_count;
+        $infoArray['readCount'] = $readCountDescription->getReadTotal();
+        $infoArray['readSinceModificationCount'] = $readCountDescription->getReadSinceModification();
+        $infoArray['userCount'] = $readCountDescription->getUserTotal();
         $infoArray['draft'] = $itemService->getItem($itemId)->isDraft();
         $infoArray['user'] = $this->legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
