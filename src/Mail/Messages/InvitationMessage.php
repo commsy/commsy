@@ -55,7 +55,7 @@ class InvitationMessage extends Message
     public function getTranslationParameters(): array
     {
         return [
-            '%portal%' => $this->portal->getTitle(),
+            'portal' => $this->portal->getTitle(),
         ];
     }
 }

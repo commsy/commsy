@@ -817,6 +817,14 @@
                 <source>Cancel cancellable delete</source>
                 <target>Zurück</target>
             </trans-unit>
+            <trans-unit id="settings_notifications_moderation_self_registration">
+                <source>settings.notifications.moderation_self_registration</source>
+                <target>Benachrichtigung bei Selbstregistrierung einer neuen Kennung am Portal</target>
+            </trans-unit>
+            <trans-unit id="settings_notifications_moderation_workspace_change">
+                <source>settings.notifications.moderation_workspace_change</source>
+                <target>Benachrichtigung bei Raumänderungen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

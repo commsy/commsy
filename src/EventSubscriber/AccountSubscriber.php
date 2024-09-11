@@ -13,6 +13,9 @@
 
 namespace App\EventSubscriber;
 
+use App\Account\AccountManager;
+use App\Account\AccountSetting;
+use App\Account\AccountSettingsManager;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
 use App\Entity\SavedSearch;
@@ -23,6 +26,7 @@ use App\Mail\Messages\AccountCreatedModerationMessage;
 use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
 use cs_environment;
+use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -33,6 +37,8 @@ readonly class AccountSubscriber implements EventSubscriberInterface
     public function __construct(
         private EntityManagerInterface $entityManager,
         private Mailer $mailer,
+        private AccountManager $accountManager,
+        private AccountSettingsManager $settingsManager,
         LegacyEnvironment $legacyEnvironment
     )
     {
@@ -68,7 +74,18 @@ readonly class AccountSubscriber implements EventSubscriberInterface
         /** @var Portal $portal */
         $portal = $portalRepository->find($account->getContextId());
         $portalModerators = $portal->getModeratorList($this->legacyEnvironment);
-        $recipients = iterator_to_array(RecipientFactory::createRecipients(...$portalModerators));
+
+        $filteredModerators = array_filter(iterator_to_array($portalModerators), function (cs_user_item $moderator): bool {
+            $moderatorAccount = $this->accountManager->getAccount($moderator, $moderator->getContextID());
+            $setting = $this->settingsManager->getSetting(
+                $moderatorAccount,
+                AccountSetting::NOTIFY_PORTAL_MOD_ON_SELF_REGISTRATION);
+
+            return $setting['enabled'] === true;
+        });
+
+
+        $recipients = iterator_to_array(RecipientFactory::createRecipients(...$filteredModerators));
 
         $message = new AccountCreatedModerationMessage($account);
         $this->mailer->sendMultiple($message, $recipients);

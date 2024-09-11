@@ -35,8 +35,15 @@ down: ## Stop the docker hub
 logs: ## Show live logs
 	@$(DOCKER_COMP) logs --tail=0 --follow
 
-sh: ## Connect to the PHP FPM container
+sh: ## Connect to the FrankenPHP container
 	@$(PHP_CONT) sh
+
+bash: ## Connect to the FrankenPHP container via bash so up and down arrows go to previous commands
+	@$(PHP_CONT) bash
+
+test: ## Start tests with codeception, pass the parameter "c=" to add options to codeception, example: make test c="--group e2e Unit"
+	@$(eval c ?=)
+	@$(DOCKER_COMP) exec -e APP_ENV=test php vendor/bin/codecept run $(c)
 
 build-office:
 	@$(DOCKER_COMP) -f compose.yaml -f compose.override.yaml -f docker/compose.office.yaml build --pull --no-cache

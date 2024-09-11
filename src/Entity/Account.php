@@ -22,6 +22,8 @@ use App\Dto\LocalLoginInputRequest;
 use App\Repository\AccountsRepository;
 use App\Validator\Constraints\EmailRegex;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
@@ -32,10 +34,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * Account.
- *
- */
 #[ORM\Entity(repositoryClass: AccountsRepository::class)]
 #[UniqueEntity(fields: ['contextId', 'username', 'authSource'], repositoryMethod: 'findOneByCredentialsArray', errorPath: 'username')]
 #[ORM\Table(name: 'accounts')]
@@ -160,12 +158,19 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
     #[ORM\Column(name: 'activity_state_updated', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTime $activityStateUpdated = null;
 
+    /**
+     * @var Collection<string, AccountSetting>
+     */
+    #[ORM\OneToMany(mappedBy: 'account', targetEntity: AccountSetting::class, cascade: ['persist'], orphanRemoval: true)]
+    private Collection $settings;
+
     public function __construct()
     {
         $this->lastLogin = null;
         $this->password = null;
         $this->passwordMd5 = null;
         $this->activityState = self::ACTIVITY_ACTIVE;
+        $this->settings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -413,5 +418,40 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         foreach ($data as $key => $value) {
             $this->{$key} = $value;
         }
+    }
+
+    /**
+     * @return Collection<int, AccountSetting>
+     */
+    public function getSettings(): Collection
+    {
+        return $this->settings;
+    }
+
+    public function setSetting(AccountSetting $setting): static
+    {
+        $lookup = $this->settings->filter(fn (AccountSetting $s) => $setting->getName() === $s->getName());
+
+        if ($lookup->isEmpty()) {
+            $this->settings->add($setting);
+            $setting->setAccount($this);
+        } else {
+            $accountSetting = $lookup->first();
+            $accountSetting->setValue($setting->getValue());
+        }
+
+        return $this;
+    }
+
+    public function removeSetting(AccountSetting $setting): static
+    {
+        if ($this->settings->removeElement($setting)) {
+            // set the owning side to null (unless already changed)
+            if ($setting->getAccount() === $this) {
+                $setting->setAccount(null);
+            }
+        }
+
+        return $this;
     }
 }

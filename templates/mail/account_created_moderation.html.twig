@@ -1,10 +1,10 @@
-{{ '[This email was generated automatically at %time_generated%.]'|trans({ '%time_generated%': 'now'|date|format_datetime }, 'mail') }}
+{{ '[This email was generated automatically at {time_generated}.]'|trans({ 'time_generated': 'now'|date|format_datetime }, 'mail') }}
 
 <br/><br/>
 
 {{ 'mail.account_registration.intro'|trans({
-    '%fullname%': account.firstname ~ ' ' ~ account.lastname,
-    '%username%': account.username
+    'fullname': account.firstname ~ ' ' ~ account.lastname,
+    'username': account.username
 }, 'mail') }}
 
 <br/><br/>

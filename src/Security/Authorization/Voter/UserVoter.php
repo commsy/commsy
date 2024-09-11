@@ -28,6 +28,7 @@ class UserVoter extends Voter
     final public const MODERATOR = 'MODERATOR';
     final public const ROOM_MODERATOR = 'ROOM_MODERATOR';
     final public const PARENT_ROOM_MODERATOR = 'PARENT_ROOM_MODERATOR';
+    final public const PORTAL_MODERATOR = 'PORTAL_MODERATOR';
 
     private readonly cs_environment $legacyEnvironment;
 
@@ -41,7 +42,12 @@ class UserVoter extends Voter
 
     protected function supports($attribute, $subject): bool
     {
-        return in_array($attribute, [self::MODERATOR, self::ROOM_MODERATOR, self::PARENT_ROOM_MODERATOR]);
+        return in_array($attribute, [
+            self::MODERATOR,
+            self::ROOM_MODERATOR,
+            self::PARENT_ROOM_MODERATOR,
+            self::PORTAL_MODERATOR,
+        ]);
     }
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
@@ -56,6 +62,7 @@ class UserVoter extends Voter
             self::MODERATOR => $this->isModerator($currentUser),
             self::ROOM_MODERATOR => $this->isModeratorForRoom($currentUser, $room),
             self::PARENT_ROOM_MODERATOR => $this->isParentModeratorForRoom($currentUser, $room),
+            self::PORTAL_MODERATOR => $this->isPortalModerator($currentUser),
             default => throw new LogicException('This code should not be reached!'),
         };
     }
@@ -95,5 +102,15 @@ class UserVoter extends Voter
         }
 
         return $this->userService->userIsParentModeratorForRoom($room, $user);
+    }
+
+    private function isPortalModerator(cs_user_item $user): bool
+    {
+        $portalUser = $user->getRelatedPortalUserItem();
+        if ($portalUser) {
+            return $portalUser->isModerator();
+        }
+
+        return false;
     }
 }

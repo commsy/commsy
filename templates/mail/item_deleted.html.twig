@@ -1,11 +1,11 @@
-{{ '[This email was generated automatically at %time_generated%.]'|trans({ '%time_generated%': 'now'|date|format_datetime }, 'mail') }}
+{{ '[This email was generated automatically at {time_generated}.]'|trans({ 'time_generated': 'now'|date|format_datetime }, 'mail') }}
 
 <br/><br/>
 
-{{ 'Title: %title%'|trans({ '%title%': item.title }, 'mail') }}<br/>
-{{ 'Rubric: %rubric%'|trans({ '%rubric%': item.type|capitalize|trans({'%count%':1}, 'rubric') }, 'mail') }}<br/>
-{{ 'Deleter: %deleter%'|trans({ '%deleter%': deleter.fullName }, 'mail') }}<br/>
-{{ 'Workspace: %workspace%'|trans({ '%workspace%': item.contextItem.title }, 'mail') }}
+{{ 'Title: {title}'|trans({ 'title': item.title }, 'mail') }}<br/>
+{{ 'Rubric: {rubric}'|trans({ 'rubric': item.type|capitalize|trans({'%count%':1}, 'rubric') }, 'mail') }}<br/>
+{{ 'Deleter: {deleter}'|trans({ 'deleter': deleter.fullName }, 'mail') }}<br/>
+{{ 'Workspace: {workspace}'|trans({ 'workspace': item.contextItem.title }, 'mail') }}
 
 <br/><br/>
 
@@ -13,4 +13,4 @@
 
 <br/><br/>
 
-{{ 'You received this email as one of the moderator/s in the workspace "%room_name%".'|trans({ '%room_name%': item.contextItem.title }, 'mail') }}
+{{ 'You received this email as one of the moderator/s in the workspace "{room_name}".'|trans({ 'room_name': item.contextItem.title }, 'mail') }}

@@ -10,9 +10,9 @@ suite_namespace: Tests\Functional
 modules:
     enabled:
         - DataFactory:
-            depends: Doctrine2
+            depends: Doctrine
         - Db
-        - Doctrine2:
+        - Doctrine:
             depends: Symfony
         - Symfony
         - Tests\Support\Helper\Factories
