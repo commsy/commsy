@@ -83,9 +83,4 @@ readonly class CronPageImpressionAndUserActivity implements CronTaskInterface
     {
         return 'Count page impressions and user activity';
     }
-
-    public function getPriority(): int
-    {
-        return self::PRIORITY_NORMAL;
-    }
 }

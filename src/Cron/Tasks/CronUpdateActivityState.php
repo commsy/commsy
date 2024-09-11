@@ -67,9 +67,4 @@ class CronUpdateActivityState implements CronTaskInterface
     {
         return 'Update activity states';
     }
-
-    public function getPriority(): int
-    {
-        return self::PRIORITY_NORMAL;
-    }
 }

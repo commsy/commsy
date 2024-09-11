@@ -11,24 +11,24 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Cron\Tasks;
+namespace App\MessageHandler;
 
-use App\Repository\LogRepository;
-use DateTimeImmutable;
+use App\Cron\CronManager;
+use App\Message\CronTaskFinished;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-readonly class CronDeleteOldLogs implements CronTaskInterface
+#[AsMessageHandler]
+final readonly class CronTaskFinishedHandler
 {
     public function __construct(
-        private LogRepository $logRepository
-    ) {}
-
-    public function run(?DateTimeImmutable $lastRun): void
-    {
-        $this->logRepository->deleteOlderThen(50);
+        private CronManager $cronManager,
+    ) {
     }
 
-    public function getSummary(): string
+    public function __invoke(CronTaskFinished $cronTaskFinished): void
     {
-        return 'Delete old log entries';
+        $cronTask = $cronTaskFinished->getCronName();
+
+        $this->cronManager->updateLastRun($cronTask);
     }
 }

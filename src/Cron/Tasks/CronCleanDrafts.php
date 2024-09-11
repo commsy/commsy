@@ -45,9 +45,4 @@ class CronCleanDrafts implements CronTaskInterface
     {
         return 'Delete drafts';
     }
-
-    public function getPriority(): int
-    {
-        return self::PRIORITY_NORMAL;
-    }
 }

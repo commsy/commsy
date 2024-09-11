@@ -11,15 +11,17 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Cron\Tasks;
+namespace App\Message;
 
-use DateTimeImmutable;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
-
-#[AutoconfigureTag('app.cron_task')]
-interface CronTaskInterface
+readonly class CronTaskFinished
 {
-    public function run(?DateTimeImmutable $lastRun): void;
+    public function __construct(
+        private string $cronName,
+    ) {
+    }
 
-    public function getSummary(): string;
+    public function getCronName(): string
+    {
+        return $this->cronName;
+    }
 }

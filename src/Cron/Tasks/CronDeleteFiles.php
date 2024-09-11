@@ -57,9 +57,4 @@ class CronDeleteFiles implements CronTaskInterface
     {
         return 'Delete old server files';
     }
-
-    public function getPriority(): int
-    {
-        return self::PRIORITY_NORMAL;
-    }
 }
