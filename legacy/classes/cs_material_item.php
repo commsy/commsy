@@ -17,6 +17,7 @@
 use App\Entity\License;
 use App\Entity\Materials;
 use App\Event\ItemDeletedEvent;
+use App\Utils\ReaderService;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for a material
@@ -1188,8 +1189,9 @@ public function copy()
     $copy->save($mode = 'copy');
     $copy_id = $copy->getItemID();
 
-    $reader_manager = $this->_environment->getReaderManager();
-    $reader_manager->markRead($copy_id, $copy->getVersionID());
+    /** @var ReaderService $readerService */
+    $readerService = $this->_environment->getSymfonyContainer()->get(ReaderService::class);
+    $readerService->markRead($copy_id, $copy->getVersionID());
 
     // Import all versions off the material
     $material_manager = $this->_environment->getMaterialManager();
@@ -1199,8 +1201,9 @@ public function copy()
     while ($import_version) {
         $version_id = $import_version->getVersionID();
         if ($version_id != $version) {
-            $copy_version = $import_version->copyVersion($copy_id);
-            $reader_manager->markRead($copy_id, $version_id);
+            $import_version->copyVersion($copy_id);
+
+            $readerService->markRead($copy_id, $version_id);
         }
         $import_version = $version_list->getNext();
     }

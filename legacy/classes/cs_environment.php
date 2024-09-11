@@ -608,12 +608,6 @@ class cs_environment
         return $this->_getInstance('cs_file_manager');
     }
 
-    public function getReaderManager(): cs_reader_manager
-    {
-        /* @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->_getInstance('cs_reader_manager');
-    }
-
     public function getRoomManager(): cs_room_manager
     {
         /* @noinspection PhpIncompatibleReturnTypeInspection */
@@ -670,7 +664,7 @@ class cs_environment
      *
      * @param string $name name of the class to be instantiated
      */
-    private function _getInstance(string $name): cs_manager|cs_reader_manager
+    private function _getInstance(string $name): cs_manager
     {
         if (!isset($this->instance[$name])) {
             $this->instance[$name] = new $name($this);
@@ -705,7 +699,7 @@ class cs_environment
      *
      * @param string $type The item type
      */
-    public function getManager(string $type): cs_manager|cs_reader_manager|null
+    public function getManager(string $type): cs_manager|null
     {
         if (empty($type)) {
             return null;
@@ -771,8 +765,6 @@ class cs_environment
             return $this->getLinkItemFileManager();
         } elseif (CS_ITEM_TYPE == $type || 'items' == $type) {
             return $this->getItemManager();
-        } elseif (CS_READER_TYPE == $type) {
-            return $this->getReaderManager();
         } elseif (CS_TIME_TYPE == $type) {
             return $this->getTimeManager();
         } elseif (CS_TAG_TYPE == $type) {

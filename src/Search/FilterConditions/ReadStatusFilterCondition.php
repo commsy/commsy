@@ -29,7 +29,7 @@ class ReadStatusFilterCondition implements FilterConditionInterface
 
     /**
      * Sets the read status to be used as a filter condition.
-     * Read status must be: ReaderService::READ_STATUS_NEW, ReaderService::READ_STATUS_CHANGED or ReaderService::READ_STATUS_SEEN.
+     * Read status must be: ReaderStatus::STATUS_NEW, ReaderStatus::STATUS_CHANGED or ReaderStatus::STATUS_SEEN.
      */
     public function setReadStatus(string $readStatus): self
     {

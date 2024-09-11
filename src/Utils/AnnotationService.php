@@ -18,21 +18,23 @@ use cs_annotations_manager;
 use cs_environment;
 use cs_list;
 
-class AnnotationService
+readonly class AnnotationService
 {
-    private readonly cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
-    private readonly cs_annotations_manager $annotationManager;
+    private cs_annotations_manager $annotationManager;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        private ReaderService $readerService,
+        LegacyEnvironment $legacyEnvironment
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $this->annotationManager = $this->legacyEnvironment->getAnnotationManager();
         $this->annotationManager->reset();
     }
 
-    public function getListAnnotations($roomId, $linkedItemId, $max, $start)
+    public function getListAnnotations($roomId, $linkedItemId, $max, $start): array
     {
         /*
          * Annotating entries in a portfolio of another user results in annotations with the context id of the
@@ -49,10 +51,8 @@ class AnnotationService
         return array_reverse($annotationList->to_array());
     }
 
-    public function addAnnotation($roomId, $itemId, $description)
+    public function addAnnotation($roomId, $itemId, $description): int
     {
-        $readerManager = $this->legacyEnvironment->getReaderManager();
-
         $user = $this->legacyEnvironment->getCurrentUser();
         // create new annotation
         $annotationManager = $this->legacyEnvironment->getAnnotationManager();
@@ -71,29 +71,13 @@ class AnnotationService
 
         $annotationItem->save();
 
-        $reader = $readerManager->getLatestReader($annotationItem->getItemID());
-        if (empty($reader) || $reader['read_date'] < $annotationItem->getModificationDate()) {
-            $readerManager->markRead($annotationItem->getItemID(), 0);
-        }
+        $this->readerService->markItemAsRead($annotationItem);
 
         return $annotationItem->getItemID();
     }
 
-    public function markAnnotationsReadedAndNoticed(cs_list $annotationList)
+    public function markAnnotationsReadedAndNoticed(cs_list $annotationList): void
     {
-        $readerManager = $this->legacyEnvironment->getReaderManager();
-
-        // collect an array of all ids and precache
-        $idArray = $annotationList->getIDArray();
-
-        $readerManager->getLatestReaderByIDArray($idArray);
-
-        // mark if needed
-        foreach ($annotationList as $annotation) {
-            $reader = $readerManager->getLatestReader($annotation->getItemID());
-            if (empty($reader) || $reader['read_date'] < $annotation->getModificationDate()) {
-                $readerManager->markRead($annotation->getItemID(), 0);
-            }
-        }
+        $this->readerService->markItemsRead($annotationList->getIDArray());
     }
 }
