@@ -35,7 +35,7 @@ final class WOPIJWTAuthenticator extends JWTAuthenticator
 
     public function doAuthenticate(Request $request): Passport
     {
-        if (!$this->proofKeyValidator->isValid()) {
+        if (!$this->proofKeyValidator->isRequestValid($request)) {
             throw new LogicException('proof key validation failed!');
         }
 

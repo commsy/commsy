@@ -31,7 +31,7 @@ class AccountCreatedModerationMessage extends Message
     public function getTranslationParameters(): array
     {
         return [
-            '%username%' => $this->account->getUsername(),
+            'username' => $this->account->getUsername(),
         ];
     }
 }

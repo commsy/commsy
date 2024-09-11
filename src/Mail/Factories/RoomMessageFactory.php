@@ -25,8 +25,10 @@ use LogicException;
 
 class RoomMessageFactory
 {
-    public function __construct(private readonly LegacyEnvironment $legacyEnvironment, private readonly PortalRepository $portalRepository)
-    {
+    public function __construct(
+        private readonly LegacyEnvironment $legacyEnvironment,
+        private readonly PortalRepository $portalRepository
+    ) {
     }
 
     public function createRoomActivityLockWarningMessage(object $room): ?MessageInterface

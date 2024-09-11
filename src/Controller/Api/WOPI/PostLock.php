@@ -54,6 +54,14 @@ final class PostLock extends AbstractController
                     $this->lockManager->renew($file);
                     return new Response();
                 }
+
+                // UnlockAndRelock
+                $oldLock = $request->headers->get('X-WOPI-Oldlock');
+                if ($file->getLockingId() === $oldLock) {
+                    $this->lockManager->unlock($file);
+                    $this->lockManager->lock($file, $lock);
+                    return new Response();
+                }
             }
 
             return new Response(null, Response::HTTP_CONFLICT, [

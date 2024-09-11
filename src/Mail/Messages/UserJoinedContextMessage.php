@@ -57,8 +57,8 @@ class UserJoinedContextMessage extends Message
     public function getTranslationParameters(): array
     {
         return [
-            '%fullname%' => $this->legacyEnvironment->getCurrentUserItem()->getFullName(),
-            '%room_title%' => $this->room->getTitle(),
+            'fullname' => $this->legacyEnvironment->getCurrentUserItem()->getFullName(),
+            'room_title' => $this->room->getTitle(),
         ];
     }
 }

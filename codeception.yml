@@ -7,7 +7,6 @@ paths:
     support: tests/Support
     envs: tests/_envs
 actor_suffix: Tester
-bootstrap: bootstrap.php
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
@@ -21,14 +20,19 @@ modules:
             dump: src/Resources/fixtures/initial.sql
             cleanup: true # whether the dump should be reloaded before each test
             populate: true # whether the the dump should be loaded before the test suite is started
-            populator: 'mysql -u $user -p$password -h $host commsy_test < $dump'
+            populator: 'mysql -u $user -p$password -h $host app_test < $dump'
             initial_queries:
-                - 'CREATE DATABASE IF NOT EXISTS commsy_test;'
-                - 'USE commsy_test;'
+                - 'CREATE DATABASE IF NOT EXISTS app_test;'
+                - 'USE app_test;'
+                - 'CREATE USER IF NOT EXISTS app IDENTIFIED BY "!ChangeMe!";'
+                - 'GRANT ALL PRIVILEGES on app_test.* to app;'
+                - 'FLUSH PRIVILEGES;'
         Symfony:
             app_path: 'src'
+            bootstrap: true
+            environment: 'test'
 
-        Doctrine2:
+        Doctrine:
             cleanup: false
 settings:
     memory_limit: 4096M

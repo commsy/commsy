@@ -1,0 +1,48 @@
+{% extends 'base/profile.html.twig' %}
+
+{% import 'utils/macros.html.twig' as macros %}
+
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
+
+{% block side_navigation %}
+    <nav aria-label="{{ 'Account'|trans({}, 'profile') }}">
+    {{ knp_menu_render('account') }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    {% set panelName = 'account-notifications' %}
+    <main id="main-content" aria-labelledby="{{ panelName }}-heading">
+    {% component 'v2:panel' with { name: panelName, title: 'notifications'|trans({}, 'menu') } %}
+        {% block content %}
+            {{ form_start(form) }}
+                {{ form_errors(form) }}
+
+                <table class="uk-table">
+                    <tr>
+                        <td>
+                            <h3 class="uk-text-primary">{{ 'profile.portal_moderation'|trans({}, 'profile') }}</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{ form_row(form.notifyPortalModOnSelfRegistration) }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{ form_row(form.notifyPortalModOnWorkspaceChange) }}
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="uk-table">
+                    <tr>
+                        <td>{{ form_widget(form.save) }}</td>
+                    </tr>
+                </table>
+            {{ form_end(form) }}
+        {% endblock %}
+    {% endcomponent %}
+    </main>
+{% endblock content %}

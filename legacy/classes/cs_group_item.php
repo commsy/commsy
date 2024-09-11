@@ -76,7 +76,7 @@ class cs_group_item extends cs_label_item
 
         /** @var cs_room_item $parentRoom */
         $parentRoom = $this->getContextItem();
-        $portal = $parentRoom->getContextItem();
+        $portal = $parentRoom->getPortal();
 
         if ($saveGrouproom) {
             if (!$this->_issetGroupRoomItemID() && $this->isGroupRoomActivated()) {

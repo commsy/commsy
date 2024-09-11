@@ -11,11 +11,10 @@
  * file that was distributed with this source code.
  */
 
-use App\Entity\Portal;
 use App\Proxy\PortalProxy;
 use App\Repository\MaterialsRepository;
+use App\Repository\PortalRepository;
 use App\Security\Authorization\Voter\ItemVoter;
-use Doctrine\ORM\EntityManagerInterface;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
@@ -76,7 +75,7 @@ class cs_item
              $contextId = $this->getContextID();
              if (!empty($contextId)) {
                  $item_manager = $this->_environment->getItemManager();
-                 $item = $item_manager->getItem($this->getContextID());
+                 $item = $item_manager->getItem($contextId);
 
                  if (isset($item) && is_object($item)) {
                      $manager = $this->_environment->getManager($item->getItemType());
@@ -86,7 +85,7 @@ class cs_item
                  }
 
                  $item_manager = $this->_environment->getItemManager(true);
-                 $item = $item_manager->getItem($this->getContextID());
+                 $item = $item_manager->getItem($contextId);
 
                  if (isset($item) && is_object($item)) {
                      $manager = $this->_environment->getManager($item->getItemType());
@@ -96,9 +95,11 @@ class cs_item
                  }
 
                  global $symfonyContainer;
-                 /** @var EntityManagerInterface $entityManager */
-                 $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
-                 $portal = $entityManager->getRepository(Portal::class)->find($contextId);
+
+                 /** @var PortalRepository $portalRepository*/
+                 $portalRepository = $symfonyContainer->get(PortalRepository::class);
+
+                 $portal = $portalRepository->findPortalByRoomContext($contextId);
 
                  if ($portal) {
                      $this->_context_item = new PortalProxy($portal, $this->_environment);
@@ -116,6 +117,24 @@ class cs_item
         if (is_object($context_item)) {
             $this->_context_item = $context_item;
         }
+    }
+
+    /**
+     * Returns the item's portal.
+     *
+     * This also works for a user room whose context is its parent
+     * project room (whose context, in turn, is the portal).
+     */
+    public function getPortal(): PortalProxy
+    {
+        global $symfonyContainer;
+
+        /** @var PortalRepository $portalRepository*/
+        $portalRepository = $symfonyContainer->get(PortalRepository::class);
+
+        $portal = $portalRepository->findPortalByRoomContext($this->getContextID());
+
+        return new PortalProxy($portal, $this->_environment);
     }
 
     public function setCacheOff()
