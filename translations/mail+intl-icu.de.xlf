@@ -387,15 +387,15 @@
             </trans-unit>
             <trans-unit id="mail_newsletter_subject_daily">
                 <source>mail.newsletter_subject_daily</source>
-                <target>Täglicher CommSy-Newsletter: %portal%</target>
+                <target>Täglicher CommSy-Newsletter: {portal}</target>
             </trans-unit>
             <trans-unit id="mail_newsletter_subject_weekly">
                 <source>mail.newsletter_subject_weekly</source>
-                <target>Wöchentlicher CommSy-Newsletter: %portal%</target>
+                <target>Wöchentlicher CommSy-Newsletter: {portal}</target>
             </trans-unit>
             <trans-unit id="mail_newsletter_body_intro">
                 <source>mail.newsletter_body_intro</source>
-                <target>Dieser Newsletter listet %mailSequence% neue oder geänderte Einträge in Ihren Räumen des CommSy-Portals "%portal%" auf. Berücksichtigt werden ungelesene Beiträge aus allen Räumen, in denen Sie Mitglied sind.</target>
+                <target>Dieser Newsletter listet {mailSequence} neue oder geänderte Einträge in Ihren Räumen des CommSy-Portals "{portal}" auf. Berücksichtigt werden ungelesene Beiträge aus allen Räumen, in denen Sie Mitglied sind.</target>
             </trans-unit>
             <trans-unit id="daily">
                 <source>daily</source>
@@ -415,7 +415,7 @@
             </trans-unit>
             <trans-unit id="mail_newsletter_body_new_annotations">
                 <source>mail.newsletter_body_new_annotations</source>
-                <target>{1}neue Anmerkung|]1,Inf[%count% neue Anmerkungen</target>
+                <target>{count, plural, =1 {neue Anmerkung} other {# neue Anmerkungen}}</target>
             </trans-unit>
             <trans-unit id="mail_newsletter_body_outro">
                 <source>mail.newsletter_body_outro</source>
