@@ -219,19 +219,16 @@ class cs_room_item extends cs_context_item
         $this->_unsetValue('contact_persons');
     }
 
-    public function renewContactPersonString()
+    public function renewContactPersonString(): void
     {
         $this->emptyContactPersonString();
-        $moderator_list = $this->getContactModeratorList();
-        $current_moderator = $moderator_list->getFirst();
-        while ($current_moderator) {
-            $contact_name = $current_moderator->getFullname();
-            if (!empty($contact_name)
-                 and 'GUEST' != mb_strtoupper((string) $contact_name)
-            ) {
+        $moderators = $this->getContactModeratorList();
+        foreach ($moderators as $moderator) {
+            /** @var cs_user_item $moderator */
+            $contact_name = $moderator->getFullname();
+            if (!empty($contact_name) && 'GUEST' != mb_strtoupper($contact_name)) {
                 $this->setContactPerson($contact_name);
             }
-            $current_moderator = $moderator_list->getNext();
         }
         $this->setChangeModificationOnSave(false);
         $this->save();

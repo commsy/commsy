@@ -14,17 +14,17 @@
 namespace App\Middleware;
 
 use ApiPlatform\Symfony\Messenger\RemoveStamp;
-use App\Account\AccountManager;
+use App\Account\AccountDeleter;
 use App\Entity\Account;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\UnrecoverableMessageHandlingException;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
 use Symfony\Component\Messenger\Middleware\StackInterface;
 
-final class AccountMiddleware implements MiddlewareInterface
+final readonly class AccountMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private AccountManager $accountManager
+        private AccountDeleter $accountDeleter
     ) {
     }
 
@@ -41,7 +41,7 @@ final class AccountMiddleware implements MiddlewareInterface
             // When a DELETE operation occurs, API Platform automatically adds a
             // ApiPlatform\Symfony\Messenger\RemoveStamp “stamp” instance to the “envelope”.
             if (!empty($envelope->all(RemoveStamp::class))) {
-                $this->accountManager->delete($message);
+                $this->accountDeleter->deleteAccount($message);
             }
         }
 

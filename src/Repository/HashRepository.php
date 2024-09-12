@@ -89,11 +89,12 @@ class HashRepository extends ServiceEntityRepository
         return $hash;
     }
 
-    public function deleteHash(Hash $hash): void
+    public function deleteHash(Hash $hash, bool $flush = true): void
     {
         $em = $this->getEntityManager();
         $em->remove($hash);
-        $em->flush();
+
+        if ($flush) $em->flush();
     }
 
     public function deleteHashesByUserIds(array $userIds): void

@@ -25,6 +25,7 @@ use App\Mail\Mailer;
 use App\Mail\Messages\AccountCreatedModerationMessage;
 use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
+use App\Utils\UserService;
 use cs_environment;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,6 +39,7 @@ readonly class AccountSubscriber implements EventSubscriberInterface
         private EntityManagerInterface $entityManager,
         private Mailer $mailer,
         private AccountManager $accountManager,
+        private UserService $userService,
         private AccountSettingsManager $settingsManager,
         LegacyEnvironment $legacyEnvironment
     )
@@ -57,7 +59,7 @@ readonly class AccountSubscriber implements EventSubscriberInterface
     public function onAccountDeleted(AccountDeletedEvent $event): void
     {
         // remove any saved searches
-        $portalUser = $event->getPortalUser();
+        $portalUser = $this->userService->getPortalUser($event->getAccount());
 
         $repository = $this->entityManager->getRepository(SavedSearch::class);
         $repository->removeSavedSearchesByAccountId($portalUser->getItemID());

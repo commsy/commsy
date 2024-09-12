@@ -1352,11 +1352,6 @@ class cs_user_manager extends cs_manager
         return $retour;
     }
 
-    public function resetCacheSQL()
-    {
-        $this->_cache_sql = [];
-    }
-
     public function getUserTempLoginExpired(): array
     {
         $user_array = [];

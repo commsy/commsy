@@ -13,26 +13,23 @@
 
 namespace App\Event;
 
-use cs_user_item;
+use App\Entity\Account;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
- * This event is fired when the user's account (i.e. the portal user item) is about to be deleted.
+ * This event is fired when the user's account is about to be deleted.
  *
  * Class AccountDeletedEvent
  */
-class AccountDeletedEvent extends Event
+final class AccountDeletedEvent extends Event
 {
     public function __construct(
-        /**
-         * @var cs_user_item The portal user item to be deleted
-         */
-        private readonly cs_user_item $portalUser
+        private readonly Account $account
     ) {
     }
 
-    public function getPortalUser(): cs_user_item
+    public function getAccount(): Account
     {
-        return $this->portalUser;
+        return $this->account;
     }
 }

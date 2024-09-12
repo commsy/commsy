@@ -13,6 +13,7 @@
 
 namespace App\Controller;
 
+use App\Account\AccountDeleter;
 use App\Action\Copy\InsertUserroomAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Action\Pin\PinAction;
@@ -380,6 +381,7 @@ class UserController extends BaseController
         EventDispatcherInterface $eventDispatcher,
         Mailer $mailer,
         AccountMail $accountMail,
+        AccountDeleter $accountDeleter,
         int $roomId
     ): Response {
         $room = $this->getRoom($roomId);
@@ -427,8 +429,7 @@ class UserController extends BaseController
                     switch ($formData['status']) {
                         case 'user-delete':
                             foreach ($users as $user) {
-                                $user->delete();
-                                $user->save();
+                                $accountDeleter->deleteLegacyProfile($user);
                             }
                             break;
 

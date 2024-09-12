@@ -51,7 +51,7 @@ class SavedSearchRepository extends ServiceEntityRepository
      *
      * @param int $accountId The ID of the user account whose saved searches shall be deleted
      */
-    public function removeSavedSearchesByAccountId(int $accountId): void
+    public function removeSavedSearchesByAccountId(int $accountId, bool $flush = true): void
     {
         $savedSearches = $this->getSavedSearchesByAccountId($accountId);
         if (empty($savedSearches)) {
@@ -64,7 +64,7 @@ class SavedSearchRepository extends ServiceEntityRepository
             $entityManager->remove($savedSearch);
         }
 
-        $entityManager->flush();
+        if ($flush) $entityManager->flush();
     }
 
     /**

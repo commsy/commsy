@@ -17,10 +17,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class cs_user_item extends cs_item
 {
-    private string $oldStatus = 'new';
-
-    private ?string $oldContact = null;
-
     private array $changedValues = [];
 
     /**
@@ -33,6 +29,8 @@ class cs_user_item extends cs_item
      */
     private ?cs_user_item $projectUserItem = null;
 
+    private bool $contactStatusUpdated = false;
+
     /** constructor: cs_user_item
      * the only available constructor, initial values for internal variables.
      */
@@ -40,19 +38,6 @@ class cs_user_item extends cs_item
     {
         parent::__construct($environment);
         $this->_type = CS_USER_TYPE;
-    }
-
-    /** Checks and sets the data of the item.
-     *
-     * @param array $data_array The prepared array from "_buildItem($db_array)"
-     */
-    public function _setItemData($data_array): void
-    {
-        $this->_data = $data_array;
-        if (isset($data_array['status']) and !empty($data_array['status'])) {
-            $this->oldStatus = $data_array['status'];
-            $this->oldContact = $data_array['is_contact'];
-        }
     }
 
     /**
@@ -316,11 +301,13 @@ class cs_user_item extends cs_item
 
     public function makeContactPerson(): void
     {
+        $this->contactStatusUpdated = true;
         $this->_setValue('is_contact', '1');
     }
 
     public function makeNoContactPerson(): void
     {
+        $this->contactStatusUpdated = true;
         $this->_setValue('is_contact', '0');
     }
 
@@ -1097,13 +1084,6 @@ class cs_user_item extends cs_item
         return $manager->getRelatedGroupListForUser($this);
     }
 
-    public function _getTaskList()
-    {
-        $task_manager = $this->_environment->getTaskManager();
-
-        return $task_manager->getTaskListForItem($this);
-    }
-
     /** is user root ?
      * this method returns a boolean explaining if user is root or not.
      *
@@ -1148,38 +1128,21 @@ class cs_user_item extends cs_item
             $this->setItemID($user_manager->getCreateID());
         }
 
-        // NOTE: media upload in a user item's description field is currently disabled
-        // $this->_saveFiles();     // this must be done before saveFileLinks
-        // $this->_saveFileLinks(); // this must be done after saving so we can be sure to have an item id
-
         // ContactPersonString
         $context_item = $this->getContextItem();
-        // get grouproom
-        if ($context_item && 'group' == $context_item->getType()) {
-            $grouproom_array = $context_item->_getItemData();
-            $grouproom_id = $grouproom_array['extras']['GROUP_ROOM_ID'];
-            $room_manager = $this->_environment->getRoomManager();
-            $context_item = $room_manager->getItem($grouproom_id);
+        if ($context_item instanceof cs_group_item) {
+            $context_item = $context_item->getGroupRoomItem();
         }
 
         if (isset($context_item)
-            and !$context_item->isPortal()
-            and !$context_item->isServer()
-            and $this->getUserID()
-            and 'GUEST' != mb_strtoupper($this->getUserID())
-            and (!isset($this->oldStatus)
-                or !isset($this->oldContact)
-                or $this->oldStatus != $this->getStatus()
-                or $this->oldContact != $this->getContactStatus()
-            )
+            && !$context_item->isPortal()
+            && !$context_item->isServer()
+            && $this->getUserID()
+            && 'GUEST' != mb_strtoupper($this->getUserID())
+            && $this->contactStatusUpdated
         ) {
             $context_item->renewContactPersonString();
-            unset($context_item);
         }
-
-        // set old status to current status
-        $this->oldStatus = $this->getStatus();
-        $this->oldContact = $this->getContactStatus();
 
         $this->updateElastic();
     }
@@ -1532,50 +1495,6 @@ class cs_user_item extends cs_item
     {
         $user_manager = $this->_environment->getUserManager();
         $user_manager->setCreatorID2ItemID($this);
-    }
-
-    public function deleteAllEntriesOfUser(): void
-    {
-        // datenschutz: overwrite or not (03.09.2012 IJ)
-        $overwrite = true;
-        global $symfonyContainer;
-        $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-        if (!empty($disable_overwrite) and 'TRUE' === $disable_overwrite) {
-            $overwrite = false;
-        }
-
-        if ($overwrite) {
-            $announcement_manager = $this->_environment->getAnnouncementManager();
-            $dates_manager = $this->_environment->getDatesManager();
-            $discussion_manager = $this->_environment->getDiscussionManager();
-            $discarticle_manager = $this->_environment->getDiscussionarticlesManager();
-            $material_manager = $this->_environment->getMaterialManager();
-            $section_manager = $this->_environment->getSectionManager();
-            $annotation_manager = $this->_environment->getAnnotationManager();
-            $label_manager = $this->_environment->getLabelManager();
-            $tag_manager = $this->_environment->getTagManager();
-            $todo_manager = $this->_environment->getTodosManager();
-            $step_manager = $this->_environment->getStepManager();
-
-            // replace users entries with the standard message for deleted entries
-            $announcement_manager->deleteAnnouncementsofUser($this->getItemID());
-            $dates_manager->deleteDatesOfUser($this->getItemID());
-            $discussion_manager->deleteDiscussionsOfUser($this->getItemID());
-            $discarticle_manager->deleteDiscarticlesOfUser($this->getItemID());
-            $material_manager->deleteMaterialsOfUser($this->getItemID());
-            $section_manager->deleteSectionsOfUser($this->getItemID());
-            $annotation_manager->deleteAnnotationsOfUser($this->getItemID());
-            $todo_manager->deleteTodosOfUser($this->getItemID());
-            $step_manager->deleteStepsOfUser($this->getItemID());
-
-            // NOTE: we don't replace hashtags (aka buzzwords) and categories (aka tags) with the standard message for
-            // deleted entries since these are structural elements benefitting all room users, and which have no direct
-            // association in the UI to the user who created them.
-            // However note that, even with these lines uncommented, buzzwords currently won't get overwritten in the UI
-            // if the server option `security.privacy_disable_overwriting` (in parameters.yml) is set to `flag`.
-//          $label_manager->deleteLabelsOfUser($this->getItemID());
-//          $tag_manager->deleteTagsOfUser($this->getItemID());
-        }
     }
 
     public function setAGBAcceptanceDate(?DateTimeImmutable $agbAcceptanceDate): cs_user_item

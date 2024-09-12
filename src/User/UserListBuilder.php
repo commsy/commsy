@@ -17,7 +17,9 @@ use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
 use cs_environment;
+use cs_grouproom_item;
 use cs_list;
+use Doctrine\Common\Collections\ArrayCollection;
 use LogicException;
 
 class UserListBuilder
@@ -128,6 +130,32 @@ class UserListBuilder
         if ($privateRoom) {
             $this->contextIds[] = $privateRoom->getItemID();
         }
+
+        return $this;
+    }
+
+    public function withGroupRoomUser(int $projectRoomId): self
+    {
+        if (!$this->account) {
+            throw new LogicException('You must provide an account object.');
+        }
+
+        $portalUser = $this->userService->getPortalUser($this->account);
+
+        $groupRoomManager = $this->legacyEnvironment->getGroupRoomManager();
+        $groupRoomList = $groupRoomManager->getUserRelatedGroupListForUser($portalUser);
+        $groupRooms = new ArrayCollection(iterator_to_array($groupRoomList));
+
+        $groupRoomsInProjectRoom = $groupRooms->filter(function (cs_grouproom_item $groupRoom) use($projectRoomId): bool {
+            $projectRoom = $groupRoom->getLinkedProjectItem();
+            return $projectRoom && $projectRoom->getItemID() == $projectRoomId;
+        });
+
+        $groupRoomsInProjectRoomIds = $groupRoomsInProjectRoom->map(fn (cs_grouproom_item $groupRoom) =>
+            $groupRoom->getItemID()
+        );
+
+        $this->contextIds = array_merge($this->contextIds, $groupRoomsInProjectRoomIds->toArray());
 
         return $this;
     }

@@ -13,6 +13,7 @@
 
 namespace App\Controller;
 
+use App\Account\AccountDeleter;
 use App\Account\AccountLanguage;
 use App\Account\AccountManager;
 use App\Account\AccountMerger;
@@ -501,6 +502,7 @@ class AccountController extends AbstractController
         Request $request,
         TranslatorInterface $translator,
         AccountManager $accountManager,
+        AccountDeleter $accountDeleter,
         Security $security,
         FormFactoryInterface $formFactory
     ): Response {
@@ -530,10 +532,9 @@ class AccountController extends AbstractController
             $deleteForm->handleRequest($request);
             if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
                 // delete account
-
                 /** @var $account Account */
                 $account = $security->getUser();
-                $accountManager->delete($account);
+                $accountDeleter->deleteAccount($account);
 
                 return $this->redirectToRoute('app_logout');
             }

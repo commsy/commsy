@@ -16,9 +16,9 @@ namespace App\Account;
 use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\Portal;
+use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Services\LegacyEnvironment;
-use App\User\UserListBuilder;
 use App\Utils\UserService;
 use cs_environment;
 use cs_list;
@@ -39,8 +39,7 @@ readonly class AccountManager
         private UserRepository $userRepository,
         LegacyEnvironment $legacyEnvironment,
         private UserService $userService,
-        private RequestStack $requestStack,
-        private UserListBuilder $userListBuilder
+        private RequestStack $requestStack
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -66,31 +65,29 @@ readonly class AccountManager
         $this->legacyEnvironment->setCurrentPortalID($account->getContextId());
 
         $portalUser = $this->userService->getPortalUser($lookupAccount ?? $account);
-        if ($portalUser) {
-            $relatedUsers = $portalUser->getRelatedUserList(true, true);
-            $relatedUsers->add($portalUser);
+        $relatedUsers = $portalUser->getRelatedUserList(true, true);
+        $relatedUsers->add($portalUser);
 
-            /*
-             * TODO: This is still very slow when changes occur, but will drastically improve login performance in
-             * most of the "normal" cases
-             */
-            foreach ($relatedUsers as $relatedUser) {
-                /** @var cs_user_item $relatedUser */
-                if ($relatedUser->getFirstname() !== $account->getFirstname() ||
-                    $relatedUser->getLastname() !== $account->getLastname() ||
-                    $relatedUser->getEmail() !== $account->getEmail()
-                ) {
-                    $relatedUser->setFirstname($account->getFirstname());
-                    $relatedUser->setLastname($account->getLastname());
-                    $relatedUser->setEmail($account->getEmail());
+        /*
+         * TODO: This is still very slow when changes occur, but will drastically improve login performance in
+         * most of the "normal" cases
+         */
+        foreach ($relatedUsers as $relatedUser) {
+            /** @var cs_user_item $relatedUser */
+            if ($relatedUser->getFirstname() !== $account->getFirstname() ||
+                $relatedUser->getLastname() !== $account->getLastname() ||
+                $relatedUser->getEmail() !== $account->getEmail()
+            ) {
+                $relatedUser->setFirstname($account->getFirstname());
+                $relatedUser->setLastname($account->getLastname());
+                $relatedUser->setEmail($account->getEmail());
 
                     $relatedUser->save();
                 }
 
                 if ($updateUsername && $relatedUser->getUserID() !== $account->getUsername()) {
                     $relatedUser->setUserID($account->getUsername());
-                    $relatedUser->save();
-                }
+                $relatedUser->save();
             }
         }
     }
@@ -146,6 +143,14 @@ readonly class AccountManager
         foreach ($users as $user) {
             yield $this->getAccount($user, $portalId);
         }
+    }
+
+    public function getAccountFromUser(User $user): ?Account
+    {
+        $accountRepository = $this->entityManager->getRepository(Account::class);
+        $authSource = $this->entityManager->getRepository(AuthSource::class)->find($user->getAuthSource());
+
+        return $accountRepository->findOneByCredentials($user->getUserID(), $authSource->getPortal()->getId(), $authSource);
     }
 
     public function getPortal(Account $account): ?Portal

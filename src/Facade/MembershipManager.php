@@ -13,6 +13,7 @@
 
 namespace App\Facade;
 
+use App\Account\AccountDeleter;
 use App\Entity\Account;
 use App\Event\UserLeftRoomEvent;
 use App\Utils\UserService;
@@ -24,7 +25,8 @@ class MembershipManager
 {
     public function __construct(
         private readonly UserService $userService,
-        private readonly EventDispatcherInterface $eventDispatcher
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly AccountDeleter $accountDeleter,
     ) {
     }
 
@@ -54,7 +56,7 @@ class MembershipManager
             return;
         }
 
-        $userInWorkspace->delete();
+        $this->accountDeleter->deleteLegacyProfile($userInWorkspace);
 
         $event = new UserLeftRoomEvent($userInWorkspace, $room);
         $this->eventDispatcher->dispatch($event);
@@ -68,7 +70,7 @@ class MembershipManager
     public function isLastModerator(cs_room_item $room, $currentUser): bool
     {
         $usersInWorkspace = $this->userService->getUserModeratorsInContext($room->getItemID());
-        if ($usersInWorkspace && ($usersInWorkspace->getCount() <= 1) && ('3' === $currentUser->getStatus())) {
+        if (($usersInWorkspace->getCount() <= 1) && ('3' === $currentUser->getStatus())) {
             return true;
         }
 

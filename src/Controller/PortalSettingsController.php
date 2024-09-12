@@ -13,6 +13,7 @@
 
 namespace App\Controller;
 
+use App\Account\AccountDeleter;
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AccountIndex;
@@ -1188,7 +1189,9 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         UserService $userService,
         AccountManager $accountManager,
-        Request $request
+        Request $request,
+        AccountManager $accountManager,
+        AccountDeleter $accountDeleter
     ): Response {
         $IdsMailRecipients = [];
         $user = $userService->getUser($userId);
@@ -1208,7 +1211,7 @@ class PortalSettingsController extends AbstractController
                 $user = $userService->getUser($userId);
                 $account = $accountManager->getAccount($user, $portal->getId());
                 if ($account) {
-                    $accountManager->delete($account);
+                    $accountDeleter->deleteAccount($account);
                 }
 
                 $this->addFlash('deleteSuccess', true);
@@ -1246,7 +1249,8 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         UserService $userService,
         Request $request,
-        AccountManager $accountManager
+        AccountManager $accountManager,
+        AccountDeleter $accountDeleter
     ): Response {
         $users = [];
         $userNames = [];
@@ -1276,7 +1280,7 @@ class PortalSettingsController extends AbstractController
                             $user = $userService->getUser($userId);
                             $account = $accountManager->getAccount($user, $portal->getId());
                             if ($account) {
-                                $accountManager->delete($account);
+                                $accountDeleter->deleteAccount($account);
                             }
                             $IdsMailRecipients[] = $userId;
                         }
@@ -1380,8 +1384,6 @@ class PortalSettingsController extends AbstractController
                         $this->addFlash('performedSuccessfully', true);
                         break;
                     default:
-                        // $user->delete();
-                        // $user->save();
                         $this->addFlash('deleteSuccess', true);
                         $action = 'user-delete';
                 }
