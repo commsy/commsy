@@ -15,11 +15,10 @@ namespace App\Services;
 
 use EtherpadLite\Client;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use UnitEnum;
 
 class EtherpadService
 {
-    private bool|string|int|float|UnitEnum|array|null $baseUrl = null;
+    private string $baseUrl;
 
     private ?Client $client = null;
 

@@ -263,7 +263,7 @@ class cs_grouproom_item extends cs_room_item
         return $access;
     }
 
-    public function getLinkedProjectItem()
+    public function getLinkedProjectItem(): ?cs_project_item
     {
         $retour = null;
         if (!isset($this->_project_room_item)) {

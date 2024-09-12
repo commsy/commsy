@@ -156,7 +156,7 @@ class cs_item
 
     /** Sets the data of the item.
      *
-     * @param $data_array array Is the prepared array from "_buildItem($db_array)"
+     * @param array $data_array Is the prepared array from "_buildItem($db_array)"
      */
     public function _setItemData($data_array): void
     {

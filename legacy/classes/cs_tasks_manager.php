@@ -322,7 +322,7 @@ class cs_tasks_manager extends cs_manager
     /**
      * Returns all existing task for an item.
      */
-    public function getTaskListForItem($item)
+    public function getTaskListForItem($item): cs_list
     {
         $item_id = $item->getItemID();
         $query = 'SELECT * FROM '.$this->addDatabasePrefix('tasks').' WHERE linked_item_id="'.encode(AS_DB, $item_id).'"';
@@ -331,9 +331,7 @@ class cs_tasks_manager extends cs_manager
         foreach ($result as $query_result) {
             $task_item = $this->_buildItem($query_result);
             $task_list->add($task_item);
-            unset($task_item);
         }
-        unset($item);
 
         return $task_list;
     }
