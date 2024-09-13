@@ -16,14 +16,12 @@ namespace App\Newsletter;
 use App\Enum\ReaderStatus;
 use App\Repository\ReaderRepository;
 use App\Services\LegacyEnvironment;
-use cs_annotations_manager;
 use cs_context_item;
 use cs_dates_manager;
 use cs_environment;
 use cs_list;
 use cs_manager;
 use cs_privateroom_item;
-use cs_user_item;
 use cs_user_manager;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -117,18 +115,6 @@ class NewsletterGenerator
         return $rubric_manager->get();
     }
 
-    private function getUserList(cs_user_item $user, cs_context_item $roomItem): ?cs_list
-    {
-        $user_manager = $this->legacyEnvironment->getUserManager();
-        $user_manager->resetLimits();
-        $user_manager->setUserIDLimit($user->getUserID());
-        $user_manager->setAuthSourceLimit($user->getAuthSource());
-        $user_manager->setContextLimit($roomItem->getItemID());
-        $user_manager->select();
-
-        return $user_manager->get();
-    }
-
     /**
      * Returns a data array with all data required to generate a newsletter message for the user
      * of the given private room. The newsletter describes the activity during the last day or week,
@@ -165,10 +151,7 @@ class NewsletterGenerator
             $roomData['pageImpressionsCount'] = $roomItem->getPageImpressionsForNewsletter($dayLimit);
             $roomData['activeMembersCount'] = $roomItem->getActiveMembersForNewsletter($dayLimit);
 
-            $userList = $this->getUserList($user, $roomItem);
-            if (isset($userList) && $userList->isNotEmpty() && 1 == $userList->getCount()) {
-                $refUser = $userList->getFirst();
-            }
+            $refUser = $roomItem->getUserByUserID($user->getUserID(), $user->getAuthSource());
             if (!isset($refUser) || !($refUser->getItemID() > 0)) {
                 continue;
             }
