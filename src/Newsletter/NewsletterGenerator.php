@@ -117,20 +117,6 @@ class NewsletterGenerator
         return $rubric_manager->get();
     }
 
-    private function getAnnotationsList(cs_context_item $roomItem, int $dayLimit): ?cs_list
-    {
-        /** @var cs_annotations_manager $annotation_manager */
-        $annotation_manager = $this->legacyEnvironment->getManager('annotation');
-        $annotation_manager->setContextLimit($roomItem->getItemID());
-
-        $annotation_manager->setAgeLimit($dayLimit);
-
-        $annotation_manager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
-        $annotation_manager->select();
-
-        return $annotation_manager->get();
-    }
-
     private function getUserList(cs_user_item $user, cs_context_item $roomItem): ?cs_list
     {
         $user_manager = $this->legacyEnvironment->getUserManager();
@@ -187,7 +173,7 @@ class NewsletterGenerator
                 continue;
             }
 
-            $annotationList = $this->getAnnotationsList($roomItem, $dayLimit);
+            $annotations = $roomItem->getAnnotationsChangedWithinDays($dayLimit);
             $annotationsInNewsletter = [];
 
             // rubrics
@@ -224,7 +210,7 @@ class NewsletterGenerator
 
                     // are there any new annotations for the new or modified items?
                     $annotationCount = 0;
-                    foreach ($annotationList as $annotationItem) {
+                    foreach ($annotations as $annotationItem) {
                         $annotationReader = $this->readerRepository->findOneByItemIdAndUserId(
                             $annotationItem->getItemID(),
                             $refUser->getItemID()
@@ -262,9 +248,8 @@ class NewsletterGenerator
             $roomData['annotationsInNewsletter'] = $annotationsInNewsletter;
 
             // are there any new annotations for unchanged items?
-            $annotationItem = $annotationList->getFirst();
             $annotationsStillToSend = [];
-            while ($annotationItem) {
+            foreach ($annotations as $annotationItem) {
                 if (!in_array($annotationItem, $annotationsInNewsletter)) {
                     $annotationReader = $this->readerRepository->findOneByItemIdAndUserId(
                         $annotationItem->getItemID(),
@@ -274,7 +259,6 @@ class NewsletterGenerator
                         $annotationsStillToSend[] = $annotationItem;
                     }
                 }
-                $annotationItem = $annotationList->getNext();
             }
             $roomData['annotationsStillToSend'] = $annotationsStillToSend;
 

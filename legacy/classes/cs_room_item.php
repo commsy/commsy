@@ -493,9 +493,28 @@ class cs_room_item extends cs_context_item
         $this->_setObject(CS_MATERIAL_TYPE, $value, false);
     }
 
+    /**
+     * Returns a list of annotations from this room that were modified within the
+     * given number of days.
+     * @param int $dayLimit number of days
+     */
+    public function getAnnotationsChangedWithinDays(int $dayLimit): array
+    {
+        $annotationManager = $this->_environment->getAnnotationManager();
+        $annotationManager->resetLimits();
+        $annotationManager->setContextLimit($this->getItemID());
+        $annotationManager->setAgeLimit($dayLimit);
+        $annotationManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $annotationManager->select();
+
+        $annotationList = $annotationManager->get();
+
+        return !$annotationList ? [] : $annotationList->to_array();
+    }
+
     /** Sets the data of the item.
      *
-     * @param $data_array Is the prepared array from "_buildItem($db_array)"
+     * @param array $data_array Is the prepared array from "_buildItem($db_array)"
      *
      * @return bool TRUE if data is valid FALSE otherwise
      */
