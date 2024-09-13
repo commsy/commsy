@@ -142,19 +142,17 @@ class RoomService
     }
 
     /**
-     * Returns a user list for the room with the $roomId.
+     * Returns the list of users for the given room item.
      *
-     * @param int $roomId room id
+     * @param cs_room_item $roomItem room item whose users should be returned
      *
-     * @return array Array with legacy user items
+     * @return cs_user_item[] Array of all users that are members of the given room
      */
-    public function getUserList($roomId): array
+    public function getUsers($roomItem): array
     {
-        // get person list
-        $roomItem = $this->getRoomItem($roomId);
-        $personList = $roomItem->getUserList();
+        $userList = $roomItem->getUserList();
 
-        return $personList->to_array();
+        return !$userList ? [] : $userList->to_array();
     }
 
     /**
