@@ -18,6 +18,7 @@ enum AccountSetting: string
     case NOTIFY_PORTAL_MOD_ON_SELF_REGISTRATION = 'notifyPortalModOnSelfRegistration';
     case NOTIFY_PORTAL_MOD_ON_WORKSPACE_CHANGE = 'notifyPortalModOnWorkspaceChange';
     case CUSTOM_INITIALS = 'customInitials';
+    case USER_DELETION_CASCADING_ITEMS  = 'userDeletionCascadingItems';
 
     public function default(): array
     {
@@ -25,6 +26,7 @@ enum AccountSetting: string
             AccountSetting::NOTIFY_PORTAL_MOD_ON_SELF_REGISTRATION => ['enabled' => true],
             AccountSetting::NOTIFY_PORTAL_MOD_ON_WORKSPACE_CHANGE => ['enabled' => false],
             AccountSetting::CUSTOM_INITIALS => ['initials' => ''],
+            AccountSetting::USER_DELETION_CASCADING_ITEMS  => ['enabled' => true],
         };
     }
 }

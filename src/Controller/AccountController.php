@@ -349,20 +349,30 @@ class AccountController extends AbstractController
 
     #[Route(path: '/portal/{portalId}/account/privacy')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function privacy($portalId, Request $request): Response
+    public function privacy(
+        #[MapEntity(id: 'portalId')]
+        Portal $portal,
+        Request $request,
+        Security $security,
+        EntityManagerInterface $entityManager
+    ): Response
     {
-        $form = $this->createForm(PrivacyType::class);
+        /** @var Account $account */
+        $account = $security->getUser();
+
+        $form = $this->createForm(PrivacyType::class, $account, [
+            'portal' => $portal,
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // generate & serve a PDF with the user's personal master data
-            return $this->redirectToRoute('app_account_privacyprint', [
-                'portalId' => $portalId,
-            ]);
+            $entityManager->persist($account);
+            $entityManager->flush();
         }
 
         return $this->render('account/privacy.html.twig', [
             'form' => $form,
+            'portal' => $portal,
         ]);
     }
 

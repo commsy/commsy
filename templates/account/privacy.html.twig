@@ -11,27 +11,41 @@
 {% block content %}
     {% set panelName = 'account-privacy' %}
     <main id="main-content" aria-labelledby="{{ panelName }}-heading">
-    {% component 'v2:panel' with { name: panelName, title: 'Self assessment'|trans({}, 'profile') } %}
+    {% component 'v2:panel' with { name: panelName, title: 'Privacy'|trans({}, 'profile') } %}
         {% block content %}
+            <table class="uk-table">
+                <tr>
+                    <td>
+                        <h3 class="uk-text-primary">{{ 'Self assessment'|trans({},'profile') }}</h3>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{ 'privacy text'|trans({},'profile') }}</td>
+                </tr>
+                <tr>
+                    <td>
+                        <a class="uk-button uk-button-primary" href="{{ path('app_account_privacyprint', {
+                            'portalId': portal.id
+                        }) }}">{{ 'Display PDF'|trans({}, 'profile') }}</a>
+                    </td>
+                </tr>
+            </table>
+
             {{ form_start(form) }}
                 {{ form_errors(form) }}
 
-                <table class="uk-table">
-                    <tr>
-                        <td>
-                            <h3 class="uk-text-primary">{{ 'Person-related data'|trans({},'profile') }}</h3>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>{{ 'privacy text'|trans({},'profile') }}</td>
-                    </tr>
-                </table>
-
-                <table class="uk-table">
-                    <tr>
-                        <td>{{ form_widget(form.download) }}</td>
-                    </tr>
-                </table>
+                {% if form.userDeletionCascadingItems is defined %}
+                    <table class="uk-table">
+                        <tr>
+                            <td>
+                                <h3 class="uk-text-primary">{{ 'profile.privacy.deletion_title'|trans({},'profile') }}</h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{{ form_row(form.userDeletionCascadingItems) }}</td>
+                        </tr>
+                    </table>
+                {% endif %}
             {{ form_end(form) }}
         {% endblock %}
     {% endcomponent %}
