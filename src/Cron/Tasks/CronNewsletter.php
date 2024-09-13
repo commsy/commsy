@@ -79,11 +79,6 @@ class CronNewsletter implements CronTaskInterface
         return 'Send newsletter';
     }
 
-    public function getPriority(): int
-    {
-        return self::PRIORITY_NORMAL;
-    }
-
     /**
      * Prepare and send the newsletters. They describe the activity during the last day or week,
      * depending on the user's frequency setting.
