@@ -1024,6 +1024,24 @@ class cs_user_manager extends cs_manager
         return $this->_getItemList('user', $id_array);
     }
 
+    public function getItemsForRoomIDChangedWithinDays(int $contextId, int $dayLimit): array
+    {
+        $this->reset();
+        $this->setContextLimit($contextId);
+
+        // NOTE: we only include newly created users (i.e., when they have requested room membership)
+        $this->setExistenceLimit($dayLimit);
+
+        $this->setUserLimit();
+
+        $this->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $this->select();
+
+        $itemsList = $this->get();
+
+        return !$itemsList ? [] : $itemsList->to_array();
+    }
+
     public function getRootUser()
     {
         if (!isset($this->_root_user)) {

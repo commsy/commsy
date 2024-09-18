@@ -39,7 +39,8 @@ class NewsletterGenerator
     }
 
     /**
-     * Returns the list of rooms for the user of the given private room.
+     * Returns the list of rooms for the user of the given private room, including his/her
+     * user rooms.
      */
     private function getRoomListForUserWithPrivatRoom(cs_privateroom_item $privateRoom): array
     {
@@ -85,34 +86,6 @@ class NewsletterGenerator
     private function generateAbsoluteUrl(string $name, array $parameters)
     {
         return $this->router->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
-    }
-
-    // TODO: move these to individual manager classes
-    //       e.g., create a basic cs_manager method and overwrite this for cs_dates_manager & cs_user_manager
-    private function getRubricItemList(cs_context_item $roomItem, array $rubricConfigArray, int $dayLimit): ?cs_list
-    {
-        $rubric_manager = $this->legacyEnvironment->getManager($rubricConfigArray[0]);
-        $rubric_manager->reset();
-        $rubric_manager->setContextLimit($roomItem->getItemID());
-
-        // NOTE: we only include newly created users (i.e., when they have requested room membership)
-        if ($rubric_manager instanceof cs_user_manager) {
-            $rubric_manager->setExistenceLimit($dayLimit);
-        } else {
-            $rubric_manager->setAgeLimit($dayLimit);
-        }
-
-        if ($rubric_manager instanceof cs_dates_manager) {
-            $rubric_manager->setDateModeLimit(2);
-        }
-        if ($rubric_manager instanceof cs_user_manager) {
-            $rubric_manager->setUserLimit();
-        }
-
-        $rubric_manager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
-        $rubric_manager->select();
-
-        return $rubric_manager->get();
     }
 
     /**
@@ -172,7 +145,8 @@ class NewsletterGenerator
                     continue;
                 }
 
-                $rubricItemList = $this->getRubricItemList($roomItem, $rubricConfigArray, $dayLimit);
+                $rubricManager = $this->legacyEnvironment->getManager($rubricConfigArray[0]);
+                $rubricItemList = $rubricManager->getItemsForRoomIDChangedWithinDays($roomItem->getItemID(), $dayLimit);
 
                 $countEntries = 0;
                 $rubricData = [];
