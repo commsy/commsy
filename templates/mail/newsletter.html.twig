@@ -2,14 +2,8 @@
 {%- set mailSequence = newsletterData.mailSequence|trans({}, 'mail') -%}
 {{ 'mail.newsletter_body_intro'|trans({'%mailSequence%': mailSequence, '%portal%': portal.title}, 'mail') }}
 
-{#- No content ~#}
-{%~ if newsletterData.rooms is empty ~%}
-    <br/><br/>
-    {{ 'mail.newsletter_body_no_new_entries'|trans({}, 'mail') }}
-{%~ endif ~%}
-
 {#- Rooms ~#}
-{% for id, roomData in newsletterData.rooms ~%}
+{%~ for id, roomData in newsletterData.rooms ~%}
     <br/><br/><br/>
     {%- set room = roomData.roomItem -%}
     <strong style="font-size: larger"><a href="{{ roomData.homeUrl }}">{{ room.title }}</a></strong>
@@ -43,7 +37,13 @@
             <br/>  -  <a href="{{ url('app_' ~ linkedItem.itemType ~ '_detail', { 'roomId': id, 'itemId': linkedItem.itemId }) ~ '#annotations' ~ linkedItem.itemId }}">{{ linkedItem.title|decodeHtmlEntity }}</a>: "{{ annotationTitle }}"
         {% endfor ~%}
     {%~ endif ~%}
+{%- else -%}
 
+    {#- No content ~#}
+    {%- if newsletterData.rooms is empty ~%}
+        <br/><br/>
+        {{ 'mail.newsletter_body_no_new_entries'|trans({}, 'mail') }}
+    {%~ endif ~%}
 {%- endfor -%}
 
 {#- Outro ~#}
