@@ -17,7 +17,7 @@
             {%- set item = itemData.item -%}
             {%- set itemTitle = item.itemType is same as('user') ? item.fullName|decodeHtmlEntity : item.title|decodeHtmlEntity -%}
             {%- set noticedStatusParts = [] -%}
-            {%- if itemData.itemNoticedStatus is defined -%}
+            {%- if itemData.itemNoticedStatus is defined and itemData.itemNoticedStatus is not same as('seen') -%}
                 {%- set noticedStatusParts = noticedStatusParts|merge([itemData.itemNoticedStatus|trans({}, 'mail')]) -%}
             {%- endif -%}
             {%- if itemData.newAnnotationsCount > 0 -%}
