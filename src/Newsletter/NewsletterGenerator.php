@@ -17,12 +17,9 @@ use App\Enum\ReaderStatus;
 use App\Repository\ReaderRepository;
 use App\Services\LegacyEnvironment;
 use cs_context_item;
-use cs_dates_manager;
 use cs_environment;
-use cs_list;
-use cs_manager;
 use cs_privateroom_item;
-use cs_user_manager;
+use DateTime;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -160,7 +157,7 @@ class NewsletterGenerator
                     $itemReader = $this->readerRepository->findOneByItemIdAndUserId($rubricItemID, $refUser->getItemID());
                     $itemNoticedStatus = !$itemReader
                         ? ReaderStatus::STATUS_NEW->value
-                        : ($itemReader->getReadDate() < $rubricItem->getModificationDate()
+                        : ($itemReader->getReadDate() < new DateTime($rubricItem->getModificationDate())
                             ? ReaderStatus::STATUS_CHANGED->value
                             : ReaderStatus::STATUS_SEEN->value
                         );
