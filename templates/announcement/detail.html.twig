@@ -224,7 +224,7 @@
             </div>
 
             {# annotations #}
-            {% if item.itemType != 'discussion' %}
+            {% if not draft and item.itemType != 'discussion' %}
                 <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
                     {# actions #}
                         <div class="uk-flex-item-none">
@@ -285,7 +285,9 @@
                         {% if (showCategories or showHashtags) %}
                             <li><a href="#categoriesAndBuzzwords{{ announcement.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
                         {% endif %}
-                        <li><a href="#annotations{{ announcement.itemId }}">{{ 'annotations'|trans({})|capitalize }} ({{ amountAnnotations }})</a></li>
+                        {% if not draft %}
+                            <li><a href="#annotations{{ announcement.itemId }}">{{ 'annotations'|trans({})|capitalize }} ({{ amountAnnotations }})</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
