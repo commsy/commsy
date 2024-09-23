@@ -141,6 +141,8 @@ class HashtagController extends AbstractController
                 $buzzwordItem = $labelManager->getItem($hashtag->getItemId());
                 $buzzwordItem->setName($hashtag->getName());
                 $buzzwordItem->save();
+
+                $eventDispatcher->dispatch(new CommsyEditEvent($buzzwordItem), CommsyEditEvent::EDIT);
             }
 
             return $this->redirectToRoute('app_hashtag_edit', [
@@ -179,6 +181,7 @@ class HashtagController extends AbstractController
             $buzzwordItemOne->setName($newName);
             $buzzwordItemOne->setModificationDate(getCurrentDateTimeInMySQL());
             $buzzwordItemOne->save();
+
             // Get links to create new hashtag links
             $managerLink = $legacyEnvironment->getLinkManager();
             $links = $managerLink->getLinksTo2('buzzword_for', $secondId);
@@ -198,8 +201,6 @@ class HashtagController extends AbstractController
                 'roomId' => $roomId,
             ]);
         }
-
-        $eventDispatcher->dispatch(new CommsyEditEvent(null), CommsyEditEvent::EDIT);
 
         return $this->render('hashtag/edit.html.twig', [
             'editForm' => $editForm,
