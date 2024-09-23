@@ -33,7 +33,7 @@ class Labels
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private int $itemId;
+    private ?int $itemId = null;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: false)]
     private int $contextId;
@@ -85,7 +85,7 @@ class Labels
         ;
     }
 
-    public function getItemId(): int
+    public function getItemId(): ?int
     {
         return $this->itemId;
     }
