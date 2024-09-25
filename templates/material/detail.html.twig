@@ -466,44 +466,46 @@
             </div>
 
             {# annotations #}
-            <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
-                <div class="uk-grid">
-                    <div class="uk-width-3-5 uk-text-large ">
-                        {{ 'annotations'|trans({})|capitalize }}
+            {% if not draft %}
+                <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
+                    <div class="uk-grid">
+                        <div class="uk-width-3-5 uk-text-large ">
+                            {{ 'annotations'|trans({})|capitalize }}
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div id="annotations{{ material.itemId }}" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
+                <div id="annotations{{ material.itemId }}" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
 
-                {% if is_granted('ITEM_ANNOTATE', material.itemId) %}
-                    <article class="uk-comment">
-                        <header class="uk-comment-header uk-margin-remove uk-flex">
-                            <div class="uk-margin-right uk-flex-item-none">
-                                {% if not user.isDeleted and user.isUser %}
-                                    {{ macros.userIconLink(user) }}
-                                {% else %}
-                                    {{ macros.userIcon(user) }}
-                                {% endif %}
-                            </div>
-                            <div class="uk-width-8-10">
-                                {{ form_start(annotationForm, {'action': path('app_annotation_create', {'roomId': app.request.attributes.get('roomId'), 'itemId': material.itemId}), 'method': 'POST'}) }}
-                                    <p>
-                                        {{ form_label(annotationForm.description) }}
-                                    </p>
-                                    {{ form_widget(annotationForm.description) }}
-                                {{ form_end(annotationForm) }}
-                            </div>
-                        </header>
-                    </article>
-                {% endif %}
+                    {% if is_granted('ITEM_ANNOTATE', material.itemId) %}
+                        <article class="uk-comment">
+                            <header class="uk-comment-header uk-margin-remove uk-flex">
+                                <div class="uk-margin-right uk-flex-item-none">
+                                    {% if not user.isDeleted and user.isUser %}
+                                        {{ macros.userIconLink(user) }}
+                                    {% else %}
+                                        {{ macros.userIcon(user) }}
+                                    {% endif %}
+                                </div>
+                                <div class="uk-width-8-10">
+                                    {{ form_start(annotationForm, {'action': path('app_annotation_create', {'roomId': app.request.attributes.get('roomId'), 'itemId': material.itemId}), 'method': 'POST'}) }}
+                                        <p>
+                                            {{ form_label(annotationForm.description) }}
+                                        </p>
+                                        {{ form_widget(annotationForm.description) }}
+                                    {{ form_end(annotationForm) }}
+                                </div>
+                            </header>
+                        </article>
+                    {% endif %}
 
-                {{ render(controller(
-                    'App\\Controller\\AnnotationController::feed',
-                    { 'roomId': roomId, 'linkedItemId': item.itemId }
-                ))}}
+                    {{ render(controller(
+                        'App\\Controller\\AnnotationController::feed',
+                        { 'roomId': roomId, 'linkedItemId': item.itemId }
+                    ))}}
 
-            </div>
+                </div>
+            {% endif %}
             </main>
         </div>
 
@@ -539,7 +541,9 @@
                             </li>
                         {% endif %}
 
-                        <li><a href="#annotations{{ material.itemId }}">{{ 'annotations'|trans({})|capitalize }} ({{ amountAnnotations }})</a></li>
+                        {% if not draft %}
+                            <li><a href="#annotations{{ material.itemId }}">{{ 'annotations'|trans({})|capitalize }} ({{ amountAnnotations }})</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

@@ -179,7 +179,7 @@ final readonly class ReaderService
 
     /**
      * @param cs_item[] $items array of items
-     * @param bool $withAnnotations Should related annotations also marked read?
+     * @param bool $withAnnotations Should related annotations also get marked as read?
      */
     public function markItemsRead(array $items, bool $withAnnotations = true): void
     {
