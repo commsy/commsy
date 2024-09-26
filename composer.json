@@ -11,6 +11,7 @@
         "ext-iconv": "*",
         "ext-intl": "*",
         "ext-json": "*",
+        "ext-mbstring": "*",
         "ext-zip": "*",
         "0x46616c6b/etherpad-lite-client": "^0.7.0",
         "api-platform/core": "^3.3",
