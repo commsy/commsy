@@ -11,6 +11,9 @@
  * file that was distributed with this source code.
  */
 
+use App\Entity\Account;
+use App\Utils\UserService;
+
 /** class for a label
  * this class implements a commsy label. A label can be a group, a topic, a label, ...
  */
@@ -34,7 +37,7 @@ class cs_group_item extends cs_label_item
     public function setGroupRoomItemID($value)
     {
         if (!empty($value)) {
-            $this->_setExtra('GROUP_ROOM_ID', (int) $value);
+            $this->_setExtra('GROUP_ROOM_ID', (int)$value);
         }
     }
 
@@ -133,8 +136,8 @@ class cs_group_item extends cs_label_item
 
                         $picture = $private_room_user_item->getPicture();
                         if (!empty($picture)) {
-                            $value_array = explode('_', (string) $picture);
-                            $value_array[0] = 'cid'.$new_member_item->getContextID();
+                            $value_array = explode('_', (string)$picture);
+                            $value_array[0] = 'cid' . $new_member_item->getContextID();
                             $new_picture_name = implode('_', $value_array);
                             $disc_manager = $this->_environment->getDiscManager();
                             $disc_manager->copyImageFromRoomToRoom($picture, $new_member_item->getContextID());
@@ -201,8 +204,19 @@ class cs_group_item extends cs_label_item
         }
 
         // add current user to the group as a member
-        if (isset($add_member) and $add_member) {
-            $this->addMember($current_user_item);
+        if (isset($add_member) && $add_member) {
+            $account = $this->_environment->getAccount();
+            if ($account instanceof Account) {
+                $container = $this->_environment->getSymfonyContainer();
+
+                /** @var UserService $userService */
+                $userService = $container->get(UserService::class);
+                $userInContext = $userService->getUserInContext($account, $this->getContextID());
+
+                if ($userInContext) {
+                    $this->addMember($userInContext);
+                }
+            }
         }
 
         $this->updateElastic();
@@ -224,20 +238,55 @@ class cs_group_item extends cs_label_item
         parent::delete();
     }
 
-     /** returns whether the given user may edit the group item or not
-      * for CommSy 9: only the moderators or groups creator may edit
-      * the group item.
-      */
-     public function mayEdit(cs_user_item $user_item)
-     {
-         $mayEditItem = parent::mayEdit($user_item);
-         if (!$mayEditItem) {
-             return false;
-         }
+    /** returns whether the given user may edit the group item or not
+     * for CommSy 9: only the moderators or groups creator may edit
+     * the group item.
+     */
+    public function mayEdit(cs_user_item $user_item)
+    {
+        $mayEditItem = parent::mayEdit($user_item);
+        if (!$mayEditItem) {
+            return false;
+        }
 
-         // NOTE: the logic here overrides superclass implementations of this method which effectively treats the
-         // "Only editable by creator" (aka \cs_item::isPublic) option as always being checked; this prevents regular
-         // group or room members from messing with the group or its group room; see #391(activity-3)
-         return $user_item->isModerator() || $user_item->getItemId() == $this->getCreatorID();
-     }
+        // NOTE: the logic here overrides superclass implementations of this method which effectively treats the
+        // "Only editable by creator" (aka \cs_item::isPublic) option as always being checked; this prevents regular
+        // group or room members from messing with the group or its group room; see #391(activity-3)
+        return $user_item->isModerator() || $user_item->getItemId() == $this->getCreatorID();
+    }
+
+    public function isMember($user): bool
+    {
+        $linkMemberList = $this->getLinkItemList(CS_USER_TYPE);
+        foreach ($linkMemberList as $linkMemberItem) {
+            $linkedUserId = $linkMemberItem->getLinkedItemID($this);
+            if ($user->getItemID() == $linkedUserId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function addMember(cs_user_item $user): void
+    {
+        if (!$this->isMember($user)) {
+            $linkManager = $this->_environment->getLinkItemManager();
+            $linkItem = $linkManager->getNewItem();
+            $linkItem->setFirstLinkedItem($this);
+            $linkItem->setSecondLinkedItem($user);
+            $linkItem->save();
+        }
+    }
+
+    public function removeMember(cs_user_item $user): void
+    {
+        $linkedMemberList = $this->getLinkItemList(CS_USER_TYPE);
+        foreach ($linkedMemberList as $linkedMemberItem) {
+            $linkedUserId = $linkedMemberItem->getLinkedItemID($this);
+            if ($user->getItemID() == $linkedUserId) {
+                $linkedMemberItem->delete();
+            }
+        }
+    }
 }
