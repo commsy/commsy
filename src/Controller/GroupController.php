@@ -305,7 +305,7 @@ class GroupController extends BaseController
 
         if ($infoArray['group']->isGroupRoomActivated()) {
             $groupRoomItem = $infoArray['group']->getGroupRoomItem();
-            if ($groupRoomItem && !empty($groupRoomItem)) {
+            if (!empty($groupRoomItem)) {
                 $memberStatus = $this->userService->getMemberStatus(
                     $groupRoomItem,
                     $this->legacyEnvironment->getCurrentUser()
@@ -338,13 +338,7 @@ class GroupController extends BaseController
             'group' => $infoArray['group'],
             'readerList' => $infoArray['readerList'],
             'modifierList' => $infoArray['modifierList'],
-            'groupList' => $infoArray['groupList'],
-            'counterPosition' => $infoArray['counterPosition'],
             'count' => $infoArray['count'],
-            'firstItemId' => $infoArray['firstItemId'],
-            'prevItemId' => $infoArray['prevItemId'],
-            'nextItemId' => $infoArray['nextItemId'],
-            'lastItemId' => $infoArray['lastItemId'],
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'userCount' => $infoArray['userCount'],
@@ -389,13 +383,7 @@ class GroupController extends BaseController
             'group' => $infoArray['group'],
             'readerList' => $infoArray['readerList'],
             'modifierList' => $infoArray['modifierList'],
-            'groupList' => $infoArray['groupList'],
-            'counterPosition' => $infoArray['counterPosition'],
             'count' => $infoArray['count'],
-            'firstItemId' => $infoArray['firstItemId'],
-            'prevItemId' => $infoArray['prevItemId'],
-            'nextItemId' => $infoArray['nextItemId'],
-            'lastItemId' => $infoArray['lastItemId'],
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'userCount' => $infoArray['userCount'],
@@ -425,8 +413,6 @@ class GroupController extends BaseController
 
         $group = $this->groupService->getGroup($itemId);
 
-        $item = $group;
-
         $this->readerService->markItemAsRead($group);
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
@@ -437,54 +423,9 @@ class GroupController extends BaseController
         $modifierList = [];
 
         $readerList[$group->getItemId()] = $this->readerService->getStatusForItem($group)->value;
-
         $modifierList[$group->getItemId()] = $this->itemService->getAdditionalEditorsForItem($group);
 
         $groups = $this->groupService->getListGroups($roomId);
-        $groupList = [];
-        $counterBefore = 0;
-        $counterAfter = 0;
-        $counterPosition = 0;
-        $foundGroup = false;
-        $firstItemId = false;
-        $prevItemId = false;
-        $nextItemId = false;
-        $lastItemId = false;
-        foreach ($groups as $tempGroup) {
-            if (!$foundGroup) {
-                if ($counterBefore > 5) {
-                    array_shift($groupList);
-                } else {
-                    ++$counterBefore;
-                }
-                $groupList[] = $tempGroup;
-                if ($tempGroup->getItemID() == $group->getItemID()) {
-                    $foundGroup = true;
-                }
-                if (!$foundGroup) {
-                    $prevItemId = $tempGroup->getItemId();
-                }
-                ++$counterPosition;
-            } else {
-                if ($counterAfter < 5) {
-                    $groupList[] = $tempGroup;
-                    ++$counterAfter;
-                    if (!$nextItemId) {
-                        $nextItemId = $tempGroup->getItemId();
-                    }
-                } else {
-                    break;
-                }
-            }
-        }
-        if (!empty($groups)) {
-            if ($prevItemId) {
-                $firstItemId = $groups[0]->getItemId();
-            }
-            if ($nextItemId) {
-                $lastItemId = $groups[sizeof($groups) - 1]->getItemId();
-            }
-        }
 
         $membersList = $group->getMemberItemList();
         $members = $membersList->to_array();
@@ -499,13 +440,7 @@ class GroupController extends BaseController
         $infoArray['group'] = $group;
         $infoArray['readerList'] = $readerList;
         $infoArray['modifierList'] = $modifierList;
-        $infoArray['groupList'] = $groupList;
-        $infoArray['counterPosition'] = $counterPosition;
         $infoArray['count'] = sizeof($groups);
-        $infoArray['firstItemId'] = $firstItemId;
-        $infoArray['prevItemId'] = $prevItemId;
-        $infoArray['nextItemId'] = $nextItemId;
-        $infoArray['lastItemId'] = $lastItemId;
         $infoArray['readCount'] = $readCountDescription->getReadTotal();
         $infoArray['readSinceModificationCount'] = $readCountDescription->getReadSinceModification();
         $infoArray['userCount'] = $readCountDescription->getUserTotal();
