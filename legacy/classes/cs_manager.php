@@ -432,11 +432,11 @@ class cs_manager
     /** get one item (newest version)
      * this method returns an item in his newest version - this method needs to be overwritten.
      *
-     * @param int $item_id id of the commsy item
+     * @param int $itemId id of the commsy item
      *
      * @return object cs_item one commsy items
      */
-    public function getItem(?int $item_id)
+    public function getItem(?int $itemId)
     {
         throw new LogicException('cs_manager (getItem): needs to be overwritten !!!');
     }
