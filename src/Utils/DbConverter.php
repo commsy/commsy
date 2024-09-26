@@ -88,9 +88,9 @@ class DbConverter
             foreach ($entries as $entry) {
                 $extras = DbConverter::convertToPHPValue($entry['extras']);
 
-                if (isset($extras[$extraToRemove])) {
-                    unset($extras[$extraToRemove]);
-                }
+                $extras = array_filter($extras, fn ($key) => !stristr($key, $extraToRemove),
+                    ARRAY_FILTER_USE_KEY
+                );
 
                 $connection->update($tableName, [
                     'extras' => serialize($extras),

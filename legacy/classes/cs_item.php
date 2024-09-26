@@ -1458,11 +1458,11 @@ class cs_item
         return $this->_getValue('public');
     }
 
-    public function mayEdit(cs_user_item $user_item)
+    public function mayEdit(cs_user_item $userItem)
     {
-        $user = ($user_item->getContextID() !== $this->getContextID())
-            ? ($user_item->getRelatedUserItemInContext($this->getContextID()) ?? $user_item)
-            : $user_item;
+        $user = ($userItem->getContextID() !== $this->getContextID())
+            ? ($userItem->getRelatedUserItemInContext($this->getContextID()) ?? $userItem)
+            : $userItem;
 
         $access = false;
         if (!$user->isOnlyReadUser()) {
@@ -1490,14 +1490,14 @@ class cs_item
             }
         } else {
             // NOTE: for guest users, $privateRoomUserItem will be null
-            $privateRoomUserItem = $user_item->getRelatedPrivateRoomUserItem();
+            $privateRoomUserItem = $userItem->getRelatedPrivateRoomUserItem();
 
             // check for sub-types
             switch ($this->getType()) {
                 case CS_SECTION_TYPE:
                 case CS_STEP_TYPE:
                     $linkedItem = $this->getLinkedItem();
-                    $mayEdit = $linkedItem->mayEdit($user_item);
+                    $mayEdit = $linkedItem->mayEdit($userItem);
                     if (!$mayEdit && $privateRoomUserItem) {
                         $mayEdit = $linkedItem->mayEdit($privateRoomUserItem);
                     }

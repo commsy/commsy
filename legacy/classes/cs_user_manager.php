@@ -32,8 +32,6 @@ class cs_user_manager extends cs_manager
      */
     public $_from_limit = null;
 
-    public $_isset_room_user_cache = false;
-
     /**
      * integer - containing how many user the select statement should get.
      */
@@ -44,21 +42,11 @@ class cs_user_manager extends cs_manager
     public $_is_user_in_context_cache = [];
 
     /**
-     * string - containing a string as a search limit for accounts.
-     */
-    public $_account_search_limit = null;
-
-    /**
      * integer - containing a status limit: 0 rejected, 1 registered, 2 normal user, 3 moderator.
      */
     public $_status_limit = null;
 
     public $_status_select_limit = null;
-
-    /**
-     * integer - containing 0 for not public, 0 - none (not visible), 1 - Commsy only visible if logged in, 2 - All always visible, >= 1 AllandCommsy.
-     */
-    public $_visible_limit = null;
 
     /**
      * string - containing a string: name of a user -> search method.
@@ -90,8 +78,6 @@ class cs_user_manager extends cs_manager
      */
     public $_user_limit = null;
 
-    public $_user_limit_binary = null;
-
     /**
      * document this limit (TBD).
      */
@@ -114,19 +100,9 @@ class cs_user_manager extends cs_manager
 
     public $_context_array_limit = null;
 
-    public $_status_project_limit = null;
-
     public $_auth_source_limit = null;
 
-    public $_limit_community = null;
-
-    public $_limit_project = null;
-
-    public $_limit_portal_id = null;
-
     public $_cache_sql = [];
-
-    private bool $_only_from_portal = false;
 
     private ?array $_group_array_limit = null;
 
@@ -134,19 +110,6 @@ class cs_user_manager extends cs_manager
      * @var mixed|null
      */
     private $_limit_email = null;
-
-    /**
-     * @var mixed|null
-     */
-    private $_limit_connection_key = null;
-    /**
-     * @var mixed|null
-     */
-    private $_limit_connection_server_key = null;
-    /**
-     * @var mixed|null
-     */
-    private $_limit_connection_own_key = null;
 
     /** constructor
      * the only available constructor, initial values for internal variables<br />
@@ -171,9 +134,7 @@ class cs_user_manager extends cs_manager
         $this->_age_limit = null;
         $this->_from_limit = null;
         $this->_interval_limit = null;
-        $this->_visible_limit = null;
         $this->_status_limit = null;
-        $this->_status_project_limit = null;
         $this->_status_select_limit = null;
         $this->_lastlogin_limit = false;
         $this->_name_limit = null;
@@ -188,40 +149,12 @@ class cs_user_manager extends cs_manager
         $this->_context_array_limit = null;
         $this->_contact_moderator_limit = null;
         $this->_auth_source_limit = null;
-        $this->_limit_community = null;
-        $this->_limit_project = null;
-        $this->_limit_portal_id = null;
-        $this->_only_from_portal = false;
         $this->_limit_email = null;
-        $this->_user_limit_binary = null;
-        $this->_limit_connection_key = null;
-        $this->_limit_connection_server_key = null;
-        $this->_limit_connection_own_key = null;
-    }
-
-    public function setExternalConnectionUserKeyLimit($value)
-    {
-        $this->_limit_connection_key = $value;
-    }
-
-    public function setExternalConnectionServerKeyLimit($value)
-    {
-        $this->_limit_connection_server_key = $value;
-    }
-
-    public function setOwnConnectionUserKeyLimit($value)
-    {
-        $this->_limit_connection_own_key = $value;
     }
 
     public function setEMailLimit($value)
     {
         $this->_limit_email = $value;
-    }
-
-    public function setOnlyUserFromPortal()
-    {
-        $this->_only_from_portal = true;
     }
 
     public function setAuthSourceLimit($value)
@@ -249,39 +182,6 @@ class cs_user_manager extends cs_manager
     {
         $this->_interval_limit = (int)$interval;
         $this->_from_limit = (int)$from;
-    }
-
-    /** set visible limit, internal -> do not use.
-     *
-     * @param int limit visible limit for selected user
-     */
-    public function _setVisibleLimit($limit)
-    {
-        $this->_visible_limit = (string)$limit;
-    }
-
-    /** set order limit to name
-     * this method sets an order limit for the select statement to name.
-     */
-    public function setVisibleToCommsy()
-    {
-        $this->_setVisibleLimit('= "1"');
-    }
-
-    /** set order limit to name
-     * this method sets an order limit for the select statement to name.
-     */
-    public function setVisibleToAll()
-    {
-        $this->_setVisibleLimit('= "2"');
-    }
-
-    /** set order limit to name
-     * this method sets an order limit for the select statement to name.
-     */
-    public function setVisibleToAllAndCommsy()
-    {
-        $this->_setVisibleLimit(' >= "1"');
     }
 
     /** set status limit to "rejected"
@@ -332,16 +232,6 @@ class cs_user_manager extends cs_manager
         } elseif (7 != $limit) {
             $this->_status_select_limit = (int)$limit;
         }
-    }
-
-    public function setUserInProjectLimit()
-    {
-        $this->_status_project_limit = 'user';
-    }
-
-    public function setContactModeratorInProjectLimit()
-    {
-        $this->_status_project_limit = 'contact_moderator';
     }
 
     /** set group limit
@@ -408,16 +298,6 @@ class cs_user_manager extends cs_manager
         $this->_user_limit = (string)$value;
     }
 
-    /** set user id limit with mysql binary (case sensitive)
-     *  this method sets a user id limit for user (case sensitive).
-     *
-     * @param string value user id limit for selected user
-     */
-    public function setUserIDLimitBinary($value)
-    {
-        $this->_user_limit_binary = (string)$value;
-    }
-
     public function setContactModeratorLimit()
     {
         $this->_contact_moderator_limit = true;
@@ -430,21 +310,6 @@ class cs_user_manager extends cs_manager
     public function setContextArrayLimit($limit)
     {
         $this->_context_array_limit = (array) $limit;
-    }
-
-    public function setPortalIDLimit($value)
-    {
-        $this->_limit_portal_id = (int)$value;
-    }
-
-    public function setCommunityLimit()
-    {
-        $this->_limit_community = true;
-    }
-
-    public function setProjectLimit()
-    {
-        $this->_limit_project = true;
     }
 
     /** set order limit
@@ -541,24 +406,6 @@ class cs_user_manager extends cs_manager
             $query .= ' LEFT JOIN ' . $this->addDatabasePrefix('link_items') . ' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id=' . $this->addDatabasePrefix('user') . '.item_id AND l31.second_item_type="' . CS_GROUP_TYPE . '"))) ';
             $query .= ' LEFT JOIN ' . $this->addDatabasePrefix('link_items') . ' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id=' . $this->addDatabasePrefix('user') . '.item_id AND l32.first_item_type="' . CS_GROUP_TYPE . '"))) ';
         }
-        if ($this->_status_project_limit) {
-            // links over link_items to room
-            $query .= ' INNER JOIN ' . $this->addDatabasePrefix('link_items') . ' AS l91 ON ( l91.deletion_date IS NULL AND l91.second_item_id=' . $this->addDatabasePrefix('user') . '.context_id AND l91.first_item_type="' . CS_PROJECT_TYPE . '") ';
-            $query .= ' INNER JOIN ' . $this->addDatabasePrefix('room') . ' ON ( ' . $this->addDatabasePrefix('room') . '.deletion_date IS NULL AND l91.first_item_id=' . $this->addDatabasePrefix('room') . '.item_id ) ';
-            $query .= ' INNER JOIN ' . $this->addDatabasePrefix('user') . ' AS l92 ON ( ' . $this->addDatabasePrefix('room') . '.item_id=l92.context_id AND l92.user_id=' . $this->addDatabasePrefix('user') . '.user_id) ';
-        }
-        if ($this->_only_from_portal) {
-            $query .= ' INNER JOIN ' . $this->addDatabasePrefix('user') . ' AS user2 ON ( user2.user_id=' . $this->addDatabasePrefix('user') . '.user_id AND user2.auth_source=' . $this->addDatabasePrefix('user') . '.auth_source) ';
-        }
-
-        if (isset($this->_limit_portal_id)
-            and (isset($this->_limit_community)
-                or isset($this->_limit_project)
-            )
-        ) {
-            $query .= ' INNER JOIN ' . $this->addDatabasePrefix('user') . ' AS user2 ON ( ' . $this->addDatabasePrefix('user') . '.user_id=user2.user_id and ' . $this->addDatabasePrefix('user') . '.auth_source=user2.auth_source ) ';
-            $query .= ' INNER JOIN ' . $this->addDatabasePrefix('room') . ' ON ( ' . $this->addDatabasePrefix('room') . '.deletion_date IS NULL AND user2.context_id=room.item_id ) ';
-        }
 
         $query .= ' WHERE 1';
 
@@ -570,9 +417,6 @@ class cs_user_manager extends cs_manager
         if (isset($this->_user_limit)) {
             $query .= ' AND ' . $this->addDatabasePrefix('user') . '.user_id = "' . encode(AS_DB, $this->_user_limit) . '"';
         }
-        if (isset($this->_user_limit_binary)) {
-            $query .= ' AND BINARY ' . $this->addDatabasePrefix('user') . '.user_id = "' . encode(AS_DB, $this->_user_limit_binary) . '"';
-        }
 
         if (empty($this->_id_array_limit)) {
             if (isset($this->_context_array_limit)
@@ -581,12 +425,7 @@ class cs_user_manager extends cs_manager
                 and !empty($this->_context_array_limit[0])
             ) {
                 $id_string = implode(',', $this->_context_array_limit);
-                if ($this->_only_from_portal) {
-                    $query .= ' AND user2.context_id IN (' . encode(AS_DB, $id_string) . ')';
-                    $query .= ' AND ' . $this->addDatabasePrefix('user') . '.context_id = "' . encode(AS_DB, $this->_environment->getCurrentPortalID()) . '"';
-                } else {
-                    $query .= ' AND ' . $this->addDatabasePrefix('user') . '.context_id IN (' . $id_string . ')';
-                }
+                $query .= ' AND ' . $this->addDatabasePrefix('user') . '.context_id IN (' . $id_string . ')';
             } elseif (isset($this->_room_limit) and 0 != $this->_room_limit) {
                 $query .= ' AND ' . $this->addDatabasePrefix('user') . '.context_id = "' . encode(AS_DB, $this->_room_limit) . '"';
             } else {
@@ -603,15 +442,7 @@ class cs_user_manager extends cs_manager
             $query .= ' AND ' . $this->addDatabasePrefix('user') . '.deletion_date IS NULL';
         }
         if (true == $this->_contact_moderator_limit) {
-            if (isset($this->_limit_portal_id)
-                and (isset($this->_limit_community)
-                    or isset($this->_limit_project)
-                )
-            ) {
-                $query .= ' AND user2.is_contact="1"';
-            } else {
-                $query .= ' AND ' . $this->addDatabasePrefix('user') . '.is_contact="1"';
-            }
+            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.is_contact="1"';
         }
         if (isset($this->_age_limit)) {
             $query .= ' AND ' . $this->addDatabasePrefix('user') . '.modification_date >= DATE_SUB(CURRENT_DATE,interval ' . encode(AS_DB, $this->_age_limit) . ' day)';
@@ -626,15 +457,7 @@ class cs_user_manager extends cs_manager
             if (2 == $this->_status_limit) {
                 $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status >= "' . encode(AS_DB, $this->_status_limit) . '"';
             } else {
-                if (isset($this->_limit_portal_id)
-                    and (isset($this->_limit_community)
-                        or isset($this->_limit_project)
-                    )
-                ) {
-                    $query .= ' AND user2.status = "' . encode(AS_DB, $this->_status_limit) . '"';
-                } else {
-                    $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status = "' . encode(AS_DB, $this->_status_limit) . '"';
-                }
+                $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status = "' . encode(AS_DB, $this->_status_limit) . '"';
             }
         }
         if (isset($this->_status_select_limit)) {
@@ -644,25 +467,13 @@ class cs_user_manager extends cs_manager
                 $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status = "' . encode(AS_DB, $this->_status_select_limit) . '"';
             }
         }
-        if ($this->_status_project_limit) {
-            if ('user' == $this->_status_project_limit) {
-                $query .= ' AND l92.is_contact="0" AND l92.status >= "2"';
-            } elseif ('contact_moderator' == $this->_status_project_limit) {
-                $query .= ' AND l92.is_contact="1" AND l92.status >= "2"';
-            }
-            $query .= ' AND l92.deleter_id IS NULL';
-            $query .= ' AND l92.deletion_date IS NULL';
-        }
+
         if ($this->_lastlogin_limit) {
             if ('empty' != $this->_lastlogin_limit) {
                 $query .= ' AND ' . $this->addDatabasePrefix('user') . '.lastlogin > "' . encode(AS_DB, $this->_lastlogin_limit) . '"';
             } else {
                 $query .= ' AND ' . $this->addDatabasePrefix('user') . '.lastlogin IS NOT NULL AND user.lastlogin != "00-00-00 00:00:00"';
             }
-        }
-
-        if (isset($this->_visible_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.visible ' . $this->_visible_limit;
         }
 
         if (isset($this->_name_limit)) {
@@ -676,21 +487,6 @@ class cs_user_manager extends cs_manager
 
         if (!empty($this->_id_array_limit)) {
             $query .= ' AND ' . $this->addDatabasePrefix('user') . '.item_id IN (' . implode(', ', $this->_id_array_limit) . ')';
-        }
-
-        // portal2Portal: connection key limit
-        if (!empty($this->_limit_connection_key)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.extras LIKE "%CONNECTION_EXTERNAL_KEY_ARRAY%"';
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.extras LIKE "%' . encode(AS_DB, $this->_limit_connection_key) . '%"';
-        }
-        // portal2Portal: connection server key limit
-        if (!empty($this->_limit_connection_server_key)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.extras LIKE "%CONNECTION_ARRAY%"';
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.extras LIKE "%' . encode(AS_DB, $this->_limit_connection_server_key) . '%"';
-        }
-        // portal2Portal: connection own key limit
-        if (!empty($this->_limit_connection_own_key)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.extras LIKE "%s:17:\"CONNECTION_OWNKEY\";s:32:\"' . $this->_limit_connection_own_key . '\"%"';
         }
 
         if (isset($this->_topic_limit)) {
@@ -729,23 +525,6 @@ class cs_user_manager extends cs_manager
             $query .= ' OR (l32.first_item_id IN (' . $mergedGroupIDs . ') OR l32.second_item_id IN (' . $mergedGroupIDs . ')))';
         }
 
-        if (isset($this->_limit_portal_id)
-            and (isset($this->_limit_community)
-                or isset($this->_limit_project)
-            )
-        ) {
-            $query .= ' AND ' . $this->addDatabasePrefix('room') . '.context_id=' . encode(AS_DB, $this->_limit_portal_id);
-            if (isset($this->_limit_community)
-                and isset($this->_limit_project)
-            ) {
-                $query .= ' AND (' . $this->addDatabasePrefix('room') . '.type="' . CS_COMMUNITY_TYPE . '" OR ' . $this->addDatabasePrefix('room') . '.type="' . CS_PROJECT_TYPE . '")';
-            } elseif (isset($this->_limit_community)) {
-                $query .= ' AND ' . $this->addDatabasePrefix('room') . '.type="' . CS_COMMUNITY_TYPE . '"';
-            } elseif (isset($this->_limit_project)) {
-                $query .= ' AND ' . $this->addDatabasePrefix('room') . '.type="' . CS_PROJECT_TYPE . '"';
-            }
-        }
-
         if ($this->modificationNewerThenLimit) {
             $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.modification_date >= "' . $this->modificationNewerThenLimit->format('Y-m-d H:i:s') . '"';
         }
@@ -758,13 +537,6 @@ class cs_user_manager extends cs_manager
             $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.item_id NOT IN (' . implode(', ', encode(AS_DB, $this->excludedIdsLimit)) . ')';
         }
 
-        if (isset($this->_limit_portal_id)
-            and (isset($this->_limit_community)
-                or isset($this->_limit_project)
-            )
-        ) {
-            $query .= ' GROUP BY ' . $this->addDatabasePrefix('user') . '.user_id,' . $this->addDatabasePrefix('user') . '.auth_source';
-        }
         if ((isset($this->_search_limit)
                 and !empty($this->_search_limit)
             )
@@ -881,32 +653,6 @@ class cs_user_manager extends cs_manager
         return $user;
     }
 
-    public function getItemByUserIDAuthSourceID($uid, $asid)
-    {
-        $retour = null;
-        if (!empty($uid)
-            and !empty($asid)
-        ) {
-            $this->resetLimits();
-            $this->setUserIDLimit($uid);
-            $this->setAuthSourceLimit($asid);
-            $this->setContextLimit($this->_environment->getCurrentContextID());
-            $this->select();
-            $list = $this->get();
-            if ($list->isNotEmpty()
-                and 1 == $list->getCount()
-            ) {
-                $retour = $list->getFirst();
-            } elseif ($list->isNotEmpty()
-                and $list->getCount() > 1
-            ) {
-                trigger_error('bug in database: multiple user for user_id: ' . $uid . ', auth_source_id: ' . $asid . ', portal: ' . $this->_environment->getCurrentContextID() . ' - ' . __FILE__ . ' - ' . __LINE__, E_USER_ERROR);
-            }
-        }
-
-        return $retour;
-    }
-
     public function getAllUsersByUserAndRoomIDLimit($user_id, $room_id_array, $auth_source_id)
     {
         $retour = [];
@@ -963,24 +709,6 @@ class cs_user_manager extends cs_manager
         }
 
         return $user_array;
-    }
-
-    public function getAllRoomUsersFromCache($context_id)
-    {
-        $user_list = new cs_list();
-        if (!empty($context_id) and !empty($this->_cache)) {
-            foreach ($this->_cache as $user) {
-                $user_list->add($user);
-            }
-        } else {
-            $this->resetLimits();
-            $this->setContextLimit($this->_environment->getCurrentContextID());
-            $this->setUserLimit();
-            $this->select();
-            $user_list = $this->get();
-        }
-
-        return $user_list;
     }
 
     public function getItemList(array $id_array)
@@ -1064,6 +792,7 @@ class cs_user_manager extends cs_manager
         $query .= 'visible="' . encode(AS_DB, $item->getVisible()) . '",';
         $query .= 'description="' . encode(AS_DB, $item->getDescription()) . '",';
         $query .= 'use_portal_email="' . encode(AS_DB, $usePortalEmail) . '",';
+
         // Datenschutz
         $expire_date = $item->getPasswordExpireDate();
 
@@ -1103,10 +832,7 @@ class cs_user_manager extends cs_manager
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems updating users last login.', E_USER_ERROR);
-        } else {
-            unset($result);
         }
-        unset($user_item);
     }
 
     /** create a new item in the items table - internal, do not use -> use method save
@@ -1118,7 +844,6 @@ class cs_user_manager extends cs_manager
     public function _create($item)
     {
         $query = 'INSERT INTO ' . $this->addDatabasePrefix('items') . ' SET ';
-        $context_id = $item->getContextID();
         $query .= 'context_id="' . encode(AS_DB, $item->getContextID()) . '", ';
         $query .= 'modification_date="' . getCurrentDateTimeInMySQL() . '",' .
             'type="user"';
@@ -1130,9 +855,7 @@ class cs_user_manager extends cs_manager
             $this->_create_id = $result;
             $item->setItemID($this->_create_id);
             $this->_newUser($item);
-            unset($result);
         }
-        unset($item);
     }
 
     /** creates a new user - internal, do not use -> use method save.
