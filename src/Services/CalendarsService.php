@@ -29,25 +29,25 @@ use Sabre\VObject;
 use Sabre\VObject\Component\VEvent;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class CalendarsService
+readonly class CalendarsService
 {
-    private readonly ObjectManager $objectManager;
+    private ObjectManager $objectManager;
 
-    private readonly cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(
-        private readonly CalendarsRepository $calendarsRepository,
-        ManagerRegistry $doctrine,
-        private readonly DateService $dateService,
-        LegacyEnvironment $legacyEnvironment,
-        private readonly TranslatorInterface $translator,
-        private readonly DeleteAction $deleteAction
+        private CalendarsRepository $calendarsRepository,
+        ManagerRegistry             $doctrine,
+        private DateService         $dateService,
+        LegacyEnvironment           $legacyEnvironment,
+        private TranslatorInterface $translator,
+        private DeleteAction        $deleteAction
     ) {
         $this->objectManager = $doctrine->getManager();
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function getListCalendars($contextId)
+    public function getListCalendars($contextId): array
     {
         $result = [];
 
@@ -65,7 +65,7 @@ class CalendarsService
         return $result;
     }
 
-    public function getListExternalCalendars()
+    public function getListExternalCalendars(): array
     {
         $result = [];
 
@@ -106,10 +106,8 @@ class CalendarsService
 
     /**
      * Deletes the given calendar and all of its contained date entries.
-     *
-     * @var Calendars
      */
-    public function removeCalendar(RoomService $roomService, $calendar)
+    public function removeCalendar(RoomService $roomService, Calendars $calendar): void
     {
         $this->removeAllCalendarDates($roomService, $calendar);
 
@@ -120,7 +118,7 @@ class CalendarsService
     /**
      * Deletes all date entries from the given calendar.
      */
-    public function removeAllCalendarDates(RoomService $roomService, $calendar): void
+    public function removeAllCalendarDates(RoomService $roomService, Calendars $calendar): void
     {
         $dates = $this->dateService->getDatesByCalendarId($calendar->getId());
         if (empty($dates)) {
@@ -137,7 +135,7 @@ class CalendarsService
         $action->execute($roomItem, $dates);
     }
 
-    public function updateSynctoken($calendarId)
+    public function updateSynctoken($calendarId): void
     {
         $calendar = $this->getCalendar($calendarId);
 
