@@ -190,13 +190,13 @@ class UserService
      */
     public function addUserToSystemGroupAll(cs_user_item $user, cs_room_item $room): ?cs_label_item
     {
-        $groupManager = $this->legacyEnvironment->getLabelManager();
+        $groupManager = $this->legacyEnvironment->getGroupManager();
         $groupManager->setExactNameLimit('ALL');
         $groupManager->setContextLimit($room->getItemID());
         $groupManager->select();
         $groupList = $groupManager->get();
 
-        /** @var cs_group_item $group */
+        /** @var cs_group_item $systemGroupAll */
         $systemGroupAll = $groupList->getFirst();
 
         if ($systemGroupAll) {
