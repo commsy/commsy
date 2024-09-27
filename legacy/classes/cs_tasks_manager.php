@@ -218,7 +218,7 @@ class cs_tasks_manager extends cs_manager
       *
       * @return cs_list list of cs_items
       */
-     public function getItemList(array $id_array)
+     public function getItemList(array $id_array): cs_list
      {
          return $this->_getItemList('tasks', $id_array);
      }

@@ -441,19 +441,19 @@ class cs_manager
         throw new LogicException('cs_manager (getItem): needs to be overwritten !!!');
     }
 
-  /** get a list of items (newest version)
-   * this method returns a list of items.
-   *
-   * @param array id_array ids of the items items
-   *
-   * @return cs_list list of cs_items
-   *
-   * @author CommSy Development Group
-   */
-  public function getItemList(array $id_array)
-  {
-      echo static::class.': cs_manager->getItemList needs to be overwritten !!!<br />'."\n";
-  }
+    /** get a list of items (newest version)
+     * this method returns a list of items.
+     *
+     * @param array $id_array ids of the items
+     *
+     * @return cs_list list of cs_items
+     *
+     * @author CommSy Development Group
+     */
+    public function getItemList(array $id_array): cs_list
+    {
+        throw new LogicException('getItemList() not implemented');
+    }
 
    public function _existsField($table, $field)
    {

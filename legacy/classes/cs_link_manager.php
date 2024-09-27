@@ -647,7 +647,7 @@ class cs_link_manager extends cs_manager
         }
     }
 
-    public function getItemList(array $id_array)
+    public function getItemList(array $id_array): cs_list
     {
         return $this->_getItemList('link_items', $id_array);
     }

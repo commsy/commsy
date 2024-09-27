@@ -275,7 +275,7 @@ class cs_section_manager extends cs_manager
      *
      * @return object cs_list of cs_section_items
      */
-    public function getItemList($id_array, $version_id = null)
+    public function getItemList($id_array, $version_id = null): cs_list
     {
         $section_list = null;
         if (empty($id_array)) {

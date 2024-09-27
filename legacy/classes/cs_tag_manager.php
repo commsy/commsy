@@ -468,7 +468,7 @@ class cs_tag_manager extends cs_manager
       *
       * @return cs_list list of cs_items
       */
-     public function getItemList(array $id_array)
+     public function getItemList(array $id_array): cs_list
      {
          return $this->_getItemList('tag', $id_array);
      }

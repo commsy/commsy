@@ -282,7 +282,7 @@ class cs_announcement_manager extends cs_manager
         return $announcement;
     }
 
-    public function getItemList(array $id_array)
+    public function getItemList(array $id_array): cs_list
     {
         return $this->_getItemList(CS_ANNOUNCEMENT_TYPE, $id_array);
     }

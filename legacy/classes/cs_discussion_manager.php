@@ -282,7 +282,7 @@ class cs_discussion_manager extends cs_manager
          return $discussion;
      }
 
-    public function getItemList(array $id_array)
+    public function getItemList(array $id_array): cs_list
     {
         return $this->_getItemList('discussion', $id_array);
     }

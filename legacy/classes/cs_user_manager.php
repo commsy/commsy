@@ -711,7 +711,7 @@ class cs_user_manager extends cs_manager
         return $user_array;
     }
 
-    public function getItemList(array $id_array)
+    public function getItemList(array $id_array): cs_list
     {
         return $this->_getItemList('user', $id_array);
     }
