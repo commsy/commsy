@@ -353,7 +353,7 @@ class cs_todos_manager extends cs_manager
      *
      * @return object cs_list of cs_todo_items
      */
-    public function getItemList(array $id_array)
+    public function getItemList(array $id_array): cs_list
     {
         return $this->_getItemList('todo', $id_array);
     }

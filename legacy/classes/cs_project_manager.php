@@ -397,7 +397,7 @@ class cs_project_manager extends cs_room2_manager
    /**
     * documentation TBD.
     */
-   public function getItemList(array $id_array)
+   public function getItemList(array $id_array): cs_list
    {
        return $this->_getItemList(CS_ROOM_TYPE, $id_array);
    }

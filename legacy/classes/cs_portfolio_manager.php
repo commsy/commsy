@@ -130,7 +130,7 @@ class cs_portfolio_manager extends cs_manager
          return $portfolio_item;
      }
 
-     public function getItemList(array $id_array)
+     public function getItemList(array $id_array): cs_list
      {
          return $this->_getItemList(CS_PORTFOLIO_TYPE, $id_array);
      }

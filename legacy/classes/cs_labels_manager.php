@@ -664,7 +664,7 @@ class cs_labels_manager extends cs_manager
      *
      * @author CommSy Development Group
      */
-    public function getItemList(array $id_array)
+    public function getItemList(array $id_array): cs_list
     {
         return $this->_getItemList('labels', $id_array);
     }

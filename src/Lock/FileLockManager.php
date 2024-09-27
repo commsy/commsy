@@ -8,7 +8,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 final readonly class FileLockManager
 {
-    public const LOCK_DURATION_MINUTES = 30;
+    public const int LOCK_DURATION_MINUTES = 30;
 
     public function __construct(
         private ManagerRegistry $managerRegistry
