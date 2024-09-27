@@ -270,10 +270,10 @@ class DateService
     /**
      * @return cs_dates_item[]
      */
-    public function getDatesByCalendarId($calendarId): array
+    public function getDatesByCalendarId(int $calendarId): array
     {
         $this->datesManager->reset();
-        $this->datesManager->setCalendarArrayLimit(['"'.$calendarId.'"']);
+        $this->datesManager->setCalendarArrayLimit([$calendarId]);
         $this->datesManager->setWithoutDateModeLimit();
         $this->datesManager->select();
         $dateList = $this->datesManager->get();

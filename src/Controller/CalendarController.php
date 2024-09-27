@@ -14,7 +14,6 @@
 namespace App\Controller;
 
 use App\Entity\Calendars;
-use App\Event\CommsyEditEvent;
 use App\Form\Type\CalendarEditType;
 use App\Repository\CalendarsRepository;
 use App\Services\CalendarsService;
@@ -98,8 +97,6 @@ class CalendarController extends AbstractController
         }
 
         $calendars = $calendarsRepository->findBy(['context_id' => $roomId]);
-
-        $eventDispatcher->dispatch(new CommsyEditEvent($calendar), CommsyEditEvent::EDIT);
 
         return $this->render('calendar/edit.html.twig', [
             'editForm' => $editForm,
