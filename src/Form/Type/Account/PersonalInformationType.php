@@ -13,6 +13,8 @@
 
 namespace App\Form\Type\Account;
 
+use App\Account\AccountSetting;
+use App\Account\AccountSettingsManager;
 use App\Entity\Account;
 use App\Validator\Constraints\UniqueUserId;
 use cs_user_item;
@@ -24,15 +26,17 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotEqualTo;
 
 class PersonalInformationType extends AbstractType
 {
-    public function __construct(private readonly Security $security)
-    {
-    }
+    public function __construct(
+        private readonly Security $security,
+        private readonly AccountSettingsManager $settingsManager
+    ) {}
 
     /**
      * Builds the form.
@@ -78,6 +82,26 @@ class PersonalInformationType extends AbstractType
                 'label' => 'lastname',
                 'required' => false,
                 'disabled' => !$changeUserdata,
+            ])
+            ->add(AccountSetting::CUSTOM_INITIALS->value, TextType::class, [
+                'label' => 'initials',
+                'required' => false,
+                'attr' => [
+                    'placeholder' => $user->getDefaultInitials(),
+                ],
+                'disabled' => !$changeUserdata,
+                'getter' => function ($viewData, FormInterface $form) use ($user): string {
+                    return $this->settingsManager
+                        ->getSetting($user, AccountSetting::CUSTOM_INITIALS)['initials'];
+                },
+                'setter' => function ($viewData, $formData, FormInterface $form) use ($user): void {
+                    if (!empty($formData)) {
+                        $this->settingsManager
+                            ->storeSetting($user, AccountSetting::CUSTOM_INITIALS, ['initials' => $formData]);
+                    } else {
+                        // TODO: use a AccountSettingsManager method to remove the CUSTOM_INITIALS setting
+                    }
+                },
             ])
             ->add('emailAccount', EmailType::class, [
                 'label' => 'email',

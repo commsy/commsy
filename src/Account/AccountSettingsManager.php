@@ -23,8 +23,8 @@ class AccountSettingsManager
     {
         $accountSettings = $account->getSettings();
 
-        $lookup = $accountSettings->filter(fn (AccountSetting $settings) =>
-            $settings->getName() === $setting->value);
+        $lookup = $accountSettings->filter(fn (AccountSetting $accountSetting) =>
+            $accountSetting->getName() === $setting->value);
 
         return !$lookup->isEmpty() ? $lookup->first()->getValue() : $setting->default();
     }

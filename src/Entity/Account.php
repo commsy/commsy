@@ -302,6 +302,23 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return $this;
     }
 
+    /**
+     * Returns the user's default initials which are generated from the user's
+     * first & last name, or else his/her username.
+     *
+     * Note that the user's personal account settings allow to specify custom
+     * initials which will be stored in account settings (with key `customInitials`).
+     */
+    public function getDefaultInitials(): string
+    {
+        $initials = strtoupper(mb_substr($this->firstname, 0, 1))
+            . strtoupper(mb_substr($this->lastname, 0, 1));
+        if (empty($initials)) {
+            $initials = strtoupper(substr($this->username, 0, 2));
+        }
+        return $initials;
+    }
+
     public function getEmail(): ?string
     {
         return $this->email;
