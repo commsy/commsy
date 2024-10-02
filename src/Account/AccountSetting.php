@@ -17,12 +17,14 @@ enum AccountSetting: string
 {
     case NOTIFY_PORTAL_MOD_ON_SELF_REGISTRATION = 'notifyPortalModOnSelfRegistration';
     case NOTIFY_PORTAL_MOD_ON_WORKSPACE_CHANGE = 'notifyPortalModOnWorkspaceChange';
+    case CUSTOM_INITIALS = 'customInitials';
 
     public function default(): array
     {
         return match ($this) {
             AccountSetting::NOTIFY_PORTAL_MOD_ON_SELF_REGISTRATION => ['enabled' => true],
             AccountSetting::NOTIFY_PORTAL_MOD_ON_WORKSPACE_CHANGE => ['enabled' => false],
+            AccountSetting::CUSTOM_INITIALS => ['initials' => ''],
         };
     }
 }
