@@ -1112,15 +1112,14 @@ class cs_item
       *
       * @param cs_manager the manager that should be used to save the item (e.g. cs_news_manager for cs_news_item)
       */
-     public function _save($manager)
+     public function _save($manager): void
      {
-         $saved = false;
          if (isset($this->_changed['general']) and true == $this->_changed['general']) {
              $manager->setCurrentContextID($this->getContextID());
              if (!$this->_link_modifier) {
                  $manager->setSaveWithoutLinkModifier();
              }
-             $saved = $manager->saveItem($this);
+             $manager->saveItem($this);
          }
 
          $this->persistExternalViewer();
@@ -1149,8 +1148,6 @@ class cs_item
                  }
              }
          }
-
-         return $saved;
      }
 
      private function persistExternalViewer(): void
@@ -2077,33 +2074,31 @@ class cs_item
         }
     }
 
-    public function _saveFiles()
+    public function _saveFiles(): void
     {
-        $file_id_array = [];
-        $result = false;
         if ($this->_filelist_changed
              and isset($this->_data['file_list'])
              and $this->_data['file_list']->getCount() > 0
         ) {
             $file_id_array = [];
-            $file_item = $this->_data['file_list']->getFirst();
-            while ($file_item) {
+            foreach ($this->_data['file_list'] as $file_item) {
                 if ($file_item->getContextID() != $this->getContextID()) {
                     $file_item->setContextID($this->getContextID());
                 }
                 $file_item->setCreatorItem($this->getCreatorItem());
-                $result = $file_item->save();
-                if ($result) {
+
+                try {
+                    $file_item->save();
+
                     $file_item_id = $file_item->getFileID();
                     if (!empty($file_item_id)) {
                         $file_id_array[] = $file_item_id;
                     } else {
                         $this->_error_array[] = $file_item->getDisplayName();
                     }
-                } else {
+                } catch (Exception $e) {
                     $this->_error_array[] = $file_item->getDisplayName();
                 }
-                $file_item = $this->_data['file_list']->getNext();
             }
             $this->setFileIDArray($file_id_array);
         }
