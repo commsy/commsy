@@ -37,4 +37,16 @@ class AccountSettingsManager
 
         $account->setSetting($accountSetting);
     }
+
+    public function removeSetting(Account $account, AccountSettingEnum $setting): void
+    {
+        $accountSettings = $account->getSettings();
+
+        $lookup = $accountSettings->filter(fn (AccountSetting $accountSetting) =>
+            $accountSetting->getName() === $setting->value);
+
+        foreach ($lookup as $accountSetting) {
+            $account->removeSetting($accountSetting);
+        }
+    }
 }
