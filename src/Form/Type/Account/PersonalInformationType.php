@@ -99,7 +99,7 @@ class PersonalInformationType extends AbstractType
                         $this->settingsManager
                             ->storeSetting($user, AccountSetting::CUSTOM_INITIALS, ['initials' => $formData]);
                     } else {
-                        // TODO: use a AccountSettingsManager method to remove the CUSTOM_INITIALS setting
+                        $this->settingsManager->removeSetting($user, AccountSetting::CUSTOM_INITIALS);
                     }
                 },
             ])
