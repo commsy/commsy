@@ -216,7 +216,7 @@ class NewsletterGenerator
             }
             $roomData['annotationsStillToSend'] = $annotationsStillToSend;
 
-            if (!empty($roomData['rubrics'])) {
+            if (!empty($roomData['rubrics']) || !empty($roomData['annotationsStillToSend'])) {
                 $roomsData[$roomItem->getItemID()] = $roomData;
             }
         }
