@@ -706,7 +706,6 @@ class RoomController extends AbstractController
         }
         $creator_item->setAccountWantMail('yes');
         $creator_item->setOpenRoomWantMail('yes');
-        $creator_item->setPublishMaterialWantMail('yes');
         $creator_item->save();
 
         // copy room settings

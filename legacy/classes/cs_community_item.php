@@ -210,7 +210,6 @@ class cs_community_item extends cs_room_item
            $new_room_user->setVisibleToLoggedIn();
            $new_room_user->setAccountWantMail('yes');
            $new_room_user->setOpenRoomWantMail('yes');
-           $new_room_user->setPublishMaterialWantMail('yes');
            $new_room_user->save();
            $new_room_user->setCreatorID2ItemID();
            $picture = $current_user->getPicture();

@@ -150,4 +150,17 @@ class RoomRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findAllIds(array $excludedTypes = []): array
+    {
+        $query = $this->getEntityManager()->createQuery('
+            SELECT r.itemId FROM App\Entity\Room r
+            WHERE r.type NOT IN (:excludedTypes)
+        ');
+        $query->setParameters([
+            'excludedTypes' => $excludedTypes,
+        ]);
+
+        return array_column($query->getResult(), 'itemId');
+    }
 }

@@ -472,48 +472,9 @@ class cs_label_item extends cs_item
         return $retour;
     }
 
-    public function isMember($user)
-    {
-        $link_member_list = $this->getLinkItemList(CS_USER_TYPE);
-        $link_member_item = $link_member_list->getFirst();
-        $is_member = false;
-        while ($link_member_item) {
-            $linked_user_id = $link_member_item->getLinkedItemID($this);
-            if ($user->getItemID() == $linked_user_id) {
-                $is_member = true;
-                break;
-            }
-            $link_member_item = $link_member_list->getNext();
-        }
-
-        return $is_member;
-    }
-
-     public function addMember(cs_user_item $user): void
-     {
-         if (!$this->isMember($user)) {
-             $link_manager = $this->_environment->getLinkItemManager();
-             $link_item = $link_manager->getNewItem();
-             $link_item->setFirstLinkedItem($this);
-             $link_item->setSecondLinkedItem($user);
-             $link_item->save();
-         }
-     }
-
-     public function removeMember(cs_user_item $user): void
-     {
-         $linkedMemberList = $this->getLinkItemList(CS_USER_TYPE);
-         foreach ($linkedMemberList as $linkedMemberItem) {
-             $linked_user_id = $linkedMemberItem->getLinkedItemID($this);
-             if ($user->getItemID() == $linked_user_id) {
-                 $linkedMemberItem->delete();
-             }
-         }
-     }
-
-    /** asks if item is editable by everybody or just creator.
-     *
-     * @param value
+    /**
+     * Is this item editable by everybody or just the creator.
+     * @return bool
      */
     public function isPublic(): bool
     {
@@ -524,9 +485,9 @@ class cs_label_item extends cs_item
         }
     }
 
-    /** sets if announcement is editable by everybody or just creator.
-     *
-     * @param value
+    /**
+     * Sets if this item is editable by everybody or just the creator.
+     * @param $value
      */
     public function setPublic($value): void
     {
