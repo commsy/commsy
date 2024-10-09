@@ -26,8 +26,11 @@ class CronUpdateActivityState implements CronTaskInterface
 {
     private const BATCH_SIZE = 100;
 
-    public function __construct(private readonly AccountsRepository $accountRepository, private readonly RoomRepository $roomRepository, private readonly MessageBusInterface $messageBus)
-    {
+    public function __construct(
+        private readonly AccountsRepository $accountRepository,
+        private readonly RoomRepository $roomRepository,
+        private readonly MessageBusInterface $messageBus
+    ) {
     }
 
     public function run(?DateTimeImmutable $lastRun): void
@@ -47,12 +50,11 @@ class CronUpdateActivityState implements CronTaskInterface
         $this->messageBus->dispatch(new AccountActivityStateTransitions($ids));
 
         // Workspaces
-        // TODO: exclude grouprooms and userrooms
-        $roomActivityObjects = $this->roomRepository->findAll();
+        $roomActivityObjectIds = $this->roomRepository->findAllIds(['grouproom', 'userroom']);
+
         $ids = [];
-        foreach ($roomActivityObjects as $roomActivityObject) {
-            /* @var Room $roomActivityObject */
-            $ids[] = $roomActivityObject->getItemId();
+        foreach ($roomActivityObjectIds as $roomActivityObjectId) {
+            $ids[] = $roomActivityObjectId;
 
             if ((count($ids) % self::BATCH_SIZE) === 0) {
                 $this->messageBus->dispatch(new WorkspaceActivityStateTransitions($ids));

@@ -16,12 +16,16 @@ namespace App\Mail;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Translation\LocaleSwitcher;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class MessageBuilder
+readonly class MessageBuilder
 {
-    public function __construct(private readonly TranslatorInterface $translator, private readonly string $emailFrom)
-    {
+    public function __construct(
+        private TranslatorInterface $translator,
+        private string              $emailFrom,
+        private LocaleSwitcher      $localeSwitcher
+    ) {
     }
 
     public function generateFromEmail(
@@ -75,15 +79,8 @@ class MessageBuilder
         Recipient $recipient,
         array $replyTo = []
     ): Email {
-        $locale = $this->translator->getLocale();
-        $this->translator->setLocale($recipient->getLanguage());
-
         $email = (new TemplatedEmail())
             ->from(new Address($this->emailFrom, $fromSenderName));
-
-        // Subject
-        $subject = $this->translator->trans($message->getSubject(), $message->getTranslationParameters(), 'mail');
-        $email->subject($subject);
 
         // To
         if (!empty($recipient->getFirstname()) || !empty($recipient->getLastname())) {
@@ -100,12 +97,15 @@ class MessageBuilder
             $email->replyTo(...$replyTo);
         }
 
-        // Body
-        $email->htmlTemplate($message->getTemplateName());
-        $email->context($message->getParameters());
+        $this->localeSwitcher->runWithLocale($recipient->getLanguage(), function() use ($message, $email) {
+            // Subject
+            $subject = $this->translator->trans($message->getSubject(), $message->getTranslationParameters(), 'mail');
+            $email->subject($subject);
 
-        // Restore the previous locale
-        $this->translator->setLocale($locale);
+            // Body
+            $email->htmlTemplate($message->getTemplateName());
+            $email->context($message->getParameters());
+        });
 
         return $email;
     }

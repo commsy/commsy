@@ -326,7 +326,7 @@ class cs_entry_manager extends cs_manager
          return $announcement;
      }
 
-     public function getItemList(array $id_array)
+     public function getItemList(array $id_array): cs_list
      {
          return $this->_getItemList(CS_ITEM_TYPE, $id_array);
      }

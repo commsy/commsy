@@ -15,8 +15,10 @@ use App\Entity\Portal;
 use App\Helper\LocaleHelper;
 use App\Proxy\PortalProxy;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /** This class returns an instance of a cs_mananger subclass on request.
  *It also contains often needed environment variables.
@@ -1029,5 +1031,15 @@ class cs_environment
         global $symfonyContainer;
 
         return $symfonyContainer;
+    }
+
+    public function getAccount(): ?UserInterface
+    {
+        $container = $this->getSymfonyContainer();
+
+        /** @var Security $security */
+        $security = $container->get('app.security');
+
+        return $security->getUser();
     }
 }

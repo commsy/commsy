@@ -11,10 +11,8 @@
  * file that was distributed with this source code.
  */
 
-use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /** class for a user
@@ -51,7 +49,7 @@ class cs_user_item extends cs_item
 
     /** Checks and sets the data of the item.
      *
-     * @param $data_array Is the prepared array from "_buildItem($db_array)"
+     * @param array $data_array The prepared array from "_buildItem($db_array)"
      */
     public function _setItemData($data_array): void
     {
@@ -179,16 +177,6 @@ class cs_user_item extends cs_item
         $value_array = [];
         $value_array[] = $value;
         $this->setTopicListByID($value_array);
-    }
-
-    /** set one topic of a user item
-     * this method sets one topic which is linked to the user.
-     *
-     * @param object cs_label topic
-     */
-    public function setTopic($value)
-    {
-        $this->setTopicByID($value->getItemID());
     }
 
     /**
@@ -660,39 +648,6 @@ class cs_user_item extends cs_item
         return '';
     }
 
-    public function getPictureUrl($full = false, $amp = true)
-    {
-        $params = [];
-        $retour = '';
-        $params['picture'] = $this->getPicture();
-        if (!empty($params['picture'])) {
-            $retour = curl($this->getContextID(), 'picture', 'getfile', $params, '');
-            if (!$amp and strstr($retour, '&amp;')) {
-                $retour = str_replace('&amp;', '&', $retour);
-            }
-            unset($params);
-            if ($full) {
-                $domain_and_path = '';
-                global $c_commsy_domain;
-                global $c_commsy_url_path;
-                if (!empty($c_commsy_domain)) {
-                    $domain_and_path .= $c_commsy_domain;
-                }
-                if (!empty($c_commsy_url_path)) {
-                    $domain_and_path .= $c_commsy_url_path.'/';
-                }
-                if ('/' != substr($domain_and_path, strlen($domain_and_path) - 1)) {
-                    $domain_and_path .= '/';
-                }
-                if (!empty($domain_and_path)) {
-                    $retour = $domain_and_path.$retour;
-                }
-            }
-        }
-
-        return $retour;
-    }
-
     /** get email of the user
      * this method returns either the room email
      * of the user or the account email of the
@@ -767,31 +722,6 @@ class cs_user_item extends cs_item
         $this->_addExtra('USERCOMMENT', (string) $value);
     }
 
-    /** get comment of the moderators
-     * this method returns the comment of the moderators.
-     *
-     * @return string comment of the moderators
-     */
-    public function getAdminComment()
-    {
-        $retour = '';
-        if ($this->_issetExtra('ADMINCOMMENT')) {
-            $retour = $this->_getExtra('ADMINCOMMENT');
-        }
-
-        return $retour;
-    }
-
-    /** set comment of the moderators
-     * this method sets the comment of the moderators.
-     *
-     * @param string value comment
-     */
-    public function setAdminComment($value)
-    {
-        $this->_addExtra('ADMINCOMMENT', $value);
-    }
-
     /** get flag, if moderator wants a mail at new accounts
      * this method returns the getaccountwantmail flag.
      *
@@ -846,11 +776,6 @@ class cs_user_item extends cs_item
         $this->_addExtra('ROOMWANTMAIL', (string) $value);
     }
 
-    public function getRoomWantMail()
-    {
-        return $this->getOpenRoomWantMail();
-    }
-
     public function setDeleteEntryWantMail(bool $enabled)
     {
         if ($enabled) {
@@ -863,33 +788,6 @@ class cs_user_item extends cs_item
     public function getDeleteEntryWantMail(): bool
     {
         return $this->_issetExtra('DELETEENTRYMAIL');
-    }
-
-    /** get flag, if moderator wants a mail if he has to publish a material
-     * this method returns the getaccountwantmail flag.
-     *
-     * @return int value 0, moderator doesn't want an e-mail
-     *             1, moderator wants an e-mail
-     */
-    public function getPublishMaterialWantMail()
-    {
-        $retour = 'yes';
-        if ($this->_issetExtra('PUBLISHWANTMAIL')) {
-            $retour = $this->_getExtra('PUBLISHWANTMAIL');
-        }
-
-        return $retour;
-    }
-
-    /** set flag if moderator wants a mail if he has to publish a material
-     * this method sets the comment of the moderator.
-     *
-     * @param int value no, moderator doesn't want an e-mail
-     *                      yes, moderator wants an e-mail
-     */
-    public function setPublishMaterialWantMail($value)
-    {
-        $this->_addExtra('PUBLISHWANTMAIL', (string) $value);
     }
 
     /** get last login time
@@ -907,14 +805,9 @@ class cs_user_item extends cs_item
      *
      * @return string user language
      */
-    public function getLanguage()
+    public function getLanguage(): string
     {
-        $retour = 'de';
-        if ($this->_issetExtra('LANGUAGE')) {
-            $retour = $this->_getExtra('LANGUAGE');
-        }
-
-        return $retour;
+        return ($this->_issetExtra('LANGUAGE')) ? $this->_getExtra('LANGUAGE') : 'de';
     }
 
     /** set user language
@@ -930,15 +823,11 @@ class cs_user_item extends cs_item
     /** get Visible of the user
      * this method returns the visible Property of the user.
      *
-     * @return int visible of the user
+     * @return string visible of the user
      */
-    public function getVisible()
+    public function getVisible(): string
     {
-        if ($this->isVisibleForAll()) {
-            return '2';
-        } else {
-            return '1';
-        }
+        return $this->isVisibleForAll() ? '2' : '1';
     }
 
     /** set visible property of the user
@@ -1001,54 +890,6 @@ class cs_user_item extends cs_item
         $retour = '';
         if ($this->_issetExtra('EMAIL_VISIBILITY')) {
             $retour = $this->_getExtra('EMAIL_VISIBILITY');
-        }
-
-        return $retour;
-    }
-
-    public function setDefaultMailNotVisible()
-    {
-        $this->_setExtra('DEFAULT_MAIL_VISIBILITY', '-1');
-    }
-
-    public function setDefaultMailVisible()
-    {
-        $this->_setExtra('DEFAULT_MAIL_VISIBILITY', '1');
-    }
-
-    public function getDefaultIsMailVisible()
-    {
-        $retour = '';
-        if ($this->_issetExtra('DEFAULT_MAIL_VISIBILITY')) {
-            $retour = $this->_getExtra('DEFAULT_MAIL_VISIBILITY');
-        }
-
-        if ('1' == $retour) {
-            $retour = true;
-        } else {
-            $retour = false;
-        }
-
-        return $retour;
-    }
-
-    // need anymore ??? (TBD)
-    public function isCommSyContact()
-    {
-        $retour = false;
-        if (1 == $this->getVisible()) {
-            $retour = true;
-        }
-
-        return $retour;
-    }
-
-    // need anymore ??? (TBD)
-    public function isWorldContact()
-    {
-        $retour = false;
-        if (2 == $this->getVisible()) {
-            $retour = true;
         }
 
         return $retour;
@@ -1142,7 +983,7 @@ class cs_user_item extends cs_item
      * @return bool true, if user is rejected
      *              false, if user is not rejected
      */
-    public function isRejected()
+    public function isRejected(): bool
     {
         return 0 == $this->_getValue('status');
     }
@@ -1153,7 +994,7 @@ class cs_user_item extends cs_item
      * @return bool true, if user is a guest
      *              false, if user is not a guest
      */
-    public function isGuest()
+    public function isGuest(): bool
     {
         return 0 == $this->_getValue('status');
     }
@@ -1164,7 +1005,7 @@ class cs_user_item extends cs_item
      * @return bool true, if user is a guest
      *              false, if user is not a guest
      */
-    public function isReallyGuest()
+    public function isReallyGuest(): bool
     {
         return 0 == $this->_getValue('status') and 'guest' == mb_strtolower((string) $this->_getValue('user_id'), 'UTF-8');
     }
@@ -1175,7 +1016,7 @@ class cs_user_item extends cs_item
      * @return bool true, if user is in request status
      *              false, if user is not in request status
      */
-    public function isRequested()
+    public function isRequested(): bool
     {
         return 1 == $this->_getValue('status');
     }
@@ -1186,7 +1027,7 @@ class cs_user_item extends cs_item
      * @return bool true, if user is a normal user or moderator
      *              false, if user is not a normal user or moderator
      */
-    public function isUser()
+    public function isUser(): bool
     {
         return $this->_getValue('status') >= 2;
     }
@@ -1197,21 +1038,14 @@ class cs_user_item extends cs_item
      * @return bool true, if user is a moderator
      *              false, if user is not a moderator
      */
-    public function isModerator()
+    public function isModerator(): bool
     {
         return 3 == $this->_getValue('status');
     }
 
-    public function isReadOnlyUser()
+    public function isReadOnlyUser(): bool
     {
         return 4 == $this->_getValue('status');
-    }
-
-    public function getRelatedRoomItem()
-    {
-        $room_manager = $this->_environment->getProjectManager();
-
-        return $room_manager->getItem($this->getRoomID());
     }
 
     public function getUserRelatedCommunityList(bool $withExtras = true): cs_list
@@ -1228,7 +1062,7 @@ class cs_user_item extends cs_item
         return $manager->getRelatedCommunityListForUser($this);
     }
 
-    public function getRelatedCommunityListAllUserStatus()
+    public function getRelatedCommunityListAllUserStatus(): cs_list
     {
         $manager = $this->_environment->getCommunityManager();
 
@@ -1249,19 +1083,17 @@ class cs_user_item extends cs_item
         return $manager->getUserRelatedProjectListForUser($this, $withExtras);
     }
 
-    public function getRelatedProjectList()
+    public function getRelatedProjectList(): cs_list
     {
         $manager = $this->_environment->getProjectManager();
 
         return $manager->getRelatedProjectListForUser($this, null);
     }
 
-    public function getRelatedProjectListAllUserStatus()
+    public function getRelatedProjectListAllUserStatus(): cs_list
     {
         $manager = $this->_environment->getProjectManager();
-        $list = $manager->getRelatedProjectListForUserAllUserStatus($this, null);
-
-        return $list;
+        return $manager->getRelatedProjectListForUserAllUserStatus($this, null);
     }
 
     public function getUserRelatedGroupList(): cs_list
@@ -1270,58 +1102,10 @@ class cs_user_item extends cs_item
         return $manager->getUserRelatedGroupListForUser($this);
     }
 
-    public function getRelatedGroupList()
+    public function getRelatedGroupList(): cs_list
     {
         $manager = $this->_environment->getGrouproomManager();
         return $manager->getRelatedGroupListForUser($this);
-    }
-
-    public function getRelatedProjectListSortByTime()
-    {
-        $manager = $this->_environment->getProjectManager();
-        $list = $manager->getRelatedProjectListForUserSortByTime($this);
-
-        return $list;
-    }
-
-    public function getRelatedProjectListForMyArea()
-    {
-        $manager = $this->_environment->getProjectManager();
-        $list = $manager->getRelatedProjectListForUserForMyArea($this);
-
-        return $list;
-    }
-
-    public function getRelatedProjectListSortByTimeForMyArea()
-    {
-        $manager = $this->_environment->getProjectManager();
-        $list = $manager->getRelatedProjectListForUserSortByTimeForMyArea($this);
-
-        return $list;
-    }
-
-    public function getContextIDArray()
-    {
-        if (!isset($this->contextIdArray)) {
-            $retour = [];
-            $manager = $this->_environment->getRoomManager();
-            $manager->setUserIDLimit($this->getUserID());
-            $manager->setAuthSourceLimit($this->getAuthSource());
-            $manager->setContextLimit('');
-            $manager->setWithGrouproom();
-            $manager->select();
-            $array = $manager->getIDArray();
-            if (!empty($array)) {
-                $retour = array_merge($retour, $array);
-            }
-            $own_room = $this->getOwnRoom();
-            if (isset($own_room)) {
-                $retour[] = $own_room->getItemID();
-            }
-            $this->contextIdArray = $retour;
-        }
-
-        return $this->contextIdArray;
     }
 
     public function _getTaskList()
@@ -1337,7 +1121,7 @@ class cs_user_item extends cs_item
      * @return bool true, if user is root
      *              false, if user is not root
      */
-    public function isRoot()
+    public function isRoot(): bool
     {
         return (3 == $this->_getValue('status'))
             and ('root' == $this->getUserID())
@@ -1350,7 +1134,7 @@ class cs_user_item extends cs_item
      * @return bool true, if user is Visible for the Public
      *              false, else
      */
-    public function isVisibleForAll()
+    public function isVisibleForAll(): bool
     {
         return 2 == $this->_getValue('visible');
     }
@@ -1361,7 +1145,7 @@ class cs_user_item extends cs_item
      * @return bool true, if user is Visible for logged in members
      *              false, else
      */
-    public function isVisibleForLoggedIn()
+    public function isVisibleForLoggedIn(): bool
     {
         return true;
     }
@@ -1519,28 +1303,28 @@ class cs_user_item extends cs_item
     /**
      * @return bool
      */
-    public function maySee(cs_user_item $user_item)
+    public function maySee(cs_user_item $userItem)
     {
         if ($this->_environment->inCommunityRoom()) {  // Community room
-            if ($user_item->isRoot()
-                or ($user_item->isGuest() and $this->isVisibleForAll())
-                or (($user_item->getContextID() == $this->getContextID()
-                        or $user_item->getContextID() == $this->_environment->getCurrentContextID()
+            if ($userItem->isRoot()
+                or ($userItem->isGuest() and $this->isVisibleForAll())
+                or (($userItem->getContextID() == $this->getContextID()
+                        or $userItem->getContextID() == $this->_environment->getCurrentContextID()
                 )
-                and (($user_item->isUser()
+                and (($userItem->isUser()
                         and $this->isVisibleForLoggedIn()
                 )
-                or ($user_item->getUserID() == $this->getUserID()
-                    and $user_item->getAuthSource == $this->getAuthSource()
+                or ($userItem->getUserID() == $this->getUserID()
+                    and $userItem->getAuthSource() == $this->getAuthSource()
                 )
-                or $user_item->isModerator()
+                or $userItem->isModerator()
                 ))) {
                 $access = true;
             } else {
                 $access = false;
             }
         } else {    // Project room, group room, private room, portal
-            $access = parent::maySee($user_item);
+            $access = parent::maySee($userItem);
             if ($access) {
                 $room = $this->_environment->getCurrentContextItem();
                 if ($room->isPrivateRoom()
@@ -1551,9 +1335,9 @@ class cs_user_item extends cs_item
                 } else {
                     // if user rubric is not active, user can always see himself
                     if (!$room->withRubric(CS_USER_TYPE)) {
-                        if ($user_item->getUserID() == $this->getUserID() && $user_item->getAuthSource() == $this->getAuthSource()) {
+                        if ($userItem->getUserID() == $this->getUserID() && $userItem->getAuthSource() == $this->getAuthSource()) {
                             $access = true;
-                        } elseif ($user_item->isModerator()) {
+                        } elseif ($userItem->isModerator()) {
                             $access = true;
                         } else {
                             $access = false;
@@ -1690,6 +1474,7 @@ class cs_user_item extends cs_item
         $userManager->select();
         $userList = $userManager->get();
         if (isset($userList) && 1 == $userList->getCount()) {
+            /** @noinspection PhpIncompatibleReturnTypeInspection */
             return $userList->getFirst();
         }
 
@@ -1697,14 +1482,12 @@ class cs_user_item extends cs_item
     }
 
     /**
-     * @return cs_user_item
+     * @return cs_user_item|null
      */
-    public function getRelatedPrivateRoomUserItem()
+    public function getRelatedPrivateRoomUserItem(): ?cs_user_item
     {
-        $retour = null;
         $private_room_manager = $this->_environment->getPrivateRoomManager();
         $own_room = $private_room_manager->getRelatedOwnRoomForUser($this, $this->_environment->getCurrentPortalID());
-        unset($private_room_manager);
         if (isset($own_room)) {
             $own_cid = $own_room->getItemID();
             $user_manager = $this->_environment->getUserManager();
@@ -1714,20 +1497,17 @@ class cs_user_item extends cs_item
             $user_manager->setAuthSourceLimit($this->getAuthSource());
             $user_manager->select();
             $user_list = $user_manager->get();
-            unset($user_manager);
             if (1 == $user_list->getCount()) {
-                $retour = $user_list->getFirst();
+                /** @noinspection PhpIncompatibleReturnTypeInspection */
+                return $user_list->getFirst();
             }
-            unset($user_list);
         }
-        unset($own_room);
 
-        return $retour;
+        return null;
     }
 
     public function getRelatedPortalUserItem(): ?cs_user_item
     {
-        $retour = null;
         $user_manager = $this->_environment->getUserManager();
         $user_manager->resetLimits();
         $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
@@ -1735,26 +1515,12 @@ class cs_user_item extends cs_item
         $user_manager->setAuthSourceLimit($this->getAuthSource());
         $user_manager->select();
         $user_list = $user_manager->get();
-        unset($user_manager);
         if (1 == $user_list->getCount()) {
-            $retour = $user_list->getFirst();
-        }
-        unset($user_list);
-
-        return $retour;
-    }
-
-    public function getModifiedItemIDArray($type, $creator_id)
-    {
-        $id_array = [];
-        $link_manager = $this->_environment->getLinkItemManager();
-        $context_item = $this->_environment->getCurrentContextItem();
-        $link_ids = $link_manager->getModiefiedItemIDArray($type, $creator_id);
-        foreach ($link_ids as $id) {
-            $id_array[] = $id;
+            /** @noinspection PhpIncompatibleReturnTypeInspection */
+            return $user_list->getFirst();
         }
 
-        return $id_array;
+        return null;
     }
 
     public function cloneData()
@@ -2275,48 +2041,6 @@ class cs_user_item extends cs_item
         $this->_unsetExtra('TEMPORARY_LOCK');
     }
 
-    // save last used passwords
-    public function setGenerationPassword($generation, $password)
-    {
-        $this->_addExtra('PW_GENERATION_'.$generation, $password);
-    }
-
-    public function getGenerationPassword($generation)
-    {
-        if ($this->_issetExtra('PW_GENERATION_'.$generation)) {
-            $retour = $this->_getExtra('PW_GENERATION_'.$generation);
-        }
-    }
-
-    public function isPasswordInGeneration($password)
-    {
-        $portal_item = $this->_environment->getCurrentPortalItem();
-
-        $retour = false;
-        $i = $portal_item->getPasswordGeneration();
-        if (0 == $i) {
-            $authentication = $this->_environment->getAuthenticationObject();
-
-            $authManager = $authentication->getAuthManager($this->getAuthSource());
-            $auth_item = $authManager->getItem($this->getUserID());
-            if ($auth_item->getPasswordMD5() == $password) {
-                $retour = true;
-            }
-        } else {
-            for ($i; $i > 0; --$i) {
-                if ($this->_issetExtra('PW_GENERATION_'.$i)) {
-                    if ($this->_getExtra('PW_GENERATION_'.$i) == $password) {
-                        $retour = true;
-                    }
-                }
-            }
-        }
-
-        unset($portal_item);
-
-        return $retour;
-    }
-
     /**
      * @return $this
      */
@@ -2345,7 +2069,6 @@ class cs_user_item extends cs_item
         } else {
             $this->_setValue('expire_date', getCurrentDateTimePlusDaysInMySQL($days, true));
         }
-        $this->unsetPasswordExpiredEmailSend();
     }
 
     public function unsetPasswordExpireDate()
@@ -2356,11 +2079,6 @@ class cs_user_item extends cs_item
     public function getPasswordExpireDate()
     {
         return $this->_getValue('expire_date');
-//    	$retour = '';
-//    	if($this->_issetExtra('PW_EXPIRE_DATE')){
-//    		$retour = $this->_getExtra('PW_EXPIRE_DATE');
-//    	}
-//    	return $retour;
     }
 
     public function isPasswordExpired()
@@ -2371,26 +2089,6 @@ class cs_user_item extends cs_item
         }
 
         return $retour;
-    }
-
-    public function isPasswordExpiredEmailSend()
-    {
-        $retour = false;
-        if ($this->_issetExtra('PASSWORD_EXPIRED_EMAIL')) {
-            $retour = true;
-        }
-
-        return $retour;
-    }
-
-    public function setPasswordExpiredEmailSend()
-    {
-        $this->_addExtra('PASSWORD_EXPIRED_EMAIL', '1');
-    }
-
-    public function unsetPasswordExpiredEmailSend()
-    {
-        $this->_unsetExtra('PASSWORD_EXPIRED_EMAIL');
     }
 
     public function setImpersonateExpiryDate(?DateTimeImmutable $expiry): cs_user_item
@@ -2416,66 +2114,6 @@ class cs_user_item extends cs_item
         }
 
         return null;
-    }
-
-    // # commsy user connections: portal2portal
-    public function getOwnConnectionKey()
-    {
-        $retour = '';
-        $value = $this->_getExtra('CONNECTION_OWNKEY');
-        if (!empty($value)) {
-            $retour = $value;
-        } else {
-            $this->_generateOwnConnectionKey();
-            $retour = $this->_getExtra('CONNECTION_OWNKEY');
-        }
-
-        return $retour;
-    }
-
-    private function _setOwnConnectionKey($value)
-    {
-        $this->_setExtra('CONNECTION_OWNKEY', $value);
-    }
-
-    private function _generateOwnConnectionKey()
-    {
-        $key = '';
-        $key .= $this->getItemID();
-        $key .= random_int(0, 9);
-        $key .= $this->getFullName();
-        $key .= random_int(0, 9);
-        $key .= $this->getEmail();
-        $key .= random_int(0, 9);
-        $key .= getCurrentDateTimeInMySQL();
-        $this->_setOwnConnectionKey(md5($key));
-        $this->save();
-    }
-
-    public function addExternalConnectionKey($key)
-    {
-        $key_array = $this->_getExternalConnectionKeyArray();
-        if (!in_array($key, $key_array)) {
-            $key_array[] = $key;
-            $this->_setExternalConnectionKeyArray($key_array);
-        }
-    }
-
-    private function _getExternalConnectionKeyArray()
-    {
-        $retour = [];
-
-        $value = $this->_getExtra('CONNECTION_EXTERNAL_KEY_ARRAY');
-        if (!empty($value)) {
-            $retour = $value;
-        }
-
-        return $retour;
-    }
-
-    private function _setExternalConnectionKeyArray($value)
-    {
-        $this->_setExtra('CONNECTION_EXTERNAL_KEY_ARRAY', $value);
     }
 
     public function setIsAllowedToCreateContext($value)
@@ -2529,36 +2167,5 @@ class cs_user_item extends cs_item
 
             return $user->getAuthSource()->getCreateRoom();
         }
-    }
-
-    /**
-     * Deletes a user caused by inactivity, expects a portal user.
-     *
-     * @throws Exception
-     */
-    public function deleteUserCausedByInactivity()
-    {
-        $userContext = $this->getContextItem();
-        if (!$userContext->isPortal()) {
-            throw new Exception('expecting portal user');
-        }
-
-        $this->delete();
-
-        $ownRoom = $this->getOwnRoom($userContext->getItemID());
-        if (isset($ownRoom)) {
-            $ownRoom->delete();
-        }
-
-        $symfonyContainer = $this->_environment->getSymfonyContainer();
-
-        /** @var AccountManager $accountManager */
-        $accountManager = $symfonyContainer->get(AccountManager::class);
-        $account = $accountManager->getAccount($this, $userContext->getId());
-
-        /** @var EntityManagerInterface $entityManager */
-        $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $entityManager->remove($account);
-        $entityManager->flush();
     }
 }
