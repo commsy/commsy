@@ -1199,6 +1199,7 @@ class PortalSettingsController extends AbstractController
         #[MapEntity(id: 'portalId')]
         Portal $portal,
         UserService $userService,
+        AccountManager $accountManager,
         Request $request
     ): Response {
         $IdsMailRecipients = [];
@@ -1217,8 +1218,11 @@ class PortalSettingsController extends AbstractController
             if ($form->get('execute')->isClicked()) {
                 $IdsMailRecipients[] = $userId;
                 $user = $userService->getUser($userId);
-                $user->delete();
-                $user->save();
+                $account = $accountManager->getAccount($user, $portal->getId());
+                if ($account) {
+                    $accountManager->delete($account);
+                }
+
                 $this->addFlash('deleteSuccess', true);
 
                 return $this->redirectToRoute('app_portalsettings_accountindexsendmail', [
@@ -1282,8 +1286,10 @@ class PortalSettingsController extends AbstractController
                     case 'user-delete':
                         foreach (explode(',', (string) $userIds) as $userId) {
                             $user = $userService->getUser($userId);
-                            $user->delete();
-                            $user->save();
+                            $account = $accountManager->getAccount($user, $portal->getId());
+                            if ($account) {
+                                $accountManager->delete($account);
+                            }
                             $IdsMailRecipients[] = $userId;
                         }
                         $this->addFlash('deleteSuccess', true);
