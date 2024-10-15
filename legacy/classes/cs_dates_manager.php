@@ -550,6 +550,22 @@ class cs_dates_manager extends cs_manager
        return $this->_getItemList('dates', $id_array);
    }
 
+    public function getItemsForRoomIDChangedWithinDays(int $contextId, int $dayLimit): array
+    {
+        $this->reset();
+        $this->setContextLimit($contextId);
+        $this->setAgeLimit($dayLimit);
+
+        $this->setDateModeLimit(2);
+
+        $this->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $this->select();
+
+        $itemsList = $this->get();
+
+        return !$itemsList ? [] : $itemsList->to_array();
+    }
+
    /** build a new material item
     * this method returns a new EMTPY material item.
     *

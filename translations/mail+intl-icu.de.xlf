@@ -385,6 +385,50 @@
                 <source>mail.room_moderation.body.linked_project_room</source>
                 <target>Dieser Gruppenraum ist mit dem Projektraum {room_name} verknüpft</target>
             </trans-unit>
+            <trans-unit id="mail_newsletter_subject_daily">
+                <source>mail.newsletter_subject_daily</source>
+                <target>Täglicher CommSy-Newsletter: {portal}</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_subject_weekly">
+                <source>mail.newsletter_subject_weekly</source>
+                <target>Wöchentlicher CommSy-Newsletter: {portal}</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_intro">
+                <source>mail.newsletter_body_intro</source>
+                <target>Dieser Newsletter listet {mailSequence} neue oder geänderte Einträge in Ihren Räumen des CommSy-Portals "{portal}" auf. Berücksichtigt werden ungelesene Beiträge aus allen Räumen, in denen Sie Mitglied sind.</target>
+            </trans-unit>
+            <trans-unit id="daily">
+                <source>daily</source>
+                <target>täglich</target>
+            </trans-unit>
+            <trans-unit id="weekly">
+                <source>weekly</source>
+                <target>wöchentlich</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_new">
+                <source>new</source>
+                <target>neu</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_changed">
+                <source>changed</source>
+                <target>geändert</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_new_annotations">
+                <source>mail.newsletter_body_new_annotations</source>
+                <target>{count, plural, =1 {neue Anmerkung} other {# neue Anmerkungen}}</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_outro">
+                <source>mail.newsletter_body_outro</source>
+                <target>Falls Sie den Newsletter nicht mehr erhalten möchten, bestellen Sie ihn bitte in Ihrem Profil beim Menüpunkt Newsletter ab.</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_no_new_entries">
+                <source>mail.newsletter_body_no_new_entries</source>
+                <target>Es sind keine neuen Einträge vorhanden.</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_new_additional_annotations">
+                <source>mail.newsletter_body_new_additional_annotations</source>
+                <target>Weitere neue Anmerkungen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
