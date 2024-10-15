@@ -23,8 +23,8 @@ class AccountSettingsManager
     {
         $accountSettings = $account->getSettings();
 
-        $lookup = $accountSettings->filter(fn (AccountSetting $settings) =>
-            $settings->getName() === $setting->value);
+        $lookup = $accountSettings->filter(fn (AccountSetting $accountSetting) =>
+            $accountSetting->getName() === $setting->value);
 
         return !$lookup->isEmpty() ? $lookup->first()->getValue() : $setting->default();
     }
@@ -36,5 +36,17 @@ class AccountSettingsManager
         $accountSetting->setValue($value);
 
         $account->setSetting($accountSetting);
+    }
+
+    public function removeSetting(Account $account, AccountSettingEnum $setting): void
+    {
+        $accountSettings = $account->getSettings();
+
+        $lookup = $accountSettings->filter(fn (AccountSetting $accountSetting) =>
+            $accountSetting->getName() === $setting->value);
+
+        foreach ($lookup as $accountSetting) {
+            $account->removeSetting($accountSetting);
+        }
     }
 }

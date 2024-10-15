@@ -13,6 +13,8 @@
 
 namespace App\Form\Type\Account;
 
+use App\Account\AccountSetting;
+use App\Account\AccountSettingsManager;
 use App\Entity\Account;
 use App\Validator\Constraints\UniqueUserId;
 use cs_user_item;
@@ -24,15 +26,19 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotEqualTo;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class PersonalInformationType extends AbstractType
 {
-    public function __construct(private readonly Security $security)
-    {
-    }
+    public function __construct(
+        private readonly Security $security,
+        private readonly AccountSettingsManager $settingsManager
+    ) {}
 
     /**
      * Builds the form.
@@ -57,6 +63,9 @@ class PersonalInformationType extends AbstractType
             $emailConstraints[] = new NotEqualTo(['value' => $portalUser->getEmail()]);
         }
 
+        $initialsMaxLength = 3;
+        $initialsRegex = '/(*UTF8)^[\p{Ll}\p{Lu}\p{Lt}\p{Lm}\p{Lo}]+$/'; // any lowercase/uppercase/title case/modifier/other Unicode letters only
+
         $builder
             ->add('userId', TextType::class, [
                 'constraints' => [
@@ -78,6 +87,39 @@ class PersonalInformationType extends AbstractType
                 'label' => 'lastname',
                 'required' => false,
                 'disabled' => !$changeUserdata,
+            ])
+            ->add(AccountSetting::CUSTOM_INITIALS->value, TextType::class, [
+                'label' => 'initials',
+                'required' => false,
+                'constraints' => [
+                    new Length([
+                        'max' => $initialsMaxLength,
+                        'maxMessage' => 'Your initials may only consist of up to {{ limit }} letters.',
+                    ]),
+                    new Regex([
+                        'pattern' => $initialsRegex,
+                        'message' => 'Your initials may only contain lowercase or uppercase letters.',
+                    ]),
+                ],
+                'attr' => [
+                    'placeholder' => $user->getDefaultInitials(),
+                ],
+                'disabled' => !$changeUserdata,
+                'getter' => function ($viewData, FormInterface $form) use ($user): string {
+                    return $this->settingsManager
+                        ->getSetting($user, AccountSetting::CUSTOM_INITIALS)['initials'];
+                },
+                'setter' => function ($viewData, $formData, FormInterface $form) use ($user, $initialsMaxLength, $initialsRegex): void {
+                    if (!empty($formData)) {
+                        if (mb_strlen($formData, 'UTF8') <= $initialsMaxLength &&
+                            preg_match($initialsRegex, $formData) === 1) {
+                            $this->settingsManager
+                                ->storeSetting($user, AccountSetting::CUSTOM_INITIALS, ['initials' => $formData]);
+                        }
+                    } else {
+                        $this->settingsManager->removeSetting($user, AccountSetting::CUSTOM_INITIALS);
+                    }
+                },
             ])
             ->add('emailAccount', EmailType::class, [
                 'label' => 'email',
