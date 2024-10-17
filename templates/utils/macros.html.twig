@@ -536,7 +536,7 @@
         {% endif %}
     {% else %}
         {% if contextMemberStatus is same as('join') %}
-            {% if context.isGroupRoom %}
+            {% if context.isGroupRoom and not memberInGroup %}
                 <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('app_group_join', {'roomId': roomId, 'itemId': context.linkedGroupItemID}) }}"><i class="uk-icon uk-icon-user-plus"></i> {{ 'join'|trans({}, 'messages') }}</a>
             {% else %}
                 <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
