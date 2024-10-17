@@ -430,13 +430,14 @@
                                     <div class="uk-width-1-5 uk-text-left">
                                         {% if item.isGroupRoomActivated %}
                                             <div class="uk-width-1-5 uk-text-left">
-                                                {% if isRoot or (userIsGroupMember and roomMemberStatus == 'enter') %}
+                                                {% if isRoot or (userIsGroupMember and roomMemberStatus is same as('enter')) %}
                                                     <a href="{{ path('app_room_home', {'roomId': item.groupRoomItem.ItemId}) }}" class="uk-icon-large uk-icon-button uk-icon-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
+                                                {% elseif roomMemberStatus is same as('join') %}
+                                                    <a href="{{ path('app_group_join', {'roomId': item.contextId, 'itemId': item.itemId}) }}" class="uk-icon-large uk-icon-button uk-icon-user-plus" data-uk-tooltip title="{{ 'join'|trans({})|capitalize }}"></a>
                                                 {% else %}
                                                     <span class="uk-icon-large uk-icon-button uk-icon-remove" data-uk-tooltip title="{{'no access'|trans({}, 'room') }}"> </span>
                                                 {% endif %}
                                             </div>
-
                                         {% endif %}
                                     </div>
                                     <div class="uk-width-2-5 uk-text-left uk-margin-right">
