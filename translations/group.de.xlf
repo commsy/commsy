@@ -62,6 +62,10 @@
                 <source>leave grouproom before group</source>
                 <target>Sie müssen Ihre Mitgliedschaft in dem Gruppenraum beenden, before Sie aus der Gruppe austreten können.</target>
             </trans-unit>
+            <trans-unit id="assign_other_moderators_before_leaving_group">
+                <source>To leave the group, please assign further moderators, or delete the group.</source>
+                <target>Um die Gruppe verlassen zu können, setzen Sie eine neue Moderation ein oder löschen Sie die Gruppe.</target>
+            </trans-unit>
             <trans-unit id="delete_group_workspace">
                 <source>Delete group workspace</source>
                 <target>Gruppenraum löschen</target>
