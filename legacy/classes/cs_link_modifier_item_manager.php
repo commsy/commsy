@@ -75,10 +75,9 @@ class cs_link_modifier_item_manager extends cs_link_father_manager
                  ' modifier_id="'.encode(AS_DB, $user_id).'"
             ';
 
-             $this->_db_connector->performQuery($query);
-
-             $errno = $this->_db_connector->getErrno();
-             if (!empty($errno)) {
+             try {
+                 $this->_db_connector->performQuery($query);
+             } catch (\Doctrine\DBAL\Exception $e) {
                  trigger_error('Problems marking item as modified from query: "'.$query.'"');
              }
          }

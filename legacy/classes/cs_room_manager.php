@@ -39,16 +39,16 @@ class cs_room_manager extends cs_context_manager
 
     public $_time_limit = null;
 
-    public $_continuous_limit = null;
-
-    public $_template_limit = null;
-
     /**
      * string - containing an order limit for the select community.
      */
     public $_order = null;
 
     public $_deleted_limit = null;
+
+    private bool $templateLimit = false;
+
+    private bool $continuousLimit = false;
 
     private bool $_limit_with_grouproom = false;
 
@@ -79,8 +79,8 @@ class cs_room_manager extends cs_context_manager
         $this->_order = null;
         $this->_deleted_limit = null;
         $this->_time_limit = null;
-        $this->_continuous_limit = null;
-        $this->_template_limit = null;
+        $this->continuousLimit = false;
+        $this->templateLimit = false;
         $this->_limit_with_grouproom = false;
         $this->_limit_only_grouproom = false;
     }
@@ -151,32 +151,22 @@ class cs_room_manager extends cs_context_manager
 
     public function setContinuousLimit()
     {
-        $this->_continuous_limit = 1;
+        $this->continuousLimit = true;
     }
 
     public function setNotContinuousLimit()
     {
-        $this->_continuous_limit = -1;
+        $this->continuousLimit = false;
     }
 
-    public function unsetContinuousLimit()
+    public function setTemplateLimit(): void
     {
-        $this->_continuous_limit = null;
+        $this->templateLimit = true;
     }
 
-    public function setTemplateLimit()
+    public function setNotTemplateLimit(): void
     {
-        $this->_template_limit = 1;
-    }
-
-    public function setNotTemplateLimit()
-    {
-        $this->_template_limit = -1;
-    }
-
-    public function unsetTemplateLimit()
-    {
-        $this->_template_limit = null;
+        $this->templateLimit = false;
     }
 
     /** set order limit
@@ -263,8 +253,8 @@ class cs_room_manager extends cs_context_manager
         ) {
             $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
         }
-        if (isset($this->_continuous_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.continuous = "'.encode(AS_DB, $this->_continuous_limit).'"';
+        if ($this->continuousLimit) {
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.continuous = "'.encode(AS_DB, 1).'"';
         }
 
         if (!empty($this->_user_id_limit)) {
@@ -284,8 +274,8 @@ class cs_room_manager extends cs_context_manager
         }
 
         // template
-        if (isset($this->_template_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "'.encode(AS_DB, $this->_template_limit).'"';
+        if ($this->templateLimit) {
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "'.encode(AS_DB, 1).'"';
         }
 
         if ('count' != $mode) {

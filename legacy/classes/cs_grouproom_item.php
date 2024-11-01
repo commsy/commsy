@@ -456,32 +456,6 @@ class cs_grouproom_item extends cs_room_item
         return [];
     }
 
-    public function setUsageInfoTextArray($value_array)
-    {
-        if (is_array($value_array)) {
-            $this->_addExtra('USAGE_INFO_TEXT', $value_array);
-        }
-    }
-
-    public function getUsageInfoFormTextArray()
-    {
-        if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
-            $retour = $this->_getExtra('USAGE_INFO_FORM_TEXT');
-            if (!empty($retour)) {
-                return $retour;
-            }
-        }
-
-        return [];
-    }
-
-    public function setUsageInfoFormTextArray($value_array)
-    {
-        if (is_array($value_array)) {
-            $this->_addExtra('USAGE_INFO_FORM_TEXT', $value_array);
-        }
-    }
-
     public function getUsageInfoHeaderForRubric($rubric)
     {
         $translator = $this->_environment->getTranslationObject();
@@ -590,69 +564,10 @@ class cs_grouproom_item extends cs_room_item
         $this->_addExtra('USAGE_INFO_TEXT', $value_array);
     }
 
-    public function setUsageInfoTextForRubricForm($rubric, $string)
-    {
-        if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
-            $value_array = $this->_getExtra('USAGE_INFO_FORM_TEXT');
-            if (empty($value_array)) {
-                $value_array = [];
-            }
-        } else {
-            $value_array = [];
-        }
-        if (!empty($string)) {
-            $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
-        } else {
-            if (isset($value_array[mb_strtoupper((string) $rubric, 'UTF-8')])) {
-                unset($value_array[mb_strtoupper((string) $rubric, 'UTF-8')]);
-            }
-        }
-        $this->_addExtra('USAGE_INFO_FORM_TEXT', $value_array);
-    }
-
-    public function getUsageInfoTextForRubricForm($rubric)
-    {
-        if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
-            $retour = $this->_getExtra('USAGE_INFO_FORM_TEXT');
-            if (empty($retour)) {
-                $retour = [];
-            }
-        } else {
-            $retour = [];
-        }
-        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
-            $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
-        } else {
-            $retour = '';
-        }
-
-        return $retour;
-    }
-
     public function getUsageInfoTextForRubricInForm($rubric)
     {
         if ($this->_issetExtra('USAGE_INFO_TEXT')) {
             $retour = $this->_getExtra('USAGE_INFO_TEXT');
-            if (empty($retour)) {
-                $retour = [];
-            }
-        } else {
-            $retour = [];
-        }
-        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
-            $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
-        } else {
-            $retour = '';
-        }
-
-        return $retour;
-    }
-
-    public function getUsageInfoTextForRubricFormInForm($rubric)
-    {
-        $funct = $this->_environment->getCurrentFunction();
-        if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
-            $retour = $this->_getExtra('USAGE_INFO_FORM_TEXT');
             if (empty($retour)) {
                 $retour = [];
             }

@@ -64,7 +64,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
         }
 
         // Block if room is a template
-        if ($room->getTemplate()) {
+        if ($room->isTemplate()) {
             $event->setBlocked(true);
 
             return;

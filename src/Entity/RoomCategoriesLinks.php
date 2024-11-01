@@ -16,12 +16,8 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Invitations.
- */
 #[ORM\Entity]
 #[ORM\Table(name: 'room_categories_links')]
-#[ORM\Index(columns: ['id'], name: 'id')]
 class RoomCategoriesLinks
 {
     #[ORM\Column(name: 'id', type: Types::INTEGER)]

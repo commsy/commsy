@@ -246,24 +246,9 @@ class cs_userroom_item extends cs_room_item
         $this->setUsageInfo('USAGE_INFO_TEXT', $rubric, $string);
     }
 
-    public function getUsageInfoTextForRubricForm($rubric)
-    {
-        return $this->getUsageInfo('USAGE_INFO_FORM_TEXT', $rubric);
-    }
-
-    public function setUsageInfoTextForRubricForm($rubric, $string)
-    {
-        $this->setUsageInfo('USAGE_INFO_FORM_TEXT', $rubric, $string);
-    }
-
     public function getUsageInfoTextForRubricInForm($rubric)
     {
         return $this->getUsageInfo('USAGE_INFO_TEXT', $rubric);
-    }
-
-    public function getUsageInfoTextForRubricFormInForm($rubric)
-    {
-        return $this->getUsageInfo('USAGE_INFO_FORM_TEXT', $rubric);
     }
 
     private function getUsageInfo(string $key, string $rubric): string

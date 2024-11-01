@@ -31,8 +31,6 @@ class cs_grouproom_manager extends cs_room2_manager
 
     public $_time_limit = null;
 
-    public $_template_limit = null;
-
     private ?int $_project_room_limit = null;
 
     /** constructor
@@ -56,7 +54,6 @@ class cs_grouproom_manager extends cs_room2_manager
         $this->_age_limit = null;
         $this->_user_id_limit = null;
         $this->_time_limit = null;
-        $this->_template_limit = null;
         $this->_project_room_limit = null;
     }
 
@@ -102,21 +99,6 @@ class cs_grouproom_manager extends cs_room2_manager
     public function setTimeLimit($limit)
     {
         $this->_time_limit = $limit;
-    }
-
-    public function setTemplateLimit()
-    {
-        $this->_template_limit = 1;
-    }
-
-    public function setNotTemplateLimit()
-    {
-        $this->_template_limit = -1;
-    }
-
-    public function unsetTemplateLimit()
-    {
-        $this->_template_limit = null;
     }
 
      /** select group rooms limited by limits
@@ -206,11 +188,6 @@ class cs_grouproom_manager extends cs_room2_manager
              } else {
                  $query .= ' AND room_time.to_item_id IS NULL';
              }
-         }
-
-         // template
-         if (isset($this->_template_limit)) {
-             $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "'.encode(AS_DB, $this->_template_limit).'"';
          }
 
          // id_array_limit
