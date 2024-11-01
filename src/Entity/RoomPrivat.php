@@ -14,6 +14,8 @@
 namespace App\Entity;
 
 use App\Repository\RoomPrivateRepository;
+use App\Utils\EntityDatesTrait;
+use App\Utils\EntityUsersTrait;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -29,6 +31,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(columns: ['lastlogin'], name: 'lastlogin')]
 class RoomPrivat
 {
+    use EntityDatesTrait;
+    use EntityUsersTrait;
 
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
@@ -37,24 +41,6 @@ class RoomPrivat
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
-
-    #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: false)]
-    private int $creatorId = 0;
-
-    #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
-    private ?int $modifierId = null;
-
-    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
-    private ?int $deleterId = null;
-
-    #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE, nullable: false)]
-    private DateTime $creationDate;
-
-    #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: false)]
-    private DateTime $modificationDate;
-
-    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?DateTime $deletionDate = null;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
     private ?string $title = null;
@@ -65,22 +51,22 @@ class RoomPrivat
     #[ORM\Column(name: 'status', type: Types::STRING, length: 20, nullable: false)]
     private ?string $status = null;
 
-    #[ORM\Column(name: 'activity', type: Types::INTEGER, nullable: false)]
+    #[ORM\Column(name: 'activity', type: Types::INTEGER, options: ['default' => 0])]
     private int $activity = 0;
 
-    #[ORM\Column(name: 'type', type: Types::STRING, length: 20, nullable: false)]
+    #[ORM\Column(name: 'type', type: Types::STRING, length: 20)]
     private string $type = 'privateroom';
 
-    #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
+    #[ORM\Column(name: 'public', type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $public = false;
 
-    #[ORM\Column(name: 'is_open_for_guests', type: Types::BOOLEAN, nullable: false)]
-    private bool $isOpenForGuests = false;
+    #[ORM\Column(name: 'is_open_for_guests', type: Types::BOOLEAN, options: ['default' => 0])]
+    private bool $openForGuests = false;
 
-    #[ORM\Column(name: 'continuous', type: Types::BOOLEAN, nullable: false)]
+    #[ORM\Column(name: 'continuous', type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $continuous = false;
 
-    #[ORM\Column(name: 'template', type: Types::BOOLEAN, nullable: false)]
+    #[ORM\Column(name: 'template', type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $template = false;
 
     #[ORM\Column(name: 'contact_persons', type: Types::STRING, length: 255, nullable: true)]
@@ -94,8 +80,8 @@ class RoomPrivat
 
     public function __construct()
     {
-        $this->creationDate = new DateTime('0000-00-00 00:00:00');
-        $this->modificationDate = new DateTime('0000-00-00 00:00:00');
+        $this->creationDate = new DateTime();
+        $this->modificationDate = new DateTime();
     }
 
     public function getItemId(): int
@@ -118,78 +104,6 @@ class RoomPrivat
     public function setContextId(int $contextId): RoomPrivat
     {
         $this->contextId = $contextId;
-
-        return $this;
-    }
-
-    public function getCreatorId(): int
-    {
-        return $this->creatorId;
-    }
-
-    public function setCreatorId(int $creatorId): RoomPrivat
-    {
-        $this->creatorId = $creatorId;
-
-        return $this;
-    }
-
-    public function getModifierId(): int
-    {
-        return $this->modifierId;
-    }
-
-    public function setModifierId(int $modifierId): RoomPrivat
-    {
-        $this->modifierId = $modifierId;
-
-        return $this;
-    }
-
-    public function getDeleterId(): int
-    {
-        return $this->deleterId;
-    }
-
-    public function setDeleterId(int $deleterId): RoomPrivat
-    {
-        $this->deleterId = $deleterId;
-
-        return $this;
-    }
-
-    public function getCreationDate(): DateTime
-    {
-        return $this->creationDate;
-    }
-
-    public function setCreationDate(DateTime $creationDate): RoomPrivat
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
-    }
-
-    public function getModificationDate(): DateTime
-    {
-        return $this->modificationDate;
-    }
-
-    public function setModificationDate(DateTime $modificationDate): RoomPrivat
-    {
-        $this->modificationDate = $modificationDate;
-
-        return $this;
-    }
-
-    public function getDeletionDate(): DateTime
-    {
-        return $this->deletionDate;
-    }
-
-    public function setDeletionDate(DateTime $deletionDate): RoomPrivat
-    {
-        $this->deletionDate = $deletionDate;
 
         return $this;
     }
@@ -266,15 +180,20 @@ class RoomPrivat
         return $this;
     }
 
-    public function isOpenForGuests(): bool
+    public function setOpenForGuests(bool $openForGuests): RoomPrivat
     {
-        return $this->isOpenForGuests;
+        $this->openForGuests = $openForGuests;
+        return $this;
     }
 
-    public function setIsOpenForGuests(bool $isOpenForGuests): RoomPrivat
+    public function getOpenForGuests(): bool
     {
-        $this->isOpenForGuests = $isOpenForGuests;
+        return $this->openForGuests;
+    }
 
+    public function setContinuous(bool $continuous): RoomPrivat
+    {
+        $this->continuous = $continuous;
         return $this;
     }
 
@@ -283,23 +202,15 @@ class RoomPrivat
         return $this->continuous;
     }
 
-    public function setContinuous(bool $continuous): RoomPrivat
+    public function setTemplate(bool $template): RoomPrivat
     {
-        $this->continuous = $continuous;
-
+        $this->template = $template;
         return $this;
     }
 
     public function isTemplate(): bool
     {
         return $this->template;
-    }
-
-    public function setTemplate(bool $template): RoomPrivat
-    {
-        $this->template = $template;
-
-        return $this;
     }
 
     public function getContactPersons(): string

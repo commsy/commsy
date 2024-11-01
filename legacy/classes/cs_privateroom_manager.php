@@ -38,8 +38,6 @@ class cs_privateroom_manager extends cs_room2_manager
 
     public $_time_limit = null;
 
-    private ?int $_template_limit = null;
-
     private bool $_active_limit = false;
 
     private ?string $_user_id_limit = null;
@@ -71,7 +69,6 @@ class cs_privateroom_manager extends cs_room2_manager
         $this->_time_limit = null;
         $this->_user_id_limit = null;
         $this->_room_type = CS_PRIVATEROOM_TYPE;
-        $this->_template_limit = null;
         $this->_active_limit = false;
     }
 
@@ -137,21 +134,6 @@ class cs_privateroom_manager extends cs_room2_manager
         $this->_auth_source_limit = (int) $limit;
     }
 
-    public function setTemplateLimit()
-    {
-        $this->_template_limit = 1;
-    }
-
-    public function setNotTemplateLimit()
-    {
-        $this->_template_limit = -1;
-    }
-
-    public function unsetTemplateLimit()
-    {
-        $this->_template_limit = null;
-    }
-
     /** select privatrooms limited by limits
      * this method returns a list (cs_list) of privatrooms within the database limited by the limits. the select statement is a bit tricky, see source code for further information.
      */
@@ -203,9 +185,6 @@ class cs_privateroom_manager extends cs_room2_manager
         if (isset($this->_room_type)) {
             $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB,
                 $this->_room_type).'"';
-        }
-        if (isset($this->_template_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "1"';
         }
 
         if ($this->_active_limit) {
@@ -322,12 +301,12 @@ class cs_privateroom_manager extends cs_room2_manager
         if ($item->isContinuous()) {
             $continuous = 1;
         } else {
-            $continuous = -1;
+            $continuous = 0;
         }
         if ($item->isTemplate()) {
             $template = 1;
         } else {
-            $template = -1;
+            $template = 0;
         }
 
         if ($item->getActivityPoints()) {

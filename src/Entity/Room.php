@@ -18,6 +18,8 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Repository\RoomRepository;
+use App\Utils\EntityDatesTrait;
+use App\Utils\EntityUsersTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -47,6 +49,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 )]
 class Room
 {
+    use EntityDatesTrait;
+    use EntityUsersTrait;
+
     public final const ACTIVITY_ACTIVE = 'active';
     public final const ACTIVITY_ACTIVE_NOTIFIED = 'active_notified';
     public final const ACTIVITY_IDLE = 'idle';
@@ -62,29 +67,6 @@ class Room
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
-
-    #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id', nullable: true)]
-    private ?User $creator = null;
-
-    #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id', nullable: true)]
-    private ?User $modifier = null;
-
-    #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id', nullable: true)]
-    private ?User $deleter = null;
-
-    #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE, nullable: false)]
-    #[Groups(['api'])]
-    private DateTime $creationDate;
-
-    #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: false)]
-    #[Groups(['api'])]
-    private DateTime $modificationDate;
-
-    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?DateTime $deletionDate = null;
 
     #[ApiProperty(openapiContext: ['type' => 'string', 'maxLength' => 255])]
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255)]
@@ -108,17 +90,14 @@ class Room
     #[Groups(['api'])]
     private string $type = 'project';
 
-    #[ORM\Column(name: 'public', type: Types::BOOLEAN, options: ['default' => 0])]
-    private bool $public = false;
-
     #[ORM\Column(name: 'is_open_for_guests', type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $openForGuests = false;
 
-    #[ORM\Column(name: 'continuous', type: Types::SMALLINT, options: ['default' => -1])]
-    private int $continuous = -1;
+    #[ORM\Column(name: 'continuous', type: Types::BOOLEAN, options: ['default' => 0])]
+    private bool $continuous = false;
 
-    #[ORM\Column(name: 'template', type: Types::SMALLINT, options: ['default' => -1])]
-    private int $template = -1;
+    #[ORM\Column(name: 'template', type: Types::BOOLEAN, options: ['default' => 0])]
+    private bool $template = false;
 
     #[ORM\Column(name: 'contact_persons', type: Types::STRING, length: 255, nullable: true)]
     private ?string $contactPersons = null;
@@ -150,7 +129,7 @@ class Room
 
     public function isIndexable(): bool
     {
-        return null == $this->deleter && null == $this->deletionDate && !$this->isArchived();
+        return null == $this->deleterId && null == $this->deletionDate && !$this->isArchived();
     }
 
     public function getLanguage()
@@ -275,48 +254,6 @@ class Room
         $this->modificationDate = new DateTime('now');
     }
 
-    public function setCreationDate(DateTime $creationDate): Room
-    {
-        $this->creationDate = $creationDate;
-        return $this;
-    }
-
-    /**
-     * Get creationDate.
-     */
-    public function getCreationDate(): DateTime
-    {
-        return $this->creationDate;
-    }
-
-    public function setModificationDate(DateTime $modificationDate): Room
-    {
-        $this->modificationDate = $modificationDate;
-        return $this;
-    }
-
-    /**
-     * Get modificationDate.
-     */
-    public function getModificationDate(): DateTime
-    {
-        return $this->modificationDate;
-    }
-
-    /**
-     * Set deletionDate.
-     */
-    public function setDeletionDate(DateTime $deletionDate): Room
-    {
-        $this->deletionDate = $deletionDate;
-        return $this;
-    }
-
-    public function getDeletionDate(): ?DateTime
-    {
-        return $this->deletionDate;
-    }
-
     /**
      * Set title.
      */
@@ -387,17 +324,6 @@ class Room
         return $this->type;
     }
 
-    public function setPublic(bool $public): Room
-    {
-        $this->public = $public;
-        return $this;
-    }
-
-    public function getPublic(): bool
-    {
-        return $this->public;
-    }
-
     public function isArchived(): bool
     {
         return $this->archived;
@@ -420,26 +346,26 @@ class Room
         return $this->openForGuests;
     }
 
-    public function setContinuous(int $continuous): Room
+    public function setContinuous(bool $continuous): Room
     {
         $this->continuous = $continuous;
         return $this;
     }
 
-    public function getContinuous(): int
+    public function isContinuous(): bool
     {
         return $this->continuous;
     }
 
     public function setTemplate(bool $template): Room
     {
-        $this->template = $template ? 1 : -1;
+        $this->template = $template;
         return $this;
     }
 
-    public function getTemplate(): bool
+    public function isTemplate(): bool
     {
-        return 1 == $this->template;
+        return $this->template;
     }
 
     public function setContactPersons(string $contactPersons): Room
@@ -506,39 +432,6 @@ class Room
             }
         }
         return $this;
-    }
-
-    public function setCreator(User $creator = null): Room
-    {
-        $this->creator = $creator;
-        return $this;
-    }
-
-    public function getCreator(): ?User
-    {
-        return $this->creator;
-    }
-
-    public function setModifier(User $modifier = null): Room
-    {
-        $this->modifier = $modifier;
-        return $this;
-    }
-
-    public function getModifier(): ?User
-    {
-        return $this->modifier;
-    }
-
-    public function setDeleter(User $deleter = null): Room
-    {
-        $this->deleter = $deleter;
-        return $this;
-    }
-
-    public function getDeleter(): ?User
-    {
-        return $this->deleter;
     }
 
     public function getActivityState(): string

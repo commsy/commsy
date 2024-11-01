@@ -431,78 +431,9 @@ class cs_community_item extends cs_room_item
        $this->_addExtra('USAGE_INFO_TEXT', $value_array);
    }
 
-   public function setUsageInfoTextForRubricForm($rubric, $string)
-   {
-       if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
-           $value_array = $this->_getExtra('USAGE_INFO_FORM_TEXT');
-           if (empty($value_array)) {
-               $value_array = [];
-           } elseif (!is_array($value_array)) {
-               $value_array = XML2Array($value_array);
-           }
-       } else {
-           $value_array = [];
-       }
-       if (!empty($string)) {
-           $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
-       } else {
-           if (isset($value_array[mb_strtoupper((string) $rubric, 'UTF-8')])) {
-               unset($value_array[mb_strtoupper((string) $rubric, 'UTF-8')]);
-           }
-       }
-       $this->_addExtra('USAGE_INFO_FORM_TEXT', $value_array);
-   }
-
-   public function getUsageInfoTextForRubricForm($rubric)
-   {
-       // formular
-       $funct = $this->_environment->getCurrentFunction();
-       if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
-           $retour = $this->_getExtra('USAGE_INFO_FORM_TEXT');
-           if (empty($retour)) {
-               $retour = [];
-           } elseif (!is_array($retour)) {
-               $retour = XML2Array($retour);
-           }
-       } else {
-           $retour = [];
-       }
-       if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
-           $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
-       } else {
-           $retour = '';
-       }
-
-       return $retour;
-   }
-
-   public function getUsageInfoTextForRubricFormInForm($rubric)
-   {
-       // Konfiguration: Einstellung (Formular)
-       $funct = $this->_environment->getCurrentFunction();
-       if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
-           $retour = $this->_getExtra('USAGE_INFO_FORM_TEXT');
-           if (empty($retour)) {
-               $retour = [];
-           } elseif (!is_array($retour)) {
-               $retour = XML2Array($retour);
-           }
-       } else {
-           $retour = [];
-       }
-       if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
-           $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
-       } else {
-           $retour = '';
-       }
-
-       return $retour;
-   }
-
    public function getUsageInfoTextForRubricInForm($rubric)
    {
        // Konfigurationsoption: Einstellen (Index)
-       $funct = $this->_environment->getCurrentFunction();
        if ($this->_issetExtra('USAGE_INFO_TEXT')) {
            $retour = $this->_getExtra('USAGE_INFO_TEXT');
            if (empty($retour)) {
@@ -521,46 +452,6 @@ class cs_community_item extends cs_room_item
 
        return $retour;
    }
-
-    public function getMDOActive()
-    {
-        // Konfigurationsoption: Medieninhalte(Mediendistribution-Online)
-        $retour = '';
-        if ($this->_issetExtra('MEDIA_MDO_ACTIVE')) {
-            $retour = $this->_getExtra('MEDIA_MDO_ACTIVE');
-        }
-
-        return $retour;
-    }
-
-    public function setMDOActive($active)
-    {
-        if ($active) {
-            $this->_addExtra('MEDIA_MDO_ACTIVE', 1);
-        } else {
-            $this->_addExtra('MEDIA_MDO_ACTIVE', -1);
-        }
-    }
-
-    public function getMDOKey()
-    {
-        // Konfigurationsoption: Medieninhalte(Mediendistribution-Online)
-        $retour = '';
-        if ($this->_issetExtra('MEDIA_MDO_KEY')) {
-            $retour = $this->_getExtra('MEDIA_MDO_KEY');
-        }
-
-        return $retour;
-    }
-
-    public function setMDOKey($key)
-    {
-        if (!empty($key)) {
-            $this->_addExtra('MEDIA_MDO_KEY', $key);
-        } else {
-            $this->_addExtra('MEDIA_MDO_KEY', -1);
-        }
-    }
 
    public function _sendMailToModeration($room_moderation, $room_change): void
    {
@@ -614,66 +505,6 @@ class cs_community_item extends cs_room_item
            $room_change
        );
        $mailer->sendMultiple($message, $recipients);
-   }
-
-   public function getCountUsedAccounts($start, $end)
-   {
-       $retour = 0;
-
-       $user_manager = $this->_environment->getUserManager();
-       $user_manager->resetLimits();
-       $project_id_array = $this->getProjectIDArray();
-       $project_id_array[] = $this->getItemID();
-       $user_manager->setContextArrayLimit($project_id_array);
-       $retour = $user_manager->getCountUsedAccounts($start, $end);
-       unset($user_manager);
-
-       return $retour;
-   }
-
-   public function getCountOpenAccounts($start, $end)
-   {
-       $retour = 0;
-
-       $user_manager = $this->_environment->getUserManager();
-       $user_manager->resetLimits();
-       $project_id_array = $this->getProjectIDArray();
-       $project_id_array[] = $this->getItemID();
-       $user_manager->setContextArrayLimit($project_id_array);
-       $retour = $user_manager->getCountOpenAccounts($start, $end);
-       unset($user_manager);
-
-       return $retour;
-   }
-
-   public function getCountAllAccounts($start, $end)
-   {
-       $retour = 0;
-
-       $user_manager = $this->_environment->getUserManager();
-       $user_manager->resetLimits();
-       $project_id_array = $this->getProjectIDArray();
-       $project_id_array[] = $this->getItemID();
-       $user_manager->setContextArrayLimit($project_id_array);
-       $retour = $user_manager->getCountAllAccounts($start, $end);
-       unset($user_manager);
-
-       return $retour;
-   }
-
-   public function getCountPluginWithLinkedRooms($plugin, $start, $end)
-   {
-       $retour = 0;
-
-       $user_manager = $this->_environment->getUserManager();
-       $user_manager->resetLimits();
-       $project_id_array = $this->getProjectIDArray();
-       $project_id_array[] = $this->getItemID();
-       $user_manager->setContextArrayLimit($project_id_array);
-       $retour = $user_manager->getCountPlugin($plugin, $start, $end);
-       unset($user_manager);
-
-       return $retour;
    }
 
    public function _setObjectLinkItems($changed_key)

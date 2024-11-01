@@ -36,8 +36,6 @@ class cs_community_manager extends cs_room2_manager
      */
     public $_order = null;
 
-    public $_template_limit = null;
-
     /** constructor: cs_community_manager
      * the only available constructor, initial values for internal variables.
      *
@@ -59,7 +57,6 @@ class cs_community_manager extends cs_room2_manager
         $this->_from_limit = null;
         $this->_interval_limit = null;
         $this->_order = null;
-        $this->_template_limit = null;
     }
 
     /** set interval limit
@@ -86,21 +83,6 @@ class cs_community_manager extends cs_room2_manager
 
     public function setTypeLimit($limit)
     {
-    }
-
-    public function setTemplateLimit()
-    {
-        $this->_template_limit = 1;
-    }
-
-    public function setNotTemplateLimit()
-    {
-        $this->_template_limit = -1;
-    }
-
-    public function unsetTemplateLimit()
-    {
-        $this->_template_limit = null;
     }
 
       public function getRelatedCommunityRooms(cs_user_item $userItem, $contextId): cs_list
@@ -159,11 +141,6 @@ class cs_community_manager extends cs_room2_manager
         // id_array_limit
         if (!empty($this->_id_array_limit)) {
             $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', encode(AS_DB, $this->_id_array_limit)).')';
-        }
-
-        // template
-        if (isset($this->_template_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "'.encode(AS_DB, $this->_template_limit).'"';
         }
 
         // archive

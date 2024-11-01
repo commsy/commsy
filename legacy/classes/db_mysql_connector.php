@@ -36,6 +36,8 @@ class db_mysql_connector
      */
     public function performQuery($query, array $params = []): Result|array|string
     {
+        $this->resetErrors();
+
         try {
             $result = $this->connection->executeQuery($query, $params);
 
@@ -97,5 +99,11 @@ class db_mysql_connector
     public function text_php2db($text)
     {
         return mysql_escape_mimic($text);
+    }
+
+    private function resetErrors(): void
+    {
+        $this->dbErrorCode = 0;
+        $this->dbError = '';
     }
 }

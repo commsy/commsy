@@ -16,13 +16,16 @@ namespace App\Utils;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 trait EntityDatesTrait
 {
     #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
+    #[Groups(['api'])]
     private DateTime $creationDate;
 
     #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE)]
+    #[Groups(['api'])]
     private DateTime $modificationDate;
 
     #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]

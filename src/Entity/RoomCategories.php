@@ -21,7 +21,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'room_categories')]
-#[ORM\Index(columns: ['id'], name: 'id')]
 class RoomCategories
 {
     #[ORM\Column(name: 'id', type: Types::INTEGER)]

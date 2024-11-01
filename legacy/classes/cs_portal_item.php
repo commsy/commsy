@@ -22,11 +22,7 @@ class cs_portal_item extends cs_guide_item
 
     public $_room_list = null;
 
-    public $_room_list_continuous = null;
-
     public $_cache_auth_source_list = null;
-    private ?\cs_list $_room_list_continuous_nlct = null;
-    private $_grouproom_list_count = null;
 
     /** constructor: cs_server_item
      * the only available constructor, initial values for internal variables.
@@ -274,47 +270,6 @@ class cs_portal_item extends cs_guide_item
         }
 
         return $this->_room_list;
-    }
-
-    public function getContinuousRoomList()
-    {
-        if (!isset($this->_room_list_continuous)) {
-            $manager = $this->_environment->getRoomManager();
-            $manager->setContextLimit($this->getItemID());
-            $manager->setContinuousLimit();
-            $manager->select();
-            $this->_room_list_continuous = $manager->get();
-            unset($manager);
-        }
-
-        return $this->_room_list_continuous;
-    }
-
-    public function getContinuousRoomListNotLinkedToTime($time_obj)
-    {
-        if (!isset($this->_room_list_continuous_nlct)) {
-            $manager = $this->_environment->getRoomManager();
-            $manager->setContextLimit($this->getItemID());
-            $manager->setContinuousLimit();
-            $manager->setOpenedLimit();
-            $manager->select();
-            $id_array1 = $manager->getIdArray();
-            $manager->setTimeLimit($time_obj->getItemID());
-            $manager->select();
-            $id_array2 = $manager->getIdArray();
-            if (is_array($id_array1) and is_array($id_array2)) {
-                $id_array3 = array_diff($id_array1, $id_array2);
-                if (!empty($id_array3)) {
-                    $manager->resetLimits();
-                    $manager->setIDArrayLimit($id_array3);
-                    $manager->select();
-                    $this->_room_list_continuous_nlct = $manager->get();
-                }
-            }
-            unset($manager);
-        }
-
-        return $this->_room_list_continuous_nlct;
     }
 
     // ##########################################################
@@ -805,37 +760,6 @@ class cs_portal_item extends cs_guide_item
         return $retour;
     }
 
-    public function setUsageInfoTextArray($value_array)
-    {
-        if (is_array($value_array)) {
-            $this->_addExtra('USAGE_INFO_TEXT', $value_array);
-        }
-    }
-
-    public function getUsageInfoFormTextArray()
-    {
-        $retour = null;
-        if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
-            $retour = $this->_getExtra('USAGE_INFO_FORM_TEXT');
-            if (empty($retour)) {
-                $retour = [];
-            } elseif (!is_array($retour)) {
-                $retour = XML2Array($retour);
-            }
-        } else {
-            $retour = [];
-        }
-
-        return $retour;
-    }
-
-    public function setUsageInfoFormTextArray($value_array)
-    {
-        if (is_array($value_array)) {
-            $this->_addExtra('USAGE_INFO_FORM_TEXT', $value_array);
-        }
-    }
-
     public function getUsageInfoHeaderForRubric($rubric)
     {
         $translator = $this->_environment->getTranslationObject();
@@ -910,92 +834,6 @@ class cs_portal_item extends cs_guide_item
         }
         $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
         $this->_addExtra('USAGE_INFO_FORM_HEADER', $value_array);
-    }
-
-    public function setUsageInfoTextForRubricForm($rubric, $string)
-    {
-        if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
-            $value_array = $this->_getExtra('USAGE_INFO_FORM_TEXT');
-            if (empty($value_array)) {
-                $value_array = [];
-            } elseif (!is_array($value_array)) {
-                $value_array = XML2Array($value_array);
-            }
-        } else {
-            $value_array = [];
-        }
-        $value_array[mb_strtoupper((string) $rubric, 'UTF-8')] = $string;
-        $this->_addExtra('USAGE_INFO_FORM_TEXT', $value_array);
-    }
-
-    public function getUsageInfoTextForRubricForm($rubric)
-    {
-        $funct = $this->_environment->getCurrentFunction();
-        if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
-            $retour = $this->_getExtra('USAGE_INFO_FORM_TEXT');
-            if (empty($retour)) {
-                $retour = [];
-            } elseif (!is_array($retour)) {
-                $retour = XML2Array($retour);
-            }
-        } else {
-            $retour = [];
-        }
-        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
-            $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
-        } else {
-            $translator = $this->_environment->getTranslationObject();
-            $mod = $this->_environment->getCurrentModule();
-            $fct = $this->_environment->getCurrentFunction();
-            if ('configuration' == $mod and 'time' == $fct) { // no link in message tag
-                $retour = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_TIME_FORM');
-                $temp = 'CONFIGURATION_TIME';
-            } else {
-                $temp = mb_strtoupper((string) $rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8');
-                $tempMessage = '';
-                $tempMessage = match ($temp) {
-                    'ACCOUNT_ACTION' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_ACCOUNT_ACTION_FORM'),
-                    'ACCOUNT_EDIT' => $translator->getMessage('USAGE_INFO_FORM_COMING_SOON'),
-                    'ACCOUNT_STATUS' => $translator->getMessage('USAGE_INFO_FORM_COMING_SOON'),
-                    'COMMUNITY_EDIT' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_COMMUNITY_EDIT_FORM'),
-                    'CONFIGURATION_AGB' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_AGB_FORM'),
-                    'CONFIGURATION_AUTHENTICATION' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_AUTHENTICATION_FORM'),
-                    'CONFIGURATION_COMMON' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_COMMON_FORM'),
-                    'CONFIGURATION_DEFAULTS' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_DEFAULTS_FORM'),
-                    'CONFIGURATION_EXPORT' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_EXPORT_FORM'),
-                    'CONFIGURATION_MAIL' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_MAIL_FORM'),
-                    'CONFIGURATION_MOVE' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_MOVE_FORM'),
-                    'CONFIGURATION_NEWS' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_NEWS_FORM'),
-                    'CONFIGURATION_PORTALHOME' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PORTALHOME_FORM'),
-                    'CONFIGURATION_PORTALUPLOAD' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PORTALUPLOAD_FORM'),
-                    'CONFIGURATION_PREFERENCES' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PREFERENCES_FORM'),
-                    'CONFIGURATION_ROOM_OPENING' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_ROOM_OPENING_FORM'),
-                    'CONFIGURATION_SERVICE' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_SERVICE_FORM'),
-                    'CONFIGURATION_WIKI' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_WIKI_FORM'),
-                    'CONFIGURATION_AUTOACCOUNTS' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_AUTOACCOUNTS_FORM'),
-                    'PROJECT_EDIT' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_PROJECT_EDIT_FORM'),
-                    'MAIL_TO_MODERATOR' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_MAIL_TO_MODERATOR_FORM'),
-                    'MAIL_PROCESS' => $translator->getMessage('USAGE_INFO_FORM_COMING_SOON'),
-                    'LANGUAGE_UNUSED' => $translator->getMessage('USAGE_INFO_TEXT_LANGUAGE_UNUSED_FORM'),
-                    'CONFIGURATION_PLUGIN' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PLUGIN_FORM'),
-                    'ACCOUNT_PASSWORD' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_ACCOUNT_PASSWORD_FORM'),
-                    'CONFIGURATION_HTMLTEXTAREA' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_HTMLTEXTAREA_FORM'),
-                    'CONFIGURATION_PLUGINS' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PLUGINS_FORM'),
-                    'CONFIGURATION_LANGUAGE' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_LANGUAGE_FORM'),
-                    'CONFIGURATION_DATASECURITY' => $translator->getMessage('USAGE_INFO_COMING_SOON'),
-                    'CONFIGURATION_INACTIVE' => $translator->getMessage('USAGE_INFO_COMING_SOON'),
-                    'CONFIGURATION_INACTIVEPROCESS' => $translator->getMessage('USAGE_INFO_COMING_SOON'),
-                    'CONFIGURATION_EXPORT_IMPORT' => $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_EXPORT_IMPORT_FORM'),
-                    default => $translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_portal_item('.__LINE__.')',
-                };
-                $retour = $tempMessage;
-            }
-            if ($retour == 'USAGE_INFO_TEXT_PORTAL_FOR_'.$temp.'_FORM' or 'tbd' == $retour) {
-                $retour = $translator->getMessage('USAGE_INFO_FORM_COMING_SOON');
-            }
-        }
-
-        return $retour;
     }
 
     // ###############################################################

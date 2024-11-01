@@ -107,33 +107,10 @@ class cs_room2_manager extends cs_context_manager
            }
        }
 
-       if ($item->isOpenForGuests()) {
-           $open_for_guests = 1;
-       } else {
-           $open_for_guests = 0;
-       }
-       if ($item->isContinuous()) {
-           $continuous = 1;
-       } else {
-           $continuous = -1;
-       }
-       if ($item->isTemplate()) {
-           $template = 1;
-       } else {
-           $template = -1;
-       }
-
-       if ($item->getActivityPoints()) {
-           $activity = $item->getActivityPoints();
-       } else {
-           $activity = '0';
-       }
-
-       if ($item->getPublic()) {
-           $public = '1';
-       } else {
-           $public = '0';
-       }
+       $open_for_guests = $item->isOpenForGuests() ? 1 : 0;
+       $continuous = $item->isContinuous() ? 1 : 0;
+       $template = $item->isTemplate() ? 1 : 0;
+       $activity = $item->getActivityPoints() ?: '0';
 
        $title = str_ireplace("'", '"', (string) $item->getTitle());
 
@@ -141,7 +118,6 @@ class cs_room2_manager extends cs_context_manager
                  "extras='".encode(AS_DB, serialize($item->getExtraInformation()))."',".
                  "status='".encode(AS_DB, $item->getStatus())."',".
                  "activity='".encode(AS_DB, $activity)."',".
-                 "public='".encode(AS_DB, $public)."',".
                  "continuous='".$continuous."',".
                  "template='".$template."',".
                  "is_open_for_guests='".$open_for_guests."',".
@@ -181,7 +157,7 @@ class cs_room2_manager extends cs_context_manager
        if ($item->isContinuous()) {
            $continuous = 1;
        } else {
-           $continuous = -1;
+           $continuous = 0;
        }
 
        if ($item->getPublic()) {

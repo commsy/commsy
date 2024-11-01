@@ -14,7 +14,6 @@
 class cs_portfolio_manager extends cs_manager
 {
     public $_user_limit = null;
-    public $_template_limit = null;
     public $_delete_limit = true;
     public $_db_table = CS_PORTFOLIO_TYPE;
     public $_sort_order = null;
@@ -34,17 +33,11 @@ class cs_portfolio_manager extends cs_manager
         $this->_user_limit = null;
         $this->_delete_limit = true;
         $this->_sort_order = null;
-        $this->_template_limit = null;
     }
 
      public function setUserLimit($limit)
      {
          $this->_user_limit = (int) $limit;
-     }
-
-     public function setTemplateLimit($limit)
-     {
-         $this->_template_limit = (int) $limit;
      }
 
      public function setDeleteLimit($limit)
@@ -74,9 +67,6 @@ class cs_portfolio_manager extends cs_manager
          $query .= ' WHERE 1';
          if (isset($this->_user_limit)) {
              $query .= ' AND creator_id = "'.encode(AS_DB, $this->_user_limit).'"';
-         }
-         if (isset($this->_template_limit)) {
-             $query .= ' AND template = "'.encode(AS_DB, $this->_template_limit).'"';
          }
          if (true == $this->_delete_limit) {
              $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NULL';
