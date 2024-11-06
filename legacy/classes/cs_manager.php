@@ -519,6 +519,20 @@ class cs_manager
        return $list;
    }
 
+    public function getItemsForRoomIDChangedWithinDays(int $contextId, int $dayLimit): array
+    {
+        $this->reset();
+        $this->setContextLimit($contextId);
+        $this->setAgeLimit($dayLimit);
+
+        $this->setInactiveEntriesLimit(self::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $this->select();
+
+        $itemsList = $this->get();
+
+        return !$itemsList ? [] : $itemsList->to_array();
+    }
+
   /** save a commsy item
    * this method saves a commsy item.
    *

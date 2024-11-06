@@ -22,6 +22,7 @@ use App\Services\LegacyEnvironment;
 use cs_annotation_item;
 use cs_item;
 use cs_user_item;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
@@ -199,7 +200,7 @@ final readonly class ReaderService
     public function markItemAsRead(cs_item $item): void
     {
         $reader = $this->getLatestReader($item->getItemID());
-        if (!$reader || $reader->getReadDate() <= $item->getModificationDate()) {
+        if (!$reader || $reader->getReadDate() <= new DateTime($item->getModificationDate())) {
             $this->markRead($item->getItemID(), $item->getVersionID());
         }
     }

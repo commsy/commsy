@@ -385,6 +385,50 @@
                 <source>mail.room_moderation.body.linked_project_room</source>
                 <target>This group workspace is linked with the project workspace {room_name}</target>
             </trans-unit>
+            <trans-unit id="mail_newsletter_subject_daily">
+                <source>mail.newsletter_subject_daily</source>
+                <target>Daily CommSy newsletter: {portal}</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_subject_weekly">
+                <source>mail.newsletter_subject_weekly</source>
+                <target>Weekly CommSy newsletter: {portal}</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_intro">
+                <source>mail.newsletter_body_intro</source>
+                <target>This newsletter is sent {mailSequence} by "{portal}". It includes information about unread items of all rooms you are member of.</target>
+            </trans-unit>
+            <trans-unit id="daily">
+                <source>daily</source>
+                <target>daily</target>
+            </trans-unit>
+            <trans-unit id="weekly">
+                <source>weekly</source>
+                <target>weekly</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_new">
+                <source>new</source>
+                <target>new</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_changed">
+                <source>changed</source>
+                <target>changed</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_new_annotations">
+                <source>mail.newsletter_body_new_annotations</source>
+                <target>{count, plural, =1 {new annotation} other {# new annotations}}</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_outro">
+                <source>mail.newsletter_body_outro</source>
+                <target>You can unsubscribe from this newsletter by switching off the according feature in your profile.</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_no_new_entries">
+                <source>mail.newsletter_body_no_new_entries</source>
+                <target>There are no new items.</target>
+            </trans-unit>
+            <trans-unit id="mail_newsletter_body_new_additional_annotations">
+                <source>mail.newsletter_body_new_additional_annotations</source>
+                <target>Additional new annotations</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
