@@ -14,8 +14,8 @@
 namespace App\Form\Type\Account;
 
 use App\Account\AccountSetting;
-use App\Account\AccountSettingsManager;
 use App\Entity\Account;
+use App\Utils\AccountSettingsFormTrait;
 use App\Validator\Constraints\UniqueUserId;
 use cs_user_item;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -35,9 +35,10 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 class PersonalInformationType extends AbstractType
 {
+    use AccountSettingsFormTrait;
+
     public function __construct(
-        private readonly Security $security,
-        private readonly AccountSettingsManager $settingsManager
+        private readonly Security $security
     ) {}
 
     /**
@@ -106,18 +107,16 @@ class PersonalInformationType extends AbstractType
                 ],
                 'disabled' => !$changeUserdata,
                 'getter' => function ($viewData, FormInterface $form) use ($user): string {
-                    return $this->settingsManager
-                        ->getSetting($user, AccountSetting::CUSTOM_INITIALS)['initials'];
+                    return $this->getSetting($user, AccountSetting::CUSTOM_INITIALS)['initials'];
                 },
                 'setter' => function ($viewData, $formData, FormInterface $form) use ($user, $initialsMaxLength, $initialsRegex): void {
                     if (!empty($formData)) {
                         if (mb_strlen($formData, 'UTF8') <= $initialsMaxLength &&
                             preg_match($initialsRegex, $formData) === 1) {
-                            $this->settingsManager
-                                ->storeSetting($user, AccountSetting::CUSTOM_INITIALS, ['initials' => $formData]);
+                            $this->storeSetting($user, AccountSetting::CUSTOM_INITIALS, ['initials' => $formData]);
                         }
                     } else {
-                        $this->settingsManager->removeSetting($user, AccountSetting::CUSTOM_INITIALS);
+                        $this->removeSetting($user, AccountSetting::CUSTOM_INITIALS);
                     }
                 },
             ])
