@@ -105,7 +105,7 @@ final readonly class ActionUrlBuilder
         preg_match_all('/<(.+?)=(.+?)(&?)>/', $urlSrc, $matches, PREG_SET_ORDER);
 
         // for legacy support ensure there is a WOPI_SOURCE match
-        $withSourcePart = array_search(fn (array $match) => $match[2] === 'WOPI_SOURCE', $matches);
+        $withSourcePart = array_filter($matches, fn (array $value) => $value[2] === 'WOPI_SOURCE');
         if (!$withSourcePart) {
             $matches[] = ['<wopisrc=WOPI_SOURCE&>', 'wopisrc', 'WOPI_SOURCE', '&'];
         }
