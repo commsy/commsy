@@ -27,8 +27,8 @@ trait EntityUsersTrait
     private ?User $modifier = null;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\Column(name: 'deleter_id', nullable: true)]
-    private ?int $deleterId = null;
+    #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id', nullable: true)]
+    private ?User $deleter = null;
 
     public function setCreator(User $creator = null): self
     {
@@ -52,14 +52,14 @@ trait EntityUsersTrait
         return $this->modifier;
     }
 
-    public function setDeleterId(?int $deleterId = null): self
+    public function setDeleter(?User $deleter = null): self
     {
-        $this->deleterId = $deleterId;
+        $this->deleter = $deleter;
         return $this;
     }
 
-    public function getDeleterId(): ?int
+    public function getDeleter(): ?User
     {
-        return $this->deleterId;
+        return $this->deleter;
     }
 }

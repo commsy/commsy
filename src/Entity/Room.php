@@ -129,7 +129,7 @@ class Room
 
     public function isIndexable(): bool
     {
-        return null == $this->deleterId && null == $this->deletionDate && !$this->isArchived();
+        return null == $this->deleter && null == $this->deletionDate && !$this->isArchived();
     }
 
     public function getLanguage()
