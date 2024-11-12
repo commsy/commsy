@@ -190,16 +190,12 @@ class FileController extends AbstractController
         return $downloadHandler->downloadObject($server, 'logoImageFile', null, null, false);
     }
 
-    /**
-     * @return StreamedResponse
-     *
-     */
     #[Route(path: '/logo/portal/{portalId}')]
     public function portalLogo(
         #[MapEntity(id: 'portalId')]
         Portal $portal,
         DownloadHandler $downloadHandler
-    ): Response
+    ): StreamedResponse
     {
         if (!$portal->getLogoFile()) {
             throw $this->createNotFoundException('logo not found');
