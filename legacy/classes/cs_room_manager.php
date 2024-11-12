@@ -644,7 +644,7 @@ class cs_room_manager extends cs_context_manager
 
         $queryBuilder
             ->select('r.item_id', 'r.context_id', 'r.creator_id', 'r.modifier_id', 'r.creation_date',
-                'r.modification_date', 'r.title', 'r.status', 'r.activity', 'r.type', 'r.public',
+                'r.modification_date', 'r.title', 'r.status', 'r.activity', 'r.type',
                 'r.is_open_for_guests', 'r.continuous', 'r.template', 'r.contact_persons', 'r.room_description',
                 'r.lastlogin')
             ->from('room', 'r')
