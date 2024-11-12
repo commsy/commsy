@@ -69,7 +69,11 @@ readonly class SecuritySubscriber implements EventSubscriberInterface
     {
         $request = $event->getRequest();
 
-        if ('app_security_simultaneouslogin' === $request->attributes->get('_route')) {
+        // Exclude unwanted routes
+        if (in_array($request->attributes->get('_route'), [
+            'app_security_simultaneouslogin',
+            'app_file_portallogo'
+        ])) {
             return;
         }
 
