@@ -94,6 +94,7 @@ use App\Utils\AccountMail;
 use App\Utils\RoomService;
 use App\Utils\TimePulsesService;
 use App\Utils\UserService;
+use cs_user_item;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -1695,11 +1696,16 @@ class PortalSettingsController extends AbstractController
             ->getList();
 
         foreach ($relatedUsers as $relatedUser) {
+            /** @var cs_user_item$relatedUser */
             $contextID = $relatedUser->getContextID();
             $locked = '0' === $relatedUser->getStatus() ? '('.$translator->trans('Locked', [], 'portal').')' : '';
             $relatedRoomItem = $roomService->getRoomItem($contextID);
 
-            $listName = "$locked {$relatedRoomItem->getTitle()}( ID: {$relatedRoomItem->getItemID()} )";
+            $listName = "$locked {$relatedRoomItem->getTitle()} (ID: {$relatedRoomItem->getItemID()})";
+
+            if ($relatedUser->isRequested()) {
+                $listName .= " ({$translator->trans('request', [], 'user')})";
+            }
 
             switch ($relatedRoomItem->getType()) {
                 case 'project':
