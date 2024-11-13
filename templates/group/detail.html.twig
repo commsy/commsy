@@ -44,10 +44,18 @@
                                             {% endif %}
                                             {% if item.isGroupRoomActivated and memberStatus != 'join' %}
                                                 <li id="leave-group-link">
+                                                {% if not lastModeratorStanding %}
                                                     <a id="leave-group-link"
                                                        href="{{path('app_group_leave', {'roomId': roomId, 'itemId': group.itemId}) }}" >
                                                         <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
                                                     </a>
+                                                {% else %}
+                                                    <span class="uk-text-muted">
+                                                        <span data-uk-tooltip title="{{'To leave the group, please assign further moderators, or delete the group.'|trans({},'group') }}">
+                                                            <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
+                                                        </span>
+                                                    </span>
+                                                {% endif %}
                                                 </li>
                                             {% endif %}
 
