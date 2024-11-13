@@ -18,6 +18,10 @@
                 <source>lastname</source>
                 <target>Last name</target>
             </trans-unit>
+            <trans-unit id="initials">
+                <source>initials</source>
+                <target>Initials</target>
+            </trans-unit>
             <trans-unit id="userId">
                 <source>userId</source>
                 <target>User id</target>

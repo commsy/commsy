@@ -13,10 +13,14 @@
 
 namespace App\Services;
 
+use App\Account\AccountSetting;
+use App\Account\AccountSettingsManager;
+use App\Entity\Account;
 use App\Utils\UserService;
 use cs_user_item;
 use OzdemirBurak\Iris\Color\Hex;
 use OzdemirBurak\Iris\Exceptions\InvalidColorException;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class AvatarService
 {
@@ -26,6 +30,8 @@ class AvatarService
 
     private ?cs_user_item $user = null;
 
+    private ?Account $account = null;
+
     private int $imageWidth = 100;
 
     private int $imageHeight = 100;
@@ -33,7 +39,11 @@ class AvatarService
     /**
      * @param string $kernelProjectDir
      */
-    public function __construct(private readonly UserService $userService, private $kernelProjectDir)
+    public function __construct(
+        private readonly UserService $userService,
+        private readonly Security $security,
+        private readonly AccountSettingsManager $settingsManager,
+        private $kernelProjectDir)
     {
     }
 
@@ -42,6 +52,7 @@ class AvatarService
      */
     public function getAvatar($itemId, int $type = 0, int $colorScheme = 0): bool|string
     {
+        $this->account = $this->security->getUser();
         $this->user = $this->userService->getUser($itemId);
         $this->type = $type;
         $this->colorScheme = $colorScheme;
@@ -66,6 +77,9 @@ class AvatarService
      */
     public function generateInitialsAvatar(): false|string
     {
+        $customInitials = $this->settingsManager->getSetting($this->account, AccountSetting::CUSTOM_INITIALS)['initials'];
+        $initialString = !empty($customInitials) ? $customInitials : $this->account->getDefaultInitials();
+
         if (1 == $this->type) {
             $image = @imagecreatefromgif($this->kernelProjectDir.'/src/Resources/img/user_unknown.gif');
             $imageSize = getimagesize($this->kernelProjectDir.'/src/Resources/img/user_unknown.gif');
@@ -74,18 +88,12 @@ class AvatarService
             $fontSize = 50;
         } else {
             $image = @imagecreate($this->imageWidth, $this->imageHeight);
-            $fontSize = 38;
+            $fontSize = mb_strlen($initialString, 'UTF8') <= 2 ? 38 : 29;
         }
 
         $colors = $this->getColors($image);
 
         imagefill($image, 0, 0, $colors['background']);
-
-        $initialString = strtoupper(mb_substr($this->user->getFirstname(), 0,
-            1)).strtoupper(mb_substr($this->user->getLastname(), 0, 1));
-        if (!$initialString) {
-            $initialString = strtoupper(substr($this->user->getUserId(), 0, 1));
-        }
 
         $font = $this->kernelProjectDir.'/src/Resources/fonts/LiberationSans-Regular.ttf';
         $angle = 0;
