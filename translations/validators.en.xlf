@@ -186,6 +186,14 @@
                 <source>This password has been leaked in a data breach, it must not be used. Please use another password.</source>
                 <target>This password is too easily guessed. Please choose a more secure password.</target>
             </trans-unit>
+            <trans-unit id="validators_initials_too_long">
+                <source>Your initials may only consist of up to {{ limit }} letters.</source>
+                <target>Your initials may only consist of up to {{ limit }} letters.</target>
+            </trans-unit>
+            <trans-unit id="validators_initials_must_only_contain_letters">
+                <source>Your initials may only contain lowercase or uppercase letters.</source>
+                <target>Your initials may only contain lowercase or uppercase letters.</target>
+            </trans-unit>
 
             <!-- csv user import -->
             <trans-unit id="violation_csv_user_import_firstname_not_blank">
