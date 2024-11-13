@@ -14,9 +14,9 @@
 namespace App\Form\Type\Account;
 
 use App\Account\AccountSetting;
-use App\Account\AccountSettingsManager;
 use App\Entity\Account;
 use App\Security\Authorization\Voter\UserVoter;
+use App\Utils\AccountSettingsFormTrait;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataMapperInterface;
@@ -32,9 +32,10 @@ use Traversable;
 
 class NotificationType extends AbstractType implements DataMapperInterface
 {
+    use AccountSettingsFormTrait;
+
     public function __construct(
-        private readonly Security $security,
-        private readonly AccountSettingsManager $settingsManager
+        private readonly Security $security
     ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -92,10 +93,8 @@ class NotificationType extends AbstractType implements DataMapperInterface
         /** @var FormInterface[] $forms */
         $forms = iterator_to_array($forms);
 
-        $notifyPortalModOnSelfRegistration = $this->settingsManager
-            ->getSetting($viewData, AccountSetting::NOTIFY_PORTAL_MOD_ON_SELF_REGISTRATION);
-        $notifyPortalModOnWorkspaceChange = $this->settingsManager
-            ->getSetting($viewData, AccountSetting::NOTIFY_PORTAL_MOD_ON_WORKSPACE_CHANGE);
+        $notifyPortalModOnSelfRegistration = $this->getSetting($viewData, AccountSetting::NOTIFY_PORTAL_MOD_ON_SELF_REGISTRATION);
+        $notifyPortalModOnWorkspaceChange = $this->getSetting($viewData, AccountSetting::NOTIFY_PORTAL_MOD_ON_WORKSPACE_CHANGE);
 
         $forms[AccountSetting::NOTIFY_PORTAL_MOD_ON_SELF_REGISTRATION->value]
             ?->setData($notifyPortalModOnSelfRegistration['enabled']);
@@ -112,12 +111,12 @@ class NotificationType extends AbstractType implements DataMapperInterface
         /** @var FormInterface[] $forms */
         $forms = iterator_to_array($forms);
 
-        $this->settingsManager->storeSetting(
+        $this->storeSetting(
             $viewData,
             AccountSetting::NOTIFY_PORTAL_MOD_ON_SELF_REGISTRATION,
             ['enabled' => $forms[AccountSetting::NOTIFY_PORTAL_MOD_ON_SELF_REGISTRATION->value]?->getData() ?? true]
         );
-        $this->settingsManager->storeSetting(
+        $this->storeSetting(
             $viewData,
             AccountSetting::NOTIFY_PORTAL_MOD_ON_WORKSPACE_CHANGE,
             ['enabled' => $forms[AccountSetting::NOTIFY_PORTAL_MOD_ON_WORKSPACE_CHANGE->value]?->getData() ?? true]
