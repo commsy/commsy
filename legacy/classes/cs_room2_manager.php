@@ -177,7 +177,6 @@ class cs_room2_manager extends cs_context_manager
                 'modification_date="'.$current_datetime.'",'.
                 'title="'.encode(AS_DB, $title).'",'.
                 'extras="'.encode(AS_DB, serialize($item->getExtraInformation())).'",'.
-                'public="'.encode(AS_DB, $public).'",'.
                 'type="'.encode(AS_DB, $item->getRoomType()).'",'.
                 'continuous="'.$continuous.'",'.
                 'status="'.encode(AS_DB, $item->getStatus()).'",'.
