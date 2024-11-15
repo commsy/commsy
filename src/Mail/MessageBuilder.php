@@ -97,7 +97,10 @@ readonly class MessageBuilder
             $email->replyTo(...$replyTo);
         }
 
-        $this->localeSwitcher->runWithLocale($recipient->getLanguage(), function() use ($message, $email) {
+        $this->localeSwitcher->runWithLocale($recipient->getLanguage(), function(string $locale) use ($message, $email) {
+            // use recipient's locale
+            $email->locale($locale);
+
             // Subject
             $subject = $this->translator->trans($message->getSubject(), $message->getTranslationParameters(), 'mail');
             $email->subject($subject);
