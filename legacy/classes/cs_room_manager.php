@@ -627,8 +627,8 @@ class cs_room_manager extends cs_context_manager
             $tag2tag_manager->deleteFromDb($itemId);
             $task_manager->deleteFromDb($itemId);
             $todo_manager->deleteFromDb($itemId);
-            $user_manager->deleteFromDb($itemId);
             $room_manager->deleteFromDb($itemId);
+            $user_manager->deleteFromDb($itemId);
         }
     }
 
