@@ -52,7 +52,7 @@
             </trans-unit>
             <trans-unit id="validators_room_agb">
                 <source>You must accept room agb.</source>
-                <target>You must accept workspace agb.</target>
+                <target>You must accept the workspace's terms of use.</target>
             </trans-unit>
             <trans-unit id="validators_room_code">
                 <source>Your access code is invalid.</source>

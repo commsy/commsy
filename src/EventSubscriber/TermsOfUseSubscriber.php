@@ -112,16 +112,25 @@ class TermsOfUseSubscriber implements EventSubscriberInterface
                 if ($contextUser) {
                     $contextToUDate = $currentContext->getAGBChangeDate();
                     $userAcceptedDate = $contextUser->getAGBAcceptanceDate();
+                    $memberStatus = $this->userService->getMemberStatus($currentContext, $contextUser);
 
                     if (!$contextUser->isRoot() && (null === $userAcceptedDate || $userAcceptedDate < $contextToUDate)) {
-                        // Redirect to tou site
-                        if ('app_tou_room' !== $event->getRequest()->attributes->get('_route') &&
-                            'app_profile_deleteroomprofile' !== $event->getRequest()->attributes->get('_route') &&
-                            'app_logout' !== $event->getRequest()->attributes->get('_route')
-                        ) {
-                            $event->setController(fn () => new RedirectResponse($this->urlGenerator->generate('app_tou_room', [
-                                'roomId' => $currentContext->getItemID(),
-                                'redirect' => $event->getRequest()->getRequestUri(),
+                        if ($memberStatus === 'enter') {
+                            // For existing room members, redirect to tou ("terms of use") site
+                            $routeName = $event->getRequest()->attributes->get('_route');
+                            if ('app_tou_room' !== $routeName &&
+                                'app_profile_deleteroomprofile' !== $routeName &&
+                                'app_logout' !== $routeName
+                            ) {
+                                $event->setController(fn () => new RedirectResponse($this->urlGenerator->generate('app_tou_room', [
+                                    'roomId' => $currentContext->getItemID(),
+                                    'redirect' => $event->getRequest()->getRequestUri(),
+                                ])));
+                            }
+                        } else {
+                            $event->setController(fn () => new RedirectResponse($this->urlGenerator->generate('app_roomall_detail', [
+                                'portalId' => $portal->getId(),
+                                'itemId' => $currentContext->getItemID(),
                             ])));
                         }
                     }
