@@ -106,7 +106,7 @@ class CancellableLockAndDeleteController extends AbstractController
                 return $this->render('cancellable_lock_and_delete/delete_or_lock.html.twig');
             } elseif ('lock' === $buttonName) {
                 $portal = $portalRepository->find($legacyEnvironment->getEnvironment()->getCurrentPortalID());
-                $status = $this->isGranted('PORTAL_MODERATOR', $portal) ?
+                $status = $this->isGranted('PORTAL_MODERATOR', $portal->getId()) ?
                     RoomStatus::LOCKED_PORTAL_MOD : RoomStatus::LOCKED;
 
                 $roomItem->lock($status);
