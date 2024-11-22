@@ -53,13 +53,29 @@ class CancellableLockAndDeleteController extends AbstractController
         }
 
         $isGroupRoom = $roomItem->isGroupRoom();
+        $group = $isGroupRoom ? $roomItem->getLinkedGroupItem() : null;
+        $groupId = $group ? $group->getItemID() : null;
 
         $isProjectRoom = $roomItem->isProjectRoom();
         $communityRooms = $isProjectRoom ? $roomService->getCommunityRoomsForRoom($roomItem) : [];
         $communityRoomIds = $roomService->getIdsForRooms($communityRooms);
         $projectRoomIsViewedFromItsCommunityRoom = ($isProjectRoom && in_array($roomId, $communityRoomIds));
 
+        // depending on where the user came from, choose the most appropriate redirect route
+        $detailRoute = $isGroupRoom ? 'app_group_detail' : ($projectRoomIsViewedFromItsCommunityRoom ? 'app_project_detail' : 'app_roomall_detail');
         $listRoute = $isGroupRoom ? 'app_group_list' : ($projectRoomIsViewedFromItsCommunityRoom ? 'app_project_list' : 'app_room_listall');
+
+        if ('app_roomall_detail' === $detailRoute) {
+            $detailRedirectResponse = $this->redirectToRoute($detailRoute, [
+                'portalId' => $roomItem->getContextID(),
+                'itemId' => $isGroupRoom ? $groupId : $itemId,
+            ]);
+        } else {
+            $detailRedirectResponse = $this->redirectToRoute($detailRoute, [
+                'roomId' => $roomId,
+                'itemId' => $isGroupRoom ? $groupId : $itemId,
+            ]);
+        }
 
         $relatedGroupRooms = [];
         if ($isProjectRoom) {
@@ -83,7 +99,7 @@ class CancellableLockAndDeleteController extends AbstractController
             $buttonName = $clickedButton ? $clickedButton->getName() : '';
 
             if ('cancel' === $buttonName) {
-                return $this->render('cancellable_lock_and_delete/delete_or_lock.html.twig');
+                return $detailRedirectResponse;
             } elseif ('delete' === $buttonName) {
                 $roomItem->delete();
                 $roomItem->save();
@@ -91,7 +107,7 @@ class CancellableLockAndDeleteController extends AbstractController
                 // redirect back to hosting context/room/group
                 return $this->redirectToRoute($listRoute, [
                     'roomId' => $roomId,
-                    'itemId' => $itemId,
+                    'itemId' => $isGroupRoom ? $groupId : $itemId,
                 ]);
             }
         }
@@ -103,7 +119,7 @@ class CancellableLockAndDeleteController extends AbstractController
             $buttonName = $clickedButton ? $clickedButton->getName() : '';
 
             if ('cancel' === $buttonName) {
-                return $this->render('cancellable_lock_and_delete/delete_or_lock.html.twig');
+                return $detailRedirectResponse;
             } elseif ('lock' === $buttonName) {
                 $portal = $portalRepository->find($legacyEnvironment->getEnvironment()->getCurrentPortalID());
                 $status = $this->isGranted('PORTAL_MODERATOR', $portal->getId()) ?
@@ -113,10 +129,7 @@ class CancellableLockAndDeleteController extends AbstractController
                 $roomItem->save();
 
                 // redirect back to hosting context/room/group
-                return $this->redirectToRoute($listRoute, [
-                    'roomId' => $roomId,
-                    'itemId' => $itemId,
-                ]);
+                return $detailRedirectResponse;
             }
         }
 
