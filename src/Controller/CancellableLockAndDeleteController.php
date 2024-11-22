@@ -146,7 +146,7 @@ class CancellableLockAndDeleteController extends AbstractController
 
         if ($roomItem->isLockedByModerator()) {
             $portal = $portalRepository->find($legacyEnvironment->getEnvironment()->getCurrentPortalID());
-            $this->denyAccessUnlessGranted('PORTAL_MODERATOR', $portal);
+            $this->denyAccessUnlessGranted('PORTAL_MODERATOR', $portal->getId());
         }
 
         $isGroupRoom = $roomItem->isGroupRoom();
