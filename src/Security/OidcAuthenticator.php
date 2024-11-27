@@ -21,7 +21,6 @@ use App\Security\Oidc\Flow\AuthorizationCodeFlow;
 use App\Utils\RequestContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Lcobucci\JWT\UnencryptedToken;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -106,50 +105,41 @@ class OidcAuthenticator extends AbstractCommsyAuthenticator
             ]);
 
         try {
-            if ($idToken = $this->authorizationCodeFlow->authenticate($request, $oidcAuthSource)) {
-                if ($idToken instanceof UnencryptedToken) {
-                    $claims = $idToken->claims()->all();
+            if ($userInfo = $this->authorizationCodeFlow->authenticate($request, $oidcAuthSource)) {
+                // Store the current context and the auth source id in the user session so we can
+                // refer to it later in the user provider to get the correct user.
+                $session = $request->getSession();
+                $session->set('context', $context);
+                $session->set('authSourceId', $oidcAuthSource->getId());
 
-                    $username = $claims['nickname'];
-                    $email = $claims['email'];
-                    $firstname = $claims['given_name'] ?? '';
-                    $lastname = $claims['family_name'] ?? '';
+                $account = $this->entityManager->getRepository(Account::class)
+                    ->findOneByCredentials($userInfo->getIdentifier(), $context, $oidcAuthSource);
 
-                    // Store the current context and the auth source id in the user session so we can
-                    // refer to it later in the user provider to get the correct user.
-                    $session = $request->getSession();
-                    $session->set('context', $context);
-                    $session->set('authSourceId', $oidcAuthSource->getId());
-
-                    $account = $this->entityManager->getRepository(Account::class)
-                        ->findOneByCredentials($username, $context, $oidcAuthSource);
-
-                    if (null === $account) {
-                        // if we did not find an existing account, create one
-                        $account = new Account();
-                        $account->setAuthSource($oidcAuthSource);
-                        $account->setContextId($context);
-                        $account->setLanguage('de');
-                        $account->setUsername($username);
-                        $account->setFirstname($firstname);
-                        $account->setLastname($lastname);
-                        $account->setEmail($email);
-                        $this->accountCreator->persistNewAccount($account);
-                    }
-
-                    // update user object with credentials extracted from request
-                    $account->setUsername($username);
-                    $account->setFirstname($firstname);
-                    $account->setLastname($lastname);
-                    $account->setEmail($email);
-
-                    $this->entityManager->persist($account);
-                    $this->entityManager->flush();
-
-                    $this->accountManager->propagateAccountDataToProfiles($account);
-
-                    return new SelfValidatingPassport(new UserBadge($username));
+                if (null === $account) {
+                    // if we did not find an existing account, create one
+                    $account = new Account();
+                    $account->setAuthSource($oidcAuthSource);
+                    $account->setContextId($context);
+                    $account->setLanguage('de');
+                    $account->setUsername($userInfo->getIdentifier());
+                    $account->setFirstname($userInfo->getFirstName());
+                    $account->setLastname($userInfo->getLastName());
+                    $account->setEmail($userInfo->getEmail());
+                    $this->accountCreator->persistNewAccount($account);
                 }
+
+                // update user object with credentials extracted from request
+                $account->setUsername($userInfo->getIdentifier());
+                $account->setFirstname($userInfo->getFirstName());
+                $account->setLastname($userInfo->getLastName());
+                $account->setEmail($userInfo->getEmail());
+
+                $this->entityManager->persist($account);
+                $this->entityManager->flush();
+
+                $this->accountManager->propagateAccountDataToProfiles($account);
+
+                return new SelfValidatingPassport(new UserBadge($userInfo->getIdentifier()));
             }
         } catch (Exception|TransportExceptionInterface) {
             throw new AuthenticationException();
