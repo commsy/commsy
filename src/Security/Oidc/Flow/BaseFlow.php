@@ -19,6 +19,8 @@ use App\Security\Oidc\Request\ResponseType;
 use App\Security\Oidc\Response\JWKSet;
 use DateInterval;
 use Exception;
+use JsonPath\InvalidJsonException;
+use JsonPath\JsonObject;
 use Lcobucci\Clock\SystemClock;
 use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Token\Parser;
@@ -29,6 +31,7 @@ use Lcobucci\JWT\Validation\Constraint\PermittedFor;
 use Lcobucci\JWT\Validation\RequiredConstraintsViolated;
 use Lcobucci\JWT\Validation\Validator;
 use Random\Randomizer;
+use Symfony\Component\HttpClient\HttpOptions;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -38,6 +41,8 @@ use Symfony\Component\Serializer\Mapping\Loader\AttributeLoader;
 use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 abstract class BaseFlow implements ProtocolFlow
@@ -92,6 +97,40 @@ abstract class BaseFlow implements ProtocolFlow
     {
         $session = $this->requestStack->getSession();
         return $session->get(self::SESSION_KEY_NONCE, '');
+    }
+
+    protected function requestUserInfo(
+        string $accessToken,
+        AuthSourceOIDC $authSourceOIDC,
+        ProviderMetadata $metadata,
+    ): ?UserInfo
+    {
+        $userInfoEndpoint = $authSourceOIDC->getUserInfoUrl() ?: $metadata->getUserInfoEndpoint();
+
+        try {
+            $response = $this->client
+                ->withOptions(
+                    (new HttpOptions())
+                        ->setAuthBearer($accessToken)
+                        ->toArray()
+                )->request('GET', $userInfoEndpoint);
+
+            // Extract the user information based on the auth source mapping via JsonPath
+            $json = new JsonObject($response->getContent(), true);
+        } catch (HttpExceptionInterface|TransportExceptionInterface|InvalidJsonException $exception) {
+            return null;
+        }
+
+        $identifier = $json->get($authSourceOIDC->getUsernameMapping());
+        $email = $json->get($authSourceOIDC->getEmailMapping());
+        $firstname = $json->get($authSourceOIDC->getFirstNameMapping());
+        $lastname = $json->get($authSourceOIDC->getLastNameMapping());
+
+        if (!$identifier || !$email || !$firstname || !$lastname) {
+            return null;
+        }
+
+        return new UserInfo($identifier, $email, $firstname, $lastname);
     }
 
     protected function verifyIdToken(

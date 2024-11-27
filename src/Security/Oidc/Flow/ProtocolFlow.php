@@ -16,7 +16,6 @@ namespace App\Security\Oidc\Flow;
 use App\Entity\AuthSourceOIDC;
 use App\Security\Oidc\Discovery\ProviderMetadata;
 use App\Security\Oidc\Request\ResponseType;
-use Lcobucci\JWT\Token;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -29,5 +28,5 @@ interface ProtocolFlow
         ResponseType $responseType
     ): RedirectResponse;
 
-    public function authenticate(Request $request, AuthSourceOIDC $authSource): ?Token;
+    public function authenticate(Request $request, AuthSourceOIDC $authSource): ?UserInfo;
 }

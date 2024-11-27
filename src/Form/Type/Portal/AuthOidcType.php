@@ -85,6 +85,27 @@ class AuthOidcType extends AbstractType
                 'label' => 'Client Secret',
                 'help' => 'secret',
             ])
+            ->add('userInfoURL', UrlType::class, [
+                'label' => 'User Info URL',
+                'required' => false,
+                'help' => 'portal.auth.oidc.userinfo_url.help',
+            ])
+            ->add('usernameMapping', TextType::class, [
+                'label' => 'Mapping: username',
+                'help' => '$.sub',
+            ])
+            ->add('emailMapping', TextType::class, [
+                'label' => 'Mapping: email',
+                'help' => '$.email',
+            ])
+            ->add('firstnameMapping', TextType::class, [
+                'label' => 'Mapping: firstname',
+                'help' => '$.given_name',
+            ])
+            ->add('lastnameMapping', TextType::class, [
+                'label' => 'Mapping: lastname',
+                'help' => '$.family_name',
+            ])
             ->add('createRoom', CheckboxType::class, [
                 'label' => 'Users may create rooms',
                 'required' => false,

@@ -1522,6 +1522,12 @@
                 <source>portal.auth.membership_identifier_help</source>
                 <target>Identifier for semicolon-separated server environment information used when automatically creating workspace members</target>
             </trans-unit>
+
+            <!-- OIDC -->
+            <trans-unit id="portal_auth_oidc_userinfo_url_help">
+                <source>portal.auth.oidc.userinfo_url.help</source>
+                <target>UserInfo-Url (optional) - will fall back to the discovery url</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
