@@ -710,6 +710,8 @@ class UserService
 
         if ($currentUser->isRoot()) {
             return 'enter';
+        } elseif ($room->isLocked()) {
+            return 'locked';
         } else {
             $userManager = $this->legacyEnvironment->getUserManager();
             $userManager->setUserIDLimit($currentUser->getUserID());
@@ -722,10 +724,6 @@ class UserService
             if ($roomUser) {
                 if ($room->mayEnter($roomUser)) {
                     return 'enter';
-                }
-
-                if ($room->isLocked()) {
-                    return 'locked';
                 }
 
                 if ($roomUser->isRequested()) {
