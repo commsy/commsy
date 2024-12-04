@@ -49,7 +49,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Constraints\Count;
@@ -874,6 +874,8 @@ class ItemController extends AbstractController
     #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function singleArticle(
         ItemService $itemService,
+        /** @noinspection PhpUnusedParameterInspection This argument is used as a subject for the #[IsGranted] attribute */
+        int $roomId,
         int $itemId
     ): Response {
         $item = $itemService->getTypedItem($itemId);
