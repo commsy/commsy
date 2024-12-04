@@ -6,6 +6,8 @@
     msgNoResults: '{{ 'No results found'|trans({}, 'search') }}'
 }">
 
+    {# Note: when one of the found item results gets selected, the UIKit autocomplete component
+       will post a `selectitem.uk.autocomplete` event that's handled by `linkSearch.js` #}
     <div class="uk-autocomplete" data-uk-autocomplete='{
         "source": "{{ path('app_search_itemsearchresults', { 'roomId': roomId, 'mode': 'json' }) }}"
     }' data-cs-link-search='{
