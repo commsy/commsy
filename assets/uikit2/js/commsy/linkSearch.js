@@ -19,10 +19,10 @@
                 $(this).val('');
             });
 
-            // check if we did not already added the item
+            // check if we did not already add the item
             let duplicate = false;
             $('ul#itemsLinkedList input[type="checkbox"]').each(function () {
-                if ($(this).val() == itemId) {
+                if ($(this).attr('name').endsWith('[' + itemId + ']')) {
                     duplicate = true;
                 }
             })
