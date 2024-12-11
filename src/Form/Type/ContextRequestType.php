@@ -84,6 +84,7 @@ class ContextRequestType extends AbstractType
                     'constraints' => [
                         new Constraints\IsTrue([
                             'message' => 'You must accept room agb.',
+                            'groups' => ['Default', 'code'],
                         ]),
                     ],
                     'label' => 'AGB',
