@@ -2413,6 +2413,7 @@ class cs_context_item extends cs_item
     {
         $retour = null;
         $user_manager = $this->_environment->getUserManager();
+        $user_manager->resetLimits();
         $user_manager->setContextLimit($this->getItemID());
         $user_manager->setUserIDLimit($user_id);
         $user_manager->setAuthSourceLimit($auth_source);

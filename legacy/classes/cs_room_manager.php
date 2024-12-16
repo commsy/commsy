@@ -12,6 +12,7 @@
  */
 
 use App\Hash\HashManager;
+use App\Utils\ReaderService;
 use Doctrine\ORM\EntityManagerInterface;
 
 /** class for database connection to the database table "community"
@@ -38,16 +39,16 @@ class cs_room_manager extends cs_context_manager
 
     public $_time_limit = null;
 
-    public $_continuous_limit = null;
-
-    public $_template_limit = null;
-
     /**
      * string - containing an order limit for the select community.
      */
     public $_order = null;
 
     public $_deleted_limit = null;
+
+    private bool $templateLimit = false;
+
+    private bool $continuousLimit = false;
 
     private bool $_limit_with_grouproom = false;
 
@@ -78,8 +79,8 @@ class cs_room_manager extends cs_context_manager
         $this->_order = null;
         $this->_deleted_limit = null;
         $this->_time_limit = null;
-        $this->_continuous_limit = null;
-        $this->_template_limit = null;
+        $this->continuousLimit = false;
+        $this->templateLimit = false;
         $this->_limit_with_grouproom = false;
         $this->_limit_only_grouproom = false;
     }
@@ -150,32 +151,22 @@ class cs_room_manager extends cs_context_manager
 
     public function setContinuousLimit()
     {
-        $this->_continuous_limit = 1;
+        $this->continuousLimit = true;
     }
 
     public function setNotContinuousLimit()
     {
-        $this->_continuous_limit = -1;
+        $this->continuousLimit = false;
     }
 
-    public function unsetContinuousLimit()
+    public function setTemplateLimit(): void
     {
-        $this->_continuous_limit = null;
+        $this->templateLimit = true;
     }
 
-    public function setTemplateLimit()
+    public function setNotTemplateLimit(): void
     {
-        $this->_template_limit = 1;
-    }
-
-    public function setNotTemplateLimit()
-    {
-        $this->_template_limit = -1;
-    }
-
-    public function unsetTemplateLimit()
-    {
-        $this->_template_limit = null;
+        $this->templateLimit = false;
     }
 
     /** set order limit
@@ -262,8 +253,8 @@ class cs_room_manager extends cs_context_manager
         ) {
             $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
         }
-        if (isset($this->_continuous_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.continuous = "'.encode(AS_DB, $this->_continuous_limit).'"';
+        if ($this->continuousLimit) {
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.continuous = "'.encode(AS_DB, 1).'"';
         }
 
         if (!empty($this->_user_id_limit)) {
@@ -283,8 +274,8 @@ class cs_room_manager extends cs_context_manager
         }
 
         // template
-        if (isset($this->_template_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "'.encode(AS_DB, $this->_template_limit).'"';
+        if ($this->templateLimit) {
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "'.encode(AS_DB, 1).'"';
         }
 
         if ('count' != $mode) {
@@ -571,7 +562,6 @@ class cs_room_manager extends cs_context_manager
         $hashManager = $symfonyContainer->get(HashManager::class);
         $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
         $link_item_file_manager = $this->_environment->getLinkItemFileManager();
-        $reader_manager = $this->_environment->getReaderManager();
         $annotation_manager = $this->_environment->getAnnotationManager();
         $announcement_manager = $this->_environment->getAnnouncementManager();
         $dates_manager = $this->_environment->getDatesManager();
@@ -602,6 +592,9 @@ class cs_room_manager extends cs_context_manager
         $query->setParameter('diff', $days);
         $rooms = $query->getResult();
 
+        /** @var ReaderService $readerService */
+        $readerService = $symfonyContainer->get(ReaderService::class);
+
         foreach ($rooms as $room) {
             $contextId = $room['contextId'];
             $itemId = $room['itemId'];
@@ -610,11 +603,13 @@ class cs_room_manager extends cs_context_manager
             $disc_manager = $this->_environment->getDiscManager();
             $disc_manager->removeRoomDir($contextId, $itemId);
 
+            // reader
+            $readerService->deleteAllEntriesInWorkspace($itemId);
+
             // managers
             $hashManager->deleteHashesInContext($itemId);
             $link_modifier_item_manager->deleteFromDb($itemId);
             $link_item_file_manager->deleteFromDb($itemId);
-            $reader_manager->deleteFromDb($itemId);
             $annotation_manager->deleteFromDb($itemId);
             $announcement_manager->deleteFromDb($itemId);
             $dates_manager->deleteFromDb($itemId);
@@ -632,8 +627,8 @@ class cs_room_manager extends cs_context_manager
             $tag2tag_manager->deleteFromDb($itemId);
             $task_manager->deleteFromDb($itemId);
             $todo_manager->deleteFromDb($itemId);
-            $user_manager->deleteFromDb($itemId);
             $room_manager->deleteFromDb($itemId);
+            $user_manager->deleteFromDb($itemId);
         }
     }
 
@@ -649,7 +644,7 @@ class cs_room_manager extends cs_context_manager
 
         $queryBuilder
             ->select('r.item_id', 'r.context_id', 'r.creator_id', 'r.modifier_id', 'r.creation_date',
-                'r.modification_date', 'r.title', 'r.status', 'r.activity', 'r.type', 'r.public',
+                'r.modification_date', 'r.title', 'r.status', 'r.activity', 'r.type',
                 'r.is_open_for_guests', 'r.continuous', 'r.template', 'r.contact_persons', 'r.room_description',
                 'r.lastlogin')
             ->from('room', 'r')

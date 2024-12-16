@@ -107,10 +107,7 @@ class DiscussionController extends BaseController
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = [];
-        foreach ($discussions as $item) {
-            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-        }
+        $readerList = $this->readerService->getChangeStatusForItems(...$discussions);
 
         $allowedActions = $itemService->getAllowedActionsForItems($discussions);
 
@@ -225,10 +222,7 @@ class DiscussionController extends BaseController
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerList = [];
-        foreach ($discussions as $item) {
-            $readerList[$item->getItemId()] = $this->readerService->getChangeStatus($item->getItemId());
-        }
+        $readerList = $this->readerService->getChangeStatusForItems(...$discussions);
 
         $ratingList = [];
         if ($current_context->isAssessmentActive()) {
@@ -330,21 +324,13 @@ class DiscussionController extends BaseController
         $discussion = $this->discussionService->getDiscussion($itemId);
         $articleList = $discussion->getAllArticles();
 
-        $readerManager = $this->legacyEnvironment->getReaderManager();
-
         // mark discussion as read / noticed
-        $latestReader = $readerManager->getLatestReader($discussion->getItemID());
-        if (empty($latestReader) || $latestReader['read_date'] < $discussion->getModificationDate()) {
-            $readerManager->markRead($discussion->getItemID(), $discussion->getVersionID());
-        }
+        $this->readerService->markItemAsRead($discussion);
 
         // mark discussion articles as read / noticed
         foreach ($articleList as $article) {
             /** @var \cs_discussionarticle_item $article */
-            $latestReader = $readerManager->getLatestReader($article->getItemID());
-            if (empty($latestReader) || $latestReader['read_date'] < $article->getModificationDate()) {
-                $readerManager->markRead($article->getItemID(), 0);
-            }
+            $this->readerService->markItemAsRead($article);
 
             $legacyMarkup->addFiles($this->itemService->getItemFileList($article->getItemID()));
         }
@@ -353,41 +339,12 @@ class DiscussionController extends BaseController
 
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
 
-        $readerManager = $this->legacyEnvironment->getReaderManager();
-
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        $id_array = $user_list->getIDArray();
-        $readerManager->getLatestReaderByUserIDArray($id_array, $discussion->getItemID());
-        foreach ($user_list as $user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($discussion->getItemID(),
-                $user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $discussion->getModificationDate()) {
-                    ++$read_count;
-                    ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
-                }
-            }
-        }
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($discussion);
 
         $readerList = [];
         $modifierList = [];
         foreach ($itemArray as $item) {
-            $reader = $this->readerService->getLatestReader($item->getItemId());
-            if (empty($reader)) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                $readerList[$item->getItemId()] = 'changed';
-            }
+            $readerList[$item->getItemId()] = $this->readerService->getStatusForItem($item)->value;
 
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
@@ -445,13 +402,9 @@ class DiscussionController extends BaseController
             $ratingOwnDetail = $assessmentService->getOwnRatingDetail($discussion);
         }
 
-        $reader_manager = $this->legacyEnvironment->getReaderManager();
-
         $item = $discussion;
-        $reader = $reader_manager->getLatestReader($item->getItemID());
-        if (empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
-            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
+
+        $this->readerService->markItemAsRead($discussion);
 
         $categories = [];
         if ($current_context->withTags()) {
@@ -474,9 +427,9 @@ class DiscussionController extends BaseController
         $infoArray['prevItemId'] = $prevItemId;
         $infoArray['nextItemId'] = $nextItemId;
         $infoArray['lastItemId'] = $lastItemId;
-        $infoArray['readCount'] = $read_count;
-        $infoArray['readSinceModificationCount'] = $read_since_modification_count;
-        $infoArray['userCount'] = $all_user_count;
+        $infoArray['readCount'] = $readCountDescription->getReadTotal();
+        $infoArray['readSinceModificationCount'] = $readCountDescription->getReadSinceModification();
+        $infoArray['userCount'] = $readCountDescription->getUserTotal();
         $infoArray['draft'] = $this->itemService->getItem($itemId)->isDraft();
         $infoArray['pinned'] = $this->itemService->getItem($itemId)->isPinned();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
@@ -853,48 +806,12 @@ class DiscussionController extends BaseController
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
-        $readerManager = $this->legacyEnvironment->getReaderManager();
-
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        $current_user = $user_list->getFirst();
-        $id_array = [];
-        while ($current_user) {
-            $id_array[] = $current_user->getItemID();
-            $current_user = $user_list->getNext();
-        }
-        $readerManager->getLatestReaderByUserIDArray($id_array, $typedItem->getItemID());
-        $current_user = $user_list->getFirst();
-        while ($current_user) {
-            $current_reader = $readerManager->getLatestReaderForUserByID($typedItem->getItemID(),
-                $current_user->getItemID());
-            if (!empty($current_reader)) {
-                if ($current_reader['read_date'] >= $typedItem->getModificationDate()) {
-                    ++$read_count;
-                    ++$read_since_modification_count;
-                } else {
-                    ++$read_count;
-                }
-            }
-            $current_user = $user_list->getNext();
-        }
+        $readCountDescription = $this->readerService->getReadCountDescriptionForItem($typedItem);
 
         $readerList = [];
         $modifierList = [];
         foreach ($itemArray as $item) {
-            $reader = $this->readerService->getLatestReader($item->getItemId());
-            if (empty($reader)) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                $readerList[$item->getItemId()] = 'changed';
-            }
+            $readerList[$item->getItemId()] = $this->readerService->getStatusForItem($item)->value;
 
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
@@ -910,9 +827,9 @@ class DiscussionController extends BaseController
             'roomId' => $roomId,
             'item' => $typedItem,
             'modifierList' => $modifierList,
-            'userCount' => $all_user_count,
-            'readCount' => $read_count,
-            'readSinceModificationCount' => $read_since_modification_count,
+            'userCount' => $readCountDescription->getUserTotal(),
+            'readCount' => $readCountDescription->getReadTotal(),
+            'readSinceModificationCount' => $readCountDescription->getReadSinceModification(),
         ]);
     }
 

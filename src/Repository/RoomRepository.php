@@ -95,7 +95,7 @@ class RoomRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('r')
             ->select()
-            ->innerJoin(User::class, 'u', Join::WITH, 'u.contextId = r.itemId')
+            ->innerJoin(User::class, 'u', Join::WITH, 'u.context = r.itemId')
             ->andWhere('r.deletionDate IS NULL')
             ->andWhere('r.deleter IS NULL')
             ->andWhere('r.contextId = :contextId')
@@ -149,5 +149,20 @@ class RoomRepository extends ServiceEntityRepository
             ->andWhere('p.deletionDate IS NULL')
             ->getQuery()
             ->getResult();
+    }
+
+    public function findAllIds(array $excludedTypes = []): array
+    {
+        $query = $this->getEntityManager()->createQuery('
+            SELECT r.itemId FROM App\Entity\Room r
+            WHERE r.type NOT IN (:excludedTypes) AND
+            r.deleter IS NOT NULL AND
+            r.deletionDate IS NOT NULL
+        ');
+        $query->setParameters([
+            'excludedTypes' => $excludedTypes,
+        ]);
+
+        return array_column($query->getResult(), 'itemId');
     }
 }

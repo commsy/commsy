@@ -65,10 +65,9 @@ class cs_file_manager extends cs_manager
         return $file;
     }
 
-    public function saveItem($file_item)
+    public function saveItem($file_item): void
     {
         /** @var cs_file_item $file_item */
-        $saved = false;
         $current_user = $this->_environment->getCurrentUser();
         $query = 'INSERT INTO ' . $this->addDatabasePrefix($this->_db_table) . ' SET' .
             ' portal_id="' . encode(AS_DB, $file_item->getPortalId()) . '",' .
@@ -78,35 +77,36 @@ class cs_file_manager extends cs_manager
             ' filename="' . encode(AS_DB, $file_item->getFileName()) . '", ' .
             ' filepath="' . encode(AS_DB, $file_item->getFilePath()) . '", ' .
             ' extras="' . encode(AS_DB, serialize($file_item->getExtraInformation())) . '"';
-        $result = $this->_db_connector->performQuery($query);
-        if (isset($result)) {
-            $file_item->setFileID($result);
-            $saved = $this->_saveOnDisk($file_item);
-            if ($saved) {
-                $discManager = $this->_environment->getDiscManager();
-                $filePath = $discManager->getRelativeFilePath(
-                    $file_item->getPortalId(),
-                    $file_item->getContextID(),
-                    $file_item->getDiskFileNameWithoutFolder()
-                );
 
-                $fileSize = filesize($discManager->getAbsoluteFilePath(
-                    $file_item->getPortalId(),
-                    $file_item->getContextID(),
-                    $file_item->getDiskFileNameWithoutFolder()
-                ));
-
-                $query = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET' .
-                    ' size="' . encode(AS_DB, $fileSize) . '",' .
-                    ' filepath="' . encode(AS_DB, $filePath) . '"' .
-                    ' WHERE files_id="' . encode(AS_DB, $file_item->getFileID()) . '"';
-                $this->_db_connector->performQuery($query);
-            }
-        } else {
-            trigger_error('Filemanager: Problem creating file entry: ' . $query, E_USER_ERROR);
+        if (!$result = $this->_db_connector->performQuery($query)) {
+            throw new Exception();
         }
+        $file_item->setFileID($result);
 
-        return $saved;
+        try {
+            $this->_saveOnDisk($file_item);
+
+            $discManager = $this->_environment->getDiscManager();
+            $filePath = $discManager->getRelativeFilePath(
+                $file_item->getPortalId(),
+                $file_item->getContextID(),
+                $file_item->getDiskFileNameWithoutFolder()
+            );
+
+            $fileSize = filesize($discManager->getAbsoluteFilePath(
+                $file_item->getPortalId(),
+                $file_item->getContextID(),
+                $file_item->getDiskFileNameWithoutFolder()
+            ));
+
+            $query = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET' .
+                ' size="' . encode(AS_DB, $fileSize) . '",' .
+                ' filepath="' . encode(AS_DB, $filePath) . '"' .
+                ' WHERE files_id="' . encode(AS_DB, $file_item->getFileID()) . '"';
+            $this->_db_connector->performQuery($query);
+        } catch (Exception $e) {
+            throw new Exception();
+        }
     }
 
     public function updateItem($file_item)
@@ -120,10 +120,9 @@ class cs_file_manager extends cs_manager
         }
     }
 
-    public function _saveOnDisk($file_item)
+    public function _saveOnDisk($file_item): void
     {
         /** @var cs_file_item $file_item */
-        $success = false;
         $tempname = $file_item->getTempName();
         if (!empty($tempname)) {
             $disc_manager = $this->_environment->getDiscManager();
@@ -131,25 +130,23 @@ class cs_file_manager extends cs_manager
             $disc_manager->setPortalID($file_item->getPortalId());
 
             // Currently, the file manager does not unlink a file here, because it is also used for copying files when copying material between rooms.
-            $success = $disc_manager->copyFile($tempname, $file_item->getDiskFileNameWithoutFolder(), false);
-            if (!$success) {
+            if (!$disc_manager->copyFile($tempname, $file_item->getDiskFileNameWithoutFolder(), false)) {
                 throw new Exception();
-            } else {
-                if (function_exists('gd_info')) {
-                    $size_info = @getimagesize($file_item->getDiskFileName());
-                    if (is_array($size_info)) {
-                        if ($size_info[0] > $this->_MAX_PICTURE_SIDE or $size_info[1] > $this->_MAX_PICTURE_SIDE) {
-                            // create Filename: origname.xxx -> origname_thumb.png
-                            $destination = $this->_create_thumb_name_from_image_name($file_item->getDiskFileNameWithoutFolder());
-                            $this->_miniatur($file_item->getDiskFileName(), $destination);
-                        }
+            }
+
+            if (function_exists('gd_info')) {
+                $size_info = @getimagesize($file_item->getDiskFileName());
+                if (is_array($size_info)) {
+                    if ($size_info[0] > $this->_MAX_PICTURE_SIDE or $size_info[1] > $this->_MAX_PICTURE_SIDE) {
+                        // create Filename: origname.xxx -> origname_thumb.png
+                        $destination = $this->_create_thumb_name_from_image_name($file_item->getDiskFileNameWithoutFolder());
+                        $this->_miniatur($file_item->getDiskFileName(), $destination);
                     }
                 }
             }
+
             $disc_manager->setContextID($this->_environment->getCurrentContextID());
         }
-
-        return $success;
     }
 
     public function setNewerLimit($datetime)

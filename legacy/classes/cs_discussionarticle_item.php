@@ -11,6 +11,8 @@
  * file that was distributed with this source code.
  */
 
+use App\Utils\ReaderService;
+
 /** class for an discussionarticle
  * this class implements a discussionarticle item.
  */
@@ -190,9 +192,9 @@ class cs_discussionarticle_item extends cs_item
         $this->_saveFiles();     // this must be done before saveFileLinks
         $this->_saveFileLinks(); // this must be done after saving so we can be sure to have an item id
 
-        // set and noticed reader manager
-        $reader_manager = $this->_environment->getReaderManager();
-        $reader_manager->markRead($this->getItemID(), 0);
+        /** @var ReaderService $readerService */
+        $readerService = $this->_environment->getSymfonyContainer()->get(ReaderService::class);
+        $readerService->markRead($this->getItemID());
     }
 
     /**

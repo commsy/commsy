@@ -14,10 +14,10 @@
 namespace App\Repository;
 
 use App\Entity\Files;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -43,5 +43,16 @@ class FilesRepository extends ServiceEntityRepository
         ]));
 
         return $query->getSingleScalarResult();
+    }
+
+    public function findAllLockedBefore(DateTime $threshold): array
+    {
+        $query = $this->getEntityManager()->createQuery('
+            SELECT f FROM App\Entity\Files f
+            WHERE f.lockingDate < :threshold
+        ');
+        $query->setParameter('threshold', $threshold);
+
+        return $query->getResult();
     }
 }

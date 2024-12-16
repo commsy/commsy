@@ -190,13 +190,13 @@ class UserService
      */
     public function addUserToSystemGroupAll(cs_user_item $user, cs_room_item $room): ?cs_label_item
     {
-        $groupManager = $this->legacyEnvironment->getLabelManager();
+        $groupManager = $this->legacyEnvironment->getGroupManager();
         $groupManager->setExactNameLimit('ALL');
         $groupManager->setContextLimit($room->getItemID());
         $groupManager->select();
         $groupList = $groupManager->get();
 
-        /** @var cs_group_item $group */
+        /** @var cs_group_item $systemGroupAll */
         $systemGroupAll = $groupList->getFirst();
 
         if ($systemGroupAll) {
@@ -710,6 +710,8 @@ class UserService
 
         if ($currentUser->isRoot()) {
             return 'enter';
+        } elseif ($room->isLocked()) {
+            return 'locked';
         } else {
             $userManager = $this->legacyEnvironment->getUserManager();
             $userManager->setUserIDLimit($currentUser->getUserID());
@@ -722,10 +724,6 @@ class UserService
             if ($roomUser) {
                 if ($room->mayEnter($roomUser)) {
                     return 'enter';
-                }
-
-                if ($room->isLocked()) {
-                    return 'locked';
                 }
 
                 if ($roomUser->isRequested()) {

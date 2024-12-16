@@ -160,7 +160,8 @@ class AccountController extends AbstractController
         PrivateRoomTransformer $privateRoomTransformer,
         UserTransformer $userTransformer,
         EventDispatcherInterface $eventDispatcher,
-        Security $security
+        Security $security,
+        EntityManagerInterface $entityManager
     ): Response {
         /** @var Account $account */
         $account = $security->getUser();
@@ -183,6 +184,9 @@ class AccountController extends AbstractController
 
             $portalUser = $userTransformer->applyTransformation($portalUser, $form->getData());
             $portalUser->save();
+
+            $entityManager->persist($account);
+            $entityManager->flush();
 
             $event = new AccountChangedEvent($oldUserItem, $portalUser);
             $eventDispatcher->dispatch($event);

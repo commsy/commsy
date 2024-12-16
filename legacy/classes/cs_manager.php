@@ -146,16 +146,6 @@ class cs_manager
         $this->_db_connector = $this->_environment->getDBConnector();
     }
 
-   /** set context id
-    * this method sets the context id.
-    *
-    * @param int id of the context
-    */
-   public function setCurrentContextID($id)
-   {
-       $this->_current_context = $id;
-   }
-
    public function setCacheOff()
    {
        $this->_cache_on = false;
@@ -432,28 +422,28 @@ class cs_manager
     /** get one item (newest version)
      * this method returns an item in his newest version - this method needs to be overwritten.
      *
-     * @param int $item_id id of the commsy item
+     * @param int $itemId id of the commsy item
      *
      * @return object cs_item one commsy items
      */
-    public function getItem(?int $item_id)
+    public function getItem(?int $itemId)
     {
         throw new LogicException('cs_manager (getItem): needs to be overwritten !!!');
     }
 
-  /** get a list of items (newest version)
-   * this method returns a list of items.
-   *
-   * @param array id_array ids of the items items
-   *
-   * @return cs_list list of cs_items
-   *
-   * @author CommSy Development Group
-   */
-  public function getItemList(array $id_array)
-  {
-      echo static::class.': cs_manager->getItemList needs to be overwritten !!!<br />'."\n";
-  }
+    /** get a list of items (newest version)
+     * this method returns a list of items.
+     *
+     * @param array $id_array ids of the items
+     *
+     * @return cs_list list of cs_items
+     *
+     * @author CommSy Development Group
+     */
+    public function getItemList(array $id_array): cs_list
+    {
+        throw new LogicException('getItemList() not implemented');
+    }
 
    public function _existsField($table, $field)
    {
@@ -518,6 +508,20 @@ class cs_manager
 
        return $list;
    }
+
+    public function getItemsForRoomIDChangedWithinDays(int $contextId, int $dayLimit): array
+    {
+        $this->reset();
+        $this->setContextLimit($contextId);
+        $this->setAgeLimit($dayLimit);
+
+        $this->setInactiveEntriesLimit(self::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $this->select();
+
+        $itemsList = $this->get();
+
+        return !$itemsList ? [] : $itemsList->to_array();
+    }
 
   /** save a commsy item
    * this method saves a commsy item.

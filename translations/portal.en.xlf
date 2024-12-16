@@ -667,8 +667,8 @@
                 <target>Description</target>
             </trans-unit>
             <trans-unit id="user_is_allowed_to_create_context">
-                <source>User is allowed to create context</source>
-                <target>Default settings of the portal</target>
+                <source>User is allowed to create rooms</source>
+                <target>User is allowed to create rooms</target>
             </trans-unit>
             <trans-unit id="standard_authentication">
                 <source>Default settings for authentification sources</source>
@@ -812,6 +812,10 @@
                 <source>Agreed to the terms of service on the...</source>
                 <target>Agreed to the terms of service on the...</target>
             </trans-unit>
+            <trans-unit id="workspace_status">
+                <source>Workspace status</source>
+                <target>Workspace status</target>
+            </trans-unit>
             <trans-unit id="workspace_membership">
                 <source>Workspace membership</source>
                 <target>Workspace membership</target>
@@ -824,9 +828,17 @@
                 <source>Project workspaces</source>
                 <target>Project workspaces</target>
             </trans-unit>
+            <trans-unit id="group_workspaces">
+                <source>Group workspaces</source>
+                <target>Group workspaces</target>
+            </trans-unit>
             <trans-unit id="archived_workspaces">
                 <source>Archived workspaces</source>
                 <target>Archived workspaces</target>
+            </trans-unit>
+            <trans-unit id="non_archived_workspaces">
+                <source>Non archived workspaces</source>
+                <target>Non archived workspaces</target>
             </trans-unit>
 
             <!-- assign workspace -->
@@ -1521,6 +1533,12 @@
             <trans-unit id="portal_auth_membership_identifier_help">
                 <source>portal.auth.membership_identifier_help</source>
                 <target>Identifier for semicolon-separated server environment information used when automatically creating workspace members</target>
+            </trans-unit>
+
+            <!-- OIDC -->
+            <trans-unit id="portal_auth_oidc_userinfo_url_help">
+                <source>portal.auth.oidc.userinfo_url.help</source>
+                <target>UserInfo-Url (optional) - will fall back to the discovery url</target>
             </trans-unit>
         </body>
     </file>

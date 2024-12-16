@@ -37,36 +37,20 @@ class cs_room_item extends cs_context_item
     // methods for linking times (clock pulses) and rooms #
     // #####################################################
 
-    public function _getContinuousStatus()
+    public function isContinuous(): bool
     {
-        $retour = $this->_getValue('continuous');
-        if (empty($retour)) {
-            $retour = -1;
-        }
-
-        return $retour;
+        return intval($this->_getValue('continuous')) === 1;
     }
 
-    public function isContinuous()
+    public function setContinuous(): void
     {
-        $retour = false;
-        $value = $this->_getContinuousStatus();
-        if (1 == $value) {
-            $retour = true;
-        }
-
-        return $retour;
-    }
-
-    public function setContinuous()
-    {
-        $this->_setValue('continuous', 1, true);
+        $this->_setValue('continuous', 1);
         $this->_setLinksToTimeLabels();
     }
 
-    public function setNotContinuous()
+    public function setNotContinuous(): void
     {
-        $this->_setValue('continuous', -1, true);
+        $this->_setValue('continuous', 0);
     }
 
     public function _setLinksToTimeLabels()
@@ -380,36 +364,19 @@ class cs_room_item extends cs_context_item
     // methods for template technique                     #
     // #####################################################
 
-    public function _getTemplateStatus()
+    public function isTemplate(): bool
     {
-        $retour = '-1';
-        $value = $this->_getValue('template');
-        if (!empty($value) and 1 == $value) {
-            $retour = 1;
-        }
-
-        return $retour;
+        return intval($this->_getValue('template')) === 1;
     }
 
-    public function isTemplate()
+    public function setTemplate(): void
     {
-        $retour = false;
-        $value = $this->_getTemplateStatus();
-        if (1 == $value) {
-            $retour = true;
-        }
-
-        return $retour;
+        $this->_setValue('template', 1);
     }
 
-    public function setTemplate()
+    public function setNotTemplate(): void
     {
-        $this->_setValue('template', 1, true);
-    }
-
-    public function setNotTemplate()
-    {
-        $this->_setValue('template', -1, true);
+        $this->_setValue('template', 0);
     }
 
     /** get topics of a project
@@ -493,9 +460,28 @@ class cs_room_item extends cs_context_item
         $this->_setObject(CS_MATERIAL_TYPE, $value, false);
     }
 
+    /**
+     * Returns a list of annotations from this room that were modified within the
+     * given number of days.
+     * @param int $dayLimit number of days
+     */
+    public function getAnnotationsChangedWithinDays(int $dayLimit): array
+    {
+        $annotationManager = $this->_environment->getAnnotationManager();
+        $annotationManager->resetLimits();
+        $annotationManager->setContextLimit($this->getItemID());
+        $annotationManager->setAgeLimit($dayLimit);
+        $annotationManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
+        $annotationManager->select();
+
+        $annotationList = $annotationManager->get();
+
+        return !$annotationList ? [] : $annotationList->to_array();
+    }
+
     /** Sets the data of the item.
      *
-     * @param $data_array Is the prepared array from "_buildItem($db_array)"
+     * @param array $data_array Is the prepared array from "_buildItem($db_array)"
      *
      * @return bool TRUE if data is valid FALSE otherwise
      */
@@ -795,37 +781,6 @@ class cs_room_item extends cs_context_item
         }
 
         return $retour;
-    }
-
-    public function setUsageInfoTextArray($value_array)
-    {
-        if (is_array($value_array)) {
-            $this->_addExtra('USAGE_INFO_TEXT', $value_array);
-        }
-    }
-
-    public function getUsageInfoFormTextArray()
-    {
-        $retour = null;
-        if ($this->_issetExtra('USAGE_INFO_FORM_TEXT')) {
-            $retour = $this->_getExtra('USAGE_INFO_FORM_TEXT');
-            if (empty($retour)) {
-                $retour = [];
-            } elseif (!is_array($retour)) {
-                $retour = XML2Array($retour);
-            }
-        } else {
-            $retour = [];
-        }
-
-        return $retour;
-    }
-
-    public function setUsageInfoFormTextArray($value_array)
-    {
-        if (is_array($value_array)) {
-            $this->_addExtra('USAGE_INFO_FORM_TEXT', $value_array);
-        }
     }
 
     public function getUsageInfoHeaderForRubric($rubric)

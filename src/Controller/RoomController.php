@@ -46,6 +46,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class RoomController extends AbstractController
 {
+    public function __construct(private readonly ReaderService $readerService)
+    {
+    }
+
     #[Route(path: '/room/{roomId}', requirements: ['roomId' => '\d+'])]
     public function home(
         Request $request,
@@ -244,12 +248,13 @@ class RoomController extends AbstractController
         $legacyEnvironment = $environment->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
-        $readerList = [];
-        foreach ($feedList as $item) {
-            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
-        }
+        $readerList = $this->readerService->getChangeStatusForItems(...$feedList);
 
-        return $this->render('room/list.html.twig', ['feedList' => $feedList, 'readerList' => $readerList, 'showRating' => $current_context->isAssessmentActive()]);
+        return $this->render('room/list.html.twig', [
+            'feedList' => $feedList,
+            'readerList' => $readerList,
+            'showRating' => $current_context->isAssessmentActive(),
+        ]);
     }
 
     /**

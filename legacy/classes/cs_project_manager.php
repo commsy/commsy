@@ -40,8 +40,6 @@ class cs_project_manager extends cs_room2_manager
 
     public $_time_limit = null;
 
-    public $_template_limit = null;
-
     /** constructor: cs_project_manager
      * the only available constructor, initial values for internal variables.
      *
@@ -67,7 +65,6 @@ class cs_project_manager extends cs_room2_manager
       $this->_user_id_limit = null;
       $this->_community_room_limit = null;
       $this->_time_limit = null;
-      $this->_template_limit = null;
   }
 
   /** set age limit
@@ -124,21 +121,6 @@ class cs_project_manager extends cs_room2_manager
   public function setTimeLimit($limit)
   {
       $this->_time_limit = $limit;
-  }
-
-  public function setTemplateLimit()
-  {
-      $this->_template_limit = 1;
-  }
-
-  public function setNotTemplateLimit()
-  {
-      $this->_template_limit = -1;
-  }
-
-  public function unsetTemplateLimit()
-  {
-      $this->_template_limit = null;
   }
 
   /** select project limited by limits
@@ -272,11 +254,6 @@ class cs_project_manager extends cs_room2_manager
           }
       }
 
-      // template
-      if (isset($this->_template_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "'.encode(AS_DB, $this->_template_limit).'"';
-      }
-
       // id_array_limit
       if (!empty($this->_id_array_limit)) {
           $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', encode(AS_DB, $this->_id_array_limit)).')';
@@ -397,7 +374,7 @@ class cs_project_manager extends cs_room2_manager
    /**
     * documentation TBD.
     */
-   public function getItemList(array $id_array)
+   public function getItemList(array $id_array): cs_list
    {
        return $this->_getItemList(CS_ROOM_TYPE, $id_array);
    }

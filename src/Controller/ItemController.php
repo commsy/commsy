@@ -49,7 +49,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Constraints\Count;
@@ -874,6 +874,8 @@ class ItemController extends AbstractController
     #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function singleArticle(
         ItemService $itemService,
+        /** @noinspection PhpUnusedParameterInspection This argument is used as a subject for the #[IsGranted] attribute */
+        int $roomId,
         int $itemId
     ): Response {
         $item = $itemService->getTypedItem($itemId);
@@ -934,19 +936,19 @@ class ItemController extends AbstractController
         $itemType = $item->getType();
 
         $itemId = match ($itemType) {
-            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE => $item->getLinkedItem()->getItemID(),
+            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE, CS_ANNOTATION_TYPE => $item->getLinkedItem()->getItemID(),
             default => $item->getItemID(),
         };
 
         $viewType = match ($itemType) {
             // NOTE: edit.js currently handles redirects for cancelled newly created steps, sections or discarticles
-            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE => 'detail',
+            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE, CS_ANNOTATION_TYPE => 'detail',
             default => ($item->isDraft() ? 'list' : 'detail'),
         };
 
         $itemType = match ($itemType) {
             CS_LABEL_TYPE => $item->getLabelType(),
-            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE => $item->getLinkedItem()->getType(),
+            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE, CS_ANNOTATION_TYPE => $item->getLinkedItem()->getType(),
             default => $itemType,
         };
 

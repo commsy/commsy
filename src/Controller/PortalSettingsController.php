@@ -89,7 +89,6 @@ use App\Room\RoomManager;
 use App\Security\Authorization\Voter\RootVoter;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
-use App\User\UserListBuilder;
 use App\Utils\AccountMail;
 use App\Utils\RoomService;
 use App\Utils\TimePulsesService;
@@ -1199,6 +1198,7 @@ class PortalSettingsController extends AbstractController
         #[MapEntity(id: 'portalId')]
         Portal $portal,
         UserService $userService,
+        AccountManager $accountManager,
         Request $request
     ): Response {
         $IdsMailRecipients = [];
@@ -1217,8 +1217,11 @@ class PortalSettingsController extends AbstractController
             if ($form->get('execute')->isClicked()) {
                 $IdsMailRecipients[] = $userId;
                 $user = $userService->getUser($userId);
-                $user->delete();
-                $user->save();
+                $account = $accountManager->getAccount($user, $portal->getId());
+                if ($account) {
+                    $accountManager->delete($account);
+                }
+
                 $this->addFlash('deleteSuccess', true);
 
                 return $this->redirectToRoute('app_portalsettings_accountindexsendmail', [
@@ -1282,8 +1285,10 @@ class PortalSettingsController extends AbstractController
                     case 'user-delete':
                         foreach (explode(',', (string) $userIds) as $userId) {
                             $user = $userService->getUser($userId);
-                            $user->delete();
-                            $user->save();
+                            $account = $accountManager->getAccount($user, $portal->getId());
+                            if ($account) {
+                                $accountManager->delete($account);
+                            }
                             $IdsMailRecipients[] = $userId;
                         }
                         $this->addFlash('deleteSuccess', true);
@@ -1659,96 +1664,32 @@ class PortalSettingsController extends AbstractController
         Request $request,
         UserService $userService,
         AuthSourceRepository $authSourceRepository,
-        RoomService $roomService,
-        TranslatorInterface $translator,
         Security $security,
-        UserListBuilder $userListBuilder,
         AccountManager $accountManager
     ): Response {
         $userList = $userService->getListUsers($portal->getId());
-        $form = $this->createForm(AccountIndexDetailType::class, $portal);
-        $form->handleRequest($request);
         $user = $userService->getUser(intval($request->get('userId')));
-
-        $communityArchivedListNames = [];
-        $communityListNames = [];
-        $projectsListNames = [];
-        $projectsArchivedListNames = [];
-        $userRoomListNames = [];
-        $userRoomsArchivedListNames = [];
-        $privateRoomNameList = [];
-        $privateRoomArchivedNameList = [];
-
         $accountOfUser = $accountManager->getAccount($user, $portal->getId());
-        $relatedUsers = $userListBuilder
-            ->fromAccount($accountOfUser)
-            ->withProjectRoomUser()
-            ->withCommunityRoomUser()
-            ->withUserRoomUser()
-            ->withPrivateRoomUser()
-            ->getList();
-
-        foreach ($relatedUsers as $relatedUser) {
-            $contextID = $relatedUser->getContextID();
-            $locked = '0' === $relatedUser->getStatus() ? '('.$translator->trans('Locked', [], 'portal').')' : '';
-            $relatedRoomItem = $roomService->getRoomItem($contextID);
-
-            $listName = "$locked {$relatedRoomItem->getTitle()}( ID: {$relatedRoomItem->getItemID()} )";
-
-            switch ($relatedRoomItem->getType()) {
-                case 'project':
-                    if ($relatedRoomItem->getArchived()) {
-                        $projectsArchivedListNames[] = "$listName (ARCH.)";
-                    } else {
-                        $projectsListNames[] = $listName;
-                    }
-                    break;
-                case 'community':
-                    if ($relatedRoomItem->getArchived()) {
-                        $communityArchivedListNames[] = "$listName (ARCH.)";
-                    } else {
-                        $communityListNames[] = $listName;
-                    }
-                    break;
-                case 'userroom':
-                    if ($relatedRoomItem->getArchived()) {
-                        $userRoomsArchivedListNames[] = "$listName (ARCH.)";
-                    } else {
-                        $userRoomListNames[] = $listName;
-                    }
-                    break;
-                case 'privateroom':
-                    if ($relatedRoomItem->getArchived()) {
-                        $privateRoomArchivedNameList[] = "$listName (ARCH.)";
-                    } else {
-                        $privateRoomNameList[] = $listName;
-                    }
-                    break;
-            }
-        }
 
         $key = 0;
-        $counter = 0;
-        $hasNext = true;
-        $hasPrevious = true;
-
-        foreach ($userList as $userItem) {
+        foreach ($userList as $index => $userItem) {
             if ($userItem->getItemID() === $user->getItemID()) {
-                $key = $counter;
+                $key = $index;
                 break;
             }
-            $counter = $counter + 1;
         }
 
-        if ($key + 1 == sizeof($userList)) {
-            $hasNext = false;
-        }
-        if (0 == $key) {
-            $hasPrevious = false;
-        }
+        $hasNext = $key !== sizeof($userList) - 1;
+        $hasPrevious = $key !== 0;
+
+        $form = $this->createForm(AccountIndexDetailType::class, $portal, [
+            'hasPrevious' => $hasPrevious,
+            'hasNext' => $hasNext,
+        ]);
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('next')->isClicked() or $form->get('previous')->isClicked()) {
+            if ($form->get('next')->isClicked() || $form->get('previous')->isClicked()) {
                 if ($form->get('next')->isClicked()) {
                     if ($key + 1 < sizeof($userList)) {
                         $user = $userList[$key + 1];
@@ -1761,25 +1702,8 @@ class PortalSettingsController extends AbstractController
                 }
 
                 return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
-                    'portal' => $portal,
                     'portalId' => $portal->getId(),
                     'userId' => $user->getItemID(),
-                    'communities' => $communityListNames,
-                    'projects' => $projectsListNames,
-                    'privaterooms' => $privateRoomNameList,
-                    'userrooms' => $userRoomListNames,
-                    'communitiesArchived' => $communityArchivedListNames,
-                    'projectsArchived' => $projectsArchivedListNames,
-                    'privateRoomsArchived' => $privateRoomArchivedNameList,
-                    'userroomsArchived' => $userRoomsArchivedListNames,
-                    'hasNext' => $hasNext,
-                    'hasPrevious' => $hasPrevious,
-                ]);
-            }
-
-            if ($form->get('back')->isClicked()) {
-                return $this->redirectToRoute('app_portalsettings_accountindex', [
-                    'portalId' => $portal->getId(),
                 ]);
             }
         }
@@ -1801,16 +1725,6 @@ class PortalSettingsController extends AbstractController
             'authSource' => $authSourceRepository->findOneBy(['id' => $user->getAuthSource()]),
             'form' => $form,
             'portal' => $portal,
-            'communities' => $communityListNames,
-            'projects' => $projectsListNames,
-            'privaterooms' => $privateRoomNameList,
-            'userrooms' => $userRoomListNames,
-            'communitiesArchived' => $communityArchivedListNames,
-            'projectsArchived' => $projectsArchivedListNames,
-            'privateRoomsArchived' => $privateRoomArchivedNameList,
-            'userroomsArchived' => $userRoomsArchivedListNames,
-            'hasNext' => $hasNext,
-            'hasPrevious' => $hasPrevious,
         ]);
     }
 

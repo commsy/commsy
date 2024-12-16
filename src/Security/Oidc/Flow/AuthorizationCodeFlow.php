@@ -18,9 +18,6 @@ use App\Security\Oidc\Discovery\MetadataReader;
 use App\Security\Oidc\Discovery\ProviderMetadata;
 use App\Security\Oidc\Response\AccessTokenResponse;
 use Exception;
-use Lcobucci\JWT\Encoding\JoseEncoder;
-use Lcobucci\JWT\Token;
-use Lcobucci\JWT\Token\Parser;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -48,7 +45,7 @@ class AuthorizationCodeFlow extends BaseFlow
     /**
      * @throws Exception|TransportExceptionInterface
      */
-    public function authenticate(Request $request, AuthSourceOIDC $authSource): ?Token
+    public function authenticate(Request $request, AuthSourceOIDC $authSource): ?UserInfo
     {
         $code = $request->query->get('code');
         $metadata = $this->metadataReader->fetchRemoteConfiguration($authSource->getIssuer());
@@ -62,8 +59,11 @@ class AuthorizationCodeFlow extends BaseFlow
         );
 
         if ($this->verifyIdToken($tokenResponse->getIdToken(), $authSource, $metadata, $this->getStoredNonce())) {
-            $parser = new Parser(new JoseEncoder());
-            return $parser->parse($tokenResponse->getIdToken());
+            return $this->requestUserInfo(
+                $tokenResponse->getAccessToken(),
+                $authSource,
+                $metadata
+            );
         }
 
         return null;
@@ -89,7 +89,7 @@ class AuthorizationCodeFlow extends BaseFlow
                 'code' => $code,
                 'redirect_uri' => $this->urlGenerator->generate('app_oidc_authoidccheck', [
                     'context' => $portalId,
-                ]),
+                ], UrlGeneratorInterface::ABSOLUTE_URL),
             ]
         ]);
 

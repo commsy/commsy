@@ -1,0 +1,62 @@
+<div{{ attributes }}>
+    <form class="uk-form-stacked">
+        <div class="uk-flex uk-flex-middle">
+            <div>
+                <label class="uk-form-label">{{ 'Workspace status' | trans({}, 'portal') }}</label>
+                <div class="uk-form-controls">
+                    <select class="uk-select" data-model="filterArchived">
+                        <option value="all">{{ 'All' | trans({}, 'portal') }}</option>
+                        <option value="only">{{ 'Archived workspaces' | trans({}, 'portal') }}</option>
+                        <option value="except">{{ 'Non archived workspaces' | trans({}, 'portal') }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="uk-margin-left">
+                <label class="uk-form-label">{{ 'context type' | trans({}, 'room') }}</label>
+                <div class="uk-form-controls">
+                    <select class="uk-select" data-model="filterType">
+                        <option value="all">{{ 'All' | trans({}, 'portal') }}</option>
+                        <option value="project">{{ 'Project workspaces' | trans({}, 'portal') }}</option>
+                        <option value="grouproom">{{ 'Group workspaces' | trans({}, 'portal') }}</option>
+                        <option value="community">{{ 'Community workspaces' |trans({}, 'portal') }}</option>
+                        <option value="userroom">{{ 'Userroom workspaces' | trans({}, 'portal') }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="uk-margin-left">
+                <label class="uk-form-label">{{ 'status' | trans({}, 'user') }}</label>
+                <div class="uk-form-controls">
+                    <select class="uk-select" data-model="filterUserStatus">
+                        <option value="all">{{ 'All' | trans({}, 'portal') }}</option>
+                        <option value="0">{{ 'Locked' | trans({}, 'portal') }}</option>
+                        <option value="1">{{ 'In activation' | trans({}, 'portal') }}</option>
+                        <option value="2">{{ 'User' | trans({}, 'portal') }}</option>
+                        <option value="3">{{ 'Moderator' | trans({}, 'portal') }}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="uk-section uk-section-xsmall">
+        <div class="uk-container">
+            <div hidden data-loading="addAttribute(uk-spinner) removeAttribute(hidden)"></div>
+
+            <dl class="uk-description-list uk-description-list-divider uk-margin-remove-top">
+                {% for user in this.users %}
+                    <dt>
+                        <span class="uk-text-bold">
+                            {{ user.context.title|raw }}({{ user.context.itemId }})
+                            {% if user.context.archived %} ({{ 'Archived' | trans({}, 'room') }}){% endif %}
+                        </span>
+                    </dt>
+                    <dd>{{ 'room.context_type'|trans({ 'type': user.context.type }, 'room') }} - {{ 'user.status'|trans({ 'status': user.status }, 'user') }}</dd>
+                {% else %}
+                    {{ 'no items'|trans({}, 'dashboard') }}
+                {% endfor %}
+            </dl>
+        </div>
+    </div>
+</div>

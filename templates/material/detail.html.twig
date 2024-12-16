@@ -231,8 +231,9 @@
             </div>
 
             {# annotations #}
-            <div class="uk-margin-top">
-                {% component 'v3:card' with { title: 'annotations'|trans(), id: 'annotations' ~ material.itemId } %}
+            {% if not draft %}
+                <div class="uk-margin-top">
+                    {% component 'v3:card' with { title: 'annotations'|trans(), id: 'annotations' ~ material.itemId } %}
                     {% import 'utils/macros.html.twig' as macros %}
 
                     {% block content %}
@@ -264,7 +265,8 @@
                         ))}}
                     {% endblock %}
                 {% endcomponent %}
-            </div>
+                </div>
+            {% endif %}
             </main>
         </div>
 
@@ -297,7 +299,9 @@
                                     </li>
                                 {% endif %}
 
+                        {% if not draft %}
                                 <li><a href="#annotations{{ material.itemId }}">{{ 'annotations'|trans({})|capitalize }} ({{ amountAnnotations }})</a></li>
+                        {% endif %}
                             </ul>
                         </div>
                     {% endblock %}

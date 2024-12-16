@@ -16,6 +16,7 @@ namespace App\Twig\Extension;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use cs_environment;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -27,7 +28,8 @@ class PageTitleExtension extends AbstractExtension
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private readonly RoomService $roomService,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly RequestStack $requestStack,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -45,6 +47,12 @@ class PageTitleExtension extends AbstractExtension
 
     public function pageTitle($roomId): string
     {
+        $request = $this->requestStack->getCurrentRequest();
+        $isOnPortalList = $request && $request->attributes->get('_route') === 'app_server_show';
+        if ($isOnPortalList) {
+            return 'CommSy';
+        }
+
         $pageTitleElements = [];
 
         // room title
