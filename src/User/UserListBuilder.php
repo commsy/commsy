@@ -145,14 +145,17 @@ class UserListBuilder
         $this->contextIds = array_values($this->contextIds);
 
         // gather IDs of all related users
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->resetLimits();
-        $userManager->setContextArrayLimit($this->contextIds);
-        $userManager->setUserIDLimit($this->account->getUsername());
-        $userManager->setAuthSourceLimit($this->account->getAuthSource()->getId());
-        $userManager->select();
+        $userList = new cs_list();
+        if ($this->contextIds) {
+            $userManager = $this->legacyEnvironment->getUserManager();
+            $userManager->resetLimits();
+            $userManager->setContextArrayLimit($this->contextIds);
+            $userManager->setUserIDLimit($this->account->getUsername());
+            $userManager->setAuthSourceLimit($this->account->getAuthSource()->getId());
+            $userManager->select();
 
-        $userList = $userManager->get();
+            $userList = $userManager->get();
+        }
 
         $this->reset();
 

@@ -33,24 +33,16 @@ class AccountIndexDetailType extends AbstractType
             ->add('previous', Types\SubmitType::class, [
                 'label' => 'Previous',
                 'translation_domain' => 'portal',
+                'attr' => [
+                    'disabled' => !$options['hasPrevious'],
+                ],
             ])
             ->add('next', Types\SubmitType::class, [
                 'label' => 'Next',
                 'translation_domain' => 'portal',
-            ])
-            ->add('hasNoPrevious', Types\SubmitType::class, [
-                'label' => 'Previous',
-                'translation_domain' => 'portal',
-                'attr' => ['disabled' => 'true'],
-            ])
-            ->add('hasNoNext', Types\SubmitType::class, [
-                'label' => 'Next',
-                'translation_domain' => 'portal',
-                'attr' => ['disabled' => 'true'],
-            ])
-            ->add('back', Types\SubmitType::class, [
-                'label' => 'Back',
-                'translation_domain' => 'portal',
+                'attr' => [
+                    'disabled' => !$options['hasNext'],
+                ],
             ])
         ;
     }
@@ -62,9 +54,12 @@ class AccountIndexDetailType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'data_class' => Portal::class,
-            'translation_domain' => 'portal',
-        ]);
+        $resolver
+            ->setRequired(['hasPrevious', 'hasNext'])
+            ->setDefaults([
+                'data_class' => Portal::class,
+                'translation_domain' => 'portal',
+            ])
+        ;
     }
 }

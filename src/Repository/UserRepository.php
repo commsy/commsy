@@ -17,6 +17,7 @@ use App\Entity\Account;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -29,14 +30,14 @@ class UserRepository extends ServiceEntityRepository
 
     public function getConfirmableUserByContextId($contextId)
     {
-        $qb = $this->createQueryBuilder('r');
+        $qb = $this->createQueryBuilder('u');
 
         return $qb
             ->where($qb->expr()->andX(
-                $qb->expr()->eq('r.contextId', ':contextId'),
-                $qb->expr()->eq('r.status', ':status'),
-                $qb->expr()->isNull('r.deletionDate'),
-                $qb->expr()->isNull('r.deleterId')
+                $qb->expr()->eq('u.context', ':contextId'),
+                $qb->expr()->eq('u.status', ':status'),
+                $qb->expr()->isNull('u.deletionDate'),
+                $qb->expr()->isNull('u.deleterId')
             ))
             ->setParameters(new ArrayCollection([
                 new Parameter('contextId', $contextId),
@@ -48,7 +49,7 @@ class UserRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('u')
             ->where('u.status = 3')
-            ->andWhere('u.contextId = :roomId')
+            ->andWhere('u.context = :roomId')
             ->andWhere('u.deletionDate IS NULL')
             ->setParameter('roomId', $roomId)
             ->getQuery()
@@ -59,7 +60,7 @@ class UserRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('u')
             ->where('u.isContact = 1')
-            ->andWhere('u.contextId = :roomId')
+            ->andWhere('u.context = :roomId')
             ->andWhere('u.deletionDate IS NULL')
             ->setParameter('roomId', $roomId)
             ->getQuery()
@@ -69,7 +70,7 @@ class UserRepository extends ServiceEntityRepository
     public function findActiveUsers(int $contextId): mixed
     {
         return $this->createQueryBuilder('u')
-            ->where('u.contextId = :contextId')
+            ->where('u.context = :contextId')
             ->andWhere('u.deletionDate IS NULL')
             ->andWhere('u.deleterId IS NULL')
             ->setParameter('contextId', $contextId)
@@ -80,7 +81,7 @@ class UserRepository extends ServiceEntityRepository
     public function findActiveUsersAsQuery(int $contextId): mixed
     {
         return $this->createQueryBuilder('u')
-            ->where('u.contextId = :contextId')
+            ->where('u.context = :contextId')
             ->andWhere('u.deletionDate IS NULL')
             ->andWhere('u.deleterId IS NULL')
             ->setParameter('contextId', $contextId)
@@ -91,7 +92,7 @@ class UserRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('u')
             ->select('COUNT(u.itemId) as num')
-            ->where('u.contextId = :contextId')
+            ->where('u.context = :contextId')
             ->andWhere('u.deletionDate IS NULL')
             ->andWhere('u.deleterId IS NULL')
             ->setParameter('contextId', $contextId)
@@ -102,7 +103,7 @@ class UserRepository extends ServiceEntityRepository
     public function findPortalUser(Account $account): ?User
     {
         return $this->createQueryBuilder('u')
-            ->where('u.contextId = :contextId')
+            ->where('u.context = :contextId')
             ->andWhere('u.authSource = :authSourceId')
             ->andWhere('u.userId = :username')
             ->andWhere('u.deletionDate IS NULL')
@@ -112,5 +113,41 @@ class UserRepository extends ServiceEntityRepository
             ->setParameter('username', $account->getUsername())
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function findAllByRoomStatus(
+        Account $account,
+        string $filterArchived = 'all',
+        string $filterType = 'all',
+        string $filterUserStatus = 'all'
+    ): array
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->innerJoin('u.context', 'r', Join::WITH)
+            ->andWhere('u.deletionDate IS NULL')
+            ->andWhere('u.deleterId IS NULL')
+            ->andWhere('u.userId = :userId')
+            ->andWhere('u.authSource = :authSource')
+            ->setParameters(new ArrayCollection([
+                new Parameter('userId', $account->getUsername()),
+                new Parameter('authSource', $account->getAuthSource()),
+            ]));
+
+        if ($filterArchived !== 'all') {
+            $qb->andWhere('r.archived = :archived');
+            $qb->setParameter('archived', $filterArchived === 'only');
+        }
+
+        if ($filterType !== 'all') {
+            $qb->andWhere('r.type = :type');
+            $qb->setParameter('type', $filterType);
+        }
+
+        if ($filterUserStatus !== 'all') {
+            $qb->andWhere('u.status = :status');
+            $qb->setParameter('status', $filterUserStatus);
+        }
+
+        return $qb->getQuery()->execute();
     }
 }
