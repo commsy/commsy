@@ -95,7 +95,7 @@ class RoomRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('r')
             ->select()
-            ->innerJoin(User::class, 'u', Join::WITH, 'u.contextId = r.itemId')
+            ->innerJoin(User::class, 'u', Join::WITH, 'u.context = r.itemId')
             ->andWhere('r.deletionDate IS NULL')
             ->andWhere('r.deleter IS NULL')
             ->andWhere('r.contextId = :contextId')
