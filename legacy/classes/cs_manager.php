@@ -146,16 +146,6 @@ class cs_manager
         $this->_db_connector = $this->_environment->getDBConnector();
     }
 
-   /** set context id
-    * this method sets the context id.
-    *
-    * @param int id of the context
-    */
-   public function setCurrentContextID($id)
-   {
-       $this->_current_context = $id;
-   }
-
    public function setCacheOff()
    {
        $this->_cache_on = false;
