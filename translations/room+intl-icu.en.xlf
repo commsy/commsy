@@ -6,17 +6,21 @@
                 <source>Workspace</source>
                 <target>Workspace</target>
             </trans-unit>
-            <trans-unit id="1">
-                <source>%count% new entries in the last %days% days</source>
-                <target>{0} No new entries in the last %days% days|{1} One new entry in the last %days% days|]1,Inf[ %count% new entries in the last %days% days</target>
+            <trans-unit id="room_num_new_entries">
+                <source>room.num_new_entries</source>
+                <target>{count, plural,
+                    =0      {No new entries in the last {days} days}
+                    =1      {One new entry in the last {days} days}
+                    other   {# new entries in the last {days} days}
+                }</target>
             </trans-unit>
             <trans-unit id="2">
                 <source>Page Impressions:</source>
                 <target>Page Impressions:</target>
             </trans-unit>
-            <trans-unit id="3">
-                <source>total %total% | active %active%</source>
-                <target>total %total% | active %active%</target>
+            <trans-unit id="room_user_status">
+                <source>room.user_status</source>
+                <target>total {total} | active {active}</target>
             </trans-unit>
             <trans-unit id="4">
                 <source>Room-Information</source>
@@ -265,6 +269,16 @@
             <trans-unit id="context type">
                 <source>context type</source>
                 <target>Workspace type</target>
+            </trans-unit>
+            <trans-unit id="room_context_type">
+                <source>room.context_type</source>
+                <target>{type, select,
+                    project    {Project workspace}
+                    grouproom  {Group workspace}
+                    community  {Community workspace}
+                    userroom   {Personal workspace}
+                    other      {Workspace}
+                }</target>
             </trans-unit>
             <trans-unit id="Room description">
                 <source>Room description</source>

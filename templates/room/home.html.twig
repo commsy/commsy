@@ -139,17 +139,14 @@
                     <li class="uk-flex">
                         <div class="uk-width-1-3">{{ 'Entries:'|trans({}, "room") }}</div>
                         <div class="uk-width-2-3">
-                            {% trans with {'%count%': numNewEntries, '%days%': timeSpread} from "room" %}
-                                %count% new entries in the last %days% days
-                            {% endtrans %}
+                            {{ 'room.num_new_entries'|trans({ 'count': numNewEntries, 'days': timeSpread }, 'room') }}
                         </div>
                     </li>
                     <li class="uk-flex">
                         <div class="uk-width-1-3">{{ 'Persons:'|trans({}, "room") }}</div>
                         <div class="uk-width-2-3">
-                            {% trans with {'%total%': numTotalMember, '%active%': numActiveMember} from "room" %}
-                            total %total% | active %active%
-                            {% endtrans %}
+                            {{ 'room.user_status'|trans({ 'total': numTotalMember, 'active': numActiveMember }, 'room') }}
+
                             <div class="uk-progress">
                                 {% set activePercent = (numActiveMember/numTotalMember*100)|round %}
                                 <div class="uk-progress-bar cs-progress-bar" style="width: {{ activePercent }}%;"></div>

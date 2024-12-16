@@ -14,33 +14,28 @@
         {% block body %}
             {% set performedSuccessfully = app.flashes('performedSuccessfully')|first %}
             {% set notYetImplemented = app.flashes('notYetImplemented')|first %}
-            {% if(performedSuccessfully) %}
+            {% if (performedSuccessfully) %}
                 <div class="uk-alert uk-alert-success">
                     <i class="uk-icon-check-square-o uk-icon-medium"></i>
                     {{ 'Performed action'|trans({}, 'portal') }}.  <a href="{{  performedSuccessfully }}">{{'Back to overview'|trans({}, 'portal') }}</a>
                 </div>
             {% endif %}
-            {% if(notYetImplemented) %}
+            {% if (notYetImplemented) %}
                 <div class="uk-alert uk-alert-success">
                     <i class="uk-icon-check-square-o uk-icon-medium"></i>
                     {{ 'Not yet implemented'|trans({}, 'portal') }}.  <a href="{{ notYetImplemented }}">{{'Back to overview'|trans({}, 'portal') }}</a>
                 </div>
             {% endif %}
+
             {{ form_start(form) }}
-
-            <div class="uk-flex">
-                {% if(hasPrevious) %}
+                <div class="uk-flex">
                     {{ form_row(form.previous) }}
-                {% else %}
-                    {{ form_row(form.hasNoPrevious) }}
-                {% endif %}
 
-                {% if(hasNext) %}
-                    {{ form_row(form.next) }}
-                {% else %}
-                    {{ form_row(form.hasNoNext) }}
-                {% endif %}
-            </div>
+                    <div class="uk-margin-small-left">
+                        {{ form_row(form.next) }}
+                    </div>
+                </div>
+            {{ form_end(form) }}
 
             <h2 class="uk-margin-remove-top">{{ user.firstname }} {{ user.lastname }}</h2>
             <hr />
@@ -82,126 +77,76 @@
                 </ul>
             </div>
 
-            <dl class="uk-description-list">
-                <dt>{{ 'User ID' | trans({}, 'portal') }}</dt>
-                <dd>{{ user.userid }}</dd>
+            <div class="uk-section uk-section-small">
+                <div class="uk-container">
+                    <div class="uk-child-width-1-2" uk-grid>
+                        <div>
+                            <dl class="uk-description-list">
+                                <dt>{{ 'User ID' | trans({}, 'portal') }}</dt>
+                                <dd>{{ user.userid }}</dd>
 
-                <dt>{{ 'authSource' | trans({}, 'portal') }}</dt>
-                <dd>{{ authSource.title }}</dd>
+                                <dt>{{ 'authSource' | trans({}, 'portal') }}</dt>
+                                <dd>{{ authSource.title }}</dd>
 
-                <dt>{{ 'Status' | trans({}, 'portal') }}</dt>
-                <dd>{{ macros.userStatus(user.status) }}</dd>
+                                <dt>{{ 'Status' | trans({}, 'portal') }}</dt>
+                                <dd>{{ macros.userStatus(user.status) }}</dd>
 
-                <dt>{{ 'Language' | trans({}, 'portal') }}</dt>
-                <dd>
-                    {% if(user.getLanguage() == 'de') %}
-                        {{'German' | trans({}, 'portal') }}
-                    {% else %}
-                        {{'English' | trans({}, 'portal') }}
-                    {% endif %}
-                </dd>
+                                <dt>{{ 'Language' | trans({}, 'portal') }}</dt>
+                                <dd>
+                                    {% if(user.getLanguage() == 'de') %}
+                                        {{ 'German' | trans({}, 'portal') }}
+                                    {% else %}
+                                        {{ 'English' | trans({}, 'portal') }}
+                                    {% endif %}
+                                </dd>
+                            </dl>
+                        </div>
+                        <div>
+                            <dl class="uk-description-list">
+                                <dt>{{ 'Login as... active' | trans({}, 'portal') }}</dt>
+                                <dd>
+                                    {% if not user.canImpersonateAnotherUser or not user.isModerator() %}
+                                        {{ 'No'|trans({}, 'portal') }}
+                                    {% elseif user.impersonateExpiryDate is not null %}
+                                        {{ user.impersonateExpiryDate|format_date }}
+                                    {% else %}
+                                        {{ 'Yes'|trans({}, 'portal') }}
+                                    {% endif %}
+                                </dd>
 
-                <dt>{{ 'Login as... active' | trans({}, 'portal') }}</dt>
-                <dd>
-                    {% if not user.canImpersonateAnotherUser %}
-                        {{'No'|trans({}, 'portal') }}
-                    {% elseif user.impersonateExpiryDate is not null %}
-                        {{ user.impersonateExpiryDate|format_date }}
-                    {% else %}
-                        {{'Yes'|trans({}, 'portal') }}
-                    {% endif %}
-                </dd>
+                                <dt>{{ 'Agreed to the terms of service on the...' | trans({}, 'portal') }}</dt>
+                                <dd>
+                                    {% if user.getAGBAcceptanceDate() %}
+                                        {{ user.getAGBAcceptanceDate()|format_date }}
+                                    {% else %}
+                                        {{ 'Never' | trans({}, 'portal') }}
+                                    {% endif %}
+                                </dd>
 
-                <dt>{{ 'Agreed to the terms of service on the...' | trans({}, 'portal') }}</dt>
-                <dd>
-                    {% if user.getAGBAcceptanceDate() %}
-                        {{ user.getAGBAcceptanceDate()|format_date }}
-                    {% else %}
-                        {{ 'Never' | trans({}, 'portal') }}
-                    {% endif %}
-                </dd>
-
-                <dt>{{ 'Hide mail' | trans({}, 'portal') }}</dt>
-                <dd>
-                    {% if user.isEmailVisible() %}
-                        {{ 'No' | trans({}, 'portal') }}
-                    {% else %}
-                        {{ 'Yes' | trans({}, 'portal') }}
-                    {% endif %}
-                </dd>
-
-                <dt>{{ 'User is allowed to create context' | trans({}, 'portal') }}</dt>
-                <dd>
-                    {% if user.isModerator() %}
-                        {% if user.isAllowedToCreateContext() == 'standard' %}
-                            {{ 'Standard' | trans({}, 'portal') }}
-                        {% elseif user.isAllowedToCreateContext() == 1 %}
-                            {{ 'Yes' | trans({}, 'portal') }}
-                        {% else %}
-                            {{ 'No' | trans({}, 'portal') }}
-                        {% endif %}
-                    {% else %}
-                        {{ 'Standard' | trans({}, 'portal') }}
-                    {% endif %}
-                </dd>
-
-                <dt>{{ 'Default settings for authentification sources' | trans({}, 'portal') }}</dt>
-                <dd>
-                    {% if user.isAllowedToCreateContext() == 'standard' %}
-                        {{ 'Standard' | trans({}, 'portal') }}
-                    {% elseif user.isAllowedToCreateContext() == 1 %}
-                        {{ 'Yes' | trans({}, 'portal') }}
-                    {% else %}
-                        {{ 'No' | trans({}, 'portal') }}
-                    {% endif %}
-                </dd>
-
-                <dt>{{ 'Default settings of the portal' | trans({}, 'portal') }}</dt>
-                <dd>{{ 'lock' | trans({}, 'profile') }}</dd>
-            </dl>
-
-            <div class="uk-child-width-expand@s uk-margin-bottom" uk-grid>
-                <div>
-                    <h3>{{ 'Workspace membership' |trans({}, 'portal') }}</h3>
-                    <dl class="uk-description-list">
-                        <dt>{{ 'Community workspaces' |trans({}, 'portal') }}</dt>
-                        <dd>{{ communities | join(', ') | default('None' | trans({}, 'portal')) }}</dd>
-
-                        <dt>{{ 'Project workspaces' | trans({}, 'portal') }}</dt>
-                        <dd>{{ projects | join(', ') | default('None' | trans({}, 'portal')) }}</dd>
-
-                        <dt>{{ 'Userroom workspaces' | trans({}, 'portal') }}</dt>
-                        <dd>{{ userrooms | join(', ') | default('None' | trans({}, 'portal')) }}</dd>
-
-                        <dt>{{'Privateroom workspaces' | trans({}, 'portal') }}</dt>
-                        <dd>{{ privaterooms | join(', ') | default('None' | trans({}, 'portal')) }}</dd>
-                    </dl>
-                </div>
-
-                <div>
-                    <h3>{{ 'Archived workspaces' | trans({}, 'portal') }}</h3>
-                    <dl class="uk-description-list">
-                        <dt>{{ 'Community workspaces' | trans({}, 'portal') }}</dt>
-                        <dd>{{ communitiesArchived | join(', ') | default('None' | trans({}, 'portal')) }}</dd>
-
-                        <dt>{{ 'Project workspaces' | trans({}, 'portal') }}</dt>
-                        <dd>{{ projectsArchived | join(', ') | default('None' | trans({}, 'portal')) }}</dd>
-
-                        <dt>{{ 'Userroom workspaces' | trans({}, 'portal') }}</dt>
-                        <dd>{{ userroomsArchived | join(', ') | default('None' | trans({}, 'portal')) }}</dd>
-
-                        <dt>{{ 'Privateroom workspaces' | trans({}, 'portal') }}</dt>
-                        <dd>{{ privateRoomsArchived | join(', ') | default('None' | trans({}, 'portal')) }}</dd>
-                    </dl>
+                                <dt>{{ 'User is allowed to create rooms' | trans({}, 'portal') }}</dt>
+                                <dd>
+                                    {% if user.isAllowedToCreateContext() == 'standard' or not user.isModerator() %}
+                                        {{ 'Standard' | trans({}, 'portal') }}
+                                    {% elseif user.isAllowedToCreateContext() == 1 %}
+                                        {{ 'Yes' | trans({}, 'portal') }}
+                                    {% else %}
+                                        {{ 'No' | trans({}, 'portal') }}
+                                    {% endif %}
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {{ form_row(form.back) }}
-            {% do form.next.setRendered %}
-            {% do form.hasNoNext.setRendered %}
-            {% do form.previous.setRendered %}
-            {% do form.hasNoPrevious.setRendered %}
-            {{ form_end(form) }}
+            <hr>
+
+            <twig:AccountWorkspacesComponent account="{{ accountOfUser }}"/>
+
+            <a class="uk-button uk-button-default"
+               href="{{ path('app_portalsettings_accountindex', { portalId: portal.id }) }}">
+                {{ 'Back'|trans({}, 'portal') }}
+            </a>
         {% endblock %}
     {% endembed %}
 {% endblock %}

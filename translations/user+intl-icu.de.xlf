@@ -1,58 +1,58 @@
 <?xml version="1.0"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-    <file source-language="en" datatype="plaintext" original="file.ext">
+    <file source-language="de" datatype="plaintext" original="file.ext">
         <body>
             <trans-unit id="title">
                 <source>title</source>
-                <target>Title</target>
+                <target>Titel</target>
             </trans-unit>
             <trans-unit id="surname">
                 <source>surname</source>
-                <target>Surname</target>
+                <target>Nachname</target>
             </trans-unit>
             <trans-unit id="dateOfBirth">
                 <source>dateOfBirth</source>
-                <target>Date of birth</target>
+                <target>Geburtstag</target>
             </trans-unit>
             <trans-unit id="userImage">
                 <source>userImage</source>
-                <target>Image</target>
+                <target>Bild</target>
             </trans-unit>
             <trans-unit id="deleteUserImage">
                 <source>deleteUserImage</source>
-                <target>Delete image</target>
+                <target>Bild löschen</target>
             </trans-unit>
             <trans-unit id="email">
                 <source>email</source>
-                <target>Email</target>
+                <target>E-Mail</target>
             </trans-unit>
             <trans-unit id="hideEmailInThisRoom">
                 <source>hideEmailInThisRoom</source>
-                <target>Hide mail in this workspace</target>
+                <target>E-Mail in diesem Raum verbergen</target>
             </trans-unit>
             <trans-unit id="phone">
                 <source>phone</source>
-                <target>Phone</target>
+                <target>Telefon</target>
             </trans-unit>
             <trans-unit id="mobile">
                 <source>mobile</source>
-                <target>Mobile</target>
+                <target>Handy</target>
             </trans-unit>
             <trans-unit id="street">
                 <source>street</source>
-                <target>Street</target>
+                <target>Straße</target>
             </trans-unit>
             <trans-unit id="zipCode">
                 <source>zipCode</source>
-                <target>Area code</target>
+                <target>Postleitzahl</target>
             </trans-unit>
             <trans-unit id="city">
                 <source>city</source>
-                <target>Town</target>
+                <target>Stadt</target>
             </trans-unit>
             <trans-unit id="room">
                 <source>room</source>
-                <target>Workspace</target>
+                <target>Raum</target>
             </trans-unit>
             <trans-unit id="organisation">
                 <source>organisation</source>
@@ -84,19 +84,19 @@
             </trans-unit>
             <trans-unit id="language">
                 <source>language</source>
-                <target>Language</target>
+                <target>Sprache</target>
             </trans-unit>
             <trans-unit id="browser">
                 <source>browser</source>
-                <target>Browser setting</target>
+                <target>Browsereinstellung</target>
             </trans-unit>
             <trans-unit id="german">
                 <source>german</source>
-                <target>German</target>
+                <target>Deutsch</target>
             </trans-unit>
             <trans-unit id="english">
                 <source>english</source>
-                <target>English</target>
+                <target>Englisch</target>
             </trans-unit>
             <trans-unit id="user status">
                 <source>user status</source>
@@ -104,179 +104,190 @@
             </trans-unit>
             <trans-unit id="quit">
                 <source>quit</source>
-                <target>Deleted Account</target>
+                <target>Gelöschte Kennung</target>
             </trans-unit>
             <trans-unit id="deleted person">
                 <source>deleted person</source>
-                <target>Deleted Person</target>
+                <target>Gelöschte Person</target>
             </trans-unit>
             <trans-unit id="request">
                 <source>request</source>
-                <target>Requesting</target>
+                <target>In Beantragung</target>
             </trans-unit>
             <trans-unit id="user">
                 <source>user</source>
-                <target>User</target>
+                <target>BenutzerIn</target>
             </trans-unit>
             <trans-unit id="moderator">
                 <source>moderator</source>
-                <target>Moderator</target>
+                <target>ModeratorIn</target>
             </trans-unit>
             <trans-unit id="emailHidden">
                 <source>emailHidden</source>
-                <target>hidden</target>
+                <target>verborgen</target>
             </trans-unit>
             <trans-unit id="emailAddressIsHidden">
                 <source>emailAddressIsHidden</source>
-                <target>Email address hidden</target>
+                <target>E-Mail Adresse verborgen</target>
             </trans-unit>
             <trans-unit id="userEmailSend">
                 <source>send email</source>
-                <target>Send email</target>
+                <target>E-Mail senden</target>
             </trans-unit>
             <trans-unit id="userPaste">
                 <source>paste</source>
-                <target>Insert marked entries into personal workspaces</target>
+                <target>Meine Auswahl in Personenräume kopieren</target>
             </trans-unit>
             <trans-unit id="delete">
                 <source>delete</source>
-                <target>Delete account/s</target>
+                <target>Kennung(en) löschen</target>
             </trans-unit>
             <trans-unit id="block">
                 <source>block</source>
-                <target>Lock account/s</target>
+                <target>Kennung(en) sperren</target>
             </trans-unit>
             <trans-unit id="confirm">
                 <source>confirm</source>
-                <target>Approve or unlock account/s</target>
+                <target>Kennung(en) freischalten</target>
             </trans-unit>
             <trans-unit id="status">
                 <source>status</source>
-                <target>Change status</target>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="user_status">
+                <source>user.status</source>
+                <target>{status, select,
+                    0       {Gesperrt}
+                    1       {In Beantragung}
+                    2       {BenutzerIn}
+                    3       {ModeratorIn}
+                    4       {LesendeR BenutzerIn}
+                    other   {Unbekannt}
+                }</target>
             </trans-unit>
             <trans-unit id="reading user">
                 <source>reading user</source>
-                <target>Read only user</target>
+                <target>LesendeR BenutzerIn</target>
             </trans-unit>
             <trans-unit id="contact">
                 <source>contact</source>
-                <target>Change status: contact person</target>
+                <target>Zu AnsprechpartnerIn machen</target>
             </trans-unit>
             <trans-unit id="contact remove">
                 <source>contact remove</source>
-                <target>Remove status: contact person</target>
+                <target>Status AnsprechpartnerIn entfernen</target>
             </trans-unit>
             <trans-unit id="is contact">
                 <source>is contact</source>
-                <target>Contact person</target>
+                <target>AnsprechpartnerIn</target>
             </trans-unit>
             <trans-unit id="no contact">
                 <source>no contact</source>
-                <target>No contact person</target>
+                <target>KeinE AnsprechpartnerIn</target>
             </trans-unit>
             <trans-unit id="is applying">
                 <source>is applying</source>
-                <target>Is applying</target>
+                <target>In Beantragung</target>
             </trans-unit>
             <trans-unit id="is blocked">
                 <source>is blocked</source>
-                <target>Locked</target>
+                <target>Gesperrt</target>
             </trans-unit>
             <trans-unit id="no restrictions">
                 <source>no restrictions</source>
-                <target>No restrictions</target>
+                <target>Keine Einschränkungen</target>
             </trans-unit>
             <trans-unit id="no moderators left">
                 <source>no moderators left</source>
-                <target>This action would leave no moderators in this workspace. Please assign a new moderation.</target>
+                <target>Durch diese Aktion gäbe es keine Moderation mehr im Raum. Bitte ernennen Sie ggf. eine neue Moderation.</target>
             </trans-unit>
             <trans-unit id="send mail">
                 <source>send mail</source>
-                <target>Send mail</target>
+                <target>E-Mail senden</target>
             </trans-unit>
             <trans-unit id="user comment">
                 <source>user comment</source>
-                <target>User comment</target>
+                <target>Teilnahmegrund</target>
             </trans-unit>
             <trans-unit id="change_status">
                 <source>Change status</source>
-                <target>Change status</target>
+                <target>Status ändern</target>
             </trans-unit>
             <trans-unit id="change_status_intro">
                 <source>change_status_intro</source>
-                <target>The following members are affected:</target>
+                <target>Änderung des Status für folgende Personen:</target>
             </trans-unit>
             <trans-unit id="change_status_inform">
                 <source>Inform user</source>
-                <target>Inform user about status change</target>
+                <target>Benutzer über Statuswechsel informieren</target>
             </trans-unit>
             <trans-unit id="user_status_0">
                 <source>status_0</source>
-                <target>Locked</target>
+                <target>Gesperrt</target>
             </trans-unit>
             <trans-unit id="user_status_1">
                 <source>status_1</source>
-                <target>Applying</target>
+                <target>In Beantragung</target>
             </trans-unit>
             <trans-unit id="user_status_2">
                 <source>status_2</source>
-                <target>User</target>
+                <target>BenutzerIn</target>
             </trans-unit>
             <trans-unit id="user_status_3">
                 <source>status_3</source>
-                <target>Moderator</target>
+                <target>ModeratorIn</target>
             </trans-unit>
             <trans-unit id="user_status_4">
                 <source>status_4</source>
-                <target>Read only</target>
+                <target>LesendeR BenutzerIn</target>
             </trans-unit>
             <trans-unit id="user_status_new">
                 <source>New status</source>
-                <target>New status</target>
+                <target>Neuer Status</target>
             </trans-unit>
             <trans-unit id="tiles">
                 <source>tiles</source>
-                <target>Tiles</target>
+                <target>Kacheln</target>
             </trans-unit>
             <trans-unit id="taskinfo">
                 <source>taskinfo</source>
-                <target>Users are waiting moderation confirmation</target>
+                <target>Kennungen warten noch auf die Freischaltung durch die Moderation</target>
             </trans-unit>
             <trans-unit id="show user">
                 <source>show user</source>
-                <target>show user</target>
+                <target>Kennungen anzeigen</target>
             </trans-unit>
             <trans-unit id="quick_action_confirm">
                 <source>Confirm</source>
-                <target>Confirm</target>
+                <target>Freischalten</target>
             </trans-unit>
             <trans-unit id="quick_action_reject">
                 <source>Reject</source>
-                <target>Reject</target>
+                <target>Ablehnen</target>
             </trans-unit>
             <trans-unit id="manage_user">
                 <source>Manage user</source>
-                <target>Manage user</target>
+                <target>Person verwalten</target>
             </trans-unit>
             <trans-unit id="manage_users">
                 <source>Manage users</source>
-                <target>Manage users</target>
+                <target>Personen verwalten</target>
             </trans-unit>
             <trans-unit id="user item ID">
                 <source>User item ID</source>
-                <target>User</target>
+                <target>BenutzerIn</target>
             </trans-unit>
             <trans-unit id="created">
                 <source>created</source>
-                <target>created</target>
+                <target>erstellt</target>
             </trans-unit>
             <trans-unit id="modified">
                 <source>modified</source>
-                <target>modified</target>
+                <target>geändert</target>
             </trans-unit>
             <trans-unit id="last login">
                 <source>last login</source>
-                <target>last login</target>
+                <target>angemeldet</target>
             </trans-unit>
         </body>
     </file>

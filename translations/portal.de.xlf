@@ -611,8 +611,8 @@
                 <target>Beschreibung</target>
             </trans-unit>
             <trans-unit id="user_is_allowed_to_create_context">
-                <source>User is allowed to create context</source>
-                <target>Standardeinstellung des Portals</target>
+                <source>User is allowed to create rooms</source>
+                <target>Benutzer darf Räume erstellen</target>
             </trans-unit>
             <trans-unit id="standard_authentication">
                 <source>Default settings for authentification sources</source>
@@ -744,6 +744,10 @@
                 <source>Agreed to the terms of service on the...</source>
                 <target>Zustimmung der Nutzungsbedingungen am</target>
             </trans-unit>
+            <trans-unit id="workspace_status">
+                <source>Workspace status</source>
+                <target>Raumstatus</target>
+            </trans-unit>
             <trans-unit id="workspace_membership">
                 <source>Workspace membership</source>
                 <target>Raumteilnahme</target>
@@ -756,9 +760,17 @@
                 <source>Project workspaces</source>
                 <target>Projekträume</target>
             </trans-unit>
+            <trans-unit id="group_workspaces">
+                <source>Group workspaces</source>
+                <target>Gruppenräume</target>
+            </trans-unit>
             <trans-unit id="archived_workspaces">
                 <source>Archived workspaces</source>
                 <target>Archivierte Räume</target>
+            </trans-unit>
+            <trans-unit id="non_archived_workspaces">
+                <source>Non archived workspaces</source>
+                <target>Nicht archivierte Räume</target>
             </trans-unit>
 
             <!-- assign workspace -->
