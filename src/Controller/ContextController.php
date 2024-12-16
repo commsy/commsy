@@ -66,9 +66,10 @@ class ContextController extends AbstractController
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($itemId);
 
-        // redirect to the room's detail page if a room membership (request) already exists for this user
+        // redirect to the room's detail page if a room membership (request) already exists for this user,
+        // or if the room is locked
         $userTestItem = $roomItem->getUserByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource());
-        if ($userTestItem) {
+        if ($userTestItem || $roomItem->isLocked()) {
             $route = $this->redirectToRoomDetailPage($legacyEnvironment, $roomId, $itemId);
 
             return $route;
