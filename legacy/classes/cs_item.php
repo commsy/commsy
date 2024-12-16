@@ -1115,7 +1115,6 @@ class cs_item
      public function _save($manager): void
      {
          if (isset($this->_changed['general']) and true == $this->_changed['general']) {
-             $manager->setCurrentContextID($this->getContextID());
              if (!$this->_link_modifier) {
                  $manager->setSaveWithoutLinkModifier();
              }
@@ -1917,7 +1916,6 @@ class cs_item
     {
         $this->setCreatorItem($user);
         $this->setModificatorItem($user);
-        $manager->setCurrentContextID($this->getContextID());
         $manager->saveItemNew($this);
     }
 
