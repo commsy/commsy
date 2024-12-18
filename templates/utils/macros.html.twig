@@ -259,7 +259,7 @@
     {% if user.isDeleted %}
         <img class="{{ classes|join(' ') }}"{{ styleAttribute | raw }} src="{{ path('app_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "deleted person"|trans({}, 'user')}}">
     {% elseif user.itemId != "" %}
-        <img class="{{ classes|join(' ') }}"{{ styleAttribute | raw }} src="{{ path('app_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
+        <img class="{{ classes|join(' ') }}"{{ styleAttribute | raw }} src="{{ path('app_user_image', {'roomId': user.contextId ?? user.context.itemId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
     {% else %}
         <img class="{{ classes|join(' ') }}"{{ styleAttribute | raw }} src="{{ path('app_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "guest"|trans({}, 'messages')}}">
     {% endif %}
@@ -267,7 +267,7 @@
 
 {% macro userIconLink(user, size, showTooltip = true, classList = []) %}
     {% import _self as macros %}
-    <a href="{{ path('app_user_detail', {'roomId': user.contextId, 'itemId': user.itemId}) }}">
+    <a href="{{ path('app_user_detail', {'roomId': user.contextId ?? user.context.itemId, 'itemId': user.itemId}) }}">
         {{ macros.userIcon(user, size, showTooltip, classList) }}
     </a>
 {% endmacro %}
