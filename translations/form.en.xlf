@@ -82,6 +82,10 @@
                 <source>form.create_document.text</source>
                 <target>Create document:</target>
             </trans-unit>
+            <trans-unit id="form-create-upload-file">
+                <source>form.create_or_upload_file</source>
+                <target>Create or upload file</target>
+            </trans-unit>
             <trans-unit id="form-ideal-aspect-ratio">
                 <source>ideal aspect ratio</source>
                 <target>The ideal aspect ratio for workspace images is 4&#58;1 (Width&#58;Height).</target>

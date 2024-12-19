@@ -82,6 +82,10 @@
                 <source>form.create_document.text</source>
                 <target>Dokument erstellen:</target>
             </trans-unit>
+            <trans-unit id="form-create-upload-file">
+                <source>form.create_or_upload_file</source>
+                <target>Dateien erstellen / hochladen</target>
+            </trans-unit>
             <trans-unit id="form-ideal-aspect-ratio">
                 <source>ideal aspect ratio</source>
                 <target>Das ideale Seitenverhältnis für Raumbilder liegt bei 4&#58;1 (Breite&#58;Höhe).</target>
