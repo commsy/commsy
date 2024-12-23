@@ -194,7 +194,7 @@ final class FileList extends AbstractController
 
             /** @var Files $file */
             $file = $filesRepository->findOneBy(['filesId' => $fileId]);
-            $file->setFilename($this->translator->trans('form.new_filename', [], 'form') . 'Components' . $uploadedFile->getExtension());
+            $file->setFilename($this->translator->trans('form.new_filename', [], 'form') . '.' . $uploadedFile->getExtension());
             $entityManager->persist($file);
             $entityManager->flush();
 

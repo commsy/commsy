@@ -104,7 +104,7 @@
         </div>
 
         <div class="uk-margin toggle_create_upload" data-uk-toggle="{target: '.toggle_create_upload'}">
-            <button class="uk-button uk-button-primary">Dateien erstellen / hochladen</button>
+            <button class="uk-button uk-button-primary">{{ 'form.create_or_upload_file'|trans({}, 'form') }}</button>
         </div>
 
         {% if is_granted('ITEM_EDIT', itemId) and is_granted('ITEM_FILE_LOCK', itemId) %}
