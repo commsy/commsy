@@ -29,6 +29,7 @@
         init: function() {
             let $this = this;
 
+            let $component = $($this.element).parentsUntil('div[data-controller]').parent().first();
             let $progressbar = $($this.element).parentsUntil('.uk-placeholder').parent().siblings('.uk-progress').first();
             let $bar = $progressbar.find('.uk-progress-bar');
 
@@ -137,11 +138,9 @@
                             }
 
                             // Call the "refreshFiles" live action of the hosting component
-                            let $component = $($this.element).closest('div[data-controller]');
                             if ($component) {
                                 $component[0].__component.refreshFiles();
                             }
-
                         } else if (responseData['attachmentInfo']) {
                             let attachmentInfoArray = responseData['attachmentInfo'];
                             let form = $($this.element).closest('form');
