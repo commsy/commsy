@@ -17,9 +17,6 @@ use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * ItemLinkFile.
- */
 #[ORM\Entity]
 #[ORM\Table(name: 'item_link_file')]
 class ItemLinkFile
@@ -30,9 +27,9 @@ class ItemLinkFile
 
     #[ORM\Column(name: 'item_vid', type: Types::INTEGER)]
     #[ORM\Id]
-    private int $itemVersionId;
+    private int $versionId;
 
-    #[ORM\OneToOne(inversedBy: 'itemLink', targetEntity: Files::class)]
+    #[ORM\OneToOne(targetEntity: Files::class, inversedBy: 'itemLink')]
     #[ORM\JoinColumn(name: 'file_id', referencedColumnName: 'files_id', nullable: false)]
     #[ORM\Id]
     private Files $file;
@@ -54,14 +51,14 @@ class ItemLinkFile
         return $this;
     }
 
-    public function getItemVersionId(): int
+    public function getVersionId(): int
     {
-        return $this->itemVersionId;
+        return $this->versionId;
     }
 
-    public function setItemVersionId(int $itemVersionId): self
+    public function setVersionId(int $versionId): self
     {
-        $this->itemVersionId = $itemVersionId;
+        $this->versionId = $versionId;
         return $this;
     }
 }
