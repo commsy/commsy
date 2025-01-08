@@ -11,7 +11,9 @@
  * file that was distributed with this source code.
  */
 
+use App\Files\FileManager;
 use App\Proxy\PortalProxy;
+use App\Repository\ItemLinkFileRepository;
 use App\Repository\MaterialsRepository;
 use App\Repository\PortalRepository;
 use App\Security\Authorization\Voter\ItemVoter;
@@ -45,7 +47,6 @@ class cs_item
      * boolean - file list is changed, save new list.
      */
     public bool $_filelist_changed = false;
-    public bool $_filelist_changed_empty = false;
     public bool $_cache_on = true;
 
     /**
@@ -1957,6 +1958,11 @@ class cs_item
             return new cs_list();
         }
 
+        $container = $this->_environment->getSymfonyContainer();
+
+        /** @var ItemLinkFileRepository $itemLinkFileRepository */
+        $itemLinkFileRepository = $container->get(ItemLinkFileRepository::class);
+
         $file_list = new cs_list();
         if (!empty($this->_data['file_list'])) {
             $file_list = $this->_data['file_list'];
@@ -1964,10 +1970,7 @@ class cs_item
             if (isset($this->_data['file_id_array']) && !empty($this->_data['file_id_array'])) {
                 $file_id_array = $this->_data['file_id_array'];
             } else {
-                $link_manager = $this->_environment->getLinkManager();
-                $file_links = $link_manager->getFileLinks($this);
-
-                $file_id_array = array_map(fn (array $fileData) => $fileData['file_id'], $file_links);
+                $file_id_array = $itemLinkFileRepository->getLinkedFileIds($this->getItemID(), $this->getVersionID());
                 $this->_data['file_id_array'] = $file_id_array;
             }
 
@@ -1996,41 +1999,31 @@ class cs_item
     */
     public function getFileIDArray(): array
     {
-        $file_id_array = [];
-        if (isset($this->_data['file_id_array']) and !empty($this->_data['file_id_array'])) { // check if file_id_array has been set by user or this method has been called before
-            $file_id_array = $this->_data['file_id_array'];
-        } elseif (isset($this->_data['file_id_array'])
-                   and empty($this->_data['file_id_array'])
-                   and $this->_filelist_changed
-        ) { // alle dateien bewusst abhängen
-            $file_id_array = $this->_data['file_id_array'];
-        } elseif (isset($this->_data['file_list']) and is_object($this->_data['file_list'])) {
-            $file = $this->_data['file_list']->getFirst();
-            while ($file) {
-                $file_id_array[] = $file->getFileID();
-                $file = $this->_data['file_list']->getNext();
-            }
-        } else {
-            $link_manager = $this->_environment->getLinkManager();
-            $file_links = $link_manager->getFileLinks($this);
-            if (!empty($file_links)) {
-                foreach ($file_links as $link) {
-                    $file_id_array[] = $link['file_id'];
-                }
-            }
-        }
+        $container = $this->_environment->getSymfonyContainer();
 
-        return $file_id_array;
+        /** @var ItemLinkFileRepository $itemLinkFileRepository */
+        $itemLinkFileRepository = $container->get(ItemLinkFileRepository::class);
+
+        // check if file_id_array has been set by user or this method has been called before
+        if (isset($this->_data['file_id_array']) && !empty($this->_data['file_id_array'])) {
+            return $this->_data['file_id_array'];
+        } elseif (isset($this->_data['file_id_array'])
+                   && empty($this->_data['file_id_array'])
+                   && $this->_filelist_changed
+        ) { // alle dateien bewusst abhängen
+            return $this->_data['file_id_array'];
+        } elseif (isset($this->_data['file_list']) && is_object($this->_data['file_list'])) {
+            return array_map(fn (cs_file_item $file) => $file->getFileID(), $this->_data['file_list']);
+        } else {
+            return $itemLinkFileRepository->getLinkedFileIds($this->getItemID(), $this->getVersionID());
+        }
     }
 
-    public function setFileIDArray($value)
+    public function setFileIDArray(array $value): void
     {
         $this->_data['file_id_array'] = $value;
         $this->_data['file_list'] = null;
         $this->_filelist_changed = true;
-        if (empty($value)) {
-            $this->_filelist_changed_empty = true;
-        }
     }
 
     public function setFileList($value)
@@ -2040,28 +2033,39 @@ class cs_item
         $this->_filelist_changed = true;
     }
 
-    public function _saveFileLinks()   // das ist so komplex, weil wir die filelinks nicht aus der db löschen können
-    {// wenn jemandem was eleganteres einfällt: nur zu
+    public function _saveFileLinks()
+    {
+        $container = $this->_environment->getSymfonyContainer();
+
+        /** @var FileManager $fileManager */
+        $fileManager = $container->get(FileManager::class);
+
+        /** @var ItemLinkFileRepository $itemLinkFileRepository */
+        $itemLinkFileRepository = $container->get(ItemLinkFileRepository::class);
+
         if ($this->_filelist_changed) {
             if (!$this->isNotActivated()) {
                 $this->setModificationDate(null);
             }
             $link_manager = $this->_environment->getLinkManager();
             $file_id_array = $this->getFileIDArray();
-            if (empty($file_id_array) || $this->_filelist_changed_empty) {
-                $link_manager->deleteFileLinks($this);
+            if (empty($file_id_array)) {
+                $fileManager->softDeleteFileLink($this->getItemID(), $this->getVersionID());
             } else {
-                $current_file_links = $link_manager->getFileLinks($this);
+                $linkedIds = $itemLinkFileRepository->getLinkedFileIds($this->getItemID(), $this->getVersionID());
                 $keep_links = [];
-                if (!empty($current_file_links)) {
-                    foreach ($current_file_links as $cur_link) {
-                        if (in_array($cur_link['file_id'], $file_id_array)) {
-                            $keep_links[] = $cur_link['file_id'];
-                        } else {
-                            $link_manager->deleteFileLinkByID($this, $cur_link['file_id']);
-                        }
+                foreach ($linkedIds as $linkedId) {
+                    if (in_array($linkedId, $file_id_array)) {
+                        $keep_links[] = $linkedId;
+                    } else {
+                        $fileManager->softDeleteFileLink(
+                            $this->getItemID(),
+                            $this->getVersionID(),
+                            $linkedId
+                        );
                     }
                 }
+
                 $add_links = array_diff($file_id_array, $keep_links);
                 if (!empty($add_links)) {
                     foreach ($add_links as $file_id) {

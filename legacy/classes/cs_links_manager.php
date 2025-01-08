@@ -54,12 +54,6 @@ class cs_links_manager extends cs_manager
 
     public $_version_id_limit = null;
 
-    public $_all_link_file_data = [];
-
-    public $_file_to_material_data = [];
-
-    public $_item_id_array = [];
-
     /**
      * @var mixed|null
      */
@@ -719,15 +713,7 @@ class cs_links_manager extends cs_manager
          }
      }
 
-// ########## file links ###########
-
-     public function linkFile($from_item, $file_item)
-     {
-         $file_id = $file_item->getFileID();
-         $this->linkFileByID($from_item, $file_id);
-     }
-
-     public function linkFileByID($from_item, $file_id)
+     public function linkFileByID($from_item, $file_id): void
      {
          if ($this->_existFileLink($from_item, $file_id)) {
              $query = 'UPDATE '.$this->addDatabasePrefix('item_link_file').' SET ';
@@ -749,145 +735,8 @@ class cs_links_manager extends cs_manager
          }
      }
 
-     public function getMaterialIDForFileID($file_id)
+     private function _existFileLink($from_item, $file_id): bool
      {
-         if (isset($this->_file_to_material_data[$file_id])) {
-             return $this->_file_to_material_data[$file_id];
-         } else {
-             $query = '
-          SELECT
-            item_iid
-          FROM
-            '.$this->addDatabasePrefix('item_link_file').'
-          WHERE
-            file_id="'.encode(AS_DB, $file_id).'" AND
-            deletion_date IS NULL
-        ';
-             $result = $this->_db_connector->performQuery($query);
-             if (!isset($result)) {
-                 trigger_error('Problems loading file links: '.$query, E_USER_WARNING);
-             } else {
-                 $this->_file_to_material_data[$file_id] = $result[0]['item_iid'];
-
-                 return $result[0]['item_iid'];
-             }
-         }
-     }
-
-     public function getFileLinks($from_item)
-     {
-         $data = [];
-         $id = $from_item->getItemID();
-         $version_id = $from_item->getVersionID();
-         if (empty($version_id)) {
-             $version_id = '0';
-         }
-         if (!empty($id)) {
-             if (in_array($id.'_'.$version_id, $this->_item_id_array)) {
-                 if (array_key_exists($id.'_'.$version_id, $this->_all_link_file_data)) {
-                     $temp_data_array = $this->_all_link_file_data[$id.'_'.$version_id];
-                     foreach ($temp_data_array as $temp_data) {
-                         if ($temp_data['item_vid'] == $version_id) {
-                             $data[] = $temp_data;
-                         }
-                     }
-                 }
-             } else {
-                 $query = 'SELECT * FROM '.$this->addDatabasePrefix('item_link_file');
-                 $query .= ' WHERE item_iid='.encode(AS_DB, $from_item->getItemID());
-                 $query .= ' AND item_vid='.encode(AS_DB, $version_id);
-                 $query .= ' AND deletion_date IS NULL';
-                 $result = $this->_db_connector->performQuery($query);
-                 if (!isset($result)) {
-                     trigger_error('Problems loading file links: '.$query, E_USER_WARNING);
-                 } else {
-                     $id = $from_item->getItemID();
-                     if (!in_array($id.'_'.$version_id, $this->_item_id_array)) {
-                         $this->_item_id_array[] = $id.'_'.$version_id;
-                     }
-                     foreach ($result as $query_result) {
-                         $data[] = $query_result;
-                     }
-                     $this->_all_link_file_data[$id.'_'.$version_id] = $data;
-                 }
-             }
-         }
-
-         return $data;
-     }
-
-     public function getAllFileLinksForListByIDs($id_array, $v_id_array = null)
-     {
-         // ------------------
-         // --->UTF8 - OK<----
-         // ------------------
-         $data = [];
-         $file_id_array = [];
-         if ((is_countable($id_array) ? count($id_array) : 0) > 0) {
-             foreach ($id_array as $id) {
-                 if (!in_array($id, $this->_item_id_array)) {
-                     if (!isset($v_id_array)) {
-                         $this->_item_id_array[] = $id.'_0';
-                     } else {
-                         if (isset($v_id_array[$id])) {
-                             $this->_item_id_array[] = $id.'_'.$v_id_array[$id];
-                         } else {
-                             $this->_item_id_array[] = $id.'_0';
-                         }
-                     }
-                 }
-             }
-             $query = 'SELECT item_iid, MAX(item_vid) as item_vid, file_id, deleter_id, deletion_date FROM '.$this->addDatabasePrefix('item_link_file').
-                    ' WHERE item_iid IN ('.implode(',', encode(AS_DB, $id_array)).')'.
-                    ' AND deleter_id IS NULL'.
-                    ' AND deletion_date IS NULL'.
-                    ' GROUP BY file_id';
-             $result = $this->_db_connector->performQuery($query);
-             if (!isset($result)) {
-                 trigger_error('Problems selecting noticed from query: "'.$query.'"');
-             } else {
-                 foreach ($result as $query_result) {
-                     $this->_all_link_file_data[$query_result['item_iid'].'_'.$query_result['item_vid']][] = $query_result;
-                     $file_id_array[] = $query_result['file_id'];
-                     if (!in_array($query_result['item_iid'].'_'.$query_result['item_vid'], $this->_item_id_array)) {
-                         $this->_item_id_array[] = $query_result['item_iid'].'_'.$query_result['item_vid'];
-                     }
-                 }
-             }
-         }
-
-         return $file_id_array;
-     }
-
-     public function deleteFileLinks($from_item)
-     {
-         $this->deleteFileLinkByID($from_item);
-     }
-
-     public function deleteFileLink($from_item, $file_item)
-     {
-         $file_id = $file_item->getFileID();
-         $this->deleteFileLinkByID($from_item, $file_id);
-     }
-
-     public function deleteFileLinkByID($from_item, $file_id = null)
-     {
-         $deleter = $this->_environment->getCurrentUser();
-         $query = 'UPDATE '.$this->addDatabasePrefix('item_link_file')." SET deletion_date='".getCurrentDateTimeInMySQL()."', deleter_id=".encode(AS_DB, $deleter->getItemID());
-         $query .= ' WHERE item_iid='.encode(AS_DB, $from_item->getItemID());
-         $query .= ' AND item_vid='.encode(AS_DB, $from_item->getVersionID());
-         if ($file_id) {   // this test is needed when invoked by deleteFileLinks()
-             $query .= ' AND file_id='.$file_id;
-         }
-         $result = $this->_db_connector->performQuery($query);
-         if (!isset($result) or !$result) {
-             trigger_error('Problem deleting File-Link: '.$query, E_USER_WARNING);
-         }
-     }
-
-     private function _existFileLink($from_item, $file_id)
-     {
-         $retour = false;
          $version_id = $from_item->getVersionID();
          if (empty($version_id)) {
              $version_id = '0';
@@ -897,18 +746,13 @@ class cs_links_manager extends cs_manager
          $query .= ' AND item_vid='.encode(AS_DB, $version_id);
          $query .= ' AND file_id="'.encode(AS_DB, $file_id).'"';
          $result = $this->_db_connector->performQuery($query);
-         if (!isset($result)) {
-             trigger_error('Problems loading file links: '.$query, E_USER_WARNING);
-         } elseif (empty($result[0])) {
-             $retour = false;
+
+         if (!empty($result[0])) {
+             return true;
          } else {
-             $retour = true;
+             return false;
          }
-
-         return $retour;
      }
-
-     // ## end file links ###
 
      public function _updateFromBackup($data_array)
      {

@@ -19,9 +19,6 @@ use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Files.
- */
 #[ORM\Entity(repositoryClass: FilesRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: 'files')]
@@ -68,7 +65,7 @@ class Files
     #[ORM\JoinColumn(nullable: false, onDelete: 'cascade')]
     private ?Portal $portal = null;
 
-    #[ORM\OneToOne(mappedBy: 'file', targetEntity: ItemLinkFile::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: ItemLinkFile::class, mappedBy: 'file', cascade: ['persist', 'remove'])]
     private ItemLinkFile $itemLink;
 
     #[ORM\Column(length: 1024, nullable: true)]

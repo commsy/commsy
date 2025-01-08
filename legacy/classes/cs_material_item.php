@@ -17,6 +17,7 @@
 use App\Entity\License;
 use App\Entity\Materials;
 use App\Event\ItemDeletedEvent;
+use App\Repository\ItemLinkFileRepository;
 use App\Utils\ReaderService;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -506,7 +507,7 @@ class cs_material_item extends cs_item
         $this->_data['buzzword_array'] = $value;
     }
 
-    public function setFileIDArray($value)
+    public function setFileIDArray(array $value): void
     {
         $this->_data['file_id_array'] = $value;
         $this->_data['file_list'] = null;
@@ -1496,53 +1497,51 @@ public function _copySectionList($copy_id)
      */
     public function getFileListWithFilesFromSections()
     {
-        $file_list = new cs_list();
-        if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getTranslationObject();
-
-            return $file_list;
-        } else {
-            // material
-            if (!empty($this->_data['file_list'])) {
-                $file_list = $this->_data['file_list'];
-            } else {
-                if (isset($this->_data['file_id_array']) and !empty($this->_data['file_id_array'])) {
-                    $file_id_array = $this->_data['file_id_array'];
-                } else {
-                    $link_manager = $this->_environment->getLinkManager();
-                    $file_links = $link_manager->getFileLinks($this);
-                    if (!empty($file_links)) {
-                        foreach ($file_links as $link) {
-                            $file_id_array[] = $link['file_id'];
-                        }
-                    }
-                }
-                if (!empty($file_id_array)) {
-                    $file_manager = $this->_environment->getFileManager();
-                    $file_manager->setIDArrayLimit($file_id_array);
-                    $file_manager->setContextLimit('');
-                    $file_manager->select();
-                    $file_list = $file_manager->get();
-                }
-            }
-
-            // sections
-            $section_item_list = clone $this->getSectionList();
-            if ($section_item_list->isNotEmpty()) {
-                $section_list_item = $section_item_list->getFirst();
-                while ($section_list_item) {
-                    $section_file_list = $section_list_item->getFileList();
-                    if ($section_file_list->isNotEmpty()) {
-                        $file_list->addList($section_file_list);
-                    }
-                    unset($section_list_item);
-                    $section_list_item = $section_item_list->getNext();
-                }
-            }
-            unset($section_list_item);
-            unset($section_item_list);
-            $file_list->sortby('filename');
+        if ($this->getPublic() == '-1') {
+            return new cs_list();
         }
+
+        $file_list = new cs_list();
+
+        $container = $this->_environment->getSymfonyContainer();
+
+        /** @var ItemLinkFileRepository $itemLinkFileRepository */
+        $itemLinkFileRepository = $container->get(ItemLinkFileRepository::class);
+
+        // material
+        if (!empty($this->_data['file_list'])) {
+            $file_list = $this->_data['file_list'];
+        } else {
+            if (isset($this->_data['file_id_array']) and !empty($this->_data['file_id_array'])) {
+                $file_id_array = $this->_data['file_id_array'];
+            } else {
+                $file_id_array = $itemLinkFileRepository->getLinkedFileIds($this->getItemID(), $this->getVersionID());
+            }
+
+            if (!empty($file_id_array)) {
+                $file_manager = $this->_environment->getFileManager();
+                $file_manager->setIDArrayLimit($file_id_array);
+                $file_manager->setContextLimit('');
+                $file_manager->select();
+                $file_list = $file_manager->get();
+            }
+        }
+
+        // sections
+        $section_item_list = clone $this->getSectionList();
+        if ($section_item_list->isNotEmpty()) {
+            $section_list_item = $section_item_list->getFirst();
+            while ($section_list_item) {
+                $section_file_list = $section_list_item->getFileList();
+                if ($section_file_list->isNotEmpty()) {
+                    $file_list->addList($section_file_list);
+                }
+                unset($section_list_item);
+                $section_list_item = $section_item_list->getNext();
+            }
+        }
+
+        $file_list->sortby('filename');
 
         return $file_list;
     }
