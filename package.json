@@ -41,7 +41,7 @@
     "expose-loader": "^4.0.0",
     "file-loader": "^6.2.0",
     "flatpickr": "^4.6.3",
-    "jquery": "^3.5.1",
+    "jquery": "^3.7.1",
     "jscolor-picker": "^2.0.4",
     "jstree": "^3.3.10",
     "less": "^3.13.1",
