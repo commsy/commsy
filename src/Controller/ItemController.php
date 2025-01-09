@@ -377,12 +377,13 @@ class ItemController extends AbstractController
         while ($latestItem && $i < 5) {
             $tempTypedItem = $itemService->getTypedItem($latestItem->getItemId());
             if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
-                if (
-                    'discarticle' != $tempTypedItem->getType() &&
-                    'task' != $tempTypedItem->getType() &&
-                    'link_item' != $tempTypedItem->getType() &&
-                    'tag' != $tempTypedItem->getType() &&
-                    'step' != $tempTypedItem->getType()
+                $itemType = $tempTypedItem->getType();
+                if (!$tempTypedItem->isNotActivated() &&
+                    'discarticle' != $itemType &&
+                    'task' != $itemType &&
+                    'link_item' != $itemType &&
+                    'tag' != $itemType &&
+                    'step' != $itemType
                 ) {
                     $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
                     ++$i;
