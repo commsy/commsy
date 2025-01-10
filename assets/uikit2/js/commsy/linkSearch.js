@@ -19,13 +19,16 @@
                 $(this).val('');
             });
 
-            // check if we did not already add the item
             let duplicate = false;
-            $('ul#itemsLinkedList input[type="checkbox"]').each(function () {
-                if ($(this).attr('name').endsWith('[' + itemId + ']')) {
-                    duplicate = true;
-                }
-            })
+            if (event.currentTarget.documentURI.endsWith('/' + itemId)) { // don't allow linking to self
+                duplicate = true;
+            } else { // check if we did not already add the item
+                $('ul#itemsLinkedList input[type="checkbox"]').each(function () {
+                    if ($(this).attr('name').endsWith('[' + itemId + ']')) {
+                        duplicate = true;
+                    }
+                })
+            }
 
             if (!duplicate) {
                 $.ajax({
