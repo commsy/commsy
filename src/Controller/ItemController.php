@@ -329,13 +329,10 @@ class ItemController extends AbstractController
         $tempLinkedItem = $itemLinkedList->getFirst();
         while ($tempLinkedItem) {
             $tempTypedLinkedItem = $itemService->getTypedItem($tempLinkedItem->getItemId());
-            if ('user' != $tempTypedLinkedItem->getItemType()) {
-                $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getTitle();
-                $items[$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem;
-            } else {
-                $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getFullname();
-                $items[$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem;
-            }
+            $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = 'user' == $tempTypedLinkedItem->getType()
+                ? $tempTypedLinkedItem->getFullName()
+                : $tempTypedLinkedItem->getTitle();
+            $items[$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem;
             $tempLinkedItem = $itemLinkedList->getNext();
         }
         if (empty($optionsData['itemsLinked'])) {
@@ -355,7 +352,7 @@ class ItemController extends AbstractController
             $tempTypedItem = $itemService->getTypedItem($tempItem->getItemId());
             // skip already linked items
             if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
-                $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+                $optionsData['items'][$tempTypedItem->getItemId()] = 'user' == $tempTypedItem->getType() ? $tempTypedItem->getFullName() : $tempTypedItem->getTitle();
                 $items[$tempTypedItem->getItemId()] = $tempTypedItem;
             }
             $tempItem = $itemList->getNext();
@@ -385,7 +382,7 @@ class ItemController extends AbstractController
                     'tag' != $itemType &&
                     'step' != $itemType
                 ) {
-                    $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+                    $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = 'user' == $itemType ? $tempTypedItem->getFullName() : $tempTypedItem->getTitle();
                     ++$i;
                 }
             }
@@ -459,6 +456,7 @@ class ItemController extends AbstractController
             'showCategories' => $roomItem->withTags(),
             'showHashtags' => $roomItem->withBuzzwords(),
             'items' => $items,
+            'itemsLinked' => $optionsData['itemsLinked'],
             'itemsLatest' => $optionsData['itemsLatest'],
         ]);
     }
