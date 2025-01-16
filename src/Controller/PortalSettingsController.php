@@ -33,7 +33,6 @@ use App\Entity\Room;
 use App\Entity\RoomCategories;
 use App\Entity\Server;
 use App\Entity\Terms;
-use App\Entity\Translation;
 use App\Event\CommsyEditEvent;
 use App\Facade\UserCreatorFacade;
 use App\Filter\AccountFilterType;
@@ -79,7 +78,6 @@ use App\Form\Type\Portal\TermsType;
 use App\Form\Type\Portal\TimePulsesType;
 use App\Form\Type\Portal\TimePulseTemplateType;
 use App\Form\Type\TermType;
-use App\Form\Type\TranslationType;
 use App\Mail\Helper\ContactFormHelper;
 use App\Model\TimePulseTemplate;
 use App\Repository\AccountsRepository;
@@ -108,7 +106,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
@@ -2172,49 +2169,14 @@ class PortalSettingsController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/portal/{portalId}/settings/translations/{translationId?}')]
+    #[Route(path: '/portal/{portalId}/settings/translations')]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function translations(
         #[MapEntity(id: 'portalId')]
         Portal $portal,
-        ?int $translationId,
-        Request $request,
-        EntityManagerInterface $entityManager
     ): Response {
-        $editForm = null;
-
-        $repository = $entityManager->getRepository(Translation::class);
-
-        $translation = null;
-        if ($translationId) {
-            $translation = $repository->find($translationId);
-
-            if (!$translation) {
-                throw new NotFoundHttpException('No translation found for given id');
-            }
-
-            $editForm = $this->createForm(TranslationType::class, $translation, []);
-
-            $editForm->handleRequest($request);
-            if ($editForm->isSubmitted() && $editForm->isValid()) {
-                $entityManager->persist($translation);
-                $entityManager->flush();
-
-                return $this->redirectToRoute('app_portalsettings_translations', [
-                    'portalId' => $portal->getId(),
-                ]);
-            }
-        }
-
-        $translations = $repository->findBy([
-            'contextId' => $portal->getId(),
-        ]);
-
         return $this->render('portal_settings/translations.html.twig', [
-            'form' => $editForm?->createView(),
             'portal' => $portal,
-            'translations' => $translations,
-            'selectedTranslation' => $translation,
         ]);
     }
 

@@ -22,6 +22,10 @@
                 <source>REGISTRATION_USERNAME_HELP</source>
                 <target>Hilfetext Kennung Registrierung</target>
             </trans-unit>
+            <trans-unit id="ROOM_SETTINGS_SLUG_HELP">
+                <source>ROOM_SETTINGS_SLUG_HELP</source>
+                <target>Hilfetext Raumkennung</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

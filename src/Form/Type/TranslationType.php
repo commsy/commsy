@@ -13,71 +13,102 @@
 
 namespace App\Form\Type;
 
+use App\Entity\Translation;
+use App\Repository\TranslationRepository;
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type as Types;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Component\Validator\Constraints;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfonycasts\DynamicForms\DependentField;
+use Symfonycasts\DynamicForms\DynamicFormBuilder;
 
 class TranslationType extends AbstractType
 {
-    /**
-     * Builds the form.
-     * This method is called for each type in the hierarchy starting from the top most type.
-     * Type extensions can further modify the form.
-     *
-     * @param FormBuilderInterface $builder The form builder
-     * @param array                $options The options
-     */
+    public function __construct(
+        private readonly TranslatorInterface $translator
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $builder = new DynamicFormBuilder($builder);
+
         $builder
-            ->add('translationDe', Types\TextareaType::class, [
+            ->add('translation', EntityType::class, [
+                'class' => Translation::class,
+                'query_builder' => fn (TranslationRepository $repository): QueryBuilder =>
+                    $repository->createQueryBuilder('t')
+                        ->where('t.contextId = :contextId')
+                        ->setParameter('contextId', $options['portalId']),
+                'choice_label' => fn (Translation $translation) =>
+                    $this->translator->trans($translation->getTranslationKey(), [], 'translation'),
+                'label' => 'Translations',
+                'translation_domain' => 'portal',
+                'placeholder' => new TranslatableMessage('no entry selected', [], 'item'),
+                'attr' => [
+                    'data-action' => 'live#action',
+                    'data-live-action-param' => 'select',
+                ]
+            ])
+        ;
+
+        $builder->addDependent('translationDe', ['translation'], function (DependentField $field, ?Translation $translation) {
+            if (!$translation) return;
+
+            $field->add(TextareaType::class, [
                 'constraints' => [
                     new Constraints\NotBlank(),
                 ],
                 'label' => 'Translation german',
                 'required' => true,
-            ])
-            ->add('translationEn', Types\TextareaType::class, [
+                'attr' => [
+                    'rows' => 5,
+                ],
+            ]);
+        });
+
+        $builder->addDependent('translationEn', ['translation'], function (DependentField $field, ?Translation $translation) {
+            if (!$translation) return;
+
+            $field->add(TextareaType::class, [
                 'constraints' => [
                     new Constraints\NotBlank(),
                 ],
                 'label' => 'Translation english',
                 'required' => true,
-            ])
-            ->add('update', Types\SubmitType::class, [
+                'attr' => [
+                    'rows' => 5,
+                ],
+            ]);
+        });
+
+        $builder->addDependent('update', ['translation'], function (DependentField $field, ?Translation $translation) {
+            if (!$translation) return;
+
+            $field->add(SubmitType::class, [
                 'label' => 'Update translation',
-            ])
-        ;
-
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            $translation = $event->getData();
-            $form = $event->getForm();
-
-            if ($translation->getId()) {
-                $form->add('cancel', Types\SubmitType::class, [
-                    'attr' => [
-                        'class' => 'uk-button uk-button-default',
-                    ],
-                    'label' => 'Cancel',
-                    'translation_domain' => 'portal',
-                ]);
-            }
+                'attr' => [
+                    'data-action' => 'live#action:prevent',
+                    'data-live-action-param' => 'save',
+                    'data-loading' => 'action(save)|addAttribute(disabled)',
+                ],
+            ]);
         });
     }
 
-    /**
-     * Configures the options for this type.
-     *
-     * @param OptionsResolver $resolver The resolver for the options
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
+            ->setRequired(['portalId'])
             ->setDefaults([
+                //'data_class' => Translation::class,
                 'translation_domain' => 'translation',
             ])
         ;

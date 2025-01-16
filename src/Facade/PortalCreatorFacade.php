@@ -62,6 +62,13 @@ class PortalCreatorFacade
         $translation->setTranslationEn('An arbitrary, unique username.');
         $manager->persist($translation);
 
+        $translation = new Translation();
+        $translation->setContextId($portal->getId());
+        $translation->setTranslationKey('ROOM_SETTINGS_SLUG_HELP');
+        $translation->setTranslationDe('');
+        $translation->setTranslationEn('');
+        $manager->persist($translation);
+
         $manager->flush();
     }
 }

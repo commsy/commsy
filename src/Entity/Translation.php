@@ -17,9 +17,6 @@ use App\Repository\TranslationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Translation.
- */
 #[ORM\Entity(repositoryClass: TranslationRepository::class)]
 #[ORM\Table(name: 'translation')]
 class Translation
@@ -41,17 +38,11 @@ class Translation
     #[ORM\Column(name: 'translation_en', type: Types::STRING, length: 2000)]
     private string $translationEn;
 
-    /**
-     * Get id.
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set contextId.
-     */
     public function setContextId(int $contextId): self
     {
         $this->contextId = $contextId;
@@ -59,17 +50,11 @@ class Translation
         return $this;
     }
 
-    /**
-     * Get contextId.
-     */
     public function getContextId(): int
     {
         return $this->contextId;
     }
 
-    /**
-     * Set translationKey.
-     */
     public function setTranslationKey(string $translationKey): self
     {
         $this->translationKey = $translationKey;
@@ -77,25 +62,16 @@ class Translation
         return $this;
     }
 
-    /**
-     * Get translationKey.
-     */
     public function getTranslationKey(): string
     {
         return $this->translationKey;
     }
 
-    /**
-     * Get german translation.
-     */
     public function getTranslationDe(): string
     {
         return $this->translationDe;
     }
 
-    /**
-     * Set german translation.
-     */
     public function setTranslationDe(string $translationDe): self
     {
         $this->translationDe = $translationDe;
@@ -103,17 +79,11 @@ class Translation
         return $this;
     }
 
-    /**
-     * Get english translation.
-     */
     public function getTranslationEn(): string
     {
         return $this->translationEn;
     }
 
-    /**
-     * Set english translation.
-     */
     public function setTranslationEn(string $translationEn): self
     {
         $this->translationEn = $translationEn;
@@ -123,13 +93,10 @@ class Translation
 
     public function getTranslationForLocale($locale): string
     {
-        if ('de' === $locale) {
-            return $this->getTranslationDe();
-        }
-        if ('en' === $locale) {
-            return $this->getTranslationEn();
-        }
-
-        return '';
+        return match ($locale) {
+            'de' => $this->getTranslationDe(),
+            'en' => $this->getTranslationEn(),
+            'default' => ''
+        };
     }
 }
