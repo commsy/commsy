@@ -13,6 +13,7 @@
 
 namespace App\Services;
 
+use App\Account\AccountManager;
 use App\Account\AccountSetting;
 use App\Account\AccountSettingsManager;
 use App\Entity\Account;
@@ -20,7 +21,6 @@ use App\Utils\UserService;
 use cs_user_item;
 use OzdemirBurak\Iris\Color\Hex;
 use OzdemirBurak\Iris\Exceptions\InvalidColorException;
-use Symfony\Bundle\SecurityBundle\Security;
 
 class AvatarService
 {
@@ -41,8 +41,8 @@ class AvatarService
      */
     public function __construct(
         private readonly UserService $userService,
-        private readonly Security $security,
         private readonly AccountSettingsManager $settingsManager,
+        private readonly AccountManager $accountManager,
         private $kernelProjectDir)
     {
     }
@@ -52,8 +52,18 @@ class AvatarService
      */
     public function getAvatar($itemId, int $type = 0, int $colorScheme = 0): bool|string
     {
-        $this->account = $this->security->getUser();
         $this->user = $this->userService->getUser($itemId);
+        if (!$this->user) {
+            return false;
+        }
+
+        $portal = $this->user->getPortal();
+        $account = $this->accountManager->getAccount($this->user, $portal->getId());
+        if (!$account) {
+            return false;
+        }
+        $this->account = $account;
+
         $this->type = $type;
         $this->colorScheme = $colorScheme;
 
