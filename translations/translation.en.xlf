@@ -22,6 +22,10 @@
                 <source>REGISTRATION_USERNAME_HELP</source>
                 <target>Help text username registration</target>
             </trans-unit>
+            <trans-unit id="ROOM_SETTINGS_SLUG_HELP">
+                <source>ROOM_SETTINGS_SLUG_HELP</source>
+                <target>Help text room slug</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

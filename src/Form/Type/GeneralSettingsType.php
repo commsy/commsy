@@ -14,6 +14,7 @@
 namespace App\Form\Type;
 
 use App\Form\DataTransformer\RoomSlugCollectionToStringTransformer;
+use App\Repository\TranslationRepository;
 use App\Services\LegacyEnvironment;
 use cs_community_item;
 use cs_environment;
@@ -29,6 +30,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\LocaleSwitcher;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -40,8 +42,10 @@ class GeneralSettingsType extends AbstractType
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private readonly TranslatorInterface $translator,
-        private readonly RoomSlugCollectionToStringTransformer $roomSlugToStringTransformer
+        private readonly TranslatorInterface  $translator,
+        private readonly RoomSlugCollectionToStringTransformer $roomSlugToStringTransformer,
+        private readonly TranslationRepository $translationRepository,
+        private readonly LocaleSwitcher $localeSwitcher
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -58,6 +62,7 @@ class GeneralSettingsType extends AbstractType
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($options['roomId']);
+        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
         $builder
             ->add('title', TextType::class, ['constraints' => [new Assert\NotBlank()], 'attr' => ['style' => 'width: 250px;']])
@@ -77,6 +82,9 @@ class GeneralSettingsType extends AbstractType
                 'attr' => [
                     'data-controller' => 'custom-autocomplete',
                 ],
+                'help' => $this->translationRepository
+                    ->findOneByContextAndKey($portalItem->getItemId(), 'ROOM_SETTINGS_SLUG_HELP')
+                    ->getTranslationForLocale($this->localeSwitcher->getLocale()),
             ])
             ->add('rubrics', CollectionType::class, [
                 'required' => false,
