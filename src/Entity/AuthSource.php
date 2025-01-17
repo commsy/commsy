@@ -18,6 +18,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
+use ApiPlatform\OpenApi\Model;
 use App\Controller\Api\GetAuthSourceDirectLoginUrl;
 use App\Repository\AuthSourceRepository;
 use Doctrine\DBAL\Types\Types;
@@ -37,9 +38,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Get(
             uriTemplate: 'auth_sources/{id}/login_url',
             controller: GetAuthSourceDirectLoginUrl::class,
-            openapiContext: [
-                'summary' => 'Get a single auth source login url',
-                'responses' => [[
+            openapi: new Model\Operation(
+                responses: [[
                     'description' => 'A direct login url',
                     'content' => [
                         'application/json' => [
@@ -52,7 +52,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
                         ],
                     ],
                 ]],
-            ],
+                summary: 'Get a single auth source login url'
+            )
         ),
         new GetCollection(),
     ],
