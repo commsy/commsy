@@ -376,15 +376,6 @@
     "php-webdriver/webdriver": {
         "version": "1.8.2"
     },
-    "phpdocumentor/reflection-common": {
-        "version": "2.0.0"
-    },
-    "phpdocumentor/reflection-docblock": {
-        "version": "5.1.0"
-    },
-    "phpdocumentor/type-resolver": {
-        "version": "1.1.0"
-    },
     "phpspec/prophecy": {
         "version": "v1.10.3"
     },
@@ -977,9 +968,6 @@
         "files": [
             "config/packages/vich_uploader.yaml"
         ]
-    },
-    "webmozart/assert": {
-        "version": "1.7.0"
     },
     "willdurand/negotiation": {
         "version": "v2.3.1"
