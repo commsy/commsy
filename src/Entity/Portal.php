@@ -17,6 +17,7 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\OpenApi\Model;
 use App\Controller\Api\GetPortalAnnouncement;
 use App\Controller\Api\GetPortalTou;
 use App\Repository\PortalRepository;
@@ -43,9 +44,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         new Get(
             uriTemplate: 'portals/{id}/announcement',
             controller: GetPortalAnnouncement::class,
-            openapiContext: [
-                'summary' => 'Get portal announcement',
-                'responses' => [[
+            openapi: new Model\Operation(
+                responses: [[
                     'description' => 'Portal announcement',
                     'content' => [
                         'application/json' => [
@@ -61,14 +61,14 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                         ],
                     ],
                 ]],
-            ],
+                summary: 'Get portal announcement'
+            )
         ),
         new Get(
             uriTemplate: 'portals/{id}/tou',
             controller: GetPortalTou::class,
-            openapiContext: [
-                'summary' => 'Get portal terms of use',
-                'responses' => [[
+            openapi: new Model\Operation(
+                responses:[[
                     'description' => 'Portal terms of use',
                     'content' => [
                         'application/json' => [
@@ -82,7 +82,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                         ],
                     ],
                 ]],
-            ],
+                summary: 'Get portal terms of use',
+            ),
         ),
         new GetCollection()
     ],

@@ -27,7 +27,6 @@ api_platform:
             # This is related to the 'application/problem+json'
             #rfc_7807_compliant_errors: true
             rfc_7807_compliant_errors: false
-    keep_legacy_inflector: false
     use_symfony_listeners: true
     mapping:
         paths:

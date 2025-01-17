@@ -17,10 +17,12 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\OpenApi\Model;
 use App\Controller\Api\GetAccountsWorkspaces;
 use App\Dto\LocalLoginInputRequest;
 use App\Repository\AccountsRepository;
 use App\Validator\Constraints\EmailRegex;
+use ArrayObject;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -49,26 +51,26 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             uriTemplate: 'accounts/checkLocalLogin',
             status: 200,
-            openapiContext: [
-                'summary' => 'Checks plain user credentials and returns account information',
-                'parameters' => [],
-                'requestBody' => [
-                    'required' => true,
-                    'description' => 'Local login data',
-                    'content' => [
+            openapi: new Model\Operation(
+                summary: 'Checks plain user credentials and returns account information',
+                parameters: [],
+                requestBody: new Model\RequestBody(
+                    description: 'Local login data',
+                    content: new ArrayObject([
                         'application/json' => [
-                            'schema' => [
-                                'type' => 'object',
-                                'properties' => [
-                                    'contextId' => ['type' => 'integer'],
-                                    'username' => ['type' => 'string'],
-                                    'password' => ['type' => 'string'],
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'contextId' => ['type' => 'integer'],
+                                        'username' => ['type' => 'string'],
+                                        'password' => ['type' => 'string'],
+                                    ],
                                 ],
                             ],
-                        ],
-                    ],
-                ],
-            ],
+                        ]),
+                    required: true
+                )
+            ),
             normalizationContext: ['groups' => ['api']],
             denormalizationContext: ['groups' => ['api_check_local_login']],
             input: LocalLoginInputRequest::class,
