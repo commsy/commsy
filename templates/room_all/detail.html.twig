@@ -63,7 +63,8 @@
                             editUrl: '{{ path('app_item_editdescription', { 'roomId': project.contextId, 'itemId': project.itemId }) }}',
                             cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': project.contextId, 'itemId': project.itemId }) }}'
                         }">
-                            {{ macrosItem.itemDescription('description', project, true, project.description) }}
+                            {% set mayEdit = not project.isLockedByModerator() -%}
+                            {{ macrosItem.itemDescription('description', project, mayEdit, project.description) }}
                         </div>
 
                         {# access #}
