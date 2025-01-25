@@ -1,28 +1,33 @@
 <?php
 
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 namespace Tests\Unit\WOPI;
 
 use App\WOPI\Discovery\DiscoveryService;
 use App\WOPI\Discovery\Response\ProofKey;
 use App\WOPI\Discovery\Response\WOPIDiscovery;
 use App\WOPI\Verification\ProofKeyValidator;
-use Codeception\Test\Unit;
-use DG\BypassFinals;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
-class ProofKeyValidatorTest extends Unit
+class ProofKeyValidatorTest extends TestCase
 {
-    protected function _before()
-    {
-        BypassFinals::enable();
-    }
-
     public function testProofKeyIsValid()
     {
         // See https://github.com/Microsoft/Office-Online-Test-Tools-and-Documentation/blob/master/samples/SampleWopiHandler/SampleWopiHandler.UnitTests/ProofKeyTests.cs
-        $discoveryService = $this->makeEmpty(DiscoveryService::class, [
-            'getWOPIDiscovery' => $this->makeEmpty(WOPIDiscovery::class, [
-                'getProofKey' => $this->makeEmpty(ProofKey::class, [
+        $discoveryService = $this->createConfiguredMock(DiscoveryService::class, [
+            'getWOPIDiscovery' => $this->createConfiguredMock(WOPIDiscovery::class, [
+                'getProofKey' => $this->createConfiguredMock(ProofKey::class, [
                     'getValue' => 'BgIAAACkAABSU0ExAAgAAAEAAQDFEthb5dkE+fGnJgsmY3IXmoFxj1cOwVYLpLNTEksnVRzbXcPfaSl/kFxn5b4QajhH1sTtXECZY6ZUyiDi1NG5ukFc9Fppgt0ywnuJqNBRWPfvLTOaVZRTtr8X8hqL+dPldOI3qFUW2zF6DEsAO9y74l3s6MqNjawCME5X0jb28TOrbXXsDfIGLEN3VBFO3wyhlRZKOmR9ZiqxQbpOz0Ltgv3HYci9OVN9c8YYV5T+fHI0Wtxg4F9lJHlB6MHPV9seVqr4ieM027NG89LhHm9BJEtceII09JgmkwLFUB/s2YGirUwZewk0efw1GL861PE7Vjdn2bIdmGSCRfFQlnPQ',
                     //'modulus' => '0HOWUPFFgmSYHbLZZzdWO/HUOr8YNfx5NAl7GUytooHZ7B9QxQKTJpj0NIJ4XEskQW8e4dLzRrPbNOOJ+KpWHttXz8HoQXkkZV/gYNxaNHJ8/pRXGMZzfVM5vchhx/2C7ULPTrpBsSpmfWQ6ShaVoQzfThFUd0MsBvIN7HVtqzPx9jbSV04wAqyNjcro7F3iu9w7AEsMejHbFlWoN+J05dP5ixryF7+2U5RVmjMt7/dYUdCoiXvCMt2CaVr0XEG6udHU4iDKVKZjmUBc7cTWRzhqEL7lZ1yQfylp38Nd2xxVJ0sSU7OkC1bBDlePcYGaF3JjJgsmp/H5BNnlW9gSxQ==',
                     //'exponent' => 'AQAB',
@@ -33,9 +38,9 @@ class ProofKeyValidatorTest extends Unit
             ]),
         ]);
 
-        $containerBag = $this->makeEmpty(ContainerBagInterface::class, [
-            'get' => fn(string $id) => $id === 'commsy.online_office.proofkey_validation',
-        ]);
+        $containerBag = $this->createStub(ContainerBagInterface::class);
+        $containerBag->method('get')
+            ->willReturnCallback(fn(string $id) => $id === 'commsy.online_office.proofkey_validation');
 
         $validator = new ProofKeyValidator($discoveryService, $containerBag);
         $this->assertTrue($validator->isValid(

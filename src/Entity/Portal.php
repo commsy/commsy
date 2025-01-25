@@ -331,6 +331,12 @@ class Portal
         return $this->activity;
     }
 
+    public function setAuthSources(Collection $authSources): Portal
+    {
+        $this->authSources = $authSources;
+        return $this;
+    }
+
     public function getAuthSources(): Collection
     {
         return $this->authSources;

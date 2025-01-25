@@ -73,6 +73,15 @@ parameters:
 when@test:
     parameters:
         commsy.online_office.proofkey_validation: false
+    
+    services:
+        _defaults:
+            public: false
+            autowire: true
+            autoconfigure: true
+            
+        Tests\Factory\:
+            resource: '../tests/Factory'
 
 when@dev:
     parameters:

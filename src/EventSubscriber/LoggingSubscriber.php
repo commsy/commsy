@@ -42,7 +42,7 @@ readonly class LoggingSubscriber implements EventSubscriberInterface
 
         $userAgent = $request->headers->get('User-Agent', 'No Info');
         $postAsJson = $serializer->encode($request->request->all(), 'json');
-        $anonymousIp = IpUtils::anonymize($request->server->get('REMOTE_ADDR'), '');
+        $anonymousIp = IpUtils::anonymize($request->server->get('REMOTE_ADDR', ''));
         $requestUri = $request->getRequestUri();
         $method = $request->getMethod();
         $username = $this->security->getUser() ? $this->security->getUser()->getUserIdentifier() : null;

@@ -32,51 +32,12 @@ Icon
 .Trashes
 
 ######################
-# Symfony 2 related  #
-######################
-/phpunit.xml
-
-/var/*
-!/var/cache
-/var/cache/*
-!var/cache/.gitkeep
-!/var/cache/htmlpurifier
-/var/cache/htmlpurifier/*
-!var/cache/htmlpurifier/.gitkeep
-!/var/sessions
-/var/sessions/*
-!var/sessions/.gitkeep
-!var/SymfonyRequirements.php
-!/var/temp
-/var/temp/*
-!var/temp/.gitkeep
-
-/bin/*
-!bin/console
-!bin/symfony_requirements
-
-######################
-# Sublime related    #
-######################
-*.sublime-project
-*.sublime-workspace
-
-######################
 # CommSy related     #
 ######################
 files/[0-9]*
 files/templates/individual/*
 files/temp/*
 !files/temp/.gitkeep
-
-!.babelrc
-!.env
-!.env.test
-!.editorconfig
-!.php-cs-fixer.dist.php
-
-/tools/php-cs-fixer/vendor/
-/.php-cs-fixer.cache
 
 ###> symfony/framework-bundle ###
 /.env.local
@@ -91,10 +52,6 @@ files/temp/*
 ###> liip/imagine-bundle ###
 /public/media/cache/
 ###< liip/imagine-bundle ###
-###> phpunit/phpunit ###
-/phpunit.xml
-.phpunit.result.cache
-###< phpunit/phpunit ###
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
@@ -109,3 +66,13 @@ phpstan.neon
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

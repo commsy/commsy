@@ -29,20 +29,20 @@ class cs_tag2tag_manager extends cs_manager
         $this->_db_table = CS_TAG2TAG_TYPE;
     }
 
-    public function _buildItem(array $data_array)
+    public function _buildItem(array $db_array): object
     {
         $retour = $this->getNewItem();
-        $retour->setLinkID($data_array['link_id']);
-        $retour->setContextItemID($data_array['context_id']);
-        $retour->setCreatorItemID($data_array['creator_id']);
-        $retour->setModifierItemID($data_array['modifier_id']);
-        $retour->setDeleterItemID($data_array['deleter_id']);
-        $retour->setCreationDate($data_array['creation_date']);
-        $retour->setModificationDate($data_array['modification_date']);
-        $retour->setDeletionDate($data_array['deletion_date']);
-        $retour->setFatherItemID($data_array['from_item_id']);
-        $retour->setChildItemID($data_array['to_item_id']);
-        $retour->setSortingPlace($data_array['sorting_place']);
+        $retour->setLinkID($db_array['link_id']);
+        $retour->setContextItemID($db_array['context_id']);
+        $retour->setCreatorItemID($db_array['creator_id']);
+        $retour->setModifierItemID($db_array['modifier_id']);
+        $retour->setDeleterItemID($db_array['deleter_id']);
+        $retour->setCreationDate($db_array['creation_date']);
+        $retour->setModificationDate($db_array['modification_date']);
+        $retour->setDeletionDate($db_array['deletion_date']);
+        $retour->setFatherItemID($db_array['from_item_id']);
+        $retour->setChildItemID($db_array['to_item_id']);
+        $retour->setSortingPlace($db_array['sorting_place']);
 
         return $retour;
     }

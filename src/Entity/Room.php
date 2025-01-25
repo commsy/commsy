@@ -228,9 +228,12 @@ class Room
         return $this;
     }
 
-    /**
-     * Get itemId.
-     */
+    public function setItemId(int $id): Room
+    {
+        $this->itemId = $id;
+        return $this;
+    }
+
     public function getItemId(): int
     {
         return $this->itemId;

@@ -8,25 +8,24 @@ api_platform:
                 name: Authorization
                 type: header
     formats:
-        #jsonld: ['application/ld+json']
-        #json: ['application/json', 'application/problem+json']
         json: ['application/json']
     docs_formats:
         json: ['application/json']
         jsonopenapi: ['application/vnd.openapi+json']
         html: ['text/html']
+    error_formats:
+        jsonproblem: ['application/problem+json']
     defaults:
         stateless: true
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
         extra_properties:
-            standard_put: true
             # Todo: Setting rfc_7807_compliant_errors to 'true' is desirable,
             # but lead into strange behaviour, causing all API test after one,
             # that is expecting a 404 response to fail
             # This is related to the 'application/problem+json'
             #rfc_7807_compliant_errors: true
-            rfc_7807_compliant_errors: false
+            rfc_7807_compliant_errors: true
     use_symfony_listeners: true
     mapping:
         paths:

@@ -52,17 +52,8 @@ jobs:
             -   name: Build frontend package
                 run: yarn build
 
-            -   name: Run Unit tests
-                run: vendor/bin/codecept run Unit --env github --debug
-
-            -   name: Run Acceptance tests
-                run: vendor/bin/codecept run Acceptance --env github
-
-            -   name: Run Functional tests
-                run: vendor/bin/codecept run Functional --env github
-
-            -   name: Run Api tests
-                run: vendor/bin/codecept run Api --env github
+            -   name: Run tests
+                run: vendor/bin/simple-phpunit
 
             -   name: Setup tmate session
                 if: ${{ failure() }}

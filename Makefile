@@ -41,9 +41,9 @@ sh: ## Connect to the FrankenPHP container
 bash: ## Connect to the FrankenPHP container via bash so up and down arrows go to previous commands
 	@$(PHP_CONT) bash
 
-test: ## Start tests with codeception, pass the parameter "c=" to add options to codeception, example: make test c="--group e2e Unit"
+test: ## Start tests with phpunit, pass the parameter "c=" to add options to phpunit, example: make test c="--group e2e --stop-on-failure"
 	@$(eval c ?=)
-	@$(DOCKER_COMP) exec -e APP_ENV=test php vendor/bin/codecept run $(c)
+	@$(DOCKER_COMP) exec -e APP_ENV=test php vendor/bin/simple-phpunit $(c)
 
 build-office:
 	@$(DOCKER_COMP) -f compose.yaml -f compose.override.yaml -f docker/compose.office.yaml build --pull --no-cache

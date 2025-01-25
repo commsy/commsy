@@ -508,7 +508,7 @@ class cs_dates_manager extends cs_manager
     *
     * @param array $db_array Contains the data from the database
     */
-   public function _buildItem(array $db_array)
+   public function _buildItem(array $db_array): object
    {
        $db_array['recurrence_pattern'] = $db_array['recurrence_pattern'] != null ?
            unserialize($db_array['recurrence_pattern']) : null;
@@ -701,7 +701,7 @@ class cs_dates_manager extends cs_manager
         try {
             $queryBuilder->executeStatement();
 
-            $this->_create_id = $queryBuilder->getConnection()->lastInsertId();
+            $this->_create_id = $this->_db_connector->getConnection()->lastInsertId();
             $item->setItemID($this->getCreateID());
             $this->_newDate($item);
         } catch (\Doctrine\DBAL\Exception $e) {

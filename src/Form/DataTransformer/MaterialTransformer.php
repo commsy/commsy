@@ -33,7 +33,7 @@ class MaterialTransformer extends AbstractTransformer
     /**
      * Transforms a cs_material_item object to an array.
      *
-     * @param cs_material_item $materialItem
+     * @param cs_material_item|cs_section_item $materialItem
      */
     public function transform($materialItem): array
     {

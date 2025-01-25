@@ -698,7 +698,7 @@ class cs_labels_manager extends cs_manager
    *
    * @param array $db_array Contains the data from the database
    */
-  public function _buildItem(array $db_array)
+  public function _buildItem(array $db_array): object
   {
       if ('ALL' == $db_array['name']) {
           $translator = $this->_environment->getTranslationObject();
@@ -783,7 +783,7 @@ class cs_labels_manager extends cs_manager
          try {
              $queryBuilder->executeStatement();
 
-             $this->_create_id = $queryBuilder->getConnection()->lastInsertId();
+             $this->_create_id = $this->_db_connector->getConnection()->lastInsertId();
              $item->setItemID($this->getCreateID());
              $this->_newLabel($item);
          } catch (\Doctrine\DBAL\Exception $e) {

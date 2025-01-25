@@ -72,48 +72,14 @@ class cs_material_manager extends cs_manager
     public $_order = null;
 
     /**
-     * array - containing the cached items already loaded from the database.
-     */
-    public $_cache = null;
-
-    /**
      * array - containing the selected ids.
      */
     public $_id_array = [];
 
     public $_limit_only_files_mode = null;
 
-    public $_handle_tmp_manual = false;
+    private bool $_handle_tmp_manual = false;
 
-    public $_sql_create_temp_material_table = 'CREATE TEMPORARY TABLE temp_material (
-  item_id int(11) NOT NULL default "0",
-  version_id int(11) NOT NULL default "0",
-  context_id int(11) default NULL,
-  creator_id int(11) NOT NULL default "0",
-  deleter_id int(11) default NULL,
-  creation_date datetime NOT NULL default "0000-00-00 00:00:00",
-  modifier_id int(11) default NULL,
-  modification_date datetime default NULL,
-  deletion_date datetime default NULL,
-  title varchar(255) NOT NULL,
-  description text,
-  author varchar(200) default NULL,
-  publishing_date varchar(20) default NULL,
-  public tinyint(11) NOT NULL default "0",
-  world_public smallint(2) NOT NULL default "0",
-  extras text,
-  new_hack tinyint(1) NOT NULL default "0",
-  copy_of int(11) default NULL,
-  PRIMARY KEY  (item_id,version_id),
-  KEY version_id (version_id),
-  KEY room_id (context_id),
-  KEY creator_id (creator_id),
-  KEY modificator (modifier_id)
-) ENGINE=MyISAM;';
-
-    /*
-     * Translation Object
-     */
     private $_translator = null;
 
     /** constructor: cs_material_manager
@@ -138,7 +104,7 @@ class cs_material_manager extends cs_manager
     }
 
     /** reset limits
-     * reset limits of this class: age limit, group limit, from limit, interval limit, order limit, type limit, id-array limit, dossier limit and all limits from upper class.
+     * reset limits of this class: age limit, group limit, from limit, interval limit, order limit, type limit, id-array limit and all limits from upper class.
      */
     public function resetLimits()
     {
@@ -200,18 +166,6 @@ class cs_material_manager extends cs_manager
         $this->_id_limit = (array) $limit;
     }
 
-    /** set type limit
-     * this method sets a type limit for material
-     * This function should be deleted it's of no use anymore ...
-     *
-     * @param string limit type limit for material
-     *
-     * @author CommSy Development Group
-     */
-    public function setTypLimit($limit)
-    {
-    }
-
     /** set Announcements limit
      * this method sets a group limit for material.
      *
@@ -227,18 +181,6 @@ class cs_material_manager extends cs_manager
     public function setRefUserLimit($limit)
     {
         $this->_ref_user_limit = (int) $limit;
-    }
-
-    /** set dossier limit
-     * this method sets a dossier limit for material.
-     *
-     * @param string limit dossier limit for material
-     *
-     * @author CommSy Development Group
-     */
-    public function setDossierLimit()
-    {
-        $this->_dossier_limit = 'dossier';
     }
 
     /** set group limit
@@ -360,9 +302,6 @@ class cs_material_manager extends cs_manager
         }
     }
 
-    /**
-     * documentation TBD.
-     */
     public function getItemByVersion($item_id, $version_id)
     {
         $material = null;
@@ -718,8 +657,15 @@ class cs_material_manager extends cs_manager
                 }
             }
             if (!$this->_handle_tmp_manual) {
-                $query = 'DROP TABLE tmp3'.$temp_number.';';
-                $this->_db_connector->performQuery($query);
+                /*
+                 * Dropping the temporary table explicitly will implicitly commit any open transaction.
+                 * This conflicts with the test process wrapping queries in a transaction for easier rollback.
+                 * In addition, temporary tables are dropped when the session ends, so this is not necessary at all.
+                 * The temporary table here is used to limit results to their newest version, which could also be
+                 * achieved in other ways.
+                 */
+//                $query = 'DROP TABLE tmp3'.$temp_number.';';
+//                $this->_db_connector->performQuery($query);
             }
             if ($result) {
                 return $result;
@@ -749,7 +695,7 @@ class cs_material_manager extends cs_manager
      *
      * @param array $db_array Contains the data from the database
      */
-    public function _buildItem(array $db_array)
+    public function _buildItem(array $db_array): object
     {
         if (isset($db_array['extras'])) {
             $db_array['extras'] = unserialize($db_array['extras']);
@@ -877,7 +823,7 @@ class cs_material_manager extends cs_manager
          try {
              $queryBuilder->executeStatement();
 
-             $this->_create_id = $queryBuilder->getConnection()->lastInsertId();
+             $this->_create_id = $this->_db_connector->getConnection()->lastInsertId();
              $material_item->setItemID($this->getCreateID());
              $this->_newmaterial($material_item);
          } catch (\Doctrine\DBAL\Exception $e) {

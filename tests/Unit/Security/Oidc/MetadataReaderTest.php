@@ -1,16 +1,24 @@
 <?php
 
-namespace Tests\Unit;
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
+namespace Tests\Unit\Security\Oidc;
 
 use App\Security\Oidc\Discovery\MetadataReader;
-use Codeception\Test\Unit;
+use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Tests\Support\UnitTester;
 
-class MetadataReaderTest extends Unit
+class MetadataReaderTest extends TestCase
 {
-    protected UnitTester $tester;
-
     public function testDeserialization(): void
     {
         $json = <<<EOF
@@ -122,7 +130,7 @@ class MetadataReaderTest extends Unit
 }
 EOF;
 
-        $metadataReader = new MetadataReader($this->makeEmpty(HttpClientInterface::class));
+        $metadataReader = new MetadataReader($this->createStub(HttpClientInterface::class));
         $metadata = $metadataReader->deserialize($json);
 
         $this->assertEquals('https://server.example.com', $metadata->getIssuer());
