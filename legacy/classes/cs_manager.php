@@ -675,10 +675,8 @@ class cs_manager
      * this method returns a item out of a row form the database.
      *
      * @param array $db_array information about the item out of the respective database table
-     *
-     * @return object cs_item an item
      */
-    protected function _buildItem(array $db_array)
+    protected function _buildItem(array $db_array): object
     {
         /** @var cs_item $item */
         $item = $this->getNewItem();

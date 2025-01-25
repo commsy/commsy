@@ -1157,7 +1157,7 @@ class cs_link_manager extends cs_manager
       *
       * @param array $db_array Contains the data from the database
       */
-     public function _buildItem(array $db_array)
+     public function _buildItem(array $db_array): object
      {
          if (!empty($db_array['extras'])) {
              $db_array['extras'] = unserialize($db_array['extras']);

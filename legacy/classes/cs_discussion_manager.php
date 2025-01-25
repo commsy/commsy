@@ -124,7 +124,7 @@ class cs_discussion_manager extends cs_manager
         return $this->getIDArray();
     }
 
-    public function _buildItem(array $db_array)
+    public function _buildItem(array $db_array): object
     {
         if (isset($db_array['extras'])) {
             $db_array['extras'] = unserialize($db_array['extras']);
@@ -368,7 +368,7 @@ class cs_discussion_manager extends cs_manager
          try {
              $queryBuilder->executeStatement();
 
-             $this->_create_id = $queryBuilder->getConnection()->lastInsertId();
+             $this->_create_id = $this->_db_connector->getConnection()->lastInsertId();
              $item->setItemID($this->getCreateID());
              $this->_newDiscussion($item);
          } catch (\Doctrine\DBAL\Exception $e) {

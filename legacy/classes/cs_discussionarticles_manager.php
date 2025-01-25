@@ -418,7 +418,7 @@ class cs_discussionarticles_manager extends cs_manager
         try {
             $queryBuilder->executeStatement();
 
-            $this->_create_id = $queryBuilder->getConnection()->lastInsertId();
+            $this->_create_id = $this->_db_connector->getConnection()->lastInsertId();
             $this->_current_article_id = $this->_create_id;
             $discussionarticle_item->setItemID($this->getCreateID());
             $this->_newDiscussionArticle($discussionarticle_item);

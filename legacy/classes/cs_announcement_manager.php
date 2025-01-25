@@ -365,7 +365,7 @@ class cs_announcement_manager extends cs_manager
         try {
             $queryBuilder->executeStatement();
 
-            $this->_create_id = $queryBuilder->getConnection()->lastInsertId();
+            $this->_create_id = $this->_db_connector->getConnection()->lastInsertId();
             $announcement_item->setItemID($this->getCreateID());
             $this->_newAnnouncement($announcement_item);
         } catch (\Doctrine\DBAL\Exception $e) {

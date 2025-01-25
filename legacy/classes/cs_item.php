@@ -36,7 +36,7 @@ class cs_item
      */
     public array $_changed = [];
 
-    public $_context_item;
+    private ?object $contextItem = null;
 
     /** error array for detecting multiple errors.
      *
@@ -72,19 +72,33 @@ class cs_item
         $this->_type = 'item';
     }
 
-     public function getContextItem()
+     public function getContextItem(): ?object
      {
-         if (null == $this->_context_item) {
+         if ($this->contextItem === null) {
              $contextId = $this->getContextID();
              if (!empty($contextId)) {
+                 /*
+                  * What emerged when creating a lot of portals when running tests was, that this breaks completely if
+                  * there is a portal with id 98, because this is the first item id in the items table the root user has.
+                  * That is happening because the portal id is not managed in the items table. This is a rare
+                  * case, because in production it is very unlikely to have such a high number of portals. But, it is
+                  * still a problem.
+                  */
+                 if ($this instanceof cs_context_item && !$this instanceof cs_userroom_item) {
+                     /** @var PortalRepository $portalRepository*/
+                     $portalRepository = $this->_environment->getSymfonyContainer()->get(PortalRepository::class);
+                     $portal = $portalRepository->findPortalByRoomContext($contextId);
+                     $this->contextItem = new PortalProxy($portal, $this->_environment);
+                     return $this->contextItem;
+                 }
+
                  $item_manager = $this->_environment->getItemManager();
                  $item = $item_manager->getItem($contextId);
 
                  if (isset($item) && is_object($item)) {
                      $manager = $this->_environment->getManager($item->getItemType());
-                     $this->_context_item = $manager->getItem($this->getContextId());
-
-                     return $this->_context_item;
+                     $this->contextItem = $manager->getItem($this->getContextId());
+                     return $this->contextItem;
                  }
 
                  $item_manager = $this->_environment->getItemManager(true);
@@ -92,33 +106,19 @@ class cs_item
 
                  if (isset($item) && is_object($item)) {
                      $manager = $this->_environment->getManager($item->getItemType());
-                     $this->_context_item = $manager->getItem($this->getContextId());
-
-                     return $this->_context_item;
-                 }
-
-                 global $symfonyContainer;
-
-                 /** @var PortalRepository $portalRepository*/
-                 $portalRepository = $symfonyContainer->get(PortalRepository::class);
-
-                 $portal = $portalRepository->findPortalByRoomContext($contextId);
-
-                 if ($portal) {
-                     $this->_context_item = new PortalProxy($portal, $this->_environment);
-
-                     return $this->_context_item;
+                     $this->contextItem = $manager->getItem($this->getContextId());
+                     return $this->contextItem;
                  }
              }
          }
 
-         return $this->_context_item;
+         return $this->contextItem;
      }
 
     public function setContextItem($context_item)
     {
         if (is_object($context_item)) {
-            $this->_context_item = $context_item;
+            $this->contextItem = $context_item;
         }
     }
 

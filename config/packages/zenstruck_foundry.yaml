@@ -1,0 +1,10 @@
+when@dev: &dev
+    # See full configuration: https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#full-default-bundle-configuration
+    zenstruck_foundry:
+        orm:
+            reset:
+                mode: migrate
+        global_state:
+            - App\Services\GlobalTestState
+
+when@test: *dev

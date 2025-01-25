@@ -94,9 +94,8 @@ class Translation
     public function getTranslationForLocale($locale): string
     {
         return match ($locale) {
-            'de' => $this->getTranslationDe(),
             'en' => $this->getTranslationEn(),
-            'default' => ''
+            default => $this->getTranslationDe(),
         };
     }
 }

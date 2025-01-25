@@ -132,16 +132,18 @@ class GeneralSettingsTransformer extends AbstractTransformer
      */
     public function applyTransformation($roomObject, $roomData): cs_room_item
     {
-        $rubricArray = [];
-        foreach (explode(',', (string) $roomData['rubricOrder']) as $rubricName) {
-            $rubricValue = $roomData['rubrics'][$rubricName];
-            if (0 == strcmp((string) $rubricValue, 'off')) {
-                continue;
+        if ($roomData['rubricOrder']) {
+            $rubricArray = [];
+            foreach (explode(',', (string) $roomData['rubricOrder']) as $rubricName) {
+                $rubricValue = $roomData['rubrics'][$rubricName];
+                if (0 == strcmp((string) $rubricValue, 'off')) {
+                    continue;
+                }
+                $rubricArray[] = $rubricName.'_'.$rubricValue;
             }
-            $rubricArray[] = $rubricName.'_'.$rubricValue;
-        }
 
-        $roomObject->setHomeConf(implode(',', $rubricArray));
+            $roomObject->setHomeConf(implode(',', $rubricArray));
+        }
 
         $roomObject->setTitle($roomData['title']);
 

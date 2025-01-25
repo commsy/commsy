@@ -228,7 +228,7 @@ class cs_link_item_file_manager extends cs_link_father_manager
      *
      * @param array $db_array information about the item out of the respective database table
      */
-    public function _buildItem(array $db_array)
+    public function _buildItem(array $db_array): object
     {
         $item = $this->getNewItem();
         $item->_setItemData(encode(FROM_DB, $db_array));
