@@ -7,7 +7,7 @@ doctrine:
         #server_version: '16'
 
         profiling_collect_backtrace: '%kernel.debug%'
-        use_savepoints: false
+        use_savepoints: true
 
         mapping_types:
             enum: string
