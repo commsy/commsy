@@ -826,24 +826,19 @@ class UserService
         return $user_array;
     }
 
-    /**
-     * @param cs_user_item $user
-     * @param int           $roomId
-     */
-    public function updateAllGroupStatus($user, $roomId)
+    public function updateAllGroupStatus(cs_user_item $user, int $roomId): void
     {
         $userGroups = $user->getGroupList();
         if ($userGroups->isEmpty()) {
             // try to find the system group "all" for the current context
-            // TODO: why is this not using the $roomId parameter instead?
-            $groupManager = $this->legacyEnvironment->getLabelManager();
+            $groupManager = $this->legacyEnvironment->getGroupManager();
             $groupManager->setExactNameLimit('ALL');
-            $groupManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
+            $groupManager->setContextLimit($roomId);
             $groupManager->select();
             $userGroups = $groupManager->get();
 
             // TODO: what is this for?
-            if (1 == $userGroups->getCount()) {
+            if ($userGroups->getCount() === 1) {
                 $group = $userGroups->getFirst();
                 $group->setTitle('ALL');
             }
