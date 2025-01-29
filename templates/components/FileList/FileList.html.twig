@@ -19,17 +19,16 @@
         {# filter #}
         <div class="uk-width-9-10">
             <form class="uk-form">
-                <div class="uk-flex">
+                <div class="uk-flex uk-flex-wrap">
                     {# file name #}
-                    <div class="uk-width-1-5">
+                    <div class="uk-width-1-2 uk-width-large-1-5">
                         <input type="text" placeholder="{{ 'form.file_name'|trans({}, 'form') }}" data-model="filterFileName"/>
                     </div>
 
                     {# file extension #}
-                    <div class="uk-width-1-5">
-                        <label class="uk-form-label">{{ 'form.file_extension'|trans({}, 'form') }}</label>
+                    <div class="uk-width-1-2 uk-width-large-1-5">
                         <select data-model="filterFileExtensions">
-                            <option value="all">{{ 'all'|trans({}, 'form') }}</option>
+                            <option value="all">{{ 'form.all_file_extensions'|trans({}, 'form') }}</option>
                             {% for extension in this.getAllFileExtensions %}
                                 <option value="{{ extension }}">{{ extension }}</option>
                             {% endfor %}
