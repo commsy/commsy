@@ -58,13 +58,10 @@ class RecipientFactory
 
         $room = $user->getContextItem();
 
-        $language = $room->getLanguage();
-        if ('user' === $language) {
-            $language = $user->getLanguage();
-            if ('browser' === $language) {
-                // TODO: Get default language from parameters
-                $language = 'de';
-            }
+        // default local is 'de'
+        $language = $room?->getLanguage() ?? 'de';
+        if ($language === 'user') {
+            $language = $user->getLanguage() !== 'browser' ? $user->getLanguage() : 'de';
         }
 
         $recipient->setLanguage($language);
