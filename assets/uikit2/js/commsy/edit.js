@@ -21,6 +21,10 @@
             UI.edit(element, UI.Utils.options(element.attr("data-cs-edit")));
           }
         });
+
+        window.addEventListener('discussionArticleDraftDidLoad', (event) => {
+          onDiscussionArticleDraftDidLoad();
+        });
       });
     },
 
@@ -248,6 +252,10 @@
       .catch((reason) => {
         console.error(reason);
       });
+  }
+
+  function onDiscussionArticleDraftDidLoad() {
+    registerDraftFormButtonEvents();
   }
 
   let registerDraftFormButtonEvents = function() {
