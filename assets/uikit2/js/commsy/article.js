@@ -48,6 +48,19 @@
                     $('#article-content').children()[0].scrollIntoView();
                 }
             }
+
+            let event = new CustomEvent(
+              'discussionArticleDraftDidLoad',
+              {
+                detail: {
+                  parentId: parentId,
+                },
+                bubbles: true,
+                cancelable: true
+              }
+              );
+            window.dispatchEvent(event);
+
         });
     });
 
