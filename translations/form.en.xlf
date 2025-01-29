@@ -66,9 +66,9 @@
                 <source>Select a file</source>
                 <target>Select a file</target>
             </trans-unit>
-            <trans-unit id="form-file-extension">
-                <source>form.file_extension</source>
-                <target>File extension</target>
+            <trans-unit id="form-all-file-extensions">
+                <source>form.all_file_extensions</source>
+                <target>All file extensions</target>
             </trans-unit>
             <trans-unit id="form-file-name">
                 <source>form.file_name</source>

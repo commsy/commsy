@@ -44,7 +44,7 @@ use Symfony\UX\LiveComponent\ComponentWithFormTrait;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
-#[AsLiveComponent()]
+#[AsLiveComponent]
 final class FileList extends AbstractController
 {
     use DefaultActionTrait;
