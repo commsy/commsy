@@ -31,7 +31,6 @@ class cs_item_manager extends cs_manager
 
     public $_user_userid_limit = null;
     public $_user_since_lastlogin_limit = null;
-    public $_cache_row = [];
     private bool $_no_interval_limit = false;
 
     /**

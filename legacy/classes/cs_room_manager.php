@@ -313,9 +313,7 @@ class cs_room_manager extends cs_context_manager
         if (!isset($result)) {
             trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"', E_USER_ERROR);
         } else {
-            if (!empty($this->_id_array_limit)
-                and 'id_array' == $this->_order
-            ) {
+            if (!empty($this->_id_array_limit) && $this->_order == 'id_array') {
                 // sort result
                 $result2 = [];
                 foreach ($result as $value) {
@@ -333,16 +331,6 @@ class cs_room_manager extends cs_context_manager
                         $temp_array['type'] = CS_PROJECT_TYPE;
                         $result[] = $temp_array;
                         unset($temp_array);
-                    }
-                }
-            } elseif (!empty($this->_id_array_limit)
-                and $this->_cache_on
-            ) {
-                foreach ($result as $row) {
-                    if (!empty($row)
-                        and !empty($row['item_id'])
-                        and empty($this->_cache_row[$row['item_id']])) {
-                        $this->_cache_row[$row['item_id']] = $row;
                     }
                 }
             }
