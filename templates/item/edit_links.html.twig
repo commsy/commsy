@@ -49,7 +49,7 @@
                                     {# search entries #}
                                     {{ render(controller(
                                     'App\\Controller\\SearchController::itemSearchForm',
-                                    { 'roomId': app.request.attributes.get('roomId'), 'linkSearch': itemId }
+                                    { 'roomId': app.request.attributes.get('roomId'), 'itemId': itemId }
                                     )) }}
                                 </li>
                                 <li>

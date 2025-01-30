@@ -18,6 +18,7 @@ use Elastica\Query\Terms;
 interface FilterConditionInterface
 {
     public const BOOL_MUST = 'must';
+    public const BOOL_MUST_NOT = 'must_not';
     public const BOOL_SHOULD = 'should';
 
     /**
