@@ -118,7 +118,7 @@
                 {{ render(controller(
                     'App\\Controller\\LinkController::showDetailShort',
                     { 'roomId': item.contextId, 'itemId': item.itemId }
-                ))}}
+                )) }}
             </div>
         </div>
     {% endset %}
@@ -127,15 +127,15 @@
         <div class="uk-grid">
             <div class="uk-width-9-10">
                 {% if showAssociations %}
-                {{ render(controller(
-                    'App\\Controller\\LinkController::showDetailLongToggle',
-                    { 'roomId': item.contextId, 'itemId': item.itemId }
-                ))}}
+                    {{ render(controller(
+                        'App\\Controller\\LinkController::showDetailLongToggle',
+                        { 'roomId': item.contextId, 'itemId': item.itemId }
+                    )) }}
                 {% else %}
                     {{ render(controller(
                         'App\\Controller\\LinkController::showDetailLong',
                         { 'roomId': item.contextId, 'itemId': item.itemId }
-                    ))}}
+                    )) }}
                 {% endif %}
             </div>
         </div>

@@ -395,12 +395,10 @@ class ItemController extends AbstractController
         // get all categories -> tree
         $optionsData['categories'] = $labelService->getCategories($roomId);
         $formData['categories'] = $labelService->getLinkedCategoryIds($item);
-        $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(['min' => 1])] : [];
 
         // get all hashtags -> list
         $optionsData['hashtags'] = $labelService->getHashtags($roomId);
         $formData['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
-        $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(['min' => 1])] : [];
 
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
 
