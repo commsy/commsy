@@ -22,6 +22,7 @@ use App\Form\Type\SearchType;
 use App\Model\SearchData;
 use App\Repository\SavedSearchRepository;
 use App\Search\FilterConditions\CreationDateFilterCondition;
+use App\Search\FilterConditions\ExcludeIdsFilterCondition;
 use App\Search\FilterConditions\ModificationDateFilterCondition;
 use App\Search\FilterConditions\MultipleCategoryFilterCondition;
 use App\Search\FilterConditions\MultipleContextFilterCondition;
@@ -110,11 +111,9 @@ class SearchController extends BaseController
         ]);
     }
 
-    /**
-     * @param $roomId int The id of the containing context
-     */
     public function itemSearchForm(
-        int $roomId
+        int $roomId,
+        int $itemId,
     ): Response {
         $form = $this->createForm(SearchItemType::class, [], [
             'action' => $this->generateUrl('app_search_results', [
@@ -125,16 +124,18 @@ class SearchController extends BaseController
         return $this->render('search/item_search_form.html.twig', [
             'form' => $form,
             'roomId' => $roomId,
+            'itemId' => $itemId,
         ]);
     }
 
-    #[Route(path: '/room/{roomId}/search/itemresults')]
+    #[Route(path: '/room/{roomId}/search/itemresults/{itemId}')]
     public function itemSearchResults(
         Request $request,
         SearchManager $searchManager,
         ReaderService $readerService,
         CalendarsService $calendarsService,
-        int $roomId
+        int $roomId,
+        int $itemId
     ): JsonResponse {
         $query = $request->get('search', '');
 
@@ -149,6 +150,10 @@ class SearchController extends BaseController
         $singleFilterCondition = new SingleContextFilterCondition();
         $singleFilterCondition->setContextId($roomId);
         $searchManager->addFilterCondition($singleFilterCondition);
+
+        $exludeIdCondition = new ExcludeIdsFilterCondition();
+        $exludeIdCondition->setIds([$itemId]);
+        $searchManager->addFilterCondition($exludeIdCondition);
 
         $searchResults = $searchManager->getLinkedItemResults();
         $results = $this->prepareResults($searchResults, $readerService, $calendarsService, $roomId, 0, true);

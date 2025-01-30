@@ -21,6 +21,7 @@ use App\Utils\UserService;
 use Elastica\Aggregation as Aggregations;
 use Elastica\Query as Queries;
 use FOS\ElasticaBundle\Finder\TransformedFinder;
+use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 
 class SearchManager
 {
@@ -109,7 +110,7 @@ class SearchManager
         return $this->commsyFinder->createPaginatorAdapter($query);
     }
 
-    public function getLinkedItemResults()
+    public function getLinkedItemResults(): TransformedPaginatorAdapter
     {
         // create our basic query
         $query = new Queries();
@@ -195,6 +196,9 @@ class SearchManager
                 switch ($filterCondition->getOperator()) {
                     case FilterConditionInterface::BOOL_MUST:
                         $boolQuery->addMust($condition);
+                        break;
+                    case FilterConditionInterface::BOOL_MUST_NOT:
+                        $boolQuery->addMustNot($condition);
                         break;
                     case FilterConditionInterface::BOOL_SHOULD:
                         $boolQuery->addShould($condition);
