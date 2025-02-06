@@ -104,13 +104,15 @@ class UserVoter extends Voter
         return $this->userService->userIsParentModeratorForRoom($room, $user);
     }
 
+    /**
+     * Checks whether the given user is the portal moderator of the user's portal.
+     */
     private function isPortalModerator(cs_user_item $user): bool
     {
-        $portalUser = $user->getRelatedPortalUserItem();
-        if ($portalUser) {
-            return $portalUser->isModerator();
+        if (!$user) {
+            return false;
         }
 
-        return false;
+        return $this->userService->userIsPortalModerator($user);
     }
 }
