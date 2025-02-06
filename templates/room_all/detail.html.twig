@@ -63,7 +63,7 @@
                             editUrl: '{{ path('app_item_editdescription', { 'roomId': project.contextId, 'itemId': project.itemId }) }}',
                             cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': project.contextId, 'itemId': project.itemId }) }}'
                         }">
-                            {% set mayEdit = not project.isLockedByModerator() -%}
+                            {% set mayEdit = not project.isLockedByModerator() or is_granted('PORTAL_MODERATOR', commsy.portal.id) -%}
                             {{ macrosItem.itemDescription('description', project, mayEdit, project.description) }}
                         </div>
 
