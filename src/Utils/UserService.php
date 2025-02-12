@@ -671,6 +671,29 @@ class UserService
     }
 
     /**
+     * Checks whether the given (or otherwise the current) user is the portal moderator of the (current) user's portal.
+     *
+     * @param cs_user_item|null $user (optional) The user for whom this method will check whether (s)he is the portal
+     *                                 moderator
+     *
+     * @return bool Whether the given (or current) user is the portal moderator (true), or not (false)
+     */
+    public function userIsPortalModerator(?cs_user_item $user = null): bool
+    {
+        $user ??= $this->legacyEnvironment->getCurrentUserItem();
+        if (!$user) {
+            return false;
+        }
+
+        $portalUser = $user->getRelatedPortalUserItem();
+        if ($portalUser) {
+            return $portalUser->isModerator();
+        }
+
+        return false;
+    }
+
+    /**
      * Returns the IDs of all given users.
      *
      * @param cs_user_item[] $users The array of users whose IDs shall be returned
