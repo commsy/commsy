@@ -634,7 +634,7 @@ class cs_environment
         return $this->_getInstance('cs_tag2tag_manager');
     }
 
-    public function getItemManager($force = false): cs_item_manager
+    public function getItemManager(): cs_item_manager
     {
         /* @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->_getInstance('cs_item_manager');
