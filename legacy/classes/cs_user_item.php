@@ -2141,7 +2141,7 @@ class cs_user_item extends cs_item
         $this->_setValue('use_portal_email', $value);
     }
 
-    public function isAllowedToCreateContext()
+    public function isAllowedToCreateContext(): bool
     {
         if ($this->isGuest()) {
             return false;
@@ -2157,10 +2157,8 @@ class cs_user_item extends cs_item
                 return true;
             }
         } else {
-            global $symfonyContainer;
-
             /** @var TokenStorageInterface $tokenStorage */
-            $tokenStorage = $symfonyContainer->get('app.token_storage');
+            $tokenStorage = $this->_environment->getSymfonyContainer()->get('app.token_storage');
 
             /** @var Account $user */
             $user = $tokenStorage->getToken()->getUser();

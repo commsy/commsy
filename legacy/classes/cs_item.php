@@ -17,6 +17,7 @@ use App\Repository\ItemLinkFileRepository;
 use App\Repository\MaterialsRepository;
 use App\Repository\PortalRepository;
 use App\Security\Authorization\Voter\ItemVoter;
+use Doctrine\ORM\UnexpectedResultException;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
@@ -84,30 +85,33 @@ class cs_item
                   * case, because in production it is very unlikely to have such a high number of portals. But, it is
                   * still a problem.
                   */
-                 if ($this instanceof cs_context_item && !$this instanceof cs_userroom_item) {
-                     /** @var PortalRepository $portalRepository*/
-                     $portalRepository = $this->_environment->getSymfonyContainer()->get(PortalRepository::class);
-                     $portal = $portalRepository->findPortalByRoomContext($contextId);
-                     $this->contextItem = new PortalProxy($portal, $this->_environment);
-                     return $this->contextItem;
-                 }
+                 try {
+                     if (
+                         ($this instanceof cs_context_item && !$this instanceof cs_userroom_item) ||
+                         $this instanceof cs_user_item
+                     ) {
+                         /** @var PortalRepository $portalRepository */
+                         $portalRepository = $this->_environment->getSymfonyContainer()->get(PortalRepository::class);
+                         $portal = $portalRepository->findPortalByRoomContext($contextId);
 
-                 $item_manager = $this->_environment->getItemManager();
-                 $item = $item_manager->getItem($contextId);
+                         // Portal is only a valid response if this is not an instance of a user item or (in case it is)
+                         // it must be the portal user (context is matching the portal id), otherwise it is a room user
+                         if (!$this instanceof cs_user_item || $this->getContextID() === $portal->getId()) {
+                             $this->contextItem = new PortalProxy($portal, $this->_environment);
+                             return $this->contextItem;
+                         }
+                     }
+                 } catch (UnexpectedResultException) {
+                    return null;
+                 } finally {
+                     $item_manager = $this->_environment->getItemManager();
+                     $item = $item_manager->getItem($contextId);
 
-                 if (isset($item) && is_object($item)) {
-                     $manager = $this->_environment->getManager($item->getItemType());
-                     $this->contextItem = $manager->getItem($this->getContextId());
-                     return $this->contextItem;
-                 }
-
-                 $item_manager = $this->_environment->getItemManager(true);
-                 $item = $item_manager->getItem($contextId);
-
-                 if (isset($item) && is_object($item)) {
-                     $manager = $this->_environment->getManager($item->getItemType());
-                     $this->contextItem = $manager->getItem($this->getContextId());
-                     return $this->contextItem;
+                     if (isset($item) && is_object($item)) {
+                         $manager = $this->_environment->getManager($item->getItemType());
+                         $this->contextItem = $manager->getItem($this->getContextId());
+                         return $this->contextItem;
+                     }
                  }
              }
          }
