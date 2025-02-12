@@ -105,7 +105,6 @@ class PersonalInformationType extends AbstractType
                 'attr' => [
                     'placeholder' => $user->getDefaultInitials(),
                 ],
-                'disabled' => !$changeUserdata,
                 'getter' => function ($viewData, FormInterface $form) use ($user): string {
                     return $this->getSetting($user, AccountSetting::CUSTOM_INITIALS)['initials'];
                 },
