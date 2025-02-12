@@ -192,13 +192,21 @@ class ItemVoter extends Voter
             return false;
         }
 
-        if (CS_DATE_TYPE == $item->getItemType()) {
+        $itemType = $item->getItemType();
+
+        if (CS_PROJECT_TYPE == $itemType || CS_COMMUNITY_TYPE == $itemType) {
+            if ($item->isLockedByModerator() && !$this->userService->userIsPortalModerator($currentUser)) {
+                return false;
+            }
+        }
+
+        if (CS_DATE_TYPE == $itemType) {
             if ($item->isExternal()) {
                 return false;
             }
         }
 
-        if (CS_DISCUSSION_TYPE == $item->getItemType()) {
+        if (CS_DISCUSSION_TYPE == $itemType) {
             $request = $this->requestStack->getCurrentRequest();
             if ('app_discussion_createanswer' == $request->get('_route')) {
                 return true;
