@@ -126,11 +126,15 @@ abstract class BaseFlow implements ProtocolFlow
         $firstname = $json->get($authSourceOIDC->getFirstNameMapping());
         $lastname = $json->get($authSourceOIDC->getLastNameMapping());
 
+        if ($displayMapping = $authSourceOIDC->getDisplaynameMapping()) {
+            $displayName = $json->get($displayMapping);
+        }
+
         if (!$identifier || !$email || !$firstname || !$lastname) {
             return null;
         }
 
-        return new UserInfo($identifier, $email, $firstname, $lastname);
+        return new UserInfo($identifier, $email, $firstname, $lastname, $displayName ?? null);
     }
 
     protected function verifyIdToken(
