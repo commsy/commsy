@@ -28,8 +28,7 @@ class AccountDeletedEvent extends Event
          * @var cs_user_item The portal user item to be deleted
          */
         private readonly cs_user_item $portalUser
-    )
-    {
+    ) {
     }
 
     public function getPortalUser(): cs_user_item

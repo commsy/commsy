@@ -11,6 +11,7 @@
  * file that was distributed with this source code.
  */
 
+use App\Event\AccountDeletedEvent;
 use App\Repository\HashRepository;
 use App\Room\RoomStatus;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -30,28 +31,28 @@ class cs_user_manager extends cs_manager
     /**
      * integer - containing a start point for the select user.
      */
-    public $_from_limit = null;
+    public ?int $_from_limit = null;
 
     /**
      * integer - containing how many user the select statement should get.
      */
-    public $_interval_limit = null;
+    public ?int $_interval_limit = null;
 
     public $_room_limit = null;
 
-    public $_is_user_in_context_cache = [];
+    public array $_is_user_in_context_cache = [];
 
     /**
      * integer - containing a status limit: 0 rejected, 1 registered, 2 normal user, 3 moderator.
      */
-    public $_status_limit = null;
+    public ?int $_status_limit = null;
 
-    public $_status_select_limit = null;
+    public ?int $_status_select_limit = null;
 
     /**
      * string - containing a string: name of a user -> search method.
      */
-    public $_name_limit = null;
+    public ?string $_name_limit = null;
 
     /**
      * boolean - containing a flag: load only user that has login in already (true) or all (false).
@@ -66,12 +67,12 @@ class cs_user_manager extends cs_manager
     /**
      * array - containing the cached items already loaded from the database.
      */
-    public $_cache = [];
+    public array $_cache = [];
 
     /**
      * string - containing an order limit for the select users.
      */
-    public $_order = null;
+    public ?string $_order = null;
 
     /**
      * document this limit (TBD).
@@ -737,9 +738,7 @@ class cs_user_manager extends cs_manager
     public function getRootUser()
     {
         if (!isset($this->_root_user)) {
-            $this->setWithoutDatabasePrefix();
             $query = 'SELECT * FROM ' . $this->addDatabasePrefix('user') . ' WHERE ' . $this->addDatabasePrefix('user') . ".user_id = 'root' AND context_id = '" . encode(AS_DB, $this->_environment->getServerID()) . "'";
-            $this->setWithDatabasePrefix();
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
                 trigger_error('Problems selecting one user item.', E_USER_WARNING);
@@ -856,10 +855,8 @@ class cs_user_manager extends cs_manager
     /** create a new item in the items table - internal, do not use -> use method save
      * this method creates a new item of type 'user' in the database and sets the dates user item id.
      * it then calls the private method _newUser to store the dates item itself.
-     *
-     * @param cs_dates_item the dates item for which an entry should be made
      */
-    public function _create($item)
+    public function _create($item): void
     {
         $query = 'INSERT INTO ' . $this->addDatabasePrefix('items') . ' SET ';
         $query .= 'context_id="' . encode(AS_DB, $item->getContextID()) . '", ';
@@ -916,20 +913,15 @@ class cs_user_manager extends cs_manager
 
     public function delete(int $itemId, bool $silent = false): void
     {
-        global $symfonyContainer;
-
         $user_item = $this->getItem($itemId);
         if ($this->_environment->inPortal()) {
-            if (isset($user_item)
-                and !empty($user_item)
-                and $user_item->getContextID() == $this->_environment->getCurrentContextID()
-            ) {
+            if (!empty($user_item) && $user_item->getContextID() == $this->_environment->getCurrentContextID()) {
                 // fire an AccountDeletedEvent (which will e.g. trigger deletion of the user's saved searches)
                 /** @var EventDispatcher $eventDispatcher */
-                $eventDispatcher = $symfonyContainer->get('event_dispatcher');
+                $eventDispatcher = $this->_environment->getSymfonyContainer()->get('event_dispatcher');
 
-                $accountDeletedEvent = new \App\Event\AccountDeletedEvent($user_item);
-                $eventDispatcher->dispatch($accountDeletedEvent, \App\Event\AccountDeletedEvent::class);
+                $accountDeletedEvent = new AccountDeletedEvent($user_item);
+                $eventDispatcher->dispatch($accountDeletedEvent, AccountDeletedEvent::class);
 
                 // delete private room - part I
                 $private_room_manager = $this->_environment->getPrivateRoomManager();
@@ -946,10 +938,8 @@ class cs_user_manager extends cs_manager
                 // delete related user in project rooms and community rooms and private room
                 $user_list = $user_item->getRelatedUserList();
                 if (!$user_list->isEmpty()) {
-                    $u_item = $user_list->getFirst();
-                    while ($u_item) {
+                    foreach ($user_list as $u_item) {
                         $u_item->delete();
-                        $u_item = $user_list->getNext();
                     }
                 }
 
@@ -993,17 +983,10 @@ class cs_user_manager extends cs_manager
                             $user_manager->setUserIDLimit($user_item->getUserID());
                             $user_manager->setAuthSourceLimit($user_item->getAuthSource());
                             $user_manager->select();
-                            $user_list = $user_manager->get();
-                            unset($user_manager);
+                            $users = $user_manager->get();
 
-                            if (!$user_list->isEmpty()) {
-                                $user = $user_list->getFirst();
-                                while ($user) {
-                                    // delete user
-                                    $user->delete();
-
-                                    $user = $user_list->getNext();
-                                }
+                            foreach ($users as $user) {
+                                $user->delete();
                             }
                         }
                     }
@@ -1013,7 +996,7 @@ class cs_user_manager extends cs_manager
 
         // delete hash values
         /** @var HashRepository $hashRepository */
-        $hashRepository = $symfonyContainer->get(HashRepository::class);
+        $hashRepository = $this->_environment->getSymfonyContainer()->get(HashRepository::class);
         $hash = $hashRepository->findByUserId($itemId);
         if (!empty($hash)) {
             $hashRepository->deleteHash($hash);
@@ -1113,10 +1096,7 @@ class cs_user_manager extends cs_manager
         if ($this->_link_modifier) {
             $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
             $mod_id = $item->getModificatorID();
-            if (!empty($mod_id)
-                and is_numeric($mod_id)
-                and $mod_id > 99
-            ) {
+            if (!empty($mod_id) && is_numeric($mod_id) && $mod_id > 99) {
                 $link_modifier_item_manager->markEdited($item->getItemID(), $mod_id);
             } else {
                 $link_modifier_item_manager->markEdited($item->getItemID());
@@ -1144,7 +1124,7 @@ class cs_user_manager extends cs_manager
         }
     }
 
-    public function changeUserID(string $username, cs_user_item $userItem)
+    public function changeUserID(string $username, cs_user_item $userItem): bool
     {
         $room_manager = $this->_environment->getRoomManager();
         $room_list = $room_manager->getAllRelatedRoomListForUser($userItem);
@@ -1162,7 +1142,6 @@ class cs_user_manager extends cs_manager
         $own_room = $userItem->getOwnRoom();
         if (isset($own_room)) {
             $room_item_ids[] = $own_room->getItemID();
-            unset($own_room);
         }
 
         // user rooms
@@ -1182,18 +1161,14 @@ class cs_user_manager extends cs_manager
         $result = $this->_db_connector->performQuery($update);
         if (!isset($result) or !$result) {
             trigger_error('Problems changing user id.', E_USER_WARNING);
-            $success = false;
+            return false;
         } else {
-            unset($result);
-            $success = true;
+            return true;
         }
-
-        return $success;
     }
 
-    public function exists($user_id, $auth_source = '')
+    public function exists($user_id, $auth_source = ''): bool
     {
-        $retour = false;
         $this->setUserIDLimit($user_id);
         if (!empty($auth_source)) {
             $this->setAuthSourceLimit($auth_source);
@@ -1201,10 +1176,10 @@ class cs_user_manager extends cs_manager
         $this->select();
         $count = $this->getCountAll();
         if (!empty($count) and $count > 0) {
-            $retour = true;
+            return true;
         }
 
-        return $retour;
+        return false;
     }
 
     // #########################################################
@@ -1283,7 +1258,6 @@ class cs_user_manager extends cs_manager
             foreach ($result as $rs) {
                 $retour = $rs['number'];
             }
-            unset($result);
         }
 
         return $retour;
