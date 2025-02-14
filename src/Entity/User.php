@@ -22,9 +22,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * User.
- */
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'user')]
 #[ORM\Index(columns: ['creator_id'], name: 'creator_idx')]
@@ -215,33 +212,18 @@ class User
         return $this->isContact;
     }
 
-    /**
-     * Set firstname.
-     *
-     * @param string $firstname
-     */
-    public function setFirstname($firstname): static
+    public function setFirstname(string $firstname): static
     {
         $this->firstname = $firstname;
 
         return $this;
     }
 
-    /**
-     * Get firstname.
-     *
-     * @return string
-     */
     public function getFirstname(): string
     {
         return $this->firstname;
     }
 
-    /**
-     * Set lastname.
-     *
-     * @param string $lastname
-     */
     public function setLastname($lastname): static
     {
         $this->lastname = $lastname;
@@ -249,95 +231,54 @@ class User
         return $this;
     }
 
-    /**
-     * Get lastname.
-     *
-     * @return string
-     */
     public function getLastname(): string
     {
         return $this->lastname;
     }
 
-    /**
-     * Set email.
-     *
-     * @param string $email
-     */
-    public function setEmail($email): static
+    public function setEmail(string $email): static
     {
         $this->email = $email;
 
         return $this;
     }
 
-    /**
-     * Get email.
-     *
-     * @return string
-     */
     public function getEmail(): string
     {
         return $this->email;
     }
 
-    /**
-     * Set city.
-     *
-     * @param string $city
-     */
-    public function setCity($city): static
+    public function setCity(string $city): static
     {
         $this->city = $city;
 
         return $this;
     }
 
-    /**
-     * Get city.
-     *
-     * @return string
-     */
     public function getCity(): string
     {
         return $this->city;
     }
 
-    /**
-     * Set lastlogin.
-     *
-     * @param DateTime $lastlogin
-     */
-    public function setLastlogin($lastlogin): static
+    public function setLastlogin(?DateTimeInterface $lastlogin): static
     {
         $this->lastlogin = $lastlogin;
 
         return $this;
     }
 
-    /**
-     * Get lastlogin.
-     */
-    public function getLastlogin(): ?DateTime
+    public function getLastlogin(): ?DateTimeInterface
     {
         return $this->lastlogin;
     }
 
-    /**
-     * Set visible.
-     *
-     * @param bool $visible
-     */
-    public function setVisible($visible): static
+    public function setVisible(bool $visible): static
     {
         $this->visible = $visible;
 
         return $this;
     }
 
-    /**
-     * Get visible.
-     */
     public function getVisible(): bool
     {
         return $this->visible;
@@ -367,52 +308,21 @@ class User
         return $this;
     }
 
-    /**
-     * Get authSource.
-     */
     public function getAuthSource(): ?int
     {
         return $this->authSource;
     }
 
-    /**
-     * Set description.
-     *
-     * @param string $description
-     */
-    public function setDescription($description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    /**
-     * Get description.
-     */
     public function getDescription(): ?string
     {
         return $this->description;
-    }
-
-    /**
-     * Set expireDate.
-     *
-     * @param DateTime $expireDate
-     */
-    public function setExpireDate($expireDate): static
-    {
-        $this->expireDate = $expireDate;
-
-        return $this;
-    }
-
-    /**
-     * Get expireDate.
-     */
-    public function getExpireDate(): ?DateTime
-    {
-        return $this->expireDate;
     }
 
     public function getItemId(): int
@@ -420,13 +330,13 @@ class User
         return $this->itemId;
     }
 
-    public function isIndexable()
+    public function isIndexable(): bool
     {
         return null == $this->deleterId && null == $this->deletionDate;
     }
 
-    public function getFullname()
+    public function getFullname(): string
     {
-        return trim($this->getFirstname().' '.$this->getLastname());
+        return trim("{$this->getFirstname()} {$this->getLastname()}");
     }
 }

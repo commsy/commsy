@@ -197,7 +197,7 @@ class cs_assessments_item extends cs_item
 
     public function save(): void
     {
-        $manager = $this->_environment->getManager($this->_type);
+        $manager = $this->_environment->getAssessmentManager();
         $manager->saveItem($this);
     }
 }

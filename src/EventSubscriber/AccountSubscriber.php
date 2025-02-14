@@ -56,6 +56,7 @@ readonly class AccountSubscriber implements EventSubscriberInterface
 
     public function onAccountDeleted(AccountDeletedEvent $event): void
     {
+        // remove any saved searches
         $portalUser = $event->getPortalUser();
 
         $repository = $this->entityManager->getRepository(SavedSearch::class);

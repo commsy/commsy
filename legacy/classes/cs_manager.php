@@ -120,8 +120,6 @@ class cs_manager
     protected $_id_array_limit;
 
     public $_link_modifier = true;
-    public $_db_prefix = '';
-    public $_with_db_prefix = true;
 
     public $_force_sql = false;
 
@@ -1352,21 +1350,6 @@ class cs_manager
    public function addDatabasePrefix($db_table)
    {
        return $db_table;
-   }
-
-   public function setWithoutDatabasePrefix()
-   {
-       $this->_with_db_prefix = false;
-   }
-
-   public function setWithDatabasePrefix()
-   {
-       $this->_with_db_prefix = true;
-   }
-
-   public function withDatabasePrefix()
-   {
-       return $this->_with_db_prefix;
    }
 
     public function deleteFromDb($context_id)

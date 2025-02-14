@@ -631,7 +631,8 @@ class UserController extends BaseController
     private function getDetailInfo(
         $roomId,
         $itemId
-    ) {
+    ): array
+    {
         $infoArray = [];
         $user = $this->userService->getUser($itemId);
 
@@ -646,7 +647,6 @@ class UserController extends BaseController
         $modifierList = [];
 
         $readerList[$user->getItemId()] = $this->readerService->getStatusForItem($user)->value;
-
         $modifierList[$user->getItemId()] = $this->itemService->getAdditionalEditorsForItem($user);
 
         $users = $this->userService->getListUsers($roomId);
