@@ -94,6 +94,11 @@ class AuthOidcType extends AbstractType
                 'label' => 'Mapping: username',
                 'help' => '$.sub',
             ])
+            ->add('displaynameMapping', TextType::class, [
+                'label' => 'Mapping: Displayname',
+                'help' => '$.displayname',
+                'required' => false,
+            ])
             ->add('emailMapping', TextType::class, [
                 'label' => 'Mapping: email',
                 'help' => '$.email',
