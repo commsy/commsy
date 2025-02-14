@@ -13,10 +13,10 @@
 
 namespace App\Facade;
 
-use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
 use App\Entity\Translation;
+use App\Enum\AddAccountSetting;
 use Doctrine\Persistence\ManagerRegistry;
 
 readonly class PortalCreatorFacade
@@ -33,7 +33,7 @@ readonly class PortalCreatorFacade
         $authSource->setTitle('Lokal');
         $authSource->setEnabled(true);
         $authSource->setDefault(true);
-        $authSource->setAddAccount(AuthSource::ADD_ACCOUNT_YES);
+        $authSource->setAddAccount(AddAccountSetting::YES);
         $authSource->setChangeUsername(true);
         $authSource->setDeleteAccount(true);
         $authSource->setChangeUserdata(true);

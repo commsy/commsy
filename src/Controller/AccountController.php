@@ -20,6 +20,7 @@ use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
+use App\Enum\AddAccountSetting;
 use App\Event\AccountChangedEvent;
 use App\Event\AccountCreatedEvent;
 use App\Facade\AccountCreatorFacade;
@@ -78,7 +79,7 @@ class AccountController extends AbstractController
         $localAuthSource = $portal->getAuthSources()->filter(fn (AuthSource $authSource) => 'local' === $authSource->getType())->first();
 
         // deny access if self registration is disabled
-        if (AuthSource::ADD_ACCOUNT_NO === $localAuthSource->getAddAccount()) {
+        if ($localAuthSource->getAddAccount() === AddAccountSetting::NO) {
             throw $this->createAccessDeniedException('Self-Registration is disabled.');
         }
 
@@ -86,7 +87,7 @@ class AccountController extends AbstractController
         // provided token is invalid
         $isTokenInvalid = false;
         $token = $request->query->get('token', '');
-        if (AuthSource::ADD_ACCOUNT_INVITE === $localAuthSource->getAddAccount()) {
+        if ($localAuthSource->getAddAccount() === AddAccountSetting::INVITATION) {
             if (!$invitationsService->confirmInvitationCode($localAuthSource, $token)) {
                 $isTokenInvalid = true;
             }
@@ -131,7 +132,7 @@ class AccountController extends AbstractController
                 $portalUser->save();
             }
 
-            if (AuthSource::ADD_ACCOUNT_INVITE === $localAuthSource->getAddAccount()) {
+            if ($localAuthSource->getAddAccount() === AddAccountSetting::INVITATION) {
                 $invitationsService->redeemInvitation($localAuthSource, $token);
 
                 $newUser = $userService->cloneUser($portalUser, $roomContextId);

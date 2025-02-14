@@ -13,10 +13,12 @@
 
 namespace App\Form\Type\Portal;
 
+use App\Enum\AddAccountSetting;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -68,15 +70,10 @@ class AuthLocalType extends AbstractType
                 'required' => false,
                 'help' => 'Pre select this authentication in the login box (deselect all others)',
             ])
-            ->add('addAccount', ChoiceType::class, [
+            ->add('addAccount', EnumType::class, [
+                'class' => AddAccountSetting::class,
                 'label' => 'Add account',
                 'expanded' => true,
-                'choices' => [
-                    'Yes' => 'yes',
-                    'No' => 'no',
-                    'Invitation' => 'invitation',
-                ],
-                'choice_translation_domain' => 'portal',
             ])
             ->add('enabled', CheckboxType::class, [
                 'label' => 'Available',

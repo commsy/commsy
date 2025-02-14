@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use App\Enum\AddAccountSetting;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -62,7 +63,7 @@ class AuthSourceOIDC extends AuthSource
 
     public function __construct()
     {
-        $this->addAccount = self::ADD_ACCOUNT_NO;
+        $this->addAccount = AddAccountSetting::NO;
         $this->changeUsername = false;
         $this->deleteAccount = false;
         $this->changeUserdata = false;

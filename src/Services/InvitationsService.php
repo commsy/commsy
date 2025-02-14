@@ -17,6 +17,7 @@ use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Invitations;
 use App\Entity\Portal;
+use App\Enum\AddAccountSetting;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -36,7 +37,7 @@ class InvitationsService
         /** @var AuthSourceLocal $localSource */
         $localAuthSource = $authSources->filter(fn (AuthSource $authSource) => $authSource instanceof AuthSourceLocal)->first();
 
-        return AuthSource::ADD_ACCOUNT_INVITE === $localAuthSource->getAddAccount();
+        return $localAuthSource->getAddAccount() === AddAccountSetting::INVITATION;
     }
 
     public function existsInvitationForEmailAddress(AuthSourceLocal $authSourceLocal, string $email): bool

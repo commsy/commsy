@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use App\Enum\AddAccountSetting;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -28,7 +29,7 @@ class AuthSourceGuest extends AuthSource
      */
     public function __construct()
     {
-        $this->addAccount = self::ADD_ACCOUNT_NO;
+        $this->addAccount = AddAccountSetting::NO;
         $this->changeUsername = false;
         $this->deleteAccount = false;
         $this->changeUserdata = false;
