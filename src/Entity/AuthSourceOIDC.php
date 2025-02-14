@@ -44,6 +44,10 @@ class AuthSourceOIDC extends AuthSource
 
     #[ORM\Column(type: Types::STRING, length: 100)]
     #[Assert\Length(max: 100)]
+    private ?string $displaynameMapping = null;
+
+    #[ORM\Column(type: Types::STRING, length: 100)]
+    #[Assert\Length(max: 100)]
     private ?string $emailMapping = null;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
@@ -117,6 +121,17 @@ class AuthSourceOIDC extends AuthSource
     public function setUsernameMapping(?string $usernameMapping): AuthSourceOIDC
     {
         $this->usernameMapping = $usernameMapping;
+        return $this;
+    }
+
+    public function getDisplaynameMapping(): ?string
+    {
+        return $this->displaynameMapping;
+    }
+
+    public function setDisplaynameMapping(?string $displaynameMapping): static
+    {
+        $this->displaynameMapping = $displaynameMapping;
         return $this;
     }
 
