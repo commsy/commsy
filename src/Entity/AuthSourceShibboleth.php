@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use App\Enum\AddAccountSetting;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -57,7 +58,7 @@ class AuthSourceShibboleth extends AuthSource
 
     public function __construct()
     {
-        $this->addAccount = self::ADD_ACCOUNT_NO;
+        $this->addAccount = AddAccountSetting::NO;
         $this->changeUsername = false;
         $this->deleteAccount = false;
         $this->changeUserdata = false;

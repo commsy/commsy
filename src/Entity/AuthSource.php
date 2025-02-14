@@ -20,10 +20,10 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\OpenApi\Model;
 use App\Controller\Api\GetAuthSourceDirectLoginUrl;
+use App\Enum\AddAccountSetting;
 use App\Repository\AuthSourceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use InvalidArgumentException;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AuthSourceRepository::class)]
@@ -73,9 +73,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 )]
 abstract class AuthSource
 {
-    public final const ADD_ACCOUNT_YES = 'yes';
-    public final const ADD_ACCOUNT_NO = 'no';
-    public final const ADD_ACCOUNT_INVITE = 'invitation';
     #[ApiProperty(description: 'The unique identifier.')]
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
@@ -105,8 +102,8 @@ abstract class AuthSource
     #[ORM\Column(name: '`default`', type: Types::BOOLEAN)]
     private ?bool $default = null;
 
-    #[ORM\Column(type: Types::STRING, length: 10, columnDefinition: "ENUM('yes', 'no', 'invitation')")]
-    protected string $addAccount;
+    #[ORM\Column(type: Types::STRING, length: 10, enumType: AddAccountSetting::class)]
+    protected AddAccountSetting $addAccount;
 
     #[ORM\Column(type: Types::BOOLEAN)]
     protected bool $changeUsername;
@@ -204,16 +201,13 @@ abstract class AuthSource
         return $this;
     }
 
-    public function getAddAccount(): string
+    public function getAddAccount(): AddAccountSetting
     {
         return $this->addAccount;
     }
 
-    public function setAddAccount(string $addAccount): self
+    public function setAddAccount(AddAccountSetting $addAccount): self
     {
-        if (!in_array($addAccount, [self::ADD_ACCOUNT_YES, self::ADD_ACCOUNT_NO, self::ADD_ACCOUNT_INVITE])) {
-            throw new InvalidArgumentException('invalid value for add_account');
-        }
         $this->addAccount = $addAccount;
         return $this;
     }
