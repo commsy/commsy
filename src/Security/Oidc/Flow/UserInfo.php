@@ -23,6 +23,7 @@ final readonly class UserInfo
         private string $email,
         private string $firstname,
         private string $lastname,
+        private ?string $displayName = null,
     ) {
     }
 
@@ -44,5 +45,10 @@ final readonly class UserInfo
     public function getLastname(): string
     {
         return $this->lastname;
+    }
+
+    public function getDisplayName(): ?string
+    {
+        return $this->displayName;
     }
 }

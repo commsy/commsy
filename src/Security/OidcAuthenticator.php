@@ -135,6 +135,10 @@ class OidcAuthenticator extends AbstractCommsyAuthenticator
                 $account->setLastname($userInfo->getLastName());
                 $account->setEmail($userInfo->getEmail());
 
+                if ($displayName = $userInfo->getDisplayName()) {
+                    $account->setDisplayName($displayName);
+                }
+
                 $this->entityManager->persist($account);
                 $this->entityManager->flush();
 

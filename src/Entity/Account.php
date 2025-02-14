@@ -89,11 +89,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 class Account implements UserInterface, PasswordAuthenticatedUserInterface, PasswordHasherAwareInterface
 {
-    public final const ACTIVITY_ACTIVE = 'active';
-    public final const ACTIVITY_ACTIVE_NOTIFIED = 'active_notified';
-    public final const ACTIVITY_IDLE = 'idle';
-    public final const ACTIVITY_IDLE_NOTIFIED = 'idle_notified';
-    public final const ACTIVITY_ABANDONED = 'abandoned';
+    public final const string ACTIVITY_ACTIVE = 'active';
+    public final const string ACTIVITY_ACTIVE_NOTIFIED = 'active_notified';
+    public final const string ACTIVITY_IDLE = 'idle';
+    public final const string ACTIVITY_IDLE_NOTIFIED = 'idle_notified';
+    public final const string ACTIVITY_ABANDONED = 'abandoned';
+
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -109,6 +110,10 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
     #[Assert\Regex(pattern: '/^(root|guest)$/i', message: '{{ value }} is a reserved name', match: false)]
     #[Groups(['api', 'api_check_local_login'])]
     private string $username;
+
+    #[ORM\Column(type: Types::STRING, length: 100, nullable: true)]
+    #[Groups(['api'])]
+    private ?string $displayName;
 
     #[Assert\NotBlank]
     #[Assert\NotCompromisedPassword]
@@ -145,7 +150,7 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
     private AccountLanguage $language;
 
     #[ORM\ManyToOne(targetEntity: AuthSource::class)]
-    #[ORM\JoinColumn]
+    #[ORM\JoinColumn(nullable: false)]
     private AuthSource $authSource;
 
     #[ORM\Column(name: 'locked', type: Types::BOOLEAN)]
@@ -164,7 +169,7 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
     /**
      * @var Collection<string, AccountSetting>
      */
-    #[ORM\OneToMany(mappedBy: 'account', targetEntity: AccountSetting::class, cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: AccountSetting::class, mappedBy: 'account', cascade: ['persist'], orphanRemoval: true)]
     private Collection $settings;
 
     public function __construct()
@@ -181,7 +186,7 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return $this->id;
     }
 
-    public function setId(?int $id): Account
+    public function setId(?int $id): static
     {
         $this->id = $id;
         return $this;
@@ -215,7 +220,7 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return $this->password ?: $this->passwordMd5;
     }
 
-    public function setPassword(string $password): Account
+    public function setPassword(string $password): static
     {
         $this->password = $password;
         return $this;
@@ -231,28 +236,36 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return null;
     }
 
-    public function getContextId(): ?int
+    public function getContextId(): int
     {
         return $this->contextId;
     }
 
-    public function setContextId(int $contextId): Account
+    public function setContextId(int $contextId): static
     {
         $this->contextId = $contextId;
         return $this;
     }
 
-    /**
-     * Returns the username used to authenticate the user.
-     */
     public function getUsername(): string
     {
         return $this->username;
     }
 
-    public function setUsername(string $username): Account
+    public function setUsername(string $username): static
     {
         $this->username = $username;
+        return $this;
+    }
+
+    public function getDisplayName(): string
+    {
+        return $this->displayName ?? $this->username;
+    }
+
+    public function setDisplayName(?string $displayName): static
+    {
+        $this->displayName = $displayName;
         return $this;
     }
 
@@ -266,7 +279,7 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return $this->plainPassword;
     }
 
-    public function setPlainPassword(mixed $plainPassword): Account
+    public function setPlainPassword(mixed $plainPassword): static
     {
         $this->plainPassword = $plainPassword;
         return $this;
@@ -277,7 +290,7 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return $this->passwordMd5;
     }
 
-    public function setPasswordMd5(?string $passwordMd5): Account
+    public function setPasswordMd5(?string $passwordMd5): static
     {
         $this->passwordMd5 = $passwordMd5;
         return $this;
@@ -288,7 +301,7 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return $this->firstname;
     }
 
-    public function setFirstname(string $firstname): Account
+    public function setFirstname(string $firstname): static
     {
         $this->firstname = $firstname;
         return $this;
@@ -299,7 +312,7 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return $this->lastname;
     }
 
-    public function setLastname(string $lastname): Account
+    public function setLastname(string $lastname): static
     {
         $this->lastname = $lastname;
         return $this;
@@ -327,7 +340,7 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return $this->email;
     }
 
-    public function setEmail(string $email): Account
+    public function setEmail(string $email): static
     {
         $this->email = $email;
         return $this;
@@ -338,7 +351,7 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return $this->language;
     }
 
-    public function setLanguage(AccountLanguage $language): Account
+    public function setLanguage(AccountLanguage $language): static
     {
         $this->language = $language;
         return $this;
@@ -372,7 +385,7 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return $this->authSource;
     }
 
-    public function setAuthSource(?AuthSource $authSource): Account
+    public function setAuthSource(?AuthSource $authSource): static
     {
         $this->authSource = $authSource;
         return $this;
@@ -383,7 +396,7 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return $this->locked;
     }
 
-    public function setLocked(bool $locked): Account
+    public function setLocked(bool $locked): static
     {
         $this->locked = $locked;
         return $this;
@@ -394,7 +407,7 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return $this->lastLogin;
     }
 
-    public function setLastLogin(?DateTime $lastLogin): Account
+    public function setLastLogin(?DateTime $lastLogin): static
     {
         $this->lastLogin = $lastLogin;
         return $this;
@@ -405,7 +418,7 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return $this->activityState;
     }
 
-    public function setActivityState(string $activityState): Account
+    public function setActivityState(string $activityState): static
     {
         if (!in_array($activityState, [self::ACTIVITY_ACTIVE, self::ACTIVITY_ACTIVE_NOTIFIED, self::ACTIVITY_IDLE, self::ACTIVITY_IDLE_NOTIFIED, self::ACTIVITY_ABANDONED])) {
             throw new InvalidArgumentException('Invalid activity');
@@ -419,7 +432,7 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return $this->activityStateUpdated;
     }
 
-    public function setActivityStateUpdated(?DateTime $activityStateUpdated): Account
+    public function setActivityStateUpdated(?DateTime $activityStateUpdated): static
     {
         $this->activityStateUpdated = $activityStateUpdated;
         return $this;

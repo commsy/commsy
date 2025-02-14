@@ -75,7 +75,7 @@ class AuthSourceOIDC extends AuthSource
         return $this->issuer;
     }
 
-    public function setIssuer(?string $issuer): AuthSourceOIDC
+    public function setIssuer(?string $issuer): static
     {
         $this->issuer = $issuer;
         return $this;
@@ -86,7 +86,7 @@ class AuthSourceOIDC extends AuthSource
         return $this->clientSecret;
     }
 
-    public function setClientSecret(?string $clientSecret): AuthSourceOIDC
+    public function setClientSecret(?string $clientSecret): static
     {
         $this->clientSecret = $clientSecret;
         return $this;
@@ -97,7 +97,7 @@ class AuthSourceOIDC extends AuthSource
         return $this->clientIdentifier;
     }
 
-    public function setClientIdentifier(?string $clientIdentifier): AuthSourceOIDC
+    public function setClientIdentifier(?string $clientIdentifier): static
     {
         $this->clientIdentifier = $clientIdentifier;
         return $this;
@@ -108,7 +108,7 @@ class AuthSourceOIDC extends AuthSource
         return $this->userInfoUrl;
     }
 
-    public function setUserInfoUrl(?string $userInfoUrl): AuthSourceOIDC
+    public function setUserInfoUrl(?string $userInfoUrl): static
     {
         $this->userInfoUrl = $userInfoUrl;
         return $this;
@@ -119,7 +119,7 @@ class AuthSourceOIDC extends AuthSource
         return $this->usernameMapping;
     }
 
-    public function setUsernameMapping(?string $usernameMapping): AuthSourceOIDC
+    public function setUsernameMapping(?string $usernameMapping): static
     {
         $this->usernameMapping = $usernameMapping;
         return $this;
@@ -141,7 +141,7 @@ class AuthSourceOIDC extends AuthSource
         return $this->emailMapping;
     }
 
-    public function setEmailMapping(?string $emailMapping): AuthSourceOIDC
+    public function setEmailMapping(?string $emailMapping): static
     {
         $this->emailMapping = $emailMapping;
         return $this;
@@ -152,7 +152,7 @@ class AuthSourceOIDC extends AuthSource
         return $this->firstnameMapping;
     }
 
-    public function setFirstnameMapping(?string $firstnameMapping): AuthSourceOIDC
+    public function setFirstnameMapping(?string $firstnameMapping): static
     {
         $this->firstnameMapping = $firstnameMapping;
         return $this;
@@ -163,7 +163,7 @@ class AuthSourceOIDC extends AuthSource
         return $this->lastnameMapping;
     }
 
-    public function setLastnameMapping(?string $lastnameMapping): AuthSourceOIDC
+    public function setLastnameMapping(?string $lastnameMapping): static
     {
         $this->lastnameMapping = $lastnameMapping;
         return $this;
