@@ -311,6 +311,7 @@
                                         {% if showWorkflow %}
                                             {{ macros.workflowTrafficLight(item) }}
                                         {% endif %}
+                                        {% set material = item %}
                                         {% include 'material/biblio.html.twig' %}
                                     {% endif %}
                                     {% if item.itemType is same as('todo') %}
