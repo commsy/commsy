@@ -42,9 +42,8 @@ class User
     #[Groups(['api_read'])]
     public int $itemId;
 
-    #[ORM\OneToOne(targetEntity: Room::class)]
-    #[ORM\JoinColumn(name: 'context_id', referencedColumnName: 'item_id', nullable: false)]
-    private ?Room $context = null;
+    #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
+    private ?int $contextId = null;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
@@ -106,16 +105,16 @@ class User
     #[ORM\Column(name: 'use_portal_email', type: Types::BOOLEAN)]
     private bool $usePortalEmail = false;
 
-    public function setContext(Room $context): static
+    public function setContextId(int $contextId): static
     {
-        $this->context = $context;
+        $this->contextId = $contextId;
 
         return $this;
     }
 
-    public function getContext(): ?Room
+    public function getContextId(): int
     {
-        return $this->context;
+        return $this->contextId;
     }
 
     /**
