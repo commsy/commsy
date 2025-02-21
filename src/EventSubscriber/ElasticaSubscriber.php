@@ -237,6 +237,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
             $context = $item->getContextItem();
             if ($context) {
                 $event->getDocument()->set('context', [
+                    'itemId' => $context->getItemId(),
                     'title' => $context->getTitle(),
                 ]);
             }
