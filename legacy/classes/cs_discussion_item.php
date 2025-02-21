@@ -204,7 +204,7 @@ class cs_discussion_item extends cs_item
         $this->replaceElasticItem($objectPersister, $repository);
     }
 
-    public function delete(): void
+    public function delete(bool $silent = false): void
     {
         $symfonyContainer = $this->_environment->getSymfonyContainer();
 

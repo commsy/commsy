@@ -724,10 +724,8 @@ class cs_link_manager extends cs_manager
     }
 
       /** delete a link_item.
-       *
-       * @param int item_id the link_item
        */
-      public function delete(int $itemId): void
+      public function delete(int $itemId, bool $silent = false): void
       {
           $current_datetime = getCurrentDateTimeInMySQL();
           $current_user = $this->_environment->getCurrentUserItem();

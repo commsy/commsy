@@ -189,7 +189,7 @@ class cs_grouproom_item extends cs_room_item
     /** delete project
      * this method deletes the group room.
      */
-    public function delete()
+    public function delete(bool $silent = false): void
     {
         parent::delete();
 
@@ -200,10 +200,12 @@ class cs_grouproom_item extends cs_room_item
         }
 
         // send mail to moderation
-        $this->_sendMailRoomDelete();
+        if (!$silent) {
+            $this->_sendMailRoomDelete();
+        }
 
         $manager = $this->_environment->getProjectManager();
-        $this->_delete($manager);
+        $this->_delete($manager, $silent);
 
         // delete linked group
         $group = $this->getLinkedGroupItem();

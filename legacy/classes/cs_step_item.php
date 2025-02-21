@@ -229,7 +229,7 @@ class cs_step_item extends cs_item
         $this->_saveFileLinks(); // this must be done after saving so we can be sure to have an item id
     }
 
-    public function delete($version = '')
+    public function delete($version = '', bool $silent = false): void
     {
         $step_manager = $this->_environment->getStepManager();
         if (!empty($version) and 'current' == $version) {

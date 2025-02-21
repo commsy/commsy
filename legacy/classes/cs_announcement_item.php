@@ -182,7 +182,7 @@ class cs_announcement_item extends cs_item
      /** delete announcement
       * this method deletes the announcement.
       */
-     public function delete()
+     public function delete(bool $silent = false): void
      {
          global $symfonyContainer;
 

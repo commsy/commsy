@@ -417,7 +417,7 @@ class cs_announcement_manager extends cs_manager
         }
     }
 
-    public function delete(int $itemId): void
+    public function delete(int $itemId, bool $silent = false): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $user = $this->_environment->getCurrentUser();

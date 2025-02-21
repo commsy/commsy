@@ -456,10 +456,8 @@ class cs_section_manager extends cs_manager
   }
 
     /**  delete a section item.
-     *
-     * @param cs_section_item the section item to be deleted
      */
-    public function delete(int $itemId, $version_id = null): void
+    public function delete(int $itemId, $version_id = null, bool $silent = false): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();

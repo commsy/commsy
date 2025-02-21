@@ -901,7 +901,7 @@ class cs_labels_manager extends cs_manager
         unset($item);
     }
 
-  public function delete(int $itemId): void
+  public function delete(int $itemId, bool $silent = false): void
   {
       $current_datetime = getCurrentDateTimeInMySQL();
       $current_user = $this->_environment->getCurrentUserItem();

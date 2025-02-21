@@ -238,10 +238,8 @@ class cs_file_manager extends cs_manager
     }
 
     /**  delete a file "item".
-     *
-     * @param cs_file_item the file "item" to be deleted
      */
-    public function delete(int $itemId): void
+    public function delete(int $itemId, bool $silent = false): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();

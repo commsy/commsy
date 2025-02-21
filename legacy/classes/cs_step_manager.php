@@ -412,10 +412,8 @@ class cs_step_manager extends cs_manager
      }
 
     /**  delete a step item.
-     *
-     * @param cs_step_item the step item to be deleted
      */
-    public function delete(int $itemId): void
+    public function delete(int $itemId, bool $silent = false): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();

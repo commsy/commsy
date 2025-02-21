@@ -1418,13 +1418,11 @@ class cs_item
     /** delete item
      * this method deletes the item to the database; if links to other items (e.g. relevant groups) are changed, they will be updated too.
      *
-     * @param cs_manager the manager that should be used to delete the item (e.g. cs_news_manager for cs_news_item)
-     *
      * @author CommSy Development Group
      */
-    public function _delete($manager)
+    protected function _delete(cs_manager $manager, bool $silent = false): void
     {
-        $manager->delete($this->getItemID());
+        $manager->delete($this->getItemID(), $silent);
         $link_manager = $this->_environment->getLinkItemManager();
         $link_manager->deleteLinksBecauseItemIsDeleted($this->getItemID());
 
@@ -1933,7 +1931,7 @@ class cs_item
      /** delete item
       * this method deletes an item.
       */
-     public function delete()
+     public function delete(bool $silent = false): void
      {
          $manager = $this->_environment->getManager($this->getItemType());
          $this->_delete($manager);
