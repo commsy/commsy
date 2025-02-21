@@ -1057,7 +1057,6 @@ class cs_user_manager extends cs_manager
             if (empty($creator_id)) {
                 $current_user = $this->_environment->getCurrentUser();
                 $creator_id = $current_user->getItemID();
-                unset($current_user);
                 if (!empty($creator_id)) {
                     $item->setCreatorID($creator_id);
                 } else {
@@ -1085,7 +1084,6 @@ class cs_user_manager extends cs_manager
                 $room_item->setClosedForGuests();
                 $room_item->setContinuous();
                 $room_item->save();
-                unset($room_item);
             }
         }
 
@@ -1107,10 +1105,7 @@ class cs_user_manager extends cs_manager
                     $new_array = array_merge($new_array, $customized_room_id_array);
                     $private_room->setCustomizedRoomIDArray($new_array);
                     $private_room->save();
-                    unset($new_array);
-                    unset($customized_room_id_array);
                 }
-                unset($private_room);
             }
         }
 
@@ -1127,7 +1122,6 @@ class cs_user_manager extends cs_manager
                 $link_modifier_item_manager->markEdited($item->getItemID());
             }
         }
-        unset($item);
     }
 
     /**

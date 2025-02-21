@@ -318,7 +318,6 @@ class cs_userroom_manager extends cs_room2_manager
         } else {
             $this->_create($item);
         }
-        unset($item);
     }
 
     /** create a project - internal, do not use -> use method save

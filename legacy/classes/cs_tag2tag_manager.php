@@ -181,7 +181,6 @@ class cs_tag2tag_manager extends cs_manager
         if (empty($modifier_id)) {
             $user = $this->_environment->getCurrentUser();
             $item->setModifierItemID($user->getItemID());
-            unset($user);
         }
 
         $link_id = $item->getLinkID();
@@ -192,11 +191,9 @@ class cs_tag2tag_manager extends cs_manager
             if (empty($creator_id)) {
                 $user = $this->_environment->getCurrentUser();
                 $item->setCreatorItemID($user->getItemID());
-                unset($user);
             }
             $this->_create($item);
         }
-        unset($item);
     }
 
     public function delete($father_id, $child_id = null, bool $silent = false): void

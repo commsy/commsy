@@ -447,12 +447,7 @@ class cs_entry_manager extends cs_manager
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problems creating announcement.', E_USER_WARNING);
-        } else {
-            unset($result);
         }
-        unset($announcement_item);
-        unset($modificator);
-        unset($user);
     }
 
     public function delete(int $itemId, bool $silent = false): void
@@ -467,11 +462,8 @@ class cs_entry_manager extends cs_manager
         if (!isset($result) or !$result) {
             trigger_error('Problems deleting announcement.', E_USER_WARNING);
         } else {
-            unset($result);
             $link_manager = $this->_environment->getLinkManager();
             $link_manager->deleteLinks($itemId, 0, 'relevant_for');
-            unset($link_manager);
-            //  $link_manager->deleteLinksBecauseItemIsDeleted($itemId);  // so wäre es einheitlich
             parent::delete($itemId);
         }
     }

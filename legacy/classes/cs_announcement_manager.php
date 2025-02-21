@@ -430,11 +430,8 @@ class cs_announcement_manager extends cs_manager
         if (!isset($result) or !$result) {
             trigger_error('Problems deleting announcement.', E_USER_WARNING);
         } else {
-            unset($result);
             $link_manager = $this->_environment->getLinkManager();
             $link_manager->deleteLinks($itemId, 0, 'relevant_for');
-            unset($link_manager);
-            //  $link_manager->deleteLinksBecauseItemIsDeleted($itemId);  // so wäre es einheitlich
             parent::delete($itemId);
         }
     }

@@ -1133,7 +1133,6 @@ class cs_item
                  if ('general' != $changed_key and 'section_for' != $changed_key and 'task_item' != $changed_key and 'copy_of' != $changed_key) {
                      // Abfrage nötig wegen langsamer Migration auf die neuen LinkTypen.
                      if (in_array($changed_key, [CS_TOPIC_TYPE, CS_GROUP_TYPE, CS_PROJECT_TYPE, CS_PRIVATEROOM_TYPE, CS_MYROOM_TYPE, CS_COMMUNITY_TYPE, CS_ANNOUNCEMENT_TYPE, CS_MATERIAL_TYPE, CS_TAG_TYPE, CS_TODO_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_USER_TYPE])) {
-                         $link_manager = $this->_environment->getLinkItemManager();
                          if (is_object($this->_data[$changed_key])) { // a list of objects or one object
                              $this->_setObjectLinkItems($changed_key);
                          } elseif (is_array($this->_data[$changed_key])) { // an array

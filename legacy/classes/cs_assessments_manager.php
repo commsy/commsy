@@ -289,11 +289,9 @@ class cs_assessments_manager extends cs_manager
             $creator_id = $item->getCreatorID();
             if (empty($creator_id)) {
                 $user = $this->_environment->getCurrentUser();
-                unset($user);
             }
             $this->_create($item);
         }
-        unset($item);
     }
 
     public function delete(int $itemId, bool $silent = false): void
