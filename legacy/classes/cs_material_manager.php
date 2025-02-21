@@ -953,8 +953,6 @@ class cs_material_manager extends cs_manager
       // Add modifier to all users who ever edited this section
       $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
       $link_modifier_item_manager->markEdited($item->getItemID());
-      unset($item);
-      unset($link_modifier_item_manager);
   }
 
   /** save a new version of a material.

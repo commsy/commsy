@@ -612,24 +612,16 @@ class cs_labels_manager extends cs_manager
         return new cs_label_item($this->_environment, $label_type);
     }
 
-  /** get a label in newest version.
-   *
-   * @param string  type    type of the label
-   * @param int item_id id of the item
+  /** get a label
    *
    * @return object cs_item a label
    */
   public function getItem(?int $item_id)
   {
       if ($this->_cache_on) {
-          if (isset($this->_room_limit)) {
-              $current_context = $this->_room_limit;
-          } else {
-              $current_context = $this->_environment->getCurrentContextID();
-          }
+          $current_context = $this->_room_limit ?? $this->_environment->getCurrentContextID();
+
           if (isset($this->_type_limit)) {
-              $current_module = $this->_environment->getCurrentModule();
-              $current_function = $this->_environment->getCurrentFunction();
               if (!isset($this->_internal_data[$current_context][$this->_type_limit])) {
                   $this->_getAllLabels($this->_type_limit);
               }
@@ -916,7 +908,6 @@ class cs_labels_manager extends cs_manager
       } else {
           $link_manager = $this->_environment->getLinkManager();
           $link_manager->deleteLinksBecauseItemIsDeleted($itemId);
-          unset($link_manager);
           parent::delete($itemId);
       }
   }
@@ -1023,14 +1014,6 @@ class cs_labels_manager extends cs_manager
                              trigger_error('Problems automatic deleting labels:.', E_USER_WARNING);
                          }
                      }
-                 }
-             }
-         }
-
-         if (!empty($result)) {
-             foreach ($result as $rs) {
-                 // Never delete any group "ALL"
-                 if (!(CS_GROUP_TYPE == $rs['type'] and 'ALL' == $rs['name'])) {
                  }
              }
          }

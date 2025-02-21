@@ -245,8 +245,6 @@ class cs_tasks_manager extends cs_manager
         // Add modifier to all users who ever edited this section
         $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
         $link_modifier_item_manager->markEdited($item->getItemID());
-        unset($link_modifier_item_manager);
-        unset($item);
     }
 
     /** update a task - internal, do not use -> use method save
