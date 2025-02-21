@@ -34,7 +34,7 @@ class cs_grouproom_item extends cs_room_item
 {
     private ?\cs_context_item $_project_room_item = null;
 
-    private ?object $_group_item = null;
+    private ?cs_group_item $linkedGroup = null;
 
     /** constructor.
      *
@@ -209,7 +209,7 @@ class cs_grouproom_item extends cs_room_item
 
         // delete linked group
         $group = $this->getLinkedGroupItem();
-        $group->delete(false);
+        $group?->delete(false);
 
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
@@ -302,28 +302,23 @@ class cs_grouproom_item extends cs_room_item
 
     public function getLinkedGroupItem(): ?cs_group_item
     {
-        $retour = null;
-        if (!isset($this->_group_item)) {
-            if ($this->_issetExtra('GROUP_ITEM_ID')) {
-                $item_id = $this->_getExtra('GROUP_ITEM_ID');
-                $manager = $this->_environment->getGroupManager();
-                if ($manager->existsItem($item_id)) {
-                    $group_item = $manager->getItem($item_id);
-                    if (isset($group_item) and !$group_item->isDeleted()) {
-                        $this->_group_item = $group_item;
-                    }
-                    $retour = $this->_group_item;
-                } else {
-                    $this->_unsetExtra('GROUP_ITEM_ID');
-                    $this->saveWithoutChangingModificationInformation();
-                    $this->save();
-                }
-            }
-        } else {
-            $retour = $this->_group_item;
+        if ($this->linkedGroup) {
+            return $this->linkedGroup;
         }
 
-        return $retour;
+        if ($groupId = $this->_getExtra('GROUP_ITEM_ID')) {
+            $groupManager = $this->_environment->getGroupManager();
+            if ($groupManager->existsItem($groupId)) {
+                /** @var cs_group_item $group */
+                $group = $groupManager->getItem($groupId);
+                if (isset($group) && !$group->isDeleted()) {
+                    $this->linkedGroup = $group;
+                    return $group;
+                }
+            }
+        }
+
+        return null;
     }
 
     public function getLinkedGroupItemID()
