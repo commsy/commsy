@@ -891,7 +891,8 @@ class cs_item
       */
      public function setCreatorItem(?cs_user_item $user): void
      {
-         $this->_setUserItem($user, 'creator');
+         $this->_data['creator'] = $user;
+         $this->_setValue('creator_id', $user?->getItemID());
      }
 
      /** get creator of a material
@@ -918,19 +919,19 @@ class cs_item
      */
     public function setDeleterItem(cs_user_item $user): void
     {
-        $this->_setUserItem($user, 'deleter');
+        $this->_data['deleter'] = $user;
+        $this->_setValue('deleter_id', $user->getItemID());
     }
 
     /** set modificator
      * this method set the modificator of the item.
      *
-     * @param cs_user_item modificator of the item
-     *
      * @author CommSy Development Group
      */
-    public function setModificatorItem($item)
+    public function setModificatorItem(?cs_user_item $user): void
     {
-        $this->_setUserItem($item, 'modifier');
+        $this->_data['modifier'] = $user;
+        $this->_setValue('modifier_id', $user?->getItemID());
     }
 
     /** get deleter of a material
@@ -1069,15 +1070,6 @@ class cs_item
          }
 
          return $user;
-     }
-
-     private function _setUserItem($user, $role)
-     {
-         if (isset($user) and is_object($user)) {
-             $this->_data[$role] = $user;
-             $item_id = $user->getItemID();
-             $this->_setValue($role.'_id', $item_id);
-         }
      }
 
     public function _setValue($key, $value, $internal = true)
