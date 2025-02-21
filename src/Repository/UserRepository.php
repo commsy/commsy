@@ -34,7 +34,7 @@ class UserRepository extends ServiceEntityRepository
 
         return $qb
             ->where($qb->expr()->andX(
-                $qb->expr()->eq('u.contextId', ':contextId'),
+                $qb->expr()->eq('u.context', ':contextId'),
                 $qb->expr()->eq('u.status', ':status'),
                 $qb->expr()->isNull('u.deletionDate'),
                 $qb->expr()->isNull('u.deleterId')
@@ -49,7 +49,7 @@ class UserRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('u')
             ->where('u.status = 3')
-            ->andWhere('u.contextId = :roomId')
+            ->andWhere('u.context = :roomId')
             ->andWhere('u.deletionDate IS NULL')
             ->setParameter('roomId', $roomId)
             ->getQuery()
@@ -60,7 +60,7 @@ class UserRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('u')
             ->where('u.isContact = 1')
-            ->andWhere('u.contextId = :roomId')
+            ->andWhere('u.context = :roomId')
             ->andWhere('u.deletionDate IS NULL')
             ->setParameter('roomId', $roomId)
             ->getQuery()
@@ -70,7 +70,7 @@ class UserRepository extends ServiceEntityRepository
     public function findActiveUsers(int $contextId): mixed
     {
         return $this->createQueryBuilder('u')
-            ->where('u.contextId = :contextId')
+            ->where('u.context = :contextId')
             ->andWhere('u.deletionDate IS NULL')
             ->andWhere('u.deleterId IS NULL')
             ->setParameter('contextId', $contextId)
@@ -81,7 +81,7 @@ class UserRepository extends ServiceEntityRepository
     public function findActiveUsersAsQuery(int $contextId): mixed
     {
         return $this->createQueryBuilder('u')
-            ->where('u.contextId = :contextId')
+            ->where('u.context = :contextId')
             ->andWhere('u.deletionDate IS NULL')
             ->andWhere('u.deleterId IS NULL')
             ->setParameter('contextId', $contextId)
@@ -92,7 +92,7 @@ class UserRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('u')
             ->select('COUNT(u.itemId) as num')
-            ->where('u.contextId = :contextId')
+            ->where('u.context = :contextId')
             ->andWhere('u.deletionDate IS NULL')
             ->andWhere('u.deleterId IS NULL')
             ->setParameter('contextId', $contextId)
@@ -103,7 +103,7 @@ class UserRepository extends ServiceEntityRepository
     public function findPortalUser(Account $account): ?User
     {
         return $this->createQueryBuilder('u')
-            ->where('u.contextId = :contextId')
+            ->where('u.context = :contextId')
             ->andWhere('u.authSource = :authSourceId')
             ->andWhere('u.userId = :username')
             ->andWhere('u.deletionDate IS NULL')
