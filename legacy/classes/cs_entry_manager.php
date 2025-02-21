@@ -455,7 +455,7 @@ class cs_entry_manager extends cs_manager
         unset($user);
     }
 
-    public function delete(int $itemId): void
+    public function delete(int $itemId, bool $silent = false): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $user_id = $this->_current_user->getItemID() ?: 0;

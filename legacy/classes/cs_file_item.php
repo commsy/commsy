@@ -221,7 +221,7 @@ class cs_file_item extends cs_item
         return $itemCollection;
     }
 
-    public function _delete($manager)
+    protected function _delete(cs_manager $manager, bool $silent = false): void
     {
         $manager->delete($this->getFileID());
     }

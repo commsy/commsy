@@ -230,7 +230,7 @@ class cs_privateroom_item extends cs_room_item
     /** delete private room
      * this method deletes the private room.
      */
-    public function delete()
+    public function delete(bool $silent = false): void
     {
         $manager = $this->_environment->getPrivateRoomManager();
         $this->_delete($manager);

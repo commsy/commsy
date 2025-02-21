@@ -343,9 +343,9 @@ class cs_tasks_manager extends cs_manager
     /** delete a task
      * this method deletes a new task.
      *
-     * @param int item_id item id of the task
+     * @param int $itemId item id of the task
      */
-    public function delete(int $itemId): void
+    public function delete(int $itemId, bool $silent = false): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();

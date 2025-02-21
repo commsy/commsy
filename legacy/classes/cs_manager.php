@@ -618,7 +618,7 @@ class cs_manager
      * @param int $itemId id of the commsy item
      * @throws \Doctrine\DBAL\Exception
      */
-    public function delete(int $itemId): void
+    public function delete(int $itemId, bool $silent = false): void
     {
         $currentDatetime = getCurrentDateTimeInMySQL();
         $currentUser = $this->_environment->getCurrentUserItem();

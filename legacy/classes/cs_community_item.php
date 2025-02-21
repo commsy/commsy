@@ -254,7 +254,7 @@ class cs_community_item extends cs_room_item
    /** delete community
     * this method deletes the community.
     */
-   public function delete()
+   public function delete(bool $silent = false): void
    {
        parent::delete();
 

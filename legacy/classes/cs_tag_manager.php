@@ -600,7 +600,7 @@ class cs_tag_manager extends cs_manager
          }
      }
 
-    public function delete(int $itemId, $deleteTag2TagRecursive = true): void
+    public function delete(int $itemId, $deleteTag2TagRecursive = true, bool $silent = false): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();

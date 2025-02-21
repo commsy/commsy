@@ -61,7 +61,7 @@ class cs_portfolio_item extends cs_item
         $this->_save($portfolio_manager);
     }
 
-    public function delete()
+    public function delete(bool $silent = false): void
     {
         $manager = $this->_environment->getPortfolioManager();
         $this->_delete($manager);

@@ -971,10 +971,7 @@ class cs_material_manager extends cs_manager
       unset($material_item);
   }
 
-  /**
-   * documentation TBD.
-   */
-  public function delete(int $itemId, $version_id = null): void
+  public function delete(int $itemId, $version_id = null, bool $silent = false): void
   {
       $current_datetime = getCurrentDateTimeInMySQL();
       $current_user = $this->_environment->getCurrentUserItem();
