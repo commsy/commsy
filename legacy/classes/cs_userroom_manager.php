@@ -308,9 +308,9 @@ class cs_userroom_manager extends cs_room2_manager
 
     /** save a user room item.
      *
-     * @param cs_userroom_item
+     * @param cs_userroom_item $item
      */
-    public function saveItem($item)
+    public function saveItem($item): void
     {
         $itemId = $item->getItemID();
         if (!empty($itemId)) {

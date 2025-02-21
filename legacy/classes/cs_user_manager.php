@@ -1043,9 +1043,9 @@ class cs_user_manager extends cs_manager
     /** save a commsy item
      * this method saves a commsy item.
      *
-     * @param cs_item
+     * @param cs_user_item $item
      */
-    public function saveItem($item)
+    public function saveItem($item): void
     {
         $setCreatorID2ItemID = false;
         $item_id = $item->getItemID();

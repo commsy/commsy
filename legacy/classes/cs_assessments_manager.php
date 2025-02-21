@@ -278,9 +278,9 @@ class cs_assessments_manager extends cs_manager
     /** save an item
      * this method saves an item.
      *
-     * @param cs_assessments_item
+     * @param cs_assessments_item $item
      */
-    public function saveItem($item)
+    public function saveItem($item): void
     {
         $item_id = $item->getItemID();
         if (!empty($item_id)) {
