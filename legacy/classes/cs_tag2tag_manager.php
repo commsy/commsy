@@ -173,9 +173,9 @@ class cs_tag2tag_manager extends cs_manager
     /** save a item
      * this method saves a item.
      *
-     * @param cs_tag2tag_item
+     * @param cs_tag2tag_item $item
      */
-    public function saveItem($item)
+    public function saveItem($item): void
     {
         $modifier_id = $item->getModifierItemID();
         if (empty($modifier_id)) {

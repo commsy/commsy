@@ -931,9 +931,9 @@ class cs_material_manager extends cs_manager
   /** save a commsy item
    * this method saves a commsy item.
    *
-   * @param cs_item
+   * @param cs_material_item $item
    */
-  public function saveItem($item)
+  public function saveItem($item): void
   {
       $item_id = $item->getItemID();
       if (!empty($item_id)) {
