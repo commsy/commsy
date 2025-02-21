@@ -350,10 +350,9 @@ class PortfolioService
         $portfolioManager->deletePortfolioTag($portfolioId, $tagId);
     }
 
-    public function getNewItem()
+    public function getNewItem(): cs_portfolio_item
     {
         $portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
-
         return $portfolioManager->getNewItem();
     }
 

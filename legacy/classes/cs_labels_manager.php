@@ -831,29 +831,25 @@ class cs_labels_manager extends cs_manager
       }
   }
 
-  /** save a label.
-   *
-   * @param cs_label_item $item the label
-   *
-   * @author CommSy Development Group
-   */
-  public function saveItem($item): void
-  {
-      $item_id = $item->getItemID();
-      if (!empty($item_id)) {
-          $this->_update($item);
-      } else {
-          $creator_id = $item->getCreatorID();
-          if (!isset($creator_id)) {
-              $item->setCreatorItem($this->_environment->getCurrentUser());
-          }
-          $this->_create($item);
-      }
+    /** save a label.
+     *
+     * @param cs_label_item $item the label
+     *
+     * @author CommSy Development Group
+     */
+    public function saveItem($item): void
+    {
+        $item_id = $item->getItemID();
+        if (!empty($item_id)) {
+            $this->_update($item);
+        } else {
+            $this->_create($item);
+        }
 
-      // Add modifier to all users who ever edited this item
-      $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
-      $link_modifier_item_manager->markEdited($item->getItemID());
-  }
+        // Add modifier to all users who ever edited this item
+        $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
+        $link_modifier_item_manager->markEdited($item->getItemID());
+    }
 
     /** update a label, with new informations, e.g. creator and modificator
      * this method updates a label initially.

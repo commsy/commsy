@@ -11,7 +11,8 @@
  * file that was distributed with this source code.
  */
 
-/** class for database connection to the database table "labels"
+/**
+ * Class for database connection to the database table "labels".
  * this class implements a database manager for the table "labels". Labels are groups, topics, labels, ...
  */
 class cs_topic_manager extends cs_labels_manager
@@ -19,31 +20,24 @@ class cs_topic_manager extends cs_labels_manager
     /** constructor
      * the only available constructor, initial values for internal variables.
      *
-     * @param object cs_environment the environment
+     * @param cs_environment $environment the environment
      */
     public function __construct($environment)
     {
         parent::__construct($environment);
     }
 
-    /** resetLimits
-     *  reset limits of this manager.
-     */
-    public function resetLimits()
+    public function resetLimits(): void
     {
         parent::resetLimits();
         $this->_type_limit = CS_TOPIC_TYPE;
     }
 
-    /** get an empty time item
-     *  get an empty label_item.
-     *
-     *  @return cs_label_item a time label
-     */
-    public function getNewItem($label_type = '')
+    public function getNewItem($label_type = ''): cs_topic_item
     {
-        $item = new cs_topic_item($this->_environment);
+        $topic = new cs_topic_item($this->_environment);
+        $topic->setCreatorItem($this->_environment->getCurrentUser());
 
-        return $item;
+        return $topic;
     }
 }
