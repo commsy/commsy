@@ -154,8 +154,10 @@
           return;
         }
 
-        // Skip, if the button adds a new hashtag
+        // Skip, if the button adds a new hashtag or category
         if (buttonNameAttr.indexOf('newHashtagAdd') > -1 || buttonNameAttr.indexOf('itemLinks[newHashtagAdd]') > -1) {
+          return;
+        } else if (buttonNameAttr.indexOf('newCategoryAdd') > -1 || buttonNameAttr.indexOf('itemLinks[newCategoryAdd]') > -1) {
           return;
         }
 
