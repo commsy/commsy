@@ -34,6 +34,12 @@ final class Version20241001121006 extends AbstractMigration
         $this->addSql('ALTER TABLE room ADD CONSTRAINT FK_729F519BD079F553 FOREIGN KEY (modifier_id) REFERENCES user (item_id)');
         $this->addSql('DROP INDEX IDX_729F519BEAEF1DFE ON room');
 
+        $this->addSql('UPDATE room_privat AS rp LEFT JOIN user AS u ON rp.creator_id = u.item_id SET rp.creator_id = NULL
+                WHERE rp.creator_id IS NOT NULL AND u.item_id IS NULL');
+
+        $this->addSql('UPDATE room_privat AS rp LEFT JOIN user AS u ON rp.modifier_id = u.item_id SET rp.modifier_id = NULL
+                WHERE rp.modifier_id IS NOT NULL AND u.item_id IS NULL');
+
         $this->addSql('ALTER TABLE room_privat CHANGE item_id item_id INT AUTO_INCREMENT NOT NULL, CHANGE creation_date creation_date DATETIME NOT NULL, CHANGE modification_date modification_date DATETIME NOT NULL, CHANGE type type VARCHAR(20) NOT NULL, CHANGE continuous continuous TINYINT(1) DEFAULT 0 NOT NULL, CHANGE template template TINYINT(1) DEFAULT 0 NOT NULL');
         $this->addSql('ALTER TABLE room_privat ADD CONSTRAINT FK_45609AA461220EA6 FOREIGN KEY (creator_id) REFERENCES user (item_id)');
         $this->addSql('ALTER TABLE room_privat ADD CONSTRAINT FK_45609AA4D079F553 FOREIGN KEY (modifier_id) REFERENCES user (item_id)');
