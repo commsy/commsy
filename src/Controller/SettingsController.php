@@ -400,7 +400,7 @@ class SettingsController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('deleteUserRooms')->isClicked()) {
+            if ($form->has('deleteUserRooms') && $form->get('deleteUserRooms')->isClicked()) {
                 return $this->redirectToRoute('app_settings_deleteuserrooms', ['roomId' => $roomId]);
             } else {
                 $oldRoom = clone $roomItem;
