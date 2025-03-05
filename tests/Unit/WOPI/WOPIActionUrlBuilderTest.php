@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 class WOPIActionUrlBuilderTest extends TestCase
 {
-    public function testLegacyWopiSourceMissing()
+    public function testLegacyWopiSourceMissing(): void
     {
         /**
          * Office 365 versions prior to 2018.12.15 required hosts to add the WopiSrc to the action URL because
@@ -32,5 +32,18 @@ class WOPIActionUrlBuilderTest extends TestCase
             ->build($legacy365WithoutSource);
 
         $this->assertStringContainsString('wopisrc=https://host/wopi/files/abcef123', urldecode($actionUrl));
+    }
+
+    public function testLegacyWopiSourceNoDuplicate(): void
+    {
+        $wopiWithSource = 'https://host/we/wordeditorframe.aspx?<ui=UI_LLCC&><rs=DC_LLCC&><dchat=DISABLE_CHAT&><hid=HOST_SESSION_ID&><showpagestats=PERFSTATS&><IsLicensedUser=BUSINESS_USER&><actnavid=ACTIVITY_NAVIGATION_ID&><wopisrc=WOPI_SOURCE&>';
+
+        $actionUrlBuilder = new ActionUrlBuilder();
+        $actionUrl = $actionUrlBuilder
+            ->setWOPISource('https://host/wopi/files/abcef123')
+            ->build($wopiWithSource);
+
+        $numSrc = substr_count(urldecode($actionUrl), 'wopisrc=https://host/wopi/files/abcef123');
+        $this->assertEquals(1,  $numSrc);
     }
 }
