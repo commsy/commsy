@@ -13,7 +13,7 @@
 
 class cs_group_manager extends cs_labels_manager
 {
-    /** constructor
+    /**
      * the only available constructor, initial values for internal variables.
      *
      * @param cs_environment $environment the environment
@@ -23,20 +23,17 @@ class cs_group_manager extends cs_labels_manager
         parent::__construct($environment);
     }
 
-    /** resetLimits
-     *  reset limits of this manager.
-     */
-    public function resetLimits()
+    public function resetLimits(): void
     {
         parent::resetLimits();
         $this->_type_limit = CS_GROUP_TYPE;
     }
 
-    /** get an empty group item
-     *  get an empty label (group) item.
-     */
     public function getNewItem($label_type = ''): cs_group_item
     {
-        return new cs_group_item($this->_environment);
+        $group = new cs_group_item($this->_environment);
+        $group->setCreatorItem($this->_environment->getCurrentUser());
+
+        return $group;
     }
 }

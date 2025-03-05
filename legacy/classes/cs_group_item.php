@@ -74,7 +74,6 @@ class cs_group_item extends cs_label_item
      */
     public function save(bool $saveGrouproom = true): void
     {
-        $current_user_item = null;
         $save_time = false;
 
         /** @var cs_room_item $parentRoom */
@@ -226,7 +225,7 @@ class cs_group_item extends cs_label_item
      * this methode delete the group item
      * with the group room.
      */
-    public function delete(bool $deleteGrouproom = true): void
+    public function delete(bool $deleteGrouproom = true, bool $silent = false): void
     {
         if ($deleteGrouproom) {
             $room = $this->getGroupRoomItem();

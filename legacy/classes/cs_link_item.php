@@ -351,7 +351,7 @@ class cs_link_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function delete()
+    public function delete(bool $silent = false): void
     {
         $link_manager = $this->_environment->getLinkItemManager();
         $link_manager->delete($this->getItemID());

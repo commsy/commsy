@@ -891,7 +891,8 @@ class cs_item
       */
      public function setCreatorItem(?cs_user_item $user): void
      {
-         $this->_setUserItem($user, 'creator');
+         $this->_data['creator'] = $user;
+         $this->_setValue('creator_id', $user?->getItemID());
      }
 
      /** get creator of a material
@@ -918,19 +919,19 @@ class cs_item
      */
     public function setDeleterItem(cs_user_item $user): void
     {
-        $this->_setUserItem($user, 'deleter');
+        $this->_data['deleter'] = $user;
+        $this->_setValue('deleter_id', $user->getItemID());
     }
 
     /** set modificator
      * this method set the modificator of the item.
      *
-     * @param cs_user_item modificator of the item
-     *
      * @author CommSy Development Group
      */
-    public function setModificatorItem($item)
+    public function setModificatorItem(?cs_user_item $user): void
     {
-        $this->_setUserItem($item, 'modifier');
+        $this->_data['modifier'] = $user;
+        $this->_setValue('modifier_id', $user?->getItemID());
     }
 
     /** get deleter of a material
@@ -1071,15 +1072,6 @@ class cs_item
          return $user;
      }
 
-     private function _setUserItem($user, $role)
-     {
-         if (isset($user) and is_object($user)) {
-             $this->_data[$role] = $user;
-             $item_id = $user->getItemID();
-             $this->_setValue($role.'_id', $item_id);
-         }
-     }
-
     public function _setValue($key, $value, $internal = true)
     {
         $this->_data[$key] = $value;
@@ -1133,7 +1125,6 @@ class cs_item
                  if ('general' != $changed_key and 'section_for' != $changed_key and 'task_item' != $changed_key and 'copy_of' != $changed_key) {
                      // Abfrage nötig wegen langsamer Migration auf die neuen LinkTypen.
                      if (in_array($changed_key, [CS_TOPIC_TYPE, CS_GROUP_TYPE, CS_PROJECT_TYPE, CS_PRIVATEROOM_TYPE, CS_MYROOM_TYPE, CS_COMMUNITY_TYPE, CS_ANNOUNCEMENT_TYPE, CS_MATERIAL_TYPE, CS_TAG_TYPE, CS_TODO_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_USER_TYPE])) {
-                         $link_manager = $this->_environment->getLinkItemManager();
                          if (is_object($this->_data[$changed_key])) { // a list of objects or one object
                              $this->_setObjectLinkItems($changed_key);
                          } elseif (is_array($this->_data[$changed_key])) { // an array
@@ -1418,13 +1409,11 @@ class cs_item
     /** delete item
      * this method deletes the item to the database; if links to other items (e.g. relevant groups) are changed, they will be updated too.
      *
-     * @param cs_manager the manager that should be used to delete the item (e.g. cs_news_manager for cs_news_item)
-     *
      * @author CommSy Development Group
      */
-    public function _delete($manager)
+    protected function _delete(cs_manager $manager, bool $silent = false): void
     {
-        $manager->delete($this->getItemID());
+        $manager->delete($this->getItemID(), $silent);
         $link_manager = $this->_environment->getLinkItemManager();
         $link_manager->deleteLinksBecauseItemIsDeleted($this->getItemID());
 
@@ -1933,7 +1922,7 @@ class cs_item
      /** delete item
       * this method deletes an item.
       */
-     public function delete()
+     public function delete(bool $silent = false): void
      {
          $manager = $this->_environment->getManager($this->getItemType());
          $this->_delete($manager);

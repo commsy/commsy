@@ -612,24 +612,16 @@ class cs_labels_manager extends cs_manager
         return new cs_label_item($this->_environment, $label_type);
     }
 
-  /** get a label in newest version.
-   *
-   * @param string  type    type of the label
-   * @param int item_id id of the item
+  /** get a label
    *
    * @return object cs_item a label
    */
   public function getItem(?int $item_id)
   {
       if ($this->_cache_on) {
-          if (isset($this->_room_limit)) {
-              $current_context = $this->_room_limit;
-          } else {
-              $current_context = $this->_environment->getCurrentContextID();
-          }
+          $current_context = $this->_room_limit ?? $this->_environment->getCurrentContextID();
+
           if (isset($this->_type_limit)) {
-              $current_module = $this->_environment->getCurrentModule();
-              $current_function = $this->_environment->getCurrentFunction();
               if (!isset($this->_internal_data[$current_context][$this->_type_limit])) {
                   $this->_getAllLabels($this->_type_limit);
               }
@@ -821,9 +813,9 @@ class cs_labels_manager extends cs_manager
           ->setValue('type', ':type')
           ->setParameter('itemId', $item->getItemID())
           ->setParameter('contextId', $item->getContextID())
-          ->setParameter('creatorId', $item->getCreatorItem()->getItemID())
+          ->setParameter('creatorId', $item->getCreatorItem()?->getItemID())
           ->setParameter('creationDate', $currentDateTime)
-          ->setParameter('modifierId', $item->getModificatorItem()->getItemID())
+          ->setParameter('modifierId', $item->getModificatorItem()?->getItemID())
           ->setParameter('modificationDate', $item->getModificationDate() ?: $currentDateTime)
           ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
           ->setParameter('name', $item->getTitle())
@@ -839,30 +831,25 @@ class cs_labels_manager extends cs_manager
       }
   }
 
-  /** save a label.
-   *
-   * @param object cs_item label_item the label
-   *
-   * @author CommSy Development Group
-   */
-  public function saveItem($label_item)
-  {
-      $item_id = $label_item->getItemID();
-      if (!empty($item_id)) {
-          $this->_update($label_item);
-      } else {
-          $creator_id = $label_item->getCreatorID();
-          if (empty($creator_id)) {
-              $user = $this->_environment->getCurrentUser();
-              $label_item->setCreatorItem($user);
-          }
-          $this->_create($label_item);
-      }
+    /** save a label.
+     *
+     * @param cs_label_item $item the label
+     *
+     * @author CommSy Development Group
+     */
+    public function saveItem($item): void
+    {
+        $item_id = $item->getItemID();
+        if (!empty($item_id)) {
+            $this->_update($item);
+        } else {
+            $this->_create($item);
+        }
 
-      // Add modifier to all users who ever edited this item
-      $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
-      $link_modifier_item_manager->markEdited($label_item->getItemID());
-  }
+        // Add modifier to all users who ever edited this item
+        $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
+        $link_modifier_item_manager->markEdited($item->getItemID());
+    }
 
     /** update a label, with new informations, e.g. creator and modificator
      * this method updates a label initially.
@@ -901,7 +888,7 @@ class cs_labels_manager extends cs_manager
         unset($item);
     }
 
-  public function delete(int $itemId): void
+  public function delete(int $itemId, bool $silent = false): void
   {
       $current_datetime = getCurrentDateTimeInMySQL();
       $current_user = $this->_environment->getCurrentUserItem();
@@ -916,7 +903,6 @@ class cs_labels_manager extends cs_manager
       } else {
           $link_manager = $this->_environment->getLinkManager();
           $link_manager->deleteLinksBecauseItemIsDeleted($itemId);
-          unset($link_manager);
           parent::delete($itemId);
       }
   }
@@ -1023,14 +1009,6 @@ class cs_labels_manager extends cs_manager
                              trigger_error('Problems automatic deleting labels:.', E_USER_WARNING);
                          }
                      }
-                 }
-             }
-         }
-
-         if (!empty($result)) {
-             foreach ($result as $rs) {
-                 // Never delete any group "ALL"
-                 if (!(CS_GROUP_TYPE == $rs['type'] and 'ALL' == $rs['name'])) {
                  }
              }
          }

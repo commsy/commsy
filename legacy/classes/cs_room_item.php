@@ -261,7 +261,7 @@ class cs_room_item extends cs_context_item
         parent::close();
     }
 
-    public function delete()
+    public function delete(bool $silent = false): void
     {
         // delete associated annotations
         $this->deleteAssociatedAnnotations();

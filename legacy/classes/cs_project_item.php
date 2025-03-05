@@ -426,7 +426,7 @@ class cs_project_item extends cs_room_item
     /**
      * Deletes the project room.
      */
-    public function delete()
+    public function delete(bool $silent = false): void
     {
         parent::delete();
 

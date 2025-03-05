@@ -1229,7 +1229,7 @@ class cs_user_item extends cs_item
         }
     }
 
-    public function delete()
+    public function delete(bool $silent = false): void
     {
         // delete associated tasks
         $task_list = $this->_getTaskList();

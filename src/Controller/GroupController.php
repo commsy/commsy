@@ -30,12 +30,10 @@ use App\Form\Type\GroupSendType;
 use App\Form\Type\GroupType;
 use App\Http\JsonDataResponse;
 use App\Mail\Mailer;
-use App\Room\Copy\LegacyCopy;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
-use App\Utils\AnnotationService;
 use App\Utils\CategoryService;
 use App\Utils\GroupService;
 use App\Utils\ItemService;
@@ -79,7 +77,7 @@ class GroupController extends BaseController
     }
 
     #[Required]
-    public function setMailer(Mailer $mailer)
+    public function setMailer(Mailer $mailer): void
     {
         $this->mailer = $mailer;
     }
@@ -121,7 +119,7 @@ class GroupController extends BaseController
 
         $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_GROUP_TYPE, CS_LABEL_TYPE ]);
 
-        $usageInfo = false;
+        $usageInfo = [];
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('group')) {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('group');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('group');
@@ -198,7 +196,6 @@ class GroupController extends BaseController
     #[Route(path: '/room/{roomId}/group/feed/{start}/{sort}')]
     public function feed(
         Request $request,
-        UserService $userService,
         int $roomId,
         int $max = 10,
         int $start = 0,
@@ -255,7 +252,6 @@ class GroupController extends BaseController
 
             // group member status
             $membersList = $item->getMemberItemList();
-            $members = $membersList->to_array();
             $groupMemberStatus['groupMember'] = $membersList->inList($this->legacyEnvironment->getCurrentUserItem());
 
             // grouproom member status
@@ -289,14 +285,13 @@ class GroupController extends BaseController
     #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function detail(
         Request $request,
-        AnnotationService $annotationService,
         CategoryService $categoryService,
         TopicService $topicService,
         LegacyMarkup $legacyMarkup,
         int $roomId,
         int $itemId
     ): Response {
-        $infoArray = $this->getDetailInfo($annotationService, $categoryService, $roomId, $itemId);
+        $infoArray = $this->getDetailInfo($categoryService, $roomId, $itemId);
 
         $memberStatus = '';
 
@@ -367,13 +362,12 @@ class GroupController extends BaseController
 
     #[Route(path: '/room/{roomId}/group/{itemId}/print')]
     public function print(
-        AnnotationService $annotationService,
         CategoryService $categoryService,
         PrintService $printService,
         int $roomId,
         int $itemId
     ): Response {
-        $infoArray = $this->getDetailInfo($annotationService, $categoryService, $roomId, $itemId);
+        $infoArray = $this->getDetailInfo($categoryService, $roomId, $itemId);
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
@@ -404,11 +398,11 @@ class GroupController extends BaseController
     }
 
     private function getDetailInfo(
-        AnnotationService $annotationService,
         CategoryService $categoryService,
         int $roomId,
         int $itemId
-    ) {
+    ): array
+    {
         $infoArray = [];
 
         $group = $this->groupService->getGroup($itemId);
@@ -464,7 +458,8 @@ class GroupController extends BaseController
     private function getTagDetailArray(
         $baseCategories,
         $itemCategories
-    ) {
+    ): array
+    {
         $result = [];
         $tempResult = [];
         $addCategory = false;
@@ -475,7 +470,6 @@ class GroupController extends BaseController
             if (!empty($tempResult)) {
                 $addCategory = true;
             }
-            $tempArray = [];
             $foundCategory = false;
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {
@@ -1153,43 +1147,6 @@ class GroupController extends BaseController
         return $action->execute($room, $items);
     }
 
-    /**
-     * @throws Exception
-     */
-    private function copySettings($masterRoom, $targetRoom, LegacyCopy $legacyCopy): mixed
-    {
-        $user_manager = $this->legacyEnvironment->getUserManager();
-        $creator_item = $user_manager->getItem($targetRoom->getCreatorID());
-        if ($creator_item->getContextID() != $targetRoom->getItemID()) {
-            $user_manager->resetLimits();
-            $user_manager->setContextLimit($targetRoom->getItemID());
-            $user_manager->setUserIDLimit($creator_item->getUserID());
-            $user_manager->setAuthSourceLimit($creator_item->getAuthSource());
-            $user_manager->setModeratorLimit();
-            $user_manager->select();
-            $user_list = $user_manager->get();
-            if ($user_list->isNotEmpty() and 1 == $user_list->getCount()) {
-                $creator_item = $user_list->getFirst();
-            } else {
-                throw new Exception('can not get creator of new room');
-            }
-        }
-        $creator_item->setAccountWantMail('yes');
-        $creator_item->setOpenRoomWantMail('yes');
-        $creator_item->save();
-
-        // copy room settings
-        $legacyCopy->copySettings($masterRoom, $targetRoom);
-
-        // save new room
-        $targetRoom->save(false);
-
-        // copy data
-        $legacyCopy->copyData($masterRoom, $targetRoom, $creator_item);
-
-        return $targetRoom;
-    }
-
     private function getAvailableTemplates(): array
     {
         $templates = [];
@@ -1236,12 +1193,10 @@ class GroupController extends BaseController
         return $templates;
     }
 
-    /**
-     * @return FormInterface
-     */
     private function createFilterForm(
         cs_room_item $room
-    ) {
+    ): FormInterface
+    {
         // setup filter form default values
         $defaultFilterValues = [
             'hide-deactivated-entries' => 'only_activated',
