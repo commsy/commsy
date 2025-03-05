@@ -53,7 +53,7 @@
                                     <img id="themeBackgroundImage" style="width: 856px; height: 180px;" src="" />
                                 {% endif %}
 
-                                <div class="uk-position-cover" style="width: 856px; opacity: 0.7;">
+                                <div id="customBackgroundImageUpload" class="uk-position-cover" style="width: 856px; opacity: 0.7;">
                                     {{ form_widget(form.room_image.room_image_upload) }}
                                 </div>
 
@@ -255,7 +255,7 @@
 
         // TODO: dynamically load bg preview depending on choice (custom image / default theme image)
         if(imageType === 'default_image'){
-            document.getElementsByClassName("cs-upload-form")[0].style.display = 'none';
+            document.getElementById("customBackgroundImageUpload").style.display = 'none';
 
             themeBg.style.display = 'inline';
             customBg.style.display = 'none';
@@ -292,7 +292,7 @@
             };
         }
         else if(imageType === 'custom_image'){
-            document.getElementsByClassName("cs-upload-form")[0].style.display = 'block';
+            document.getElementById("customBackgroundImageUpload").style.display = 'block';
 
             themeBg.style.display = 'none';
             customBg.style.display = 'inline';
