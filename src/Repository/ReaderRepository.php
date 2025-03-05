@@ -31,9 +31,11 @@ class ReaderRepository extends ServiceEntityRepository
                 SELECT r
                 FROM App\Entity\Reader r
                 WHERE r.itemId = :itemId AND r.userId = :userId
+                ORDER BY r.versionId DESC
             ")
             ->setParameter('itemId', $itemId)
-            ->setParameter('userId', $userId);
+            ->setParameter('userId', $userId)
+            ->setMaxResults(1);
 
         return $query->getOneOrNullResult();
     }
