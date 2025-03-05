@@ -53,7 +53,7 @@ final readonly class LocaleSubscriber implements EventSubscriberInterface
             $resolvedLocale = $request->getPreferredLanguage($enabledLocales);
         }
 
-        $request->setLocale($resolvedLocale);
+        $request->setLocale(mb_strtolower($resolvedLocale));
     }
 
     public static function getSubscribedEvents(): array
