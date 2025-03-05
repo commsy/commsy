@@ -980,7 +980,7 @@ class cs_material_item extends cs_item
      /** delete material
       * this method deletes the material.
       */
-     public function delete($version = 'current')
+     public function delete($version = 'current', bool $silent = false): void
      {
          global $symfonyContainer;
 

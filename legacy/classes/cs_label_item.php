@@ -432,7 +432,7 @@ class cs_label_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function delete()
+    public function delete(bool $silent = false): void
     {
         $manager = $this->_environment->getLabelManager();
         $this->_delete($manager);

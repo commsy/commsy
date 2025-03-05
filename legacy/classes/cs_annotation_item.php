@@ -199,7 +199,7 @@ class cs_annotation_item extends cs_item
         $linkedItem->updateElastic();
     }
 
-    public function delete()
+    public function delete(bool $silent = false): void
     {
         $annotation_manager = $this->_environment->getAnnotationManager();
         $this->_delete($annotation_manager);

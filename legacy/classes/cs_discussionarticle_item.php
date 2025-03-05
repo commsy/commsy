@@ -202,7 +202,7 @@ class cs_discussionarticle_item extends cs_item
      * When a discussion article has child article(s) we won't delete it but instead only indicate (by setting
      * `public = -2`) that its content should get overwritten. This will keep the discussion hierarchy intact.
      */
-    public function delete(): void
+    public function delete(bool $silent = false): void
     {
         $discussionManager = $this->_environment->getDiscussionArticlesManager();
         $children = $discussionManager->getChildrenForDiscArticle($this);

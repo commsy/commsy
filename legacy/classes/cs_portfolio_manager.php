@@ -291,7 +291,7 @@ class cs_portfolio_manager extends cs_manager
         unset($portfolio_item);
     }
 
-    public function delete(int $itemId): void
+    public function delete(int $itemId, bool $silent = false): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.

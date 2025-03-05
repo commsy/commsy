@@ -278,9 +278,9 @@ class cs_assessments_manager extends cs_manager
     /** save an item
      * this method saves an item.
      *
-     * @param cs_assessments_item
+     * @param cs_assessments_item $item
      */
-    public function saveItem($item)
+    public function saveItem($item): void
     {
         $item_id = $item->getItemID();
         if (!empty($item_id)) {
@@ -289,14 +289,12 @@ class cs_assessments_manager extends cs_manager
             $creator_id = $item->getCreatorID();
             if (empty($creator_id)) {
                 $user = $this->_environment->getCurrentUser();
-                unset($user);
             }
             $this->_create($item);
         }
-        unset($item);
     }
 
-    public function delete(int $itemId): void
+    public function delete(int $itemId, bool $silent = false): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $user_id = $this->_current_user->getItemID() ?: 0;

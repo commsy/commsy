@@ -564,7 +564,7 @@ class cs_dates_item extends cs_item
          $this->replaceElasticItem($objectPersister, $repository);
      }
 
-     public function delete()
+     public function delete(bool $silent = false): void
      {
          global $symfonyContainer;
 

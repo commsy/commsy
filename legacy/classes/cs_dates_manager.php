@@ -815,11 +815,9 @@ class cs_dates_manager extends cs_manager
 
    /**  delete a dates item.
     *
-    * @param cs_dates_item the dates item to be deleted
-    *
     * @author CommSy Development Group
     */
-   public function delete(int $itemId): void
+   public function delete(int $itemId, bool $silent = false): void
    {
        $current_datetime = getCurrentDateTimeInMySQL();
        $current_user = $this->_environment->getCurrentUserItem();
