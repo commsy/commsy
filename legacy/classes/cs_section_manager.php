@@ -456,10 +456,8 @@ class cs_section_manager extends cs_manager
   }
 
     /**  delete a section item.
-     *
-     * @param cs_section_item the section item to be deleted
      */
-    public function delete(int $itemId, $version_id = null): void
+    public function delete(int $itemId, $version_id = null, bool $silent = false): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();
@@ -485,9 +483,9 @@ class cs_section_manager extends cs_manager
   /** save a commsy item
    * this method saves a commsy item.
    *
-   * @param cs_item
+   * @param cs_section_item $item
    */
-  public function saveItem($item, $with_date = true)
+  public function saveItem($item, $with_date = true): void
   {
       $item_id = $item->getItemID();
       if (!empty($item_id)) {

@@ -523,7 +523,7 @@ class cs_portal_item extends cs_guide_item
     /** delete portal
      * this method portal the community.
      */
-    public function delete()
+    public function delete(bool $silent = false): void
     {
         parent::delete();
 

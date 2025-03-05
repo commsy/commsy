@@ -554,9 +554,9 @@ class cs_tag_manager extends cs_manager
 
     /** save a tag.
      *
-     * @param object cs_item the tag
+     * @param cs_tag_item $item
      */
-    public function saveItem($item)
+    public function saveItem($item): void
     {
         $item_id = $item->getItemID();
         if (!empty($item_id)) {
@@ -600,7 +600,7 @@ class cs_tag_manager extends cs_manager
          }
      }
 
-    public function delete(int $itemId, $deleteTag2TagRecursive = true): void
+    public function delete(int $itemId, $deleteTag2TagRecursive = true, bool $silent = false): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();

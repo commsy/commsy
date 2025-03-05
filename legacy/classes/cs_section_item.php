@@ -249,7 +249,7 @@ class cs_section_item extends cs_item
         $this->_saveFileLinks(); // this must be done after saving so we can be sure to have an item id
     }
 
-    public function delete($version = '')
+    public function delete($version = '', bool $silent = false): void
     {
         $section_manager = $this->_environment->getSectionManager();
         if (!empty($version) and 'current' == $version) {

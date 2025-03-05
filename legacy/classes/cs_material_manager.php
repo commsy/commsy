@@ -931,9 +931,9 @@ class cs_material_manager extends cs_manager
   /** save a commsy item
    * this method saves a commsy item.
    *
-   * @param cs_item
+   * @param cs_material_item $item
    */
-  public function saveItem($item)
+  public function saveItem($item): void
   {
       $item_id = $item->getItemID();
       if (!empty($item_id)) {
@@ -953,8 +953,6 @@ class cs_material_manager extends cs_manager
       // Add modifier to all users who ever edited this section
       $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
       $link_modifier_item_manager->markEdited($item->getItemID());
-      unset($item);
-      unset($link_modifier_item_manager);
   }
 
   /** save a new version of a material.
@@ -971,10 +969,7 @@ class cs_material_manager extends cs_manager
       unset($material_item);
   }
 
-  /**
-   * documentation TBD.
-   */
-  public function delete(int $itemId, $version_id = null): void
+  public function delete(int $itemId, $version_id = null, bool $silent = false): void
   {
       $current_datetime = getCurrentDateTimeInMySQL();
       $current_user = $this->_environment->getCurrentUserItem();
