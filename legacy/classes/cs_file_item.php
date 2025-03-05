@@ -137,20 +137,28 @@ class cs_file_item extends cs_item
         return null;
     }
 
-    public function getFileSize(): float
+    /**
+     * @return int File size in kilobytes
+     */
+    public function getFileSize(): int
     {
         $discManager = $this->_environment->getDiscManager();
-        if (!$discManager->existsFile($this->getDiskFileNameWithoutFolder())) {
-            return 0.0;
+        $filePath = $discManager->getAbsoluteFilePath(
+            $this->getPortalId(),
+            $this->getContextID(),
+            $this->getDiskFileNameWithoutFolder()
+        );
+
+        if (!file_exists($filePath)) {
+            return 0;
         }
 
         if (0 == $this->_getValue('size')) {
-            $diskFileName = $this->getDiskFileName();
-            $filesize = filesize($diskFileName);
+            $filesize = filesize($filePath);
             $this->_data['size'] = $filesize ?: 0;
         }
 
-        return round(($this->_getValue('size') + 1023) / 1024, 0);
+        return round(($this->_getValue('size') + 1023) / 1024);
     }
 
     public function getDiskFileName(): string
