@@ -31,14 +31,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: 'room')]
-#[ORM\Index(columns: ['activity'], name: 'activity')]
-#[ORM\Index(columns: ['context_id'], name: 'context_id')]
-#[ORM\Index(columns: ['deleter_id', 'deletion_date'], name: 'delete_idx')]
-#[ORM\Index(columns: ['lastlogin'], name: 'lastlogin')]
-#[ORM\Index(columns: ['title', 'contact_persons'], name: 'search_idx')]
-#[ORM\Index(columns: ['status'], name: 'status')]
-#[ORM\Index(columns: ['title'], name: 'title')]
-#[ORM\Index(columns: ['type'], name: 'type')]
+#[ORM\Index(name: 'activity', columns: ['activity'])]
+#[ORM\Index(name: 'context_id', columns: ['context_id'])]
+#[ORM\Index(name: 'delete_idx', columns: ['deleter_id', 'deletion_date'])]
+#[ORM\Index(name: 'lastlogin', columns: ['lastlogin'])]
+#[ORM\Index(name: 'search_idx', columns: ['title', 'contact_persons'])]
+#[ORM\Index(name: 'status', columns: ['status'])]
+#[ORM\Index(name: 'title', columns: ['title'])]
+#[ORM\Index(name: 'type', columns: ['type'])]
 #[ApiResource(operations: [
     new Get(),
     new GetCollection(),

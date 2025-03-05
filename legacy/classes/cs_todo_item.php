@@ -353,7 +353,7 @@ class cs_todo_item extends cs_item
      *
      * @author CommSy Development Group
      */
-    public function delete()
+    public function delete(bool $silent = false): void
     {
         $todo_manager = $this->_environment->getTodosManager();
         $this->_delete($todo_manager);

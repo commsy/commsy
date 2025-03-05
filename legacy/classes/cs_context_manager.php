@@ -673,10 +673,8 @@ class cs_context_manager extends cs_manager
 
     /** delete a project
      * this method deletes a project.
-     *
-     * @param int item_id item id of the project
      */
-    public function delete(int $itemId): void
+    public function delete(int $itemId, bool $silent = false): void
     {
         $currentDateTime = getCurrentDateTimeInMySQL();
         $currentUser = $this->_environment->getCurrentUserItem();

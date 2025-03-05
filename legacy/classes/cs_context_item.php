@@ -2702,7 +2702,7 @@ class cs_context_item extends cs_item
         return $user_manager->getCountAll();
     }
 
-    public function delete()
+    public function delete(bool $silent = false): void
     {
     }
 

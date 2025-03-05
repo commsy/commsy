@@ -525,10 +525,8 @@ class cs_manager
 
   /** save a commsy item
    * this method saves a commsy item.
-   *
-   * @param cs_item
    */
-  public function saveItem($item)
+  public function saveItem($item): void
   {
       $item_id = $item->getItemID();
 
@@ -618,7 +616,7 @@ class cs_manager
      * @param int $itemId id of the commsy item
      * @throws \Doctrine\DBAL\Exception
      */
-    public function delete(int $itemId): void
+    public function delete(int $itemId, bool $silent = false): void
     {
         $currentDatetime = getCurrentDateTimeInMySQL();
         $currentUser = $this->_environment->getCurrentUserItem();

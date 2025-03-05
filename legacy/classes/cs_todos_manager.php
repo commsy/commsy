@@ -494,11 +494,7 @@ class cs_todos_manager extends cs_manager
          }
      }
 
-    /**  delete a todo item.
-     *
-     * @param cs_todo_item the todo item to be deleted
-     */
-    public function delete(int $itemId): void
+    public function delete(int $itemId, bool $silent = false): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();

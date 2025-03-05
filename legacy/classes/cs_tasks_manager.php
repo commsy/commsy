@@ -226,9 +226,9 @@ class cs_tasks_manager extends cs_manager
     /** save a commsy item
      * this method saves a commsy item.
      *
-     * @param cs_item
+     * @param cs_task_item $item
      */
-    public function saveItem($item)
+    public function saveItem($item): void
     {
         $item_id = $item->getItemID();
         if (!empty($item_id)) {
@@ -245,8 +245,6 @@ class cs_tasks_manager extends cs_manager
         // Add modifier to all users who ever edited this section
         $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
         $link_modifier_item_manager->markEdited($item->getItemID());
-        unset($link_modifier_item_manager);
-        unset($item);
     }
 
     /** update a task - internal, do not use -> use method save
@@ -343,9 +341,9 @@ class cs_tasks_manager extends cs_manager
     /** delete a task
      * this method deletes a new task.
      *
-     * @param int item_id item id of the task
+     * @param int $itemId item id of the task
      */
-    public function delete(int $itemId): void
+    public function delete(int $itemId, bool $silent = false): void
     {
         $current_datetime = getCurrentDateTimeInMySQL();
         $current_user = $this->_environment->getCurrentUserItem();
