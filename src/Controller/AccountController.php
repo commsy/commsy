@@ -52,6 +52,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -219,7 +220,7 @@ class AccountController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Account $user */
             $account = $security->getUser();
-            if (null !== $account) {
+            if ($account instanceof PasswordAuthenticatedUserInterface) {
                 $formData = $form->getData();
 
                 $account->setPassword($passwordHasher->hashPassword($account, $formData['new_password']));
@@ -402,7 +403,7 @@ class AccountController extends AbstractController
             .' ('.$portal->getTitle().').pdf';
 
         if (str_contains($html, 'localhost:81')) { // local fix for wkhtmltopdf
-            $html = preg_replace("/<img[^>]+\>/i", '(image) ', $html);
+            $html = preg_replace("/<img[^>]+>/i", '(image) ', $html);
         }
 
         // return HTML Response containing a PDF generated from the HTML data
@@ -496,10 +497,10 @@ class AccountController extends AbstractController
 
         $lockForm = $formFactory->createNamedBuilder('lock_form', DeleteType::class, [
             'confirm_string' => $translator->trans('lock', [], 'profile'),
-        ], [])->getForm();
+        ])->getForm();
         $deleteForm = $formFactory->createNamedBuilder('delete_form', DeleteType::class, [
             'confirm_string' => $translator->trans('delete', [], 'profile'),
-        ], [])->getForm();
+        ])->getForm();
 
         // Lock account
         if ($request->request->has('lock_form')) {
