@@ -108,7 +108,7 @@ class PrivateRoomTransformer extends AbstractTransformer
 
             // TODO: Set language in portal / portalProxy
             if (isset($privateRoomData['language'])) {
-                $privateRoomObject->setLanguage($privateRoomData['language']);
+                $privateRoomObject->setLanguage($privateRoomData['language']->value);
             }
 
             $set_to = 'none';

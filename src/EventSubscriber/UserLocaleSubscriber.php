@@ -39,6 +39,6 @@ class UserLocaleSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $event->getRequest()->getSession()->set('_locale', $account->getLanguage());
+        $event->getRequest()->getSession()->set('_locale', $account->getLanguage()->value);
     }
 }

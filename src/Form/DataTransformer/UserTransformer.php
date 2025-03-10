@@ -13,6 +13,7 @@
 
 namespace App\Form\DataTransformer;
 
+use App\Account\AccountLanguage;
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Services\LegacyEnvironment;
@@ -56,7 +57,10 @@ class UserTransformer extends AbstractTransformer
             $userData['userId'] = $userItem->getUserId();
             $userData['firstname'] = $userItem->getFirstname();
             $userData['lastname'] = $userItem->getLastname();
-            $userData['language'] = $userItem->getLanguage();
+
+            $account = $this->accountManager->getAccount($portalUser, $portalUser->getContextID());
+            $userData['language'] = $account->getLanguage();
+
             if ('1' == $userItem->getAutoSaveStatus()) {
                 $userData['autoSaveStatus'] = true;
             } else {
@@ -85,7 +89,6 @@ class UserTransformer extends AbstractTransformer
             $userData['jabber'] = $userItem->getJabber();
             $userData['homepage'] = $userItem->getHomepage();
             $userData['description'] = $userItem->getDescription();
-            $userData['language'] = $userItem->getLanguage();
         }
 
         return $userData;
@@ -129,22 +132,20 @@ class UserTransformer extends AbstractTransformer
 
             $userObject->setFirstname($userData['firstname']);
             $userObject->setLastname($userData['lastname']);
-            $userObject->setLanguage($userData['language']);
+            $userObject->setLanguage($userData['language']->value);
 
             $portalUser->setFirstname($userData['firstname']);
             $portalUser->setLastname($userData['lastname']);
-            $portalUser->setLanguage($userData['language']);
+            $portalUser->setLanguage($userData['language']->value);
 
             // since name and language are now configured in the account settings,
             // they always have to be changed for the list of related users as well
             $userList = $userObject->getRelatedUserList();
-            $tempUserItem = $userList->getFirst();
-            while ($tempUserItem) {
+            foreach ($userList as $tempUserItem) {
                 $tempUserItem->setFirstname($userData['firstname']);
                 $tempUserItem->setLastname($userData['lastname']);
-                $tempUserItem->setLanguage($userData['language']);
+                $tempUserItem->setLanguage($userData['language']->value);
                 $tempUserItem->save();
-                $tempUserItem = $userList->getNext();
             }
 
             if ($userData['autoSaveStatus']) {
@@ -188,7 +189,7 @@ class UserTransformer extends AbstractTransformer
                     $account->setEmail($portalUser->getEmail());
                     $account->setFirstname($portalUser->getFirstname());
                     $account->setLastname($portalUser->getLastname());
-                    $account->setLanguage($portalUser->getLanguage());
+                    $account->setLanguage(AccountLanguage::from($portalUser->getLanguage()));
 
                     $this->entityManager->persist($account);
                     $this->entityManager->flush();
@@ -216,10 +217,9 @@ class UserTransformer extends AbstractTransformer
             $userObject->setJabber($userData['jabber']);
             $userObject->setHomepage($userData['homepage']);
             $userObject->setDescription($userData['description']);
-            $userObject->setLanguage($userData['language']);
 
             if ($privateRoomUserItem) {
-                $privateRoomUserItem->setLanguage($userData['language']);
+                $privateRoomUserItem->setLanguage($userData['language']->value);
                 $privateRoomUserItem->save();
             }
         }

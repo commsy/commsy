@@ -13,6 +13,7 @@
 
 namespace Tests\Factory;
 
+use App\Account\AccountLanguage;
 use App\Entity\Account;
 use App\Facade\AccountCreatorFacade;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -53,7 +54,11 @@ final class AccountFactory extends PersistentProxyObjectFactory
             ]),
             'email' => self::faker()->email(),
             'firstname' => self::faker()->firstName(),
-            'language' => self::faker()->languageCode(),
+            'language' => self::faker()->randomElement([
+                AccountLanguage::GERMAN,
+                AccountLanguage::ENGLISH,
+                AccountLanguage::BROWSER,
+            ]),
             'lastname' => self::faker()->lastName(),
             'locked' => self::faker()->boolean(),
             'username' => self::faker()->userName(),

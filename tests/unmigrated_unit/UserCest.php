@@ -13,6 +13,7 @@
 
 namespace Tests\Unit;
 
+use App\Account\AccountLanguage;
 use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\Portal;
@@ -93,7 +94,7 @@ class UserCest
         $account = new Account();
         $account->setAuthSource($localAuthSource);
         $account->setContextId($portal->getId());
-        $account->setLanguage('de');
+        $account->setLanguage(AccountLanguage::GERMAN);
         $account->setFirstname('Firstname');
         $account->setLastname('lastname');
         $account->setEmail('mail@test.de');
