@@ -194,15 +194,15 @@ final readonly class AccountManager
         $this->entityManager->flush();
     }
 
-    public function updateUserLocale(Account $account, string $locale): void
+    public function updateUserLocale(Account $account, AccountLanguage $language): void
     {
-        $account->setLanguage($locale);
+        $account->setLanguage($language);
         $this->entityManager->persist($account);
         $this->entityManager->flush();
 
         // Update the user's session here too (normally done on login)
         // This will affect the LocaleSubscriber decision
-        $this->requestStack->getSession()->set('_locale', $account->getLanguage());
+        $this->requestStack->getSession()->set('_locale', $account->getLanguage()->value);
     }
 
     public function renewActivityUpdated(Account $account, bool $flush = true): void

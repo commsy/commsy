@@ -13,6 +13,7 @@
 
 namespace App\Security;
 
+use App\Account\AccountLanguage;
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AuthSourceShibboleth;
@@ -147,7 +148,7 @@ class ShibbolethAuthenticator extends AbstractCommsyAuthenticator
             $account = new Account();
             $account->setAuthSource($shibAuthSource);
             $account->setContextId($credentials['context']);
-            $account->setLanguage('de');
+            $account->setLanguage(AccountLanguage::GERMAN);
             $account->setUsername($credentials['username']);
             $account->setFirstname($credentials['firstname']);
             $account->setLastname($credentials['lastname']);

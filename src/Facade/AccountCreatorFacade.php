@@ -53,7 +53,7 @@ class AccountCreatorFacade
         $portalUser->setFirstname($account->getFirstname());
         $portalUser->setLastname($account->getLastname());
         $portalUser->setEmail($account->getEmail());
-        $portalUser->setLanguage($account->getLanguage());
+        $portalUser->setLanguage($account->getLanguage()->value);
         $portalUser->makeUser();
         $portalUser->save();
 

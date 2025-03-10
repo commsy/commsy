@@ -13,6 +13,7 @@
 
 namespace App\Controller;
 
+use App\Account\AccountLanguage;
 use App\Account\AccountManager;
 use App\Account\AccountMerger;
 use App\Entity\Account;
@@ -111,7 +112,7 @@ class AccountController extends AbstractController
                     'context' => $portal->getId(),
                 ]);
             }
-            $account->setLanguage('de');
+            $account->setLanguage(AccountLanguage::GERMAN);
 
             $password = $passwordHasher->hashPassword($account, $account->getPlainPassword());
             $account->setPassword($password);

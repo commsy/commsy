@@ -18,6 +18,7 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model;
+use App\Account\AccountLanguage;
 use App\Controller\Api\GetAccountsWorkspaces;
 use App\Dto\LocalLoginInputRequest;
 use App\Repository\AccountsRepository;
@@ -140,8 +141,8 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
     #[Groups(['api'])]
     private string $email;
 
-    #[ORM\Column(name: 'language', type: Types::STRING, length: 10)]
-    private string $language;
+    #[ORM\Column(name: 'language', type: Types::STRING, length: 10, enumType: AccountLanguage::class)]
+    private AccountLanguage $language;
 
     #[ORM\ManyToOne(targetEntity: AuthSource::class)]
     #[ORM\JoinColumn]
@@ -332,12 +333,12 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return $this;
     }
 
-    public function getLanguage(): string
+    public function getLanguage(): AccountLanguage
     {
         return $this->language;
     }
 
-    public function setLanguage(string $language): Account
+    public function setLanguage(AccountLanguage $language): Account
     {
         $this->language = $language;
         return $this;

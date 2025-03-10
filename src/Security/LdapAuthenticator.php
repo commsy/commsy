@@ -13,6 +13,7 @@
 
 namespace App\Security;
 
+use App\Account\AccountLanguage;
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AuthSourceLdap;
@@ -132,7 +133,7 @@ class LdapAuthenticator extends AbstractCommsyAuthenticator
             $account = new Account();
             $account->setAuthSource($ldapAuthSource);
             $account->setContextId($credentials['context']);
-            $account->setLanguage('de');
+            $account->setLanguage(AccountLanguage::GERMAN);
             $account->setUsername($ldapUser->getUserIdentifier());
             $account->setFirstname($extraFields['givenName']);
             $account->setLastname($extraFields['sn']);

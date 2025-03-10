@@ -13,6 +13,7 @@
 
 namespace App\Facade;
 
+use App\Account\AccountLanguage;
 use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\RoomSlug;
@@ -122,7 +123,7 @@ class UserCreatorFacade
         $account->setLastname($lastname);
         $account->setEmail($email);
         $account->setContextId($authSource->getPortal()->getId());
-        $account->setLanguage('de');
+        $account->setLanguage(AccountLanguage::GERMAN);
         $account->setAuthSource($authSource);
 
         $account->setPassword($this->passwordEncoder->encodePassword($account, $password));
@@ -161,7 +162,7 @@ class UserCreatorFacade
         // filter out any null values (where a room slug couldn't be mapped to an actual room ID)
         // and make them unique
         $roomIds = array_unique(array_filter($roomIds));
-        
+
         // create room users
         $portalUser = $this->userService->getPortalUser($account);
         $this->addUserToRoomsWithIds($portalUser, $roomIds, 2, true);

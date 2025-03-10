@@ -13,6 +13,7 @@
 
 namespace App\Security;
 
+use App\Account\AccountLanguage;
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AuthSourceOIDC;
@@ -120,7 +121,7 @@ class OidcAuthenticator extends AbstractCommsyAuthenticator
                     $account = new Account();
                     $account->setAuthSource($oidcAuthSource);
                     $account->setContextId($context);
-                    $account->setLanguage('de');
+                    $account->setLanguage(AccountLanguage::GERMAN);
                     $account->setUsername($userInfo->getIdentifier());
                     $account->setFirstname($userInfo->getFirstName());
                     $account->setLastname($userInfo->getLastName());

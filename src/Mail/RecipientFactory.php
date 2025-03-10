@@ -91,7 +91,7 @@ class RecipientFactory
         $recipient->setFirstname($account->getFirstname());
         $recipient->setLastname($account->getLastname());
         $recipient->setEmail($account->getEmail());
-        $recipient->setLanguage($account->getLanguage());
+        $recipient->setLanguage($account->getLanguage()->value);
 
         return $recipient;
     }
