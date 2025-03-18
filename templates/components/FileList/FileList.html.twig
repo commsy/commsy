@@ -75,25 +75,22 @@
                 <div class="uk-margin-bottom uk-grid uk-grid-small">
                     {# show the first 20 files #}
                     {% for file in otherFiles[:20] %}
-                        {{ component('FileList:FileListItem', {
-                            itemId: itemId,
-                            file: file,
-                            key: file.fileId
-                        }) }}
+                        <twig:FileList:FileListItem
+                            :itemId="itemId"
+                            :file="file"
+                            :key="file.fileId" />
                     {% endfor %}
 
                     {# show additonal files in a share more toggle #}
-                    {% if imageFiles|length > 20 %}
+                    {% if otherFiles|length > 20 %}
                         <a class="toggle_more_files" data-uk-toggle="{target: '.toggle_more_files'}">{{ 'show all'|trans({}) }}</a>
-                        <div class="toggle_more_files uk-hidden">
-                            {% for file in otherFiles[20:] %}
-                                {{ component('FileList:FileListItem', {
-                                    itemId: itemId,
-                                    file: file,
-                                    key: file.fileId
-                                }) }}
-                            {% endfor %}
-                        </div>
+                        {% for file in otherFiles[20:] %}
+                            <twig:FileList:FileListItem
+                                :itemId="itemId"
+                                :file="file"
+                                :key="file.fileId"
+                                class="toggle_more_files uk-hidden" />
+                        {% endfor %}
                     {% endif %}
                 </div>
             {% endif %}
