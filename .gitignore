@@ -31,14 +31,6 @@ Icon
 .Spotlight-V100
 .Trashes
 
-######################
-# CommSy related     #
-######################
-files/[0-9]*
-files/templates/individual/*
-files/temp/*
-!files/temp/.gitkeep
-
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -76,3 +68,19 @@ yarn-error.log
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+######################
+# CommSy related     #
+######################
+files/[0-9]*
+files/templates/individual/*
+files/temp/*
+!files/temp/.gitkeep
+
+!var/
+var/*
+!var/cache/
+var/cache/*
+!var/cache/htmlpurifier/
+var/cache/htmlpurifier/*
+!var/cache/htmlpurifier/.gitkeep
