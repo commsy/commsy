@@ -24,9 +24,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'user')]
-#[ORM\Index(columns: ['creator_id'], name: 'creator_idx')]
-#[ORM\Index(columns: ['deletion_date', 'deleter_id'], name: 'deleted_idx')]
-#[ORM\Index(columns: ['context_id'], name: 'context_idx')]
+#[ORM\Index(name: 'creator_idx', columns: ['creator_id'])]
+#[ORM\Index(name: 'deleted_idx', columns: ['deletion_date', 'deleter_id'])]
+#[ORM\Index(name: 'context_idx', columns: ['context_id'])]
 #[ORM\UniqueConstraint(name: 'unique_non_soft_deleted_idx', columns: ['user_id', 'auth_source', 'context_id', 'not_deleted'])]
 class User
 {
@@ -96,9 +96,6 @@ class User
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 65535, nullable: true)]
     private ?string $description = null;
-
-    #[ORM\Column(name: 'expire_date', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $expireDate = null;
 
     #[ORM\Column(name: 'use_portal_email', type: Types::BOOLEAN)]
     private bool $usePortalEmail = false;
