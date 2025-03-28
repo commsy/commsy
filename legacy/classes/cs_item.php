@@ -1770,22 +1770,16 @@ class cs_item
         return $result_list;
     }
 
-    public function getAllLinkedItemIDArray()
+    public function getAllLinkedItemIDArray(): array
     {
-        $id_array = [];
         $link_list = $this->getAllLinkItemList();
-        $link_item = $link_list->getFirst();
-        while ($link_item) {
-            $link_item_id = $link_item->getFirstLinkedItemID();
-            if ($link_item_id == $this->getItemID()) {
-                $id_array[] = $link_item->getSecondLinkedItemID();
-            } else {
-                $id_array[] = $link_item->getFirstLinkedItemID();
-            }
-            $link_item = $link_list->getNext();
-        }
 
-        return $id_array;
+        return array_map(
+            fn($linkItem) => $linkItem->getFirstLinkedItemID() == $this->getItemID() ?
+                $linkItem->getSecondLinkedItemID() :
+                $linkItem->getFirstLinkedItemID(),
+            $link_list->to_array()
+        );
     }
 
     public function isSystemLabel(): bool

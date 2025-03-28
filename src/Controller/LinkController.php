@@ -23,9 +23,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * Class LinkController.
- */
 #[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class LinkController extends AbstractController
 {
@@ -199,9 +196,7 @@ class LinkController extends AbstractController
 
     #[Route(path: '/room/{roomId}/material/link/{itemId}')]
     public function showDetailShort(
-        GroupService $groupService,
         ItemService $itemService,
-        LabelService $labelService,
         RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
@@ -247,9 +242,7 @@ class LinkController extends AbstractController
 
     #[Route(path: '/room/{roomId}/material/link/{itemId}')]
     public function showDetailLong(
-        GroupService $groupService,
         ItemService $itemService,
-        LabelService $labelService,
         RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
@@ -295,9 +288,7 @@ class LinkController extends AbstractController
 
     #[Route(path: '/room/{roomId}/material/link/{itemId}')]
     public function showDetailLongToggle(
-        GroupService $groupService,
         ItemService $itemService,
-        LabelService $labelService,
         RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
@@ -306,14 +297,6 @@ class LinkController extends AbstractController
         $item = $itemService->getItem($itemId);
 
         $linkedItems = [];
-        if ('label' == $item->getItemType()) {
-            $tempLabel = $labelService->getLabel($item->getItemId());
-            if ('group' == $tempLabel->getLabelType()) {
-                $group = $groupService->getGroup($tempLabel->getItemID());
-                $membersList = $group->getMemberItemList();
-                $linkedItems = $membersList->to_array();
-            }
-        }
         $ids = $item->getAllLinkedItemIDArray();
         foreach ($ids as $id) {
             $linkedItems[] = $itemService->getItem($id);
