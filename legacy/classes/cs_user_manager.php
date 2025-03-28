@@ -810,15 +810,6 @@ class cs_user_manager extends cs_manager
         $query .= 'description="' . encode(AS_DB, $item->getDescription()) . '",';
         $query .= 'use_portal_email="' . encode(AS_DB, $usePortalEmail) . '",';
 
-        // Datenschutz
-        $expire_date = $item->getPasswordExpireDate();
-
-        if (empty($expire_date) or 0 == $expire_date) {
-            $query .= 'expire_date=NULL,';
-        } else {
-            $query .= 'expire_date="' . encode(AS_DB, $expire_date) . '",';
-        }
-
         // if user was entered by system (creator_id == 0) then creator_id must change from 0 to item_id of the user_item
         // see methode _create()
         if ($with_creator_id) {
@@ -900,8 +891,7 @@ class cs_user_manager extends cs_manager
             'city="' . encode(AS_DB, $item->getCity()) . '",' .
             'visible="' . encode(AS_DB, $item->getVisible()) . '",' .
             'description="' . encode(AS_DB, $item->getDescription()) . '",' .
-            'extras="' . encode(AS_DB, serialize($item->getExtraInformation())) . '",' .
-            'expire_date=NULL';
+            'extras="' . encode(AS_DB, serialize($item->getExtraInformation())) . '"';
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
