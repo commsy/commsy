@@ -1246,20 +1246,6 @@ class cs_user_item extends cs_item
     }
 
     /**
-     * Check if this user can be seen by $userItem.
-     *
-     * @see cs_item::mayPortfolioSee()
-     */
-    public function mayPortfolioSee(string $username): bool
-    {
-        $portfolioManager = $this->_environment->getPortfolioManager();
-
-        $userArray = $portfolioManager->getPortfolioUserForExternalViewer($this->getItemId());
-
-        return in_array($username, $userArray);
-    }
-
-    /**
      * @return bool
      */
     public function maySee(cs_user_item $userItem)

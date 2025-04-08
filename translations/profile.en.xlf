@@ -162,10 +162,6 @@
                 <source>stackStatus</source>
                 <target>My stack</target>
             </trans-unit>
-            <trans-unit id="portfolioStatus">
-                <source>portfolioStatus</source>
-                <target>Portfolio</target>
-            </trans-unit>
             <trans-unit id="switchRoomStatus">
                 <source>switchRoomStatus</source>
                 <target>switch workspace</target>

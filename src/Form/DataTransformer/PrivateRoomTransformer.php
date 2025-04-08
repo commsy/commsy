@@ -61,9 +61,6 @@ class PrivateRoomTransformer extends AbstractTransformer
                 $privateRoomData['newsletterStatus'] = '3';
             }
 
-            // Portfolio
-            $privateRoomData['portfolio'] = $privateRoomItem->isPortfolioEnabled();
-
             // email to commsy
             $privateRoomData['emailToCommsy'] = $privateRoomItem->getEmailToCommSy();
             $privateRoomData['emailToCommsySecret'] = $privateRoomItem->getEmailToCommSySecret();
@@ -120,9 +117,6 @@ class PrivateRoomTransformer extends AbstractTransformer
                 }
             }
             $privateRoomObject->setPrivateRoomNewsletterActivity($set_to);
-
-            // Portfolio
-            $privateRoomObject->setPortfolioEnabled($privateRoomData['portfolio']);
 
             // email to commsy
             if (isset($privateRoomData['emailToCommsy'])) {
