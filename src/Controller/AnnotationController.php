@@ -18,11 +18,9 @@ use App\Form\Type\AnnotationType;
 use App\Services\LegacyEnvironment;
 use App\Utils\AnnotationService;
 use App\Utils\ItemService;
-use App\Utils\PortfolioService;
 use App\Utils\ReaderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -36,52 +34,6 @@ class AnnotationController extends AbstractController
 {
     public function __construct(private readonly ReaderService $readerService)
     {
-    }
-
-    #[Route(path: '/room/{roomId}/annotation/feed/{linkedItemId}/{start}/{firstTagId}/{secondTagId}')]
-    public function feed(
-        AnnotationService $annotationService,
-        ItemService $itemService,
-        ReaderService $readerService,
-        PortfolioService $portfolioService,
-        int $roomId,
-        int $linkedItemId,
-        int $max = 10,
-        int $start = 0,
-        int $firstTagId = null,
-        int $secondTagId = null
-    ): Response {
-        // get annotation list from manager service
-        $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
-
-        if ($firstTagId && $secondTagId) {
-            $cellCoordinates = $portfolioService->getCellCoordinatesForTagIds($linkedItemId, $firstTagId, $secondTagId);
-            if (!empty($cellCoordinates)) {
-                $annotationIds = $portfolioService->getAnnotationIdsForPortfolioCell($linkedItemId, $cellCoordinates[0], $cellCoordinates[1]);
-                $portfolioAnnotations = [];
-                if ($annotationIds) {
-                    foreach ($annotationIds as $annotationId) {
-                        $portfolioAnnotations[] = $itemService->getTypedItem($annotationId);
-                    }
-                }
-                $annotations = $portfolioAnnotations;
-            }
-        }
-
-        $readerList = $this->readerService->getChangeStatusForItems(...$annotations);
-
-        /**
-         * For first show annotations no read and after mark read.
-         */
-        $itemAnnotation = $itemService->getItem($linkedItemId);
-        $annotationList = $itemAnnotation->getAnnotationList();
-        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
-
-        return $this->render('annotation/feed.html.twig', [
-            'roomId' => $roomId,
-            'annotations' => $annotations,
-            'readerList' => $readerList,
-        ]);
     }
 
     #[Route(path: '/room/{roomId}/annotation/feed/{linkedItemId}/{start}')]
@@ -152,62 +104,6 @@ class AnnotationController extends AbstractController
         return $this->render('annotation/success.html.twig', [
             'annotation' => $item,
         ]);
-    }
-
-    /**
-     * @return RedirectResponse
-     */
-    #[Route(path: '/room/{roomId}/annotation/{itemId}/create/{firstTagId}/{secondTagId}', methods: ['POST'])]
-    #[IsGranted('ITEM_ANNOTATE', subject: 'itemId')]
-    public function create(
-        ItemService $itemService,
-        AnnotationService $annotationService,
-        Request $request,
-        PortfolioService $portfolioService,
-        int $roomId,
-        int $itemId,
-        int $firstTagId = null,
-        int $secondTagId = null
-    ): Response {
-        $item = $itemService->getTypedItem($itemId);
-        $itemType = $item->getItemType();
-
-        $form = $this->createForm(AnnotationType::class);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('save')->isClicked()) {
-                $data = $form->getData();
-
-                // create new annotation
-                $annotationId = $annotationService->addAnnotation($roomId, $itemId, $data['description']);
-
-                $routeArray = [];
-                $routeArray['roomId'] = $roomId;
-                $routeArray['itemId'] = $itemId;
-                $routeArray['_fragment'] = 'description'.$annotationId;
-                if ('portfolio' == $itemType) {
-                    $routeArray['portfolioId'] = $itemId;
-                    $routeArray['firstTagId'] = $firstTagId;
-                    $routeArray['secondTagId'] = $secondTagId;
-
-                    $cellCoordinates = $portfolioService->getCellCoordinatesForTagIds($itemId, $firstTagId, $secondTagId);
-                    if (!empty($cellCoordinates)) {
-                        $portfolioService->setPortfolioAnnotation($itemId, $annotationId, $cellCoordinates[0], $cellCoordinates[1]);
-                    }
-                }
-
-                return $this->redirectToRoute('app_'.$itemType.'_detail', $routeArray);
-            }
-            if ($form->get('cancel')->isClicked()) {
-                if ('portfolio' == $itemType) {
-                    return $this->redirectToRoute('app_portfolio_index', [
-                        'roomId' => $roomId,
-                    ]);
-                }
-            }
-        }
-
-        return $this->redirectToRoute('app_'.$itemType.'_detail', ['roomId' => $roomId, 'itemId' => $itemId]);
     }
 
     #[Route(path: '/room/{roomId}/annotation/{itemId}/delete', methods: ['GET'])]

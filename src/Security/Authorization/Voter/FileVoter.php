@@ -63,13 +63,10 @@ class FileVoter extends Voter
     private function canDownload(
         cs_file_item $fileItem,
         cs_user_item $currentUser,
-        ?Account $user)
+        ?Account $user
+    ): bool
     {
         if ($fileItem->maySee($currentUser)) {
-            return true;
-        }
-
-        if ($fileItem->mayPortfolioSeeLinkedItem($currentUser)) {
             return true;
         }
 

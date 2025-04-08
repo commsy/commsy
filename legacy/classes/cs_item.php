@@ -1499,73 +1499,13 @@ class cs_item
         return $access;
     }
 
-    /** \brief	check via portfolio permission.
-     *
-     * This Method checks for item <=> activated portfolio - relationships
-     */
-    public function mayPortfolioSee(string $username): bool
-    {
-        $portfolioManager = $this->_environment->getPortfolioManager();
-
-        // get all ids from portfolios we are allow to see
-        $portfolioIds = $portfolioManager->getPortfolioForExternalViewer($username);
-
-        // now we get all item tags and their ids
-        $tagList = $this->getTagList();
-        $tagIdArray = [];
-
-        $tagEntry = $tagList->getFirst();
-        while ($tagEntry) {
-            $tagIdArray[] = $tagEntry->getItemID();
-
-            $tagEntry = $tagList->getNext();
-        }
-
-        if (empty($portfolioIds) || empty($tagIdArray)) {
-            return false;
-        }
-
-        // get row and column information for all portfolios with given tags
-        $portfolioInformation = $portfolioManager->getPortfolioData($portfolioIds, $tagIdArray);
-
-        // if user is allowed to see, there must be two tags for one portfolioId in this array, one for column, one for row
-        foreach ($portfolioIds as $portfolioId) {
-            if (isset($portfolioInformation[$portfolioId])) {
-                $entryArray = $portfolioInformation[$portfolioId];
-
-                if (sizeof($entryArray) > 1) {
-                    $hasRow = $hasColumn = false;
-                    foreach ($entryArray as $entry) {
-                        if (0 == $entry['row']) {
-                            $hasColumn = true;
-                        }
-                        if (0 == $entry['column']) {
-                            $hasRow = true;
-                        }
-                    }
-
-                    if (true === $hasRow && true === $hasColumn) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
      /**
       * @throws \Doctrine\DBAL\Exception
       */
      public function mayExternalSee(int $itemId, string $username): bool
      {
          $item_manager = $this->_environment->getItemManager();
-         $retour = $item_manager->getExternalViewerForItem($itemId, $username);
-         if ($retour) {
-             return true;
-         } else {
-             return $this->mayPortfolioSee($username);
-         }
+         return $item_manager->getExternalViewerForItem($itemId, $username);
      }
 
      /** is the given user allowed to see this item?

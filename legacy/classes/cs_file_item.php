@@ -320,22 +320,6 @@ class cs_file_item extends cs_item
         return false;
     }
 
-    public function mayPortfolioSeeLinkedItem(cs_user_item $userItem)
-    {
-        $itemCollection = $this->getLinkedItems();
-        if (!isset($itemCollection) or $itemCollection->isEmpty()) {
-            return false;
-        }
-
-        foreach ($itemCollection as $item) {
-            if ($item->mayPortfolioSee($userItem->getUserID())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     /**
      * May view files for external viewer.
      *

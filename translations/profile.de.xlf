@@ -162,10 +162,6 @@
                 <source>stackStatus</source>
                 <target>Meine Ablage</target>
             </trans-unit>
-            <trans-unit id="portfolioStatus">
-                <source>portfolioStatus</source>
-                <target>Mein Portfolio</target>
-            </trans-unit>
             <trans-unit id="switchRoomStatus">
                 <source>switchRoomStatus</source>
                 <target>Raum wechseln</target>

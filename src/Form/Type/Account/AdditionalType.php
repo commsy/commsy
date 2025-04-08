@@ -39,6 +39,7 @@ class AdditionalType extends AbstractType
                 'class' => AccountLanguage::class,
                 'placeholder' => false,
             ]);
+
         if ($options['emailToCommsy']) {
             $builder
                 ->add('emailToCommsy', CheckboxType::class, [
@@ -56,14 +57,6 @@ class AdditionalType extends AbstractType
         }
 
         $builder
-            ->add('portfolio', CheckboxType::class, [
-                'label' => 'Activate',
-                'translation_domain' => 'settings',
-                'required' => false,
-                'label_attr' => [
-                    'class' => 'uk-form-label',
-                ],
-            ])
             ->add('save', SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',
