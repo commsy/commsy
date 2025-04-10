@@ -282,7 +282,7 @@ final readonly class ReaderService
             if ($reader) {
                 $readCount++;
 
-                if ($reader->getReadDate() >= $item->getModificationDate()) {
+                if ($reader->getReadDate() >= new DateTime($item->getModificationDate())) {
                     $readSinceModificationCount++;
                 }
             }
@@ -383,7 +383,7 @@ final readonly class ReaderService
             if (!$itemIsCurrentUser) {
                 $return = ReaderStatus::STATUS_NEW->value;
             }
-        } elseif (!$item->isNotActivated() and $reader->getReadDate() < $item->getModificationDate()) {
+        } elseif (!$item->isNotActivated() and $reader->getReadDate() < new DateTime($item->getModificationDate())) {
             $return = ReaderStatus::STATUS_CHANGED->value;
         }
 
@@ -401,7 +401,7 @@ final readonly class ReaderService
                         $changed = false;
                         $date = $anno_item->getModificationDate();
                     }
-                } elseif ($reader->getReadDate() < $anno_item->getModificationDate()) {
+                } elseif ($reader->getReadDate() < new DateTime($anno_item->getModificationDate())) {
                     if ($date < $anno_item->getModificationDate()) {
                         $new = false;
                         $changed = true;
@@ -448,7 +448,7 @@ final readonly class ReaderService
                         $changed = false;
                         $date = $readerItem->getModificationDate();
                     }
-                } elseif ($reader->getReadDate() < $readerItem->getModificationDate()) {
+                } elseif ($reader->getReadDate() < new DateTime($readerItem->getModificationDate())) {
                     if ($date < $readerItem->getModificationDate()) {
                         $new = false;
                         $changed = true;
