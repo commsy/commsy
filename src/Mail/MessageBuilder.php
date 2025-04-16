@@ -14,6 +14,7 @@
 namespace App\Mail;
 
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Translation\LocaleSwitcher;
@@ -23,8 +24,10 @@ readonly class MessageBuilder
 {
     public function __construct(
         private TranslatorInterface $translator,
-        private string              $emailFrom,
-        private LocaleSwitcher      $localeSwitcher
+        private string $emailFrom,
+        private LocaleSwitcher $localeSwitcher,
+        #[Autowire(param: 'locale')]
+        private string $defaultLocale,
     ) {
     }
 
@@ -99,7 +102,7 @@ readonly class MessageBuilder
 
         $this->localeSwitcher->runWithLocale($recipient->getLanguage(), function(string $locale) use ($message, $email) {
             // use recipient's locale
-            $email->locale($locale);
+            $email->locale($locale === 'browser' ? $this->defaultLocale : $locale);
 
             // Subject
             $subject = $this->translator->trans($message->getSubject(), $message->getTranslationParameters(), 'mail');
