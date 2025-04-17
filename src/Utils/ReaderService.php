@@ -245,6 +245,8 @@ final readonly class ReaderService
                 $reader->setUserId($userId);
 
                 $this->entityManager->persist($reader);
+
+                // fire a ReadStatusPreChangeEvent (which will e.g. trigger invalidation of the read status cache for this item & user)
                 $this->eventDispatcher->dispatch(new ReadStatusPreChangeEvent($userId, $itemId, ReaderStatus::STATUS_SEEN));
             }
         }
