@@ -112,7 +112,7 @@ class InsertUserroomAction
 
                 foreach ($versionIdsByCopyIds as $copyId => $versionId) {
                     // TODO: allowing markItemsAsRead() to accept a matching array of version IDs would avoid this foreach loop
-                    $this->readerService->markItemsAsRead([$copyId], $versionId, $relatedUserIds);
+                    $this->readerService->markItemsWithIdsAsRead([$copyId], $versionId, $relatedUserIds);
                 }
             }
         }

@@ -25,6 +25,6 @@ class MarkReadGeneric implements MarkReadInterface
 
     public function markRead(cs_item $item): void
     {
-        $this->readerService->markItemsRead([$item]);
+        $this->readerService->markItemsAsRead([$item]);
     }
 }
