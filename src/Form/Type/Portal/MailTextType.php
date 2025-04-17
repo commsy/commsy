@@ -68,15 +68,15 @@ class MailTextType extends AbstractType
                 'translation_domain' => 'portal',
                 'attr' => [
                     'data-action' => 'live#action',
-                    'data-action-name' => 'select',
+                    'data-live-action-param' => 'select',
                 ]
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',
                 'attr' => [
-                    'data-action' => 'live#action',
-                    'data-action-name' => 'prevent|save',
+                    'data-action' => 'live#action:prevent',
+                    'data-live-action-param' => 'save',
                     'data-loading' => 'addAttribute(disabled)',
                 ],
             ])
@@ -93,14 +93,7 @@ class MailTextType extends AbstractType
 
         $builder->get('mailText')->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             $mailText = $event->getForm()->getData();
-
-            $test = $event->getForm()->getParent();
-
-            /** @var MailText $data */
-            $data = $test->getData();
-            $data->setContentGerman('some content');
-            $event->setData($data);
-
+            
             $this->addTranslationFields($event->getForm()->getParent(), $mailText);
         });
     }
@@ -128,7 +121,8 @@ class MailTextType extends AbstractType
                 'attr' => [
                     'class' => 'uk-button-danger uk-button-small',
                     'data-action' => 'live#action',
-                    'data-action-name' => 'resetContent(lang=de)',
+                    'data-live-action-param' => 'resetContent',
+                    'data-live-lang-param' => 'de',
                 ],
             ])
             ->add('contentEnglish', TextareaType::class, [
@@ -143,7 +137,8 @@ class MailTextType extends AbstractType
                 'attr' => [
                     'class' => 'uk-button-danger uk-button-small',
                     'data-action' => 'live#action',
-                    'data-action-name' => 'resetContent(lang=en)',
+                    'data-live-action-param' => 'resetContent',
+                    'data-live-lang-param' => 'en',
                 ],
             ])
         ;
