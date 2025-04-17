@@ -33,7 +33,6 @@ use App\Entity\Room;
 use App\Entity\RoomCategories;
 use App\Entity\Server;
 use App\Entity\Terms;
-use App\Event\CommsyEditEvent;
 use App\Facade\UserCreatorFacade;
 use App\Filter\AccountFilterType;
 use App\Form\Model\MailText;
@@ -82,6 +81,7 @@ use App\Mail\Helper\ContactFormHelper;
 use App\Model\TimePulseTemplate;
 use App\Repository\AccountsRepository;
 use App\Repository\AuthSourceRepository;
+use App\Repository\LicenseRepository;
 use App\Repository\UserRepository;
 use App\Room\RoomManager;
 use App\Security\Authorization\Voter\RootVoter;
@@ -110,7 +110,6 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PortalSettingsController extends AbstractController
@@ -329,7 +328,6 @@ class PortalSettingsController extends AbstractController
         ?int $roomCategoryId,
         Request $request,
         RoomCategoriesService $roomCategoriesService,
-        EventDispatcherInterface $dispatcher,
         EntityManagerInterface $entityManager
     ): Response {
         $editForm = null;
@@ -757,18 +755,15 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         ?int $licenseId,
         Request $request,
-        EventDispatcherInterface $dispatcher,
         LegacyEnvironment $environment,
-        ManagerRegistry $managerRegistry
+        LicenseRepository $licenseRepository,
+        EntityManagerInterface $entityManager
     ): Response {
         $portalId = $portal->getId();
 
-        $em = $managerRegistry->getManager();
-        $repository = $em->getRepository(License::class);
-
         $license = new License();
         if ($licenseId) {
-            $license = $repository->findOneById($licenseId);
+            $license = $licenseRepository->findOneById($licenseId);
             $license->setTitle(html_entity_decode((string) $license->getTitle()));
         }
 
@@ -790,7 +785,7 @@ class PortalSettingsController extends AbstractController
 
                 if (!$license->getPosition()) {
                     $position = 0;
-                    $highestPosition = $repository->findHighestPosition($portalId);
+                    $highestPosition = $licenseRepository->findHighestPosition($portalId);
 
                     if ($highestPosition) {
                         $highestPosition = $highestPosition[0];
@@ -800,10 +795,8 @@ class PortalSettingsController extends AbstractController
                     $license->setPosition($position);
                 }
 
-                $em->persist($license);
-                $em->flush();
-
-                $dispatcher->dispatch(new CommsyEditEvent(null), 'commsy.edit');
+                $entityManager->persist($license);
+                $entityManager->flush();
             }
 
             return $this->redirectToRoute('app_portalsettings_licenses', [
@@ -828,8 +821,8 @@ class PortalSettingsController extends AbstractController
                 $materialManager = $legacyEnvironment->getMaterialManager();
                 $materialManager->unsetLicenses($delete->get(0));
 
-                $em->remove($delete->get(0));
-                $em->flush();
+                $entityManager->remove($delete->get(0));
+                $entityManager->flush();
             }
 
             $structure = $data['structure'];
@@ -837,7 +830,7 @@ class PortalSettingsController extends AbstractController
                 $structure = json_decode((string) $structure, true, 512, JSON_THROW_ON_ERROR);
 
                 // update position
-                $repository->updatePositions($structure, $portalId);
+                $licenseRepository->updatePositions($structure, $portalId);
             }
 
             return $this->redirectToRoute('app_portalsettings_licenses', [
@@ -1137,7 +1130,6 @@ class PortalSettingsController extends AbstractController
         #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
-        EventDispatcherInterface $dispatcher,
         LegacyEnvironment $environment,
         ManagerRegistry $managerRegistry,
         int $termId = null
