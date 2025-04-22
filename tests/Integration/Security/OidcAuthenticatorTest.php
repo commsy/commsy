@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Integration\Security;
+namespace Tests\Integration\Security;
 
 use App\Security\Oidc\Flow\AuthorizationCodeFlow;
 use App\Security\Oidc\Flow\UserInfo;
