@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
 
 class RoomServiceTest extends TestCase
 {
-    public function testGetRubricInformationWithoutModifier()
+    public function testGetRubricInformationWithoutModifier(): void
     {
         $legacyEnvironment = $this->createConfiguredMock(LegacyEnvironment::class, [
             'getEnvironment' => $this->createConfiguredMock(cs_environment::class, [

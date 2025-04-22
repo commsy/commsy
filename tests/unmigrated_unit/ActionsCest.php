@@ -24,7 +24,7 @@ class ActionsCest
     {
     }
 
-    public function deleteUser(UnitTester $I)
+    public function deleteUser(UnitTester $I): void
     {
         /** @var \cs_environment $legacyEnvironment */
         $legacyEnvironment = $I->grabService('commsy_legacy.environment')->getEnvironment();
@@ -93,7 +93,7 @@ class ActionsCest
         $I->assertNotNull($deletionDateUser2);
     }
 
-    public function deleteGroup(UnitTester $I)
+    public function deleteGroup(UnitTester $I): void
     {
         /** @var \cs_environment $legacyEnvironment */
         $legacyEnvironment = $I->grabService('commsy_legacy.environment')->getEnvironment();
@@ -144,7 +144,7 @@ class ActionsCest
         $I->assertNotNull($deletionDateGroup);
     }
 
-    public function nonItemDelete(UnitTester $I)
+    public function nonItemDelete(UnitTester $I): void
     {
         /** @var \cs_environment $legacyEnvironment */
         $legacyEnvironment = $I->grabService('commsy_legacy.environment')->getEnvironment();

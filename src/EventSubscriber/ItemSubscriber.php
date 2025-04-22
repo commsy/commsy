@@ -43,7 +43,7 @@ class ItemSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onItemDeleted(ItemDeletedEvent $event)
+    public function onItemDeleted(ItemDeletedEvent $event): void
     {
         $typedItem = $event->getItem();
 
@@ -72,7 +72,7 @@ class ItemSubscriber implements EventSubscriberInterface
         $this->mailer->sendMultiple($message, $moderatorRecipients);
     }
 
-    public function onItemReindex(ItemReindexEvent $event)
+    public function onItemReindex(ItemReindexEvent $event): void
     {
         if ($event->getItem()) {
             $typedItem = $event->getItem();
@@ -86,7 +86,7 @@ class ItemSubscriber implements EventSubscriberInterface
      *
      * @param cs_item $item the item whose search index entry shall be updated
      */
-    private function updateSearchIndex(cs_item $item)
+    private function updateSearchIndex(cs_item $item): void
     {
         if (method_exists($item, 'updateElastic')) {
             $item->updateElastic();

@@ -29,7 +29,7 @@ class CategoryService
         return $tagManager->getItem($tagId);
     }
 
-    public function updateTag($tagId, $newTitle)
+    public function updateTag($tagId, $newTitle): void
     {
         $tagItem = $this->getTag($tagId);
         $tagItem->setTitle($newTitle);
@@ -82,7 +82,7 @@ class CategoryService
         return $tagItem;
     }
 
-    public function removeTag($tagId, $roomId)
+    public function removeTag($tagId, $roomId): void
     {
         $environment = $this->legacyEnvironment->getEnvironment();
         $environment->setCurrentContextID($roomId);
@@ -91,7 +91,7 @@ class CategoryService
         $tagManager->delete($tagId);
     }
 
-    public function updateStructure($structure, $roomId)
+    public function updateStructure($structure, $roomId): void
     {
         $environment = $this->legacyEnvironment->getEnvironment();
         $environment->setCurrentContextID($roomId);
@@ -102,7 +102,7 @@ class CategoryService
         $this->updateTree($structure, $rootTagItem, $tagManager);
     }
 
-    private function updateTree($structure, $rootItem, $tagManager)
+    private function updateTree($structure, $rootItem, $tagManager): void
     {
         foreach ($structure as $position => $tagInformation) {
             // persist new position

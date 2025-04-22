@@ -31,7 +31,7 @@ class RequestsMetric extends AbstractMetric implements MetricInterface, EventSub
         ];
     }
 
-    public function onKernelTerminate(TerminateEvent $event)
+    public function onKernelTerminate(TerminateEvent $event): void
     {
         if (!$event->isMainRequest()) {
             return;

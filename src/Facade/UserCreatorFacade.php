@@ -53,7 +53,7 @@ class UserCreatorFacade
     public function createFromCsvDataset(
         AuthSource $authSource,
         CsvUserDataset $csvUserDataset
-    ) {
+    ): void {
         $userIdentifier = $this->findFreeIdentifier($csvUserDataset->getIdentifier(), $authSource);
         $userPassword = $csvUserDataset->getPassword() ?? $this->generatePassword();
 

@@ -22,7 +22,7 @@ use Symfony\Component\Workflow\Transition;
 class AccountActivityTest extends KernelTestCase
 {
     // tests
-    public function testAccountWorkflowExists()
+    public function testAccountWorkflowExists(): void
     {
         self::bootKernel();
         $container = self::getContainer();
@@ -67,7 +67,7 @@ class AccountActivityTest extends KernelTestCase
         $this->assertContains('abandoned', current($forsakeTransition)->getTos());
     }
 
-    public function testRoomWorkflowExists()
+    public function testRoomWorkflowExists(): void
     {
         self::bootKernel();
         $container = self::getContainer();

@@ -188,7 +188,7 @@ class PortfolioService
         return $templates;
     }
 
-    public function prepareFromTemplate(int $templateId, cs_portfolio_item $portfolioItem)
+    public function prepareFromTemplate(int $templateId, cs_portfolio_item $portfolioItem): void
     {
         $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
 
@@ -325,7 +325,7 @@ class PortfolioService
         return [];
     }
 
-    public function setPortfolioAnnotation($portfolioId, $annotationId, $portfolioRow, $portfolioColumn)
+    public function setPortfolioAnnotation($portfolioId, $annotationId, $portfolioRow, $portfolioColumn): void
     {
         $portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
         $portfolioManager->setPortfolioAnnotation($portfolioId, $annotationId, $portfolioRow, $portfolioColumn);
@@ -338,13 +338,13 @@ class PortfolioService
         return $portfolioManager->getAnnotationIdsForPortfolioCell($portfolioId, $row, $column);
     }
 
-    public function addTagToPortfolio($portfolioId, $tagId, $position, $index, $description)
+    public function addTagToPortfolio($portfolioId, $tagId, $position, $index, $description): void
     {
         $portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
         $portfolioManager->addTagToPortfolio($portfolioId, $tagId, $position, $index, $description);
     }
 
-    public function deletePortfolioTag($portfolioId, $tagId)
+    public function deletePortfolioTag($portfolioId, $tagId): void
     {
         $portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
         $portfolioManager->deletePortfolioTag($portfolioId, $tagId);
@@ -356,7 +356,7 @@ class PortfolioService
         return $portfolioManager->getNewItem();
     }
 
-    public function replaceTagForPortfolio($portfolioId, $tagId, $oldTagId, $description)
+    public function replaceTagForPortfolio($portfolioId, $tagId, $oldTagId, $description): void
     {
         $portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
         $portfolioManager->replaceTagForPortfolio($portfolioId, $tagId, $oldTagId, $description);

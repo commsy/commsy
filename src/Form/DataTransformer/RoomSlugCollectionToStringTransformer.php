@@ -30,7 +30,7 @@ class RoomSlugCollectionToStringTransformer implements DataTransformerInterface
     ) {
     }
 
-    public function setRoomId(int $roomId)
+    public function setRoomId(int $roomId): void
     {
         $this->roomId = $roomId;
     }

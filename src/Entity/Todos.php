@@ -95,7 +95,7 @@ class Todos
         return $this;
     }
 
-    public function removeSteps(Step $step)
+    public function removeSteps(Step $step): void
     {
         $this->steps->removeElement($step);
     }

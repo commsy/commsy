@@ -54,7 +54,7 @@ class ProjectService
         return $projectList->to_array();
     }
 
-    public function setFilterConditions(Form $filterForm)
+    public function setFilterConditions(Form $filterForm): void
     {
         $formData = $filterForm->getData();
 

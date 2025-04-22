@@ -116,10 +116,7 @@ class Materials
         return $this;
     }
 
-    /**
-     * Remove section.
-     */
-    public function removeSection(Section $section)
+    public function removeSection(Section $section): void
     {
         $this->sections->removeElement($section);
     }

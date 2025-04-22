@@ -31,7 +31,7 @@ readonly class LoggingSubscriber implements EventSubscriberInterface
     ) {
     }
 
-    public function onTerminateEvent(TerminateEvent $event)
+    public function onTerminateEvent(TerminateEvent $event): void
     {
         if (!$event->isMainRequest()) {
             return;

@@ -45,7 +45,7 @@ class LogRepository extends ServiceEntityRepository
         string $method,
         ?string $username,
         ?int $contextId
-    ) {
+    ): void {
         $log = new Log();
         $log->setIp($ip);
         $log->setAgent($userAgent);

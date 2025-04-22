@@ -473,7 +473,7 @@ readonly class CalendarsService
                 0.0 === $dateInterval->f;
     }
 
-    public function createCalendar($roomItem, $title = null, $color = null, $default = null)
+    public function createCalendar($roomItem, $title = null, $color = null, $default = null): void
     {
         $calendar = new Calendars();
 

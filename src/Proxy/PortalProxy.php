@@ -190,7 +190,7 @@ class PortalProxy
         return $this->portal->getExtras()['SHOWROOMSONHOME'] ?? '';
     }
 
-    public function setShowRoomsOnHome(?string $text)
+    public function setShowRoomsOnHome(?string $text): void
     {
         $this->portal->getExtras()['SHOWROOMSONHOME'] = $text;
     }
@@ -249,13 +249,13 @@ class PortalProxy
         return $this->portal->getExtras()['MAIL_TEXT_ARRAY'] ?? [];
     }
 
-    public function setEmailTextArray($array)
+    public function setEmailTextArray($array): void
     {
         $this->portal->getExtras()['MAIL_TEXT_ARRAY'] = $array;
         // $this->portal->setEmailTextArray($array);
     }
 
-    public function setEmailText($message_tag, $array)
+    public function setEmailText($message_tag, $array): void
     {
         //  foreach($array as $language => $message){
         //     $this->portal->getExtras()['MAIL_TEXT_ARRAY'][$message_tag] = [$language => $message];
@@ -292,7 +292,7 @@ class PortalProxy
         return 1 === $hideMailByDefault;
     }
 
-    public function setConfigurationHideMailByDefault(bool $enabled)
+    public function setConfigurationHideMailByDefault(bool $enabled): void
     {
         $this->portal->getExtras()['HIDE_MAIL_BY_DEFAULT'] = (true === $enabled) ? 1 : 0;
     }

@@ -33,7 +33,7 @@ class MailCest
     }
 
     // tests
-    public function invalidEmail(UnitTester $I)
+    public function invalidEmail(UnitTester $I): void
     {
         /** @var \App\Mail\Mailer $mailer */
         $mailer = $I->grabService(\App\Mail\Mailer::class);
@@ -67,7 +67,7 @@ class MailCest
         $I->assertFalse($status);
     }
 
-    public function validEmail(UnitTester $I)
+    public function validEmail(UnitTester $I): void
     {
         /** @var \App\Mail\Mailer $mailer */
         $mailer = $I->grabService(\App\Mail\Mailer::class);
@@ -92,7 +92,7 @@ class MailCest
     }
 
 
-    public function roomArchivedMessage(UnitTester $I)
+    public function roomArchivedMessage(UnitTester $I): void
     {
         require_once 'classes/cs_room_item.php';
         /** @var cs_room_item $room */
@@ -116,7 +116,7 @@ class MailCest
         $I->assertRegExp('/http:\/\/somehost\/room\/123/', $generatedMessage->getBody());
     }
 
-    public function itemDeletedMessage(UnitTester $I)
+    public function itemDeletedMessage(UnitTester $I): void
     {
         require_once 'classes/cs_room_item.php';
 
@@ -158,7 +158,7 @@ class MailCest
         $I->assertRegExp('/Raum/', $generatedMessage->getBody());
     }
 
-    public function recipientFactoryModerators(UnitTester $I)
+    public function recipientFactoryModerators(UnitTester $I): void
     {
         require_once 'classes/cs_room_item.php';
         $moderators = new cs_list();

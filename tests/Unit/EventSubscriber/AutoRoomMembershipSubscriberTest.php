@@ -31,7 +31,7 @@ class AutoRoomMembershipSubscriberTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSubscriberMethodCalled()
+    public function testSubscriberMethodCalled(): void
     {
         $roomslugs = ['a-test-room', 'another-test-room'];
 

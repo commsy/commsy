@@ -66,7 +66,7 @@ final class FixPhysicalFilesTest extends TestCase
     }
 
     // tests
-    public function testFirstLevelFolder()
+    public function testFirstLevelFolder(): void
     {
         $symfonyStyle = $this->createStub(SymfonyStyle::class);
 
@@ -117,7 +117,7 @@ final class FixPhysicalFilesTest extends TestCase
     }
 
 
-    public function testSecondLevelFolder()
+    public function testSecondLevelFolder(): void
     {
         $symfonyStyle = $this->createStub(SymfonyStyle::class);
 
@@ -155,7 +155,7 @@ final class FixPhysicalFilesTest extends TestCase
         $this->assertDirectoryDoesNotExist(self::FILES_FOLDER . '/12345/12345');
     }
 
-    public function testThirdLevelFolder()
+    public function testThirdLevelFolder(): void
     {
         $symfonyStyle = $this->createStub(SymfonyStyle::class);
 
@@ -211,7 +211,7 @@ final class FixPhysicalFilesTest extends TestCase
         $this->assertDirectoryDoesNotExist(self::FILES_FOLDER . '/12345/1234/999_');
     }
 
-    public function testFileLevel()
+    public function testFileLevel(): void
     {
         $symfonyStyle = $this->createStub(SymfonyStyle::class);
 
