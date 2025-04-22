@@ -26,7 +26,7 @@ readonly class PortalCreatorFacade
     ) {
     }
 
-    public function persistPortal(Portal $portal)
+    public function persistPortal(Portal $portal): void
     {
         $authSource = new AuthSourceLocal();
         $authSource->setPortal($portal);

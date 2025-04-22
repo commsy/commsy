@@ -1122,7 +1122,7 @@ class DateController extends BaseController
         ]);
     }
 
-    public function saveRecurringDates($dateItem, $isNewRecurring, $valuesToChange, $formData)
+    public function saveRecurringDates($dateItem, $isNewRecurring, $valuesToChange, $formData): void
     {
         /* @var cs_dates_item $dateItem */
 

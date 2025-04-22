@@ -89,12 +89,12 @@ class AnnouncementService
         return $announcementList->to_array();
     }
 
-    public function setDateLimit()
+    public function setDateLimit(): void
     {
         $this->announcementManager->setDateLimit(getCurrentDateTimeInMySQL());
     }
 
-    public function setFilterConditions(Form $filterForm)
+    public function setFilterConditions(Form $filterForm): void
     {
         $formData = $filterForm->getData();
 
@@ -162,12 +162,12 @@ class AnnouncementService
         return $this->announcementManager->getNewItem();
     }
 
-    public function hideDeactivatedEntries()
+    public function hideDeactivatedEntries(): void
     {
         $this->announcementManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
-    public function hideInvalidEntries()
+    public function hideInvalidEntries(): void
     {
         $this->announcementManager->setDateLimit(getCurrentDateTimeInMySQL());
     }

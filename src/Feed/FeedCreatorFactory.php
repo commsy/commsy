@@ -50,7 +50,7 @@ class FeedCreatorFactory
         }
     }
 
-    public function setGuestAccess($isGuestAccess)
+    public function setGuestAccess($isGuestAccess): void
     {
         $this->isGuestAccess = $isGuestAccess;
     }

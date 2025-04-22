@@ -105,7 +105,7 @@ class UserroomService
         return $newRoom;
     }
 
-    public function updateRoomTemplate($roomId, cs_room_item $roomTemplate = null)
+    public function updateRoomTemplate($roomId, cs_room_item $roomTemplate = null): void
     {
         $roomManager = $this->legacyEnvironment->getUserroomManager();
         $room = $roomManager->getItem($roomId);
@@ -118,7 +118,7 @@ class UserroomService
      *
      * @param cs_room_item $room the project room for which user rooms shall be created for all its existing users
      */
-    public function createUserroomsForRoomUsers(cs_room_item $room)
+    public function createUserroomsForRoomUsers(cs_room_item $room): void
     {
         $roomUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
         foreach ($roomUsers as $user) {
@@ -140,7 +140,7 @@ class UserroomService
      * @param string        $newFirstname       (optional) the first name to be used for renaming; if not given, defaults to the $changedProjectUser's first name
      * @param string        $newLastname        (optional) the last name to be used for renaming; if not given, defaults to the $changedProjectUser's last name
      */
-    public function updateNameInUserroomsForUser(cs_user_item $changedProjectUser, string $newFirstname = null, string $newLastname = null)
+    public function updateNameInUserroomsForUser(cs_user_item $changedProjectUser, string $newFirstname = null, string $newLastname = null): void
     {
         $room = $changedProjectUser->getContextItem();
         $newFirstname ??= $changedProjectUser->getFirstname();
@@ -192,7 +192,7 @@ class UserroomService
      * @param string        $newLanguage        (optional) the language identifier describing the system language to be used; if not given,
      *                                          defaults to the $changedProjectUser's language
      */
-    public function updateLanguageInUserroomOfUser(cs_user_item $changedProjectUser, string $newLanguage = null)
+    public function updateLanguageInUserroomOfUser(cs_user_item $changedProjectUser, string $newLanguage = null): void
     {
         $newLanguage ??= $changedProjectUser->getLanguage();
 
@@ -231,7 +231,7 @@ class UserroomService
      *
      * @param cs_room_item $room the project room whose user rooms shall be updated
      */
-    public function renameUserroomsForRoom(cs_room_item $room)
+    public function renameUserroomsForRoom(cs_room_item $room): void
     {
         $roomUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
         foreach ($roomUsers as $user) {
@@ -245,7 +245,7 @@ class UserroomService
         }
     }
 
-    public function updateTemplateInUserroomsForRoom(cs_room_item $room)
+    public function updateTemplateInUserroomsForRoom(cs_room_item $room): void
     {
         $roomManager = $this->legacyEnvironment->getUserroomManager();
         $roomUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
@@ -265,7 +265,7 @@ class UserroomService
      * @param cs_room_item $room        the project room whose user rooms shall be updated
      * @param cs_user_item $changedUser the project room user whose related user room users shall be updated
      */
-    public function changeUserStatusInUserroomsForRoom(cs_room_item $room, cs_user_item $changedUser)
+    public function changeUserStatusInUserroomsForRoom(cs_room_item $room, cs_user_item $changedUser): void
     {
         $changedUserStatus = $changedUser->getStatus();
 
@@ -331,7 +331,7 @@ class UserroomService
      * @param cs_room_item $room        the project room whose associated user rooms shall be purged
      * @param cs_user_item $deletedUser the project room user whose related user room users shall be deleted
      */
-    public function removeUserFromUserroomsForRoom(cs_room_item $room, cs_user_item $deletedUser)
+    public function removeUserFromUserroomsForRoom(cs_room_item $room, cs_user_item $deletedUser): void
     {
         $projectUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
         foreach ($projectUsers as $projectUser) {
@@ -355,7 +355,7 @@ class UserroomService
         }
     }
 
-    public function deleteUserroomsForProjectRoomId(int $projectRoomId)
+    public function deleteUserroomsForProjectRoomId(int $projectRoomId): void
     {
         $roomItem = $this->roomService->getRoomItem($projectRoomId);
         if ('project' === $roomItem->getType()) {
@@ -387,7 +387,7 @@ class UserroomService
      * @param string            $newRoomTitle (optional) the name to be used for renaming; if not given, defaults to the name returned
      *                                        by defaultUserroomTitle()
      */
-    private function renameUserroom(cs_userroom_item $userroom, cs_user_item $roomOwner, string $newRoomTitle = null)
+    private function renameUserroom(cs_userroom_item $userroom, cs_user_item $roomOwner, string $newRoomTitle = null): void
     {
         /**
          * @var cs_project_item $projectRoom
@@ -404,7 +404,7 @@ class UserroomService
         }
     }
 
-    private function updateUserroomTemplate(cs_userroom_item $userroom, cs_user_item $roomOwner, string $newRoomTemplateID)
+    private function updateUserroomTemplate(cs_userroom_item $userroom, cs_user_item $roomOwner, string $newRoomTemplateID): void
     {
         /**
          * @var cs_project_item $projectRoom

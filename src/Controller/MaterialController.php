@@ -76,7 +76,7 @@ class MaterialController extends BaseController
     private AssessmentService $assessmentService;
 
     #[Required]
-    public function setCategoryService(CategoryService $categoryService)
+    public function setCategoryService(CategoryService $categoryService): void
     {
         $this->categoryService = $categoryService;
     }
@@ -100,7 +100,7 @@ class MaterialController extends BaseController
     }
 
     #[Required]
-    public function setMaterialTransformer(MaterialTransformer $materialTransformer)
+    public function setMaterialTransformer(MaterialTransformer $materialTransformer): void
     {
         $this->materialTransformer = $materialTransformer;
     }

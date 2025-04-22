@@ -52,7 +52,7 @@ class LicenseRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function updatePositions(array $positions, $portalId)
+    public function updatePositions(array $positions, $portalId): void
     {
         $em = null;
         // [{"itemId":2},{"itemId":3},{"itemId":1}]

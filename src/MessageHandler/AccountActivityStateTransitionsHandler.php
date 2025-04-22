@@ -27,7 +27,7 @@ class AccountActivityStateTransitionsHandler
     {
     }
 
-    public function __invoke(AccountActivityStateTransitions $message)
+    public function __invoke(AccountActivityStateTransitions $message): void
     {
         $ids = $message->getIds();
 

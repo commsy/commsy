@@ -70,7 +70,7 @@ class RoomCategoriesService
         return $roomCategories = $query->getResult();
     }
 
-    public function setRoomCategoriesLinkedToContext($contextId, $roomCategories)
+    public function setRoomCategoriesLinkedToContext($contextId, $roomCategories): void
     {
         $linkedCategories = $this->getRoomCategoriesLinkedToContext($contextId);
         foreach ($linkedCategories as $linkedCategory) {
@@ -97,7 +97,7 @@ class RoomCategoriesService
         $this->em->flush();
     }
 
-    public function removeRoomCategory($roomCategory)
+    public function removeRoomCategory($roomCategory): void
     {
         $repository = $this->em->getRepository(RoomCategoriesLinks::class);
 

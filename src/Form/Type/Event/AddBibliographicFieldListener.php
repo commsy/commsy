@@ -24,12 +24,12 @@ class AddBibliographicFieldListener implements EventSubscriberInterface
         return [FormEvents::PRE_SET_DATA => 'onPreSetData', FormEvents::POST_SUBMIT => 'onPostSubmit', FormEvents::PRE_SUBMIT => 'onPreSubmit'];
     }
 
-    public function onPostSubmit(FormEvent $event)
+    public function onPostSubmit(FormEvent $event): void
     {
         $event->stopPropagation();
     }
 
-    public function onPreSubmit(FormEvent $event)
+    public function onPreSubmit(FormEvent $event): void
     {
         $data = $event->getData();
         $form = $event->getForm();
@@ -49,7 +49,7 @@ class AddBibliographicFieldListener implements EventSubscriberInterface
         }
     }
 
-    public function onPreSetData(FormEvent $event)
+    public function onPreSetData(FormEvent $event): void
     {
         $data = $event->getData();
         $form = $event->getForm();

@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 class RoomActivityStateSubscriberTest extends TestCase
 {
-    public function testSubscribedEvents()
+    public function testSubscribedEvents(): void
     {
         $subscribedEvents = RoomActivityStateSubscriber::getSubscribedEvents();
 

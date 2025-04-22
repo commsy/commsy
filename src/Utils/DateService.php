@@ -78,7 +78,7 @@ class DateService
         return $dateList->to_array();
     }
 
-    public function setFilterConditions(FormInterface $filterForm)
+    public function setFilterConditions(FormInterface $filterForm): void
     {
         $formData = $filterForm->getData();
 
@@ -177,7 +177,7 @@ class DateService
         }
     }
 
-    public function setPastFilter($past)
+    public function setPastFilter($past): void
     {
         if (!$past) {
             $this->datesManager->setFutureLimit();
@@ -245,7 +245,7 @@ class DateService
         return $dateList->to_array();
     }
 
-    public function hideDeactivatedEntries()
+    public function hideDeactivatedEntries(): void
     {
         $this->datesManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }

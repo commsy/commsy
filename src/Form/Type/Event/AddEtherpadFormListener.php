@@ -31,7 +31,7 @@ class AddEtherpadFormListener implements EventSubscriberInterface
         return [FormEvents::PRE_SET_DATA => 'onPreSetData'];
     }
 
-    public function onPreSetData(FormEvent $event)
+    public function onPreSetData(FormEvent $event): void
     {
         $enabled = $this->parameterBag->get('commsy.etherpad.enabled');
 
