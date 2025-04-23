@@ -2559,27 +2559,17 @@ class cs_context_item extends cs_item
         return $retour;
     }
 
-    public function getPageImpressions($external_timespread = 0, $db_page_impressions = 0): int
+    public function getPageImpressions($external_timespread = 0): int
     {
         if (!isset($this->cachePageImpressions[$external_timespread])) {
             $timespread = ($external_timespread != 0) ? $external_timespread : $this->getTimeSpread();
 
-            $count = 0;
-            $pi_array = $this->getPageImpressionArray();
-            for ($i = 0; $i < $timespread; ++$i) {
-                if (!empty($pi_array[$i])) {
-                    $count = $count + $pi_array[$i];
-                }
-            }
+            $piInTimespread = array_slice($this->getPageImpressionArray(), 0, $timespread);
+            $count = array_sum($piInTimespread);
 
-            if ($db_page_impressions == 0) {
-                global $symfonyContainer;
-                /** @var LogRepository $logRepository */
-                $logRepository = $symfonyContainer->get(LogRepository::class);
-                $pageImpressions = $logRepository->getCountForContext($this->getItemID());
-            } else {
-                $pageImpressions = $db_page_impressions;
-            }
+            /** @var LogRepository $logRepository */
+            $logRepository = $this->_environment->getSymfonyContainer()->get(LogRepository::class);
+            $pageImpressions = $logRepository->getCountForContext($this->getItemID());
 
             $this->cachePageImpressions[$external_timespread] = $count + $pageImpressions;
         }
