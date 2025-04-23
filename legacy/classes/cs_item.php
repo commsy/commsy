@@ -1689,14 +1689,6 @@ class cs_item
          foreach ($rubrics as $rubric) {
              $rubric_array = explode('_', $rubric);
              if (('none' != $rubric_array[1] && CS_USER_TYPE != $rubric_array[0]) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_DATE_TYPE == $this->_environment->getCurrentModule()) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_TODO_TYPE == $this->_environment->getCurrentModule()) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_GROUP_TYPE == $this->_environment->getCurrentModule()) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_MATERIAL_TYPE == $this->_environment->getCurrentModule()) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_ANNOUNCEMENT_TYPE == $this->_environment->getCurrentModule()) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_TASK_TYPE == $this->_environment->getCurrentModule()) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_DISCUSSION_TYPE == $this->_environment->getCurrentModule()) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_TOPIC_TYPE == $this->_environment->getCurrentModule()) ||
                  (CS_USER_TYPE == $rubric_array[0] && CS_DATE_TYPE == $this->getItemType()) ||
                  (CS_USER_TYPE == $rubric_array[0] && CS_TODO_TYPE == $this->getItemType()) ||
                  (CS_USER_TYPE == $rubric_array[0] && CS_GROUP_TYPE == $this->getItemType()) ||
@@ -1873,13 +1865,7 @@ class cs_item
 
          foreach ($rubric_array as $rubric) {
              if (
-                 CS_DATE_TYPE == $this->_environment->getCurrentModule() ||
-                 CS_TODO_TYPE == $this->_environment->getCurrentModule() ||
-                 CS_GROUP_TYPE == $this->_environment->getCurrentModule() ||
-                 CS_ANNOUNCEMENT_TYPE == $this->_environment->getCurrentModule() ||
-                 CS_TASK_TYPE == $this->_environment->getCurrentModule() ||
-                 CS_DISCUSSION_TYPE == $this->_environment->getCurrentModule() ||
-                 CS_TOPIC_TYPE == $this->_environment->getCurrentModule() || CS_DATE_TYPE == $this->getItemType() ||
+                 CS_DATE_TYPE == $this->getItemType() ||
                  CS_MATERIAL_TYPE == $this->getItemType() ||
                  CS_GROUP_TYPE == $this->getItemType() ||
                  CS_ANNOUNCEMENT_TYPE == $this->getItemType() ||

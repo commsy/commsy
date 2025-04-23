@@ -29,14 +29,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\EnteredEvent;
 use Symfony\Component\Workflow\Event\GuardEvent;
 
-class RoomActivityStateSubscriber implements EventSubscriberInterface
+readonly class RoomActivityStateSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly PortalRepository $portalRepository,
-        private readonly RoomManager $roomManager,
-        private readonly ItemService $itemService,
-        private readonly RoomMessageFactory $roomMessageFactory,
-        private readonly Mailer $mailer
+        private PortalRepository $portalRepository,
+        private RoomManager $roomManager,
+        private ItemService $itemService,
+        private RoomMessageFactory $roomMessageFactory,
+        private Mailer $mailer
     ) {
     }
 
