@@ -56,27 +56,11 @@ class cs_environment
 
     public ?cs_server_item $_server_item = null;
 
-    /**
-     * string - current module name.
-     */
-    public $current_module;
-
-    /**
-     * string - current function name.
-     */
-    public $current_function;
-
     public $_current_parameter_array = null;
-
-    /**
-     * string - selected language of the current user.
-     */
-    public $_selected_language = '';
 
     private ?db_mysql_connector $_db_mysql_connector = null;
     private bool $_cache_on = true;
     private ?misc_text_converter $_misc_text_converter = null;
-    private ?array $_available_languages = null;
 
     /**
      * get the current user
@@ -293,30 +277,6 @@ class cs_environment
     public function setCurrentPortalID($value)
     {
         $this->_current_portal_id = (int)$value;
-    }
-
-    /** get name of the current module
-     * returns the current module.
-     *
-     * @return string current_module
-     *
-     * @author CommSy Development Group
-     */
-    public function getCurrentModule()
-    {
-        return $this->current_module;
-    }
-
-    /** get name of the current function
-     * returns the current function.
-     *
-     * @return string current_function
-     *
-     * @author CommSy Development Group
-     */
-    public function getCurrentFunction()
-    {
-        return $this->current_function;
     }
 
     public function getValueOfParameter($parameter)

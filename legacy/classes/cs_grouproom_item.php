@@ -523,7 +523,6 @@ class cs_grouproom_item extends cs_room_item
 
     public function getUsageInfoTextForRubric($rubric)
     {
-        $funct = $this->_environment->getCurrentFunction();
         if ($this->_issetExtra('USAGE_INFO_TEXT')) {
             $retour = $this->_getExtra('USAGE_INFO_TEXT');
             if (empty($retour)) {
