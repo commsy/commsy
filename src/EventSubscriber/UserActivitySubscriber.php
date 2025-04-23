@@ -19,9 +19,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\TerminateEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class UserActivitySubscriber implements EventSubscriberInterface
+readonly class UserActivitySubscriber implements EventSubscriberInterface
 {
-    private readonly cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -45,25 +45,28 @@ class UserActivitySubscriber implements EventSubscriberInterface
            "/dashboard/<id>"
         */
         $request = $event->getRequest();
-        $logRequest = false;
-        if (preg_match('~\/room\/(\d)+$~', $request->getUri())) {
-            $logRequest = true;
-        } elseif (preg_match('~\/room\/(\d)+\/([a-z])+$~', $request->getUri())) {
-            $logRequest = true;
-        } elseif (preg_match('~\/room\/(\d)+\/([a-z])+\/(\d)+$~', $request->getUri())) {
-            $logRequest = true;
-        } elseif (preg_match('~\/dashboard\/(\d)+$~', $request->getUri())) {
-            $logRequest = true;
+
+        $patterns = [
+            '~\/room\/(\d)+$~',
+            '~\/room\/(\d)+\/([a-z])+$~',
+            '~\/room\/(\d)+\/([a-z])+\/(\d)+$~',
+            '~\/dashboard\/(\d)+$~',
+        ];
+
+        $logRequest = array_filter($patterns, function (string $pattern) use ($request) {
+            return preg_match($pattern, $request->getUri());
+        }) !== [];
+
+        if (!$logRequest) {
+            return;
         }
 
-        if ($logRequest) {
-            $user = $this->legacyEnvironment->getCurrentUser();
-            if ($user->isUser() and !$user->isRoot()) {
-                $user->updateLastLogin();
+        $user = $this->legacyEnvironment->getCurrentUser();
+        if ($user->isUser() && !$user->isRoot()) {
+            $user->updateLastLogin();
 
-                // The portal user is no longer updated here
-                // This is now done by the LoginSubscriber and stored in the Account
-            }
+            // The portal user is no longer updated here
+            // This is now done by the LoginSubscriber and stored in the Account
         }
     }
 }

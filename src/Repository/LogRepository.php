@@ -43,18 +43,21 @@ class LogRepository extends ServiceEntityRepository
         string $requestUri,
         string $postContent,
         string $method,
+        bool $isAjax,
         ?string $username,
         ?int $contextId
     ): void {
-        $log = new Log();
-        $log->setIp($ip);
-        $log->setAgent($userAgent);
-        $log->setRequest($requestUri);
+        $log = (new Log())
+            ->setIp($ip)
+            ->setAgent($userAgent)
+            ->setRequest($requestUri)
         // May contain sensitive information that must be excluded or masked
-        //$log->setPostContent($postContent);
-        $log->setMethod($method);
-        $log->setUlogin($username);
-        $log->setCid($contextId);
+        //  ->setPostContent($postContent)
+            ->setMethod($method)
+            ->setAjax($isAjax)
+            ->setUlogin($username)
+            ->setCid($contextId)
+        ;
 
         $em = $this->getEntityManager();
         $em->persist($log);
@@ -67,7 +70,13 @@ class LogRepository extends ServiceEntityRepository
     public function getCountForContext(int $contextId): int
     {
         $query = $this->getEntityManager()->createQuery("
-            SELECT COUNT(l.id) FROM App\Entity\Log l WHERE l.cid = :contextId
+            SELECT COUNT(DISTINCT l.timestamp)
+            FROM App\Entity\Log l
+            WHERE l.cid = :contextId AND
+            (l.ajax = 0 OR l.ajax IS NULL) AND
+            l.request NOT LIKE '%theme/background%' AND
+            l.request NOT LIKE '%image%' AND
+            l.request NOT LIKE '%logo%'
         ")->setParameter('contextId', $contextId);
 
         return $query->getSingleScalarResult();
