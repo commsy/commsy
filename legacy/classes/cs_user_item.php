@@ -1365,9 +1365,9 @@ class cs_user_item extends cs_item
      *
      * @param bool $includeUserroomUsers whether related users from user rooms shall be returned as well
      *
-     * @return \cs_list list of user items connected to this item
+     * @return cs_list list of user items connected to this item
      */
-    public function getRelatedUserList(bool $includeUserroomUsers = false): cs_list
+    public function getRelatedUserList(bool $includeUserroomUsers = false, bool $includeGrouproomUsers = false): cs_list
     {
         $roomIds = [];
         $emptyList = new cs_list();
@@ -1391,8 +1391,12 @@ class cs_user_item extends cs_item
         $userroomManager = $this->_environment->getUserRoomManager();
         $userRooms = ($includeUserroomUsers) ? $userroomManager->getRelatedUserroomListForUser($this) : $emptyList;
 
+        // group rooms
+        $grouproomManager = $this->_environment->getGrouproomManager();
+        $groupRooms = ($includeGrouproomUsers) ? $grouproomManager->getRelatedGroupListForUser($this) : $emptyList;
+
         // gather all room IDs sans the current context ID
-        $roomIds = array_merge($communityRooms->getIDArray(), $projectRooms->getIDArray(), $userRooms->getIDArray());
+        $roomIds = array_merge($communityRooms->getIDArray(), $projectRooms->getIDArray(), $userRooms->getIDArray(), $groupRooms->getIDArray());
         $roomIds = array_filter($roomIds, fn (int $roomId) => $roomId != $currentContextId);
 
         // NOTE: we reindex the $roomIds array (so that its array values start from 0) since cs_user_manager->_performQuery()
@@ -1417,7 +1421,7 @@ class cs_user_item extends cs_item
         $userManager->setUserIDLimit($this->getUserID());
         $userManager->setAuthSourceLimit($this->getAuthSource());
         $userManager->select();
-        /** @var \cs_list $relatedUsers */
+        /** @var cs_list $relatedUsers */
         $relatedUsers = $userManager->get();
 
         return $relatedUsers;

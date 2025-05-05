@@ -18,6 +18,7 @@ use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AuthSourceOIDC;
 use App\Facade\AccountCreatorFacade;
+use App\Repository\AccountsRepository;
 use App\Security\Oidc\Flow\AuthorizationCodeFlow;
 use App\Utils\RequestContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -113,8 +114,21 @@ class OidcAuthenticator extends AbstractCommsyAuthenticator
                 $session->set('context', $context);
                 $session->set('authSourceId', $oidcAuthSource->getId());
 
-                $account = $this->entityManager->getRepository(Account::class)
-                    ->findOneByCredentials($userInfo->getIdentifier(), $context, $oidcAuthSource);
+                if (!$oidcAuthSource->getUseEmailAsIdentifier()) {
+                    // find by username
+                    $account = $this->entityManager->getRepository(Account::class)
+                        ->findOneByCredentials($userInfo->getIdentifier(), $context, $oidcAuthSource);
+                } else {
+                    // find by email
+                    /** @var AccountsRepository $accountRepository */
+                    $accountRepository = $this->entityManager->getRepository(Account::class);
+                    $account = $accountRepository->findOneBy([
+                        'authSource' => $oidcAuthSource,
+                        'contextId' => $context,
+                        'email' => $userInfo->getEmail(),
+                    ]);
+                    $lookupAccount = clone $account;
+                }
 
                 if (null === $account) {
                     // if we did not find an existing account, create one
@@ -142,7 +156,12 @@ class OidcAuthenticator extends AbstractCommsyAuthenticator
                 $this->entityManager->persist($account);
                 $this->entityManager->flush();
 
-                $this->accountManager->propagateAccountDataToProfiles($account);
+                $this->accountManager->propagateAccountDataToProfiles(
+                    $account,
+                    // When identified by email, we also update the username
+                    $oidcAuthSource->getUseEmailAsIdentifier(),
+                    $lookupAccount ?? null
+                );
 
                 return new SelfValidatingPassport(new UserBadge($userInfo->getIdentifier()));
             }
