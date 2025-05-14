@@ -18,7 +18,7 @@ use App\Action\MarkRead\MarkReadAction;
 use App\Action\Pin\PinAction;
 use App\Action\Pin\UnpinAction;
 use App\Entity\Portal;
-use App\Enum\ReaderStatus;
+use App\Entity\User;
 use App\Event\UserLeftRoomEvent;
 use App\Event\UserStatusChangedEvent;
 use App\Filter\UserFilterType;
@@ -48,6 +48,7 @@ use Exception;
 use Liip\ImagineBundle\Imagine\Data\DataManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
 use Nette\Utils\Strings;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -555,13 +556,15 @@ class UserController extends BaseController
         TopicService $topicService,
         LegacyMarkup $legacyMarkup,
         TranslatorInterface $translator,
+        #[MapEntity(id: 'itemId')]
+        User $user,
         int $roomId,
-        int $itemId
+        int $itemId,
     ): Response {
-        $infoArray = $this->getDetailInfo($roomId, $itemId);
+        $infoArray = $this->getDetailInfo($roomId, $user->getItemId());
 
         $alert = null;
-        if (!$this->isGranted(ItemVoter::EDIT_LOCK, $itemId)) {
+        if (!$this->isGranted(ItemVoter::EDIT_LOCK, $user->getItemId())) {
             $alert['type'] = 'warning';
             $alert['content'] = $translator->trans('item is locked', [], 'item');
         }
@@ -571,9 +574,9 @@ class UserController extends BaseController
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
-        $isSelf = $this->legacyEnvironment->getCurrentUserItem()->getItemId() == $itemId;
+        $isSelf = $this->legacyEnvironment->getCurrentUserItem()->getItemId() == $user->getItemId();
 
-        $legacyMarkup->addFiles($this->itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($this->itemService->getItemFileList($user->getItemId()));
 
         $roomItem = $this->roomService->getRoomItem($roomId);
         $moderatorListLength = $roomItem->getModeratorList()->getCount();
@@ -595,7 +598,7 @@ class UserController extends BaseController
 
         return $this->render('user/detail.html.twig', [
             'roomId' => $roomId,
-            'user' => $infoArray['user'],
+            'user' => $user,
             'readerList' => $infoArray['readerList'],
             'modifierList' => $infoArray['modifierList'],
             'userList' => $infoArray['userList'],
