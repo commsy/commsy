@@ -96,7 +96,7 @@ class EmailUploadCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function emailToCommsy($mail)
+    private function emailToCommsy($mail): void
     {
         $translation = [];
         $translator = $this->legacyEnvironment->getTranslationObject();

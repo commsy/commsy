@@ -75,7 +75,7 @@ class MenuBuilderTest extends KernelTestCase
         );
     }
 
-    public function testMainMenuReplicatesRoomConfiguration()
+    public function testMainMenuReplicatesRoomConfiguration(): void
     {
         $requestStack = $this->createConfiguredMock(RequestStack::class, [
             'getCurrentRequest' => new Request([], [], [

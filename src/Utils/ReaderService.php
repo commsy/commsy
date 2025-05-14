@@ -167,22 +167,27 @@ final readonly class ReaderService
     }
 
     /**
-     * Marks the item with the given item ID & version ID as read by the current user.
+     * Marks the given item as read by the current user.
      *
-     * @param int $itemId Id of the item to be marked as read
-     * @param int $versionId Id of the item version to be marked as read
+     * @param cs_item $item The item to be marked as read
      * @return void
      */
-    public function markRead(int $itemId, int $versionId = 0): void
+    public function markItemAsRead(cs_item $item): void
     {
-        $this->markItemsAsRead([$itemId], $versionId);
+        $reader = $this->getLatestReader($item->getItemID());
+        if (!$reader || $reader->getReadDate() <= new DateTime($item->getModificationDate())) {
+            $this->markRead($item->getItemID(), $item->getVersionID());
+        }
     }
 
     /**
-     * @param cs_item[] $items array of items
-     * @param bool $withAnnotations Should related annotations also get marked as read?
+     * Marks the given items (and, by default, also its related annotations) as read by the current user.
+     *
+     * @param cs_item[] $items Array of items to be marked as read
+     * @param bool $withAnnotations Should related annotations also get marked as read? Defaults to true
+     * @return void
      */
-    public function markItemsRead(array $items, bool $withAnnotations = true): void
+    public function markItemsAsRead(array $items, bool $withAnnotations = true): void
     {
         foreach ($items as $item) {
             $this->markRead($item->getItemID(), $item->getVersionID());
@@ -197,24 +202,30 @@ final readonly class ReaderService
         }
     }
 
-    public function markItemAsRead(cs_item $item): void
+    /**
+     * Marks the item with the given item ID & version ID as read by the current user.
+     *
+     * @param int $itemId ID of the item to be marked as read
+     * @param int $versionId ID of the item version to be marked as read; defaults to 0 if not specified explicitly
+     * @return void
+     */
+    public function markRead(int $itemId, int $versionId = 0): void
     {
-        $reader = $this->getLatestReader($item->getItemID());
-        if (!$reader || $reader->getReadDate() <= new DateTime($item->getModificationDate())) {
-            $this->markRead($item->getItemID(), $item->getVersionID());
-        }
+        $this->markItemsWithIdsAsRead([$itemId], $versionId);
     }
 
     /**
-     * Marks an array of items (of the given version ID) as read by the given users
+     * Marks the items with the given item IDs and of the given version ID as read by the users of the given user IDs
      * (or the current user in case no user IDs were given).
      *
      * @param int[]      $itemIds   Array of item IDs for items to be marked as read
      * @param int        $versionId ID of the item version (applied to all given items) to be marked as read
      * @param int[]|null $userIds   Optional array of user IDs specifying the users for whom the given items shall
-     *                              be marked as read; defaults to null in which case given items will be marked as read for the current user
+     *                              be marked as read; defaults to null in which case given items will be marked as
+     *                              read for the current user
+     * @return void
      */
-    public function markItemsAsRead(array $itemIds, int $versionId, array $userIds = null): void
+    public function markItemsWithIdsAsRead(array $itemIds, int $versionId, array $userIds = null): void
     {
         if (empty($itemIds)) {
             return;
@@ -245,6 +256,8 @@ final readonly class ReaderService
                 $reader->setUserId($userId);
 
                 $this->entityManager->persist($reader);
+
+                // fire a ReadStatusPreChangeEvent (which will e.g. trigger invalidation of the read status cache for this item & user)
                 $this->eventDispatcher->dispatch(new ReadStatusPreChangeEvent($userId, $itemId, ReaderStatus::STATUS_SEEN));
             }
         }
@@ -282,7 +295,7 @@ final readonly class ReaderService
             if ($reader) {
                 $readCount++;
 
-                if ($reader->getReadDate() >= $item->getModificationDate()) {
+                if ($reader->getReadDate() >= new DateTime($item->getModificationDate())) {
                     $readSinceModificationCount++;
                 }
             }
@@ -383,7 +396,7 @@ final readonly class ReaderService
             if (!$itemIsCurrentUser) {
                 $return = ReaderStatus::STATUS_NEW->value;
             }
-        } elseif (!$item->isNotActivated() and $reader->getReadDate() < $item->getModificationDate()) {
+        } elseif (!$item->isNotActivated() and $reader->getReadDate() < new DateTime($item->getModificationDate())) {
             $return = ReaderStatus::STATUS_CHANGED->value;
         }
 
@@ -401,7 +414,7 @@ final readonly class ReaderService
                         $changed = false;
                         $date = $anno_item->getModificationDate();
                     }
-                } elseif ($reader->getReadDate() < $anno_item->getModificationDate()) {
+                } elseif ($reader->getReadDate() < new DateTime($anno_item->getModificationDate())) {
                     if ($date < $anno_item->getModificationDate()) {
                         $new = false;
                         $changed = true;
@@ -448,7 +461,7 @@ final readonly class ReaderService
                         $changed = false;
                         $date = $readerItem->getModificationDate();
                     }
-                } elseif ($reader->getReadDate() < $readerItem->getModificationDate()) {
+                } elseif ($reader->getReadDate() < new DateTime($readerItem->getModificationDate())) {
                     if ($date < $readerItem->getModificationDate()) {
                         $new = false;
                         $changed = true;

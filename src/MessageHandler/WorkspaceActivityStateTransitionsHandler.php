@@ -27,7 +27,7 @@ class WorkspaceActivityStateTransitionsHandler
     {
     }
 
-    public function __invoke(WorkspaceActivityStateTransitions $message)
+    public function __invoke(WorkspaceActivityStateTransitions $message): void
     {
         $ids = $message->getIds();
 

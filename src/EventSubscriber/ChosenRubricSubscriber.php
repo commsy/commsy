@@ -37,7 +37,7 @@ class ChosenRubricSubscriber implements EventSubscriberInterface
      * This callback method will get called if the user selects a value from
      * the `selectedRubric` dropdown (e.g. in the SearchFilterType form).
      */
-    public function onPreSetData(FormEvent $event)
+    public function onPreSetData(FormEvent $event): void
     {
         /** @var SearchData $searchData * */
         $searchData = $event->getData();

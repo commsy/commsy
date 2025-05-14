@@ -24,7 +24,7 @@ class LegacyMarkup
     {
     }
 
-    public function addFiles($files)
+    public function addFiles($files): void
     {
         $this->files = array_merge($this->files, $files);
     }

@@ -38,7 +38,7 @@ class AccountMerger
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function mergeAccounts(Account $from, Account $into)
+    public function mergeAccounts(Account $from, Account $into): void
     {
         if ($from === $into) {
             return;
@@ -58,7 +58,7 @@ class AccountMerger
         $this->entityManager->flush();
     }
 
-    private function doMerge(Account $from, Account $into)
+    private function doMerge(Account $from, Account $into): void
     {
         $fromPortalUser = $this->userService->getPortalUser($from);
         $intoPortalUser = $this->userService->getPortalUser($into);
@@ -123,7 +123,7 @@ class AccountMerger
         return null;
     }
 
-    private function rewriteRoomUser(Account $from, Account $into, cs_room_item $room, cs_user_item $nameSource = null)
+    private function rewriteRoomUser(Account $from, Account $into, cs_room_item $room, cs_user_item $nameSource = null): void
     {
         $roomUser = $this->getUserInContext($from, $room->getItemID());
         $roomUser->setUserID($into->getUsername());
@@ -135,7 +135,7 @@ class AccountMerger
         $roomUser->save();
     }
 
-    private function rewriteContextUserAndContent(Account $from, Account $into, int $contextId)
+    private function rewriteContextUserAndContent(Account $from, Account $into, int $contextId): void
     {
         $fromRoomUser = $this->getUserInContext($from, $contextId);
         $intoRoomUser = $this->getUserInContext($into, $contextId);
@@ -176,7 +176,7 @@ class AccountMerger
         $fromRoomUser->delete();
     }
 
-    private function rewritePrivateRoom(Account $from, Account $into)
+    private function rewritePrivateRoom(Account $from, Account $into): void
     {
         $fromPortalUser = $this->userService->getPortalUser($from);
         $intoPortalUser = $this->userService->getPortalUser($into);

@@ -83,7 +83,7 @@ class CronNewsletter implements CronTaskInterface
      * Prepare and send the newsletters. They describe the activity during the last day or week,
      * depending on the user's frequency setting.
      */
-    private function sendNewsletter(Portal $portal, cs_privateroom_item $privateRoom)
+    private function sendNewsletter(Portal $portal, cs_privateroom_item $privateRoom): void
     {
         // prepare newsletter data
         $newsletterData = $this->newsletterGenerator->getNewsletterData($privateRoom);

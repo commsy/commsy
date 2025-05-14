@@ -120,7 +120,7 @@ class DownloadService
      * @param cs_item $item         The CommSy item
      * @param string   $targetFolder Path to the target folder
      */
-    private function copyItemFilesToFolder($item, $targetFolder)
+    private function copyItemFilesToFolder($item, $targetFolder): void
     {
         $files = $this->itemService->getItemFileList($item->getItemId());
 

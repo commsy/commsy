@@ -35,7 +35,7 @@ final readonly class ThemeSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onKernelRequest(RequestEvent $event)
+    public function onKernelRequest(RequestEvent $event): void
     {
         if (HttpKernelInterface::MAIN_REQUEST !== $event->getRequestType()) {
             return;

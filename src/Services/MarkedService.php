@@ -103,7 +103,7 @@ class MarkedService
         return $filteredMarkedItems;
     }
 
-    public function setFilterConditions(FormInterface $filterForm)
+    public function setFilterConditions(FormInterface $filterForm): void
     {
         $formData = $filterForm->getData();
 
@@ -128,7 +128,7 @@ class MarkedService
         return $this->getCountArray($roomId);
     }
 
-    public function removeItemFromClipboard(int $itemId)
+    public function removeItemFromClipboard(int $itemId): void
     {
         $currentClipboardIds = $this->requestStack->getSession()->get('clipboard_ids', []);
 

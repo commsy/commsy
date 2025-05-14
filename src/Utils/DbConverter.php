@@ -75,7 +75,7 @@ class DbConverter
         string $tableName,
         string $idColumnIdentifier,
         array $remove
-    ) {
+    ): void {
         $queryBuilder = $connection->createQueryBuilder();
 
         foreach ($remove as $extraToRemove) {

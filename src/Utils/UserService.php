@@ -79,7 +79,7 @@ class UserService
         return $countUserArray;
     }
 
-    public function resetLimits()
+    public function resetLimits(): void
     {
         $this->userManager->resetLimits();
     }
@@ -291,7 +291,7 @@ class UserService
         return $user;
     }
 
-    public function setFilterConditions(FormInterface $filterForm)
+    public function setFilterConditions(FormInterface $filterForm): void
     {
         $formData = $filterForm->getData();
 
@@ -379,7 +379,7 @@ class UserService
         return $roomList->to_array();
     }
 
-    public function grantAccessToAllPendingApplications()
+    public function grantAccessToAllPendingApplications(): void
     {
         $this->userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
         $this->userManager->setRegisteredLimit();
@@ -711,12 +711,12 @@ class UserService
         return $userIds;
     }
 
-    public function hideDeactivatedEntries()
+    public function hideDeactivatedEntries(): void
     {
         $this->userManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
-    public function showUserStatus($status)
+    public function showUserStatus($status): void
     {
         $this->userManager->setStatusLimit($status);
     }
@@ -780,7 +780,7 @@ class UserService
         AccountMail $accountMail,
         $userIds,
         $action
-    ) {
+    ): void {
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         $contextItem = $this->legacyEnvironment->getCurrentContextItem()->getContextItem();
         $fromSender = $contextItem ? $contextItem->getTitle() : 'CommSy';

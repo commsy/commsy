@@ -73,6 +73,11 @@ class AuthOidcType extends AbstractType
                 'label' => 'Available',
                 'required' => false,
             ])
+            ->add('useEmailAsIdentifier', CheckboxType::class, [
+                'label' => 'portal.auth.oidc.email_identifier.label',
+                'help' => 'portal.auth.oidc.email_identifier.help',
+                'required' => false,
+            ])
             ->add('issuer', UrlType::class, [
                 'label' => 'Auth Provider Issuer URL',
                 'help' => 'https://auth.provider',

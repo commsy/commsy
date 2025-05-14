@@ -217,7 +217,7 @@ class MaterialTransformer extends AbstractTransformer
         return $materialObject;
     }
 
-    private function setBibliographic($form_data, $item)
+    private function setBibliographic($form_data, $item): void
     {
         $bibFields = [
             'author',

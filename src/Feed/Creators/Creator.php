@@ -48,7 +48,7 @@ abstract class Creator implements CreatorInterface
         return $feedItem;
     }
 
-    public function setGuestAccess($isGuestAccess)
+    public function setGuestAccess($isGuestAccess): void
     {
         $this->isGuestAccess = $isGuestAccess;
     }

@@ -27,7 +27,7 @@ class UploadDropzoneType extends AbstractType
     ) {
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $jsOptions = [
             'path' => $options['uploadUrl'],

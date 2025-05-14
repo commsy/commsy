@@ -1540,6 +1540,14 @@
                 <source>portal.auth.oidc.userinfo_url.help</source>
                 <target>UserInfo-Url (optional) - will fall back to the discovery url</target>
             </trans-unit>
+            <trans-unit id="portal_auth_oidc_email_identifier_label">
+                <source>portal.auth.oidc.email_identifier.label</source>
+                <target>Use email as identifier</target>
+            </trans-unit>
+            <trans-unit id="portal_auth_oidc_email_identifier_help">
+                <source>portal.auth.oidc.email_identifier.help</source>
+                <target>CommSy will use the email mapping to identify unique accounts instead of the username</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

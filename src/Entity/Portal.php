@@ -239,7 +239,7 @@ class Portal
     }
 
     #[ORM\PrePersist]
-    public function setInitialDateValues()
+    public function setInitialDateValues(): void
     {
         $this->creationDate = new DateTime('now');
         $this->modificationDate = new DateTime('now');
@@ -257,7 +257,7 @@ class Portal
     }
 
     #[ORM\PreUpdate]
-    public function setModificationDateValue()
+    public function setModificationDateValue(): void
     {
         $this->modificationDate = new DateTime('now');
     }
@@ -904,7 +904,7 @@ class Portal
         return $this->getExtras()['INDEX_VIEW_ACTION'] ?? 0;
     }
 
-    public function setIndexViewAction($value)
+    public function setIndexViewAction($value): void
     {
         $this->getExtras()['INDEX_VIEW_ACTION'] = $value;
     }
@@ -914,7 +914,7 @@ class Portal
         return $this->getExtras()['INDEX_FILTER_CHOICE'] ?? 0;
     }
 
-    public function setUserIndexFilterChoice($value)
+    public function setUserIndexFilterChoice($value): void
     {
         $this->getExtras()['INDEX_FILTER_CHOICE'] = $value;
     }
@@ -924,7 +924,7 @@ class Portal
         return $this->getExtras()['ACCOUNT_INDEX_SEARCH_STRING'] ?? '';
     }
 
-    public function setAccountIndexSearchString($value)
+    public function setAccountIndexSearchString($value): void
     {
         $this->getExtras()['ACCOUNT_INDEX_SEARCH_STRING'] = $value;
     }
@@ -1027,7 +1027,7 @@ class Portal
         return $result;
     }
 
-    public function _addExtra($key, $value)
+    public function _addExtra($key, $value): void
     {
         $extras = $this->getExtras();
         $extras[$key] = $value;

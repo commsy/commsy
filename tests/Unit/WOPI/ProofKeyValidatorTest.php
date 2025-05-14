@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
 class ProofKeyValidatorTest extends TestCase
 {
-    public function testProofKeyIsValid()
+    public function testProofKeyIsValid(): void
     {
         // See https://github.com/Microsoft/Office-Online-Test-Tools-and-Documentation/blob/master/samples/SampleWopiHandler/SampleWopiHandler.UnitTests/ProofKeyTests.cs
         $discoveryService = $this->createConfiguredMock(DiscoveryService::class, [

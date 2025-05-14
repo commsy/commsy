@@ -326,16 +326,16 @@
         ]
     },
     "phpunit/phpunit": {
-        "version": "9.6",
+        "version": "11.5",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "9.6",
-            "ref": "7364a21d87e658eb363c5020c072ecfdc12e2326"
+            "version": "10.0",
+            "ref": "bb22cf8d8c554a623b427d5f3416b538f5525233"
         },
         "files": [
             ".env.test",
-            "phpunit.xml.dist",
+            "phpunit.dist.xml",
             "tests/bootstrap.php"
         ]
     },
@@ -419,6 +419,18 @@
     },
     "symfony/debug": {
         "version": "v4.4.5"
+    },
+    "symfony/debug-bundle": {
+        "version": "7.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "5.3",
+            "ref": "5aa8aa48234c8eb6dbdd7b3cd5d791485d2cec4b"
+        },
+        "files": [
+            "config/packages/debug.yaml"
+        ]
     },
     "symfony/dependency-injection": {
         "version": "v4.4.5"
@@ -611,9 +623,6 @@
     "symfony/polyfill-php73": {
         "version": "v1.14.0"
     },
-    "symfony/polyfill-php80": {
-        "version": "v1.17.0"
-    },
     "symfony/process": {
         "version": "v4.4.5"
     },
@@ -634,6 +643,18 @@
         "files": [
             "config/packages/routing.yaml",
             "config/routes.yaml"
+        ]
+    },
+    "symfony/scheduler": {
+        "version": "7.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "7.2",
+            "ref": "caea3c928ee9e1b21288fd76aef36f16ea355515"
+        },
+        "files": [
+            "src/Schedule.php"
         ]
     },
     "symfony/security-bundle": {
@@ -787,12 +808,12 @@
         "version": "v4.4.37"
     },
     "symfony/web-profiler-bundle": {
-        "version": "6.2",
+        "version": "7.2",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "6.1",
-            "ref": "e42b3f0177df239add25373083a564e5ead4e13a"
+            "ref": "8b51135b84f4266e3b4c8a6dc23c9d1e32e543b7"
         },
         "files": [
             "config/packages/web_profiler.yaml",
@@ -805,7 +826,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "2.0",
-            "ref": "35ee1edee91a1a7137095f53db7ed0c20884b745"
+            "ref": "9ef5412a4a2a8415aca3a3f2b4edd3866aab9a19"
         },
         "files": [
             "assets/app.js",

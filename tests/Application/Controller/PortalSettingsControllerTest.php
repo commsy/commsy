@@ -33,6 +33,37 @@ class PortalSettingsControllerTest extends AbstractApplicationTestCase
         $this->assertAnySelectorTextContains('h3', 'Vorlagen Nutzungsbedingungen');
     }
 
+    #[WithStory(PortalStory::class)]
+    public function testLicenses(): void
+    {
+        $portal = PortalStory::get('portal');
+
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/licenses");
+        $this->assertResponseIsSuccessful();
+        $this->assertAnySelectorTextContains('h3', 'Neue Lizenz anlegen');
+
+        // Create a new license
+        $this->client->submitForm('Neue Lizenz anlegen', [
+            'license[title]' => 'Lizenz ABC',
+            'license[content]' => 'content',
+        ]);
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+        $this->assertAnySelectorTextContains('div', 'Lizenz ABC');
+
+        // Edit
+        $this->client->clickLink('Bearbeiten');
+        $this->client->submitForm('Lizenz speichern', [
+            'license[title]' => 'Lizenz DEF',
+            'license[content]' => 'content2',
+        ]);
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+        $this->assertAnySelectorTextContains('div', 'Lizenz DEF');
+    }
+
     public function testAccountIndex(): void
     {
         /** @var Account $account */

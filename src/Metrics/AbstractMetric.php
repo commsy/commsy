@@ -26,7 +26,7 @@ abstract class AbstractMetric
     private ?WipeableAPC $adapter = null;
 
     #[Required]
-    public function setCacheKey(ParameterBagInterface $params)
+    public function setCacheKey(ParameterBagInterface $params): void
     {
         $this->cacheKey = $params->get('commsy.metrics.cache_namespace');
     }

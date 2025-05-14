@@ -29,21 +29,21 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\EnteredEvent;
 use Symfony\Component\Workflow\Event\GuardEvent;
 
-class RoomActivityStateSubscriber implements EventSubscriberInterface
+readonly class RoomActivityStateSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly PortalRepository $portalRepository,
-        private readonly RoomManager $roomManager,
-        private readonly ItemService $itemService,
-        private readonly RoomMessageFactory $roomMessageFactory,
-        private readonly Mailer $mailer
+        private PortalRepository $portalRepository,
+        private RoomManager $roomManager,
+        private ItemService $itemService,
+        private RoomMessageFactory $roomMessageFactory,
+        private Mailer $mailer
     ) {
     }
 
     /**
      * Called on all transitions, perform general checks here.
      */
-    public function guard(GuardEvent $event)
+    public function guard(GuardEvent $event): void
     {
         /** @var Room $room */
         $room = $event->getSubject();
@@ -90,7 +90,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
      *
      * @throws Exception
      */
-    public function guardNotifyLock(GuardEvent $event)
+    public function guardNotifyLock(GuardEvent $event): void
     {
         /** @var Room $room */
         $room = $event->getSubject();
@@ -110,7 +110,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
      *
      * @throws Exception
      */
-    public function guardLock(GuardEvent $event)
+    public function guardLock(GuardEvent $event): void
     {
         /** @var Room $room */
         $room = $event->getSubject();
@@ -129,7 +129,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
      *
      * @throws Exception
      */
-    public function guardNotifyForsake(GuardEvent $event)
+    public function guardNotifyForsake(GuardEvent $event): void
     {
         /** @var Room $room */
         $room = $event->getSubject();
@@ -149,7 +149,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
      *
      * @throws Exception
      */
-    public function guardForsake(GuardEvent $event)
+    public function guardForsake(GuardEvent $event): void
     {
         /** @var Room $room */
         $room = $event->getSubject();
@@ -167,7 +167,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     /**
      * The room has entered a new state and the marking is updated.
      */
-    public function entered(EnteredEvent $event)
+    public function entered(EnteredEvent $event): void
     {
         /** @var Room $room */
         $room = $event->getSubject();
@@ -178,7 +178,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     /**
      * The room has entered the active_notified state. The marking is updated.
      */
-    public function enteredActiveNotified(EnteredEvent $event)
+    public function enteredActiveNotified(EnteredEvent $event): void
     {
         /** @var Room $room */
         $room = $event->getSubject();
@@ -196,7 +196,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     /**
      * The room has entered the idle state. The marking is updated.
      */
-    public function enteredIdle(EnteredEvent $event)
+    public function enteredIdle(EnteredEvent $event): void
     {
         /** @var Room $room */
         $room = $event->getSubject();
@@ -211,7 +211,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     /**
      * The room has entered the idle_notified state. The marking is updated.
      */
-    public function enteredIdleNotified(EnteredEvent $event)
+    public function enteredIdleNotified(EnteredEvent $event): void
     {
         /** @var Room $room */
         $room = $event->getSubject();
@@ -229,7 +229,7 @@ class RoomActivityStateSubscriber implements EventSubscriberInterface
     /**
      * The room has entered the abandoned state. The marking is updated.
      */
-    public function enteredAbandoned(EnteredEvent $event)
+    public function enteredAbandoned(EnteredEvent $event): void
     {
         /** @var Room $room */
         $room = $event->getSubject();

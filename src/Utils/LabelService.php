@@ -68,7 +68,7 @@ class LabelService
      * @param int[] $itemIds     list of IDs for items that shall be tagged with the categories referenced by $categoryIds
      * @param int   $contextId   the ID of the room containing the specified categories and items
      */
-    public function addCategoriesById(array $categoryIds, array $itemIds, int $contextId)
+    public function addCategoriesById(array $categoryIds, array $itemIds, int $contextId): void
     {
         if (empty($categoryIds) || empty($itemIds)) {
             return;
@@ -91,7 +91,7 @@ class LabelService
      * @param int[] $itemIds    list of IDs for items that shall be tagged with the hashtags referenced by $hashtagIds
      * @param int   $contextId  the ID of the room containing the specified hashtags and items
      */
-    public function addHashtagsById(array $hashtagIds, array $itemIds, int $contextId)
+    public function addHashtagsById(array $hashtagIds, array $itemIds, int $contextId): void
     {
         if (empty($hashtagIds) || empty($itemIds)) {
             return;
